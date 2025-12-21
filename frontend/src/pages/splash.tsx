@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Progress } from "@/components/ui/progress";
+import TextType from "@/components/TextType";
 
 const SplashPage = () => {
   const [progress, setProgress] = useState(0);
@@ -25,7 +26,7 @@ const SplashPage = () => {
           Snipit
         </h1>
         <p className="text-xl text-muted-foreground mb-8">
-          Share your snippets instantly
+          <TextType text={"Share your snippets instantly"} />
         </p>
         <Progress value={progress} className="w-64 mx-auto" />
       </div>
