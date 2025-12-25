@@ -3,6 +3,7 @@ export interface PasteData {
   content: string;
   createdAt: string;
   expiresAt: string;
+  redirectUrl?: boolean;
 }
 
 export type IdType = "system" | "dynamic";

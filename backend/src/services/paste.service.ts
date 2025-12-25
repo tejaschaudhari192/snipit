@@ -11,10 +11,10 @@ class PasteService {
   async deletePaste(id: string) {
     return await pasteModel.deleteOne({ id });
   }
-  async updatePaste(id: string, content: string) {
+  async updatePaste(id: string, content: string, redirectUrl?: boolean) {
     return await pasteModel.findOneAndUpdate(
       { id },
-      { content },
+      { content, redirectUrl },
       { new: true },
     );
   }

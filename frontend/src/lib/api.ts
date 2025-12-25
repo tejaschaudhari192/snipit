@@ -24,6 +24,7 @@ export const useApiHelpers = () => {
     expiresTime: string,
     idType?: "system" | "dynamic",
     customId?: string,
+    redirectUrl?: boolean,
   ) => {
     const value = userInputRef.current?.value || "";
     const response = await api.post("/", {
@@ -31,6 +32,7 @@ export const useApiHelpers = () => {
       expiresTime,
       idType,
       customId,
+      redirectUrl,
     });
     const data = response.data;
     console.log(data);
@@ -49,8 +51,12 @@ export const useApiHelpers = () => {
     return data;
   };
 
-  const updatePaste = async (id: string, content: string) => {
-    const response = await api.put("/" + id, { content });
+  const updatePaste = async (
+    id: string,
+    content: string,
+    redirectUrl?: boolean,
+  ) => {
+    const response = await api.put("/" + id, { content, redirectUrl });
     const data = response.data;
     return data;
   };

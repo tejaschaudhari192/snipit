@@ -20,14 +20,24 @@ const DisplayPage = () => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [paste, setPaste] = useState<PasteData>();
   const [updatedContent, setUpdatedContent] = useState<string>();
+  const [redirectUrl, setRedirectUrl] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     async function loadData() {
       const data = await apiHelpers.getPaste(id!);
       if (data) {
+        if (data.redirectUrl) {
+          let url = data.content;
+          if (!/^https?:\/\//i.test(url)) {
+            url = "https://" + url;
+          }
+          window.location.href = url;
+          return;
+        }
         setPaste(data);
         setUpdatedContent(data.content);
+        setRedirectUrl(data.redirectUrl || false);
       } else {
         setPaste(undefined);
       }
@@ -68,12 +78,19 @@ const DisplayPage = () => {
   };
 
   const handleEditSave = async () => {
-    if (updatedContent === paste?.content) {
+    if (
+      updatedContent === paste?.content &&
+      redirectUrl === paste?.redirectUrl
+    ) {
       setIsEdit(false);
       return;
     }
 
-    const data = await apiHelpers.updatePaste(id!, updatedContent!);
+    const data = await apiHelpers.updatePaste(
+      id!,
+      updatedContent!,
+      redirectUrl,
+    );
     if (data) {
       toast.success("Paste updated Successfully ✔️");
       setPaste(data);
@@ -135,6 +152,7 @@ const DisplayPage = () => {
                     onClick={() => {
                       setIsEdit(false);
                       setUpdatedContent(paste?.content);
+                      setRedirectUrl(paste?.redirectUrl || false);
                     }}
                     className="gap-2"
                   >
@@ -151,11 +169,28 @@ const DisplayPage = () => {
           </div>
           <div className="w-screen h-[75vh] px-6 py-4 overflow-x-hidden">
             {isEdit ? (
-              <Textarea
-                className="h-full font-mono"
-                value={updatedContent}
-                onChange={(e) => setUpdatedContent(e.target.value)}
-              />
+              <div className="h-full flex flex-col gap-4">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="editRedirectUrl"
+                    checked={redirectUrl}
+                    onChange={(e) => setRedirectUrl(e.target.checked)}
+                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary accent-primary"
+                  />
+                  <label
+                    htmlFor="editRedirectUrl"
+                    className="text-sm font-medium leading-none cursor-pointer"
+                  >
+                    Redirect URL
+                  </label>
+                </div>
+                <Textarea
+                  className="flex-1 font-mono"
+                  value={updatedContent}
+                  onChange={(e) => setUpdatedContent(e.target.value)}
+                />
+              </div>
             ) : (
               <Card className="h-full overflow-y-auto">
                 <CardContent className="h-fit">{paste.content}</CardContent>

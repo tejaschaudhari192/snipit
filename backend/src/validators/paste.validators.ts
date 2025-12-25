@@ -4,4 +4,5 @@ export const createPasteSchema = z.object({
   expiresAt: z.date(),
   idType: z.enum(["system", "dynamic"]).optional().default("dynamic"),
   customId: z.string().optional(),
+  redirectUrl: z.boolean().optional().default(false),
 });

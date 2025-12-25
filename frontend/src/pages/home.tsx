@@ -36,6 +36,7 @@ const HomePage = () => {
   const userInputRef = useRef<HTMLTextAreaElement>(null);
   const [expiresTime, setExpiresTime] = useState("");
   const [textValue, setTextValue] = useState("");
+  const [redirectUrl, setRedirectUrl] = useState(false);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [customId, setCustomId] = useState("");
@@ -51,6 +52,7 @@ const HomePage = () => {
         expiresTime,
         selectedIdType,
         providedId,
+        redirectUrl,
       );
       toast.success(`Snippet pasted with ${selectedIdType} ID!`, {
         position: "bottom-right",
@@ -116,6 +118,22 @@ const HomePage = () => {
               </SelectGroup>
             </SelectContent>
           </Select>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="redirectUrl"
+            checked={redirectUrl}
+            onChange={(e) => setRedirectUrl(e.target.checked)}
+            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary accent-primary"
+          />
+          <label
+            htmlFor="redirectUrl"
+            className="text-sm font-medium leading-none cursor-pointer"
+          >
+            Redirect URL
+          </label>
         </div>
 
         <div className="w-full h-fit flex justify-end px-0 md:px-5">
