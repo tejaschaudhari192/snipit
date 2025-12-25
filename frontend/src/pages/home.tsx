@@ -28,6 +28,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDownIcon, Sparkles, Hash } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { IdType } from "@/types";
@@ -121,12 +122,10 @@ const HomePage = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
+          <Checkbox
             id="redirectUrl"
             checked={redirectUrl}
-            onChange={(e) => setRedirectUrl(e.target.checked)}
-            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary accent-primary"
+            onCheckedChange={(checked) => setRedirectUrl(checked as boolean)}
           />
           <label
             htmlFor="redirectUrl"

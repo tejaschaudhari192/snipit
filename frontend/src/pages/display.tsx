@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useApiHelpers } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -171,12 +172,12 @@ const DisplayPage = () => {
             {isEdit ? (
               <div className="h-full flex flex-col gap-4">
                 <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     id="editRedirectUrl"
                     checked={redirectUrl}
-                    onChange={(e) => setRedirectUrl(e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary accent-primary"
+                    onCheckedChange={(checked) =>
+                      setRedirectUrl(checked as boolean)
+                    }
                   />
                   <label
                     htmlFor="editRedirectUrl"
