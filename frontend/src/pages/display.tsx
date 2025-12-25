@@ -194,7 +194,9 @@ const DisplayPage = () => {
               </div>
             ) : (
               <Card className="h-full overflow-y-auto">
-                <CardContent className="h-fit">{paste.content}</CardContent>
+                <CardContent className="h-fit whitespace-pre-wrap">
+                  {paste.content}
+                </CardContent>
               </Card>
             )}
           </div>
