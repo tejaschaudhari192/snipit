@@ -13,10 +13,15 @@ class PasteService {
   ): Promise<{ acknowledged: boolean; deletedCount: number }> {
     return await pasteModel.deleteOne({ id });
   }
-  async updatePaste(id: string, content: string, redirectUrl?: boolean) {
+  async updatePaste(
+    id: string,
+    content: string,
+    redirectUrl?: boolean,
+    language?: string,
+  ) {
     return await pasteModel.findOneAndUpdate(
       { id },
-      { content, redirectUrl },
+      { content, redirectUrl, language },
       { new: true },
     );
   }

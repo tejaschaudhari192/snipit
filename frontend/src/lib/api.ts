@@ -63,8 +63,13 @@ export const useApiHelpers = () => {
     id: string,
     content: string,
     redirectUrl?: boolean,
+    language?: string,
   ) => {
-    const response = await api.put("/" + id, { content, redirectUrl });
+    const response = await api.put("/" + id, {
+      content,
+      redirectUrl,
+      language,
+    });
     const data = response.data;
     return data;
   };

@@ -85,8 +85,6 @@ const HomePage = () => {
   };
 
   const handleLanguageDetection = async (content: string) => {
-    if (!content || content.trim().length < 5) return;
-
     setIsDetecting(true);
     // Only detect if it's likely a code paste or significant text
     try {

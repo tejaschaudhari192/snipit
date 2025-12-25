@@ -103,12 +103,13 @@ class PasteController {
 
   async updatePaste(req: Request, res: Response, next: NextFunction) {
     const id = req.params.id;
-    const { content, redirectUrl } = req.body;
+    const { content, redirectUrl, language } = req.body;
     try {
       const result = await this.pasteService.updatePaste(
         id!,
         content,
         redirectUrl,
+        language,
       );
       this.logger.info("Updating paste:", id);
       return res.json(result);

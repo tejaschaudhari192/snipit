@@ -4,6 +4,7 @@ export interface PasteData {
   createdAt: string;
   expiresAt: string;
   redirectUrl?: boolean;
+  language?: string;
 }
 
 export type IdType = "system" | "dynamic";

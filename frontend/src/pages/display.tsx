@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Editor } from "@monaco-editor/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -11,7 +12,16 @@ import Loader from "@/components/loader";
 import type { PasteData } from "@/types";
 import { getTimeRemaining } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
-import { Edit, Trash2, Save, X, Clock } from "lucide-react";
+import { Code2, Edit, Trash2, Save, X, Clock } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import AiGeneratingIcon from "@/assets/ai-gen-icon";
 
 const DisplayPage = () => {
   const { id } = useParams();
@@ -22,7 +32,10 @@ const DisplayPage = () => {
   const [paste, setPaste] = useState<PasteData>();
   const [updatedContent, setUpdatedContent] = useState<string>();
   const [redirectUrl, setRedirectUrl] = useState<boolean>(false);
+
   const [loading, setLoading] = useState<boolean>(true);
+  const [language, setLanguage] = useState<string>("text");
+  const [isDetecting, setIsDetecting] = useState<boolean>(false);
 
   useEffect(() => {
     async function loadData() {
@@ -39,6 +52,7 @@ const DisplayPage = () => {
         setPaste(data);
         setUpdatedContent(data.content);
         setRedirectUrl(data.redirectUrl || false);
+        setLanguage(data.language || "text");
       } else {
         setPaste(undefined);
       }
@@ -47,6 +61,22 @@ const DisplayPage = () => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleLanguageDetection = async (content: string) => {
+    setIsDetecting(true);
+    try {
+      const result = await apiHelpers.detectLanguage(content);
+
+      if (result.language) {
+        setLanguage(result.language);
+        toast.success(`Detected language: ${result.language}`);
+      }
+    } catch (error) {
+      console.error("Failed to detect language", error);
+    } finally {
+      setIsDetecting(false);
+    }
+  };
 
   const handleDelete = async () => {
     toast("Are you sure you want to delete this paste?", {
@@ -91,6 +121,7 @@ const DisplayPage = () => {
       id!,
       updatedContent!,
       redirectUrl,
+      language,
     );
     if (data) {
       toast.success("Paste updated Successfully ✔️");
@@ -152,8 +183,10 @@ const DisplayPage = () => {
                     size="sm"
                     onClick={() => {
                       setIsEdit(false);
+
                       setUpdatedContent(paste?.content);
                       setRedirectUrl(paste?.redirectUrl || false);
+                      setLanguage(paste?.language || "text");
                     }}
                     className="gap-2"
                   >
@@ -186,10 +219,87 @@ const DisplayPage = () => {
                     Redirect URL
                   </label>
                 </div>
-                <Textarea
-                  className="flex-1 font-mono"
-                  value={updatedContent}
-                  onChange={(e) => setUpdatedContent(e.target.value)}
+
+                <div className="flex items-center gap-2">
+                  {isDetecting ? (
+                    <div className="w-[160px] h-10 px-3 flex items-center gap-2 bg-muted/20 border border-border/50 rounded-md text-sm text-muted-foreground">
+                      <span>Auto Detecting...</span>
+                      <AiGeneratingIcon />
+                    </div>
+                  ) : (
+                    <Select value={language} onValueChange={setLanguage}>
+                      <SelectTrigger className="w-[160px] h-10 bg-muted/20 hover:bg-muted/40 border-border/50 transition-all duration-200 shadow-sm">
+                        <SelectValue placeholder="Language" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="text">Plain Text</SelectItem>
+                          <SelectItem value="javascript">JavaScript</SelectItem>
+                          <SelectItem value="typescript">TypeScript</SelectItem>
+                          <SelectItem value="html">HTML</SelectItem>
+                          <SelectItem value="css">CSS</SelectItem>
+                          <SelectItem value="json">JSON</SelectItem>
+                          <SelectItem value="java">Java</SelectItem>
+                          <SelectItem value="python">Python</SelectItem>
+                          <SelectItem value="c">C</SelectItem>
+                          <SelectItem value="cpp">C++</SelectItem>
+                          <SelectItem value="csharp">C#</SelectItem>
+                          <SelectItem value="go">Go</SelectItem>
+                          <SelectItem value="rust">Rust</SelectItem>
+                          <SelectItem value="markdown">Markdown</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  )}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-10 px-3 text-muted-foreground hover:text-foreground"
+                    onClick={() => handleLanguageDetection(updatedContent!)}
+                    disabled={isDetecting || !updatedContent}
+                    title="Auto detect language"
+                  >
+                    <Code2 className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                {language && language !== "text" ? (
+                  <div className="flex-1 border rounded-md overflow-hidden">
+                    <Editor
+                      height="100%"
+                      language={language}
+                      value={updatedContent}
+                      onChange={(value) => setUpdatedContent(value || "")}
+                      theme="vs-dark"
+                      options={{
+                        minimap: { enabled: false },
+                        fontSize: 14,
+                        padding: { top: 16 },
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <Textarea
+                    className="flex-1 font-mono"
+                    value={updatedContent}
+                    onChange={(e) => setUpdatedContent(e.target.value)}
+                  />
+                )}
+              </div>
+            ) : paste.language && paste.language !== "text" ? (
+              <div className="h-full border rounded-md overflow-hidden">
+                <Editor
+                  height="100%"
+                  language={paste.language}
+                  value={paste.content}
+                  theme="vs-dark"
+                  options={{
+                    minimap: { enabled: false },
+                    fontSize: 14,
+                    padding: { top: 16 },
+                    readOnly: true,
+                    domReadOnly: true,
+                  }}
                 />
               </div>
             ) : (
