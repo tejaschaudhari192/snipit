@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  ElementType,
+  type ElementType,
   useEffect,
   useRef,
   useState,
