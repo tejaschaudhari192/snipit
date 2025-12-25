@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { AxiosError } from "axios";
 import { Textarea } from "@/components/ui/textarea";
 import { useApiHelpers } from "@/lib/api";
 import { saveToLocal } from "@/lib/utils";
@@ -59,7 +60,8 @@ const HomePage = () => {
       return true;
     } catch (error) {
       return (
-        (error as unknown).response?.data?.error || "Failed to create snippet"
+        (error as AxiosError<{ error: string }>).response?.data?.error ||
+        "Failed to create snippet"
       );
     }
   };
@@ -84,10 +86,10 @@ const HomePage = () => {
 
   return (
     <div className="h-fit max-h-screen">
-      <div className=" h-fit flex flex-row  border-slate-200 justify-end items-center my-4 mx-5">
-        <div className="">
+      <div className="h-fit flex flex-col md:flex-row gap-4 border-slate-200 justify-end items-center my-4 mx-5">
+        <div className="w-full md:w-auto">
           <Select onValueChange={setExpiresTime}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-full md:w-[180px]">
               <SelectValue
                 className=""
                 placeholder={t("home.select_expire_time")}
@@ -116,7 +118,7 @@ const HomePage = () => {
           </Select>
         </div>
 
-        <div className="w-full h-fit flex justify-end px-5">
+        <div className="w-full h-fit flex justify-end px-0 md:px-5">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button

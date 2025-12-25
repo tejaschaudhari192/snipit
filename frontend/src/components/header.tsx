@@ -11,6 +11,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Menu } from "lucide-react";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
 import ThemeTogglePositionsDemo from "@/components/theme-toggle";
 
@@ -67,23 +74,21 @@ const Header = ({ className }: HeaderProps) => {
           </span>
         )}
       </div>
-      <div className="flex gap-2">
+      <div className="hidden md:flex gap-2">
         <Link to={"/about"}>
           <Button variant={"ghost"}>{t("header.about")}</Button>
         </Link>
         <Link to={"/history"}>
           <Button variant={"ghost"}>{t("header.history")}</Button>
         </Link>
-        <Select onValueChange={setLanguage}>
+        <Select onValueChange={setLanguage} value={language}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue className="" placeholder="Select Language" />
+            <SelectValue placeholder="Select Language" />
           </SelectTrigger>
 
           <SelectContent>
             <SelectGroup>
-              <SelectItem defaultChecked value="en">
-                English
-              </SelectItem>
+              <SelectItem value="en">English</SelectItem>
               <SelectItem value="mr">मराठी</SelectItem>
               <SelectItem value="hi">हिन्दी</SelectItem>
               <SelectItem value="ja">日本語</SelectItem>
@@ -97,6 +102,44 @@ const Header = ({ className }: HeaderProps) => {
           </Link>
         )}
         <ThemeTogglePositionsDemo />
+      </div>
+
+      <div className="md:hidden flex items-center gap-2">
+        <Select onValueChange={setLanguage} value={language}>
+          <SelectTrigger className="w-[100px]">
+            <SelectValue placeholder="Lang" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="en">English</SelectItem>
+              <SelectItem value="mr">मराठी</SelectItem>
+              <SelectItem value="hi">हिन्दी</SelectItem>
+              <SelectItem value="ja">日本語</SelectItem>
+              <SelectItem value="de">Deutsch</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <ThemeTogglePositionsDemo />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Menu className="h-5 w-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem asChild>
+              <Link to="/about">{t("header.about")}</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/history">{t("header.history")}</Link>
+            </DropdownMenuItem>
+            {path.length > 1 && (
+              <DropdownMenuItem asChild>
+                <Link to="/">{t("header.newnippet")}</Link>
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

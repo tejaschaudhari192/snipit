@@ -1,13 +1,15 @@
-export interface PasteInterface {
+export type PasteData = {
   id: string;
   content: string;
   expiresAt: Date;
   createdAt: Date;
-}
+  redirectUrl?: boolean;
+};
 
-export interface IPaste extends Document {
+export type IPaste = Document & {
   id: string;
   content: string;
   expiresAt: Date;
   createdAt: Date;
-}
+  redirectUrl?: boolean;
+};

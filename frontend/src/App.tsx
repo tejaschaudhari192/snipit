@@ -32,7 +32,7 @@ const App = () => {
   return (
     <ThemeProvider>
       <Router>
-        <div className="h-screen w-screen m-0 p-0 box-border">
+        <div className="min-h-screen w-full m-0 p-0 box-border flex flex-col">
           <Header />
           <Routes>
             <Route path="/" element={<HomePage />} />

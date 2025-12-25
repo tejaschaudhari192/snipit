@@ -12,6 +12,11 @@ const pastSchema = new Schema<IPaste>({
     type: String,
     required: true,
   },
+  redirectUrl: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
   expiresAt: {
     type: Date,
     required: true,

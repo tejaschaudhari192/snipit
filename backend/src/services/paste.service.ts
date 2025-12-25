@@ -1,8 +1,8 @@
 import pasteModel from "@/models/Paste.js";
-import type { PasteInterface } from "@/types/index.js";
+import type { PasteData } from "@/types/index.js";
 
 class PasteService {
-  async savePaste(pastedata: PasteInterface) {
+  async savePaste(pastedata: PasteData) {
     return await pasteModel.create(pastedata);
   }
   async getPasteById(id: string) {
