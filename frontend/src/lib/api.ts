@@ -48,9 +48,13 @@ export const useApiHelpers = () => {
   };
 
   const getPaste = async (id: string) => {
-    const response = await api.get("/" + id);
-    const data = response.data;
-    return data;
+    try {
+      const response = await api.get("/" + id);
+      const data = response.data;
+      return data;
+    } catch {
+      return null;
+    }
   };
 
   const deletePaste = async (id: string) => {

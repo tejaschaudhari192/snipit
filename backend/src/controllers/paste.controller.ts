@@ -81,6 +81,17 @@ class PasteController {
     const id = req.params.id;
     try {
       const result = await this.pasteService.getPasteById(id!);
+      if (!result) {
+        this.logger.info("Paste not found:", id);
+        return res.status(404).json({ error: "Paste not found" });
+      }
+
+      if (result.expiresAt && new Date() > result.expiresAt) {
+        await this.pasteService.deletePaste(id!);
+        this.logger.info("Paste expired and deleted:", id);
+        return res.status(404).json({ error: "Paste expired" });
+      }
+
       this.logger.info("Getting paste:", id);
       return res.json(result);
     } catch (error) {
