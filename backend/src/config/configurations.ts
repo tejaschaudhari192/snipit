@@ -10,7 +10,7 @@ const configurations = {
     password: process.env.DB_PASSWORD,
     name: process.env.DB_NAME,
   },
-  gemini_api_key: process.env.GEMINI_API_KEY,
+  groq_api_key: process.env.GROQ_API_KEY,
 };
 
 export default configurations;

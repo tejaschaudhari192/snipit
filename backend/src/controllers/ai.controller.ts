@@ -1,14 +1,14 @@
-import { GoogleGenAI } from "@google/genai";
+import Groq from "groq-sdk";
 import type { Request, Response } from "express";
 import configurations from "@/config/configurations.js";
 
-const apiKey = configurations.gemini_api_key;
+const apiKey = configurations.groq_api_key;
 
 if (!apiKey) {
-  throw new Error("GEMINI_API_KEY is not set in the environment variables");
+  throw new Error("GROQ_API_KEY is not set in the environment variables");
 }
 
-const genAI = new GoogleGenAI({ apiKey });
+const groq = new Groq({ apiKey });
 
 export const detectLanguage = async (req: Request, res: Response) => {
   try {
@@ -36,23 +36,26 @@ export const detectLanguage = async (req: Request, res: Response) => {
       "text",
     ];
 
-    const prompt = `
-            Analyze the following text/code and detect its programming language or format.
-            Return ONLY one of the following strings: ${validLanguages.join(", ")}.
-            If it is plain text or doesn't match a code format, return 'text'.
-            
-            Code snippet:
-            ${content.slice(0, 1000)}
-        `;
+    const prompt = `Analyze the following text/code and detect its programming language or format.
+Return ONLY one of the following strings: ${validLanguages.join(", ")}.
+If it is plain text or doesn't match a code format, return 'text'.
 
-    const result = await genAI.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
+Code snippet:
+${content.slice(0, 1000)}`;
+
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      model: "llama-3.3-70b-versatile",
     });
 
     let language = "text";
-    if (result?.candidates?.[0]?.content?.parts?.[0]?.text) {
-      language = result.candidates[0].content.parts[0].text;
+    if (chatCompletion.choices[0]?.message?.content) {
+      language = chatCompletion.choices[0].message.content;
     }
 
     language = language.trim().toLowerCase();

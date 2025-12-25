@@ -30,18 +30,28 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ChevronDownIcon, Sparkles, Hash } from "lucide-react";
+import { ChevronDownIcon, Sparkles, Hash, FileText, Code2 } from "lucide-react";
+import { motion } from "motion/react";
+
 import { useTranslation } from "react-i18next";
 import type { IdType } from "@/types";
+import AiGeneratingIcon from "@/assets/ai-gen-icon";
 
 const HomePage = () => {
   const userInputRef = useRef<HTMLTextAreaElement>(null);
+  const valueRef = useRef("");
+
   const [expiresTime, setExpiresTime] = useState("");
-  const [textValue, setTextValue] = useState("");
+  const [textValue, _setTextValue] = useState("");
+  const setTextValue = (val: string) => {
+    _setTextValue(val);
+    valueRef.current = val;
+  };
+
   const [redirectUrl, setRedirectUrl] = useState(false);
   const [contentType, setContentType] = useState<"text" | "code">("text");
   const [language, setLanguage] = useState("javascript");
-  const [hasDetectedLanguage, setHasDetectedLanguage] = useState(false);
+  const [isDetecting, setIsDetecting] = useState(false);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [customId, setCustomId] = useState("");
@@ -75,12 +85,13 @@ const HomePage = () => {
   };
 
   const handleLanguageDetection = async (content: string) => {
-    if (!content || hasDetectedLanguage || content.trim().length < 5) return;
+    if (!content || content.trim().length < 5) return;
 
+    setIsDetecting(true);
     // Only detect if it's likely a code paste or significant text
     try {
       const result = await apiHelpers.detectLanguage(content);
-      setHasDetectedLanguage(true);
+
       if (result.language && result.language !== "text") {
         setContentType("code");
         setLanguage(result.language);
@@ -90,19 +101,23 @@ const HomePage = () => {
       }
     } catch (error) {
       console.error("Failed to detect language", error);
+    } finally {
+      setIsDetecting(false);
     }
   };
 
   const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    if (valueRef.current.trim() !== "") return;
     const text = e.clipboardData.getData("text");
     handleLanguageDetection(text);
   };
 
   const handleEditorMount: OnMount = (editor) => {
     editor.onDidPaste(() => {
-      // We need to get the value from the model as the event doesn't give text directly easily
       const value = editor.getValue();
-      handleLanguageDetection(value);
+      if (valueRef.current.trim() === "") {
+        handleLanguageDetection(value);
+      }
     });
   };
 
@@ -158,59 +173,86 @@ const HomePage = () => {
           </Select>
         </div>
 
-        <div className="flex items-center gap-1 bg-muted p-1 rounded-md">
-          <Button
-            variant={contentType === "text" ? "secondary" : "ghost"}
-            size="sm"
+        <div className="relative flex p-1 bg-muted/40 rounded-xl border border-border/50 shadow-sm backdrop-blur-sm w-full md:w-auto">
+          <motion.div
+            className="absolute inset-y-1 bg-background rounded-lg shadow-sm border border-border/50"
+            style={{
+              width: "calc(50% - 4px)",
+              left: "4px",
+            }}
+            initial={false}
+            animate={{
+              x: contentType === "text" ? 0 : "100%",
+            }}
+            transition={{ type: "spring", bounce: 0.1, duration: 0.4 }}
+          />
+          <button
+            type="button"
             onClick={() => setContentType("text")}
-            className="h-7 text-xs"
+            className={`relative z-10 flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2 text-sm font-medium transition-colors duration-200 min-w-32 cursor-pointer ${
+              contentType === "text"
+                ? "text-foreground"
+                : "text-muted-foreground hover:text-foreground/80"
+            }`}
           >
-            Plain Text
-          </Button>
-          <Button
-            variant={contentType === "code" ? "secondary" : "ghost"}
-            size="sm"
+            <FileText className="h-4 w-4" />
+            <span>{t("home.tab_text")}</span>
+          </button>
+          <button
+            type="button"
             onClick={() => setContentType("code")}
-            className="h-7 text-xs"
+            className={`relative z-10 flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2 text-sm font-medium transition-colors duration-200 min-w-32 cursor-pointer ${
+              contentType === "code"
+                ? "text-foreground"
+                : "text-muted-foreground hover:text-foreground/80"
+            }`}
           >
-            Code
-          </Button>
+            <Code2 className="h-4 w-4" />
+            <span>{t("home.tab_code")}</span>
+          </button>
         </div>
 
-        {contentType === "code" && (
-          <Select value={language} onValueChange={setLanguage}>
-            <SelectTrigger className="w-[140px] h-9">
-              <SelectValue placeholder="Language" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="javascript">JavaScript</SelectItem>
-                <SelectItem value="typescript">TypeScript</SelectItem>
-                <SelectItem value="html">HTML</SelectItem>
-                <SelectItem value="css">CSS</SelectItem>
-                <SelectItem value="json">JSON</SelectItem>
-                <SelectItem value="java">Java</SelectItem>
-                <SelectItem value="python">Python</SelectItem>
-                <SelectItem value="c">C</SelectItem>
-                <SelectItem value="cpp">C++</SelectItem>
-                <SelectItem value="csharp">C#</SelectItem>
-                <SelectItem value="go">Go</SelectItem>
-                <SelectItem value="rust">Rust</SelectItem>
-                <SelectItem value="markdown">Markdown</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        )}
+        {(isDetecting || contentType === "code") &&
+          (isDetecting ? (
+            <div className="w-[160px] h-10 px-3 flex items-center gap-2 bg-muted/20 border border-border/50 rounded-md text-sm text-muted-foreground">
+              <span>Auto Detecting...</span>
+              <AiGeneratingIcon />
+            </div>
+          ) : (
+            <Select value={language} onValueChange={setLanguage}>
+              <SelectTrigger className="w-[160px] h-10 bg-muted/20 hover:bg-muted/40 border-border/50 transition-all duration-200 shadow-sm">
+                <SelectValue placeholder="Language" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="javascript">JavaScript</SelectItem>
+                  <SelectItem value="typescript">TypeScript</SelectItem>
+                  <SelectItem value="html">HTML</SelectItem>
+                  <SelectItem value="css">CSS</SelectItem>
+                  <SelectItem value="json">JSON</SelectItem>
+                  <SelectItem value="java">Java</SelectItem>
+                  <SelectItem value="python">Python</SelectItem>
+                  <SelectItem value="c">C</SelectItem>
+                  <SelectItem value="cpp">C++</SelectItem>
+                  <SelectItem value="csharp">C#</SelectItem>
+                  <SelectItem value="go">Go</SelectItem>
+                  <SelectItem value="rust">Rust</SelectItem>
+                  <SelectItem value="markdown">Markdown</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          ))}
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/20 hover:bg-muted/40 rounded-lg border border-border/50 transition-colors duration-200 cursor-pointer group">
           <Checkbox
             id="redirectUrl"
             checked={redirectUrl}
             onCheckedChange={(checked) => setRedirectUrl(checked as boolean)}
+            className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
           />
           <label
             htmlFor="redirectUrl"
-            className="text-sm font-medium leading-none cursor-pointer"
+            className="text-sm font-medium leading-none cursor-pointer select-none group-hover:text-foreground transition-colors duration-200"
           >
             Redirect URL
           </label>

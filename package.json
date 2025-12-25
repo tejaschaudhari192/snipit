@@ -13,7 +13,9 @@
     "keywords": [],
     "author": "",
     "license": "ISC",
-    "dependencies": {},
+    "dependencies": {
+        "groq-sdk": "^0.37.0"
+    },
     "lint-staged": {
         "src/**/*{js,html,css,ts,tsx}": [
             "eslint --fix",
