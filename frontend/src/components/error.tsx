@@ -2,7 +2,7 @@ import errorImage from "@/assets/images/404.jpg";
 
 const Error = () => {
   return (
-    <div className="flex items-center justify-center h-[90vh] bg-gray-100 text-gray-800 p-4">
+    <div className="flex items-center justify-center min-h-[90vh] bg-gray-100 text-gray-800 p-4">
       <div className="bg-white rounded-lg shadow-2xl overflow-hidden max-w-6xl w-full flex flex-col md:flex-row">
         {/* Left section for the image */}
         <div className="relative w-full md:w-1/2 p-6 flex items-center justify-center">
