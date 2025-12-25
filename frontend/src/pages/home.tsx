@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Editor } from "@monaco-editor/react";
+import { Editor, type OnMount } from "@monaco-editor/react";
 import { AxiosError } from "axios";
 import { Textarea } from "@/components/ui/textarea";
 import { useApiHelpers } from "@/lib/api";
@@ -98,7 +98,7 @@ const HomePage = () => {
     handleLanguageDetection(text);
   };
 
-  const handleEditorMount = (editor: unknown) => {
+  const handleEditorMount: OnMount = (editor) => {
     editor.onDidPaste(() => {
       // We need to get the value from the model as the event doesn't give text directly easily
       const value = editor.getValue();
