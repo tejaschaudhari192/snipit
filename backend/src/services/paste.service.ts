@@ -8,7 +8,9 @@ class PasteService {
   async getPasteById(id: string) {
     return await pasteModel.findOne({ id });
   }
-  async deletePaste(id: string) {
+  async deletePaste(
+    id: string,
+  ): Promise<{ acknowledged: boolean; deletedCount: number }> {
     return await pasteModel.deleteOne({ id });
   }
   async updatePaste(id: string, content: string, redirectUrl?: boolean) {

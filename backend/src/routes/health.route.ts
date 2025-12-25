@@ -5,7 +5,7 @@ import {
   type Request,
   type Response,
 } from "express";
-const router = Router();
+const router: Router = Router();
 
 router.get("/", (req, res) => {
   logger.info("Checking Server Status");

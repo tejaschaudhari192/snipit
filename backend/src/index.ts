@@ -3,6 +3,7 @@ const app = express();
 import { connectDB } from "@/config/db.js";
 import pasteRouter from "@/routes/paste.route.js";
 import healthRouter from "@/routes/health.route.js";
+import aiRouter from "@/routes/ai.route.js";
 import cors from "cors";
 import logger from "@/config/logger.js";
 
@@ -26,6 +27,10 @@ app.get("/api", (req: Request, res: Response) => {
   res.send("Hello");
 });
 
-app.use(express.json()).use("/api/", pasteRouter).use("/health/", healthRouter);
+app
+  .use(express.json())
+  .use("/api/", pasteRouter)
+  .use("/health/", healthRouter)
+  .use("/api/", aiRouter);
 
 app.listen(port, () => logger.info(`Listening on ${port}`));

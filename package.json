@@ -1,36 +1,35 @@
 {
-  "name": "snipit",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky",
-    "dev:frontend": "cd frontend && pnpm dev",
-    "dev:backend": "cd backend && pnpm dev",
-    "dev": "concurrently \"pnpm dev:frontend\" \"pnpm dev:backend\""  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "husky": "^9.1.7",
-    "lint-staged": "^16.1.6",
-    "prettier": "^3.6.2"
-  },
-  "lint-staged": {
-    "src/**/*{js,html,css,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.35.0",
-    "concurrently": "^9.2.1",
-    "eslint": "^9.35.0",
-    "eslint-plugin-react": "^7.37.5",
-    "globals": "^16.3.0",
-    "husky": "^8.0.0",
-    "jiti": "^2.5.1",
-    "typescript-eslint": "^8.42.0"
-  }
+    "name": "snipit",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "prepare": "husky",
+        "dev:frontend": "cd frontend && pnpm dev",
+        "dev:backend": "cd backend && pnpm dev",
+        "dev": "concurrently \"pnpm dev:frontend\" \"pnpm dev:backend\""
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {},
+    "lint-staged": {
+        "src/**/*{js,html,css,ts,tsx}": [
+            "eslint --fix",
+            "prettier --write"
+        ]
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.35.0",
+        "concurrently": "^9.2.1",
+        "eslint": "^9.35.0",
+        "eslint-plugin-react": "^7.37.5",
+        "globals": "^16.3.0",
+        "husky": "^9.1.7",
+        "jiti": "^2.5.1",
+        "lint-staged": "^16.1.6",
+        "prettier": "^3.6.2",
+        "typescript-eslint": "^8.42.0"
+    }
 }

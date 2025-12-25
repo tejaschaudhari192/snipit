@@ -4,6 +4,7 @@ export type PasteData = {
   expiresAt: Date;
   createdAt: Date;
   redirectUrl?: boolean;
+  language?: string;
 };
 
 export type IPaste = Document & {
@@ -12,4 +13,5 @@ export type IPaste = Document & {
   expiresAt: Date;
   createdAt: Date;
   redirectUrl?: boolean;
+  language?: string;
 };

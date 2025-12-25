@@ -5,4 +5,5 @@ export const createPasteSchema = z.object({
   idType: z.enum(["system", "dynamic"]).optional().default("dynamic"),
   customId: z.string().optional(),
   redirectUrl: z.boolean().optional().default(false),
+  language: z.string().optional().default("text"),
 });

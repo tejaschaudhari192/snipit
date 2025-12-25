@@ -13,7 +13,8 @@ class PasteController {
   async createPaste(req: Request, res: Response, next: NextFunction) {
     try {
       const createdAt = new Date(Date.now());
-      const { content, expiresTime, idType, customId, redirectUrl } = req.body;
+      const { content, expiresTime, idType, customId, redirectUrl, language } =
+        req.body;
 
       const expiresAt = expiresTime
         ? dateConverter(expiresTime)
@@ -24,6 +25,7 @@ class PasteController {
         idType,
         customId,
         redirectUrl,
+        language,
       });
 
       let pasteId =
@@ -37,6 +39,7 @@ class PasteController {
           expiresAt: validatedBody.expiresAt,
           createdAt,
           redirectUrl: validatedBody.redirectUrl,
+          language: validatedBody.language,
         };
         return await this.pasteService.savePaste(pasteData);
       };

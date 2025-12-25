@@ -7,7 +7,7 @@ import {
   type Request,
   type Response,
 } from "express";
-const router = Router();
+const router: Router = Router();
 
 const pasteService = new PasteService();
 const pasteController = new PasteController(pasteService, logger);

@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Editor } from "@monaco-editor/react";
 import { AxiosError } from "axios";
 import { Textarea } from "@/components/ui/textarea";
 import { useApiHelpers } from "@/lib/api";
@@ -38,6 +39,9 @@ const HomePage = () => {
   const [expiresTime, setExpiresTime] = useState("");
   const [textValue, setTextValue] = useState("");
   const [redirectUrl, setRedirectUrl] = useState(false);
+  const [contentType, setContentType] = useState<"text" | "code">("text");
+  const [language, setLanguage] = useState("javascript");
+  const [hasDetectedLanguage, setHasDetectedLanguage] = useState(false);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [customId, setCustomId] = useState("");
@@ -49,11 +53,12 @@ const HomePage = () => {
   const handleSubmit = async (selectedIdType: IdType, providedId?: string) => {
     try {
       const data = await apiHelpers.submitPaste(
-        userInputRef,
+        textValue,
         expiresTime,
         selectedIdType,
         providedId,
         redirectUrl,
+        contentType === "code" ? language : "text",
       );
       toast.success(`Snippet pasted with ${selectedIdType} ID!`, {
         position: "bottom-right",
@@ -67,6 +72,38 @@ const HomePage = () => {
         "Failed to create snippet"
       );
     }
+  };
+
+  const handleLanguageDetection = async (content: string) => {
+    if (!content || hasDetectedLanguage || content.trim().length < 5) return;
+
+    // Only detect if it's likely a code paste or significant text
+    try {
+      const result = await apiHelpers.detectLanguage(content);
+      setHasDetectedLanguage(true);
+      if (result.language && result.language !== "text") {
+        setContentType("code");
+        setLanguage(result.language);
+        toast.success(`Detected language: ${result.language}`);
+      } else if (result.language === "text") {
+        setContentType("text");
+      }
+    } catch (error) {
+      console.error("Failed to detect language", error);
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const text = e.clipboardData.getData("text");
+    handleLanguageDetection(text);
+  };
+
+  const handleEditorMount = (editor: unknown) => {
+    editor.onDidPaste(() => {
+      // We need to get the value from the model as the event doesn't give text directly easily
+      const value = editor.getValue();
+      handleLanguageDetection(value);
+    });
   };
 
   const handleDynamicIdClick = () => {
@@ -120,6 +157,50 @@ const HomePage = () => {
             </SelectContent>
           </Select>
         </div>
+
+        <div className="flex items-center gap-1 bg-muted p-1 rounded-md">
+          <Button
+            variant={contentType === "text" ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => setContentType("text")}
+            className="h-7 text-xs"
+          >
+            Plain Text
+          </Button>
+          <Button
+            variant={contentType === "code" ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => setContentType("code")}
+            className="h-7 text-xs"
+          >
+            Code
+          </Button>
+        </div>
+
+        {contentType === "code" && (
+          <Select value={language} onValueChange={setLanguage}>
+            <SelectTrigger className="w-[140px] h-9">
+              <SelectValue placeholder="Language" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="javascript">JavaScript</SelectItem>
+                <SelectItem value="typescript">TypeScript</SelectItem>
+                <SelectItem value="html">HTML</SelectItem>
+                <SelectItem value="css">CSS</SelectItem>
+                <SelectItem value="json">JSON</SelectItem>
+                <SelectItem value="java">Java</SelectItem>
+                <SelectItem value="python">Python</SelectItem>
+                <SelectItem value="c">C</SelectItem>
+                <SelectItem value="cpp">C++</SelectItem>
+                <SelectItem value="csharp">C#</SelectItem>
+                <SelectItem value="go">Go</SelectItem>
+                <SelectItem value="rust">Rust</SelectItem>
+                <SelectItem value="markdown">Markdown</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        )}
 
         <div className="flex items-center gap-2">
           <Checkbox
@@ -211,14 +292,31 @@ const HomePage = () => {
         </DialogContent>
       </Dialog>
 
-      <div className="m-5 h-[70vh]">
-        <Textarea
-          ref={userInputRef}
-          value={textValue}
-          onChange={(e) => setTextValue(e.target.value)}
-          placeholder={t("home.enter_snippet_placeholder")}
-          className="h-full w-full mx-auto"
-        />
+      <div className="m-5 h-[70vh] border rounded-md overflow-hidden">
+        {contentType === "code" ? (
+          <Editor
+            height="100%"
+            language={language}
+            value={textValue}
+            onChange={(value) => setTextValue(value || "")}
+            theme="vs-dark"
+            onMount={handleEditorMount}
+            options={{
+              minimap: { enabled: false },
+              fontSize: 14,
+              padding: { top: 16 },
+            }}
+          />
+        ) : (
+          <Textarea
+            ref={userInputRef}
+            value={textValue}
+            onChange={(e) => setTextValue(e.target.value)}
+            placeholder={t("home.enter_snippet_placeholder")}
+            className="h-full w-full mx-auto resize-none border-0 focus-visible:ring-0"
+            onPaste={handlePaste}
+          />
+        )}
       </div>
     </div>
   );

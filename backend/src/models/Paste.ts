@@ -17,6 +17,10 @@ const pastSchema = new Schema<IPaste>({
     required: false,
     default: false,
   },
+  language: {
+    type: String,
+    default: "text",
+  },
   expiresAt: {
     type: Date,
     required: true,

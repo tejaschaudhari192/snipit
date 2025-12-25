@@ -20,19 +20,27 @@ export const useApiHelpers = () => {
   };
 
   const submitPaste = async (
-    userInputRef: RefObject<HTMLTextAreaElement | null>,
+    userInputRef: RefObject<HTMLTextAreaElement | null> | string,
     expiresTime: string,
     idType?: "system" | "dynamic",
     customId?: string,
     redirectUrl?: boolean,
+    language?: string,
   ) => {
-    const value = userInputRef.current?.value || "";
+    let value = "";
+    if (typeof userInputRef === "string") {
+      value = userInputRef;
+    } else {
+      value = userInputRef.current?.value || "";
+    }
+
     const response = await api.post("/", {
       content: value,
       expiresTime,
       idType,
       customId,
       redirectUrl,
+      language,
     });
     const data = response.data;
     console.log(data);
@@ -61,12 +69,18 @@ export const useApiHelpers = () => {
     return data;
   };
 
+  const detectLanguage = async (content: string) => {
+    const response = await api.post("/detect-language", { content });
+    return response.data;
+  };
+
   return {
     getServerStatus,
     submitPaste,
     getPaste,
     deletePaste,
     updatePaste,
+    detectLanguage,
   };
 };
 
