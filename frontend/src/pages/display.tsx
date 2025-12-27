@@ -10,7 +10,7 @@ import Error from "@/components/error";
 import { toast } from "sonner";
 import Loader from "@/components/loader";
 import type { PasteData } from "@/types";
-import { getTimeRemaining } from "@/lib/utils";
+import { getTimeRemaining, saveToLocal } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { Code2, Edit, Trash2, Save, X, Clock } from "lucide-react";
 import {
@@ -62,6 +62,7 @@ const DisplayPage = () => {
         setUpdatedContent(data.content);
         setRedirectUrl(data.redirectUrl || false);
         setLanguage(data.language || "text");
+        saveToLocal(data);
       } else {
         setPaste(undefined);
       }
@@ -142,6 +143,7 @@ const DisplayPage = () => {
     if (data) {
       toast.success("Paste updated Successfully ✔️");
       setPaste(data);
+      saveToLocal(data);
     } else {
       toast.error("Failed to update paste", {
         style: { backgroundColor: "#ef4444", color: "#fff" },

@@ -7,17 +7,17 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function saveToLocal(pasteData: PasteData) {
-  const { id, content, createdAt, expiresAt }: PasteData = pasteData;
-
   const key = "items";
-
   const stored = localStorage.getItem(key);
   const items: Array<PasteData> = stored ? JSON.parse(stored) : [];
 
-  const index = items.findIndex((item: PasteData) => item.id === id);
+  const index = items.findIndex((item: PasteData) => item.id === pasteData.id);
 
-  if (index !== -1) items[index].content = content;
-  else items.unshift({ id, content, createdAt, expiresAt });
+  if (index !== -1) {
+    items[index] = { ...items[index], ...pasteData };
+  } else {
+    items.unshift(pasteData);
+  }
 
   localStorage.setItem(key, JSON.stringify(items));
 }
