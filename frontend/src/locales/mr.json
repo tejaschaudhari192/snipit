@@ -1,53 +1,53 @@
 {
-    "header": {
-        "about": "बद्दल",
-        "history": "इतिहास",
-        "newnippet": "नवीन स्निपेट",
-        "copied": "कॉपी केले!"
+  "header": {
+    "about": "बद्दल",
+    "history": "इतिहास",
+    "newnippet": "नवीन स्निपेट",
+    "copied": "कॉपी केले!"
+  },
+  "home": {
+    "select_expire_time": "मुदतची वेळ निवडा",
+    "enter_snippet_placeholder": "तुमचा स्निपेट इथे लिहा...",
+    "paste_button": "पेस्ट करा",
+    "paste_dynamic_id": "डायनामिक ID सह पेस्ट करा",
+    "paste_system_id": "सिस्टम ID सह पेस्ट करा",
+    "paste_dynamic_id_desc": "तुमची स्वतःची ID निवडा",
+    "paste_system_id_desc": "ID आपोआप तयार करा",
+    "expire_options": {
+      "one_time_snippet": "एक वेळचा स्निपेट",
+      "expire_in_1_hour": "१ तासात मुदत संपेल",
+      "expire_in_1_day": "१ दिवसात मुदत संपेल",
+      "expire_in_1_week": "१ आठवड्यात मुदत संपेल",
+      "expire_in_1_month": "१ महिन्यात मुदत संपेल",
+      "expire_in_1_year": "१ वर्षात मुदत संपेल"
     },
-    "home": {
-        "select_expire_time": "मुदतची वेळ निवडा",
-        "enter_snippet_placeholder": "तुमचा स्निपेट इथे लिहा...",
-        "paste_button": "पेस्ट करा",
-        "paste_dynamic_id": "डायनामिक ID सह पेस्ट करा",
-        "paste_system_id": "सिस्टम ID सह पेस्ट करा",
-        "paste_dynamic_id_desc": "तुमची स्वतःची ID निवडा",
-        "paste_system_id_desc": "ID आपोआप तयार करा",
-        "expire_options": {
-            "one_time_snippet": "एक वेळचा स्निपेट",
-            "expire_in_1_hour": "१ तासात मुदत संपेल",
-            "expire_in_1_day": "१ दिवसात मुदत संपेल",
-            "expire_in_1_week": "१ आठवड्यात मुदत संपेल",
-            "expire_in_1_month": "१ महिन्यात मुदत संपेल",
-            "expire_in_1_year": "१ वर्षात मुदत संपेल"
-        },
-        "tab_text": "साधा मजकूर",
-        "tab_code": "कोड",
-        "auto_detecting": "आपोआप ओळखत आहे...",
-        "detected_language": "ओळखलेली भाषा: {{language}}",
-        "dynamic_id_dialog": {
-            "title": "कस्टम ID टाका",
-            "description": "एक युनिक आयडेंटिफायर निवडा. याचा वापर तुमच्या स्निपेटच्या URL मध्ये केला जाईल.",
-            "placeholder": "तुमची कस्टम ID इथे टाका...",
-            "preview": "पूर्वावलोकन:",
-            "cancel": "रद्द करा",
-            "submit": "स्निपेट तयार करा"
-        }
-    },
-    "display": {
-        "expires_in": "यामध्ये मुदत संपेल:",
-        "edit_button": "संपादित करा",
-        "copy_button": "कॉपी",
-        "delete_button": "हटवा",
-        "save_button": "बदल जतन करा"
-    },
-    "history": {
-        "plain_text_snippet": "साधा मजकूर स्निपेट",
-        "created_ago": "पूर्वी तयार केले"
-    },
-    "messages": {
-        "snippet_created": "{{idType}} ID सह स्निपेट पेस्ट केले!",
-        "snippet_failed": "स्निपेट तयार करण्यात अडचण आली",
-        "id_conflict": "ही ID आधीच घेतली आहे. कृपया दुसरी ID वापरून पहा."
+    "tab_text": "साधा मजकूर",
+    "tab_code": "कोड",
+    "auto_detecting": "आपोआप ओळखत आहे...",
+    "detected_language": "ओळखलेली भाषा: {{language}}",
+    "dynamic_id_dialog": {
+      "title": "कस्टम ID टाका",
+      "description": "एक युनिक आयडेंटिफायर निवडा. याचा वापर तुमच्या स्निपेटच्या URL मध्ये केला जाईल.",
+      "placeholder": "तुमची कस्टम ID इथे टाका...",
+      "preview": "पूर्वावलोकन:",
+      "cancel": "रद्द करा",
+      "submit": "स्निपेट तयार करा"
     }
+  },
+  "display": {
+    "expires_in": "यामध्ये मुदत संपेल:",
+    "edit_button": "संपादित करा",
+    "copy_button": "कॉपी",
+    "delete_button": "हटवा",
+    "save_button": "बदल जतन करा"
+  },
+  "history": {
+    "plain_text_snippet": "साधा मजकूर स्निपेट",
+    "created_ago": "पूर्वी तयार केले"
+  },
+  "messages": {
+    "snippet_created": "{{idType}} ID सह स्निपेट पेस्ट केले!",
+    "snippet_failed": "स्निपेट तयार करण्यात अडचण आली",
+    "id_conflict": "ही ID आधीच घेतली आहे. कृपया दुसरी ID वापरून पहा."
+  }
 }
