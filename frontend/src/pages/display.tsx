@@ -240,10 +240,7 @@ const DisplayPage = () => {
               {t("display.expires_in")} {getTimeRemaining(paste.expiresAt)}
             </div>
           </div>
-          <div
-            ref={contentRef}
-            className="w-screen h-[75vh] px-6 py-4 overflow-x-hidden touch-none"
-          >
+          <div className="mx-5 my-4 h-[75vh]">
             {isEdit ? (
               <div className="h-full flex flex-col gap-4">
                 <div className="flex items-center gap-2">
@@ -426,8 +423,11 @@ const DisplayPage = () => {
                   </Button>
                 </div>
 
-                {language && language !== "text" ? (
-                  <div className="flex-1 border rounded-md overflow-hidden">
+                <div
+                  ref={contentRef}
+                  className="flex-1 border rounded-md overflow-hidden touch-none"
+                >
+                  {language && language !== "text" ? (
                     <Editor
                       height="100%"
                       language={language}
@@ -442,18 +442,21 @@ const DisplayPage = () => {
                         mouseWheelZoom: true,
                       }}
                     />
-                  </div>
-                ) : (
-                  <Textarea
-                    className="flex-1 font-mono"
-                    value={updatedContent}
-                    onChange={(e) => setUpdatedContent(e.target.value)}
-                    style={{ fontSize: `${fontSize}px` }}
-                  />
-                )}
+                  ) : (
+                    <Textarea
+                      className="h-full w-full resize-none border-0 focus-visible:ring-0 font-mono"
+                      value={updatedContent}
+                      onChange={(e) => setUpdatedContent(e.target.value)}
+                      style={{ fontSize: `${fontSize}px` }}
+                    />
+                  )}
+                </div>
               </div>
             ) : paste.language && paste.language !== "text" ? (
-              <div className="h-full border rounded-md overflow-hidden">
+              <div
+                ref={contentRef}
+                className="h-full border rounded-md overflow-hidden touch-none"
+              >
                 <Editor
                   height="100%"
                   language={paste.language}
@@ -471,14 +474,19 @@ const DisplayPage = () => {
                 />
               </div>
             ) : (
-              <Card className="h-full overflow-y-auto">
-                <CardContent
-                  className="h-fit whitespace-pre-wrap"
-                  style={{ fontSize: `${fontSize}px` }}
-                >
-                  {paste.content}
-                </CardContent>
-              </Card>
+              <div
+                ref={contentRef}
+                className="h-full border rounded-md overflow-hidden touch-none"
+              >
+                <Card className="h-full overflow-y-auto border-0 rounded-none">
+                  <CardContent
+                    className="h-fit whitespace-pre-wrap py-4"
+                    style={{ fontSize: `${fontSize}px` }}
+                  >
+                    {paste.content}
+                  </CardContent>
+                </Card>
+              </div>
             )}
           </div>
         </>

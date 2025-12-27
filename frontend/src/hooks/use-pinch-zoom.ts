@@ -2,12 +2,11 @@ import { useRef, useState, useEffect } from "react";
 
 export function usePinchZoom(initialFontSize = 14) {
   const [fontSize, setFontSize] = useState(initialFontSize);
-  const ref = useRef<HTMLDivElement>(null);
+  const [element, setElement] = useState<HTMLDivElement | null>(null);
   const initialDistance = useRef<number | null>(null);
   const initialFontSizeRef = useRef(initialFontSize);
 
   useEffect(() => {
-    const element = ref.current;
     if (!element) return;
 
     const handleTouchStart = (e: TouchEvent) => {
@@ -58,7 +57,7 @@ export function usePinchZoom(initialFontSize = 14) {
       element.removeEventListener("touchmove", handleTouchMove);
       element.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [fontSize]);
+  }, [fontSize, element]);
 
-  return { fontSize, ref, setFontSize };
+  return { fontSize, ref: setElement, setFontSize };
 }
