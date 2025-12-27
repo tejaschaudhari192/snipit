@@ -27,6 +27,7 @@ import aiGif from "@/assets/images/ai.gif";
 import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { LanguageIcon } from "@/components/language-icon";
+import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 
 const DisplayPage = () => {
   const { id } = useParams();
@@ -42,6 +43,7 @@ const DisplayPage = () => {
   const [language, setLanguage] = useState<string>("text");
   const [isDetecting, setIsDetecting] = useState<boolean>(false);
   const { theme } = useTheme();
+  const { fontSize, ref: contentRef } = usePinchZoom(14);
 
   const handleEditorWillMount: BeforeMount = (monaco) => {
     defineMonacoThemes(monaco);
@@ -238,7 +240,10 @@ const DisplayPage = () => {
               {t("display.expires_in")} {getTimeRemaining(paste.expiresAt)}
             </div>
           </div>
-          <div className="w-screen h-[75vh] px-6 py-4 overflow-x-hidden">
+          <div
+            ref={contentRef}
+            className="w-screen h-[75vh] px-6 py-4 overflow-x-hidden touch-none"
+          >
             {isEdit ? (
               <div className="h-full flex flex-col gap-4">
                 <div className="flex items-center gap-2">
@@ -432,9 +437,9 @@ const DisplayPage = () => {
                       beforeMount={handleEditorWillMount}
                       options={{
                         minimap: { enabled: false },
-                        fontSize: 14,
+                        fontSize: fontSize,
                         padding: { top: 16 },
-                        mouseWheelZoom: false,
+                        mouseWheelZoom: true,
                       }}
                     />
                   </div>
@@ -443,6 +448,7 @@ const DisplayPage = () => {
                     className="flex-1 font-mono"
                     value={updatedContent}
                     onChange={(e) => setUpdatedContent(e.target.value)}
+                    style={{ fontSize: `${fontSize}px` }}
                   />
                 )}
               </div>
@@ -456,17 +462,20 @@ const DisplayPage = () => {
                   beforeMount={handleEditorWillMount}
                   options={{
                     minimap: { enabled: false },
-                    fontSize: 14,
+                    fontSize: fontSize,
                     padding: { top: 16 },
                     readOnly: true,
                     domReadOnly: true,
-                    mouseWheelZoom: false,
+                    mouseWheelZoom: true,
                   }}
                 />
               </div>
             ) : (
               <Card className="h-full overflow-y-auto">
-                <CardContent className="h-fit whitespace-pre-wrap">
+                <CardContent
+                  className="h-fit whitespace-pre-wrap"
+                  style={{ fontSize: `${fontSize}px` }}
+                >
                   {paste.content}
                 </CardContent>
               </Card>

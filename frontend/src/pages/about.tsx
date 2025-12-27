@@ -178,7 +178,7 @@ const AboutPage = () => {
                 {
                   name: "Tejas Chaudhari",
                   email: "jaybalaji192@gmail.com",
-                  github: "https://github.com/tejaschaudhari131",
+                  github: "https://github.com/tejaschaudhari192",
                 },
               ].map((member, index) => (
                 <motion.div

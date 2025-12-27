@@ -41,10 +41,12 @@ import aiGif from "@/assets/images/ai.gif";
 import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { LanguageIcon } from "@/components/language-icon";
+import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 
 const HomePage = () => {
   const userInputRef = useRef<HTMLTextAreaElement>(null);
   const valueRef = useRef("");
+  const { fontSize, ref: editorContainerRef } = usePinchZoom(14);
 
   const [expiresTime, setExpiresTime] = useState("");
   const [textValue, _setTextValue] = useState("");
@@ -480,7 +482,10 @@ const HomePage = () => {
         </DialogContent>
       </Dialog>
 
-      <div className="m-5 h-[70vh] border rounded-md overflow-hidden">
+      <div
+        ref={editorContainerRef}
+        className="m-5 h-[70vh] border rounded-md overflow-hidden touch-none"
+      >
         {contentType === "code" ? (
           <Editor
             height="100%"
@@ -492,9 +497,9 @@ const HomePage = () => {
             onMount={handleEditorMount}
             options={{
               minimap: { enabled: false },
-              fontSize: 14,
+              fontSize: fontSize,
               padding: { top: 16 },
-              mouseWheelZoom: false,
+              mouseWheelZoom: true,
             }}
           />
         ) : (
@@ -505,6 +510,7 @@ const HomePage = () => {
             placeholder={t("home.enter_snippet_placeholder")}
             className="h-full w-full mx-auto resize-none border-0 focus-visible:ring-0"
             onPaste={handlePaste}
+            style={{ fontSize: `${fontSize}px` }}
           />
         )}
       </div>

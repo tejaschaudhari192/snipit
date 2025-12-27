@@ -6,7 +6,7 @@ export const defineMonacoThemes = (monaco: Monaco) => {
     inherit: true,
     rules: [],
     colors: {
-      "editor.background": "#1a1a1a", // Matches standard dark mode ~oklch(0.145 0 0)
+      "editor.background": "#1a1a1a",
       "editor.foreground": "#fafafa",
       "editor.lineHighlightBackground": "#2a2a2a",
       "editorCursor.foreground": "#fafafa",
