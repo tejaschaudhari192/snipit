@@ -2,7 +2,7 @@ import { timeAgo } from "@/lib/utils";
 import type { PasteData } from "@/types";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { FileText, Trash2, Clock, Inbox } from "lucide-react";
+import { FileText, Trash2, Clock, Inbox, Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -33,7 +33,7 @@ const HistoryPage = () => {
     <div className="h-[90%] bg-muted/30 p-8">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">History</h1>
+          <h1 className="text-2xl font-bold">{t("history.title")}</h1>
           {items.length > 0 && (
             <Button
               variant="outline"
@@ -42,7 +42,7 @@ const HistoryPage = () => {
               className="gap-2 text-destructive hover:text-destructive"
             >
               <Trash2 className="h-4 w-4" />
-              Clear History
+              {t("history.clear_history")}
             </Button>
           )}
         </div>
@@ -50,12 +50,14 @@ const HistoryPage = () => {
         {items.length === 0 ? (
           <div className="bg-card rounded-lg border p-12 text-center">
             <Inbox className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-            <h2 className="text-xl font-semibold mb-2">No History Yet</h2>
+            <h2 className="text-xl font-semibold mb-2">
+              {t("history.no_history_title")}
+            </h2>
             <p className="text-muted-foreground mb-4">
-              Your snippet history will appear here
+              {t("history.no_history_desc")}
             </p>
             <Link to="/">
-              <Button>Create Your First Snippet</Button>
+              <Button>{t("history.create_first")}</Button>
             </Link>
           </div>
         ) : (
@@ -68,8 +70,19 @@ const HistoryPage = () => {
               >
                 <div className="flex justify-between items-center mb-3">
                   <div className="flex items-center gap-2 text-sm font-medium">
-                    <FileText className="h-4 w-4" />
-                    {t("history.plain_text_snippet")}
+                    {item.language && item.language !== "text" ? (
+                      <>
+                        <Code2 className="h-4 w-4" />
+                        <span>
+                          {t("history.code_snippet")} ({item.language})
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <FileText className="h-4 w-4" />
+                        <span>{t("history.plain_text_snippet")}</span>
+                      </>
+                    )}
                   </div>
                   <div className="flex items-center gap-1 text-sm text-muted-foreground">
                     <Clock className="h-3 w-3" />

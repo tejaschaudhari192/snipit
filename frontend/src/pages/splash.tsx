@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { Progress } from "@/components/ui/progress";
 import TextType from "@/components/TextType";
+import { useTranslation } from "react-i18next";
 
 const SplashPage = () => {
+  const { t } = useTranslation();
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -26,7 +28,7 @@ const SplashPage = () => {
           Snipit
         </h1>
         <p className="text-xl text-muted-foreground mb-8">
-          <TextType text={"Share your snippets instantly"} />
+          <TextType text={t("splash.tagline")} />
         </p>
         <Progress value={progress} className="w-64 mx-auto" />
       </div>

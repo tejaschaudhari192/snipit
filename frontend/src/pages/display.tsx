@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
-import AiGeneratingIcon from "@/assets/ai-gen-icon";
+import aiGif from "@/assets/images/ai.gif";
 
 import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
@@ -73,8 +73,15 @@ const DisplayPage = () => {
 
   const handleLanguageDetection = async (content: string) => {
     setIsDetecting(true);
+    const startTime = Date.now();
     try {
       const result = await apiHelpers.detectLanguage(content);
+
+      // Wait for at least 2 seconds to make the animation feel natural
+      const elapsedTime = Date.now() - startTime;
+      if (elapsedTime < 2000) {
+        await new Promise((resolve) => setTimeout(resolve, 2000 - elapsedTime));
+      }
 
       if (result.language) {
         setLanguage(result.language);
@@ -238,9 +245,18 @@ const DisplayPage = () => {
 
                 <div className="flex items-center gap-2">
                   {isDetecting ? (
-                    <div className="w-[160px] h-10 px-3 flex items-center gap-2 bg-muted/20 border border-border/50 rounded-md text-sm text-muted-foreground">
-                      <span>Auto Detecting...</span>
-                      <AiGeneratingIcon />
+                    <div className="relative p-[1px] overflow-hidden rounded-md w-[160px] h-10 shrink-0">
+                      <div className="absolute inset-[-200%] moving-border-gradient animate-moving-border opacity-80" />
+                      <div className="relative z-10 w-full h-full px-3 flex items-center gap-2 bg-background dark:bg-slate-900 rounded-[5px] text-sm text-foreground/80 select-none">
+                        <span className="whitespace-nowrap">
+                          {t("home.auto_detecting")}
+                        </span>
+                        <img
+                          src={aiGif}
+                          alt="AI Detecting"
+                          className="w-5 h-5 shrink-0"
+                        />
+                      </div>
                     </div>
                   ) : (
                     <Select value={language} onValueChange={setLanguage}>

@@ -30,12 +30,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChevronDownIcon, Sparkles, Hash, FileText, Code2 } from "lucide-react";
 import { motion } from "motion/react";
 
 import { useTranslation } from "react-i18next";
 import type { IdType } from "@/types";
-import AiGeneratingIcon from "@/assets/ai-gen-icon";
+import aiGif from "@/assets/images/ai.gif";
 
 import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
@@ -90,9 +91,16 @@ const HomePage = () => {
 
   const handleLanguageDetection = async (content: string) => {
     setIsDetecting(true);
+    const startTime = Date.now();
     // Only detect if it's likely a code paste or significant text
     try {
       const result = await apiHelpers.detectLanguage(content);
+
+      // Wait for at least 2 seconds to make the animation feel natural
+      const elapsedTime = Date.now() - startTime;
+      if (elapsedTime < 2000) {
+        await new Promise((resolve) => setTimeout(resolve, 2000 - elapsedTime));
+      }
 
       if (result.language && result.language !== "text") {
         setContentType("code");
@@ -183,50 +191,43 @@ const HomePage = () => {
           </Select>
         </div>
 
-        <div className="relative flex p-1 bg-muted/40 rounded-xl border border-border/50 shadow-sm backdrop-blur-sm w-full md:w-auto">
-          <motion.div
-            className="absolute inset-y-1 bg-background rounded-lg shadow-sm border border-border/50"
-            style={{
-              width: "calc(50% - 4px)",
-              left: "4px",
-            }}
-            initial={false}
-            animate={{
-              x: contentType === "text" ? 0 : "100%",
-            }}
-            transition={{ type: "spring", bounce: 0.1, duration: 0.4 }}
-          />
-          <button
-            type="button"
-            onClick={() => setContentType("text")}
-            className={`relative z-10 flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2 text-sm font-medium transition-colors duration-200 min-w-32 cursor-pointer ${
-              contentType === "text"
-                ? "text-foreground"
-                : "text-muted-foreground hover:text-foreground/80"
-            }`}
-          >
-            <FileText className="h-4 w-4" />
-            <span>{t("home.tab_text")}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setContentType("code")}
-            className={`relative z-10 flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2 text-sm font-medium transition-colors duration-200 min-w-32 cursor-pointer ${
-              contentType === "code"
-                ? "text-foreground"
-                : "text-muted-foreground hover:text-foreground/80"
-            }`}
-          >
-            <Code2 className="h-4 w-4" />
-            <span>{t("home.tab_code")}</span>
-          </button>
-        </div>
+        <Tabs
+          value={contentType}
+          onValueChange={(val) => setContentType(val as "text" | "code")}
+          className="w-full md:w-auto"
+        >
+          <TabsList className="h-10">
+            <TabsTrigger
+              value="text"
+              className="flex items-center gap-2 px-6 text-sm font-semibold min-w-36"
+            >
+              <FileText className="h-4 w-4 shrink-0" />
+              <span className="whitespace-nowrap">{t("home.tab_text")}</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="code"
+              className="flex items-center gap-2 px-6 text-sm font-semibold min-w-36"
+            >
+              <Code2 className="h-4 w-4 shrink-0" />
+              <span className="whitespace-nowrap">{t("home.tab_code")}</span>
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
 
         {(isDetecting || contentType === "code") &&
           (isDetecting ? (
-            <div className="w-[160px] h-10 px-3 flex items-center gap-2 bg-muted/20 border border-border/50 rounded-md text-sm text-muted-foreground">
-              <span>{t("home.auto_detecting")}</span>
-              <AiGeneratingIcon />
+            <div className="relative p-[1px] overflow-hidden rounded-md w-[160px] h-10 shrink-0">
+              <div className="absolute inset-[-200%] moving-border-gradient animate-moving-border opacity-80" />
+              <div className="relative z-10 w-full h-full px-3 flex items-center gap-2 bg-background dark:bg-slate-900 rounded-[5px] text-sm text-foreground/80 select-none">
+                <span className="whitespace-nowrap">
+                  {t("home.auto_detecting")}
+                </span>
+                <img
+                  src={aiGif}
+                  alt="AI Detecting"
+                  className="w-5 h-5 shrink-0"
+                />
+              </div>
             </div>
           ) : (
             <Select value={language} onValueChange={setLanguage}>

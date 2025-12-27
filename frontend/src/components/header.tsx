@@ -4,14 +4,6 @@ import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -20,6 +12,7 @@ import {
 import { Menu } from "lucide-react";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
 import ThemeTogglePositionsDemo from "@/components/theme-toggle";
+import { LanguageSwitcher } from "./language-switcher";
 
 interface HeaderProps {
   className?: string;
@@ -28,21 +21,13 @@ interface HeaderProps {
 const Header = ({ className }: HeaderProps) => {
   const path = useLocation().pathname;
   const id = path.includes("history") || path.includes("about") ? null : path;
+  const { t } = useTranslation();
+
   const [url, setUrl] = useState(window.location.href);
-  const location = useLocation();
-  const { t, i18n } = useTranslation();
-  const [language, setLanguage] = useState(
-    localStorage.getItem("lang") || "en",
-  );
 
   useEffect(() => {
     setUrl(window.location.href);
   }, [location]);
-
-  useEffect(() => {
-    i18n.changeLanguage(language);
-    localStorage.setItem("lang", language);
-  }, [language, i18n]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(url);
@@ -76,26 +61,16 @@ const Header = ({ className }: HeaderProps) => {
       </div>
       <div className="hidden md:flex gap-2">
         <Link to={"/about"}>
-          <Button variant={"ghost"}>{t("header.about")}</Button>
+          <Button variant={path === "/about" ? "secondary" : "ghost"}>
+            {t("header.about")}
+          </Button>
         </Link>
         <Link to={"/history"}>
-          <Button variant={"ghost"}>{t("header.history")}</Button>
+          <Button variant={path === "/history" ? "secondary" : "ghost"}>
+            {t("header.history")}
+          </Button>
         </Link>
-        <Select onValueChange={setLanguage} value={language}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select Language" />
-          </SelectTrigger>
-
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="en">English</SelectItem>
-              <SelectItem value="mr">मराठी</SelectItem>
-              <SelectItem value="hi">हिन्दी</SelectItem>
-              <SelectItem value="ja">日本語</SelectItem>
-              <SelectItem value="de">Deutsch</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <LanguageSwitcher className="w-[180px]" />
         {path.length > 1 && (
           <Link to={"/"}>
             <Button variant={"outline"}>{t("header.newnippet")}</Button>
@@ -105,20 +80,7 @@ const Header = ({ className }: HeaderProps) => {
       </div>
 
       <div className="md:hidden flex items-center gap-2">
-        <Select onValueChange={setLanguage} value={language}>
-          <SelectTrigger className="w-[100px]">
-            <SelectValue placeholder="Lang" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="en">English</SelectItem>
-              <SelectItem value="mr">मराठी</SelectItem>
-              <SelectItem value="hi">हिन्दी</SelectItem>
-              <SelectItem value="ja">日本語</SelectItem>
-              <SelectItem value="de">Deutsch</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <LanguageSwitcher className="w-[100px]" />
         <ThemeTogglePositionsDemo />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

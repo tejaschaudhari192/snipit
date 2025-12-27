@@ -114,7 +114,34 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  @keyframes moving-border {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .moving-border-gradient {
+    background: conic-gradient(
+      from 0deg,
+      transparent 0 240deg,
+      #6366f1 280deg,
+      #a855f7 320deg,
+      #ec4899 360deg
+    );
+  }
+
+  .animate-moving-border {
+    animation: moving-border 3.5s linear infinite;
   }
 }

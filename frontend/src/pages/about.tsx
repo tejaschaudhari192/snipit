@@ -1,171 +1,277 @@
 import Footer from "@/components/ui/footer";
-import { Mail, Code, Users, Heart, Github } from "lucide-react";
+import {
+  Mail,
+  Code,
+  Users,
+  Github,
+  Sparkles,
+  Clock,
+  Languages,
+  Moon,
+  Link2,
+  Heart,
+  Hash,
+  Zap,
+} from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { motion } from "motion/react";
+import { Button } from "@/components/ui/button";
 
 const AboutPage = () => {
-  return (
-    <div className="max-w-100vw overflow-x-hidden">
-      <div className="overflow-x-hidden bg-muted/30 py-16 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              About <span className="text-purple-600">Snipit</span>
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              A passion project built by two developers who believe in making
-              code sharing simple and beautiful.
-            </p>
-          </div>
+  const { t } = useTranslation();
 
-          {/* Main Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
-            {/* Left Side - Image */}
-            <div className="order-2 lg:order-1">
-              <div className="relative  overflow-hidden">
-                <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl p-8 shadow-2xl">
-                  <div className="bg-card rounded-xl p-6 mb-6">
-                    <Code className="w-12 h-12 text-purple-600 mb-4" />
-                    <h3 className="text-xl font-semibold text-card-foreground mb-2">
-                      Code Sharing Made Easy
+  const features = [
+    {
+      icon: Code,
+      key: "syntax_highlighting",
+      gradient: "from-violet-500 to-purple-500",
+    },
+    {
+      icon: Sparkles,
+      key: "ai_detection",
+      gradient: "from-pink-500 to-rose-500",
+    },
+    {
+      icon: Hash,
+      key: "custom_ids",
+      gradient: "from-cyan-500 to-blue-500",
+    },
+    {
+      icon: Clock,
+      key: "expiration",
+      gradient: "from-amber-500 to-orange-500",
+    },
+    {
+      icon: Languages,
+      key: "multi_language",
+      gradient: "from-emerald-500 to-teal-500",
+    },
+    {
+      icon: Moon,
+      key: "dark_mode",
+      gradient: "from-slate-500 to-zinc-600",
+    },
+    {
+      icon: Heart,
+      key: "open_source",
+      gradient: "from-red-500 to-pink-500",
+    },
+    {
+      icon: Link2,
+      key: "redirect_urls",
+      gradient: "from-indigo-500 to-purple-500",
+    },
+  ];
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <div className="flex-1 overflow-x-hidden">
+        {/* Hero Section */}
+        <section className="relative py-20 px-4 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5" />
+          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+
+          <div className="max-w-4xl mx-auto text-center relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+                <Zap className="w-4 h-4" />
+                {t("about_page.features_title")}
+              </div>
+              <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 tracking-tight">
+                {t("about_page.title")}{" "}
+                <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                  Snipit
+                </span>
+              </h1>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                {t("about_page.subtitle")}
+              </p>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Features Grid */}
+        <section className="py-16 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-foreground mb-4">
+                {t("about_page.features_title")}
+              </h2>
+              <p className="text-muted-foreground max-w-xl mx-auto">
+                {t("about_page.features_subtitle")}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {features.map((feature, index) => (
+                <motion.div
+                  key={feature.key}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  className="group relative"
+                >
+                  <div className="h-full p-6 rounded-2xl bg-card border border-border/50 hover:border-border transition-all duration-300 hover:shadow-lg hover:shadow-primary/5">
+                    <div
+                      className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
+                    >
+                      <feature.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">
+                      {t(`about_page.features.${feature.key}.title`)}
                     </h3>
-                    <p className="text-muted-foreground">
-                      Share your code snippets with beautiful syntax
-                      highlighting and easy collaboration.
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {t(`about_page.features.${feature.key}.desc`)}
                     </p>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 text-white">
-                      <Users className="w-8 h-8 mb-2" />
-                      <p className="font-semibold">Collaborative</p>
-                    </div>
-                    <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 text-white">
-                      <Heart className="w-8 h-8 mb-2" />
-                      <p className="font-semibold">Open Source</p>
-                    </div>
-                  </div>
-                </div>
-                {/* Decorative elements */}
-                <div className="absolute -top-4 -right-4 w-24 h-24 bg-purple-200 rounded-full opacity-50"></div>
-                <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-pink-200 rounded-full opacity-50"></div>
-              </div>
-            </div>
-
-            {/* Right Side - About Content */}
-            <div className="order-1 lg:order-2">
-              <div className="prose prose-lg max-w-none">
-                <h2 className="text-3xl font-bold text-foreground mb-6">
-                  Our Story
-                </h2>
-                <p className="text-muted-foreground mb-6 leading-relaxed">
-                  Snippit was born from a simple idea: code sharing should be
-                  beautiful, fast, and effortless. As developers, we found
-                  ourselves constantly sharing code snippets with colleagues,
-                  friends, and the community, but existing solutions felt clunky
-                  and outdated.
-                </p>
-                <p className="text-muted-foreground mb-6 leading-relaxed">
-                  So we decided to build something better. Snippit combines
-                  elegant design with powerful functionality, making it the
-                  perfect tool for developers who care about both form and
-                  function.
-                </p>
-                <p className="text-muted-foreground mb-8 leading-relaxed">
-                  Built with modern web technologies and a focus on user
-                  experience, Snippit aims to be the go-to platform for code
-                  sharing in the developer community.
-                </p>
-
-                <div className="bg-card rounded-xl p-6 shadow-lg border border-border">
-                  <h3 className="text-xl font-semibold text-card-foreground mb-4 flex items-center">
-                    <Users className="w-6 h-6 text-purple-600 mr-2" />
-                    Meet the Team
-                  </h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-                      <div>
-                        <h4 className="font-semibold text-foreground">
-                          Durgesh Kapade
-                        </h4>
-                        <p className="text-muted-foreground text-sm">
-                          Co-Founder & Developer
-                        </p>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <a
-                          href="mailto:durgeshkapade26@gmail.com"
-                          className="text-muted-foreground hover:text-purple-600 transition-colors"
-                        >
-                          <Mail className="w-5 h-5" />
-                        </a>
-                        <a
-                          href="https://github.com/durgeshkapade"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-gray-500 hover:text-purple-600 transition-colors"
-                        >
-                          <Github className="w-5 h-5" />
-                        </a>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-                      <div>
-                        <h4 className="font-semibold text-foreground">
-                          Tejas Chaudhari
-                        </h4>
-                        <p className="text-muted-foreground text-sm">
-                          Co-Founder & Developer
-                        </p>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <a
-                          href="mailto:jaybalaji192@gmail.com"
-                          className="text-muted-foreground hover:text-purple-600 transition-colors"
-                        >
-                          <Mail className="w-5 h-5" />
-                        </a>
-                        <a
-                          href="https://github.com/tejaschaudhari131"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-gray-500 hover:text-purple-600 transition-colors"
-                        >
-                          <Github className="w-5 h-5" />
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                </motion.div>
+              ))}
             </div>
           </div>
+        </section>
 
-          {/* Bottom Section */}
-          <div className="text-center">
-            <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 text-white">
-              <h3 className="text-2xl font-bold mb-4">Want to Contribute?</h3>
-              <p className="text-purple-100 mb-6 max-w-2xl mx-auto">
-                Snippit is open source and we welcome contributions from the
-                community. Whether it's bug fixes, new features, or
-                documentation improvements, every contribution matters.
-              </p>
-              <div className="flex justify-center space-x-4">
-                <a
-                  href="https://github.com/durgeshkapade/snipit"
-                  target="_blank"
-                  rel="noopener noreferrer"
+        {/* Story Section */}
+        <section className="py-16 px-4 bg-muted/30">
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
+                {t("about_page.story.title")}
+              </h2>
+              <div className="space-y-6">
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  {t("about_page.story.p1")}
+                </p>
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  {t("about_page.story.p2")}
+                </p>
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  {t("about_page.story.p3")}
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Team Section */}
+        <section className="py-16 px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
+              {t("about_page.team.title")}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[
+                {
+                  name: "Durgesh Kapade",
+                  email: "durgeshkapade26@gmail.com",
+                  github: "https://github.com/durgeshkapade",
+                },
+                {
+                  name: "Tejas Chaudhari",
+                  email: "jaybalaji192@gmail.com",
+                  github: "https://github.com/tejaschaudhari131",
+                },
+              ].map((member, index) => (
+                <motion.div
+                  key={member.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  className="p-6 rounded-2xl bg-card border border-border/50 hover:border-border transition-all duration-300"
                 >
-                  <button className="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-                    View on GitHub
-                  </button>
-                </a>
-                <a href="mailto:durgeshkapade26@gmail.com">
-                  <button className="bg-purple-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-400 transition-colors">
-                    Get in Touch
-                  </button>
-                </a>
-              </div>
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+                      <Users className="w-8 h-8 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-foreground">
+                        {member.name}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {t("about_page.team.role")}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <a
+                        href={`mailto:${member.email}`}
+                        className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors"
+                      >
+                        <Mail className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
+                      </a>
+                      <a
+                        href={member.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors"
+                      >
+                        <Github className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
+                      </a>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </div>
-        </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-16 px-4">
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary/80 p-10 md:p-14 text-center"
+            >
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_50%)]" />
+              <div className="relative z-10">
+                <h3 className="text-3xl md:text-4xl font-bold text-primary-foreground mb-4">
+                  {t("about_page.contribute.title")}
+                </h3>
+                <p className="text-primary-foreground/80 mb-8 max-w-xl mx-auto leading-relaxed">
+                  {t("about_page.contribute.desc")}
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <a
+                    href="https://github.com/durgeshkapade/snipit"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button
+                      size="lg"
+                      variant="secondary"
+                      className="gap-2 px-8 shadow-lg"
+                    >
+                      <Github className="w-5 h-5" />
+                      {t("about_page.contribute.github_button")}
+                    </Button>
+                  </a>
+                  <a href="mailto:durgeshkapade26@gmail.com">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="gap-2 px-8 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground"
+                    >
+                      <Mail className="w-5 h-5" />
+                      {t("about_page.contribute.contact_button")}
+                    </Button>
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
       </div>
 
       <Footer />

@@ -1,40 +1,95 @@
-import errorImage from "@/assets/images/404.jpg";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { motion } from "motion/react";
+import { Button } from "@/components/ui/button";
+import { Home, Plus, FileQuestion } from "lucide-react";
 
 const Error = () => {
-  return (
-    <div className="flex items-center justify-center min-h-[90vh] bg-gray-100 text-gray-800 p-4">
-      <div className="bg-white rounded-lg shadow-2xl overflow-hidden max-w-6xl w-full flex flex-col md:flex-row">
-        {/* Left section for the image */}
-        <div className="relative w-full md:w-1/2 p-6 flex items-center justify-center">
-          <div className="h-full w-full flex items-center justify-center">
-            {/* The image is a public URL, it's safer to use it this way */}
-            <img
-              src={errorImage}
-              alt="A golden retriever dog digging a hole in the ground"
-              className="rounded-lg max-h-96 md:max-h-full object-cover"
-            />
-          </div>
-        </div>
+  const { t } = useTranslation();
 
-        {/* Right section for the text */}
-        <div className="w-full md:w-1/2 p-10 flex flex-col items-center justify-center text-center">
-          <h1 className="text-8xl md:text-9xl font-extrabold text-blue-600 mb-4">
-            404
-          </h1>
-          <p className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
-            Oops! It seems you've dug up the wrong page.
+  return (
+    <div className="min-h-[90vh] flex items-center justify-center px-4 bg-background">
+      <div className="max-w-2xl w-full text-center">
+        {/* Animated 404 */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="relative mb-8"
+        >
+          {/* Background glow effect */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
+          </div>
+
+          {/* 404 Text */}
+          <div className="relative">
+            <h1 className="text-[150px] md:text-[200px] font-black text-transparent bg-clip-text bg-gradient-to-b from-primary via-primary/70 to-primary/20 leading-none select-none">
+              404
+            </h1>
+          </div>
+        </motion.div>
+
+        {/* Icon */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mb-6"
+        >
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-muted">
+            <FileQuestion className="w-8 h-8 text-muted-foreground" />
+          </div>
+        </motion.div>
+
+        {/* Text content */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="space-y-4 mb-10"
+        >
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+            {t("error_page.title")}
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-md mx-auto">
+            {t("error_page.subtitle")}
           </p>
-          <p className="text-gray-600 mb-8 max-w-sm">
-            The page you're looking for doesn't exist or has been moved. The dog
-            probably buried it somewhere.
+          <p className="text-sm text-muted-foreground/70 max-w-sm mx-auto">
+            {t("error_page.description")}
           </p>
-          <a
-            href="/"
-            className="inline-block px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full transition duration-300 transform hover:scale-105"
-          >
-            Go Home
-          </a>
-        </div>
+        </motion.div>
+
+        {/* Action buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="flex flex-col sm:flex-row gap-4 justify-center"
+        >
+          <Link to="/">
+            <Button size="lg" className="gap-2 px-8 w-full sm:w-auto">
+              <Home className="w-4 h-4" />
+              {t("error_page.go_home")}
+            </Button>
+          </Link>
+          <Link to="/">
+            <Button
+              size="lg"
+              variant="outline"
+              className="gap-2 px-8 w-full sm:w-auto"
+            >
+              <Plus className="w-4 h-4" />
+              {t("error_page.create_new")}
+            </Button>
+          </Link>
+        </motion.div>
+
+        {/* Decorative elements */}
+        <div className="absolute top-1/4 left-10 w-2 h-2 rounded-full bg-primary/30 animate-pulse" />
+        <div className="absolute top-1/3 right-16 w-3 h-3 rounded-full bg-primary/20 animate-pulse delay-150" />
+        <div className="absolute bottom-1/4 left-20 w-2 h-2 rounded-full bg-primary/25 animate-pulse delay-300" />
+        <div className="absolute bottom-1/3 right-10 w-2 h-2 rounded-full bg-primary/30 animate-pulse delay-500" />
       </div>
     </div>
   );
