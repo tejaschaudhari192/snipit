@@ -16,6 +16,7 @@ app.use(
       "https://snipit-rho.vercel.app",
       "https://snipit-nu.vercel.app",
       "http://localhost:5173",
+      "http://192.168.0.2:5173",
     ],
     credentials: true,
     methods: "GET,POST,PUT,DELETE,OPTIONS",
