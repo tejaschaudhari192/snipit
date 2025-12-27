@@ -12,7 +12,7 @@ import Loader from "@/components/loader";
 import type { PasteData } from "@/types";
 import { getTimeRemaining, saveToLocal } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
-import { Code2, Edit, Trash2, Save, X, Clock } from "lucide-react";
+import { Code2, Edit, Trash2, Save, X, Clock, Minus, Plus } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ButtonGroup } from "@/components/ui/button-group";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
 import aiGif from "@/assets/images/ai.gif";
 
@@ -43,7 +44,7 @@ const DisplayPage = () => {
   const [language, setLanguage] = useState<string>("text");
   const [isDetecting, setIsDetecting] = useState<boolean>(false);
   const { theme } = useTheme();
-  const { fontSize, ref: contentRef } = usePinchZoom(14);
+  const { fontSize, ref: contentRef, setFontSize } = usePinchZoom(14);
 
   const handleEditorWillMount: BeforeMount = (monaco) => {
     defineMonacoThemes(monaco);
@@ -194,6 +195,33 @@ const DisplayPage = () => {
                     <Trash2 className="h-4 w-4" />
                     {t("display.delete_button")}
                   </Button>
+                  <ButtonGroup className="ml-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() =>
+                        setFontSize((prev: number) => Math.max(prev - 1, 8))
+                      }
+                      className="h-8 w-8"
+                      title="Zoom Out"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                    <div className="flex items-center justify-center px-3 border-y bg-muted/30 text-xs font-medium min-w-[40px] select-none">
+                      {fontSize}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() =>
+                        setFontSize((prev: number) => Math.min(prev + 1, 48))
+                      }
+                      className="h-8 w-8"
+                      title="Zoom In"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </ButtonGroup>
                 </>
               ) : (
                 <>
@@ -221,6 +249,33 @@ const DisplayPage = () => {
                     <X className="h-4 w-4" />
                     Cancel
                   </Button>
+                  <ButtonGroup className="ml-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() =>
+                        setFontSize((prev: number) => Math.max(prev - 1, 8))
+                      }
+                      className="h-8 w-8"
+                      title="Zoom Out"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                    <div className="flex items-center justify-center px-3 border-y bg-muted/30 text-xs font-medium min-w-[40px] select-none">
+                      {fontSize}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() =>
+                        setFontSize((prev: number) => Math.min(prev + 1, 48))
+                      }
+                      className="h-8 w-8"
+                      title="Zoom In"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </ButtonGroup>
                 </>
               )}
               {paste.language && (

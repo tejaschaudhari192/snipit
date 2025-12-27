@@ -31,7 +31,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChevronDownIcon, Sparkles, Hash, FileText, Code2 } from "lucide-react";
+import {
+  ChevronDownIcon,
+  Sparkles,
+  Hash,
+  FileText,
+  Code2,
+  Minus,
+  Plus,
+} from "lucide-react";
 import { motion } from "motion/react";
 
 import { useTranslation } from "react-i18next";
@@ -42,11 +50,12 @@ import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { LanguageIcon } from "@/components/language-icon";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
+import { ButtonGroup } from "@/components/ui/button-group";
 
 const HomePage = () => {
   const userInputRef = useRef<HTMLTextAreaElement>(null);
   const valueRef = useRef("");
-  const { fontSize, ref: editorContainerRef } = usePinchZoom(14);
+  const { fontSize, ref: editorContainerRef, setFontSize } = usePinchZoom(14);
 
   const [expiresTime, setExpiresTime] = useState("");
   const [textValue, _setTextValue] = useState("");
@@ -372,6 +381,32 @@ const HomePage = () => {
             Redirect URL
           </label>
         </div>
+
+        <ButtonGroup>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setFontSize((prev: number) => Math.max(prev - 1, 8))}
+            className="h-10 w-10 md:h-9 md:w-9"
+            title="Zoom Out"
+          >
+            <Minus className="h-4 w-4" />
+          </Button>
+          <div className="flex items-center justify-center px-4 md:px-3 border-y bg-muted/30 text-xs font-medium min-w-[44px] select-none">
+            {fontSize}
+          </div>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() =>
+              setFontSize((prev: number) => Math.min(prev + 1, 48))
+            }
+            className="h-10 w-10 md:h-9 md:w-9"
+            title="Zoom In"
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        </ButtonGroup>
 
         <div className="w-full h-fit flex justify-end px-0 md:px-5">
           <DropdownMenu>
