@@ -9,15 +9,13 @@ export function cn(...inputs: ClassValue[]) {
 export function saveToLocal(pasteData: PasteData) {
   const key = "items";
   const stored = localStorage.getItem(key);
-  const items: Array<PasteData> = stored ? JSON.parse(stored) : [];
+  let items: Array<PasteData> = stored ? JSON.parse(stored) : [];
 
-  const index = items.findIndex((item: PasteData) => item.id === pasteData.id);
+  // Remove existing item with the same ID if it exists so we can move it to the top
+  items = items.filter((item: PasteData) => item.id !== pasteData.id);
 
-  if (index !== -1) {
-    items[index] = { ...items[index], ...pasteData };
-  } else {
-    items.unshift(pasteData);
-  }
+  // Add the new/updated item to the beginning
+  items.unshift(pasteData);
 
   localStorage.setItem(key, JSON.stringify(items));
 }
@@ -69,21 +67,24 @@ export function getTimeRemaining(isoString: string) {
   const remainingMonths = months % 12;
   const remainingDays = Math.floor(days % 30.44);
   const remainingHours = hours % 24;
+  const remainingMinutes = minutes % 60;
 
-  // Build the output string
-  let result = "";
+  // Return only the largest unit
   if (years > 0) {
-    result += `${years} year${years > 1 ? "s" : ""} `;
+    return `${years} year${years > 1 ? "s" : ""}`;
   }
   if (remainingMonths > 0) {
-    result += `${remainingMonths} month${remainingMonths > 1 ? "s" : ""} `;
+    return `${remainingMonths} month${remainingMonths > 1 ? "s" : ""}`;
   }
   if (remainingDays > 0) {
-    result += `${remainingDays} day${remainingDays > 1 ? "s" : ""} `;
+    return `${remainingDays} day${remainingDays > 1 ? "s" : ""}`;
   }
   if (remainingHours > 0) {
-    result += `${remainingHours} hour${remainingHours > 1 ? "s" : ""} `;
+    return `${remainingHours} hour${remainingHours > 1 ? "s" : ""}`;
+  }
+  if (remainingMinutes > 0) {
+    return `${remainingMinutes} minute${remainingMinutes > 1 ? "s" : ""}`;
   }
 
-  return result.trim();
+  return "Less than a minute";
 }
