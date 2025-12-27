@@ -13,7 +13,7 @@ const port = process.env.PORT;
 app.use(
   cors({
     origin: [
-      "https://snipit-rho.vercel.app",
+      "https://cpaste.vercel.app",
       "https://snipit-nu.vercel.app",
       "http://localhost:5173",
       "http://192.168.0.2:5173",
