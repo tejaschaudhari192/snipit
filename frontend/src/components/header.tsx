@@ -19,7 +19,8 @@ interface HeaderProps {
 }
 
 const Header = ({ className }: HeaderProps) => {
-  const path = useLocation().pathname;
+  const location = useLocation();
+  const path = location.pathname;
   const id = path.includes("history") || path.includes("about") ? null : path;
   const { t } = useTranslation();
 
@@ -27,11 +28,7 @@ const Header = ({ className }: HeaderProps) => {
 
   useEffect(() => {
     setUrl(window.location.href);
-  }, [location]);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(url);
-  };
+  }, [path]);
 
   return (
     <header
@@ -49,12 +46,12 @@ const Header = ({ className }: HeaderProps) => {
         </Link>
         {id && id.length > 1 && (
           <span className="flex items-center h-fit gap-2">
-            <p>{url}</p>
+            <p className="text-sm text-muted-foreground">{url}</p>
             <CopyButton
-              onCopy={handleCopy}
-              content="Medium size"
+              content={url}
               size="default"
               variant="outline"
+              className="h-8 w-8"
             />
           </span>
         )}

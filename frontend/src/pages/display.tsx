@@ -495,6 +495,7 @@ const DisplayPage = () => {
                         fontSize: fontSize,
                         padding: { top: 16 },
                         mouseWheelZoom: true,
+                        wordWrap: "on",
                       }}
                     />
                   ) : (
@@ -525,6 +526,7 @@ const DisplayPage = () => {
                     readOnly: true,
                     domReadOnly: true,
                     mouseWheelZoom: true,
+                    wordWrap: "on",
                   }}
                 />
               </div>

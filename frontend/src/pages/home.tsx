@@ -421,22 +421,6 @@ const HomePage = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuItem
-                onClick={handleDynamicIdClick}
-                className="cursor-pointer"
-              >
-                <div className="flex items-start gap-3">
-                  <Hash className="h-4 w-4 mt-0.5" />
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-medium">
-                      {t("home.paste_dynamic_id")}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {t("home.paste_dynamic_id_desc")}
-                    </span>
-                  </div>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem
                 onClick={() => handleSubmit("system")}
                 className="cursor-pointer"
               >
@@ -448,6 +432,22 @@ const HomePage = () => {
                     </span>
                     <span className="text-xs text-muted-foreground">
                       {t("home.paste_system_id_desc")}
+                    </span>
+                  </div>
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={handleDynamicIdClick}
+                className="cursor-pointer"
+              >
+                <div className="flex items-start gap-3">
+                  <Hash className="h-4 w-4 mt-0.5" />
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-medium">
+                      {t("home.paste_dynamic_id")}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {t("home.paste_dynamic_id_desc")}
                     </span>
                   </div>
                 </div>
@@ -535,6 +535,7 @@ const HomePage = () => {
               fontSize: fontSize,
               padding: { top: 16 },
               mouseWheelZoom: true,
+              wordWrap: "on",
             }}
           />
         ) : (
