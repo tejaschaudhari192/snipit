@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Editor } from "@monaco-editor/react";
+import { Editor, type BeforeMount } from "@monaco-editor/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -21,7 +21,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
 import AiGeneratingIcon from "@/assets/ai-gen-icon";
+
+import { useTheme } from "@/hooks/use-theme";
+import { defineMonacoThemes } from "@/lib/monaco";
 
 const DisplayPage = () => {
   const { id } = useParams();
@@ -36,6 +40,11 @@ const DisplayPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [language, setLanguage] = useState<string>("text");
   const [isDetecting, setIsDetecting] = useState<boolean>(false);
+  const { theme } = useTheme();
+
+  const handleEditorWillMount: BeforeMount = (monaco) => {
+    defineMonacoThemes(monaco);
+  };
 
   useEffect(() => {
     async function loadData() {
@@ -148,6 +157,13 @@ const DisplayPage = () => {
             <div className="flex gap-2">
               {!isEdit ? (
                 <>
+                  <CopyButton
+                    variant="outline"
+                    content={paste.content}
+                    className="gap-2 w-auto px-3 h-8 rounded-md text-sm font-medium"
+                  >
+                    {t("display.copy_button")}
+                  </CopyButton>
                   <Button
                     variant="outline"
                     size="sm"
@@ -270,11 +286,13 @@ const DisplayPage = () => {
                       language={language}
                       value={updatedContent}
                       onChange={(value) => setUpdatedContent(value || "")}
-                      theme="vs-dark"
+                      theme={theme === "dark" ? "snipit-dark" : "snipit-light"}
+                      beforeMount={handleEditorWillMount}
                       options={{
                         minimap: { enabled: false },
                         fontSize: 14,
                         padding: { top: 16 },
+                        mouseWheelZoom: false,
                       }}
                     />
                   </div>
@@ -292,13 +310,15 @@ const DisplayPage = () => {
                   height="100%"
                   language={paste.language}
                   value={paste.content}
-                  theme="vs-dark"
+                  theme={theme === "dark" ? "snipit-dark" : "snipit-light"}
+                  beforeMount={handleEditorWillMount}
                   options={{
                     minimap: { enabled: false },
                     fontSize: 14,
                     padding: { top: 16 },
                     readOnly: true,
                     domReadOnly: true,
+                    mouseWheelZoom: false,
                   }}
                 />
               </div>

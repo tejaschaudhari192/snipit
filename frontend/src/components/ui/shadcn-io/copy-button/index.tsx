@@ -6,13 +6,14 @@ import { CheckIcon, CopyIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants, type ButtonVariants } from "./variants";
 
-type CopyButtonProps = Omit<HTMLMotionProps<"button">, "children" | "onCopy"> &
+type CopyButtonProps = Omit<HTMLMotionProps<"button">, "onCopy"> &
   ButtonVariants & {
     content?: string;
     delay?: number;
     onCopy?: (content: string) => void;
     isCopied?: boolean;
     onCopyChange?: (isCopied: boolean) => void;
+    children?: React.ReactNode;
   };
 
 export function CopyButton({
@@ -25,6 +26,7 @@ export function CopyButton({
   onCopy,
   isCopied,
   onCopyChange,
+  children,
   ...props
 }: CopyButtonProps) {
   const [localIsCopied, setLocalIsCopied] = React.useState(isCopied ?? false);
@@ -65,7 +67,7 @@ export function CopyButton({
       data-slot="copy-button"
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      className={cn(buttonVariants({ variant, size }), className)}
+      className={cn(buttonVariants({ variant, size }), "gap-2", className)}
       onClick={handleCopy}
       {...props}
     >
@@ -81,6 +83,7 @@ export function CopyButton({
           <Icon />
         </motion.span>
       </AnimatePresence>
+      {children}
     </motion.button>
   );
 }

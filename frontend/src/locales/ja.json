@@ -1,33 +1,53 @@
 {
-  "header": {
-    "about": "について",
-    "history": "履歴",
-    "newnippet": "新しいスニペット",
-    "copied": "コピーしました！"
-  },
-  "home": {
-    "select_expire_time": "有効期限を選択",
-    "enter_snippet_placeholder": "ここにスニペットを入力...",
-    "paste_button": "貼り付け",
-    "paste_dynamic_id": "ダイナミックIDで貼り付け",
-    "paste_system_id": "システムIDで貼り付け",
-    "expire_options": {
-      "one_time_snippet": "一回限りのスニペット",
-      "expire_in_1_hour": "1時間で期限切れ",
-      "expire_in_1_day": "1日で期限切れ",
-      "expire_in_1_week": "1週間で期限切れ",
-      "expire_in_1_month": "1ヶ月で期限切れ",
-      "expire_in_1_year": "1年で期限切れ"
+    "header": {
+        "about": "について",
+        "history": "履歴",
+        "newnippet": "新しいスニペット",
+        "copied": "コピーしました！"
+    },
+    "home": {
+        "select_expire_time": "有効期限を選択",
+        "enter_snippet_placeholder": "ここにスニペットを入力...",
+        "paste_button": "貼り付け",
+        "paste_dynamic_id": "ダイナミックIDで貼り付け",
+        "paste_system_id": "システムIDで貼り付け",
+        "paste_dynamic_id_desc": "独自のIDを選択",
+        "paste_system_id_desc": "IDを自動生成",
+        "expire_options": {
+            "one_time_snippet": "一回限りのスニペット",
+            "expire_in_1_hour": "1時間で期限切れ",
+            "expire_in_1_day": "1日で期限切れ",
+            "expire_in_1_week": "1週間で期限切れ",
+            "expire_in_1_month": "1ヶ月で期限切れ",
+            "expire_in_1_year": "1年で期限切れ"
+        },
+        "tab_text": "プレーンテキスト",
+        "tab_code": "コード",
+        "auto_detecting": "自動検出中...",
+        "detected_language": "検出された言語: {{language}}",
+        "dynamic_id_dialog": {
+            "title": "カスタムIDの入力",
+            "description": "一意の識別子を選択してください。これはスニペットのURLに使用されます。",
+            "placeholder": "カスタムIDを入力してください...",
+            "preview": "プレビュー:",
+            "cancel": "キャンセル",
+            "submit": "スニペットを作成"
+        }
+    },
+    "display": {
+        "expires_in": "有効期限:",
+        "edit_button": "編集",
+        "copy_button": "コピー",
+        "delete_button": "削除",
+        "save_button": "変更を保存"
+    },
+    "history": {
+        "plain_text_snippet": "プレーンテキストのスニペット",
+        "created_ago": "作成"
+    },
+    "messages": {
+        "snippet_created": "{{idType}} IDでスニペットが貼り付けられました！",
+        "snippet_failed": "スニペットの作成に失敗しました",
+        "id_conflict": "このIDは既に使用されています。別のIDを試してください。"
     }
-  },
-  "display": {
-    "expires_in": "有効期限:",
-    "edit_button": "編集",
-    "delete_button": "削除",
-    "save_button": "変更を保存"
-  },
-  "history": {
-    "plain_text_snippet": "プレーンテキストのスニペット",
-    "created_ago": "作成"
-  }
 }

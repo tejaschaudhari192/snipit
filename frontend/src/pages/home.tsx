@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Editor, type OnMount } from "@monaco-editor/react";
+import { Editor, type OnMount, type BeforeMount } from "@monaco-editor/react";
 import { AxiosError } from "axios";
 import { Textarea } from "@/components/ui/textarea";
 import { useApiHelpers } from "@/lib/api";
@@ -37,6 +37,9 @@ import { useTranslation } from "react-i18next";
 import type { IdType } from "@/types";
 import AiGeneratingIcon from "@/assets/ai-gen-icon";
 
+import { useTheme } from "@/hooks/use-theme";
+import { defineMonacoThemes } from "@/lib/monaco";
+
 const HomePage = () => {
   const userInputRef = useRef<HTMLTextAreaElement>(null);
   const valueRef = useRef("");
@@ -70,17 +73,18 @@ const HomePage = () => {
         redirectUrl,
         contentType === "code" ? language : "text",
       );
-      toast.success(`Snippet pasted with ${selectedIdType} ID!`, {
+      toast.success(t("messages.snippet_created", { idType: selectedIdType }), {
         position: "bottom-right",
       });
       navigate("/" + data.id);
       saveToLocal(data);
       return true;
     } catch (error) {
-      return (
-        (error as AxiosError<{ error: string }>).response?.data?.error ||
-        "Failed to create snippet"
-      );
+      const axiosError = error as AxiosError<{ error: string }>;
+      if (axiosError.response?.status === 409) {
+        return t("messages.id_conflict");
+      }
+      return axiosError.response?.data?.error || t("messages.snippet_failed");
     }
   };
 
@@ -93,7 +97,9 @@ const HomePage = () => {
       if (result.language && result.language !== "text") {
         setContentType("code");
         setLanguage(result.language);
-        toast.success(`Detected language: ${result.language}`);
+        toast.success(
+          t("home.detected_language", { language: result.language }),
+        );
       } else if (result.language === "text") {
         setContentType("text");
       }
@@ -135,6 +141,12 @@ const HomePage = () => {
         setDialogError(result);
       }
     }
+  };
+
+  const { theme } = useTheme();
+
+  const handleEditorWillMount: BeforeMount = (monaco) => {
+    defineMonacoThemes(monaco);
   };
 
   return (
@@ -213,7 +225,7 @@ const HomePage = () => {
         {(isDetecting || contentType === "code") &&
           (isDetecting ? (
             <div className="w-[160px] h-10 px-3 flex items-center gap-2 bg-muted/20 border border-border/50 rounded-md text-sm text-muted-foreground">
-              <span>Auto Detecting...</span>
+              <span>{t("home.auto_detecting")}</span>
               <AiGeneratingIcon />
             </div>
           ) : (
@@ -279,7 +291,7 @@ const HomePage = () => {
                       {t("home.paste_dynamic_id")}
                     </span>
                     <span className="text-xs text-muted-foreground">
-                      Choose your own ID
+                      {t("home.paste_dynamic_id_desc")}
                     </span>
                   </div>
                 </div>
@@ -295,7 +307,7 @@ const HomePage = () => {
                       {t("home.paste_system_id")}
                     </span>
                     <span className="text-xs text-muted-foreground">
-                      Auto-generate ID
+                      {t("home.paste_system_id_desc")}
                     </span>
                   </div>
                 </div>
@@ -306,27 +318,60 @@ const HomePage = () => {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Enter Custom ID</DialogTitle>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                <Hash className="h-5 w-5" />
+              </div>
+              <DialogTitle>{t("home.dynamic_id_dialog.title")}</DialogTitle>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {t("home.dynamic_id_dialog.description")}
+            </p>
           </DialogHeader>
-          <div className="py-4">
-            <Input
-              placeholder="Enter your custom ID..."
-              value={customId}
-              onChange={(e) => setCustomId(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleDialogSubmit()}
-            />
+
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Input
+                placeholder={t("home.dynamic_id_dialog.placeholder")}
+                value={customId}
+                className="h-11 focus-visible:ring-primary/50"
+                onChange={(e) => setCustomId(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleDialogSubmit()}
+              />
+              {customId.trim() && (
+                <p className="text-xs text-muted-foreground ml-1 flex items-center gap-1">
+                  {t("home.dynamic_id_dialog.preview")}{" "}
+                  <span className="text-primary font-medium">
+                    {window.location.origin}/{customId}
+                  </span>
+                </p>
+              )}
+            </div>
+
             {dialogError && (
-              <p className="text-sm text-red-500 mt-2">{dialogError}</p>
+              <motion.div
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-sm text-red-500 flex items-start gap-2"
+              >
+                <div className="mt-0.5">⚠️</div>
+                <p>{dialogError}</p>
+              </motion.div>
             )}
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-              Cancel
+
+          <DialogFooter className="sm:justify-between gap-2">
+            <Button variant="ghost" onClick={() => setIsDialogOpen(false)}>
+              {t("home.dynamic_id_dialog.cancel")}
             </Button>
-            <Button onClick={handleDialogSubmit} disabled={!customId.trim()}>
-              Create Snippet
+            <Button
+              onClick={handleDialogSubmit}
+              disabled={!customId.trim()}
+              className="px-8 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all"
+            >
+              {t("home.dynamic_id_dialog.submit")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -339,12 +384,14 @@ const HomePage = () => {
             language={language}
             value={textValue}
             onChange={(value) => setTextValue(value || "")}
-            theme="vs-dark"
+            theme={theme === "dark" ? "snipit-dark" : "snipit-light"}
+            beforeMount={handleEditorWillMount}
             onMount={handleEditorMount}
             options={{
               minimap: { enabled: false },
               fontSize: 14,
               padding: { top: 16 },
+              mouseWheelZoom: false,
             }}
           />
         ) : (

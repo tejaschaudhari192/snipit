@@ -1,33 +1,53 @@
 {
-  "header": {
-    "about": "Über uns",
-    "history": "Verlauf",
-    "newnippet": "Neuer Snippet",
-    "copied": "Kopiert!"
-  },
-  "home": {
-    "select_expire_time": "Ablaufzeit auswählen",
-    "enter_snippet_placeholder": "Geben Sie Ihren Snippet hier ein...",
-    "paste_button": "Einfügen",
-    "paste_dynamic_id": "Mit dynamischer ID einfügen",
-    "paste_system_id": "Mit System-ID einfügen",
-    "expire_options": {
-      "one_time_snippet": "Einmaliger Snippet",
-      "expire_in_1_hour": "Läuft in 1 Stunde ab",
-      "expire_in_1_day": "Läuft in 1 Tag ab",
-      "expire_in_1_week": "Läuft in 1 Woche ab",
-      "expire_in_1_month": "Läuft in 1 Monat ab",
-      "expire_in_1_year": "Läuft in 1 Jahr ab"
+    "header": {
+        "about": "Über uns",
+        "history": "Verlauf",
+        "newnippet": "Neuer Snippet",
+        "copied": "Kopiert!"
+    },
+    "home": {
+        "select_expire_time": "Ablaufzeit auswählen",
+        "enter_snippet_placeholder": "Geben Sie Ihren Snippet hier ein...",
+        "paste_button": "Einfügen",
+        "paste_dynamic_id": "Mit dynamischer ID einfügen",
+        "paste_system_id": "Mit System-ID einfügen",
+        "paste_dynamic_id_desc": "Wählen Sie Ihre eigene ID",
+        "paste_system_id_desc": "ID automatisch generieren",
+        "expire_options": {
+            "one_time_snippet": "Einmaliger Snippet",
+            "expire_in_1_hour": "Läuft in 1 Stunde ab",
+            "expire_in_1_day": "Läuft in 1 Tag ab",
+            "expire_in_1_week": "Läuft in 1 Woche ab",
+            "expire_in_1_month": "Läuft in 1 Monat ab",
+            "expire_in_1_year": "Läuft in 1 Jahr ab"
+        },
+        "tab_text": "Klartext",
+        "tab_code": "Code",
+        "auto_detecting": "Automatische Erkennung...",
+        "detected_language": "Erkannte Sprache: {{language}}",
+        "dynamic_id_dialog": {
+            "title": "Benutzerdefinierte ID eingeben",
+            "description": "Wählen Sie eine eindeutige Kennung. Diese wird in der URL Ihres Snippets verwendet.",
+            "placeholder": "Geben Sie Ihre benutzerdefinierte ID ein...",
+            "preview": "Vorschau:",
+            "cancel": "Abbrechen",
+            "submit": "Snippet erstellen"
+        }
+    },
+    "display": {
+        "expires_in": "Läuft ab in:",
+        "edit_button": "Bearbeiten",
+        "copy_button": "Kopieren",
+        "delete_button": "Löschen",
+        "save_button": "Änderungen speichern"
+    },
+    "history": {
+        "plain_text_snippet": "Klartext-Snippet",
+        "created_ago": "Erstellt"
+    },
+    "messages": {
+        "snippet_created": "Snippet mit {{idType}}-ID eingefügt!",
+        "snippet_failed": "Snippet konnte nicht erstellt werden",
+        "id_conflict": "Diese ID ist bereits vergeben. Bitte versuchen Sie eine andere."
     }
-  },
-  "display": {
-    "expires_in": "Läuft ab in:",
-    "edit_button": "Bearbeiten",
-    "delete_button": "Löschen",
-    "save_button": "Änderungen speichern"
-  },
-  "history": {
-    "plain_text_snippet": "Klartext-Snippet",
-    "created_ago": "Erstellt"
-  }
 }

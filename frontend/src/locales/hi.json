@@ -1,33 +1,53 @@
 {
-  "header": {
-    "about": "हमारे बारे में",
-    "history": "इतिहास",
-    "newnippet": "नया स्निपेट",
-    "copied": "कॉपी किया गया!"
-  },
-  "home": {
-    "select_expire_time": "समाप्ति का समय चुनें",
-    "enter_snippet_placeholder": "अपना स्निपेट यहाँ दर्ज करें...",
-    "paste_button": "पेस्ट करें",
-    "paste_dynamic_id": "डायनामिक ID के साथ पेस्ट करें",
-    "paste_system_id": "सिस्टम ID के साथ पेस्ट करें",
-    "expire_options": {
-      "one_time_snippet": "वन टाइम स्निपेट",
-      "expire_in_1_hour": "1 घंटे में समाप्त होगा",
-      "expire_in_1_day": "1 दिन में समाप्त होगा",
-      "expire_in_1_week": "1 सप्ताह में समाप्त होगा",
-      "expire_in_1_month": "1 महीने में समाप्त होगा",
-      "expire_in_1_year": "1 साल में समाप्त होगा"
+    "header": {
+        "about": "हमारे बारे में",
+        "history": "इतिहास",
+        "newnippet": "नया स्निपेट",
+        "copied": "कॉपी किया गया!"
+    },
+    "home": {
+        "select_expire_time": "समाप्ति का समय चुनें",
+        "enter_snippet_placeholder": "अपना स्निपेट यहाँ दर्ज करें...",
+        "paste_button": "पेस्ट करें",
+        "paste_dynamic_id": "डायनामिक ID के साथ पेस्ट करें",
+        "paste_system_id": "सिस्टम ID के साथ पेस्ट करें",
+        "paste_dynamic_id_desc": "अपनी पसंद की ID चुनें",
+        "paste_system_id_desc": "ID अपने आप जेनरेट करें",
+        "expire_options": {
+            "one_time_snippet": "वन टाइम स्निपेट",
+            "expire_in_1_hour": "1 घंटे में समाप्त होगा",
+            "expire_in_1_day": "1 दिन में समाप्त होगा",
+            "expire_in_1_week": "1 सप्ताह में समाप्त होगा",
+            "expire_in_1_month": "1 महीने में समाप्त होगा",
+            "expire_in_1_year": "1 साल में समाप्त होगा"
+        },
+        "tab_text": "साधा पाठ",
+        "tab_code": "कोड",
+        "auto_detecting": "अपने आप पहचान रहा है...",
+        "detected_language": "पहचानी गई भाषा: {{language}}",
+        "dynamic_id_dialog": {
+            "title": "कस्टम ID दर्ज करें",
+            "description": "एक अद्वितीय पहचानकर्ता चुनें। इसका उपयोग आपके स्निपेट के URL में किया जाएगा।",
+            "placeholder": "अपनी कस्टम ID यहाँ लिखें...",
+            "preview": "पूर्वावलोकन:",
+            "cancel": "रद्द करें",
+            "submit": "स्निपेट बनाएँ"
+        }
+    },
+    "display": {
+        "expires_in": "समाप्त होगा:",
+        "edit_button": "संपादित करें",
+        "copy_button": "कॉपी",
+        "delete_button": "मिटाएँ",
+        "save_button": "परिवर्तन सहेजें"
+    },
+    "history": {
+        "plain_text_snippet": "सादा पाठ स्निपेट",
+        "created_ago": "बनाया गया"
+    },
+    "messages": {
+        "snippet_created": "{{idType}} ID के साथ स्निपेट पेस्ट किया गया!",
+        "snippet_failed": "स्निपेट बनाने में विफल",
+        "id_conflict": "यह ID पहले से ही उपयोग में है। कृपया कोई दूसरा प्रयास करें।"
     }
-  },
-  "display": {
-    "expires_in": "समाप्त होगा:",
-    "edit_button": "संपादित करें",
-    "delete_button": "मिटाएँ",
-    "save_button": "परिवर्तन सहेजें"
-  },
-  "history": {
-    "plain_text_snippet": "सादा पाठ स्निपेट",
-    "created_ago": "बनाया गया"
-  }
 }
