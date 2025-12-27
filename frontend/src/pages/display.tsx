@@ -26,6 +26,7 @@ import aiGif from "@/assets/images/ai.gif";
 
 import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
+import { LanguageIcon } from "@/components/language-icon";
 
 const DisplayPage = () => {
   const { id } = useParams();
@@ -220,6 +221,17 @@ const DisplayPage = () => {
                   </Button>
                 </>
               )}
+              {paste.language && (
+                <div className="flex items-center gap-2 px-3 h-8 rounded-md bg-muted/50 border border-border/50 text-xs font-medium text-muted-foreground whitespace-nowrap">
+                  <LanguageIcon
+                    language={paste.language}
+                    className="h-3.5 w-3.5"
+                  />
+                  <span className="capitalize">
+                    {paste.language === "text" ? "Plain Text" : paste.language}
+                  </span>
+                </div>
+              )}
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Clock className="h-4 w-4" />
@@ -262,25 +274,137 @@ const DisplayPage = () => {
                     </div>
                   ) : (
                     <Select value={language} onValueChange={setLanguage}>
-                      <SelectTrigger className="w-[160px] h-10 bg-muted/20 hover:bg-muted/40 border-border/50 transition-all duration-200 shadow-sm">
+                      <SelectTrigger className="w-[240px] h-10 bg-muted/20 hover:bg-muted/40 border-border/50 transition-all duration-200 shadow-sm">
                         <SelectValue placeholder="Language" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="text">Plain Text</SelectItem>
-                          <SelectItem value="javascript">JavaScript</SelectItem>
-                          <SelectItem value="typescript">TypeScript</SelectItem>
-                          <SelectItem value="html">HTML</SelectItem>
-                          <SelectItem value="css">CSS</SelectItem>
-                          <SelectItem value="json">JSON</SelectItem>
-                          <SelectItem value="java">Java</SelectItem>
-                          <SelectItem value="python">Python</SelectItem>
-                          <SelectItem value="c">C</SelectItem>
-                          <SelectItem value="cpp">C++</SelectItem>
-                          <SelectItem value="csharp">C#</SelectItem>
-                          <SelectItem value="go">Go</SelectItem>
-                          <SelectItem value="rust">Rust</SelectItem>
-                          <SelectItem value="markdown">Markdown</SelectItem>
+                          <SelectItem value="text">
+                            <span className="inline-flex items-center gap-2">
+                              <LanguageIcon
+                                language="text"
+                                className="h-4 w-4 shrink-0"
+                              />
+                              <span>Plain Text</span>
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="javascript">
+                            <span className="inline-flex items-center gap-2">
+                              <LanguageIcon
+                                language="javascript"
+                                className="h-4 w-4 shrink-0"
+                              />
+                              <span>JavaScript</span>
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="typescript">
+                            <span className="inline-flex items-center gap-2">
+                              <LanguageIcon
+                                language="typescript"
+                                className="h-4 w-4 shrink-0"
+                              />
+                              <span>TypeScript</span>
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="html">
+                            <span className="inline-flex items-center gap-2">
+                              <LanguageIcon
+                                language="html"
+                                className="h-4 w-4 shrink-0"
+                              />
+                              <span>HTML</span>
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="css">
+                            <span className="inline-flex items-center gap-2">
+                              <LanguageIcon
+                                language="css"
+                                className="h-4 w-4 shrink-0"
+                              />
+                              <span>CSS</span>
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="json">
+                            <span className="inline-flex items-center gap-2">
+                              <LanguageIcon
+                                language="json"
+                                className="h-4 w-4 shrink-0"
+                              />
+                              <span>JSON</span>
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="java">
+                            <span className="inline-flex items-center gap-2">
+                              <LanguageIcon
+                                language="java"
+                                className="h-4 w-4 shrink-0"
+                              />
+                              <span>Java</span>
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="python">
+                            <span className="inline-flex items-center gap-2">
+                              <LanguageIcon
+                                language="python"
+                                className="h-4 w-4 shrink-0"
+                              />
+                              <span>Python</span>
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="c">
+                            <span className="inline-flex items-center gap-2">
+                              <LanguageIcon
+                                language="c"
+                                className="h-4 w-4 shrink-0"
+                              />
+                              <span>C</span>
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="cpp">
+                            <span className="inline-flex items-center gap-2">
+                              <LanguageIcon
+                                language="cpp"
+                                className="h-4 w-4 shrink-0"
+                              />
+                              <span>C++</span>
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="csharp">
+                            <span className="inline-flex items-center gap-2">
+                              <LanguageIcon
+                                language="csharp"
+                                className="h-4 w-4 shrink-0"
+                              />
+                              <span>C#</span>
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="go">
+                            <span className="inline-flex items-center gap-2">
+                              <LanguageIcon
+                                language="go"
+                                className="h-4 w-4 shrink-0"
+                              />
+                              <span>Go</span>
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="rust">
+                            <span className="inline-flex items-center gap-2">
+                              <LanguageIcon
+                                language="rust"
+                                className="h-4 w-4 shrink-0"
+                              />
+                              <span>Rust</span>
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="markdown">
+                            <span className="inline-flex items-center gap-2">
+                              <LanguageIcon
+                                language="markdown"
+                                className="h-4 w-4 shrink-0"
+                              />
+                              <span>Markdown</span>
+                            </span>
+                          </SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>

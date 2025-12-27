@@ -6,7 +6,6 @@ import {
   FileText,
   Trash2,
   Inbox,
-  Code2,
   ExternalLink,
   Timer,
   Calendar,
@@ -15,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
 import { motion } from "motion/react";
+import { LanguageIcon } from "@/components/language-icon";
 
 const HistoryPage = () => {
   const { t } = useTranslation();
@@ -91,7 +91,7 @@ const HistoryPage = () => {
               variant="outline"
               size="sm"
               onClick={handleClearHistory}
-              className="gap-2 text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/30"
+              className="gap-2 text-destructive hover:text-destructive"
             >
               <Trash2 className="h-4 w-4" />
               {t("history.clear_history")}
@@ -157,12 +157,18 @@ const HistoryPage = () => {
                         >
                           {item.language && item.language !== "text" ? (
                             <>
-                              <Code2 className="h-3.5 w-3.5" />
+                              <LanguageIcon
+                                language={item.language}
+                                className="h-3.5 w-3.5"
+                              />
                               <span className="uppercase">{item.language}</span>
                             </>
                           ) : (
                             <>
-                              <FileText className="h-3.5 w-3.5" />
+                              <LanguageIcon
+                                language="text"
+                                className="h-3.5 w-3.5"
+                              />
                               <span>{t("history.plain_text_snippet")}</span>
                             </>
                           )}
