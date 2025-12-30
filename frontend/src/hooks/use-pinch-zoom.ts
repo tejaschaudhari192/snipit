@@ -1,10 +1,51 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
+
+const STORAGE_KEY = "snipit-font-size";
 
 export function usePinchZoom(initialFontSize = 14) {
-  const [fontSize, setFontSize] = useState(initialFontSize);
-  const [element, setElement] = useState<HTMLDivElement | null>(null);
+  const [fontSize, setFontSizeState] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      const parsed = saved ? parseInt(saved, 10) : initialFontSize;
+      return isNaN(parsed) ? initialFontSize : parsed;
+    }
+    return initialFontSize;
+  });
+
+  const setFontSize = useCallback(
+    (value: number | ((prev: number) => number)) => {
+      setFontSizeState((prev) => {
+        const newValue = typeof value === "function" ? value(prev) : value;
+        const validValue = Math.min(Math.max(newValue, 8), 48);
+        localStorage.setItem(STORAGE_KEY, validValue.toString());
+        return validValue;
+      });
+    },
+    [],
+  );
+
+  const [element, setElement] = useState<HTMLElement | null>(null);
   const initialDistance = useRef<number | null>(null);
-  const initialFontSizeRef = useRef(initialFontSize);
+  const initialFontSizeRef = useRef(fontSize);
+  const fontSizeRef = useRef(fontSize);
+
+  useEffect(() => {
+    fontSizeRef.current = fontSize;
+  }, [fontSize]);
+
+  // Sync with other tabs
+  useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY && e.newValue) {
+        const newSize = parseInt(e.newValue, 10);
+        if (!isNaN(newSize)) {
+          setFontSizeState(newSize);
+        }
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
 
   useEffect(() => {
     if (!element) return;
@@ -18,7 +59,7 @@ export function usePinchZoom(initialFontSize = 14) {
           touch1.clientX - touch2.clientX,
           touch1.clientY - touch2.clientY,
         );
-        initialFontSizeRef.current = fontSize;
+        initialFontSizeRef.current = fontSizeRef.current;
       }
     };
 
@@ -46,18 +87,33 @@ export function usePinchZoom(initialFontSize = 14) {
       initialDistance.current = null;
     };
 
+    const handleWheel = (e: WheelEvent) => {
+      if (e.ctrlKey) {
+        e.preventDefault();
+        e.stopPropagation();
+        const delta = e.deltaY > 0 ? -1 : 1;
+        setFontSize((prev) => prev + delta);
+      }
+    };
+
     element.addEventListener("touchstart", handleTouchStart, {
       passive: false,
     });
     element.addEventListener("touchmove", handleTouchMove, { passive: false });
     element.addEventListener("touchend", handleTouchEnd);
+    // Use capture to intercept events before monaco editor
+    element.addEventListener("wheel", handleWheel, {
+      passive: false,
+      capture: true,
+    });
 
     return () => {
       element.removeEventListener("touchstart", handleTouchStart);
       element.removeEventListener("touchmove", handleTouchMove);
       element.removeEventListener("touchend", handleTouchEnd);
+      element.removeEventListener("wheel", handleWheel, { capture: true });
     };
-  }, [fontSize, element]);
+  }, [element, setFontSize]);
 
   return { fontSize, ref: setElement, setFontSize };
 }

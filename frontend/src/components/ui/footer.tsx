@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import logo from "@/assets/brand/logo.png";
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -8,6 +9,11 @@ const Footer = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-8">
+              <img
+                src={logo}
+                alt="Snipit Logo"
+                className="h-8 w-auto opacity-80 hover:opacity-100 transition-opacity"
+              />
               <p className="text-muted-foreground text-sm font-medium">
                 {t("footer.copyright")}
               </p>

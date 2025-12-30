@@ -13,6 +13,7 @@ import { Menu } from "lucide-react";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
 import ThemeTogglePositionsDemo from "@/components/theme-toggle";
 import { LanguageSwitcher } from "./language-switcher";
+import icon from "@/assets/brand/icon.png";
 
 interface HeaderProps {
   className?: string;
@@ -38,11 +39,15 @@ const Header = ({ className }: HeaderProps) => {
       )}
     >
       <div className="flex items-center h-fit gap-6 w-fit">
-        <Link
-          to={"/"}
-          className="text-3xl font-bold tracking-tight bg-clip-text transform transition-transform duration-300 ease-in-out group-hover:scale-105"
-        >
-          Snipit
+        <Link to={"/"} className="flex items-center gap-2 group">
+          <img
+            src={icon}
+            alt="Snipit Logo"
+            className="h-8 w-auto transform transition-transform duration-300 ease-in-out group-hover:scale-105"
+          />
+          <p className="text-3xl font-bold bg-clip-text transform transition-transform duration-300 ease-in-out group-hover:scale-105">
+            Snipit
+          </p>
         </Link>
         {id && id.length > 1 && (
           <span className="flex items-center h-fit gap-2">

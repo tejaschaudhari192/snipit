@@ -19,7 +19,8 @@
             "expire_in_1_day": "Expire In 1 Day",
             "expire_in_1_week": "Expire In 1 Week",
             "expire_in_1_month": "Expire In 1 Month",
-            "expire_in_1_year": "Expire In 1 Year"
+            "expire_in_1_year": "Expire In 1 Year",
+            "custom": "Custom Expiry"
         },
         "tab_text": "Plain Text",
         "tab_code": "Code",

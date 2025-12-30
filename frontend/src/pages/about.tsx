@@ -16,6 +16,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
+import appScreenshot from "@/assets/brand/app.png";
 
 const AboutPage = () => {
   const { t } = useTranslation();
@@ -91,6 +92,25 @@ const AboutPage = () => {
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
                 {t("about_page.subtitle")}
               </p>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* App Screenshot Section */}
+        <section className="pb-16 px-4">
+          <div className="max-w-5xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="relative rounded-2xl overflow-hidden border shadow-2xl shadow-primary/20"
+            >
+              <img
+                src={appScreenshot}
+                alt="Snipit App Screenshot"
+                className="w-full h-auto"
+              />
             </motion.div>
           </div>
         </section>

@@ -462,6 +462,24 @@ const DisplayPage = () => {
                               <span>Markdown</span>
                             </span>
                           </SelectItem>
+                          <SelectItem value="shell">
+                            <span className="inline-flex items-center gap-2">
+                              <LanguageIcon
+                                language="shell"
+                                className="h-4 w-4 shrink-0"
+                              />
+                              <span>Shell/Bash</span>
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="other">
+                            <span className="inline-flex items-center gap-2">
+                              <LanguageIcon
+                                language="other"
+                                className="h-4 w-4 shrink-0"
+                              />
+                              <span>Other</span>
+                            </span>
+                          </SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>

@@ -53,6 +53,9 @@ const HistoryPage = () => {
       cpp: "bg-pink-500/20 text-pink-600 dark:text-pink-400",
       csharp: "bg-violet-500/20 text-violet-600 dark:text-violet-400",
       markdown: "bg-gray-500/20 text-gray-600 dark:text-gray-400",
+      shell: "bg-slate-500/20 text-slate-600 dark:text-slate-400",
+      bash: "bg-slate-500/20 text-slate-600 dark:text-slate-400",
+      other: "bg-slate-500/20 text-slate-600 dark:text-slate-400",
     };
     return colors[language] || "bg-primary/10 text-primary";
   };

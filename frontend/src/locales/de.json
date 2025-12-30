@@ -19,7 +19,8 @@
             "expire_in_1_day": "Läuft in 1 Tag ab",
             "expire_in_1_week": "Läuft in 1 Woche ab",
             "expire_in_1_month": "Läuft in 1 Monat ab",
-            "expire_in_1_year": "Läuft in 1 Jahr ab"
+            "expire_in_1_year": "Läuft in 1 Jahr ab",
+            "custom": "Benutzerdefiniertes Ablaufdatum"
         },
         "tab_text": "Klartext",
         "tab_code": "Code",

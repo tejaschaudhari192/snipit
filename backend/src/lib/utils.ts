@@ -27,7 +27,13 @@ export function dateConverter(expiresTime: string) {
       expiresAt = null; // special handling (e.g. delete after first view)
       break;
     default:
-      expiresAt = null;
+      // Check if it's a valid date string (for custom expiry)
+      const customDate = new Date(expiresTime);
+      if (expiresTime && !isNaN(customDate.getTime())) {
+        expiresAt = customDate;
+      } else {
+        expiresAt = null;
+      }
   }
 
   return expiresAt;

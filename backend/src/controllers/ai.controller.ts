@@ -33,12 +33,16 @@ export const detectLanguage = async (req: Request, res: Response) => {
       "go",
       "rust",
       "markdown",
+      "shell",
+      "bash",
+      "other",
       "text",
     ];
 
     const prompt = `Analyze the following text/code and detect its programming language or format.
 Return ONLY one of the following strings: ${validLanguages.join(", ")}.
-If it is plain text or doesn't match a code format, return 'text'.
+If it is code but doesn't match any specific language listed above, return 'other'.
+If it is clearly plain text (like a note or message), return 'text'.
 
 Code snippet:
 ${content.slice(0, 1000)}`;

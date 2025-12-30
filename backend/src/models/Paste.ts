@@ -28,7 +28,7 @@ const pastSchema = new Schema<IPaste>({
   },
   createdAt: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
   },
 });
 

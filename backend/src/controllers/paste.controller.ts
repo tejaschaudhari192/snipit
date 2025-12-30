@@ -19,9 +19,35 @@ class PasteController {
       const expiresAt = expiresTime
         ? dateConverter(expiresTime)
         : dateConverter("1d");
+
+      if (!expiresAt && expiresTime !== "one-time") {
+        this.logger.warn(
+          `Invalid expiration time format received: ${expiresTime}`,
+        );
+        return res
+          .status(400)
+          .json({ error: "Invalid expiration time format" });
+      }
+
+      if (expiresAt && isNaN(expiresAt.getTime())) {
+        this.logger.warn(
+          `Invalid date format during conversion: ${expiresTime}`,
+        );
+        return res.status(400).json({ error: "Invalid date format" });
+      }
+
+      if (expiresAt && expiresAt < new Date()) {
+        this.logger.warn(
+          `Attempted to create paste with past date: ${expiresAt.toISOString()}`,
+        );
+        return res
+          .status(400)
+          .json({ error: "Expiration time cannot be in the past" });
+      }
+
       const validatedBody = createPasteSchema.parse({
         content,
-        expiresAt,
+        expiresAt: expiresAt || dateConverter("1d"), // Fallback for one-time for now to satisfy schema
         idType,
         customId,
         redirectUrl,
@@ -30,7 +56,9 @@ class PasteController {
 
       let pasteId =
         validatedBody.customId ||
-        (validatedBody.idType === "system" ? uniqueIdGenerator() : customId);
+        (validatedBody.idType === "system"
+          ? uniqueIdGenerator()
+          : customId || uniqueIdGenerator());
 
       const createAndSavePaste = async (id: string) => {
         const pasteData = {
@@ -49,7 +77,11 @@ class PasteController {
         this.logger.info(`Created paste with id: ${pasteId}`);
         return res.json(result);
       } catch (error: any) {
-        if (error?.errorResponse?.code === 11000) {
+        // Handle duplicate key error (code 11000)
+        const isDuplicateKey =
+          error?.code === 11000 || error?.errorResponse?.code === 11000;
+
+        if (isDuplicateKey) {
           if (validatedBody.customId) {
             const isExpired = await this.pasteService.isPasteExpired(pasteId);
             if (isExpired) {
@@ -60,16 +92,23 @@ class PasteController {
             }
             return res.status(409).json({ error: "ID already in use" });
           }
+
+          // For system IDs, try one more time with a new ID
           pasteId =
             validatedBody.idType === "system" ? uniqueIdGenerator() : customId;
-          const result = await createAndSavePaste(pasteId);
-          this.logger.info(
-            `Created paste with new id after conflict: ${pasteId}`,
-          );
-          return res.json(result);
-        } else {
-          throw new Error(error?.message || "Unknown error while saving paste");
+          try {
+            const result = await createAndSavePaste(pasteId);
+            this.logger.info(
+              `Created paste with new id after conflict: ${pasteId}`,
+            );
+            return res.json(result);
+          } catch (retryError) {
+            return next(retryError);
+          }
         }
+
+        // For all other errors, bubble up to outer catch
+        throw error;
       }
     } catch (error) {
       this.logger.error("Error creating paste:", error);

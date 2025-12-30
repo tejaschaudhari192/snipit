@@ -39,6 +39,7 @@ import {
   Code2,
   Minus,
   Plus,
+  Clock,
 } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -51,13 +52,14 @@ import { defineMonacoThemes } from "@/lib/monaco";
 import { LanguageIcon } from "@/components/language-icon";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { ButtonGroup } from "@/components/ui/button-group";
+import { DateTimePicker } from "@/components/ui/date-time-picker";
 
 const HomePage = () => {
   const userInputRef = useRef<HTMLTextAreaElement>(null);
   const valueRef = useRef("");
   const { fontSize, ref: editorContainerRef, setFontSize } = usePinchZoom(14);
 
-  const [expiresTime, setExpiresTime] = useState("");
+  const [expiresTime, setExpiresTime] = useState("1w");
   const [textValue, _setTextValue] = useState("");
   const setTextValue = (val: string) => {
     _setTextValue(val);
@@ -70,6 +72,11 @@ const HomePage = () => {
   const [isDetecting, setIsDetecting] = useState(false);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isCustomExpiryDialogOpen, setIsCustomExpiryDialogOpen] =
+    useState(false);
+  const [customExpiryDate, setCustomExpiryDate] = useState<Date | undefined>(
+    new Date(Date.now() + 24 * 60 * 60 * 1000),
+  );
   const [customId, setCustomId] = useState("");
   const [dialogError, setDialogError] = useState("");
   const navigate = useNavigate();
@@ -93,10 +100,20 @@ const HomePage = () => {
       saveToLocal(data);
       return true;
     } catch (error) {
-      const axiosError = error as AxiosError<{ error: string }>;
+      const axiosError = error as AxiosError<{
+        error: string;
+        details?: { path: string[]; message: string }[];
+      }>;
       if (axiosError.response?.status === 409) {
         return t("messages.id_conflict");
       }
+
+      // Handle validation details from Zod
+      const details = axiosError.response?.data?.details;
+      if (details && details.length > 0) {
+        return details[0].message;
+      }
+
       return axiosError.response?.data?.error || t("messages.snippet_failed");
     }
   };
@@ -173,7 +190,16 @@ const HomePage = () => {
     <div className="h-fit max-h-screen">
       <div className="h-fit flex flex-col md:flex-row gap-4 border-slate-200 justify-end items-center my-4 mx-5">
         <div className="w-full md:w-auto">
-          <Select onValueChange={setExpiresTime}>
+          <Select
+            value={expiresTime.includes("-") ? "custom" : expiresTime}
+            onValueChange={(val) => {
+              if (val === "custom") {
+                setIsCustomExpiryDialogOpen(true);
+              } else {
+                setExpiresTime(val);
+              }
+            }}
+          >
             <SelectTrigger className="w-full md:w-[180px]">
               <SelectValue
                 className=""
@@ -183,6 +209,9 @@ const HomePage = () => {
 
             <SelectContent>
               <SelectGroup>
+                <SelectItem value="one-time">
+                  {t("home.expire_options.one_time_snippet")}
+                </SelectItem>
                 <SelectItem value="1h">
                   {t("home.expire_options.expire_in_1_hour")}
                 </SelectItem>
@@ -197,6 +226,14 @@ const HomePage = () => {
                 </SelectItem>
                 <SelectItem value="1y">
                   {t("home.expire_options.expire_in_1_year")}
+                </SelectItem>
+                <SelectItem value="custom">
+                  {expiresTime.includes("-")
+                    ? new Date(expiresTime).toLocaleString([], {
+                        dateStyle: "short",
+                        timeStyle: "short",
+                      })
+                    : t("home.expire_options.custom")}
                 </SelectItem>
               </SelectGroup>
             </SelectContent>
@@ -230,13 +267,14 @@ const HomePage = () => {
           (isDetecting ? (
             <button
               type="button"
-                className="group relative w-[160px] h-10 shrink-0 rounded-md p-[1px] overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
-                >
-                  {/* animated border */}
-                    <div className="absolute inset-[-200%] opacity-70 transition-opacity duration-300 group-hover:opacity-100 moving-border-gradient animate-moving-border" />
+              className="group relative w-[160px] h-10 shrink-0 rounded-md p-[1px] overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+            >
+              {/* animated border */}
+              <div className="absolute inset-[-200%] opacity-70 transition-opacity duration-300 group-hover:opacity-100 moving-border-gradient animate-moving-border" />
 
-                      {/* button body */}
-                        <div className="relative z-10 flex h-full w-full items-center justify-center gap-2 rounded-[5px] 
+              {/* button body */}
+              <div
+                className="relative z-10 flex h-full w-full items-center justify-center gap-2 rounded-[5px] 
                                           bg-background dark:bg-slate-900 
                                                             text-sm font-medium text-foreground/80
                                                                               shadow-sm transition-all duration-200
@@ -244,19 +282,18 @@ const HomePage = () => {
                                                                                                                   group-hover:shadow-md
                                                                                                                                     group-active:scale-[0.98]
                                                                                                                                                       select-none"
-                                                                                                                                                        >
-                                                                                                                                                            <span className="whitespace-nowrap">
-                                                                                                                                                                  {t("home.auto_detecting")}
-                                                                                                                                                                      </span>
+              >
+                <span className="whitespace-nowrap">
+                  {t("home.auto_detecting")}
+                </span>
 
-                                                                                                                                                                          <img
-                                                                                                                                                                                src={aiGif}
-                                                                                                                                                                                      alt="AI Detecting"
-                                                                                                                                                                                            className="w-5 h-5 shrink-0 opacity-90 group-hover:opacity-100 transition-opacity"
-                                                                                                                                                                                                />
-                                                                                                                                                                                                  </div>
-                                                                                                                                                                                                  </button>
-                                                                                                                                                                                                  
+                <img
+                  src={aiGif}
+                  alt="AI Detecting"
+                  className="w-5 h-5 shrink-0 opacity-90 group-hover:opacity-100 transition-opacity"
+                />
+              </div>
+            </button>
           ) : (
             <Select value={language} onValueChange={setLanguage}>
               <SelectTrigger className="w-[240px] h-10 bg-muted/20 hover:bg-muted/40 border-border/50 transition-all duration-200 shadow-sm">
@@ -378,6 +415,24 @@ const HomePage = () => {
                       <span>Markdown</span>
                     </span>
                   </SelectItem>
+                  <SelectItem value="shell">
+                    <span className="inline-flex items-center gap-2">
+                      <LanguageIcon
+                        language="shell"
+                        className="h-4 w-4 shrink-0"
+                      />
+                      <span>Shell/Bash</span>
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="other">
+                    <span className="inline-flex items-center gap-2">
+                      <LanguageIcon
+                        language="other"
+                        className="h-4 w-4 shrink-0"
+                      />
+                      <span>Other</span>
+                    </span>
+                  </SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -429,7 +484,7 @@ const HomePage = () => {
             <DropdownMenuTrigger asChild>
               <Button
                 disabled={!textValue.length}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 px-5"
               >
                 {t("home.paste_button")}
                 <ChevronDownIcon className="h-4 w-4" />
@@ -437,7 +492,12 @@ const HomePage = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuItem
-                onClick={() => handleSubmit("system")}
+                onClick={async () => {
+                  const result = await handleSubmit("system");
+                  if (result !== true) {
+                    toast.error(result);
+                  }
+                }}
                 className="cursor-pointer"
               >
                 <div className="flex items-start gap-3">
@@ -528,6 +588,53 @@ const HomePage = () => {
               className="px-8 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all"
             >
               {t("home.dynamic_id_dialog.submit")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={isCustomExpiryDialogOpen}
+        onOpenChange={setIsCustomExpiryDialogOpen}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                <Clock className="h-5 w-5" />
+              </div>
+              <DialogTitle>{t("home.expire_options.custom")}</DialogTitle>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Choose a specific date and time for this snippet to expire.
+            </p>
+          </DialogHeader>
+
+          <div className="py-4">
+            <DateTimePicker
+              date={customExpiryDate}
+              setDate={setCustomExpiryDate}
+            />
+          </div>
+
+          <DialogFooter className="sm:justify-between gap-2">
+            <Button
+              variant="ghost"
+              onClick={() => setIsCustomExpiryDialogOpen(false)}
+            >
+              {t("home.dynamic_id_dialog.cancel")}
+            </Button>
+            <Button
+              onClick={() => {
+                if (customExpiryDate) {
+                  setExpiresTime(customExpiryDate.toISOString());
+                  setIsCustomExpiryDialogOpen(false);
+                }
+              }}
+              disabled={!customExpiryDate}
+              className="px-8 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all"
+            >
+              Set Expiry
             </Button>
           </DialogFooter>
         </DialogContent>

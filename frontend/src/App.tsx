@@ -25,7 +25,7 @@ const App = () => {
       checkStatus();
       hasRun.current = true;
     }
-  }, []);
+  }, [apiHelpers]);
 
   if (loading) return <SplashPage />;
 
