@@ -228,19 +228,35 @@ const HomePage = () => {
 
         {(isDetecting || contentType === "code") &&
           (isDetecting ? (
-            <div className="relative p-[1px] overflow-hidden rounded-md w-[160px] h-10 shrink-0">
-              <div className="absolute inset-[-200%] moving-border-gradient animate-moving-border opacity-80" />
-              <div className="relative z-10 w-full h-full px-3 flex items-center gap-2 bg-background dark:bg-slate-900 rounded-[5px] text-sm text-foreground/80 select-none">
-                <span className="whitespace-nowrap">
-                  {t("home.auto_detecting")}
-                </span>
-                <img
-                  src={aiGif}
-                  alt="AI Detecting"
-                  className="w-5 h-5 shrink-0"
-                />
-              </div>
-            </div>
+            <button
+              type="button"
+                className="group relative w-[160px] h-10 shrink-0 rounded-md p-[1px] overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+                >
+                  {/* animated border */}
+                    <div className="absolute inset-[-200%] opacity-70 transition-opacity duration-300 group-hover:opacity-100 moving-border-gradient animate-moving-border" />
+
+                      {/* button body */}
+                        <div className="relative z-10 flex h-full w-full items-center justify-center gap-2 rounded-[5px] 
+                                          bg-background dark:bg-slate-900 
+                                                            text-sm font-medium text-foreground/80
+                                                                              shadow-sm transition-all duration-200
+                                                                                                group-hover:text-foreground
+                                                                                                                  group-hover:shadow-md
+                                                                                                                                    group-active:scale-[0.98]
+                                                                                                                                                      select-none"
+                                                                                                                                                        >
+                                                                                                                                                            <span className="whitespace-nowrap">
+                                                                                                                                                                  {t("home.auto_detecting")}
+                                                                                                                                                                      </span>
+
+                                                                                                                                                                          <img
+                                                                                                                                                                                src={aiGif}
+                                                                                                                                                                                      alt="AI Detecting"
+                                                                                                                                                                                            className="w-5 h-5 shrink-0 opacity-90 group-hover:opacity-100 transition-opacity"
+                                                                                                                                                                                                />
+                                                                                                                                                                                                  </div>
+                                                                                                                                                                                                  </button>
+                                                                                                                                                                                                  
           ) : (
             <Select value={language} onValueChange={setLanguage}>
               <SelectTrigger className="w-[240px] h-10 bg-muted/20 hover:bg-muted/40 border-border/50 transition-all duration-200 shadow-sm">
