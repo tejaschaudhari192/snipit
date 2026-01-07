@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Editor, type BeforeMount } from "@monaco-editor/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useApiHelpers } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -12,7 +13,18 @@ import Loader from "@/components/loader";
 import type { PasteData } from "@/types";
 import { getTimeRemaining, saveToLocal } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
-import { Code2, Edit, Trash2, Save, X, Clock, Minus, Plus } from "lucide-react";
+import {
+  Code2,
+  Edit,
+  Trash2,
+  Save,
+  X,
+  Clock,
+  Minus,
+  Plus,
+  Link,
+  FileText,
+} from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -38,10 +50,12 @@ const DisplayPage = () => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [paste, setPaste] = useState<PasteData>();
   const [updatedContent, setUpdatedContent] = useState<string>();
-  const [redirectUrl, setRedirectUrl] = useState<boolean>(false);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [language, setLanguage] = useState<string>("text");
+  const [contentType, setContentType] = useState<"text" | "code" | "link">(
+    "text",
+  );
   const [isDetecting, setIsDetecting] = useState<boolean>(false);
   const { theme } = useTheme();
   const { fontSize, ref: contentRef, setFontSize } = usePinchZoom(14);
@@ -64,8 +78,14 @@ const DisplayPage = () => {
         }
         setPaste(data);
         setUpdatedContent(data.content);
-        setRedirectUrl(data.redirectUrl || false);
         setLanguage(data.language || "text");
+        setContentType(
+          data.redirectUrl
+            ? "link"
+            : data.language !== "text"
+              ? "code"
+              : "text",
+        );
         saveToLocal(data);
       } else {
         setPaste(undefined);
@@ -132,7 +152,7 @@ const DisplayPage = () => {
   const handleEditSave = async () => {
     if (
       updatedContent === paste?.content &&
-      redirectUrl === paste?.redirectUrl
+      (contentType === "link") === paste?.redirectUrl
     ) {
       setIsEdit(false);
       return;
@@ -141,8 +161,8 @@ const DisplayPage = () => {
     const data = await apiHelpers.updatePaste(
       id!,
       updatedContent!,
-      redirectUrl,
-      language,
+      contentType === "link",
+      contentType === "code" ? language : "text",
     );
     if (data) {
       toast.success("Paste updated Successfully ✔️");
@@ -159,9 +179,9 @@ const DisplayPage = () => {
   };
 
   return (
-    <div className="h-[90%]">
+    <div className="flex-1 flex flex-col">
       {loading ? (
-        <div className="flex justify-center items-center h-full">
+        <div className="flex-1 flex justify-center items-center min-h-[80vh]">
           <Loader />
         </div>
       ) : paste?.content ? (
@@ -241,7 +261,13 @@ const DisplayPage = () => {
                       setIsEdit(false);
 
                       setUpdatedContent(paste?.content);
-                      setRedirectUrl(paste?.redirectUrl || false);
+                      setContentType(
+                        paste?.redirectUrl
+                          ? "link"
+                          : paste?.language !== "text"
+                            ? "code"
+                            : "text",
+                      );
                       setLanguage(paste?.language || "text");
                     }}
                     className="gap-2"
@@ -298,209 +324,235 @@ const DisplayPage = () => {
           <div className="mx-5 my-4 h-[75vh]">
             {isEdit ? (
               <div className="h-full flex flex-col gap-4">
-                <div className="flex items-center gap-2">
-                  <Checkbox
-                    id="editRedirectUrl"
-                    checked={redirectUrl}
-                    onCheckedChange={(checked) =>
-                      setRedirectUrl(checked as boolean)
-                    }
-                  />
-                  <label
-                    htmlFor="editRedirectUrl"
-                    className="text-sm font-medium leading-none cursor-pointer"
-                  >
-                    Redirect URL
-                  </label>
-                </div>
+                <Tabs
+                  value={contentType}
+                  onValueChange={(val) =>
+                    setContentType(val as "text" | "code" | "link")
+                  }
+                  className="w-full md:w-auto"
+                >
+                  <TabsList className="h-10">
+                    <TabsTrigger
+                      value="text"
+                      className="flex items-center gap-2 px-6 text-sm font-semibold min-w-36"
+                    >
+                      <FileText className="h-4 w-4 shrink-0" />
+                      <span className="whitespace-nowrap">
+                        {t("home.tab_text")}
+                      </span>
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="code"
+                      className="flex items-center gap-2 px-6 text-sm font-semibold min-w-36"
+                    >
+                      <Code2 className="h-4 w-4 shrink-0" />
+                      <span className="whitespace-nowrap">
+                        {t("home.tab_code")}
+                      </span>
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="link"
+                      className="flex items-center gap-2 px-6 text-sm font-semibold min-w-36"
+                    >
+                      <Link className="h-4 w-4 shrink-0" />
+                      <span className="whitespace-nowrap">
+                        {t("home.tab_link")}
+                      </span>
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
 
                 <div className="flex items-center gap-2">
-                  {isDetecting ? (
-                    <div className="relative p-[1px] overflow-hidden rounded-md w-[160px] h-10 shrink-0">
-                      <div className="absolute inset-[-200%] moving-border-gradient animate-moving-border opacity-80" />
-                      <div className="relative z-10 w-full h-full px-3 flex items-center gap-2 bg-background dark:bg-slate-900 rounded-[5px] text-sm text-foreground/80 select-none">
-                        <span className="whitespace-nowrap">
-                          {t("home.auto_detecting")}
-                        </span>
-                        <img
-                          src={aiGif}
-                          alt="AI Detecting"
-                          className="w-5 h-5 shrink-0"
-                        />
-                      </div>
-                    </div>
-                  ) : (
-                    <Select value={language} onValueChange={setLanguage}>
-                      <SelectTrigger className="w-[240px] h-10 bg-muted/20 hover:bg-muted/40 border-border/50 transition-all duration-200 shadow-sm">
-                        <SelectValue placeholder="Language" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem value="text">
-                            <span className="inline-flex items-center gap-2">
-                              <LanguageIcon
-                                language="text"
-                                className="h-4 w-4 shrink-0"
-                              />
-                              <span>Plain Text</span>
+                  {contentType === "code" && (
+                    <>
+                      {isDetecting ? (
+                        <div className="relative p-[1px] overflow-hidden rounded-md w-[160px] h-10 shrink-0">
+                          <div className="absolute inset-[-200%] moving-border-gradient animate-moving-border opacity-80" />
+                          <div className="relative z-10 w-full h-full px-3 flex items-center gap-2 bg-background dark:bg-slate-900 rounded-[5px] text-sm text-foreground/80 select-none">
+                            <span className="whitespace-nowrap">
+                              {t("home.auto_detecting")}
                             </span>
-                          </SelectItem>
-                          <SelectItem value="javascript">
-                            <span className="inline-flex items-center gap-2">
-                              <LanguageIcon
-                                language="javascript"
-                                className="h-4 w-4 shrink-0"
-                              />
-                              <span>JavaScript</span>
-                            </span>
-                          </SelectItem>
-                          <SelectItem value="typescript">
-                            <span className="inline-flex items-center gap-2">
-                              <LanguageIcon
-                                language="typescript"
-                                className="h-4 w-4 shrink-0"
-                              />
-                              <span>TypeScript</span>
-                            </span>
-                          </SelectItem>
-                          <SelectItem value="html">
-                            <span className="inline-flex items-center gap-2">
-                              <LanguageIcon
-                                language="html"
-                                className="h-4 w-4 shrink-0"
-                              />
-                              <span>HTML</span>
-                            </span>
-                          </SelectItem>
-                          <SelectItem value="css">
-                            <span className="inline-flex items-center gap-2">
-                              <LanguageIcon
-                                language="css"
-                                className="h-4 w-4 shrink-0"
-                              />
-                              <span>CSS</span>
-                            </span>
-                          </SelectItem>
-                          <SelectItem value="json">
-                            <span className="inline-flex items-center gap-2">
-                              <LanguageIcon
-                                language="json"
-                                className="h-4 w-4 shrink-0"
-                              />
-                              <span>JSON</span>
-                            </span>
-                          </SelectItem>
-                          <SelectItem value="java">
-                            <span className="inline-flex items-center gap-2">
-                              <LanguageIcon
-                                language="java"
-                                className="h-4 w-4 shrink-0"
-                              />
-                              <span>Java</span>
-                            </span>
-                          </SelectItem>
-                          <SelectItem value="python">
-                            <span className="inline-flex items-center gap-2">
-                              <LanguageIcon
-                                language="python"
-                                className="h-4 w-4 shrink-0"
-                              />
-                              <span>Python</span>
-                            </span>
-                          </SelectItem>
-                          <SelectItem value="c">
-                            <span className="inline-flex items-center gap-2">
-                              <LanguageIcon
-                                language="c"
-                                className="h-4 w-4 shrink-0"
-                              />
-                              <span>C</span>
-                            </span>
-                          </SelectItem>
-                          <SelectItem value="cpp">
-                            <span className="inline-flex items-center gap-2">
-                              <LanguageIcon
-                                language="cpp"
-                                className="h-4 w-4 shrink-0"
-                              />
-                              <span>C++</span>
-                            </span>
-                          </SelectItem>
-                          <SelectItem value="csharp">
-                            <span className="inline-flex items-center gap-2">
-                              <LanguageIcon
-                                language="csharp"
-                                className="h-4 w-4 shrink-0"
-                              />
-                              <span>C#</span>
-                            </span>
-                          </SelectItem>
-                          <SelectItem value="go">
-                            <span className="inline-flex items-center gap-2">
-                              <LanguageIcon
-                                language="go"
-                                className="h-4 w-4 shrink-0"
-                              />
-                              <span>Go</span>
-                            </span>
-                          </SelectItem>
-                          <SelectItem value="rust">
-                            <span className="inline-flex items-center gap-2">
-                              <LanguageIcon
-                                language="rust"
-                                className="h-4 w-4 shrink-0"
-                              />
-                              <span>Rust</span>
-                            </span>
-                          </SelectItem>
-                          <SelectItem value="markdown">
-                            <span className="inline-flex items-center gap-2">
-                              <LanguageIcon
-                                language="markdown"
-                                className="h-4 w-4 shrink-0"
-                              />
-                              <span>Markdown</span>
-                            </span>
-                          </SelectItem>
-                          <SelectItem value="shell">
-                            <span className="inline-flex items-center gap-2">
-                              <LanguageIcon
-                                language="shell"
-                                className="h-4 w-4 shrink-0"
-                              />
-                              <span>Shell/Bash</span>
-                            </span>
-                          </SelectItem>
-                          <SelectItem value="other">
-                            <span className="inline-flex items-center gap-2">
-                              <LanguageIcon
-                                language="other"
-                                className="h-4 w-4 shrink-0"
-                              />
-                              <span>Other</span>
-                            </span>
-                          </SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                            <img
+                              src={aiGif}
+                              alt="AI Detecting"
+                              className="w-5 h-5 shrink-0"
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        <Select value={language} onValueChange={setLanguage}>
+                          <SelectTrigger className="w-[240px] h-10 bg-muted/20 hover:bg-muted/40 border-border/50 transition-all duration-200 shadow-sm">
+                            <SelectValue placeholder="Language" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value="text">
+                                <span className="inline-flex items-center gap-2">
+                                  <LanguageIcon
+                                    language="text"
+                                    className="h-4 w-4 shrink-0"
+                                  />
+                                  <span>Plain Text</span>
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="javascript">
+                                <span className="inline-flex items-center gap-2">
+                                  <LanguageIcon
+                                    language="javascript"
+                                    className="h-4 w-4 shrink-0"
+                                  />
+                                  <span>JavaScript</span>
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="typescript">
+                                <span className="inline-flex items-center gap-2">
+                                  <LanguageIcon
+                                    language="typescript"
+                                    className="h-4 w-4 shrink-0"
+                                  />
+                                  <span>TypeScript</span>
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="html">
+                                <span className="inline-flex items-center gap-2">
+                                  <LanguageIcon
+                                    language="html"
+                                    className="h-4 w-4 shrink-0"
+                                  />
+                                  <span>HTML</span>
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="css">
+                                <span className="inline-flex items-center gap-2">
+                                  <LanguageIcon
+                                    language="css"
+                                    className="h-4 w-4 shrink-0"
+                                  />
+                                  <span>CSS</span>
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="json">
+                                <span className="inline-flex items-center gap-2">
+                                  <LanguageIcon
+                                    language="json"
+                                    className="h-4 w-4 shrink-0"
+                                  />
+                                  <span>JSON</span>
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="java">
+                                <span className="inline-flex items-center gap-2">
+                                  <LanguageIcon
+                                    language="java"
+                                    className="h-4 w-4 shrink-0"
+                                  />
+                                  <span>Java</span>
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="python">
+                                <span className="inline-flex items-center gap-2">
+                                  <LanguageIcon
+                                    language="python"
+                                    className="h-4 w-4 shrink-0"
+                                  />
+                                  <span>Python</span>
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="c">
+                                <span className="inline-flex items-center gap-2">
+                                  <LanguageIcon
+                                    language="c"
+                                    className="h-4 w-4 shrink-0"
+                                  />
+                                  <span>C</span>
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="cpp">
+                                <span className="inline-flex items-center gap-2">
+                                  <LanguageIcon
+                                    language="cpp"
+                                    className="h-4 w-4 shrink-0"
+                                  />
+                                  <span>C++</span>
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="csharp">
+                                <span className="inline-flex items-center gap-2">
+                                  <LanguageIcon
+                                    language="csharp"
+                                    className="h-4 w-4 shrink-0"
+                                  />
+                                  <span>C#</span>
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="go">
+                                <span className="inline-flex items-center gap-2">
+                                  <LanguageIcon
+                                    language="go"
+                                    className="h-4 w-4 shrink-0"
+                                  />
+                                  <span>Go</span>
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="rust">
+                                <span className="inline-flex items-center gap-2">
+                                  <LanguageIcon
+                                    language="rust"
+                                    className="h-4 w-4 shrink-0"
+                                  />
+                                  <span>Rust</span>
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="markdown">
+                                <span className="inline-flex items-center gap-2">
+                                  <LanguageIcon
+                                    language="markdown"
+                                    className="h-4 w-4 shrink-0"
+                                  />
+                                  <span>Markdown</span>
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="shell">
+                                <span className="inline-flex items-center gap-2">
+                                  <LanguageIcon
+                                    language="shell"
+                                    className="h-4 w-4 shrink-0"
+                                  />
+                                  <span>Shell/Bash</span>
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="other">
+                                <span className="inline-flex items-center gap-2">
+                                  <LanguageIcon
+                                    language="other"
+                                    className="h-4 w-4 shrink-0"
+                                  />
+                                  <span>Other</span>
+                                </span>
+                              </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-10 px-3 text-muted-foreground hover:text-foreground"
+                        onClick={() => handleLanguageDetection(updatedContent!)}
+                        disabled={isDetecting || !updatedContent}
+                        title="Auto detect language"
+                      >
+                        <Code2 className="h-4 w-4" />
+                      </Button>
+                    </>
                   )}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-10 px-3 text-muted-foreground hover:text-foreground"
-                    onClick={() => handleLanguageDetection(updatedContent!)}
-                    disabled={isDetecting || !updatedContent}
-                    title="Auto detect language"
-                  >
-                    <Code2 className="h-4 w-4" />
-                  </Button>
                 </div>
 
                 <div
                   ref={contentRef}
                   className="flex-1 border rounded-md overflow-hidden touch-none"
                 >
-                  {language && language !== "text" ? (
+                  {contentType === "code" ? (
                     <Editor
                       height="100%"
                       language={language}
@@ -516,11 +568,26 @@ const DisplayPage = () => {
                         wordWrap: "on",
                       }}
                     />
+                  ) : contentType === "link" ? (
+                    <div className="h-full w-full flex flex-col items-center justify-center p-10 bg-muted/5">
+                      <div className="w-full max-w-2xl space-y-6">
+                        <Input
+                          value={updatedContent}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setUpdatedContent(e.target.value)
+                          }
+                          placeholder={t("home.link_placeholder")}
+                          className="h-14 text-lg px-6 rounded-xl border-primary/20 focus-visible:ring-primary/30 shadow-sm"
+                        />
+                      </div>
+                    </div>
                   ) : (
                     <Textarea
                       className="h-full w-full resize-none border-0 focus-visible:ring-0 font-mono"
                       value={updatedContent}
-                      onChange={(e) => setUpdatedContent(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                        setUpdatedContent(e.target.value)
+                      }
                       style={{ fontSize: `${fontSize}px` }}
                     />
                   )}

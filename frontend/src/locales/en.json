@@ -24,6 +24,14 @@
         },
         "tab_text": "Plain Text",
         "tab_code": "Code",
+        "tab_link": "Shorten Link",
+        "link_placeholder": "Enter URL to shorten (e.g., https://google.com)",
+        "link_desc": "Paste the long URL below to create a short, redirecting link.",
+        "link_features": {
+            "fast": "Fast Redirection",
+            "custom": "Custom Slugs",
+            "analytics": "Analytics"
+        },
         "auto_detecting": "Auto Detecting...",
         "detected_language": "Detected language: {{language}}",
         "dynamic_id_dialog": {
@@ -46,6 +54,7 @@
         "title": "History",
         "plain_text_snippet": "Plain Text Snippet",
         "code_snippet": "Code Snippet",
+        "link_snippet": "Shorten Link",
         "created_ago": "Created",
         "clear_history": "Clear History",
         "clear_confirm": "Clear all history?",
@@ -96,8 +105,8 @@
                 "desc": "Free and open source. Contribute, fork, or self-host."
             },
             "redirect_urls": {
-                "title": "Redirect URLs",
-                "desc": "Use snippets as short URLs that redirect to any destination."
+                "title": "Shorten Links",
+                "desc": "Create short, manageable links that redirect to any destination instantly."
             }
         },
         "story": {

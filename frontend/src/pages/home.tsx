@@ -29,7 +29,6 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ChevronDownIcon,
@@ -40,6 +39,7 @@ import {
   Minus,
   Plus,
   Clock,
+  Link,
 } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -66,8 +66,9 @@ const HomePage = () => {
     valueRef.current = val;
   };
 
-  const [redirectUrl, setRedirectUrl] = useState(false);
-  const [contentType, setContentType] = useState<"text" | "code">("text");
+  const [contentType, setContentType] = useState<"text" | "code" | "link">(
+    "text",
+  );
   const [language, setLanguage] = useState("javascript");
   const [isDetecting, setIsDetecting] = useState(false);
 
@@ -90,7 +91,7 @@ const HomePage = () => {
         expiresTime,
         selectedIdType,
         providedId,
-        redirectUrl,
+        contentType === "link",
         contentType === "code" ? language : "text",
       );
       toast.success(t("messages.snippet_created", { idType: selectedIdType }), {
@@ -242,7 +243,9 @@ const HomePage = () => {
 
         <Tabs
           value={contentType}
-          onValueChange={(val) => setContentType(val as "text" | "code")}
+          onValueChange={(val) =>
+            setContentType(val as "text" | "code" | "link")
+          }
           className="w-full md:w-auto"
         >
           <TabsList className="h-10">
@@ -259,6 +262,13 @@ const HomePage = () => {
             >
               <Code2 className="h-4 w-4 shrink-0" />
               <span className="whitespace-nowrap">{t("home.tab_code")}</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="link"
+              className="flex items-center gap-2 px-6 text-sm font-semibold min-w-36"
+            >
+              <Link className="h-4 w-4 shrink-0" />
+              <span className="whitespace-nowrap">{t("home.tab_link")}</span>
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -437,21 +447,6 @@ const HomePage = () => {
               </SelectContent>
             </Select>
           ))}
-
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/20 hover:bg-muted/40 rounded-lg border border-border/50 transition-colors duration-200 cursor-pointer group">
-          <Checkbox
-            id="redirectUrl"
-            checked={redirectUrl}
-            onCheckedChange={(checked) => setRedirectUrl(checked as boolean)}
-            className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-          />
-          <label
-            htmlFor="redirectUrl"
-            className="text-sm font-medium leading-none cursor-pointer select-none group-hover:text-foreground transition-colors duration-200"
-          >
-            Redirect URL
-          </label>
-        </div>
 
         <ButtonGroup>
           <Button
@@ -661,6 +656,37 @@ const HomePage = () => {
               wordWrap: "on",
             }}
           />
+        ) : contentType === "link" ? (
+          <div className="h-full w-full flex flex-col items-center justify-center p-10 bg-muted/5">
+            <div className="w-full max-w-2xl space-y-6">
+              <div className="flex flex-col items-center gap-2 text-center">
+                <div className="p-4 rounded-full bg-primary/10 text-primary">
+                  <Link className="h-8 w-8" />
+                </div>
+                <h2 className="text-2xl font-bold tracking-tight">
+                  {t("home.tab_link")}
+                </h2>
+                <p className="text-muted-foreground">{t("home.link_desc")}</p>
+              </div>
+              <Input
+                value={textValue}
+                onChange={(e) => setTextValue(e.target.value)}
+                placeholder={t("home.link_placeholder")}
+                className="h-14 text-lg px-6 rounded-xl border-primary/20 focus-visible:ring-primary/30 shadow-sm"
+              />
+              <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  ✅ {t("home.link_features.fast")}
+                </span>
+                <span className="flex items-center gap-1">
+                  ✅ {t("home.link_features.custom")}
+                </span>
+                <span className="flex items-center gap-1">
+                  ✅ {t("home.link_features.analytics")}
+                </span>
+              </div>
+            </div>
+          </div>
         ) : (
           <Textarea
             ref={userInputRef}

@@ -24,6 +24,14 @@
         },
         "tab_text": "プレーンテキスト",
         "tab_code": "コード",
+        "tab_link": "リンクを短縮",
+        "link_placeholder": "短縮するURLを入力してください（例：https://google.com）",
+        "link_desc": "以下の長いURLを貼り付けて、短縮リダイレクトリンクを作成します。",
+        "link_features": {
+            "fast": "高速リダイレクト",
+            "custom": "カスタムスラッグ",
+            "analytics": "分析"
+        },
         "auto_detecting": "自動検出中...",
         "detected_language": "検出された言語: {{language}}",
         "dynamic_id_dialog": {
@@ -96,8 +104,8 @@
                 "desc": "無料でオープンソース。貢献、フォーク、セルフホスト可能。"
             },
             "redirect_urls": {
-                "title": "リダイレクトURL",
-                "desc": "スニペットを任意の宛先にリダイレクトするショートURLとして使用。"
+                "title": "リンクを短縮",
+                "desc": "任意の宛先に即座にリダイレクトする、短くて管理しやすいリンクを作成します。"
             }
         },
         "story": {
