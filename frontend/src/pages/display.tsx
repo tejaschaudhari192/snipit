@@ -41,6 +41,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { LanguageIcon } from "@/components/language-icon";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
+import { AuroraBackground } from "@/components/ui/shadcn-io/aurora-background";
 
 const DisplayPage = () => {
   const { id } = useParams();
@@ -215,33 +216,35 @@ const DisplayPage = () => {
                     <Trash2 className="h-4 w-4" />
                     {t("display.delete_button")}
                   </Button>
-                  <ButtonGroup className="ml-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() =>
-                        setFontSize((prev: number) => Math.max(prev - 1, 8))
-                      }
-                      className="h-8 w-8"
-                      title="Zoom Out"
-                    >
-                      <Minus className="h-4 w-4" />
-                    </Button>
-                    <div className="flex items-center justify-center px-3 border-y bg-muted/30 text-xs font-medium min-w-[40px] select-none">
-                      {fontSize}
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() =>
-                        setFontSize((prev: number) => Math.min(prev + 1, 48))
-                      }
-                      className="h-8 w-8"
-                      title="Zoom In"
-                    >
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </ButtonGroup>
+                  {contentType !== "link" && (
+                    <ButtonGroup className="ml-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() =>
+                          setFontSize((prev: number) => Math.max(prev - 1, 8))
+                        }
+                        className="h-8 w-8"
+                        title="Zoom Out"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <div className="flex items-center justify-center px-3 border-y bg-muted/30 text-xs font-medium min-w-[40px] select-none">
+                        {fontSize}
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() =>
+                          setFontSize((prev: number) => Math.min(prev + 1, 48))
+                        }
+                        className="h-8 w-8"
+                        title="Zoom In"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </ButtonGroup>
+                  )}
                 </>
               ) : (
                 <>
@@ -275,33 +278,35 @@ const DisplayPage = () => {
                     <X className="h-4 w-4" />
                     Cancel
                   </Button>
-                  <ButtonGroup className="ml-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() =>
-                        setFontSize((prev: number) => Math.max(prev - 1, 8))
-                      }
-                      className="h-8 w-8"
-                      title="Zoom Out"
-                    >
-                      <Minus className="h-4 w-4" />
-                    </Button>
-                    <div className="flex items-center justify-center px-3 border-y bg-muted/30 text-xs font-medium min-w-[40px] select-none">
-                      {fontSize}
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() =>
-                        setFontSize((prev: number) => Math.min(prev + 1, 48))
-                      }
-                      className="h-8 w-8"
-                      title="Zoom In"
-                    >
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </ButtonGroup>
+                  {contentType !== "link" && (
+                    <ButtonGroup className="ml-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() =>
+                          setFontSize((prev: number) => Math.max(prev - 1, 8))
+                        }
+                        className="h-8 w-8"
+                        title="Zoom Out"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <div className="flex items-center justify-center px-3 border-y bg-muted/30 text-xs font-medium min-w-[40px] select-none">
+                        {fontSize}
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() =>
+                          setFontSize((prev: number) => Math.min(prev + 1, 48))
+                        }
+                        className="h-8 w-8"
+                        title="Zoom In"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </ButtonGroup>
+                  )}
                 </>
               )}
               {paste.language && (
@@ -569,18 +574,23 @@ const DisplayPage = () => {
                       }}
                     />
                   ) : contentType === "link" ? (
-                    <div className="h-full w-full flex flex-col items-center justify-center p-10 bg-muted/5">
-                      <div className="w-full max-w-2xl space-y-6">
+                    <AuroraBackground className="h-full w-full rounded-md border-0">
+                      <div className="w-full max-w-2xl space-y-6 relative z-10 px-4">
+                        <div className="flex flex-col items-center gap-2 text-center">
+                          <div className="p-4 rounded-full bg-primary/10 text-primary backdrop-blur-sm">
+                            <Link className="h-8 w-8" />
+                          </div>
+                        </div>
                         <Input
                           value={updatedContent}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             setUpdatedContent(e.target.value)
                           }
                           placeholder={t("home.link_placeholder")}
-                          className="h-14 text-lg px-6 rounded-xl border-primary/20 focus-visible:ring-primary/30 shadow-sm"
+                          className="h-14 text-lg px-6 rounded-xl border-primary/20 focus-visible:ring-primary/30 shadow-lg bg-background/50 backdrop-blur-md"
                         />
                       </div>
-                    </div>
+                    </AuroraBackground>
                   ) : (
                     <Textarea
                       className="h-full w-full resize-none border-0 focus-visible:ring-0 font-mono"

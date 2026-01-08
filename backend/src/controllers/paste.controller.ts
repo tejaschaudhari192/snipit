@@ -76,10 +76,14 @@ class PasteController {
         const result = await createAndSavePaste(pasteId);
         this.logger.info(`Created paste with id: ${pasteId}`);
         return res.json(result);
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Handle duplicate key error (code 11000)
+        const err = error as {
+          code?: number;
+          errorResponse?: { code?: number };
+        };
         const isDuplicateKey =
-          error?.code === 11000 || error?.errorResponse?.code === 11000;
+          err?.code === 11000 || err?.errorResponse?.code === 11000;
 
         if (isDuplicateKey) {
           if (validatedBody.customId) {

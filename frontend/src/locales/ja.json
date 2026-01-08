@@ -2,7 +2,7 @@
     "header": {
         "about": "について",
         "history": "履歴",
-        "newnippet": "新しいスニペット",
+        "new_snippet": "新しいスニペット",
         "copied": "コピーしました！"
     },
     "home": {

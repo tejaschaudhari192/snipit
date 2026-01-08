@@ -9,6 +9,7 @@ import {
   ExternalLink,
   Timer,
   Calendar,
+  Link as LinkIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -153,12 +154,19 @@ const HistoryPage = () => {
                       <div className="flex items-center gap-3">
                         <div
                           className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold ${
-                            item.language && item.language !== "text"
-                              ? getLanguageColor(item.language)
-                              : "bg-muted text-muted-foreground"
+                            item.redirectUrl
+                              ? "bg-primary/10 text-primary"
+                              : item.language && item.language !== "text"
+                                ? getLanguageColor(item.language)
+                                : "bg-muted text-muted-foreground"
                           }`}
                         >
-                          {item.language && item.language !== "text" ? (
+                          {item.redirectUrl ? (
+                            <>
+                              <LinkIcon className="h-3.5 w-3.5" />
+                              <span>{t("history.link_snippet")}</span>
+                            </>
+                          ) : item.language && item.language !== "text" ? (
                             <>
                               <LanguageIcon
                                 language={item.language}

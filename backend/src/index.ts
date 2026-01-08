@@ -37,7 +37,13 @@ app
 
 app.use(
   (
-    err: any,
+    err: Error & {
+      status?: number;
+      statusCode?: number;
+      issues?: unknown[];
+      errors?: unknown[];
+      name?: string;
+    },
     req: Request,
     res: Response,
     _next: import("express").NextFunction,
@@ -60,10 +66,13 @@ app.use(
 
     // Handle Zod validation errors (status 400)
     if (err && (err.name === "ZodError" || err instanceof ZodError)) {
-      const issues = err.issues || err.errors || [];
+      const issues = (err.issues || err.errors || []) as {
+        path: (string | number)[];
+        message: string;
+      }[];
       return res.status(400).json({
         error: "Validation failed",
-        details: issues.map((e: any) => ({
+        details: issues.map((e) => ({
           path: e.path,
           message: e.message,
         })),

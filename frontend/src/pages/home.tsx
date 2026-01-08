@@ -53,6 +53,7 @@ import { LanguageIcon } from "@/components/language-icon";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
+import { AuroraBackground } from "@/components/ui/shadcn-io/aurora-background";
 
 const HomePage = () => {
   const userInputRef = useRef<HTMLTextAreaElement>(null);
@@ -448,31 +449,35 @@ const HomePage = () => {
             </Select>
           ))}
 
-        <ButtonGroup>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setFontSize((prev: number) => Math.max(prev - 1, 8))}
-            className="h-10 w-10 md:h-9 md:w-9"
-            title="Zoom Out"
-          >
-            <Minus className="h-4 w-4" />
-          </Button>
-          <div className="flex items-center justify-center px-4 md:px-3 border-y bg-muted/30 text-xs font-medium min-w-[44px] select-none">
-            {fontSize}
-          </div>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() =>
-              setFontSize((prev: number) => Math.min(prev + 1, 48))
-            }
-            className="h-10 w-10 md:h-9 md:w-9"
-            title="Zoom In"
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-        </ButtonGroup>
+        {contentType !== "link" && (
+          <ButtonGroup>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() =>
+                setFontSize((prev: number) => Math.max(prev - 1, 8))
+              }
+              className="h-10 w-10 md:h-9 md:w-9"
+              title="Zoom Out"
+            >
+              <Minus className="h-4 w-4" />
+            </Button>
+            <div className="flex items-center justify-center px-4 md:px-3 border-y bg-muted/30 text-xs font-medium min-w-[44px] select-none">
+              {fontSize}
+            </div>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() =>
+                setFontSize((prev: number) => Math.min(prev + 1, 48))
+              }
+              className="h-10 w-10 md:h-9 md:w-9"
+              title="Zoom In"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </ButtonGroup>
+        )}
 
         <div className="w-full h-fit flex justify-end px-0 md:px-5">
           <DropdownMenu>
@@ -485,7 +490,7 @@ const HomePage = () => {
                 <ChevronDownIcon className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align="end" className="w-fit">
               <DropdownMenuItem
                 onClick={async () => {
                   const result = await handleSubmit("system");
@@ -657,10 +662,10 @@ const HomePage = () => {
             }}
           />
         ) : contentType === "link" ? (
-          <div className="h-full w-full flex flex-col items-center justify-center p-10 bg-muted/5">
-            <div className="w-full max-w-2xl space-y-6">
+          <AuroraBackground className="h-full w-full">
+            <div className="w-full max-w-2xl space-y-6 relative z-10 px-4">
               <div className="flex flex-col items-center gap-2 text-center">
-                <div className="p-4 rounded-full bg-primary/10 text-primary">
+                <div className="p-4 rounded-full bg-primary/10 text-primary backdrop-blur-sm">
                   <Link className="h-8 w-8" />
                 </div>
                 <h2 className="text-2xl font-bold tracking-tight">
@@ -672,7 +677,7 @@ const HomePage = () => {
                 value={textValue}
                 onChange={(e) => setTextValue(e.target.value)}
                 placeholder={t("home.link_placeholder")}
-                className="h-14 text-lg px-6 rounded-xl border-primary/20 focus-visible:ring-primary/30 shadow-sm"
+                className="h-14 text-lg px-6 rounded-xl border-primary/20 focus-visible:ring-primary/30 shadow-lg bg-background/50 backdrop-blur-md"
               />
               <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1">
@@ -686,7 +691,7 @@ const HomePage = () => {
                 </span>
               </div>
             </div>
-          </div>
+          </AuroraBackground>
         ) : (
           <Textarea
             ref={userInputRef}

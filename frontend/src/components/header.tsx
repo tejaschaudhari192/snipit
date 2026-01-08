@@ -75,7 +75,7 @@ const Header = ({ className }: HeaderProps) => {
         <LanguageSwitcher className="w-[180px]" />
         {path.length > 1 && (
           <Link to={"/"}>
-            <Button variant={"outline"}>{t("header.newnippet")}</Button>
+            <Button variant={"outline"}>{t("header.new_snippet")}</Button>
           </Link>
         )}
         <ThemeTogglePositionsDemo />
@@ -99,7 +99,7 @@ const Header = ({ className }: HeaderProps) => {
             </DropdownMenuItem>
             {path.length > 1 && (
               <DropdownMenuItem asChild>
-                <Link to="/">{t("header.newnippet")}</Link>
+                <Link to="/">{t("header.new_snippet")}</Link>
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>

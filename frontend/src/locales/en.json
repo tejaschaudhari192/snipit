@@ -2,7 +2,7 @@
     "header": {
         "about": "About",
         "history": "History",
-        "newnippet": "New Snippet",
+        "new_snippet": "New Snippet",
         "copied": "Copied!"
     },
     "home": {
