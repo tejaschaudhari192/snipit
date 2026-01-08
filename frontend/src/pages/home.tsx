@@ -190,346 +190,231 @@ const HomePage = () => {
 
   return (
     <div className="h-fit max-h-screen">
-      <div className="h-fit flex flex-col md:flex-row gap-4 border-slate-200 justify-end items-center my-4 mx-5">
-        <div className="w-full md:w-auto">
-          <Select
-            value={expiresTime.includes("-") ? "custom" : expiresTime}
-            onValueChange={(val) => {
-              if (val === "custom") {
-                setIsCustomExpiryDialogOpen(true);
-              } else {
-                setExpiresTime(val);
-              }
-            }}
+      <div className="flex flex-col gap-4 my-2 mx-3 md:my-4 md:mx-5">
+        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+          <Tabs
+            value={contentType}
+            onValueChange={(val) =>
+              setContentType(val as "text" | "code" | "link")
+            }
+            className="w-full sm:w-auto"
           >
-            <SelectTrigger className="w-full md:w-[180px]">
-              <SelectValue
-                className=""
-                placeholder={t("home.select_expire_time")}
-              />
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="one-time">
-                  {t("home.expire_options.one_time_snippet")}
-                </SelectItem>
-                <SelectItem value="1h">
-                  {t("home.expire_options.expire_in_1_hour")}
-                </SelectItem>
-                <SelectItem value="1d">
-                  {t("home.expire_options.expire_in_1_day")}
-                </SelectItem>
-                <SelectItem value="1w">
-                  {t("home.expire_options.expire_in_1_week")}
-                </SelectItem>
-                <SelectItem value="1m">
-                  {t("home.expire_options.expire_in_1_month")}
-                </SelectItem>
-                <SelectItem value="1y">
-                  {t("home.expire_options.expire_in_1_year")}
-                </SelectItem>
-                <SelectItem value="custom">
-                  {expiresTime.includes("-")
-                    ? new Date(expiresTime).toLocaleString([], {
-                        dateStyle: "short",
-                        timeStyle: "short",
-                      })
-                    : t("home.expire_options.custom")}
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <Tabs
-          value={contentType}
-          onValueChange={(val) =>
-            setContentType(val as "text" | "code" | "link")
-          }
-          className="w-full md:w-auto"
-        >
-          <TabsList className="h-10">
-            <TabsTrigger
-              value="text"
-              className="flex items-center gap-2 px-6 text-sm font-semibold min-w-36"
-            >
-              <FileText className="h-4 w-4 shrink-0" />
-              <span className="whitespace-nowrap">{t("home.tab_text")}</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="code"
-              className="flex items-center gap-2 px-6 text-sm font-semibold min-w-36"
-            >
-              <Code2 className="h-4 w-4 shrink-0" />
-              <span className="whitespace-nowrap">{t("home.tab_code")}</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="link"
-              className="flex items-center gap-2 px-6 text-sm font-semibold min-w-36"
-            >
-              <Link className="h-4 w-4 shrink-0" />
-              <span className="whitespace-nowrap">{t("home.tab_link")}</span>
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-
-        {(isDetecting || contentType === "code") &&
-          (isDetecting ? (
-            <button
-              type="button"
-              className="group relative w-[160px] h-10 shrink-0 rounded-md p-[1px] overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
-            >
-              {/* animated border */}
-              <div className="absolute inset-[-200%] opacity-70 transition-opacity duration-300 group-hover:opacity-100 moving-border-gradient animate-moving-border" />
-
-              {/* button body */}
-              <div
-                className="relative z-10 flex h-full w-full items-center justify-center gap-2 rounded-[5px] 
-                                          bg-background dark:bg-slate-900 
-                                                            text-sm font-medium text-foreground/80
-                                                                              shadow-sm transition-all duration-200
-                                                                                                group-hover:text-foreground
-                                                                                                                  group-hover:shadow-md
-                                                                                                                                    group-active:scale-[0.98]
-                                                                                                                                                      select-none"
+            <TabsList className="h-11 w-full flex">
+              <TabsTrigger
+                value="text"
+                className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
               >
-                <span className="whitespace-nowrap">
-                  {t("home.auto_detecting")}
-                </span>
+                <FileText className="h-4 w-4 shrink-0" />
+                <span className="whitespace-nowrap">{t("home.tab_text")}</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="code"
+                className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
+              >
+                <Code2 className="h-4 w-4 shrink-0" />
+                <span className="whitespace-nowrap">{t("home.tab_code")}</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="link"
+                className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
+              >
+                <Link className="h-4 w-4 shrink-0" />
+                <span className="whitespace-nowrap">{t("home.tab_link")}</span>
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
 
-                <img
-                  src={aiGif}
-                  alt="AI Detecting"
-                  className="w-5 h-5 shrink-0 opacity-90 group-hover:opacity-100 transition-opacity"
-                />
-              </div>
-            </button>
-          ) : (
-            <Select value={language} onValueChange={setLanguage}>
-              <SelectTrigger className="w-[240px] h-10 bg-muted/20 hover:bg-muted/40 border-border/50 transition-all duration-200 shadow-sm">
-                <SelectValue placeholder="Language" />
+          <div className="flex items-center gap-2 justify-between sm:justify-end">
+            <Select
+              value={expiresTime.includes("-") ? "custom" : expiresTime}
+              onValueChange={(val) => {
+                if (val === "custom") {
+                  setIsCustomExpiryDialogOpen(true);
+                } else {
+                  setExpiresTime(val);
+                }
+              }}
+            >
+              <SelectTrigger className="flex-1 sm:w-fit h-11">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  <SelectValue placeholder={t("home.select_expire_time")} />
+                </div>
               </SelectTrigger>
+
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="javascript">
-                    <span className="inline-flex items-center gap-2">
-                      <LanguageIcon
-                        language="javascript"
-                        className="h-4 w-4 shrink-0"
-                      />
-                      <span>JavaScript</span>
-                    </span>
+                  <SelectItem value="one-time">
+                    {t("home.expire_options.one_time_snippet")}
                   </SelectItem>
-                  <SelectItem value="typescript">
-                    <span className="inline-flex items-center gap-2">
-                      <LanguageIcon
-                        language="typescript"
-                        className="h-4 w-4 shrink-0"
-                      />
-                      <span>TypeScript</span>
-                    </span>
+                  <SelectItem value="1h">
+                    {t("home.expire_options.expire_in_1_hour")}
                   </SelectItem>
-                  <SelectItem value="html">
-                    <span className="inline-flex items-center gap-2">
-                      <LanguageIcon
-                        language="html"
-                        className="h-4 w-4 shrink-0"
-                      />
-                      <span>HTML</span>
-                    </span>
+                  <SelectItem value="1d">
+                    {t("home.expire_options.expire_in_1_day")}
                   </SelectItem>
-                  <SelectItem value="css">
-                    <span className="inline-flex items-center gap-2">
-                      <LanguageIcon
-                        language="css"
-                        className="h-4 w-4 shrink-0"
-                      />
-                      <span>CSS</span>
-                    </span>
+                  <SelectItem value="1w">
+                    {t("home.expire_options.expire_in_1_week")}
                   </SelectItem>
-                  <SelectItem value="json">
-                    <span className="inline-flex items-center gap-2">
-                      <LanguageIcon
-                        language="json"
-                        className="h-4 w-4 shrink-0"
-                      />
-                      <span>JSON</span>
-                    </span>
+                  <SelectItem value="1m">
+                    {t("home.expire_options.expire_in_1_month")}
                   </SelectItem>
-                  <SelectItem value="java">
-                    <span className="inline-flex items-center gap-2">
-                      <LanguageIcon
-                        language="java"
-                        className="h-4 w-4 shrink-0"
-                      />
-                      <span>Java</span>
-                    </span>
+                  <SelectItem value="1y">
+                    {t("home.expire_options.expire_in_1_year")}
                   </SelectItem>
-                  <SelectItem value="python">
-                    <span className="inline-flex items-center gap-2">
-                      <LanguageIcon
-                        language="python"
-                        className="h-4 w-4 shrink-0"
-                      />
-                      <span>Python</span>
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="c">
-                    <span className="inline-flex items-center gap-2">
-                      <LanguageIcon language="c" className="h-4 w-4 shrink-0" />
-                      <span>C</span>
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="cpp">
-                    <span className="inline-flex items-center gap-2">
-                      <LanguageIcon
-                        language="cpp"
-                        className="h-4 w-4 shrink-0"
-                      />
-                      <span>C++</span>
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="csharp">
-                    <span className="inline-flex items-center gap-2">
-                      <LanguageIcon
-                        language="csharp"
-                        className="h-4 w-4 shrink-0"
-                      />
-                      <span>C#</span>
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="go">
-                    <span className="inline-flex items-center gap-2">
-                      <LanguageIcon
-                        language="go"
-                        className="h-4 w-4 shrink-0"
-                      />
-                      <span>Go</span>
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="rust">
-                    <span className="inline-flex items-center gap-2">
-                      <LanguageIcon
-                        language="rust"
-                        className="h-4 w-4 shrink-0"
-                      />
-                      <span>Rust</span>
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="markdown">
-                    <span className="inline-flex items-center gap-2">
-                      <LanguageIcon
-                        language="markdown"
-                        className="h-4 w-4 shrink-0"
-                      />
-                      <span>Markdown</span>
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="shell">
-                    <span className="inline-flex items-center gap-2">
-                      <LanguageIcon
-                        language="shell"
-                        className="h-4 w-4 shrink-0"
-                      />
-                      <span>Shell/Bash</span>
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="other">
-                    <span className="inline-flex items-center gap-2">
-                      <LanguageIcon
-                        language="other"
-                        className="h-4 w-4 shrink-0"
-                      />
-                      <span>Other</span>
-                    </span>
+                  <SelectItem value="custom">
+                    {expiresTime.includes("-")
+                      ? new Date(expiresTime).toLocaleString([], {
+                          dateStyle: "short",
+                          timeStyle: "short",
+                        })
+                      : t("home.expire_options.custom")}
                   </SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
-          ))}
 
-        {contentType !== "link" && (
-          <ButtonGroup>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() =>
-                setFontSize((prev: number) => Math.max(prev - 1, 8))
-              }
-              className="h-10 w-10 md:h-9 md:w-9"
-              title="Zoom Out"
-            >
-              <Minus className="h-4 w-4" />
-            </Button>
-            <div className="flex items-center justify-center px-4 md:px-3 border-y bg-muted/30 text-xs font-medium min-w-[44px] select-none">
-              {fontSize}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  disabled={!textValue.length}
+                  size="lg"
+                  className="px-6 h-11 shadow-lg shadow-primary/20"
+                >
+                  {t("home.paste_button")}
+                  <ChevronDownIcon className="ml-1 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-[240px]">
+                <DropdownMenuItem
+                  onClick={async () => {
+                    const result = await handleSubmit("system");
+                    if (result !== true) {
+                      toast.error(result);
+                    }
+                  }}
+                  className="cursor-pointer py-3"
+                >
+                  <div className="flex items-start gap-3">
+                    <Sparkles className="h-4 w-4 mt-0.5 text-primary" />
+                    <div className="flex flex-col gap-0.5">
+                      <span className="font-medium">
+                        {t("home.paste_system_id")}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {t("home.paste_system_id_desc")}
+                      </span>
+                    </div>
+                  </div>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={handleDynamicIdClick}
+                  className="cursor-pointer py-3"
+                >
+                  <div className="flex items-start gap-3">
+                    <Hash className="h-4 w-4 mt-0.5 text-primary" />
+                    <div className="flex flex-col gap-0.5">
+                      <span className="font-medium">
+                        {t("home.paste_dynamic_id")}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {t("home.paste_dynamic_id_desc")}
+                      </span>
+                    </div>
+                  </div>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
+          {(isDetecting || contentType === "code") && (
+            <div className="w-full sm:w-auto">
+              {isDetecting ? (
+                <button
+                  type="button"
+                  className="group relative w-full sm:w-[180px] h-10 shrink-0 rounded-md p-[1px] overflow-hidden focus:outline-none"
+                >
+                  <div className="absolute inset-[-200%] opacity-70 moving-border-gradient animate-moving-border" />
+                  <div className="relative z-10 flex h-full w-full items-center justify-center gap-2 rounded-[5px] bg-background dark:bg-slate-900 text-sm font-medium">
+                    <span className="whitespace-nowrap">
+                      {t("home.auto_detecting")}
+                    </span>
+                    <img
+                      src={aiGif}
+                      alt="AI Detecting"
+                      className="w-5 h-5 shrink-0"
+                    />
+                  </div>
+                </button>
+              ) : (
+                <Select value={language} onValueChange={setLanguage}>
+                  <SelectTrigger className="w-full sm:w-[200px] h-10 bg-muted/20">
+                    <SelectValue placeholder="Language" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {[
+                        "javascript",
+                        "typescript",
+                        "html",
+                        "css",
+                        "json",
+                        "java",
+                        "python",
+                        "c",
+                        "cpp",
+                        "csharp",
+                        "go",
+                        "rust",
+                        "markdown",
+                        "shell",
+                        "other",
+                      ].map((lang) => (
+                        <SelectItem key={lang} value={lang}>
+                          <span className="inline-flex items-center gap-2 font-mono text-xs">
+                            <LanguageIcon language={lang} className="h-4 w-4" />
+                            <span className="capitalize">{lang}</span>
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
             </div>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() =>
-                setFontSize((prev: number) => Math.min(prev + 1, 48))
-              }
-              className="h-10 w-10 md:h-9 md:w-9"
-              title="Zoom In"
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </ButtonGroup>
-        )}
+          )}
 
-        <div className="w-full h-fit flex justify-end px-0 md:px-5">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                disabled={!textValue.length}
-                className="flex items-center gap-2 px-5"
-              >
-                {t("home.paste_button")}
-                <ChevronDownIcon className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-fit">
-              <DropdownMenuItem
-                onClick={async () => {
-                  const result = await handleSubmit("system");
-                  if (result !== true) {
-                    toast.error(result);
+          {contentType !== "link" && (
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <ButtonGroup className="w-full sm:w-auto">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() =>
+                    setFontSize((prev: number) => Math.max(prev - 1, 8))
                   }
-                }}
-                className="cursor-pointer"
-              >
-                <div className="flex items-start gap-3">
-                  <Sparkles className="h-4 w-4 mt-0.5" />
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-medium">
-                      {t("home.paste_system_id")}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {t("home.paste_system_id_desc")}
-                    </span>
-                  </div>
+                  className="h-10 w-10 px-0 shrink-0"
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <div className="flex items-center justify-center px-4 bg-muted/30 text-xs font-bold min-w-[44px]">
+                  {fontSize}
                 </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={handleDynamicIdClick}
-                className="cursor-pointer"
-              >
-                <div className="flex items-start gap-3">
-                  <Hash className="h-4 w-4 mt-0.5" />
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-medium">
-                      {t("home.paste_dynamic_id")}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {t("home.paste_dynamic_id_desc")}
-                    </span>
-                  </div>
-                </div>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() =>
+                    setFontSize((prev: number) => Math.min(prev + 1, 48))
+                  }
+                  className="h-10 w-10 px-0 shrink-0"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </ButtonGroup>
+            </div>
+          )}
         </div>
       </div>
 
@@ -642,7 +527,7 @@ const HomePage = () => {
 
       <div
         ref={editorContainerRef}
-        className="m-5 h-[70vh] border rounded-md overflow-hidden touch-none"
+        className="m-3 sm:m-5 h-[70vh] border rounded-md overflow-hidden touch-none"
       >
         {contentType === "code" ? (
           <Editor

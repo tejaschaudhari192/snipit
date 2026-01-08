@@ -180,153 +180,138 @@ const DisplayPage = () => {
   };
 
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col min-h-0">
       {loading ? (
-        <div className="flex-1 flex justify-center items-center min-h-[80vh]">
+        <div className="flex-1 flex justify-center items-center">
           <Loader />
         </div>
       ) : paste?.content ? (
         <>
-          <div className="flex justify-between items-center px-6 py-3 border-b">
-            <div className="flex gap-2">
-              {!isEdit ? (
-                <>
-                  <CopyButton
-                    variant="outline"
-                    content={paste.content}
-                    className="gap-2 w-auto px-3 h-8 rounded-md text-sm font-medium"
-                  >
-                    {t("display.copy_button")}
-                  </CopyButton>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setIsEdit(true)}
-                    className="gap-2"
-                  >
-                    <Edit className="h-4 w-4" />
-                    {t("display.edit_button")}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleDelete}
-                    className="gap-2 text-destructive hover:text-destructive"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                    {t("display.delete_button")}
-                  </Button>
-                  {contentType !== "link" && (
-                    <ButtonGroup className="ml-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() =>
-                          setFontSize((prev: number) => Math.max(prev - 1, 8))
-                        }
-                        className="h-8 w-8"
-                        title="Zoom Out"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      <div className="flex items-center justify-center px-3 border-y bg-muted/30 text-xs font-medium min-w-[40px] select-none">
-                        {fontSize}
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() =>
-                          setFontSize((prev: number) => Math.min(prev + 1, 48))
-                        }
-                        className="h-8 w-8"
-                        title="Zoom In"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </ButtonGroup>
-                  )}
-                </>
-              ) : (
-                <>
-                  <Button
-                    variant="default"
-                    size="sm"
-                    onClick={handleEditSave}
-                    className="gap-2"
-                  >
-                    <Save className="h-4 w-4" />
-                    {t("display.save_button")}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setIsEdit(false);
+          <div className="flex flex-col border-b bg-background/50 backdrop-blur-md sticky top-0 z-40">
+            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 md:px-6">
+              <div className="flex items-center gap-2">
+                {!isEdit ? (
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5 px-0.5 max-w-[75vw] sm:max-w-none">
+                    <CopyButton
+                      variant="outline"
+                      content={paste.content}
+                      className="gap-2 px-3 h-9 w-auto rounded-md text-sm font-medium shrink-0"
+                    >
+                      <span className="hidden sm:inline">
+                        {t("display.copy_button")}
+                      </span>
+                    </CopyButton>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setIsEdit(true)}
+                      className="gap-2 h-9 shrink-0"
+                    >
+                      <Edit className="h-4 w-4" />
+                      <span className="hidden sm:inline">
+                        {t("display.edit_button")}
+                      </span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleDelete}
+                      className="gap-2 h-9 shrink-0 text-destructive hover:text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span className="hidden sm:inline">
+                        {t("display.delete_button")}
+                      </span>
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5 px-0.5 max-w-[75vw] sm:max-w-none">
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={handleEditSave}
+                      className="gap-2 h-9"
+                    >
+                      <Save className="h-4 w-4" />
+                      <span className="hidden sm:inline">
+                        {t("display.save_button")}
+                      </span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setIsEdit(false);
+                        setUpdatedContent(paste?.content);
+                        setContentType(
+                          paste?.redirectUrl
+                            ? "link"
+                            : paste?.language !== "text"
+                              ? "code"
+                              : "text",
+                        );
+                        setLanguage(paste?.language || "text");
+                      }}
+                      className="gap-2 h-9"
+                    >
+                      <X className="h-4 w-4" />
+                      <span className="hidden sm:inline">Cancel</span>
+                    </Button>
+                  </div>
+                )}
+              </div>
 
-                      setUpdatedContent(paste?.content);
-                      setContentType(
-                        paste?.redirectUrl
-                          ? "link"
-                          : paste?.language !== "text"
-                            ? "code"
-                            : "text",
-                      );
-                      setLanguage(paste?.language || "text");
-                    }}
-                    className="gap-2"
-                  >
-                    <X className="h-4 w-4" />
-                    Cancel
-                  </Button>
-                  {contentType !== "link" && (
-                    <ButtonGroup className="ml-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() =>
-                          setFontSize((prev: number) => Math.max(prev - 1, 8))
-                        }
-                        className="h-8 w-8"
-                        title="Zoom Out"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      <div className="flex items-center justify-center px-3 border-y bg-muted/30 text-xs font-medium min-w-[40px] select-none">
-                        {fontSize}
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() =>
-                          setFontSize((prev: number) => Math.min(prev + 1, 48))
-                        }
-                        className="h-8 w-8"
-                        title="Zoom In"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </ButtonGroup>
-                  )}
-                </>
-              )}
-              {paste.language && (
-                <div className="flex items-center gap-2 px-3 h-8 rounded-md bg-muted/50 border border-border/50 text-xs font-medium text-muted-foreground whitespace-nowrap">
-                  <LanguageIcon
-                    language={paste.language}
-                    className="h-3.5 w-3.5"
-                  />
-                  <span className="capitalize">
-                    {paste.language === "text" ? "Plain Text" : paste.language}
-                  </span>
-                </div>
-              )}
+              <div className="flex items-center gap-2 ml-auto">
+                {contentType !== "link" && (
+                  <ButtonGroup className="h-10">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() =>
+                        setFontSize((prev: number) => Math.max(prev - 1, 8))
+                      }
+                      className="h-10 w-10 px-0 shrink-0"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                    <div className="flex items-center justify-center px-4 bg-muted/30 text-xs font-bold min-w-[44px]">
+                      {fontSize}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() =>
+                        setFontSize((prev: number) => Math.min(prev + 1, 48))
+                      }
+                      className="h-10 w-10 px-0 shrink-0"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </ButtonGroup>
+                )}
+              </div>
             </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Clock className="h-4 w-4" />
-              {t("display.expires_in")} {getTimeRemaining(paste.expiresAt)}
+
+            <div className="flex items-center justify-between px-4 py-2 bg-muted/30 border-t text-[10px] sm:text-xs mt-1 md:mt-2">
+              <div className="flex items-center gap-3">
+                {paste.language ? (
+                  <div className="flex items-center gap-1.5 font-medium text-muted-foreground uppercase tracking-wider">
+                    <LanguageIcon
+                      language={paste.language}
+                      className="h-3 w-3"
+                    />
+                    {paste.language === "text" ? "Plain Text" : paste.language}
+                  </div>
+                ) : null}
+                <div className="w-px h-3 bg-border hidden sm:block" />
+                <div className="flex items-center gap-1.5 text-muted-foreground">
+                  <Clock className="h-3 w-3" />
+                  {t("display.expires_in")} {getTimeRemaining(paste.expiresAt)}
+                </div>
+              </div>
             </div>
           </div>
-          <div className="mx-5 my-4 h-[75vh]">
+          <div className="mx-3 sm:mx-5 my-4 h-[75vh]">
             {isEdit ? (
               <div className="h-full flex flex-col gap-4">
                 <Tabs
@@ -339,7 +324,7 @@ const DisplayPage = () => {
                   <TabsList className="h-10">
                     <TabsTrigger
                       value="text"
-                      className="flex items-center gap-2 px-6 text-sm font-semibold min-w-36"
+                      className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
                     >
                       <FileText className="h-4 w-4 shrink-0" />
                       <span className="whitespace-nowrap">
@@ -348,7 +333,7 @@ const DisplayPage = () => {
                     </TabsTrigger>
                     <TabsTrigger
                       value="code"
-                      className="flex items-center gap-2 px-6 text-sm font-semibold min-w-36"
+                      className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
                     >
                       <Code2 className="h-4 w-4 shrink-0" />
                       <span className="whitespace-nowrap">
@@ -357,7 +342,7 @@ const DisplayPage = () => {
                     </TabsTrigger>
                     <TabsTrigger
                       value="link"
-                      className="flex items-center gap-2 px-6 text-sm font-semibold min-w-36"
+                      className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
                     >
                       <Link className="h-4 w-4 shrink-0" />
                       <span className="whitespace-nowrap">

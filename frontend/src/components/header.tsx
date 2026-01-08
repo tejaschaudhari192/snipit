@@ -34,74 +34,124 @@ const Header = ({ className }: HeaderProps) => {
   return (
     <header
       className={cn(
-        "flex justify-between h-fit p-4 px-6 border shadow bg-background",
+        "flex justify-between items-center h-[64px] p-3 px-4 md:px-8 border shadow-sm bg-background/80 backdrop-blur-md sticky top-0 z-50",
         className,
       )}
     >
-      <div className="flex items-center h-fit gap-6 w-fit">
-        <Link to={"/"} className="flex items-center gap-2 group">
+      <div className="flex items-center h-full gap-4 md:gap-8 min-w-0">
+        <Link to={"/"} className="flex items-center gap-2.5 group shrink-0">
           <img
             src={icon}
             alt="Snipit Logo"
             className="h-8 w-auto transform transition-transform duration-300 ease-in-out group-hover:scale-105"
           />
-          <p className="text-3xl font-bold bg-clip-text transform transition-transform duration-300 ease-in-out group-hover:scale-105">
+          <p className="text-xl md:text-2xl font-black tracking-tight bg-clip-text transform transition-transform duration-300 ease-in-out group-hover:scale-105">
             Snipit
           </p>
         </Link>
         {id && id.length > 1 && (
-          <span className="flex items-center h-fit gap-2">
-            <p className="text-sm text-muted-foreground">{url}</p>
+          <div className="hidden md:flex items-center h-8 gap-2 min-w-0 px-3 rounded-full bg-muted/50 border border-border/50">
+            <p className="text-xs text-muted-foreground truncate max-w-[200px] lg:max-w-[400px]">
+              {url}
+            </p>
+            <div className="w-px h-3 bg-border mx-1" />
             <CopyButton
               content={url}
-              size="default"
-              variant="outline"
-              className="h-8 w-8"
+              variant="ghost"
+              className="h-6 w-6 p-0 hover:bg-transparent"
             />
-          </span>
+          </div>
         )}
       </div>
-      <div className="hidden md:flex gap-2">
-        <Link to={"/about"}>
-          <Button variant={path === "/about" ? "secondary" : "ghost"}>
-            {t("header.about")}
-          </Button>
-        </Link>
-        <Link to={"/history"}>
-          <Button variant={path === "/history" ? "secondary" : "ghost"}>
-            {t("header.history")}
-          </Button>
-        </Link>
-        <LanguageSwitcher className="w-[180px]" />
+
+      <div className="hidden md:flex items-center gap-3">
+        <nav className="flex items-center gap-1 bg-muted/30 p-1 rounded-lg mr-2">
+          <Link to={"/about"}>
+            <Button
+              variant={path === "/about" ? "secondary" : "ghost"}
+              size="sm"
+              className="h-8 text-xs font-semibold"
+            >
+              {t("header.about")}
+            </Button>
+          </Link>
+          <Link to={"/history"}>
+            <Button
+              variant={path === "/history" ? "secondary" : "ghost"}
+              size="sm"
+              className="h-8 text-xs font-semibold"
+            >
+              {t("header.history")}
+            </Button>
+          </Link>
+        </nav>
+
+        <LanguageSwitcher className="w-[140px] h-9" />
+
         {path.length > 1 && (
           <Link to={"/"}>
-            <Button variant={"outline"}>{t("header.new_snippet")}</Button>
+            <Button
+              variant={"outline"}
+              size="sm"
+              className="h-9 font-bold px-4"
+            >
+              {t("header.new_snippet")}
+            </Button>
           </Link>
         )}
+
+        <div className="w-px h-4 bg-border mx-1" />
         <ThemeTogglePositionsDemo />
       </div>
 
       <div className="md:hidden flex items-center gap-2">
-        <LanguageSwitcher className="w-[100px]" />
-        <ThemeTogglePositionsDemo />
+        {id && id.length > 1 && (
+          <CopyButton
+            content={url}
+            size="default"
+            variant="outline"
+            className="h-9 w-9 shrink-0 px-0"
+          />
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
+            <Button variant="outline" size="icon" className="h-9 w-9">
               <Menu className="h-5 w-5" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild>
-              <Link to="/about">{t("header.about")}</Link>
+          <DropdownMenuContent align="end" className="w-[220px] p-2">
+            <DropdownMenuItem asChild className="rounded-md">
+              <Link to="/about" className="flex items-center gap-2 py-2">
+                <span>{t("header.about")}</span>
+              </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to="/history">{t("header.history")}</Link>
+            <DropdownMenuItem asChild className="rounded-md">
+              <Link to="/history" className="flex items-center gap-2 py-2">
+                <span>{t("header.history")}</span>
+              </Link>
             </DropdownMenuItem>
             {path.length > 1 && (
-              <DropdownMenuItem asChild>
-                <Link to="/">{t("header.new_snippet")}</Link>
+              <DropdownMenuItem asChild className="rounded-md">
+                <Link to="/" className="flex items-center gap-2 py-2">
+                  <span>{t("header.new_snippet")}</span>
+                </Link>
               </DropdownMenuItem>
             )}
+            <div className="h-px bg-muted my-2" />
+            <div className="px-2 py-2 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-muted-foreground uppercase">
+                  Theme
+                </span>
+                <ThemeTogglePositionsDemo />
+              </div>
+              <div className="space-y-1.5">
+                <span className="text-xs font-bold text-muted-foreground uppercase">
+                  Language
+                </span>
+                <LanguageSwitcher className="w-full h-9" />
+              </div>
+            </div>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

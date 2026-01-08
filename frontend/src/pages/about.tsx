@@ -32,11 +32,7 @@ const AboutPage = () => {
       key: "ai_detection",
       gradient: "from-pink-500 to-rose-500",
     },
-    {
-      icon: Hash,
-      key: "custom_ids",
-      gradient: "from-cyan-500 to-blue-500",
-    },
+    { icon: Hash, key: "custom_ids", gradient: "from-cyan-500 to-blue-500" },
     {
       icon: Clock,
       key: "expiration",
@@ -47,16 +43,8 @@ const AboutPage = () => {
       key: "multi_language",
       gradient: "from-emerald-500 to-teal-500",
     },
-    {
-      icon: Moon,
-      key: "dark_mode",
-      gradient: "from-slate-500 to-zinc-600",
-    },
-    {
-      icon: Heart,
-      key: "open_source",
-      gradient: "from-red-500 to-pink-500",
-    },
+    { icon: Moon, key: "dark_mode", gradient: "from-slate-500 to-zinc-600" },
+    { icon: Heart, key: "open_source", gradient: "from-red-500 to-pink-500" },
     {
       icon: Link2,
       key: "redirect_urls",
@@ -68,10 +56,10 @@ const AboutPage = () => {
     <div className="min-h-screen flex flex-col">
       <div className="flex-1 overflow-x-hidden">
         {/* Hero Section */}
-        <section className="relative py-20 px-4 overflow-hidden">
+        <section className="relative py-16 md:py-24 px-4 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5" />
-          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+          <div className="absolute top-10 left-10 w-48 h-48 md:w-72 md:h-72 bg-primary/10 rounded-full blur-3xl opacity-60" />
+          <div className="absolute bottom-10 right-10 w-64 h-64 md:w-96 md:h-96 bg-primary/5 rounded-full blur-3xl opacity-60" />
 
           <div className="max-w-4xl mx-auto text-center relative z-10">
             <motion.div
@@ -79,17 +67,17 @@ const AboutPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-xs md:text-sm font-medium mb-6">
                 <Zap className="w-4 h-4" />
                 {t("about_page.features_title")}
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 tracking-tight">
+              <h1 className="text-3xl md:text-5xl lg:text-7xl font-black text-foreground mb-6 tracking-tight leading-[1.1]">
                 {t("about_page.title")}{" "}
-                <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
                   Snipit
                 </span>
               </h1>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed px-2">
                 {t("about_page.subtitle")}
               </p>
             </motion.div>
@@ -97,52 +85,53 @@ const AboutPage = () => {
         </section>
 
         {/* App Screenshot Section */}
-        <section className="pb-16 px-4">
-          <div className="max-w-5xl mx-auto">
+        <section className="pb-16 px-4 md:px-8">
+          <div className="max-w-6xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative rounded-2xl overflow-hidden border shadow-2xl shadow-primary/20"
+              className="relative rounded-2xl md:rounded-3xl overflow-hidden border shadow-2xl shadow-primary/20 bg-background"
             >
               <img
                 src={appScreenshot}
                 alt="Snipit App Screenshot"
-                className="w-full h-auto"
+                className="w-full h-auto transition-transform duration-700 hover:scale-105"
               />
             </motion.div>
           </div>
         </section>
 
         {/* Features Grid */}
-        <section className="py-16 px-4">
+        <section className="py-16 md:py-24 px-4 bg-muted/20">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-foreground mb-4">
+            <div className="text-center mb-12 md:mb-16">
+              <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-4">
                 {t("about_page.features_title")}
               </h2>
-              <p className="text-muted-foreground max-w-xl mx-auto">
+              <p className="text-sm md:text-lg text-muted-foreground max-w-xl mx-auto px-4">
                 {t("about_page.features_subtitle")}
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {features.map((feature, index) => (
                 <motion.div
                   key={feature.key}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: index * 0.05 }}
                   className="group relative"
                 >
-                  <div className="h-full p-6 rounded-2xl bg-card border border-border/50 hover:border-border transition-all duration-300 hover:shadow-lg hover:shadow-primary/5">
+                  <div className="h-full p-6 md:p-8 rounded-2xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5">
                     <div
-                      className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
+                      className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
                     >
                       <feature.icon className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-lg font-semibold text-foreground mb-2">
+                    <h3 className="text-lg font-bold text-foreground mb-3">
                       {t(`about_page.features.${feature.key}.title`)}
                     </h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">
@@ -156,25 +145,28 @@ const AboutPage = () => {
         </section>
 
         {/* Story Section */}
-        <section className="py-16 px-4 bg-muted/30">
+        <section className="py-16 md:py-24 px-4">
           <div className="max-w-4xl mx-auto">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
+              className="space-y-8"
             >
-              <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
+              <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-8">
                 {t("about_page.story.title")}
               </h2>
-              <div className="space-y-6">
-                <p className="text-muted-foreground leading-relaxed text-lg">
+              <div className="space-y-6 md:space-y-8">
+                <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
                   {t("about_page.story.p1")}
                 </p>
-                <p className="text-muted-foreground leading-relaxed text-lg">
-                  {t("about_page.story.p2")}
-                </p>
-                <p className="text-muted-foreground leading-relaxed text-lg">
+                <div className="pl-4 md:pl-6 border-l-2 border-primary/30">
+                  <p className="text-base md:text-lg text-muted-foreground leading-relaxed italic">
+                    {t("about_page.story.p2")}
+                  </p>
+                </div>
+                <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
                   {t("about_page.story.p3")}
                 </p>
               </div>
@@ -183,12 +175,12 @@ const AboutPage = () => {
         </section>
 
         {/* Team Section */}
-        <section className="py-16 px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
+        <section className="py-16 md:py-24 px-4 bg-muted/20">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-12 text-center">
               {t("about_page.team.title")}
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {[
                 {
                   name: "Durgesh Kapade",
@@ -207,35 +199,39 @@ const AboutPage = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
-                  className="p-6 rounded-2xl bg-card border border-border/50 hover:border-border transition-all duration-300"
+                  className="p-6 md:p-8 rounded-3xl bg-card border border-border/50 hover:border-primary/20 transition-all duration-300 hover:shadow-xl shadow-sm"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                      <Users className="w-8 h-8 text-primary" />
+                  <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-6">
+                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center shrink-0 shadow-inner">
+                      <Users className="w-10 h-10 text-primary" />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-foreground">
+                    <div className="flex-1 space-y-1">
+                      <h3 className="text-xl font-bold text-foreground tracking-tight">
                         {member.name}
                       </h3>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm font-medium text-primary/80 uppercase tracking-widest mb-4">
                         {t("about_page.team.role")}
                       </p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <a
-                        href={`mailto:${member.email}`}
-                        className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors"
-                      >
-                        <Mail className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
-                      </a>
-                      <a
-                        href={member.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors"
-                      >
-                        <Github className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
-                      </a>
+                      <div className="flex items-center justify-center sm:justify-start gap-4 pt-2">
+                        <a
+                          href={`mailto:${member.email}`}
+                          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted hover:bg-primary/10 hover:text-primary transition-all duration-300 text-muted-foreground"
+                          title="Email"
+                        >
+                          <Mail className="w-4 h-4" />
+                          <span className="text-xs font-semibold">Email</span>
+                        </a>
+                        <a
+                          href={member.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted hover:bg-primary/10 hover:text-primary transition-all duration-300 text-muted-foreground"
+                          title="GitHub"
+                        >
+                          <Github className="w-4 h-4" />
+                          <span className="text-xs font-semibold">GitHub</span>
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -245,45 +241,54 @@ const AboutPage = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 px-4">
-          <div className="max-w-4xl mx-auto">
+        <section className="py-20 md:py-32 px-4">
+          <div className="max-w-5xl mx-auto">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary/80 p-10 md:p-14 text-center"
+              className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] bg-gradient-to-br from-primary via-primary to-primary/70 p-8 md:p-20 text-center"
             >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_50%)]" />
-              <div className="relative z-10">
-                <h3 className="text-3xl md:text-4xl font-bold text-primary-foreground mb-4">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent_60%)]" />
+              <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
+
+              <div className="relative z-10 max-w-2xl mx-auto">
+                <div className="inline-flex p-3 rounded-2xl bg-white/10 backdrop-blur-sm mb-6">
+                  <Heart className="w-8 h-8 text-white animate-pulse" />
+                </div>
+                <h3 className="text-2xl md:text-5xl font-black text-white mb-6 tracking-tight">
                   {t("about_page.contribute.title")}
                 </h3>
-                <p className="text-primary-foreground/80 mb-8 max-w-xl mx-auto leading-relaxed">
+                <p className="text-white/80 text-base md:text-xl mb-10 leading-relaxed font-medium">
                   {t("about_page.contribute.desc")}
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                   <a
                     href="https://github.com/durgeshkapade/snipit"
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="w-full sm:w-auto"
                   >
                     <Button
                       size="lg"
                       variant="secondary"
-                      className="gap-2 px-8 shadow-lg"
+                      className="w-full sm:w-auto gap-3 px-10 h-14 text-base font-bold shadow-2xl hover:scale-105 transition-transform"
                     >
-                      <Github className="w-5 h-5" />
+                      <Github className="w-6 h-6" />
                       {t("about_page.contribute.github_button")}
                     </Button>
                   </a>
-                  <a href="mailto:durgeshkapade26@gmail.com">
+                  <a
+                    href="mailto:durgeshkapade26@gmail.com"
+                    className="w-full sm:w-auto"
+                  >
                     <Button
                       size="lg"
                       variant="outline"
-                      className="gap-2 px-8 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground"
+                      className="w-full sm:w-auto gap-3 px-10 h-14 text-base font-bold bg-white/5 border-white/20 text-white hover:bg-white/10 hover:text-white backdrop-blur-md"
                     >
-                      <Mail className="w-5 h-5" />
+                      <Mail className="w-6 h-6" />
                       {t("about_page.contribute.contact_button")}
                     </Button>
                   </a>
