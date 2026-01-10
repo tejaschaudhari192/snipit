@@ -135,10 +135,10 @@ const HomePage = () => {
 
       if (result.language && result.language !== "text") {
         setContentType("code");
-        setLanguage(result.language);
-        toast.success(
-          t("home.detected_language", { language: result.language }),
-        );
+        const detectedLang =
+          result.language === "bash" ? "shell" : result.language;
+        setLanguage(detectedLang);
+        toast.success(t("home.detected_language", { language: detectedLang }));
       } else if (result.language === "text") {
         setContentType("text");
       }
@@ -356,26 +356,29 @@ const HomePage = () => {
                   <SelectContent>
                     <SelectGroup>
                       {[
-                        "javascript",
-                        "typescript",
-                        "html",
-                        "css",
-                        "json",
-                        "java",
-                        "python",
-                        "c",
-                        "cpp",
-                        "csharp",
-                        "go",
-                        "rust",
-                        "markdown",
-                        "shell",
-                        "other",
+                        { name: "JavaScript", value: "javascript" },
+                        { name: "TypeScript", value: "typescript" },
+                        { name: "HTML", value: "html" },
+                        { name: "CSS", value: "css" },
+                        { name: "JSON", value: "json" },
+                        { name: "Java", value: "java" },
+                        { name: "Python", value: "python" },
+                        { name: "C", value: "c" },
+                        { name: "C++", value: "cpp" },
+                        { name: "C#", value: "csharp" },
+                        { name: "Go", value: "go" },
+                        { name: "Rust", value: "rust" },
+                        { name: "Markdown", value: "markdown" },
+                        { name: "Shell", value: "shell" },
+                        { name: "Other", value: "other" },
                       ].map((lang) => (
-                        <SelectItem key={lang} value={lang}>
-                          <span className="inline-flex items-center gap-2 font-mono text-xs">
-                            <LanguageIcon language={lang} className="h-4 w-4" />
-                            <span className="capitalize">{lang}</span>
+                        <SelectItem key={lang.value} value={lang.value}>
+                          <span className="inline-flex items-center gap-2">
+                            <LanguageIcon
+                              language={lang.value}
+                              className="h-4 w-4"
+                            />
+                            <span>{lang.name}</span>
                           </span>
                         </SelectItem>
                       ))}

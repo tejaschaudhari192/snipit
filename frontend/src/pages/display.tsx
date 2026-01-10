@@ -110,8 +110,10 @@ const DisplayPage = () => {
       }
 
       if (result.language) {
-        setLanguage(result.language);
-        toast.success(`Detected language: ${result.language}`);
+        const detectedLang =
+          result.language === "bash" ? "shell" : result.language;
+        setLanguage(detectedLang);
+        toast.success(`Detected language: ${detectedLang}`);
       }
     } catch (error) {
       console.error("Failed to detect language", error);
