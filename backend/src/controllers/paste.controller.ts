@@ -93,9 +93,6 @@ class PasteController {
           burnAfterRead: validatedBody.burnAfterRead,
           expiresTime: validatedBody.expiresTime,
         };
-        this.logger.info(
-          `Saving paste with data: ${JSON.stringify(pasteData)}`,
-        );
         return await this.pasteService.savePaste(pasteData as any);
       };
 
@@ -150,7 +147,9 @@ class PasteController {
   async getPaste(req: Request, res: Response, next: NextFunction) {
     const id = req.params.id;
     try {
-      const result = await this.pasteService.getPasteById(id!);
+      // Increment views atomically
+      const result = await this.pasteService.incrementViews(id!);
+
       if (!result) {
         this.logger.info("Paste not found:", id);
         return res.status(404).json({ error: "Paste not found" });
@@ -161,14 +160,12 @@ class PasteController {
         this.logger.info("Paste expired and deleted:", id);
         return res.status(404).json({ error: "Paste expired" });
       }
-      if (result.burnAfterRead) {
+
+      if (result.burnAfterRead && result.views > 3) {
         await this.pasteService.deletePaste(id!);
-        this.logger.info(`Paste burned after read: ${id}`);
+        this.logger.info(`Paste burned after 3rd public read: ${id}`);
       }
 
-      this.logger.info(
-        `Getting paste: ${id}, burnAfterRead: ${result.burnAfterRead}`,
-      );
       return res.json(result.toObject());
     } catch (error) {
       this.logger.error("Error fetching paste", id, error);

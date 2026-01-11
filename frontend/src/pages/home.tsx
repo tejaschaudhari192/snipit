@@ -84,17 +84,7 @@ const HomePage = () => {
   const navigate = useNavigate();
   const apiHelpers = useApiHelpers();
   const { t } = useTranslation();
-
   const handleSubmit = async (selectedIdType: IdType, providedId?: string) => {
-    console.log("FRONTEND SUBMIT:", {
-      textValue,
-      expiresTime,
-      selectedIdType,
-      providedId,
-      contentType,
-      language,
-      burnAfterRead: expiresTime === "one-time",
-    });
     try {
       const data = await apiHelpers.submitPaste(
         textValue,
@@ -108,7 +98,7 @@ const HomePage = () => {
       toast.success(t("messages.snippet_created", { idType: selectedIdType }), {
         position: "bottom-right",
       });
-      navigate("/" + data.id);
+      navigate("/" + data.id, { state: { pasteData: data } });
       saveToLocal(data);
       return true;
     } catch (error) {

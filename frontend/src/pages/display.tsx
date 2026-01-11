@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useApiHelpers } from "@/lib/api";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import Error from "@/components/error";
 import { toast } from "sonner";
 import Loader from "@/components/loader";
@@ -46,6 +46,7 @@ import { AuroraBackground } from "@/components/ui/shadcn-io/aurora-background";
 const DisplayPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const apiHelpers = useApiHelpers();
   const { t } = useTranslation();
   const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -67,6 +68,25 @@ const DisplayPage = () => {
 
   useEffect(() => {
     async function loadData() {
+      // Check if we already have the paste data from navigation state (creator's first view)
+      if (location.state?.pasteData) {
+        const data = location.state.pasteData;
+        setPaste(data);
+        setUpdatedContent(data.content);
+        setLanguage(data.language || "text");
+        setContentType(
+          data.redirectUrl
+            ? "link"
+            : data.language !== "text"
+              ? "code"
+              : "text",
+        );
+        setLoading(false);
+        // Clear the state so a refresh will trigger a real fetch
+        window.history.replaceState({}, document.title);
+        return;
+      }
+
       const data = await apiHelpers.getPaste(id!);
       if (data) {
         if (data.redirectUrl) {
@@ -95,7 +115,7 @@ const DisplayPage = () => {
     }
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id]);
 
   const handleLanguageDetection = async (content: string) => {
     setIsDetecting(true);
@@ -318,7 +338,12 @@ const DisplayPage = () => {
           {(paste.burnAfterRead || paste.expiresTime === "one-time") && (
             <div className="mx-4 mt-4 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-yellow-600 dark:text-yellow-500 text-sm flex items-center gap-2">
               <span className="text-lg">⚠️</span>
-              {t("display.burn_after_read_warning")}
+              {t("display.burn_after_read_warning")}{" "}
+              {paste.views === 0
+                ? "(2 views remaining)"
+                : paste.views === 1
+                  ? "(1 view remaining)"
+                  : "(Final view)"}
             </div>
           )}
           <div className="mx-3 sm:mx-5 my-4 h-[75vh]">

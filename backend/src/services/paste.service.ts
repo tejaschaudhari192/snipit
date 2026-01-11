@@ -8,6 +8,13 @@ class PasteService {
   async getPasteById(id: string) {
     return await pasteModel.findOne({ id });
   }
+  async incrementViews(id: string) {
+    return await pasteModel.findOneAndUpdate(
+      { id },
+      { $inc: { views: 1 } },
+      { new: true },
+    );
+  }
   async deletePaste(
     id: string,
   ): Promise<{ acknowledged: boolean; deletedCount: number }> {

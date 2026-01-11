@@ -9,6 +9,7 @@ export type PasteData = {
   language?: string;
   burnAfterRead?: boolean;
   expiresTime?: string;
+  views: number;
 };
 
 export type IPaste = Document & {
@@ -20,4 +21,5 @@ export type IPaste = Document & {
   language?: string;
   burnAfterRead?: boolean;
   expiresTime?: string;
+  views: number;
 };

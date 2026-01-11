@@ -7,6 +7,7 @@ export interface PasteData {
   language?: string;
   burnAfterRead?: boolean;
   expiresTime?: string;
+  views: number;
 }
 
 export type IdType = "system" | "dynamic";

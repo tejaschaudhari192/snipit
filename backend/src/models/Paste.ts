@@ -39,6 +39,10 @@ const pasteSchema = new Schema<IPaste>(
       type: String,
       default: "1d",
     },
+    views: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     toJSON: { virtuals: true, versionKey: false },
