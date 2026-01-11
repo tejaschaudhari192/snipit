@@ -21,18 +21,6 @@ const logger = createLogger({
       level: "debug",
       format: consoleFormat,
     }),
-    new transports.File({
-      dirname: "logs",
-      filename: "combined.log",
-      level: "info",
-      format: fileFormat,
-    }),
-    new transports.File({
-      dirname: "logs",
-      filename: "errors.log",
-      level: "error",
-      format: fileFormat,
-    }),
   ],
 });
 

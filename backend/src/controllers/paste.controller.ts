@@ -1,5 +1,5 @@
 import { dateConverter, uniqueIdGenerator } from "@/lib/utils.js";
-import fs from "fs";
+
 import type PasteService from "@/services/paste.service.js";
 import { createPasteSchema } from "@/validators/paste.validators.js";
 import type { NextFunction, Request, Response } from "express";
@@ -12,10 +12,6 @@ class PasteController {
   ) {}
 
   async createPaste(req: Request, res: Response, next: NextFunction) {
-    const logData = `[${new Date().toISOString()}] NEW PASTE REQUEST: ${JSON.stringify(req.body, null, 2)}\n`;
-    console.log(logData);
-    fs.appendFileSync("pastes-debug.log", logData);
-
     try {
       const createdAt = new Date(Date.now());
       const {
@@ -61,7 +57,6 @@ class PasteController {
       let finalBurnAfterRead: boolean = !!burnAfterRead;
 
       if (expiresTime === "one-time") {
-        fs.appendFileSync("debug.log", "DEBUG: ONE-TIME SNIPPET DETECTED\n");
         finalExpiresAt = dateConverter("1d");
         finalBurnAfterRead = true;
       }
@@ -80,10 +75,6 @@ class PasteController {
         burnAfterRead: finalBurnAfterRead,
         expiresTime,
       });
-
-      console.error(
-        `Validated body: burnAfterRead=${validatedBody.burnAfterRead}, expiresTime=${validatedBody.expiresTime}`,
-      );
 
       let pasteId =
         validatedBody.customId ||
