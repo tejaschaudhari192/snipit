@@ -6,4 +6,6 @@ export const createPasteSchema = z.object({
   customId: z.string().optional(),
   redirectUrl: z.boolean().optional().default(false),
   language: z.string().optional().default("text"),
+  burnAfterRead: z.boolean().optional(),
+  expiresTime: z.string().optional(),
 });

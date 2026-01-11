@@ -1,3 +1,5 @@
+import type { Document } from "mongoose";
+
 export type PasteData = {
   id: string;
   content: string;
@@ -5,6 +7,8 @@ export type PasteData = {
   createdAt: Date;
   redirectUrl?: boolean;
   language?: string;
+  burnAfterRead?: boolean;
+  expiresTime?: string;
 };
 
 export type IPaste = Document & {
@@ -14,4 +18,6 @@ export type IPaste = Document & {
   createdAt: Date;
   redirectUrl?: boolean;
   language?: string;
+  burnAfterRead?: boolean;
+  expiresTime?: string;
 };

@@ -14,6 +14,17 @@ import type { PasteData } from "@/types";
 import { getTimeRemaining, saveToLocal } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ButtonGroup } from "@/components/ui/button-group";
+import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
+import aiGif from "@/assets/images/ai.gif";
+import {
   Code2,
   Edit,
   Trash2,
@@ -25,17 +36,6 @@ import {
   Link,
   FileText,
 } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { ButtonGroup } from "@/components/ui/button-group";
-import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
-import aiGif from "@/assets/images/ai.gif";
 
 import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
@@ -308,11 +308,19 @@ const DisplayPage = () => {
                 <div className="w-px h-3 bg-border hidden sm:block" />
                 <div className="flex items-center gap-1.5 text-muted-foreground">
                   <Clock className="h-3 w-3" />
-                  {t("display.expires_in")} {getTimeRemaining(paste.expiresAt)}
+                  {paste.burnAfterRead || paste.expiresTime === "one-time"
+                    ? t("home.expire_options.one_time_snippet")
+                    : `${t("display.expires_in")} ${getTimeRemaining(paste.expiresAt)}`}
                 </div>
               </div>
             </div>
           </div>
+          {(paste.burnAfterRead || paste.expiresTime === "one-time") && (
+            <div className="mx-4 mt-4 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-yellow-600 dark:text-yellow-500 text-sm flex items-center gap-2">
+              <span className="text-lg">⚠️</span>
+              {t("display.burn_after_read_warning")}
+            </div>
+          )}
           <div className="mx-3 sm:mx-5 my-4 h-[75vh]">
             {isEdit ? (
               <div className="h-full flex flex-col gap-4">

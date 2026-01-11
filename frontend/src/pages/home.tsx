@@ -86,6 +86,15 @@ const HomePage = () => {
   const { t } = useTranslation();
 
   const handleSubmit = async (selectedIdType: IdType, providedId?: string) => {
+    console.log("FRONTEND SUBMIT:", {
+      textValue,
+      expiresTime,
+      selectedIdType,
+      providedId,
+      contentType,
+      language,
+      burnAfterRead: expiresTime === "one-time",
+    });
     try {
       const data = await apiHelpers.submitPaste(
         textValue,
@@ -94,6 +103,7 @@ const HomePage = () => {
         providedId,
         contentType === "link",
         contentType === "code" ? language : "text",
+        expiresTime === "one-time",
       );
       toast.success(t("messages.snippet_created", { idType: selectedIdType }), {
         position: "bottom-right",
@@ -226,7 +236,11 @@ const HomePage = () => {
 
           <div className="flex items-center gap-2 justify-between sm:justify-end">
             <Select
-              value={expiresTime.includes("-") ? "custom" : expiresTime}
+              value={
+                expiresTime.includes("-") && expiresTime !== "one-time"
+                  ? "custom"
+                  : expiresTime
+              }
               onValueChange={(val) => {
                 if (val === "custom") {
                   setIsCustomExpiryDialogOpen(true);
@@ -263,7 +277,7 @@ const HomePage = () => {
                     {t("home.expire_options.expire_in_1_year")}
                   </SelectItem>
                   <SelectItem value="custom">
-                    {expiresTime.includes("-")
+                    {expiresTime.includes("-") && expiresTime !== "one-time"
                       ? new Date(expiresTime).toLocaleString([], {
                           dateStyle: "short",
                           timeStyle: "short",

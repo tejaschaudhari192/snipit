@@ -9,8 +9,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu } from "lucide-react";
+import { Menu, QrCode } from "lucide-react";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { QRCodeSVG } from "qrcode.react";
 import ThemeTogglePositionsDemo from "@/components/theme-toggle";
 import { LanguageSwitcher } from "./language-switcher";
 import icon from "@/assets/brand/icon.png";
@@ -24,6 +31,7 @@ const Header = ({ className }: HeaderProps) => {
   const path = location.pathname;
   const id = path.includes("history") || path.includes("about") ? null : path;
   const { t } = useTranslation();
+  const [isQRDialogOpen, setIsQRDialogOpen] = useState(false);
 
   const [url, setUrl] = useState(window.location.href);
 
@@ -60,6 +68,14 @@ const Header = ({ className }: HeaderProps) => {
               variant="ghost"
               className="h-6 w-6 p-0 hover:bg-transparent"
             />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 p-0 hover:bg-transparent"
+              onClick={() => setIsQRDialogOpen(true)}
+            >
+              <QrCode className="h-3.5 w-3.5" />
+            </Button>
           </div>
         )}
       </div>
@@ -113,6 +129,16 @@ const Header = ({ className }: HeaderProps) => {
             className="h-9 w-9 shrink-0 px-0"
           />
         )}
+        {id && id.length > 1 && (
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-9 w-9 shrink-0"
+            onClick={() => setIsQRDialogOpen(true)}
+          >
+            <QrCode className="h-4 w-4" />
+          </Button>
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon" className="h-9 w-9">
@@ -155,6 +181,27 @@ const Header = ({ className }: HeaderProps) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+      <Dialog open={isQRDialogOpen} onOpenChange={setIsQRDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                <QrCode className="h-5 w-5" />
+              </div>
+              <DialogTitle>{t("header.qr_button")}</DialogTitle>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Scan this code to open the snippet on another device.
+            </p>
+          </DialogHeader>
+          <div className="flex flex-col items-center justify-center p-6 bg-white rounded-xl shadow-inner my-4">
+            <QRCodeSVG value={url} size={200} level="H" includeMargin={true} />
+          </div>
+          <div className="text-center text-xs text-muted-foreground break-all px-4">
+            {url}
+          </div>
+        </DialogContent>
+      </Dialog>
     </header>
   );
 };

@@ -26,6 +26,7 @@ export const useApiHelpers = () => {
     customId?: string,
     redirectUrl?: boolean,
     language?: string,
+    burnAfterRead?: boolean,
   ) => {
     let value = "";
     if (typeof userInputRef === "string") {
@@ -41,6 +42,7 @@ export const useApiHelpers = () => {
       customId,
       redirectUrl,
       language,
+      burnAfterRead,
     });
     const data = response.data;
     console.log(data);

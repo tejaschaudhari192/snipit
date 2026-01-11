@@ -1,5 +1,14 @@
 import express, { type Request, type Response } from "express";
+import fs from "fs";
+import path from "path";
+
 const app = express();
+
+app.use((req, res, next) => {
+  const logMsg = `[${new Date().toISOString()}] ${req.method} ${req.url} BODY: ${JSON.stringify(req.body)}\n`;
+  fs.appendFileSync("C:/Users/Admin/snipit-debug.log", logMsg);
+  next();
+});
 import { connectDB } from "@/config/db.js";
 import pasteRouter from "@/routes/paste.route.js";
 import healthRouter from "@/routes/health.route.js";
@@ -31,6 +40,13 @@ app.get("/api", (req: Request, res: Response) => {
 
 app
   .use(express.json())
+  .use((req, res, next) => {
+    if (req.method === "POST" || req.method === "GET") {
+      const logMsg = `[${new Date().toISOString()}] ${req.method} ${req.url} BODY: ${JSON.stringify(req.body)}\n`;
+      fs.appendFileSync(path.join(process.cwd(), "api-debug.log"), logMsg);
+    }
+    next();
+  })
   .use("/api/", pasteRouter)
   .use("/health/", healthRouter)
   .use("/api/", aiRouter);

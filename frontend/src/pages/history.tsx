@@ -207,9 +207,12 @@ const HistoryPage = () => {
                           >
                             <Timer className="h-3.5 w-3.5" />
                             <span>
-                              {expired
-                                ? "Expired"
-                                : getTimeRemaining(item.expiresAt)}
+                              {item.burnAfterRead ||
+                              item.expiresTime === "one-time"
+                                ? t("home.expire_options.one_time_snippet")
+                                : expired
+                                  ? "Expired"
+                                  : getTimeRemaining(item.expiresAt)}
                             </span>
                           </div>
                         )}

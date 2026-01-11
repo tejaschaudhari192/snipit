@@ -1,4 +1,5 @@
 import { dateConverter, uniqueIdGenerator } from "@/lib/utils.js";
+import fs from "fs";
 import type PasteService from "@/services/paste.service.js";
 import { createPasteSchema } from "@/validators/paste.validators.js";
 import type { NextFunction, Request, Response } from "express";
@@ -11,10 +12,21 @@ class PasteController {
   ) {}
 
   async createPaste(req: Request, res: Response, next: NextFunction) {
+    const logData = `[${new Date().toISOString()}] NEW PASTE REQUEST: ${JSON.stringify(req.body, null, 2)}\n`;
+    console.log(logData);
+    fs.appendFileSync("pastes-debug.log", logData);
+
     try {
       const createdAt = new Date(Date.now());
-      const { content, expiresTime, idType, customId, redirectUrl, language } =
-        req.body;
+      const {
+        content,
+        expiresTime,
+        idType,
+        customId,
+        redirectUrl,
+        language,
+        burnAfterRead,
+      } = req.body;
 
       const expiresAt = expiresTime
         ? dateConverter(expiresTime)
@@ -45,14 +57,33 @@ class PasteController {
           .json({ error: "Expiration time cannot be in the past" });
       }
 
+      let finalExpiresAt: Date | null = expiresAt;
+      let finalBurnAfterRead: boolean = !!burnAfterRead;
+
+      if (expiresTime === "one-time") {
+        fs.appendFileSync("debug.log", "DEBUG: ONE-TIME SNIPPET DETECTED\n");
+        finalExpiresAt = dateConverter("1d");
+        finalBurnAfterRead = true;
+      }
+
+      if (!finalExpiresAt) {
+        finalExpiresAt = dateConverter("1d");
+      }
+
       const validatedBody = createPasteSchema.parse({
         content,
-        expiresAt: expiresAt || dateConverter("1d"), // Fallback for one-time for now to satisfy schema
+        expiresAt: finalExpiresAt,
         idType,
         customId,
         redirectUrl,
         language,
+        burnAfterRead: finalBurnAfterRead,
+        expiresTime,
       });
+
+      console.error(
+        `Validated body: burnAfterRead=${validatedBody.burnAfterRead}, expiresTime=${validatedBody.expiresTime}`,
+      );
 
       let pasteId =
         validatedBody.customId ||
@@ -68,14 +99,19 @@ class PasteController {
           createdAt,
           redirectUrl: validatedBody.redirectUrl,
           language: validatedBody.language,
+          burnAfterRead: validatedBody.burnAfterRead,
+          expiresTime: validatedBody.expiresTime,
         };
-        return await this.pasteService.savePaste(pasteData);
+        this.logger.info(
+          `Saving paste with data: ${JSON.stringify(pasteData)}`,
+        );
+        return await this.pasteService.savePaste(pasteData as any);
       };
 
       try {
         const result = await createAndSavePaste(pasteId);
         this.logger.info(`Created paste with id: ${pasteId}`);
-        return res.json(result);
+        return res.status(201).json(result.toObject());
       } catch (error: unknown) {
         // Handle duplicate key error (code 11000)
         const err = error as {
@@ -92,7 +128,7 @@ class PasteController {
               await this.pasteService.deletePaste(pasteId);
               const result = await createAndSavePaste(pasteId);
               this.logger.info(`Replaced expired paste with id: ${pasteId}`);
-              return res.json(result);
+              return res.json(result.toObject());
             }
             return res.status(409).json({ error: "ID already in use" });
           }
@@ -134,9 +170,15 @@ class PasteController {
         this.logger.info("Paste expired and deleted:", id);
         return res.status(404).json({ error: "Paste expired" });
       }
+      if (result.burnAfterRead) {
+        await this.pasteService.deletePaste(id!);
+        this.logger.info(`Paste burned after read: ${id}`);
+      }
 
-      this.logger.info("Getting paste:", id);
-      return res.json(result);
+      this.logger.info(
+        `Getting paste: ${id}, burnAfterRead: ${result.burnAfterRead}`,
+      );
+      return res.json(result.toObject());
     } catch (error) {
       this.logger.error("Error fetching paste", id, error);
       return next(error);
