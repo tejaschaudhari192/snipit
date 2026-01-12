@@ -5,7 +5,8 @@ import {
   Languages,
   Moon,
   Link2,
-  Heart
+  Heart,
+  Hash
 } from "lucide-react";
 
 const app = {

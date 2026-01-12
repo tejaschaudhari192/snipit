@@ -3,8 +3,8 @@ import {
   Mail,
   Users,
   Github,
-  Hash,
   Zap,
+  Heart
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion } from "motion/react";
