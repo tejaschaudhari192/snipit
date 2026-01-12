@@ -43,7 +43,7 @@ const AboutPage = () => {
           <div className="absolute top-10 left-10 w-48 h-48 md:w-72 md:h-72 bg-primary/20 rounded-full blur-[120px] opacity-50" />
           <div className="absolute bottom-10 right-10 w-64 h-64 md:w-96 md:h-96 bg-primary/10 rounded-full blur-[120px] opacity-50" />
 
-          <div className="max-w-4xl mx-auto text-center relative z-10">
+          <div className="max-w-xl mx-auto text-center relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -145,11 +145,23 @@ const AboutPage = () => {
         {/* Team Section */}
         <section className="py-16 md:py-24 px-4 bg-secondary/5">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-2xl md:text-4xl font-bold mb-12 text-center">{t("about_page.team.title")}</h2>
+            <h2 className="text-2xl md:text-4xl font-bold mb-12 text-center text-foreground">
+              {t("about_page.team.title")}
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {[
-                { name: "Durgesh Kapade", email: "durgeshkapade26@gmail.com", github: "https://github.com/durgeshkapade" },
-                { name: "Tejas Chaudhari", email: "jaybalaji192@gmail.com", github: "https://github.com/tejaschaudhari192" },
+                {
+                  name: "Durgesh Kapade",
+                  email: "durgeshkapade26@gmail.com",
+                  github: "https://github.com/durgeshkapade",
+                  avatar: "https://avatars.githubusercontent.com/u/135988213?v=4"
+                },
+                {
+                  name: "Tejas Chaudhari",
+                  email: "jaybalaji192@gmail.com",
+                  github: "https://github.com/tejaschaudhari192",
+                  avatar: "https://avatars.githubusercontent.com/u/104405128?s=400&u=1285d0293657159a9e85e0709ee549c37198667e&v=4"
+                },
               ].map((member, index) => (
                 <motion.div
                   key={member.name}
@@ -157,23 +169,47 @@ const AboutPage = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
-                  className="p-6 md:p-8 rounded-3xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-300 shadow-sm"
+                  className="p-6 md:p-8 rounded-3xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-300 shadow-sm group"
                 >
                   <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-6">
-                    <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-                      <Users className="w-10 h-10 text-primary" />
+                    {/* Avatar Container with Dark Mode Ring */}
+                    <div className="relative shrink-0">
+                      <div className="w-24 h-24 rounded-2xl overflow-hidden ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all duration-300">
+                        <img 
+                          src={member.avatar} 
+                          alt={member.name}
+                          className="w-full h-full object-cover" 
+                        />
+                      </div>
+                      <div className="absolute -bottom-2 -right-2 bg-background rounded-lg p-1.5 shadow-sm border border-border">
+                        <Users className="w-4 h-4 text-primary" />
+                      </div>
                     </div>
+
                     <div className="flex-1 space-y-1">
-                      <h3 className="text-xl font-bold tracking-tight">{member.name}</h3>
-                      <p className="text-sm font-medium text-primary uppercase tracking-widest mb-4">{t("about_page.team.role")}</p>
-                      <div className="flex items-center justify-center sm:justify-start gap-4 pt-2">
-                        <a href={`mailto:${member.email}`} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+                      <h3 className="text-xl font-bold tracking-tight text-foreground">
+                        {member.name}
+                      </h3>
+                      <p className="text-sm font-medium text-primary uppercase tracking-widest mb-4">
+                        {t("about_page.team.role")}
+                      </p>
+                      
+                      <div className="flex items-center justify-center sm:justify-start gap-3 pt-2">
+                        <a
+                          href={`mailto:${member.email}`}
+                          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                        >
                           <Mail className="w-4 h-4" />
-                          <span className="text-xs font-semibold">Email</span>
+                          <span className="text-xs font-bold">Email</span>
                         </a>
-                        <a href={member.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+                        <a
+                          href={member.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                        >
                           <Github className="w-4 h-4" />
-                          <span className="text-xs font-semibold">GitHub</span>
+                          <span className="text-xs font-bold">GitHub</span>
                         </a>
                       </div>
                     </div>
