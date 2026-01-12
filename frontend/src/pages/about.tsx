@@ -151,16 +151,16 @@ const AboutPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {[
                 {
-                  name: "Durgesh Kapade",
-                  email: "durgeshkapade26@gmail.com",
-                  github: "https://github.com/durgeshkapade",
-                  avatar: "https://avatars.githubusercontent.com/u/135988213?v=4"
-                },
-                {
                   name: "Tejas Chaudhari",
                   email: "jaybalaji192@gmail.com",
                   github: "https://github.com/tejaschaudhari192",
                   avatar: "https://avatars.githubusercontent.com/u/104405128?s=400&u=1285d0293657159a9e85e0709ee549c37198667e&v=4"
+                },
+                {
+                  name: "Durgesh Kapade",
+                  email: "durgeshkapade26@gmail.com",
+                  github: "https://github.com/durgeshkapade",
+                  avatar: "https://avatars.githubusercontent.com/u/135988213?v=4"
                 },
               ].map((member, index) => (
                 <motion.div
