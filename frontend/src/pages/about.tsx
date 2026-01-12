@@ -17,20 +17,10 @@ import { useTranslation } from "react-i18next";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import appScreenshot from "@/assets/brand/app.png";
+import app from "@/lib/data";
 
 const AboutPage = () => {
   const { t } = useTranslation();
-
-  const features = [
-    { icon: Code, key: "syntax_highlighting", gradient: "from-violet-500 to-purple-500" },
-    { icon: Sparkles, key: "ai_detection", gradient: "from-pink-500 to-rose-500" },
-    { icon: Hash, key: "custom_ids", gradient: "from-cyan-500 to-blue-500" },
-    { icon: Clock, key: "expiration", gradient: "from-amber-500 to-orange-500" },
-    { icon: Languages, key: "multi_language", gradient: "from-emerald-500 to-teal-500" },
-    { icon: Moon, key: "dark_mode", gradient: "from-slate-500 to-zinc-600" },
-    { icon: Heart, key: "open_source", gradient: "from-red-500 to-pink-500" },
-    { icon: Link2, key: "redirect_urls", gradient: "from-indigo-500 to-purple-500" },
-  ];
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
@@ -100,7 +90,7 @@ const AboutPage = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-              {features.map((feature, index) => (
+              {app.features.map((feature, index) => (
                 <motion.div
                   key={feature.key}
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -149,20 +139,7 @@ const AboutPage = () => {
               {t("about_page.team.title")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-              {[
-                {
-                  name: "Tejas Chaudhari",
-                  email: "jaybalaji192@gmail.com",
-                  github: "https://github.com/tejaschaudhari192",
-                  avatar: "https://avatars.githubusercontent.com/u/104405128?s=400&u=1285d0293657159a9e85e0709ee549c37198667e&v=4"
-                },
-                {
-                  name: "Durgesh Kapade",
-                  email: "durgeshkapade26@gmail.com",
-                  github: "https://github.com/durgeshkapade",
-                  avatar: "https://avatars.githubusercontent.com/u/135988213?v=4"
-                },
-              ].map((member, index) => (
+              {app.team.map((member, index) => (
                 <motion.div
                   key={member.name}
                   initial={{ opacity: 0, y: 20 }}
