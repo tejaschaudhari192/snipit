@@ -1,3 +1,13 @@
+import {
+  Code,
+  Sparkles,
+  Clock,
+  Languages,
+  Moon,
+  Link2,
+  Heart
+} from "lucide-react";
+
 app = {
     features: [
         { icon: Code, key: "syntax_highlighting", gradient: "from-violet-500 to-purple-500" },
