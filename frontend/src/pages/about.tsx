@@ -22,44 +22,26 @@ const AboutPage = () => {
   const { t } = useTranslation();
 
   const features = [
-    {
-      icon: Code,
-      key: "syntax_highlighting",
-      gradient: "from-violet-500 to-purple-500",
-    },
-    {
-      icon: Sparkles,
-      key: "ai_detection",
-      gradient: "from-pink-500 to-rose-500",
-    },
+    { icon: Code, key: "syntax_highlighting", gradient: "from-violet-500 to-purple-500" },
+    { icon: Sparkles, key: "ai_detection", gradient: "from-pink-500 to-rose-500" },
     { icon: Hash, key: "custom_ids", gradient: "from-cyan-500 to-blue-500" },
-    {
-      icon: Clock,
-      key: "expiration",
-      gradient: "from-amber-500 to-orange-500",
-    },
-    {
-      icon: Languages,
-      key: "multi_language",
-      gradient: "from-emerald-500 to-teal-500",
-    },
+    { icon: Clock, key: "expiration", gradient: "from-amber-500 to-orange-500" },
+    { icon: Languages, key: "multi_language", gradient: "from-emerald-500 to-teal-500" },
     { icon: Moon, key: "dark_mode", gradient: "from-slate-500 to-zinc-600" },
     { icon: Heart, key: "open_source", gradient: "from-red-500 to-pink-500" },
-    {
-      icon: Link2,
-      key: "redirect_urls",
-      gradient: "from-indigo-500 to-purple-500",
-    },
+    { icon: Link2, key: "redirect_urls", gradient: "from-indigo-500 to-purple-500" },
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
       <div className="flex-1 overflow-x-hidden">
+        
         {/* Hero Section */}
         <section className="relative py-16 md:py-24 px-4 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5" />
-          <div className="absolute top-10 left-10 w-48 h-48 md:w-72 md:h-72 bg-primary/10 rounded-full blur-3xl opacity-60" />
-          <div className="absolute bottom-10 right-10 w-64 h-64 md:w-96 md:h-96 bg-primary/5 rounded-full blur-3xl opacity-60" />
+          {/* Enhanced Background Glows for Dark Mode */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5 dark:from-primary/20" />
+          <div className="absolute top-10 left-10 w-48 h-48 md:w-72 md:h-72 bg-primary/20 rounded-full blur-[120px] opacity-50" />
+          <div className="absolute bottom-10 right-10 w-64 h-64 md:w-96 md:h-96 bg-primary/10 rounded-full blur-[120px] opacity-50" />
 
           <div className="max-w-4xl mx-auto text-center relative z-10">
             <motion.div
@@ -67,11 +49,11 @@ const AboutPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-xs md:text-sm font-medium mb-6">
-                <Zap className="w-4 h-4" />
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary dark:bg-primary/20 text-xs md:text-sm font-medium mb-6 ring-1 ring-primary/20">
+                <Zap className="w-4 h-4 fill-current" />
                 {t("about_page.features_title")}
               </div>
-              <h1 className="text-3xl md:text-5xl lg:text-7xl font-black text-foreground mb-6 tracking-tight leading-[1.1]">
+              <h1 className="text-3xl md:text-5xl lg:text-7xl font-black mb-6 tracking-tight leading-[1.1]">
                 {t("about_page.title")}{" "}
                 <span className="bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
                   Snipit
@@ -84,7 +66,7 @@ const AboutPage = () => {
           </div>
         </section>
 
-        {/* App Screenshot Section */}
+        {/* App Screenshot Section - Improved for Dark Mode visibility */}
         <section className="pb-16 px-4 md:px-8">
           <div className="max-w-6xl mx-auto">
             <motion.div
@@ -92,22 +74,24 @@ const AboutPage = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative rounded-2xl md:rounded-3xl overflow-hidden border shadow-2xl shadow-primary/20 bg-background"
+              className="relative rounded-2xl md:rounded-3xl overflow-hidden border border-border/50 shadow-2xl shadow-primary/20 bg-card"
             >
               <img
                 src={appScreenshot}
                 alt="Snipit App Screenshot"
-                className="w-full h-auto transition-transform duration-700 hover:scale-105"
+                className="w-full h-auto transition-transform duration-700 hover:scale-[1.02] dark:brightness-90 dark:contrast-110"
               />
+              {/* Overlay gradient to blend bottom edge if needed */}
+              <div className="absolute inset-0 pointer-events-none ring-1 ring-inset ring-white/10" />
             </motion.div>
           </div>
         </section>
 
         {/* Features Grid */}
-        <section className="py-16 md:py-24 px-4 bg-muted/20">
+        <section className="py-16 md:py-24 px-4 bg-secondary/5 dark:bg-secondary/10">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12 md:mb-16">
-              <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-4">
+              <h2 className="text-2xl md:text-4xl font-bold mb-4">
                 {t("about_page.features_title")}
               </h2>
               <p className="text-sm md:text-lg text-muted-foreground max-w-xl mx-auto px-4">
@@ -123,17 +107,13 @@ const AboutPage = () => {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: index * 0.05 }}
-                  className="group relative"
+                  className="group"
                 >
-                  <div className="h-full p-6 md:p-8 rounded-2xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5">
-                    <div
-                      className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
-                    >
+                  <div className="h-full p-6 md:p-8 rounded-2xl bg-card border border-border/50 hover:border-primary/40 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 dark:hover:bg-accent/5">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-black/10`} >
                       <feature.icon className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-lg font-bold text-foreground mb-3">
-                      {t(`about_page.features.${feature.key}.title`)}
-                    </h3>
+                    <h3 className="text-lg font-bold mb-3">{t(`about_page.features.${feature.key}.title`)}</h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       {t(`about_page.features.${feature.key}.desc`)}
                     </p>
@@ -147,51 +127,29 @@ const AboutPage = () => {
         {/* Story Section */}
         <section className="py-16 md:py-24 px-4">
           <div className="max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="space-y-8"
-            >
-              <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-8">
+            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="space-y-8">
+              <h2 className="text-2xl md:text-4xl font-bold mb-8 italic border-l-4 border-primary pl-4">
                 {t("about_page.story.title")}
               </h2>
               <div className="space-y-6 md:space-y-8">
-                <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-                  {t("about_page.story.p1")}
-                </p>
-                <div className="pl-4 md:pl-6 border-l-2 border-primary/30">
-                  <p className="text-base md:text-lg text-muted-foreground leading-relaxed italic">
-                    {t("about_page.story.p2")}
-                  </p>
+                <p className="text-base md:text-lg text-muted-foreground leading-relaxed">{t("about_page.story.p1")}</p>
+                <div className="pl-4 md:pl-6 border-l border-primary/20 bg-primary/5 py-4 rounded-r-lg">
+                  <p className="text-base md:text-lg text-foreground/80 leading-relaxed italic">{t("about_page.story.p2")}</p>
                 </div>
-                <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-                  {t("about_page.story.p3")}
-                </p>
+                <p className="text-base md:text-lg text-muted-foreground leading-relaxed">{t("about_page.story.p3")}</p>
               </div>
             </motion.div>
           </div>
         </section>
 
         {/* Team Section */}
-        <section className="py-16 md:py-24 px-4 bg-muted/20">
+        <section className="py-16 md:py-24 px-4 bg-secondary/5">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-12 text-center">
-              {t("about_page.team.title")}
-            </h2>
+            <h2 className="text-2xl md:text-4xl font-bold mb-12 text-center">{t("about_page.team.title")}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {[
-                {
-                  name: "Durgesh Kapade",
-                  email: "durgeshkapade26@gmail.com",
-                  github: "https://github.com/durgeshkapade",
-                },
-                {
-                  name: "Tejas Chaudhari",
-                  email: "jaybalaji192@gmail.com",
-                  github: "https://github.com/tejaschaudhari192",
-                },
+                { name: "Durgesh Kapade", email: "durgeshkapade26@gmail.com", github: "https://github.com/durgeshkapade" },
+                { name: "Tejas Chaudhari", email: "jaybalaji192@gmail.com", github: "https://github.com/tejaschaudhari192" },
               ].map((member, index) => (
                 <motion.div
                   key={member.name}
@@ -199,35 +157,21 @@ const AboutPage = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
-                  className="p-6 md:p-8 rounded-3xl bg-card border border-border/50 hover:border-primary/20 transition-all duration-300 hover:shadow-xl shadow-sm"
+                  className="p-6 md:p-8 rounded-3xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-300 shadow-sm"
                 >
                   <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-6">
-                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center shrink-0 shadow-inner">
+                    <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
                       <Users className="w-10 h-10 text-primary" />
                     </div>
                     <div className="flex-1 space-y-1">
-                      <h3 className="text-xl font-bold text-foreground tracking-tight">
-                        {member.name}
-                      </h3>
-                      <p className="text-sm font-medium text-primary/80 uppercase tracking-widest mb-4">
-                        {t("about_page.team.role")}
-                      </p>
+                      <h3 className="text-xl font-bold tracking-tight">{member.name}</h3>
+                      <p className="text-sm font-medium text-primary uppercase tracking-widest mb-4">{t("about_page.team.role")}</p>
                       <div className="flex items-center justify-center sm:justify-start gap-4 pt-2">
-                        <a
-                          href={`mailto:${member.email}`}
-                          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted hover:bg-primary/10 hover:text-primary transition-all duration-300 text-muted-foreground"
-                          title="Email"
-                        >
+                        <a href={`mailto:${member.email}`} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary hover:bg-primary hover:text-primary-foreground transition-all duration-300">
                           <Mail className="w-4 h-4" />
                           <span className="text-xs font-semibold">Email</span>
                         </a>
-                        <a
-                          href={member.github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted hover:bg-primary/10 hover:text-primary transition-all duration-300 text-muted-foreground"
-                          title="GitHub"
-                        >
+                        <a href={member.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary hover:bg-primary hover:text-primary-foreground transition-all duration-300">
                           <Github className="w-4 h-4" />
                           <span className="text-xs font-semibold">GitHub</span>
                         </a>
@@ -247,47 +191,24 @@ const AboutPage = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] bg-gradient-to-br from-primary via-primary to-primary/70 p-8 md:p-20 text-center"
+              className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] bg-primary p-8 md:p-20 text-center"
             >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent_60%)]" />
-              <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-
-              <div className="relative z-10 max-w-2xl mx-auto">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-black/20" />
+              <div className="relative z-10 max-w-2xl mx-auto text-primary-foreground">
                 <div className="inline-flex p-3 rounded-2xl bg-white/10 backdrop-blur-sm mb-6">
-                  <Heart className="w-8 h-8 text-white animate-pulse" />
+                  <Heart className="w-8 h-8 animate-pulse fill-white" />
                 </div>
-                <h3 className="text-2xl md:text-5xl font-black text-white mb-6 tracking-tight">
-                  {t("about_page.contribute.title")}
-                </h3>
-                <p className="text-white/80 text-base md:text-xl mb-10 leading-relaxed font-medium">
-                  {t("about_page.contribute.desc")}
-                </p>
+                <h3 className="text-2xl md:text-5xl font-black mb-6 tracking-tight">{t("about_page.contribute.title")}</h3>
+                <p className="opacity-90 text-base md:text-xl mb-10 leading-relaxed font-medium">{t("about_page.contribute.desc")}</p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                  <a
-                    href="https://github.com/durgeshkapade/snipit"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full sm:w-auto"
-                  >
-                    <Button
-                      size="lg"
-                      variant="secondary"
-                      className="w-full sm:w-auto gap-3 px-10 h-14 text-base font-bold shadow-2xl hover:scale-105 transition-transform"
-                    >
+                  <a href="https://github.com/durgeshkapade/snipit" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+                    <Button size="lg" variant="secondary" className="w-full sm:w-auto gap-3 px-10 h-14 text-base font-bold shadow-xl hover:scale-105 transition-transform">
                       <Github className="w-6 h-6" />
                       {t("about_page.contribute.github_button")}
                     </Button>
                   </a>
-                  <a
-                    href="mailto:durgeshkapade26@gmail.com"
-                    className="w-full sm:w-auto"
-                  >
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="w-full sm:w-auto gap-3 px-10 h-14 text-base font-bold bg-white/5 border-white/20 text-white hover:bg-white/10 hover:text-white backdrop-blur-md"
-                    >
+                  <a href="mailto:durgeshkapade26@gmail.com" className="w-full sm:w-auto">
+                    <Button size="lg" variant="outline" className="w-full sm:w-auto gap-3 px-10 h-14 text-base font-bold bg-white/10 border-white/20 text-white hover:bg-white/20">
                       <Mail className="w-6 h-6" />
                       {t("about_page.contribute.contact_button")}
                     </Button>
