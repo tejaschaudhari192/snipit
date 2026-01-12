@@ -43,7 +43,7 @@ const AboutPage = () => {
           <div className="absolute top-10 left-10 w-48 h-48 md:w-72 md:h-72 bg-primary/20 rounded-full blur-[120px] opacity-50" />
           <div className="absolute bottom-10 right-10 w-64 h-64 md:w-96 md:h-96 bg-primary/10 rounded-full blur-[120px] opacity-50" />
 
-          <div className="max-w-xl mx-auto text-center relative z-10">
+          <div className="max-w-4xl mx-auto text-center relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -68,7 +68,7 @@ const AboutPage = () => {
 
         {/* App Screenshot Section - Improved for Dark Mode visibility */}
         <section className="pb-16 px-4 md:px-8">
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
