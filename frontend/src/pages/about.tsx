@@ -1,15 +1,8 @@
 import Footer from "@/components/ui/footer";
 import {
   Mail,
-  Code,
   Users,
   Github,
-  Sparkles,
-  Clock,
-  Languages,
-  Moon,
-  Link2,
-  Heart,
   Hash,
   Zap,
 } from "lucide-react";

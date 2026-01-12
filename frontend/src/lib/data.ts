@@ -8,7 +8,7 @@ import {
   Heart
 } from "lucide-react";
 
-app = {
+const app = {
     features: [
         { icon: Code, key: "syntax_highlighting", gradient: "from-violet-500 to-purple-500" },
         { icon: Sparkles, key: "ai_detection", gradient: "from-pink-500 to-rose-500" },
