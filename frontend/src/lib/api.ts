@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { RefObject } from "react";
+// import type { RefObject } from "react";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -19,33 +19,19 @@ export const useApiHelpers = () => {
     }
   };
 
-  const submitPaste = async (
-    userInputRef: RefObject<HTMLTextAreaElement | null> | string,
-    expiresTime: string,
-    idType?: "system" | "dynamic",
-    customId?: string,
-    redirectUrl?: boolean,
-    language?: string,
-    burnAfterRead?: boolean,
-  ) => {
-    let value = "";
-    if (typeof userInputRef === "string") {
-      value = userInputRef;
-    } else {
-      value = userInputRef.current?.value || "";
-    }
-
-    const response = await api.post("/", {
-      content: value,
-      expiresTime,
-      idType,
-      customId,
-      redirectUrl,
-      language,
-      burnAfterRead,
-    });
-    const data = response.data;
-    return data;
+  const submitPaste = async (data: {
+    content: string;
+    expiresTime: string;
+    idType?: "system" | "dynamic";
+    customId?: string;
+    redirectUrl?: boolean;
+    language?: string;
+    burnAfterRead?: boolean;
+    visibility?: "public" | "private" | "shared";
+    allowedUsers?: string[];
+  }) => {
+    const response = await api.post("/", data);
+    return response.data;
   };
 
   const getPaste = async (id: string) => {

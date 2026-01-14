@@ -4,6 +4,8 @@ import type PasteService from "@/services/paste.service.js";
 import { createPasteSchema } from "@/validators/paste.validators.js";
 import type { NextFunction, Request, Response } from "express";
 import type { Logger } from "winston";
+import jwt from "jsonwebtoken";
+import User from "@/models/User.js";
 
 class PasteController {
   constructor(
@@ -22,6 +24,8 @@ class PasteController {
         redirectUrl,
         language,
         burnAfterRead,
+        visibility,
+        allowedUsers,
       } = req.body;
 
       const expiresAt = expiresTime
@@ -74,7 +78,30 @@ class PasteController {
         language,
         burnAfterRead: finalBurnAfterRead,
         expiresTime,
+        visibility,
+        allowedUsers,
       });
+
+      let owner = null;
+      if (req.cookies.jwt) {
+        try {
+          const decoded = jwt.verify(
+            req.cookies.jwt,
+            process.env.JWT_SECRET || "default_secret",
+          ) as { id: string };
+          owner = decoded.id;
+        } catch (e) {}
+      }
+
+      if (
+        validatedBody.visibility &&
+        validatedBody.visibility !== "public" &&
+        !owner
+      ) {
+        return res
+          .status(401)
+          .json({ error: "Login required for private/shared pastes" });
+      }
 
       let pasteId =
         validatedBody.customId ||
@@ -92,6 +119,9 @@ class PasteController {
           language: validatedBody.language,
           burnAfterRead: validatedBody.burnAfterRead,
           expiresTime: validatedBody.expiresTime,
+          owner,
+          visibility: validatedBody.visibility,
+          allowedUsers: validatedBody.allowedUsers,
         };
         return await this.pasteService.savePaste(pasteData as any);
       };
@@ -164,6 +194,38 @@ class PasteController {
       if (result.burnAfterRead && result.views > 3) {
         await this.pasteService.deletePaste(id!);
         this.logger.info(`Paste burned after 3rd public read: ${id}`);
+        // Ensure we stop execution or return 404 if deleted?
+        // Logic continues... but usually burn means gone.
+      }
+
+      // Visibility Check
+      if (result.visibility && result.visibility !== "public") {
+        let userId = null;
+        let userEmail = null;
+        if (req.cookies.jwt) {
+          try {
+            const decoded = jwt.verify(
+              req.cookies.jwt,
+              process.env.JWT_SECRET || "default_secret",
+            ) as { id: string };
+            userId = decoded.id;
+            const user = await User.findById(userId);
+            if (user) userEmail = user.email;
+          } catch (e) {}
+        }
+
+        const isOwner =
+          result.owner && userId && result.owner.toString() === userId;
+        const isAllowed =
+          result.allowedUsers &&
+          userEmail &&
+          result.allowedUsers.includes(userEmail);
+
+        if (!isOwner && !isAllowed) {
+          return res
+            .status(403)
+            .json({ error: "Access denied. Private or Shared snippet." });
+        }
       }
 
       return res.json(result.toObject());

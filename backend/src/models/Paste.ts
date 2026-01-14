@@ -43,6 +43,20 @@ const pasteSchema = new Schema<IPaste>(
       type: Number,
       default: 0,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: false,
+    },
+    visibility: {
+      type: String,
+      enum: ["public", "private", "shared"],
+      default: "public",
+    },
+    allowedUsers: {
+      type: [String],
+      default: [],
+    },
   },
   {
     toJSON: { virtuals: true, versionKey: false },

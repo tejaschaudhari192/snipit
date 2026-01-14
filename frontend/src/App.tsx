@@ -9,6 +9,10 @@ import { useApiHelpers } from "./lib/api";
 import Header from "@/components/header";
 import ThemeProvider from "@/lib/theme";
 
+import { AuthProvider } from "@/context/AuthContext";
+import LoginPage from "@/pages/login";
+import SignupPage from "@/pages/signup";
+
 const App = () => {
   const apiHelpers = useApiHelpers();
   const hasRun = useRef(false);
@@ -31,17 +35,21 @@ const App = () => {
 
   return (
     <ThemeProvider>
-      <Router>
-        <div className="min-h-screen w-full m-0 p-0 box-border flex flex-col">
-          <Header />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/:id" element={<DisplayPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/history" element={<HistoryPage />} />
-          </Routes>
-        </div>
-      </Router>
+      <AuthProvider>
+        <Router>
+          <div className="min-h-screen w-full m-0 p-0 box-border flex flex-col">
+            <Header />
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+              <Route path="/:id" element={<DisplayPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/history" element={<HistoryPage />} />
+            </Routes>
+          </div>
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 };

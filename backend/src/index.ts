@@ -31,9 +31,14 @@ app.get("/api", (req: Request, res: Response) => {
   res.send("Hello");
 });
 
+import cookieParser from "cookie-parser";
+import authRouter from "@/routes/auth.routes.js";
+
 app
   .use(express.json())
+  .use(cookieParser())
 
+  .use("/api/auth", authRouter)
   .use("/api/", pasteRouter)
   .use("/health/", healthRouter)
   .use("/api/", aiRouter);

@@ -8,4 +8,9 @@ export const createPasteSchema = z.object({
   language: z.string().optional().default("text"),
   burnAfterRead: z.boolean().optional(),
   expiresTime: z.string().optional(),
+  visibility: z
+    .enum(["public", "private", "shared"])
+    .optional()
+    .default("public"),
+  allowedUsers: z.array(z.string()).optional(),
 });

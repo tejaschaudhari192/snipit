@@ -21,10 +21,52 @@ import { QRCodeSVG } from "qrcode.react";
 import ThemeTogglePositionsDemo from "@/components/theme-toggle";
 import { LanguageSwitcher } from "./language-switcher";
 import icon from "@/assets/brand/icon.png";
+import { useAuth } from "@/context/AuthContext";
+import { User, LogOut } from "lucide-react";
 
 interface HeaderProps {
   className?: string;
 }
+
+const UserMenu = () => {
+  const { user, logout } = useAuth();
+  const { t } = useTranslation();
+
+  if (!user) {
+    return (
+      <div className="flex items-center gap-2">
+        <Link to="/login">
+          <Button variant="ghost" size="sm">
+            {t("header.login", "Login")}
+          </Button>
+        </Link>
+        <Link to="/signup">
+          <Button size="sm">{t("header.signup", "Signup")}</Button>
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="sm" className="gap-2">
+          <User className="h-4 w-4" />
+          <span className="hidden sm:inline-block">{user.username}</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem
+          onClick={() => logout()}
+          className="text-red-500 focus:text-red-500 cursor-pointer"
+        >
+          <LogOut className="h-4 w-4 mr-2" />
+          {t("header.logout", "Logout")}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 const Header = ({ className }: HeaderProps) => {
   const location = useLocation();
@@ -118,6 +160,8 @@ const Header = ({ className }: HeaderProps) => {
 
         <div className="w-px h-4 bg-border mx-1" />
         <ThemeTogglePositionsDemo />
+        <div className="w-px h-4 bg-border mx-1" />
+        <UserMenu />
       </div>
 
       <div className="md:hidden flex items-center gap-2">
@@ -139,6 +183,9 @@ const Header = ({ className }: HeaderProps) => {
             <QrCode className="h-4 w-4" />
           </Button>
         )}
+        <div className="md:hidden">
+          <UserMenu />
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon" className="h-9 w-9">

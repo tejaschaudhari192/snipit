@@ -54,11 +54,18 @@ import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { AuroraBackground } from "@/components/ui/shadcn-io/aurora-background";
+import { useAuth } from "@/context/AuthContext";
+import { MultiEmailInput } from "@/components/ui/multi-email-input";
 
 const HomePage = () => {
   const userInputRef = useRef<HTMLTextAreaElement>(null);
   const valueRef = useRef("");
   const { fontSize, ref: editorContainerRef, setFontSize } = usePinchZoom(14);
+  const { user } = useAuth();
+  const [visibility, setVisibility] = useState<"public" | "private" | "shared">(
+    "public",
+  );
+  const [allowedUsers, setAllowedUsers] = useState<string[]>([]);
 
   const [expiresTime, setExpiresTime] = useState("1w");
   const [textValue, _setTextValue] = useState("");
@@ -86,15 +93,17 @@ const HomePage = () => {
   const { t } = useTranslation();
   const handleSubmit = async (selectedIdType: IdType, providedId?: string) => {
     try {
-      const data = await apiHelpers.submitPaste(
-        textValue,
+      const data = await apiHelpers.submitPaste({
+        content: textValue,
         expiresTime,
-        selectedIdType,
-        providedId,
-        contentType === "link",
-        contentType === "code" ? language : "text",
-        expiresTime === "one-time",
-      );
+        idType: selectedIdType,
+        customId: providedId,
+        redirectUrl: contentType === "link",
+        language: contentType === "code" ? language : "text",
+        burnAfterRead: expiresTime === "one-time",
+        visibility,
+        allowedUsers: visibility === "shared" ? allowedUsers : undefined,
+      });
       toast.success(t("messages.snippet_created", { idType: selectedIdType }), {
         position: "bottom-right",
       });
@@ -277,6 +286,40 @@ const HomePage = () => {
                 </SelectGroup>
               </SelectContent>
             </Select>
+
+            {/* Visibility Selector */}
+            <Select
+              value={visibility}
+              onValueChange={(val: "public" | "private" | "shared") =>
+                setVisibility(val)
+              }
+              disabled={
+                !user &&
+                false /* Allow selection but warn or redirect? Better to just disable if strictly private */
+              }
+            >
+              <SelectTrigger className="w-[120px] h-11">
+                <SelectValue placeholder="Visibility" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="public">Public</SelectItem>
+                <SelectItem value="private" disabled={!user}>
+                  Private {!user && "(Login req)"}
+                </SelectItem>
+                <SelectItem value="shared" disabled={!user}>
+                  Shared {!user && "(Login req)"}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+
+            {visibility === "shared" && (
+              <MultiEmailInput
+                value={allowedUsers}
+                onChange={setAllowedUsers}
+                placeholder="Allowed emails"
+                className="w-full sm:w-[300px] h-11"
+              />
+            )}
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
