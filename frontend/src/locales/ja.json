@@ -1,146 +1,146 @@
 {
-    "header": {
-        "about": "について",
-        "history": "履歴",
-        "new_snippet": "新しいスニペット",
-        "copied": "コピーしました！",
-        "qr_button": "QRコード"
+  "header": {
+    "about": "について",
+    "history": "履歴",
+    "new_snippet": "新しいスニペット",
+    "copied": "コピーしました！",
+    "qr_button": "QRコード"
+  },
+  "home": {
+    "select_expire_time": "有効期限を選択",
+    "enter_snippet_placeholder": "ここにスニペットを入力...",
+    "paste_button": "貼り付け",
+    "paste_dynamic_id": "ダイナミックIDで貼り付け",
+    "paste_system_id": "システムIDで貼り付け",
+    "paste_dynamic_id_desc": "独自のIDを選択",
+    "paste_system_id_desc": "IDを自動生成",
+    "expire_options": {
+      "one_time_snippet": "一回限りのスニペット",
+      "expire_in_1_hour": "1時間で期限切れ",
+      "expire_in_1_day": "1日で期限切れ",
+      "expire_in_1_week": "1週間で期限切れ",
+      "expire_in_1_month": "1ヶ月で期限切れ",
+      "expire_in_1_year": "1年で期限切れ",
+      "custom": "カスタムの有効期限"
     },
-    "home": {
-        "select_expire_time": "有効期限を選択",
-        "enter_snippet_placeholder": "ここにスニペットを入力...",
-        "paste_button": "貼り付け",
-        "paste_dynamic_id": "ダイナミックIDで貼り付け",
-        "paste_system_id": "システムIDで貼り付け",
-        "paste_dynamic_id_desc": "独自のIDを選択",
-        "paste_system_id_desc": "IDを自動生成",
-        "expire_options": {
-            "one_time_snippet": "一回限りのスニペット",
-            "expire_in_1_hour": "1時間で期限切れ",
-            "expire_in_1_day": "1日で期限切れ",
-            "expire_in_1_week": "1週間で期限切れ",
-            "expire_in_1_month": "1ヶ月で期限切れ",
-            "expire_in_1_year": "1年で期限切れ",
-            "custom": "カスタムの有効期限"
-        },
-        "tab_text": "プレーンテキスト",
-        "tab_code": "コード",
-        "tab_link": "リンクを短縮",
-        "link_placeholder": "短縮するURLを入力してください（例：https://example.xyz）",
-        "link_desc": "以下の長いURLを貼り付けて、短縮リダイレクトリンクを作成します。",
-        "link_features": {
-            "fast": "高速リダイレクト",
-            "custom": "カスタムスラッグ"
-        },
-        "auto_detecting": "自動検出中...",
-        "detected_language": "検出された言語: {{language}}",
-        "dynamic_id_dialog": {
-            "title": "カスタムIDの入力",
-            "description": "一意の識別子を選択してください。これはスニペットのURLに使用されます。",
-            "placeholder": "カスタムIDを入力してください...",
-            "preview": "プレビュー:",
-            "cancel": "キャンセル",
-            "submit": "スニペットを作成"
-        }
+    "tab_text": "プレーンテキスト",
+    "tab_code": "コード",
+    "tab_link": "リンクを短縮",
+    "link_placeholder": "短縮するURLを入力してください（例：https://example.xyz）",
+    "link_desc": "以下の長いURLを貼り付けて、短縮リダイレクトリンクを作成します。",
+    "link_features": {
+      "fast": "高速リダイレクト",
+      "custom": "カスタムスラッグ"
     },
-    "display": {
-        "expires_in": "有効期限:",
-        "edit_button": "編集",
-        "copy_button": "コピー",
-        "delete_button": "削除",
-        "save_button": "変更を保存",
-        "burn_after_read_warning": "警告：これは一回限りのスニペットであり、読まれた後に削除されます。"
-    },
-    "history": {
-        "title": "履歴",
-        "plain_text_snippet": "プレーンテキストのスニペット",
-        "code_snippet": "コードスニペット",
-        "created_ago": "作成",
-        "clear_history": "履歴を消去",
-        "clear_confirm": "すべての履歴を消去しますか？",
-        "clear_action": "消去",
-        "cancel": "キャンセル",
-        "cleared_success": "履歴が消去されました",
-        "no_history_title": "履歴はまだありません",
-        "no_history_desc": "スニペットの履歴はここに表示されます",
-        "create_first": "最初のスニペットを作成"
-    },
-    "messages": {
-        "snippet_created": "{{idType}} IDでスニペットが貼り付けられました！",
-        "snippet_failed": "スニペットの作成に失敗しました",
-        "id_conflict": "このIDは既に使用されています。別のIDを試してください。"
-    },
-    "about_page": {
-        "title": "Snipitについて",
-        "subtitle": "コード共有をシンプルかつ美しくすることを信じる2人の開発者による情熱的なプロジェクト。",
-        "features_title": "強力な機能",
-        "features_subtitle": "シームレスなコード共有に必要なすべて",
-        "features": {
-            "syntax_highlighting": {
-                "title": "シンタックスハイライト",
-                "desc": "15以上のプログラミング言語をサポートした美しいコード表示。"
-            },
-            "ai_detection": {
-                "title": "AI言語検出",
-                "desc": "AI技術を使用してプログラミング言語を自動的に検出。"
-            },
-            "custom_ids": {
-                "title": "カスタムURL",
-                "desc": "簡単なスニペット共有のための記憶に残るカスタムURLを作成。"
-            },
-            "expiration": {
-                "title": "有効期限制御",
-                "desc": "スニペットを1時間から1年後に期限切れに設定、または永久に保持。"
-            },
-            "multi_language": {
-                "title": "多言語UI",
-                "desc": "英語、ドイツ語、ヒンディー語、日本語、マラーティー語で利用可能。"
-            },
-            "dark_mode": {
-                "title": "ダークモード",
-                "desc": "美しいダークテーマオプションで目に優しい。"
-            },
-            "open_source": {
-                "title": "オープンソース",
-                "desc": "無料でオープンソース。貢献、フォーク、セルフホスト可能。"
-            },
-            "redirect_urls": {
-                "title": "リンクを短縮",
-                "desc": "任意の宛先に即座にリダイレクトする、短くて管理しやすいリンクを作成します。"
-            }
-        },
-        "story": {
-            "title": "私たちのストーリー",
-            "p1": "Snipitはシンプルなアイデアから生まれました：コード共有は美しく、速く、簡単であるべきです。開発者として、私たちは同僚、友人、コミュニティとコードスニペットを常に共有していましたが、既存のソリューションは不格好で時代遅れに感じました。",
-            "p2": "だから私たちはより良いものを作ることにしました。Snipitはエレガントなデザインと強力な機能を組み合わせ、形式と機能の両方を重視する開発者にとって完璧なツールです。",
-            "p3": "モダンなウェブ技術とユーザーエクスペリエンスに焦点を当てて構築されたSnipitは、開発者コミュニティでのコード共有のための最適なプラットフォームを目指しています。"
-        },
-        "team": {
-            "title": "チームに会う",
-            "role": "共同創設者 & 開発者"
-        },
-        "contribute": {
-            "title": "貢献しますか？",
-            "desc": "Snipitはオープンソースであり、コミュニティからの貢献を歓迎します。バグ修正、新機能、ドキュメントの改善など、すべての貢献が重要です。",
-            "github_button": "GitHubで表示",
-            "contact_button": "連絡する"
-        }
-    },
-    "footer": {
-        "copyright": "© 2025 Snipit. 全著作権所有。",
-        "privacy": "プライバシーポリシー",
-        "terms": "利用規約",
-        "contact": "お問い合わせ",
-        "made_by": "Durgesh & Tejas によって ❤️ で作られました"
-    },
-    "splash": {
-        "tagline": "スニペットを瞬時に共有"
-    },
-    "error_page": {
-        "title": "ページが見つかりません",
-        "subtitle": "おっと！お探しのスニペットが存在しないか、期限切れです。",
-        "description": "削除された可能性があるか、リンクが正しくないか、スニペットの有効期限が切れている可能性があります。",
-        "go_home": "ホームへ",
-        "create_new": "新しいスニペットを作成"
+    "auto_detecting": "自動検出中...",
+    "detected_language": "検出された言語: {{language}}",
+    "dynamic_id_dialog": {
+      "title": "カスタムIDの入力",
+      "description": "一意の識別子を選択してください。これはスニペットのURLに使用されます。",
+      "placeholder": "カスタムIDを入力してください...",
+      "preview": "プレビュー:",
+      "cancel": "キャンセル",
+      "submit": "スニペットを作成"
     }
+  },
+  "display": {
+    "expires_in": "有効期限:",
+    "edit_button": "編集",
+    "copy_button": "コピー",
+    "delete_button": "削除",
+    "save_button": "変更を保存",
+    "burn_after_read_warning": "警告：これは一回限りのスニペットであり、読まれた後に削除されます。"
+  },
+  "history": {
+    "title": "履歴",
+    "plain_text_snippet": "プレーンテキストのスニペット",
+    "code_snippet": "コードスニペット",
+    "created_ago": "作成",
+    "clear_history": "履歴を消去",
+    "clear_confirm": "すべての履歴を消去しますか？",
+    "clear_action": "消去",
+    "cancel": "キャンセル",
+    "cleared_success": "履歴が消去されました",
+    "no_history_title": "履歴はまだありません",
+    "no_history_desc": "スニペットの履歴はここに表示されます",
+    "create_first": "最初のスニペットを作成"
+  },
+  "messages": {
+    "snippet_created": "{{idType}} IDでスニペットが貼り付けられました！",
+    "snippet_failed": "スニペットの作成に失敗しました",
+    "id_conflict": "このIDは既に使用されています。別のIDを試してください。"
+  },
+  "about_page": {
+    "title": "Snipitについて",
+    "subtitle": "コード共有をシンプルかつ美しくすることを信じる2人の開発者による情熱的なプロジェクト。",
+    "features_title": "強力な機能",
+    "features_subtitle": "シームレスなコード共有に必要なすべて",
+    "features": {
+      "syntax_highlighting": {
+        "title": "シンタックスハイライト",
+        "desc": "15以上のプログラミング言語をサポートした美しいコード表示。"
+      },
+      "ai_detection": {
+        "title": "AI言語検出",
+        "desc": "AI技術を使用してプログラミング言語を自動的に検出。"
+      },
+      "custom_ids": {
+        "title": "カスタムURL",
+        "desc": "簡単なスニペット共有のための記憶に残るカスタムURLを作成。"
+      },
+      "expiration": {
+        "title": "有効期限制御",
+        "desc": "スニペットを1時間から1年後に期限切れに設定、または永久に保持。"
+      },
+      "multi_language": {
+        "title": "多言語UI",
+        "desc": "英語、ドイツ語、ヒンディー語、日本語、マラーティー語で利用可能。"
+      },
+      "dark_mode": {
+        "title": "ダークモード",
+        "desc": "美しいダークテーマオプションで目に優しい。"
+      },
+      "open_source": {
+        "title": "オープンソース",
+        "desc": "無料でオープンソース。貢献、フォーク、セルフホスト可能。"
+      },
+      "redirect_urls": {
+        "title": "リンクを短縮",
+        "desc": "任意の宛先に即座にリダイレクトする、短くて管理しやすいリンクを作成します。"
+      }
+    },
+    "story": {
+      "title": "私たちのストーリー",
+      "p1": "Snipitはシンプルなアイデアから生まれました：コード共有は美しく、速く、簡単であるべきです。開発者として、私たちは同僚、友人、コミュニティとコードスニペットを常に共有していましたが、既存のソリューションは不格好で時代遅れに感じました。",
+      "p2": "だから私たちはより良いものを作ることにしました。Snipitはエレガントなデザインと強力な機能を組み合わせ、形式と機能の両方を重視する開発者にとって完璧なツールです。",
+      "p3": "モダンなウェブ技術とユーザーエクスペリエンスに焦点を当てて構築されたSnipitは、開発者コミュニティでのコード共有のための最適なプラットフォームを目指しています。"
+    },
+    "team": {
+      "title": "チームに会う",
+      "role": "共同創設者 & 開発者"
+    },
+    "contribute": {
+      "title": "貢献しますか？",
+      "desc": "Snipitはオープンソースであり、コミュニティからの貢献を歓迎します。バグ修正、新機能、ドキュメントの改善など、すべての貢献が重要です。",
+      "github_button": "GitHubで表示",
+      "contact_button": "連絡する"
+    }
+  },
+  "footer": {
+    "copyright": "© 2025 Snipit. 全著作権所有。",
+    "privacy": "プライバシーポリシー",
+    "terms": "利用規約",
+    "contact": "お問い合わせ",
+    "made_by": "Durgesh & Tejas によって ❤️ で作られました"
+  },
+  "splash": {
+    "tagline": "スニペットを瞬時に共有"
+  },
+  "error_page": {
+    "title": "ページが見つかりません",
+    "subtitle": "おっと！お探しのスニペットが存在しないか、期限切れです。",
+    "description": "削除された可能性があるか、リンクが正しくないか、スニペットの有効期限が切れている可能性があります。",
+    "go_home": "ホームへ",
+    "create_new": "新しいスニペットを作成"
+  }
 }

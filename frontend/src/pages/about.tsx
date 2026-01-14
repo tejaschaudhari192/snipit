@@ -1,11 +1,5 @@
 import Footer from "@/components/ui/footer";
-import {
-  Mail,
-  Users,
-  Github,
-  Zap,
-  Heart
-} from "lucide-react";
+import { Mail, Users, Github, Zap, Heart } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
@@ -18,7 +12,6 @@ const AboutPage = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
       <div className="flex-1 overflow-x-hidden">
-        
         {/* Hero Section */}
         <section className="relative py-16 md:py-24 px-4 overflow-hidden">
           {/* Enhanced Background Glows for Dark Mode */}
@@ -93,10 +86,14 @@ const AboutPage = () => {
                   className="group"
                 >
                   <div className="h-full p-6 md:p-8 rounded-2xl bg-card border border-border/50 hover:border-primary/40 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 dark:hover:bg-accent/5">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-black/10`} >
+                    <div
+                      className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-black/10`}
+                    >
                       <feature.icon className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-lg font-bold mb-3">{t(`about_page.features.${feature.key}.title`)}</h3>
+                    <h3 className="text-lg font-bold mb-3">
+                      {t(`about_page.features.${feature.key}.title`)}
+                    </h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       {t(`about_page.features.${feature.key}.desc`)}
                     </p>
@@ -110,16 +107,27 @@ const AboutPage = () => {
         {/* Story Section */}
         <section className="py-16 md:py-24 px-4">
           <div className="max-w-4xl mx-auto">
-            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="space-y-8">
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="space-y-8"
+            >
               <h2 className="text-2xl md:text-4xl font-bold mb-8 italic border-l-4 border-primary pl-4">
                 {t("about_page.story.title")}
               </h2>
               <div className="space-y-6 md:space-y-8">
-                <p className="text-base md:text-lg text-muted-foreground leading-relaxed">{t("about_page.story.p1")}</p>
+                <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+                  {t("about_page.story.p1")}
+                </p>
                 <div className="pl-4 md:pl-6 border-l border-primary/20 bg-primary/5 py-4 rounded-r-lg">
-                  <p className="text-base md:text-lg text-foreground/80 leading-relaxed italic">{t("about_page.story.p2")}</p>
+                  <p className="text-base md:text-lg text-foreground/80 leading-relaxed italic">
+                    {t("about_page.story.p2")}
+                  </p>
                 </div>
-                <p className="text-base md:text-lg text-muted-foreground leading-relaxed">{t("about_page.story.p3")}</p>
+                <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+                  {t("about_page.story.p3")}
+                </p>
               </div>
             </motion.div>
           </div>
@@ -145,10 +153,10 @@ const AboutPage = () => {
                     {/* Avatar Container with Dark Mode Ring */}
                     <div className="relative shrink-0">
                       <div className="w-24 h-24 rounded-2xl overflow-hidden ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all duration-300">
-                        <img 
-                          src={member.avatar} 
+                        <img
+                          src={member.avatar}
                           alt={member.name}
-                          className="w-full h-full object-cover" 
+                          className="w-full h-full object-cover"
                         />
                       </div>
                       <div className="absolute -bottom-2 -right-2 bg-background rounded-lg p-1.5 shadow-sm border border-border">
@@ -163,7 +171,7 @@ const AboutPage = () => {
                       <p className="text-sm font-medium text-primary uppercase tracking-widest mb-4">
                         {t("about_page.team.role")}
                       </p>
-                      
+
                       <div className="flex items-center justify-center sm:justify-start gap-3 pt-2">
                         <a
                           href={`mailto:${member.email}`}
@@ -204,17 +212,37 @@ const AboutPage = () => {
                 <div className="inline-flex p-3 rounded-2xl bg-white/10 backdrop-blur-sm mb-6">
                   <Heart className="w-8 h-8 animate-pulse fill-white" />
                 </div>
-                <h3 className="text-2xl md:text-5xl font-black mb-6 tracking-tight">{t("about_page.contribute.title")}</h3>
-                <p className="opacity-90 text-base md:text-xl mb-10 leading-relaxed font-medium">{t("about_page.contribute.desc")}</p>
+                <h3 className="text-2xl md:text-5xl font-black mb-6 tracking-tight">
+                  {t("about_page.contribute.title")}
+                </h3>
+                <p className="opacity-90 text-base md:text-xl mb-10 leading-relaxed font-medium">
+                  {t("about_page.contribute.desc")}
+                </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                  <a href="https://github.com/durgeshkapade/snipit" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-                    <Button size="lg" variant="secondary" className="w-full sm:w-auto gap-3 px-10 h-14 text-base font-bold shadow-xl hover:scale-105 transition-transform">
+                  <a
+                    href="https://github.com/durgeshkapade/snipit"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto"
+                  >
+                    <Button
+                      size="lg"
+                      variant="secondary"
+                      className="w-full sm:w-auto gap-3 px-10 h-14 text-base font-bold shadow-xl hover:scale-105 transition-transform"
+                    >
                       <Github className="w-6 h-6" />
                       {t("about_page.contribute.github_button")}
                     </Button>
                   </a>
-                  <a href="mailto:durgeshkapade26@gmail.com" className="w-full sm:w-auto">
-                    <Button size="lg" variant="outline" className="w-full sm:w-auto gap-3 px-10 h-14 text-base font-bold bg-white/10 border-white/20 text-white hover:bg-white/20">
+                  <a
+                    href="mailto:durgeshkapade26@gmail.com"
+                    className="w-full sm:w-auto"
+                  >
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="w-full sm:w-auto gap-3 px-10 h-14 text-base font-bold bg-white/10 border-white/20 text-white hover:bg-white/20"
+                    >
                       <Mail className="w-6 h-6" />
                       {t("about_page.contribute.contact_button")}
                     </Button>
