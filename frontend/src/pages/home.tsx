@@ -578,9 +578,6 @@ const HomePage = () => {
                 <span className="flex items-center gap-1">
                   ✅ {t("home.link_features.custom")}
                 </span>
-                <span className="flex items-center gap-1">
-                  ✅ {t("home.link_features.analytics")}
-                </span>
               </div>
             </div>
           </AuroraBackground>

@@ -30,8 +30,7 @@
         "link_desc": "Fügen Sie unten die lange URL ein, um einen kurzen, weiterleitenden Link zu erstellen.",
         "link_features": {
             "fast": "Schnelle Weiterleitung",
-            "custom": "Benutzerdefinierte Slugs",
-            "analytics": "Analysen"
+            "custom": "Benutzerdefinierte Slugs"
         },
         "auto_detecting": "Automatische Erkennung...",
         "detected_language": "Erkannte Sprache: {{language}}",
@@ -49,7 +48,8 @@
         "edit_button": "Bearbeiten",
         "copy_button": "Kopieren",
         "delete_button": "Löschen",
-        "save_button": "Änderungen speichern"
+        "save_button": "Änderungen speichern",
+        "burn_after_read_warning": "Warnung: Dies ist ein einmaliges Snippet und wird nach dem Lesen gelöscht."
     },
     "history": {
         "title": "Verlauf",

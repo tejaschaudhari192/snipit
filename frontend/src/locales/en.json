@@ -30,8 +30,7 @@
         "link_desc": "Paste the long URL below to create a short, redirecting link.",
         "link_features": {
             "fast": "Fast Redirection",
-            "custom": "Custom Slugs",
-            "analytics": "Analytics"
+            "custom": "Custom Slugs"
         },
         "auto_detecting": "Auto Detecting...",
         "detected_language": "Detected language: {{language}}",

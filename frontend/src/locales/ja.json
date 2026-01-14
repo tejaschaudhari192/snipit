@@ -30,8 +30,7 @@
         "link_desc": "以下の長いURLを貼り付けて、短縮リダイレクトリンクを作成します。",
         "link_features": {
             "fast": "高速リダイレクト",
-            "custom": "カスタムスラッグ",
-            "analytics": "分析"
+            "custom": "カスタムスラッグ"
         },
         "auto_detecting": "自動検出中...",
         "detected_language": "検出された言語: {{language}}",
@@ -49,7 +48,8 @@
         "edit_button": "編集",
         "copy_button": "コピー",
         "delete_button": "削除",
-        "save_button": "変更を保存"
+        "save_button": "変更を保存",
+        "burn_after_read_warning": "警告：これは一回限りのスニペットであり、読まれた後に削除されます。"
     },
     "history": {
         "title": "履歴",
