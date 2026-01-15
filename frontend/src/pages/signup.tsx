@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { AxiosError } from "axios";
-import { useAuth } from "@/context/AuthContext";
 import api from "@/lib/api";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -21,21 +20,20 @@ const SignupPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  // const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await api.post("/auth/register", {
+      await api.post("/auth/register", {
         username,
         email,
         password,
       });
-      login(response.data);
-      toast.success("Account created successfully");
-      navigate("/");
+      toast.success("Account created successfully. Please login.");
+      navigate("/login");
     } catch (error) {
       const axiosError = error as AxiosError<{ message: string }>;
       toast.error(axiosError.response?.data?.message || "Signup failed");
