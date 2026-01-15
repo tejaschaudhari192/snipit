@@ -8,6 +8,8 @@ export interface PasteData {
 	burnAfterRead?: boolean;
 	expiresTime?: string;
 	views: number;
+	visibility?: "public" | "private" | "shared";
+	allowedUsers?: string[];
 }
 
 export type IdType = "system" | "dynamic";

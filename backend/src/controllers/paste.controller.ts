@@ -1,269 +1,315 @@
 import { dateConverter, uniqueIdGenerator } from "@/lib/utils.js";
-
-import type PasteService from "@/services/paste.service.js";
-import { createPasteSchema } from "@/validators/paste.validators.js";
 import type { NextFunction, Request, Response } from "express";
-import type { Logger } from "winston";
+import { createPasteSchema } from "@/validators/paste.validators.js";
 import jwt from "jsonwebtoken";
+import type { Logger } from "winston";
 import User from "@/models/User.js";
+import type PasteService from "@/services/paste.service.js";
 
 class PasteController {
-  constructor(
-    private readonly pasteService: PasteService,
-    private readonly logger: Logger,
-  ) {}
+	constructor(
+		private readonly pasteService: PasteService,
+		private readonly logger: Logger,
+	) {}
 
-  async createPaste(req: Request, res: Response, next: NextFunction) {
-    try {
-      const createdAt = new Date(Date.now());
-      const {
-        content,
-        expiresTime,
-        idType,
-        customId,
-        redirectUrl,
-        language,
-        burnAfterRead,
-        visibility,
-        allowedUsers,
-      } = req.body;
+	async createPaste(req: Request, res: Response, next: NextFunction) {
+		try {
+			const createdAt = new Date(Date.now());
+			const {
+				content,
+				expiresTime,
+				idType,
+				customId,
+				redirectUrl,
+				language,
+				burnAfterRead,
+				visibility,
+				allowedUsers,
+			} = req.body;
 
-      const expiresAt = expiresTime
-        ? dateConverter(expiresTime)
-        : dateConverter("1d");
+			const expiresAt = expiresTime
+				? dateConverter(expiresTime)
+				: dateConverter("1d");
 
-      if (!expiresAt && expiresTime !== "one-time") {
-        this.logger.warn(
-          `Invalid expiration time format received: ${expiresTime}`,
-        );
-        return res
-          .status(400)
-          .json({ error: "Invalid expiration time format" });
-      }
+			if (!expiresAt && expiresTime !== "one-time") {
+				this.logger.warn(
+					`Invalid expiration time format received: ${expiresTime} `,
+				);
+				return res
+					.status(400)
+					.json({ error: "Invalid expiration time format" });
+			}
 
-      if (expiresAt && isNaN(expiresAt.getTime())) {
-        this.logger.warn(
-          `Invalid date format during conversion: ${expiresTime}`,
-        );
-        return res.status(400).json({ error: "Invalid date format" });
-      }
+			if (expiresAt && isNaN(expiresAt.getTime())) {
+				this.logger.warn(
+					`Invalid date format during conversion: ${expiresTime} `,
+				);
+				return res.status(400).json({ error: "Invalid date format" });
+			}
 
-      if (expiresAt && expiresAt < new Date()) {
-        this.logger.warn(
-          `Attempted to create paste with past date: ${expiresAt.toISOString()}`,
-        );
-        return res
-          .status(400)
-          .json({ error: "Expiration time cannot be in the past" });
-      }
+			if (expiresAt && expiresAt < new Date()) {
+				this.logger.warn(
+					`Attempted to create paste with past date: ${expiresAt.toISOString()} `,
+				);
+				return res
+					.status(400)
+					.json({ error: "Expiration time cannot be in the past" });
+			}
 
-      let finalExpiresAt: Date | null = expiresAt;
-      let finalBurnAfterRead: boolean = !!burnAfterRead;
+			let finalExpiresAt: Date | null = expiresAt;
+			let finalBurnAfterRead: boolean = !!burnAfterRead;
 
-      if (expiresTime === "one-time") {
-        finalExpiresAt = dateConverter("1d");
-        finalBurnAfterRead = true;
-      }
+			if (expiresTime === "one-time") {
+				finalExpiresAt = dateConverter("1d");
+				finalBurnAfterRead = true;
+			}
 
-      if (!finalExpiresAt) {
-        finalExpiresAt = dateConverter("1d");
-      }
+			if (!finalExpiresAt) {
+				finalExpiresAt = dateConverter("1d");
+			}
 
-      const validatedBody = createPasteSchema.parse({
-        content,
-        expiresAt: finalExpiresAt,
-        idType,
-        customId,
-        redirectUrl,
-        language,
-        burnAfterRead: finalBurnAfterRead,
-        expiresTime,
-        visibility,
-        allowedUsers,
-      });
+			const validatedBody = createPasteSchema.parse({
+				content,
+				expiresAt: finalExpiresAt,
+				idType,
+				customId,
+				redirectUrl,
+				language,
+				burnAfterRead: finalBurnAfterRead,
+				expiresTime,
+				visibility,
+				allowedUsers,
+			});
 
-      let owner = null;
-      if (req.cookies.jwt) {
-        try {
-          const decoded = jwt.verify(
-            req.cookies.jwt,
-            process.env.JWT_SECRET || "default_secret",
-          ) as { id: string };
-          owner = decoded.id;
-        } catch (e) {}
-      }
+			let owner = null;
+			if (req.cookies.jwt) {
+				try {
+					const decoded = jwt.verify(
+						req.cookies.jwt,
+						process.env.JWT_SECRET || "default_secret",
+					) as { id: string };
+					owner = decoded.id;
+				} catch (e) {}
+			}
 
-      if (
-        validatedBody.visibility &&
-        validatedBody.visibility !== "public" &&
-        !owner
-      ) {
-        return res
-          .status(401)
-          .json({ error: "Login required for private/shared pastes" });
-      }
+			if (
+				validatedBody.visibility &&
+				validatedBody.visibility !== "public" &&
+				!owner
+			) {
+				return res
+					.status(401)
+					.json({
+						error: "Login required for private/shared pastes",
+					});
+			}
 
-      let pasteId =
-        validatedBody.customId ||
-        (validatedBody.idType === "system"
-          ? uniqueIdGenerator()
-          : customId || uniqueIdGenerator());
+			let pasteId =
+				validatedBody.customId ||
+				(validatedBody.idType === "system"
+					? uniqueIdGenerator()
+					: customId || uniqueIdGenerator());
 
-      const createAndSavePaste = async (id: string) => {
-        const pasteData = {
-          id,
-          content: validatedBody.content,
-          expiresAt: validatedBody.expiresAt,
-          createdAt,
-          redirectUrl: validatedBody.redirectUrl,
-          language: validatedBody.language,
-          burnAfterRead: validatedBody.burnAfterRead,
-          expiresTime: validatedBody.expiresTime,
-          owner,
-          visibility: validatedBody.visibility,
-          allowedUsers: validatedBody.allowedUsers,
-        };
-        return await this.pasteService.savePaste(pasteData as any);
-      };
+			const createAndSavePaste = async (id: string) => {
+				const pasteData = {
+					id,
+					content: validatedBody.content,
+					expiresAt: validatedBody.expiresAt,
+					createdAt,
+					redirectUrl: validatedBody.redirectUrl,
+					language: validatedBody.language,
+					burnAfterRead: validatedBody.burnAfterRead,
+					expiresTime: validatedBody.expiresTime,
+					owner,
+					visibility: validatedBody.visibility,
+					allowedUsers: validatedBody.allowedUsers,
+				};
+				return await this.pasteService.savePaste(pasteData as any);
+			};
 
-      try {
-        const result = await createAndSavePaste(pasteId);
-        this.logger.info(`Created paste with id: ${pasteId}`);
-        return res.status(201).json(result.toObject());
-      } catch (error: unknown) {
-        // Handle duplicate key error (code 11000)
-        const err = error as {
-          code?: number;
-          errorResponse?: { code?: number };
-        };
-        const isDuplicateKey =
-          err?.code === 11000 || err?.errorResponse?.code === 11000;
+			try {
+				const result = await createAndSavePaste(pasteId);
+				this.logger.info(`Created paste with id: ${pasteId} `);
+				return res.status(201).json(result.toObject());
+			} catch (error: unknown) {
+				// Handle duplicate key error (code 11000)
+				const err = error as {
+					code?: number;
+					errorResponse?: { code?: number };
+				};
+				const isDuplicateKey =
+					err?.code === 11000 || err?.errorResponse?.code === 11000;
 
-        if (isDuplicateKey) {
-          if (validatedBody.customId) {
-            const isExpired = await this.pasteService.isPasteExpired(pasteId);
-            if (isExpired) {
-              await this.pasteService.deletePaste(pasteId);
-              const result = await createAndSavePaste(pasteId);
-              this.logger.info(`Replaced expired paste with id: ${pasteId}`);
-              return res.json(result.toObject());
-            }
-            return res.status(409).json({ error: "ID already in use" });
-          }
+				if (isDuplicateKey) {
+					if (validatedBody.customId) {
+						const isExpired =
+							await this.pasteService.isPasteExpired(pasteId);
+						if (isExpired) {
+							await this.pasteService.deletePaste(pasteId);
+							const result = await createAndSavePaste(pasteId);
+							this.logger.info(
+								`Replaced expired paste with id: ${pasteId} `,
+							);
+							return res.json(result.toObject());
+						}
+						return res
+							.status(409)
+							.json({ error: "ID already in use" });
+					}
 
-          // For system IDs, try one more time with a new ID
-          pasteId =
-            validatedBody.idType === "system" ? uniqueIdGenerator() : customId;
-          try {
-            const result = await createAndSavePaste(pasteId);
-            this.logger.info(
-              `Created paste with new id after conflict: ${pasteId}`,
-            );
-            return res.json(result);
-          } catch (retryError) {
-            return next(retryError);
-          }
-        }
+					// For system IDs, try one more time with a new ID
+					pasteId =
+						validatedBody.idType === "system"
+							? uniqueIdGenerator()
+							: customId;
+					try {
+						const result = await createAndSavePaste(pasteId);
+						this.logger.info(
+							`Created paste with new id after conflict: ${pasteId} `,
+						);
+						return res.json(result);
+					} catch (retryError) {
+						return next(retryError);
+					}
+				}
 
-        // For all other errors, bubble up to outer catch
-        throw error;
-      }
-    } catch (error) {
-      this.logger.error("Error creating paste:", error);
-      return next(error);
-    }
-  }
+				// For all other errors, bubble up to outer catch
+				throw error;
+			}
+		} catch (error) {
+			this.logger.error("Error creating paste:", error);
+			return next(error);
+		}
+	}
 
-  async getPaste(req: Request, res: Response, next: NextFunction) {
-    const id = req.params.id;
-    try {
-      // Increment views atomically
-      const result = await this.pasteService.incrementViews(id!);
+	async getPaste(req: Request, res: Response, next: NextFunction) {
+		const id = req.params.id;
+		try {
+			// Increment views atomically
+			const result = await this.pasteService.incrementViews(id!);
 
-      if (!result) {
-        this.logger.info("Paste not found:", id);
-        return res.status(404).json({ error: "Paste not found" });
-      }
+			if (!result) {
+				this.logger.info("Paste not found:", id);
+				return res.status(404).json({ error: "Paste not found" });
+			}
 
-      if (result.expiresAt && new Date() > result.expiresAt) {
-        await this.pasteService.deletePaste(id!);
-        this.logger.info("Paste expired and deleted:", id);
-        return res.status(404).json({ error: "Paste expired" });
-      }
+			if (result.expiresAt && new Date() > result.expiresAt) {
+				await this.pasteService.deletePaste(id!);
+				this.logger.info("Paste expired and deleted:", id);
+				return res.status(404).json({ error: "Paste expired" });
+			}
 
-      if (result.burnAfterRead && result.views > 3) {
-        await this.pasteService.deletePaste(id!);
-        this.logger.info(`Paste burned after 3rd public read: ${id}`);
-        // Ensure we stop execution or return 404 if deleted?
-        // Logic continues... but usually burn means gone.
-      }
+			if (result.burnAfterRead && result.views > 3) {
+				await this.pasteService.deletePaste(id!);
+				this.logger.info(`Paste burned after 3rd public read: ${id} `);
+				// Ensure we stop execution or return 404 if deleted?
+				// Logic continues... but usually burn means gone.
+			}
 
-      // Visibility Check
-      if (result.visibility && result.visibility !== "public") {
-        let userId = null;
-        let userEmail = null;
-        if (req.cookies.jwt) {
-          try {
-            const decoded = jwt.verify(
-              req.cookies.jwt,
-              process.env.JWT_SECRET || "default_secret",
-            ) as { id: string };
-            userId = decoded.id;
-            const user = await User.findById(userId);
-            if (user) userEmail = user.email;
-          } catch (e) {}
-        }
+			// Visibility Check
+			if (result.visibility && result.visibility !== "public") {
+				let userId = null;
+				let userEmail = null;
+				if (req.cookies.jwt) {
+					try {
+						const decoded = jwt.verify(
+							req.cookies.jwt,
+							process.env.JWT_SECRET || "default_secret",
+						) as { id: string };
+						userId = decoded.id;
+						const user = await User.findById(userId);
+						if (user) userEmail = user.email;
+					} catch (e) {}
+				}
 
-        const isOwner =
-          result.owner && userId && result.owner.toString() === userId;
-        const isAllowed =
-          result.allowedUsers &&
-          userEmail &&
-          result.allowedUsers.includes(userEmail);
+				const isOwner =
+					result.owner &&
+					userId &&
+					result.owner.toString() === userId;
+				const isAllowed =
+					result.allowedUsers &&
+					userEmail &&
+					result.allowedUsers.includes(userEmail);
 
-        if (!isOwner && !isAllowed) {
-          return res
-            .status(403)
-            .json({ error: "Access denied. Private or Shared snippet." });
-        }
-      }
+				if (!isOwner && !isAllowed) {
+					return res
+						.status(403)
+						.json({
+							error: "Access denied. Private or Shared snippet.",
+						});
+				}
+			}
 
-      return res.json(result.toObject());
-    } catch (error) {
-      this.logger.error("Error fetching paste", id, error);
-      return next(error);
-    }
-  }
+			return res.json(result.toObject());
+		} catch (error) {
+			this.logger.error("Error fetching paste", id, error);
+			return next(error);
+		}
+	}
 
-  async deletePaste(req: Request, res: Response, next: NextFunction) {
-    const id = req.params.id;
-    try {
-      const result = await this.pasteService.deletePaste(id!);
-      this.logger.info("Deleting paste:", id);
-      return res.json(result);
-    } catch (error) {
-      this.logger.error("Error deleting paste", id, error);
-      return next(error);
-    }
-  }
+	async deletePaste(req: Request, res: Response, next: NextFunction) {
+		const id = req.params.id;
+		try {
+			const result = await this.pasteService.deletePaste(id!);
+			this.logger.info("Deleting paste:", id);
+			return res.json(result);
+		} catch (error) {
+			this.logger.error("Error deleting paste", id, error);
+			return next(error);
+		}
+	}
 
-  async updatePaste(req: Request, res: Response, next: NextFunction) {
-    const id = req.params.id;
-    const { content, redirectUrl, language } = req.body;
-    try {
-      const result = await this.pasteService.updatePaste(
-        id!,
-        content,
-        redirectUrl,
-        language,
-      );
-      this.logger.info("Updating paste:", id);
-      return res.json(result);
-    } catch (error) {
-      this.logger.error("Error updating paste", id, error);
-      return next(error);
-    }
-  }
+	async updatePaste(req: Request, res: Response, next: NextFunction) {
+		const id = req.params.id;
+		const { content, redirectUrl, language, visibility, allowedUsers } =
+			req.body;
+		try {
+			// Check ownership
+			const existingPaste = await this.pasteService.getPasteById(id!);
+			if (!existingPaste) {
+				return res.status(404).json({ error: "Paste not found" });
+			}
+
+			if (existingPaste.owner) {
+				let userId = null;
+				if (req.cookies.jwt) {
+					try {
+						const decoded = jwt.verify(
+							req.cookies.jwt,
+							process.env.JWT_SECRET || "default_secret",
+						) as { id: string };
+						userId = decoded.id;
+					} catch (e) {}
+				}
+
+				if (existingPaste.owner.toString() !== userId) {
+					return res
+						.status(403)
+						.json({
+							error: "Unauthorized: You are not the owner of this paste",
+						});
+				}
+			}
+
+			this.logger.info(
+				`Update request for paste ${id}: visibility = ${visibility} `,
+			);
+			const result = await this.pasteService.updatePaste(
+				id!,
+				content,
+				redirectUrl,
+				language,
+				visibility,
+				allowedUsers,
+			);
+
+			this.logger.info(`Successfully updated paste: ${id} `);
+			return res.json(result!.toObject());
+		} catch (error) {
+			this.logger.error("Error updating paste", id, error);
+			return next(error);
+		}
+	}
 }
 
 export default PasteController;

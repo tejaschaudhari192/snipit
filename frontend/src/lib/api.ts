@@ -1,8 +1,9 @@
 import axios from "axios";
+import { CONFIG } from "@/configurations";
 // import type { RefObject } from "react";
 
 const api = axios.create({
-	baseURL: import.meta.env.VITE_API_BASE_URL,
+	baseURL: CONFIG.API_BASE_URL,
 	headers: {
 		"Content-Type": "application/json",
 	},
@@ -55,11 +56,15 @@ export const useApiHelpers = () => {
 		content: string,
 		redirectUrl?: boolean,
 		language?: string,
+		visibility?: "public" | "private" | "shared",
+		allowedUsers?: string[],
 	) => {
 		const response = await api.put("/" + id, {
 			content,
 			redirectUrl,
 			language,
+			visibility,
+			allowedUsers,
 		});
 		const data = response.data;
 		return data;

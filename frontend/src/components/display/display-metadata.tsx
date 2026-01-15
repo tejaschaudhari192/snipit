@@ -33,6 +33,19 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 							? t("home.expire_options.one_time_snippet")
 							: `${t("display.expires_in")} ${getTimeRemaining(paste.expiresAt!)}`}
 					</div>
+					<div className="w-px h-3 bg-border hidden sm:block" />
+					<div className="flex items-center gap-1.5 text-muted-foreground uppercase tracking-wider font-medium">
+						<span
+							className={`h-1.5 w-1.5 rounded-full ${
+								paste.visibility === "public"
+									? "bg-green-500"
+									: paste.visibility === "shared"
+										? "bg-blue-500"
+										: "bg-red-500"
+							}`}
+						/>
+						{paste.visibility || "public"}
+					</div>
 				</div>
 			</div>
 

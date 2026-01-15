@@ -10,24 +10,7 @@ import { LanguageIcon } from "@/components/language-icon";
 import { useTranslation } from "react-i18next";
 import aiGif from "@/assets/images/ai.gif";
 import { cn } from "@/lib/utils";
-
-const LANGUAGES = [
-	{ name: "JavaScript", value: "javascript" },
-	{ name: "TypeScript", value: "typescript" },
-	{ name: "HTML", value: "html" },
-	{ name: "CSS", value: "css" },
-	{ name: "JSON", value: "json" },
-	{ name: "Java", value: "java" },
-	{ name: "Python", value: "python" },
-	{ name: "C", value: "c" },
-	{ name: "C++", value: "cpp" },
-	{ name: "C#", value: "csharp" },
-	{ name: "Go", value: "go" },
-	{ name: "Rust", value: "rust" },
-	{ name: "Markdown", value: "markdown" },
-	{ name: "Shell", value: "shell" },
-	{ name: "Other", value: "other" },
-];
+import { LANGUAGES } from "@/configurations";
 
 interface LanguageSelectorProps {
 	value: string;

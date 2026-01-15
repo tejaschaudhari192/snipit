@@ -12,6 +12,7 @@ import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { useAuth } from "@/context/AuthContext";
 import type { IdType } from "@/types";
+import { CONFIG } from "@/configurations";
 
 // Extracted Components
 import { LanguageSelector } from "@/components/editor/language-selector";
@@ -24,7 +25,11 @@ import { EditorContent } from "@/components/home/editor-content";
 const HomePage = () => {
 	const userInputRef = useRef<HTMLTextAreaElement>(null);
 	const valueRef = useRef("");
-	const { fontSize, ref: editorContainerRef, setFontSize } = usePinchZoom(14);
+	const {
+		fontSize,
+		ref: editorContainerRef,
+		setFontSize,
+	} = usePinchZoom(CONFIG.DEFAULTS.FONT_SIZE);
 	const { user } = useAuth();
 	const navigate = useNavigate();
 	const apiHelpers = useApiHelpers();
@@ -36,12 +41,12 @@ const HomePage = () => {
 		"public" | "private" | "shared"
 	>("public");
 	const [allowedUsers, setAllowedUsers] = useState<string[]>([]);
-	const [expiresTime, setExpiresTime] = useState("1w");
+	const [expiresTime, setExpiresTime] = useState(CONFIG.DEFAULTS.EXPIRY);
 	const [textValue, _setTextValue] = useState("");
 	const [contentType, setContentType] = useState<"text" | "code" | "link">(
 		"text",
 	);
-	const [language, setLanguage] = useState("javascript");
+	const [language, setLanguage] = useState(CONFIG.DEFAULTS.LANGUAGE);
 	const [isDetecting, setIsDetecting] = useState(false);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [isCustomExpiryDialogOpen, setIsCustomExpiryDialogOpen] =

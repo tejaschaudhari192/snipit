@@ -14,7 +14,7 @@ interface EditorContentProps {
 	theme: string;
 	fontSize: number;
 	editorContainerRef: (node: HTMLElement | null) => void;
-	userInputRef: RefObject<HTMLTextAreaElement>;
+	userInputRef: RefObject<HTMLTextAreaElement | null>;
 	handleEditorWillMount: BeforeMount;
 	handleEditorMount: OnMount;
 	handlePaste: (e: React.ClipboardEvent<HTMLTextAreaElement>) => void;

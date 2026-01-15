@@ -35,6 +35,10 @@ const DisplayPage = () => {
 	const [contentType, setContentType] = useState<"text" | "code" | "link">(
 		"text",
 	);
+	const [visibility, setVisibility] = useState<
+		"public" | "private" | "shared"
+	>("public");
+	const [allowedUsers, setAllowedUsers] = useState<string[]>([]);
 	const [isDetecting, setIsDetecting] = useState<boolean>(false);
 	const { fontSize, ref: contentRef, setFontSize } = usePinchZoom(14);
 
@@ -55,6 +59,8 @@ const DisplayPage = () => {
 							? "code"
 							: "text",
 				);
+				setVisibility(data.visibility || "public");
+				setAllowedUsers(data.allowedUsers || []);
 				setLoading(false);
 				window.history.replaceState({}, document.title);
 				return;
@@ -78,6 +84,8 @@ const DisplayPage = () => {
 							? "code"
 							: "text",
 				);
+				setVisibility(data.visibility || "public");
+				setAllowedUsers(data.allowedUsers || []);
 				saveToLocal(data);
 			} else {
 				setPaste(undefined);
@@ -142,10 +150,15 @@ const DisplayPage = () => {
 	};
 
 	const handleEditSave = async () => {
-		if (
+		const isUnchanged =
 			updatedContent === paste?.content &&
-			(contentType === "link") === paste?.redirectUrl
-		) {
+			(contentType === "link") === paste?.redirectUrl &&
+			language === paste?.language &&
+			visibility === paste?.visibility &&
+			JSON.stringify(allowedUsers) ===
+				JSON.stringify(paste?.allowedUsers);
+
+		if (isUnchanged) {
 			setIsEdit(false);
 			return;
 		}
@@ -155,10 +168,23 @@ const DisplayPage = () => {
 			updatedContent!,
 			contentType === "link",
 			contentType === "code" ? language : "text",
+			visibility,
+			visibility === "shared" ? allowedUsers : [],
 		);
 		if (data) {
 			toast.success("Paste updated Successfully ✔️");
 			setPaste(data);
+			setUpdatedContent(data.content);
+			setLanguage(data.language || "text");
+			setContentType(
+				data.redirectUrl
+					? "link"
+					: data.language !== "text"
+						? "code"
+						: "text",
+			);
+			setVisibility(data.visibility || "public");
+			setAllowedUsers(data.allowedUsers || []);
 			saveToLocal(data);
 		} else {
 			toast.error("Failed to update paste", {
@@ -180,6 +206,8 @@ const DisplayPage = () => {
 					: "text",
 		);
 		setLanguage(paste?.language || "text");
+		setVisibility(paste?.visibility || "public");
+		setAllowedUsers(paste?.allowedUsers || []);
 	};
 
 	return (
@@ -194,7 +222,25 @@ const DisplayPage = () => {
 						<DisplayToolbar
 							isEdit={isEdit}
 							content={paste.content}
-							onEdit={setIsEdit}
+							onEdit={(val) => {
+								if (val) {
+									// Sync state when entering edit mode
+									setUpdatedContent(paste?.content);
+									setVisibility(
+										paste?.visibility || "public",
+									);
+									setAllowedUsers(paste?.allowedUsers || []);
+									setLanguage(paste?.language || "text");
+									setContentType(
+										paste?.redirectUrl
+											? "link"
+											: paste?.language !== "text"
+												? "code"
+												: "text",
+									);
+								}
+								setIsEdit(val);
+							}}
 							onDelete={handleDelete}
 							onSave={handleEditSave}
 							onCancel={handleCancel}
@@ -212,11 +258,14 @@ const DisplayPage = () => {
 								setContentType={setContentType}
 								language={language}
 								setLanguage={setLanguage}
+								visibility={visibility}
+								setVisibility={setVisibility}
+								allowedUsers={allowedUsers}
+								setAllowedUsers={setAllowedUsers}
 								isDetecting={isDetecting}
 								onAutoDetect={() =>
 									handleLanguageDetection(updatedContent!)
 								}
-								showLanguageSelector={contentType === "code"}
 							/>
 						)}
 						<DisplayContent
