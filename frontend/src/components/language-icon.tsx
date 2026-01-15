@@ -17,58 +17,58 @@ import bashIcon from "@/assets/icons/code/bash-original.svg";
 import markdownIcon from "@/assets/icons/code/markdown-original.svg";
 
 interface LanguageIconProps {
-  language: string;
-  className?: string;
+	language: string;
+	className?: string;
 }
 
 export const LanguageIcon: React.FC<LanguageIconProps> = ({
-  language,
-  className,
+	language,
+	className,
 }) => {
-  const lang = language.toLowerCase();
+	const lang = language.toLowerCase();
 
-  const iconMap: Record<string, string> = {
-    javascript: jsIcon,
-    js: jsIcon,
-    typescript: tsIcon,
-    ts: tsIcon,
-    python: pythonIcon,
-    py: pythonIcon,
-    html: htmlIcon,
-    css: cssIcon,
-    rust: rustIcon,
-    go: goIcon,
-    java: javaIcon,
-    json: jsonIcon,
-    c: cIcon,
-    cpp: cppIcon,
-    csharp: csharpIcon,
-    markdown: markdownIcon,
-    md: markdownIcon,
-    bash: bashIcon,
-    shell: bashIcon,
-    sh: bashIcon,
-  };
+	const iconMap: Record<string, string> = {
+		javascript: jsIcon,
+		js: jsIcon,
+		typescript: tsIcon,
+		ts: tsIcon,
+		python: pythonIcon,
+		py: pythonIcon,
+		html: htmlIcon,
+		css: cssIcon,
+		rust: rustIcon,
+		go: goIcon,
+		java: javaIcon,
+		json: jsonIcon,
+		c: cIcon,
+		cpp: cppIcon,
+		csharp: csharpIcon,
+		markdown: markdownIcon,
+		md: markdownIcon,
+		bash: bashIcon,
+		shell: bashIcon,
+		sh: bashIcon,
+	};
 
-  const assetIcon = iconMap[lang];
+	const assetIcon = iconMap[lang];
 
-  if (assetIcon) {
-    return <img src={assetIcon} alt={language} className={className} />;
-  }
+	if (assetIcon) {
+		return <img src={assetIcon} alt={language} className={className} />;
+	}
 
-  switch (lang) {
-    case "json":
-      return <FileJson className={className} />;
-    case "markdown":
-    case "md":
-      return <FileType className={className} />;
-    case "shell":
-    case "bash":
-    case "sh":
-      return <Terminal className={className} />;
-    case "text":
-      return <FileText className={className} />;
-    default:
-      return <FileCode className={className} />;
-  }
+	switch (lang) {
+		case "json":
+			return <FileJson className={className} />;
+		case "markdown":
+		case "md":
+			return <FileType className={className} />;
+		case "shell":
+		case "bash":
+		case "sh":
+			return <Terminal className={className} />;
+		case "text":
+			return <FileText className={className} />;
+		default:
+			return <FileCode className={className} />;
+	}
 };

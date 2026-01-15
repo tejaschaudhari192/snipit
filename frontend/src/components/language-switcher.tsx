@@ -1,52 +1,52 @@
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
 } from "@/components/ui/select";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 
 interface LanguageSwitcherProps {
-  className?: string;
+	className?: string;
 }
 
 export const LanguageSwitcher = ({ className }: LanguageSwitcherProps) => {
-  const { i18n } = useTranslation();
-  // Initialize from i18n or localStorage to ensure sync
-  const [language, setLanguage] = useState(
-    localStorage.getItem("lang") || i18n.language || "en",
-  );
+	const { i18n } = useTranslation();
+	// Initialize from i18n or localStorage to ensure sync
+	const [language, setLanguage] = useState(
+		localStorage.getItem("lang") || i18n.language || "en",
+	);
 
-  useEffect(() => {
-    // Sync local state when i18n language changes (e.g. from another component instance)
-    if (i18n.language && i18n.language !== language) {
-      setLanguage(i18n.language);
-    }
-  }, [i18n.language, language]);
+	useEffect(() => {
+		// Sync local state when i18n language changes (e.g. from another component instance)
+		if (i18n.language && i18n.language !== language) {
+			setLanguage(i18n.language);
+		}
+	}, [i18n.language, language]);
 
-  const handleLanguageChange = (value: string) => {
-    setLanguage(value);
-    i18n.changeLanguage(value);
-    localStorage.setItem("lang", value);
-  };
+	const handleLanguageChange = (value: string) => {
+		setLanguage(value);
+		i18n.changeLanguage(value);
+		localStorage.setItem("lang", value);
+	};
 
-  return (
-    <Select onValueChange={handleLanguageChange} value={language}>
-      <SelectTrigger className={className}>
-        <SelectValue placeholder="Select Language" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectItem value="en">English</SelectItem>
-          <SelectItem value="mr">मराठी</SelectItem>
-          <SelectItem value="hi">हिन्दी</SelectItem>
-          <SelectItem value="ja">日本語</SelectItem>
-          <SelectItem value="de">Deutsch</SelectItem>
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-  );
+	return (
+		<Select onValueChange={handleLanguageChange} value={language}>
+			<SelectTrigger className={className}>
+				<SelectValue placeholder="Select Language" />
+			</SelectTrigger>
+			<SelectContent>
+				<SelectGroup>
+					<SelectItem value="en">English</SelectItem>
+					<SelectItem value="mr">मराठी</SelectItem>
+					<SelectItem value="hi">हिन्दी</SelectItem>
+					<SelectItem value="ja">日本語</SelectItem>
+					<SelectItem value="de">Deutsch</SelectItem>
+				</SelectGroup>
+			</SelectContent>
+		</Select>
+	);
 };

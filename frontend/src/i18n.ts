@@ -8,18 +8,18 @@ import ja from "@/locales/ja.json";
 import de from "@/locales/de.json";
 
 i18n.use(initReactI18next).init({
-  resources: {
-    en: { translation: en },
-    mr: { translation: mr },
-    hi: { translation: hi },
-    ja: { translation: ja },
-    de: { translation: de },
-  },
-  lng: localStorage.getItem("lang") ?? "en",
-  fallbackLng: "en",
-  interpolation: {
-    escapeValue: false,
-  },
+	resources: {
+		en: { translation: en },
+		mr: { translation: mr },
+		hi: { translation: hi },
+		ja: { translation: ja },
+		de: { translation: de },
+	},
+	lng: localStorage.getItem("lang") ?? "en",
+	fallbackLng: "en",
+	interpolation: {
+		escapeValue: false,
+	},
 });
 
 export default i18n;

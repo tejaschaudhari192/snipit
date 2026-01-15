@@ -5,51 +5,55 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 type AnimationVariant = "circle" | "circle-blur" | "gif" | "polygon";
 type StartPosition =
-  | "center"
-  | "top-left"
-  | "top-right"
-  | "bottom-left"
-  | "bottom-right";
+	| "center"
+	| "top-left"
+	| "top-right"
+	| "bottom-left"
+	| "bottom-right";
 export interface ThemeToggleButtonProps {
-  theme?: "light" | "dark";
-  showLabel?: boolean;
-  variant?: AnimationVariant;
-  start?: StartPosition;
-  url?: string; // For gif variant
-  className?: string;
-  onClick?: () => void;
+	theme?: "light" | "dark";
+	showLabel?: boolean;
+	variant?: AnimationVariant;
+	start?: StartPosition;
+	url?: string; // For gif variant
+	className?: string;
+	onClick?: () => void;
 }
 export const ThemeToggleButton = ({
-  theme = "light",
-  showLabel = false,
-  variant = "circle",
-  start = "center",
-  url,
-  className,
-  onClick,
+	theme = "light",
+	showLabel = false,
+	variant = "circle",
+	start = "center",
+	url,
+	className,
+	onClick,
 }: ThemeToggleButtonProps) => {
-  const handleClick = useCallback(() => {
-    // Inject animation styles for this specific transition
-    const styleId = `theme-transition-${Date.now()}`;
-    const style = document.createElement("style");
-    style.id = styleId;
+	const handleClick = useCallback(() => {
+		// Inject animation styles for this specific transition
+		const styleId = `theme-transition-${Date.now()}`;
+		const style = document.createElement("style");
+		style.id = styleId;
 
-    // Generate animation CSS based on variant
-    let css = "";
-    const positions = {
-      center: "center",
-      "top-left": "top left",
-      "top-right": "top right",
-      "bottom-left": "bottom left",
-      "bottom-right": "bottom right",
-    };
+		// Generate animation CSS based on variant
+		let css = "";
+		const positions = {
+			center: "center",
+			"top-left": "top left",
+			"top-right": "top right",
+			"bottom-left": "bottom left",
+			"bottom-right": "bottom right",
+		};
 
-    if (variant === "circle") {
-      const cx =
-        start === "center" ? "50" : start.includes("left") ? "0" : "100";
-      const cy =
-        start === "center" ? "50" : start.includes("top") ? "0" : "100";
-      css = `
+		if (variant === "circle") {
+			const cx =
+				start === "center"
+					? "50"
+					: start.includes("left")
+						? "0"
+						: "100";
+			const cy =
+				start === "center" ? "50" : start.includes("top") ? "0" : "100";
+			css = `
         @supports (view-transition-name: root) {
           ::view-transition-old(root) { 
             animation: none;
@@ -68,12 +72,16 @@ export const ThemeToggleButton = ({
           }
         }
       `;
-    } else if (variant === "circle-blur") {
-      const cx =
-        start === "center" ? "50" : start.includes("left") ? "0" : "100";
-      const cy =
-        start === "center" ? "50" : start.includes("top") ? "0" : "100";
-      css = `
+		} else if (variant === "circle-blur") {
+			const cx =
+				start === "center"
+					? "50"
+					: start.includes("left")
+						? "0"
+						: "100";
+			const cy =
+				start === "center" ? "50" : start.includes("top") ? "0" : "100";
+			css = `
         @supports (view-transition-name: root) {
           ::view-transition-old(root) { 
             animation: none;
@@ -95,8 +103,8 @@ export const ThemeToggleButton = ({
           }
         }
       `;
-    } else if (variant === "gif" && url) {
-      css = `
+		} else if (variant === "gif" && url) {
+			css = `
         @supports (view-transition-name: root) {
           ::view-transition-old(root) {
             animation: fade-out 0.4s ease-out;
@@ -129,8 +137,8 @@ export const ThemeToggleButton = ({
           }
         }
       `;
-    } else if (variant === "polygon") {
-      css = `
+		} else if (variant === "polygon") {
+			css = `
         @supports (view-transition-name: root) {
           ::view-transition-old(root) {
             animation: none;
@@ -156,44 +164,46 @@ export const ThemeToggleButton = ({
           }
         }
       `;
-    }
+		}
 
-    if (css) {
-      style.textContent = css;
-      document.head.appendChild(style);
+		if (css) {
+			style.textContent = css;
+			document.head.appendChild(style);
 
-      // Clean up animation styles after transition
-      setTimeout(() => {
-        const styleEl = document.getElementById(styleId);
-        if (styleEl) {
-          styleEl.remove();
-        }
-      }, 3000);
-    }
+			// Clean up animation styles after transition
+			setTimeout(() => {
+				const styleEl = document.getElementById(styleId);
+				if (styleEl) {
+					styleEl.remove();
+				}
+			}, 3000);
+		}
 
-    // Call the onClick handler if provided
-    onClick?.();
-  }, [onClick, variant, start, url, theme]);
-  return (
-    <Button
-      variant="outline"
-      size={showLabel ? "default" : "icon"}
-      onClick={handleClick}
-      className={cn(
-        "relative overflow-hidden transition-all",
-        showLabel && "gap-2",
-        className,
-      )}
-      aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
-    >
-      {theme === "light" ? (
-        <Sun className="h-[1.2rem] w-[1.2rem]" />
-      ) : (
-        <Moon className="h-[1.2rem] w-[1.2rem]" />
-      )}
-      {showLabel && (
-        <span className="text-sm">{theme === "light" ? "Light" : "Dark"}</span>
-      )}
-    </Button>
-  );
+		// Call the onClick handler if provided
+		onClick?.();
+	}, [onClick, variant, start, url, theme]);
+	return (
+		<Button
+			variant="outline"
+			size={showLabel ? "default" : "icon"}
+			onClick={handleClick}
+			className={cn(
+				"relative overflow-hidden transition-all",
+				showLabel && "gap-2",
+				className,
+			)}
+			aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
+		>
+			{theme === "light" ? (
+				<Sun className="h-[1.2rem] w-[1.2rem]" />
+			) : (
+				<Moon className="h-[1.2rem] w-[1.2rem]" />
+			)}
+			{showLabel && (
+				<span className="text-sm">
+					{theme === "light" ? "Light" : "Dark"}
+				</span>
+			)}
+		</Button>
+	);
 };
