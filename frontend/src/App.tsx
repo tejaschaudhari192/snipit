@@ -4,6 +4,7 @@ import DisplayPage from "@/pages/display";
 import HistoryPage from "@/pages/history";
 import AboutPage from "@/pages/about";
 import SplashPage from "@/pages/splash";
+import ProfilePage from "@/pages/profile";
 import { useEffect, useRef, useState } from "react";
 import { useApiHelpers } from "./lib/api";
 import Header from "@/components/header";
@@ -43,6 +44,7 @@ const App = () => {
 							<Route path="/" element={<HomePage />} />
 							<Route path="/login" element={<LoginPage />} />
 							<Route path="/signup" element={<SignupPage />} />
+							<Route path="/profile" element={<ProfilePage />} />
 							<Route path="/:id" element={<DisplayPage />} />
 							<Route path="/about" element={<AboutPage />} />
 							<Route path="/history" element={<HistoryPage />} />

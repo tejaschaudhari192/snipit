@@ -77,6 +77,16 @@ export const useApiHelpers = () => {
 		return response.data;
 	};
 
+	const getUserPastes = async () => {
+		const response = await api.get("/user/pastes");
+		return response.data;
+	};
+
+	const updateMe = async (data: { username: string }) => {
+		const response = await api.put("/auth/me", data);
+		return response.data;
+	};
+
 	return {
 		getServerStatus,
 		submitPaste,
@@ -84,6 +94,8 @@ export const useApiHelpers = () => {
 		deletePaste,
 		updatePaste,
 		detectLanguage,
+		getUserPastes,
+		updateMe,
 	};
 };
 

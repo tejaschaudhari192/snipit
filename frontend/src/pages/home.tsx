@@ -87,7 +87,9 @@ const HomePage = () => {
 				},
 			);
 			navigate("/" + data.id, { state: { pasteData: data } });
-			saveToLocal(data);
+			if (!user) {
+				saveToLocal(data);
+			}
 			return true;
 		} catch (error) {
 			const axiosError = error as AxiosError<{

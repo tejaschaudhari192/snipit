@@ -100,3 +100,40 @@ export const getMe = async (req: Request, res: Response) => {
 		email: user.email,
 	});
 };
+
+export const updateMe = async (req: Request, res: Response) => {
+	const user = (req as AuthRequest).user;
+	if (!user) {
+		res.status(401).json({ message: "Not authorized" });
+		return;
+	}
+
+	const { username } = req.body;
+
+	try {
+		if (username) {
+			const userExists = await User.findOne({ username });
+			if (
+				userExists &&
+				userExists._id.toString() !== user._id.toString()
+			) {
+				res.status(400).json({ message: "Username already exists" });
+				return;
+			}
+			user.username = username;
+		}
+
+		await user.save();
+
+		res.status(200).json({
+			_id: user._id,
+			username: user.username,
+			email: user.email,
+			message: "Profile updated successfully",
+		});
+	} catch (error: unknown) {
+		const message =
+			error instanceof Error ? error.message : "An error occurred";
+		res.status(500).json({ message });
+	}
+};

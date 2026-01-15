@@ -318,6 +318,31 @@ class PasteController {
 			return next(error);
 		}
 	}
+
+	async getUserPastes(req: Request, res: Response, next: NextFunction) {
+		try {
+			let userId = null;
+			if (req.cookies.jwt) {
+				try {
+					const decoded = jwt.verify(
+						req.cookies.jwt,
+						process.env.JWT_SECRET || "default_secret",
+					) as { id: string };
+					userId = decoded.id;
+				} catch (e) {}
+			}
+
+			if (!userId) {
+				return res.status(401).json({ error: "Unauthorized" });
+			}
+
+			const pastes = await this.pasteService.getUserPastes(userId);
+			return res.json(pastes.map((p) => p.toObject()));
+		} catch (error) {
+			this.logger.error("Error fetching user pastes", error);
+			return next(error);
+		}
+	}
 }
 
 export default PasteController;

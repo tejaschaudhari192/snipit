@@ -61,6 +61,11 @@ class PasteService {
 		const paste = await pasteModel.findOne({ id });
 		return paste ? new Date() > paste.expiresAt : false;
 	}
+	async getUserPastes(ownerId: string) {
+		return await pasteModel
+			.find({ owner: ownerId })
+			.sort({ createdAt: -1 });
+	}
 }
 
 export default PasteService;

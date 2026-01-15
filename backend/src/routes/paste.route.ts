@@ -7,10 +7,19 @@ import {
 	type Request,
 	type Response,
 } from "express";
+import { protect } from "@/middleware/auth.middleware.js";
 const router: Router = Router();
 
 const pasteService = new PasteService();
 const pasteController = new PasteController(pasteService, logger);
+
+router.get(
+	"/user/pastes",
+	protect,
+	async (req: Request, res: Response, next: NextFunction) => {
+		return await pasteController.getUserPastes(req, res, next);
+	},
+);
 
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
 	return await pasteController.createPaste(req, res, next);

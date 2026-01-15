@@ -9,6 +9,8 @@ import { saveToLocal } from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
+import { useAuth } from "@/context/AuthContext";
+import { useTranslation } from "react-i18next";
 import type { PasteData } from "@/types";
 
 import Loader from "@/components/loader";
@@ -26,6 +28,8 @@ const DisplayPage = () => {
 	const location = useLocation();
 	const apiHelpers = useApiHelpers();
 	const { theme } = useTheme();
+	const { user } = useAuth();
+	const { t } = useTranslation();
 
 	// State
 	const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -88,7 +92,9 @@ const DisplayPage = () => {
 				);
 				setVisibility(data.visibility || "public");
 				setAllowedUsers(data.allowedUsers || []);
-				saveToLocal(data);
+				if (!user) {
+					saveToLocal(data);
+				}
 			} else {
 				setPaste(undefined);
 			}
@@ -113,7 +119,9 @@ const DisplayPage = () => {
 				const detectedLang =
 					result.language === "bash" ? "shell" : result.language;
 				setLanguage(detectedLang);
-				toast.success(`Detected language: ${detectedLang}`);
+				toast.success(
+					t("messages.detected_language", { language: detectedLang }),
+				);
 			}
 		} catch (error) {
 			console.error("Failed to detect language", error);
@@ -123,32 +131,53 @@ const DisplayPage = () => {
 	};
 
 	const handleDelete = async () => {
-		toast("Are you sure you want to delete this paste?", {
-			position: "top-center",
-			action: {
-				label: "Delete",
-				onClick: async () => {
-					const data = await apiHelpers.deletePaste(id!);
-					if (data) {
-						toast.success("Paste deleted", {
-							position: "bottom-right",
-						});
-						navigate("/");
-					} else {
-						toast.error("Failed to delete paste", {
-							position: "bottom-right",
-						});
-					}
+		toast(
+			t(
+				"messages.delete_confirm",
+				"Are you sure you want to delete this snippet?",
+			),
+			{
+				position: "top-center",
+				action: {
+					label: t("history.clear_action", "Delete"),
+					onClick: async () => {
+						const data = await apiHelpers.deletePaste(id!);
+						if (data) {
+							toast.success(
+								t(
+									"messages.snippet_deleted",
+									"Snippet deleted",
+								),
+								{
+									position: "bottom-right",
+								},
+							);
+							navigate("/");
+						} else {
+							toast.error(
+								t(
+									"messages.delete_failed",
+									"Failed to delete snippet",
+								),
+								{
+									position: "bottom-right",
+								},
+							);
+						}
+					},
+				},
+				cancel: {
+					label: t("history.cancel", "Cancel"),
+					onClick: () =>
+						toast.info(
+							t("messages.action_cancelled", "Action cancelled"),
+							{
+								position: "bottom-right",
+							},
+						),
 				},
 			},
-			cancel: {
-				label: "Cancel",
-				onClick: () =>
-					toast.info("Action cancelled", {
-						position: "bottom-right",
-					}),
-			},
-		});
+		);
 	};
 	const handleEditSave = async () => {
 		const isUnchanged =
@@ -176,7 +205,12 @@ const DisplayPage = () => {
 				customId.trim() !== id ? customId.trim() : undefined,
 			);
 			if (data) {
-				toast.success("Paste updated Successfully ✔️");
+				toast.success(
+					t(
+						"messages.snippet_updated",
+						"Snippet updated successfully",
+					),
+				);
 				setPaste(data);
 				setUpdatedContent(data.content);
 				setLanguage(data.language || "text");
@@ -189,7 +223,9 @@ const DisplayPage = () => {
 				);
 				setVisibility(data.visibility || "public");
 				setAllowedUsers(data.allowedUsers || []);
-				saveToLocal(data);
+				if (!user) {
+					saveToLocal(data);
+				}
 
 				// If ID changed, navigate to new URL
 				if (data.id !== id) {
@@ -205,12 +241,15 @@ const DisplayPage = () => {
 			}>;
 			if (axiosError.response?.status === 409) {
 				toast.error(
-					"This ID is already taken. Please try another one.",
+					t(
+						"messages.id_conflict",
+						"This ID is already taken. Please try another one.",
+					),
 				);
 			} else {
 				toast.error(
 					axiosError.response?.data?.error ||
-						"Failed to update paste",
+						t("messages.update_failed", "Failed to update snippet"),
 				);
 			}
 		}

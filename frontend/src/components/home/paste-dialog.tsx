@@ -118,7 +118,7 @@ export const PasteDialog = ({
 
 				<div className="space-y-4 mb-6">
 					<div className="space-y-2">
-						<Label>Visibility</Label>
+						<Label>{t("common.visibility", "Visibility")}</Label>
 						<Select
 							value={visibility}
 							onValueChange={(
@@ -126,12 +126,23 @@ export const PasteDialog = ({
 							) => setVisibility(val)}
 						>
 							<SelectTrigger className="w-full h-11">
-								<SelectValue placeholder="Visibility" />
+								<SelectValue
+									placeholder={t(
+										"common.visibility",
+										"Visibility",
+									)}
+								/>
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="public">Public</SelectItem>
-								<SelectItem value="private">Private</SelectItem>
-								<SelectItem value="shared">Shared</SelectItem>
+								<SelectItem value="public">
+									{t("common.public", "Public")}
+								</SelectItem>
+								<SelectItem value="private">
+									{t("common.private", "Private")}
+								</SelectItem>
+								<SelectItem value="shared">
+									{t("common.shared", "Shared")}
+								</SelectItem>
 							</SelectContent>
 						</Select>
 					</div>
@@ -144,12 +155,21 @@ export const PasteDialog = ({
 						>
 							<div className="flex items-center gap-2 text-primary font-semibold">
 								<LogIn className="h-4 w-4" />
-								<span>Authentication Required</span>
+								<span>
+									{t(
+										"common.auth_required",
+										"Authentication Required",
+									)}
+								</span>
 							</div>
 							<p className="text-sm text-muted-foreground leading-relaxed">
-								Creating <strong>{visibility}</strong> snippets
-								requires an account to manage access control and
-								ownership.
+								{t("common.auth_required_desc", {
+									visibility: t(
+										`common.${visibility}`,
+										visibility,
+									),
+									defaultValue: `Creating ${visibility} snippets requires an account to manage access control and ownership.`,
+								})}
 							</p>
 							<div className="flex gap-2 pt-1">
 								<Button
@@ -158,25 +178,30 @@ export const PasteDialog = ({
 									className="h-8 text-xs font-bold"
 									onClick={() => navigate("/login")}
 								>
-									Login
+									{t("header.login", "Login")}
 								</Button>
 								<Button
 									size="sm"
 									className="h-8 text-xs font-bold"
 									onClick={() => navigate("/signup")}
 								>
-									Sign Up
+									{t("header.signup", "Sign Up")}
 								</Button>
 							</div>
 						</motion.div>
 					) : (
 						visibility === "shared" && (
 							<div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-								<Label>Allowed Users</Label>
+								<Label>
+									{t("common.allowed_users", "Allowed Users")}
+								</Label>
 								<MultiEmailInput
 									value={allowedUsers}
 									onChange={setAllowedUsers}
-									placeholder="Enter emails..."
+									placeholder={t(
+										"common.allowed_users_placeholder",
+										"Enter emails...",
+									)}
 									className="w-full min-h-[44px]"
 								/>
 							</div>

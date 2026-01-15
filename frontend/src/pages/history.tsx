@@ -12,17 +12,68 @@ import {
 	Link as LinkIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { motion } from "motion/react";
 import { LanguageIcon } from "@/components/language-icon";
+import { useAuth } from "@/context/AuthContext";
+import { useApiHelpers } from "@/lib/api";
+import { Loader2 } from "lucide-react";
 
 const HistoryPage = () => {
 	const { t } = useTranslation();
-	const stored = localStorage.getItem("items");
-	const [items, setItems] = useState<Array<PasteData>>(
-		stored ? JSON.parse(stored) : [],
-	);
+	const { user } = useAuth();
+	const apiHelpers = useApiHelpers();
+
+	const [items, setItems] = useState<Array<PasteData>>([]);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		const loadHistory = async () => {
+			setLoading(true);
+			try {
+				// Get local items
+				const stored = localStorage.getItem("items");
+				const localItems: Array<PasteData> = stored
+					? JSON.parse(stored)
+					: [];
+
+				let finalItems = [...localItems];
+
+				// If user is logged in, fetch their pastes
+				if (user) {
+					try {
+						const userPastes = await apiHelpers.getUserPastes();
+						// Merge and deduplicate by ID
+						const userPasteIds = new Set(
+							userPastes.map((p: PasteData) => p.id),
+						);
+						const filteredLocal = localItems.filter(
+							(p) => !userPasteIds.has(p.id),
+						);
+						finalItems = [...userPastes, ...filteredLocal];
+					} catch (err) {
+						console.error("Failed to fetch user pastes", err);
+						toast.error("Failed to sync your account snippets");
+					}
+				}
+
+				// Sort by date (descending)
+				finalItems.sort(
+					(a, b) =>
+						new Date(b.createdAt).getTime() -
+						new Date(a.createdAt).getTime(),
+				);
+
+				setItems(finalItems);
+			} finally {
+				setLoading(true); // Wait, should be false. Fixed below.
+				setLoading(false);
+			}
+		};
+
+		loadHistory();
+	}, [user, apiHelpers]);
 
 	const handleClearHistory = () => {
 		toast("Clear all history?", {
@@ -86,8 +137,16 @@ const HistoryPage = () => {
 						</h1>
 						{items.length > 0 && (
 							<p className="text-muted-foreground mt-1">
-								{items.length} snippet
-								{items.length !== 1 ? "s" : ""} saved
+								{items.length}{" "}
+								{items.length !== 1
+									? t(
+											"history.snippets_saved",
+											"snippets saved",
+										)
+									: t(
+											"history.snippet_saved",
+											"snippet saved",
+										)}
 							</p>
 						)}
 					</div>
@@ -104,7 +163,17 @@ const HistoryPage = () => {
 					)}
 				</motion.div>
 
-				{items.length === 0 ? (
+				{loading ? (
+					<div className="flex flex-col items-center justify-center p-20 gap-4">
+						<Loader2 className="h-8 w-8 animate-spin text-primary" />
+						<p className="text-muted-foreground italic">
+							{t(
+								"history.fetching_history",
+								"Fetching your history...",
+							)}
+						</p>
+					</div>
+				) : items.length === 0 ? (
 					<motion.div
 						initial={{ opacity: 0, scale: 0.95 }}
 						animate={{ opacity: 1, scale: 1 }}
@@ -243,7 +312,10 @@ const HistoryPage = () => {
 																		"home.expire_options.one_time_snippet",
 																	)
 																: expired
-																	? "Expired"
+																	? t(
+																			"history.expired",
+																			"Expired",
+																		)
 																	: getTimeRemaining(
 																			item.expiresAt,
 																		)}
@@ -265,7 +337,12 @@ const HistoryPage = () => {
 
 										{/* Hover indicator */}
 										<div className="flex items-center justify-end gap-1 mt-3 text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-											<span>View snippet</span>
+											<span>
+												{t(
+													"history.view_snippet",
+													"View snippet",
+												)}
+											</span>
 											<ExternalLink className="h-3 w-3" />
 										</div>
 									</Link>
