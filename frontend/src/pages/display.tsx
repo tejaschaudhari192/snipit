@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { type BeforeMount } from "@monaco-editor/react";
+import { AxiosError } from "axios";
 
 import { useApiHelpers } from "@/lib/api";
 import { saveToLocal } from "@/lib/utils";
@@ -39,6 +40,7 @@ const DisplayPage = () => {
 		"public" | "private" | "shared"
 	>("public");
 	const [allowedUsers, setAllowedUsers] = useState<string[]>([]);
+	const [customId, setCustomId] = useState<string>("");
 	const [isDetecting, setIsDetecting] = useState<boolean>(false);
 	const { fontSize, ref: contentRef, setFontSize } = usePinchZoom(14);
 
@@ -148,13 +150,13 @@ const DisplayPage = () => {
 			},
 		});
 	};
-
 	const handleEditSave = async () => {
 		const isUnchanged =
 			updatedContent === paste?.content &&
 			(contentType === "link") === paste?.redirectUrl &&
 			language === paste?.language &&
 			visibility === paste?.visibility &&
+			customId.trim() === paste?.id &&
 			JSON.stringify(allowedUsers) ===
 				JSON.stringify(paste?.allowedUsers);
 
@@ -163,36 +165,55 @@ const DisplayPage = () => {
 			return;
 		}
 
-		const data = await apiHelpers.updatePaste(
-			id!,
-			updatedContent!,
-			contentType === "link",
-			contentType === "code" ? language : "text",
-			visibility,
-			visibility === "shared" ? allowedUsers : [],
-		);
-		if (data) {
-			toast.success("Paste updated Successfully ✔️");
-			setPaste(data);
-			setUpdatedContent(data.content);
-			setLanguage(data.language || "text");
-			setContentType(
-				data.redirectUrl
-					? "link"
-					: data.language !== "text"
-						? "code"
-						: "text",
+		try {
+			const data = await apiHelpers.updatePaste(
+				id!,
+				updatedContent!,
+				contentType === "link",
+				contentType === "code" ? language : "text",
+				visibility,
+				visibility === "shared" ? allowedUsers : [],
+				customId.trim() !== id ? customId.trim() : undefined,
 			);
-			setVisibility(data.visibility || "public");
-			setAllowedUsers(data.allowedUsers || []);
-			saveToLocal(data);
-		} else {
-			toast.error("Failed to update paste", {
-				style: { backgroundColor: "#ef4444", color: "#fff" },
-				duration: 2000,
-			});
+			if (data) {
+				toast.success("Paste updated Successfully ✔️");
+				setPaste(data);
+				setUpdatedContent(data.content);
+				setLanguage(data.language || "text");
+				setContentType(
+					data.redirectUrl
+						? "link"
+						: data.language !== "text"
+							? "code"
+							: "text",
+				);
+				setVisibility(data.visibility || "public");
+				setAllowedUsers(data.allowedUsers || []);
+				saveToLocal(data);
+
+				// If ID changed, navigate to new URL
+				if (data.id !== id) {
+					navigate("/" + data.id, { replace: true });
+				}
+			} else {
+				toast.error("Failed to update paste");
+			}
+			setIsEdit(false);
+		} catch (error) {
+			const axiosError = error as AxiosError<{
+				error: string;
+			}>;
+			if (axiosError.response?.status === 409) {
+				toast.error(
+					"This ID is already taken. Please try another one.",
+				);
+			} else {
+				toast.error(
+					axiosError.response?.data?.error ||
+						"Failed to update paste",
+				);
+			}
 		}
-		setIsEdit(false);
 	};
 
 	const handleCancel = () => {
@@ -208,6 +229,7 @@ const DisplayPage = () => {
 		setLanguage(paste?.language || "text");
 		setVisibility(paste?.visibility || "public");
 		setAllowedUsers(paste?.allowedUsers || []);
+		setCustomId(paste?.id || "");
 	};
 
 	return (
@@ -238,6 +260,7 @@ const DisplayPage = () => {
 												? "code"
 												: "text",
 									);
+									setCustomId(paste?.id || "");
 								}
 								setIsEdit(val);
 							}}
@@ -266,6 +289,8 @@ const DisplayPage = () => {
 								onAutoDetect={() =>
 									handleLanguageDetection(updatedContent!)
 								}
+								customId={customId}
+								setCustomId={setCustomId}
 							/>
 						)}
 						<DisplayContent

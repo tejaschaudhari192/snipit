@@ -58,6 +58,7 @@ export const useApiHelpers = () => {
 		language?: string,
 		visibility?: "public" | "private" | "shared",
 		allowedUsers?: string[],
+		newId?: string,
 	) => {
 		const response = await api.put("/" + id, {
 			content,
@@ -65,6 +66,7 @@ export const useApiHelpers = () => {
 			language,
 			visibility,
 			allowedUsers,
+			newId,
 		});
 		const data = response.data;
 		return data;

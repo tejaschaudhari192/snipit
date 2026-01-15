@@ -1,5 +1,5 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, Code2, Link, Shield, Users } from "lucide-react";
+import { FileText, Code2, Link, Shield, Users, Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { LanguageSelector } from "@/components/editor/language-selector";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { MultiEmailInput } from "@/components/ui/multi-email-input";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 interface EditControlsProps {
 	contentType: "text" | "code" | "link";
@@ -24,6 +25,8 @@ interface EditControlsProps {
 	setAllowedUsers: (v: string[]) => void;
 	isDetecting: boolean;
 	onAutoDetect: () => void;
+	customId: string;
+	setCustomId: (v: string) => void;
 }
 
 export const EditControls = ({
@@ -37,6 +40,8 @@ export const EditControls = ({
 	setAllowedUsers,
 	isDetecting,
 	onAutoDetect,
+	customId,
+	setCustomId,
 }: EditControlsProps) => {
 	const { t } = useTranslation();
 
@@ -81,7 +86,17 @@ export const EditControls = ({
 					</TabsList>
 				</Tabs>
 
-				<div className="flex items-center gap-2 justify-between sm:justify-end">
+				<div className="flex flex-wrap items-center gap-2 justify-between sm:justify-end">
+					<div className="relative group flex-1 sm:flex-initial">
+						<Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+						<Input
+							value={customId}
+							onChange={(e) => setCustomId(e.target.value)}
+							placeholder="Custom ID (optional)..."
+							className="pl-9 h-11 w-full sm:w-48 bg-muted/20 border-transparent focus:border-border transition-all"
+						/>
+					</div>
+
 					<Select
 						value={visibility}
 						onValueChange={(val: "public" | "private" | "shared") =>

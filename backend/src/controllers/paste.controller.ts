@@ -1,5 +1,6 @@
 import { dateConverter, uniqueIdGenerator } from "@/lib/utils.js";
 import type { NextFunction, Request, Response } from "express";
+import type { PasteData } from "@/types/index.js";
 import { createPasteSchema } from "@/validators/paste.validators.js";
 import jwt from "jsonwebtoken";
 import type { Logger } from "winston";
@@ -97,11 +98,9 @@ class PasteController {
 				validatedBody.visibility !== "public" &&
 				!owner
 			) {
-				return res
-					.status(401)
-					.json({
-						error: "Login required for private/shared pastes",
-					});
+				return res.status(401).json({
+					error: "Login required for private/shared pastes",
+				});
 			}
 
 			let pasteId =
@@ -111,7 +110,7 @@ class PasteController {
 					: customId || uniqueIdGenerator());
 
 			const createAndSavePaste = async (id: string) => {
-				const pasteData = {
+				const pasteData: PasteData = {
 					id,
 					content: validatedBody.content,
 					expiresAt: validatedBody.expiresAt,
@@ -120,11 +119,11 @@ class PasteController {
 					language: validatedBody.language,
 					burnAfterRead: validatedBody.burnAfterRead,
 					expiresTime: validatedBody.expiresTime,
-					owner,
+					owner: owner || undefined,
 					visibility: validatedBody.visibility,
 					allowedUsers: validatedBody.allowedUsers,
 				};
-				return await this.pasteService.savePaste(pasteData as any);
+				return await this.pasteService.savePaste(pasteData);
 			};
 
 			try {
@@ -232,11 +231,9 @@ class PasteController {
 					result.allowedUsers.includes(userEmail);
 
 				if (!isOwner && !isAllowed) {
-					return res
-						.status(403)
-						.json({
-							error: "Access denied. Private or Shared snippet.",
-						});
+					return res.status(403).json({
+						error: "Access denied. Private or Shared snippet.",
+					});
 				}
 			}
 
@@ -261,8 +258,14 @@ class PasteController {
 
 	async updatePaste(req: Request, res: Response, next: NextFunction) {
 		const id = req.params.id;
-		const { content, redirectUrl, language, visibility, allowedUsers } =
-			req.body;
+		const {
+			content,
+			redirectUrl,
+			language,
+			visibility,
+			allowedUsers,
+			newId,
+		} = req.body;
 		try {
 			// Check ownership
 			const existingPaste = await this.pasteService.getPasteById(id!);
@@ -283,16 +286,14 @@ class PasteController {
 				}
 
 				if (existingPaste.owner.toString() !== userId) {
-					return res
-						.status(403)
-						.json({
-							error: "Unauthorized: You are not the owner of this paste",
-						});
+					return res.status(403).json({
+						error: "Unauthorized: You are not the owner of this paste",
+					});
 				}
 			}
 
 			this.logger.info(
-				`Update request for paste ${id}: visibility = ${visibility} `,
+				`Update request for paste ${id}: visibility = ${visibility}, newId = ${newId} `,
 			);
 			const result = await this.pasteService.updatePaste(
 				id!,
@@ -301,11 +302,18 @@ class PasteController {
 				language,
 				visibility,
 				allowedUsers,
+				newId,
 			);
 
 			this.logger.info(`Successfully updated paste: ${id} `);
 			return res.json(result!.toObject());
 		} catch (error) {
+			if (
+				error instanceof Error &&
+				error.message === "ID_ALREADY_EXISTS"
+			) {
+				return res.status(409).json({ error: "ID already in use" });
+			}
 			this.logger.error("Error updating paste", id, error);
 			return next(error);
 		}

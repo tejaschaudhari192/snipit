@@ -25,18 +25,28 @@ class PasteService {
 		content: string,
 		redirectUrl?: boolean,
 		language?: string,
-		visibility?: string,
+		visibility?: "public" | "private" | "shared",
 		allowedUsers?: string[],
+		newId?: string,
 	) {
 		const paste = await pasteModel.findOne({ id });
 		if (!paste) return null;
+
+		// If changing ID, check if new ID is already taken
+		if (newId && newId !== id) {
+			const existing = await pasteModel.findOne({ id: newId });
+			if (existing) {
+				throw new Error("ID_ALREADY_EXISTS");
+			}
+			paste.id = newId;
+		}
 
 		paste.content = content;
 		if (redirectUrl !== undefined) paste.redirectUrl = redirectUrl;
 		if (language !== undefined) paste.language = language;
 
 		if (visibility !== undefined) {
-			paste.visibility = visibility as any;
+			paste.visibility = visibility;
 			paste.markModified("visibility");
 		}
 
