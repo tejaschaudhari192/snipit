@@ -1,9 +1,9 @@
 import express from "express";
 import {
-  registerUser,
-  loginUser,
-  logoutUser,
-  getMe,
+	registerUser,
+	loginUser,
+	logoutUser,
+	getMe,
 } from "@/controllers/auth.controller.js";
 import { protect } from "@/middleware/auth.middleware.js";
 

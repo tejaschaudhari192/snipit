@@ -1,48 +1,48 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "node ./dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --exec tsx ./src/index.ts",
-    "build": "tsc && tsc-alias",
-    "lint": "eslint .",
-    "format": "prettier --write ."
-  },
-  "author": "",
-  "license": "ISC",
-  "type": "module",
-  "lint-staged": {
-    "src/**/*{js,ts}": [
-      "pnpm run format"
-    ]
-  },
-  "dependencies": {
-    "@types/cors": "^2.8.19",
-    "bcryptjs": "^3.0.3",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.5",
-    "crypto-random-string": "^5.0.0",
-    "dotenv": "^17.2.2",
-    "express": "^5.1.0",
-    "groq-sdk": "^0.37.0",
-    "jsonwebtoken": "^9.0.3",
-    "mongoose": "^8.18.0",
-    "nodemon": "^3.1.10",
-    "winston": "^3.17.0",
-    "zod": "^4.1.5"
-  },
-  "devDependencies": {
-    "@types/bcryptjs": "^3.0.0",
-    "@types/cookie-parser": "^1.4.10",
-    "@types/express": "^5.0.3",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/mongoose": "^5.11.97",
-    "@types/node": "^24.3.1",
-    "prettier": "^3.6.2",
-    "tsc-alias": "^1.8.16",
-    "typescript": "^5.9.2"
-  }
+	"name": "backend",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "node ./dist/index.js",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "nodemon --exec tsx ./src/index.ts",
+		"build": "tsc && tsc-alias",
+		"lint": "eslint .",
+		"format": "prettier --write ."
+	},
+	"author": "",
+	"license": "ISC",
+	"type": "module",
+	"lint-staged": {
+		"src/**/*{js,ts}": [
+			"pnpm run format"
+		]
+	},
+	"dependencies": {
+		"@types/cors": "^2.8.19",
+		"bcryptjs": "^3.0.3",
+		"cookie-parser": "^1.4.7",
+		"cors": "^2.8.5",
+		"crypto-random-string": "^5.0.0",
+		"dotenv": "^17.2.2",
+		"express": "^5.1.0",
+		"groq-sdk": "^0.37.0",
+		"jsonwebtoken": "^9.0.3",
+		"mongoose": "^8.18.0",
+		"nodemon": "^3.1.10",
+		"winston": "^3.17.0",
+		"zod": "^4.1.5"
+	},
+	"devDependencies": {
+		"@types/bcryptjs": "^3.0.0",
+		"@types/cookie-parser": "^1.4.10",
+		"@types/express": "^5.0.3",
+		"@types/jsonwebtoken": "^9.0.10",
+		"@types/mongoose": "^5.11.97",
+		"@types/node": "^24.3.1",
+		"prettier": "^3.6.2",
+		"tsc-alias": "^1.8.16",
+		"typescript": "^5.9.2"
+	}
 }
