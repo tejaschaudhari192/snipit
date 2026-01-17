@@ -7,6 +7,9 @@ import {
 	Link2,
 	Heart,
 	Hash,
+	Share2,
+	User,
+	Lock,
 } from "lucide-react";
 
 const app = {
@@ -30,6 +33,21 @@ const app = {
 			icon: Clock,
 			key: "expiration",
 			gradient: "from-amber-500 to-orange-500",
+		},
+		{
+			icon: Share2,
+			key: "sharing",
+			gradient: "from-blue-500 to-indigo-500",
+		},
+		{
+			icon: User,
+			key: "profile",
+			gradient: "from-green-500 to-emerald-500",
+		},
+		{
+			icon: Lock,
+			key: "password",
+			gradient: "from-red-500 to-rose-500",
 		},
 		{
 			icon: Languages,
@@ -65,6 +83,12 @@ const app = {
 			github: "https://github.com/durgeshkapade",
 			avatar: "https://avatars.githubusercontent.com/u/135988213?v=4",
 		},
+	],
+	faq: [
+		{ key: "free" },
+		{ key: "expiration" },
+		{ key: "secure" },
+		{ key: "edit" },
 	],
 };
 

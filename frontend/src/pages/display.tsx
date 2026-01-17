@@ -58,6 +58,8 @@ const DisplayPage = () => {
 	const { fontSize, ref: contentRef, setFontSize } = usePinchZoom(14);
 	const [passwordInput, setPasswordInput] = useState("");
 	const [passwordError, setPasswordError] = useState("");
+	const [editPassword, setEditPassword] = useState("");
+	const [isPasswordEnabled, setIsPasswordEnabled] = useState(false);
 
 	const handleEditorWillMount: BeforeMount = (monaco) =>
 		defineMonacoThemes(monaco);
@@ -78,6 +80,9 @@ const DisplayPage = () => {
 				);
 				setVisibility(data.visibility || "public");
 				setAllowedUsers(data.allowedUsers || []);
+				setIsPasswordEnabled(
+					data.isPasswordProtected || !!data.password || false,
+				);
 				setLoading(false);
 				window.history.replaceState({}, document.title);
 				return;
@@ -103,6 +108,9 @@ const DisplayPage = () => {
 				);
 				setVisibility(data.visibility || "public");
 				setAllowedUsers(data.allowedUsers || []);
+				setIsPasswordEnabled(
+					data.isPasswordProtected || !!data.password || false,
+				);
 				if (!user) {
 					saveToLocal(data);
 				}
@@ -172,12 +180,17 @@ const DisplayPage = () => {
 		);
 	};
 	const handleEditSave = async () => {
+		const wasProtected = paste?.isPasswordProtected || false;
+		const passwordChanged =
+			isPasswordEnabled !== wasProtected || !!editPassword;
+
 		const isUnchanged =
 			updatedContent === paste?.content &&
 			(contentType === "link") === paste?.redirectUrl &&
 			language === paste?.language &&
 			visibility === paste?.visibility &&
 			customId.trim() === paste?.id &&
+			!passwordChanged &&
 			JSON.stringify(allowedUsers) ===
 				JSON.stringify(paste?.allowedUsers);
 
@@ -185,6 +198,17 @@ const DisplayPage = () => {
 			setIsEdit(false);
 			return;
 		}
+
+		// Calculate password update payload
+		let passwordPayload: string | undefined = undefined;
+		if (!isPasswordEnabled && wasProtected) {
+			// Password disabled, send empty string to remove
+			passwordPayload = "";
+		} else if (isPasswordEnabled && editPassword) {
+			// Password enabled and updated, send new password
+			passwordPayload = editPassword;
+		}
+		// Else (isPasswordEnabled && !editPassword) -> user kept existing password, send undefined
 
 		try {
 			const data = await apiHelpers.updatePaste(
@@ -195,6 +219,7 @@ const DisplayPage = () => {
 				visibility,
 				visibility === "shared" ? allowedUsers : [],
 				customId.trim() !== id ? customId.trim() : undefined,
+				passwordPayload,
 			);
 			if (data) {
 				toast.success(
@@ -215,6 +240,8 @@ const DisplayPage = () => {
 				);
 				setVisibility(data.visibility || "public");
 				setAllowedUsers(data.allowedUsers || []);
+				setIsPasswordEnabled(data.isPasswordProtected || false);
+				setEditPassword("");
 				if (!user) {
 					saveToLocal(data);
 				}
@@ -260,6 +287,8 @@ const DisplayPage = () => {
 		setVisibility(paste?.visibility || "public");
 		setAllowedUsers(paste?.allowedUsers || []);
 		setCustomId(paste?.id || "");
+		setEditPassword("");
+		setIsPasswordEnabled(paste?.isPasswordProtected || false);
 	};
 
 	const handleVerifyPassword = async () => {
@@ -374,6 +403,11 @@ const DisplayPage = () => {
 													: "text",
 										);
 										setCustomId(paste?.id || "");
+										setIsPasswordEnabled(
+											paste?.isPasswordProtected ||
+												!!paste?.password ||
+												false,
+										);
 									}
 									setIsEdit(val);
 								}}
@@ -404,6 +438,10 @@ const DisplayPage = () => {
 									}
 									customId={customId}
 									setCustomId={setCustomId}
+									newPassword={editPassword}
+									setNewPassword={setEditPassword}
+									isPasswordEnabled={isPasswordEnabled}
+									setIsPasswordEnabled={setIsPasswordEnabled}
 								/>
 							)}
 							<DisplayContent

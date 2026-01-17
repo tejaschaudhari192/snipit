@@ -11,6 +11,7 @@ export interface PasteData {
 	visibility?: "public" | "private" | "shared";
 	allowedUsers?: string[];
 	isPasswordProtected?: boolean;
+	password?: string;
 }
 
 export type IdType = "system" | "dynamic";

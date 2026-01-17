@@ -214,6 +214,38 @@ const AboutPage = () => {
 					</div>
 				</section>
 
+				{/* FAQ Section */}
+				<section className="py-16 md:py-24 px-4 bg-secondary/5">
+					<div className="max-w-4xl mx-auto">
+						<h2 className="text-2xl md:text-4xl font-bold mb-12 text-center">
+							{t("about_page.faq.title")}
+						</h2>
+						<div className="grid gap-6">
+							{app.faq.map((item, index) => (
+								<motion.div
+									key={item.key}
+									initial={{ opacity: 0, x: -20 }}
+									whileInView={{ opacity: 1, x: 0 }}
+									viewport={{ once: true }}
+									transition={{ delay: index * 0.1 }}
+									className="p-6 rounded-2xl bg-card border border-border/50 shadow-sm hover:shadow-md transition-shadow"
+								>
+									<h3 className="text-lg font-bold mb-2">
+										{t(
+											`about_page.faq.items.${item.key}.question`,
+										)}
+									</h3>
+									<p className="text-muted-foreground leading-relaxed">
+										{t(
+											`about_page.faq.items.${item.key}.answer`,
+										)}
+									</p>
+								</motion.div>
+							))}
+						</div>
+					</div>
+				</section>
+
 				{/* CTA Section */}
 				<section className="py-20 md:py-32 px-4">
 					<div className="max-w-5xl mx-auto">

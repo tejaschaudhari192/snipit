@@ -179,6 +179,18 @@
 			"redirect_urls": {
 				"title": "Shorten Links",
 				"desc": "Create short, manageable links that redirect to any destination instantly."
+			},
+			"sharing": {
+				"title": "Easy Sharing",
+				"desc": "Share your snippets effortlessly with a simple link or QR code."
+			},
+			"profile": {
+				"title": "User Profiles",
+				"desc": "Create an account to manage, edit, and keep track of your snippets."
+			},
+			"password": {
+				"title": "Password Protection",
+				"desc": "Secure your sensitive snippets with password protection for restricted access."
 			}
 		},
 		"story": {
@@ -196,6 +208,27 @@
 			"desc": "Snipit is open source and we welcome contributions from the community. Whether it's bug fixes, new features, or documentation improvements, every contribution matters.",
 			"github_button": "View on GitHub",
 			"contact_button": "Get in Touch"
+		},
+		"faq": {
+			"title": "Frequently Asked Questions",
+			"items": {
+				"free": {
+					"question": "Is Snipit free to use?",
+					"answer": "Yes! Snipit is completely free and open source. You can use it for personal or commercial projects without any cost."
+				},
+				"expiration": {
+					"question": "How long do snippets last?",
+					"answer": "You can choose the expiration time for each snippet, ranging from 1 hour to 1 year. You can also create snippets that never expire."
+				},
+				"secure": {
+					"question": "Is my code secure?",
+					"answer": "We take security seriously. All snippets are encrypted in transit and at rest. Password-protected snippets add an extra layer of security."
+				},
+				"edit": {
+					"question": "Can I edit my snippets later?",
+					"answer": "Yes, if you are logged in when you create a snippet, you can edit or delete it later from your dashboard."
+				}
+			}
 		}
 	},
 	"footer": {

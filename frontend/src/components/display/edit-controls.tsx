@@ -1,5 +1,13 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, Code2, Link, Shield, Users, Globe } from "lucide-react";
+import {
+	FileText,
+	Code2,
+	Link,
+	Shield,
+	Users,
+	Globe,
+	Lock,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { LanguageSelector } from "@/components/editor/language-selector";
 import { Button } from "@/components/ui/button";
@@ -13,6 +21,7 @@ import {
 import { MultiEmailInput } from "@/components/ui/multi-email-input";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface EditControlsProps {
 	contentType: "text" | "code" | "link";
@@ -27,6 +36,10 @@ interface EditControlsProps {
 	onAutoDetect: () => void;
 	customId: string;
 	setCustomId: (v: string) => void;
+	newPassword: string;
+	setNewPassword: (v: string) => void;
+	isPasswordEnabled: boolean;
+	setIsPasswordEnabled: (v: boolean) => void;
 }
 
 export const EditControls = ({
@@ -42,138 +55,182 @@ export const EditControls = ({
 	onAutoDetect,
 	customId,
 	setCustomId,
+	newPassword,
+	setNewPassword,
+	isPasswordEnabled,
+	setIsPasswordEnabled,
 }: EditControlsProps) => {
 	const { t } = useTranslation();
 
 	return (
 		<div className="flex flex-col gap-4 animate-in fade-in slide-in-from-top-4 duration-300">
-			<div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
-				<Tabs
-					value={contentType}
-					onValueChange={(val) =>
-						setContentType(val as "text" | "code" | "link")
-					}
-					className="w-full sm:w-auto"
-				>
-					<TabsList className="h-11 w-full flex">
-						<TabsTrigger
-							value="text"
-							className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
-						>
-							<FileText className="h-4 w-4 shrink-0" />
-							<span className="whitespace-nowrap">
-								{t("home.tab_text")}
-							</span>
-						</TabsTrigger>
-						<TabsTrigger
-							value="code"
-							className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
-						>
-							<Code2 className="h-4 w-4 shrink-0" />
-							<span className="whitespace-nowrap">
-								{t("home.tab_code")}
-							</span>
-						</TabsTrigger>
-						<TabsTrigger
-							value="link"
-							className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
-						>
-							<Link className="h-4 w-4 shrink-0" />
-							<span className="whitespace-nowrap">
-								{t("home.tab_link")}
-							</span>
-						</TabsTrigger>
-					</TabsList>
-				</Tabs>
+			<div className="flex flex-col gap-4">
+				<div className="flex flex-col xl:flex-row gap-4 justify-between items-start xl:items-center">
+					<Tabs
+						value={contentType}
+						onValueChange={(val) =>
+							setContentType(val as "text" | "code" | "link")
+						}
+						className="w-full xl:w-auto"
+					>
+						<TabsList className="h-11 w-full xl:w-fit flex">
+							<TabsTrigger
+								value="text"
+								className="flex-1 xl:flex-none xl:w-32 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
+							>
+								<FileText className="h-4 w-4 shrink-0" />
+								<span className="whitespace-nowrap">
+									{t("home.tab_text")}
+								</span>
+							</TabsTrigger>
+							<TabsTrigger
+								value="code"
+								className="flex-1 xl:flex-none xl:w-32 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
+							>
+								<Code2 className="h-4 w-4 shrink-0" />
+								<span className="whitespace-nowrap">
+									{t("home.tab_code")}
+								</span>
+							</TabsTrigger>
+							<TabsTrigger
+								value="link"
+								className="flex-1 xl:flex-none xl:w-32 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
+							>
+								<Link className="h-4 w-4 shrink-0" />
+								<span className="whitespace-nowrap">
+									{t("home.tab_link")}
+								</span>
+							</TabsTrigger>
+						</TabsList>
+					</Tabs>
 
-				<div className="flex flex-wrap items-center gap-2 justify-between sm:justify-end">
-					<div className="relative group flex-1 sm:flex-initial">
-						<Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-						<Input
-							value={customId}
-							onChange={(e) => setCustomId(e.target.value)}
-							placeholder={t(
-								"home.dynamic_id_dialog.placeholder",
-								"Custom ID (optional)...",
-							)}
-							className="pl-9 h-11 w-full sm:w-48 bg-muted/20 border-transparent focus:border-border transition-all"
+					<div className="w-full xl:w-auto flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
+						<div className="relative group flex-1 sm:flex-none sm:w-48">
+							<Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+							<Input
+								value={customId}
+								onChange={(e) => setCustomId(e.target.value)}
+								placeholder={t(
+									"home.dynamic_id_dialog.placeholder",
+									"Custom ID...",
+								)}
+								className="pl-9 h-11 w-full bg-muted/20 border-transparent focus:border-border transition-all"
+							/>
+						</div>
+
+						<Select
+							value={visibility}
+							onValueChange={(
+								val: "public" | "private" | "shared",
+							) => setVisibility(val)}
+						>
+							<SelectTrigger className="flex-1 sm:flex-none sm:w-[140px] h-11">
+								<div className="flex items-center gap-2">
+									<Shield className="h-4 w-4 text-muted-foreground" />
+									<SelectValue
+										placeholder={t(
+											"common.visibility",
+											"Visibility",
+										)}
+									/>
+								</div>
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="public">
+									{t("common.public", "Public")}
+								</SelectItem>
+								<SelectItem value="private">
+									{t("common.private", "Private")}
+								</SelectItem>
+								<SelectItem value="shared">
+									{t("common.shared", "Shared")}
+								</SelectItem>
+							</SelectContent>
+						</Select>
+
+						{contentType === "code" && (
+							<div className="flex-1 sm:flex-none flex items-center gap-2 animate-in fade-in zoom-in-95 duration-200">
+								<LanguageSelector
+									value={language}
+									onValueChange={setLanguage}
+									isDetecting={isDetecting}
+									className="w-full sm:w-[180px] h-11"
+								/>
+								{!isDetecting && (
+									<Button
+										variant="outline"
+										size="icon"
+										className="h-11 w-11 shrink-0"
+										onClick={onAutoDetect}
+										title={t(
+											"home.auto_detecting",
+											"Auto detect language",
+										)}
+									>
+										<Code2 className="h-4 w-4" />
+									</Button>
+								)}
+							</div>
+						)}
+					</div>
+				</div>
+
+				<div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/50">
+					<div className="flex items-center gap-3">
+						<Checkbox
+							id="password-protected"
+							checked={isPasswordEnabled}
+							onCheckedChange={(checked) =>
+								setIsPasswordEnabled(checked as boolean)
+							}
 						/>
+						<Label
+							htmlFor="password-protected"
+							className="cursor-pointer font-medium select-none flex items-center gap-2"
+						>
+							<Lock className="h-4 w-4 text-muted-foreground" />
+							{t(
+								"common.password_protected",
+								"Password Protected",
+							)}
+						</Label>
 					</div>
 
-					<Select
-						value={visibility}
-						onValueChange={(val: "public" | "private" | "shared") =>
-							setVisibility(val)
-						}
-					>
-						<SelectTrigger className="flex-1 sm:w-fit min-w-[130px] h-11">
-							<div className="flex items-center gap-2">
-								<Shield className="h-4 w-4 text-muted-foreground" />
-								<SelectValue
-									placeholder={t(
-										"common.visibility",
-										"Visibility",
-									)}
-								/>
-							</div>
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value="public">
-								{t("common.public", "Public")}
-							</SelectItem>
-							<SelectItem value="private">
-								{t("common.private", "Private")}
-							</SelectItem>
-							<SelectItem value="shared">
-								{t("common.shared", "Shared")}
-							</SelectItem>
-						</SelectContent>
-					</Select>
-
-					{contentType === "code" && (
-						<div className="flex items-center gap-2 animate-in fade-in zoom-in-95 duration-200">
-							<LanguageSelector
-								value={language}
-								onValueChange={setLanguage}
-								isDetecting={isDetecting}
-								className="w-full sm:w-[180px] h-11"
+					{isPasswordEnabled && (
+						<div className="relative group w-full sm:max-w-xs animate-in slide-in-from-right-2 fade-in duration-200">
+							<Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+							<Input
+								type="password"
+								value={newPassword}
+								onChange={(e) => setNewPassword(e.target.value)}
+								placeholder={t(
+									"common.password_placeholder",
+									"Enter password...",
+								)}
+								className="pl-9 h-11 w-full bg-background border-input focus:border-border transition-all shadow-sm"
 							/>
-							{!isDetecting && (
-								<Button
-									variant="outline"
-									size="icon"
-									className="h-11 w-11 shrink-0"
-									onClick={onAutoDetect}
-									title={t(
-										"home.auto_detecting",
-										"Auto detect language",
-									)}
-								>
-									<Code2 className="h-4 w-4" />
-								</Button>
-							)}
 						</div>
 					)}
 				</div>
-			</div>
 
-			{visibility === "shared" && (
-				<div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
-					<Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2 ml-1">
-						<Users className="h-3 w-3" />
-						{t("common.allowed_users", "Collaborators")}
-					</Label>
-					<MultiEmailInput
-						value={allowedUsers}
-						onChange={setAllowedUsers}
-						placeholder={t(
-							"common.allowed_users_placeholder",
-							"Enter emails...",
-						)}
-						className="w-full min-h-[44px] bg-background/50 backdrop-blur-sm border-primary/10 focus-within:border-primary/30 transition-colors"
-					/>
-				</div>
-			)}
+				{visibility === "shared" && (
+					<div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+						<Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2 ml-1">
+							<Users className="h-3 w-3" />
+							{t("common.allowed_users", "Collaborators")}
+						</Label>
+						<MultiEmailInput
+							value={allowedUsers}
+							onChange={setAllowedUsers}
+							placeholder={t(
+								"common.allowed_users_placeholder",
+								"Enter emails...",
+							)}
+							className="w-full min-h-[44px] bg-background/50 backdrop-blur-sm border-primary/10 focus-within:border-primary/30 transition-colors"
+						/>
+					</div>
+				)}
+			</div>
 		</div>
 	);
 };
