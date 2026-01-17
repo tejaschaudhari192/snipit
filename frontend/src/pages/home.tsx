@@ -15,7 +15,6 @@ import type { IdType } from "@/types";
 import { CONFIG } from "@/configurations";
 import { useLanguageDetection } from "@/hooks/use-language-detection";
 
-// Extracted Components
 import { LanguageSelector } from "@/components/editor/language-selector";
 import { FontSizeControls } from "@/components/editor/font-size-controls";
 import { CustomExpiryDialog } from "@/components/home/custom-expiry-dialog";
@@ -37,7 +36,6 @@ const HomePage = () => {
 	const { t } = useTranslation();
 	const { theme } = useTheme();
 
-	// State
 	const [visibility, setVisibility] = useState<
 		"public" | "private" | "shared"
 	>("public");

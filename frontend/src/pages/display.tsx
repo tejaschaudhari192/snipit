@@ -16,7 +16,6 @@ import type { PasteData } from "@/types";
 import Loader from "@/components/loader";
 import Error from "@/components/error";
 
-// Extracted Components
 import { DisplayToolbar } from "@/components/display/display-toolbar";
 import { DisplayMetadata } from "@/components/display/display-metadata";
 import { DisplayContent } from "@/components/display/display-content";
@@ -42,7 +41,6 @@ const DisplayPage = () => {
 	const { user } = useAuth();
 	const { t } = useTranslation();
 
-	// State
 	const [isEdit, setIsEdit] = useState<boolean>(false);
 	const [paste, setPaste] = useState<PasteData>();
 	const [updatedContent, setUpdatedContent] = useState<string>();
@@ -221,7 +219,6 @@ const DisplayPage = () => {
 					saveToLocal(data);
 				}
 
-				// If ID changed, navigate to new URL
 				if (data.id !== id) {
 					navigate("/" + data.id, { replace: true });
 				}
@@ -361,7 +358,6 @@ const DisplayPage = () => {
 								content={paste.content}
 								onEdit={(val) => {
 									if (val) {
-										// Sync state when entering edit mode
 										setUpdatedContent(paste?.content);
 										setVisibility(
 											paste?.visibility || "public",

@@ -23,7 +23,6 @@ const HistoryPage = () => {
 		const loadHistory = async () => {
 			setLoading(true);
 			try {
-				// Get local items
 				const stored = localStorage.getItem("items");
 				const localItems: Array<PasteData> = stored
 					? JSON.parse(stored)
@@ -31,11 +30,10 @@ const HistoryPage = () => {
 
 				let finalItems = [...localItems];
 
-				// If user is logged in, fetch their pastes
 				if (user) {
 					try {
 						const userPastes = await apiHelpers.getUserPastes();
-						// Merge and deduplicate by ID
+
 						const userPasteIds = new Set(
 							userPastes.map((p: PasteData) => p.id),
 						);
@@ -54,7 +52,6 @@ const HistoryPage = () => {
 					}
 				}
 
-				// Sort by date (descending)
 				finalItems.sort(
 					(a, b) =>
 						new Date(b.createdAt).getTime() -
@@ -63,7 +60,6 @@ const HistoryPage = () => {
 
 				setItems(finalItems);
 			} finally {
-				setLoading(true); // Wait, should be false. Fixed below.
 				setLoading(false);
 			}
 		};
@@ -89,7 +85,6 @@ const HistoryPage = () => {
 	return (
 		<div className="min-h-[90vh] bg-gradient-to-br from-background via-muted/20 to-background p-4 md:p-8">
 			<div className="max-w-5xl mx-auto">
-				{/* Header Section */}
 				<motion.div
 					initial={{ opacity: 0, y: -20 }}
 					animate={{ opacity: 1, y: 0 }}

@@ -77,7 +77,6 @@ export const SnippetCard = ({
 				}`}
 			>
 				<div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
-					{/* Left: Type Badge & ID */}
 					<div className="flex items-center gap-3">
 						<div
 							className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold border ${
@@ -120,7 +119,6 @@ export const SnippetCard = ({
 						</span>
 					</div>
 
-					{/* Right: Time Info */}
 					<div className="flex items-center gap-4 text-xs">
 						<div className="flex items-center gap-1.5 text-muted-foreground font-medium">
 							<Calendar className="h-3.5 w-3.5" />
@@ -152,7 +150,6 @@ export const SnippetCard = ({
 					</div>
 				</div>
 
-				{/* Content Preview */}
 				<div className="relative">
 					<div className="bg-muted/30 rounded-lg p-4 border border-border/20">
 						<pre className="text-sm font-mono text-foreground/70 whitespace-pre-wrap break-words line-clamp-2 italic leading-relaxed">
@@ -162,7 +159,6 @@ export const SnippetCard = ({
 					<div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent rounded-xl pointer-events-none" />
 				</div>
 
-				{/* Footer Info */}
 				<div className="flex items-center justify-between mt-4 text-[10px] md:text-xs text-muted-foreground font-medium">
 					<div className="flex items-center gap-4">
 						{showViews && (

@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import axios from "axios";
 import { CONFIG } from "@/configurations";
-// import type { RefObject } from "react";
 
 const api = axios.create({
 	baseURL: CONFIG.API_BASE_URL,

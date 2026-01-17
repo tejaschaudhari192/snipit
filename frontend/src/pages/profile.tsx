@@ -133,7 +133,6 @@ const ProfilePage = () => {
 		<div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background">
 			<div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">
 				<div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-					{/* Left Sidebar: Account Details & Stats */}
 					<div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
 						<motion.div
 							initial={{ opacity: 0, x: -20 }}
@@ -395,7 +394,6 @@ const ProfilePage = () => {
 						</motion.div>
 					</div>
 
-					{/* Right Side: Snippets List */}
 					<div className="lg:col-span-8 space-y-6">
 						<div className="flex items-center justify-between px-2">
 							<h2 className="text-3xl font-black flex items-center gap-3 tracking-tight">

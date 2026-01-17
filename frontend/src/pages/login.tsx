@@ -28,7 +28,6 @@ const LoginPage = () => {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 
-	// Redirect if already logged in
 	if (user) {
 		navigate("/");
 		return null;
