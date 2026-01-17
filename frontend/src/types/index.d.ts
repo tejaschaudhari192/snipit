@@ -10,6 +10,7 @@ export interface PasteData {
 	views: number;
 	visibility?: "public" | "private" | "shared";
 	allowedUsers?: string[];
+	isPasswordProtected?: boolean;
 }
 
 export type IdType = "system" | "dynamic";

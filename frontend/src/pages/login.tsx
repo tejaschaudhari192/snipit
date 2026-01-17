@@ -17,6 +17,7 @@ import {
 import { toast } from "sonner";
 import { motion } from "motion/react";
 import { LogIn, Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const LoginPage = () => {
 	const [email, setEmail] = useState("");
@@ -25,6 +26,7 @@ const LoginPage = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { login, user } = useAuth();
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 
 	// Redirect if already logged in
 	if (user) {
@@ -38,11 +40,13 @@ const LoginPage = () => {
 		try {
 			const response = await api.post("/auth/login", { email, password });
 			login(response.data);
-			toast.success("Logged in successfully");
+			toast.success(t("auth.login_success"));
 			navigate("/");
 		} catch (error) {
 			const axiosError = error as AxiosError<{ message: string }>;
-			toast.error(axiosError.response?.data?.message || "Login failed");
+			toast.error(
+				axiosError.response?.data?.message || t("auth.login_failed"),
+			);
 		} finally {
 			setIsLoading(false);
 		}
@@ -64,10 +68,10 @@ const LoginPage = () => {
 							</div>
 						</div>
 						<CardTitle className="text-3xl font-black tracking-tight">
-							Welcome back
+							{t("auth.login_title")}
 						</CardTitle>
 						<CardDescription className="text-base text-muted-foreground">
-							Enter your credentials to access your snippets.
+							{t("auth.login_subtitle")}
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
@@ -77,14 +81,16 @@ const LoginPage = () => {
 									htmlFor="email"
 									className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70"
 								>
-									Email
+									{t("auth.email_label")}
 								</Label>
 								<div className="relative group">
 									<Mail className="absolute left-3 top-3 h-5 w-5 text-muted-foreground transition-colors group-focus-within:text-primary" />
 									<Input
 										id="email"
 										type="email"
-										placeholder="name@example.com"
+										placeholder={t(
+											"auth.email_placeholder",
+										)}
 										required
 										className="pl-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all"
 										value={email}
@@ -100,13 +106,13 @@ const LoginPage = () => {
 										htmlFor="password"
 										className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70"
 									>
-										Password
+										{t("auth.password_label")}
 									</Label>
 									<Link
 										to="/forgot-password"
 										className="text-xs font-semibold text-primary hover:underline hover:text-primary/80 transition-colors"
 									>
-										Forgot password?
+										{t("auth.forgot_password")}
 									</Link>
 								</div>
 								<div className="relative group">
@@ -116,7 +122,9 @@ const LoginPage = () => {
 										type={
 											showPassword ? "text" : "password"
 										}
-										placeholder="••••••••"
+										placeholder={t(
+											"auth.password_placeholder",
+										)}
 										required
 										className="pl-10 pr-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all font-mono"
 										value={password}
@@ -132,8 +140,8 @@ const LoginPage = () => {
 										className="absolute right-3 top-3 text-muted-foreground hover:text-primary transition-colors focus:outline-none"
 										aria-label={
 											showPassword
-												? "Hide password"
-												: "Show password"
+												? t("auth.hide_password")
+												: t("auth.show_password")
 										}
 									>
 										{showPassword ? (
@@ -160,11 +168,11 @@ const LoginPage = () => {
 											}}
 											className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full"
 										/>
-										Logging in...
+										{t("auth.logging_in")}
 									</>
 								) : (
 									<>
-										Login
+										{t("auth.login_button")}
 										<ArrowRight className="h-5 w-5" />
 									</>
 								)}
@@ -178,17 +186,17 @@ const LoginPage = () => {
 							</div>
 							<div className="relative flex justify-center text-xs uppercase">
 								<span className="bg-background/0 px-2 text-muted-foreground">
-									Or
+									{t("auth.or")}
 								</span>
 							</div>
 						</div>
 						<p className="text-sm text-muted-foreground text-center">
-							New to Snipit?{" "}
+							{t("auth.new_to_snipit")}{" "}
 							<Link
 								to="/signup"
 								className="font-bold text-primary hover:text-primary/80 transition-colors inline-flex items-center gap-1"
 							>
-								Create an account
+								{t("auth.create_account")}
 								<ArrowRight className="h-3 w-3" />
 							</Link>
 						</p>

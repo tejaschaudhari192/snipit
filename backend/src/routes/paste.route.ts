@@ -41,4 +41,11 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
 	return await pasteController.updatePaste(req, res, next);
 });
 
+router.post(
+	"/:id/verify-password",
+	async (req: Request, res: Response, next: NextFunction) => {
+		return await pasteController.verifyPassword(req, res, next);
+	},
+);
+
 export default router;

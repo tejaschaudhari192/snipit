@@ -32,6 +32,7 @@ export const useApiHelpers = () => {
 			burnAfterRead?: boolean;
 			visibility?: "public" | "private" | "shared";
 			allowedUsers?: string[];
+			password?: string;
 		}) => {
 			const response = await api.post("/", data);
 			return response.data;
@@ -61,6 +62,7 @@ export const useApiHelpers = () => {
 			visibility?: "public" | "private" | "shared",
 			allowedUsers?: string[],
 			newId?: string,
+			password?: string,
 		) => {
 			const response = await api.put("/" + id, {
 				content,
@@ -69,6 +71,7 @@ export const useApiHelpers = () => {
 				visibility,
 				allowedUsers,
 				newId,
+				password,
 			});
 			const data = response.data;
 			return data;
@@ -89,6 +92,13 @@ export const useApiHelpers = () => {
 			return response.data;
 		};
 
+		const verifyPassword = async (id: string, password: string) => {
+			const response = await api.post(`/${id}/verify-password`, {
+				password,
+			});
+			return response.data;
+		};
+
 		return {
 			getServerStatus,
 			submitPaste,
@@ -98,6 +108,7 @@ export const useApiHelpers = () => {
 			detectLanguage,
 			getUserPastes,
 			updateMe,
+			verifyPassword,
 		};
 	}, []);
 };

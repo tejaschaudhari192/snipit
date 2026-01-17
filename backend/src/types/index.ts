@@ -13,6 +13,7 @@ export type PasteData = {
 	owner?: string | undefined;
 	visibility?: ("public" | "private" | "shared") | undefined;
 	allowedUsers?: string[] | undefined;
+	password?: string | undefined;
 };
 
 export type IPaste = Document & {
@@ -28,6 +29,7 @@ export type IPaste = Document & {
 	owner?: string | undefined; // User ID
 	visibility?: ("public" | "private" | "shared") | undefined;
 	allowedUsers?: string[] | undefined;
+	password?: string | undefined;
 };
 
 // export type IPaste = Document & PasteData; // Removed duplicate

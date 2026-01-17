@@ -13,4 +13,5 @@ export const createPasteSchema = z.object({
 		.optional()
 		.default("public"),
 	allowedUsers: z.array(z.string()).optional(),
+	password: z.string().optional(),
 });

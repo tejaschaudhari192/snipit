@@ -57,6 +57,10 @@ const pasteSchema = new Schema<IPaste>(
 			type: [String],
 			default: [],
 		},
+		password: {
+			type: String,
+			required: false,
+		},
 	},
 	{
 		toJSON: { virtuals: true, versionKey: false },

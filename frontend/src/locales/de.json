@@ -1,193 +1,241 @@
 {
-	"header": {
-		"about": "Über uns",
-		"history": "Verlauf",
-		"new_snippet": "Neuer Snippet",
-		"copied": "Kopiert!",
-		"qr_button": "QR Code",
-		"profile": "Profil",
-		"logout": "Abmelden",
-		"login": "Anmelden",
-		"signup": "Registrieren",
-		"theme": "Design",
-		"language": "Sprache",
-		"qr_scan_desc": "Scannen Sie diesen Code, um das Snippet auf einem anderen Gerät zu öffnen."
-	},
-	"common": {
-		"visibility": "Sichtbarkeit",
-		"public": "Öffentlich",
-		"private": "Privat",
-		"shared": "Geteilt",
-		"auth_required": "Authentifizierung erforderlich",
-		"auth_required_desc": "Das Erstellen von {{visibility}} Snippets erfordert ein Konto.",
-		"allowed_users": "Zugelassene Benutzer",
-		"allowed_users_placeholder": "E-Mails eingeben..."
-	},
-	"profile": {
-		"title": "Ihr Profil",
-		"account_info": "Kontoinformationen",
-		"username": "Benutzername",
-		"email": "E-Mail",
-		"joined": "Beigetreten",
-		"edit_profile": "Profil bearbeiten",
-		"save_profile": "Profil speichern",
-		"snippets_count": "Snippets",
-		"no_snippets": "Noch keine Snippets",
-		"no_snippets_desc": "Ihre geteilten Code-Meisterwerke werden hier erscheinen!",
-		"create_first": "Erstellen Sie Ihren ersten Snippet",
-		"your_snippets": "Ihre Snippets",
-		"total_views": "Gesamtansichten",
-		"most_used_language": "Meistgenutzte Sprache",
-		"activity": "Konto-Aktivität",
-		"access_denied": "Zugriff verweigert",
-		"login_required": "Bitte melden Sie sich an, um Ihr Profil zu sehen und Ihre Snippets zu verwalten.",
-		"loading_pastes": "Deine Kreationen werden geladen...",
-		"profile_updated": "Profil erfolgreich aktualisiert",
-		"view_details": "Details anzeigen",
-		"views": "Ansichten",
-		"expired": "Abgelaufen",
-		"visibility": {
-			"public": "Öffentlich",
-			"private": "Privat",
-			"shared": "Geteilt"
-		},
-		"not_applicable": "N/V"
-	},
-	"home": {
-		"select_expire_time": "Ablaufzeit auswählen",
-		"enter_snippet_placeholder": "Geben Sie Ihren Snippet hier ein...",
-		"paste_button": "Einfügen",
-		"paste_dynamic_id": "Eigene ID",
-		"paste_system_id": "Automatische ID",
-		"paste_dynamic_id_desc": "Wählen Sie Ihre eigene URL",
-		"paste_system_id_desc": "ID wird automatisch generiert",
-		"expire_options": {
-			"one_time_snippet": "Einmaliger Snippet",
-			"expire_in_1_hour": "Läuft in 1 Stunde ab",
-			"expire_in_1_day": "Läuft in 1 Tag ab",
-			"expire_in_1_week": "Läuft in 1 Woche ab",
-			"expire_in_1_month": "Läuft in 1 Monat ab",
-			"expire_in_1_year": "Läuft in 1 Jahr ab",
-			"custom": "Benutzerdefiniertes Ablaufdatum"
-		},
-		"tab_text": "Klartext",
-		"tab_code": "Code",
-		"tab_link": "Link kürzen",
-		"link_placeholder": "Geben Sie die zu kürzende URL ein (z. B. https://example.xyz)",
-		"link_desc": "Fügen Sie unten die lange URL ein, um einen kurzen, weiterleitenden Link zu erstellen.",
-		"link_features": {
-			"fast": "Schnelle Weiterleitung",
-			"custom": "Benutzerdefinierte Slugs"
-		},
-		"auto_detecting": "Automatische Erkennung...",
-		"detected_language": "Erkannte Sprache: {{language}}",
-		"dynamic_id_dialog": {
-			"title": "Benutzerdefinierte ID eingeben",
-			"description": "Wählen Sie eine eindeुते Kennung. Diese wird in der URL Ihres Snippets verwendet.",
-			"placeholder": "Geben Sie Ihre benutzerdefinierte ID ein...",
-			"preview": "Vorschau:",
-			"cancel": "Abbrechen",
-			"submit": "Snippet erstellen"
-		}
-	},
-	"display": {
-		"expires_in": "Läuft ab in:",
-		"edit_button": "Bearbeiten",
-		"copy_button": "Kopieren",
-		"delete_button": "Löschen",
-		"save_button": "Änderungen speichern",
-		"burn_after_read_warning": "Warnung: Dies ist ein einmaliges Snippet und wird nach dem Lesen gelöscht."
-	},
-	"history": {
-		"title": "Verlauf",
-		"plain_text_snippet": "Klartext-Snippet",
-		"code_snippet": "Code-Snippet",
-		"created_ago": "Erstellt",
-		"clear_history": "Verlauf löschen",
-		"clear_confirm": "Gesamten Verlauf löschen?",
-		"clear_action": "Löschen",
-		"cancel": "Abbrechen",
-		"cleared_success": "Verlauf gelöscht",
-		"no_history_title": "Noch kein Verlauf",
-		"no_history_desc": "Ihr Snippet-Verlauf wird hier angezeigt",
-		"create_first": "Erstellen Sie Ihr erstes Snippet"
-	},
-	"messages": {
-		"snippet_created": "Snippet erfolgreich erstellt!",
-		"snippet_failed": "Snippet konnte nicht erstellt werden",
-		"id_conflict": "Diese ID ist bereits vergeben. Bitte versuchen Sie eine andere."
-	},
-	"about_page": {
-		"title": "Über",
-		"subtitle": "Ein Projekt zweier Entwickler, die Code-Sharing einfach und schön machen wollen.",
-		"features_title": "Leistungsstarke Funktionen",
-		"features_subtitle": "Alles, was Sie für nahtloses Code-Sharing brauchen",
-		"features": {
-			"syntax_highlighting": {
-				"title": "Syntax-Hervorhebung",
-				"desc": "Schöne Code-Anzeige mit Unterstützung für 15+ Programmiersprachen."
-			},
-			"ai_detection": {
-				"title": "KI-Spracherkennung",
-				"desc": "Erkennt Programmiersprachen automatisch mit KI-Technologie."
-			},
-			"custom_ids": {
-				"title": "Benutzerdefinierte URLs",
-				"desc": "Erstellen Sie einprägsame URLs für einfaches Snippet-Teilen."
-			},
-			"expiration": {
-				"title": "Ablaufkontrolle",
-				"desc": "Snippets laufen nach 1 Stunde bis 1 Jahr ab, oder behalten Sie sie für immer."
-			},
-			"multi_language": {
-				"title": "Mehrsprachige Oberfläche",
-				"desc": "Benutzeroबरfläche in Englisch, Deutsch, Hindi, Japanisch und Marathi."
-			},
-			"dark_mode": {
-				"title": "Dunkelmodus",
-				"desc": "Augenschonend mit einer schönen dunklen Theme-Option."
-			},
-			"open_source": {
-				"title": "Open Source",
-				"desc": "Kostenlos und Open Source. Beitragen, forken oder selbst hosten."
-			},
-			"redirect_urls": {
-				"title": "Links kürzen",
-				"desc": "Erstellen Sie kurze, handliche Links, die sofort zu jedem beliebigen Ziel weiterleiten."
-			}
-		},
-		"story": {
-			"title": "Unsere Geschichte",
-			"p1": "Snipit entstand aus einer einfachen Idee: Code-Sharing sollte schön, schnell und mühelos sein. Als Entwickler teilten wir ständig Code-Snippets mit Kollegen, Freunden und der Community, aber bestehende Lösungen fühlten sich klobig und veraltet an.",
-			"p2": "Also beschlossen wir, etwas Besseres zu bauen. Snipit kombiniert elegantes Design mit leistungsstarker Funktionalität und ist das perfekte Werkzeug für Entwickler, die sowohl Form als auch Funktion schätzen.",
-			"p3": "Mit modernen Webtechnologien und Fokus auf Benutzererfahrung gebaut, will Snipit die erste Wahl für Code-Sharing in der Entwickler-Community sein."
-		},
-		"team": {
-			"title": "Das Team",
-			"role": "Mitbegründer & Entwickler"
-		},
-		"contribute": {
-			"title": "Mitmachen?",
-			"desc": "Snipit ist Open Source und we welcome contributions from the community. Whether it's bug fixes, new features, or documentation improvements, every contribution matters.",
-			"github_button": "Auf GitHub ansehen",
-			"contact_button": "Kontakt aufnehmen"
-		}
-	},
-	"footer": {
-		"copyright": "© 2025 Snipit. Alle Rechte vorbehalten.",
-		"privacy": "Datenschutz",
-		"terms": "Nutzungsbedingungen",
-		"contact": "Kontakt",
-		"made_by": "Gemacht mit ❤️ von Durgesh & Tejas"
-	},
-	"splash": {
-		"tagline": "Teilen Sie Ihre Snippets sofort"
-	},
-	"error_page": {
-		"title": "Seite nicht gefunden",
-		"subtitle": "Hoppla! Das Snippet existiert nicht oder ist abgelaufen.",
-		"description": "Es wurde möglicherweise gelöscht, der Link ist falsch, oder das Snippet hat sein Ablaufdatum erreicht.",
-		"go_home": "Zur Startseite",
-		"create_new": "Neues Snippet erstellen"
-	}
+    "header": {
+        "about": "Über uns",
+        "history": "Verlauf",
+        "new_snippet": "Neuer Snippet",
+        "copied": "Kopiert!",
+        "qr_button": "QR Code",
+        "profile": "Profil",
+        "logout": "Abmelden",
+        "login": "Anmelden",
+        "signup": "Registrieren",
+        "theme": "Design",
+        "language": "Sprache",
+        "qr_scan_desc": "Scannen Sie diesen Code, um das Snippet auf einem anderen Gerät zu öffnen."
+    },
+    "common": {
+        "visibility": "Sichtbarkeit",
+        "public": "Öffentlich",
+        "private": "Privat",
+        "shared": "Geteilt",
+        "auth_required": "Authentifizierung erforderlich",
+        "auth_required_desc": "Das Erstellen von {{visibility}} Snippets erfordert ein Konto.",
+        "allowed_users": "Zugelassene Benutzer",
+        "allowed_users_placeholder": "E-Mails eingeben..."
+    },
+    "profile": {
+        "title": "Ihr Profil",
+        "account_info": "Kontoinformationen",
+        "username": "Benutzername",
+        "email": "E-Mail",
+        "joined": "Beigetreten",
+        "edit_profile": "Profil bearbeiten",
+        "save_profile": "Profil speichern",
+        "snippets_count": "Snippets",
+        "no_snippets": "Noch keine Snippets",
+        "no_snippets_desc": "Ihre geteilten Code-Meisterwerke werden hier erscheinen!",
+        "create_first": "Erstellen Sie Ihren ersten Snippet",
+        "your_snippets": "Ihre Snippets",
+        "total_views": "Gesamtansichten",
+        "most_used_language": "Meistgenutzte Sprache",
+        "activity": "Konto-Aktivität",
+        "access_denied": "Zugriff verweigert",
+        "login_required": "Bitte melden Sie sich an, um Ihr Profil zu sehen und Ihre Snippets zu verwalten.",
+        "loading_pastes": "Deine Kreationen werden geladen...",
+        "profile_updated": "Profil erfolgreich aktualisiert",
+        "view_details": "Details anzeigen",
+        "views": "Ansichten",
+        "expired": "Abgelaufen",
+        "visibility": {
+            "public": "Öffentlich",
+            "private": "Privat",
+            "shared": "Geteilt"
+        },
+        "not_applicable": "N/V"
+    },
+    "home": {
+        "select_expire_time": "Ablaufzeit auswählen",
+        "enter_snippet_placeholder": "Geben Sie Ihren Snippet hier ein...",
+        "paste_button": "Einfügen",
+        "paste_dynamic_id": "Eigene ID",
+        "paste_system_id": "Automatische ID",
+        "paste_dynamic_id_desc": "Wählen Sie Ihre eigene URL",
+        "paste_system_id_desc": "ID wird automatisch generiert",
+        "expire_options": {
+            "one_time_snippet": "Einmaliger Snippet",
+            "expire_in_1_hour": "Läuft in 1 Stunde ab",
+            "expire_in_1_day": "Läuft in 1 Tag ab",
+            "expire_in_1_week": "Läuft in 1 Woche ab",
+            "expire_in_1_month": "Läuft in 1 Monat ab",
+            "expire_in_1_year": "Läuft in 1 Jahr ab",
+            "custom": "Benutzerdefiniertes Ablaufdatum"
+        },
+        "tab_text": "Klartext",
+        "tab_code": "Code",
+        "tab_link": "Link kürzen",
+        "link_placeholder": "Geben Sie die zu kürzende URL ein (z. B. https://example.xyz)",
+        "link_desc": "Fügen Sie unten die lange URL ein, um einen kurzen, weiterleitenden Link zu erstellen.",
+        "link_features": {
+            "fast": "Schnelle Weiterleitung",
+            "custom": "Benutzerdefinierte Slugs"
+        },
+        "auto_detecting": "Automatische Erkennung...",
+        "detected_language": "Erkannte Sprache: {{language}}",
+        "dynamic_id_dialog": {
+            "title": "Benutzerdefinierte ID eingeben",
+            "description": "Wählen Sie eine eindeुते Kennung. Diese wird in der URL Ihres Snippets verwendet.",
+            "placeholder": "Geben Sie Ihre benutzerdefinierte ID ein...",
+            "preview": "Vorschau:",
+            "cancel": "Abbrechen",
+            "submit": "Snippet erstellen"
+        }
+    },
+    "display": {
+        "expires_in": "Läuft ab in:",
+        "edit_button": "Bearbeiten",
+        "copy_button": "Kopieren",
+        "delete_button": "Löschen",
+        "save_button": "Änderungen speichern",
+        "burn_after_read_warning": "Warnung: Dies ist ein einmaliges Snippet und wird nach dem Lesen gelöscht.",
+        "views_remaining_plural": "({{count}} Ansichten verbleibend)",
+        "views_remaining_singular": "(1 Ansicht verbleibend)",
+        "final_view": "(Letzte Ansicht)"
+    },
+    "history": {
+        "title": "Verlauf",
+        "plain_text_snippet": "Klartext-Snippet",
+        "code_snippet": "Code-Snippet",
+        "created_ago": "Erstellt",
+        "clear_history": "Verlauf löschen",
+        "clear_confirm": "Gesamten Verlauf löschen?",
+        "clear_action": "Löschen",
+        "cancel": "Abbrechen",
+        "cleared_success": "Verlauf gelöscht",
+        "no_history_title": "Noch kein Verlauf",
+        "no_history_desc": "Ihr Snippet-Verlauf wird hier angezeigt",
+        "create_first": "Erstellen Sie Ihr erstes Snippet",
+        "snippets_saved": "Snippets gespeichert",
+        "snippet_saved": "Snippet gespeichert",
+        "fetching_history": "Verlauf wird geladen...",
+        "expired": "Abgelaufen",
+        "view_snippet": "Snippet anzeigen",
+        "sync_failed": "Synchronisierung Ihrer Konto-Snippets fehlgeschlagen"
+    },
+    "messages": {
+        "snippet_created": "Snippet erfolgreich erstellt!",
+        "snippet_failed": "Snippet konnte nicht erstellt werden",
+        "id_conflict": "Diese ID ist bereits vergeben. Bitte versuchen Sie eine andere.",
+        "detected_language": "Erkannte Sprache: {{language}}",
+        "delete_confirm": "Sind Sie sicher, dass Sie dieses Snippet löschen möchten?",
+        "snippet_deleted": "Snippet gelöscht",
+        "delete_failed": "Löschen des Snippets fehlgeschlagen",
+        "action_cancelled": "Aktion abgebrochen",
+        "snippet_updated": "Snippet erfolgreich aktualisiert",
+        "update_failed": "Snippet konnte nicht aktualisiert werden"
+    },
+    "about_page": {
+        "title": "Über",
+        "subtitle": "Ein Projekt zweier Entwickler, die Code-Sharing einfach und schön machen wollen.",
+        "features_title": "Leistungsstarke Funktionen",
+        "features_subtitle": "Alles, was Sie für nahtloses Code-Sharing brauchen",
+        "features": {
+            "syntax_highlighting": {
+                "title": "Syntax-Hervorhebung",
+                "desc": "Schöne Code-Anzeige mit Unterstützung für 15+ Programmiersprachen."
+            },
+            "ai_detection": {
+                "title": "KI-Spracherkennung",
+                "desc": "Erkennt Programmiersprachen automatisch mit KI-Technologie."
+            },
+            "custom_ids": {
+                "title": "Benutzerdefinierte URLs",
+                "desc": "Erstellen Sie einprägsame URLs für einfaches Snippet-Teilen."
+            },
+            "expiration": {
+                "title": "Ablaufkontrolle",
+                "desc": "Snippets laufen nach 1 Stunde bis 1 Jahr ab, oder behalten Sie sie für immer."
+            },
+            "multi_language": {
+                "title": "Mehrsprachige Oberfläche",
+                "desc": "Benutzeroबरfläche in Englisch, Deutsch, Hindi, Japanisch und Marathi."
+            },
+            "dark_mode": {
+                "title": "Dunkelmodus",
+                "desc": "Augenschonend mit einer schönen dunklen Theme-Option."
+            },
+            "open_source": {
+                "title": "Open Source",
+                "desc": "Kostenlos und Open Source. Beitragen, forken oder selbst hosten."
+            },
+            "redirect_urls": {
+                "title": "Links kürzen",
+                "desc": "Erstellen Sie kurze, handliche Links, die sofort zu jedem beliebigen Ziel weiterleiten."
+            }
+        },
+        "story": {
+            "title": "Unsere Geschichte",
+            "p1": "Snipit entstand aus einer einfachen Idee: Code-Sharing sollte schön, schnell und mühelos sein. Als Entwickler teilten wir ständig Code-Snippets mit Kollegen, Freunden und der Community, aber bestehende Lösungen fühlten sich klobig und veraltet an.",
+            "p2": "Also beschlossen wir, etwas Besseres zu bauen. Snipit kombiniert elegantes Design mit leistungsstarker Funktionalität und ist das perfekte Werkzeug für Entwickler, die sowohl Form als auch Funktion schätzen.",
+            "p3": "Mit modernen Webtechnologien und Fokus auf Benutzererfahrung gebaut, will Snipit die erste Wahl für Code-Sharing in der Entwickler-Community sein."
+        },
+        "team": {
+            "title": "Das Team",
+            "role": "Mitbegründer & Entwickler"
+        },
+        "contribute": {
+            "title": "Mitmachen?",
+            "desc": "Snipit ist Open Source und we welcome contributions from the community. Whether it's bug fixes, new features, or documentation improvements, every contribution matters.",
+            "github_button": "Auf GitHub ansehen",
+            "contact_button": "Kontakt aufnehmen"
+        }
+    },
+    "footer": {
+        "copyright": "© 2025 Snipit. Alle Rechte vorbehalten.",
+        "privacy": "Datenschutz",
+        "terms": "Nutzungsbedingungen",
+        "contact": "Kontakt",
+        "made_by": "Gemacht mit ❤️ von Durgesh & Tejas"
+    },
+    "splash": {
+        "tagline": "Teilen Sie Ihre Snippets sofort"
+    },
+    "error_page": {
+        "title": "Seite nicht gefunden",
+        "subtitle": "Hoppla! Das Snippet existiert nicht oder ist abgelaufen.",
+        "description": "Es wurde möglicherweise gelöscht, der Link ist falsch, oder das Snippet hat sein Ablaufdatum erreicht.",
+        "go_home": "Zur Startseite",
+        "create_new": "Neues Snippet erstellen"
+    },
+    "auth": {
+        "login_title": "Willkommen zurück",
+        "login_subtitle": "Geben Sie Ihre Zugangsdaten ein, um auf Ihre Snippets zuzugreifen.",
+        "email_label": "E-Mail",
+        "email_placeholder": "name@example.com",
+        "password_label": "Passwort",
+        "password_placeholder": "••••••••",
+        "forgot_password": "Passwort vergessen?",
+        "login_button": "Anmelden",
+        "logging_in": "Wird angemeldet...",
+        "or": "Oder",
+        "new_to_snipit": "Neu bei Snipit?",
+        "create_account": "Konto erstellen",
+        "login_success": "Erfolgreich angemeldet",
+        "login_failed": "Anmeldung fehlgeschlagen",
+        "signup_title": "Snipit beitreten",
+        "signup_subtitle": "Erstellen Sie ein Konto, um Ihre Snippets zu verwalten.",
+        "username_label": "Benutzername",
+        "username_placeholder": "johndoe",
+        "signup_button": "Registrieren",
+        "creating_account": "Wird erstellt...",
+        "already_have_account": "Haben Sie bereits ein Konto?",
+        "login_here": "Hier anmelden",
+        "signup_success": "Konto erfolgreich erstellt. Bitte anmelden.",
+        "signup_failed": "Registrierung fehlgeschlagen",
+        "show_password": "Passwort anzeigen",
+        "hide_password": "Passwort verbergen",
+        "logout_confirm": "Erfolgreich abgemeldet",
+        "logout_confirm_question": "Sind Sie sicher, dass Sie sich abmelden möchten?",
+        "logout_action": "Abmelden",
+        "logout_cancel": "Abbrechen"
+    }
 }

@@ -22,6 +22,16 @@ import { DisplayMetadata } from "@/components/display/display-metadata";
 import { DisplayContent } from "@/components/display/display-content";
 import { useLanguageDetection } from "@/hooks/use-language-detection";
 import { EditControls } from "@/components/display/edit-controls";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+	CardDescription,
+} from "@/components/ui/card";
+import { Lock } from "lucide-react";
 
 const DisplayPage = () => {
 	const { id } = useParams();
@@ -48,6 +58,8 @@ const DisplayPage = () => {
 	const [customId, setCustomId] = useState<string>("");
 	const { isDetecting, detectLanguage } = useLanguageDetection();
 	const { fontSize, ref: contentRef, setFontSize } = usePinchZoom(14);
+	const [passwordInput, setPasswordInput] = useState("");
+	const [passwordError, setPasswordError] = useState("");
 
 	const handleEditorWillMount: BeforeMount = (monaco) =>
 		defineMonacoThemes(monaco);
@@ -214,7 +226,7 @@ const DisplayPage = () => {
 					navigate("/" + data.id, { replace: true });
 				}
 			} else {
-				toast.error("Failed to update paste");
+				toast.error(t("messages.update_failed"));
 			}
 			setIsEdit(false);
 		} catch (error) {
@@ -253,81 +265,166 @@ const DisplayPage = () => {
 		setCustomId(paste?.id || "");
 	};
 
+	const handleVerifyPassword = async () => {
+		try {
+			const data = await apiHelpers.verifyPassword(id!, passwordInput);
+			setPaste(data);
+			setUpdatedContent(data.content);
+			setLanguage(data.language || "text");
+			setContentType(
+				data.redirectUrl
+					? "link"
+					: data.language !== "text"
+						? "code"
+						: "text",
+			);
+			setVisibility(data.visibility || "public");
+			setAllowedUsers(data.allowedUsers || []);
+		} catch {
+			setPasswordError(
+				t("messages.password_incorrect", "Incorrect password"),
+			);
+		}
+	};
+
 	return (
 		<div className="flex-1 flex flex-col min-h-0 bg-gradient-to-br from-background via-muted/5 to-background">
 			{loading ? (
 				<div className="flex-1 flex justify-center items-center">
 					<Loader />
 				</div>
-			) : paste?.content ? (
-				<>
-					<div className="flex flex-col border-b bg-background/50 backdrop-blur-md sticky top-0 z-40">
-						<DisplayToolbar
-							isEdit={isEdit}
-							content={paste.content}
-							onEdit={(val) => {
-								if (val) {
-									// Sync state when entering edit mode
-									setUpdatedContent(paste?.content);
-									setVisibility(
-										paste?.visibility || "public",
-									);
-									setAllowedUsers(paste?.allowedUsers || []);
-									setLanguage(paste?.language || "text");
-									setContentType(
-										paste?.redirectUrl
-											? "link"
-											: paste?.language !== "text"
-												? "code"
-												: "text",
-									);
-									setCustomId(paste?.id || "");
-								}
-								setIsEdit(val);
-							}}
-							onDelete={handleDelete}
-							onSave={handleEditSave}
-							onCancel={handleCancel}
-							fontSize={fontSize}
-							setFontSize={setFontSize}
-							showFontControls={contentType !== "link"}
-						/>
-						{!isEdit && <DisplayMetadata paste={paste} />}
+			) : paste ? (
+				paste.isPasswordProtected && !paste.content ? (
+					<div className="flex-1 flex justify-center items-center p-4">
+						<Card className="w-full max-w-md shadow-lg border-2">
+							<CardHeader className="space-y-1 text-center">
+								<div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+									<Lock className="w-6 h-6 text-primary" />
+								</div>
+								<CardTitle className="text-2xl">
+									{t(
+										"common.password_protected",
+										"Password Protected",
+									)}
+								</CardTitle>
+								<CardDescription>
+									{t(
+										"common.enter_password_desc",
+										"This snippet is password protected. Please enter the password to view it.",
+									)}
+								</CardDescription>
+							</CardHeader>
+							<CardContent className="space-y-4">
+								<div className="space-y-2">
+									<Input
+										type="password"
+										placeholder={t(
+											"common.password_placeholder",
+											"Enter password...",
+										)}
+										value={passwordInput}
+										onChange={(e) => {
+											setPasswordInput(e.target.value);
+											setPasswordError("");
+										}}
+										onKeyDown={(e) =>
+											e.key === "Enter" &&
+											handleVerifyPassword()
+										}
+										className={
+											passwordError
+												? "border-red-500"
+												: ""
+										}
+									/>
+									{passwordError && (
+										<p className="text-sm text-red-500 font-medium animate-in slide-in-from-top-1">
+											{passwordError}
+										</p>
+									)}
+								</div>
+								<Button
+									className="w-full font-bold"
+									onClick={handleVerifyPassword}
+									disabled={!passwordInput}
+								>
+									{t("common.unlock", "Unlock Snippet")}
+								</Button>
+							</CardContent>
+						</Card>
 					</div>
-
-					<div className="mx-3 sm:mx-5 my-4 h-[75vh] flex flex-col gap-4">
-						{isEdit && (
-							<EditControls
-								contentType={contentType}
-								setContentType={setContentType}
-								language={language}
-								setLanguage={setLanguage}
-								visibility={visibility}
-								setVisibility={setVisibility}
-								allowedUsers={allowedUsers}
-								setAllowedUsers={setAllowedUsers}
-								isDetecting={isDetecting}
-								onAutoDetect={() =>
-									handleLanguageDetection(updatedContent!)
-								}
-								customId={customId}
-								setCustomId={setCustomId}
+				) : (
+					<>
+						<div className="flex flex-col border-b bg-background/50 backdrop-blur-md sticky top-0 z-40">
+							<DisplayToolbar
+								isEdit={isEdit}
+								content={paste.content}
+								onEdit={(val) => {
+									if (val) {
+										// Sync state when entering edit mode
+										setUpdatedContent(paste?.content);
+										setVisibility(
+											paste?.visibility || "public",
+										);
+										setAllowedUsers(
+											paste?.allowedUsers || [],
+										);
+										setLanguage(paste?.language || "text");
+										setContentType(
+											paste?.redirectUrl
+												? "link"
+												: paste?.language !== "text"
+													? "code"
+													: "text",
+										);
+										setCustomId(paste?.id || "");
+									}
+									setIsEdit(val);
+								}}
+								onDelete={handleDelete}
+								onSave={handleEditSave}
+								onCancel={handleCancel}
+								fontSize={fontSize}
+								setFontSize={setFontSize}
+								showFontControls={contentType !== "link"}
 							/>
-						)}
-						<DisplayContent
-							isEdit={isEdit}
-							contentType={contentType}
-							language={language}
-							content={updatedContent || ""}
-							onContentChange={setUpdatedContent}
-							theme={theme}
-							fontSize={fontSize}
-							contentRef={contentRef}
-							handleEditorWillMount={handleEditorWillMount}
-							paste={paste}
-						/>
-					</div>
-				</>
+							{!isEdit && <DisplayMetadata paste={paste} />}
+						</div>
+
+						<div className="mx-3 sm:mx-5 my-4 h-[75vh] flex flex-col gap-4">
+							{isEdit && (
+								<EditControls
+									contentType={contentType}
+									setContentType={setContentType}
+									language={language}
+									setLanguage={setLanguage}
+									visibility={visibility}
+									setVisibility={setVisibility}
+									allowedUsers={allowedUsers}
+									setAllowedUsers={setAllowedUsers}
+									isDetecting={isDetecting}
+									onAutoDetect={() =>
+										handleLanguageDetection(updatedContent!)
+									}
+									customId={customId}
+									setCustomId={setCustomId}
+								/>
+							)}
+							<DisplayContent
+								isEdit={isEdit}
+								contentType={contentType}
+								language={language}
+								content={updatedContent || ""}
+								onContentChange={setUpdatedContent}
+								theme={theme}
+								fontSize={fontSize}
+								contentRef={contentRef}
+								handleEditorWillMount={handleEditorWillMount}
+								paste={paste}
+							/>
+						</div>
+					</>
+				)
 			) : (
 				<Error />
 			)}

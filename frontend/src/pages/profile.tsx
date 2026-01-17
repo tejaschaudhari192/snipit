@@ -13,20 +13,15 @@ import {
 	Edit2,
 	Check,
 	X,
-	Timer,
-	Calendar as CalendarIcon,
-	Link as LinkIcon,
-	ChevronRight,
 	Loader2,
+	ChevronRight,
 	Inbox,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { LanguageIcon } from "@/components/language-icon";
-import { timeAgo, getTimeRemaining } from "@/lib/utils";
+import { SnippetCard } from "@/components/snippet-card";
 import type { PasteData } from "@/types";
 
 const ProfilePage = () => {
@@ -93,27 +88,6 @@ const ProfilePage = () => {
 		}
 	};
 
-	const getLanguageColor = (language: string) => {
-		const colors: Record<string, string> = {
-			javascript:
-				"bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20",
-			typescript:
-				"bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
-			python: "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20",
-			java: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20",
-			html: "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20",
-			css: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
-			json: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
-			rust: "bg-orange-600/10 text-orange-700 dark:text-orange-400 border-orange-600/20",
-			go: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20",
-			shell: "bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20",
-			bash: "bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20",
-		};
-		return (
-			colors[language] || "bg-primary/10 text-primary border-primary/20"
-		);
-	};
-
 	if (authLoading) {
 		return (
 			<div className="flex flex-col items-center justify-center min-h-[80vh] container mx-auto px-4">
@@ -157,147 +131,197 @@ const ProfilePage = () => {
 
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background">
-			<div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl">
-				{/* Profile Header Card */}
-				<motion.div
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.5 }}
-					className="relative"
-				>
-					<div className="absolute inset-0 bg-primary/5 blur-3xl -z-10 rounded-full" />
-					<Card className="border-border/50 bg-background/60 backdrop-blur-xl shadow-2xl overflow-hidden">
-						<div className="h-32 bg-gradient-to-r from-primary/20 via-primary/10 to-transparent" />
-						<CardContent className="relative pt-0 px-6 pb-8">
-							<div className="flex flex-col md:flex-row items-end md:items-center gap-6 -mt-12 md:-mt-16">
-								<div className="relative group">
-									<div className="h-24 w-24 md:h-32 md:w-32 rounded-2xl bg-gradient-to-br from-primary to-primary/60 p-1 shadow-2xl transform transition-transform group-hover:scale-105">
-										<div className="h-full w-full rounded-xl bg-background flex items-center justify-center overflow-hidden">
-											<User className="h-12 w-12 md:h-16 md:w-16 text-primary" />
+			<div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">
+				<div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+					{/* Left Sidebar: Account Details & Stats */}
+					<div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
+						<motion.div
+							initial={{ opacity: 0, x: -20 }}
+							animate={{ opacity: 1, x: 0 }}
+							transition={{ duration: 0.5 }}
+						>
+							<Card className="border-border/50 bg-background/60 backdrop-blur-xl shadow-2xl overflow-hidden">
+								<div className="h-24 bg-gradient-to-r from-primary/20 via-primary/10 to-transparent" />
+								<CardContent className="relative pt-0 px-6 pb-8">
+									<div className="flex flex-col items-center -mt-12 mb-6">
+										<div className="relative group">
+											<div className="h-24 w-24 rounded-2xl bg-gradient-to-br from-primary to-primary/60 p-1 shadow-2xl transform transition-transform group-hover:scale-105">
+												<div className="h-full w-full rounded-xl bg-background flex items-center justify-center overflow-hidden">
+													<User className="h-10 w-10 text-primary" />
+												</div>
+											</div>
 										</div>
-									</div>
-								</div>
 
-								<div className="flex-1 space-y-2 text-center md:text-left min-w-0 w-full md:w-auto">
-									<AnimatePresence mode="wait">
-										{isEditingName ? (
-											<motion.div
-												key="edit"
-												initial={{ opacity: 0, x: -10 }}
-												animate={{ opacity: 1, x: 0 }}
-												exit={{ opacity: 0, x: 10 }}
-												className="flex items-center gap-2 max-w-md mx-auto md:mx-0"
-											>
-												<Input
-													value={newName}
-													onChange={(e) =>
-														setNewName(
-															e.target.value,
-														)
-													}
-													className="text-2xl font-bold h-12 bg-background/50 border-primary/30"
-													autoFocus
-													onKeyDown={(e) => {
-														if (e.key === "Enter")
-															handleUpdateName();
-														if (e.key === "Escape")
-															setIsEditingName(
-																false,
-															);
-													}}
-												/>
-												<Button
-													size="icon"
-													className="h-12 w-12 shrink-0"
-													onClick={handleUpdateName}
-													disabled={isUpdating}
-												>
-													{isUpdating ? (
-														<Loader2 className="h-5 w-5 animate-spin" />
-													) : (
-														<Check className="h-5 w-5" />
+										<div className="mt-4 w-full text-center space-y-4">
+											<AnimatePresence mode="wait">
+												{isEditingName ? (
+													<motion.div
+														key="edit"
+														initial={{
+															opacity: 0,
+															y: -5,
+														}}
+														animate={{
+															opacity: 1,
+															y: 0,
+														}}
+														exit={{
+															opacity: 0,
+															y: 5,
+														}}
+														className="flex items-center gap-2"
+													>
+														<Input
+															value={newName}
+															onChange={(e) =>
+																setNewName(
+																	e.target
+																		.value,
+																)
+															}
+															className="text-lg font-bold h-10 bg-background/50 border-primary/30"
+															autoFocus
+															onKeyDown={(e) => {
+																if (
+																	e.key ===
+																	"Enter"
+																)
+																	handleUpdateName();
+																if (
+																	e.key ===
+																	"Escape"
+																)
+																	setIsEditingName(
+																		false,
+																	);
+															}}
+														/>
+														<div className="flex gap-1">
+															<Button
+																size="icon"
+																variant="default"
+																className="h-10 w-10 shrink-0"
+																onClick={
+																	handleUpdateName
+																}
+																disabled={
+																	isUpdating
+																}
+															>
+																{isUpdating ? (
+																	<Loader2 className="h-4 w-4 animate-spin" />
+																) : (
+																	<Check className="h-4 w-4" />
+																)}
+															</Button>
+															<Button
+																variant="outline"
+																size="icon"
+																className="h-10 w-10 shrink-0"
+																onClick={() =>
+																	setIsEditingName(
+																		false,
+																	)
+																}
+															>
+																<X className="h-4 w-4" />
+															</Button>
+														</div>
+													</motion.div>
+												) : (
+													<motion.div
+														key="view"
+														initial={{
+															opacity: 0,
+															y: 5,
+														}}
+														animate={{
+															opacity: 1,
+															y: 0,
+														}}
+														exit={{
+															opacity: 0,
+															y: -5,
+														}}
+														className="flex items-center justify-center gap-2 group"
+													>
+														<h1 className="text-2xl font-black tracking-tight flex items-center gap-2">
+															{user.username}
+															<span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+														</h1>
+														<Button
+															variant="ghost"
+															size="icon"
+															className="h-7 w-7 text-muted-foreground hover:text-primary transition-colors opacity-0 group-hover:opacity-100"
+															onClick={() =>
+																setIsEditingName(
+																	true,
+																)
+															}
+														>
+															<Edit2 className="h-3 w-3" />
+														</Button>
+													</motion.div>
+												)}
+											</AnimatePresence>
+
+											<div className="space-y-1">
+												<div className="flex items-center justify-center gap-2 text-sm text-muted-foreground font-medium">
+													<Mail className="h-3.5 w-3.5" />
+													{user.email}
+												</div>
+												<div className="flex items-center justify-center gap-2 text-sm text-muted-foreground font-medium">
+													<Calendar className="h-3.5 w-3.5" />
+													{t(
+														"profile.joined",
+														"Joined",
+													)}{" "}
+													{new Date(
+														user.createdAt ||
+															Date.now(),
+													).toLocaleDateString(
+														undefined,
+														{
+															month: "short",
+															year: "numeric",
+														},
 													)}
-												</Button>
-												<Button
-													variant="outline"
-													size="icon"
-													className="h-12 w-12 shrink-0"
-													onClick={() =>
-														setIsEditingName(false)
-													}
-												>
-													<X className="h-5 w-5" />
-												</Button>
-											</motion.div>
-										) : (
-											<motion.div
-												key="view"
-												initial={{ opacity: 0, x: -10 }}
-												animate={{ opacity: 1, x: 0 }}
-												exit={{ opacity: 0, x: 10 }}
-												className="flex items-center justify-center md:justify-start gap-3"
-											>
-												<h1 className="text-3xl md:text-4xl font-black tracking-tight flex items-center gap-2">
-													{user.username}
-													<span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-												</h1>
-												<Button
-													variant="ghost"
-													size="icon"
-													className="h-8 w-8 text-muted-foreground hover:text-primary transition-colors"
-													onClick={() =>
-														setIsEditingName(true)
-													}
-												>
-													<Edit2 className="h-4 w-4" />
-												</Button>
-											</motion.div>
-										)}
-									</AnimatePresence>
-
-									<div className="flex flex-wrap justify-center md:justify-start items-center gap-4 text-muted-foreground">
-										<div className="flex items-center gap-1.5 text-sm font-medium">
-											<Mail className="h-4 w-4" />
-											{user.email}
-										</div>
-										<Separator
-											orientation="vertical"
-											className="h-4 hidden sm:block"
-										/>
-										<div className="flex items-center gap-1.5 text-sm font-medium">
-											<Calendar className="h-4 w-4" />
-											{t("profile.joined", "Joined")}{" "}
-											{new Date(
-												user.createdAt || Date.now(),
-											).toLocaleDateString(undefined, {
-												month: "long",
-												year: "numeric",
-											})}
+												</div>
+											</div>
 										</div>
 									</div>
-								</div>
 
-								<div className="flex items-center gap-4 w-full md:w-auto justify-center">
-									<div className="bg-primary/10 border border-primary/20 rounded-2xl p-4 text-center min-w-[100px]">
-										<div className="text-2xl font-black text-primary">
-											{pastes.length}
+									<Separator className="bg-border/50 mb-6" />
+
+									<div className="grid grid-cols-2 gap-4">
+										<div className="bg-primary/5 hover:bg-primary/10 border border-primary/10 rounded-xl p-3 text-center transition-colors">
+											<div className="text-xl font-black text-primary">
+												{pastes.length}
+											</div>
+											<div className="text-[10px] uppercase tracking-wider font-bold text-primary/70">
+												{t(
+													"profile.snippets_count",
+													"Snippets",
+												)}
+											</div>
 										</div>
-										<div className="text-[10px] uppercase tracking-wider font-bold text-primary/70">
-											{t(
-												"profile.snippets_count",
-												"Snippets",
-											)}
+										<div className="bg-muted/30 border border-border/50 rounded-xl p-3 text-center">
+											<div className="text-xl font-black text-foreground">
+												{pastes.reduce(
+													(acc, p) =>
+														acc + (p.views || 0),
+													0,
+												)}
+											</div>
+											<div className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">
+												{t("profile.views", "Views")}
+											</div>
 										</div>
 									</div>
-								</div>
-							</div>
-						</CardContent>
-					</Card>
-				</motion.div>
+								</CardContent>
+							</Card>
+						</motion.div>
 
-				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
-					{/* Sidebar / Stats */}
-					<div className="lg:col-span-1 space-y-6">
 						<motion.div
 							initial={{ opacity: 0, x: -20 }}
 							animate={{ opacity: 1, x: 0 }}
@@ -305,14 +329,11 @@ const ProfilePage = () => {
 						>
 							<Card className="border-border/50 bg-background/50 backdrop-blur-md">
 								<CardContent className="p-6 space-y-6">
-									<h3 className="font-bold flex items-center gap-2">
-										<div className="p-1.5 rounded-lg bg-primary/10 text-primary">
-											<Loader2 className="h-4 w-4" />
+									<h3 className="font-bold text-sm flex items-center gap-2 uppercase tracking-wider text-muted-foreground">
+										<div className="p-1 px-2 rounded-md bg-muted text-foreground lowercase italic">
+											stats
 										</div>
-										{t(
-											"profile.activity",
-											"Account Activity",
-										)}
+										{t("profile.activity", "Activity")}
 									</h3>
 									<div className="space-y-4">
 										<div className="flex items-center justify-between text-sm">
@@ -322,7 +343,7 @@ const ProfilePage = () => {
 													"Total Views",
 												)}
 											</span>
-											<span className="font-bold">
+											<span className="font-bold font-mono">
 												{pastes.reduce(
 													(acc, p) =>
 														acc + (p.views || 0),
@@ -334,10 +355,10 @@ const ProfilePage = () => {
 											<span className="text-muted-foreground">
 												{t(
 													"profile.most_used_language",
-													"Most Used Language",
+													"Favorite",
 												)}
 											</span>
-											<span className="font-bold uppercase">
+											<span className="font-bold uppercase text-primary">
 												{pastes.length > 0
 													? Object.entries(
 															pastes.reduce(
@@ -374,32 +395,31 @@ const ProfilePage = () => {
 						</motion.div>
 					</div>
 
-					{/* Snippets List */}
-					<div className="lg:col-span-2 space-y-6">
+					{/* Right Side: Snippets List */}
+					<div className="lg:col-span-8 space-y-6">
 						<div className="flex items-center justify-between px-2">
-							<h2 className="text-2xl font-bold flex items-center gap-3">
-								<FileText className="h-6 w-6 text-primary" />
-								{t("profile.your_snippets", "Your Snippets")}
+							<h2 className="text-3xl font-black flex items-center gap-3 tracking-tight">
+								<FileText className="h-7 w-7 text-primary" />
+								{t("profile.your_snippets", "Snippets")}
 							</h2>
 							<Link to="/">
 								<Button
-									variant="outline"
 									size="sm"
-									className="gap-2"
+									className="gap-2 font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform"
 								>
-									{t("header.new_snippet", "New Snippet")}{" "}
+									{t("header.new_snippet", "New")}
 									<ChevronRight className="h-4 w-4" />
 								</Button>
 							</Link>
 						</div>
 
 						{loadingPastes ? (
-							<div className="flex flex-col items-center justify-center py-20 gap-4">
-								<Loader2 className="h-8 w-8 animate-spin text-primary" />
-								<p className="text-muted-foreground">
+							<div className="flex flex-col items-center justify-center py-24 gap-4 bg-muted/10 rounded-3xl border border-dashed border-border/50">
+								<Loader2 className="h-10 w-10 animate-spin text-primary/50" />
+								<p className="text-muted-foreground italic">
 									{t(
 										"profile.loading_pastes",
-										"Loading your creations...",
+										"Summoning your creations...",
 									)}
 								</p>
 							</div>
@@ -427,7 +447,7 @@ const ProfilePage = () => {
 								<Link to="/">
 									<Button
 										size="lg"
-										className="rounded-full px-8 shadow-xl shadow-primary/20 hover:scale-105 transition-transform"
+										className="rounded-full px-8 shadow-xl shadow-primary/20 hover:scale-105 transition-transform font-bold"
 									>
 										{t(
 											"profile.create_first",
@@ -439,122 +459,11 @@ const ProfilePage = () => {
 						) : (
 							<div className="grid gap-4">
 								{pastes.map((paste, idx) => (
-									<motion.div
+									<SnippetCard
 										key={paste.id}
-										initial={{ opacity: 0, y: 20 }}
-										animate={{ opacity: 1, y: 0 }}
-										transition={{ delay: 0.1 + idx * 0.05 }}
-									>
-										<Link
-											to={`/${paste.id}`}
-											className="group block bg-card/40 backdrop-blur-sm hover:bg-card/70 border border-border/50 hover:border-primary/40 rounded-2xl p-5 transition-all duration-300 shadow-sm hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1"
-										>
-											<div className="flex flex-col gap-4">
-												<div className="flex items-center justify-between">
-													<div className="flex items-center gap-3">
-														<Badge
-															className={`px-2.5 py-0.5 border shadow-none ${
-																paste.redirectUrl
-																	? "bg-blue-500/10 text-blue-600 border-blue-500/20"
-																	: getLanguageColor(
-																			paste.language ||
-																				"text",
-																		)
-															}`}
-														>
-															{paste.redirectUrl ? (
-																<LinkIcon className="h-3 w-3 mr-1" />
-															) : (
-																<LanguageIcon
-																	language={
-																		paste.language ||
-																		"text"
-																	}
-																	className="h-3 w-3 mr-1"
-																/>
-															)}
-															<span className="uppercase text-[10px] font-bold tracking-wider">
-																{paste.redirectUrl
-																	? "Link"
-																	: paste.language}
-															</span>
-														</Badge>
-														<span className="font-mono text-xs text-muted-foreground bg-muted/50 px-2 py-0.5 rounded italic">
-															/{paste.id}
-														</span>
-													</div>
-
-													<div className="flex items-center gap-4">
-														<div className="hidden sm:flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-															<CalendarIcon className="h-3 w-3" />
-															{timeAgo(
-																paste.createdAt,
-															)}
-														</div>
-														<div
-															className={`flex items-center gap-1.5 text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-																new Date(
-																	paste.expiresAt,
-																).getTime() <
-																Date.now()
-																	? "bg-destructive/10 text-destructive border-destructive/20"
-																	: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
-															}`}
-														>
-															<Timer className="h-3 w-3" />
-															{new Date(
-																paste.expiresAt,
-															).getTime() <
-															Date.now()
-																? t(
-																		"profile.expired",
-																		"Expired",
-																	)
-																: getTimeRemaining(
-																		paste.expiresAt,
-																	)}
-														</div>
-													</div>
-												</div>
-
-												<div className="relative">
-													<pre className="text-sm font-mono text-foreground/70 bg-muted/20 p-4 rounded-xl border border-border/20 overflow-hidden line-clamp-2 italic leading-relaxed">
-														{paste.content}
-													</pre>
-													<div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent rounded-xl" />
-												</div>
-
-												<div className="flex items-center justify-between text-xs text-muted-foreground pt-1">
-													<div className="flex items-center gap-4">
-														<span className="flex items-center gap-1">
-															<span className="h-1.5 w-1.5 rounded-full bg-primary" />
-															{paste.views || 0}{" "}
-															{t(
-																"profile.views",
-																"views",
-															)}
-														</span>
-														{paste.visibility && (
-															<span className="flex items-center gap-1 capitalize">
-																<span className="h-1.5 w-1.5 rounded-full bg-gray-400" />
-																{t(
-																	`profile.visibility.${paste.visibility}`,
-																	paste.visibility,
-																)}
-															</span>
-														)}
-													</div>
-													<div className="flex items-center gap-1 text-primary opacity-0 group-hover:opacity-100 transition-opacity font-bold uppercase tracking-wider text-[10px]">
-														{t(
-															"profile.view_details",
-															"View Details",
-														)}
-														<ChevronRight className="h-3 w-3" />
-													</div>
-												</div>
-											</div>
-										</Link>
-									</motion.div>
+										item={paste}
+										index={idx}
+									/>
 								))}
 							</div>
 						)}

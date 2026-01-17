@@ -23,6 +23,7 @@ import { LanguageSwitcher } from "./language-switcher";
 import icon from "@/assets/brand/icon.png";
 import { useAuth } from "@/context/AuthContext";
 import { User, LogOut } from "lucide-react";
+import { toast } from "sonner";
 
 interface HeaderProps {
 	className?: string;
@@ -68,7 +69,21 @@ const UserMenu = () => {
 					</Link>
 				</DropdownMenuItem>
 				<DropdownMenuItem
-					onClick={() => logout()}
+					onClick={() => {
+						toast(t("auth.logout_confirm_question"), {
+							action: {
+								label: t("auth.logout_action"),
+								onClick: async () => {
+									await logout();
+									toast.success(t("auth.logout_confirm"));
+								},
+							},
+							cancel: {
+								label: t("auth.logout_cancel"),
+								onClick: () => {},
+							},
+						});
+					}}
 					className="text-red-500 focus:text-red-500 cursor-pointer"
 				>
 					<LogOut className="h-4 w-4 mr-2" />

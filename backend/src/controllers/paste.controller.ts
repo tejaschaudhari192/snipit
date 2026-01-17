@@ -9,6 +9,7 @@ import {
 	getUserIdFromToken,
 	extractTokenFromRequest,
 } from "@/lib/auth.utils.js";
+import bcrypt from "bcryptjs";
 
 class PasteController {
 	constructor(
@@ -34,6 +35,7 @@ class PasteController {
 				burnAfterRead,
 				visibility,
 				allowedUsers,
+				password,
 			} = req.body;
 
 			const expiresAt = expiresTime
@@ -88,6 +90,7 @@ class PasteController {
 				expiresTime,
 				visibility,
 				allowedUsers,
+				password,
 			});
 
 			const owner = this.getUserId(req);
@@ -121,7 +124,17 @@ class PasteController {
 					owner: owner || undefined,
 					visibility: validatedBody.visibility,
 					allowedUsers: validatedBody.allowedUsers,
+					password: validatedBody.password,
 				};
+
+				if (pasteData.password) {
+					const salt = await bcrypt.genSalt(10);
+					pasteData.password = await bcrypt.hash(
+						pasteData.password,
+						salt,
+					);
+				}
+
 				return await this.pasteService.savePaste(pasteData);
 			};
 
@@ -130,7 +143,6 @@ class PasteController {
 				this.logger.info(`Created paste with id: ${pasteId} `);
 				return res.status(201).json(result.toObject());
 			} catch (error: unknown) {
-				// Handle duplicate key error (code 11000)
 				const err = error as {
 					code?: number;
 					errorResponse?: { code?: number };
@@ -155,7 +167,6 @@ class PasteController {
 							.json({ error: "ID already in use" });
 					}
 
-					// For system IDs, try one more time with a new ID
 					pasteId =
 						validatedBody.idType === "system"
 							? uniqueIdGenerator()
@@ -171,7 +182,6 @@ class PasteController {
 					}
 				}
 
-				// For all other errors, bubble up to outer catch
 				throw error;
 			}
 		} catch (error) {
@@ -183,7 +193,6 @@ class PasteController {
 	async getPaste(req: Request, res: Response, next: NextFunction) {
 		const id = req.params.id;
 		try {
-			// Increment views atomically
 			const result = await this.pasteService.incrementViews(id!);
 
 			if (!result) {
@@ -202,7 +211,6 @@ class PasteController {
 				this.logger.info(`Paste burned after 3rd public read: ${id} `);
 			}
 
-			// Visibility Check
 			if (result.visibility && result.visibility !== "public") {
 				const userId = this.getUserId(req);
 				let userEmail = null;
@@ -223,6 +231,23 @@ class PasteController {
 				if (!isOwner && !isAllowed) {
 					return res.status(403).json({
 						error: "Access denied. Private or Shared snippet.",
+					});
+				}
+			}
+
+			if (result.password) {
+				const userId = this.getUserId(req);
+				const isOwner =
+					result.owner &&
+					userId &&
+					result.owner.toString() === userId;
+
+				if (!isOwner) {
+					const pasteObj = result.toObject();
+					const { content, ...rest } = pasteObj;
+					return res.json({
+						...rest,
+						isPasswordProtected: true,
 					});
 				}
 			}
@@ -248,16 +273,16 @@ class PasteController {
 
 	async updatePaste(req: Request, res: Response, next: NextFunction) {
 		const id = req.params.id;
-		const {
+		let {
 			content,
 			redirectUrl,
 			language,
 			visibility,
 			allowedUsers,
 			newId,
+			password,
 		} = req.body;
 		try {
-			// Check ownership
 			const existingPaste = await this.pasteService.getPasteById(id!);
 			if (!existingPaste) {
 				return res.status(404).json({ error: "Paste not found" });
@@ -273,6 +298,11 @@ class PasteController {
 				}
 			}
 
+			if (password) {
+				const salt = await bcrypt.genSalt(10);
+				password = await bcrypt.hash(password, salt);
+			}
+
 			this.logger.info(
 				`Update request for paste ${id}: visibility = ${visibility}, newId = ${newId} `,
 			);
@@ -284,6 +314,7 @@ class PasteController {
 				visibility,
 				allowedUsers,
 				newId,
+				password,
 			);
 
 			this.logger.info(`Successfully updated paste: ${id} `);
@@ -312,6 +343,34 @@ class PasteController {
 			return res.json(pastes.map((p) => p.toObject()));
 		} catch (error) {
 			this.logger.error("Error fetching user pastes", error);
+			return next(error);
+		}
+	}
+
+	async verifyPassword(req: Request, res: Response, next: NextFunction) {
+		const id = req.params.id;
+		const { password } = req.body;
+
+		try {
+			const paste = await this.pasteService.getPasteById(id!);
+
+			if (!paste) {
+				return res.status(404).json({ error: "Paste not found" });
+			}
+
+			if (!paste.password) {
+				return res.json(paste.toObject());
+			}
+
+			const isMatch = await bcrypt.compare(password, paste.password);
+
+			if (isMatch) {
+				return res.json(paste.toObject());
+			} else {
+				return res.status(401).json({ error: "Incorrect password" });
+			}
+		} catch (error) {
+			this.logger.error("Error verifying paste password", id, error);
 			return next(error);
 		}
 	}

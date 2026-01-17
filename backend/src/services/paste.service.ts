@@ -28,6 +28,7 @@ class PasteService {
 		visibility?: "public" | "private" | "shared",
 		allowedUsers?: string[],
 		newId?: string,
+		password?: string,
 	) {
 		const paste = await pasteModel.findOne({ id });
 		if (!paste) return null;
@@ -53,6 +54,10 @@ class PasteService {
 		if (allowedUsers !== undefined) {
 			paste.allowedUsers = allowedUsers;
 			paste.markModified("allowedUsers");
+		}
+
+		if (password !== undefined) {
+			paste.password = password;
 		}
 
 		return await paste.save();

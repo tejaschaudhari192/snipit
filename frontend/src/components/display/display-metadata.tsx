@@ -22,7 +22,7 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 								className="h-3 w-3"
 							/>
 							{paste.language === "text"
-								? "Plain Text"
+								? t("home.tab_text", "Plain Text")
 								: paste.language}
 						</div>
 					) : null}
@@ -44,7 +44,7 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 										: "bg-red-500"
 							}`}
 						/>
-						{paste.visibility || "public"}
+						{t(`common.${paste.visibility || "public"}`)}
 					</div>
 				</div>
 			</div>
@@ -54,10 +54,10 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 					<span className="text-lg">⚠️</span>
 					{t("display.burn_after_read_warning")}{" "}
 					{paste.views === 0
-						? "(2 views remaining)"
+						? t("display.views_remaining_plural", { count: 2 })
 						: paste.views === 1
-							? "(1 view remaining)"
-							: "(Final view)"}
+							? t("display.views_remaining_singular")
+							: t("display.final_view")}
 				</div>
 			)}
 		</>

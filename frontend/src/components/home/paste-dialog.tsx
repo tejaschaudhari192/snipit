@@ -34,6 +34,8 @@ interface PasteDialogProps {
 	setVisibility: (v: "public" | "private" | "shared") => void;
 	allowedUsers: string[];
 	setAllowedUsers: (v: string[]) => void;
+	password: string;
+	setPassword: (v: string) => void;
 	dialogError: string;
 	user: User | null;
 	isSubmitting: boolean;
@@ -51,6 +53,8 @@ export const PasteDialog = ({
 	setVisibility,
 	allowedUsers,
 	setAllowedUsers,
+	password,
+	setPassword,
 	dialogError,
 	user,
 	isSubmitting,
@@ -119,6 +123,22 @@ export const PasteDialog = ({
 				</Tabs>
 
 				<div className="space-y-4 mb-6">
+					<div className="space-y-2">
+						<Label>
+							{t("common.password", "Password (Optional)")}
+						</Label>
+						<Input
+							type="password"
+							placeholder={t(
+								"common.password_placeholder",
+								"Enter password...",
+							)}
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							className="h-11"
+						/>
+					</div>
+
 					<div className="space-y-2">
 						<Label>{t("common.visibility", "Visibility")}</Label>
 						<Select

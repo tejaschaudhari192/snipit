@@ -1,24 +1,15 @@
-import { timeAgo, getTimeRemaining } from "@/lib/utils";
 import type { PasteData } from "@/types";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import {
-	FileText,
-	Trash2,
-	Inbox,
-	ExternalLink,
-	Timer,
-	Calendar,
-	Link as LinkIcon,
-} from "lucide-react";
+import { FileText, Trash2, Inbox } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { motion } from "motion/react";
-import { LanguageIcon } from "@/components/language-icon";
 import { useAuth } from "@/context/AuthContext";
 import { useApiHelpers } from "@/lib/api";
 import { Loader2 } from "lucide-react";
+import { SnippetCard } from "@/components/snippet-card";
 
 const HistoryPage = () => {
 	const { t } = useTranslation();
@@ -54,7 +45,12 @@ const HistoryPage = () => {
 						finalItems = [...userPastes, ...filteredLocal];
 					} catch (err) {
 						console.error("Failed to fetch user pastes", err);
-						toast.error("Failed to sync your account snippets");
+						toast.error(
+							t(
+								"history.sync_failed",
+								"Failed to sync your account snippets",
+							),
+						);
 					}
 				}
 
@@ -76,50 +72,18 @@ const HistoryPage = () => {
 	}, [user, apiHelpers]);
 
 	const handleClearHistory = () => {
-		toast("Clear all history?", {
+		toast(t("history.clear_confirm"), {
 			position: "top-center",
 			action: {
-				label: "Clear",
+				label: t("history.clear_action"),
 				onClick: () => {
 					localStorage.removeItem("items");
 					setItems([]);
-					toast.success("History cleared");
+					toast.success(t("history.cleared_success"));
 				},
 			},
-			cancel: { label: "Cancel", onClick: () => {} },
+			cancel: { label: t("history.cancel"), onClick: () => {} },
 		});
-	};
-
-	const getLanguageColor = (language: string) => {
-		const colors: Record<string, string> = {
-			javascript: "bg-yellow-500/20 text-yellow-600 dark:text-yellow-400",
-			typescript: "bg-blue-500/20 text-blue-600 dark:text-blue-400",
-			python: "bg-green-500/20 text-green-600 dark:text-green-400",
-			java: "bg-orange-500/20 text-orange-600 dark:text-orange-400",
-			html: "bg-red-500/20 text-red-600 dark:text-red-400",
-			css: "bg-purple-500/20 text-purple-600 dark:text-purple-400",
-			json: "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400",
-			rust: "bg-orange-600/20 text-orange-700 dark:text-orange-400",
-			go: "bg-cyan-500/20 text-cyan-600 dark:text-cyan-400",
-			c: "bg-slate-500/20 text-slate-600 dark:text-slate-400",
-			cpp: "bg-pink-500/20 text-pink-600 dark:text-pink-400",
-			csharp: "bg-violet-500/20 text-violet-600 dark:text-violet-400",
-			markdown: "bg-gray-500/20 text-gray-600 dark:text-gray-400",
-			shell: "bg-slate-500/20 text-slate-600 dark:text-slate-400",
-			bash: "bg-slate-500/20 text-slate-600 dark:text-slate-400",
-			other: "bg-slate-500/20 text-slate-600 dark:text-slate-400",
-		};
-		return colors[language] || "bg-primary/10 text-primary";
-	};
-
-	const isExpiringSoon = (expiresAt: string) => {
-		const hoursRemaining =
-			(new Date(expiresAt).getTime() - Date.now()) / (1000 * 60 * 60);
-		return hoursRemaining < 24 && hoursRemaining > 0;
-	};
-
-	const isExpired = (expiresAt: string) => {
-		return new Date(expiresAt).getTime() < Date.now();
 	};
 
 	return (
@@ -200,155 +164,14 @@ const HistoryPage = () => {
 					</motion.div>
 				) : (
 					<div className="grid gap-4">
-						{items.map((item, index) => {
-							const expired =
-								item.expiresAt && isExpired(item.expiresAt);
-							const expiringSoon =
-								item.expiresAt &&
-								!expired &&
-								isExpiringSoon(item.expiresAt);
-
-							return (
-								<motion.div
-									key={item.id}
-									initial={{ opacity: 0, y: 20 }}
-									animate={{ opacity: 1, y: 0 }}
-									transition={{ delay: index * 0.05 }}
-								>
-									<Link
-										to={"/" + item.id}
-										className={`group block bg-card/80 backdrop-blur-sm rounded-xl border p-5 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-0.5 ${
-											expired
-												? "opacity-60 border-destructive/30"
-												: expiringSoon
-													? "border-amber-500/30"
-													: "border-border/50"
-										}`}
-									>
-										<div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
-											{/* Left: Type Badge & ID */}
-											<div className="flex items-center gap-3">
-												<div
-													className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold ${
-														item.redirectUrl
-															? "bg-primary/10 text-primary"
-															: item.language &&
-																  item.language !==
-																		"text"
-																? getLanguageColor(
-																		item.language,
-																	)
-																: "bg-muted text-muted-foreground"
-													}`}
-												>
-													{item.redirectUrl ? (
-														<>
-															<LinkIcon className="h-3.5 w-3.5" />
-															<span>
-																{t(
-																	"history.link_snippet",
-																)}
-															</span>
-														</>
-													) : item.language &&
-													  item.language !==
-															"text" ? (
-														<>
-															<LanguageIcon
-																language={
-																	item.language
-																}
-																className="h-3.5 w-3.5"
-															/>
-															<span className="uppercase">
-																{item.language}
-															</span>
-														</>
-													) : (
-														<>
-															<LanguageIcon
-																language="text"
-																className="h-3.5 w-3.5"
-															/>
-															<span>
-																{t(
-																	"history.plain_text_snippet",
-																)}
-															</span>
-														</>
-													)}
-												</div>
-												<span className="text-xs text-muted-foreground font-mono">
-													/{item.id}
-												</span>
-											</div>
-
-											{/* Right: Time Info */}
-											<div className="flex items-center gap-4 text-xs">
-												<div className="flex items-center gap-1.5 text-muted-foreground">
-													<Calendar className="h-3.5 w-3.5" />
-													<span>
-														{timeAgo(
-															item.createdAt,
-														)}
-													</span>
-												</div>
-												{item.expiresAt && (
-													<div
-														className={`flex items-center gap-1.5 font-medium px-2 py-1 rounded-md ${
-															expired
-																? "bg-destructive/10 text-destructive"
-																: expiringSoon
-																	? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
-																	: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-														}`}
-													>
-														<Timer className="h-3.5 w-3.5" />
-														<span>
-															{item.burnAfterRead ||
-															item.expiresTime ===
-																"one-time"
-																? t(
-																		"home.expire_options.one_time_snippet",
-																	)
-																: expired
-																	? t(
-																			"history.expired",
-																			"Expired",
-																		)
-																	: getTimeRemaining(
-																			item.expiresAt,
-																		)}
-														</span>
-													</div>
-												)}
-											</div>
-										</div>
-
-										{/* Content Preview */}
-										<div className="relative">
-											<div className="bg-muted/30 rounded-lg p-4 border border-border/30">
-												<pre className="text-sm text-foreground/80 font-mono whitespace-pre-wrap break-words line-clamp-3 leading-relaxed">
-													{item.content}
-												</pre>
-											</div>
-											<div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent rounded-lg pointer-events-none" />
-										</div>
-
-										{/* Hover indicator */}
-										<div className="flex items-center justify-end gap-1 mt-3 text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-											<span>
-												{t(
-													"history.view_snippet",
-													"View snippet",
-												)}
-											</span>
-											<ExternalLink className="h-3 w-3" />
-										</div>
-									</Link>
-								</motion.div>
-							);
-						})}
+						{items.map((item, index) => (
+							<SnippetCard
+								key={item.id}
+								item={item}
+								index={index}
+								showViews={false}
+							/>
+						))}
 					</div>
 				)}
 			</div>

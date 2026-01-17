@@ -56,6 +56,7 @@ const HomePage = () => {
 		new Date(Date.now() + 24 * 60 * 60 * 1000),
 	);
 	const [customId, setCustomId] = useState("");
+	const [password, setPassword] = useState("");
 	const [idTypeTab, setIdTypeTab] = useState<"system" | "dynamic">("system");
 	const [dialogError, setDialogError] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -82,6 +83,7 @@ const HomePage = () => {
 				visibility,
 				allowedUsers:
 					visibility === "shared" ? allowedUsers : undefined,
+				password: password || undefined,
 			});
 			toast.success(
 				t("messages.snippet_created", { idType: selectedIdType }),
@@ -148,6 +150,7 @@ const HomePage = () => {
 		if (result === true) {
 			setIsDialogOpen(false);
 			if (idTypeTab === "dynamic") setCustomId("");
+			setPassword("");
 		} else {
 			setDialogError(result as string);
 		}
@@ -200,6 +203,8 @@ const HomePage = () => {
 				setVisibility={setVisibility}
 				allowedUsers={allowedUsers}
 				setAllowedUsers={setAllowedUsers}
+				password={password}
+				setPassword={setPassword}
 				dialogError={dialogError}
 				user={user}
 				isSubmitting={isSubmitting}

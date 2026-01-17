@@ -92,7 +92,10 @@ export const EditControls = ({
 						<Input
 							value={customId}
 							onChange={(e) => setCustomId(e.target.value)}
-							placeholder="Custom ID (optional)..."
+							placeholder={t(
+								"home.dynamic_id_dialog.placeholder",
+								"Custom ID (optional)...",
+							)}
 							className="pl-9 h-11 w-full sm:w-48 bg-muted/20 border-transparent focus:border-border transition-all"
 						/>
 					</div>
@@ -106,13 +109,24 @@ export const EditControls = ({
 						<SelectTrigger className="flex-1 sm:w-fit min-w-[130px] h-11">
 							<div className="flex items-center gap-2">
 								<Shield className="h-4 w-4 text-muted-foreground" />
-								<SelectValue placeholder="Visibility" />
+								<SelectValue
+									placeholder={t(
+										"common.visibility",
+										"Visibility",
+									)}
+								/>
 							</div>
 						</SelectTrigger>
 						<SelectContent>
-							<SelectItem value="public">Public</SelectItem>
-							<SelectItem value="private">Private</SelectItem>
-							<SelectItem value="shared">Shared</SelectItem>
+							<SelectItem value="public">
+								{t("common.public", "Public")}
+							</SelectItem>
+							<SelectItem value="private">
+								{t("common.private", "Private")}
+							</SelectItem>
+							<SelectItem value="shared">
+								{t("common.shared", "Shared")}
+							</SelectItem>
 						</SelectContent>
 					</Select>
 
@@ -130,7 +144,10 @@ export const EditControls = ({
 									size="icon"
 									className="h-11 w-11 shrink-0"
 									onClick={onAutoDetect}
-									title="Auto detect language"
+									title={t(
+										"home.auto_detecting",
+										"Auto detect language",
+									)}
 								>
 									<Code2 className="h-4 w-4" />
 								</Button>
@@ -144,12 +161,15 @@ export const EditControls = ({
 				<div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
 					<Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2 ml-1">
 						<Users className="h-3 w-3" />
-						Collaborators
+						{t("common.allowed_users", "Collaborators")}
 					</Label>
 					<MultiEmailInput
 						value={allowedUsers}
 						onChange={setAllowedUsers}
-						placeholder="Enter emails..."
+						placeholder={t(
+							"common.allowed_users_placeholder",
+							"Enter emails...",
+						)}
 						className="w-full min-h-[44px] bg-background/50 backdrop-blur-sm border-primary/10 focus-within:border-primary/30 transition-colors"
 					/>
 				</div>
