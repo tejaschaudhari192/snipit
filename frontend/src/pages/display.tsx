@@ -80,9 +80,7 @@ const DisplayPage = () => {
 				);
 				setVisibility(data.visibility || "public");
 				setAllowedUsers(data.allowedUsers || []);
-				setIsPasswordEnabled(
-					data.isPasswordProtected || !!data.password || false,
-				);
+				setIsPasswordEnabled(data.isPasswordProtected || false);
 				setLoading(false);
 				window.history.replaceState({}, document.title);
 				return;
@@ -108,9 +106,7 @@ const DisplayPage = () => {
 				);
 				setVisibility(data.visibility || "public");
 				setAllowedUsers(data.allowedUsers || []);
-				setIsPasswordEnabled(
-					data.isPasswordProtected || !!data.password || false,
-				);
+				setIsPasswordEnabled(data.isPasswordProtected || false);
 				if (!user) {
 					saveToLocal(data);
 				}
@@ -180,9 +176,7 @@ const DisplayPage = () => {
 		);
 	};
 	const handleEditSave = async () => {
-		const wasProtected =
-			paste?.isPasswordProtected ||
-			(!!paste?.password && paste.password.length > 0);
+		const wasProtected = paste?.isPasswordProtected || false;
 		const passwordChanged =
 			isPasswordEnabled !== wasProtected || !!editPassword;
 
@@ -406,9 +400,7 @@ const DisplayPage = () => {
 										);
 										setCustomId(paste?.id || "");
 										setIsPasswordEnabled(
-											paste?.isPasswordProtected ||
-												!!paste?.password ||
-												false,
+											paste?.isPasswordProtected || false,
 										);
 									}
 									setIsEdit(val);

@@ -128,7 +128,7 @@ export const PasteDialog = ({
 							{t("common.password", "Password (Optional)")}
 						</Label>
 						<Input
-							type="password"
+							type="text"
 							placeholder={t(
 								"common.password_placeholder",
 								"Enter password...",
