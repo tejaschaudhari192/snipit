@@ -4,8 +4,7 @@
 
 export const CONFIG = {
 	// API Configuration
-	API_BASE_URL:
-		import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api",
+	API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
 
 	// Storage Keys
 	STORAGE_KEYS: {

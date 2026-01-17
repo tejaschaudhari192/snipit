@@ -25,7 +25,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 	const [user, setUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState(true);
 
-	const checkAuth = async () => {
+	const checkAuth = React.useCallback(async () => {
 		try {
 			const response = await api.get("/auth/me");
 			setUser(response.data);
@@ -34,31 +34,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, []);
 
 	useEffect(() => {
 		checkAuth();
+	}, [checkAuth]);
+
+	const login = React.useCallback((userData: User) => {
+		setUser(userData);
 	}, []);
 
-	const login = (userData: User) => {
-		setUser(userData);
-	};
-
-	const logout = async () => {
+	const logout = React.useCallback(async () => {
 		try {
 			await api.post("/auth/logout");
 			setUser(null);
 		} catch (error) {
 			console.error("Logout failed", error);
 		}
-	};
+	}, []);
+
+	const value = React.useMemo(
+		() => ({ user, loading, login, logout, checkAuth, setUser }),
+		[user, loading, login, logout, checkAuth],
+	);
 
 	return (
-		<AuthContext.Provider
-			value={{ user, loading, login, logout, checkAuth, setUser }}
-		>
-			{children}
-		</AuthContext.Provider>
+		<AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 	);
 };
 
