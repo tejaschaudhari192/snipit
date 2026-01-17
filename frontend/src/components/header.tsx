@@ -107,6 +107,7 @@ const Header = ({ className }: HeaderProps) => {
 					<img
 						src={icon}
 						alt="Snipit Logo"
+						loading="lazy"
 						className="h-8 w-auto transform transition-transform duration-300 ease-in-out group-hover:scale-105"
 					/>
 					<p className="text-xl md:text-2xl font-black tracking-tight bg-clip-text transform transition-transform duration-300 ease-in-out group-hover:scale-105">

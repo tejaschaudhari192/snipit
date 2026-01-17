@@ -55,6 +55,7 @@ const AboutPage = () => {
 							<img
 								src={appScreenshot}
 								alt="Snipit App Screenshot"
+								loading="lazy"
 								className="w-full h-auto transition-transform duration-700 hover:scale-[1.02] dark:brightness-90 dark:contrast-110"
 							/>
 							{/* Overlay gradient to blend bottom edge if needed */}
@@ -166,6 +167,7 @@ const AboutPage = () => {
 												<img
 													src={member.avatar}
 													alt={member.name}
+													loading="lazy"
 													className="w-full h-full object-cover"
 												/>
 											</div>
