@@ -56,11 +56,13 @@ export const loginUser = async (req: Request, res: Response) => {
 		if (user && (await bcrypt.compare(password, user.password as string))) {
 			const token = generateToken(user._id as string);
 
+			const isProduction = process.env.NODE_ENV === "production";
+
 			// Set cookie
 			res.cookie("jwt", token, {
 				httpOnly: true,
-				secure: process.env.NODE_ENV !== "development",
-				sameSite: "strict",
+				secure: isProduction, // Only secure in production
+				sameSite: isProduction ? "none" : "lax", // 'none' for cross-site prod, 'lax' for local
 				maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
 			});
 
@@ -81,8 +83,12 @@ export const loginUser = async (req: Request, res: Response) => {
 };
 
 export const logoutUser = async (req: Request, res: Response) => {
+	const isProduction = process.env.NODE_ENV === "production";
+
 	res.cookie("jwt", "", {
 		httpOnly: true,
+		secure: isProduction,
+		sameSite: isProduction ? "none" : "lax",
 		expires: new Date(0),
 	});
 	res.status(200).json({ message: "Logged out successfully" });

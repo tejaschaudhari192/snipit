@@ -31,7 +31,7 @@ import type { PasteData } from "@/types";
 
 const ProfilePage = () => {
 	const { t } = useTranslation();
-	const { user, setUser } = useAuth();
+	const { user, loading: authLoading, setUser } = useAuth();
 	const apiHelpers = useApiHelpers();
 
 	const [isEditingName, setIsEditingName] = useState(false);
@@ -113,6 +113,17 @@ const ProfilePage = () => {
 			colors[language] || "bg-primary/10 text-primary border-primary/20"
 		);
 	};
+
+	if (authLoading) {
+		return (
+			<div className="flex flex-col items-center justify-center min-h-[80vh] container mx-auto px-4">
+				<Loader2 className="h-12 w-12 animate-spin text-primary" />
+				<p className="mt-4 text-muted-foreground animate-pulse">
+					{t("profile.checking_auth", "Checking authentication...")}
+				</p>
+			</div>
+		);
+	}
 
 	if (!user) {
 		return (
