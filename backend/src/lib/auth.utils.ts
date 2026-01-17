@@ -27,6 +27,7 @@ export const getCookieOptions = () => {
 		secure: isProduction,
 		sameSite: (isProduction ? "none" : "lax") as "none" | "lax",
 		maxAge: configurations.cookie.maxAge,
+		path: "/",
 	};
 };
 

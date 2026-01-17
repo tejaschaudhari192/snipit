@@ -162,7 +162,7 @@
 			},
 			"expiration": {
 				"title": "Expiration Control",
-				"desc": "Set snippets to expire after 1 hour to 1 year, or keep them forever."
+				"desc": "Set snippets to expire after 1 hour to 1 year, choose a custom date, or keep them forever."
 			},
 			"multi_language": {
 				"title": "Multi-Language UI",
@@ -183,6 +183,10 @@
 			"sharing": {
 				"title": "Easy Sharing",
 				"desc": "Share your snippets effortlessly with a simple link or QR code."
+			},
+			"access_control": {
+				"title": "User Access Control",
+				"desc": "Share your snippets with specific users by email for granular privacy control."
 			},
 			"profile": {
 				"title": "User Profiles",

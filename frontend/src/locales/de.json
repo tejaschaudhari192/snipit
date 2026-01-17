@@ -160,7 +160,7 @@
 			},
 			"expiration": {
 				"title": "Ablaufkontrolle",
-				"desc": "Snippets laufen nach 1 Stunde bis 1 Jahr ab, oder behalten Sie sie für immer."
+				"desc": "Snippets laufen nach 1 Stunde bis 1 Jahr ab, wählen Sie ein benutzerdefiniertes Datum, oder behalten Sie sie für immer."
 			},
 			"multi_language": {
 				"title": "Mehrsprachige Oberfläche",
@@ -177,6 +177,22 @@
 			"redirect_urls": {
 				"title": "Links kürzen",
 				"desc": "Erstellen Sie kurze, handliche Links, die sofort zu jedem beliebigen Ziel weiterleiten."
+			},
+			"sharing": {
+				"title": "Easy Sharing",
+				"desc": "Share your snippets effortlessly with a simple link or QR code."
+			},
+			"access_control": {
+				"title": "User Access Control",
+				"desc": "Share your snippets with specific users by email for granular privacy control."
+			},
+			"profile": {
+				"title": "User Profiles",
+				"desc": "Create an account to manage, edit, and keep track of your snippets."
+			},
+			"password": {
+				"title": "Password Protection",
+				"desc": "Secure your sensitive snippets with password protection for restricted access."
 			}
 		},
 		"story": {

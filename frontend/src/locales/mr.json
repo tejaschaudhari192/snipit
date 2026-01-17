@@ -160,7 +160,7 @@
 			},
 			"expiration": {
 				"title": "मुदत नियंत्रण",
-				"desc": "स्निपेट 1 तासापासून 1 वर्षापर्यंत मुदत संपण्यासाठी सेट करा, किंवा ते कायम ठेवा."
+				"desc": "स्निपेट 1 तासापासून 1 वर्षापर्यंत मुदत संपण्यासाठी सेट करा, सानुकूल तारीख निवडा, किंवा ते कायम ठेवा."
 			},
 			"multi_language": {
 				"title": "बहु-भाषा UI",
@@ -177,6 +177,22 @@
 			"redirect_urls": {
 				"title": "लिंक लहान करा",
 				"desc": "लहान आणि व्यवस्थापित करण्यायोग्य दुवे तयार करा जे कोणत्याही गंतव्यस्थानावर त्वरित पुनर्निर्देशित करतात."
+			},
+			"sharing": {
+				"title": "Easy Sharing",
+				"desc": "Share your snippets effortlessly with a simple link or QR code."
+			},
+			"access_control": {
+				"title": "User Access Control",
+				"desc": "Share your snippets with specific users by email for granular privacy control."
+			},
+			"profile": {
+				"title": "User Profiles",
+				"desc": "Create an account to manage, edit, and keep track of your snippets."
+			},
+			"password": {
+				"title": "Password Protection",
+				"desc": "Secure your sensitive snippets with password protection for restricted access."
 			}
 		},
 		"story": {

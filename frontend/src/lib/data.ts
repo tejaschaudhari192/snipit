@@ -10,6 +10,7 @@ import {
 	Share2,
 	User,
 	Lock,
+	ShieldCheck,
 } from "lucide-react";
 
 const app = {
@@ -38,6 +39,11 @@ const app = {
 			icon: Share2,
 			key: "sharing",
 			gradient: "from-blue-500 to-indigo-500",
+		},
+		{
+			icon: ShieldCheck,
+			key: "access_control",
+			gradient: "from-indigo-500 to-violet-500",
 		},
 		{
 			icon: User,

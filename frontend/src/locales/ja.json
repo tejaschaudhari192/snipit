@@ -160,7 +160,7 @@
 			},
 			"expiration": {
 				"title": "有効期限制御",
-				"desc": "スニペットを1時間から1年後に期限切れに設定、または永久に保持。"
+				"desc": "スニペットを1時間から1年後に期限切れに設定、または永久に保持、またはカスタム日付を選択。"
 			},
 			"multi_language": {
 				"title": "多言語UI",
@@ -181,6 +181,10 @@
 			"sharing": {
 				"title": "Easy Sharing",
 				"desc": "Share your snippets effortlessly with a simple link or QR code."
+			},
+			"access_control": {
+				"title": "User Access Control",
+				"desc": "Share your snippets with specific users by email for granular privacy control."
 			},
 			"profile": {
 				"title": "User Profiles",

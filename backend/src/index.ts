@@ -14,6 +14,8 @@ import configurations from "@/config/configurations.js";
 connectDB();
 const port = configurations.port;
 
+app.set("trust proxy", 1); // Enable trust proxy for secure cookies behind reverse proxies
+
 app.use(
 	cors({
 		origin: configurations.cors.origins,

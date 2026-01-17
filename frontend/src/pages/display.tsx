@@ -180,7 +180,9 @@ const DisplayPage = () => {
 		);
 	};
 	const handleEditSave = async () => {
-		const wasProtected = paste?.isPasswordProtected || false;
+		const wasProtected =
+			paste?.isPasswordProtected ||
+			(!!paste?.password && paste.password.length > 0);
 		const passwordChanged =
 			isPasswordEnabled !== wasProtected || !!editPassword;
 
