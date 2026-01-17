@@ -13,6 +13,7 @@ import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { useAuth } from "@/context/AuthContext";
 import type { IdType } from "@/types";
 import { CONFIG } from "@/configurations";
+import { useLanguageDetection } from "@/hooks/use-language-detection";
 
 // Extracted Components
 import { LanguageSelector } from "@/components/editor/language-selector";
@@ -47,7 +48,7 @@ const HomePage = () => {
 		"text",
 	);
 	const [language, setLanguage] = useState(CONFIG.DEFAULTS.LANGUAGE);
-	const [isDetecting, setIsDetecting] = useState(false);
+	const { isDetecting, detectLanguage } = useLanguageDetection();
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [isCustomExpiryDialogOpen, setIsCustomExpiryDialogOpen] =
 		useState(false);
@@ -57,6 +58,7 @@ const HomePage = () => {
 	const [customId, setCustomId] = useState("");
 	const [idTypeTab, setIdTypeTab] = useState<"system" | "dynamic">("system");
 	const [dialogError, setDialogError] = useState("");
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const setTextValue = (val: string) => {
 		_setTextValue(val);
@@ -68,6 +70,7 @@ const HomePage = () => {
 		providedId?: string,
 	) => {
 		try {
+			setIsSubmitting(true);
 			const data = await apiHelpers.submitPaste({
 				content: textValue,
 				expiresTime,
@@ -103,36 +106,20 @@ const HomePage = () => {
 			return (
 				axiosError.response?.data?.error || t("messages.snippet_failed")
 			);
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 
 	const handleLanguageDetection = async (content: string) => {
-		setIsDetecting(true);
-		const startTime = Date.now();
-		try {
-			const result = await apiHelpers.detectLanguage(content);
-			const elapsedTime = Date.now() - startTime;
-			if (elapsedTime < 2000) {
-				await new Promise((resolve) =>
-					setTimeout(resolve, 2000 - elapsedTime),
-				);
-			}
-
-			if (result.language && result.language !== "text") {
+		const result = await detectLanguage(content);
+		if (result) {
+			if (result.isCode) {
 				setContentType("code");
-				const detectedLang =
-					result.language === "bash" ? "shell" : result.language;
-				setLanguage(detectedLang);
-				toast.success(
-					t("home.detected_language", { language: detectedLang }),
-				);
-			} else if (result.language === "text") {
+				setLanguage(result.language);
+			} else {
 				setContentType("text");
 			}
-		} catch (error) {
-			console.error("Failed to detect language", error);
-		} finally {
-			setIsDetecting(false);
 		}
 	};
 
@@ -215,6 +202,7 @@ const HomePage = () => {
 				setAllowedUsers={setAllowedUsers}
 				dialogError={dialogError}
 				user={user}
+				isSubmitting={isSubmitting}
 				onSubmit={handleDialogSubmit}
 			/>
 

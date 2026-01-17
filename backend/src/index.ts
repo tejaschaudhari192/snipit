@@ -9,18 +9,14 @@ import aiRouter from "@/routes/ai.route.js";
 import cors from "cors";
 import logger from "@/config/logger.js";
 import { ZodError } from "zod";
+import configurations from "@/config/configurations.js";
 
 connectDB();
-const port = process.env.PORT;
+const port = configurations.port;
 
 app.use(
 	cors({
-		origin: [
-			"https://cpaste.vercel.app",
-			"https://snipit-nu.vercel.app",
-			"http://localhost:5173",
-			"http://192.168.0.2:5173",
-		],
+		origin: configurations.cors.origins,
 		credentials: true,
 		methods: "GET,POST,PUT,DELETE,OPTIONS",
 		allowedHeaders: "Content-Type,Authorization",

@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 const configurations = {
-	port: process.env.PORT,
+	port: process.env.PORT || 3000,
 	domain: process.env.DOMAIN,
 	database: {
 		user: process.env.DB_USER,
@@ -10,6 +10,21 @@ const configurations = {
 		name: process.env.DB_NAME,
 	},
 	groq_api_key: process.env.GROQ_API_KEY,
+	jwt: {
+		secret: process.env.JWT_SECRET || "default_secret",
+		expiry: "30d",
+	},
+	cookie: {
+		maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+	},
+	cors: {
+		origins: [
+			"https://cpaste.vercel.app",
+			"https://snipit-nu.vercel.app",
+			"http://localhost:5173",
+			"http://192.168.0.2:5173",
+		],
+	},
 };
 
 export default configurations;

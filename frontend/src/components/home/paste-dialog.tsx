@@ -36,6 +36,7 @@ interface PasteDialogProps {
 	setAllowedUsers: (v: string[]) => void;
 	dialogError: string;
 	user: User | null;
+	isSubmitting: boolean;
 	onSubmit: () => void;
 }
 
@@ -52,6 +53,7 @@ export const PasteDialog = ({
 	setAllowedUsers,
 	dialogError,
 	user,
+	isSubmitting,
 	onSubmit,
 }: PasteDialogProps) => {
 	const { t } = useTranslation();
@@ -227,12 +229,15 @@ export const PasteDialog = ({
 					<Button
 						onClick={onSubmit}
 						disabled={
+							isSubmitting ||
 							(idTypeTab === "dynamic" && !customId.trim()) ||
 							(!user && visibility !== "public")
 						}
 						className="px-8 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all font-bold"
 					>
-						{t("home.dynamic_id_dialog.submit")}
+						{isSubmitting
+							? t("common.submitting", "Submitting...")
+							: t("home.dynamic_id_dialog.submit")}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

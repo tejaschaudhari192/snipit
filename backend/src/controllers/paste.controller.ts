@@ -2,16 +2,24 @@ import { dateConverter, uniqueIdGenerator } from "@/lib/utils.js";
 import type { NextFunction, Request, Response } from "express";
 import type { PasteData } from "@/types/index.js";
 import { createPasteSchema } from "@/validators/paste.validators.js";
-import jwt from "jsonwebtoken";
 import type { Logger } from "winston";
 import User from "@/models/User.js";
 import type PasteService from "@/services/paste.service.js";
+import {
+	getUserIdFromToken,
+	extractTokenFromRequest,
+} from "@/lib/auth.utils.js";
 
 class PasteController {
 	constructor(
 		private readonly pasteService: PasteService,
 		private readonly logger: Logger,
 	) {}
+
+	private getUserId(req: Request): string | null {
+		const token = extractTokenFromRequest(req);
+		return token ? getUserIdFromToken(token) : null;
+	}
 
 	async createPaste(req: Request, res: Response, next: NextFunction) {
 		try {
@@ -82,16 +90,7 @@ class PasteController {
 				allowedUsers,
 			});
 
-			let owner = null;
-			if (req.cookies.jwt) {
-				try {
-					const decoded = jwt.verify(
-						req.cookies.jwt,
-						process.env.JWT_SECRET || "default_secret",
-					) as { id: string };
-					owner = decoded.id;
-				} catch (e) {}
-			}
+			const owner = this.getUserId(req);
 
 			if (
 				validatedBody.visibility &&
@@ -201,24 +200,15 @@ class PasteController {
 			if (result.burnAfterRead && result.views > 3) {
 				await this.pasteService.deletePaste(id!);
 				this.logger.info(`Paste burned after 3rd public read: ${id} `);
-				// Ensure we stop execution or return 404 if deleted?
-				// Logic continues... but usually burn means gone.
 			}
 
 			// Visibility Check
 			if (result.visibility && result.visibility !== "public") {
-				let userId = null;
+				const userId = this.getUserId(req);
 				let userEmail = null;
-				if (req.cookies.jwt) {
-					try {
-						const decoded = jwt.verify(
-							req.cookies.jwt,
-							process.env.JWT_SECRET || "default_secret",
-						) as { id: string };
-						userId = decoded.id;
-						const user = await User.findById(userId);
-						if (user) userEmail = user.email;
-					} catch (e) {}
+				if (userId) {
+					const user = await User.findById(userId);
+					if (user) userEmail = user.email;
 				}
 
 				const isOwner =
@@ -274,16 +264,7 @@ class PasteController {
 			}
 
 			if (existingPaste.owner) {
-				let userId = null;
-				if (req.cookies.jwt) {
-					try {
-						const decoded = jwt.verify(
-							req.cookies.jwt,
-							process.env.JWT_SECRET || "default_secret",
-						) as { id: string };
-						userId = decoded.id;
-					} catch (e) {}
-				}
+				const userId = this.getUserId(req);
 
 				if (existingPaste.owner.toString() !== userId) {
 					return res.status(403).json({
@@ -321,16 +302,7 @@ class PasteController {
 
 	async getUserPastes(req: Request, res: Response, next: NextFunction) {
 		try {
-			let userId = null;
-			if (req.cookies.jwt) {
-				try {
-					const decoded = jwt.verify(
-						req.cookies.jwt,
-						process.env.JWT_SECRET || "default_secret",
-					) as { id: string };
-					userId = decoded.id;
-				} catch (e) {}
-			}
+			const userId = this.getUserId(req);
 
 			if (!userId) {
 				return res.status(401).json({ error: "Unauthorized" });

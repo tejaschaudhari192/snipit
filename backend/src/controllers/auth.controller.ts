@@ -1,13 +1,17 @@
 import type { Request, Response } from "express";
 import User from "@/models/User.js";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import type { AuthRequest } from "@/middleware/auth.middleware.js";
+import {
+	generateToken,
+	setAuthCookie,
+	clearAuthCookie,
+} from "@/lib/auth.utils.js";
 
-const generateToken = (id: string) => {
-	return jwt.sign({ id }, process.env.JWT_SECRET || "default_secret", {
-		expiresIn: "30d",
-	});
+const handleServerError = (res: Response, error: unknown) => {
+	const message =
+		error instanceof Error ? error.message : "An error occurred";
+	res.status(500).json({ message });
 };
 
 export const registerUser = async (req: Request, res: Response) => {
@@ -41,9 +45,7 @@ export const registerUser = async (req: Request, res: Response) => {
 			res.status(400).json({ message: "Invalid user data" });
 		}
 	} catch (error: unknown) {
-		const message =
-			error instanceof Error ? error.message : "An error occurred";
-		res.status(500).json({ message });
+		handleServerError(res, error);
 	}
 };
 
@@ -55,16 +57,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
 		if (user && (await bcrypt.compare(password, user.password as string))) {
 			const token = generateToken(user._id as string);
-
-			const isProduction = process.env.NODE_ENV === "production";
-
-			// Set cookie
-			res.cookie("jwt", token, {
-				httpOnly: true,
-				secure: isProduction, // Only secure in production
-				sameSite: isProduction ? "none" : "lax", // 'none' for cross-site prod, 'lax' for local
-				maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-			});
+			setAuthCookie(res, token);
 
 			res.json({
 				_id: user._id,
@@ -76,21 +69,12 @@ export const loginUser = async (req: Request, res: Response) => {
 			res.status(401).json({ message: "Invalid email or password" });
 		}
 	} catch (error: unknown) {
-		const message =
-			error instanceof Error ? error.message : "An error occurred";
-		res.status(500).json({ message });
+		handleServerError(res, error);
 	}
 };
 
 export const logoutUser = async (req: Request, res: Response) => {
-	const isProduction = process.env.NODE_ENV === "production";
-
-	res.cookie("jwt", "", {
-		httpOnly: true,
-		secure: isProduction,
-		sameSite: isProduction ? "none" : "lax",
-		expires: new Date(0),
-	});
+	clearAuthCookie(res);
 	res.status(200).json({ message: "Logged out successfully" });
 };
 
@@ -138,8 +122,6 @@ export const updateMe = async (req: Request, res: Response) => {
 			message: "Profile updated successfully",
 		});
 	} catch (error: unknown) {
-		const message =
-			error instanceof Error ? error.message : "An error occurred";
-		res.status(500).json({ message });
+		handleServerError(res, error);
 	}
 };

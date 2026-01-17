@@ -20,6 +20,7 @@ import Error from "@/components/error";
 import { DisplayToolbar } from "@/components/display/display-toolbar";
 import { DisplayMetadata } from "@/components/display/display-metadata";
 import { DisplayContent } from "@/components/display/display-content";
+import { useLanguageDetection } from "@/hooks/use-language-detection";
 import { EditControls } from "@/components/display/edit-controls";
 
 const DisplayPage = () => {
@@ -45,7 +46,7 @@ const DisplayPage = () => {
 	>("public");
 	const [allowedUsers, setAllowedUsers] = useState<string[]>([]);
 	const [customId, setCustomId] = useState<string>("");
-	const [isDetecting, setIsDetecting] = useState<boolean>(false);
+	const { isDetecting, detectLanguage } = useLanguageDetection();
 	const { fontSize, ref: contentRef, setFontSize } = usePinchZoom(14);
 
 	const handleEditorWillMount: BeforeMount = (monaco) =>
@@ -105,28 +106,9 @@ const DisplayPage = () => {
 	}, [id]);
 
 	const handleLanguageDetection = async (content: string) => {
-		setIsDetecting(true);
-		const startTime = Date.now();
-		try {
-			const result = await apiHelpers.detectLanguage(content);
-			const elapsedTime = Date.now() - startTime;
-			if (elapsedTime < 2000) {
-				await new Promise((resolve) =>
-					setTimeout(resolve, 2000 - elapsedTime),
-				);
-			}
-			if (result.language) {
-				const detectedLang =
-					result.language === "bash" ? "shell" : result.language;
-				setLanguage(detectedLang);
-				toast.success(
-					t("messages.detected_language", { language: detectedLang }),
-				);
-			}
-		} catch (error) {
-			console.error("Failed to detect language", error);
-		} finally {
-			setIsDetecting(false);
+		const result = await detectLanguage(content);
+		if (result) {
+			setLanguage(result.language);
 		}
 	};
 
