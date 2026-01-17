@@ -2,7 +2,6 @@ import { Editor, type BeforeMount } from "@monaco-editor/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { AuroraBackground } from "@/components/ui/shadcn-io/aurora-background";
 import { Link } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -60,10 +59,10 @@ export const DisplayContent = ({
 						}}
 					/>
 				) : contentType === "link" ? (
-					<AuroraBackground className="h-full w-full rounded-md border-0">
+					<div className="h-full w-full bg-gradient-to-br from-background via-muted/10 to-background flex items-center justify-center rounded-md">
 						<div className="w-full max-w-2xl space-y-6 relative z-10 px-4">
 							<div className="flex flex-col items-center gap-2 text-center">
-								<div className="p-4 rounded-full bg-primary/10 text-primary backdrop-blur-sm">
+								<div className="p-4 rounded-full bg-primary/10 text-primary backdrop-blur-sm border border-primary/20">
 									<Link className="h-8 w-8" />
 								</div>
 							</div>
@@ -73,10 +72,10 @@ export const DisplayContent = ({
 									onContentChange(e.target.value)
 								}
 								placeholder={t("home.link_placeholder")}
-								className="h-14 text-lg px-6 rounded-xl border-primary/20 focus-visible:ring-primary/30 shadow-lg bg-background/50 backdrop-blur-md"
+								className="h-14 text-lg px-6 rounded-xl border-border/50 focus-visible:ring-primary/30 shadow-lg bg-background/50 backdrop-blur-md"
 							/>
 						</div>
-					</AuroraBackground>
+					</div>
 				) : (
 					<Textarea
 						className="h-full w-full resize-none border-0 focus-visible:ring-0 font-mono"

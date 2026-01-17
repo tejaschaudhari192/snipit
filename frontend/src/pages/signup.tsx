@@ -15,14 +15,22 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 import { motion } from "motion/react";
-import { UserPlus, Mail, Lock, User, ArrowRight } from "lucide-react";
-import { AuroraBackground } from "@/components/ui/shadcn-io/aurora-background";
+import {
+	UserPlus,
+	Mail,
+	Lock,
+	User,
+	ArrowRight,
+	Eye,
+	EyeOff,
+} from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 const SignupPage = () => {
 	const [username, setUsername] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const { user } = useAuth();
 	const navigate = useNavigate();
@@ -53,14 +61,14 @@ const SignupPage = () => {
 	};
 
 	return (
-		<AuroraBackground className="min-h-[calc(100vh-64px)]">
+		<div className="flex-1 flex flex-col items-center justify-center bg-gradient-to-br from-background via-muted/10 to-background px-4 py-8 md:py-12">
 			<motion.div
-				initial={{ opacity: 0, y: 20 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.5 }}
-				className="w-full max-w-sm px-4 relative z-10"
+				initial={{ opacity: 0, scale: 0.95 }}
+				animate={{ opacity: 1, scale: 1 }}
+				transition={{ duration: 0.3 }}
+				className="w-full max-w-sm relative z-10"
 			>
-				<Card className="border-primary/10 bg-background/60 backdrop-blur-xl shadow-2xl">
+				<Card className="border-border/50 bg-background/60 backdrop-blur-xl shadow-2xl">
 					<CardHeader className="space-y-1 pb-6">
 						<div className="flex items-center justify-between mb-2">
 							<div className="p-2 rounded-lg bg-primary/10 text-primary">
@@ -70,7 +78,7 @@ const SignupPage = () => {
 						<CardTitle className="text-3xl font-black tracking-tight">
 							Join Snipit
 						</CardTitle>
-						<CardDescription className="text-base">
+						<CardDescription className="text-base text-muted-foreground">
 							Create an account to start managing your snippets.
 						</CardDescription>
 					</CardHeader>
@@ -90,7 +98,7 @@ const SignupPage = () => {
 										type="text"
 										placeholder="johndoe"
 										required
-										className="pl-10 h-11 bg-background/50 border-primary/10 focus:border-primary/30 transition-all"
+										className="pl-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all"
 										value={username}
 										onChange={(e) =>
 											setUsername(e.target.value)
@@ -112,7 +120,7 @@ const SignupPage = () => {
 										type="email"
 										placeholder="name@example.com"
 										required
-										className="pl-10 h-11 bg-background/50 border-primary/10 focus:border-primary/30 transition-all"
+										className="pl-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all"
 										value={email}
 										onChange={(e) =>
 											setEmail(e.target.value)
@@ -131,15 +139,35 @@ const SignupPage = () => {
 									<Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground transition-colors group-focus-within:text-primary" />
 									<Input
 										id="password"
-										type="password"
+										type={
+											showPassword ? "text" : "password"
+										}
 										placeholder="••••••••"
 										required
-										className="pl-10 h-11 bg-background/50 border-primary/10 focus:border-primary/30 transition-all"
+										className="pl-10 pr-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all font-mono"
 										value={password}
 										onChange={(e) =>
 											setPassword(e.target.value)
 										}
 									/>
+									<button
+										type="button"
+										onClick={() =>
+											setShowPassword(!showPassword)
+										}
+										className="absolute right-3 top-3 text-muted-foreground hover:text-primary transition-colors focus:outline-none"
+										aria-label={
+											showPassword
+												? "Hide password"
+												: "Show password"
+										}
+									>
+										{showPassword ? (
+											<EyeOff className="h-5 w-5" />
+										) : (
+											<Eye className="h-5 w-5" />
+										)}
+									</button>
 								</div>
 							</div>
 							<Button
@@ -172,10 +200,10 @@ const SignupPage = () => {
 					<CardFooter className="flex flex-col gap-4 pt-2">
 						<div className="relative w-full">
 							<div className="absolute inset-0 flex items-center">
-								<span className="w-full border-t border-primary/10"></span>
+								<span className="w-full border-t border-border/50"></span>
 							</div>
 							<div className="relative flex justify-center text-xs uppercase">
-								<span className="bg-background px-2 text-muted-foreground">
+								<span className="bg-background/0 px-2 text-muted-foreground">
 									Or
 								</span>
 							</div>
@@ -193,7 +221,7 @@ const SignupPage = () => {
 					</CardFooter>
 				</Card>
 			</motion.div>
-		</AuroraBackground>
+		</div>
 	);
 };
 

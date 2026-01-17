@@ -23,7 +23,7 @@ const SplashPage = () => {
 	}, []);
 
 	return (
-		<div className="h-screen w-screen flex items-center justify-center bg-white">
+		<div className="h-screen w-screen flex items-center justify-center bg-background transition-colors duration-300">
 			<div className="text-center animate-fade-in">
 				<div className="flex items-center justify-center h-fit gap-2">
 					<img src={icon} alt="Snipit icon" className="h-16" />

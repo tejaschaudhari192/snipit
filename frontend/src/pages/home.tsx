@@ -157,7 +157,7 @@ const HomePage = () => {
 		defineMonacoThemes(monaco);
 
 	return (
-		<div className="h-fit max-h-screen">
+		<div className="flex-1 flex flex-col bg-gradient-to-br from-background via-muted/5 to-background">
 			<div className="flex flex-col gap-4 my-2 mx-3 md:my-4 md:mx-5">
 				<MainToolbar
 					contentType={contentType}

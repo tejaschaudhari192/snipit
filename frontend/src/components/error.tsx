@@ -8,7 +8,7 @@ const Error = () => {
 	const { t } = useTranslation();
 
 	return (
-		<div className="min-h-[90vh] flex items-center justify-center px-4 bg-background">
+		<div className="min-h-[90vh] flex items-center justify-center px-4 bg-gradient-to-br from-background via-muted/10 to-background">
 			<div className="max-w-2xl w-full text-center">
 				{/* Animated 404 */}
 				<motion.div

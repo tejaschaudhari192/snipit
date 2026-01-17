@@ -1,7 +1,6 @@
 import { Editor, type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { AuroraBackground } from "@/components/ui/shadcn-io/aurora-background";
 import { Link } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { RefObject } from "react";
@@ -58,10 +57,10 @@ export const EditorContent = ({
 					}}
 				/>
 			) : contentType === "link" ? (
-				<AuroraBackground className="h-full w-full">
+				<div className="h-full w-full bg-gradient-to-br from-background via-muted/10 to-background flex items-center justify-center">
 					<div className="w-full max-w-2xl space-y-6 relative z-10 px-4">
 						<div className="flex flex-col items-center gap-2 text-center">
-							<div className="p-4 rounded-full bg-primary/10 text-primary backdrop-blur-sm">
+							<div className="p-4 rounded-full bg-primary/10 text-primary backdrop-blur-sm border border-primary/20">
 								<Link className="h-8 w-8" />
 							</div>
 							<h2 className="text-2xl font-bold tracking-tight">
@@ -75,18 +74,18 @@ export const EditorContent = ({
 							value={textValue}
 							onChange={(e) => setTextValue(e.target.value)}
 							placeholder={t("home.link_placeholder")}
-							className="h-14 text-lg px-6 rounded-xl border-primary/20 focus-visible:ring-primary/30 shadow-lg bg-background/50 backdrop-blur-md"
+							className="h-14 text-lg px-6 rounded-xl border-border/50 focus-visible:ring-primary/30 shadow-lg bg-background/50 backdrop-blur-md"
 						/>
-						<div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
-							<span className="flex items-center gap-1">
+						<div className="flex items-center justify-center gap-4 text-sm text-muted-foreground font-medium">
+							<span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/5 border border-primary/10">
 								✅ {t("home.link_features.fast")}
 							</span>
-							<span className="flex items-center gap-1">
+							<span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/5 border border-primary/10">
 								✅ {t("home.link_features.custom")}
 							</span>
 						</div>
 					</div>
-				</AuroraBackground>
+				</div>
 			) : (
 				<Textarea
 					ref={userInputRef}

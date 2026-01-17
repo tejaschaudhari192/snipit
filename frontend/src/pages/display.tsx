@@ -254,7 +254,7 @@ const DisplayPage = () => {
 	};
 
 	return (
-		<div className="flex-1 flex flex-col min-h-0">
+		<div className="flex-1 flex flex-col min-h-0 bg-gradient-to-br from-background via-muted/5 to-background">
 			{loading ? (
 				<div className="flex-1 flex justify-center items-center">
 					<Loader />
