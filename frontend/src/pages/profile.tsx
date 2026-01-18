@@ -132,8 +132,8 @@ const ProfilePage = () => {
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background">
 			<div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">
-				<div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-					<div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
+				<div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+					<div className="md:col-span-4 space-y-6 md:sticky md:top-24">
 						<motion.div
 							initial={{ opacity: 0, x: -20 }}
 							animate={{ opacity: 1, x: 0 }}
@@ -246,7 +246,7 @@ const ProfilePage = () => {
 													>
 														<h1 className="text-2xl font-black tracking-tight flex items-center gap-2">
 															{user.username}
-															<span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+															<span className="h-2 w-2 rounded-full bg-green-500 animate-pulse shrink-0" />
 														</h1>
 														<Button
 															variant="ghost"
@@ -394,8 +394,8 @@ const ProfilePage = () => {
 						</motion.div>
 					</div>
 
-					<div className="lg:col-span-8 space-y-6">
-						<div className="flex items-center justify-between px-2">
+					<div className="md:col-span-8 space-y-6">
+						<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-2">
 							<h2 className="text-3xl font-black flex items-center gap-3 tracking-tight">
 								<FileText className="h-7 w-7 text-primary" />
 								{t("profile.your_snippets", "Snippets")}
@@ -403,7 +403,7 @@ const ProfilePage = () => {
 							<Link to="/">
 								<Button
 									size="sm"
-									className="gap-2 font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform"
+									className="gap-2 font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform w-full sm:w-auto"
 								>
 									{t("header.new_snippet", "New")}
 									<ChevronRight className="h-4 w-4" />
@@ -425,10 +425,10 @@ const ProfilePage = () => {
 							<motion.div
 								initial={{ opacity: 0, scale: 0.95 }}
 								animate={{ opacity: 1, scale: 1 }}
-								className="bg-card/30 backdrop-blur-sm rounded-3xl border border-dashed border-border/60 p-20 text-center"
+								className="bg-card/30 backdrop-blur-sm rounded-3xl border border-dashed border-border/60 p-8 md:p-20 text-center"
 							>
-								<div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted/50 flex items-center justify-center">
-									<Inbox className="h-10 w-10 text-muted-foreground" />
+								<div className="w-16 h-16 md:w-20 md:h-20 mx-auto mb-6 rounded-full bg-muted/50 flex items-center justify-center">
+									<Inbox className="h-8 w-8 md:h-10 md:w-10 text-muted-foreground" />
 								</div>
 								<h3 className="text-2xl font-semibold mb-2">
 									{t(

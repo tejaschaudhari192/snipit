@@ -219,16 +219,12 @@ const DisplayPage = () => {
 			return;
 		}
 
-		// Calculate password update payload
 		let passwordPayload: string | undefined = undefined;
 		if (!isPasswordEnabled && wasProtected) {
-			// Password disabled, send empty string to remove
 			passwordPayload = "";
 		} else if (isPasswordEnabled && editPassword) {
-			// Password enabled and updated, send new password
 			passwordPayload = editPassword;
 		}
-		// Else (isPasswordEnabled && !editPassword) -> user kept existing password, send undefined
 
 		try {
 			const data = await apiHelpers.updatePaste(

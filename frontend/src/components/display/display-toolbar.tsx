@@ -49,10 +49,8 @@ export const DisplayToolbar = ({
 	const { t } = useTranslation();
 	const { user } = useAuth();
 
-	// Check if user is owner
 	const isOwner = !paste?.owner || (user && paste.owner === user._id);
 
-	// Check user's role
 	const getUserRole = (): "admin" | "editor" | "viewer" | "commenter" => {
 		if (isOwner) return "admin";
 
