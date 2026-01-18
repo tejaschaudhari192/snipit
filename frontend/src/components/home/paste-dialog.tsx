@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Wand2, Fingerprint, LogIn, Globe, Lock } from "lucide-react";
+import { Wand2, Fingerprint, LogIn, Globe, Lock, Users } from "lucide-react";
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import { MultiEmailInput } from "@/components/ui/multi-email-input";
@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import type { User } from "@/context/AuthContext";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 
 interface PasteDialogProps {
 	isOpen: boolean;
@@ -88,7 +88,12 @@ export const PasteDialog = ({
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 
-	// Local state for the "Add people" input
+	const [isPasswordEnabled, setIsPasswordEnabled] = useState(!!password);
+
+	if (isOpen && !isPasswordEnabled && password) {
+		setIsPasswordEnabled(true);
+	}
+
 	const [pendingEmails, setPendingEmails] = useState<string[]>([]);
 	const [pendingRole, setPendingRole] = useState<
 		"viewer" | "editor" | "admin" | "commenter"
@@ -190,37 +195,68 @@ export const PasteDialog = ({
 				</Tabs>
 
 				<div className="space-y-4 mb-6">
-					<div className="space-y-2">
-						<Label>
-							{t("common.password", "Password (Optional)")}
-						</Label>
-						<Input
-							type="text"
-							placeholder={t(
-								"common.password_placeholder",
-								"Enter password...",
-							)}
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-							className="h-11"
-						/>
+					<div className="grid grid-cols-2 gap-4">
+						<div
+							className="flex items-center justify-between p-3.5 rounded-xl border bg-card hover:bg-muted/50 transition-all cursor-pointer group"
+							onClick={() => {
+								const newValue = !isPasswordEnabled;
+								setIsPasswordEnabled(newValue);
+								if (!newValue) setPassword("");
+							}}
+						>
+							<Label
+								htmlFor="password-switch"
+								className="flex items-center gap-2.5 text-sm font-medium cursor-pointer pointer-events-none"
+							>
+								<Lock className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+								{t("common.password", "Password")}
+							</Label>
+							<Switch
+								id="password-switch"
+								checked={isPasswordEnabled}
+								onCheckedChange={(checked) => {
+									setIsPasswordEnabled(checked);
+									if (!checked) setPassword("");
+								}}
+							/>
+						</div>
+
+						<div
+							className="flex items-center justify-between p-3.5 rounded-xl border bg-card hover:bg-muted/50 transition-all cursor-pointer group"
+							onClick={() => setAllowComments(!allowComments)}
+						>
+							<Label
+								htmlFor="allowComments"
+								className="flex items-center gap-2.5 text-sm font-medium cursor-pointer pointer-events-none"
+							>
+								<Users className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+								{t("common.open_discussion", "Open discussion")}
+							</Label>
+							<Switch
+								id="allowComments"
+								checked={allowComments}
+								onCheckedChange={(checked) =>
+									setAllowComments(checked)
+								}
+							/>
+						</div>
 					</div>
 
-					<div className="flex items-center gap-2 px-1">
-						<Checkbox
-							id="allowComments"
-							checked={allowComments}
-							onCheckedChange={(checked) =>
-								setAllowComments(checked as boolean)
-							}
-						/>
-						<Label
-							htmlFor="allowComments"
-							className="text-sm font-medium cursor-pointer"
-						>
-							{t("common.open_discussion", "Open discussion")}
-						</Label>
-					</div>
+					{isPasswordEnabled && (
+						<div className="animate-in slide-in-from-top-2 fade-in duration-200">
+							<Input
+								type="text"
+								placeholder={t(
+									"common.password_placeholder",
+									"Enter password...",
+								)}
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								className="h-11"
+								autoFocus
+							/>
+						</div>
+					)}
 
 					{!user ? (
 						<div className="p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-3">
@@ -262,13 +298,13 @@ export const PasteDialog = ({
 								<Label>
 									{t("common.access_control", "Access Level")}
 								</Label>
-								<div className="flex items-center justify-between p-3.5 rounded-xl border bg-muted/30 shadow-sm transition-all hover:bg-muted/40 group">
+								<div className="flex items-center justify-between p-3.5 rounded-xl border bg-card hover:bg-muted/50 transition-all shadow-sm group">
 									<div className="flex items-center gap-3">
-										<div className="p-2.5 rounded-full bg-background border border-border/50 shadow-sm group-hover:scale-105 transition-transform">
+										<div className="p-2.5 rounded-full bg-primary/10 border border-primary/20 group-hover:scale-105 transition-transform">
 											{visibility === "public" ? (
 												<Globe className="h-4 w-4 text-primary" />
 											) : (
-												<Lock className="h-4 w-4 text-muted-foreground" />
+												<Lock className="h-4 w-4 text-primary" />
 											)}
 										</div>
 										<div className="flex flex-col">
@@ -278,7 +314,7 @@ export const PasteDialog = ({
 													"General access",
 												)}
 											</span>
-											<span className="text-[10px] text-muted-foreground uppercase tracking-tight">
+											<span className="text-[10px] text-muted-foreground uppercase tracking-tight font-medium">
 												{visibility === "public"
 													? t(
 															"common.anyone_with_link",
@@ -318,7 +354,7 @@ export const PasteDialog = ({
 											}
 										}}
 									>
-										<SelectTrigger className="w-[120px] h-9 text-xs bg-background">
+										<SelectTrigger className="w-[130px] h-9 text-xs font-medium bg-background border-input/50 focus:ring-primary/20">
 											<SelectValue />
 										</SelectTrigger>
 										<SelectContent>
@@ -345,14 +381,15 @@ export const PasteDialog = ({
 								</div>
 							</div>
 
-							<div className="space-y-2">
-								<Label>
+							<div className="space-y-3">
+								<Label className="flex items-center gap-2 text-sm font-medium">
+									<Users className="h-4 w-4 text-muted-foreground" />
 									{t(
 										"common.share_with_people",
 										"Share with people",
 									)}
 								</Label>
-								<div className="flex gap-2">
+								<div className="flex gap-2 p-1">
 									<div className="flex-1">
 										<MultiEmailInput
 											value={pendingEmails}
@@ -361,7 +398,7 @@ export const PasteDialog = ({
 												"common.add_people_placeholder",
 												"Add people...",
 											)}
-											className="min-h-[44px]"
+											className="min-h-[44px] bg-background"
 										/>
 									</div>
 									<Select
@@ -374,7 +411,7 @@ export const PasteDialog = ({
 												| "commenter",
 										) => setPendingRole(r)}
 									>
-										<SelectTrigger className="w-[110px] h-auto bg-background">
+										<SelectTrigger className="w-[110px] h-[44px] bg-background border-input focus:ring-primary/20">
 											<SelectValue />
 										</SelectTrigger>
 										<SelectContent>
@@ -398,7 +435,8 @@ export const PasteDialog = ({
 									<Button
 										onClick={handleAddPeople}
 										disabled={pendingEmails.length === 0}
-										className="h-auto"
+										className="h-[44px] w-[60px]"
+										variant="secondary"
 									>
 										{t("common.add", "Add")}
 									</Button>

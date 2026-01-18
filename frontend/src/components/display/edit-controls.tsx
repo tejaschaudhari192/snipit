@@ -21,7 +21,7 @@ import {
 import { MultiEmailInput } from "@/components/ui/multi-email-input";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 
 interface EditControlsProps {
 	contentType: "text" | "code" | "link";
@@ -89,7 +89,6 @@ export const EditControls = ({
 }: EditControlsProps) => {
 	const { t } = useTranslation();
 
-	// Local state for the "Add people" input
 	const [pendingEmails, setPendingEmails] = useState<string[]>([]);
 	const [pendingRole, setPendingRole] = useState<
 		"viewer" | "editor" | "admin" | "commenter"
@@ -103,7 +102,6 @@ export const EditControls = ({
 			role: pendingRole,
 		}));
 
-		// Filter out duplicates based on email
 		const uniqueItems = newShareItems.filter(
 			(newItem) =>
 				!shareList.some((existing) => existing.email === newItem.email),
@@ -111,7 +109,6 @@ export const EditControls = ({
 
 		setShareList([...shareList, ...uniqueItems]);
 		setPendingEmails([]); // Clear input
-		// Sync allowedUsers
 		setAllowedUsers([...allowedUsers, ...uniqueItems.map((i) => i.email)]);
 	};
 
@@ -188,11 +185,11 @@ export const EditControls = ({
 				{(isOwner || isAdmin) && (
 					<div className="flex flex-wrap items-center gap-4 p-3 rounded-xl bg-muted/30 border border-border/50 shadow-sm animate-in slide-in-from-top-2 duration-300">
 						<div className="flex items-center gap-3 pr-4 border-r border-border/50">
-							<Checkbox
+							<Switch
 								id="password-protected"
 								checked={isPasswordEnabled}
 								onCheckedChange={(checked) =>
-									setIsPasswordEnabled(checked as boolean)
+									setIsPasswordEnabled(checked)
 								}
 								disabled={!isOwner && !isAdmin}
 							/>
@@ -208,11 +205,11 @@ export const EditControls = ({
 						</div>
 
 						<div className="flex items-center gap-3 pr-4 border-border/50">
-							<Checkbox
+							<Switch
 								id="allow-comments"
 								checked={allowComments}
 								onCheckedChange={(checked) =>
-									setAllowComments(checked as boolean)
+									setAllowComments(checked)
 								}
 								disabled={!isOwner && !isAdmin}
 							/>

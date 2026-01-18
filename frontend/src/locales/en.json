@@ -22,7 +22,7 @@
 		"auth_required_desc": "Creating {{visibility}} snippets requires an account to manage access control and ownership.",
 		"allowed_users": "Allowed Users",
 		"allowed_users_placeholder": "Enter emails...",
-		"password": "Password (Optional)",
+		"password": "Password",
 		"password_placeholder": "Enter password...",
 		"submitting": "Submitting...",
 		"password_protected": "Password Protected",
