@@ -48,4 +48,11 @@ router.post(
 	},
 );
 
+router.post(
+	"/:id/comment",
+	async (req: Request, res: Response, next: NextFunction) => {
+		return await pasteController.addComment(req, res, next);
+	},
+);
+
 export default router;

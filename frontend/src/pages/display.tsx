@@ -21,8 +21,6 @@ import { DisplayMetadata } from "@/components/display/display-metadata";
 import { DisplayContent } from "@/components/display/display-content";
 import { useLanguageDetection } from "@/hooks/use-language-detection";
 import { EditControls } from "@/components/display/edit-controls";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
 	Card,
 	CardContent,
@@ -30,6 +28,8 @@ import {
 	CardTitle,
 	CardDescription,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Lock } from "lucide-react";
 
 const DisplayPage = () => {
@@ -57,9 +57,12 @@ const DisplayPage = () => {
 		"owner" | "shared" | "public"
 	>("owner");
 	const [shareList, setShareList] = useState<
-		{ email: string; role: "viewer" | "editor" | "admin" }[]
+		{ email: string; role: "viewer" | "editor" | "admin" | "commenter" }[]
 	>([]);
-	const [publicRole, setPublicRole] = useState<"viewer" | "editor">("viewer");
+	const [publicRole, setPublicRole] = useState<
+		"viewer" | "editor" | "commenter"
+	>("viewer");
+	const [allowComments, setAllowComments] = useState(false);
 	const [customId, setCustomId] = useState<string>("");
 	const { isDetecting, detectLanguage } = useLanguageDetection();
 	const { fontSize, ref: contentRef, setFontSize } = usePinchZoom(14);
@@ -67,6 +70,8 @@ const DisplayPage = () => {
 	const [passwordError, setPasswordError] = useState("");
 	const [editPassword, setEditPassword] = useState("");
 	const [isPasswordEnabled, setIsPasswordEnabled] = useState(false);
+
+	const isOwner = !paste?.owner || (!!user && paste.owner === user._id);
 
 	const handleEditorWillMount: BeforeMount = (monaco) =>
 		defineMonacoThemes(monaco);
@@ -90,6 +95,7 @@ const DisplayPage = () => {
 				setEditPermission(data.editPermission || "owner");
 				setShareList(data.shareList || []);
 				setPublicRole(data.publicRole || "viewer");
+				setAllowComments(data.allowComments || false);
 				setIsPasswordEnabled(data.isPasswordProtected || false);
 				setLoading(false);
 				window.history.replaceState({}, document.title);
@@ -119,6 +125,7 @@ const DisplayPage = () => {
 				setEditPermission(data.editPermission || "owner");
 				setShareList(data.shareList || []);
 				setPublicRole(data.publicRole || "viewer");
+				setAllowComments(data.allowComments || false);
 				setIsPasswordEnabled(data.isPasswordProtected || false);
 				if (!user) {
 					saveToLocal(data);
@@ -204,7 +211,8 @@ const DisplayPage = () => {
 			JSON.stringify(allowedUsers) ===
 				JSON.stringify(paste?.allowedUsers) &&
 			JSON.stringify(shareList) === JSON.stringify(paste?.shareList) &&
-			publicRole === paste?.publicRole;
+			publicRole === paste?.publicRole &&
+			allowComments === (paste?.allowComments || false);
 
 		if (isUnchanged) {
 			setIsEdit(false);
@@ -237,6 +245,7 @@ const DisplayPage = () => {
 				editPermission,
 				shareList,
 				publicRole,
+				allowComments,
 			);
 			if (data) {
 				toast.success(
@@ -258,6 +267,7 @@ const DisplayPage = () => {
 				setVisibility(data.visibility || "public");
 				setAllowedUsers(data.allowedUsers || []);
 				setEditPermission(data.editPermission || "owner");
+				setAllowComments(data.allowComments || false);
 				setIsPasswordEnabled(data.isPasswordProtected || false);
 				setEditPassword("");
 				if (!user) {
@@ -308,6 +318,7 @@ const DisplayPage = () => {
 		setCustomId(paste?.id || "");
 		setEditPassword("");
 		setIsPasswordEnabled(paste?.isPasswordProtected || false);
+		setAllowComments(paste?.allowComments || false);
 	};
 
 	const handleVerifyPassword = async () => {
@@ -400,7 +411,7 @@ const DisplayPage = () => {
 						</Card>
 					</div>
 				) : (
-					<>
+					<div className="flex-1 overflow-y-auto">
 						<div className="flex flex-col border-b bg-background/50 backdrop-blur-md sticky top-0 z-40">
 							<DisplayToolbar
 								isEdit={isEdit}
@@ -429,6 +440,9 @@ const DisplayPage = () => {
 										setIsPasswordEnabled(
 											paste?.isPasswordProtected || false,
 										);
+										setAllowComments(
+											paste?.allowComments || false,
+										);
 									}
 									setIsEdit(val);
 								}}
@@ -438,50 +452,59 @@ const DisplayPage = () => {
 								fontSize={fontSize}
 								setFontSize={setFontSize}
 								showFontControls={contentType !== "link"}
+								allowComments={allowComments}
+								commentCount={paste.comments?.length || 0}
+								paste={paste}
+								onCommentAdded={(updated) => setPaste(updated)}
 							/>
 							{!isEdit && <DisplayMetadata paste={paste} />}
 						</div>
 
-						<div className="mx-3 sm:mx-5 my-4 h-[75vh] flex flex-col gap-4">
+						<div className="w-full px-3 sm:px-5 py-6">
 							{isEdit && (
-								<EditControls
-									contentType={contentType}
-									setContentType={setContentType}
-									language={language}
-									setLanguage={setLanguage}
-									visibility={visibility}
-									setVisibility={setVisibility}
-									allowedUsers={allowedUsers}
-									setAllowedUsers={setAllowedUsers}
-									isDetecting={isDetecting}
-									onAutoDetect={() =>
-										handleLanguageDetection(updatedContent!)
-									}
-									customId={customId}
-									setCustomId={setCustomId}
-									newPassword={editPassword}
-									setNewPassword={setEditPassword}
-									isPasswordEnabled={isPasswordEnabled}
-									setIsPasswordEnabled={setIsPasswordEnabled}
-									editPermission={editPermission}
-									setEditPermission={setEditPermission}
-									isOwner={
-										!paste.owner ||
-										(!!user && paste.owner === user._id)
-									}
-									isAdmin={
-										!!user &&
-										shareList.some(
-											(item) =>
-												item.email === user.email &&
-												item.role === "admin",
-										)
-									}
-									shareList={shareList}
-									setShareList={setShareList}
-									publicRole={publicRole}
-									setPublicRole={setPublicRole}
-								/>
+								<div className="mb-4">
+									<EditControls
+										contentType={contentType}
+										setContentType={setContentType}
+										language={language}
+										setLanguage={setLanguage}
+										visibility={visibility}
+										setVisibility={setVisibility}
+										allowedUsers={allowedUsers}
+										setAllowedUsers={setAllowedUsers}
+										isDetecting={isDetecting}
+										onAutoDetect={() =>
+											handleLanguageDetection(
+												updatedContent!,
+											)
+										}
+										customId={customId}
+										setCustomId={setCustomId}
+										newPassword={editPassword}
+										setNewPassword={setEditPassword}
+										isPasswordEnabled={isPasswordEnabled}
+										setIsPasswordEnabled={
+											setIsPasswordEnabled
+										}
+										editPermission={editPermission}
+										setEditPermission={setEditPermission}
+										isOwner={isOwner}
+										isAdmin={
+											!!user &&
+											shareList.some(
+												(item) =>
+													item.email === user.email &&
+													item.role === "admin",
+											)
+										}
+										shareList={shareList}
+										setShareList={setShareList}
+										publicRole={publicRole}
+										setPublicRole={setPublicRole}
+										allowComments={allowComments}
+										setAllowComments={setAllowComments}
+									/>
+								</div>
 							)}
 							<DisplayContent
 								isEdit={isEdit}
@@ -496,7 +519,7 @@ const DisplayPage = () => {
 								paste={paste}
 							/>
 						</div>
-					</>
+					</div>
 				)
 			) : (
 				<Error />

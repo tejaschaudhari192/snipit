@@ -30,8 +30,12 @@ class PasteService {
 		newId?: string,
 		password?: string,
 		editPermission?: "owner" | "shared" | "public",
-		shareList?: { email: string; role: "viewer" | "editor" | "admin" }[],
-		publicRole?: "viewer" | "editor",
+		shareList?: {
+			email: string;
+			role: "viewer" | "editor" | "admin" | "commenter";
+		}[],
+		publicRole?: "viewer" | "editor" | "commenter",
+		allowComments?: boolean,
 	) {
 		const paste = await pasteModel.findOne({ id });
 		if (!paste) return null;
@@ -75,6 +79,9 @@ class PasteService {
 		if (publicRole !== undefined) {
 			paste.publicRole = publicRole;
 		}
+		if (allowComments !== undefined) {
+			paste.allowComments = allowComments;
+		}
 
 		return await paste.save();
 	}
@@ -86,6 +93,21 @@ class PasteService {
 		return await pasteModel
 			.find({ owner: ownerId })
 			.sort({ createdAt: -1 });
+	}
+	async addComment(
+		id: string,
+		comment: {
+			id: string;
+			author: string;
+			content: string;
+			userId?: string | undefined;
+		},
+	) {
+		return await pasteModel.findOneAndUpdate(
+			{ id },
+			{ $push: { comments: comment } },
+			{ new: true },
+		);
 	}
 }
 

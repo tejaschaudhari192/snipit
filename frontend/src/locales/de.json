@@ -41,7 +41,19 @@
 		"general_access": "Allgemeiner Zugriff",
 		"anyone_with_link": "Jeder mit dem Link",
 		"restricted": "Privat (Eingeschränkt)",
-		"manage_access": "Zugriff verwalten"
+		"manage_access": "Zugriff verwalten",
+		"commenter": "Kann kommentieren",
+		"open_discussion": "Diskussion öffnen",
+		"snippet": "Schnipsel",
+		"discussion": "Diskussion",
+		"discussion_title": "Schnipsel-Diskussion",
+		"discussion_desc": "Teilen Sie Ihre Gedanken und arbeiten Sie mit anderen an diesem Schnipsel zusammen.",
+		"no_comments": "Noch keine Kommentare",
+		"your_name": "Ihr Name (Optional)",
+		"anonymus": "Anonym",
+		"write_comment": "Schreiben Sie einen Kommentar...",
+		"post_comment": "Kommentar posten",
+		"comment_restricted": "Sie haben keine Berechtigung, diesen Schnipsel zu kommentieren."
 	},
 	"profile": {
 		"title": "Ihr Profil",

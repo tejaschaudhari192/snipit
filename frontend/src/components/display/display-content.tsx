@@ -38,7 +38,7 @@ export const DisplayContent = ({
 		return (
 			<div
 				ref={contentRef}
-				className="flex-1 border rounded-md overflow-hidden touch-none"
+				className="h-[70vh] border rounded-md overflow-hidden touch-none"
 			>
 				{contentType === "code" ? (
 					<Editor
@@ -91,7 +91,7 @@ export const DisplayContent = ({
 	return (
 		<div
 			ref={contentRef}
-			className="flex-1 border rounded-md overflow-hidden touch-none"
+			className="h-[70vh] border rounded-md overflow-hidden touch-none"
 		>
 			{paste.language && paste.language !== "text" ? (
 				<Editor

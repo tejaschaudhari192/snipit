@@ -44,9 +44,12 @@ const HomePage = () => {
 	>("owner");
 	const [allowedUsers, setAllowedUsers] = useState<string[]>([]);
 	const [shareList, setShareList] = useState<
-		{ email: string; role: "viewer" | "editor" | "admin" }[]
+		{ email: string; role: "viewer" | "editor" | "admin" | "commenter" }[]
 	>([]);
-	const [publicRole, setPublicRole] = useState<"viewer" | "editor">("viewer");
+	const [publicRole, setPublicRole] = useState<
+		"viewer" | "editor" | "commenter"
+	>("viewer");
+	const [allowComments, setAllowComments] = useState(false);
 	const [expiresTime, setExpiresTime] = useState(CONFIG.DEFAULTS.EXPIRY);
 	const [textValue, _setTextValue] = useState("");
 	const [contentType, setContentType] = useState<"text" | "code" | "link">(
@@ -94,6 +97,7 @@ const HomePage = () => {
 				editPermission,
 				shareList,
 				publicRole,
+				allowComments,
 			});
 			toast.success(
 				t("messages.snippet_created", { idType: selectedIdType }),
@@ -221,6 +225,8 @@ const HomePage = () => {
 				setShareList={setShareList}
 				publicRole={publicRole}
 				setPublicRole={setPublicRole}
+				allowComments={allowComments}
+				setAllowComments={setAllowComments}
 				dialogError={dialogError}
 				user={user}
 				isSubmitting={isSubmitting}

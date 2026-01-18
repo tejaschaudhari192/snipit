@@ -45,7 +45,19 @@
 		"general_access": "General access",
 		"anyone_with_link": "Anyone with link",
 		"restricted": "Private (Restricted)",
-		"manage_access": "Manage Access"
+		"manage_access": "Manage Access",
+		"commenter": "Can comment",
+		"open_discussion": "Open discussion",
+		"snippet": "Snippet",
+		"discussion": "Discussion",
+		"discussion_title": "Snippet Discussion",
+		"discussion_desc": "Share your thoughts and collaborate with others on this snippet.",
+		"no_comments": "No comments yet",
+		"your_name": "Your Name (Optional)",
+		"anonymus": "Anonymous",
+		"write_comment": "Write a comment...",
+		"post_comment": "Post Comment",
+		"comment_restricted": "You don't have permission to comment on this snippet."
 	},
 	"profile": {
 		"title": "Your Profile",
@@ -158,7 +170,9 @@
 		"action_cancelled": "Action cancelled",
 		"snippet_updated": "Snippet updated successfully",
 		"update_failed": "Failed to update snippet",
-		"password_incorrect": "Incorrect password"
+		"password_incorrect": "Incorrect password",
+		"comment_added": "Comment added successfully",
+		"comment_failed": "Failed to add comment"
 	},
 	"about_page": {
 		"title": "About",

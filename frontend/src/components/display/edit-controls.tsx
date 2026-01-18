@@ -1,14 +1,6 @@
 import { useState } from "react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-	FileText,
-	Code2,
-	Link,
-	Users,
-	Globe,
-	Lock,
-	ShieldCheck,
-} from "lucide-react";
+import { ContentTypeSelector } from "@/components/common/content-type-selector";
+import { Code2, Users, Globe, Lock, ShieldCheck } from "lucide-react";
 import {
 	Dialog,
 	DialogContent,
@@ -52,12 +44,20 @@ interface EditControlsProps {
 	setEditPermission: (v: "owner" | "shared" | "public") => void;
 	isOwner: boolean;
 	isAdmin: boolean;
-	shareList: { email: string; role: "viewer" | "editor" | "admin" }[];
+	shareList: {
+		email: string;
+		role: "viewer" | "editor" | "admin" | "commenter";
+	}[];
 	setShareList: (
-		v: { email: string; role: "viewer" | "editor" | "admin" }[],
+		v: {
+			email: string;
+			role: "viewer" | "editor" | "admin" | "commenter";
+		}[],
 	) => void;
-	publicRole: "viewer" | "editor";
-	setPublicRole: (v: "viewer" | "editor") => void;
+	publicRole: "viewer" | "editor" | "commenter";
+	setPublicRole: (v: "viewer" | "editor" | "commenter") => void;
+	allowComments: boolean;
+	setAllowComments: (v: boolean) => void;
 }
 
 export const EditControls = ({
@@ -84,13 +84,15 @@ export const EditControls = ({
 	setShareList,
 	publicRole,
 	setPublicRole,
+	allowComments,
+	setAllowComments,
 }: EditControlsProps) => {
 	const { t } = useTranslation();
 
 	// Local state for the "Add people" input
 	const [pendingEmails, setPendingEmails] = useState<string[]>([]);
 	const [pendingRole, setPendingRole] = useState<
-		"viewer" | "editor" | "admin"
+		"viewer" | "editor" | "admin" | "commenter"
 	>("editor");
 
 	const handleAddPeople = () => {
@@ -120,7 +122,7 @@ export const EditControls = ({
 
 	const handleUpdateRole = (
 		email: string,
-		newRole: "viewer" | "editor" | "admin",
+		newRole: "viewer" | "editor" | "admin" | "commenter",
 	) => {
 		setShareList(
 			shareList.map((item) =>
@@ -133,37 +135,12 @@ export const EditControls = ({
 		<div className="flex flex-col gap-4 animate-in fade-in slide-in-from-top-4 duration-300">
 			<div className="flex flex-col gap-4">
 				<div className="flex flex-col xl:flex-row gap-4 justify-between items-start xl:items-center -mb-1">
-					<Tabs
+					<ContentTypeSelector
 						value={contentType}
-						onValueChange={(val) =>
-							setContentType(val as "text" | "code" | "link")
-						}
+						onValueChange={setContentType}
 						className="w-full xl:w-auto"
-					>
-						<TabsList className="h-9 w-full xl:w-fit flex">
-							<TabsTrigger
-								value="text"
-								className="h-7 px-3 text-xs font-semibold gap-2"
-							>
-								<FileText className="h-3.5 w-3.5" />
-								{t("home.tab_text")}
-							</TabsTrigger>
-							<TabsTrigger
-								value="code"
-								className="h-7 px-3 text-xs font-semibold gap-2"
-							>
-								<Code2 className="h-3.5 w-3.5" />
-								{t("home.tab_code")}
-							</TabsTrigger>
-							<TabsTrigger
-								value="link"
-								className="h-7 px-3 text-xs font-semibold gap-2"
-							>
-								<Link className="h-3.5 w-3.5" />
-								{t("home.tab_link")}
-							</TabsTrigger>
-						</TabsList>
-					</Tabs>
+						listClassName="xl:w-fit"
+					/>
 
 					<div className="w-full xl:w-auto flex flex-wrap items-center gap-3">
 						{(isOwner || isAdmin) && (
@@ -179,7 +156,7 @@ export const EditControls = ({
 										"Custom ID...",
 									)}
 									disabled={!isOwner && !isAdmin}
-									className="pl-8 h-9 text-xs bg-muted/20 border-transparent focus:border-border transition-all"
+									className="pl-8 h-10 text-sm bg-muted/20 border-transparent focus:border-border transition-all"
 								/>
 							</div>
 						)}
@@ -190,17 +167,17 @@ export const EditControls = ({
 									value={language}
 									onValueChange={setLanguage}
 									isDetecting={isDetecting}
-									className="w-[140px] h-9 text-xs"
+									className="w-[180px] h-10 text-sm"
 								/>
 								{!isDetecting && (
 									<Button
 										variant="outline"
 										size="icon"
-										className="h-9 w-9 shrink-0"
+										className="h-10 w-10 shrink-0"
 										onClick={onAutoDetect}
 										title={t("home.auto_detecting")}
 									>
-										<Code2 className="h-3.5 w-3.5" />
+										<Code2 className="h-4 w-4" />
 									</Button>
 								)}
 							</div>
@@ -230,6 +207,23 @@ export const EditControls = ({
 							</Label>
 						</div>
 
+						<div className="flex items-center gap-3 pr-4 border-border/50">
+							<Checkbox
+								id="allow-comments"
+								checked={allowComments}
+								onCheckedChange={(checked) =>
+									setAllowComments(checked as boolean)
+								}
+								disabled={!isOwner && !isAdmin}
+							/>
+							<Label
+								htmlFor="allow-comments"
+								className={`cursor-pointer font-bold select-none text-sm flex items-center gap-2 ${!isOwner && !isAdmin ? "opacity-50 cursor-not-allowed" : ""}`}
+							>
+								{t("common.open_discussion", "Open discussion")}
+							</Label>
+						</div>
+
 						{isPasswordEnabled && (
 							<div className="relative group w-40 animate-in slide-in-from-left-2 fade-in duration-200">
 								<Input
@@ -242,9 +236,9 @@ export const EditControls = ({
 										"common.password_placeholder",
 									)}
 									disabled={!isOwner && !isAdmin}
-									className="h-9 text-xs bg-background border-input focus:border-border transition-all shadow-sm pl-8"
+									className="h-10 text-sm bg-background border-input focus:border-border transition-all shadow-sm pl-8"
 								/>
-								<Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+								<Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
 							</div>
 						)}
 
@@ -322,7 +316,8 @@ export const EditControls = ({
 														setPublicRole(
 															val as
 																| "viewer"
-																| "editor",
+																| "editor"
+																| "commenter",
 														);
 														setEditPermission(
 															val === "editor"
@@ -345,6 +340,9 @@ export const EditControls = ({
 													</SelectItem>
 													<SelectItem value="editor">
 														{t("common.editor")}
+													</SelectItem>
+													<SelectItem value="commenter">
+														{t("common.commenter")}
 													</SelectItem>
 												</SelectContent>
 											</Select>
@@ -376,7 +374,8 @@ export const EditControls = ({
 														r:
 															| "viewer"
 															| "editor"
-															| "admin",
+															| "admin"
+															| "commenter",
 													) => setPendingRole(r)}
 												>
 													<SelectTrigger className="w-[110px] h-10 text-xs bg-background">
@@ -391,6 +390,11 @@ export const EditControls = ({
 														</SelectItem>
 														<SelectItem value="admin">
 															{t("common.admin")}
+														</SelectItem>
+														<SelectItem value="commenter">
+															{t(
+																"common.commenter",
+															)}
 														</SelectItem>
 													</SelectContent>
 												</Select>
@@ -441,7 +445,8 @@ export const EditControls = ({
 																		r:
 																			| "viewer"
 																			| "editor"
-																			| "admin",
+																			| "admin"
+																			| "commenter",
 																	) =>
 																		handleUpdateRole(
 																			item.email,

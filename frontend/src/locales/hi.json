@@ -41,7 +41,19 @@
 		"general_access": "सामान्य पहुंच",
 		"anyone_with_link": "लिंक वाला कोई भी व्यक्ति",
 		"restricted": "निजी (प्रतिबंधित)",
-		"manage_access": "पहुंच प्रबंधित करें"
+		"manage_access": "पहुंच प्रबंधित करें",
+		"commenter": "टिप्पणी कर सकते हैं",
+		"open_discussion": "चर्चा खोलें",
+		"snippet": "स्निपेट",
+		"discussion": "चर्चा",
+		"discussion_title": "स्निपेट चर्चा",
+		"discussion_desc": "अपने विचार साझा करें और इस स्निपेट पर दूसरों के साथ सहयोग करें।",
+		"no_comments": "अभी तक कोई टिप्पणी नहीं",
+		"your_name": "आपका नाम (वैकल्पिक)",
+		"anonymus": "अनाम",
+		"write_comment": "एक टिप्पणी लिखें...",
+		"post_comment": "टिप्पणी पोस्ट करें",
+		"comment_restricted": "आपके पास इस स्निपेट पर टिप्पणी करने की अनुमति नहीं है।"
 	},
 	"profile": {
 		"title": "आपकी प्रोफ़ाइल",

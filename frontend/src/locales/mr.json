@@ -41,7 +41,19 @@
 		"general_access": "सामान्य प्रवेश",
 		"anyone_with_link": "लिंक असलेला कोणीही",
 		"restricted": "खाजगी (प्रतिबंधित)",
-		"manage_access": "प्रवेश व्यवस्थापित करा"
+		"manage_access": "प्रवेश व्यवस्थापित करा",
+		"commenter": "टिप्पणी करू शकता",
+		"open_discussion": "चर्चा उघडा",
+		"snippet": "स्निपेट",
+		"discussion": "चर्चा",
+		"discussion_title": "स्निपेट चर्चा",
+		"discussion_desc": "या स्निपेटवर आपले विचार सामायिक करा आणि इतरांसह सहयोग करा.",
+		"no_comments": "अद्याप कोणतीही टिप्पणी नाही",
+		"your_name": "तुमचे नाव (पर्यायी)",
+		"anonymus": "अनामिक",
+		"write_comment": "टिप्पणी लिहा...",
+		"post_comment": "टिप्पणी पोस्ट करा",
+		"comment_restricted": "तुम्हाला या स्निपेटवर टिप्पणी करण्याची परवानगी नाही."
 	},
 	"profile": {
 		"title": "तुमची प्रोफाइल",

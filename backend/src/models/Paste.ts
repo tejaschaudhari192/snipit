@@ -72,16 +72,34 @@ const pasteSchema = new Schema<IPaste>(
 				email: { type: String, required: true },
 				role: {
 					type: String,
-					enum: ["viewer", "editor", "admin"],
+					enum: ["viewer", "editor", "admin", "commenter"],
 					required: true,
 				},
 			},
 		],
 		publicRole: {
 			type: String,
-			enum: ["viewer", "editor"],
+			enum: ["viewer", "editor", "commenter"],
 			default: "viewer",
 		},
+		allowComments: {
+			type: Boolean,
+			default: false,
+		},
+		comments: [
+			{
+				_id: false,
+				id: { type: String, required: true },
+				author: { type: String, required: true },
+				content: { type: String, required: true },
+				createdAt: { type: Date, default: Date.now },
+				userId: {
+					type: Schema.Types.ObjectId,
+					ref: "User",
+					required: false,
+				},
+			},
+		],
 	},
 	{
 		toJSON: { virtuals: true, versionKey: false },

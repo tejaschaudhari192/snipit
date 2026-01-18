@@ -22,9 +22,13 @@ export const createPasteSchema = z.object({
 		.array(
 			z.object({
 				email: z.string().email(),
-				role: z.enum(["viewer", "editor", "admin"]),
+				role: z.enum(["viewer", "editor", "admin", "commenter"]),
 			}),
 		)
 		.optional(),
-	publicRole: z.enum(["viewer", "editor"]).optional().default("viewer"),
+	publicRole: z
+		.enum(["viewer", "editor", "commenter"])
+		.optional()
+		.default("viewer"),
+	allowComments: z.boolean().optional().default(false),
 });

@@ -1,8 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
-import { Edit, Trash2, Save, X } from "lucide-react";
+import { Edit, Trash2, Save, X, MessageSquare } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { FontSizeControls } from "@/components/editor/font-size-controls";
+import {
+	Sheet,
+	SheetContent,
+	SheetDescription,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from "@/components/ui/sheet";
+import { CommentsSection } from "@/components/display/comments-section";
+import { useAuth } from "@/context/AuthContext";
+import type { PasteData } from "@/types";
 
 interface DisplayToolbarProps {
 	isEdit: boolean;
@@ -14,6 +25,10 @@ interface DisplayToolbarProps {
 	fontSize: number;
 	setFontSize: (v: number | ((p: number) => number)) => void;
 	showFontControls: boolean;
+	allowComments: boolean;
+	commentCount: number;
+	paste: PasteData | undefined;
+	onCommentAdded: (updatedPaste: PasteData) => void;
 }
 
 export const DisplayToolbar = ({
@@ -26,8 +41,37 @@ export const DisplayToolbar = ({
 	fontSize,
 	setFontSize,
 	showFontControls,
+	allowComments,
+	commentCount,
+	paste,
+	onCommentAdded,
 }: DisplayToolbarProps) => {
 	const { t } = useTranslation();
+	const { user } = useAuth();
+
+	// Check if user is owner
+	const isOwner = !paste?.owner || (user && paste.owner === user._id);
+
+	// Check user's role
+	const getUserRole = (): "admin" | "editor" | "viewer" | "commenter" => {
+		if (isOwner) return "admin";
+
+		if (paste?.shareList && user?.email) {
+			const shareEntry = paste.shareList.find(
+				(s) => s.email === user.email,
+			);
+			if (shareEntry) return shareEntry.role;
+		}
+
+		return paste?.publicRole || "viewer";
+	};
+
+	const userRole = getUserRole();
+	const canEdit =
+		userRole === "admin" ||
+		userRole === "editor" ||
+		paste?.editPermission === "public";
+	const canDelete = isOwner || userRole === "admin";
 
 	return (
 		<div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 md:px-6">
@@ -43,28 +87,32 @@ export const DisplayToolbar = ({
 								{t("display.copy_button")}
 							</span>
 						</CopyButton>
-						<Button
-							variant="outline"
-							size="sm"
-							onClick={() => onEdit(true)}
-							className="gap-2 h-9 shrink-0"
-						>
-							<Edit className="h-4 w-4" />
-							<span className="hidden sm:inline">
-								{t("display.edit_button")}
-							</span>
-						</Button>
-						<Button
-							variant="outline"
-							size="sm"
-							onClick={onDelete}
-							className="gap-2 h-9 shrink-0 text-destructive hover:text-destructive"
-						>
-							<Trash2 className="h-4 w-4" />
-							<span className="hidden sm:inline">
-								{t("display.delete_button")}
-							</span>
-						</Button>
+						{canEdit && (
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={() => onEdit(true)}
+								className="gap-2 h-9 shrink-0"
+							>
+								<Edit className="h-4 w-4" />
+								<span className="hidden sm:inline">
+									{t("display.edit_button")}
+								</span>
+							</Button>
+						)}
+						{canDelete && (
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={onDelete}
+								className="gap-2 h-9 shrink-0 text-destructive hover:text-destructive"
+							>
+								<Trash2 className="h-4 w-4" />
+								<span className="hidden sm:inline">
+									{t("display.delete_button")}
+								</span>
+							</Button>
+						)}
 					</div>
 				) : (
 					<div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5 px-0.5 max-w-[75vw] sm:max-w-none">
@@ -100,6 +148,50 @@ export const DisplayToolbar = ({
 						fontSize={fontSize}
 						setFontSize={setFontSize}
 					/>
+				)}
+
+				{(allowComments || (paste && !paste.owner)) && (
+					<Sheet modal={false}>
+						<SheetTrigger asChild>
+							<Button
+								variant="ghost"
+								size="sm"
+								className="gap-2 text-primary font-semibold hover:bg-primary/5"
+							>
+								<MessageSquare className="h-4 w-4" />
+								<span className="hidden sm:inline">
+									{t("common.discussion", "Discussion")}
+								</span>
+								{commentCount > 0 && (
+									<span className="bg-primary/10 px-1.5 py-0.5 rounded text-[10px] animate-in zoom-in-50">
+										{commentCount}
+									</span>
+								)}
+							</Button>
+						</SheetTrigger>
+						<SheetContent
+							hideOverlay
+							className="flex flex-col h-full sm:max-w-md w-full border-l shadow-2xl p-0 overflow-hidden"
+						>
+							<SheetHeader className="p-6 pb-2 border-b">
+								<SheetTitle className="flex items-center gap-2 text-xl">
+									<MessageSquare className="w-5 h-5 text-primary" />
+									{t("common.discussion_title", "Discussion")}
+								</SheetTitle>
+								<SheetDescription>
+									{t("common.discussion_desc")}
+								</SheetDescription>
+							</SheetHeader>
+							<div className="flex-1 min-h-0 p-6">
+								{paste && (
+									<CommentsSection
+										paste={paste}
+										onCommentAdded={onCommentAdded}
+									/>
+								)}
+							</div>
+						</SheetContent>
+					</Sheet>
 				)}
 			</div>
 		</div>

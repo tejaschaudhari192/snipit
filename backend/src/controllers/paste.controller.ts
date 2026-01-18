@@ -1,6 +1,6 @@
 import { dateConverter, uniqueIdGenerator } from "@/lib/utils.js";
 import type { NextFunction, Request, Response } from "express";
-import type { PasteData } from "@/types/index.js";
+import type { PasteData, IPaste } from "@/types/index.js";
 import { createPasteSchema } from "@/validators/paste.validators.js";
 import type { Logger } from "winston";
 import User from "@/models/User.js";
@@ -22,6 +22,62 @@ class PasteController {
 		return token ? getUserIdFromToken(token) : null;
 	}
 
+	private async getUserRole(
+		req: Request,
+		paste: IPaste,
+	): Promise<"admin" | "editor" | "viewer" | "commenter"> {
+		const userId = this.getUserId(req);
+		let userEmail = null;
+		if (userId) {
+			const user = await User.findById(userId);
+			if (user) userEmail = user.email;
+		}
+
+		const isOwner =
+			paste.owner && userId && paste.owner.toString() === userId;
+		const isAnonymousOwner = !paste.owner;
+
+		if (isOwner || isAnonymousOwner) {
+			return "admin";
+		}
+
+		let userRole: "admin" | "editor" | "viewer" | "commenter" = "viewer";
+
+		// Check shareList
+		if (paste.shareList && userEmail) {
+			const shareEntry = paste.shareList.find(
+				(s: { email: string; role: string }) => s.email === userEmail,
+			);
+			if (shareEntry) {
+				userRole = shareEntry.role;
+			}
+		}
+
+		// Fallback to legacy allowedUsers -> editor
+		if (
+			userRole === "viewer" &&
+			paste.allowedUsers &&
+			userEmail &&
+			paste.allowedUsers.includes(userEmail)
+		) {
+			userRole = "editor";
+		}
+
+		// Check public role / editPermission
+		if (userRole === "viewer") {
+			if (paste.editPermission === "public") {
+				userRole = "editor"; // Legacy compatibility
+			} else if (
+				paste.visibility === "public" ||
+				paste.visibility === "shared"
+			) {
+				userRole = paste.publicRole || "viewer";
+			}
+		}
+
+		return userRole;
+	}
+
 	async createPaste(req: Request, res: Response, next: NextFunction) {
 		try {
 			const createdAt = new Date(Date.now());
@@ -39,6 +95,7 @@ class PasteController {
 				editPermission,
 				shareList,
 				publicRole,
+				allowComments,
 			} = req.body;
 
 			const expiresAt = expiresTime
@@ -97,6 +154,7 @@ class PasteController {
 				editPermission,
 				shareList,
 				publicRole,
+				allowComments,
 			});
 
 			const owner = this.getUserId(req);
@@ -134,6 +192,7 @@ class PasteController {
 					editPermission: validatedBody.editPermission,
 					shareList: validatedBody.shareList,
 					publicRole: validatedBody.publicRole,
+					allowComments: validatedBody.allowComments,
 				};
 
 				if (pasteData.password) {
@@ -286,32 +345,9 @@ class PasteController {
 				return res.status(404).json({ error: "Paste not found" });
 			}
 
-			const userId = this.getUserId(req);
-			let userEmail = null;
-			if (userId) {
-				const user = await User.findById(userId);
-				if (user) userEmail = user.email;
-			}
+			const userRole = await this.getUserRole(req, existingPaste);
 
-			const isOwner =
-				existingPaste.owner &&
-				userId &&
-				existingPaste.owner.toString() === userId;
-			const isAnonymous = !existingPaste.owner;
-
-			let authorized = isOwner || isAnonymous;
-
-			// Check admin role via shareList
-			if (!authorized && existingPaste.shareList && userEmail) {
-				const shareEntry = existingPaste.shareList.find(
-					(s) => s.email === userEmail,
-				);
-				if (shareEntry && shareEntry.role === "admin") {
-					authorized = true;
-				}
-			}
-
-			if (!authorized) {
+			if (userRole !== "admin") {
 				return res.status(403).json({
 					error: "Unauthorized: You do not have permission to delete this paste",
 				});
@@ -337,6 +373,7 @@ class PasteController {
 			editPermission,
 			shareList,
 			publicRole,
+			allowComments,
 		} = req.body;
 		try {
 			const existingPaste = await this.pasteService.getPasteById(id!);
@@ -344,58 +381,9 @@ class PasteController {
 				return res.status(404).json({ error: "Paste not found" });
 			}
 
-			const userId = this.getUserId(req);
-			let userEmail = null;
-			if (userId) {
-				const user = await User.findById(userId);
-				if (user) userEmail = user.email;
-			}
+			const userRole = await this.getUserRole(req, existingPaste);
 
-			const isOwner =
-				existingPaste.owner &&
-				userId &&
-				existingPaste.owner.toString() === userId;
-			const isAnonymous = !existingPaste.owner;
-
-			let userRole: "admin" | "editor" | "viewer" = "viewer";
-
-			if (isOwner || isAnonymous) {
-				userRole = "admin";
-			} else {
-				// Check shareList
-				if (existingPaste.shareList && userEmail) {
-					const shareEntry = existingPaste.shareList.find(
-						(s) => s.email === userEmail,
-					);
-					if (shareEntry) {
-						userRole = shareEntry.role;
-					}
-				}
-
-				// Fallback to legacy allowedUsers -> editor
-				if (
-					userRole === "viewer" &&
-					existingPaste.allowedUsers &&
-					userEmail &&
-					existingPaste.allowedUsers.includes(userEmail)
-				) {
-					userRole = "editor";
-				}
-
-				// Check public role / editPermission
-				if (userRole === "viewer") {
-					if (existingPaste.editPermission === "public") {
-						userRole = "editor"; // Legacy compatibility
-					} else if (
-						existingPaste.visibility === "public" ||
-						existingPaste.visibility === "shared"
-					) {
-						userRole = existingPaste.publicRole || "viewer";
-					}
-				}
-			}
-
-			if (userRole === "viewer") {
+			if (userRole === "viewer" || userRole === "commenter") {
 				return res.status(403).json({
 					error: "Unauthorized: You do not have permission to edit this paste",
 				});
@@ -410,6 +398,7 @@ class PasteController {
 				editPermission = undefined;
 				shareList = undefined;
 				publicRole = undefined;
+				allowComments = undefined;
 			}
 
 			if (password) {
@@ -432,6 +421,7 @@ class PasteController {
 				editPermission,
 				shareList,
 				publicRole,
+				allowComments,
 			);
 
 			this.logger.info(`Successfully updated paste: ${id} `);
@@ -488,6 +478,60 @@ class PasteController {
 			}
 		} catch (error) {
 			this.logger.error("Error verifying paste password", id, error);
+			return next(error);
+		}
+	}
+
+	async addComment(req: Request, res: Response, next: NextFunction) {
+		const id = req.params.id;
+		const { content, author } = req.body;
+
+		try {
+			const paste = await this.pasteService.getPasteById(id!);
+			if (!paste) {
+				return res.status(404).json({ error: "Paste not found" });
+			}
+
+			if (!paste.allowComments) {
+				return res
+					.status(403)
+					.json({ error: "Comments are disabled for this snippet" });
+			}
+
+			const userRole = await this.getUserRole(req, paste);
+			// editor and admins can comment
+			if (
+				userRole !== "admin" &&
+				userRole !== "editor" &&
+				userRole !== "commenter"
+			) {
+				return res
+					.status(403)
+					.json({
+						error: "Unauthorized: You do not have permission to comment",
+					});
+			}
+
+			const userId = this.getUserId(req);
+			let finalAuthor: string = author || "Anonymous";
+
+			if (userId && !author) {
+				const user = await User.findById(userId);
+				if (user) finalAuthor = user.username || user.email;
+			}
+
+			const comment = {
+				id: uniqueIdGenerator(),
+				author: finalAuthor,
+				content: content as string,
+				createdAt: new Date(),
+				userId: userId || undefined,
+			};
+
+			const result = await this.pasteService.addComment(id!, comment);
+			return res.status(201).json(result?.toObject());
+		} catch (error) {
+			this.logger.error("Error adding comment", id, error);
 			return next(error);
 		}
 	}

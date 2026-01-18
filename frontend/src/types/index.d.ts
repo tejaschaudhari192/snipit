@@ -1,3 +1,11 @@
+export interface Comment {
+	id: string;
+	author: string;
+	content: string;
+	createdAt: string;
+	userId?: string;
+}
+
 export interface PasteData {
 	id: string;
 	content: string;
@@ -14,8 +22,13 @@ export interface PasteData {
 	password?: string;
 	owner?: string;
 	editPermission?: "owner" | "shared" | "public";
-	shareList?: { email: string; role: "viewer" | "editor" | "admin" }[];
-	publicRole?: "viewer" | "editor";
+	shareList?: {
+		email: string;
+		role: "viewer" | "editor" | "admin" | "commenter";
+	}[];
+	publicRole?: "viewer" | "editor" | "commenter";
+	allowComments?: boolean;
+	comments?: Comment[];
 }
 
 export type IdType = "system" | "dynamic";

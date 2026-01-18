@@ -1,5 +1,13 @@
 import type { Document } from "mongoose";
 
+export type CommentData = {
+	id: string;
+	author: string;
+	content: string;
+	createdAt: Date;
+	userId?: string;
+};
+
 export type PasteData = {
 	id: string;
 	content: string;
@@ -16,9 +24,11 @@ export type PasteData = {
 	password?: string | undefined;
 	editPermission?: ("owner" | "shared" | "public") | undefined;
 	shareList?:
-		| { email: string; role: "viewer" | "editor" | "admin" }[]
+		| { email: string; role: "viewer" | "editor" | "admin" | "commenter" }[]
 		| undefined;
-	publicRole?: "viewer" | "editor" | undefined;
+	publicRole?: "viewer" | "editor" | "commenter" | undefined;
+	allowComments?: boolean | undefined;
+	comments?: CommentData[] | undefined;
 };
 
 export type IPaste = Document & {
@@ -37,9 +47,11 @@ export type IPaste = Document & {
 	password?: string | undefined;
 	editPermission?: ("owner" | "shared" | "public") | undefined;
 	shareList?:
-		| { email: string; role: "viewer" | "editor" | "admin" }[]
+		| { email: string; role: "viewer" | "editor" | "admin" | "commenter" }[]
 		| undefined;
-	publicRole?: "viewer" | "editor" | undefined;
+	publicRole?: "viewer" | "editor" | "commenter" | undefined;
+	allowComments?: boolean | undefined;
+	comments?: CommentData[] | undefined;
 };
 
 // export type IPaste = Document & PasteData; // Removed duplicate

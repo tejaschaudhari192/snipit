@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ContentTypeSelector } from "@/components/common/content-type-selector";
 import {
 	Select,
 	SelectContent,
@@ -8,7 +8,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { FileText, Code2, Link, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface MainToolbarProps {
@@ -34,43 +34,11 @@ export const MainToolbar = ({
 
 	return (
 		<div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
-			<Tabs
+			<ContentTypeSelector
 				value={contentType}
-				onValueChange={(val) =>
-					setContentType(val as "text" | "code" | "link")
-				}
+				onValueChange={setContentType}
 				className="w-full sm:w-auto"
-			>
-				<TabsList className="h-11 w-full flex">
-					<TabsTrigger
-						value="text"
-						className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
-					>
-						<FileText className="h-4 w-4 shrink-0" />
-						<span className="whitespace-nowrap">
-							{t("home.tab_text")}
-						</span>
-					</TabsTrigger>
-					<TabsTrigger
-						value="code"
-						className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
-					>
-						<Code2 className="h-4 w-4 shrink-0" />
-						<span className="whitespace-nowrap">
-							{t("home.tab_code")}
-						</span>
-					</TabsTrigger>
-					<TabsTrigger
-						value="link"
-						className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
-					>
-						<Link className="h-4 w-4 shrink-0" />
-						<span className="whitespace-nowrap">
-							{t("home.tab_link")}
-						</span>
-					</TabsTrigger>
-				</TabsList>
-			</Tabs>
+			/>
 
 			<div className="flex items-center gap-2 justify-between sm:justify-end">
 				<Select

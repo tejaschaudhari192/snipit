@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import type { User } from "@/context/AuthContext";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface PasteDialogProps {
 	isOpen: boolean;
@@ -39,12 +40,20 @@ interface PasteDialogProps {
 	setPassword: (v: string) => void;
 	editPermission: "owner" | "shared" | "public";
 	setEditPermission: (v: "owner" | "shared" | "public") => void;
-	shareList: { email: string; role: "viewer" | "editor" | "admin" }[];
+	shareList: {
+		email: string;
+		role: "viewer" | "editor" | "admin" | "commenter";
+	}[];
 	setShareList: (
-		v: { email: string; role: "viewer" | "editor" | "admin" }[],
+		v: {
+			email: string;
+			role: "viewer" | "editor" | "admin" | "commenter";
+		}[],
 	) => void;
-	publicRole: "viewer" | "editor";
-	setPublicRole: (v: "viewer" | "editor") => void;
+	publicRole: "viewer" | "editor" | "commenter";
+	setPublicRole: (v: "viewer" | "editor" | "commenter") => void;
+	allowComments: boolean;
+	setAllowComments: (v: boolean) => void;
 	dialogError: string;
 	user: User | null;
 	isSubmitting: boolean;
@@ -73,6 +82,8 @@ export const PasteDialog = ({
 	user,
 	isSubmitting,
 	onSubmit,
+	allowComments,
+	setAllowComments,
 }: PasteDialogProps) => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
@@ -80,7 +91,7 @@ export const PasteDialog = ({
 	// Local state for the "Add people" input
 	const [pendingEmails, setPendingEmails] = useState<string[]>([]);
 	const [pendingRole, setPendingRole] = useState<
-		"viewer" | "editor" | "admin"
+		"viewer" | "editor" | "admin" | "commenter"
 	>("editor");
 
 	const handleAddPeople = () => {
@@ -110,7 +121,7 @@ export const PasteDialog = ({
 
 	const handleUpdateRole = (
 		email: string,
-		newRole: "viewer" | "editor" | "admin",
+		newRole: "viewer" | "editor" | "admin" | "commenter",
 	) => {
 		setShareList(
 			shareList.map((item) =>
@@ -193,6 +204,22 @@ export const PasteDialog = ({
 							onChange={(e) => setPassword(e.target.value)}
 							className="h-11"
 						/>
+					</div>
+
+					<div className="flex items-center gap-2 px-1">
+						<Checkbox
+							id="allowComments"
+							checked={allowComments}
+							onCheckedChange={(checked) =>
+								setAllowComments(checked as boolean)
+							}
+						/>
+						<Label
+							htmlFor="allowComments"
+							className="text-sm font-medium cursor-pointer"
+						>
+							{t("common.open_discussion", "Open discussion")}
+						</Label>
 					</div>
 
 					{!user ? (
@@ -278,7 +305,10 @@ export const PasteDialog = ({
 											} else {
 												setVisibility("public");
 												setPublicRole(
-													val as "viewer" | "editor",
+													val as
+														| "viewer"
+														| "editor"
+														| "commenter",
 												);
 												setEditPermission(
 													val === "editor"
@@ -303,6 +333,12 @@ export const PasteDialog = ({
 											</SelectItem>
 											<SelectItem value="editor">
 												{t("common.editor", "Can edit")}
+											</SelectItem>
+											<SelectItem value="commenter">
+												{t(
+													"common.commenter",
+													"Can comment",
+												)}
 											</SelectItem>
 										</SelectContent>
 									</Select>
@@ -331,7 +367,11 @@ export const PasteDialog = ({
 									<Select
 										value={pendingRole}
 										onValueChange={(
-											r: "viewer" | "editor" | "admin",
+											r:
+												| "viewer"
+												| "editor"
+												| "admin"
+												| "commenter",
 										) => setPendingRole(r)}
 									>
 										<SelectTrigger className="w-[110px] h-auto bg-background">
@@ -346,6 +386,12 @@ export const PasteDialog = ({
 											</SelectItem>
 											<SelectItem value="admin">
 												{t("common.admin", "Admin")}
+											</SelectItem>
+											<SelectItem value="commenter">
+												{t(
+													"common.commenter",
+													"Commenter",
+												)}
 											</SelectItem>
 										</SelectContent>
 									</Select>
@@ -389,7 +435,8 @@ export const PasteDialog = ({
 															r:
 																| "viewer"
 																| "editor"
-																| "admin",
+																| "admin"
+																| "commenter",
 														) =>
 															handleUpdateRole(
 																item.email,

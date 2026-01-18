@@ -29,6 +29,13 @@
 		"enter_password_desc": "このスニペットはパスワードで保護されています。閲覧するにはパスワードを入力してください。",
 		"unlock": "スニペットのロック解除",
 		"access_control": "アクセスレベル",
+		"commenter": "コメント可能",
+		"open_discussion": "ディスカッションを開く",
+		"snippet": "スニペット",
+		"discussion": "ディスカッション",
+		"discussion_title": "スニペットのディスカッション",
+		"discussion_desc": "このスニペットについて意見を共有したり、他の人と協力したりしましょう。",
+		"no_comments": "コメントはまだありません",
 		"share_with_people": "共同作業者を追加",
 		"people_with_access": "アクセス可能なユーザー",
 		"add_people_placeholder": "メールで追加...",
@@ -41,7 +48,12 @@
 		"general_access": "一般的なアクセス",
 		"anyone_with_link": "リンクを知っている全員",
 		"restricted": "制限付き（非公開）",
-		"manage_access": "アクセス権の管理"
+		"manage_access": "アクセス権の管理",
+		"your_name": "お名前（任意）",
+		"anonymus": "匿名",
+		"write_comment": "コメントを書く...",
+		"post_comment": "コメントを投稿",
+		"comment_restricted": "このスニペットにコメントする権限がありません。"
 	},
 	"profile": {
 		"title": "ユーザープロフィール",

@@ -35,9 +35,10 @@ export const useApiHelpers = () => {
 			editPermission?: "owner" | "shared" | "public";
 			shareList?: {
 				email: string;
-				role: "viewer" | "editor" | "admin";
+				role: "viewer" | "editor" | "admin" | "commenter";
 			}[];
-			publicRole?: "viewer" | "editor";
+			publicRole?: "viewer" | "editor" | "commenter";
+			allowComments?: boolean;
 		}) => {
 			const response = await api.post("/", data);
 			return response.data;
@@ -71,9 +72,10 @@ export const useApiHelpers = () => {
 			editPermission?: "owner" | "shared" | "public",
 			shareList?: {
 				email: string;
-				role: "viewer" | "editor" | "admin";
+				role: "viewer" | "editor" | "admin" | "commenter";
 			}[],
-			publicRole?: "viewer" | "editor",
+			publicRole?: "viewer" | "editor" | "commenter",
+			allowComments?: boolean,
 		) => {
 			const response = await api.put("/" + id, {
 				content,
@@ -86,6 +88,7 @@ export const useApiHelpers = () => {
 				editPermission,
 				shareList,
 				publicRole,
+				allowComments,
 			});
 			const data = response.data;
 			return data;
@@ -113,6 +116,18 @@ export const useApiHelpers = () => {
 			return response.data;
 		};
 
+		const addComment = async (
+			id: string,
+			content: string,
+			author?: string,
+		) => {
+			const response = await api.post(`/${id}/comment`, {
+				content,
+				author,
+			});
+			return response.data;
+		};
+
 		return {
 			getServerStatus,
 			submitPaste,
@@ -123,6 +138,7 @@ export const useApiHelpers = () => {
 			getUserPastes,
 			updateMe,
 			verifyPassword,
+			addComment,
 		};
 	}, []);
 };
