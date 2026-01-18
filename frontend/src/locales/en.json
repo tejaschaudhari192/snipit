@@ -27,7 +27,25 @@
 		"submitting": "Submitting...",
 		"password_protected": "Password Protected",
 		"enter_password_desc": "This snippet is password protected. Please enter the password to view it.",
-		"unlock": "Unlock Snippet"
+		"unlock": "Unlock Snippet",
+		"edit_permission": "Who can edit?",
+		"only_me": "Only Me",
+		"specific_people": "Specific People",
+		"everyone": "Everyone",
+		"access_control": "Access Level",
+		"share_with_people": "Add Collaborators",
+		"people_with_access": "Who has access",
+		"add_people_placeholder": "Add people by email...",
+		"role": "Permission",
+		"viewer": "Can view",
+		"editor": "Can edit",
+		"admin": "Full access",
+		"add": "Add",
+		"remove": "Remove",
+		"general_access": "General access",
+		"anyone_with_link": "Anyone with link",
+		"restricted": "Private (Restricted)",
+		"manage_access": "Manage Access"
 	},
 	"profile": {
 		"title": "Your Profile",
@@ -185,16 +203,16 @@
 				"desc": "Share your snippets effortlessly with a simple link or QR code."
 			},
 			"access_control": {
-				"title": "User Access Control",
-				"desc": "Share your snippets with specific users by email for granular privacy control."
+				"title": "Role-Based Access Control",
+				"desc": "Grant Viewer, Editor, or Admin roles to specific users for precise collaboration control."
 			},
 			"profile": {
 				"title": "User Profiles",
 				"desc": "Create an account to manage, edit, and keep track of your snippets."
 			},
 			"password": {
-				"title": "Password Protection",
-				"desc": "Secure your sensitive snippets with password protection for restricted access."
+				"title": "Enhanced Security",
+				"desc": "Protect sensitive code with passwords and manage granular access permissions."
 			}
 		},
 		"story": {

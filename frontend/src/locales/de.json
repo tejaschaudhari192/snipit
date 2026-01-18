@@ -27,7 +27,21 @@
 		"submitting": "Wird gesendet...",
 		"password_protected": "Passwortgeschützt",
 		"enter_password_desc": "Dieses Snippet ist passwortgeschützt. Bitte geben Sie das Passwort ein, um es anzuzeigen.",
-		"unlock": "Snippet entsperren"
+		"unlock": "Snippet entsperren",
+		"access_control": "Zugriffsebene",
+		"share_with_people": "Mitarbeiter hinzufügen",
+		"people_with_access": "Wer hat Zugriff",
+		"add_people_placeholder": "Per E-Mail hinzufügen...",
+		"role": "Berechtigung",
+		"viewer": "Kann ansehen",
+		"editor": "Kann bearbeiten",
+		"admin": "Vollzugriff",
+		"add": "Hinzufügen",
+		"remove": "Entfernen",
+		"general_access": "Allgemeiner Zugriff",
+		"anyone_with_link": "Jeder mit dem Link",
+		"restricted": "Privat (Eingeschränkt)",
+		"manage_access": "Zugriff verwalten"
 	},
 	"profile": {
 		"title": "Ihr Profil",
@@ -183,16 +197,16 @@
 				"desc": "Share your snippets effortlessly with a simple link or QR code."
 			},
 			"access_control": {
-				"title": "User Access Control",
-				"desc": "Share your snippets with specific users by email for granular privacy control."
+				"title": "Rollenbasierte Zugriffskontrolle",
+				"desc": "Erteilen Sie bestimmten Benutzern Viewer-, Editor- oder Admin-Rollen für eine präzise Zusammenarbeit."
 			},
 			"profile": {
-				"title": "User Profiles",
-				"desc": "Create an account to manage, edit, and keep track of your snippets."
+				"title": "Benutzerprofile",
+				"desc": "Erstellen Sie ein Konto, um Ihre Snippets zu verwalten, zu bearbeiten und den Überblick zu behalten."
 			},
 			"password": {
-				"title": "Password Protection",
-				"desc": "Secure your sensitive snippets with password protection for restricted access."
+				"title": "Erhöhte Sicherheit",
+				"desc": "Schützen Sie vertraulichen Code mit Passwörtern und verwalten Sie granulare Zugriffsberechtigungen."
 			}
 		},
 		"story": {

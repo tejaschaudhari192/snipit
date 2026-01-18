@@ -29,6 +29,9 @@ class PasteService {
 		allowedUsers?: string[],
 		newId?: string,
 		password?: string,
+		editPermission?: "owner" | "shared" | "public",
+		shareList?: { email: string; role: "viewer" | "editor" | "admin" }[],
+		publicRole?: "viewer" | "editor",
 	) {
 		const paste = await pasteModel.findOne({ id });
 		if (!paste) return null;
@@ -58,6 +61,19 @@ class PasteService {
 
 		if (password !== undefined) {
 			paste.password = password;
+		}
+
+		if (editPermission !== undefined) {
+			paste.editPermission = editPermission;
+		}
+
+		if (shareList !== undefined) {
+			paste.shareList = shareList;
+			paste.markModified("shareList");
+		}
+
+		if (publicRole !== undefined) {
+			paste.publicRole = publicRole;
 		}
 
 		return await paste.save();

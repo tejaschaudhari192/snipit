@@ -65,7 +65,7 @@ const HistoryPage = () => {
 		};
 
 		loadHistory();
-	}, [user, apiHelpers]);
+	}, [user, apiHelpers, t]);
 
 	const handleClearHistory = () => {
 		toast(t("history.clear_confirm"), {

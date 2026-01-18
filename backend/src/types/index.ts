@@ -14,6 +14,11 @@ export type PasteData = {
 	visibility?: ("public" | "private" | "shared") | undefined;
 	allowedUsers?: string[] | undefined;
 	password?: string | undefined;
+	editPermission?: ("owner" | "shared" | "public") | undefined;
+	shareList?:
+		| { email: string; role: "viewer" | "editor" | "admin" }[]
+		| undefined;
+	publicRole?: "viewer" | "editor" | undefined;
 };
 
 export type IPaste = Document & {
@@ -30,6 +35,11 @@ export type IPaste = Document & {
 	visibility?: ("public" | "private" | "shared") | undefined;
 	allowedUsers?: string[] | undefined;
 	password?: string | undefined;
+	editPermission?: ("owner" | "shared" | "public") | undefined;
+	shareList?:
+		| { email: string; role: "viewer" | "editor" | "admin" }[]
+		| undefined;
+	publicRole?: "viewer" | "editor" | undefined;
 };
 
 // export type IPaste = Document & PasteData; // Removed duplicate

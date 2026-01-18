@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import {
 	Dialog,
 	DialogContent,
@@ -9,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Wand2, Fingerprint, LogIn } from "lucide-react";
+import { Wand2, Fingerprint, LogIn, Globe, Lock } from "lucide-react";
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import { MultiEmailInput } from "@/components/ui/multi-email-input";
@@ -36,6 +37,14 @@ interface PasteDialogProps {
 	setAllowedUsers: (v: string[]) => void;
 	password: string;
 	setPassword: (v: string) => void;
+	editPermission: "owner" | "shared" | "public";
+	setEditPermission: (v: "owner" | "shared" | "public") => void;
+	shareList: { email: string; role: "viewer" | "editor" | "admin" }[];
+	setShareList: (
+		v: { email: string; role: "viewer" | "editor" | "admin" }[],
+	) => void;
+	publicRole: "viewer" | "editor";
+	setPublicRole: (v: "viewer" | "editor") => void;
 	dialogError: string;
 	user: User | null;
 	isSubmitting: boolean;
@@ -55,6 +64,11 @@ export const PasteDialog = ({
 	setAllowedUsers,
 	password,
 	setPassword,
+	setEditPermission,
+	shareList,
+	setShareList,
+	publicRole,
+	setPublicRole,
 	dialogError,
 	user,
 	isSubmitting,
@@ -62,6 +76,48 @@ export const PasteDialog = ({
 }: PasteDialogProps) => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
+
+	// Local state for the "Add people" input
+	const [pendingEmails, setPendingEmails] = useState<string[]>([]);
+	const [pendingRole, setPendingRole] = useState<
+		"viewer" | "editor" | "admin"
+	>("editor");
+
+	const handleAddPeople = () => {
+		if (pendingEmails.length === 0) return;
+
+		const newShareItems = pendingEmails.map((email) => ({
+			email,
+			role: pendingRole,
+		}));
+
+		// Filter out duplicates based on email
+		const uniqueItems = newShareItems.filter(
+			(newItem) =>
+				!shareList.some((existing) => existing.email === newItem.email),
+		);
+
+		setShareList([...shareList, ...uniqueItems]);
+		setPendingEmails([]); // Clear input
+		// Also sync to legacy allowedUsers for backward compat
+		setAllowedUsers([...allowedUsers, ...uniqueItems.map((i) => i.email)]);
+	};
+
+	const handleRemovePerson = (emailToRemove: string) => {
+		setShareList(shareList.filter((i) => i.email !== emailToRemove));
+		setAllowedUsers(allowedUsers.filter((e) => e !== emailToRemove));
+	};
+
+	const handleUpdateRole = (
+		email: string,
+		newRole: "viewer" | "editor" | "admin",
+	) => {
+		setShareList(
+			shareList.map((item) =>
+				item.email === email ? { ...item, role: newRole } : item,
+			),
+		);
+	};
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -139,42 +195,8 @@ export const PasteDialog = ({
 						/>
 					</div>
 
-					<div className="space-y-2">
-						<Label>{t("common.visibility", "Visibility")}</Label>
-						<Select
-							value={visibility}
-							onValueChange={(
-								val: "public" | "private" | "shared",
-							) => setVisibility(val)}
-						>
-							<SelectTrigger className="w-full h-11">
-								<SelectValue
-									placeholder={t(
-										"common.visibility",
-										"Visibility",
-									)}
-								/>
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="public">
-									{t("common.public", "Public")}
-								</SelectItem>
-								<SelectItem value="private">
-									{t("common.private", "Private")}
-								</SelectItem>
-								<SelectItem value="shared">
-									{t("common.shared", "Shared")}
-								</SelectItem>
-							</SelectContent>
-						</Select>
-					</div>
-
-					{!user && visibility !== "public" ? (
-						<motion.div
-							initial={{ opacity: 0, y: 10 }}
-							animate={{ opacity: 1, y: 0 }}
-							className="p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-3"
-						>
+					{!user ? (
+						<div className="p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-3">
 							<div className="flex items-center gap-2 text-primary font-semibold">
 								<LogIn className="h-4 w-4" />
 								<span>
@@ -186,11 +208,7 @@ export const PasteDialog = ({
 							</div>
 							<p className="text-sm text-muted-foreground leading-relaxed">
 								{t("common.auth_required_desc", {
-									visibility: t(
-										`common.${visibility}`,
-										visibility,
-									),
-									defaultValue: `Creating ${visibility} snippets requires an account to manage access control and ownership.`,
+									defaultValue: `Advanced access control requires an account.`,
 								})}
 							</p>
 							<div className="flex gap-2 pt-1">
@@ -210,24 +228,237 @@ export const PasteDialog = ({
 									{t("header.signup", "Sign Up")}
 								</Button>
 							</div>
-						</motion.div>
+						</div>
 					) : (
-						visibility === "shared" && (
-							<div className="space-y-2 animate-in fade-in slide-in-from-top-2">
+						<div className="space-y-4">
+							<div className="space-y-2">
 								<Label>
-									{t("common.allowed_users", "Allowed Users")}
+									{t("common.access_control", "Access Level")}
 								</Label>
-								<MultiEmailInput
-									value={allowedUsers}
-									onChange={setAllowedUsers}
-									placeholder={t(
-										"common.allowed_users_placeholder",
-										"Enter emails...",
-									)}
-									className="w-full min-h-[44px]"
-								/>
+								<div className="flex items-center justify-between p-3.5 rounded-xl border bg-muted/30 shadow-sm transition-all hover:bg-muted/40 group">
+									<div className="flex items-center gap-3">
+										<div className="p-2.5 rounded-full bg-background border border-border/50 shadow-sm group-hover:scale-105 transition-transform">
+											{visibility === "public" ? (
+												<Globe className="h-4 w-4 text-primary" />
+											) : (
+												<Lock className="h-4 w-4 text-muted-foreground" />
+											)}
+										</div>
+										<div className="flex flex-col">
+											<span className="text-sm font-bold">
+												{t(
+													"common.general_access",
+													"General access",
+												)}
+											</span>
+											<span className="text-[10px] text-muted-foreground uppercase tracking-tight">
+												{visibility === "public"
+													? t(
+															"common.anyone_with_link",
+															"Anyone with link",
+														)
+													: t(
+															"common.restricted",
+															"Private (Restricted)",
+														)}
+											</span>
+										</div>
+									</div>
+									<Select
+										value={
+											visibility === "public"
+												? publicRole
+												: "restricted"
+										}
+										onValueChange={(val) => {
+											if (val === "restricted") {
+												setVisibility("private");
+												setPublicRole("viewer");
+												setEditPermission("owner");
+											} else {
+												setVisibility("public");
+												setPublicRole(
+													val as "viewer" | "editor",
+												);
+												setEditPermission(
+													val === "editor"
+														? "public"
+														: "owner",
+												);
+											}
+										}}
+									>
+										<SelectTrigger className="w-[120px] h-9 text-xs bg-background">
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="restricted">
+												{t(
+													"common.restricted",
+													"Private",
+												)}
+											</SelectItem>
+											<SelectItem value="viewer">
+												{t("common.viewer", "Can view")}
+											</SelectItem>
+											<SelectItem value="editor">
+												{t("common.editor", "Can edit")}
+											</SelectItem>
+										</SelectContent>
+									</Select>
+								</div>
 							</div>
-						)
+
+							<div className="space-y-2">
+								<Label>
+									{t(
+										"common.share_with_people",
+										"Share with people",
+									)}
+								</Label>
+								<div className="flex gap-2">
+									<div className="flex-1">
+										<MultiEmailInput
+											value={pendingEmails}
+											onChange={setPendingEmails}
+											placeholder={t(
+												"common.add_people_placeholder",
+												"Add people...",
+											)}
+											className="min-h-[44px]"
+										/>
+									</div>
+									<Select
+										value={pendingRole}
+										onValueChange={(
+											r: "viewer" | "editor" | "admin",
+										) => setPendingRole(r)}
+									>
+										<SelectTrigger className="w-[110px] h-auto bg-background">
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="viewer">
+												{t("common.viewer", "Viewer")}
+											</SelectItem>
+											<SelectItem value="editor">
+												{t("common.editor", "Editor")}
+											</SelectItem>
+											<SelectItem value="admin">
+												{t("common.admin", "Admin")}
+											</SelectItem>
+										</SelectContent>
+									</Select>
+									<Button
+										onClick={handleAddPeople}
+										disabled={pendingEmails.length === 0}
+										className="h-auto"
+									>
+										{t("common.add", "Add")}
+									</Button>
+								</div>
+
+								{shareList.length > 0 && (
+									<div className="flex flex-col gap-2 mt-2 max-h-[150px] overflow-y-auto pr-1">
+										<Label className="text-xs text-muted-foreground mt-2">
+											{t(
+												"common.people_with_access",
+												"People with access",
+											)}
+										</Label>
+										{shareList.map((item) => (
+											<div
+												key={item.email}
+												className="flex items-center justify-between p-2 rounded-md border bg-muted/20"
+											>
+												<div className="flex items-center gap-2 overflow-hidden">
+													<div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary shrink-0">
+														{item.email[0].toUpperCase()}
+													</div>
+													<span
+														className="text-sm truncate"
+														title={item.email}
+													>
+														{item.email}
+													</span>
+												</div>
+												<div className="flex items-center gap-2 shrink-0">
+													<Select
+														value={item.role}
+														onValueChange={(
+															r:
+																| "viewer"
+																| "editor"
+																| "admin",
+														) =>
+															handleUpdateRole(
+																item.email,
+																r,
+															)
+														}
+													>
+														<SelectTrigger className="w-[110px] h-7 text-xs bg-background">
+															<SelectValue />
+														</SelectTrigger>
+														<SelectContent>
+															<SelectItem value="viewer">
+																{t(
+																	"common.viewer",
+																	"Viewer",
+																)}
+															</SelectItem>
+															<SelectItem value="editor">
+																{t(
+																	"common.editor",
+																	"Editor",
+																)}
+															</SelectItem>
+															<SelectItem value="admin">
+																{t(
+																	"common.admin",
+																	"Admin",
+																)}
+															</SelectItem>
+														</SelectContent>
+													</Select>
+													<Button
+														variant="ghost"
+														size="icon"
+														className="h-7 w-7 text-muted-foreground hover:text-red-500"
+														onClick={() =>
+															handleRemovePerson(
+																item.email,
+															)
+														}
+													>
+														<span className="sr-only">
+															{t(
+																"common.remove",
+																"Remove",
+															)}
+														</span>
+														<svg
+															xmlns="http://www.w3.org/2000/svg"
+															width="14"
+															height="14"
+															viewBox="0 0 24 24"
+															fill="none"
+															stroke="currentColor"
+															strokeWidth="2"
+															strokeLinecap="round"
+															strokeLinejoin="round"
+														>
+															<path d="M18 6 6 18" />
+															<path d="m6 6 12 12" />
+														</svg>
+													</Button>
+												</div>
+											</div>
+										))}
+									</div>
+								)}
+							</div>
+						</div>
 					)}
 				</div>
 

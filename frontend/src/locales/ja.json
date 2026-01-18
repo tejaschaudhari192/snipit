@@ -27,7 +27,21 @@
 		"submitting": "送信中...",
 		"password_protected": "パスワード保護されています",
 		"enter_password_desc": "このスニペットはパスワードで保護されています。閲覧するにはパスワードを入力してください。",
-		"unlock": "スニペットのロック解除"
+		"unlock": "スニペットのロック解除",
+		"access_control": "アクセスレベル",
+		"share_with_people": "共同作業者を追加",
+		"people_with_access": "アクセス可能なユーザー",
+		"add_people_placeholder": "メールで追加...",
+		"role": "権限",
+		"viewer": "閲覧可能",
+		"editor": "編集可能",
+		"admin": "フルアクセス",
+		"add": "追加",
+		"remove": "削除",
+		"general_access": "一般的なアクセス",
+		"anyone_with_link": "リンクを知っている全員",
+		"restricted": "制限付き（非公開）",
+		"manage_access": "アクセス権の管理"
 	},
 	"profile": {
 		"title": "ユーザープロフィール",
@@ -183,16 +197,16 @@
 				"desc": "Share your snippets effortlessly with a simple link or QR code."
 			},
 			"access_control": {
-				"title": "User Access Control",
-				"desc": "Share your snippets with specific users by email for granular privacy control."
+				"title": "ロールベースのアクセス制御 (RBAC)",
+				"desc": "特定のユーザーに閲覧者、編集者、または管理者のロールを割り当て、正確なコラボレーション制御を可能にします。"
 			},
 			"profile": {
-				"title": "User Profiles",
-				"desc": "Create an account to manage, edit, and keep track of your snippets."
+				"title": "ユーザープロフィール",
+				"desc": "アカウントを作成して、スニペットの管理、編集、追跡を行うことができます。"
 			},
 			"password": {
-				"title": "Password Protection",
-				"desc": "Secure your sensitive snippets with password protection for restricted access."
+				"title": "強化されたセキュリティ",
+				"desc": "機密コードをパスワードで保護し、きめ細かなアクセス権限を管理します。"
 			}
 		},
 		"story": {

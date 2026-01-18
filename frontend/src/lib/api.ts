@@ -32,6 +32,12 @@ export const useApiHelpers = () => {
 			visibility?: "public" | "private" | "shared";
 			allowedUsers?: string[];
 			password?: string;
+			editPermission?: "owner" | "shared" | "public";
+			shareList?: {
+				email: string;
+				role: "viewer" | "editor" | "admin";
+			}[];
+			publicRole?: "viewer" | "editor";
 		}) => {
 			const response = await api.post("/", data);
 			return response.data;
@@ -62,6 +68,12 @@ export const useApiHelpers = () => {
 			allowedUsers?: string[],
 			newId?: string,
 			password?: string,
+			editPermission?: "owner" | "shared" | "public",
+			shareList?: {
+				email: string;
+				role: "viewer" | "editor" | "admin";
+			}[],
+			publicRole?: "viewer" | "editor",
 		) => {
 			const response = await api.put("/" + id, {
 				content,
@@ -71,6 +83,9 @@ export const useApiHelpers = () => {
 				allowedUsers,
 				newId,
 				password,
+				editPermission,
+				shareList,
+				publicRole,
 			});
 			const data = response.data;
 			return data;

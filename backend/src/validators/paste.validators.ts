@@ -14,4 +14,17 @@ export const createPasteSchema = z.object({
 		.default("public"),
 	allowedUsers: z.array(z.string()).optional(),
 	password: z.string().optional(),
+	editPermission: z
+		.enum(["owner", "shared", "public"])
+		.optional()
+		.default("owner"),
+	shareList: z
+		.array(
+			z.object({
+				email: z.string().email(),
+				role: z.enum(["viewer", "editor", "admin"]),
+			}),
+		)
+		.optional(),
+	publicRole: z.enum(["viewer", "editor"]).optional().default("viewer"),
 });

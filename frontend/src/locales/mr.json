@@ -27,7 +27,21 @@
 		"submitting": "सबमिट करत आहे...",
 		"password_protected": "पासवर्ड सुरक्षित",
 		"enter_password_desc": "हे स्निपेट पासवर्ड सुरक्षित आहे. ते पाहण्यासाठी कृपया पासवर्ड प्रविष्ट करा.",
-		"unlock": "स्निपेट अनलॉक करा"
+		"unlock": "स्निपेट अनलॉक करा",
+		"access_control": "प्रवेश पातळी",
+		"share_with_people": "सहकाऱ्यांना जोडा",
+		"people_with_access": "कोणाकडे प्रवेश आहे",
+		"add_people_placeholder": "ईमेलद्वारे जोडा...",
+		"role": "परवानगी",
+		"viewer": "पाहू शकतात",
+		"editor": "संपादित करू शकतात",
+		"admin": "पूर्ण प्रवेश",
+		"add": "जोडा",
+		"remove": "काढून टाका",
+		"general_access": "सामान्य प्रवेश",
+		"anyone_with_link": "लिंक असलेला कोणीही",
+		"restricted": "खाजगी (प्रतिबंधित)",
+		"manage_access": "प्रवेश व्यवस्थापित करा"
 	},
 	"profile": {
 		"title": "तुमची प्रोफाइल",
@@ -183,16 +197,16 @@
 				"desc": "Share your snippets effortlessly with a simple link or QR code."
 			},
 			"access_control": {
-				"title": "User Access Control",
-				"desc": "Share your snippets with specific users by email for granular privacy control."
+				"title": "भूमिका-आधारित प्रवेश नियंत्रण (RBAC)",
+				"desc": "अचूक सहकार्य नियंत्रणासाठी विशिष्ट वापरकर्त्यांना व्ह्यूअर, एडिटर किंवा ॲडमिन भूमिका द्या."
 			},
 			"profile": {
-				"title": "User Profiles",
-				"desc": "Create an account to manage, edit, and keep track of your snippets."
+				"title": "वापरकर्ता प्रोफाइल",
+				"desc": "तुमचे स्निपेट व्यवस्थापित करण्यासाठी, संपादित करण्यासाठी आणि मागोवा ठेवण्यासाठी खाते तयार करा."
 			},
 			"password": {
-				"title": "Password Protection",
-				"desc": "Secure your sensitive snippets with password protection for restricted access."
+				"title": "वर्धित सुरक्षा",
+				"desc": "पासवर्डसह संवेदनशील कोड सुरक्षित करा आणि तपशीलवार प्रवेश परवानग्या व्यवस्थापित करा."
 			}
 		},
 		"story": {

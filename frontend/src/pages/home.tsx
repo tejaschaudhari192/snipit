@@ -39,7 +39,14 @@ const HomePage = () => {
 	const [visibility, setVisibility] = useState<
 		"public" | "private" | "shared"
 	>("public");
+	const [editPermission, setEditPermission] = useState<
+		"owner" | "shared" | "public"
+	>("owner");
 	const [allowedUsers, setAllowedUsers] = useState<string[]>([]);
+	const [shareList, setShareList] = useState<
+		{ email: string; role: "viewer" | "editor" | "admin" }[]
+	>([]);
+	const [publicRole, setPublicRole] = useState<"viewer" | "editor">("viewer");
 	const [expiresTime, setExpiresTime] = useState(CONFIG.DEFAULTS.EXPIRY);
 	const [textValue, _setTextValue] = useState("");
 	const [contentType, setContentType] = useState<"text" | "code" | "link">(
@@ -80,8 +87,13 @@ const HomePage = () => {
 				burnAfterRead: expiresTime === "one-time",
 				visibility,
 				allowedUsers:
-					visibility === "shared" ? allowedUsers : undefined,
+					visibility === "shared" || editPermission === "shared"
+						? allowedUsers
+						: undefined,
 				password: password || undefined,
+				editPermission,
+				shareList,
+				publicRole,
 			});
 			toast.success(
 				t("messages.snippet_created", { idType: selectedIdType }),
@@ -203,6 +215,12 @@ const HomePage = () => {
 				setAllowedUsers={setAllowedUsers}
 				password={password}
 				setPassword={setPassword}
+				editPermission={editPermission}
+				setEditPermission={setEditPermission}
+				shareList={shareList}
+				setShareList={setShareList}
+				publicRole={publicRole}
+				setPublicRole={setPublicRole}
 				dialogError={dialogError}
 				user={user}
 				isSubmitting={isSubmitting}

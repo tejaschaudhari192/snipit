@@ -9,6 +9,7 @@ interface MultiEmailInputProps {
 	onChange: (value: string[]) => void;
 	placeholder?: string;
 	className?: string;
+	isReadOnly?: boolean;
 }
 
 export function MultiEmailInput({
@@ -16,11 +17,13 @@ export function MultiEmailInput({
 	onChange,
 	placeholder = "Enter emails...",
 	className,
+	isReadOnly = false,
 }: MultiEmailInputProps) {
 	const [inputValue, setInputValue] = React.useState("");
 	const inputRef = React.useRef<HTMLInputElement>(null);
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (isReadOnly) return;
 		if (
 			(e.key === "Enter" || e.key === "," || e.key === " ") &&
 			inputValue.trim()
@@ -33,6 +36,7 @@ export function MultiEmailInput({
 	};
 
 	const addEmail = (email: string) => {
+		if (isReadOnly) return;
 		const trimmedEmail = email.trim().replace(/,/g, "");
 		if (!trimmedEmail) return;
 
@@ -50,6 +54,7 @@ export function MultiEmailInput({
 	};
 
 	const removeEmail = (emailToRemove: string) => {
+		if (isReadOnly) return;
 		onChange(value.filter((email) => email !== emailToRemove));
 	};
 
@@ -57,39 +62,45 @@ export function MultiEmailInput({
 		<div
 			className={cn(
 				"flex flex-wrap items-center gap-2 p-2 rounded-md border border-input bg-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+				isReadOnly &&
+					"opacity-50 cursor-not-allowed focus-within:ring-0",
 				className,
 			)}
-			onClick={() => inputRef.current?.focus()}
+			onClick={() => !isReadOnly && inputRef.current?.focus()}
 		>
 			{value.map((email) => (
 				<Badge key={email} variant="secondary" className="gap-1 pr-1">
 					{email}
-					<button
-						type="button"
-						className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-						onClick={(e) => {
-							e.stopPropagation();
-							removeEmail(email);
-						}}
-					>
-						<X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-					</button>
+					{!isReadOnly && (
+						<button
+							type="button"
+							className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+							onClick={(e) => {
+								e.stopPropagation();
+								removeEmail(email);
+							}}
+						>
+							<X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+						</button>
+					)}
 				</Badge>
 			))}
-			<Input
-				ref={inputRef}
-				type="text"
-				className="flex-1 border-0 bg-transparent p-0 placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 min-w-[150px] h-8"
-				placeholder={value.length === 0 ? placeholder : ""}
-				value={inputValue}
-				onChange={(e) => setInputValue(e.target.value)}
-				onKeyDown={handleKeyDown}
-				onBlur={() => {
-					if (inputValue.trim()) {
-						addEmail(inputValue);
-					}
-				}}
-			/>
+			{!isReadOnly && (
+				<Input
+					ref={inputRef}
+					type="text"
+					className="flex-1 border-0 bg-transparent p-0 placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 min-w-[150px] h-8"
+					placeholder={value.length === 0 ? placeholder : ""}
+					value={inputValue}
+					onChange={(e) => setInputValue(e.target.value)}
+					onKeyDown={handleKeyDown}
+					onBlur={() => {
+						if (inputValue.trim()) {
+							addEmail(inputValue);
+						}
+					}}
+				/>
+			)}
 		</div>
 	);
 }

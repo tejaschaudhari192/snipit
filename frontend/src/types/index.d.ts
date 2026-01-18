@@ -12,6 +12,10 @@ export interface PasteData {
 	allowedUsers?: string[];
 	isPasswordProtected?: boolean;
 	password?: string;
+	owner?: string;
+	editPermission?: "owner" | "shared" | "public";
+	shareList?: { email: string; role: "viewer" | "editor" | "admin" }[];
+	publicRole?: "viewer" | "editor";
 }
 
 export type IdType = "system" | "dynamic";

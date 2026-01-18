@@ -53,6 +53,13 @@ const DisplayPage = () => {
 		"public" | "private" | "shared"
 	>("public");
 	const [allowedUsers, setAllowedUsers] = useState<string[]>([]);
+	const [editPermission, setEditPermission] = useState<
+		"owner" | "shared" | "public"
+	>("owner");
+	const [shareList, setShareList] = useState<
+		{ email: string; role: "viewer" | "editor" | "admin" }[]
+	>([]);
+	const [publicRole, setPublicRole] = useState<"viewer" | "editor">("viewer");
 	const [customId, setCustomId] = useState<string>("");
 	const { isDetecting, detectLanguage } = useLanguageDetection();
 	const { fontSize, ref: contentRef, setFontSize } = usePinchZoom(14);
@@ -80,6 +87,9 @@ const DisplayPage = () => {
 				);
 				setVisibility(data.visibility || "public");
 				setAllowedUsers(data.allowedUsers || []);
+				setEditPermission(data.editPermission || "owner");
+				setShareList(data.shareList || []);
+				setPublicRole(data.publicRole || "viewer");
 				setIsPasswordEnabled(data.isPasswordProtected || false);
 				setLoading(false);
 				window.history.replaceState({}, document.title);
@@ -106,6 +116,9 @@ const DisplayPage = () => {
 				);
 				setVisibility(data.visibility || "public");
 				setAllowedUsers(data.allowedUsers || []);
+				setEditPermission(data.editPermission || "owner");
+				setShareList(data.shareList || []);
+				setPublicRole(data.publicRole || "viewer");
 				setIsPasswordEnabled(data.isPasswordProtected || false);
 				if (!user) {
 					saveToLocal(data);
@@ -185,10 +198,13 @@ const DisplayPage = () => {
 			(contentType === "link") === paste?.redirectUrl &&
 			language === paste?.language &&
 			visibility === paste?.visibility &&
+			editPermission === (paste?.editPermission || "owner") &&
 			customId.trim() === paste?.id &&
 			!passwordChanged &&
 			JSON.stringify(allowedUsers) ===
-				JSON.stringify(paste?.allowedUsers);
+				JSON.stringify(paste?.allowedUsers) &&
+			JSON.stringify(shareList) === JSON.stringify(paste?.shareList) &&
+			publicRole === paste?.publicRole;
 
 		if (isUnchanged) {
 			setIsEdit(false);
@@ -213,9 +229,14 @@ const DisplayPage = () => {
 				contentType === "link",
 				contentType === "code" ? language : "text",
 				visibility,
-				visibility === "shared" ? allowedUsers : [],
+				visibility === "shared" || editPermission === "shared"
+					? allowedUsers
+					: [],
 				customId.trim() !== id ? customId.trim() : undefined,
 				passwordPayload,
+				editPermission,
+				shareList,
+				publicRole,
 			);
 			if (data) {
 				toast.success(
@@ -236,6 +257,7 @@ const DisplayPage = () => {
 				);
 				setVisibility(data.visibility || "public");
 				setAllowedUsers(data.allowedUsers || []);
+				setEditPermission(data.editPermission || "owner");
 				setIsPasswordEnabled(data.isPasswordProtected || false);
 				setEditPassword("");
 				if (!user) {
@@ -282,6 +304,7 @@ const DisplayPage = () => {
 		setLanguage(paste?.language || "text");
 		setVisibility(paste?.visibility || "public");
 		setAllowedUsers(paste?.allowedUsers || []);
+		setEditPermission(paste?.editPermission || "owner");
 		setCustomId(paste?.id || "");
 		setEditPassword("");
 		setIsPasswordEnabled(paste?.isPasswordProtected || false);
@@ -302,6 +325,7 @@ const DisplayPage = () => {
 			);
 			setVisibility(data.visibility || "public");
 			setAllowedUsers(data.allowedUsers || []);
+			setEditPermission(data.editPermission || "owner");
 		} catch {
 			setPasswordError(
 				t("messages.password_incorrect", "Incorrect password"),
@@ -399,6 +423,9 @@ const DisplayPage = () => {
 													: "text",
 										);
 										setCustomId(paste?.id || "");
+										setEditPermission(
+											paste?.editPermission || "owner",
+										);
 										setIsPasswordEnabled(
 											paste?.isPasswordProtected || false,
 										);
@@ -436,6 +463,24 @@ const DisplayPage = () => {
 									setNewPassword={setEditPassword}
 									isPasswordEnabled={isPasswordEnabled}
 									setIsPasswordEnabled={setIsPasswordEnabled}
+									editPermission={editPermission}
+									setEditPermission={setEditPermission}
+									isOwner={
+										!paste.owner ||
+										(!!user && paste.owner === user._id)
+									}
+									isAdmin={
+										!!user &&
+										shareList.some(
+											(item) =>
+												item.email === user.email &&
+												item.role === "admin",
+										)
+									}
+									shareList={shareList}
+									setShareList={setShareList}
+									publicRole={publicRole}
+									setPublicRole={setPublicRole}
 								/>
 							)}
 							<DisplayContent

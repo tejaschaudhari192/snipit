@@ -36,6 +36,9 @@ class PasteController {
 				visibility,
 				allowedUsers,
 				password,
+				editPermission,
+				shareList,
+				publicRole,
 			} = req.body;
 
 			const expiresAt = expiresTime
@@ -91,6 +94,9 @@ class PasteController {
 				visibility,
 				allowedUsers,
 				password,
+				editPermission,
+				shareList,
+				publicRole,
 			});
 
 			const owner = this.getUserId(req);
@@ -125,6 +131,9 @@ class PasteController {
 					visibility: validatedBody.visibility,
 					allowedUsers: validatedBody.allowedUsers,
 					password: validatedBody.password,
+					editPermission: validatedBody.editPermission,
+					shareList: validatedBody.shareList,
+					publicRole: validatedBody.publicRole,
 				};
 
 				if (pasteData.password) {
@@ -228,7 +237,16 @@ class PasteController {
 					userEmail &&
 					result.allowedUsers.includes(userEmail);
 
-				if (!isOwner && !isAllowed) {
+				// Check new shareList for read access
+				let hasShareListAccess = false;
+				if (result.shareList && userEmail) {
+					const shareEntry = result.shareList.find(
+						(s) => s.email === userEmail,
+					);
+					if (shareEntry) hasShareListAccess = true;
+				}
+
+				if (!isOwner && !isAllowed && !hasShareListAccess) {
 					return res.status(403).json({
 						error: "Access denied. Private or Shared snippet.",
 					});
@@ -244,6 +262,7 @@ class PasteController {
 
 				if (!isOwner) {
 					const pasteObj = result.toObject();
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const { content, ...rest } = pasteObj;
 					return res.json({
 						...rest,
@@ -262,6 +281,42 @@ class PasteController {
 	async deletePaste(req: Request, res: Response, next: NextFunction) {
 		const id = req.params.id;
 		try {
+			const existingPaste = await this.pasteService.getPasteById(id!);
+			if (!existingPaste) {
+				return res.status(404).json({ error: "Paste not found" });
+			}
+
+			const userId = this.getUserId(req);
+			let userEmail = null;
+			if (userId) {
+				const user = await User.findById(userId);
+				if (user) userEmail = user.email;
+			}
+
+			const isOwner =
+				existingPaste.owner &&
+				userId &&
+				existingPaste.owner.toString() === userId;
+			const isAnonymous = !existingPaste.owner;
+
+			let authorized = isOwner || isAnonymous;
+
+			// Check admin role via shareList
+			if (!authorized && existingPaste.shareList && userEmail) {
+				const shareEntry = existingPaste.shareList.find(
+					(s) => s.email === userEmail,
+				);
+				if (shareEntry && shareEntry.role === "admin") {
+					authorized = true;
+				}
+			}
+
+			if (!authorized) {
+				return res.status(403).json({
+					error: "Unauthorized: You do not have permission to delete this paste",
+				});
+			}
+
 			const result = await this.pasteService.deletePaste(id!);
 			this.logger.info("Deleting paste:", id);
 			return res.json(result);
@@ -273,14 +328,15 @@ class PasteController {
 
 	async updatePaste(req: Request, res: Response, next: NextFunction) {
 		const id = req.params.id;
+		const { content, redirectUrl, language } = req.body;
 		let {
-			content,
-			redirectUrl,
-			language,
 			visibility,
 			allowedUsers,
 			newId,
 			password,
+			editPermission,
+			shareList,
+			publicRole,
 		} = req.body;
 		try {
 			const existingPaste = await this.pasteService.getPasteById(id!);
@@ -288,14 +344,72 @@ class PasteController {
 				return res.status(404).json({ error: "Paste not found" });
 			}
 
-			if (existingPaste.owner) {
-				const userId = this.getUserId(req);
+			const userId = this.getUserId(req);
+			let userEmail = null;
+			if (userId) {
+				const user = await User.findById(userId);
+				if (user) userEmail = user.email;
+			}
 
-				if (existingPaste.owner.toString() !== userId) {
-					return res.status(403).json({
-						error: "Unauthorized: You are not the owner of this paste",
-					});
+			const isOwner =
+				existingPaste.owner &&
+				userId &&
+				existingPaste.owner.toString() === userId;
+			const isAnonymous = !existingPaste.owner;
+
+			let userRole: "admin" | "editor" | "viewer" = "viewer";
+
+			if (isOwner || isAnonymous) {
+				userRole = "admin";
+			} else {
+				// Check shareList
+				if (existingPaste.shareList && userEmail) {
+					const shareEntry = existingPaste.shareList.find(
+						(s) => s.email === userEmail,
+					);
+					if (shareEntry) {
+						userRole = shareEntry.role;
+					}
 				}
+
+				// Fallback to legacy allowedUsers -> editor
+				if (
+					userRole === "viewer" &&
+					existingPaste.allowedUsers &&
+					userEmail &&
+					existingPaste.allowedUsers.includes(userEmail)
+				) {
+					userRole = "editor";
+				}
+
+				// Check public role / editPermission
+				if (userRole === "viewer") {
+					if (existingPaste.editPermission === "public") {
+						userRole = "editor"; // Legacy compatibility
+					} else if (
+						existingPaste.visibility === "public" ||
+						existingPaste.visibility === "shared"
+					) {
+						userRole = existingPaste.publicRole || "viewer";
+					}
+				}
+			}
+
+			if (userRole === "viewer") {
+				return res.status(403).json({
+					error: "Unauthorized: You do not have permission to edit this paste",
+				});
+			}
+
+			// Restrict sensitive fields for Editors (Admins can do everything)
+			if (userRole === "editor") {
+				visibility = undefined;
+				allowedUsers = undefined;
+				newId = undefined;
+				password = undefined;
+				editPermission = undefined;
+				shareList = undefined;
+				publicRole = undefined;
 			}
 
 			if (password) {
@@ -315,6 +429,9 @@ class PasteController {
 				allowedUsers,
 				newId,
 				password,
+				editPermission,
+				shareList,
+				publicRole,
 			);
 
 			this.logger.info(`Successfully updated paste: ${id} `);

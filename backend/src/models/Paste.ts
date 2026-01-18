@@ -61,6 +61,27 @@ const pasteSchema = new Schema<IPaste>(
 			type: String,
 			required: false,
 		},
+		editPermission: {
+			type: String,
+			enum: ["owner", "shared", "public"],
+			default: "owner",
+		},
+		shareList: [
+			{
+				_id: false,
+				email: { type: String, required: true },
+				role: {
+					type: String,
+					enum: ["viewer", "editor", "admin"],
+					required: true,
+				},
+			},
+		],
+		publicRole: {
+			type: String,
+			enum: ["viewer", "editor"],
+			default: "viewer",
+		},
 	},
 	{
 		toJSON: { virtuals: true, versionKey: false },
