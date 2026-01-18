@@ -6,6 +6,7 @@ import { connectDB } from "@/config/db.js";
 import pasteRouter from "@/routes/paste.route.js";
 import healthRouter from "@/routes/health.route.js";
 import aiRouter from "@/routes/ai.route.js";
+import jobRouter from "@/routes/job.route.js";
 import cors from "cors";
 import logger from "@/config/logger.js";
 import { ZodError } from "zod";
@@ -38,7 +39,8 @@ app.use(express.json())
 	.use("/api/auth", authRouter)
 	.use("/api/", pasteRouter)
 	.use("/health/", healthRouter)
-	.use("/api/", aiRouter);
+	.use("/api/", aiRouter)
+	.use("/job", jobRouter);
 
 app.use(
 	(

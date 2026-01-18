@@ -25,6 +25,7 @@ const configurations = {
 			"http://192.168.0.2:5173",
 		],
 	},
+	job_secret: process.env.JOB_SECRET,
 };
 
 export default configurations;
