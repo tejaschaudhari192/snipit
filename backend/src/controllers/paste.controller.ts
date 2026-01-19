@@ -322,7 +322,7 @@ class PasteController {
 				if (!isOwner) {
 					const pasteObj = result.toObject();
 					// eslint-disable-next-line @typescript-eslint/no-unused-vars
-					const { content, ...rest } = pasteObj;
+					const { content, password, ...rest } = pasteObj;
 					return res.json({
 						...rest,
 						isPasswordProtected: true,
@@ -419,11 +419,9 @@ class PasteController {
 						.json({ error: "Invalid date format" });
 				}
 				if (expiresAt && expiresAt < new Date()) {
-					return res
-						.status(400)
-						.json({
-							error: "Expiration time cannot be in the past",
-						});
+					return res.status(400).json({
+						error: "Expiration time cannot be in the past",
+					});
 				}
 			}
 

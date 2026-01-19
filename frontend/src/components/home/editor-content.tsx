@@ -37,7 +37,7 @@ export const EditorContent = ({
 	return (
 		<div
 			ref={editorContainerRef}
-			className="m-3 sm:m-5 h-[70vh] border rounded-md overflow-hidden touch-none"
+			className="m-3 sm:m-5 h-[60vh] border rounded-md overflow-hidden touch-none"
 		>
 			{contentType === "code" ? (
 				<Editor

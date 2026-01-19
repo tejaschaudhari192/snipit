@@ -103,7 +103,9 @@ const DisplayPage = () => {
 				setShareList(data.shareList || []);
 				setPublicRole(data.publicRole || "viewer");
 				setAllowComments(data.allowComments || false);
-				setIsPasswordEnabled(data.isPasswordProtected || false);
+				setIsPasswordEnabled(
+					!!data.password || !!data.isPasswordProtected,
+				);
 				setExpiresTime(data.expiresTime || "1d");
 				setLoading(false);
 				window.history.replaceState({}, document.title);
@@ -134,7 +136,9 @@ const DisplayPage = () => {
 				setShareList(data.shareList || []);
 				setPublicRole(data.publicRole || "viewer");
 				setAllowComments(data.allowComments || false);
-				setIsPasswordEnabled(data.isPasswordProtected || false);
+				setIsPasswordEnabled(
+					!!data.password || !!data.isPasswordProtected,
+				);
 				setExpiresTime(data.expiresTime || "1d");
 				if (!user) {
 					saveToLocal(data);
@@ -205,7 +209,7 @@ const DisplayPage = () => {
 		);
 	};
 	const handleEditSave = async () => {
-		const wasProtected = paste?.isPasswordProtected || false;
+		const wasProtected = !!paste?.password || !!paste?.isPasswordProtected;
 		const passwordChanged =
 			isPasswordEnabled !== wasProtected || !!editPassword;
 
@@ -276,7 +280,9 @@ const DisplayPage = () => {
 				setAllowedUsers(data.allowedUsers || []);
 				setEditPermission(data.editPermission || "owner");
 				setAllowComments(data.allowComments || false);
-				setIsPasswordEnabled(data.isPasswordProtected || false);
+				setIsPasswordEnabled(
+					!!data.password || !!data.isPasswordProtected,
+				);
 				setEditPassword("");
 				if (!user) {
 					saveToLocal(data);
@@ -325,7 +331,7 @@ const DisplayPage = () => {
 		setEditPermission(paste?.editPermission || "owner");
 		setCustomId(paste?.id || "");
 		setEditPassword("");
-		setIsPasswordEnabled(paste?.isPasswordProtected || false);
+		setIsPasswordEnabled(!!paste?.password || !!paste?.isPasswordProtected);
 		setAllowComments(paste?.allowComments || false);
 		setExpiresTime(paste?.expiresTime || "1d");
 	};
@@ -360,7 +366,8 @@ const DisplayPage = () => {
 					<Loader />
 				</div>
 			) : paste ? (
-				paste.isPasswordProtected && !paste.content ? (
+				(paste.isPasswordProtected || !!paste.password) &&
+				!paste.content ? (
 					<div className="flex-1 flex justify-center items-center p-4">
 						<Card className="w-full max-w-md shadow-lg border-2">
 							<CardHeader className="space-y-1 text-center">
@@ -447,7 +454,8 @@ const DisplayPage = () => {
 											paste?.editPermission || "owner",
 										);
 										setIsPasswordEnabled(
-											paste?.isPasswordProtected || false,
+											!!paste?.password ||
+												!!paste?.isPasswordProtected,
 										);
 										setAllowComments(
 											paste?.allowComments || false,
