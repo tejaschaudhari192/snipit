@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { CalendarIcon } from "@radix-ui/react-icons";
+import { CalendarIcon, ChevronUp, ChevronDown } from "lucide-react";
 import { format } from "date-fns";
 
 import { cn } from "@/lib/utils";
@@ -12,7 +12,102 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+
+interface TimeSpinnerProps {
+	value: number;
+	onChange: (value: number) => void;
+	min: number;
+	max: number;
+	label: string;
+	padZero?: boolean;
+}
+
+function TimeSpinner({
+	value,
+	onChange,
+	min,
+	max,
+	label,
+	padZero = true,
+}: TimeSpinnerProps) {
+	const increment = () => {
+		onChange(value >= max ? min : value + 1);
+	};
+
+	const decrement = () => {
+		onChange(value <= min ? max : value - 1);
+	};
+
+	return (
+		<div className="flex flex-col items-center gap-1">
+			<span className="text-[10px] uppercase font-bold text-muted-foreground">
+				{label}
+			</span>
+			<div className="flex flex-col items-center bg-muted/50 rounded-lg border border-border overflow-hidden">
+				<button
+					type="button"
+					onClick={increment}
+					className="w-12 h-8 flex items-center justify-center hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
+				>
+					<ChevronUp className="h-4 w-4" />
+				</button>
+				<div className="w-12 h-10 flex items-center justify-center bg-background border-y border-border">
+					<span className="text-lg font-bold tabular-nums">
+						{padZero ? value.toString().padStart(2, "0") : value}
+					</span>
+				</div>
+				<button
+					type="button"
+					onClick={decrement}
+					className="w-12 h-8 flex items-center justify-center hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
+				>
+					<ChevronDown className="h-4 w-4" />
+				</button>
+			</div>
+		</div>
+	);
+}
+
+interface AmPmToggleProps {
+	value: "AM" | "PM";
+	onChange: (value: "AM" | "PM") => void;
+}
+
+function AmPmToggle({ value, onChange }: AmPmToggleProps) {
+	return (
+		<div className="flex flex-col items-center gap-1">
+			<span className="text-[10px] uppercase font-bold text-muted-foreground">
+				Period
+			</span>
+			<div className="flex flex-col bg-muted/50 rounded-lg border border-border overflow-hidden">
+				<button
+					type="button"
+					onClick={() => onChange("AM")}
+					className={cn(
+						"w-12 h-10 flex items-center justify-center text-xs font-bold transition-colors",
+						value === "AM"
+							? "bg-primary text-primary-foreground"
+							: "hover:bg-accent text-muted-foreground hover:text-foreground",
+					)}
+				>
+					AM
+				</button>
+				<button
+					type="button"
+					onClick={() => onChange("PM")}
+					className={cn(
+						"w-12 h-10 flex items-center justify-center text-xs font-bold transition-colors border-t border-border",
+						value === "PM"
+							? "bg-primary text-primary-foreground"
+							: "hover:bg-accent text-muted-foreground hover:text-foreground",
+					)}
+				>
+					PM
+				</button>
+			</div>
+		</div>
+	);
+}
 
 export function DateTimePicker({
 	date,
@@ -22,9 +117,6 @@ export function DateTimePicker({
 	setDate: (date: Date | undefined) => void;
 }) {
 	const [isOpen, setIsOpen] = React.useState(false);
-
-	const hours = Array.from({ length: 12 }, (_, i) => i + 1);
-	const minutes = Array.from({ length: 12 }, (_, i) => i * 5);
 
 	const handleDateSelect = (selectedDate: Date | undefined) => {
 		if (selectedDate) {
@@ -36,24 +128,42 @@ export function DateTimePicker({
 		}
 	};
 
-	const handleTimeChange = (
-		type: "hour" | "minute" | "ampm",
-		value: string,
-	) => {
+	const getHour12 = () => {
+		if (!date) return 12;
+		const h = date.getHours() % 12;
+		return h === 0 ? 12 : h;
+	};
+
+	const getMinute = () => {
+		return date ? date.getMinutes() : 0;
+	};
+
+	const getAmPm = (): "AM" | "PM" => {
+		return date && date.getHours() >= 12 ? "PM" : "AM";
+	};
+
+	const handleHourChange = (hour12: number) => {
 		const newDate = date ? new Date(date) : new Date();
-		if (type === "hour") {
-			const h = parseInt(value);
-			const isPM = newDate.getHours() >= 12;
-			newDate.setHours(isPM ? (h % 12) + 12 : h % 12);
-		} else if (type === "minute") {
-			newDate.setMinutes(parseInt(value));
-		} else if (type === "ampm") {
-			const currentHours = newDate.getHours();
-			if (value === "PM" && currentHours < 12) {
-				newDate.setHours(currentHours + 12);
-			} else if (value === "AM" && currentHours >= 12) {
-				newDate.setHours(currentHours - 12);
-			}
+		const isPM = newDate.getHours() >= 12;
+		const hour24 =
+			hour12 === 12 ? (isPM ? 12 : 0) : isPM ? hour12 + 12 : hour12;
+		newDate.setHours(hour24);
+		setDate(newDate);
+	};
+
+	const handleMinuteChange = (minute: number) => {
+		const newDate = date ? new Date(date) : new Date();
+		newDate.setMinutes(minute);
+		setDate(newDate);
+	};
+
+	const handleAmPmChange = (ampm: "AM" | "PM") => {
+		const newDate = date ? new Date(date) : new Date();
+		const currentHours = newDate.getHours();
+		if (ampm === "PM" && currentHours < 12) {
+			newDate.setHours(currentHours + 12);
+		} else if (ampm === "AM" && currentHours >= 12) {
+			newDate.setHours(currentHours - 12);
 		}
 		setDate(newDate);
 	};
@@ -80,8 +190,9 @@ export function DateTimePicker({
 				className="w-auto p-0 border border-border shadow-xl rounded-xl overflow-hidden bg-popover"
 				align="start"
 			>
-				<div className="flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-border">
-					<div className="p-3 bg-card/10">
+				<div className="flex flex-col sm:flex-row">
+					{/* Calendar */}
+					<div className="border-b sm:border-b-0 sm:border-r border-border">
 						<Calendar
 							mode="single"
 							selected={date}
@@ -90,96 +201,67 @@ export function DateTimePicker({
 						/>
 					</div>
 
-					<div className="flex sm:h-[320px] divide-x divide-border">
-						{/* Hours */}
-						<div className="flex flex-col">
-							<div className="text-[10px] uppercase font-bold text-muted-foreground text-center py-2 border-b border-border bg-muted/30">
-								Hr
-							</div>
-							<ScrollArea className="flex-1 w-14">
-								<div className="flex flex-col p-1.5 gap-1.5">
-									{hours.map((hour) => (
-										<Button
-											key={hour}
-											variant={
-												date &&
-												date.getHours() % 12 ===
-													hour % 12
-													? "default"
-													: "ghost"
-											}
-											className="h-8 w-full shrink-0 text-xs font-medium"
-											onClick={() =>
-												handleTimeChange(
-													"hour",
-													hour.toString(),
-												)
-											}
-										>
-											{hour}
-										</Button>
-									))}
-								</div>
-								<ScrollBar orientation="vertical" />
-							</ScrollArea>
+					{/* Time Picker */}
+					<div className="p-4 flex flex-col justify-center">
+						<div className="text-xs font-semibold text-muted-foreground mb-3 text-center">
+							Select Time
 						</div>
-
-						{/* Minutes */}
-						<div className="flex flex-col">
-							<div className="text-[10px] uppercase font-bold text-muted-foreground text-center py-2 border-b border-border bg-muted/30">
-								Min
+						<div className="flex items-center gap-2">
+							<TimeSpinner
+								value={getHour12()}
+								onChange={handleHourChange}
+								min={1}
+								max={12}
+								label="Hour"
+								padZero={false}
+							/>
+							<div className="flex flex-col items-center justify-center h-full pt-5">
+								<span className="text-2xl font-bold text-muted-foreground">
+									:
+								</span>
 							</div>
-							<ScrollArea className="flex-1 w-14">
-								<div className="flex flex-col p-1.5 gap-1.5">
-									{minutes.map((minute) => (
-										<Button
-											key={minute}
-											variant={
-												date &&
-												date.getMinutes() === minute
-													? "default"
-													: "ghost"
-											}
-											className="h-8 w-full shrink-0 text-xs font-medium"
-											onClick={() =>
-												handleTimeChange(
-													"minute",
-													minute.toString(),
-												)
-											}
-										>
-											{minute.toString().padStart(2, "0")}
-										</Button>
-									))}
-								</div>
-								<ScrollBar orientation="vertical" />
-							</ScrollArea>
+							<TimeSpinner
+								value={getMinute()}
+								onChange={handleMinuteChange}
+								min={0}
+								max={59}
+								label="Min"
+							/>
+							<AmPmToggle
+								value={getAmPm()}
+								onChange={handleAmPmChange}
+							/>
 						</div>
-
-						{/* AM/PM */}
-						<div className="flex flex-col">
-							<div className="text-[10px] uppercase font-bold text-muted-foreground text-center py-2 border-b border-border bg-muted/30">
-								Per
+						{/* Quick time presets */}
+						<div className="mt-4 pt-3 border-t border-border">
+							<div className="text-[10px] font-semibold text-muted-foreground mb-2 text-center uppercase">
+								Quick Set
 							</div>
-							<div className="flex flex-col p-1.5 gap-1.5">
-								{["AM", "PM"].map((ampm) => (
+							<div className="grid grid-cols-3 gap-1.5">
+								{[
+									{ label: "9 AM", hour: 9, min: 0 },
+									{ label: "12 PM", hour: 12, min: 0 },
+									{ label: "6 PM", hour: 18, min: 0 },
+								].map((preset) => (
 									<Button
-										key={ampm}
-										variant={
-											date &&
-											((ampm === "AM" &&
-												date.getHours() < 12) ||
-												(ampm === "PM" &&
-													date.getHours() >= 12))
-												? "default"
-												: "ghost"
-										}
-										className="h-10 w-12 shrink-0 text-xs font-bold"
-										onClick={() =>
-											handleTimeChange("ampm", ampm)
-										}
+										key={preset.label}
+										variant="ghost"
+										size="sm"
+										className="h-7 text-xs"
+										onClick={() => {
+											const newDate = date
+												? new Date(date)
+												: new Date();
+											newDate.setHours(
+												preset.hour,
+												preset.min,
+												0,
+												0,
+											);
+											setDate(newDate);
+										}}
 									>
-										{ampm}
+										{preset.label}
 									</Button>
 								))}
 							</div>
