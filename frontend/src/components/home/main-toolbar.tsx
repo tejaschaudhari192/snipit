@@ -51,7 +51,7 @@ export const MainToolbar = ({
 					setIsCustomExpiryDialogOpen={setIsCustomExpiryDialogOpen}
 				/>
 
-				<ButtonGroup className="shadow-lg shadow-primary/20 ring-1 ring-primary/10 overflow-hidden">
+				<ButtonGroup className="shadow-lg shadow-primary/20 overflow-hidden">
 					<Button
 						disabled={!textValue.length}
 						size="lg"
