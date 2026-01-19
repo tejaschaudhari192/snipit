@@ -220,6 +220,23 @@ export const EditControls = ({
 								/>
 								{t("common.password_protected")}
 							</Label>
+							{isPasswordEnabled && (
+								<div className="relative group w-40 animate-in slide-in-from-left-2 fade-in duration-200 ml-2">
+									<Input
+										type="password"
+										value={newPassword}
+										onChange={(e) =>
+											setNewPassword(e.target.value)
+										}
+										placeholder={t(
+											"common.password_placeholder",
+										)}
+										disabled={!isOwner && !isAdmin}
+										className="h-10 text-sm bg-background border-input focus:border-border transition-all shadow-sm pl-8"
+									/>
+									<Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+								</div>
+							)}
 						</div>
 
 						<div className="flex items-center gap-3 pr-4 border-border/50">
@@ -238,24 +255,6 @@ export const EditControls = ({
 								{t("common.open_discussion", "Open discussion")}
 							</Label>
 						</div>
-
-						{isPasswordEnabled && (
-							<div className="relative group w-40 animate-in slide-in-from-left-2 fade-in duration-200">
-								<Input
-									type="password"
-									value={newPassword}
-									onChange={(e) =>
-										setNewPassword(e.target.value)
-									}
-									placeholder={t(
-										"common.password_placeholder",
-									)}
-									disabled={!isOwner && !isAdmin}
-									className="h-10 text-sm bg-background border-input focus:border-border transition-all shadow-sm pl-8"
-								/>
-								<Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-							</div>
-						)}
 
 						<div className="ml-auto">
 							<Dialog>

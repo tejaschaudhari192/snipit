@@ -77,9 +77,25 @@ const HomePage = () => {
 	const handleSubmit = async (
 		selectedIdType: IdType,
 		providedId?: string,
+		options: {
+			visibility?: "public" | "private" | "shared";
+			password?: string;
+			editPermission?: "owner" | "shared" | "public";
+			allowedUsers?: string[];
+			shareList?: {
+				email: string;
+				role: "viewer" | "editor" | "admin" | "commenter";
+			}[];
+			publicRole?: "viewer" | "editor" | "commenter";
+			allowComments?: boolean;
+		} = {},
 	) => {
 		try {
 			setIsSubmitting(true);
+			const finalVisibility = options.visibility ?? visibility;
+			const finalEditPermission =
+				options.editPermission ?? editPermission;
+
 			const data = await apiHelpers.submitPaste({
 				content: textValue,
 				expiresTime,
@@ -88,16 +104,17 @@ const HomePage = () => {
 				redirectUrl: contentType === "link",
 				language: contentType === "code" ? language : "text",
 				burnAfterRead: expiresTime === "one-time",
-				visibility,
+				visibility: finalVisibility,
 				allowedUsers:
-					visibility === "shared" || editPermission === "shared"
-						? allowedUsers
+					finalVisibility === "shared" ||
+					finalEditPermission === "shared"
+						? (options.allowedUsers ?? allowedUsers)
 						: undefined,
-				password: password || undefined,
-				editPermission,
-				shareList,
-				publicRole,
-				allowComments,
+				password: (options.password ?? password) || undefined,
+				editPermission: finalEditPermission,
+				shareList: options.shareList ?? shareList,
+				publicRole: options.publicRole ?? publicRole,
+				allowComments: options.allowComments ?? allowComments,
 			});
 			toast.success(
 				t("messages.snippet_created", { idType: selectedIdType }),
@@ -124,6 +141,21 @@ const HomePage = () => {
 			);
 		} finally {
 			setIsSubmitting(false);
+		}
+	};
+
+	const handleQuickPaste = async () => {
+		const result = await handleSubmit("system", undefined, {
+			visibility: "public",
+			password: "",
+			editPermission: "owner",
+			allowedUsers: [],
+			shareList: [],
+			publicRole: "viewer",
+			allowComments: false,
+		});
+		if (result !== true) {
+			toast.error(result as string);
 		}
 	};
 
@@ -184,6 +216,7 @@ const HomePage = () => {
 					setIsCustomExpiryDialogOpen={setIsCustomExpiryDialogOpen}
 					textValue={textValue}
 					handleCreationClick={handleCreationClick}
+					handleQuickPaste={handleQuickPaste}
 				/>
 
 				<div className="flex flex-wrap items-center gap-3">
