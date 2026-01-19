@@ -36,6 +36,8 @@ class PasteService {
 		}[],
 		publicRole?: "viewer" | "editor" | "commenter",
 		allowComments?: boolean,
+		expiresTime?: string,
+		expiresAt?: Date | null,
 	) {
 		const paste = await pasteModel.findOne({ id });
 		if (!paste) return null;

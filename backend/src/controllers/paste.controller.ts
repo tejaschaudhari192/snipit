@@ -374,6 +374,7 @@ class PasteController {
 			shareList,
 			publicRole,
 			allowComments,
+			expiresTime,
 		} = req.body;
 		try {
 			const existingPaste = await this.pasteService.getPasteById(id!);
@@ -401,6 +402,31 @@ class PasteController {
 				allowComments = undefined;
 			}
 
+			let expiresAt: Date | undefined;
+			if (expiresTime) {
+				const parsed = expiresTime
+					? dateConverter(expiresTime)
+					: dateConverter("1d");
+				if (expiresTime === "one-time") {
+					expiresAt = dateConverter("1d") || undefined;
+				} else if (parsed) {
+					expiresAt = parsed;
+				}
+
+				if (expiresAt && isNaN(expiresAt.getTime())) {
+					return res
+						.status(400)
+						.json({ error: "Invalid date format" });
+				}
+				if (expiresAt && expiresAt < new Date()) {
+					return res
+						.status(400)
+						.json({
+							error: "Expiration time cannot be in the past",
+						});
+				}
+			}
+
 			if (password) {
 				const salt = await bcrypt.genSalt(10);
 				password = await bcrypt.hash(password, salt);
@@ -422,6 +448,8 @@ class PasteController {
 				shareList,
 				publicRole,
 				allowComments,
+				expiresTime,
+				expiresAt,
 			);
 
 			this.logger.info(`Successfully updated paste: ${id} `);
@@ -505,11 +533,9 @@ class PasteController {
 				userRole !== "editor" &&
 				userRole !== "commenter"
 			) {
-				return res
-					.status(403)
-					.json({
-						error: "Unauthorized: You do not have permission to comment",
-					});
+				return res.status(403).json({
+					error: "Unauthorized: You do not have permission to comment",
+				});
 			}
 
 			const userId = this.getUserId(req);

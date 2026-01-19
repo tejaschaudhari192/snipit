@@ -22,6 +22,7 @@ import { MultiEmailInput } from "@/components/ui/multi-email-input";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { ExpirySelector } from "@/components/common/expiry-selector";
 
 interface EditControlsProps {
 	contentType: "text" | "code" | "link";
@@ -58,6 +59,9 @@ interface EditControlsProps {
 	setPublicRole: (v: "viewer" | "editor" | "commenter") => void;
 	allowComments: boolean;
 	setAllowComments: (v: boolean) => void;
+	expiresTime: string;
+	setExpiresTime: (v: string) => void;
+	setIsCustomExpiryDialogOpen: (v: boolean) => void;
 }
 
 export const EditControls = ({
@@ -86,6 +90,9 @@ export const EditControls = ({
 	setPublicRole,
 	allowComments,
 	setAllowComments,
+	expiresTime,
+	setExpiresTime,
+	setIsCustomExpiryDialogOpen,
 }: EditControlsProps) => {
 	const { t } = useTranslation();
 
@@ -184,6 +191,17 @@ export const EditControls = ({
 
 				{(isOwner || isAdmin) && (
 					<div className="flex flex-wrap items-center gap-4 p-3 rounded-xl bg-muted/30 border border-border/50 shadow-sm animate-in slide-in-from-top-2 duration-300">
+						<div className="flex items-center gap-3 pr-4 border-r border-border/50">
+							<ExpirySelector
+								expiresTime={expiresTime}
+								setExpiresTime={setExpiresTime}
+								setIsCustomExpiryDialogOpen={
+									setIsCustomExpiryDialogOpen
+								}
+								className="w-[140px] h-9"
+							/>
+						</div>
+
 						<div className="flex items-center gap-3 pr-4 border-r border-border/50">
 							<Switch
 								id="password-protected"

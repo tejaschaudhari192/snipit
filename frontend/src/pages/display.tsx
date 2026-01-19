@@ -31,6 +31,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Lock } from "lucide-react";
+import { CustomExpiryDialog } from "@/components/home/custom-expiry-dialog";
 
 const DisplayPage = () => {
 	const { id } = useParams();
@@ -70,6 +71,12 @@ const DisplayPage = () => {
 	const [passwordError, setPasswordError] = useState("");
 	const [editPassword, setEditPassword] = useState("");
 	const [isPasswordEnabled, setIsPasswordEnabled] = useState(false);
+	const [expiresTime, setExpiresTime] = useState("1d");
+	const [isCustomExpiryDialogOpen, setIsCustomExpiryDialogOpen] =
+		useState(false);
+	const [customExpiryDate, setCustomExpiryDate] = useState<Date | undefined>(
+		new Date(Date.now() + 24 * 60 * 60 * 1000),
+	);
 
 	const isOwner = !paste?.owner || (!!user && paste.owner === user._id);
 
@@ -97,6 +104,7 @@ const DisplayPage = () => {
 				setPublicRole(data.publicRole || "viewer");
 				setAllowComments(data.allowComments || false);
 				setIsPasswordEnabled(data.isPasswordProtected || false);
+				setExpiresTime(data.expiresTime || "1d");
 				setLoading(false);
 				window.history.replaceState({}, document.title);
 				return;
@@ -127,6 +135,7 @@ const DisplayPage = () => {
 				setPublicRole(data.publicRole || "viewer");
 				setAllowComments(data.allowComments || false);
 				setIsPasswordEnabled(data.isPasswordProtected || false);
+				setExpiresTime(data.expiresTime || "1d");
 				if (!user) {
 					saveToLocal(data);
 				}
@@ -211,8 +220,10 @@ const DisplayPage = () => {
 			JSON.stringify(allowedUsers) ===
 				JSON.stringify(paste?.allowedUsers) &&
 			JSON.stringify(shareList) === JSON.stringify(paste?.shareList) &&
+			JSON.stringify(shareList) === JSON.stringify(paste?.shareList) &&
 			publicRole === paste?.publicRole &&
-			allowComments === (paste?.allowComments || false);
+			allowComments === (paste?.allowComments || false) &&
+			expiresTime === (paste?.expiresTime || "1d");
 
 		if (isUnchanged) {
 			setIsEdit(false);
@@ -242,6 +253,7 @@ const DisplayPage = () => {
 				shareList,
 				publicRole,
 				allowComments,
+				expiresTime,
 			);
 			if (data) {
 				toast.success(
@@ -315,6 +327,7 @@ const DisplayPage = () => {
 		setEditPassword("");
 		setIsPasswordEnabled(paste?.isPasswordProtected || false);
 		setAllowComments(paste?.allowComments || false);
+		setExpiresTime(paste?.expiresTime || "1d");
 	};
 
 	const handleVerifyPassword = async () => {
@@ -499,9 +512,24 @@ const DisplayPage = () => {
 										setPublicRole={setPublicRole}
 										allowComments={allowComments}
 										setAllowComments={setAllowComments}
+										expiresTime={expiresTime}
+										setExpiresTime={setExpiresTime}
+										setIsCustomExpiryDialogOpen={
+											setIsCustomExpiryDialogOpen
+										}
 									/>
 								</div>
 							)}
+							<CustomExpiryDialog
+								isOpen={isCustomExpiryDialogOpen}
+								onOpenChange={setIsCustomExpiryDialogOpen}
+								customExpiryDate={customExpiryDate}
+								setCustomExpiryDate={setCustomExpiryDate}
+								onConfirm={(date) => {
+									setExpiresTime(date.toISOString());
+									setIsCustomExpiryDialogOpen(false);
+								}}
+							/>
 							<DisplayContent
 								isEdit={isEdit}
 								contentType={contentType}

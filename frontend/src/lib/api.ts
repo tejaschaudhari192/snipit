@@ -76,6 +76,7 @@ export const useApiHelpers = () => {
 			}[],
 			publicRole?: "viewer" | "editor" | "commenter",
 			allowComments?: boolean,
+			expiresTime?: string,
 		) => {
 			const response = await api.put("/" + id, {
 				content,
@@ -89,6 +90,7 @@ export const useApiHelpers = () => {
 				shareList,
 				publicRole,
 				allowComments,
+				expiresTime,
 			});
 			const data = response.data;
 			return data;
