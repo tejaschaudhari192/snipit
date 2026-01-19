@@ -3,13 +3,29 @@ import { useTranslation } from "react-i18next";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Home, Plus, FileQuestion } from "lucide-react";
+import { Particles } from "@/components/ui/shadcn-io/particles";
+import { useTheme } from "@/hooks/use-theme";
 
 const Error = () => {
 	const { t } = useTranslation();
+	const { theme } = useTheme();
+	const particleColor = theme === "dark" ? "#a78bfa" : "#7c3aed";
 
 	return (
-		<div className="min-h-[90vh] flex items-center justify-center px-4 bg-gradient-to-br from-background via-muted/10 to-background">
-			<div className="max-w-2xl w-full text-center">
+		<div className="relative min-h-[90vh] flex items-center justify-center px-4 bg-gradient-to-br from-background via-muted/10 to-background overflow-hidden">
+			{/* Particles Background */}
+			<Particles
+				className="absolute inset-0 z-0"
+				quantity={120}
+				staticity={30}
+				ease={80}
+				size={0.5}
+				color={particleColor}
+				vx={0.05}
+				vy={0.05}
+			/>
+
+			<div className="max-w-2xl w-full text-center relative z-10">
 				{/* Animated 404 */}
 				<motion.div
 					initial={{ opacity: 0, scale: 0.8 }}
@@ -37,7 +53,7 @@ const Error = () => {
 					transition={{ duration: 0.5, delay: 0.2 }}
 					className="mb-6"
 				>
-					<div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-muted">
+					<div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-muted/80 backdrop-blur-sm">
 						<FileQuestion className="w-8 h-8 text-muted-foreground" />
 					</div>
 				</motion.div>
@@ -80,19 +96,13 @@ const Error = () => {
 						<Button
 							size="lg"
 							variant="outline"
-							className="gap-2 px-8 w-full sm:w-auto"
+							className="gap-2 px-8 w-full sm:w-auto backdrop-blur-sm"
 						>
 							<Plus className="w-4 h-4" />
 							{t("error_page.create_new")}
 						</Button>
 					</Link>
 				</motion.div>
-
-				{/* Decorative elements */}
-				<div className="absolute top-1/4 left-10 w-2 h-2 rounded-full bg-primary/30 animate-pulse" />
-				<div className="absolute top-1/3 right-16 w-3 h-3 rounded-full bg-primary/20 animate-pulse delay-150" />
-				<div className="absolute bottom-1/4 left-20 w-2 h-2 rounded-full bg-primary/25 animate-pulse delay-300" />
-				<div className="absolute bottom-1/3 right-10 w-2 h-2 rounded-full bg-primary/30 animate-pulse delay-500" />
 			</div>
 		</div>
 	);

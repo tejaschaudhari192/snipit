@@ -5,15 +5,32 @@ import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import appScreenshot from "@/assets/brand/app.png";
 import app from "@/lib/data";
+import { Particles } from "@/components/ui/shadcn-io/particles";
+import { useTheme } from "@/hooks/use-theme";
 
 const AboutPage = () => {
 	const { t } = useTranslation();
+	const { theme } = useTheme();
+	// Teal/cyan color for a friendly, inviting feel
+	const particleColor = theme === "dark" ? "#5eead4" : "#14b8a6";
 
 	return (
 		<div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
 			<div className="flex-1 overflow-x-hidden">
 				{/* Hero Section */}
 				<section className="relative py-16 md:py-24 px-4 overflow-hidden">
+					{/* Particles Background */}
+					<Particles
+						className="absolute inset-0 z-0"
+						quantity={100}
+						staticity={50}
+						ease={70}
+						size={0.5}
+						color={particleColor}
+						vx={0.03}
+						vy={0.03}
+					/>
+
 					{/* Enhanced Background Glows for Dark Mode */}
 					<div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5 dark:from-primary/20" />
 					<div className="absolute top-10 left-10 w-48 h-48 md:w-72 md:h-72 bg-primary/20 rounded-full blur-[120px] opacity-50" />

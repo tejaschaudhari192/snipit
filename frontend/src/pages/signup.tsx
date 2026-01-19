@@ -26,6 +26,8 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "react-i18next";
+import { Particles } from "@/components/ui/shadcn-io/particles";
+import { useTheme } from "@/hooks/use-theme";
 
 const SignupPage = () => {
 	const [username, setUsername] = useState("");
@@ -36,6 +38,8 @@ const SignupPage = () => {
 	const { user } = useAuth();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
+	const { theme } = useTheme();
+	const particleColor = theme === "dark" ? "#818cf8" : "#4f46e5";
 
 	if (user) {
 		navigate("/");
@@ -64,7 +68,19 @@ const SignupPage = () => {
 	};
 
 	return (
-		<div className="flex-1 flex flex-col items-center justify-center bg-gradient-to-br from-background via-muted/10 to-background px-4 py-8 md:py-12">
+		<div className="relative flex-1 flex flex-col items-center justify-center bg-gradient-to-br from-background via-muted/10 to-background px-4 py-8 md:py-12 overflow-hidden">
+			{/* Particles Background */}
+			<Particles
+				className="absolute inset-0 z-0"
+				quantity={80}
+				staticity={40}
+				ease={60}
+				size={0.4}
+				color={particleColor}
+				vx={0.02}
+				vy={0.02}
+			/>
+
 			<motion.div
 				initial={{ opacity: 0, scale: 0.95 }}
 				animate={{ opacity: 1, scale: 1 }}

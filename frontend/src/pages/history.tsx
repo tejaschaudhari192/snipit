@@ -10,11 +10,16 @@ import { useAuth } from "@/context/AuthContext";
 import { useApiHelpers } from "@/lib/api";
 import { Loader2 } from "lucide-react";
 import { SnippetCard } from "@/components/snippet-card";
+import { Particles } from "@/components/ui/shadcn-io/particles";
+import { useTheme } from "@/hooks/use-theme";
 
 const HistoryPage = () => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
 	const apiHelpers = useApiHelpers();
+	const { theme } = useTheme();
+	// Warm amber/orange for history - feels like memories/records
+	const particleColor = theme === "dark" ? "#fbbf24" : "#d97706";
 
 	const [items, setItems] = useState<Array<PasteData>>([]);
 	const [loading, setLoading] = useState(true);
@@ -83,8 +88,20 @@ const HistoryPage = () => {
 	};
 
 	return (
-		<div className="min-h-[90vh] bg-gradient-to-br from-background via-muted/20 to-background p-4 md:p-8">
-			<div className="max-w-5xl mx-auto">
+		<div className="relative min-h-[90vh] bg-gradient-to-br from-background via-muted/20 to-background p-4 md:p-8 overflow-hidden">
+			{/* Particles Background */}
+			<Particles
+				className="absolute inset-0 z-0"
+				quantity={80}
+				staticity={60}
+				ease={80}
+				size={0.4}
+				color={particleColor}
+				vx={0.02}
+				vy={0.02}
+			/>
+
+			<div className="max-w-5xl mx-auto relative z-10">
 				<motion.div
 					initial={{ opacity: 0, y: -20 }}
 					animate={{ opacity: 1, y: 0 }}
@@ -114,7 +131,7 @@ const HistoryPage = () => {
 							variant="outline"
 							size="sm"
 							onClick={handleClearHistory}
-							className="gap-2 text-destructive hover:text-destructive"
+							className="gap-2 text-destructive hover:text-destructive backdrop-blur-sm"
 						>
 							<Trash2 className="h-4 w-4" />
 							{t("history.clear_history")}
