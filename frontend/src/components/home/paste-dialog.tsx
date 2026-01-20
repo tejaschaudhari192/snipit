@@ -504,6 +504,12 @@ export const PasteDialog = ({
 																	"Admin",
 																)}
 															</SelectItem>
+															<SelectItem value="commenter">
+																{t(
+																	"common.commenter",
+																	"Commenter",
+																)}
+															</SelectItem>
 														</SelectContent>
 													</Select>
 													<Button

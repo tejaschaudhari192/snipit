@@ -103,43 +103,38 @@ export const DisplayContent = ({
 						>
 							<ReactMarkdown
 								remarkPlugins={[remarkGfm]}
+								/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 								components={{
-									// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 									h1: ({ node: _node, ...props }: any) => (
 										<h1
 											className="text-3xl font-bold tracking-tight mb-4"
 											{...props}
 										/>
 									),
-									// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 									h2: ({ node: _node, ...props }: any) => (
 										<h2
 											className="text-2xl font-semibold tracking-tight mt-8 mb-4 border-b pb-2"
 											{...props}
 										/>
 									),
-									// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 									h3: ({ node: _node, ...props }: any) => (
 										<h3
 											className="text-xl font-semibold tracking-tight mt-6 mb-3"
 											{...props}
 										/>
 									),
-									// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 									ul: ({ node: _node, ...props }: any) => (
 										<ul
 											className="list-disc pl-6 space-y-2 mb-4"
 											{...props}
 										/>
 									),
-									// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 									ol: ({ node: _node, ...props }: any) => (
 										<ol
 											className="list-decimal pl-6 space-y-2 mb-4"
 											{...props}
 										/>
 									),
-									// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 									blockquote: ({
 										node: _node,
 										...props
@@ -149,7 +144,6 @@ export const DisplayContent = ({
 											{...props}
 										/>
 									),
-									// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 									a: ({ node: _node, ...props }: any) => (
 										<a
 											className="text-primary hover:underline font-medium break-all"
@@ -158,7 +152,6 @@ export const DisplayContent = ({
 											{...props}
 										/>
 									),
-									// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 									code: ({
 										node: _node,
 										className,
@@ -188,6 +181,7 @@ export const DisplayContent = ({
 										);
 									},
 								}}
+								/* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 							>
 								{paste.content}
 							</ReactMarkdown>

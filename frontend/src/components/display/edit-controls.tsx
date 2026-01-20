@@ -191,18 +191,21 @@ export const EditControls = ({
 
 				{(isOwner || isAdmin) && (
 					<div className="flex flex-wrap items-center gap-4 p-3 rounded-xl bg-muted/30 border border-border/50 shadow-sm animate-in slide-in-from-top-2 duration-300">
-						<div className="flex items-center gap-3 pr-4 border-r border-border/50">
+						<div className="flex flex-col sm:flex-row sm:items-center gap-2 pr-0 md:pr-4 md:border-r border-border/50">
+							<Label className="text-[10px] uppercase font-bold text-muted-foreground ml-1 sm:hidden">
+								{t("common.expires", "Expires")}
+							</Label>
 							<ExpirySelector
 								expiresTime={expiresTime}
 								setExpiresTime={setExpiresTime}
 								setIsCustomExpiryDialogOpen={
 									setIsCustomExpiryDialogOpen
 								}
-								className="w-[140px] h-9"
+								className="w-full sm:w-[140px] h-9"
 							/>
 						</div>
 
-						<div className="flex items-center gap-3 pr-4 border-r border-border/50">
+						<div className="flex items-center gap-3 pr-0 md:pr-4 md:border-r border-border/50">
 							<Switch
 								id="password-protected"
 								checked={isPasswordEnabled}
@@ -485,6 +488,11 @@ export const EditControls = ({
 																		<SelectItem value="admin">
 																			{t(
 																				"common.admin",
+																			)}
+																		</SelectItem>
+																		<SelectItem value="commenter">
+																			{t(
+																				"common.commenter",
 																			)}
 																		</SelectItem>
 																	</SelectContent>
