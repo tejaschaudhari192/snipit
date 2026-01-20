@@ -3,6 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Link } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useTranslation } from "react-i18next";
 
 import type { PasteData } from "@/types";
@@ -93,7 +95,106 @@ export const DisplayContent = ({
 			ref={contentRef}
 			className="h-[70vh] border rounded-md overflow-hidden touch-none"
 		>
-			{paste.language && paste.language !== "text" ? (
+			{paste.language === "markdown" ? (
+				<Card className="h-full overflow-y-auto border-0 rounded-none bg-background">
+					<CardContent className="h-fit">
+						<div
+							className={`prose dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-a:text-primary prose-code:text-primary prose-pre:bg-muted/50 prose-pre:border prose-pre:border-border`}
+						>
+							<ReactMarkdown
+								remarkPlugins={[remarkGfm]}
+								components={{
+									// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+									h1: ({ node: _node, ...props }: any) => (
+										<h1
+											className="text-3xl font-bold tracking-tight mb-4"
+											{...props}
+										/>
+									),
+									// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+									h2: ({ node: _node, ...props }: any) => (
+										<h2
+											className="text-2xl font-semibold tracking-tight mt-8 mb-4 border-b pb-2"
+											{...props}
+										/>
+									),
+									// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+									h3: ({ node: _node, ...props }: any) => (
+										<h3
+											className="text-xl font-semibold tracking-tight mt-6 mb-3"
+											{...props}
+										/>
+									),
+									// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+									ul: ({ node: _node, ...props }: any) => (
+										<ul
+											className="list-disc pl-6 space-y-2 mb-4"
+											{...props}
+										/>
+									),
+									// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+									ol: ({ node: _node, ...props }: any) => (
+										<ol
+											className="list-decimal pl-6 space-y-2 mb-4"
+											{...props}
+										/>
+									),
+									// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+									blockquote: ({
+										node: _node,
+										...props
+									}: any) => (
+										<blockquote
+											className="border-l-4 border-primary/50 pl-4 italic my-4 text-muted-foreground bg-muted/20 p-2 rounded-r"
+											{...props}
+										/>
+									),
+									// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+									a: ({ node: _node, ...props }: any) => (
+										<a
+											className="text-primary hover:underline font-medium break-all"
+											target="_blank"
+											rel="noopener noreferrer"
+											{...props}
+										/>
+									),
+									// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+									code: ({
+										node: _node,
+										className,
+										children,
+										...props
+									}: any) => {
+										const match = /language-(\w+)/.exec(
+											className || "",
+										);
+										const isInline =
+											!match &&
+											!String(children).includes("\n");
+										return isInline ? (
+											<code
+												className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-primary"
+												{...props}
+											>
+												{children}
+											</code>
+										) : (
+											<code
+												className={className}
+												{...props}
+											>
+												{children}
+											</code>
+										);
+									},
+								}}
+							>
+								{paste.content}
+							</ReactMarkdown>
+						</div>
+					</CardContent>
+				</Card>
+			) : paste.language && paste.language !== "text" ? (
 				<Editor
 					height="100%"
 					language={paste.language}
