@@ -1,12 +1,16 @@
 import { Editor, type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { Link } from "lucide-react";
+import { Link, FileUp, Upload, X, File, CheckCircle2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { RefObject } from "react";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
+import { CONFIG } from "@/configurations";
 
 interface EditorContentProps {
-	contentType: "text" | "code" | "link";
+	contentType: "text" | "code" | "link" | "file";
 	language: string;
 	textValue: string;
 	setTextValue: (val: string) => void;
@@ -17,6 +21,13 @@ interface EditorContentProps {
 	handleEditorWillMount: BeforeMount;
 	handleEditorMount: OnMount;
 	handlePaste: (e: React.ClipboardEvent<HTMLTextAreaElement>) => void;
+	// File upload props
+	onFileSelect?: (file: File) => void;
+	uploadProgress?: number;
+	isUploading?: boolean;
+	uploadedFileName?: string | null;
+	uploadError?: string | null;
+	onClearFile?: () => void;
 }
 
 export const EditorContent = ({
@@ -31,8 +42,35 @@ export const EditorContent = ({
 	handleEditorWillMount,
 	handleEditorMount,
 	handlePaste,
+	onFileSelect,
+	uploadProgress = 0,
+	isUploading = false,
+	uploadedFileName,
+	uploadError,
+	onClearFile,
 }: EditorContentProps) => {
 	const { t } = useTranslation();
+
+	const handleDragOver = (e: React.DragEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+	};
+
+	const handleDrop = (e: React.DragEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+		const file = e.dataTransfer.files[0];
+		if (file && onFileSelect) {
+			onFileSelect(file);
+		}
+	};
+
+	const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (file && onFileSelect) {
+			onFileSelect(file);
+		}
+	};
 
 	return (
 		<div
@@ -56,6 +94,132 @@ export const EditorContent = ({
 						wordWrap: "on",
 					}}
 				/>
+			) : contentType === "file" ? (
+				<div
+					className="h-full w-full bg-gradient-to-br from-background via-muted/10 to-background flex items-center justify-center"
+					onDragOver={handleDragOver}
+					onDrop={handleDrop}
+				>
+					<div className="w-full max-w-2xl space-y-6 relative z-10 px-4">
+						<div className="flex flex-col items-center gap-2 text-center">
+							<div className="p-4 rounded-full bg-primary/10 text-primary backdrop-blur-sm border border-primary/20">
+								<FileUp className="h-8 w-8" />
+							</div>
+							<h2 className="text-2xl font-bold tracking-tight">
+								{t("home.tab_file", "Upload File")}
+							</h2>
+							<p className="text-muted-foreground">
+								{t(
+									"home.file_desc",
+									"Upload any file to share with a unique link",
+								)}
+							</p>
+						</div>
+
+						{uploadedFileName ? (
+							<div className="relative p-6 rounded-xl border-2 border-primary/30 bg-primary/5 backdrop-blur-md">
+								<div className="flex items-center gap-4">
+									<div className="p-3 rounded-lg bg-primary/20">
+										<CheckCircle2 className="h-6 w-6 text-primary" />
+									</div>
+									<div className="flex-1 min-w-0">
+										<p className="font-medium truncate">
+											{uploadedFileName}
+										</p>
+										<p className="text-sm text-muted-foreground">
+											{t(
+												"home.file_ready",
+												"Ready to share",
+											)}
+										</p>
+									</div>
+									<Button
+										variant="ghost"
+										size="icon"
+										onClick={onClearFile}
+										className="shrink-0"
+									>
+										<X className="h-4 w-4" />
+									</Button>
+								</div>
+							</div>
+						) : isUploading ? (
+							<div className="p-6 rounded-xl border-2 border-dashed border-primary/30 bg-background/50 backdrop-blur-md">
+								<div className="flex items-center gap-4 mb-4">
+									<div className="p-3 rounded-lg bg-primary/10 animate-pulse">
+										<Upload className="h-6 w-6 text-primary" />
+									</div>
+									<div className="flex-1">
+										<p className="font-medium">
+											{t(
+												"home.file_uploading",
+												"Uploading...",
+											)}
+										</p>
+										<p className="text-sm text-muted-foreground">
+											{Math.round(uploadProgress)}%
+										</p>
+									</div>
+								</div>
+								<Progress
+									value={uploadProgress}
+									className="h-2"
+								/>
+							</div>
+						) : (
+							<label
+								className={cn(
+									"relative flex flex-col items-center justify-center gap-4 p-8 rounded-xl border-2 border-dashed cursor-pointer transition-all",
+									"border-border/50 hover:border-primary/50 hover:bg-primary/5",
+									"backdrop-blur-md bg-background/50",
+								)}
+							>
+								<input
+									type="file"
+									className="absolute inset-0 opacity-0 cursor-pointer"
+									onChange={handleFileInputChange}
+								/>
+								<div className="p-4 rounded-full bg-muted">
+									<File className="h-8 w-8 text-muted-foreground" />
+								</div>
+								<div className="text-center">
+									<p className="font-medium">
+										{t(
+											"home.file_drop",
+											"Drop your file here or click to browse",
+										)}
+									</p>
+									<p className="text-sm text-muted-foreground mt-1">
+										{t(
+											"home.file_max_size",
+											`Maximum file size: ${CONFIG.DEFAULTS.MAX_FILE_SIZE / (1024 * 1024)}MB`,
+										)}
+									</p>
+								</div>
+							</label>
+						)}
+
+						{uploadError && (
+							<div className="p-4 rounded-lg bg-destructive/10 border border-destructive/30 text-destructive text-sm">
+								{uploadError}
+							</div>
+						)}
+
+						<div className="flex items-center justify-center gap-4 text-sm text-muted-foreground font-medium">
+							<span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/5 border border-primary/10">
+								✅{" "}
+								{t(
+									"home.file_features.secure",
+									"Secure Upload",
+								)}
+							</span>
+							<span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/5 border border-primary/10">
+								✅{" "}
+								{t("home.file_features.share", "Easy Sharing")}
+							</span>
+						</div>
+					</div>
+				</div>
 			) : contentType === "link" ? (
 				<div className="h-full w-full bg-gradient-to-br from-background via-muted/10 to-background flex items-center justify-center">
 					<div className="w-full max-w-2xl space-y-6 relative z-10 px-4">

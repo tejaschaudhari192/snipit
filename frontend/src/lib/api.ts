@@ -26,6 +26,11 @@ export const useApiHelpers = () => {
 			expiresTime: string;
 			idType?: "system" | "dynamic";
 			customId?: string;
+			contentMode?: "text" | "code" | "link" | "file";
+			fileUrl?: string | null;
+			fileName?: string | null;
+			fileSize?: number | null;
+			fileMimeType?: string | null;
 			redirectUrl?: boolean;
 			language?: string;
 			burnAfterRead?: boolean;
@@ -141,6 +146,18 @@ export const useApiHelpers = () => {
 			updateMe,
 			verifyPassword,
 			addComment,
+			forgotPassword: async (email: string) => {
+				const response = await api.post("/auth/forgotpassword", {
+					email,
+				});
+				return response.data;
+			},
+			resetPassword: async (token: string, password: string) => {
+				const response = await api.put(`/auth/resetpassword/${token}`, {
+					password,
+				});
+				return response.data;
+			},
 		};
 	}, []);
 };

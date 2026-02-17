@@ -26,6 +26,9 @@ const configurations = {
 		],
 	},
 	job_secret: process.env.JOB_SECRET,
+	SUPABASE_URL: process.env.SUPABASE_URL,
+	SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+	SUPABASE_STORAGE_BUCKET: process.env.SUPABASE_STORAGE_BUCKET,
 };
 
 export default configurations;

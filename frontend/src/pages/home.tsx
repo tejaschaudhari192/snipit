@@ -11,6 +11,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { useAuth } from "@/context/AuthContext";
+import { useFileUpload } from "@/hooks/use-file-upload";
 import type { IdType } from "@/types";
 import { CONFIG } from "@/configurations";
 import { useLanguageDetection } from "@/hooks/use-language-detection";
@@ -52,9 +53,9 @@ const HomePage = () => {
 	const [allowComments, setAllowComments] = useState(false);
 	const [expiresTime, setExpiresTime] = useState(CONFIG.DEFAULTS.EXPIRY);
 	const [textValue, _setTextValue] = useState("");
-	const [contentType, setContentType] = useState<"text" | "code" | "link">(
-		"text",
-	);
+	const [contentType, setContentType] = useState<
+		"text" | "code" | "link" | "file"
+	>("text");
 	const [language, setLanguage] = useState(CONFIG.DEFAULTS.LANGUAGE);
 	const { isDetecting, detectLanguage } = useLanguageDetection();
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -67,7 +68,21 @@ const HomePage = () => {
 	const [password, setPassword] = useState("");
 	const [idTypeTab, setIdTypeTab] = useState<"system" | "dynamic">("system");
 	const [dialogError, setDialogError] = useState("");
+	const [fastRedirect, setFastRedirect] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	// File upload state
+	const {
+		isUploading,
+		progress: uploadProgress,
+		error: uploadError,
+		fileUrl,
+		fileName,
+		fileSize,
+		fileMimeType,
+		uploadFile,
+		reset: resetFileUpload,
+	} = useFileUpload();
 
 	const setTextValue = (val: string) => {
 		_setTextValue(val);
@@ -88,6 +103,7 @@ const HomePage = () => {
 			}[];
 			publicRole?: "viewer" | "editor" | "commenter";
 			allowComments?: boolean;
+			redirectUrl?: boolean;
 		} = {},
 	) => {
 		try {
@@ -97,11 +113,21 @@ const HomePage = () => {
 				options.editPermission ?? editPermission;
 
 			const data = await apiHelpers.submitPaste({
-				content: textValue,
+				content:
+					contentType === "file"
+						? fileUrl || fileName || "File upload"
+						: textValue,
 				expiresTime,
 				idType: selectedIdType,
 				customId: providedId,
-				redirectUrl: contentType === "link",
+				contentMode: contentType,
+				fileUrl: contentType === "file" ? fileUrl : undefined,
+				fileName: contentType === "file" ? fileName : undefined,
+				fileSize: contentType === "file" ? fileSize : undefined,
+				fileMimeType: contentType === "file" ? fileMimeType : undefined,
+				redirectUrl:
+					contentType === "link" ||
+					(contentType === "file" && options.redirectUrl === true),
 				language: contentType === "code" ? language : "text",
 				burnAfterRead: expiresTime === "one-time",
 				visibility: finalVisibility,
@@ -192,7 +218,9 @@ const HomePage = () => {
 		setDialogError("");
 		const selectedId =
 			idTypeTab === "dynamic" ? customId.trim() : undefined;
-		const result = await handleSubmit(idTypeTab, selectedId);
+		const result = await handleSubmit(idTypeTab, selectedId, {
+			redirectUrl: fastRedirect,
+		});
 		if (result === true) {
 			setIsDialogOpen(false);
 			if (idTypeTab === "dynamic") setCustomId("");
@@ -214,7 +242,11 @@ const HomePage = () => {
 					expiresTime={expiresTime}
 					setExpiresTime={setExpiresTime}
 					setIsCustomExpiryDialogOpen={setIsCustomExpiryDialogOpen}
-					textValue={textValue}
+					hasContent={
+						contentType === "file"
+							? !!fileUrl
+							: textValue.length > 0
+					}
 					handleCreationClick={handleCreationClick}
 					handleQuickPaste={handleQuickPaste}
 				/>
@@ -264,6 +296,9 @@ const HomePage = () => {
 				user={user}
 				isSubmitting={isSubmitting}
 				onSubmit={handleDialogSubmit}
+				fastRedirect={fastRedirect}
+				setFastRedirect={setFastRedirect}
+				contentType={contentType}
 			/>
 
 			<CustomExpiryDialog
@@ -289,6 +324,17 @@ const HomePage = () => {
 				handleEditorWillMount={handleEditorWillMount}
 				handleEditorMount={handleEditorMount}
 				handlePaste={handlePaste}
+				onFileSelect={async (file) => {
+					const result = await uploadFile(file);
+					if (result.error) {
+						toast.error(result.error);
+					}
+				}}
+				uploadProgress={uploadProgress}
+				isUploading={isUploading}
+				uploadedFileName={fileName}
+				uploadError={uploadError}
+				onClearFile={resetFileUpload}
 			/>
 		</div>
 	);

@@ -15,6 +15,8 @@ const AboutPage = lazy(() => import("@/pages/about"));
 const ProfilePage = lazy(() => import("@/pages/profile"));
 const LoginPage = lazy(() => import("@/pages/login"));
 const SignupPage = lazy(() => import("@/pages/signup"));
+const ForgotPasswordPage = lazy(() => import("@/pages/forgot-password"));
+const ResetPasswordPage = lazy(() => import("@/pages/reset-password"));
 
 const App = () => {
 	const apiHelpers = useApiHelpers();
@@ -55,6 +57,14 @@ const App = () => {
 								<Route
 									path="/signup"
 									element={<SignupPage />}
+								/>
+								<Route
+									path="/forgot-password"
+									element={<ForgotPasswordPage />}
+								/>
+								<Route
+									path="/reset-password/:token"
+									element={<ResetPasswordPage />}
 								/>
 								<Route
 									path="/profile"

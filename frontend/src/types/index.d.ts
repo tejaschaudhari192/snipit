@@ -11,6 +11,11 @@ export interface PasteData {
 	content: string;
 	createdAt: string;
 	expiresAt: string;
+	contentMode?: "text" | "code" | "link" | "file";
+	fileUrl?: string;
+	fileName?: string;
+	fileSize?: number;
+	fileMimeType?: string;
 	redirectUrl?: boolean;
 	language?: string;
 	burnAfterRead?: boolean;

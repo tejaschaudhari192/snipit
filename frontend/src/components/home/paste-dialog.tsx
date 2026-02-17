@@ -10,7 +10,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Wand2, Fingerprint, LogIn, Globe, Lock, Users } from "lucide-react";
+import {
+	Wand2,
+	Fingerprint,
+	LogIn,
+	Globe,
+	Lock,
+	Users,
+	Zap,
+} from "lucide-react";
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import { MultiEmailInput } from "@/components/ui/multi-email-input";
@@ -54,10 +62,13 @@ interface PasteDialogProps {
 	setPublicRole: (v: "viewer" | "editor" | "commenter") => void;
 	allowComments: boolean;
 	setAllowComments: (v: boolean) => void;
+	fastRedirect: boolean;
+	setFastRedirect: (v: boolean) => void;
 	dialogError: string;
 	user: User | null;
 	isSubmitting: boolean;
 	onSubmit: () => void;
+	contentType: "text" | "code" | "link" | "file";
 }
 
 export const PasteDialog = ({
@@ -84,6 +95,9 @@ export const PasteDialog = ({
 	onSubmit,
 	allowComments,
 	setAllowComments,
+	fastRedirect,
+	setFastRedirect,
+	contentType,
 }: PasteDialogProps) => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
@@ -241,6 +255,41 @@ export const PasteDialog = ({
 							/>
 						</div>
 					</div>
+
+					{contentType !== "file" && (
+						<div
+							className="flex items-center justify-between p-3.5 rounded-xl border bg-card hover:bg-muted/50 transition-all cursor-pointer group"
+							onClick={() => setFastRedirect(!fastRedirect)}
+						>
+							<div className="flex items-center gap-2.5">
+								<div className="p-2 rounded-full bg-yellow-500/10 text-yellow-500 group-hover:scale-110 transition-transform">
+									<Zap className="h-4 w-4 fill-current" />
+								</div>
+								<div className="flex flex-col">
+									<Label
+										htmlFor="fast-redirect"
+										className="text-sm font-bold cursor-pointer pointer-events-none"
+									>
+										{t(
+											"common.fast_redirection",
+											"Fast Redirection",
+										)}
+									</Label>
+									<span className="text-[10px] text-muted-foreground font-medium pr-8">
+										{t(
+											"common.fast_redirection_desc",
+											"Directly opens the content when the link is reached.",
+										)}
+									</span>
+								</div>
+							</div>
+							<Switch
+								id="fast-redirect"
+								checked={fastRedirect}
+								onCheckedChange={setFastRedirect}
+							/>
+						</div>
+					)}
 
 					{isPasswordEnabled && (
 						<div className="animate-in slide-in-from-top-2 fade-in duration-200">

@@ -24,6 +24,14 @@ const userSchema = new Schema<IUser>(
 			type: Date,
 			default: Date.now,
 		},
+		resetPasswordToken: {
+			type: String,
+			required: false,
+		},
+		resetPasswordExpires: {
+			type: Date,
+			required: false,
+		},
 	},
 	{
 		toJSON: { virtuals: true, versionKey: false },

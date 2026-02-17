@@ -6,6 +6,12 @@ export const CONFIG = {
 	// API Configuration
 	API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
 
+	// Supabase Configuration
+	SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL,
+	SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY,
+	SUPABASE_STORAGE_BUCKET:
+		import.meta.env.VITE_SUPABASE_STORAGE_BUCKET || "uploads",
+
 	// Storage Keys
 	STORAGE_KEYS: {
 		FONT_SIZE: "snipit-font-size",
@@ -21,6 +27,7 @@ export const CONFIG = {
 		LANGUAGE: "javascript",
 		EXPIRY: "1w",
 		VISIBILITY: "public" as const,
+		MAX_FILE_SIZE: 50 * 1024 * 1024, // 50MB
 	},
 
 	// UI Constants

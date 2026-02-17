@@ -25,8 +25,8 @@ import { Switch } from "@/components/ui/switch";
 import { ExpirySelector } from "@/components/common/expiry-selector";
 
 interface EditControlsProps {
-	contentType: "text" | "code" | "link";
-	setContentType: (v: "text" | "code" | "link") => void;
+	contentType: "text" | "code" | "link" | "file";
+	setContentType: (v: "text" | "code" | "link" | "file") => void;
 	language: string;
 	setLanguage: (v: string) => void;
 	visibility: "public" | "private" | "shared";
@@ -144,6 +144,7 @@ export const EditControls = ({
 						onValueChange={setContentType}
 						className="w-full xl:w-auto"
 						listClassName="xl:w-fit"
+						showFileOption={false}
 					/>
 
 					<div className="w-full xl:w-auto flex flex-wrap items-center gap-3">

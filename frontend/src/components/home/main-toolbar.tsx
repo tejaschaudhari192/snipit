@@ -14,12 +14,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 interface MainToolbarProps {
-	contentType: "text" | "code" | "link";
-	setContentType: (val: "text" | "code" | "link") => void;
+	contentType: "text" | "code" | "link" | "file";
+	setContentType: (val: "text" | "code" | "link" | "file") => void;
 	expiresTime: string;
 	setExpiresTime: (val: string) => void;
 	setIsCustomExpiryDialogOpen: (val: boolean) => void;
-	textValue: string;
+	hasContent: boolean;
 	handleCreationClick: () => void;
 	handleQuickPaste: () => void;
 }
@@ -30,7 +30,7 @@ export const MainToolbar = ({
 	expiresTime,
 	setExpiresTime,
 	setIsCustomExpiryDialogOpen,
-	textValue,
+	hasContent,
 	handleCreationClick,
 	handleQuickPaste,
 }: MainToolbarProps) => {
@@ -53,7 +53,7 @@ export const MainToolbar = ({
 
 				<ButtonGroup className="shadow-lg shadow-primary/20 overflow-hidden">
 					<Button
-						disabled={!textValue.length}
+						disabled={!hasContent}
 						size="lg"
 						className="px-6 h-11 font-bold rounded-r-none border-r-0 hover:bg-primary/90 transition-colors"
 						onClick={handleQuickPaste}
@@ -64,7 +64,7 @@ export const MainToolbar = ({
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button
-								disabled={!textValue.length}
+								disabled={!hasContent}
 								size="icon"
 								className="h-11 w-10 rounded-l-none border-l-0 hover:bg-primary/90 transition-colors"
 							>

@@ -20,6 +20,7 @@
 		]
 	},
 	"dependencies": {
+		"@supabase/supabase-js": "^2.96.0",
 		"@types/cors": "^2.8.19",
 		"bcryptjs": "^3.0.3",
 		"cookie-parser": "^1.4.7",
@@ -30,6 +31,7 @@
 		"groq-sdk": "^0.37.0",
 		"jsonwebtoken": "^9.0.3",
 		"mongoose": "^8.18.0",
+		"nodemailer": "^7.0.13",
 		"nodemon": "^3.1.10",
 		"winston": "^3.17.0",
 		"zod": "^4.1.5"
@@ -41,6 +43,7 @@
 		"@types/jsonwebtoken": "^9.0.10",
 		"@types/mongoose": "^5.11.97",
 		"@types/node": "^24.3.1",
+		"@types/nodemailer": "^7.0.9",
 		"prettier": "^3.6.2",
 		"tsc-alias": "^1.8.16",
 		"tsx": "^4.21.0",

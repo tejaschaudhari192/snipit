@@ -1,13 +1,14 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, Code2, Link } from "lucide-react";
+import { FileText, Code2, Link, FileUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 interface ContentTypeSelectorProps {
-	value: "text" | "code" | "link";
-	onValueChange: (value: "text" | "code" | "link") => void;
+	value: "text" | "code" | "link" | "file";
+	onValueChange: (value: "text" | "code" | "link" | "file") => void;
 	className?: string;
 	listClassName?: string;
+	showFileOption?: boolean;
 }
 
 export const ContentTypeSelector = ({
@@ -15,6 +16,7 @@ export const ContentTypeSelector = ({
 	onValueChange,
 	className,
 	listClassName,
+	showFileOption = true,
 }: ContentTypeSelectorProps) => {
 	const { t } = useTranslation();
 
@@ -22,7 +24,7 @@ export const ContentTypeSelector = ({
 		<Tabs
 			value={value}
 			onValueChange={(val) =>
-				onValueChange(val as "text" | "code" | "link")
+				onValueChange(val as "text" | "code" | "link" | "file")
 			}
 			className={cn("w-full", className)}
 		>
@@ -45,6 +47,17 @@ export const ContentTypeSelector = ({
 						{t("home.tab_code")}
 					</span>
 				</TabsTrigger>
+				{showFileOption && (
+					<TabsTrigger
+						value="file"
+						className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
+					>
+						<FileUp className="h-4 w-4 shrink-0" />
+						<span className="whitespace-nowrap">
+							{t("home.tab_file", "File")}
+						</span>
+					</TabsTrigger>
+				)}
 				<TabsTrigger
 					value="link"
 					className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"

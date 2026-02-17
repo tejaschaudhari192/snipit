@@ -47,9 +47,9 @@ const DisplayPage = () => {
 	const [updatedContent, setUpdatedContent] = useState<string>();
 	const [loading, setLoading] = useState<boolean>(true);
 	const [language, setLanguage] = useState<string>("text");
-	const [contentType, setContentType] = useState<"text" | "code" | "link">(
-		"text",
-	);
+	const [contentType, setContentType] = useState<
+		"text" | "code" | "link" | "file"
+	>("text");
 	const [visibility, setVisibility] = useState<
 		"public" | "private" | "shared"
 	>("public");
@@ -90,13 +90,26 @@ const DisplayPage = () => {
 				setPaste(data);
 				setUpdatedContent(data.content);
 				setLanguage(data.language || "text");
-				setContentType(
-					data.redirectUrl
+				const detectedType: "text" | "code" | "link" | "file" =
+					data.contentMode ||
+					(data.redirectUrl
 						? "link"
-						: data.language !== "text"
-							? "code"
-							: "text",
-				);
+						: data.fileUrl
+							? "file"
+							: data.language !== "text"
+								? "code"
+								: "text");
+				setContentType(detectedType);
+
+				// Auto-redirect for links OR files if redirectUrl is true
+				if (data.redirectUrl) {
+					if (detectedType === "link") {
+						let url = data.content;
+						if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+						window.location.href = url;
+						return;
+					}
+				}
 				setVisibility(data.visibility || "public");
 				setAllowedUsers(data.allowedUsers || []);
 				setEditPermission(data.editPermission || "owner");
@@ -114,22 +127,29 @@ const DisplayPage = () => {
 
 			const data = await apiHelpers.getPaste(id!);
 			if (data) {
-				if (data.redirectUrl) {
-					let url = data.content;
-					if (!/^https?:\/\//i.test(url)) url = "https://" + url;
-					window.location.href = url;
-					return;
-				}
-				setPaste(data);
-				setUpdatedContent(data.content);
-				setLanguage(data.language || "text");
-				setContentType(
-					data.redirectUrl
+				const detectedType: "text" | "code" | "link" | "file" =
+					data.contentMode ||
+					(data.redirectUrl
 						? "link"
-						: data.language !== "text"
-							? "code"
-							: "text",
-				);
+						: data.fileUrl
+							? "file"
+							: data.language !== "text"
+								? "code"
+								: "text");
+				setContentType(detectedType);
+
+				// Auto-redirect for links OR files if redirectUrl is true
+				if (data.redirectUrl) {
+					if (detectedType === "link") {
+						let url = data.content;
+						if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+						window.location.href = url;
+						return;
+					} else if (detectedType === "file" && data.fileUrl) {
+						window.location.href = data.fileUrl;
+						return;
+					}
+				}
 				setVisibility(data.visibility || "public");
 				setAllowedUsers(data.allowedUsers || []);
 				setEditPermission(data.editPermission || "owner");

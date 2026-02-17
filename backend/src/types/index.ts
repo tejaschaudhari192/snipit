@@ -13,6 +13,11 @@ export type PasteData = {
 	content: string;
 	expiresAt: Date;
 	createdAt: Date;
+	contentMode?: ("text" | "code" | "link" | "file") | undefined;
+	fileUrl?: string | undefined;
+	fileName?: string | undefined;
+	fileSize?: number | undefined;
+	fileMimeType?: string | undefined;
 	redirectUrl?: boolean | undefined;
 	language?: string | undefined;
 	burnAfterRead?: boolean | undefined;
@@ -36,6 +41,11 @@ export type IPaste = Document & {
 	content: string;
 	expiresAt: Date;
 	createdAt: Date;
+	contentMode?: ("text" | "code" | "link" | "file") | undefined;
+	fileUrl?: string | undefined;
+	fileName?: string | undefined;
+	fileSize?: number | undefined;
+	fileMimeType?: string | undefined;
 	redirectUrl?: boolean | undefined;
 	language?: string | undefined;
 	burnAfterRead?: boolean | undefined;
@@ -60,6 +70,8 @@ export type IUser = Document & {
 	_id: string;
 	username: string;
 	email: string;
-	password?: string;
+	password?: string | undefined;
 	createdAt: Date;
+	resetPasswordToken?: string | undefined;
+	resetPasswordExpires?: Date | undefined;
 };

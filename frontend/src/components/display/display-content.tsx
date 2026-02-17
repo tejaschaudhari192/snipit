@@ -2,7 +2,8 @@ import { Editor, type BeforeMount } from "@monaco-editor/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { Link } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Link, FileDown, File } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useTranslation } from "react-i18next";
@@ -11,7 +12,7 @@ import type { PasteData } from "@/types";
 
 interface DisplayContentProps {
 	isEdit: boolean;
-	contentType: "text" | "code" | "link";
+	contentType: "text" | "code" | "link" | "file";
 	language: string;
 	content: string;
 	onContentChange: (val: string) => void;
@@ -36,7 +37,41 @@ export const DisplayContent = ({
 }: DisplayContentProps) => {
 	const { t } = useTranslation();
 
+	const formatFileSize = (bytes: number) => {
+		if (bytes < 1024) return `${bytes} B`;
+		if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+		return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+	};
+
+	const handleDownload = () => {
+		if (paste.fileUrl) {
+			window.open(paste.fileUrl, "_blank");
+		}
+	};
+
 	if (isEdit) {
+		// File editing is not supported - show read-only view
+		if (contentType === "file") {
+			return (
+				<div
+					ref={contentRef}
+					className="h-[70vh] border rounded-md overflow-hidden touch-none flex items-center justify-center bg-muted/20"
+				>
+					<div className="text-center space-y-4 p-8">
+						<div className="p-4 rounded-full bg-primary/10 mx-auto w-fit">
+							<File className="h-12 w-12 text-primary" />
+						</div>
+						<p className="text-muted-foreground">
+							{t(
+								"display.file_edit_disabled",
+								"File content cannot be edited",
+							)}
+						</p>
+					</div>
+				</div>
+			);
+		}
+
 		return (
 			<div
 				ref={contentRef}
@@ -86,6 +121,49 @@ export const DisplayContent = ({
 						style={{ fontSize: `${fontSize}px` }}
 					/>
 				)}
+			</div>
+		);
+	}
+
+	// Read-only view for file content type
+	if (
+		contentType === "file" ||
+		paste.contentMode === "file" ||
+		paste.fileUrl
+	) {
+		return (
+			<div
+				ref={contentRef}
+				className="h-[70vh] border rounded-md overflow-hidden touch-none flex items-center justify-center bg-gradient-to-br from-background via-muted/10 to-background"
+			>
+				<div className="text-center space-y-6 p-8 max-w-lg">
+					<div className="p-6 rounded-full bg-primary/10 mx-auto w-fit">
+						<File className="h-16 w-16 text-primary" />
+					</div>
+					<div className="space-y-2">
+						<h2 className="text-2xl font-bold">
+							{paste.fileName || "File"}
+						</h2>
+						{paste.fileSize && (
+							<p className="text-muted-foreground">
+								{formatFileSize(paste.fileSize)}
+							</p>
+						)}
+						{paste.fileMimeType && (
+							<p className="text-sm text-muted-foreground">
+								{paste.fileMimeType}
+							</p>
+						)}
+					</div>
+					<Button
+						size="lg"
+						onClick={handleDownload}
+						className="gap-2"
+					>
+						<FileDown className="h-5 w-5" />
+						{t("display.download_file", "Download File")}
+					</Button>
+				</div>
 			</div>
 		);
 	}

@@ -13,6 +13,27 @@ const pasteSchema = new Schema<IPaste>(
 			type: String,
 			required: true,
 		},
+		contentMode: {
+			type: String,
+			enum: ["text", "code", "link", "file"],
+			default: "text",
+		},
+		fileUrl: {
+			type: String,
+			required: false,
+		},
+		fileName: {
+			type: String,
+			required: false,
+		},
+		fileSize: {
+			type: Number,
+			required: false,
+		},
+		fileMimeType: {
+			type: String,
+			required: false,
+		},
 		redirectUrl: {
 			type: Boolean,
 			required: false,

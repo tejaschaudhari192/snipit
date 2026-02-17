@@ -1,0 +1,148 @@
+import { useState, useCallback } from "react";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { CONFIG } from "@/configurations";
+
+interface UploadState {
+	isUploading: boolean;
+	progress: number;
+	error: string | null;
+	fileUrl: string | null;
+	fileName: string | null;
+	fileSize: number | null;
+	fileMimeType: string | null;
+}
+
+export const useFileUpload = () => {
+	const [uploadState, setUploadState] = useState<UploadState>({
+		isUploading: false,
+		progress: 0,
+		error: null,
+		fileUrl: null,
+		fileName: null,
+		fileSize: null,
+		fileMimeType: null,
+	});
+
+	const uploadFile = useCallback(async (file: File): Promise<UploadState> => {
+		if (!isSupabaseConfigured || !supabase) {
+			const errorState: UploadState = {
+				isUploading: false,
+				progress: 0,
+				error: "File upload is not configured",
+				fileUrl: null,
+				fileName: null,
+				fileSize: null,
+				fileMimeType: null,
+			};
+			setUploadState(errorState);
+			return errorState;
+		}
+
+		if (file.size > CONFIG.DEFAULTS.MAX_FILE_SIZE) {
+			const errorState: UploadState = {
+				isUploading: false,
+				progress: 0,
+				error: `File size exceeds ${CONFIG.DEFAULTS.MAX_FILE_SIZE / (1024 * 1024)}MB limit`,
+				fileUrl: null,
+				fileName: null,
+				fileSize: null,
+				fileMimeType: null,
+			};
+			setUploadState(errorState);
+			return errorState;
+		}
+
+		setUploadState({
+			isUploading: true,
+			progress: 0,
+			error: null,
+			fileUrl: null,
+			fileName: file.name,
+			fileSize: file.size,
+			fileMimeType: file.type,
+		});
+
+		try {
+			const timestamp = Date.now();
+			const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+			const filePath = `${timestamp}_${sanitizedName}`;
+
+			// Supabase doesn't provide upload progress natively,
+			// so we simulate a progress update before upload
+			setUploadState((prev) => ({ ...prev, progress: 30 }));
+
+			const { error: uploadError } = await supabase.storage
+				.from(CONFIG.SUPABASE_STORAGE_BUCKET)
+				.upload(filePath, file, {
+					cacheControl: "3600",
+					upsert: false,
+					contentType: file.type,
+				});
+
+			if (uploadError) {
+				const errorState: UploadState = {
+					isUploading: false,
+					progress: 0,
+					error: uploadError.message || "Upload failed",
+					fileUrl: null,
+					fileName: null,
+					fileSize: null,
+					fileMimeType: null,
+				};
+				setUploadState(errorState);
+				return errorState;
+			}
+
+			setUploadState((prev) => ({ ...prev, progress: 80 }));
+
+			const {
+				data: { publicUrl },
+			} = supabase.storage
+				.from(CONFIG.SUPABASE_STORAGE_BUCKET)
+				.getPublicUrl(filePath);
+
+			const successState: UploadState = {
+				isUploading: false,
+				progress: 100,
+				error: null,
+				fileUrl: publicUrl,
+				fileName: file.name,
+				fileSize: file.size,
+				fileMimeType: file.type,
+			};
+			setUploadState(successState);
+			return successState;
+		} catch (error) {
+			const errorState: UploadState = {
+				isUploading: false,
+				progress: 0,
+				error: (error as Error).message || "Failed to upload file",
+				fileUrl: null,
+				fileName: null,
+				fileSize: null,
+				fileMimeType: null,
+			};
+			setUploadState(errorState);
+			return errorState;
+		}
+	}, []);
+
+	const reset = useCallback(() => {
+		setUploadState({
+			isUploading: false,
+			progress: 0,
+			error: null,
+			fileUrl: null,
+			fileName: null,
+			fileSize: null,
+			fileMimeType: null,
+		});
+	}, []);
+
+	return {
+		...uploadState,
+		uploadFile,
+		reset,
+		isConfigured: isSupabaseConfigured,
+	};
+};

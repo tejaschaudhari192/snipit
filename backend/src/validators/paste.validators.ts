@@ -4,6 +4,14 @@ export const createPasteSchema = z.object({
 	expiresAt: z.date(),
 	idType: z.enum(["system", "dynamic"]).optional().default("dynamic"),
 	customId: z.string().optional(),
+	contentMode: z
+		.enum(["text", "code", "link", "file"])
+		.optional()
+		.default("text"),
+	fileUrl: z.string().optional(),
+	fileName: z.string().optional(),
+	fileSize: z.number().optional(),
+	fileMimeType: z.string().optional(),
 	redirectUrl: z.boolean().optional().default(false),
 	language: z.string().optional().default("text"),
 	burnAfterRead: z.boolean().optional(),
