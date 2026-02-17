@@ -57,7 +57,9 @@
         "anonymus": "Anonymous",
         "write_comment": "Write a comment...",
         "post_comment": "Post Comment",
-        "comment_restricted": "You don't have permission to comment on this snippet."
+        "comment_restricted": "You don't have permission to comment on this snippet.",
+        "fast_redirection": "Fast Redirection",
+        "fast_redirection_desc": "Directly opens the content when the link is reached."
     },
     "profile": {
         "title": "Your Profile",
@@ -98,6 +100,8 @@
         "paste_system_id": "Auto-generated ID",
         "paste_dynamic_id_desc": "Choose your own unique URL",
         "paste_system_id_desc": "Get a random URL automatically",
+        "paste_advanced": "Advanced Creation",
+        "paste_advanced_desc": "Configure privacy, password, and more",
         "expire_options": {
             "one_time_snippet": "One Time Snippet",
             "expire_in_1_hour": "Expire In 1 Hour",

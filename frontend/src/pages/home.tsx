@@ -11,7 +11,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { useAuth } from "@/context/AuthContext";
-import { useFileUpload } from "@/hooks/use-file-upload";
+import { useFileUpload, type UploadState } from "@/hooks/use-file-upload";
 import type { IdType } from "@/types";
 import { CONFIG } from "@/configurations";
 import { useLanguageDetection } from "@/hooks/use-language-detection";
@@ -58,6 +58,8 @@ const HomePage = () => {
 	>("text");
 	const [language, setLanguage] = useState(CONFIG.DEFAULTS.LANGUAGE);
 	const { isDetecting, detectLanguage } = useLanguageDetection();
+	const uploadPromiseRef = useRef<Promise<UploadState> | null>(null);
+	const [pendingFile, setPendingFile] = useState<File | null>(null);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [isCustomExpiryDialogOpen, setIsCustomExpiryDialogOpen] =
 		useState(false);
@@ -81,6 +83,7 @@ const HomePage = () => {
 		fileSize,
 		fileMimeType,
 		uploadFile,
+		setFile: setFileUpload,
 		reset: resetFileUpload,
 	} = useFileUpload();
 
@@ -112,19 +115,52 @@ const HomePage = () => {
 			const finalEditPermission =
 				options.editPermission ?? editPermission;
 
+			let currentFileUrl = fileUrl;
+			let currentFileName = fileName;
+			let currentFileSize = fileSize;
+			let currentFileMimeType = fileMimeType;
+
+			// Trigger file upload if a file is selected but not yet uploaded
+			if (contentType === "file" && pendingFile && !currentFileUrl) {
+				const uploadResult = await uploadFile(pendingFile);
+				if (uploadResult.error) {
+					throw new Error(uploadResult.error);
+				}
+				currentFileUrl = uploadResult.fileUrl;
+				currentFileName = uploadResult.fileName;
+				currentFileSize = uploadResult.fileSize;
+				currentFileMimeType = uploadResult.fileMimeType;
+				setPendingFile(null); // Clear pending file once uploaded
+			} else if (
+				contentType === "file" &&
+				isUploading &&
+				uploadPromiseRef.current
+			) {
+				// Wait for ongoing file upload if it's already in progress (e.g. from a previous click)
+				const uploadResult = await uploadPromiseRef.current;
+				if (uploadResult.error) {
+					throw new Error(uploadResult.error);
+				}
+				currentFileUrl = uploadResult.fileUrl;
+				currentFileName = uploadResult.fileName;
+				currentFileSize = uploadResult.fileSize;
+				currentFileMimeType = uploadResult.fileMimeType;
+			}
+
 			const data = await apiHelpers.submitPaste({
 				content:
 					contentType === "file"
-						? fileUrl || fileName || "File upload"
+						? currentFileUrl || currentFileName || "File upload"
 						: textValue,
 				expiresTime,
 				idType: selectedIdType,
 				customId: providedId,
 				contentMode: contentType,
-				fileUrl: contentType === "file" ? fileUrl : undefined,
-				fileName: contentType === "file" ? fileName : undefined,
-				fileSize: contentType === "file" ? fileSize : undefined,
-				fileMimeType: contentType === "file" ? fileMimeType : undefined,
+				fileUrl: contentType === "file" ? currentFileUrl : undefined,
+				fileName: contentType === "file" ? currentFileName : undefined,
+				fileSize: contentType === "file" ? currentFileSize : undefined,
+				fileMimeType:
+					contentType === "file" ? currentFileMimeType : undefined,
 				redirectUrl:
 					contentType === "link" ||
 					(contentType === "file" && options.redirectUrl === true),
@@ -244,11 +280,14 @@ const HomePage = () => {
 					setIsCustomExpiryDialogOpen={setIsCustomExpiryDialogOpen}
 					hasContent={
 						contentType === "file"
-							? !!fileUrl
+							? !!fileName
 							: textValue.length > 0
 					}
 					handleCreationClick={handleCreationClick}
 					handleQuickPaste={handleQuickPaste}
+					isSubmitting={isSubmitting}
+					isUploading={isUploading}
+					uploadProgress={uploadProgress}
 				/>
 
 				<div className="flex flex-wrap items-center gap-3">
@@ -299,6 +338,8 @@ const HomePage = () => {
 				fastRedirect={fastRedirect}
 				setFastRedirect={setFastRedirect}
 				contentType={contentType}
+				isUploading={isUploading}
+				uploadProgress={uploadProgress}
 			/>
 
 			<CustomExpiryDialog
@@ -324,17 +365,18 @@ const HomePage = () => {
 				handleEditorWillMount={handleEditorWillMount}
 				handleEditorMount={handleEditorMount}
 				handlePaste={handlePaste}
-				onFileSelect={async (file) => {
-					const result = await uploadFile(file);
-					if (result.error) {
-						toast.error(result.error);
-					}
+				onFileSelect={(file) => {
+					setPendingFile(file);
+					setFileUpload(file);
 				}}
 				uploadProgress={uploadProgress}
 				isUploading={isUploading}
 				uploadedFileName={fileName}
 				uploadError={uploadError}
-				onClearFile={resetFileUpload}
+				onClearFile={() => {
+					resetFileUpload();
+					setPendingFile(null);
+				}}
 			/>
 		</div>
 	);

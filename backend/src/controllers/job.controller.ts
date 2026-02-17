@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import Paste from "@/models/Paste.js";
 import configurations from "@/config/configurations.js";
+import { deleteFileFromStorage } from "@/lib/supabase.js";
 
 export const cleanupExpiredPastes = async (req: Request, res: Response) => {
 	try {
@@ -28,7 +29,21 @@ export const cleanupExpiredPastes = async (req: Request, res: Response) => {
 
 		const deletedIds = expiredPastes.map((p) => p.id);
 
-		if (deletedIds.length > 0) {
+		if (expiredPastes.length > 0) {
+			// Delete files from storage
+			for (const paste of expiredPastes) {
+				if (paste.fileUrl) {
+					try {
+						await deleteFileFromStorage(paste.fileUrl);
+					} catch (storageError) {
+						console.error(
+							`Error deleting file for paste ${paste.id}:`,
+							storageError,
+						);
+					}
+				}
+			}
+
 			await Paste.deleteMany({
 				_id: { $in: expiredPastes.map((p) => p._id) },
 			});

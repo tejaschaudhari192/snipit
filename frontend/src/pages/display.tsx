@@ -120,6 +120,7 @@ const DisplayPage = () => {
 					!!data.password || !!data.isPasswordProtected,
 				);
 				setExpiresTime(data.expiresTime || "1d");
+				setCustomId(data.id || "");
 				setLoading(false);
 				window.history.replaceState({}, document.title);
 				return;
@@ -145,9 +146,6 @@ const DisplayPage = () => {
 						if (!/^https?:\/\//i.test(url)) url = "https://" + url;
 						window.location.href = url;
 						return;
-					} else if (detectedType === "file" && data.fileUrl) {
-						window.location.href = data.fileUrl;
-						return;
 					}
 				}
 				setVisibility(data.visibility || "public");
@@ -160,6 +158,10 @@ const DisplayPage = () => {
 					!!data.password || !!data.isPasswordProtected,
 				);
 				setExpiresTime(data.expiresTime || "1d");
+				setLanguage(data.language || "text");
+				setUpdatedContent(data.content);
+				setCustomId(data.id || "");
+				setPaste(data);
 				if (!user) {
 					saveToLocal(data);
 				}
@@ -170,7 +172,7 @@ const DisplayPage = () => {
 		}
 		loadData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [id]);
+	}, [id, apiHelpers, location.state, user]);
 
 	const handleLanguageDetection = async (content: string) => {
 		const result = await detectLanguage(content);

@@ -69,6 +69,8 @@ interface PasteDialogProps {
 	isSubmitting: boolean;
 	onSubmit: () => void;
 	contentType: "text" | "code" | "link" | "file";
+	isUploading?: boolean;
+	uploadProgress?: number;
 }
 
 export const PasteDialog = ({
@@ -98,6 +100,8 @@ export const PasteDialog = ({
 	fastRedirect,
 	setFastRedirect,
 	contentType,
+	isUploading = false,
+	uploadProgress = 0,
 }: PasteDialogProps) => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
@@ -627,7 +631,11 @@ export const PasteDialog = ({
 						className="px-8 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all font-bold"
 					>
 						{isSubmitting
-							? t("common.submitting", "Submitting...")
+							? contentType === "file" &&
+								isUploading &&
+								uploadProgress < 100
+								? t("home.file_uploading", "Uploading...")
+								: t("common.submitting", "Submitting...")
 							: t("home.dynamic_id_dialog.submit")}
 					</Button>
 				</DialogFooter>

@@ -10,6 +10,7 @@ import {
 	extractTokenFromRequest,
 } from "@/lib/auth.utils.js";
 import bcrypt from "bcryptjs";
+import { deleteFileFromStorage } from "@/lib/supabase.js";
 
 class PasteController {
 	constructor(
@@ -284,12 +285,18 @@ class PasteController {
 			}
 
 			if (result.expiresAt && new Date() > result.expiresAt) {
+				if (result.fileUrl) {
+					await deleteFileFromStorage(result.fileUrl);
+				}
 				await this.pasteService.deletePaste(id!);
 				this.logger.info("Paste expired and deleted:", id);
 				return res.status(404).json({ error: "Paste expired" });
 			}
 
 			if (result.burnAfterRead && result.views > 3) {
+				if (result.fileUrl) {
+					await deleteFileFromStorage(result.fileUrl);
+				}
 				await this.pasteService.deletePaste(id!);
 				this.logger.info(`Paste burned after 3rd public read: ${id} `);
 			}
@@ -368,6 +375,9 @@ class PasteController {
 				});
 			}
 
+			if (existingPaste.fileUrl) {
+				await deleteFileFromStorage(existingPaste.fileUrl);
+			}
 			const result = await this.pasteService.deletePaste(id!);
 			this.logger.info("Deleting paste:", id);
 			return res.json(result);

@@ -22,6 +22,9 @@ interface MainToolbarProps {
 	hasContent: boolean;
 	handleCreationClick: () => void;
 	handleQuickPaste: () => void;
+	isSubmitting?: boolean;
+	isUploading?: boolean;
+	uploadProgress?: number;
 }
 
 export const MainToolbar = ({
@@ -33,8 +36,21 @@ export const MainToolbar = ({
 	hasContent,
 	handleCreationClick,
 	handleQuickPaste,
+	isSubmitting = false,
+	isUploading = false,
+	uploadProgress = 0,
 }: MainToolbarProps) => {
 	const { t } = useTranslation();
+
+	const renderButtonText = () => {
+		if (isSubmitting) {
+			if (contentType === "file" && isUploading && uploadProgress < 100) {
+				return t("home.file_uploading", "Uploading...");
+			}
+			return t("common.submitting", "Submitting...");
+		}
+		return t("home.paste_button");
+	};
 
 	return (
 		<div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
@@ -53,18 +69,18 @@ export const MainToolbar = ({
 
 				<ButtonGroup className="shadow-lg shadow-primary/20 overflow-hidden">
 					<Button
-						disabled={!hasContent}
+						disabled={!hasContent || isSubmitting}
 						size="lg"
-						className="px-6 h-11 font-bold rounded-r-none border-r-0 hover:bg-primary/90 transition-colors"
+						className="px-6 h-11 font-bold rounded-r-none border-r-0 hover:bg-primary/90 transition-colors min-w-[120px]"
 						onClick={handleQuickPaste}
 					>
-						{t("home.paste_button")}
+						{renderButtonText()}
 					</Button>
 					<div className="w-[1px] bg-primary-foreground/20 self-stretch my-2" />
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button
-								disabled={!hasContent}
+								disabled={!hasContent || isSubmitting}
 								size="icon"
 								className="h-11 w-10 rounded-l-none border-l-0 hover:bg-primary/90 transition-colors"
 							>

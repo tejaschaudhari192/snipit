@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { CONFIG } from "@/configurations";
 
-interface UploadState {
+export interface UploadState {
 	isUploading: boolean;
 	progress: number;
 	error: string | null;
@@ -67,10 +67,6 @@ export const useFileUpload = () => {
 			const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
 			const filePath = `${timestamp}_${sanitizedName}`;
 
-			// Supabase doesn't provide upload progress natively,
-			// so we simulate a progress update before upload
-			setUploadState((prev) => ({ ...prev, progress: 30 }));
-
 			const { error: uploadError } = await supabase.storage
 				.from(CONFIG.SUPABASE_STORAGE_BUCKET)
 				.upload(filePath, file, {
@@ -92,8 +88,6 @@ export const useFileUpload = () => {
 				setUploadState(errorState);
 				return errorState;
 			}
-
-			setUploadState((prev) => ({ ...prev, progress: 80 }));
 
 			const {
 				data: { publicUrl },
@@ -127,6 +121,18 @@ export const useFileUpload = () => {
 		}
 	}, []);
 
+	const setFile = useCallback((file: File) => {
+		setUploadState((prev) => ({
+			...prev,
+			fileName: file.name,
+			fileSize: file.size,
+			fileMimeType: file.type,
+			error: null,
+			fileUrl: null,
+			progress: 0,
+		}));
+	}, []);
+
 	const reset = useCallback(() => {
 		setUploadState({
 			isUploading: false,
@@ -142,6 +148,7 @@ export const useFileUpload = () => {
 	return {
 		...uploadState,
 		uploadFile,
+		setFile,
 		reset,
 		isConfigured: isSupabaseConfigured,
 	};
