@@ -4,10 +4,10 @@ export type UserData = {
 	_id: string;
 	username: string;
 	email: string;
-	password?: string;
+	password?: string | undefined;
 	createdAt: Date;
-	resetPasswordToken?: string;
-	resetPasswordExpires?: Date;
+	resetPasswordToken?: string | undefined;
+	resetPasswordExpires?: Date | undefined;
 };
 
 export type IUser = Document & UserData;
