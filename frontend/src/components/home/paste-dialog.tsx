@@ -30,7 +30,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
-import type { User } from "@/context/AuthContext";
+import type { User } from "@/types";
 import { Switch } from "@/components/ui/switch";
 
 interface PasteDialogProps {
