@@ -1,5 +1,5 @@
 import pasteModel from "@/models/Paste.js";
-import type { PasteData } from "@/types/index.js";
+import type { PasteData, CommentData } from "@/types/index.js";
 
 class PasteService {
 	async savePaste(pastedata: PasteData) {
@@ -96,15 +96,7 @@ class PasteService {
 			.find({ owner: ownerId })
 			.sort({ createdAt: -1 });
 	}
-	async addComment(
-		id: string,
-		comment: {
-			id: string;
-			author: string;
-			content: string;
-			userId?: string | undefined;
-		},
-	) {
+	async addComment(id: string, comment: CommentData) {
 		return await pasteModel.findOneAndUpdate(
 			{ id },
 			{ $push: { comments: comment } },

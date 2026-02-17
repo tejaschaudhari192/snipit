@@ -171,7 +171,6 @@ const DisplayPage = () => {
 			setLoading(false);
 		}
 		loadData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id, apiHelpers, location.state, user]);
 
 	const handleLanguageDetection = async (content: string) => {

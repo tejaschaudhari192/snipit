@@ -35,9 +35,9 @@ export const deleteFileFromStorage = async (fileUrl: string) => {
 			return;
 		}
 
-		const filePath = urlParts[1];
+		const filePath = urlParts[1]!;
 		const { error } = await supabase.storage
-			.from(bucket as string)
+			.from(bucket)
 			.remove([filePath]);
 
 		if (error) {

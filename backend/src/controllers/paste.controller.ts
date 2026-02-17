@@ -11,6 +11,7 @@ import {
 } from "@/lib/auth.utils.js";
 import bcrypt from "bcryptjs";
 import { deleteFileFromStorage } from "@/lib/supabase.js";
+import type { AuthRequest } from "@/middleware/auth.middleware.js";
 
 class PasteController {
 	constructor(
@@ -18,13 +19,14 @@ class PasteController {
 		private readonly logger: Logger,
 	) {}
 
-	private getUserId(req: Request): string | null {
+	private getUserId(req: Request | AuthRequest): string | null {
+		if ("user" in req && req.user) return req.user._id.toString();
 		const token = extractTokenFromRequest(req);
 		return token ? getUserIdFromToken(token) : null;
 	}
 
 	private async getUserRole(
-		req: Request,
+		req: AuthRequest,
 		paste: IPaste,
 	): Promise<"admin" | "editor" | "viewer" | "commenter"> {
 		const userId = this.getUserId(req);
@@ -79,7 +81,7 @@ class PasteController {
 		return userRole;
 	}
 
-	async createPaste(req: Request, res: Response, next: NextFunction) {
+	async createPaste(req: AuthRequest, res: Response, next: NextFunction) {
 		try {
 			const createdAt = new Date(Date.now());
 			const {
@@ -274,7 +276,7 @@ class PasteController {
 		}
 	}
 
-	async getPaste(req: Request, res: Response, next: NextFunction) {
+	async getPaste(req: AuthRequest, res: Response, next: NextFunction) {
 		const id = req.params.id;
 		try {
 			const result = await this.pasteService.incrementViews(id!);
@@ -359,7 +361,7 @@ class PasteController {
 		}
 	}
 
-	async deletePaste(req: Request, res: Response, next: NextFunction) {
+	async deletePaste(req: AuthRequest, res: Response, next: NextFunction) {
 		const id = req.params.id;
 		try {
 			const existingPaste = await this.pasteService.getPasteById(id!);
@@ -387,7 +389,7 @@ class PasteController {
 		}
 	}
 
-	async updatePaste(req: Request, res: Response, next: NextFunction) {
+	async updatePaste(req: AuthRequest, res: Response, next: NextFunction) {
 		const id = req.params.id;
 		const { content, redirectUrl, language } = req.body;
 		let {
@@ -489,7 +491,7 @@ class PasteController {
 		}
 	}
 
-	async getUserPastes(req: Request, res: Response, next: NextFunction) {
+	async getUserPastes(req: AuthRequest, res: Response, next: NextFunction) {
 		try {
 			const userId = this.getUserId(req);
 
@@ -505,7 +507,7 @@ class PasteController {
 		}
 	}
 
-	async verifyPassword(req: Request, res: Response, next: NextFunction) {
+	async verifyPassword(req: AuthRequest, res: Response, next: NextFunction) {
 		const id = req.params.id;
 		const { password } = req.body;
 
@@ -533,7 +535,7 @@ class PasteController {
 		}
 	}
 
-	async addComment(req: Request, res: Response, next: NextFunction) {
+	async addComment(req: AuthRequest, res: Response, next: NextFunction) {
 		const id = req.params.id;
 		const { content, author } = req.body;
 

@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import axios from "axios";
 import { CONFIG } from "@/configurations";
+import type { PasteData, User } from "@/types";
 
 const api = axios.create({
 	baseURL: CONFIG.API_BASE_URL,
@@ -12,7 +13,7 @@ const api = axios.create({
 
 export const useApiHelpers = () => {
 	return useMemo(() => {
-		const getServerStatus = async () => {
+		const getServerStatus = async (): Promise<boolean> => {
 			try {
 				const response = await api.get("/");
 				return response.status == 200;
@@ -44,12 +45,12 @@ export const useApiHelpers = () => {
 			}[];
 			publicRole?: "viewer" | "editor" | "commenter";
 			allowComments?: boolean;
-		}) => {
+		}): Promise<PasteData> => {
 			const response = await api.post("/", data);
 			return response.data;
 		};
 
-		const getPaste = async (id: string) => {
+		const getPaste = async (id: string): Promise<PasteData | null> => {
 			try {
 				const response = await api.get("/" + id);
 				const data = response.data;
@@ -59,7 +60,9 @@ export const useApiHelpers = () => {
 			}
 		};
 
-		const deletePaste = async (id: string) => {
+		const deletePaste = async (
+			id: string,
+		): Promise<{ acknowledged: boolean; deletedCount: number }> => {
 			const response = await api.delete("/" + id);
 			const data = response.data;
 			return data;
@@ -82,7 +85,7 @@ export const useApiHelpers = () => {
 			publicRole?: "viewer" | "editor" | "commenter",
 			allowComments?: boolean,
 			expiresTime?: string,
-		) => {
+		): Promise<PasteData> => {
 			const response = await api.put("/" + id, {
 				content,
 				redirectUrl,
@@ -101,22 +104,29 @@ export const useApiHelpers = () => {
 			return data;
 		};
 
-		const detectLanguage = async (content: string) => {
+		const detectLanguage = async (
+			content: string,
+		): Promise<{ language: string }> => {
 			const response = await api.post("/detect-language", { content });
 			return response.data;
 		};
 
-		const getUserPastes = async () => {
+		const getUserPastes = async (): Promise<PasteData[]> => {
 			const response = await api.get("/user/pastes");
 			return response.data;
 		};
 
-		const updateMe = async (data: { username: string }) => {
+		const updateMe = async (data: {
+			username: string;
+		}): Promise<User & { message: string }> => {
 			const response = await api.put("/auth/me", data);
 			return response.data;
 		};
 
-		const verifyPassword = async (id: string, password: string) => {
+		const verifyPassword = async (
+			id: string,
+			password: string,
+		): Promise<PasteData> => {
 			const response = await api.post(`/${id}/verify-password`, {
 				password,
 			});
@@ -127,7 +137,7 @@ export const useApiHelpers = () => {
 			id: string,
 			content: string,
 			author?: string,
-		) => {
+		): Promise<PasteData> => {
 			const response = await api.post(`/${id}/comment`, {
 				content,
 				author,
@@ -146,13 +156,20 @@ export const useApiHelpers = () => {
 			updateMe,
 			verifyPassword,
 			addComment,
-			forgotPassword: async (email: string) => {
+			forgotPassword: async (
+				email: string,
+			): Promise<{ success: boolean; data: string }> => {
 				const response = await api.post("/auth/forgotpassword", {
 					email,
 				});
 				return response.data;
 			},
-			resetPassword: async (token: string, password: string) => {
+			resetPassword: async (
+				token: string,
+				password: string,
+			): Promise<
+				User & { success: boolean; token: string; message?: string }
+			> => {
 				const response = await api.put(`/auth/resetpassword/${token}`, {
 					password,
 				});

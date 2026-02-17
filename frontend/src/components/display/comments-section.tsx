@@ -8,7 +8,7 @@ import { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { PasteData, Comment } from "@/types";
+import type { PasteData, CommentData } from "@/types";
 import { useApiHelpers } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 
@@ -89,7 +89,7 @@ export const CommentsSection = ({
 			<ScrollArea className="flex-1 min-h-0 pr-4 -mr-3">
 				<div className="space-y-3 pr-3">
 					{paste.comments && paste.comments.length > 0 ? (
-						paste.comments.map((comment: Comment) => (
+						paste.comments.map((comment: CommentData) => (
 							<div
 								key={comment.id}
 								className="group flex gap-3 p-3 rounded-lg border bg-card/50 shadow-sm transition-all hover:bg-card hover:shadow-md"

@@ -1,11 +1,24 @@
 import type { Document } from "mongoose";
 
+export type UserData = {
+	_id: string;
+	username: string;
+	email: string;
+	password?: string;
+	createdAt: Date;
+	resetPasswordToken?: string;
+	resetPasswordExpires?: Date;
+};
+
+export type IUser = Document & UserData;
+
 export type CommentData = {
 	id: string;
 	author: string;
 	content: string;
 	createdAt: Date;
-	userId?: string;
+	userId?: string | undefined;
+	user?: UserData | undefined;
 };
 
 export type PasteData = {
@@ -24,6 +37,7 @@ export type PasteData = {
 	expiresTime?: string | undefined;
 	views?: number | undefined;
 	owner?: string | undefined;
+	ownerData?: UserData | undefined;
 	visibility?: ("public" | "private" | "shared") | undefined;
 	allowedUsers?: string[] | undefined;
 	password?: string | undefined;
@@ -52,6 +66,7 @@ export type IPaste = Document & {
 	expiresTime?: string | undefined;
 	views: number;
 	owner?: string | undefined; // User ID
+	ownerData?: UserData | undefined; // Populated User
 	visibility?: ("public" | "private" | "shared") | undefined;
 	allowedUsers?: string[] | undefined;
 	password?: string | undefined;
@@ -62,16 +77,4 @@ export type IPaste = Document & {
 	publicRole?: "viewer" | "editor" | "commenter" | undefined;
 	allowComments?: boolean | undefined;
 	comments?: CommentData[] | undefined;
-};
-
-// export type IPaste = Document & PasteData; // Removed duplicate
-
-export type IUser = Document & {
-	_id: string;
-	username: string;
-	email: string;
-	password?: string | undefined;
-	createdAt: Date;
-	resetPasswordToken?: string | undefined;
-	resetPasswordExpires?: Date | undefined;
 };
