@@ -47,6 +47,15 @@ export const ContentTypeSelector = ({
 						{t("home.tab_code")}
 					</span>
 				</TabsTrigger>
+				<TabsTrigger
+					value="link"
+					className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
+				>
+					<Link className="h-4 w-4 shrink-0" />
+					<span className="whitespace-nowrap">
+						{t("home.tab_link")}
+					</span>
+				</TabsTrigger>
 				{showFileOption && (
 					<TabsTrigger
 						value="file"
@@ -58,15 +67,6 @@ export const ContentTypeSelector = ({
 						</span>
 					</TabsTrigger>
 				)}
-				<TabsTrigger
-					value="link"
-					className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
-				>
-					<Link className="h-4 w-4 shrink-0" />
-					<span className="whitespace-nowrap">
-						{t("home.tab_link")}
-					</span>
-				</TabsTrigger>
 			</TabsList>
 		</Tabs>
 	);

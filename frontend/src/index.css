@@ -170,6 +170,40 @@
 		);
 	}
 
+	@keyframes progress-gradient-flow {
+		0% {
+			background-position: 0% 50%;
+		}
+
+		50% {
+			background-position: 100% 50%;
+		}
+
+		100% {
+			background-position: 0% 50%;
+		}
+	}
+
+	.animate-progress-gradient {
+		background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899, #6366f1);
+		background-size: 200% 200%;
+		animation: progress-gradient-flow 3s ease infinite;
+	}
+
+	@keyframes shimmer {
+		from {
+			transform: translateX(-100%);
+		}
+
+		to {
+			transform: translateX(100%);
+		}
+	}
+
+	.animate-shimmer {
+		animation: shimmer 2s infinite;
+	}
+
 	.animate-moving-border {
 		animation: moving-border 3.5s linear infinite;
 	}

@@ -62,6 +62,19 @@ export const useFileUpload = () => {
 			fileMimeType: file.type,
 		});
 
+		// Simulate progress for perceived performance
+		const progressInterval = setInterval(() => {
+			setUploadState((prev) => {
+				if (!prev.isUploading || prev.progress >= 95) return prev;
+				// Slowly increase progress up to 95%
+				const increment = Math.max(0.5, (95 - prev.progress) / 15);
+				return {
+					...prev,
+					progress: Math.min(95, prev.progress + increment),
+				};
+			});
+		}, 200);
+
 		try {
 			const timestamp = Date.now();
 			const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
@@ -74,6 +87,8 @@ export const useFileUpload = () => {
 					upsert: false,
 					contentType: file.type,
 				});
+
+			clearInterval(progressInterval);
 
 			if (uploadError) {
 				const errorState: UploadState = {
@@ -107,6 +122,7 @@ export const useFileUpload = () => {
 			setUploadState(successState);
 			return successState;
 		} catch (error) {
+			clearInterval(progressInterval);
 			const errorState: UploadState = {
 				isUploading: false,
 				progress: 0,
