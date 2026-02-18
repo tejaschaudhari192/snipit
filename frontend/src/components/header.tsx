@@ -22,8 +22,9 @@ import ThemeTogglePositionsDemo from "@/components/theme-toggle";
 import { LanguageSwitcher } from "./language-switcher";
 import icon from "@/assets/brand/icon.png";
 import { useAuth } from "@/context/AuthContext";
-import { User, LogOut } from "lucide-react";
+import { User, LogOut, Search } from "lucide-react";
 import { toast } from "sonner";
+import { JumpToDialog } from "./jump-to-dialog";
 
 interface HeaderProps {
 	className?: string;
@@ -100,6 +101,7 @@ const Header = ({ className }: HeaderProps) => {
 	const id = path.includes("history") || path.includes("about") ? null : path;
 	const { t } = useTranslation();
 	const [isQRDialogOpen, setIsQRDialogOpen] = useState(false);
+	const [isJumpToDialogOpen, setIsJumpToDialogOpen] = useState(false);
 
 	const [url, setUrl] = useState(window.location.href);
 
@@ -174,6 +176,15 @@ const Header = ({ className }: HeaderProps) => {
 							{t("header.history")}
 						</Button>
 					</Link>
+					<Button
+						variant="ghost"
+						size="sm"
+						className="h-8 text-xs font-semibold gap-1.5"
+						onClick={() => setIsJumpToDialogOpen(true)}
+					>
+						<Search className="h-3.5 w-3.5" />
+						{t("header.jump_to")}
+					</Button>
 				</nav>
 
 				<LanguageSwitcher className="w-[140px] h-9" />
@@ -245,6 +256,14 @@ const Header = ({ className }: HeaderProps) => {
 								<span>{t("header.history")}</span>
 							</Link>
 						</DropdownMenuItem>
+						<DropdownMenuItem
+							className="rounded-md"
+							onClick={() => setIsJumpToDialogOpen(true)}
+						>
+							<div className="flex items-center gap-2 py-2">
+								<span>{t("header.jump_to")}</span>
+							</div>
+						</DropdownMenuItem>
 						{path.length > 1 && (
 							<DropdownMenuItem asChild className="rounded-md">
 								<Link
@@ -273,6 +292,10 @@ const Header = ({ className }: HeaderProps) => {
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</div>
+			<JumpToDialog
+				isOpen={isJumpToDialogOpen}
+				onOpenChange={setIsJumpToDialogOpen}
+			/>
 			<Dialog open={isQRDialogOpen} onOpenChange={setIsQRDialogOpen}>
 				<DialogContent className="sm:max-w-md">
 					<DialogHeader>

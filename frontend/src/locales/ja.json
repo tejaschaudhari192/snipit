@@ -1,311 +1,315 @@
 {
-	"header": {
-		"about": "について",
-		"history": "履歴",
-		"new_snippet": "新しいスニペット",
-		"copied": "コピーしました！",
-		"qr_button": "QRコード",
-		"profile": "プロフィール",
-		"logout": "ログアウト",
-		"login": "ログイン",
-		"signup": "サインアップ",
-		"theme": "テーマ",
-		"language": "言語",
-		"qr_scan_desc": "別のデバイスでスニペットを開くには、このコードをスキャンしてください。"
-	},
-	"common": {
-		"visibility": "公開設定",
-		"public": "公開",
-		"private": "非公開",
-		"shared": "共有",
-		"auth_required": "認証が必要です",
-		"auth_required_desc": "{{visibility}} スニペットを作成するにはアカウントが必要です。",
-		"allowed_users": "許可されたユーザー",
-		"allowed_users_placeholder": "メールアドレスを入力...",
-		"password": "パスワード（オプション）",
-		"password_placeholder": "パスワードを入力...",
-		"submitting": "送信中...",
-		"password_protected": "パスワード保護されています",
-		"enter_password_desc": "このスニペットはパスワードで保護されています。閲覧するにはパスワードを入力してください。",
-		"unlock": "スニペットのロック解除",
-		"access_control": "アクセスレベル",
-		"commenter": "コメント可能",
-		"open_discussion": "ディスカッションを開く",
-		"snippet": "スニペット",
-		"discussion": "ディスカッション",
-		"discussion_title": "スニペットのディスカッション",
-		"discussion_desc": "このスニペットについて意見を共有したり、他の人と協力したりしましょう。",
-		"no_comments": "コメントはまだありません",
-		"share_with_people": "共同作業者を追加",
-		"people_with_access": "アクセス可能なユーザー",
-		"add_people_placeholder": "メールで追加...",
-		"role": "権限",
-		"viewer": "閲覧可能",
-		"editor": "編集可能",
-		"admin": "フルアクセス",
-		"add": "追加",
-		"remove": "削除",
-		"general_access": "一般的なアクセス",
-		"anyone_with_link": "リンクを知っている全員",
-		"restricted": "制限付き（非公開）",
-		"manage_access": "アクセス権の管理",
-		"your_name": "お名前（任意）",
-		"anonymus": "匿名",
-		"write_comment": "コメントを書く...",
-		"post_comment": "コメントを投稿",
-		"comment_restricted": "このスニペットにコメントする権限がありません。"
-	},
-	"profile": {
-		"title": "ユーザープロフィール",
-		"account_info": "アカウント情報",
-		"username": "ユーザー名",
-		"email": "メールアドレス",
-		"joined": "登録日",
-		"edit_profile": "プロフィールを編集",
-		"save_profile": "プロフィールを保存",
-		"snippets_count": "スニペット",
-		"no_snippets": "スニペットはまだありません",
-		"no_snippets_desc": "共有されたコードの傑作がここに表示されます！",
-		"create_first": "最初のスニペットを作成",
-		"your_snippets": "あなたのスニペット",
-		"total_views": "総閲覧数",
-		"most_used_language": "最も使用されている言語",
-		"activity": "アカウントアクティビティ",
-		"access_denied": "アクセスが拒否されました",
-		"login_required": "プロフィールを表示してスニペットを管理するには、ログインしてください。",
-		"loading_pastes": "スニペットを読み込んでいます...",
-		"profile_updated": "プロフィールが更新されました",
-		"view_details": "詳細を見る",
-		"views": "回閲覧",
-		"expired": "期限切れ",
-		"visibility": {
-			"public": "公開",
-			"private": "非公開",
-			"shared": "共有"
-		},
-		"not_applicable": "該当なし"
-	},
-	"home": {
-		"select_expire_time": "有効期限を選択",
-		"enter_snippet_placeholder": "ここにスニペットを入力...",
-		"paste_button": "貼り付け",
-		"paste_dynamic_id": "ダイナミックIDで貼り付け",
-		"paste_system_id": "システムIDで貼り付け",
-		"paste_dynamic_id_desc": "独自のIDを選択",
-		"paste_system_id_desc": "IDを自動生成",
-		"expire_options": {
-			"one_time_snippet": "一回限りのスニペット",
-			"expire_in_1_hour": "1時間で期限切れ",
-			"expire_in_1_day": "1日で期限切れ",
-			"expire_in_1_week": "1週間で期限切れ",
-			"expire_in_1_month": "1ヶ月で期限切れ",
-			"expire_in_1_year": "1年で期限切れ",
-			"custom": "カスタムの有効期限"
-		},
-		"tab_text": "プレーンテキスト",
-		"tab_code": "コード",
-		"tab_link": "リンクを短縮",
-		"link_placeholder": "短縮するURLを入力してください（例：https://example.xyz）",
-		"link_desc": "以下の長いURLを貼り付けて、短縮リダイレクトリンクを作成します。",
-		"link_features": {
-			"fast": "高速リダイレクト",
-			"custom": "カスタムスラッグ"
-		},
-		"auto_detecting": "自動検出中...",
-		"detected_language": "検出された言語: {{language}}",
-		"dynamic_id_dialog": {
-			"title": "カスタムIDの入力",
-			"description": "一意の識別子を選択してください。これはスニペットのURLに使用されます。",
-			"placeholder": "カスタムIDを入力してください...",
-			"preview": "プレビュー:",
-			"cancel": "キャンセル",
-			"submit": "スニペットを作成"
-		}
-	},
-	"display": {
-		"expires_in": "有効期限:",
-		"edit_button": "編集",
-		"copy_button": "コピー",
-		"delete_button": "削除",
-		"save_button": "変更を保存",
-		"burn_after_read_warning": "警告：これは一回限りのスニペットであり、読まれた後に削除されます。",
-		"views_remaining_plural": "(残り {{count}} 回の閲覧可能)",
-		"views_remaining_singular": "(残り 1 回の閲覧可能)",
-		"final_view": "(最後の閲覧)"
-	},
-	"history": {
-		"title": "履歴",
-		"plain_text_snippet": "プレーンテキストのスニペット",
-		"code_snippet": "コードスニペット",
-		"created_ago": "作成",
-		"clear_history": "履歴を消去",
-		"clear_confirm": "すべての履歴を消去しますか？",
-		"clear_action": "消去",
-		"cancel": "キャンセル",
-		"cleared_success": "履歴が消去されました",
-		"no_history_title": "履歴はまだありません",
-		"no_history_desc": "スニペットの履歴はここに表示されます",
-		"create_first": "最初のスニペットを作成",
-		"snippets_saved": "個のスニペットを保存",
-		"snippet_saved": "個のスニペットを保存",
-		"fetching_history": "履歴を取得中...",
-		"expired": "期限切れ",
-		"view_snippet": "スニペットを表示",
-		"sync_failed": "アカウントのスニペットの同期に失敗しました"
-	},
-	"messages": {
-		"snippet_created": "スニペットが正常に作成されました！",
-		"snippet_failed": "スニペットの作成に失敗しました",
-		"id_conflict": "このIDは既に使用されています。別のIDを試してください。",
-		"detected_language": "検出された言語: {{language}}",
-		"delete_confirm": "このスニペットを削除してもよろしいですか？",
-		"snippet_deleted": "スニペットが削除されました",
-		"delete_failed": "スニペットの削除に失敗しました",
-		"action_cancelled": "アクションがキャンセルされました",
-		"snippet_updated": "スニペットが正常に更新されました",
-		"update_failed": "スニペットの更新に失敗しました",
-		"password_incorrect": "パスワードが間違っています"
-	},
-	"about_page": {
-		"title": "Snipitについて",
-		"subtitle": "コード共有をシンプルかつ美しくすることを信じる2人の開発者による情熱的なプロジェクト。",
-		"features_title": "強力な機能",
-		"features_subtitle": "シームレスなコード共有に必要なすべて",
-		"features": {
-			"syntax_highlighting": {
-				"title": "シンタックスハイライト",
-				"desc": "15以上のプログラミング言語をサポートした美しいコード表示。"
-			},
-			"ai_detection": {
-				"title": "AI言語検出",
-				"desc": "AI技術を使用してプログラミング言語を自動的に検出。"
-			},
-			"custom_ids": {
-				"title": "カスタムURL",
-				"desc": "簡単なスニペット共有のための記憶に残るカスタムURLを作成。"
-			},
-			"expiration": {
-				"title": "有効期限制御",
-				"desc": "スニペットを1時間から1年後に期限切れに設定、または永久に保持、またはカスタム日付を選択。"
-			},
-			"multi_language": {
-				"title": "多言語UI",
-				"desc": "英語、ドイツ語、ヒンディー語、日本語、マラーティー語で利用可能。"
-			},
-			"dark_mode": {
-				"title": "ダークモード",
-				"desc": "美しいダークテーマオプションで目に優しい。"
-			},
-			"open_source": {
-				"title": "オープンソース",
-				"desc": "無料でオープンソース。貢献、フォーク、セルフホスト可能。"
-			},
-			"redirect_urls": {
-				"title": "リンクを短縮",
-				"desc": "任意の宛先に即座にリダイレクトする、短くて管理しやすいリンクを作成します。"
-			},
-			"sharing": {
-				"title": "Easy Sharing",
-				"desc": "Share your snippets effortlessly with a simple link or QR code."
-			},
-			"access_control": {
-				"title": "ロールベースのアクセス制御 (RBAC)",
-				"desc": "特定のユーザーに閲覧者、編集者、または管理者のロールを割り当て、正確なコラボレーション制御を可能にします。"
-			},
-			"profile": {
-				"title": "ユーザープロフィール",
-				"desc": "アカウントを作成して、スニペットの管理、編集、追跡を行うことができます。"
-			},
-			"password": {
-				"title": "強化されたセキュリティ",
-				"desc": "機密コードをパスワードで保護し、きめ細かなアクセス権限を管理します。"
-			}
-		},
-		"story": {
-			"title": "私たちのストーリー",
-			"p1": "Snipitはシンプルなアイデアから生まれました：コード共有は美しく、速く、簡単であるべきです。開発者として、私たちは同僚、友人、コミュニティとコードスニペットを常に共有していましたが、既存のソリューションは不格好で時代遅れに感じました。",
-			"p2": "だから私たちはより良いものを作ることにしました。Snipitはエレガントなデザインと強力な機能を組み合わせ、形式と機能の両方を重視する開発者にとって完璧なツールです。",
-			"p3": "モダンなウェブ技術とユーザーエクスペリエンスに焦点を当てて構築されたSnipitは、開発者コミュニティでのコード共有のための最適なプラットフォームを目指しています。"
-		},
-		"team": {
-			"title": "チームに会う",
-			"role": "共同創設者 & 開発者"
-		},
-		"contribute": {
-			"title": "貢献しますか？",
-			"desc": "Snipitはオープンソースであり、コミュニティからの貢献を歓迎します。バグ修正、新機能、ドキュメントの改善など、すべての貢献が重要です。",
-			"github_button": "GitHubで表示",
-			"contact_button": "連絡する"
-		},
-		"faq": {
-			"title": "Frequently Asked Questions",
-			"items": {
-				"free": {
-					"question": "Is Snipit free to use?",
-					"answer": "Yes! Snipit is completely free and open source. You can use it for personal or commercial projects without any cost."
-				},
-				"expiration": {
-					"question": "How long do snippets last?",
-					"answer": "You can choose the expiration time for each snippet, ranging from 1 hour to 1 year. You can also create snippets that never expire."
-				},
-				"secure": {
-					"question": "Is my code secure?",
-					"answer": "We take security seriously. All snippets are encrypted in transit and at rest. Password-protected snippets add an extra layer of security."
-				},
-				"edit": {
-					"question": "Can I edit my snippets later?",
-					"answer": "Yes, if you are logged in when you create a snippet, you can edit or delete it later from your dashboard."
-				}
-			}
-		}
-	},
-	"footer": {
-		"copyright": "© 2025 Snipit. 全著作権所有。",
-		"privacy": "プライバシーポリシー",
-		"terms": "利用規約",
-		"contact": "お問い合わせ",
-		"made_by": "Durgesh & Tejas によって ❤️ で作られました"
-	},
-	"splash": {
-		"tagline": "スニペットを瞬時に共有"
-	},
-	"error_page": {
-		"title": "ページが見つかりません",
-		"subtitle": "おっと！お探しのスニペットが存在しないか、期限切れです。",
-		"description": "削除された可能性があるか、リンクが正しくないか、スニペットの有効期限が切れている可能性があります。",
-		"go_home": "ホームへ",
-		"create_new": "新しいスニペットを作成"
-	},
-	"auth": {
-		"login_title": "おかえりなさい",
-		"login_subtitle": "スニペットにアクセスするためにログインしてください。",
-		"email_label": "メールアドレス",
-		"email_placeholder": "name@example.com",
-		"password_label": "パスワード",
-		"password_placeholder": "••••••••",
-		"forgot_password": "パスワードを忘れましたか？",
-		"login_button": "ログイン",
-		"logging_in": "ログイン中...",
-		"or": "または",
-		"new_to_snipit": "Snipitは初めてですか？",
-		"create_account": "アカウントを作成",
-		"login_success": "ログインしました",
-		"login_failed": "ログインに失敗しました",
-		"signup_title": "Snipitに参加",
-		"signup_subtitle": "スニペットを管理するためにアカウントを作成してください。",
-		"username_label": "ユーザー名",
-		"username_placeholder": "johndoe",
-		"signup_button": "サインアップ",
-		"creating_account": "作成中...",
-		"already_have_account": "すでにアカウントをお持ちですか？",
-		"login_here": "こちらからログイン",
-		"signup_success": "アカウントが作成されました。ログインしてください。",
-		"signup_failed": "サインアップに失敗しました",
-		"show_password": "パスワードを表示",
-		"hide_password": "パスワードを非表示",
-		"logout_confirm": "ログアウトしました",
-		"logout_confirm_question": "ログアウトしてもよろしいですか？",
-		"logout_action": "ログアウト",
-		"logout_cancel": "キャンセル"
-	}
+    "header": {
+        "about": "について",
+        "history": "履歴",
+        "new_snippet": "新しいスニペット",
+        "copied": "コピーしました！",
+        "qr_button": "QRコード",
+        "profile": "プロフィール",
+        "logout": "ログアウト",
+        "login": "ログイン",
+        "signup": "サインアップ",
+        "theme": "テーマ",
+        "language": "言語",
+        "qr_scan_desc": "別のデバイスでスニペットを開くには、このコードをスキャンしてください。",
+        "jump_to": "移動",
+        "jump_to_title": "スニペットへ移動",
+        "jump_to_desc": "スニペットIDを入力して直接移動します。",
+        "jump_to_placeholder": "スニペットIDを入力..."
+    },
+    "common": {
+        "visibility": "公開設定",
+        "public": "公開",
+        "private": "非公開",
+        "shared": "共有",
+        "auth_required": "認証が必要です",
+        "auth_required_desc": "{{visibility}} スニペットを作成するにはアカウントが必要です。",
+        "allowed_users": "許可されたユーザー",
+        "allowed_users_placeholder": "メールアドレスを入力...",
+        "password": "パスワード（オプション）",
+        "password_placeholder": "パスワードを入力...",
+        "submitting": "送信中...",
+        "password_protected": "パスワード保護されています",
+        "enter_password_desc": "このスニペットはパスワードで保護されています。閲覧するにはパスワードを入力してください。",
+        "unlock": "スニペットのロック解除",
+        "access_control": "アクセスレベル",
+        "commenter": "コメント可能",
+        "open_discussion": "ディスカッションを開く",
+        "snippet": "スニペット",
+        "discussion": "ディスカッション",
+        "discussion_title": "スニペットのディスカッション",
+        "discussion_desc": "このスニペットについて意見を共有したり、他の人と協力したりしましょう。",
+        "no_comments": "コメントはまだありません",
+        "share_with_people": "共同作業者を追加",
+        "people_with_access": "アクセス可能なユーザー",
+        "add_people_placeholder": "メールで追加...",
+        "role": "権限",
+        "viewer": "閲覧可能",
+        "editor": "編集可能",
+        "admin": "フルアクセス",
+        "add": "追加",
+        "remove": "削除",
+        "general_access": "一般的なアクセス",
+        "anyone_with_link": "リンクを知っている全員",
+        "restricted": "制限付き（非公開）",
+        "manage_access": "アクセス権の管理",
+        "your_name": "お名前（任意）",
+        "anonymus": "匿名",
+        "write_comment": "コメントを書く...",
+        "post_comment": "コメントを投稿",
+        "comment_restricted": "このスニペットにコメントする権限がありません。"
+    },
+    "profile": {
+        "title": "ユーザープロフィール",
+        "account_info": "アカウント情報",
+        "username": "ユーザー名",
+        "email": "メールアドレス",
+        "joined": "登録日",
+        "edit_profile": "プロフィールを編集",
+        "save_profile": "プロフィールを保存",
+        "snippets_count": "スニペット",
+        "no_snippets": "スニペットはまだありません",
+        "no_snippets_desc": "共有されたコードの傑作がここに表示されます！",
+        "create_first": "最初のスニペットを作成",
+        "your_snippets": "あなたのスニペット",
+        "total_views": "総閲覧数",
+        "most_used_language": "最も使用されている言語",
+        "activity": "アカウントアクティビティ",
+        "access_denied": "アクセスが拒否されました",
+        "login_required": "プロフィールを表示してスニペットを管理するには、ログインしてください。",
+        "loading_pastes": "スニペットを読み込んでいます...",
+        "profile_updated": "プロフィールが更新されました",
+        "view_details": "詳細を見る",
+        "views": "回閲覧",
+        "expired": "期限切れ",
+        "visibility": {
+            "public": "公開",
+            "private": "非公開",
+            "shared": "共有"
+        },
+        "not_applicable": "該当なし"
+    },
+    "home": {
+        "select_expire_time": "有効期限を選択",
+        "enter_snippet_placeholder": "ここにスニペットを入力...",
+        "paste_button": "貼り付け",
+        "paste_dynamic_id": "ダイナミックIDで貼り付け",
+        "paste_system_id": "システムIDで貼り付け",
+        "paste_dynamic_id_desc": "独自のIDを選択",
+        "paste_system_id_desc": "IDを自動生成",
+        "expire_options": {
+            "one_time_snippet": "一回限りのスニペット",
+            "expire_in_1_hour": "1時間で期限切れ",
+            "expire_in_1_day": "1日で期限切れ",
+            "expire_in_1_week": "1週間で期限切れ",
+            "expire_in_1_month": "1ヶ月で期限切れ",
+            "expire_in_1_year": "1年で期限切れ",
+            "custom": "カスタムの有効期限"
+        },
+        "tab_text": "プレーンテキスト",
+        "tab_code": "コード",
+        "tab_link": "リンクを短縮",
+        "link_placeholder": "短縮するURLを入力してください（例：https://example.xyz）",
+        "link_desc": "以下の長いURLを貼り付けて、短縮リダイレクトリンクを作成します。",
+        "link_features": {
+            "fast": "高速リダイレクト",
+            "custom": "カスタムスラッグ"
+        },
+        "auto_detecting": "自動検出中...",
+        "detected_language": "検出された言語: {{language}}",
+        "dynamic_id_dialog": {
+            "title": "カスタムIDの入力",
+            "description": "一意の識別子を選択してください。これはスニペットのURLに使用されます。",
+            "placeholder": "カスタムIDを入力してください...",
+            "preview": "プレビュー:",
+            "cancel": "キャンセル",
+            "submit": "スニペットを作成"
+        }
+    },
+    "display": {
+        "expires_in": "有効期限:",
+        "edit_button": "編集",
+        "copy_button": "コピー",
+        "delete_button": "削除",
+        "save_button": "変更を保存",
+        "burn_after_read_warning": "警告：これは一回限りのスニペットであり、読まれた後に削除されます。",
+        "views_remaining_plural": "(残り {{count}} 回の閲覧可能)",
+        "views_remaining_singular": "(残り 1 回の閲覧可能)",
+        "final_view": "(最後の閲覧)"
+    },
+    "history": {
+        "title": "履歴",
+        "plain_text_snippet": "プレーンテキストのスニペット",
+        "code_snippet": "コードスニペット",
+        "created_ago": "作成",
+        "clear_history": "履歴を消去",
+        "clear_confirm": "すべての履歴を消去しますか？",
+        "clear_action": "消去",
+        "cancel": "キャンセル",
+        "cleared_success": "履歴が消去されました",
+        "no_history_title": "履歴はまだありません",
+        "no_history_desc": "スニペットの履歴はここに表示されます",
+        "create_first": "最初のスニペットを作成",
+        "snippets_saved": "個のスニペットを保存",
+        "snippet_saved": "個のスニペットを保存",
+        "fetching_history": "履歴を取得中...",
+        "expired": "期限切れ",
+        "view_snippet": "スニペットを表示",
+        "sync_failed": "アカウントのスニペットの同期に失敗しました"
+    },
+    "messages": {
+        "snippet_created": "スニペットが正常に作成されました！",
+        "snippet_failed": "スニペットの作成に失敗しました",
+        "id_conflict": "このIDは既に使用されています。別のIDを試してください。",
+        "detected_language": "検出された言語: {{language}}",
+        "delete_confirm": "このスニペットを削除してもよろしいですか？",
+        "snippet_deleted": "スニペットが削除されました",
+        "delete_failed": "スニペットの削除に失敗しました",
+        "action_cancelled": "アクションがキャンセルされました",
+        "snippet_updated": "スニペットが正常に更新されました",
+        "update_failed": "スニペットの更新に失敗しました",
+        "password_incorrect": "パスワードが間違っています"
+    },
+    "about_page": {
+        "title": "Snipitについて",
+        "subtitle": "コード共有をシンプルかつ美しくすることを信じる2人の開発者による情熱的なプロジェクト。",
+        "features_title": "強力な機能",
+        "features_subtitle": "シームレスなコード共有に必要なすべて",
+        "features": {
+            "syntax_highlighting": {
+                "title": "シンタックスハイライト",
+                "desc": "15以上のプログラミング言語をサポートした美しいコード表示。"
+            },
+            "ai_detection": {
+                "title": "AI言語検出",
+                "desc": "AI技術を使用してプログラミング言語を自動的に検出。"
+            },
+            "custom_ids": {
+                "title": "カスタムURL",
+                "desc": "簡単なスニペット共有のための記憶に残るカスタムURLを作成。"
+            },
+            "expiration": {
+                "title": "有効期限制御",
+                "desc": "スニペットを1時間から1年後に期限切れに設定、または永久に保持、またはカスタム日付を選択。"
+            },
+            "multi_language": {
+                "title": "多言語UI",
+                "desc": "英語、ドイツ語、ヒンディー語、日本語、マラーティー語で利用可能。"
+            },
+            "dark_mode": {
+                "title": "ダークモード",
+                "desc": "美しいダークテーマオプションで目に優しい。"
+            },
+            "open_source": {
+                "title": "オープンソース",
+                "desc": "無料でオープンソース。貢献、フォーク、セルフホスト可能。"
+            },
+            "redirect_urls": {
+                "title": "リンクを短縮",
+                "desc": "任意の宛先に即座にリダイレクトする、短くて管理しやすいリンクを作成します。"
+            },
+            "sharing": {
+                "title": "Easy Sharing",
+                "desc": "Share your snippets effortlessly with a simple link or QR code."
+            },
+            "access_control": {
+                "title": "ロールベースのアクセス制御 (RBAC)",
+                "desc": "特定のユーザーに閲覧者、編集者、または管理者のロールを割り当て、正確なコラボレーション制御を可能にします。"
+            },
+            "profile": {
+                "title": "ユーザープロフィール",
+                "desc": "アカウントを作成して、スニペットの管理、編集、追跡を行うことができます。"
+            },
+            "password": {
+                "title": "強化されたセキュリティ",
+                "desc": "機密コードをパスワードで保護し、きめ細かなアクセス権限を管理します。"
+            }
+        },
+        "story": {
+            "title": "私たちのストーリー",
+            "p1": "Snipitはシンプルなアイデアから生まれました：コード共有は美しく、速く、簡単であるべきです。開発者として、私たちは同僚、友人、コミュニティとコードスニペットを常に共有していましたが、既存のソリューションは不格好で時代遅れに感じました。",
+            "p2": "だから私たちはより良いものを作ることにしました。Snipitはエレガントなデザインと強力な機能を組み合わせ、形式と機能の両方を重視する開発者にとって完璧なツールです。",
+            "p3": "モダンなウェブ技術とユーザーエクスペリエンスに焦点を当てて構築されたSnipitは、開発者コミュニティでのコード共有のための最適なプラットフォームを目指しています。"
+        },
+        "team": {
+            "title": "チームに会う",
+            "role": "共同創設者 & 開発者"
+        },
+        "contribute": {
+            "title": "貢献しますか？",
+            "desc": "Snipitはオープンソースであり、コミュニティからの貢献を歓迎します。バグ修正、新機能、ドキュメントの改善など、すべての貢献が重要です。",
+            "github_button": "GitHubで表示",
+            "contact_button": "連絡する"
+        },
+        "faq": {
+            "title": "Frequently Asked Questions",
+            "items": {
+                "free": {
+                    "question": "Is Snipit free to use?",
+                    "answer": "Yes! Snipit is completely free and open source. You can use it for personal or commercial projects without any cost."
+                },
+                "expiration": {
+                    "question": "How long do snippets last?",
+                    "answer": "You can choose the expiration time for each snippet, ranging from 1 hour to 1 year. You can also create snippets that never expire."
+                },
+                "secure": {
+                    "question": "Is my code secure?",
+                    "answer": "We take security seriously. All snippets are encrypted in transit and at rest. Password-protected snippets add an extra layer of security."
+                },
+                "edit": {
+                    "question": "Can I edit my snippets later?",
+                    "answer": "Yes, if you are logged in when you create a snippet, you can edit or delete it later from your dashboard."
+                }
+            }
+        }
+    },
+    "footer": {
+        "copyright": "© 2025 Snipit. 全著作権所有。",
+        "privacy": "プライバシーポリシー",
+        "terms": "利用規約",
+        "contact": "お問い合わせ",
+        "made_by": "Durgesh & Tejas によって ❤️ で作られました"
+    },
+    "splash": {
+        "tagline": "スニペットを瞬時に共有"
+    },
+    "error_page": {
+        "title": "ページが見つかりません",
+        "subtitle": "おっと！お探しのスニペットが存在しないか、期限切れです。",
+        "description": "削除された可能性があるか、リンクが正しくないか、スニペットの有効期限が切れている可能性があります。",
+        "go_home": "ホームへ",
+        "create_new": "新しいスニペットを作成"
+    },
+    "auth": {
+        "login_title": "おかえりなさい",
+        "login_subtitle": "スニペットにアクセスするためにログインしてください。",
+        "email_label": "メールアドレス",
+        "email_placeholder": "name@example.com",
+        "password_label": "パスワード",
+        "password_placeholder": "••••••••",
+        "forgot_password": "パスワードを忘れましたか？",
+        "login_button": "ログイン",
+        "logging_in": "ログイン中...",
+        "or": "または",
+        "new_to_snipit": "Snipitは初めてですか？",
+        "create_account": "アカウントを作成",
+        "login_success": "ログインしました",
+        "login_failed": "ログインに失敗しました",
+        "signup_title": "Snipitに参加",
+        "signup_subtitle": "スニペットを管理するためにアカウントを作成してください。",
+        "username_label": "ユーザー名",
+        "username_placeholder": "johndoe",
+        "signup_button": "サインアップ",
+        "creating_account": "作成中...",
+        "already_have_account": "すでにアカウントをお持ちですか？",
+        "login_here": "こちらからログイン",
+        "signup_success": "アカウントが作成されました。ログインしてください。",
+        "signup_failed": "サインアップに失敗しました",
+        "show_password": "パスワードを表示",
+        "hide_password": "パスワードを非表示",
+        "logout_confirm": "ログアウトしました",
+        "logout_confirm_question": "ログアウトしてもよろしいですか？",
+        "logout_action": "ログアウト",
+        "logout_cancel": "キャンセル"
+    }
 }
