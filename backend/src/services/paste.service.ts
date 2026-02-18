@@ -84,6 +84,12 @@ class PasteService {
 		if (allowComments !== undefined) {
 			paste.allowComments = allowComments;
 		}
+		if (expiresTime !== undefined) {
+			paste.expiresTime = expiresTime;
+		}
+		if (expiresAt !== undefined) {
+			paste.expiresAt = expiresAt;
+		}
 
 		return await paste.save();
 	}

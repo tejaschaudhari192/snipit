@@ -383,9 +383,11 @@ const DisplayPage = () => {
 								setContentType(
 									paste?.redirectUrl
 										? "link"
-										: paste?.language !== "text"
-											? "code"
-											: "text",
+										: paste?.fileUrl
+											? "file"
+											: paste?.language !== "text"
+												? "code"
+												: "text",
 								);
 								setCustomId(paste?.id || "");
 								setEditPermission(
@@ -404,7 +406,9 @@ const DisplayPage = () => {
 						onCancel={handleCancel}
 						fontSize={fontSize}
 						setFontSize={setFontSize}
-						showFontControls={contentType !== "link"}
+						showFontControls={
+							contentType !== "link" && contentType !== "file"
+						}
 						allowComments={allowComments}
 						commentCount={paste.comments?.length || 0}
 						paste={paste}

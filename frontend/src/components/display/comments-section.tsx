@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { MessageSquare, Send } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { enUS, de, hi, ja } from "date-fns/locale";
 import { AxiosError } from "axios";
 
 import { Button } from "@/components/ui/button";
@@ -21,7 +22,7 @@ export const CommentsSection = ({
 	paste,
 	onCommentAdded,
 }: CommentsSectionProps) => {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const { user } = useAuth();
 	const apiHelpers = useApiHelpers();
 	const [newComment, setNewComment] = useState("");
@@ -107,6 +108,18 @@ export const CommentsSection = ({
 												new Date(comment.createdAt),
 												{
 													addSuffix: true,
+													locale:
+														i18n.language === "de"
+															? de
+															: i18n.language ===
+																		"hi" ||
+																  i18n.language ===
+																		"mr"
+																? hi
+																: i18n.language ===
+																	  "ja"
+																	? ja
+																	: enUS,
 												},
 											)}
 										</span>

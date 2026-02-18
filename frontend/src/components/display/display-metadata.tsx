@@ -31,7 +31,7 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 						<Clock className="h-3 w-3" />
 						{paste.burnAfterRead || paste.expiresTime === "one-time"
 							? t("home.expire_options.one_time_snippet")
-							: `${t("display.expires_in")} ${getTimeRemaining(paste.expiresAt!)}`}
+							: `${t("display.expires_in")} ${getTimeRemaining(paste.expiresAt!, t)}`}
 					</div>
 					<div className="w-px h-3 bg-border hidden sm:block" />
 					<div className="flex items-center gap-1.5 text-muted-foreground uppercase tracking-wider font-medium">

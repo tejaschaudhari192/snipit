@@ -63,7 +63,32 @@
 		"post_comment": "Post Comment",
 		"comment_restricted": "You don't have permission to comment on this snippet.",
 		"fast_redirection": "Fast Redirection",
-		"fast_redirection_desc": "Directly opens the content when the link is reached."
+		"fast_redirection_desc": "Directly opens the content when the link is reached.",
+		"redirect_ready": "Redirect Ready",
+		"redirect_desc": "Click the button below to visit the shared destination link.",
+		"visit_link": "Visit Destination",
+		"download_file": "Download File",
+		"unnamed_file": "Unnamed File",
+		"time": {
+			"just_now": "Just now",
+			"years_ago": "{{count}} years ago",
+			"months_ago": "{{count}} months ago",
+			"days_ago": "{{count}} days ago",
+			"hours_ago": "{{count}} hours ago",
+			"minutes_ago": "{{count}} minutes ago",
+			"expired": "Expired",
+			"less_than_minute": "Less than a minute",
+			"year": "{{count}} year",
+			"years": "{{count}} years",
+			"month": "{{count}} month",
+			"months": "{{count}} months",
+			"day": "{{count}} day",
+			"days": "{{count}} days",
+			"hour": "{{count}} hour",
+			"hours": "{{count}} hours",
+			"minute": "{{count}} minute",
+			"minutes": "{{count}} minutes"
+		}
 	},
 	"profile": {
 		"title": "Your Profile",
@@ -129,6 +154,7 @@
 		"file_drop": "Drop your file here or click to browse",
 		"file_max_size": "Maximum file size: 50MB",
 		"file_uploading": "Uploading...",
+		"file_selected": "Selected - click Paste",
 		"file_ready": "Ready to share",
 		"file_features": {
 			"secure": "Secure Upload",

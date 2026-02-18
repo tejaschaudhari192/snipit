@@ -1,7 +1,21 @@
 import { Editor, type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { Link, FileUp, X, File, CheckCircle2, Loader2 } from "lucide-react";
+import {
+	Link,
+	FileUp,
+	X,
+	File,
+	CheckCircle2,
+	Loader2,
+	FileImage,
+	FileAudio,
+	FileVideo,
+	FileArchive,
+	FileCode,
+	FileText,
+	Terminal,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { RefObject } from "react";
 import { Button } from "@/components/ui/button";
@@ -28,6 +42,7 @@ interface EditorContentProps {
 	uploadedFileName?: string | null;
 	uploadError?: string | null;
 	onClearFile?: () => void;
+	fileMimeType?: string | null;
 }
 
 export const EditorContent = ({
@@ -48,6 +63,7 @@ export const EditorContent = ({
 	uploadedFileName,
 	uploadError,
 	onClearFile,
+	fileMimeType,
 }: EditorContentProps) => {
 	const { t } = useTranslation();
 
@@ -70,6 +86,103 @@ export const EditorContent = ({
 		if (file && onFileSelect) {
 			onFileSelect(file);
 		}
+	};
+
+	const getFileIcon = () => {
+		const mime = fileMimeType?.toLowerCase() || "";
+		if (mime.startsWith("image/")) return <FileImage className="h-6 w-6" />;
+		if (mime.startsWith("audio/")) return <FileAudio className="h-6 w-6" />;
+		if (mime.startsWith("video/")) return <FileVideo className="h-6 w-6" />;
+
+		const ext =
+			uploadedFileName?.toLowerCase().split(".").pop() ||
+			mime.split("/")[1] ||
+			"";
+
+		const archiveExts = ["zip", "rar", "7z", "tar", "gz", "bz2", "xz"];
+		if (
+			archiveExts.includes(ext) ||
+			mime.includes("zip") ||
+			mime.includes("archive") ||
+			mime.includes("compressed")
+		)
+			return <FileArchive className="h-6 w-6" />;
+
+		const codeExts = [
+			"js",
+			"ts",
+			"jsx",
+			"tsx",
+			"py",
+			"java",
+			"c",
+			"cpp",
+			"cs",
+			"html",
+			"css",
+			"json",
+			"md",
+			"sh",
+			"rs",
+			"go",
+			"php",
+			"rb",
+			"sql",
+			"yaml",
+			"yml",
+			"xml",
+		];
+		if (
+			codeExts.includes(ext) ||
+			mime.includes("code") ||
+			mime.includes("javascript") ||
+			mime.includes("json")
+		)
+			return <FileCode className="h-6 w-6" />;
+
+		if (ext === "pdf" || mime.includes("pdf"))
+			return <FileText className="h-6 w-6" />;
+
+		const textExts = [
+			"txt",
+			"doc",
+			"docx",
+			"rtf",
+			"odt",
+			"xls",
+			"xlsx",
+			"ppt",
+			"pptx",
+			"csv",
+		];
+		if (
+			textExts.includes(ext) ||
+			mime.includes("text") ||
+			mime.includes("document") ||
+			mime.includes("sheet") ||
+			mime.includes("presentation")
+		)
+			return <FileText className="h-6 w-6" />;
+
+		const execExts = [
+			"exe",
+			"msi",
+			"bin",
+			"apk",
+			"dmg",
+			"app",
+			"bat",
+			"cmd",
+		];
+		if (
+			execExts.includes(ext) ||
+			mime.includes("shell") ||
+			mime.includes("executable") ||
+			mime.includes("application/octet-stream")
+		)
+			return <Terminal className="h-6 w-6" />;
+
+		return <File className="h-6 w-6" />;
 	};
 
 	return (
@@ -120,20 +233,19 @@ export const EditorContent = ({
 									)}
 								>
 									<div className="flex items-center gap-5 relative z-10">
-										<div
-											className={cn(
-												"p-3.5 rounded-xl transition-colors duration-300",
-												isUploading
-													? "bg-primary text-primary-foreground"
-													: "bg-primary/10 text-primary",
-											)}
-										>
+										<div className="relative">
 											{isUploading ? (
-												<Loader2 className="h-6 w-6 animate-spin" />
+												<div className="p-3.5 rounded-xl bg-primary text-primary-foreground transition-colors duration-300">
+													<Loader2 className="h-6 w-6 animate-spin" />
+												</div>
 											) : uploadProgress === 100 ? (
-												<CheckCircle2 className="h-6 w-6" />
+												<div className="p-3.5 rounded-xl bg-emerald-500 text-white transition-colors duration-300">
+													<CheckCircle2 className="h-6 w-6" />
+												</div>
 											) : (
-												<File className="h-6 w-6" />
+												<div className="p-3.5 rounded-xl bg-primary/10 text-primary transition-colors duration-300">
+													{getFileIcon()}
+												</div>
 											)}
 										</div>
 										<div className="flex-1 min-w-0">
@@ -176,8 +288,8 @@ export const EditorContent = ({
 															<span className="text-muted-foreground flex items-center gap-1.5">
 																<div className="h-1.5 w-1.5 rounded-full bg-amber-500" />
 																{t(
-																	"home.file_pending",
-																	"Pending - click Paste",
+																	"home.file_selected",
+																	"Selected - click Paste",
 																)}
 															</span>
 														)}

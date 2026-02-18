@@ -98,7 +98,7 @@ export const EditControls = ({
 						onValueChange={setContentType}
 						className="w-full xl:w-auto"
 						listClassName="xl:w-fit"
-						showFileOption={false}
+						showFileOption={contentType === "file"}
 					/>
 
 					<div className="w-full xl:w-auto flex flex-wrap items-center gap-3">

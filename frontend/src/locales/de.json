@@ -57,7 +57,34 @@
 		"anonymus": "Anonym",
 		"write_comment": "Schreiben Sie einen Kommentar...",
 		"post_comment": "Kommentar posten",
-		"comment_restricted": "Sie haben keine Berechtigung, diesen Schnipsel zu kommentieren."
+		"comment_restricted": "Sie haben keine Berechtigung, diesen Schnipsel zu kommentieren.",
+		"fast_redirection": "Schnelle Weiterleitung",
+		"fast_redirection_desc": "Öffnet den Inhalt direkt, wenn der Link erreicht wird.",
+		"redirect_ready": "Weiterleitung bereit",
+		"redirect_desc": "Klicken Sie auf die Schaltfläche unten, um den geteilten Ziellink zu besuchen.",
+		"visit_link": "Ziel besuchen",
+		"download_file": "Datei herunterladen",
+		"unnamed_file": "Unbenannte Datei",
+		"time": {
+			"just_now": "Gerade eben",
+			"years_ago": "vor {{count}} Jahren",
+			"months_ago": "vor {{count}} Monaten",
+			"days_ago": "vor {{count}} Tagen",
+			"hours_ago": "vor {{count}} Stunden",
+			"minutes_ago": "vor {{count}} Minuten",
+			"expired": "Abgelaufen",
+			"less_than_minute": "Weniger als eine Minute",
+			"year": "{{count}} Jahr",
+			"years": "{{count}} Jahre",
+			"month": "{{count}} Monat",
+			"months": "{{count}} Monate",
+			"day": "{{count}} Tag",
+			"days": "{{count}} Tage",
+			"hour": "{{count}} Stunde",
+			"hours": "{{count}} Stunden",
+			"minute": "{{count}} Minute",
+			"minutes": "{{count}} Minuten"
+		}
 	},
 	"profile": {
 		"title": "Ihr Profil",
@@ -109,11 +136,22 @@
 		"tab_text": "Klartext",
 		"tab_code": "Code",
 		"tab_link": "Link kürzen",
+		"tab_file": "Datei",
 		"link_placeholder": "Geben Sie die zu kürzende URL ein (z. B. https://example.xyz)",
 		"link_desc": "Fügen Sie unten die lange URL ein, um einen kurzen, weiterleitenden Link zu erstellen.",
 		"link_features": {
 			"fast": "Schnelle Weiterleitung",
 			"custom": "Benutzerdefinierte Slugs"
+		},
+		"file_desc": "Laden Sie eine beliebige Datei hoch, um sie über einen eindeutigen Link zu teilen",
+		"file_drop": "Datei hierher ziehen oder zum Durchsuchen klicken",
+		"file_max_size": "Maximale Dateigröße: 50MB",
+		"file_uploading": "Wird hochgeladen...",
+		"file_selected": "Ausgewählt - auf Einfügen klicken",
+		"file_ready": "Bereit zum Teilen",
+		"file_features": {
+			"secure": "Sicherer Upload",
+			"share": "Einfaches Teilen"
 		},
 		"auto_detecting": "Automatische Erkennung...",
 		"detected_language": "Erkannte Sprache: {{language}}",

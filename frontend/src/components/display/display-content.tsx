@@ -34,7 +34,7 @@ export const DisplayContent = ({
 }: DisplayContentProps) => {
 	const { t } = useTranslation();
 
-	if (contentType === "file" && !isEdit) {
+	if (contentType === "file") {
 		return <FileDisplay paste={paste} contentRef={contentRef} />;
 	}
 

@@ -301,7 +301,7 @@ const HomePage = () => {
 						</div>
 					)}
 
-					{contentType !== "link" && (
+					{contentType !== "link" && contentType !== "file" && (
 						<FontSizeControls
 							fontSize={fontSize}
 							setFontSize={setFontSize}
@@ -377,6 +377,7 @@ const HomePage = () => {
 					resetFileUpload();
 					setPendingFile(null);
 				}}
+				fileMimeType={fileMimeType}
 			/>
 		</div>
 	);

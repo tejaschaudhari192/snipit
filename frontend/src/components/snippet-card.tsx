@@ -2,7 +2,15 @@ import { timeAgo, getTimeRemaining } from "@/lib/utils";
 import type { PasteData } from "@/types";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { ExternalLink, Timer, Calendar, Link as LinkIcon } from "lucide-react";
+import {
+	ExternalLink,
+	Timer,
+	Calendar,
+	Link as LinkIcon,
+	File,
+	FileText,
+	Terminal,
+} from "lucide-react";
 import { motion } from "motion/react";
 import { LanguageIcon } from "@/components/language-icon";
 
@@ -80,7 +88,9 @@ export const SnippetCard = ({
 					<div className="flex items-center gap-3">
 						<div
 							className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold border ${
-								item.redirectUrl
+								item.redirectUrl ||
+								item.contentMode === "file" ||
+								item.fileUrl
 									? "bg-primary/10 text-primary border-primary/20"
 									: item.language && item.language !== "text"
 										? getLanguageColor(item.language)
@@ -91,6 +101,46 @@ export const SnippetCard = ({
 								<>
 									<LinkIcon className="h-3.5 w-3.5" />
 									<span>{t("history.link_snippet")}</span>
+								</>
+							) : item.fileUrl || item.contentMode === "file" ? (
+								<>
+									{(() => {
+										const ext =
+											item.fileName
+												?.toLowerCase()
+												.split(".")
+												.pop() || "";
+										const mime =
+											item.fileMimeType?.toLowerCase() ||
+											"";
+										const isPdf =
+											ext === "pdf" ||
+											mime.includes("pdf");
+										const isExec =
+											[
+												"exe",
+												"msi",
+												"bin",
+												"apk",
+												"dmg",
+												"app",
+												"bat",
+												"cmd",
+											].includes(ext) ||
+											mime.includes("executable") ||
+											mime.includes("octet-stream");
+
+										if (isExec)
+											return (
+												<Terminal className="h-3.5 w-3.5" />
+											);
+										if (isPdf)
+											return (
+												<FileText className="h-3.5 w-3.5" />
+											);
+										return <File className="h-3.5 w-3.5" />;
+									})()}
+									<span>{t("home.tab_file", "File")}</span>
 								</>
 							) : item.language && item.language !== "text" ? (
 								<>
@@ -122,7 +172,7 @@ export const SnippetCard = ({
 					<div className="flex items-center gap-4 text-xs">
 						<div className="flex items-center gap-1.5 text-muted-foreground font-medium">
 							<Calendar className="h-3.5 w-3.5" />
-							<span>{timeAgo(item.createdAt)}</span>
+							<span>{timeAgo(item.createdAt, t)}</span>
 						</div>
 						{item.expiresAt && (
 							<div
@@ -142,8 +192,11 @@ export const SnippetCard = ({
 												"home.expire_options.one_time_snippet",
 											)
 										: expired
-											? t("history.expired", "Expired")
-											: getTimeRemaining(item.expiresAt)}
+											? t("common.time.expired")
+											: getTimeRemaining(
+													item.expiresAt,
+													t,
+												)}
 								</span>
 							</div>
 						)}
@@ -153,7 +206,9 @@ export const SnippetCard = ({
 				<div className="relative">
 					<div className="bg-muted/30 rounded-lg p-4 border border-border/20">
 						<pre className="text-sm font-mono text-foreground/70 whitespace-pre-wrap break-words line-clamp-2 italic leading-relaxed">
-							{item.content}
+							{item.contentMode === "file" && item.fileName
+								? item.fileName
+								: item.content}
 						</pre>
 					</div>
 					<div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent rounded-xl pointer-events-none" />

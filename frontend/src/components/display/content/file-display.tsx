@@ -1,6 +1,16 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileDown, File as FileIcon } from "lucide-react";
+import {
+	FileDown,
+	File as FileIcon,
+	FileImage,
+	FileAudio,
+	FileVideo,
+	FileArchive,
+	FileCode,
+	FileText,
+	Terminal,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { PasteData } from "@/types";
 
@@ -11,6 +21,104 @@ interface FileDisplayProps {
 
 export const FileDisplay = ({ paste, contentRef }: FileDisplayProps) => {
 	const { t } = useTranslation();
+
+	const getFileIcon = () => {
+		const mime = paste.fileMimeType?.toLowerCase() || "";
+		if (mime.startsWith("image/")) return FileImage;
+		if (mime.startsWith("audio/")) return FileAudio;
+		if (mime.startsWith("video/")) return FileVideo;
+
+		const ext =
+			paste.fileName?.toLowerCase().split(".").pop() ||
+			mime.split("/")[1] ||
+			"";
+
+		const archiveExts = ["zip", "rar", "7z", "tar", "gz", "bz2", "xz"];
+		if (
+			archiveExts.includes(ext) ||
+			mime.includes("zip") ||
+			mime.includes("archive") ||
+			mime.includes("compressed")
+		)
+			return FileArchive;
+
+		const codeExts = [
+			"js",
+			"ts",
+			"jsx",
+			"tsx",
+			"py",
+			"java",
+			"c",
+			"cpp",
+			"cs",
+			"html",
+			"css",
+			"json",
+			"md",
+			"sh",
+			"rs",
+			"go",
+			"php",
+			"rb",
+			"sql",
+			"yaml",
+			"yml",
+			"xml",
+		];
+		if (
+			codeExts.includes(ext) ||
+			mime.includes("code") ||
+			mime.includes("javascript") ||
+			mime.includes("json")
+		)
+			return FileCode;
+
+		if (ext === "pdf" || mime.includes("pdf")) return FileText;
+
+		const textExts = [
+			"txt",
+			"doc",
+			"docx",
+			"rtf",
+			"odt",
+			"xls",
+			"xlsx",
+			"ppt",
+			"pptx",
+			"csv",
+		];
+		if (
+			textExts.includes(ext) ||
+			mime.includes("text") ||
+			mime.includes("document") ||
+			mime.includes("sheet") ||
+			mime.includes("presentation")
+		)
+			return FileText;
+
+		const execExts = [
+			"exe",
+			"msi",
+			"bin",
+			"apk",
+			"dmg",
+			"app",
+			"bat",
+			"cmd",
+		];
+		if (
+			execExts.includes(ext) ||
+			mime.includes("shell") ||
+			mime.includes("executable") ||
+			mime.includes("application/octet-stream")
+		)
+			return Terminal;
+
+		return FileIcon;
+	};
+
+	const Icon = getFileIcon();
 
 	const formatFileSize = (bytes: number) => {
 		if (bytes === 0) return "0 Bytes";
@@ -36,7 +144,10 @@ export const FileDisplay = ({ paste, contentRef }: FileDisplayProps) => {
 					<div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,transparent,black)]" />
 					<div className="relative transform group-hover:scale-110 transition-transform duration-500">
 						<div className="p-4 rounded-2xl bg-background shadow-xl border border-border/50">
-							<FileIcon className="w-12 h-12 text-primary" />
+							<Icon
+								className="w-12 h-12 text-primary transition-colors duration-300"
+								strokeWidth={1.5}
+							/>
 						</div>
 					</div>
 				</div>
