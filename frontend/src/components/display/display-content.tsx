@@ -1,14 +1,11 @@
-import { Editor, type BeforeMount } from "@monaco-editor/react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Link, FileDown, File } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import { type BeforeMount } from "@monaco-editor/react";
+import { Link } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import type { PasteData } from "@/types";
+import { MarkdownDisplay } from "./content/markdown-display";
+import { FileDisplay } from "./content/file-display";
+import { CodeEditorView } from "./content/code-editor-view";
 
 interface DisplayContentProps {
 	isEdit: boolean;
@@ -37,262 +34,68 @@ export const DisplayContent = ({
 }: DisplayContentProps) => {
 	const { t } = useTranslation();
 
-	const formatFileSize = (bytes: number) => {
-		if (bytes < 1024) return `${bytes} B`;
-		if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-		return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-	};
+	if (contentType === "file" && !isEdit) {
+		return <FileDisplay paste={paste} contentRef={contentRef} />;
+	}
 
-	const handleDownload = () => {
-		if (paste.fileUrl) {
-			window.open(paste.fileUrl, "_blank");
-		}
-	};
-
-	if (isEdit) {
-		// File editing is not supported - show read-only view
-		if (contentType === "file") {
-			return (
-				<div
-					ref={contentRef}
-					className="h-[70vh] border rounded-md overflow-hidden touch-none flex items-center justify-center bg-muted/20"
-				>
-					<div className="text-center space-y-4 p-8">
-						<div className="p-4 rounded-full bg-primary/10 mx-auto w-fit">
-							<File className="h-12 w-12 text-primary" />
-						</div>
-						<p className="text-muted-foreground">
-							{t(
-								"display.file_edit_disabled",
-								"File content cannot be edited",
-							)}
-						</p>
-					</div>
-				</div>
-			);
-		}
-
+	if (contentType === "link" && !isEdit) {
 		return (
 			<div
 				ref={contentRef}
-				className="h-[70vh] border rounded-md overflow-hidden touch-none"
+				className="flex flex-col items-center justify-center py-24 px-4 bg-muted/10 rounded-3xl border border-dashed border-border/50 animate-in fade-in slide-in-from-bottom-4 duration-700"
 			>
-				{contentType === "code" ? (
-					<Editor
-						height="100%"
-						language={language}
-						value={content}
-						onChange={(value) => onContentChange(value || "")}
-						theme={
-							theme === "dark" ? "snipit-dark" : "snipit-light"
-						}
-						beforeMount={handleEditorWillMount}
-						options={{
-							minimap: { enabled: false },
-							fontSize: fontSize,
-							padding: { top: 16 },
-							mouseWheelZoom: true,
-							wordWrap: "on",
-						}}
-					/>
-				) : contentType === "link" ? (
-					<div className="h-full w-full bg-gradient-to-br from-background via-muted/10 to-background flex items-center justify-center rounded-md">
-						<div className="w-full max-w-2xl space-y-6 relative z-10 px-4">
-							<div className="flex flex-col items-center gap-2 text-center">
-								<div className="p-4 rounded-full bg-primary/10 text-primary backdrop-blur-sm border border-primary/20">
-									<Link className="h-8 w-8" />
-								</div>
-							</div>
-							<Input
-								value={content}
-								onChange={(e) =>
-									onContentChange(e.target.value)
-								}
-								placeholder={t("home.link_placeholder")}
-								className="h-14 text-lg px-6 rounded-xl border-border/50 focus-visible:ring-primary/30 shadow-lg bg-background/50 backdrop-blur-md"
-							/>
-						</div>
+				<div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6 shadow-xl shadow-primary/5">
+					<Link className="w-10 h-10 text-primary" />
+				</div>
+				<h3 className="text-2xl font-black mb-3">
+					{t("common.redirect_ready", "Redirect Ready")}
+				</h3>
+				<p className="text-muted-foreground mb-8 text-center max-w-md font-medium">
+					{t(
+						"common.redirect_desc",
+						"Click the button below to visit the shared destination link.",
+					)}
+				</p>
+				<a
+					href={
+						/^https?:\/\//i.test(content)
+							? content
+							: `https://${content}`
+					}
+					target="_blank"
+					rel="noopener noreferrer"
+					className="group relative inline-flex items-center justify-center px-10 py-4 font-bold text-white transition-all duration-200 bg-primary rounded-2xl hover:bg-primary/90 shadow-xl shadow-primary/20 active:scale-95"
+				>
+					{t("common.visit_link", "Visit Destination")}
+					<div className="ml-2 group-hover:translate-x-1 transition-transform">
+						🚀
 					</div>
-				) : (
-					<Textarea
-						className="h-full w-full resize-none border-0 focus-visible:ring-0 font-mono"
-						value={content}
-						onChange={(e) => onContentChange(e.target.value)}
-						style={{ fontSize: `${fontSize}px` }}
-					/>
-				)}
+				</a>
 			</div>
 		);
 	}
 
-	// Read-only view for file content type
-	if (
-		contentType === "file" ||
-		paste.contentMode === "file" ||
-		paste.fileUrl
-	) {
+	if (language === "markdown" && !isEdit) {
 		return (
-			<div
-				ref={contentRef}
-				className="h-[70vh] border rounded-md overflow-hidden touch-none flex items-center justify-center bg-gradient-to-br from-background via-muted/10 to-background"
-			>
-				<div className="text-center space-y-6 p-8 max-w-lg">
-					<div className="p-6 rounded-full bg-primary/10 mx-auto w-fit">
-						<File className="h-16 w-16 text-primary" />
-					</div>
-					<div className="space-y-2">
-						<h2 className="text-2xl font-bold">
-							{paste.fileName || "File"}
-						</h2>
-						{paste.fileSize && (
-							<p className="text-muted-foreground">
-								{formatFileSize(paste.fileSize)}
-							</p>
-						)}
-						{paste.fileMimeType && (
-							<p className="text-sm text-muted-foreground">
-								{paste.fileMimeType}
-							</p>
-						)}
-					</div>
-					<Button
-						size="lg"
-						onClick={handleDownload}
-						className="gap-2"
-					>
-						<FileDown className="h-5 w-5" />
-						{t("display.download_file", "Download File")}
-					</Button>
-				</div>
-			</div>
+			<MarkdownDisplay
+				content={content}
+				fontSize={fontSize}
+				contentRef={contentRef}
+			/>
 		);
 	}
 
 	return (
-		<div
-			ref={contentRef}
-			className="h-[70vh] border rounded-md overflow-hidden touch-none"
-		>
-			{paste.language === "markdown" ? (
-				<Card className="h-full overflow-y-auto border-0 rounded-none bg-background">
-					<CardContent className="h-fit">
-						<div
-							className={`prose dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-a:text-primary prose-code:text-primary prose-pre:bg-muted/50 prose-pre:border prose-pre:border-border`}
-						>
-							<ReactMarkdown
-								remarkPlugins={[remarkGfm]}
-								/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
-								components={{
-									h1: ({ node: _node, ...props }: any) => (
-										<h1
-											className="text-3xl font-bold tracking-tight mb-4"
-											{...props}
-										/>
-									),
-									h2: ({ node: _node, ...props }: any) => (
-										<h2
-											className="text-2xl font-semibold tracking-tight mt-8 mb-4 border-b pb-2"
-											{...props}
-										/>
-									),
-									h3: ({ node: _node, ...props }: any) => (
-										<h3
-											className="text-xl font-semibold tracking-tight mt-6 mb-3"
-											{...props}
-										/>
-									),
-									ul: ({ node: _node, ...props }: any) => (
-										<ul
-											className="list-disc pl-6 space-y-2 mb-4"
-											{...props}
-										/>
-									),
-									ol: ({ node: _node, ...props }: any) => (
-										<ol
-											className="list-decimal pl-6 space-y-2 mb-4"
-											{...props}
-										/>
-									),
-									blockquote: ({
-										node: _node,
-										...props
-									}: any) => (
-										<blockquote
-											className="border-l-4 border-primary/50 pl-4 italic my-4 text-muted-foreground bg-muted/20 p-2 rounded-r"
-											{...props}
-										/>
-									),
-									a: ({ node: _node, ...props }: any) => (
-										<a
-											className="text-primary hover:underline font-medium break-all"
-											target="_blank"
-											rel="noopener noreferrer"
-											{...props}
-										/>
-									),
-									code: ({
-										node: _node,
-										className,
-										children,
-										...props
-									}: any) => {
-										const match = /language-(\w+)/.exec(
-											className || "",
-										);
-										const isInline =
-											!match &&
-											!String(children).includes("\n");
-										return isInline ? (
-											<code
-												className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-primary"
-												{...props}
-											>
-												{children}
-											</code>
-										) : (
-											<code
-												className={className}
-												{...props}
-											>
-												{children}
-											</code>
-										);
-									},
-								}}
-								/* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
-							>
-								{paste.content}
-							</ReactMarkdown>
-						</div>
-					</CardContent>
-				</Card>
-			) : paste.language && paste.language !== "text" ? (
-				<Editor
-					height="100%"
-					language={paste.language}
-					value={paste.content}
-					theme={theme === "dark" ? "snipit-dark" : "snipit-light"}
-					beforeMount={handleEditorWillMount}
-					options={{
-						minimap: { enabled: false },
-						fontSize: fontSize,
-						padding: { top: 16 },
-						readOnly: true,
-						domReadOnly: true,
-						mouseWheelZoom: true,
-						wordWrap: "on",
-					}}
-				/>
-			) : (
-				<Card className="h-full overflow-y-auto border-0 rounded-none">
-					<CardContent
-						className="h-fit whitespace-pre-wrap py-4"
-						style={{ fontSize: `${fontSize}px` }}
-					>
-						{paste.content}
-					</CardContent>
-				</Card>
-			)}
-		</div>
+		<CodeEditorView
+			isEdit={isEdit}
+			contentType={contentType}
+			language={language}
+			content={content}
+			onContentChange={onContentChange}
+			theme={theme}
+			fontSize={fontSize}
+			handleEditorWillMount={handleEditorWillMount}
+			contentRef={contentRef}
+		/>
 	);
 };

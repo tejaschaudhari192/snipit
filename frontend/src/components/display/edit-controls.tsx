@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { ContentTypeSelector } from "@/components/common/content-type-selector";
-import { Code2, Users, Globe, Lock, ShieldCheck } from "lucide-react";
+import { Code2, ShieldCheck, Lock, Globe } from "lucide-react";
 import {
 	Dialog,
 	DialogContent,
@@ -11,18 +10,12 @@ import {
 import { useTranslation } from "react-i18next";
 import { LanguageSelector } from "@/components/editor/language-selector";
 import { Button } from "@/components/ui/button";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import { MultiEmailInput } from "@/components/ui/multi-email-input";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { ExpirySelector } from "@/components/common/expiry-selector";
+import { VisibilitySelector } from "@/components/common/access-control/visibility-selector";
+import { CollaboratorsManager } from "@/components/common/access-control/collaborators-manager";
 
 interface EditControlsProps {
 	contentType: "text" | "code" | "link" | "file";
@@ -95,45 +88,6 @@ export const EditControls = ({
 	setIsCustomExpiryDialogOpen,
 }: EditControlsProps) => {
 	const { t } = useTranslation();
-
-	const [pendingEmails, setPendingEmails] = useState<string[]>([]);
-	const [pendingRole, setPendingRole] = useState<
-		"viewer" | "editor" | "admin" | "commenter"
-	>("editor");
-
-	const handleAddPeople = () => {
-		if (pendingEmails.length === 0) return;
-
-		const newShareItems = pendingEmails.map((email) => ({
-			email,
-			role: pendingRole,
-		}));
-
-		const uniqueItems = newShareItems.filter(
-			(newItem) =>
-				!shareList.some((existing) => existing.email === newItem.email),
-		);
-
-		setShareList([...shareList, ...uniqueItems]);
-		setPendingEmails([]); // Clear input
-		setAllowedUsers([...allowedUsers, ...uniqueItems.map((i) => i.email)]);
-	};
-
-	const handleRemovePerson = (emailToRemove: string) => {
-		setShareList(shareList.filter((i) => i.email !== emailToRemove));
-		setAllowedUsers(allowedUsers.filter((e) => e !== emailToRemove));
-	};
-
-	const handleUpdateRole = (
-		email: string,
-		newRole: "viewer" | "editor" | "admin" | "commenter",
-	) => {
-		setShareList(
-			shareList.map((item) =>
-				item.email === email ? { ...item, role: newRole } : item,
-			),
-		);
-	};
 
 	return (
 		<div className="flex flex-col gap-4 animate-in fade-in slide-in-from-top-4 duration-300">
@@ -287,253 +241,24 @@ export const EditControls = ({
 									</DialogHeader>
 
 									<div className="space-y-6 pt-4">
-										{/* General Access Card */}
-										<div className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/50 transition-all hover:bg-muted/40 group">
-											<div className="flex items-center gap-3">
-												<div className="p-2.5 rounded-full bg-background border border-border/50 shadow-sm group-hover:scale-105 transition-transform">
-													{visibility === "public" ? (
-														<Globe className="h-4 w-4 text-primary" />
-													) : (
-														<Lock className="h-4 w-4 text-muted-foreground" />
-													)}
-												</div>
-												<div className="flex flex-col">
-													<span className="text-sm font-bold">
-														{t(
-															"common.general_access",
-														)}
-													</span>
-													<span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-														{visibility === "public"
-															? t(
-																	"common.anyone_with_link",
-																)
-															: t(
-																	"common.restricted",
-																)}
-													</span>
-												</div>
-											</div>
-											<Select
-												value={
-													visibility === "public"
-														? publicRole
-														: "restricted"
-												}
-												onValueChange={(val) => {
-													if (val === "restricted") {
-														setVisibility(
-															"private",
-														);
-														setPublicRole("viewer");
-														setEditPermission(
-															"owner",
-														);
-													} else {
-														setVisibility("public");
-														setPublicRole(
-															val as
-																| "viewer"
-																| "editor"
-																| "commenter",
-														);
-														setEditPermission(
-															val === "editor"
-																? "public"
-																: "owner",
-														);
-													}
-												}}
-												disabled={!isOwner && !isAdmin}
-											>
-												<SelectTrigger className="w-[130px] h-9 text-xs bg-background">
-													<SelectValue />
-												</SelectTrigger>
-												<SelectContent>
-													<SelectItem value="restricted">
-														{t("common.restricted")}
-													</SelectItem>
-													<SelectItem value="viewer">
-														{t("common.viewer")}
-													</SelectItem>
-													<SelectItem value="editor">
-														{t("common.editor")}
-													</SelectItem>
-													<SelectItem value="commenter">
-														{t("common.commenter")}
-													</SelectItem>
-												</SelectContent>
-											</Select>
-										</div>
+										<VisibilitySelector
+											visibility={visibility}
+											setVisibility={setVisibility}
+											publicRole={publicRole}
+											setPublicRole={setPublicRole}
+											setEditPermission={
+												setEditPermission
+											}
+											disabled={!isOwner && !isAdmin}
+										/>
 
-										{/* Collaborators section */}
-										<div className="space-y-4">
-											<Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2 ml-1">
-												<Users className="h-3 w-3" />
-												{t("common.share_with_people")}
-											</Label>
-
-											<div className="flex gap-2">
-												<div className="flex-1">
-													<MultiEmailInput
-														value={pendingEmails}
-														onChange={
-															setPendingEmails
-														}
-														placeholder={t(
-															"common.add_people_placeholder",
-														)}
-														className="min-h-[40px] text-sm"
-													/>
-												</div>
-												<Select
-													value={pendingRole}
-													onValueChange={(
-														r:
-															| "viewer"
-															| "editor"
-															| "admin"
-															| "commenter",
-													) => setPendingRole(r)}
-												>
-													<SelectTrigger className="w-[110px] h-10 text-xs bg-background">
-														<SelectValue />
-													</SelectTrigger>
-													<SelectContent>
-														<SelectItem value="viewer">
-															{t("common.viewer")}
-														</SelectItem>
-														<SelectItem value="editor">
-															{t("common.editor")}
-														</SelectItem>
-														<SelectItem value="admin">
-															{t("common.admin")}
-														</SelectItem>
-														<SelectItem value="commenter">
-															{t(
-																"common.commenter",
-															)}
-														</SelectItem>
-													</SelectContent>
-												</Select>
-												<Button
-													onClick={handleAddPeople}
-													disabled={
-														pendingEmails.length ===
-														0
-													}
-													size="sm"
-													className="h-10 px-4 font-bold"
-												>
-													{t("common.add")}
-												</Button>
-											</div>
-
-											{shareList.length > 0 && (
-												<div className="flex flex-col gap-2 mt-2 max-h-[200px] overflow-y-auto pr-1">
-													<Label className="text-[10px] uppercase font-bold text-muted-foreground mt-2">
-														{t(
-															"common.people_with_access",
-														)}
-													</Label>
-													{shareList.map((item) => (
-														<div
-															key={item.email}
-															className="flex items-center justify-between p-2.5 rounded-lg border bg-muted/20"
-														>
-															<div className="flex items-center gap-2 overflow-hidden">
-																<div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-black text-primary shrink-0 border border-primary/20">
-																	{item.email[0].toUpperCase()}
-																</div>
-																<span
-																	className="text-sm font-medium truncate"
-																	title={
-																		item.email
-																	}
-																>
-																	{item.email}
-																</span>
-															</div>
-															<div className="flex items-center gap-2 shrink-0">
-																<Select
-																	value={
-																		item.role
-																	}
-																	onValueChange={(
-																		r:
-																			| "viewer"
-																			| "editor"
-																			| "admin"
-																			| "commenter",
-																	) =>
-																		handleUpdateRole(
-																			item.email,
-																			r,
-																		)
-																	}
-																>
-																	<SelectTrigger className="w-[110px] h-7 text-xs bg-background">
-																		<SelectValue />
-																	</SelectTrigger>
-																	<SelectContent>
-																		<SelectItem value="viewer">
-																			{t(
-																				"common.viewer",
-																			)}
-																		</SelectItem>
-																		<SelectItem value="editor">
-																			{t(
-																				"common.editor",
-																			)}
-																		</SelectItem>
-																		<SelectItem value="admin">
-																			{t(
-																				"common.admin",
-																			)}
-																		</SelectItem>
-																		<SelectItem value="commenter">
-																			{t(
-																				"common.commenter",
-																			)}
-																		</SelectItem>
-																	</SelectContent>
-																</Select>
-																<Button
-																	variant="ghost"
-																	size="icon"
-																	className="h-7 w-7 text-muted-foreground hover:text-red-500 hover:bg-red-50"
-																	onClick={() =>
-																		handleRemovePerson(
-																			item.email,
-																		)
-																	}
-																>
-																	<span className="sr-only">
-																		{t(
-																			"common.remove",
-																		)}
-																	</span>
-																	<svg
-																		xmlns="http://www.w3.org/2000/svg"
-																		width="14"
-																		height="14"
-																		viewBox="0 0 24 24"
-																		fill="none"
-																		stroke="currentColor"
-																		strokeWidth="2"
-																		strokeLinecap="round"
-																		strokeLinejoin="round"
-																	>
-																		<path d="M18 6 6 18" />
-																		<path d="m6 6 12 12" />
-																	</svg>
-																</Button>
-															</div>
-														</div>
-													))}
-												</div>
-											)}
-										</div>
+										<CollaboratorsManager
+											shareList={shareList}
+											setShareList={setShareList}
+											allowedUsers={allowedUsers}
+											setAllowedUsers={setAllowedUsers}
+											disabled={!isOwner && !isAdmin}
+										/>
 									</div>
 								</DialogContent>
 							</Dialog>
