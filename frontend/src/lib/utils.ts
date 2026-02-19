@@ -11,10 +11,8 @@ export function saveToLocal(pasteData: PasteData) {
 	const stored = localStorage.getItem(key);
 	let items: Array<PasteData> = stored ? JSON.parse(stored) : [];
 
-	// Remove existing item with the same ID if it exists so we can move it to the top
 	items = items.filter((item: PasteData) => item.id !== pasteData.id);
 
-	// Add the new/updated item to the beginning
 	items.unshift(pasteData);
 
 	localStorage.setItem(key, JSON.stringify(items));

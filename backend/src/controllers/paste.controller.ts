@@ -46,7 +46,6 @@ class PasteController {
 
 		let userRole: "admin" | "editor" | "viewer" | "commenter" = "viewer";
 
-		// Check shareList
 		if (paste.shareList && userEmail) {
 			const shareEntry = paste.shareList.find(
 				(s: { email: string; role: string }) => s.email === userEmail,
@@ -56,7 +55,6 @@ class PasteController {
 			}
 		}
 
-		// Fallback to legacy allowedUsers -> editor
 		if (
 			userRole === "viewer" &&
 			paste.allowedUsers &&
@@ -66,7 +64,6 @@ class PasteController {
 			userRole = "editor";
 		}
 
-		// Check public role / editPermission
 		if (userRole === "viewer") {
 			if (paste.editPermission === "public") {
 				userRole = "editor"; // Legacy compatibility
@@ -320,7 +317,6 @@ class PasteController {
 					userEmail &&
 					result.allowedUsers.includes(userEmail);
 
-				// Check new shareList for read access
 				let hasShareListAccess = false;
 				if (result.shareList && userEmail) {
 					const shareEntry = result.shareList.find(
@@ -345,7 +341,6 @@ class PasteController {
 
 				if (!isOwner) {
 					const pasteObj = result.toObject();
-					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const { content, password, ...rest } = pasteObj;
 					return res.json({
 						...rest,
@@ -417,7 +412,6 @@ class PasteController {
 				});
 			}
 
-			// Restrict sensitive fields for Editors (Admins can do everything)
 			if (userRole === "editor") {
 				visibility = undefined;
 				allowedUsers = undefined;
@@ -552,7 +546,6 @@ class PasteController {
 			}
 
 			const userRole = await this.getUserRole(req, paste);
-			// editor and admins can comment
 			if (
 				userRole !== "admin" &&
 				userRole !== "editor" &&

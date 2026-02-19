@@ -140,21 +140,17 @@ export const forgotPassword = async (req: Request, res: Response) => {
 			return;
 		}
 
-		// Generate token
 		const resetToken = nodeCrypto.randomBytes(20).toString("hex");
 
-		// Hash token and set to resetPasswordToken field
 		user.resetPasswordToken = nodeCrypto
 			.createHash("sha256")
 			.update(resetToken)
 			.digest("hex");
 
-		// Set expire to 10 minutes
 		user.resetPasswordExpires = new Date(Date.now() + 10 * 60 * 1000);
 
 		await user.save();
 
-		// Create reset url
 		const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
 		const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
 
@@ -217,7 +213,6 @@ export const resetPassword = async (req: Request, res: Response) => {
 			return;
 		}
 
-		// Set new password
 		const salt = await bcrypt.genSalt(10);
 		user.password = await bcrypt.hash(req.body.password, salt);
 		user.resetPasswordToken = undefined;

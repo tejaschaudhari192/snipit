@@ -7,7 +7,6 @@ import ThemeProvider from "@/lib/theme";
 import { AuthProvider } from "@/context/AuthContext";
 import Loader from "@/components/loader";
 
-// Lazy load page components
 const HomePage = lazy(() => import("@/pages/home"));
 const DisplayPage = lazy(() => import("@/pages/display"));
 const HistoryPage = lazy(() => import("@/pages/history"));

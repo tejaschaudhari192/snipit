@@ -67,13 +67,9 @@ const HomePage = () => {
 		new Date(Date.now() + 24 * 60 * 60 * 1000),
 	);
 
-	// Update default expiry when content type changes to file
 	useEffect(() => {
 		if (contentType === "file") {
 			setExpiresTime("1d");
-		} else if (expiresTime === "1d") {
-			// If we switch away from file and expiry is 1d, maybe we should keep it?
-			// The user can always change it.
 		}
 	}, [contentType]);
 	const [customId, setCustomId] = useState("");
@@ -82,8 +78,6 @@ const HomePage = () => {
 	const [dialogError, setDialogError] = useState("");
 	const [fastRedirect, setFastRedirect] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-
-	// File upload state
 	const {
 		isUploading,
 		progress: uploadProgress,
@@ -130,7 +124,6 @@ const HomePage = () => {
 			let currentFileSize = fileSize;
 			let currentFileMimeType = fileMimeType;
 
-			// Trigger file upload if a file is selected but not yet uploaded
 			if (contentType === "file" && pendingFile && !currentFileUrl) {
 				const uploadResult = await uploadFile(pendingFile);
 				if (uploadResult.error) {
@@ -140,13 +133,12 @@ const HomePage = () => {
 				currentFileName = uploadResult.fileName;
 				currentFileSize = uploadResult.fileSize;
 				currentFileMimeType = uploadResult.fileMimeType;
-				setPendingFile(null); // Clear pending file once uploaded
+				setPendingFile(null);
 			} else if (
 				contentType === "file" &&
 				isUploading &&
 				uploadPromiseRef.current
 			) {
-				// Wait for ongoing file upload if it's already in progress (e.g. from a previous click)
 				const uploadResult = await uploadPromiseRef.current;
 				if (uploadResult.error) {
 					throw new Error(uploadResult.error);
