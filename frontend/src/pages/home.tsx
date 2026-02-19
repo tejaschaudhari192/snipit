@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -66,6 +66,16 @@ const HomePage = () => {
 	const [customExpiryDate, setCustomExpiryDate] = useState<Date | undefined>(
 		new Date(Date.now() + 24 * 60 * 60 * 1000),
 	);
+
+	// Update default expiry when content type changes to file
+	useEffect(() => {
+		if (contentType === "file") {
+			setExpiresTime("1d");
+		} else if (expiresTime === "1d") {
+			// If we switch away from file and expiry is 1d, maybe we should keep it?
+			// The user can always change it.
+		}
+	}, [contentType]);
 	const [customId, setCustomId] = useState("");
 	const [password, setPassword] = useState("");
 	const [idTypeTab, setIdTypeTab] = useState<"system" | "dynamic">("system");
