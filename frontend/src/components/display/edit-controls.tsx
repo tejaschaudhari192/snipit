@@ -156,7 +156,7 @@ export const EditControls = ({
 								setIsCustomExpiryDialogOpen={
 									setIsCustomExpiryDialogOpen
 								}
-								className="w-full sm:w-[140px] h-9"
+								className="w-full sm:w-fit h-9"
 							/>
 						</div>
 
