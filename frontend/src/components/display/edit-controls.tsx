@@ -124,7 +124,12 @@ export const EditControls = ({
 							<div className="flex items-center gap-2 animate-in fade-in zoom-in-95 duration-200">
 								<LanguageSelector
 									value={language}
-									onValueChange={setLanguage}
+									onValueChange={(val) => {
+										setLanguage(val);
+										if (val === "text") {
+											setContentType("text");
+										}
+									}}
 									isDetecting={isDetecting}
 									className="w-[180px] h-10 text-sm"
 								/>

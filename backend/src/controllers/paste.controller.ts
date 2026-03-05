@@ -452,7 +452,14 @@ class PasteController {
 			}
 
 			this.logger.info(
-				`Update request for paste ${id}: visibility = ${visibility}, newId = ${newId} `,
+				`Update request for paste ${id}: ${JSON.stringify({
+					visibility,
+					newId,
+					contentMode: req.body.contentMode,
+					language,
+					expiresAt,
+					allowComments,
+				})} `,
 			);
 			const result = await this.pasteService.updatePaste(
 				id!,
@@ -469,6 +476,7 @@ class PasteController {
 				allowComments,
 				expiresTime,
 				expiresAt,
+				req.body.contentMode,
 			);
 
 			this.logger.info(`Successfully updated paste: ${id} `);

@@ -231,7 +231,14 @@ const DisplayPage = () => {
 			JSON.stringify(shareList) === JSON.stringify(paste?.shareList) &&
 			publicRole === paste?.publicRole &&
 			allowComments === (paste?.allowComments || false) &&
-			expiresTime === (paste?.expiresTime || "1d");
+			expiresTime === (paste?.expiresTime || "1d") &&
+			contentType ===
+				(paste?.contentMode ||
+					(paste?.redirectUrl
+						? "link"
+						: paste?.language !== "text"
+							? "code"
+							: "text"));
 
 		if (isUnchanged) {
 			setIsEdit(false);
@@ -262,6 +269,7 @@ const DisplayPage = () => {
 				publicRole,
 				allowComments,
 				expiresTime,
+				contentType,
 			);
 			if (data) {
 				toast.success(
@@ -274,11 +282,12 @@ const DisplayPage = () => {
 				setUpdatedContent(data.content);
 				setLanguage(data.language || "text");
 				setContentType(
-					data.redirectUrl
-						? "link"
-						: data.language !== "text"
-							? "code"
-							: "text",
+					data.contentMode ||
+						(data.redirectUrl
+							? "link"
+							: data.language !== "text"
+								? "code"
+								: "text"),
 				);
 				setVisibility(data.visibility || "public");
 				setAllowedUsers(data.allowedUsers || []);
@@ -305,11 +314,12 @@ const DisplayPage = () => {
 		setIsEdit(false);
 		setUpdatedContent(paste?.content);
 		setContentType(
-			paste?.redirectUrl
-				? "link"
-				: paste?.language !== "text"
-					? "code"
-					: "text",
+			paste?.contentMode ||
+				(paste?.redirectUrl
+					? "link"
+					: paste?.language !== "text"
+						? "code"
+						: "text"),
 		);
 		setLanguage(paste?.language || "text");
 		setVisibility(paste?.visibility || "public");
@@ -381,13 +391,14 @@ const DisplayPage = () => {
 								setAllowedUsers(paste?.allowedUsers || []);
 								setLanguage(paste?.language || "text");
 								setContentType(
-									paste?.redirectUrl
-										? "link"
-										: paste?.fileUrl
-											? "file"
-											: paste?.language !== "text"
-												? "code"
-												: "text",
+									paste?.contentMode ||
+										(paste?.redirectUrl
+											? "link"
+											: paste?.fileUrl
+												? "file"
+												: paste?.language !== "text"
+													? "code"
+													: "text"),
 								);
 								setCustomId(paste?.id || "");
 								setEditPermission(

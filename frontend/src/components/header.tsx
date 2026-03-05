@@ -127,25 +127,30 @@ const Header = ({ className }: HeaderProps) => {
 						loading="lazy"
 						className="h-8 w-auto transform transition-transform duration-300 ease-in-out group-hover:scale-105"
 					/>
-					<p className="text-xl md:text-2xl font-black tracking-tight bg-clip-text transform transition-transform duration-300 ease-in-out group-hover:scale-105">
+					<p
+						className={cn(
+							"text-xl md:text-2xl font-black tracking-tight bg-clip-text transform transition-transform duration-300 ease-in-out group-hover:scale-105",
+							id && id.length > 1 ? "hidden sm:block" : "block",
+						)}
+					>
 						Snipit
 					</p>
 				</Link>
 				{id && id.length > 1 && (
-					<div className="hidden md:flex items-center h-8 gap-2 min-w-0 px-3 rounded-full bg-muted/50 border border-border/50">
-						<p className="text-xs text-muted-foreground truncate max-w-[200px] lg:max-w-[400px]">
+					<div className="hidden md:flex items-center h-8 gap-2 min-w-0 flex-1 px-3 rounded-full bg-muted/50 border border-border/50 max-w-sm">
+						<p className="text-xs text-muted-foreground truncate flex-1 min-w-0">
 							{url}
 						</p>
-						<div className="w-px h-3 bg-border mx-1" />
+						<div className="w-px h-3 bg-border mx-1 shrink-0" />
 						<CopyButton
 							content={url}
 							variant="ghost"
-							className="h-6 w-6 p-0 hover:bg-transparent"
+							className="h-6 w-6 p-0 hover:bg-transparent shrink-0"
 						/>
 						<Button
 							variant="ghost"
 							size="icon"
-							className="h-6 w-6 p-0 hover:bg-transparent"
+							className="h-6 w-6 p-0 hover:bg-transparent shrink-0"
 							onClick={() => setIsQRDialogOpen(true)}
 						>
 							<QrCode className="h-3.5 w-3.5" />
@@ -154,7 +159,7 @@ const Header = ({ className }: HeaderProps) => {
 				)}
 			</div>
 
-			<div className="hidden md:flex items-center gap-3">
+			<div className="hidden md:flex items-center gap-3 min-w-0 shrink-0">
 				<nav className="flex items-center gap-1 bg-muted/30 p-1 rounded-lg mr-2">
 					<Link to={"/about"}>
 						<Button
@@ -207,7 +212,7 @@ const Header = ({ className }: HeaderProps) => {
 				<UserMenu />
 			</div>
 
-			<div className="md:hidden flex items-center gap-2">
+			<div className="md:hidden flex items-center gap-1.5 shrink-0">
 				{id && id.length > 1 && (
 					<CopyButton
 						content={url}
@@ -220,15 +225,13 @@ const Header = ({ className }: HeaderProps) => {
 					<Button
 						variant="outline"
 						size="icon"
-						className="h-9 w-9 shrink-0"
+						className="h-9 w-9 shrink-0 hidden sm:flex"
 						onClick={() => setIsQRDialogOpen(true)}
 					>
 						<QrCode className="h-4 w-4" />
 					</Button>
 				)}
-				<div className="md:hidden">
-					<UserMenu />
-				</div>
+				<UserMenu />
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button

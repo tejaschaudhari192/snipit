@@ -38,6 +38,7 @@ export const CONFIG = {
 };
 
 export const LANGUAGES = [
+	{ name: "Plain Text", value: "text" },
 	{ name: "JavaScript", value: "javascript" },
 	{ name: "TypeScript", value: "typescript" },
 	{ name: "HTML", value: "html" },

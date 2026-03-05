@@ -85,6 +85,7 @@ export const useApiHelpers = () => {
 			publicRole?: "viewer" | "editor" | "commenter",
 			allowComments?: boolean,
 			expiresTime?: string,
+			contentMode?: "text" | "code" | "link" | "file",
 		): Promise<PasteData> => {
 			const response = await api.put("/" + id, {
 				content,
@@ -99,6 +100,7 @@ export const useApiHelpers = () => {
 				publicRole,
 				allowComments,
 				expiresTime,
+				contentMode,
 			});
 			const data = response.data;
 			return data;

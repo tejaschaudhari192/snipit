@@ -38,6 +38,7 @@ class PasteService {
 		allowComments?: boolean,
 		expiresTime?: string,
 		expiresAt?: Date | null,
+		contentMode?: "text" | "code" | "link" | "file",
 	) {
 		const paste = await pasteModel.findOne({ id });
 		if (!paste) return null;
@@ -54,6 +55,7 @@ class PasteService {
 		paste.content = content;
 		if (redirectUrl !== undefined) paste.redirectUrl = redirectUrl;
 		if (language !== undefined) paste.language = language;
+		if (contentMode !== undefined) paste.contentMode = contentMode;
 
 		if (visibility !== undefined) {
 			paste.visibility = visibility;
@@ -87,9 +89,17 @@ class PasteService {
 		if (expiresTime !== undefined) {
 			paste.expiresTime = expiresTime;
 		}
-		if (expiresAt !== undefined) {
+		if (expiresAt !== undefined && expiresAt !== null) {
 			paste.expiresAt = expiresAt;
 		}
+
+		console.log(`[PasteService] Final Save Object for ${id}:`, {
+			contentMode: paste.contentMode,
+			language: paste.language,
+			visibility: paste.visibility,
+			redirectUrl: paste.redirectUrl,
+			expiresTime: paste.expiresTime,
+		});
 
 		return await paste.save();
 	}

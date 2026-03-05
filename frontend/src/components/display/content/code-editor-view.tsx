@@ -24,6 +24,12 @@ export const CodeEditorView = ({
 	handleEditorWillMount,
 	contentRef,
 }: CodeEditorViewProps) => {
+	console.log(
+		"[CodeEditorView] Render: contentType =",
+		contentType,
+		"isEdit =",
+		isEdit,
+	);
 	if (contentType === "code") {
 		return (
 			<div
@@ -59,6 +65,7 @@ export const CodeEditorView = ({
 							horizontalScrollbarSize: 10,
 						},
 						wordWrap: "on",
+						automaticLayout: true,
 					}}
 				/>
 			</div>
