@@ -12,6 +12,8 @@ import {
 import bcrypt from "bcryptjs";
 import { deleteFileFromStorage } from "@/lib/supabase.js";
 import type { AuthRequest } from "@/middleware/auth.middleware.js";
+import { sendAccessGrantedEmail } from "@/lib/email.js";
+import configurations from "@/config/configurations.js";
 
 class PasteController {
 	constructor(
@@ -224,6 +226,24 @@ class PasteController {
 			try {
 				const result = await createAndSavePaste(pasteId);
 				this.logger.info(`Created paste with id: ${pasteId} `);
+
+				if (validatedBody.shareList && result) {
+					const frontendUrl =
+						configurations.domain ||
+						(req.headers.origin
+							? req.headers.origin
+							: "http://localhost:5173");
+					for (const share of validatedBody.shareList) {
+						const pasteUrl = `${frontendUrl}/${result.id}`;
+						sendAccessGrantedEmail(
+							share.email,
+							share.role,
+							result.id,
+							pasteUrl,
+						);
+					}
+				}
+
 				return res.status(201).json(result.toObject());
 			} catch (error: unknown) {
 				const err = error as {
@@ -451,6 +471,13 @@ class PasteController {
 				password = await bcrypt.hash(password, salt);
 			}
 
+			const oldShareMap = new Map();
+			if (existingPaste.shareList) {
+				for (const share of existingPaste.shareList) {
+					oldShareMap.set(share.email, share.role);
+				}
+			}
+
 			this.logger.info(
 				`Update request for paste ${id}: ${JSON.stringify({
 					visibility,
@@ -478,6 +505,26 @@ class PasteController {
 				expiresAt,
 				req.body.contentMode,
 			);
+
+			if (shareList && result) {
+				const frontendUrl =
+					configurations.domain ||
+					(req.headers.origin
+						? req.headers.origin
+						: "http://localhost:5173");
+				for (const share of shareList) {
+					const oldRole = oldShareMap.get(share.email);
+					if (oldRole !== share.role) {
+						const pasteUrl = `${frontendUrl}/${result.id}`;
+						sendAccessGrantedEmail(
+							share.email,
+							share.role,
+							result.id,
+							pasteUrl,
+						);
+					}
+				}
+			}
 
 			this.logger.info(`Successfully updated paste: ${id} `);
 			return res.json(result!.toObject());

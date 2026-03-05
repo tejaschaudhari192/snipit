@@ -29,6 +29,14 @@ const configurations = {
 	SUPABASE_URL: process.env.SUPABASE_URL,
 	SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
 	SUPABASE_STORAGE_BUCKET: process.env.SUPABASE_STORAGE_BUCKET,
+	smtp: {
+		service: process.env.SMTP_SERVICE || "gmail",
+		host: process.env.SMTP_HOST,
+		port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587,
+		user: process.env.SMTP_USER,
+		pass: process.env.SMTP_PASS,
+		from: process.env.SMTP_FROM || process.env.SMTP_USER,
+	},
 };
 
 export default configurations;
