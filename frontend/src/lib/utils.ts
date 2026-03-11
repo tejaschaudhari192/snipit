@@ -1,6 +1,8 @@
 import type { PasteData } from "@/types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import errorSound from "@/assets/audio/error.mp3";
+import yaySound from "@/assets/audio/yay.mp3";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -132,4 +134,21 @@ export function getTimeRemaining(
 	}
 
 	return t ? t("common.time.less_than_minute") : "Less than a minute";
+}
+
+export function playErrorSound() {
+	try {
+		const audio = new Audio(errorSound);
+		audio.play();
+	} catch (e) {
+		console.error("Audio error:", e);
+	}
+}
+export function playSuccessSound() {
+	try {
+		const audio = new Audio(yaySound);
+		audio.play();
+	} catch (e) {
+		console.error("Audio error:", e);
+	}
 }

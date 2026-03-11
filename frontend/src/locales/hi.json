@@ -209,7 +209,9 @@
 		"action_cancelled": "कार्रवाई रद्द कर दी गई",
 		"snippet_updated": "स्निपेट सफलतापूर्वक अपडेट किया गया",
 		"update_failed": "स्निपेट अपडेट करने में विफल",
-		"password_incorrect": "ग़लत पासवर्ड"
+		"password_incorrect": "ग़लत पासवर्ड",
+		"empty_content": "कृपया पहले कुछ सामग्री दर्ज करें!",
+		"empty_file": "कृपया पहले एक फ़ाइल चुनें!"
 	},
 	"about_page": {
 		"title": "के बारे में",

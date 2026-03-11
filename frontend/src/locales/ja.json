@@ -208,7 +208,9 @@
 		"action_cancelled": "アクションがキャンセルされました",
 		"snippet_updated": "スニペットが正常に更新されました",
 		"update_failed": "スニペットの更新に失敗しました",
-		"password_incorrect": "パスワードが間違っています"
+		"password_incorrect": "パスワードが間違っています",
+		"empty_content": "貼り付けるコンテンツを入力してください。",
+		"empty_file": "アップロードするファイルを選択してください。"
 	},
 	"about_page": {
 		"title": "Snipitについて",

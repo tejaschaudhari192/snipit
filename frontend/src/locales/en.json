@@ -217,7 +217,9 @@
 		"update_failed": "Failed to update snippet",
 		"password_incorrect": "Incorrect password",
 		"comment_added": "Comment added successfully",
-		"comment_failed": "Failed to add comment"
+		"comment_failed": "Failed to add comment",
+		"empty_content": "Please enter some content first!",
+		"empty_file": "Please select a file first!"
 	},
 	"about_page": {
 		"title": "About",

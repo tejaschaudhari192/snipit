@@ -206,7 +206,9 @@
 		"action_cancelled": "Aktion abgebrochen",
 		"snippet_updated": "Snippet erfolgreich aktualisiert",
 		"update_failed": "Snippet konnte nicht aktualisiert werden",
-		"password_incorrect": "Falsches Passwort"
+		"password_incorrect": "Falsches Passwort",
+		"empty_content": "Bitte geben Sie zuerst einen Inhalt ein!",
+		"empty_file": "Bitte wählen Sie zuerst eine Datei aus!"
 	},
 	"about_page": {
 		"title": "Über",

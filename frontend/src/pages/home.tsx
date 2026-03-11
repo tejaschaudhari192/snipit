@@ -6,7 +6,7 @@ import { type OnMount, type BeforeMount } from "@monaco-editor/react";
 import { AxiosError } from "axios";
 
 import { useApiHelpers } from "@/lib/api";
-import { saveToLocal } from "@/lib/utils";
+import { saveToLocal, playErrorSound, playSuccessSound } from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
@@ -180,6 +180,7 @@ const HomePage = () => {
 				publicRole: options.publicRole ?? publicRole,
 				allowComments: options.allowComments ?? allowComments,
 			});
+			playSuccessSound();
 			toast.success(
 				t("messages.snippet_created", { idType: selectedIdType }),
 				{
@@ -209,6 +210,20 @@ const HomePage = () => {
 	};
 
 	const handleQuickPaste = async () => {
+		const hasContent =
+			contentType === "file" ? !!fileName : textValue.trim().length > 0;
+		if (!hasContent) {
+			playErrorSound();
+			toast.warning(
+				contentType === "file"
+					? t("messages.empty_file", "Please select a file first!")
+					: t(
+							"messages.empty_content",
+							"Please enter some content first!",
+						),
+			);
+			return;
+		}
 		const result = await handleSubmit("system", undefined, {
 			visibility: "public",
 			password: "",
@@ -248,6 +263,20 @@ const HomePage = () => {
 	};
 
 	const handleCreationClick = () => {
+		const hasContent =
+			contentType === "file" ? !!fileName : textValue.trim().length > 0;
+		if (!hasContent) {
+			playErrorSound();
+			toast.warning(
+				contentType === "file"
+					? t("messages.empty_file", "Please select a file first!")
+					: t(
+							"messages.empty_content",
+							"Please enter some content first!",
+						),
+			);
+			return;
+		}
 		setIsDialogOpen(true);
 		setDialogError("");
 	};
@@ -280,11 +309,6 @@ const HomePage = () => {
 					expiresTime={expiresTime}
 					setExpiresTime={setExpiresTime}
 					setIsCustomExpiryDialogOpen={setIsCustomExpiryDialogOpen}
-					hasContent={
-						contentType === "file"
-							? !!fileName
-							: textValue.length > 0
-					}
 					handleCreationClick={handleCreationClick}
 					handleQuickPaste={handleQuickPaste}
 					isSubmitting={isSubmitting}

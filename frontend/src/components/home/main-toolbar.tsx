@@ -19,7 +19,6 @@ interface MainToolbarProps {
 	expiresTime: string;
 	setExpiresTime: (val: string) => void;
 	setIsCustomExpiryDialogOpen: (val: boolean) => void;
-	hasContent: boolean;
 	handleCreationClick: () => void;
 	handleQuickPaste: () => void;
 	isSubmitting?: boolean;
@@ -33,7 +32,6 @@ export const MainToolbar = ({
 	expiresTime,
 	setExpiresTime,
 	setIsCustomExpiryDialogOpen,
-	hasContent,
 	handleCreationClick,
 	handleQuickPaste,
 	isSubmitting = false,
@@ -69,7 +67,7 @@ export const MainToolbar = ({
 
 				<ButtonGroup className="shadow-lg shadow-primary/20 overflow-hidden">
 					<Button
-						disabled={!hasContent || isSubmitting}
+						disabled={isSubmitting}
 						size="lg"
 						className="px-6 h-11 font-bold rounded-r-none border-r-0 hover:bg-primary/90 transition-colors min-w-[120px]"
 						onClick={handleQuickPaste}
@@ -80,7 +78,7 @@ export const MainToolbar = ({
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button
-								disabled={!hasContent || isSubmitting}
+								disabled={isSubmitting}
 								size="icon"
 								className="h-11 w-10 rounded-l-none border-l-0 hover:bg-primary/90 transition-colors"
 							>

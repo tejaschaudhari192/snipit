@@ -5,7 +5,7 @@ import { type BeforeMount } from "@monaco-editor/react";
 import { AxiosError } from "axios";
 
 import { useApiHelpers } from "@/lib/api";
-import { saveToLocal } from "@/lib/utils";
+import { saveToLocal, playErrorSound } from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
@@ -214,6 +214,23 @@ const DisplayPage = () => {
 	};
 
 	const handleEditSave = async () => {
+		const hasContent =
+			contentType === "file"
+				? !!paste?.fileUrl
+				: updatedContent?.trim().length &&
+					updatedContent.trim().length > 0;
+		if (!hasContent) {
+			playErrorSound();
+			toast.warning(
+				contentType === "file"
+					? t("messages.empty_file", "Please select a file first!")
+					: t(
+							"messages.empty_content",
+							"Please enter some content first!",
+						),
+			);
+			return;
+		}
 		const wasProtected = !!paste?.password || !!paste?.isPasswordProtected;
 		const passwordChanged =
 			isPasswordEnabled !== wasProtected || !!editPassword;

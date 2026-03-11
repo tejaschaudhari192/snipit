@@ -208,7 +208,9 @@
 		"action_cancelled": "क्रिया रद्द केली",
 		"snippet_updated": "स्निपेट यशस्वीरित्या अपडेट केले",
 		"update_failed": "स्निपेट अपडेट करण्यात अयशस्वी",
-		"password_incorrect": "चुकीचा पासवर्ड"
+		"password_incorrect": "पासवर्ड चुकीचा आहे",
+		"empty_content": "कृपया प्रथम काही मजकूर प्रविष्ट करा!",
+		"empty_file": "कृपया प्रथम फाइल निवडा!"
 	},
 	"about_page": {
 		"title": "Snipit बद्दल",
