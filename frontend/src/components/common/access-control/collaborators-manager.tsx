@@ -36,12 +36,23 @@ export const CollaboratorsManager = ({
 }: CollaboratorsManagerProps) => {
 	const { t } = useTranslation();
 	const [pendingEmails, setPendingEmails] = useState<string[]>([]);
+	const [inputValue, setInputValue] = useState("");
 	const [pendingRole, setPendingRole] = useState<Role>("editor");
 
 	const handleAddPeople = () => {
-		if (pendingEmails.length === 0) return;
+		const emailsToAdd = [...pendingEmails];
 
-		const newShareItems = pendingEmails.map((email) => ({
+		if (inputValue.trim()) {
+			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			if (emailRegex.test(inputValue.trim())) {
+				emailsToAdd.push(inputValue.trim());
+				setInputValue(""); // clear it
+			}
+		}
+
+		if (emailsToAdd.length === 0) return;
+
+		const newShareItems = emailsToAdd.map((email) => ({
 			email,
 			role: pendingRole,
 		}));
@@ -80,6 +91,8 @@ export const CollaboratorsManager = ({
 					<MultiEmailInput
 						value={pendingEmails}
 						onChange={setPendingEmails}
+						inputValue={inputValue}
+						onInputChange={setInputValue}
 						placeholder={t(
 							"common.add_people_placeholder",
 							"Add people...",
@@ -113,9 +126,14 @@ export const CollaboratorsManager = ({
 				</Select>
 				<Button
 					onClick={handleAddPeople}
-					disabled={disabled || pendingEmails.length === 0}
-					className="h-[44px] w-[60px]"
-					variant="secondary"
+					disabled={
+						disabled ||
+						(pendingEmails.length === 0 &&
+							!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+								inputValue.trim(),
+							))
+					}
+					className="h-[44px] px-6 min-w-[80px] font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm transition-colors border-none"
 				>
 					{t("common.add", "Add")}
 				</Button>

@@ -10,6 +10,8 @@ interface MultiEmailInputProps {
 	placeholder?: string;
 	className?: string;
 	isReadOnly?: boolean;
+	inputValue?: string;
+	onInputChange?: (value: string) => void;
 }
 
 export function MultiEmailInput({
@@ -18,19 +20,28 @@ export function MultiEmailInput({
 	placeholder = "Enter emails...",
 	className,
 	isReadOnly = false,
+	inputValue,
+	onInputChange,
 }: MultiEmailInputProps) {
-	const [inputValue, setInputValue] = React.useState("");
+	const [internalInputValue, setInternalInputValue] = React.useState("");
+	const currentInputValue =
+		inputValue !== undefined ? inputValue : internalInputValue;
+	const setCurrentInputValue = onInputChange || setInternalInputValue;
 	const inputRef = React.useRef<HTMLInputElement>(null);
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (isReadOnly) return;
 		if (
 			(e.key === "Enter" || e.key === "," || e.key === " ") &&
-			inputValue.trim()
+			currentInputValue.trim()
 		) {
 			e.preventDefault();
-			addEmail(inputValue);
-		} else if (e.key === "Backspace" && !inputValue && value.length > 0) {
+			addEmail(currentInputValue);
+		} else if (
+			e.key === "Backspace" &&
+			!currentInputValue &&
+			value.length > 0
+		) {
 			removeEmail(value[value.length - 1]);
 		}
 	};
@@ -50,7 +61,7 @@ export function MultiEmailInput({
 		if (!value.includes(trimmedEmail)) {
 			onChange([...value, trimmedEmail]);
 		}
-		setInputValue("");
+		setCurrentInputValue("");
 	};
 
 	const removeEmail = (emailToRemove: string) => {
@@ -91,12 +102,12 @@ export function MultiEmailInput({
 					type="text"
 					className="flex-1 border-0 bg-transparent p-0 placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 min-w-[150px] h-8"
 					placeholder={value.length === 0 ? placeholder : ""}
-					value={inputValue}
-					onChange={(e) => setInputValue(e.target.value)}
+					value={currentInputValue}
+					onChange={(e) => setCurrentInputValue(e.target.value)}
 					onKeyDown={handleKeyDown}
 					onBlur={() => {
-						if (inputValue.trim()) {
-							addEmail(inputValue);
+						if (currentInputValue.trim()) {
+							addEmail(currentInputValue);
 						}
 					}}
 				/>
