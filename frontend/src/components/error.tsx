@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "motion/react";
@@ -5,15 +6,23 @@ import { Button } from "@/components/ui/button";
 import { Home, Plus, FileQuestion } from "lucide-react";
 import { Particles } from "@/components/ui/shadcn-io/particles";
 import { useTheme } from "@/hooks/use-theme";
+import { playBruhSound } from "@/lib/utils";
 
 const Error = () => {
 	const { t } = useTranslation();
 	const { theme } = useTheme();
 	const particleColor = theme === "dark" ? "#a78bfa" : "#7c3aed";
 
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			playBruhSound();
+		}, 3000);
+
+		return () => clearTimeout(timer);
+	}, []);
+
 	return (
 		<div className="relative min-h-[90vh] flex items-center justify-center px-4 bg-gradient-to-br from-background via-muted/10 to-background overflow-hidden">
-			{/* Particles Background */}
 			<Particles
 				className="absolute inset-0 z-0"
 				quantity={120}
@@ -26,7 +35,6 @@ const Error = () => {
 			/>
 
 			<div className="max-w-2xl w-full text-center relative z-10">
-				{/* Animated 404 */}
 				<motion.div
 					initial={{ opacity: 0, scale: 0.8 }}
 					animate={{ opacity: 1, scale: 1 }}
@@ -38,7 +46,6 @@ const Error = () => {
 						<div className="w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
 					</div>
 
-					{/* 404 Text */}
 					<div className="relative">
 						<h1 className="text-[150px] md:text-[200px] font-black text-transparent bg-clip-text bg-gradient-to-b from-primary via-primary/70 to-primary/20 leading-none select-none">
 							404
@@ -46,7 +53,6 @@ const Error = () => {
 					</div>
 				</motion.div>
 
-				{/* Icon */}
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
@@ -58,7 +64,6 @@ const Error = () => {
 					</div>
 				</motion.div>
 
-				{/* Text content */}
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
@@ -76,7 +81,6 @@ const Error = () => {
 					</p>
 				</motion.div>
 
-				{/* Action buttons */}
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}

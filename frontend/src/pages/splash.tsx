@@ -3,12 +3,14 @@ import { Progress } from "@/components/ui/progress";
 import TextType from "@/components/TextType";
 import { useTranslation } from "react-i18next";
 import icon from "@/assets/brand/icon.png";
+import { playTudumSound } from "@/lib/utils";
 
 const SplashPage = () => {
 	const { t } = useTranslation();
 	const [progress, setProgress] = useState(0);
 
 	useEffect(() => {
+		playTudumSound();
 		const timer = setInterval(() => {
 			setProgress((prev) => {
 				if (prev >= 100) {

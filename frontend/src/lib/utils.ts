@@ -3,6 +3,11 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import errorSound from "@/assets/audio/error.mp3";
 import yaySound from "@/assets/audio/yay.mp3";
+import bruhSound from "@/assets/audio/bruh.mp3";
+import americaSound from "@/assets/audio/america-kya-kehta-tha.mp3";
+import tudumSound from "@/assets/audio/tudum.mp3";
+import removeSound from "@/assets/audio/remove.mp3";
+import undoSound from "@/assets/audio/undo.mp3";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -147,6 +152,51 @@ export function playErrorSound() {
 export function playSuccessSound() {
 	try {
 		const audio = new Audio(yaySound);
+		audio.play();
+	} catch (e) {
+		console.error("Audio error:", e);
+	}
+}
+
+export function playBruhSound() {
+	try {
+		const audio = new Audio(bruhSound);
+		audio.play();
+	} catch (e) {
+		console.error("Audio error:", e);
+	}
+}
+
+export function playAmericaSound() {
+	try {
+		const audio = new Audio(americaSound);
+		audio.play();
+	} catch (e) {
+		console.error("Audio error:", e);
+	}
+}
+
+export function playTudumSound() {
+	try {
+		const audio = new Audio(tudumSound);
+		audio.play();
+	} catch (e) {
+		console.error("Audio error:", e);
+	}
+}
+
+export function playRemoveSound() {
+	try {
+		const audio = new Audio(removeSound);
+		audio.play();
+	} catch (e) {
+		console.error("Audio error:", e);
+	}
+}
+
+export function playUndoSound() {
+	try {
+		const audio = new Audio(undoSound);
 		audio.play();
 	} catch (e) {
 		console.error("Audio error:", e);

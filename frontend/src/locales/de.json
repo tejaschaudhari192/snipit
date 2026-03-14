@@ -84,7 +84,8 @@
 			"hours": "{{count}} Stunden",
 			"minute": "{{count}} Minute",
 			"minutes": "{{count}} Minuten"
-		}
+		},
+		"undo": "Rückgängig"
 	},
 	"profile": {
 		"title": "Ihr Profil",
@@ -201,7 +202,7 @@
 		"id_conflict": "Diese ID ist bereits vergeben. Bitte versuchen Sie eine andere.",
 		"detected_language": "Erkannte Sprache: {{language}}",
 		"delete_confirm": "Sind Sie sicher, dass Sie dieses Snippet löschen möchten?",
-		"snippet_deleted": "Snippet gelöscht",
+		"snippet_deleted": "Snippet wurde gelöscht",
 		"delete_failed": "Löschen des Snippets fehlgeschlagen",
 		"action_cancelled": "Aktion abgebrochen",
 		"snippet_updated": "Snippet erfolgreich aktualisiert",

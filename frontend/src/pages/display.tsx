@@ -5,7 +5,7 @@ import { type BeforeMount } from "@monaco-editor/react";
 import { AxiosError } from "axios";
 
 import { useApiHelpers } from "@/lib/api";
-import { saveToLocal, playErrorSound } from "@/lib/utils";
+import { saveToLocal, playErrorSound, playRemoveSound } from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
@@ -23,6 +23,19 @@ import { useLanguageDetection } from "@/hooks/use-language-detection";
 import { EditControls } from "@/components/display/edit-controls";
 import { CustomExpiryDialog } from "@/components/home/custom-expiry-dialog";
 import { PasswordGate } from "./display/password-gate";
+import { DeleteConfirmationToast } from "@/components/delete-confirmation-toast";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogMedia,
+} from "@/components/ui/alert-dialog";
+import { Trash2 } from "lucide-react";
 
 const DisplayPage = () => {
 	const { id } = useParams();
@@ -68,6 +81,7 @@ const DisplayPage = () => {
 	const [customExpiryDate, setCustomExpiryDate] = useState<Date | undefined>(
 		new Date(Date.now() + 24 * 60 * 60 * 1000),
 	);
+	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
 	const isOwner = !paste?.owner || (!!user && paste.owner === user._id);
 
@@ -169,28 +183,24 @@ const DisplayPage = () => {
 		if (result) setLanguage(result.language);
 	};
 
-	const handleDelete = async () => {
-		toast(
-			t(
-				"messages.delete_confirm",
-				"Are you sure you want to delete this snippet?",
-			),
-			{
-				position: "top-center",
-				action: {
-					label: t("history.clear_action", "Delete"),
-					onClick: async () => {
-						const data = await apiHelpers.deletePaste(id!);
-						if (data) {
-							toast.success(
-								t(
-									"messages.snippet_deleted",
-									"Snippet deleted",
-								),
-								{ position: "bottom-right" },
-							);
-							navigate("/");
-						} else {
+	const confirmDelete = () => {
+		playRemoveSound();
+		const originalId = id!;
+		const originalPath = location.pathname;
+
+		navigate("/");
+
+		toast.custom(
+			(tId) => (
+				<DeleteConfirmationToast
+					onUndo={() => {
+						toast.dismiss(tId);
+						navigate(originalPath);
+					}}
+					onConfirm={async () => {
+						toast.dismiss(tId);
+						const data = await apiHelpers.deletePaste(originalId);
+						if (!data) {
 							toast.error(
 								t(
 									"messages.delete_failed",
@@ -199,19 +209,17 @@ const DisplayPage = () => {
 								{ position: "bottom-right" },
 							);
 						}
-					},
-				},
-				cancel: {
-					label: t("history.cancel", "Cancel"),
-					onClick: () =>
-						toast.info(
-							t("messages.action_cancelled", "Action cancelled"),
-							{ position: "bottom-right" },
-						),
-				},
+					}}
+				/>
+			),
+			{
+				position: "bottom-right",
+				duration: Infinity,
 			},
 		);
 	};
+
+	const handleDelete = () => setIsDeleteDialogOpen(true);
 
 	const handleEditSave = async () => {
 		const hasContent =
@@ -516,6 +524,37 @@ const DisplayPage = () => {
 					/>
 				</div>
 			</div>
+
+			<AlertDialog
+				open={isDeleteDialogOpen}
+				onOpenChange={setIsDeleteDialogOpen}
+			>
+				<AlertDialogContent size="sm">
+					<AlertDialogHeader>
+						<AlertDialogMedia className="bg-destructive/10 text-destructive">
+							<Trash2 className="size-8" />
+						</AlertDialogMedia>
+						<AlertDialogTitle>
+							{t("display.delete_button")}
+						</AlertDialogTitle>
+						<AlertDialogDescription>
+							{t("messages.delete_confirm")}
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel variant="ghost">
+							{t("history.cancel")}
+						</AlertDialogCancel>
+						<AlertDialogAction
+							variant="destructive"
+							onClick={confirmDelete}
+							className="font-bold"
+						>
+							{t("display.delete_button")}
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	);
 };

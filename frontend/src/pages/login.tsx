@@ -57,7 +57,6 @@ const LoginPage = () => {
 
 	return (
 		<div className="relative flex-1 flex flex-col items-center justify-center bg-gradient-to-br from-background via-muted/10 to-background px-4 py-8 md:py-12 overflow-hidden">
-			{/* Particles Background */}
 			<Particles
 				className="absolute inset-0 z-0"
 				quantity={80}

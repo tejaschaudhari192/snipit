@@ -84,7 +84,8 @@
 			"hours": "{{count}} घंटे",
 			"minute": "{{count}} मिनट",
 			"minutes": "{{count}} मिनट"
-		}
+		},
+		"undo": "पूर्ववत करें"
 	},
 	"profile": {
 		"title": "आपकी प्रोफ़ाइल",

@@ -12,6 +12,18 @@ import { Loader2 } from "lucide-react";
 import { SnippetCard } from "@/components/snippet-card";
 import { Particles } from "@/components/ui/shadcn-io/particles";
 import { useTheme } from "@/hooks/use-theme";
+import { playRemoveSound } from "@/lib/utils";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogMedia,
+} from "@/components/ui/alert-dialog";
 
 const HistoryPage = () => {
 	const { t } = useTranslation();
@@ -23,6 +35,7 @@ const HistoryPage = () => {
 
 	const [items, setItems] = useState<Array<PasteData>>([]);
 	const [loading, setLoading] = useState(true);
+	const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
 
 	useEffect(() => {
 		const loadHistory = async () => {
@@ -72,19 +85,14 @@ const HistoryPage = () => {
 		loadHistory();
 	}, [user, apiHelpers, t]);
 
-	const handleClearHistory = () => {
-		toast(t("history.clear_confirm"), {
-			position: "top-center",
-			action: {
-				label: t("history.clear_action"),
-				onClick: () => {
-					localStorage.removeItem("items");
-					setItems([]);
-					toast.success(t("history.cleared_success"));
-				},
-			},
-			cancel: { label: t("history.cancel"), onClick: () => {} },
-		});
+	const handleClearHistory = () => setIsClearDialogOpen(true);
+
+	const confirmClearHistory = () => {
+		playRemoveSound();
+		localStorage.removeItem("items");
+		setItems([]);
+		toast.success(t("history.cleared_success"));
+		setIsClearDialogOpen(false);
 	};
 
 	return (
@@ -187,6 +195,37 @@ const HistoryPage = () => {
 					</div>
 				)}
 			</div>
+
+			<AlertDialog
+				open={isClearDialogOpen}
+				onOpenChange={setIsClearDialogOpen}
+			>
+				<AlertDialogContent size="sm">
+					<AlertDialogHeader>
+						<AlertDialogMedia className="bg-destructive/10 text-destructive">
+							<Trash2 className="size-8" />
+						</AlertDialogMedia>
+						<AlertDialogTitle>
+							{t("history.clear_history")}
+						</AlertDialogTitle>
+						<AlertDialogDescription>
+							{t("history.clear_confirm")}
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel variant="ghost">
+							{t("history.cancel")}
+						</AlertDialogCancel>
+						<AlertDialogAction
+							variant="destructive"
+							onClick={confirmClearHistory}
+							className="font-bold"
+						>
+							{t("history.clear_action")}
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	);
 };

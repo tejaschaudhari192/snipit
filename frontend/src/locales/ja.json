@@ -84,7 +84,8 @@
 			"hours": "{{count}} 時間",
 			"minute": "{{count}} 分",
 			"minutes": "{{count}} 分"
-		}
+		},
+		"undo": "元に戻す"
 	},
 	"profile": {
 		"title": "ユーザープロフィール",
