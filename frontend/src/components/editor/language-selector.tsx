@@ -6,7 +6,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { LanguageIcon } from "@/components/language-icon";
+import { LanguageIcon } from "@/components/snippets/language-icon";
 import { useTranslation } from "react-i18next";
 import aiGif from "@/assets/images/ai.gif";
 import { cn } from "@/lib/utils";

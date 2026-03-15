@@ -1,5 +1,5 @@
 import { Clock } from "lucide-react";
-import { LanguageIcon } from "@/components/language-icon";
+import { LanguageIcon } from "@/components/snippets/language-icon";
 import { getTimeRemaining } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import type { PasteData } from "@/types";
