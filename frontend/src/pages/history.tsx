@@ -9,7 +9,7 @@ import { motion } from "motion/react";
 import { useAuth } from "@/context/AuthContext";
 import { useApiHelpers } from "@/lib/api";
 import { Loader2 } from "lucide-react";
-import { SnippetCard } from "@/components/snippet-card";
+import { SnippetCard } from "@/components/snippets/snippet-card";
 import { Particles } from "@/components/ui/shadcn-io/particles";
 import { useTheme } from "@/hooks/use-theme";
 import { playRemoveSound } from "@/lib/utils";

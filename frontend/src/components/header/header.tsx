@@ -18,21 +18,22 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { QRCodeSVG } from "qrcode.react";
-import ThemeTogglePositionsDemo from "@/components/theme-toggle";
+import ThemeTogglePositionsDemo from "./theme-toggle";
 import { LanguageSwitcher } from "./language-switcher";
 import icon from "@/assets/brand/icon.png";
 import { useAuth } from "@/context/AuthContext";
 import { User, LogOut, Search } from "lucide-react";
-import { toast } from "sonner";
 import { JumpToDialog } from "./jump-to-dialog";
+import { LogoutDialog } from "./logout-dialog";
 
 interface HeaderProps {
 	className?: string;
 }
 
 const UserMenu = () => {
-	const { user, logout } = useAuth();
+	const { user } = useAuth();
 	const { t } = useTranslation();
+	const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 
 	if (!user) {
 		return (
@@ -70,27 +71,18 @@ const UserMenu = () => {
 					</Link>
 				</DropdownMenuItem>
 				<DropdownMenuItem
-					onClick={() => {
-						toast(t("auth.logout_confirm_question"), {
-							action: {
-								label: t("auth.logout_action"),
-								onClick: async () => {
-									await logout();
-									toast.success(t("auth.logout_confirm"));
-								},
-							},
-							cancel: {
-								label: t("auth.logout_cancel"),
-								onClick: () => {},
-							},
-						});
-					}}
+					onClick={() => setIsLogoutDialogOpen(true)}
 					className="text-red-500 focus:text-red-500 cursor-pointer"
 				>
 					<LogOut className="h-4 w-4 mr-2" />
 					{t("header.logout", "Logout")}
 				</DropdownMenuItem>
 			</DropdownMenuContent>
+
+			<LogoutDialog
+				open={isLogoutDialogOpen}
+				onOpenChange={setIsLogoutDialogOpen}
+			/>
 		</DropdownMenu>
 	);
 };

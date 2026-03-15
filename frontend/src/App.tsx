@@ -2,10 +2,10 @@ import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SplashPage from "@/pages/splash";
 import { useApiHelpers } from "./lib/api";
-import Header from "@/components/header";
+import Header from "@/components/header/header";
 import ThemeProvider from "@/lib/theme";
 import { AuthProvider } from "@/context/AuthContext";
-import Loader from "@/components/loader";
+import Loader from "@/components/common/core/loader";
 
 const HomePage = lazy(() => import("@/pages/home"));
 const DisplayPage = lazy(() => import("@/pages/display"));

@@ -2,7 +2,7 @@ import { motion } from "motion/react";
 import { FileText, ChevronRight, Loader2, Inbox } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { SnippetCard } from "@/components/snippet-card";
+import { SnippetCard } from "@/components/snippets/snippet-card";
 import { useTranslation } from "react-i18next";
 import type { PasteData } from "@/types";
 

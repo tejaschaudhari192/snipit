@@ -6,8 +6,8 @@ import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { User, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ProfileInfo } from "./profile/profile-info";
-import { ProfileSnippetList } from "./profile/profile-snippet-list";
+import { ProfileInfo } from "@/components/profile/profile-info";
+import { ProfileSnippetList } from "@/components/profile/profile-snippet-list";
 import type { PasteData } from "@/types";
 import { motion } from "motion/react";
 

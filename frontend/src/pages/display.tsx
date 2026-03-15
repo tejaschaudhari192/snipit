@@ -13,8 +13,8 @@ import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "react-i18next";
 import type { PasteData } from "@/types";
 
-import Loader from "@/components/loader";
-import Error from "@/components/error";
+import Loader from "@/components/common/core/loader";
+import Error from "@/components/common/core/error";
 
 import { DisplayToolbar } from "@/components/display/display-toolbar";
 import { DisplayMetadata } from "@/components/display/display-metadata";
@@ -22,8 +22,8 @@ import { DisplayContent } from "@/components/display/display-content";
 import { useLanguageDetection } from "@/hooks/use-language-detection";
 import { EditControls } from "@/components/display/edit-controls";
 import { CustomExpiryDialog } from "@/components/home/custom-expiry-dialog";
-import { PasswordGate } from "./display/password-gate";
-import { DeleteConfirmationToast } from "@/components/delete-confirmation-toast";
+import { PasswordGate } from "@/components/display/password-gate";
+import { DeleteConfirmationToast } from "@/components/snippets/delete-confirmation-toast";
 import {
 	AlertDialog,
 	AlertDialogAction,

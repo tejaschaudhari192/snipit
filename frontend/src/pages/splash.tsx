@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Progress } from "@/components/ui/progress";
-import TextType from "@/components/TextType";
+import TextType from "@/components/common/core/TextType";
 import { useTranslation } from "react-i18next";
 import icon from "@/assets/brand/icon.png";
 import { playTudumSound } from "@/lib/utils";

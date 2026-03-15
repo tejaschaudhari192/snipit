@@ -12,7 +12,7 @@ import {
 	Terminal,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { LanguageIcon } from "@/components/language-icon";
+import { LanguageIcon } from "./language-icon";
 
 interface SnippetCardProps {
 	item: PasteData;
