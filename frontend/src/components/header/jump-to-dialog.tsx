@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Search, ArrowRight } from "lucide-react";
-import chaloAudio from "@/assets/audio/chalo.mp3";
 import {
 	Dialog,
 	DialogContent,
@@ -36,10 +35,6 @@ export const JumpToDialog = ({ isOpen, onOpenChange }: JumpToDialogProps) => {
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		if (snippetId.trim()) {
-			// Play chalo sound
-			const audio = new Audio(chaloAudio);
-			audio.play().catch((e) => console.error("Error playing audio:", e));
-
 			navigate(`/${snippetId.trim()}`);
 			onOpenChange(false);
 			setSnippetId("");

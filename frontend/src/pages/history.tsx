@@ -96,7 +96,7 @@ const HistoryPage = () => {
 	};
 
 	return (
-		<div className="relative min-h-[90vh] bg-background p-4 md:p-8 overflow-hidden">
+		<div className="relative min-h-[90vh] bg-background p-4 md:p-8 overflow-x-hidden w-full">
 			<div className="absolute top-[10%] right-[10%] w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full pointer-events-none opacity-50" />
 			<div className="absolute bottom-[20%] left-[5%] w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full pointer-events-none opacity-50" />
 			{/* Particles Background */}

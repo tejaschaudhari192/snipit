@@ -112,7 +112,7 @@ const Header = ({ className }: HeaderProps) => {
 	return (
 		<header
 			className={cn(
-				"flex justify-between items-center h-[64px] p-3 px-4 md:px-8 border-b border-border/50 shadow-2xl bg-background/60 backdrop-blur-xl sticky top-0 z-50 ring-1 ring-white/5",
+				"flex justify-between items-center h-[64px] p-3 px-4 md:px-8 border-b border-border/50 bg-background/60 backdrop-blur-xl sticky top-0 z-50",
 				className,
 			)}
 		>
