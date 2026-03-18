@@ -53,7 +53,7 @@ export const ProfileInfo = ({
 				animate={{ opacity: 1, x: 0 }}
 				transition={{ duration: 0.5 }}
 			>
-				<Card className="border-border/50 bg-background/60 backdrop-blur-xl shadow-2xl overflow-hidden">
+				<Card className="border border-border/50 bg-background/60 backdrop-blur-2xl shadow-2xl rounded-2xl ring-1 ring-white/5 overflow-hidden">
 					<div className="h-24 bg-gradient-to-r from-primary/20 via-primary/10 to-transparent" />
 					<CardContent className="relative pt-0 px-6 pb-8">
 						<div className="flex flex-col items-center -mt-12 mb-6">
@@ -187,7 +187,7 @@ export const ProfileInfo = ({
 				animate={{ opacity: 1, x: 0 }}
 				transition={{ delay: 0.2 }}
 			>
-				<Card className="border-border/50 bg-background/50 backdrop-blur-md">
+				<Card className="border border-border/50 bg-background/60 backdrop-blur-2xl shadow-2xl rounded-2xl ring-1 ring-white/5">
 					<CardContent className="p-6 space-y-6">
 						<h3 className="font-bold text-sm flex items-center gap-2 uppercase tracking-wider text-muted-foreground">
 							<div className="p-1 px-2 rounded-md bg-muted text-foreground lowercase italic">

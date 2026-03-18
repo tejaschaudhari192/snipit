@@ -17,8 +17,8 @@ export const DeleteConfirmationToast = ({
 	const { t } = useTranslation();
 
 	return (
-		<div className="bg-white/95 backdrop-blur-md text-slate-900 border border-slate-200/50 rounded-2xl p-4 w-[350px] relative overflow-hidden pointer-events-auto shadow-[0_20px_50px_-10px_rgba(0,0,0,0.15),0_0_60px_30px_rgba(99,102,241,0.05)]">
-			<div className="absolute bottom-0 left-0 right-0 h-[2px] bg-slate-100/40" />
+		<div className="bg-background/80 backdrop-blur-2xl text-foreground border border-border/50 rounded-2xl p-4 w-[350px] relative overflow-hidden pointer-events-auto shadow-2xl ring-1 ring-white/5">
+			<div className="absolute bottom-0 left-0 right-0 h-[2px] bg-muted" />
 			<motion.div
 				className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-blue-400 to-indigo-600 shadow-[0_0_12px_rgba(99,102,241,0.3)]"
 				initial={{ width: "0%" }}
@@ -29,7 +29,7 @@ export const DeleteConfirmationToast = ({
 
 			<div className="flex items-center justify-between gap-4 relative z-10 px-1">
 				<div className="flex items-center gap-3">
-					<span className="text-sm font-semibold tracking-tight text-slate-800">
+					<span className="text-sm font-semibold tracking-tight text-foreground">
 						{t(
 							"messages.snippet_deleted",
 							"Snippet has been deleted",
@@ -39,7 +39,7 @@ export const DeleteConfirmationToast = ({
 				<Button
 					variant="secondary"
 					size="sm"
-					className="h-8 px-4 text-xs font-bold uppercase tracking-widest text-blue-600 hover:text-blue-700 hover:bg-blue-50/50 transition-all border-none relative z-20"
+					className="h-8 px-4 text-xs font-bold uppercase tracking-widest text-primary hover:text-primary hover:bg-primary/10 transition-all border-none relative z-20"
 					onClick={() => {
 						playUndoSound();
 						onUndo();

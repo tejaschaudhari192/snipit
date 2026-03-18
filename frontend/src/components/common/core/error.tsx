@@ -22,7 +22,10 @@ const Error = () => {
 	}, []);
 
 	return (
-		<div className="relative min-h-[90vh] flex items-center justify-center px-4 bg-gradient-to-br from-background via-muted/10 to-background overflow-hidden">
+		<div className="relative min-h-[90vh] flex items-center justify-center px-4 bg-background overflow-hidden">
+			{/* Ambient Background Glows */}
+			<div className="absolute top-[10%] right-[10%] w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full pointer-events-none opacity-50" />
+			<div className="absolute bottom-[20%] left-[5%] w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full pointer-events-none opacity-50" />
 			<Particles
 				className="absolute inset-0 z-0"
 				quantity={120}

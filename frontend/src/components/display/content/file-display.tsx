@@ -139,7 +139,7 @@ export const FileDisplay = ({ paste, contentRef }: FileDisplayProps) => {
 			ref={contentRef}
 			className="flex justify-center items-center py-12 px-4"
 		>
-			<Card className="w-full max-w-sm border-2 shadow-2xl overflow-hidden group hover:border-primary/50 transition-all duration-300">
+			<Card className="w-full max-w-sm border border-border/50 bg-background/60 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden group hover:border-primary/50 transition-all ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-500">
 				<div className="h-32 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent flex items-center justify-center relative overflow-hidden">
 					<div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,transparent,black)]" />
 					<div className="relative transform group-hover:scale-110 transition-transform duration-500">

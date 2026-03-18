@@ -36,7 +36,7 @@ export const ProfileSnippetList = ({
 			</div>
 
 			{loading ? (
-				<div className="flex flex-col items-center justify-center py-24 gap-4 bg-muted/10 rounded-3xl border border-dashed border-border/50">
+				<div className="flex flex-col items-center justify-center py-24 gap-4 bg-background/60 backdrop-blur-2xl shadow-2xl ring-1 ring-white/5 rounded-3xl border border-border/50 relative z-10">
 					<Loader2 className="h-10 w-10 animate-spin text-primary/50" />
 					<p className="text-muted-foreground italic">
 						{t(
@@ -49,7 +49,7 @@ export const ProfileSnippetList = ({
 				<motion.div
 					initial={{ opacity: 0, scale: 0.95 }}
 					animate={{ opacity: 1, scale: 1 }}
-					className="bg-card/30 backdrop-blur-sm rounded-3xl border border-dashed border-border/60 p-8 md:p-20 text-center"
+					className="bg-background/60 backdrop-blur-2xl shadow-2xl ring-1 ring-white/5 rounded-3xl border border-border/50 p-8 md:p-20 text-center relative z-10"
 				>
 					<div className="w-16 h-16 md:w-20 md:h-20 mx-auto mb-6 rounded-full bg-muted/50 flex items-center justify-center">
 						<Inbox className="h-8 w-8 md:h-10 md:w-10 text-muted-foreground" />

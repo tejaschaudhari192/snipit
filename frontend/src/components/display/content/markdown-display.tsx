@@ -75,7 +75,7 @@ export const MarkdownDisplay = ({
 	return (
 		<div
 			ref={contentRef}
-			className="prose prose-sm md:prose-base dark:prose-invert max-w-none break-words"
+			className="prose prose-sm md:prose-base dark:prose-invert break-words p-8 md:p-12 rounded-2xl border border-border/50 bg-background/60 backdrop-blur-xl shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-500 max-w-[900px] mx-auto"
 			style={{ fontSize: `${fontSize}px` }}
 		>
 			<ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>

@@ -96,7 +96,9 @@ const HistoryPage = () => {
 	};
 
 	return (
-		<div className="relative min-h-[90vh] bg-gradient-to-br from-background via-muted/20 to-background p-4 md:p-8 overflow-hidden">
+		<div className="relative min-h-[90vh] bg-background p-4 md:p-8 overflow-hidden">
+			<div className="absolute top-[10%] right-[10%] w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full pointer-events-none opacity-50" />
+			<div className="absolute bottom-[20%] left-[5%] w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full pointer-events-none opacity-50" />
 			{/* Particles Background */}
 			<Particles
 				className="absolute inset-0 z-0"
@@ -161,7 +163,7 @@ const HistoryPage = () => {
 					<motion.div
 						initial={{ opacity: 0, scale: 0.95 }}
 						animate={{ opacity: 1, scale: 1 }}
-						className="bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 p-16 text-center shadow-lg"
+						className="bg-background/60 backdrop-blur-2xl rounded-3xl border border-border/50 p-16 text-center shadow-2xl ring-1 ring-white/5 relative z-10"
 					>
 						<div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted/50 flex items-center justify-center">
 							<Inbox className="h-10 w-10 text-muted-foreground" />
@@ -200,7 +202,10 @@ const HistoryPage = () => {
 				open={isClearDialogOpen}
 				onOpenChange={setIsClearDialogOpen}
 			>
-				<AlertDialogContent size="sm">
+				<AlertDialogContent
+					size="sm"
+					className="border border-border/50 bg-background/60 backdrop-blur-2xl shadow-2xl rounded-2xl ring-1 ring-white/5 overflow-hidden"
+				>
 					<AlertDialogHeader>
 						<AlertDialogMedia className="bg-destructive/10 text-destructive">
 							<Trash2 className="size-8" />

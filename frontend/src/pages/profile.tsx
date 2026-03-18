@@ -117,8 +117,12 @@ const ProfilePage = () => {
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background">
-			<div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">
+		<div className="relative min-h-screen bg-background overflow-hidden flex flex-col items-center">
+			{/* Ambient Background Glows */}
+			<div className="absolute top-[10%] right-[10%] w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full pointer-events-none opacity-50" />
+			<div className="absolute bottom-[20%] left-[5%] w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full pointer-events-none opacity-50" />
+
+			<div className="relative z-10 container mx-auto px-4 py-8 md:py-12 max-w-7xl">
 				<div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
 					<ProfileInfo
 						user={user}

@@ -112,7 +112,7 @@ const Header = ({ className }: HeaderProps) => {
 	return (
 		<header
 			className={cn(
-				"flex justify-between items-center h-[64px] p-3 px-4 md:px-8 border shadow-sm bg-background/80 backdrop-blur-md sticky top-0 z-50",
+				"flex justify-between items-center h-[64px] p-3 px-4 md:px-8 border-b border-border/50 shadow-2xl bg-background/60 backdrop-blur-xl sticky top-0 z-50 ring-1 ring-white/5",
 				className,
 			)}
 		>
@@ -300,7 +300,7 @@ const Header = ({ className }: HeaderProps) => {
 				onOpenChange={setIsJumpToDialogOpen}
 			/>
 			<Dialog open={isQRDialogOpen} onOpenChange={setIsQRDialogOpen}>
-				<DialogContent className="sm:max-w-md">
+				<DialogContent className="sm:max-w-md border border-border/50 bg-background/60 backdrop-blur-2xl shadow-2xl rounded-2xl ring-1 ring-white/5 overflow-hidden">
 					<DialogHeader>
 						<div className="flex items-center gap-2 mb-1">
 							<div className="p-2 rounded-lg bg-primary/10 text-primary">

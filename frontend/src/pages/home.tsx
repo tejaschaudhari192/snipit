@@ -301,8 +301,12 @@ const HomePage = () => {
 		defineMonacoThemes(monaco);
 
 	return (
-		<div className="flex-1 flex flex-col bg-gradient-to-br from-background via-muted/5 to-background">
-			<div className="flex flex-col gap-4 my-2 mx-3 md:my-4 md:mx-5">
+		<div className="relative flex-1 flex flex-col bg-background overflow-hidden">
+			{/* Ambient Background Glows */}
+			<div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-blue-500/10 blur-[100px] rounded-full pointer-events-none" />
+			<div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-primary/10 blur-[100px] rounded-full pointer-events-none" />
+
+			<div className="relative z-10 flex flex-col gap-4 my-2 mx-3 md:my-4 md:mx-5">
 				<MainToolbar
 					contentType={contentType}
 					setContentType={setContentType}

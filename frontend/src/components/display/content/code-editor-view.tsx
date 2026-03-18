@@ -34,7 +34,7 @@ export const CodeEditorView = ({
 		return (
 			<div
 				ref={contentRef}
-				className="rounded-xl border border-border/50 shadow-2xl overflow-hidden bg-background/50 backdrop-blur-sm animate-in fade-in zoom-in-95 duration-500"
+				className="rounded-2xl border border-border/50 shadow-2xl overflow-hidden bg-background/60 backdrop-blur-xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-500"
 			>
 				<Editor
 					height="70vh"
@@ -73,14 +73,14 @@ export const CodeEditorView = ({
 	}
 
 	return (
-		<div ref={contentRef}>
+		<div ref={contentRef} className="relative z-10">
 			<Textarea
 				readOnly={!isEdit}
 				value={content}
 				onChange={
 					isEdit ? (e) => onContentChange(e.target.value) : undefined
 				}
-				className={`min-h-[500px] font-mono text-sm resize-none bg-muted/20 border-border/50 p-6 leading-relaxed shadow-inner ${
+				className={`min-h-[500px] font-mono text-sm resize-none bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 leading-relaxed shadow-2xl ring-1 ring-white/5 animate-in fade-in zoom-in-95 duration-500 ${
 					!isEdit
 						? "select-all cursor-text"
 						: "focus-visible:ring-primary/20"

@@ -51,7 +51,7 @@ export const MainToolbar = ({
 	};
 
 	return (
-		<div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+		<div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between p-3 rounded-2xl bg-background/40 backdrop-blur-xl border border-border/50 shadow-sm relative z-10">
 			<ContentTypeSelector
 				value={contentType}
 				onValueChange={setContentType}

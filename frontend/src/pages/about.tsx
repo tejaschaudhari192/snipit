@@ -30,10 +30,9 @@ const AboutPage = () => {
 						vy={0.03}
 					/>
 
-					{/* Enhanced Background Glows for Dark Mode */}
-					<div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5 dark:from-primary/20" />
-					<div className="absolute top-10 left-10 w-48 h-48 md:w-72 md:h-72 bg-primary/20 rounded-full blur-[120px] opacity-50" />
-					<div className="absolute bottom-10 right-10 w-64 h-64 md:w-96 md:h-96 bg-primary/10 rounded-full blur-[120px] opacity-50" />
+					{/* Ambient Background Glows */}
+					<div className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] opacity-40 pointer-events-none" />
+					<div className="absolute bottom-[20%] right-[10%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] opacity-40 pointer-events-none" />
 
 					<div className="max-w-4xl mx-auto text-center relative z-10">
 						<motion.div
@@ -81,7 +80,7 @@ const AboutPage = () => {
 				</section>
 
 				{/* Features Grid */}
-				<section className="py-16 md:py-24 px-4 bg-secondary/5 dark:bg-secondary/10">
+				<section className="py-16 md:py-24 px-4 relative z-10">
 					<div className="max-w-6xl mx-auto">
 						<div className="text-center mb-12 md:mb-16">
 							<h2 className="text-2xl md:text-4xl font-bold mb-4">
@@ -105,7 +104,7 @@ const AboutPage = () => {
 									}}
 									className="group"
 								>
-									<div className="h-full p-6 md:p-8 rounded-2xl bg-card border border-border/50 hover:border-primary/40 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 dark:hover:bg-accent/5">
+									<div className="h-full p-6 md:p-8 rounded-2xl border border-border/50 bg-background/60 backdrop-blur-xl shadow-2xl ring-1 ring-white/5 hover:border-primary/40 transition-all duration-300 hover:shadow-primary/10 dark:hover:bg-accent/5">
 										<div
 											className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-black/10`}
 										>
@@ -158,7 +157,7 @@ const AboutPage = () => {
 				</section>
 
 				{/* Team Section */}
-				<section className="py-16 md:py-24 px-4 bg-secondary/5">
+				<section className="py-16 md:py-24 px-4 relative z-10">
 					<div className="max-w-5xl mx-auto">
 						<h2 className="text-2xl md:text-4xl font-bold mb-12 text-center text-foreground">
 							{t("about_page.team.title")}
@@ -174,7 +173,7 @@ const AboutPage = () => {
 										duration: 0.4,
 										delay: index * 0.1,
 									}}
-									className="p-6 md:p-8 rounded-3xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-300 shadow-sm group"
+									className="p-6 md:p-8 rounded-3xl bg-background/60 backdrop-blur-xl border border-border/50 shadow-2xl ring-1 ring-white/5 hover:border-primary/30 transition-all duration-300 group"
 								>
 									<div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-6">
 										{/* Avatar Container with Dark Mode Ring */}
@@ -231,7 +230,7 @@ const AboutPage = () => {
 				</section>
 
 				{/* FAQ Section */}
-				<section className="py-16 md:py-24 px-4 bg-secondary/5">
+				<section className="py-16 md:py-24 px-4 relative z-10">
 					<div className="max-w-4xl mx-auto">
 						<h2 className="text-2xl md:text-4xl font-bold mb-12 text-center">
 							{t("about_page.faq.title")}
@@ -244,7 +243,7 @@ const AboutPage = () => {
 									whileInView={{ opacity: 1, x: 0 }}
 									viewport={{ once: true }}
 									transition={{ delay: index * 0.1 }}
-									className="p-6 rounded-2xl bg-card border border-border/50 shadow-sm hover:shadow-md transition-shadow"
+									className="p-6 rounded-2xl bg-background/60 backdrop-blur-xl border border-border/50 shadow-2xl ring-1 ring-white/5 hover:border-primary/30 transition-all duration-300"
 								>
 									<h3 className="text-lg font-bold mb-2">
 										{t(

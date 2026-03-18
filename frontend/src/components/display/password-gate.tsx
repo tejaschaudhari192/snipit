@@ -29,15 +29,22 @@ export const PasswordGate = ({
 
 	return (
 		<div className="flex-1 flex justify-center items-center p-4">
-			<Card className="w-full max-w-md shadow-lg border-2">
-				<CardHeader className="space-y-1 text-center">
-					<div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-						<Lock className="w-6 h-6 text-primary" />
+			<Card className="w-full max-w-md shadow-2xl border border-border/50 bg-background/60 backdrop-blur-xl rounded-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-500 overflow-hidden">
+				<CardHeader className="space-y-2 text-center pb-6">
+					<div className="flex items-center justify-center mb-6">
+						<div className="relative flex items-center justify-center w-20 h-20">
+							<div className="absolute inset-0 rounded-full border border-primary/30 border-dashed animate-[spin_8s_linear_infinite]" />
+							<div className="absolute inset-2 rounded-full border border-primary/20 animate-[spin_6s_linear_infinite_reverse]" />
+							<div className="absolute inset-0 bg-primary/10 blur-xl rounded-full animate-pulse" />
+							<div className="relative z-10 p-3 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 shadow-lg text-primary backdrop-blur-sm">
+								<Lock className="h-8 w-8 drop-shadow-md" />
+							</div>
+						</div>
 					</div>
-					<CardTitle className="text-2xl">
+					<CardTitle className="text-3xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-foreground via-foreground to-muted-foreground drop-shadow-sm text-center">
 						{t("common.password_protected", "Password Protected")}
 					</CardTitle>
-					<CardDescription>
+					<CardDescription className="text-base text-muted-foreground text-center">
 						{t(
 							"common.enter_password_desc",
 							"This snippet is password protected. Please enter the password to view it.",

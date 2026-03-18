@@ -188,7 +188,7 @@ export const EditorContent = ({
 	return (
 		<div
 			ref={editorContainerRef}
-			className="m-3 sm:m-5 h-[60vh] border rounded-lg overflow-hidden touch-none bg-background shadow-sm"
+			className="m-3 sm:m-5 h-[60vh] border border-border/50 bg-background/60 backdrop-blur-xl rounded-2xl overflow-hidden touch-none shadow-2xl relative z-20 ring-1 ring-white/5"
 		>
 			{contentType === "code" ? (
 				<Editor

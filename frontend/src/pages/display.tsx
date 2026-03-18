@@ -403,8 +403,12 @@ const DisplayPage = () => {
 	}
 
 	return (
-		<div className="flex-1 flex flex-col min-h-0 bg-gradient-to-br from-background via-muted/5 to-background">
-			<div className="flex-1 overflow-y-auto">
+		<div className="relative flex-1 flex flex-col min-h-0 bg-background overflow-hidden">
+			{/* Ambient Background Glows */}
+			<div className="absolute top-[-5%] right-[-5%] w-[500px] h-[500px] bg-blue-500/10 blur-[100px] rounded-full pointer-events-none" />
+			<div className="absolute bottom-[-5%] left-[-5%] w-[500px] h-[500px] bg-primary/10 blur-[100px] rounded-full pointer-events-none" />
+
+			<div className="relative z-10 flex-1 overflow-y-auto">
 				<div className="flex flex-col border-b bg-background/50 backdrop-blur-md sticky top-0 z-40">
 					<DisplayToolbar
 						isEdit={isEdit}
@@ -529,7 +533,10 @@ const DisplayPage = () => {
 				open={isDeleteDialogOpen}
 				onOpenChange={setIsDeleteDialogOpen}
 			>
-				<AlertDialogContent size="sm">
+				<AlertDialogContent
+					size="sm"
+					className="border border-border/50 bg-background/60 backdrop-blur-2xl shadow-2xl rounded-2xl ring-1 ring-white/5 overflow-hidden"
+				>
 					<AlertDialogHeader>
 						<AlertDialogMedia className="bg-destructive/10 text-destructive">
 							<Trash2 className="size-8" />

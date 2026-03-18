@@ -25,7 +25,10 @@ export const LogoutDialog = ({ open, onOpenChange }: LogoutDialogProps) => {
 
 	return (
 		<AlertDialog open={open} onOpenChange={onOpenChange}>
-			<AlertDialogContent size="sm">
+			<AlertDialogContent
+				size="sm"
+				className="border border-border/50 bg-background/60 backdrop-blur-2xl shadow-2xl rounded-2xl ring-1 ring-white/5 overflow-hidden"
+			>
 				<AlertDialogHeader>
 					<AlertDialogMedia className="bg-destructive/10 text-destructive">
 						<LogOut className="h-8 w-8" />

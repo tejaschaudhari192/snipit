@@ -42,7 +42,7 @@ export const DisplayContent = ({
 		return (
 			<div
 				ref={contentRef}
-				className="flex flex-col items-center justify-center py-24 px-4 bg-muted/10 rounded-3xl border border-dashed border-border/50 animate-in fade-in slide-in-from-bottom-4 duration-700"
+				className="flex flex-col items-center justify-center py-24 px-4 bg-background/60 backdrop-blur-xl rounded-3xl border border-border/50 shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-700 max-w-[600px] mx-auto mt-10"
 			>
 				<div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6 shadow-xl shadow-primary/5">
 					<Link className="w-10 h-10 text-primary" />

@@ -98,7 +98,7 @@ export const PasteDialog = ({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onOpenChange}>
-			<DialogContent className="sm:max-w-md gap-0">
+			<DialogContent className="sm:max-w-md gap-0 border border-border/50 bg-background/60 backdrop-blur-2xl shadow-2xl rounded-2xl ring-1 ring-white/5 overflow-hidden">
 				<DialogHeader className="mb-4">
 					<DialogTitle>{t("home.paste_button")}</DialogTitle>
 				</DialogHeader>

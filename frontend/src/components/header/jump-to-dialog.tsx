@@ -48,7 +48,7 @@ export const JumpToDialog = ({ isOpen, onOpenChange }: JumpToDialogProps) => {
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onOpenChange}>
-			<DialogContent className="sm:max-w-md">
+			<DialogContent className="sm:max-w-md border border-border/50 bg-background/60 backdrop-blur-2xl shadow-2xl rounded-2xl ring-1 ring-white/5 overflow-hidden">
 				<DialogHeader>
 					<div className="flex items-center gap-2 mb-1">
 						<div className="p-2 rounded-lg bg-primary/10 text-primary">
