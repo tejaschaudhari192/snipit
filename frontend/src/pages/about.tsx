@@ -1,5 +1,5 @@
 import Footer from "@/components/ui/footer";
-import { Mail, Users, Github, Zap, Heart } from "lucide-react";
+import { Mail, Users, Github, Zap, Heart, Linkedin } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,7 @@ const AboutPage = () => {
 		<div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
 			<div className="flex-1 overflow-x-hidden">
 				{/* Hero Section */}
-				<section className="relative py-16 md:py-24 px-4 overflow-hidden">
+				<section className="relative min-h-[60vh] flex items-center justify-center py-16 md:py-24 px-4 overflow-hidden">
 					{/* Particles Background */}
 					<Particles
 						className="absolute inset-0 z-0"
@@ -34,23 +34,28 @@ const AboutPage = () => {
 					<div className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] opacity-40 pointer-events-none" />
 					<div className="absolute bottom-[20%] right-[10%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] opacity-40 pointer-events-none" />
 
-					<div className="max-w-4xl mx-auto text-center relative z-10">
+					<div className="max-w-4xl mx-auto text-center relative z-10 w-full">
 						<motion.div
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.6 }}
+							initial={{
+								opacity: 0,
+								y: 20,
+								filter: "blur(10px)",
+							}}
+							animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+							transition={{ duration: 0.8, ease: "easeOut" }}
+							className="flex flex-col items-center justify-center w-full"
 						>
-							<div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary dark:bg-primary/20 text-xs md:text-sm font-medium mb-6 ring-1 ring-primary/20">
-								<Zap className="w-4 h-4 fill-current" />
+							<div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary dark:bg-primary/20 text-xs md:text-sm font-bold mb-8 ring-1 ring-primary/20 backdrop-blur-sm shadow-lg shadow-primary/5">
+								<Zap className="w-4 h-4 fill-current animate-pulse" />
 								{t("about_page.features_title")}
 							</div>
-							<h1 className="text-3xl md:text-5xl lg:text-7xl font-black mb-6 tracking-tight leading-[1.1]">
+							<h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-8 tracking-tighter leading-[1.1] text-foreground">
 								{t("about_page.title")}{" "}
-								<span className="bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
+								<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/80 to-primary/60 drop-shadow-sm">
 									Snipit
 								</span>
 							</h1>
-							<p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed px-2">
+							<p className="text-lg md:text-xl lg:text-2xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed px-4">
 								{t("about_page.subtitle")}
 							</p>
 						</motion.div>
@@ -178,7 +183,7 @@ const AboutPage = () => {
 									<div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-6">
 										{/* Avatar Container with Dark Mode Ring */}
 										<div className="relative shrink-0">
-											<div className="w-24 h-24 rounded-2xl overflow-hidden ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all duration-300">
+											<div className="w-20 h-20 rounded-2xl overflow-hidden ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all duration-300">
 												<img
 													src={member.avatar}
 													alt={member.name}
@@ -195,31 +200,39 @@ const AboutPage = () => {
 											<h3 className="text-xl font-bold tracking-tight text-foreground">
 												{member.name}
 											</h3>
-											<p className="text-sm font-medium text-primary uppercase tracking-widest mb-4">
-												{t("about_page.team.role")}
+											<p className="text-sm font-medium text-primary mb-4">
+												{member.roleKey &&
+													t(member.roleKey)}
 											</p>
 
-											<div className="flex items-center justify-center sm:justify-start gap-3 pt-2">
+											<div className="flex items-center justify-center sm:justify-start gap-2 pt-2">
 												<a
 													href={`mailto:${member.email}`}
-													className="flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+													className="p-2.5 rounded-xl bg-secondary/50 hover:bg-[#EA4335] hover:text-white transition-all duration-300"
+													title="Email"
 												>
-													<Mail className="w-4 h-4" />
-													<span className="text-xs font-bold">
-														Email
-													</span>
+													<Mail className="w-5 h-5" />
 												</a>
 												<a
 													href={member.github}
 													target="_blank"
 													rel="noopener noreferrer"
-													className="flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+													className="p-2.5 rounded-xl bg-secondary/50 hover:bg-foreground hover:text-background transition-all duration-300"
+													title="GitHub"
 												>
-													<Github className="w-4 h-4" />
-													<span className="text-xs font-bold">
-														GitHub
-													</span>
+													<Github className="w-5 h-5" />
 												</a>
+												{member.linkedin && (
+													<a
+														href={member.linkedin}
+														target="_blank"
+														rel="noopener noreferrer"
+														className="p-2.5 rounded-xl bg-secondary/50 hover:bg-[#0077B5] hover:text-white transition-all duration-300"
+														title="LinkedIn"
+													>
+														<Linkedin className="w-5 h-5" />
+													</a>
+												)}
 											</div>
 										</div>
 									</div>

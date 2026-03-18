@@ -125,6 +125,8 @@
 		"paste_system_id": "Automatische ID",
 		"paste_dynamic_id_desc": "Wählen Sie Ihre eigene URL",
 		"paste_system_id_desc": "ID wird automatisch generiert",
+		"paste_advanced": "Erweiterte Erstellung",
+		"paste_advanced_desc": "Konfigurieren Sie Datenschutz, Passwort und mehr",
 		"expire_options": {
 			"one_time_snippet": "Einmaliger Snippet",
 			"expire_in_1_hour": "Läuft in 1 Stunde ab",
@@ -250,8 +252,12 @@
 				"desc": "Erstellen Sie kurze, handliche Links, die sofort zu jedem beliebigen Ziel weiterleiten."
 			},
 			"sharing": {
-				"title": "Easy Sharing",
-				"desc": "Share your snippets effortlessly with a simple link or QR code."
+				"title": "Einfaches Teilen",
+				"desc": "Teilen Sie Ihre Snippets mühelos mit einem einfachen Link oder QR-Code."
+			},
+			"file_share": {
+				"title": "Dateifreigabe",
+				"desc": "Laden Sie Dateien sicher hoch und teilen Sie sie über einen eindeutigen Link."
 			},
 			"access_control": {
 				"title": "Rollenbasierte Zugriffskontrolle",
@@ -274,13 +280,37 @@
 		},
 		"team": {
 			"title": "Das Team",
-			"role": "Mitbegründer & Entwickler"
+			"roles": {
+				"developer": "Entwickler",
+				"tester": "Tester"
+			}
 		},
 		"contribute": {
 			"title": "Mitmachen?",
-			"desc": "Snipit ist Open Source und we welcome contributions from the community. Whether it's bug fixes, new features, or documentation improvements, every contribution matters.",
+			"desc": "Snipit ist Open Source und wir freuen uns über Beiträge aus der Community. Ob Fehlerbehebung, neue Funktionen oder Verbesserungen der Dokumentation – jeder Beitrag zählt.",
 			"github_button": "Auf GitHub ansehen",
 			"contact_button": "Kontakt aufnehmen"
+		},
+		"faq": {
+			"title": "Häufig gestellte Fragen (FAQ)",
+			"items": {
+				"free": {
+					"question": "Ist Snipit kostenlos?",
+					"answer": "Ja! Snipit ist komplett kostenlos und Open Source. Sie können es für persönliche oder kommerzielle Projekte ohne Kosten nutzen."
+				},
+				"expiration": {
+					"question": "Wie lange bleiben Snippets erhalten?",
+					"answer": "Sie können die Ablaufzeit für jedes Snippet zwischen 1 Stunde und 1 Jahr wählen. Sie können auch Snippets erstellen, die nie ablaufen."
+				},
+				"secure": {
+					"question": "Ist mein Code sicher?",
+					"answer": "Wir nehmen Sicherheit ernst. Alle Snippets werden während der Übertragung und im Ruhezustand verschlüsselt. Passwortgeschützte Snippets bieten eine zusätzliche Sicherheitsebene."
+				},
+				"edit": {
+					"question": "Kann ich meine Snippets später bearbeiten?",
+					"answer": "Ja, wenn Sie beim Erstellen eines Snippets angemeldet sind, können Sie es später über Ihr Dashboard bearbeiten oder löschen."
+				}
+			}
 		}
 	},
 	"footer": {

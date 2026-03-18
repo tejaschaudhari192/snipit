@@ -111,7 +111,7 @@ const HistoryPage = () => {
 				vy={0.02}
 			/>
 
-			<div className="max-w-5xl mx-auto relative z-10">
+			<div className="max-w-3xl mx-auto relative z-10">
 				<motion.div
 					initial={{ opacity: 0, y: -20 }}
 					animate={{ opacity: 1, y: 0 }}

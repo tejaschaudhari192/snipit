@@ -11,6 +11,7 @@ import {
 	User,
 	Lock,
 	ShieldCheck,
+	FileUp,
 } from "lucide-react";
 
 const app = {
@@ -39,6 +40,11 @@ const app = {
 			icon: Share2,
 			key: "sharing",
 			gradient: "from-blue-500 to-indigo-500",
+		},
+		{
+			icon: FileUp,
+			key: "file_share",
+			gradient: "from-rose-500 to-pink-500",
 		},
 		{
 			icon: ShieldCheck,
@@ -81,13 +87,17 @@ const app = {
 			name: "Tejas Chaudhari",
 			email: "jaybalaji192@gmail.com",
 			github: "https://github.com/tejaschaudhari192",
+			linkedin: "https://www.linkedin.com/in/tejaschaudhari192/",
 			avatar: "https://avatars.githubusercontent.com/u/104405128?s=400&u=1285d0293657159a9e85e0709ee549c37198667e&v=4",
+			roleKey: "about_page.team.roles.developer",
 		},
 		{
 			name: "Durgesh Kapade",
 			email: "durgeshkapade26@gmail.com",
 			github: "https://github.com/durgeshkapade",
+			linkedin: "https://www.linkedin.com/in/durgeshkapade/",
 			avatar: "https://avatars.githubusercontent.com/u/135988213?v=4",
+			roleKey: "about_page.team.roles.tester",
 		},
 	],
 	faq: [

@@ -264,6 +264,10 @@
 				"title": "Easy Sharing",
 				"desc": "Share your snippets effortlessly with a simple link or QR code."
 			},
+			"file_share": {
+				"title": "File Sharing",
+				"desc": "Upload and share files securely with a unique link."
+			},
 			"access_control": {
 				"title": "Role-Based Access Control",
 				"desc": "Grant Viewer, Editor, or Admin roles to specific users for precise collaboration control."
@@ -285,7 +289,10 @@
 		},
 		"team": {
 			"title": "Meet the Team",
-			"role": "Co-Founder & Developer"
+			"roles": {
+				"developer": "Developer",
+				"tester": "Tester"
+			}
 		},
 		"contribute": {
 			"title": "Want to Contribute?",

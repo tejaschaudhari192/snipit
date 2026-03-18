@@ -125,6 +125,8 @@
 		"paste_system_id": "システムIDで貼り付け",
 		"paste_dynamic_id_desc": "独自のIDを選択",
 		"paste_system_id_desc": "IDを自動生成",
+		"paste_advanced": "高度な作成",
+		"paste_advanced_desc": "プライバシー、パスワードなどを設定",
 		"expire_options": {
 			"one_time_snippet": "一回限りのスニペット",
 			"expire_in_1_hour": "1時間で期限切れ",
@@ -214,7 +216,7 @@
 		"empty_file": "アップロードするファイルを選択してください。"
 	},
 	"about_page": {
-		"title": "Snipitについて",
+		"title": "について",
 		"subtitle": "コード共有をシンプルかつ美しくすることを信じる2人の開発者による情熱的なプロジェクト。",
 		"features_title": "強力な機能",
 		"features_subtitle": "シームレスなコード共有に必要なすべて",
@@ -276,7 +278,10 @@
 		},
 		"team": {
 			"title": "チームに会う",
-			"role": "共同創設者 & 開発者"
+			"roles": {
+				"developer": "開発者",
+				"tester": "テスター"
+			}
 		},
 		"contribute": {
 			"title": "貢献しますか？",
@@ -285,23 +290,23 @@
 			"contact_button": "連絡する"
 		},
 		"faq": {
-			"title": "Frequently Asked Questions",
+			"title": "よくある質問",
 			"items": {
 				"free": {
-					"question": "Is Snipit free to use?",
-					"answer": "Yes! Snipit is completely free and open source. You can use it for personal or commercial projects without any cost."
+					"question": "Snipitは無料で使えますか？",
+					"answer": "はい！Snipitは完全に無料でオープンソースです。個人プロジェクトや商用プロジェクトを問わず、無料で使用できます。"
 				},
 				"expiration": {
-					"question": "How long do snippets last?",
-					"answer": "You can choose the expiration time for each snippet, ranging from 1 hour to 1 year. You can also create snippets that never expire."
+					"question": "スニペットの有効期限はどのくらいですか？",
+					"answer": "スニペットごとに、1時間から1年までの有効期限を選択できます。また、期限のないスニペットを作成することも可能です。"
 				},
 				"secure": {
-					"question": "Is my code secure?",
-					"answer": "We take security seriously. All snippets are encrypted in transit and at rest. Password-protected snippets add an extra layer of security."
+					"question": "コードのセキュリティは大丈夫ですか？",
+					"answer": "セキュリティを最優先に考えています。すべてのスニペットは送信中および保存時に暗号化されます。パスワード保護機能により、さらに安全性を高めることができます。"
 				},
 				"edit": {
-					"question": "Can I edit my snippets later?",
-					"answer": "Yes, if you are logged in when you create a snippet, you can edit or delete it later from your dashboard."
+					"question": "後でスニペットを編集できますか？",
+					"answer": "はい、ログイン状態でスニペットを作成した場合は、後でダッシュボードから編集や削除が可能です。"
 				}
 			}
 		}
