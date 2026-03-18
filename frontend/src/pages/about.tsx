@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import Footer from "@/components/ui/footer";
 import { Mail, Users, Github, Zap, Heart } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -8,16 +7,11 @@ import appScreenshot from "@/assets/brand/app.png";
 import app from "@/lib/data";
 import { Particles } from "@/components/ui/shadcn-io/particles";
 import { useTheme } from "@/hooks/use-theme";
-import { playAmericaSound } from "@/lib/utils";
 
 const AboutPage = () => {
 	const { t } = useTranslation();
 	const { theme } = useTheme();
 	const particleColor = theme === "dark" ? "#5eead4" : "#14b8a6";
-
-	useEffect(() => {
-		playAmericaSound();
-	}, []);
 
 	return (
 		<div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">

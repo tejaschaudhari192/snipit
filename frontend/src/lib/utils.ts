@@ -2,10 +2,9 @@ import type { PasteData } from "@/types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import errorSound from "@/assets/audio/error.mp3";
-import yaySound from "@/assets/audio/yay.mp3";
+import startSound from "@/assets/audio/start.mp3";
 import bruhSound from "@/assets/audio/bruh.mp3";
-import americaSound from "@/assets/audio/america-kya-kehta-tha.mp3";
-import tudumSound from "@/assets/audio/tudum.mp3";
+
 import removeSound from "@/assets/audio/remove.mp3";
 import undoSound from "@/assets/audio/undo.mp3";
 
@@ -144,6 +143,7 @@ export function getTimeRemaining(
 export function playErrorSound() {
 	try {
 		const audio = new Audio(errorSound);
+		audio.volume = 0.4;
 		audio.play();
 	} catch (e) {
 		console.error("Audio error:", e);
@@ -151,7 +151,8 @@ export function playErrorSound() {
 }
 export function playSuccessSound() {
 	try {
-		const audio = new Audio(yaySound);
+		const audio = new Audio(startSound);
+		audio.volume = 0.4;
 		audio.play();
 	} catch (e) {
 		console.error("Audio error:", e);
@@ -161,24 +162,7 @@ export function playSuccessSound() {
 export function playBruhSound() {
 	try {
 		const audio = new Audio(bruhSound);
-		audio.play();
-	} catch (e) {
-		console.error("Audio error:", e);
-	}
-}
-
-export function playAmericaSound() {
-	try {
-		const audio = new Audio(americaSound);
-		audio.play();
-	} catch (e) {
-		console.error("Audio error:", e);
-	}
-}
-
-export function playTudumSound() {
-	try {
-		const audio = new Audio(tudumSound);
+		audio.volume = 0.4;
 		audio.play();
 	} catch (e) {
 		console.error("Audio error:", e);
@@ -188,6 +172,7 @@ export function playTudumSound() {
 export function playRemoveSound() {
 	try {
 		const audio = new Audio(removeSound);
+		audio.volume = 0.4;
 		audio.play();
 	} catch (e) {
 		console.error("Audio error:", e);
@@ -197,6 +182,7 @@ export function playRemoveSound() {
 export function playUndoSound() {
 	try {
 		const audio = new Audio(undoSound);
+		audio.volume = 0.4;
 		audio.play();
 	} catch (e) {
 		console.error("Audio error:", e);

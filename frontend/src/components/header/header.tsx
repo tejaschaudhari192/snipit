@@ -90,7 +90,15 @@ const UserMenu = () => {
 const Header = ({ className }: HeaderProps) => {
 	const location = useLocation();
 	const path = location.pathname;
-	const id = path.includes("history") || path.includes("about") ? null : path;
+	const nonShareablePaths = [
+		"history",
+		"about",
+		"profile",
+		"login",
+		"signup",
+		"password",
+	];
+	const id = nonShareablePaths.some((p) => path.includes(p)) ? null : path;
 	const { t } = useTranslation();
 	const [isQRDialogOpen, setIsQRDialogOpen] = useState(false);
 	const [isJumpToDialogOpen, setIsJumpToDialogOpen] = useState(false);
