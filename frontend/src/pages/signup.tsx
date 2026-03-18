@@ -68,7 +68,11 @@ const SignupPage = () => {
 	};
 
 	return (
-		<div className="relative flex-1 flex flex-col items-center justify-center bg-gradient-to-br from-background via-muted/10 to-background px-4 py-8 md:py-12 overflow-hidden">
+		<div className="relative flex-1 flex flex-col items-center justify-center bg-background px-4 py-8 md:py-12 overflow-hidden">
+			{/* Ambient Background Glows */}
+			<div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-500/10 blur-[100px] rounded-full pointer-events-none" />
+			<div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-primary/10 blur-[100px] rounded-full pointer-events-none" />
+
 			{/* Particles Background */}
 			<Particles
 				className="absolute inset-0 z-0"
@@ -88,16 +92,22 @@ const SignupPage = () => {
 				className="w-full max-w-sm relative z-10"
 			>
 				<Card className="border-border/50 bg-background/60 backdrop-blur-xl shadow-2xl">
-					<CardHeader className="space-y-1 pb-6">
-						<div className="flex items-center justify-between mb-2">
-							<div className="p-2 rounded-lg bg-primary/10 text-primary">
-								<UserPlus className="h-6 w-6" />
+					<CardHeader className="space-y-2 pb-6">
+						<div className="flex items-center justify-center mb-6">
+							<div className="relative flex items-center justify-center w-20 h-20">
+								{/* Animated decorative rings */}
+								<div className="absolute inset-0 rounded-full border border-primary/30 border-dashed animate-[spin_8s_linear_infinite]" />
+								<div className="absolute inset-2 rounded-full border border-primary/20 animate-[spin_6s_linear_infinite_reverse]" />
+								<div className="absolute inset-0 bg-primary/10 blur-xl rounded-full animate-pulse" />
+								<div className="relative z-10 p-3 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 shadow-lg text-primary backdrop-blur-sm">
+									<UserPlus className="h-8 w-8 drop-shadow-md" />
+								</div>
 							</div>
 						</div>
-						<CardTitle className="text-3xl font-black tracking-tight">
+						<CardTitle className="text-3xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-foreground via-foreground to-muted-foreground drop-shadow-sm text-center">
 							{t("auth.signup_title")}
 						</CardTitle>
-						<CardDescription className="text-base text-muted-foreground">
+						<CardDescription className="text-base text-muted-foreground text-center">
 							{t("auth.signup_subtitle")}
 						</CardDescription>
 					</CardHeader>
