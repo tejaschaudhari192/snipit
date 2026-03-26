@@ -55,11 +55,17 @@ export const LanguageSelector = ({
 		<Select value={value} onValueChange={onValueChange}>
 			<SelectTrigger
 				className={cn(
-					"w-full sm:w-[200px] h-10 bg-muted/20",
+					"w-full sm:w-[200px] h-10 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm transition-all focus:ring-primary/20",
 					className,
 				)}
 			>
-				<SelectValue placeholder="Language" />
+				<div className="flex items-center gap-2">
+					<LanguageIcon
+						language={value}
+						className="h-4 w-4 shrink-0"
+					/>
+					<SelectValue placeholder="Language" />
+				</div>
 			</SelectTrigger>
 			<SelectContent>
 				<SelectGroup>

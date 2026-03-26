@@ -29,6 +29,7 @@
 		"password": "Passwort (Optional)",
 		"password_placeholder": "Passwort eingeben...",
 		"submitting": "Wird gesendet...",
+		"saving": "Speichern...",
 		"password_protected": "Passwortgeschützt",
 		"enter_password_desc": "Dieses Snippet ist passwortgeschützt. Bitte geben Sie das Passwort ein, um es anzuzeigen.",
 		"unlock": "Snippet entsperren",
@@ -137,9 +138,13 @@
 			"custom": "Benutzerdefiniertes Ablaufdatum"
 		},
 		"tab_text": "Klartext",
+		"tab_text_short": "Text",
 		"tab_code": "Code",
+		"tab_code_short": "Code",
 		"tab_link": "Link kürzen",
+		"tab_link_short": "Link",
 		"tab_file": "Datei",
+		"tab_file_short": "Datei",
 		"link_placeholder": "Geben Sie die zu kürzende URL ein (z. B. https://example.xyz)",
 		"link_desc": "Fügen Sie unten die lange URL ein, um einen kurzen, weiterleitenden Link zu erstellen.",
 		"link_features": {
@@ -321,7 +326,14 @@
 		"made_by": "Gemacht mit ❤️ von Durgesh & Tejas"
 	},
 	"splash": {
-		"tagline": "Teilen Sie Ihre Snippets sofort"
+		"tagline": "Teilen Sie Ihre Snippets sofort",
+		"loading_phrases": [
+			"Initialisiere Core...",
+			"Engine wird aufgewärmt...",
+			"Lade Syntaxbäume...",
+			"Kompiliere Arbeitsbereich...",
+			"Bereite Snippets vor..."
+		]
 	},
 	"error_page": {
 		"title": "Seite nicht gefunden",

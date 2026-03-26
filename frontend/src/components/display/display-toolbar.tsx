@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
-import { Edit, Trash2, Save, X, MessageSquare } from "lucide-react";
+import { Edit, Trash2, Save, X, MessageSquare, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { FontSizeControls } from "@/components/editor/font-size-controls";
 import {
@@ -22,6 +22,7 @@ interface DisplayToolbarProps {
 	onDelete: () => void;
 	onSave: () => void;
 	onCancel: () => void;
+	isSaving?: boolean;
 	fontSize: number;
 	setFontSize: (v: number | ((p: number) => number)) => void;
 	showFontControls: boolean;
@@ -38,6 +39,7 @@ export const DisplayToolbar = ({
 	onDelete,
 	onSave,
 	onCancel,
+	isSaving,
 	fontSize,
 	setFontSize,
 	showFontControls,
@@ -81,9 +83,7 @@ export const DisplayToolbar = ({
 							content={content}
 							className="gap-2 px-3 h-9 w-auto rounded-md text-sm font-medium shrink-0"
 						>
-							<span className="hidden sm:inline">
-								{t("display.copy_button")}
-							</span>
+							<span>{t("display.copy_button")}</span>
 						</CopyButton>
 						{canEdit && (
 							<Button
@@ -118,12 +118,22 @@ export const DisplayToolbar = ({
 							variant="default"
 							size="sm"
 							onClick={onSave}
-							className="gap-2 h-9 font-bold"
+							disabled={isSaving}
+							className="gap-2 h-9 font-bold min-w-[120px]"
 						>
-							<Save className="h-4 w-4" />
-							<span className="hidden sm:inline">
-								{t("display.save_button")}
-							</span>
+							{isSaving ? (
+								<>
+									<Loader2 className="h-4 w-4 animate-spin" />
+									<span>{t("common.saving")}</span>
+								</>
+							) : (
+								<>
+									<Save className="h-4 w-4" />
+									<span className="hidden sm:inline">
+										{t("display.save_button")}
+									</span>
+								</>
+							)}
 						</Button>
 						<Button
 							variant="outline"
@@ -133,7 +143,7 @@ export const DisplayToolbar = ({
 						>
 							<X className="h-4 w-4" />
 							<span className="hidden sm:inline">
-								{t("history.cancel", "Cancel")}
+								{t("history.cancel")}
 							</span>
 						</Button>
 					</div>
@@ -158,7 +168,7 @@ export const DisplayToolbar = ({
 							>
 								<MessageSquare className="h-4 w-4" />
 								<span className="hidden sm:inline">
-									{t("common.discussion", "Discussion")}
+									{t("common.discussion")}
 								</span>
 								{commentCount > 0 && (
 									<span className="bg-primary/10 px-1.5 py-0.5 rounded text-[10px] animate-in zoom-in-50">
@@ -174,7 +184,7 @@ export const DisplayToolbar = ({
 							<SheetHeader className="p-6 pb-2 border-b">
 								<SheetTitle className="flex items-center gap-2 text-xl">
 									<MessageSquare className="w-5 h-5 text-primary" />
-									{t("common.discussion_title", "Discussion")}
+									{t("common.discussion_title")}
 								</SheetTitle>
 								<SheetDescription>
 									{t("common.discussion_desc")}

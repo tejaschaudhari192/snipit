@@ -1,18 +1,26 @@
 import { useEffect, useState } from "react";
 import icon from "@/assets/brand/icon.png";
 import { Loader2 } from "lucide-react";
-
-const loadingPhrases = [
-	"Initializing Core...",
-	"Warming up engine...",
-	"Loading syntax trees...",
-	"Compiling workspace...",
-	"Readying snippets...",
-];
+import { useTranslation } from "react-i18next";
 
 const SplashPage = () => {
+	const { t } = useTranslation();
 	const [progress, setProgress] = useState(0);
 	const [phraseIndex, setPhraseIndex] = useState(0);
+
+	const phrases = t("splash.loading_phrases", {
+		returnObjects: true,
+	});
+
+	const loadingPhrases = Array.isArray(phrases)
+		? phrases
+		: [
+				"Initializing Core...",
+				"Warming up engine...",
+				"Loading syntax trees...",
+				"Compiling workspace...",
+				"Readying snippets...",
+			];
 
 	useEffect(() => {
 		const timer = setInterval(() => {
@@ -34,7 +42,7 @@ const SplashPage = () => {
 			clearInterval(timer);
 			clearInterval(phraseTimer);
 		};
-	}, []);
+	}, [loadingPhrases.length]);
 
 	return (
 		<div className="relative h-screen w-screen overflow-hidden bg-background text-foreground transition-colors duration-300 flex flex-col items-center justify-center pointer-events-none selction:bg-transparent">

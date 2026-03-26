@@ -86,8 +86,8 @@ export const CollaboratorsManager = ({
 				<Users className="h-4 w-4 text-muted-foreground" />
 				{t("common.share_with_people", "Share with people")}
 			</Label>
-			<div className="flex gap-2 p-1">
-				<div className="flex-1">
+			<div className="flex flex-col sm:flex-row gap-2 p-1">
+				<div className="flex-1 min-w-0">
 					<MultiEmailInput
 						value={pendingEmails}
 						onChange={setPendingEmails}
@@ -101,42 +101,44 @@ export const CollaboratorsManager = ({
 						isReadOnly={disabled}
 					/>
 				</div>
-				<Select
-					value={pendingRole}
-					onValueChange={(r: Role) => setPendingRole(r)}
-					disabled={disabled}
-				>
-					<SelectTrigger className="w-[110px] h-[44px] bg-background border-input focus:ring-primary/20">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectItem value="viewer">
-							{t("common.viewer", "Viewer")}
-						</SelectItem>
-						<SelectItem value="editor">
-							{t("common.editor", "Editor")}
-						</SelectItem>
-						<SelectItem value="admin">
-							{t("common.admin", "Admin")}
-						</SelectItem>
-						<SelectItem value="commenter">
-							{t("common.commenter", "Commenter")}
-						</SelectItem>
-					</SelectContent>
-				</Select>
-				<Button
-					onClick={handleAddPeople}
-					disabled={
-						disabled ||
-						(pendingEmails.length === 0 &&
-							!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
-								inputValue.trim(),
-							))
-					}
-					className="h-[44px] px-6 min-w-[80px] font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm transition-colors border-none"
-				>
-					{t("common.add", "Add")}
-				</Button>
+				<div className="flex gap-2 items-center">
+					<Select
+						value={pendingRole}
+						onValueChange={(r: Role) => setPendingRole(r)}
+						disabled={disabled}
+					>
+						<SelectTrigger className="flex-1 sm:w-[110px] h-[44px] bg-background border-input focus:ring-primary/20">
+							<SelectValue />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="viewer">
+								{t("common.viewer", "Viewer")}
+							</SelectItem>
+							<SelectItem value="editor">
+								{t("common.editor", "Editor")}
+							</SelectItem>
+							<SelectItem value="admin">
+								{t("common.admin", "Admin")}
+							</SelectItem>
+							<SelectItem value="commenter">
+								{t("common.commenter", "Commenter")}
+							</SelectItem>
+						</SelectContent>
+					</Select>
+					<Button
+						onClick={handleAddPeople}
+						disabled={
+							disabled ||
+							(pendingEmails.length === 0 &&
+								!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+									inputValue.trim(),
+								))
+						}
+						className="h-[44px] px-4 sm:px-6 min-w-[70px] sm:min-w-[80px] font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm transition-colors border-none flex-1 sm:flex-none"
+					>
+						{t("common.add", "Add")}
+					</Button>
+				</div>
 			</div>
 
 			{shareList.length > 0 && (
@@ -147,20 +149,20 @@ export const CollaboratorsManager = ({
 					{shareList.map((item) => (
 						<div
 							key={item.email}
-							className="flex items-center justify-between p-2 rounded-md border bg-muted/20"
+							className="flex flex-col min-[440px]:flex-row min-[440px]:items-center justify-between p-2.5 rounded-xl border bg-card/50 gap-3 shadow-sm"
 						>
-							<div className="flex items-center gap-2 overflow-hidden">
-								<div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary shrink-0">
+							<div className="flex items-center gap-2 overflow-hidden flex-1">
+								<div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0 border border-primary/20">
 									{item.email[0].toUpperCase()}
 								</div>
 								<span
-									className="text-sm truncate"
+									className="text-xs font-medium truncate"
 									title={item.email}
 								>
 									{item.email}
 								</span>
 							</div>
-							<div className="flex items-center gap-2 shrink-0">
+							<div className="flex items-center gap-2 shrink-0 w-full min-[440px]:w-auto">
 								<Select
 									value={item.role}
 									onValueChange={(r: Role) =>
@@ -168,7 +170,7 @@ export const CollaboratorsManager = ({
 									}
 									disabled={disabled}
 								>
-									<SelectTrigger className="w-[110px] h-7 text-xs bg-background">
+									<SelectTrigger className="flex-1 min-[440px]:w-[100px] h-8 text-[11px] bg-background border-input/50">
 										<SelectValue />
 									</SelectTrigger>
 									<SelectContent>
@@ -189,7 +191,7 @@ export const CollaboratorsManager = ({
 								<Button
 									variant="ghost"
 									size="icon"
-									className="h-7 w-7 text-muted-foreground hover:text-red-500"
+									className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors"
 									onClick={() =>
 										handleRemovePerson(item.email)
 									}

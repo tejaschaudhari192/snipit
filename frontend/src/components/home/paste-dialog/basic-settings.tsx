@@ -30,10 +30,10 @@ export const BasicSettings = ({
 	const { t } = useTranslation();
 
 	return (
-		<div className="space-y-4 mb-6">
-			<div className="grid grid-cols-2 gap-4">
+		<div className="space-y-3 mb-4">
+			<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 				<div
-					className="flex items-center justify-between p-3.5 rounded-xl border bg-card hover:bg-muted/50 transition-all cursor-pointer group"
+					className="flex items-center justify-between p-3 rounded-xl border bg-card hover:bg-muted/50 transition-all cursor-pointer group shadow-sm"
 					onClick={() => {
 						const newValue = !isPasswordEnabled;
 						setIsPasswordEnabled(newValue);
@@ -42,9 +42,9 @@ export const BasicSettings = ({
 				>
 					<Label
 						htmlFor="password-switch"
-						className="flex items-center gap-2.5 text-sm font-medium cursor-pointer pointer-events-none"
+						className="flex items-center gap-2 text-sm font-medium cursor-pointer pointer-events-none"
 					>
-						<Lock className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+						<Lock className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
 						{t("common.password", "Password")}
 					</Label>
 					<Switch
@@ -58,14 +58,14 @@ export const BasicSettings = ({
 				</div>
 
 				<div
-					className="flex items-center justify-between p-3.5 rounded-xl border bg-card hover:bg-muted/50 transition-all cursor-pointer group"
+					className="flex items-center justify-between p-3 rounded-xl border bg-card hover:bg-muted/50 transition-all cursor-pointer group shadow-sm"
 					onClick={() => setAllowComments(!allowComments)}
 				>
 					<Label
 						htmlFor="allowComments"
-						className="flex items-center gap-2.5 text-sm font-medium cursor-pointer pointer-events-none"
+						className="flex items-center gap-2 text-sm font-medium cursor-pointer pointer-events-none"
 					>
-						<Users className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+						<Users className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
 						{t("common.open_discussion", "Open discussion")}
 					</Label>
 					<Switch

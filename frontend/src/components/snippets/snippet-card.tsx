@@ -84,10 +84,10 @@ export const SnippetCard = ({
 							: "border-border/50"
 				}`}
 			>
-				<div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
-					<div className="flex items-center gap-3">
+				<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+					<div className="flex items-center gap-3 min-w-0 flex-1">
 						<div
-							className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold border ${
+							className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold border shrink-0 ${
 								item.redirectUrl ||
 								item.contentMode === "file" ||
 								item.fileUrl
@@ -164,28 +164,28 @@ export const SnippetCard = ({
 								</>
 							)}
 						</div>
-						<span className="text-xs text-muted-foreground font-mono bg-muted/30 px-2 py-0.5 rounded italic">
+						<span className="text-[10px] sm:text-xs text-muted-foreground font-mono bg-muted/30 px-2 py-0.5 rounded italic truncate max-w-[80px] sm:max-w-none">
 							/{item.id}
 						</span>
 					</div>
 
-					<div className="flex items-center gap-4 text-xs">
-						<div className="flex items-center gap-1.5 text-muted-foreground font-medium">
+					<div className="flex items-center gap-3 text-[10px] sm:text-xs shrink-0 self-end sm:self-auto">
+						<div className="flex items-center gap-1.5 text-muted-foreground/60 font-bold uppercase tracking-wider">
 							<Calendar className="h-3.5 w-3.5" />
 							<span>{timeAgo(item.createdAt, t)}</span>
 						</div>
 						{item.expiresAt && (
 							<div
-								className={`flex items-center gap-1.5 font-bold px-2 py-1 rounded-md border ${
+								className={`flex items-center gap-1.5 font-black px-2.5 py-1.5 rounded-lg border shadow-sm ${
 									expired
-										? "bg-destructive/10 text-destructive border-destructive/20"
+										? "bg-destructive/5 text-destructive border-destructive/20"
 										: expiringSoon
-											? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
-											: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+											? "bg-amber-500/5 text-amber-600 dark:text-amber-400 border-amber-500/20"
+											: "bg-emerald-500/5 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
 								}`}
 							>
 								<Timer className="h-3.5 w-3.5" />
-								<span>
+								<span className="uppercase tracking-tight">
 									{item.burnAfterRead ||
 									item.expiresTime === "one-time"
 										? t(

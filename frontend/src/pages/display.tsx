@@ -82,6 +82,7 @@ const DisplayPage = () => {
 		new Date(Date.now() + 24 * 60 * 60 * 1000),
 	);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+	const [isSaving, setIsSaving] = useState<boolean>(false);
 
 	const isOwner = !paste?.owner || (!!user && paste.owner === user._id);
 
@@ -278,6 +279,7 @@ const DisplayPage = () => {
 		}
 
 		try {
+			setIsSaving(true);
 			const data = await apiHelpers.updatePaste(
 				id!,
 				updatedContent!,
@@ -332,6 +334,8 @@ const DisplayPage = () => {
 				axiosError.response?.data?.error ||
 					t("messages.update_failed", "Failed to update snippet"),
 			);
+		} finally {
+			setIsSaving(false);
 		}
 	};
 
@@ -444,6 +448,7 @@ const DisplayPage = () => {
 						onDelete={handleDelete}
 						onSave={handleEditSave}
 						onCancel={handleCancel}
+						isSaving={isSaving}
 						fontSize={fontSize}
 						setFontSize={setFontSize}
 						showFontControls={

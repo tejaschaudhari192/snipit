@@ -39,7 +39,12 @@ export const ExpirySelector = ({
 				}
 			}}
 		>
-			<SelectTrigger className={cn("flex-1 sm:w-fit h-11", className)}>
+			<SelectTrigger
+				className={cn(
+					"flex-1 sm:w-fit h-11 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm hover:bg-muted/30 transition-all",
+					className,
+				)}
+			>
 				<div className="flex items-center gap-2">
 					<Clock className="h-4 w-4 text-muted-foreground" />
 					<SelectValue placeholder={t("home.select_expire_time")} />
@@ -82,8 +87,11 @@ export const ExpirySelector = ({
 					{isCustomDate && (
 						<SelectItem value={expiresTime} className="hidden">
 							{new Date(expiresTime).toLocaleString([], {
-								dateStyle: "short",
-								timeStyle: "short",
+								month: "short",
+								day: "numeric",
+								hour: "numeric",
+								minute: "2-digit",
+								hour12: true,
 							})}
 						</SelectItem>
 					)}

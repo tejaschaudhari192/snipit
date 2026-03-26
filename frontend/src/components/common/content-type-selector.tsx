@@ -31,39 +31,51 @@ export const ContentTypeSelector = ({
 			<TabsList className={cn("h-11 w-full flex", listClassName)}>
 				<TabsTrigger
 					value="text"
-					className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
+					className="flex-1 flex items-center justify-center gap-2 px-2 sm:px-3 text-sm font-semibold"
 				>
 					<FileText className="h-4 w-4 shrink-0" />
-					<span className="whitespace-nowrap">
+					<span className="hidden min-[440px]:inline whitespace-nowrap">
 						{t("home.tab_text")}
+					</span>
+					<span className="inline min-[440px]:hidden whitespace-nowrap">
+						{t("home.tab_text_short", "Text")}
 					</span>
 				</TabsTrigger>
 				<TabsTrigger
 					value="code"
-					className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
+					className="flex-1 flex items-center justify-center gap-2 px-2 sm:px-3 text-sm font-semibold"
 				>
 					<Code2 className="h-4 w-4 shrink-0" />
-					<span className="whitespace-nowrap">
+					<span className="hidden min-[440px]:inline whitespace-nowrap">
 						{t("home.tab_code")}
+					</span>
+					<span className="inline min-[440px]:hidden whitespace-nowrap">
+						{t("home.tab_code_short", "Code")}
 					</span>
 				</TabsTrigger>
 				<TabsTrigger
 					value="link"
-					className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
+					className="flex-1 flex items-center justify-center gap-2 px-2 sm:px-3 text-sm font-semibold"
 				>
 					<Link className="h-4 w-4 shrink-0" />
-					<span className="whitespace-nowrap">
+					<span className="hidden min-[440px]:inline whitespace-nowrap">
 						{t("home.tab_link")}
+					</span>
+					<span className="inline min-[440px]:hidden whitespace-nowrap">
+						{t("home.tab_link_short", "Link")}
 					</span>
 				</TabsTrigger>
 				{showFileOption && (
 					<TabsTrigger
 						value="file"
-						className="flex-1 flex items-center justify-center gap-2 px-3 text-sm font-semibold"
+						className="flex-1 flex items-center justify-center gap-2 px-2 sm:px-3 text-sm font-semibold"
 					>
 						<FileUp className="h-4 w-4 shrink-0" />
-						<span className="whitespace-nowrap">
-							{t("home.tab_file", "File")}
+						<span className="hidden min-[440px]:inline whitespace-nowrap">
+							{t("home.tab_file")}
+						</span>
+						<span className="inline min-[440px]:hidden whitespace-nowrap">
+							{t("home.tab_file_short", "File")}
 						</span>
 					</TabsTrigger>
 				)}

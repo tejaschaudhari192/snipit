@@ -58,18 +58,19 @@ export const MainToolbar = ({
 				className="w-full sm:w-auto"
 			/>
 
-			<div className="flex items-center gap-2 justify-between sm:justify-end">
+			<div className="flex items-center gap-2 justify-between sm:justify-end w-full sm:w-auto">
 				<ExpirySelector
 					expiresTime={expiresTime}
 					setExpiresTime={setExpiresTime}
 					setIsCustomExpiryDialogOpen={setIsCustomExpiryDialogOpen}
+					className="flex-1 min-w-0" // Allow it to shrink if needed
 				/>
 
-				<ButtonGroup className="shadow-lg shadow-primary/20 overflow-hidden">
+				<ButtonGroup className="shadow-lg shadow-primary/20 overflow-hidden shrink-0">
 					<Button
 						disabled={isSubmitting}
 						size="lg"
-						className="px-6 h-11 font-bold rounded-r-none border-r-0 hover:bg-primary/90 transition-colors min-w-[120px]"
+						className="px-4 sm:px-6 h-11 font-bold rounded-r-none border-r-0 hover:bg-primary/90 transition-colors min-w-[90px] sm:min-w-[120px]"
 						onClick={handleQuickPaste}
 					>
 						{renderButtonText()}

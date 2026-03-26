@@ -123,21 +123,25 @@ const ProfilePage = () => {
 			<div className="absolute bottom-[20%] left-[5%] w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full pointer-events-none opacity-50" />
 
 			<div className="relative z-10 container mx-auto px-4 py-8 md:py-12 max-w-7xl w-full">
-				<div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-					<ProfileInfo
-						user={user}
-						isEditingName={isEditingName}
-						setIsEditingName={setIsEditingName}
-						newName={newName}
-						setNewName={setNewName}
-						handleUpdateName={handleUpdateName}
-						isUpdating={isUpdating}
-						pastes={pastes}
-					/>
-					<ProfileSnippetList
-						pastes={pastes}
-						loading={loadingPastes}
-					/>
+				<div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 items-start">
+					<div className="w-full lg:col-span-4 lg:sticky lg:top-24 max-w-2xl mx-auto lg:max-w-none">
+						<ProfileInfo
+							user={user}
+							isEditingName={isEditingName}
+							setIsEditingName={setIsEditingName}
+							newName={newName}
+							setNewName={setNewName}
+							handleUpdateName={handleUpdateName}
+							isUpdating={isUpdating}
+							pastes={pastes}
+						/>
+					</div>
+					<div className="w-full lg:col-span-8 max-w-4xl mx-auto lg:max-w-none">
+						<ProfileSnippetList
+							pastes={pastes}
+							loading={loadingPastes}
+						/>
+					</div>
 				</div>
 			</div>
 		</div>

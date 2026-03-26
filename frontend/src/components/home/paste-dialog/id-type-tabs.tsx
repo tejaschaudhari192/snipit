@@ -26,13 +26,19 @@ export const IdTypeTabs = ({
 			onValueChange={(v) => setIdTypeTab(v as "system" | "dynamic")}
 			className="w-full"
 		>
-			<TabsList className="grid w-full grid-cols-2 mb-4">
-				<TabsTrigger value="system">
-					<Wand2 className="h-4 w-4 mr-2" />
+			<TabsList className="grid w-full grid-cols-2 mb-4 h-12 sm:h-auto">
+				<TabsTrigger
+					value="system"
+					className="text-[11px] sm:text-sm px-1 sm:px-3"
+				>
+					<Wand2 className="h-4 w-4 hidden min-[400px]:block mr-1 sm:mr-2" />
 					{t("home.paste_system_id")}
 				</TabsTrigger>
-				<TabsTrigger value="dynamic">
-					<Fingerprint className="h-4 w-4 mr-2" />
+				<TabsTrigger
+					value="dynamic"
+					className="text-[11px] sm:text-sm px-1 sm:px-3"
+				>
+					<Fingerprint className="h-4 w-4 hidden min-[400px]:block mr-1 sm:mr-2" />
 					{t("home.paste_dynamic_id")}
 				</TabsTrigger>
 			</TabsList>

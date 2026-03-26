@@ -29,6 +29,7 @@
 		"password": "Password",
 		"password_placeholder": "Enter password...",
 		"submitting": "Submitting...",
+		"saving": "Saving...",
 		"password_protected": "Password Protected",
 		"enter_password_desc": "This snippet is password protected. Please enter the password to view it.",
 		"unlock": "Unlock Snippet",
@@ -142,9 +143,13 @@
 			"custom": "Custom Expiry"
 		},
 		"tab_text": "Plain Text",
+		"tab_text_short": "Text",
 		"tab_code": "Code",
+		"tab_code_short": "Code",
 		"tab_link": "Shorten Link",
+		"tab_link_short": "Link",
 		"tab_file": "File",
+		"tab_file_short": "File",
 		"link_placeholder": "Enter URL to shorten (e.g., https://example.xyz)",
 		"link_desc": "Paste the long URL below to create a short, redirecting link.",
 		"link_features": {
@@ -330,7 +335,14 @@
 		"made_by": "Made with ❤️ by Durgesh & Tejas"
 	},
 	"splash": {
-		"tagline": "Share your snippets instantly"
+		"tagline": "Share your snippets instantly",
+		"loading_phrases": [
+			"Initializing Core...",
+			"Warming up engine...",
+			"Loading syntax trees...",
+			"Compiling workspace...",
+			"Readying snippets..."
+		]
 	},
 	"error_page": {
 		"title": "Page Not Found",

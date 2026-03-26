@@ -100,8 +100,10 @@ const Header = ({ className }: HeaderProps) => {
 	];
 	const id = nonShareablePaths.some((p) => path.includes(p)) ? null : path;
 	const { t } = useTranslation();
+	const { user } = useAuth();
 	const [isQRDialogOpen, setIsQRDialogOpen] = useState(false);
 	const [isJumpToDialogOpen, setIsJumpToDialogOpen] = useState(false);
+	const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 
 	const [url, setUrl] = useState(window.location.href);
 
@@ -137,7 +139,7 @@ const Header = ({ className }: HeaderProps) => {
 					</p>
 				</Link>
 				{id && id.length > 1 && (
-					<div className="hidden md:flex items-center h-8 gap-2 min-w-0 flex-1 px-3 rounded-full bg-muted/50 border border-border/50 max-w-sm">
+					<div className="flex items-center h-9 md:h-8 gap-2 min-w-0 flex-1 px-3 rounded-full bg-muted/50 border border-border/50 max-w-sm ml-1 sm:ml-0 overflow-hidden">
 						<p className="text-xs text-muted-foreground truncate flex-1 min-w-0">
 							{url}
 						</p>
@@ -213,25 +215,6 @@ const Header = ({ className }: HeaderProps) => {
 			</div>
 
 			<div className="md:hidden flex items-center gap-1.5 shrink-0">
-				{id && id.length > 1 && (
-					<CopyButton
-						content={url}
-						size="default"
-						variant="outline"
-						className="h-9 w-9 shrink-0 px-0"
-					/>
-				)}
-				{id && id.length > 1 && (
-					<Button
-						variant="outline"
-						size="icon"
-						className="h-9 w-9 shrink-0 hidden sm:flex"
-						onClick={() => setIsQRDialogOpen(true)}
-					>
-						<QrCode className="h-4 w-4" />
-					</Button>
-				)}
-				<UserMenu />
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button
@@ -243,6 +226,60 @@ const Header = ({ className }: HeaderProps) => {
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-[220px] p-2">
+						{!user ? (
+							<>
+								<DropdownMenuItem
+									asChild
+									className="rounded-md"
+								>
+									<Link
+										to="/login"
+										className="flex items-center gap-2 py-2"
+									>
+										<User className="h-4 w-4" />
+										<span>{t("header.login")}</span>
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									asChild
+									className="rounded-md"
+								>
+									<Link
+										to="/signup"
+										className="flex items-center gap-2 py-2"
+									>
+										<User className="h-4 w-4" />
+										<span>{t("header.signup")}</span>
+									</Link>
+								</DropdownMenuItem>
+								<div className="h-px bg-muted my-2" />
+							</>
+						) : (
+							<>
+								<DropdownMenuItem
+									asChild
+									className="rounded-md"
+								>
+									<Link
+										to="/profile"
+										className="flex items-center gap-2 py-2"
+									>
+										<User className="h-4 w-4" />
+										<span>{t("header.profile")}</span>
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									className="rounded-md text-red-500 focus:text-red-500"
+									onClick={() => setIsLogoutDialogOpen(true)}
+								>
+									<div className="flex items-center gap-2 py-2">
+										<LogOut className="h-4 w-4" />
+										<span>{t("header.logout")}</span>
+									</div>
+								</DropdownMenuItem>
+								<div className="h-px bg-muted my-2" />
+							</>
+						)}
 						<DropdownMenuItem asChild className="rounded-md">
 							<Link
 								to="/about"
@@ -315,19 +352,30 @@ const Header = ({ className }: HeaderProps) => {
 							)}
 						</p>
 					</DialogHeader>
-					<div className="flex flex-col items-center justify-center p-6 bg-white rounded-xl shadow-inner my-4">
+					<div className="flex flex-col items-center justify-center p-6 bg-white rounded-xl shadow-inner my-4 relative group">
 						<QRCodeSVG
 							value={url}
 							size={200}
 							level="H"
 							includeMargin={true}
 						/>
+						<div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/5 rounded-xl">
+							<CopyButton
+								content={url}
+								variant="outline"
+								className="bg-background shadow-lg scale-125"
+							/>
+						</div>
 					</div>
 					<div className="text-center text-xs text-muted-foreground break-all px-4">
 						{url}
 					</div>
 				</DialogContent>
 			</Dialog>
+			<LogoutDialog
+				open={isLogoutDialogOpen}
+				onOpenChange={setIsLogoutDialogOpen}
+			/>
 		</header>
 	);
 };

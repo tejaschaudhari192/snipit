@@ -29,6 +29,7 @@
 		"password": "パスワード（オプション）",
 		"password_placeholder": "パスワードを入力...",
 		"submitting": "送信中...",
+		"saving": "保存中...",
 		"password_protected": "パスワード保護されています",
 		"enter_password_desc": "このスニペットはパスワードで保護されています。閲覧するにはパスワードを入力してください。",
 		"unlock": "スニペットのロック解除",
@@ -137,9 +138,13 @@
 			"custom": "カスタムの有効期限"
 		},
 		"tab_text": "プレーンテキスト",
+		"tab_text_short": "テキスト",
 		"tab_code": "コード",
+		"tab_code_short": "コード",
 		"tab_link": "リンクを短縮",
+		"tab_link_short": "リンク",
 		"tab_file": "ファイル",
+		"tab_file_short": "ファイル",
 		"link_placeholder": "短縮するURLを入力してください（例：https://example.xyz）",
 		"link_desc": "以下の長いURLを貼り付けて、短縮リダイレクトリンクを作成します。",
 		"link_features": {
@@ -319,7 +324,14 @@
 		"made_by": "Durgesh & Tejas によって ❤️ で作られました"
 	},
 	"splash": {
-		"tagline": "スニペットを瞬時に共有"
+		"tagline": "スニペットを瞬時に共有",
+		"loading_phrases": [
+			"コアを初期化中...",
+			"エンジンをウォームアップ中...",
+			"構文木を読み込み中...",
+			"ワークスペースをコンパイル中...",
+			"スニペットを準備中..."
+		]
 	},
 	"error_page": {
 		"title": "ページが見つかりません",

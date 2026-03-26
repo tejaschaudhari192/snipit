@@ -97,14 +97,14 @@ export const EditControls = ({
 						value={contentType}
 						onValueChange={setContentType}
 						className="w-full xl:w-auto"
-						listClassName="xl:w-fit"
+						listClassName="xl:w-fit h-10"
 						showFileOption={contentType === "file"}
 					/>
 
 					<div className="w-full xl:w-auto flex flex-wrap items-center gap-3">
 						{(isOwner || isAdmin) && (
-							<div className="relative group w-40">
-								<Globe className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+							<div className="relative group w-44">
+								<Globe className="absolute left-3.5 top-[50%] -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors z-10 pointer-events-none" />
 								<Input
 									value={customId}
 									onChange={(e) =>
@@ -115,7 +115,7 @@ export const EditControls = ({
 										"Custom ID...",
 									)}
 									disabled={!isOwner && !isAdmin}
-									className="pl-8 h-10 text-sm bg-muted/20 border-transparent focus:border-border transition-all"
+									className="pl-9 h-10 text-sm bg-background/80 backdrop-blur-sm border-border/50 focus:border-primary/50 shadow-sm transition-all ring-offset-background"
 								/>
 							</div>
 						)}
@@ -137,11 +137,11 @@ export const EditControls = ({
 									<Button
 										variant="outline"
 										size="icon"
-										className="h-10 w-10 shrink-0"
+										className="h-10 w-10 shrink-0 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm"
 										onClick={onAutoDetect}
 										title={t("home.auto_detecting")}
 									>
-										<Code2 className="h-4 w-4" />
+										<Code2 className="h-4 w-4 text-muted-foreground" />
 									</Button>
 								)}
 							</div>

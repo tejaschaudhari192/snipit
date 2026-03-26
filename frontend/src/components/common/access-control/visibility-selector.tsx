@@ -43,8 +43,10 @@ export const VisibilitySelector = ({
 
 	return (
 		<div className="space-y-2">
-			<Label>{t("common.access_control", "Access Level")}</Label>
-			<div className="flex items-center justify-between p-3.5 rounded-xl border bg-card hover:bg-muted/50 transition-all shadow-sm group">
+			<Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground ml-1">
+				{t("common.access_control", "Access Level")}
+			</Label>
+			<div className="flex flex-col min-[440px]:flex-row min-[440px]:items-center justify-between p-3 gap-3 rounded-xl border bg-card hover:bg-muted/50 transition-all shadow-sm group">
 				<div className="flex items-center gap-3">
 					<div className="p-2.5 rounded-full bg-primary/10 border border-primary/20 group-hover:scale-105 transition-transform">
 						{visibility === "public" ? (
@@ -75,7 +77,7 @@ export const VisibilitySelector = ({
 					onValueChange={handleValueChange}
 					disabled={disabled}
 				>
-					<SelectTrigger className="w-[130px] h-9 text-xs font-medium bg-background border-input/50 focus:ring-primary/20">
+					<SelectTrigger className="w-full min-[440px]:w-[130px] h-9 text-xs font-medium bg-background border-input/50 focus:ring-primary/20">
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>

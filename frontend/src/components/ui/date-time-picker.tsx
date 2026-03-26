@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { CalendarIcon, ChevronUp, ChevronDown } from "lucide-react";
+import { CalendarIcon, ChevronUp, ChevronDown, Clock } from "lucide-react";
 import { format } from "date-fns";
 
 import { cn } from "@/lib/utils";
@@ -109,7 +109,7 @@ function AmPmToggle({ value, onChange }: AmPmToggleProps) {
 	);
 }
 
-export function DateTimePicker({
+export function DatePicker({
 	date,
 	setDate,
 }: {
@@ -125,8 +125,52 @@ export function DateTimePicker({
 			newDate.setMonth(selectedDate.getMonth());
 			newDate.setDate(selectedDate.getDate());
 			setDate(newDate);
+			setIsOpen(false);
 		}
 	};
+
+	return (
+		<Popover open={isOpen} onOpenChange={setIsOpen}>
+			<PopoverTrigger asChild>
+				<Button
+					variant="outline"
+					className={cn(
+						"w-full justify-start text-left font-normal h-11 border-input bg-background/50 hover:bg-accent/50 transition-colors",
+						!date && "text-muted-foreground",
+					)}
+				>
+					<CalendarIcon className="mr-2 h-4 w-4" />
+					{date ? (
+						format(date, "MMM dd, yyyy")
+					) : (
+						<span>Pick a date</span>
+					)}
+				</Button>
+			</PopoverTrigger>
+			<PopoverContent
+				className="w-auto p-0 border border-border shadow-2xl rounded-2xl overflow-hidden bg-popover ring-1 ring-white/5"
+				align="center"
+			>
+				<Calendar
+					mode="single"
+					selected={date}
+					onSelect={handleDateSelect}
+					initialFocus
+					className="p-3"
+				/>
+			</PopoverContent>
+		</Popover>
+	);
+}
+
+export function TimePicker({
+	date,
+	setDate,
+}: {
+	date: Date | undefined;
+	setDate: (date: Date | undefined) => void;
+}) {
+	const [isOpen, setIsOpen] = React.useState(false);
 
 	const getHour12 = () => {
 		if (!date) return 12;
@@ -174,101 +218,98 @@ export function DateTimePicker({
 				<Button
 					variant="outline"
 					className={cn(
-						"w-full justify-start text-left font-normal h-11 border-input bg-background hover:bg-accent/50 transition-colors",
+						"w-full justify-start text-left font-normal h-11 border-input bg-background/50 hover:bg-accent/50 transition-colors",
 						!date && "text-muted-foreground",
 					)}
 				>
-					<CalendarIcon className="mr-2 h-4 w-4" />
-					{date ? (
-						format(date, "MM/dd/yyyy hh:mm aa")
-					) : (
-						<span>MM/DD/YYYY hh:mm aa</span>
-					)}
+					<Clock className="mr-2 h-4 w-4" />
+					{date ? format(date, "hh:mm aa") : <span>Set time</span>}
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent
-				className="w-auto p-0 border border-border shadow-xl rounded-xl overflow-hidden bg-popover"
-				align="start"
+				className="w-auto p-4 border border-border shadow-2xl rounded-2xl overflow-hidden bg-popover ring-1 ring-white/5"
+				align="center"
 			>
-				<div className="flex flex-col sm:flex-row">
-					{/* Calendar */}
-					<div className="border-b sm:border-b-0 sm:border-r border-border">
-						<Calendar
-							mode="single"
-							selected={date}
-							onSelect={handleDateSelect}
-							initialFocus
+				<div className="flex flex-col justify-center">
+					<div className="text-xs font-bold text-muted-foreground mb-4 text-center uppercase tracking-wider">
+						Set Time
+					</div>
+					<div className="flex items-center gap-2 justify-center">
+						<TimeSpinner
+							value={getHour12()}
+							onChange={handleHourChange}
+							min={1}
+							max={12}
+							label="Hr"
+							padZero={false}
+						/>
+						<div className="flex flex-col items-center justify-center h-full pt-5">
+							<span className="text-xl font-bold text-muted-foreground">
+								:
+							</span>
+						</div>
+						<TimeSpinner
+							value={getMinute()}
+							onChange={handleMinuteChange}
+							min={0}
+							max={59}
+							label="Min"
+						/>
+						<AmPmToggle
+							value={getAmPm()}
+							onChange={handleAmPmChange}
 						/>
 					</div>
-
-					{/* Time Picker */}
-					<div className="p-4 flex flex-col justify-center">
-						<div className="text-xs font-semibold text-muted-foreground mb-3 text-center">
-							Select Time
+					<div className="mt-6 pt-4 border-t border-border/50">
+						<div className="text-[10px] font-bold text-muted-foreground mb-3 text-center uppercase tracking-widest">
+							Quick Set
 						</div>
-						<div className="flex items-center gap-2">
-							<TimeSpinner
-								value={getHour12()}
-								onChange={handleHourChange}
-								min={1}
-								max={12}
-								label="Hour"
-								padZero={false}
-							/>
-							<div className="flex flex-col items-center justify-center h-full pt-5">
-								<span className="text-2xl font-bold text-muted-foreground">
-									:
-								</span>
-							</div>
-							<TimeSpinner
-								value={getMinute()}
-								onChange={handleMinuteChange}
-								min={0}
-								max={59}
-								label="Min"
-							/>
-							<AmPmToggle
-								value={getAmPm()}
-								onChange={handleAmPmChange}
-							/>
-						</div>
-						{/* Quick time presets */}
-						<div className="mt-4 pt-3 border-t border-border">
-							<div className="text-[10px] font-semibold text-muted-foreground mb-2 text-center uppercase">
-								Quick Set
-							</div>
-							<div className="grid grid-cols-3 gap-1.5">
-								{[
-									{ label: "9 AM", hour: 9, min: 0 },
-									{ label: "12 PM", hour: 12, min: 0 },
-									{ label: "6 PM", hour: 18, min: 0 },
-								].map((preset) => (
-									<Button
-										key={preset.label}
-										variant="ghost"
-										size="sm"
-										className="h-7 text-xs"
-										onClick={() => {
-											const newDate = date
-												? new Date(date)
-												: new Date();
-											newDate.setHours(
-												preset.hour,
-												preset.min,
-												0,
-												0,
-											);
-											setDate(newDate);
-										}}
-									>
-										{preset.label}
-									</Button>
-								))}
-							</div>
+						<div className="grid grid-cols-3 gap-1.5">
+							{[
+								{ label: "9 AM", hour: 9, min: 0 },
+								{ label: "12 PM", hour: 12, min: 0 },
+								{ label: "6 PM", hour: 18, min: 0 },
+							].map((preset) => (
+								<Button
+									key={preset.label}
+									variant="secondary"
+									size="sm"
+									className="h-8 text-[10px] font-bold"
+									onClick={() => {
+										const newDate = date
+											? new Date(date)
+											: new Date();
+										newDate.setHours(
+											preset.hour,
+											preset.min,
+											0,
+											0,
+										);
+										setDate(newDate);
+									}}
+								>
+									{preset.label}
+								</Button>
+							))}
 						</div>
 					</div>
 				</div>
 			</PopoverContent>
 		</Popover>
+	);
+}
+
+export function DateTimePicker({
+	date,
+	setDate,
+}: {
+	date: Date | undefined;
+	setDate: (date: Date | undefined) => void;
+}) {
+	return (
+		<div className="grid grid-cols-2 gap-2 sm:gap-3">
+			<DatePicker date={date} setDate={setDate} />
+			<TimePicker date={date} setDate={setDate} />
+		</div>
 	);
 }
