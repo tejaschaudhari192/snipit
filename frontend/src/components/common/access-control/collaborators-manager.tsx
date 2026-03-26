@@ -107,7 +107,7 @@ export const CollaboratorsManager = ({
 						onValueChange={(r: Role) => setPendingRole(r)}
 						disabled={disabled}
 					>
-						<SelectTrigger className="flex-1 sm:w-[110px] h-[44px] bg-background border-input focus:ring-primary/20">
+						<SelectTrigger className="flex-1 h-[44px] bg-background border-input focus:ring-primary/20">
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>

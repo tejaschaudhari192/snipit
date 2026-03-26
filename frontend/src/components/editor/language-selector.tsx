@@ -59,13 +59,7 @@ export const LanguageSelector = ({
 					className,
 				)}
 			>
-				<div className="flex items-center gap-2">
-					<LanguageIcon
-						language={value}
-						className="h-4 w-4 shrink-0"
-					/>
-					<SelectValue placeholder="Language" />
-				</div>
+				<SelectValue placeholder="Language" />
 			</SelectTrigger>
 			<SelectContent>
 				<SelectGroup>
