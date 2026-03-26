@@ -179,6 +179,24 @@ const DisplayPage = () => {
 		loadData();
 	}, [id, apiHelpers, location.state, user]);
 
+	useEffect(() => {
+		if (paste && paste.id) {
+			const cleanContent = paste.content?.replace(/\r?\n|\r/g, " ");
+			const trimmedContent = cleanContent
+				? cleanContent.length > 30
+					? cleanContent.substring(0, 30).trim() + "..."
+					: cleanContent
+				: "";
+			document.title = `${paste.id}${trimmedContent ? ` - ${trimmedContent}` : ""} | Snipit`;
+		} else {
+			document.title = "Snipit";
+		}
+
+		return () => {
+			document.title = "Snipit";
+		};
+	}, [paste]);
+
 	const handleLanguageDetection = async (content: string) => {
 		const result = await detectLanguage(content);
 		if (result) setLanguage(result.language);
