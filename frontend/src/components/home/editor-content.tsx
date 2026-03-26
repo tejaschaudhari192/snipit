@@ -17,7 +17,7 @@ import {
 	Terminal,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { RefObject } from "react";
+import { useEffect, type RefObject } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
@@ -80,6 +80,31 @@ export const EditorContent = ({
 	const isAudio = mime.startsWith("audio/");
 	const isPdf = mime === "application/pdf" || ext === "pdf";
 	const hasPreview = previewUrl && (isImage || isVideo || isAudio || isPdf);
+
+	useEffect(() => {
+		if (contentType !== "file" || isUploading) return;
+
+		const handleGlobalPaste = (e: ClipboardEvent) => {
+			const items = e.clipboardData?.items;
+			if (!items) return;
+
+			for (const item of items) {
+				if (item.kind === "file") {
+					const file = item.getAsFile();
+					if (file && onFileSelect) {
+						onFileSelect(file);
+						e.preventDefault();
+						break;
+					}
+				}
+			}
+		};
+
+		document.addEventListener("paste", handleGlobalPaste);
+		return () => {
+			document.removeEventListener("paste", handleGlobalPaste);
+		};
+	}, [contentType, isUploading, onFileSelect]);
 
 	const handleDragOver = (e: React.DragEvent) => {
 		e.preventDefault();
