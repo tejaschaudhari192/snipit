@@ -60,6 +60,7 @@ const HomePage = () => {
 	const { isDetecting, detectLanguage } = useLanguageDetection();
 	const uploadPromiseRef = useRef<Promise<UploadState> | null>(null);
 	const [pendingFile, setPendingFile] = useState<File | null>(null);
+	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [isCustomExpiryDialogOpen, setIsCustomExpiryDialogOpen] =
 		useState(false);
@@ -72,6 +73,17 @@ const HomePage = () => {
 			setExpiresTime("1d");
 		}
 	}, [contentType]);
+
+	useEffect(() => {
+		if (!pendingFile) {
+			setPreviewUrl(null);
+			return;
+		}
+		const objectUrl = URL.createObjectURL(pendingFile);
+		setPreviewUrl(objectUrl);
+		return () => URL.revokeObjectURL(objectUrl);
+	}, [pendingFile]);
+
 	const [customId, setCustomId] = useState("");
 	const [password, setPassword] = useState("");
 	const [idTypeTab, setIdTypeTab] = useState<"system" | "dynamic">("system");
@@ -408,6 +420,7 @@ const HomePage = () => {
 					setPendingFile(null);
 				}}
 				fileMimeType={fileMimeType}
+				previewUrl={previewUrl}
 			/>
 		</div>
 	);

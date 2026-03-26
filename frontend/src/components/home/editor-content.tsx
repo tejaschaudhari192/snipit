@@ -43,6 +43,7 @@ interface EditorContentProps {
 	uploadError?: string | null;
 	onClearFile?: () => void;
 	fileMimeType?: string | null;
+	previewUrl?: string | null;
 }
 
 export const EditorContent = ({
@@ -64,8 +65,21 @@ export const EditorContent = ({
 	uploadError,
 	onClearFile,
 	fileMimeType,
+	previewUrl,
 }: EditorContentProps) => {
 	const { t } = useTranslation();
+
+	const mime = fileMimeType?.toLowerCase() || "";
+	const ext =
+		uploadedFileName?.toLowerCase().split(".").pop() ||
+		mime.split("/")[1] ||
+		"";
+
+	const isImage = mime.startsWith("image/");
+	const isVideo = mime.startsWith("video/");
+	const isAudio = mime.startsWith("audio/");
+	const isPdf = mime === "application/pdf" || ext === "pdf";
+	const hasPreview = previewUrl && (isImage || isVideo || isAudio || isPdf);
 
 	const handleDragOver = (e: React.DragEvent) => {
 		e.preventDefault();
@@ -209,21 +223,58 @@ export const EditorContent = ({
 				/>
 			) : contentType === "file" ? (
 				<div
-					className="h-full w-full flex items-center justify-center p-6 bg-muted/5"
+					className="h-full w-full flex items-center justify-center p-6 bg-muted/5 overflow-y-auto"
 					onDragOver={handleDragOver}
 					onDrop={handleDrop}
 				>
-					<div className="w-full max-w-xl">
+					<div className="w-full max-w-xl my-auto">
 						{uploadedFileName ? (
 							<div className="space-y-6">
-								<div className="flex flex-col items-center gap-2 text-center">
-									<div className="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
-										<FileUp className="h-5 w-5" />
+								{hasPreview && (
+									<div className="w-full bg-background/60 backdrop-blur-xl rounded-2xl border border-border/50 shadow-sm overflow-hidden flex items-center justify-center">
+										{isImage && (
+											<img
+												src={previewUrl!}
+												alt={uploadedFileName}
+												className="w-full h-auto max-h-[180px] object-cover bg-muted/10 pattern-boxes pattern-muted/20 pattern-bg-transparent pattern-size-4"
+											/>
+										)}
+										{isVideo && (
+											<video
+												src={previewUrl!}
+												controls
+												className="w-full h-auto max-h-[180px] bg-black"
+											/>
+										)}
+										{isAudio && (
+											<div className="w-full py-4 px-4 flex flex-col items-center justify-center bg-gradient-to-br from-primary/5 via-primary/10 to-transparent gap-3">
+												<FileAudio className="w-8 h-8 text-primary animate-pulse drop-shadow-md" />
+												<audio
+													src={previewUrl!}
+													controls
+													className="w-full max-w-xs shadow-md rounded-full"
+												/>
+											</div>
+										)}
+										{isPdf && (
+											<iframe
+												src={previewUrl!}
+												className="w-full h-[180px] border-0 bg-white"
+												title={uploadedFileName}
+											/>
+										)}
 									</div>
-									<h2 className="text-lg font-bold tracking-tight">
-										{t("home.tab_file", "Upload File")}
-									</h2>
-								</div>
+								)}
+								{!hasPreview && (
+									<div className="flex flex-col items-center gap-2 text-center">
+										<div className="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
+											<FileUp className="h-5 w-5" />
+										</div>
+										<h2 className="text-lg font-bold tracking-tight">
+											{t("home.tab_file", "Upload File")}
+										</h2>
+									</div>
+								)}
 								<div
 									className={cn(
 										"relative p-6 rounded-2xl border-2 transition-all duration-300",
