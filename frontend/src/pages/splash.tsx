@@ -3,11 +3,11 @@ import icon from "@/assets/brand/icon.png";
 import { Loader2 } from "lucide-react";
 
 const loadingPhrases = [
-	"Initializing Core...",
-	"Warming up engine...",
-	"Loading syntax trees...",
-	"Compiling workspace...",
-	"Readying snippets...",
+    "Starting up...",
+    "Just a second...",
+    "Almost ready...",
+    "Getting things set...",
+    "Finishing touches...",
 ];
 
 const SplashPage = () => {
