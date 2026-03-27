@@ -1,4 +1,5 @@
 import { Editor, type BeforeMount, type OnMount } from "@monaco-editor/react";
+import { CollabDraw } from "@/components/display/collab-draw";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import {
@@ -227,10 +228,17 @@ export const EditorContent = ({
 
 	return (
 		<div
-			ref={editorContainerRef}
+			ref={contentType === "draw" ? null : editorContainerRef}
 			className="m-3 sm:m-5 h-[60vh] border border-border/50 bg-background/60 backdrop-blur-xl rounded-2xl overflow-hidden touch-none shadow-2xl relative z-20 ring-1 ring-white/5"
 		>
-			{contentType === "code" ? (
+			{contentType === "draw" ? (
+				<CollabDraw
+					isEdit={true}
+					content={textValue}
+					onContentChange={setTextValue}
+					theme={theme as "light" | "dark" | "system"}
+				/>
+			) : contentType === "code" || contentType === "text" ? (
 				<Editor
 					height="100%"
 					language={language}

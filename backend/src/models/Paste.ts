@@ -15,7 +15,7 @@ const pasteSchema = new Schema<IPaste>(
 		},
 		contentMode: {
 			type: String,
-			enum: ["text", "code", "link", "file"],
+			enum: ["text", "code", "draw", "link", "file"],
 			default: "text",
 		},
 		fileUrl: {

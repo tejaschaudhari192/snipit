@@ -387,12 +387,14 @@ const HomePage = () => {
 						</div>
 					)}
 
-					{contentType !== "link" && contentType !== "file" && (
-						<FontSizeControls
-							fontSize={fontSize}
-							setFontSize={setFontSize}
-						/>
-					)}
+					{contentType !== "link" &&
+						contentType !== "file" &&
+						contentType !== "draw" && (
+							<FontSizeControls
+								fontSize={fontSize}
+								setFontSize={setFontSize}
+							/>
+						)}
 				</div>
 			</div>
 

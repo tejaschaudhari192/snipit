@@ -39,7 +39,7 @@ const configurations = {
 	},
 };
 
-export const CONTENT_MODES = ["text", "code", "link", "file"] as const;
+export const CONTENT_MODES = ["text", "code", "link", "file", "draw"] as const;
 export const VISIBILITIES = ["public", "private", "shared"] as const;
 export const EDIT_PERMISSIONS = ["owner", "shared", "public"] as const;
 export const ROLES = ["viewer", "editor", "admin", "commenter"] as const;

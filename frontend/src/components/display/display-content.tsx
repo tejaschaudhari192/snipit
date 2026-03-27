@@ -7,6 +7,10 @@ import { MarkdownDisplay } from "./content/markdown-display";
 import { FileDisplay } from "./content/file-display";
 import { CodeEditorView } from "./content/code-editor-view";
 
+import type { Socket } from "socket.io-client";
+import type { ActiveUser } from "@/types";
+import { CollabDraw } from "./collab-draw";
+
 interface DisplayContentProps {
 	id: string;
 	isEdit: boolean;
@@ -20,6 +24,8 @@ interface DisplayContentProps {
 	handleEditorWillMount: BeforeMount;
 	paste: PasteData;
 	onMount?: OnMount;
+	socketRef?: React.MutableRefObject<Socket | null>;
+	activeUsers?: ActiveUser[];
 }
 
 export const DisplayContent = ({
@@ -35,11 +41,29 @@ export const DisplayContent = ({
 	handleEditorWillMount,
 	paste,
 	onMount,
+	socketRef,
+	activeUsers,
 }: DisplayContentProps) => {
 	const { t } = useTranslation();
 
 	if (contentType === "file") {
 		return <FileDisplay paste={paste} contentRef={contentRef} />;
+	}
+
+	if (contentType === "draw") {
+		return (
+			<div className="h-full w-full">
+				<CollabDraw
+					id={id}
+					socketRef={socketRef}
+					isEdit={isEdit}
+					content={content}
+					onContentChange={onContentChange}
+					theme={theme as "light" | "dark" | "system"}
+					activeUsers={activeUsers}
+				/>
+			</div>
+		);
 	}
 
 	if (contentType === "link" && !isEdit) {
