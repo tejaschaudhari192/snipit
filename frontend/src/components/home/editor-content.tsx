@@ -22,9 +22,10 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { CONFIG } from "@/configurations";
+import type { ContentMode } from "@/types";
 
 interface EditorContentProps {
-	contentType: "text" | "code" | "link" | "file";
+	contentType: ContentMode;
 	language: string;
 	textValue: string;
 	setTextValue: (val: string) => void;

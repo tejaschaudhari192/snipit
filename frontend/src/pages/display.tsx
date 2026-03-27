@@ -1,17 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "sonner";
-import { type BeforeMount } from "@monaco-editor/react";
+import { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { AxiosError } from "axios";
+import { io, type Socket } from "socket.io-client";
+import { CONFIG } from "@/configurations";
 
 import { useApiHelpers } from "@/lib/api";
-import { saveToLocal, playErrorSound, playRemoveSound } from "@/lib/utils";
+import {
+	saveToLocal,
+	playErrorSound,
+	playRemoveSound,
+	detectContentMode,
+} from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
+import { useRemoteCursors } from "@/hooks/use-remote-cursors";
 import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "react-i18next";
-import type { PasteData } from "@/types";
+import type {
+	ActiveUser,
+	CursorPosition,
+	PasteData,
+	ContentMode,
+	Visibility,
+	EditPermission,
+	PublicRole,
+	ShareRole,
+} from "@/types";
 
 import Loader from "@/components/common/core/loader";
 import Error from "@/components/common/core/error";
@@ -37,8 +54,29 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Trash2 } from "lucide-react";
 
+type SaveStatus = "idle" | "saving" | "saved" | "error";
+
+interface ShareEntry {
+	email: string;
+	role: ShareRole;
+}
+
+interface SyncState {
+	content?: string;
+	language?: string;
+	contentMode?: ContentMode;
+	visibility?: Visibility;
+	allowedUsers?: string[];
+	editPermission?: EditPermission;
+	publicRole?: PublicRole;
+	allowComments?: boolean;
+	expiresTime?: string;
+	id?: string;
+	isAutosave?: boolean;
+}
+
 const DisplayPage = () => {
-	const { id } = useParams();
+	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const location = useLocation();
 	const apiHelpers = useApiHelpers();
@@ -46,126 +84,135 @@ const DisplayPage = () => {
 	const { user } = useAuth();
 	const { t } = useTranslation();
 
-	const [isEdit, setIsEdit] = useState<boolean>(false);
+	const [isEdit, setIsEdit] = useState(false);
 	const [paste, setPaste] = useState<PasteData>();
 	const [updatedContent, setUpdatedContent] = useState<string>();
-	const [loading, setLoading] = useState<boolean>(true);
-	const [language, setLanguage] = useState<string>("text");
-	const [contentType, setContentType] = useState<
-		"text" | "code" | "link" | "file"
-	>("text");
-	const [visibility, setVisibility] = useState<
-		"public" | "private" | "shared"
-	>("public");
+	const [loading, setLoading] = useState(true);
+	const [language, setLanguage] = useState(CONFIG.DEFAULTS.LANGUAGE);
+	const [contentType, setContentType] = useState<ContentMode>(
+		CONFIG.DEFAULTS.CONTENT_MODE,
+	);
+	const [visibility, setVisibility] = useState<Visibility>(
+		CONFIG.DEFAULTS.VISIBILITY,
+	);
 	const [allowedUsers, setAllowedUsers] = useState<string[]>([]);
-	const [editPermission, setEditPermission] = useState<
-		"owner" | "shared" | "public"
-	>("owner");
-	const [shareList, setShareList] = useState<
-		{ email: string; role: "viewer" | "editor" | "admin" | "commenter" }[]
-	>([]);
-	const [publicRole, setPublicRole] = useState<
-		"viewer" | "editor" | "commenter"
-	>("viewer");
+	const [editPermission, setEditPermission] = useState<EditPermission>(
+		CONFIG.DEFAULTS.EDIT_PERMISSION,
+	);
+	const [shareList, setShareList] = useState<ShareEntry[]>([]);
+	const [publicRole, setPublicRole] = useState<PublicRole>(
+		CONFIG.DEFAULTS.PUBLIC_ROLE,
+	);
 	const [allowComments, setAllowComments] = useState(false);
-	const [customId, setCustomId] = useState<string>("");
-	const { isDetecting, detectLanguage } = useLanguageDetection();
-	const { fontSize, ref: contentRef, setFontSize } = usePinchZoom(14);
+	const [customId, setCustomId] = useState("");
 	const [passwordInput, setPasswordInput] = useState("");
 	const [passwordError, setPasswordError] = useState("");
 	const [editPassword, setEditPassword] = useState("");
 	const [isPasswordEnabled, setIsPasswordEnabled] = useState(false);
-	const [expiresTime, setExpiresTime] = useState("1d");
+	const [expiresTime, setExpiresTime] = useState(CONFIG.DEFAULTS.EXPIRY);
 	const [isCustomExpiryDialogOpen, setIsCustomExpiryDialogOpen] =
 		useState(false);
 	const [customExpiryDate, setCustomExpiryDate] = useState<Date | undefined>(
 		new Date(Date.now() + 24 * 60 * 60 * 1000),
 	);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-	const [isSaving, setIsSaving] = useState<boolean>(false);
+	const [isSaving, setIsSaving] = useState(false);
+	const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+	const [activeUsers, setActiveUsers] = useState<ActiveUser[]>([]);
+	const [isAutosave, setIsAutosave] = useState(true);
+	const [remoteCursors, setRemoteCursors] = useState<
+		Record<string, CursorPosition>
+	>({});
+	const [editorInstance, setEditorInstance] = useState<
+		Parameters<OnMount>[0] | null
+	>(null);
+
+	const socketRef = useRef<Socket | null>(null);
+	const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
+	const syncStateRef = useRef<SyncState>({});
+	const isRemoteUpdate = useRef(false);
+	const isEditRef = useRef(isEdit);
+
+	const { isDetecting, detectLanguage } = useLanguageDetection();
+	const { fontSize, ref: contentRef, setFontSize } = usePinchZoom(14);
 
 	const isOwner = !paste?.owner || (!!user && paste.owner === user._id);
 
-	const handleEditorWillMount: BeforeMount = (monaco) =>
-		defineMonacoThemes(monaco);
+	const handleEditorWillMount: BeforeMount = (m) => defineMonacoThemes(m);
+
+	useRemoteCursors(editorInstance, remoteCursors, activeUsers);
+
+	useEffect(() => {
+		isEditRef.current = isEdit;
+	}, [isEdit]);
 
 	useEffect(() => {
 		async function loadData() {
 			try {
 				if (location.state?.pasteData) {
-					const data = location.state.pasteData;
-					setPaste(data);
-					setUpdatedContent(data.content);
-					setLanguage(data.language || "text");
-					const detectedType: "text" | "code" | "link" | "file" =
-						data.contentMode ||
-						(data.redirectUrl
-							? "link"
-							: data.fileUrl
-								? "file"
-								: data.language !== "text"
-									? "code"
-									: "text");
-					setContentType(detectedType);
+					const data = location.state.pasteData as PasteData;
+					const detectedType = detectContentMode(data);
 
 					if (data.redirectUrl && detectedType === "link") {
 						let url = data.content;
-						if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+						if (!/^https?:\/\//i.test(url)) url = `https://${url}`;
 						window.location.href = url;
 						return;
 					}
-					setVisibility(data.visibility || "public");
-					setAllowedUsers(data.allowedUsers || []);
-					setEditPermission(data.editPermission || "owner");
-					setShareList(data.shareList || []);
-					setPublicRole(data.publicRole || "viewer");
-					setAllowComments(data.allowComments || false);
+
+					setPaste(data);
+					setUpdatedContent(data.content);
+					setLanguage(data.language ?? "text");
+					setContentType(detectedType);
+					setVisibility(data.visibility ?? "public");
+					setAllowedUsers(data.allowedUsers ?? []);
+					setEditPermission(data.editPermission ?? "owner");
+					setShareList(data.shareList ?? []);
+					setPublicRole(data.publicRole ?? "viewer");
+					setAllowComments(data.allowComments ?? false);
 					setIsPasswordEnabled(
 						!!data.password || !!data.isPasswordProtected,
 					);
-					setExpiresTime(data.expiresTime || "1d");
-					setCustomId(data.id || "");
+					setExpiresTime(data.expiresTime ?? "1d");
+					setCustomId(data.id ?? "");
 					setLoading(false);
+					if (location.state.isCollaborative) setIsEdit(true);
 					window.history.replaceState({}, document.title);
 					return;
 				}
 
 				const data = await apiHelpers.getPaste(id!);
 				if (data) {
-					const detectedType: "text" | "code" | "link" | "file" =
-						data.contentMode ||
-						(data.redirectUrl
-							? "link"
-							: data.fileUrl
-								? "file"
-								: data.language !== "text"
-									? "code"
-									: "text");
-					setContentType(detectedType);
+					const detectedType = detectContentMode(data);
 
 					if (data.redirectUrl && detectedType === "link") {
 						let url = data.content;
-						if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+						if (!/^https?:\/\//i.test(url)) url = `https://${url}`;
 						window.location.href = url;
 						return;
 					}
-					setVisibility(data.visibility || "public");
-					setAllowedUsers(data.allowedUsers || []);
-					setEditPermission(data.editPermission || "owner");
-					setShareList(data.shareList || []);
-					setPublicRole(data.publicRole || "viewer");
-					setAllowComments(data.allowComments || false);
+
+					setContentType(detectedType);
+					setVisibility(data.visibility ?? "public");
+					setAllowedUsers(data.allowedUsers ?? []);
+					setEditPermission(data.editPermission ?? "owner");
+					setShareList(data.shareList ?? []);
+					setPublicRole(data.publicRole ?? "viewer");
+					setAllowComments(data.allowComments ?? false);
 					setIsPasswordEnabled(
 						!!data.password || !!data.isPasswordProtected,
 					);
-					setExpiresTime(data.expiresTime || "1d");
-					setLanguage(data.language || "text");
+					setExpiresTime(data.expiresTime ?? "1d");
+					setLanguage(data.language ?? "text");
 					setUpdatedContent(data.content);
-					setCustomId(data.id || "");
+					setCustomId(data.id ?? "");
 					setPaste(data);
-					if (!user) {
-						saveToLocal(data);
-					}
+					syncStateRef.current = {
+						...syncStateRef.current,
+						content: data.content,
+						id: data.id,
+					};
+					if (!user) saveToLocal(data);
 				} else {
 					setPaste(undefined);
 				}
@@ -180,22 +227,292 @@ const DisplayPage = () => {
 	}, [id, apiHelpers, location.state, user]);
 
 	useEffect(() => {
-		if (paste && paste.id) {
-			const cleanContent = paste.content?.replace(/\r?\n|\r/g, " ");
-			const trimmedContent = cleanContent
-				? cleanContent.length > 30
-					? cleanContent.substring(0, 30).trim() + "..."
-					: cleanContent
-				: "";
-			document.title = `${paste.id}${trimmedContent ? ` - ${trimmedContent}` : ""} | Snipit`;
+		if (!paste) return;
+		syncStateRef.current = {
+			content: paste.content,
+			language: paste.language,
+			contentMode: paste.contentMode,
+			visibility: paste.visibility,
+			allowedUsers: paste.allowedUsers ?? [],
+			editPermission: paste.editPermission ?? "owner",
+			publicRole: paste.publicRole ?? "viewer",
+			allowComments: paste.allowComments ?? false,
+			expiresTime: paste.expiresTime ?? "1d",
+			id: paste.id,
+			isAutosave: true,
+		};
+	}, [paste]);
+
+	useEffect(() => {
+		if (loading || !id || !paste) return;
+
+		const socketUrl = CONFIG.API_BASE_URL
+			? CONFIG.API_BASE_URL.replace(/\/api\/?$/, "")
+			: "";
+		const socket = io(socketUrl, { withCredentials: true });
+		socketRef.current = socket;
+
+		socket.on("connect", () => {
+			socket.emit("join-paste", {
+				pasteId: id,
+				userName: user?.username,
+			});
+			if (isEditRef.current) {
+				socket.emit("set-editing-status", {
+					pasteId: id,
+					isEditing: true,
+				});
+			}
+		});
+
+		socket.on("room-users", (users: ActiveUser[]) => {
+			setActiveUsers(users);
+			const currentIds = new Set(users.map((u) => u.socketId));
+			setRemoteCursors((prev) => {
+				const next = { ...prev };
+				let changed = false;
+				for (const key of Object.keys(next)) {
+					if (!currentIds.has(key)) {
+						delete next[key];
+						changed = true;
+					}
+				}
+				return changed ? next : prev;
+			});
+		});
+
+		socket.on(
+			"paste-updated",
+			(
+				data: Partial<PasteData> & {
+					socketId: string;
+					isAutosave?: boolean;
+				},
+			) => {
+				isRemoteUpdate.current = true;
+				syncStateRef.current = { ...syncStateRef.current, ...data };
+
+				if (data.content !== undefined) {
+					const currentEditor = editorRef.current;
+					const currentVal =
+						currentEditor?.getValue() ?? updatedContent;
+
+					if (data.content !== currentVal) {
+						if (currentEditor) {
+							const model = currentEditor.getModel();
+							if (model) {
+								if (isEditRef.current) {
+									const scrollTop =
+										currentEditor.getScrollTop();
+									const scrollLeft =
+										currentEditor.getScrollLeft();
+									currentEditor.executeEdits("remote-sync", [
+										{
+											range: model.getFullModelRange(),
+											text: data.content,
+											forceMoveMarkers: true,
+										},
+									]);
+									currentEditor.setScrollTop(scrollTop);
+									currentEditor.setScrollLeft(scrollLeft);
+								} else {
+									model.setValue(data.content);
+								}
+							}
+						}
+						setUpdatedContent(data.content);
+					}
+				}
+
+				if (data.language !== undefined) setLanguage(data.language);
+				if (data.contentMode !== undefined)
+					setContentType(data.contentMode);
+				if (data.visibility !== undefined)
+					setVisibility(data.visibility);
+				if (data.editPermission !== undefined)
+					setEditPermission(data.editPermission);
+				if (data.allowComments !== undefined)
+					setAllowComments(data.allowComments);
+				if (data.expiresTime !== undefined)
+					setExpiresTime(data.expiresTime);
+				if (data.publicRole !== undefined)
+					setPublicRole(data.publicRole);
+				if (data.id !== undefined) setCustomId(data.id);
+				if (data.allowedUsers !== undefined)
+					setAllowedUsers(data.allowedUsers);
+				if (data.isAutosave !== undefined)
+					setIsAutosave(data.isAutosave);
+
+				setTimeout(() => {
+					isRemoteUpdate.current = false;
+				}, 100);
+			},
+		);
+
+		socket.on(
+			"user-cursor-move",
+			(data: { socketId: string; position: CursorPosition }) => {
+				setRemoteCursors((prev) => ({
+					...prev,
+					[data.socketId]: data.position,
+				}));
+			},
+		);
+
+		return () => {
+			socket.emit("leave-paste", id);
+			socket.disconnect();
+			socketRef.current = null;
+		};
+	}, [id, loading, paste?.id, user?.username]);
+
+	useEffect(() => {
+		if (paste) {
+			const cleanContent = paste.content?.replace(/\r?\n|\r/g, " ") ?? "";
+			const trimmed =
+				cleanContent.length > 30
+					? `${cleanContent.substring(0, 30).trim()}...`
+					: cleanContent;
+			document.title = `${paste.id}${trimmed ? ` - ${trimmed}` : ""} | Snipit`;
 		} else {
 			document.title = "Snipit";
 		}
-
 		return () => {
 			document.title = "Snipit";
 		};
 	}, [paste]);
+
+	useEffect(() => {
+		if (socketRef.current && id) {
+			socketRef.current.emit("set-editing-status", {
+				pasteId: id,
+				isEditing: isEdit,
+			});
+		}
+	}, [isEdit, id]);
+
+	useEffect(() => {
+		if (!isEdit) return;
+
+		const isSettingsChanged =
+			(contentType === "link") !== paste?.redirectUrl ||
+			language !== paste?.language ||
+			visibility !== paste?.visibility ||
+			editPermission !== (paste?.editPermission ?? "owner") ||
+			customId.trim() !== paste?.id ||
+			JSON.stringify(allowedUsers) !==
+				JSON.stringify(paste?.allowedUsers) ||
+			JSON.stringify(shareList) !== JSON.stringify(paste?.shareList) ||
+			publicRole !== paste?.publicRole ||
+			allowComments !== (paste?.allowComments ?? false) ||
+			expiresTime !== (paste?.expiresTime ?? "1d");
+
+		const isContentChanged = updatedContent !== paste?.content;
+
+		if (!isSettingsChanged && isContentChanged && !isAutosave) return;
+
+		const timer = setTimeout(() => handleEditSave(false), 2000);
+		return () => clearTimeout(timer);
+	}, [
+		updatedContent,
+		customId,
+		language,
+		contentType,
+		visibility,
+		allowedUsers,
+		editPermission,
+		publicRole,
+		allowComments,
+		expiresTime,
+		isAutosave,
+		isEdit,
+		paste?.redirectUrl,
+		paste?.language,
+		paste?.visibility,
+		paste?.editPermission,
+		paste?.id,
+		paste?.allowedUsers,
+		paste?.shareList,
+		paste?.publicRole,
+		paste?.allowComments,
+		paste?.expiresTime,
+		paste?.content,
+	]);
+
+	useEffect(() => {
+		if (!socketRef.current || !isEdit || isRemoteUpdate.current) return;
+
+		const sync = syncStateRef.current;
+		const isDifferent =
+			updatedContent !== sync.content ||
+			language !== sync.language ||
+			contentType !== sync.contentMode ||
+			visibility !== sync.visibility ||
+			JSON.stringify(allowedUsers) !==
+				JSON.stringify(sync.allowedUsers ?? []) ||
+			editPermission !== sync.editPermission ||
+			publicRole !== sync.publicRole ||
+			allowComments !== sync.allowComments ||
+			expiresTime !== sync.expiresTime ||
+			customId !== sync.id ||
+			isAutosave !== (sync.isAutosave ?? true);
+
+		if (!isDifferent) return;
+
+		const newState = {
+			pasteId: id,
+			content: updatedContent,
+			language,
+			contentMode: contentType,
+			visibility,
+			allowedUsers,
+			editPermission,
+			publicRole,
+			allowComments,
+			expiresTime,
+			id: customId,
+			isAutosave,
+		};
+
+		syncStateRef.current = { ...sync, ...newState };
+
+		const timer = setTimeout(() => {
+			socketRef.current?.emit("edit-paste", newState);
+		}, 10);
+		return () => clearTimeout(timer);
+	}, [
+		updatedContent,
+		customId,
+		language,
+		contentType,
+		visibility,
+		allowedUsers,
+		editPermission,
+		publicRole,
+		allowComments,
+		expiresTime,
+		isAutosave,
+		isEdit,
+	]);
+
+	const handleEditorMount: OnMount = (ed) => {
+		setEditorInstance(ed);
+		editorRef.current = ed;
+
+		ed.onDidChangeCursorPosition((e) => {
+			if (
+				!isRemoteUpdate.current &&
+				socketRef.current &&
+				id &&
+				isEditRef.current
+			) {
+				socketRef.current.emit("cursor-move", {
+					pasteId: id,
+					position: e.position,
+				});
+			}
+		});
+	};
 
 	const handleLanguageDetection = async (content: string) => {
 		const result = await detectLanguage(content);
@@ -231,21 +548,20 @@ const DisplayPage = () => {
 					}}
 				/>
 			),
-			{
-				position: "bottom-right",
-				duration: Infinity,
-			},
+			{ position: "bottom-right", duration: Infinity },
 		);
 	};
 
 	const handleDelete = () => setIsDeleteDialogOpen(true);
 
-	const handleEditSave = async () => {
+	const handleEditSave = async (shouldClose = true) => {
+		setSaveStatus("saving");
+
 		const hasContent =
 			contentType === "file"
 				? !!paste?.fileUrl
-				: updatedContent?.trim().length &&
-					updatedContent.trim().length > 0;
+				: (updatedContent?.trim().length ?? 0) > 0;
+
 		if (!hasContent) {
 			playErrorSound();
 			toast.warning(
@@ -258,6 +574,7 @@ const DisplayPage = () => {
 			);
 			return;
 		}
+
 		const wasProtected = !!paste?.password || !!paste?.isPasswordProtected;
 		const passwordChanged =
 			isPasswordEnabled !== wasProtected || !!editPassword;
@@ -267,17 +584,17 @@ const DisplayPage = () => {
 			(contentType === "link") === paste?.redirectUrl &&
 			language === paste?.language &&
 			visibility === paste?.visibility &&
-			editPermission === (paste?.editPermission || "owner") &&
+			editPermission === (paste?.editPermission ?? "owner") &&
 			customId.trim() === paste?.id &&
 			!passwordChanged &&
 			JSON.stringify(allowedUsers) ===
 				JSON.stringify(paste?.allowedUsers) &&
 			JSON.stringify(shareList) === JSON.stringify(paste?.shareList) &&
 			publicRole === paste?.publicRole &&
-			allowComments === (paste?.allowComments || false) &&
-			expiresTime === (paste?.expiresTime || "1d") &&
+			allowComments === (paste?.allowComments ?? false) &&
+			expiresTime === (paste?.expiresTime ?? "1d") &&
 			contentType ===
-				(paste?.contentMode ||
+				(paste?.contentMode ??
 					(paste?.redirectUrl
 						? "link"
 						: paste?.language !== "text"
@@ -285,16 +602,16 @@ const DisplayPage = () => {
 							: "text"));
 
 		if (isUnchanged) {
-			setIsEdit(false);
+			if (shouldClose) setIsEdit(false);
 			return;
 		}
 
-		let passwordPayload: string | undefined = undefined;
-		if (!isPasswordEnabled && wasProtected) {
-			passwordPayload = "";
-		} else if (isPasswordEnabled && editPassword) {
-			passwordPayload = editPassword;
-		}
+		const passwordPayload =
+			!isPasswordEnabled && wasProtected
+				? ""
+				: isPasswordEnabled && editPassword
+					? editPassword
+					: undefined;
 
 		try {
 			setIsSaving(true);
@@ -316,40 +633,46 @@ const DisplayPage = () => {
 				expiresTime,
 				contentType,
 			);
+
 			if (data) {
-				toast.success(
-					t(
-						"messages.snippet_updated",
-						"Snippet updated successfully",
-					),
-				);
+				if (shouldClose) {
+					toast.success(
+						t(
+							"messages.snippet_updated",
+							"Snippet updated successfully",
+						),
+					);
+				}
 				setPaste(data);
+				setSaveStatus("saved");
 				setUpdatedContent(data.content);
-				setLanguage(data.language || "text");
+				setLanguage(data.language ?? "text");
 				setContentType(
-					data.contentMode ||
+					data.contentMode ??
 						(data.redirectUrl
 							? "link"
 							: data.language !== "text"
 								? "code"
 								: "text"),
 				);
-				setVisibility(data.visibility || "public");
-				setAllowedUsers(data.allowedUsers || []);
-				setEditPermission(data.editPermission || "owner");
-				setAllowComments(data.allowComments || false);
+				setVisibility(data.visibility ?? "public");
+				setAllowedUsers(data.allowedUsers ?? []);
+				setEditPermission(data.editPermission ?? "owner");
+				setAllowComments(data.allowComments ?? false);
 				setIsPasswordEnabled(
 					!!data.password || !!data.isPasswordProtected,
 				);
 				setEditPassword("");
 				if (!user) saveToLocal(data);
-				if (data.id !== id) navigate("/" + data.id, { replace: true });
+				if (data.id !== id) navigate(`/${data.id}`, { replace: true });
 			}
-			setIsEdit(false);
+
+			if (shouldClose) setIsEdit(false);
 		} catch (error) {
+			setSaveStatus("error");
 			const axiosError = error as AxiosError<{ error: string }>;
 			toast.error(
-				axiosError.response?.data?.error ||
+				axiosError.response?.data?.error ??
 					t("messages.update_failed", "Failed to update snippet"),
 			);
 		} finally {
@@ -361,22 +684,27 @@ const DisplayPage = () => {
 		setIsEdit(false);
 		setUpdatedContent(paste?.content);
 		setContentType(
-			paste?.contentMode ||
+			paste?.contentMode ??
 				(paste?.redirectUrl
 					? "link"
 					: paste?.language !== "text"
 						? "code"
 						: "text"),
 		);
-		setLanguage(paste?.language || "text");
-		setVisibility(paste?.visibility || "public");
-		setAllowedUsers(paste?.allowedUsers || []);
-		setEditPermission(paste?.editPermission || "owner");
-		setCustomId(paste?.id || "");
+		setLanguage(paste?.language ?? "text");
+		setVisibility(paste?.visibility ?? "public");
+		setAllowedUsers(paste?.allowedUsers ?? []);
+		setEditPermission(paste?.editPermission ?? "owner");
+		setCustomId(paste?.id ?? "");
 		setEditPassword("");
 		setIsPasswordEnabled(!!paste?.password || !!paste?.isPasswordProtected);
-		setAllowComments(paste?.allowComments || false);
-		setExpiresTime(paste?.expiresTime || "1d");
+		setAllowComments(paste?.allowComments ?? false);
+		setExpiresTime(paste?.expiresTime ?? "1d");
+	};
+
+	const handleContentChange = (val: string) => {
+		setUpdatedContent(val);
+		if (isAutosave) setSaveStatus("saving");
 	};
 
 	const handleVerifyPassword = async () => {
@@ -384,7 +712,7 @@ const DisplayPage = () => {
 			const data = await apiHelpers.verifyPassword(id!, passwordInput);
 			setPaste(data);
 			setUpdatedContent(data.content);
-			setLanguage(data.language || "text");
+			setLanguage(data.language ?? "text");
 			setContentType(
 				data.redirectUrl
 					? "link"
@@ -392,9 +720,9 @@ const DisplayPage = () => {
 						? "code"
 						: "text",
 			);
-			setVisibility(data.visibility || "public");
-			setAllowedUsers(data.allowedUsers || []);
-			setEditPermission(data.editPermission || "owner");
+			setVisibility(data.visibility ?? "public");
+			setAllowedUsers(data.allowedUsers ?? []);
+			setEditPermission(data.editPermission ?? "owner");
 		} catch {
 			setPasswordError(
 				t("messages.password_incorrect", "Incorrect password"),
@@ -424,42 +752,39 @@ const DisplayPage = () => {
 		);
 	}
 
+	const visibleActiveUsers = activeUsers.filter(
+		(u) => u.socketId !== socketRef.current?.id,
+	);
+
 	return (
 		<div className="relative flex-1 flex flex-col min-h-0 bg-background overflow-hidden">
-			{/* Ambient Background Glows */}
 			<div className="absolute top-[-5%] right-[-5%] w-[500px] h-[500px] bg-blue-500/10 blur-[100px] rounded-full pointer-events-none" />
 			<div className="absolute bottom-[-5%] left-[-5%] w-[500px] h-[500px] bg-primary/10 blur-[100px] rounded-full pointer-events-none" />
 
 			<div className="relative z-10 flex-1 overflow-y-auto">
 				<div className="flex flex-col border-b bg-background/50 backdrop-blur-md sticky top-0 z-40">
 					<DisplayToolbar
+						activeUsers={visibleActiveUsers}
 						isEdit={isEdit}
+						isAutosave={isAutosave}
+						saveStatus={saveStatus}
 						content={paste.content}
 						onEdit={(val) => {
 							if (val) {
 								setUpdatedContent(paste?.content);
-								setVisibility(paste?.visibility || "public");
-								setAllowedUsers(paste?.allowedUsers || []);
-								setLanguage(paste?.language || "text");
-								setContentType(
-									paste?.contentMode ||
-										(paste?.redirectUrl
-											? "link"
-											: paste?.fileUrl
-												? "file"
-												: paste?.language !== "text"
-													? "code"
-													: "text"),
-								);
-								setCustomId(paste?.id || "");
+								setVisibility(paste?.visibility ?? "public");
+								setAllowedUsers(paste?.allowedUsers ?? []);
+								setLanguage(paste?.language ?? "text");
+								setContentType(detectContentMode(paste));
+								setCustomId(paste?.id ?? "");
 								setEditPermission(
-									paste?.editPermission || "owner",
+									paste?.editPermission ?? "owner",
 								);
 								setIsPasswordEnabled(
 									!!paste?.password ||
 										!!paste?.isPasswordProtected,
 								);
-								setAllowComments(paste?.allowComments || false);
+								setAllowComments(paste?.allowComments ?? false);
 							}
 							setIsEdit(val);
 						}}
@@ -473,9 +798,11 @@ const DisplayPage = () => {
 							contentType !== "link" && contentType !== "file"
 						}
 						allowComments={allowComments}
-						commentCount={paste.comments?.length || 0}
+						commentCount={paste.comments?.length ?? 0}
 						paste={paste}
-						onCommentAdded={(updated) => setPaste(updated)}
+						onCommentAdded={(updated: PasteData) =>
+							setPaste(updated)
+						}
 					/>
 					{!isEdit && <DisplayMetadata paste={paste} />}
 				</div>
@@ -502,6 +829,8 @@ const DisplayPage = () => {
 								setNewPassword={setEditPassword}
 								isPasswordEnabled={isPasswordEnabled}
 								setIsPasswordEnabled={setIsPasswordEnabled}
+								isAutosave={isAutosave}
+								setIsAutosave={setIsAutosave}
 								editPermission={editPermission}
 								setEditPermission={setEditPermission}
 								isOwner={isOwner}
@@ -527,6 +856,7 @@ const DisplayPage = () => {
 							/>
 						</div>
 					)}
+
 					<CustomExpiryDialog
 						isOpen={isCustomExpiryDialogOpen}
 						onOpenChange={setIsCustomExpiryDialogOpen}
@@ -537,17 +867,20 @@ const DisplayPage = () => {
 							setIsCustomExpiryDialogOpen(false);
 						}}
 					/>
+
 					<DisplayContent
+						id={id ?? ""}
 						isEdit={isEdit}
 						contentType={contentType}
 						language={language}
-						content={updatedContent || ""}
-						onContentChange={setUpdatedContent}
+						content={updatedContent ?? ""}
+						onContentChange={handleContentChange}
 						theme={theme}
 						fontSize={fontSize}
 						contentRef={contentRef}
 						handleEditorWillMount={handleEditorWillMount}
 						paste={paste}
+						onMount={handleEditorMount}
 					/>
 				</div>
 			</div>

@@ -1,6 +1,6 @@
 import Groq from "groq-sdk";
 import type { Request, Response } from "express";
-import configurations from "@/config/configurations.js";
+import configurations, { VALID_LANGUAGES } from "@/config/configurations.js";
 
 const apiKey = configurations.groq_api_key;
 
@@ -19,32 +19,12 @@ export const detectLanguage = async (req: Request, res: Response) => {
 			return;
 		}
 
-		const validLanguages = [
-			"javascript",
-			"typescript",
-			"html",
-			"css",
-			"json",
-			"java",
-			"python",
-			"c",
-			"cpp",
-			"csharp",
-			"go",
-			"rust",
-			"markdown",
-			"shell",
-			"bash",
-			"other",
-			"text",
-		];
+		const prompt = `Analyze the following code or text and detect its programming language.
+Return ONLY the name from this list: ${VALID_LANGUAGES.join(", ")}.
+If it is code but doesn't match a specific language, return 'code'.
+If it is clearly plain text, return 'text'.
 
-		const prompt = `Analyze the following text/code and detect its programming language or format.
-Return ONLY one of the following strings: ${validLanguages.join(", ")}.
-If it is code but doesn't match any specific language listed above, return 'other'.
-If it is clearly plain text (like a note or message), return 'text'.
-
-Code snippet:
+Content snippet:
 ${content.slice(0, 1000)}`;
 
 		const chatCompletion = await groq.chat.completions.create({
@@ -57,17 +37,16 @@ ${content.slice(0, 1000)}`;
 			model: "llama-3.3-70b-versatile",
 		});
 
-		let language = "text";
-		if (chatCompletion.choices[0]?.message?.content) {
-			language = chatCompletion.choices[0].message.content;
-		}
+		let language =
+			chatCompletion.choices[0]?.message?.content?.trim().toLowerCase() ||
+			"text";
 
 		language = language.trim().toLowerCase();
 
 		// Clean up any potential extra characters (like markdown code blocks if the model outputs them)
 		language = language.replace(/```/g, "").trim();
 
-		if (!validLanguages.includes(language)) {
+		if (!VALID_LANGUAGES.includes(language as any)) {
 			language = "text";
 		}
 

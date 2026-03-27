@@ -1,9 +1,11 @@
-import { Editor, type BeforeMount } from "@monaco-editor/react";
+import { Editor, type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { Textarea } from "@/components/ui/textarea";
+import type { ContentMode } from "@/types";
 
 interface CodeEditorViewProps {
+	id: string;
 	isEdit: boolean;
-	contentType: "text" | "code" | "link" | "file";
+	contentType: ContentMode;
 	language: string;
 	content: string;
 	onContentChange: (val: string) => void;
@@ -11,9 +13,11 @@ interface CodeEditorViewProps {
 	fontSize: number;
 	handleEditorWillMount: BeforeMount;
 	contentRef: (node: HTMLElement | null) => void;
+	onMount?: OnMount;
 }
 
 export const CodeEditorView = ({
+	id,
 	isEdit,
 	contentType,
 	language,
@@ -23,31 +27,28 @@ export const CodeEditorView = ({
 	fontSize,
 	handleEditorWillMount,
 	contentRef,
+	onMount,
 }: CodeEditorViewProps) => {
-	console.log(
-		"[CodeEditorView] Render: contentType =",
-		contentType,
-		"isEdit =",
-		isEdit,
-	);
-	if (contentType === "code") {
+	if (contentType === "code" || contentType === "text") {
 		return (
 			<div
 				ref={contentRef}
 				className="rounded-2xl border border-border/50 shadow-2xl overflow-hidden bg-background/60 backdrop-blur-xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-500"
 			>
 				<Editor
+					key={id}
 					height="70vh"
-					language={language}
-					value={content}
+					language={contentType === "text" ? "text" : language}
+					defaultValue={content}
 					onChange={
-						isEdit ? (val) => onContentChange(val || "") : undefined
+						isEdit ? (val) => onContentChange(val ?? "") : undefined
 					}
+					onMount={onMount}
 					beforeMount={handleEditorWillMount}
 					theme={theme === "dark" ? "snipit-dark" : "snipit-light"}
 					options={{
 						readOnly: !isEdit,
-						fontSize: fontSize,
+						fontSize,
 						minimap: { enabled: true },
 						scrollBeyondLastLine: false,
 						lineNumbers: "on",
@@ -66,6 +67,10 @@ export const CodeEditorView = ({
 						},
 						wordWrap: "on",
 						automaticLayout: true,
+						unicodeHighlight: {
+							ambiguousCharacters: false,
+							invisibleCharacters: false,
+						},
 					}}
 				/>
 			</div>
