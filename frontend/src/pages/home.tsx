@@ -12,7 +12,14 @@ import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { useAuth } from "@/context/AuthContext";
 import { useFileUpload, type UploadState } from "@/hooks/use-file-upload";
-import type { IdType } from "@/types";
+import type {
+	IdType,
+	ContentMode,
+	Visibility,
+	EditPermission,
+	PublicRole,
+	ShareRole,
+} from "@/types";
 import { CONFIG } from "@/configurations";
 import { useLanguageDetection } from "@/hooks/use-language-detection";
 
@@ -37,25 +44,25 @@ const HomePage = () => {
 	const { t } = useTranslation();
 	const { theme } = useTheme();
 
-	const [visibility, setVisibility] = useState<
-		"public" | "private" | "shared"
-	>("public");
-	const [editPermission, setEditPermission] = useState<
-		"owner" | "shared" | "public"
-	>("owner");
+	const [visibility, setVisibility] = useState<Visibility>(
+		CONFIG.DEFAULTS.VISIBILITY,
+	);
+	const [editPermission, setEditPermission] = useState<EditPermission>(
+		CONFIG.DEFAULTS.EDIT_PERMISSION,
+	);
 	const [allowedUsers, setAllowedUsers] = useState<string[]>([]);
 	const [shareList, setShareList] = useState<
-		{ email: string; role: "viewer" | "editor" | "admin" | "commenter" }[]
+		{ email: string; role: ShareRole }[]
 	>([]);
-	const [publicRole, setPublicRole] = useState<
-		"viewer" | "editor" | "commenter"
-	>("viewer");
+	const [publicRole, setPublicRole] = useState<PublicRole>(
+		CONFIG.DEFAULTS.PUBLIC_ROLE,
+	);
 	const [allowComments, setAllowComments] = useState(false);
 	const [expiresTime, setExpiresTime] = useState(CONFIG.DEFAULTS.EXPIRY);
 	const [textValue, _setTextValue] = useState("");
-	const [contentType, setContentType] = useState<
-		"text" | "code" | "link" | "file"
-	>("text");
+	const [contentType, setContentType] = useState<ContentMode>(
+		CONFIG.DEFAULTS.CONTENT_MODE,
+	);
 	const [language, setLanguage] = useState(CONFIG.DEFAULTS.LANGUAGE);
 	const { isDetecting, detectLanguage } = useLanguageDetection();
 	const uploadPromiseRef = useRef<Promise<UploadState> | null>(null);
@@ -112,17 +119,18 @@ const HomePage = () => {
 		selectedIdType: IdType,
 		providedId?: string,
 		options: {
-			visibility?: "public" | "private" | "shared";
+			visibility?: Visibility;
 			password?: string;
-			editPermission?: "owner" | "shared" | "public";
+			editPermission?: EditPermission;
 			allowedUsers?: string[];
 			shareList?: {
 				email: string;
-				role: "viewer" | "editor" | "admin" | "commenter";
+				role: ShareRole;
 			}[];
-			publicRole?: "viewer" | "editor" | "commenter";
+			publicRole?: PublicRole;
 			allowComments?: boolean;
 			redirectUrl?: boolean;
+			isCollaborative?: boolean;
 		} = {},
 	) => {
 		try {
@@ -199,7 +207,12 @@ const HomePage = () => {
 					position: "bottom-right",
 				},
 			);
-			navigate("/" + data.id, { state: { pasteData: data } });
+			navigate("/" + data.id, {
+				state: {
+					pasteData: data,
+					isCollaborative: options.isCollaborative,
+				},
+			});
 			if (!user) {
 				saveToLocal(data);
 			}
@@ -244,6 +257,36 @@ const HomePage = () => {
 			shareList: [],
 			publicRole: "viewer",
 			allowComments: false,
+		});
+		if (result !== true) {
+			toast.error(result as string);
+		}
+	};
+
+	const handleCollaborative = async () => {
+		const hasContent =
+			contentType === "file" ? !!fileName : textValue.trim().length > 0;
+		if (!hasContent) {
+			playErrorSound();
+			toast.warning(
+				contentType === "file"
+					? t("messages.empty_file", "Please select a file first!")
+					: t(
+							"messages.empty_content",
+							"Please enter some content first!",
+						),
+			);
+			return;
+		}
+		const result = await handleSubmit("system", undefined, {
+			visibility: "public",
+			password: "",
+			editPermission: "public",
+			allowedUsers: [],
+			shareList: [],
+			publicRole: "editor",
+			allowComments: false,
+			isCollaborative: true,
 		});
 		if (result !== true) {
 			toast.error(result as string);
@@ -327,6 +370,7 @@ const HomePage = () => {
 					setIsCustomExpiryDialogOpen={setIsCustomExpiryDialogOpen}
 					handleCreationClick={handleCreationClick}
 					handleQuickPaste={handleQuickPaste}
+					handleCollaborative={handleCollaborative}
 					isSubmitting={isSubmitting}
 					isUploading={isUploading}
 					uploadProgress={uploadProgress}

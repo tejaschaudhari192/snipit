@@ -1,7 +1,16 @@
 import { useMemo } from "react";
 import axios from "axios";
 import { CONFIG } from "@/configurations";
-import type { PasteData, User } from "@/types";
+import type {
+	PasteData,
+	User,
+	ContentMode,
+	Visibility,
+	EditPermission,
+	PublicRole,
+	ShareRole,
+	IdType,
+} from "@/types";
 
 const api = axios.create({
 	baseURL: CONFIG.API_BASE_URL,
@@ -25,9 +34,9 @@ export const useApiHelpers = () => {
 		const submitPaste = async (data: {
 			content: string;
 			expiresTime: string;
-			idType?: "system" | "dynamic";
+			idType?: IdType;
 			customId?: string;
-			contentMode?: "text" | "code" | "link" | "file";
+			contentMode?: ContentMode;
 			fileUrl?: string | null;
 			fileName?: string | null;
 			fileSize?: number | null;
@@ -35,15 +44,15 @@ export const useApiHelpers = () => {
 			redirectUrl?: boolean;
 			language?: string;
 			burnAfterRead?: boolean;
-			visibility?: "public" | "private" | "shared";
+			visibility?: Visibility;
 			allowedUsers?: string[];
 			password?: string;
-			editPermission?: "owner" | "shared" | "public";
+			editPermission?: EditPermission;
 			shareList?: {
 				email: string;
-				role: "viewer" | "editor" | "admin" | "commenter";
+				role: ShareRole;
 			}[];
-			publicRole?: "viewer" | "editor" | "commenter";
+			publicRole?: PublicRole;
 			allowComments?: boolean;
 		}): Promise<PasteData> => {
 			const response = await api.post("/", data);
@@ -73,19 +82,19 @@ export const useApiHelpers = () => {
 			content: string,
 			redirectUrl?: boolean,
 			language?: string,
-			visibility?: "public" | "private" | "shared",
+			visibility?: Visibility,
 			allowedUsers?: string[],
 			newId?: string,
 			password?: string,
-			editPermission?: "owner" | "shared" | "public",
+			editPermission?: EditPermission,
 			shareList?: {
 				email: string;
-				role: "viewer" | "editor" | "admin" | "commenter";
+				role: ShareRole;
 			}[],
-			publicRole?: "viewer" | "editor" | "commenter",
+			publicRole?: PublicRole,
 			allowComments?: boolean,
 			expiresTime?: string,
-			contentMode?: "text" | "code" | "link" | "file",
+			contentMode?: ContentMode,
 		): Promise<PasteData> => {
 			const response = await api.put("/" + id, {
 				content,

@@ -9,12 +9,14 @@ import {
 import { Globe, Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import type { Visibility, PublicRole, EditPermission } from "@/types";
+
 interface VisibilitySelectorProps {
-	visibility: "public" | "private" | "shared";
-	setVisibility: (v: "public" | "private" | "shared") => void;
-	publicRole: "viewer" | "editor" | "commenter";
-	setPublicRole: (v: "viewer" | "editor" | "commenter") => void;
-	setEditPermission: (v: "owner" | "shared" | "public") => void;
+	visibility: Visibility;
+	setVisibility: (v: Visibility) => void;
+	publicRole: PublicRole;
+	setPublicRole: (v: PublicRole) => void;
+	setEditPermission: (v: EditPermission) => void;
 	disabled?: boolean;
 }
 
@@ -35,7 +37,7 @@ export const VisibilitySelector = ({
 			setEditPermission("owner");
 		} else {
 			setVisibility("public");
-			const role = val as "viewer" | "editor" | "commenter";
+			const role = val as PublicRole;
 			setPublicRole(role);
 			setEditPermission(role === "editor" ? "public" : "owner");
 		}

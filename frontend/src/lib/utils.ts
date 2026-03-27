@@ -1,4 +1,4 @@
-import type { PasteData } from "@/types";
+import type { PasteData, ContentMode } from "@/types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import errorSound from "@/assets/audio/error.mp3";
@@ -10,6 +10,24 @@ import undoSound from "@/assets/audio/undo.mp3";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
+}
+
+export function detectContentMode(
+	data: Pick<
+		PasteData,
+		"contentMode" | "redirectUrl" | "fileUrl" | "language"
+	>,
+): ContentMode {
+	return (
+		data.contentMode ??
+		(data.redirectUrl
+			? "link"
+			: data.fileUrl
+				? "file"
+				: data.language !== "text"
+					? "code"
+					: "text")
+	);
 }
 
 export function saveToLocal(pasteData: PasteData) {

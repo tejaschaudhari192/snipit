@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ContentTypeSelector } from "@/components/common/content-type-selector";
 
 import { ExpirySelector } from "@/components/common/expiry-selector";
+import { Switch } from "@/components/ui/switch";
 import { useTranslation } from "react-i18next";
 
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -13,14 +14,17 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import type { ContentMode } from "@/types";
+
 interface MainToolbarProps {
-	contentType: "text" | "code" | "link" | "file";
-	setContentType: (val: "text" | "code" | "link" | "file") => void;
+	contentType: ContentMode;
+	setContentType: (val: ContentMode) => void;
 	expiresTime: string;
 	setExpiresTime: (val: string) => void;
 	setIsCustomExpiryDialogOpen: (val: boolean) => void;
 	handleCreationClick: () => void;
 	handleQuickPaste: () => void;
+	handleCollaborative: () => void;
 	isSubmitting?: boolean;
 	isUploading?: boolean;
 	uploadProgress?: number;
@@ -34,6 +38,7 @@ export const MainToolbar = ({
 	setIsCustomExpiryDialogOpen,
 	handleCreationClick,
 	handleQuickPaste,
+	handleCollaborative,
 	isSubmitting = false,
 	isUploading = false,
 	uploadProgress = 0,
@@ -59,6 +64,25 @@ export const MainToolbar = ({
 			/>
 
 			<div className="flex items-center gap-2 justify-between sm:justify-end w-full sm:w-auto">
+				<div
+					className={`flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all duration-300 border shadow-sm ${"bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400"}`}
+				>
+					<span className="text-xs sm:text-sm font-semibold tracking-wide flex items-center gap-1.5">
+						<span className="relative flex h-2 w-2">
+							<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+							<span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+						</span>
+						{t("home.collaborative_session", "Collaborative")}
+					</span>
+
+					<Switch
+						checked={false}
+						onCheckedChange={handleCollaborative}
+						disabled={isSubmitting}
+						className="data-[state=checked]:bg-blue-500"
+					/>
+				</div>
+
 				<ExpirySelector
 					expiresTime={expiresTime}
 					setExpiresTime={setExpiresTime}

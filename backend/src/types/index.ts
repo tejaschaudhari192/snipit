@@ -1,5 +1,24 @@
 import type { Document } from "mongoose";
 
+export type ContentMode = "text" | "code" | "link" | "file";
+export type Visibility = "public" | "private" | "shared";
+export type EditPermission = "owner" | "shared" | "public";
+export type PublicRole = "viewer" | "editor" | "commenter";
+export type ShareRole = "viewer" | "editor" | "admin" | "commenter";
+
+export interface CursorPosition {
+	lineNumber: number;
+	column: number;
+}
+
+export interface ActiveUser {
+	socketId: string;
+	name: string;
+	color: string;
+	isEditing: boolean;
+	pasteId: string;
+}
+
 export type UserData = {
 	_id: string;
 	username: string;
@@ -26,7 +45,7 @@ export type PasteData = {
 	content: string;
 	expiresAt: Date;
 	createdAt: Date;
-	contentMode?: ("text" | "code" | "link" | "file") | undefined;
+	contentMode?: ContentMode | undefined;
 	fileUrl?: string | undefined;
 	fileName?: string | undefined;
 	fileSize?: number | undefined;
@@ -38,14 +57,12 @@ export type PasteData = {
 	views?: number | undefined;
 	owner?: string | undefined;
 	ownerData?: UserData | undefined;
-	visibility?: ("public" | "private" | "shared") | undefined;
+	visibility?: Visibility | undefined;
 	allowedUsers?: string[] | undefined;
 	password?: string | undefined;
-	editPermission?: ("owner" | "shared" | "public") | undefined;
-	shareList?:
-		| { email: string; role: "viewer" | "editor" | "admin" | "commenter" }[]
-		| undefined;
-	publicRole?: "viewer" | "editor" | "commenter" | undefined;
+	editPermission?: EditPermission | undefined;
+	shareList?: { email: string; role: ShareRole }[] | undefined;
+	publicRole?: PublicRole | undefined;
 	allowComments?: boolean | undefined;
 	comments?: CommentData[] | undefined;
 };
@@ -55,7 +72,7 @@ export type IPaste = Document & {
 	content: string;
 	expiresAt: Date;
 	createdAt: Date;
-	contentMode?: ("text" | "code" | "link" | "file") | undefined;
+	contentMode?: ContentMode | undefined;
 	fileUrl?: string | undefined;
 	fileName?: string | undefined;
 	fileSize?: number | undefined;
@@ -67,14 +84,12 @@ export type IPaste = Document & {
 	views: number;
 	owner?: string | undefined; // User ID
 	ownerData?: UserData | undefined; // Populated User
-	visibility?: ("public" | "private" | "shared") | undefined;
+	visibility?: Visibility | undefined;
 	allowedUsers?: string[] | undefined;
 	password?: string | undefined;
-	editPermission?: ("owner" | "shared" | "public") | undefined;
-	shareList?:
-		| { email: string; role: "viewer" | "editor" | "admin" | "commenter" }[]
-		| undefined;
-	publicRole?: "viewer" | "editor" | "commenter" | undefined;
+	editPermission?: EditPermission | undefined;
+	shareList?: { email: string; role: ShareRole }[] | undefined;
+	publicRole?: PublicRole | undefined;
 	allowComments?: boolean | undefined;
 	comments?: CommentData[] | undefined;
 };

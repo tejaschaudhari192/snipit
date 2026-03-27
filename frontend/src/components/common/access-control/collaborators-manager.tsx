@@ -11,12 +11,11 @@ import { MultiEmailInput } from "@/components/ui/multi-email-input";
 import { Button } from "@/components/ui/button";
 import { Users, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
-export type Role = "viewer" | "editor" | "admin" | "commenter";
+import type { ShareRole } from "@/types";
 
 interface ShareItem {
 	email: string;
-	role: Role;
+	role: ShareRole;
 }
 
 interface CollaboratorsManagerProps {
@@ -37,7 +36,7 @@ export const CollaboratorsManager = ({
 	const { t } = useTranslation();
 	const [pendingEmails, setPendingEmails] = useState<string[]>([]);
 	const [inputValue, setInputValue] = useState("");
-	const [pendingRole, setPendingRole] = useState<Role>("editor");
+	const [pendingRole, setPendingRole] = useState<ShareRole>("editor");
 
 	const handleAddPeople = () => {
 		const emailsToAdd = [...pendingEmails];
@@ -72,7 +71,7 @@ export const CollaboratorsManager = ({
 		setAllowedUsers(allowedUsers.filter((e) => e !== emailToRemove));
 	};
 
-	const handleUpdateRole = (email: string, newRole: Role) => {
+	const handleUpdateRole = (email: string, newRole: ShareRole) => {
 		setShareList(
 			shareList.map((item) =>
 				item.email === email ? { ...item, role: newRole } : item,
@@ -104,7 +103,7 @@ export const CollaboratorsManager = ({
 				<div className="flex gap-2 items-center">
 					<Select
 						value={pendingRole}
-						onValueChange={(r: Role) => setPendingRole(r)}
+						onValueChange={(r: ShareRole) => setPendingRole(r)}
 						disabled={disabled}
 					>
 						<SelectTrigger className="flex-1 h-[44px] bg-background border-input focus:ring-primary/20">
@@ -165,7 +164,7 @@ export const CollaboratorsManager = ({
 							<div className="flex items-center gap-2 shrink-0 w-full min-[440px]:w-auto">
 								<Select
 									value={item.role}
-									onValueChange={(r: Role) =>
+									onValueChange={(r: ShareRole) =>
 										handleUpdateRole(item.email, r)
 									}
 									disabled={disabled}

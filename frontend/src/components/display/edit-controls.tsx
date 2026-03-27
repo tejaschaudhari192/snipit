@@ -1,5 +1,5 @@
 import { ContentTypeSelector } from "@/components/common/content-type-selector";
-import { Code2, ShieldCheck, Lock, Globe } from "lucide-react";
+import { Code2, ShieldCheck, Lock, Globe, Save } from "lucide-react";
 import {
 	Dialog,
 	DialogContent,
@@ -17,13 +17,21 @@ import { ExpirySelector } from "@/components/common/expiry-selector";
 import { VisibilitySelector } from "@/components/common/access-control/visibility-selector";
 import { CollaboratorsManager } from "@/components/common/access-control/collaborators-manager";
 
+import type {
+	ContentMode,
+	Visibility,
+	EditPermission,
+	PublicRole,
+	ShareRole,
+} from "@/types";
+
 interface EditControlsProps {
-	contentType: "text" | "code" | "link" | "file";
-	setContentType: (v: "text" | "code" | "link" | "file") => void;
+	contentType: ContentMode;
+	setContentType: (v: ContentMode) => void;
 	language: string;
 	setLanguage: (v: string) => void;
-	visibility: "public" | "private" | "shared";
-	setVisibility: (v: "public" | "private" | "shared") => void;
+	visibility: Visibility;
+	setVisibility: (v: Visibility) => void;
 	allowedUsers: string[];
 	setAllowedUsers: (v: string[]) => void;
 	isDetecting: boolean;
@@ -34,27 +42,29 @@ interface EditControlsProps {
 	setNewPassword: (v: string) => void;
 	isPasswordEnabled: boolean;
 	setIsPasswordEnabled: (v: boolean) => void;
-	editPermission: "owner" | "shared" | "public";
-	setEditPermission: (v: "owner" | "shared" | "public") => void;
+	editPermission: EditPermission;
+	setEditPermission: (v: EditPermission) => void;
 	isOwner: boolean;
 	isAdmin: boolean;
 	shareList: {
 		email: string;
-		role: "viewer" | "editor" | "admin" | "commenter";
+		role: ShareRole;
 	}[];
 	setShareList: (
 		v: {
 			email: string;
-			role: "viewer" | "editor" | "admin" | "commenter";
+			role: ShareRole;
 		}[],
 	) => void;
-	publicRole: "viewer" | "editor" | "commenter";
-	setPublicRole: (v: "viewer" | "editor" | "commenter") => void;
+	publicRole: PublicRole;
+	setPublicRole: (v: PublicRole) => void;
 	allowComments: boolean;
 	setAllowComments: (v: boolean) => void;
 	expiresTime: string;
 	setExpiresTime: (v: string) => void;
 	setIsCustomExpiryDialogOpen: (v: boolean) => void;
+	isAutosave: boolean;
+	setIsAutosave: (v: boolean) => void;
 }
 
 export const EditControls = ({
@@ -86,6 +96,8 @@ export const EditControls = ({
 	expiresTime,
 	setExpiresTime,
 	setIsCustomExpiryDialogOpen,
+	isAutosave,
+	setIsAutosave,
 }: EditControlsProps) => {
 	const { t } = useTranslation();
 
@@ -119,6 +131,26 @@ export const EditControls = ({
 								/>
 							</div>
 						)}
+
+						<div
+							className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border border-border/50 transition-all duration-300 shadow-sm ${
+								isAutosave
+									? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
+									: "bg-background/80"
+							}`}
+						>
+							<span className="text-xs font-bold tracking-wide flex items-center gap-1.5 select-none">
+								<Save
+									className={`h-3.5 w-3.5 ${isAutosave ? "animate-pulse" : ""}`}
+								/>
+								Autosave
+							</span>
+							<Switch
+								checked={isAutosave}
+								onCheckedChange={setIsAutosave}
+								className="scale-75 data-[state=checked]:bg-emerald-500"
+							/>
+						</div>
 
 						{contentType === "code" && (
 							<div className="flex items-center gap-2 animate-in fade-in zoom-in-95 duration-200">

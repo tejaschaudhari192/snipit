@@ -3,6 +3,7 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Lock, Users, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import type { ContentMode } from "@/types";
 
 interface BasicSettingsProps {
 	isPasswordEnabled: boolean;
@@ -13,7 +14,7 @@ interface BasicSettingsProps {
 	setAllowComments: (v: boolean) => void;
 	fastRedirect: boolean;
 	setFastRedirect: (v: boolean) => void;
-	contentType: "text" | "code" | "link" | "file";
+	contentType: ContentMode;
 }
 
 export const BasicSettings = ({

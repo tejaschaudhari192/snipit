@@ -17,6 +17,7 @@ export const CONFIG = {
 		FONT_SIZE: "snipit-font-size",
 		LANGUAGE: "snipit-last-language",
 		THEME: "snipit-theme",
+		HISTORY: "snipit-history",
 	},
 
 	// Default Values
@@ -25,8 +26,11 @@ export const CONFIG = {
 		MIN_FONT_SIZE: 8,
 		MAX_FONT_SIZE: 48,
 		LANGUAGE: "javascript",
-		EXPIRY: "1w",
+		EXPIRY: "1d",
 		VISIBILITY: "public" as const,
+		EDIT_PERMISSION: "owner" as const,
+		PUBLIC_ROLE: "viewer" as const,
+		CONTENT_MODE: "text" as const,
 		MAX_FILE_SIZE: 50 * 1024 * 1024, // 50MB
 	},
 
@@ -36,6 +40,11 @@ export const CONFIG = {
 		TOAST_DURATION: 3000,
 	},
 };
+
+export const CONTENT_MODES = ["text", "code", "link", "file"] as const;
+export const VISIBILITIES = ["public", "private", "shared"] as const;
+export const EDIT_PERMISSIONS = ["owner", "shared", "public"] as const;
+export const ROLES = ["viewer", "editor", "admin", "commenter"] as const;
 
 export const LANGUAGES = [
 	{ name: "Plain Text", value: "text" },
@@ -96,3 +105,45 @@ export const FILE_EXTENSIONS = {
 	],
 	EXEC: ["exe", "msi", "bin", "apk", "dmg", "app", "bat", "cmd"],
 };
+
+export const ADJECTIVES = [
+	"Anonymous",
+	"Secret",
+	"Hidden",
+	"Silent",
+	"Mysterious",
+	"Ghostly",
+	"Shadowy",
+	"Invisible",
+	"Stealthy",
+];
+
+export const ANIMALS = [
+	"Panda",
+	"Tiger",
+	"Fox",
+	"Wolf",
+	"Owl",
+	"Bear",
+	"Cat",
+	"Dog",
+	"Rabbit",
+	"Dragon",
+	"Phoenix",
+];
+
+export const COLLABORATOR_COLORS = [
+	"#ef4444",
+	"#f97316",
+	"#f59e0b",
+	"#84cc16",
+	"#22c55e",
+	"#10b981",
+	"#06b6d4",
+	"#0ea5e9",
+	"#3b82f6",
+	"#6366f1",
+	"#8b5cf6",
+	"#d946ef",
+	"#f43f5e",
+];
