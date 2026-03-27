@@ -5,7 +5,7 @@ export const createPasteSchema = z.object({
 	idType: z.enum(["system", "dynamic"]).optional().default("dynamic"),
 	customId: z.string().optional(),
 	contentMode: z
-		.enum(["text", "code", "link", "file"])
+		.enum(["text", "code", "link", "file", "draw"])
 		.optional()
 		.default("text"),
 	fileUrl: z.string().optional(),
