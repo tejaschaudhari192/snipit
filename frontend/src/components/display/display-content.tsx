@@ -1,15 +1,16 @@
-import { type BeforeMount } from "@monaco-editor/react";
+import { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { Link } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import type { PasteData } from "@/types";
+import type { PasteData, ContentMode } from "@/types";
 import { MarkdownDisplay } from "./content/markdown-display";
 import { FileDisplay } from "./content/file-display";
 import { CodeEditorView } from "./content/code-editor-view";
 
 interface DisplayContentProps {
+	id: string;
 	isEdit: boolean;
-	contentType: "text" | "code" | "link" | "file";
+	contentType: ContentMode;
 	language: string;
 	content: string;
 	onContentChange: (val: string) => void;
@@ -18,9 +19,11 @@ interface DisplayContentProps {
 	contentRef: (node: HTMLElement | null) => void;
 	handleEditorWillMount: BeforeMount;
 	paste: PasteData;
+	onMount?: OnMount;
 }
 
 export const DisplayContent = ({
+	id,
 	isEdit,
 	contentType,
 	language,
@@ -31,6 +34,7 @@ export const DisplayContent = ({
 	contentRef,
 	handleEditorWillMount,
 	paste,
+	onMount,
 }: DisplayContentProps) => {
 	const { t } = useTranslation();
 
@@ -87,6 +91,7 @@ export const DisplayContent = ({
 
 	return (
 		<CodeEditorView
+			id={id}
 			isEdit={isEdit}
 			contentType={contentType}
 			language={language}
@@ -96,6 +101,7 @@ export const DisplayContent = ({
 			fontSize={fontSize}
 			handleEditorWillMount={handleEditorWillMount}
 			contentRef={contentRef}
+			onMount={onMount}
 		/>
 	);
 };

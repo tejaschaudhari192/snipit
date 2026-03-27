@@ -1,5 +1,13 @@
 import pasteModel from "@/models/Paste.js";
-import type { PasteData, CommentData } from "@/types/index.js";
+import type {
+	PasteData,
+	CommentData,
+	ContentMode,
+	Visibility,
+	EditPermission,
+	PublicRole,
+	ShareRole,
+} from "@/types/index.js";
 
 class PasteService {
 	async savePaste(pastedata: PasteData) {
@@ -25,20 +33,20 @@ class PasteService {
 		content: string,
 		redirectUrl?: boolean,
 		language?: string,
-		visibility?: "public" | "private" | "shared",
+		visibility?: Visibility,
 		allowedUsers?: string[],
 		newId?: string,
 		password?: string,
-		editPermission?: "owner" | "shared" | "public",
+		editPermission?: EditPermission,
 		shareList?: {
 			email: string;
-			role: "viewer" | "editor" | "admin" | "commenter";
+			role: ShareRole;
 		}[],
-		publicRole?: "viewer" | "editor" | "commenter",
+		publicRole?: PublicRole,
 		allowComments?: boolean,
 		expiresTime?: string,
 		expiresAt?: Date | null,
-		contentMode?: "text" | "code" | "link" | "file",
+		contentMode?: ContentMode,
 	) {
 		const paste = await pasteModel.findOne({ id });
 		if (!paste) return null;

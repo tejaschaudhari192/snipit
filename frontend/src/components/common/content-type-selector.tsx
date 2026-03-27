@@ -2,10 +2,11 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText, Code2, Link, FileUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
+import type { ContentMode } from "@/types";
 
 interface ContentTypeSelectorProps {
-	value: "text" | "code" | "link" | "file";
-	onValueChange: (value: "text" | "code" | "link" | "file") => void;
+	value: ContentMode;
+	onValueChange: (value: ContentMode) => void;
 	className?: string;
 	listClassName?: string;
 	showFileOption?: boolean;
@@ -23,9 +24,7 @@ export const ContentTypeSelector = ({
 	return (
 		<Tabs
 			value={value}
-			onValueChange={(val) =>
-				onValueChange(val as "text" | "code" | "link" | "file")
-			}
+			onValueChange={(val) => onValueChange(val as ContentMode)}
 			className={cn("w-full", className)}
 		>
 			<TabsList className={cn("h-11 w-full flex", listClassName)}>
