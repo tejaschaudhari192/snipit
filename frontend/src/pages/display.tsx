@@ -364,7 +364,7 @@ const DisplayPage = () => {
 			socket.disconnect();
 			socketRef.current = null;
 		};
-	}, [id, loading, paste?.id, user?.username]);
+	}, [id, loading, paste?.id, user?.username, updatedContent]);
 
 	useEffect(() => {
 		if (paste) {
@@ -493,6 +493,7 @@ const DisplayPage = () => {
 		expiresTime,
 		isAutosave,
 		isEdit,
+		id,
 	]);
 
 	const handleEditorMount: OnMount = (ed) => {
@@ -795,7 +796,9 @@ const DisplayPage = () => {
 						fontSize={fontSize}
 						setFontSize={setFontSize}
 						showFontControls={
-							contentType !== "link" && contentType !== "file"
+							contentType !== "link" &&
+							contentType !== "file" &&
+							contentType !== "draw"
 						}
 						allowComments={allowComments}
 						commentCount={paste.comments?.length ?? 0}
@@ -881,6 +884,8 @@ const DisplayPage = () => {
 						handleEditorWillMount={handleEditorWillMount}
 						paste={paste}
 						onMount={handleEditorMount}
+						socketRef={socketRef}
+						activeUsers={activeUsers}
 					/>
 				</div>
 			</div>

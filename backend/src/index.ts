@@ -215,6 +215,20 @@ io.on("connection", (socket) => {
 		}
 	});
 
+	socket.on("draw-update", async (data) => {
+		const user = activeUsers.get(socket.id);
+		if (!user || user.pasteId !== data.pasteId) return;
+
+		const userId = getSocketUserId(socket);
+		const allowed = await canUserEdit(data.pasteId, userId);
+
+		if (allowed) {
+			socket
+				.to(data.pasteId)
+				.emit("draw-update", { ...data, socketId: socket.id });
+		}
+	});
+
 	socket.on("cursor-move", async ({ pasteId, position }) => {
 		const user = activeUsers.get(socket.id);
 		if (!user || user.pasteId !== pasteId) return;

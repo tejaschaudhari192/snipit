@@ -27,7 +27,7 @@ export interface CursorPosition {
 	column: number;
 }
 
-export type ContentMode = "text" | "code" | "link" | "file";
+export type ContentMode = "text" | "code" | "draw" | "link" | "file";
 export type Visibility = "public" | "private" | "shared";
 export type EditPermission = "owner" | "shared" | "public";
 export type PublicRole = "viewer" | "editor" | "commenter";
