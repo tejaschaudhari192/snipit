@@ -41,6 +41,7 @@ interface CollabDrawProps {
 interface DrawUpdateData {
 	socketId: string;
 	elements?: readonly ExcalidrawElement[];
+	appState?: Partial<AppState>;
 	pointer?: { x: number; y: number; tool: "pointer" | "laser" };
 	button?: "up" | "down";
 	username?: string;
@@ -63,8 +64,13 @@ export const CollabDraw = ({
 	);
 	const [initialData, setInitialData] = useState<DrawData | null>(null);
 	const isRemoteUpdate = useRef(false);
-	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+	const emitTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const lastElementsRef = useRef<string>("");
+	const lastAppStateRef = useRef<{
+		theme?: string;
+		viewBackgroundColor?: string;
+	}>({});
 
 	useEffect(() => {
 		if (content) {
@@ -106,12 +112,44 @@ export const CollabDraw = ({
 			if (data.socketId === socket.id) return;
 
 			// Merge incoming remote changes into local store
-			if (data.elements) {
+			if (data.elements || data.appState) {
 				isRemoteUpdate.current = true;
-				lastElementsRef.current = JSON.stringify(data.elements);
+
+				const currentElements = excalidrawAPI.getSceneElements();
+				const mergedElements = [...currentElements];
+
+				if (data.elements) {
+					// Merge strategy: update existing or add new
+					data.elements.forEach((newEl) => {
+						const index = mergedElements.findIndex(
+							(el) => el.id === newEl.id,
+						);
+						if (index !== -1) {
+							// Only update if remote version is newer
+							if (newEl.version > mergedElements[index].version) {
+								mergedElements[index] = newEl;
+							}
+						} else {
+							mergedElements.push(newEl);
+						}
+					});
+				}
+
+				lastElementsRef.current = JSON.stringify(mergedElements);
+				if (data.appState) {
+					lastAppStateRef.current = {
+						theme: data.appState.theme,
+						viewBackgroundColor: data.appState.viewBackgroundColor,
+					};
+				}
+
 				excalidrawAPI.updateScene({
-					elements: data.elements,
+					elements: mergedElements,
+					appState: data.appState as Parameters<
+						ExcalidrawAPI["updateScene"]
+					>[0]["appState"],
 				});
+
 				// Small delay to ensure all synchronous onChange events are ignored
 				setTimeout(() => {
 					isRemoteUpdate.current = false;
@@ -166,6 +204,75 @@ export const CollabDraw = ({
 		};
 	}, [socketRef, excalidrawAPI, activeUsers]);
 
+	// Sync Excalidraw's collaborators list with our activeUsers prop to handle join/leave correctly
+	useEffect(() => {
+		if (!excalidrawAPI || !activeUsers) return;
+
+		const appState = excalidrawAPI.getAppState();
+		const currentCollaborators = new Map<SocketId, Collaborator>(
+			(appState.collaborators as Map<SocketId, Collaborator>) || [],
+		);
+
+		const activeSocketIds = new Set(activeUsers.map((u) => u.socketId));
+		let changed = false;
+
+		// 1. Remove stale collaborators who are no longer active
+		for (const socketId of Array.from(currentCollaborators.keys())) {
+			if (!activeSocketIds.has(socketId)) {
+				currentCollaborators.delete(socketId);
+				changed = true;
+			}
+		}
+
+		// 2. Ensure all active users exist in the collaborators map (with default props if needed)
+		activeUsers.forEach((user) => {
+			if (user.socketId === socketRef?.current?.id) return; // Skip ourselves
+
+			if (!currentCollaborators.has(user.socketId as SocketId)) {
+				currentCollaborators.set(
+					user.socketId as SocketId,
+					{
+						username: user.name,
+						color: {
+							background: user.color || "#ff0000",
+							stroke: user.color || "#ff0000",
+						},
+					} as Collaborator,
+				);
+				changed = true;
+			} else {
+				// Update name/color if it changed
+				const existing = currentCollaborators.get(
+					user.socketId as SocketId,
+				);
+				if (
+					existing &&
+					(existing.username !== user.name ||
+						existing.color?.background !== user.color)
+				) {
+					currentCollaborators.set(
+						user.socketId as SocketId,
+						{
+							...existing,
+							username: user.name,
+							color: {
+								background: user.color || "#ff0000",
+								stroke: user.color || "#ff0000",
+							},
+						} as Collaborator,
+					);
+					changed = true;
+				}
+			}
+		});
+
+		if (changed) {
+			excalidrawAPI.updateScene({
+				collaborators: currentCollaborators,
+			});
+		}
+	}, [activeUsers, excalidrawAPI, socketRef]);
+
 	const handlePointerUpdate = (payload: {
 		pointer: { x: number; y: number; tool: "pointer" | "laser" };
 		button: "down" | "up";
@@ -192,23 +299,44 @@ export const CollabDraw = ({
 		currentAppState: AppState,
 	) => {
 		// Only broadcast and save local changes
-		if (isRemoteUpdate.current || !isEdit || !socketRef?.current || !id) {
+		if (isRemoteUpdate.current || !isEdit) {
 			return;
 		}
 
-		// Prevent infinite loops caused by appState (e.g., cursor pointer) updates triggering onChange
+		// Check what actually changed
 		const currentElementsJson = JSON.stringify(elements);
-		if (currentElementsJson === lastElementsRef.current) {
-			return; // Nothing actually changed in the drawing elements
+		const elementsChanged = currentElementsJson !== lastElementsRef.current;
+		const appStateChanged =
+			currentAppState.theme !== lastAppStateRef.current.theme ||
+			currentAppState.viewBackgroundColor !==
+				lastAppStateRef.current.viewBackgroundColor;
+
+		if (!elementsChanged && !appStateChanged) {
+			return;
 		}
 
-		// This is a local structural change, proceed with tracking it.
+		// Proceed with tracking changes
 		lastElementsRef.current = currentElementsJson;
+		lastAppStateRef.current = {
+			theme: currentAppState.theme,
+			viewBackgroundColor: currentAppState.viewBackgroundColor,
+		};
 
-		socketRef.current.emit("draw-update", {
-			pasteId: id,
-			elements,
-		});
+		if (socketRef?.current && id) {
+			// Debounce socket updates slightly to avoid network congestion
+			if (emitTimeoutRef.current) clearTimeout(emitTimeoutRef.current);
+			emitTimeoutRef.current = setTimeout(() => {
+				socketRef.current?.emit("draw-update", {
+					pasteId: id,
+					elements,
+					appState: {
+						theme: currentAppState.theme,
+						viewBackgroundColor:
+							currentAppState.viewBackgroundColor,
+					},
+				});
+			}, 30);
+		}
 
 		if (onContentChange) {
 			if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -223,7 +351,7 @@ export const CollabDraw = ({
 						},
 					}),
 				);
-			}, 1000);
+			}, 100);
 		}
 	};
 

@@ -173,7 +173,9 @@ const HomePage = () => {
 				content:
 					contentType === "file"
 						? currentFileUrl || currentFileName || "File upload"
-						: textValue,
+						: contentType === "draw" && !valueRef.current.trim()
+							? JSON.stringify({ elements: [], appState: {} })
+							: valueRef.current,
 				expiresTime,
 				idType: selectedIdType,
 				customId: providedId,
@@ -236,7 +238,11 @@ const HomePage = () => {
 
 	const handleQuickPaste = async () => {
 		const hasContent =
-			contentType === "file" ? !!fileName : textValue.trim().length > 0;
+			contentType === "file"
+				? !!fileName
+				: contentType === "draw"
+					? true
+					: valueRef.current.trim().length > 0;
 		if (!hasContent) {
 			playErrorSound();
 			toast.warning(
@@ -265,7 +271,11 @@ const HomePage = () => {
 
 	const handleCollaborative = async () => {
 		const hasContent =
-			contentType === "file" ? !!fileName : textValue.trim().length > 0;
+			contentType === "file"
+				? !!fileName
+				: contentType === "draw"
+					? true
+					: valueRef.current.trim().length > 0;
 		if (!hasContent) {
 			playErrorSound();
 			toast.warning(
@@ -319,7 +329,11 @@ const HomePage = () => {
 
 	const handleCreationClick = () => {
 		const hasContent =
-			contentType === "file" ? !!fileName : textValue.trim().length > 0;
+			contentType === "file"
+				? !!fileName
+				: contentType === "draw"
+					? true
+					: valueRef.current.trim().length > 0;
 		if (!hasContent) {
 			playErrorSound();
 			toast.warning(
