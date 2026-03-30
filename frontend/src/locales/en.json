@@ -90,7 +90,8 @@
 			"minute": "{{count}} minute",
 			"minutes": "{{count}} minutes"
 		},
-		"undo": "Undo"
+		"undo": "Undo",
+		"drawing": "Drawing"
 	},
 	"profile": {
 		"title": "Your Profile",

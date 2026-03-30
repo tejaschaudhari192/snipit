@@ -23,11 +23,11 @@ interface MainToolbarProps {
 	setExpiresTime: (val: string) => void;
 	setIsCustomExpiryDialogOpen: (val: boolean) => void;
 	handleCreationClick: () => void;
-	handleQuickPaste: () => void;
 	handleCollaborative: () => void;
 	isSubmitting?: boolean;
 	isUploading?: boolean;
 	uploadProgress?: number;
+	handleQuickPaste: () => void;
 }
 
 export const MainToolbar = ({
@@ -37,11 +37,11 @@ export const MainToolbar = ({
 	setExpiresTime,
 	setIsCustomExpiryDialogOpen,
 	handleCreationClick,
-	handleQuickPaste,
 	handleCollaborative,
 	isSubmitting = false,
 	isUploading = false,
 	uploadProgress = 0,
+	handleQuickPaste,
 }: MainToolbarProps) => {
 	const { t } = useTranslation();
 

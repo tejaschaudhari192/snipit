@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { PasteData } from "@/types";
-import { FILE_EXTENSIONS } from "@/configurations";
+import { FILE_EXTENSIONS } from "@/constants";
 
 interface FileDisplayProps {
 	paste: PasteData;

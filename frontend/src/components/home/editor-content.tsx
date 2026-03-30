@@ -23,7 +23,9 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { CONFIG } from "@/configurations";
+import { FILE_EXTENSIONS } from "@/constants";
 import type { ContentMode } from "@/types";
+import { MarkdownDisplay } from "@/components/display/content/markdown-display";
 
 interface EditorContentProps {
 	contentType: ContentMode;
@@ -140,41 +142,16 @@ export const EditorContent = ({
 			mime.split("/")[1] ||
 			"";
 
-		const archiveExts = ["zip", "rar", "7z", "tar", "gz", "bz2", "xz"];
 		if (
-			archiveExts.includes(ext) ||
+			FILE_EXTENSIONS.ARCHIVE.includes(ext) ||
 			mime.includes("zip") ||
 			mime.includes("archive") ||
 			mime.includes("compressed")
 		)
 			return <FileArchive className="h-6 w-6" />;
 
-		const codeExts = [
-			"js",
-			"ts",
-			"jsx",
-			"tsx",
-			"py",
-			"java",
-			"c",
-			"cpp",
-			"cs",
-			"html",
-			"css",
-			"json",
-			"md",
-			"sh",
-			"rs",
-			"go",
-			"php",
-			"rb",
-			"sql",
-			"yaml",
-			"yml",
-			"xml",
-		];
 		if (
-			codeExts.includes(ext) ||
+			FILE_EXTENSIONS.CODE.includes(ext) ||
 			mime.includes("code") ||
 			mime.includes("javascript") ||
 			mime.includes("json")
@@ -184,20 +161,8 @@ export const EditorContent = ({
 		if (ext === "pdf" || mime.includes("pdf"))
 			return <FileText className="h-6 w-6" />;
 
-		const textExts = [
-			"txt",
-			"doc",
-			"docx",
-			"rtf",
-			"odt",
-			"xls",
-			"xlsx",
-			"ppt",
-			"pptx",
-			"csv",
-		];
 		if (
-			textExts.includes(ext) ||
+			FILE_EXTENSIONS.TEXT.includes(ext) ||
 			mime.includes("text") ||
 			mime.includes("document") ||
 			mime.includes("sheet") ||
@@ -205,18 +170,8 @@ export const EditorContent = ({
 		)
 			return <FileText className="h-6 w-6" />;
 
-		const execExts = [
-			"exe",
-			"msi",
-			"bin",
-			"apk",
-			"dmg",
-			"app",
-			"bat",
-			"cmd",
-		];
 		if (
-			execExts.includes(ext) ||
+			FILE_EXTENSIONS.EXEC.includes(ext) ||
 			mime.includes("shell") ||
 			mime.includes("executable") ||
 			mime.includes("application/octet-stream")
@@ -239,22 +194,58 @@ export const EditorContent = ({
 					theme={theme as "light" | "dark" | "system"}
 				/>
 			) : contentType === "code" || contentType === "text" ? (
-				<Editor
-					height="100%"
-					language={language}
-					value={textValue}
-					onChange={(value) => setTextValue(value || "")}
-					theme={theme === "dark" ? "snipit-dark" : "snipit-light"}
-					beforeMount={handleEditorWillMount}
-					onMount={handleEditorMount}
-					options={{
-						minimap: { enabled: false },
-						fontSize: fontSize,
-						padding: { top: 16 },
-						mouseWheelZoom: true,
-						wordWrap: "on",
-					}}
-				/>
+				language === "markdown" ? (
+					<div className="flex flex-col md:flex-row h-full w-full">
+						<div className="flex-1 md:w-1/2 min-h-[200px] md:min-h-0 min-w-0 md:border-r border-b md:border-b-0 border-border/50 relative">
+							<Editor
+								height="100%"
+								language={language}
+								value={textValue}
+								onChange={(value) => setTextValue(value || "")}
+								theme={
+									theme === "dark"
+										? "snipit-dark"
+										: "snipit-light"
+								}
+								beforeMount={handleEditorWillMount}
+								onMount={handleEditorMount}
+								options={{
+									minimap: { enabled: false },
+									fontSize: fontSize,
+									padding: { top: 16 },
+									mouseWheelZoom: true,
+									wordWrap: "on",
+								}}
+							/>
+						</div>
+						<div className="flex-1 md:w-1/2 min-h-[200px] md:min-h-0 min-w-0 overflow-y-auto bg-background/50">
+							<MarkdownDisplay
+								content={textValue}
+								fontSize={fontSize}
+								contentRef={() => {}}
+							/>
+						</div>
+					</div>
+				) : (
+					<Editor
+						height="100%"
+						language={language}
+						value={textValue}
+						onChange={(value) => setTextValue(value || "")}
+						theme={
+							theme === "dark" ? "snipit-dark" : "snipit-light"
+						}
+						beforeMount={handleEditorWillMount}
+						onMount={handleEditorMount}
+						options={{
+							minimap: { enabled: false },
+							fontSize: fontSize,
+							padding: { top: 16 },
+							mouseWheelZoom: true,
+							wordWrap: "on",
+						}}
+					/>
+				)
 			) : contentType === "file" ? (
 				<div
 					className="h-full w-full flex items-center justify-center p-6 bg-muted/5 overflow-y-auto"

@@ -4,9 +4,18 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { type OnMount, type BeforeMount } from "@monaco-editor/react";
 import { AxiosError } from "axios";
+import { Code2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 import { useApiHelpers } from "@/lib/api";
-import { saveToLocal, playErrorSound, playSuccessSound } from "@/lib/utils";
+import {
+	saveToLocal,
+	playErrorSound,
+	playSuccessSound,
+	saveDraft,
+	getDraft,
+	clearDrafts,
+} from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
@@ -33,6 +42,7 @@ import { EditorContent } from "@/components/home/editor-content";
 const HomePage = () => {
 	const userInputRef = useRef<HTMLTextAreaElement>(null);
 	const valueRef = useRef("");
+	const previousLengthRef = useRef(0);
 	const {
 		fontSize,
 		ref: editorContainerRef,
@@ -59,12 +69,56 @@ const HomePage = () => {
 	);
 	const [allowComments, setAllowComments] = useState(false);
 	const [expiresTime, setExpiresTime] = useState(CONFIG.DEFAULTS.EXPIRY);
-	const [textValue, _setTextValue] = useState("");
+	const [textValue, _setTextValue] = useState(() => {
+		return getDraft(CONFIG.DEFAULTS.CONTENT_MODE) || "";
+	});
 	const [contentType, setContentType] = useState<ContentMode>(
 		CONFIG.DEFAULTS.CONTENT_MODE,
 	);
-	const [language, setLanguage] = useState(CONFIG.DEFAULTS.LANGUAGE);
+	const onContentTypeChange = (newMode: ContentMode) => {
+		// Update language based on target mode
+		if (newMode === "text") {
+			_setLanguage("text");
+		} else if (newMode === "code") {
+			// If currently plain text, switch to default code language
+			_setLanguage(
+				CONFIG.DEFAULTS.LANGUAGE === "text"
+					? "javascript"
+					: CONFIG.DEFAULTS.LANGUAGE,
+			);
+		}
+
+		// Persist current content
+		saveDraft(contentType, textValue);
+
+		// Load appropriate draft for the new mode
+		const draft = getDraft(newMode);
+		if (draft !== null) {
+			_setTextValue(draft);
+			valueRef.current = draft;
+		} else if (newMode === "draw") {
+			const emptyDraw = JSON.stringify({ elements: [], appState: {} });
+			_setTextValue(emptyDraw);
+			valueRef.current = emptyDraw;
+		} else {
+			_setTextValue("");
+			valueRef.current = "";
+		}
+
+		setContentType(newMode);
+	};
 	const { isDetecting, detectLanguage } = useLanguageDetection();
+	const [language, _setLanguage] = useState(CONFIG.DEFAULTS.LANGUAGE);
+	const setLanguage = (newLang: string) => {
+		_setLanguage(newLang);
+		if (newLang === "text") {
+			if (contentType === "code") setContentType("text");
+		} else {
+			if (isDetecting) return; // Don't flip tab while detecting
+			if (contentType === "text") setContentType("code");
+		}
+	};
+	const hasDetectedRef = useRef(false);
 	const uploadPromiseRef = useRef<Promise<UploadState> | null>(null);
 	const [pendingFile, setPendingFile] = useState<File | null>(null);
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -80,6 +134,8 @@ const HomePage = () => {
 			setExpiresTime("1d");
 		}
 	}, [contentType]);
+
+	// Reset detection flag whenever the editor is cleared or mode changes
 
 	useEffect(() => {
 		if (!pendingFile) {
@@ -111,8 +167,10 @@ const HomePage = () => {
 	} = useFileUpload();
 
 	const setTextValue = (val: string) => {
+		previousLengthRef.current = valueRef.current.trim().length;
 		_setTextValue(val);
 		valueRef.current = val;
+		saveDraft(contentType, val);
 	};
 
 	const handleSubmit = async (
@@ -218,6 +276,7 @@ const HomePage = () => {
 			if (!user) {
 				saveToLocal(data);
 			}
+			clearDrafts();
 			return true;
 		} catch (error) {
 			const axiosError = error as AxiosError<{
@@ -304,11 +363,14 @@ const HomePage = () => {
 	};
 
 	const handleLanguageDetection = async (content: string) => {
+		if (hasDetectedRef.current) return;
+		// Mark as attempted so subsequent pastes are ignored
+		hasDetectedRef.current = true;
 		const result = await detectLanguage(content);
 		if (result) {
+			setLanguage(result.language);
 			if (result.isCode) {
 				setContentType("code");
-				setLanguage(result.language);
 			} else {
 				setContentType("text");
 			}
@@ -316,14 +378,21 @@ const HomePage = () => {
 	};
 
 	const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+		// Only detect on first paste when editor is empty
 		if (valueRef.current.trim() !== "") return;
-		handleLanguageDetection(e.clipboardData.getData("text"));
+		handleLanguageDetection(
+			e.clipboardData.getData("text/plain") ||
+				e.clipboardData.getData("text"),
+		);
 	};
 
 	const handleEditorMount: OnMount = (editor) => {
 		editor.onDidPaste(() => {
 			const value = editor.getValue();
-			if (valueRef.current.trim() === "") handleLanguageDetection(value);
+			// Only auto detect if the editor was completely empty before the paste
+			if (previousLengthRef.current === 0) {
+				handleLanguageDetection(value);
+			}
 		});
 	};
 
@@ -378,7 +447,7 @@ const HomePage = () => {
 			<div className="relative z-10 flex flex-col gap-4 my-2 mx-3 md:my-4 md:mx-5">
 				<MainToolbar
 					contentType={contentType}
-					setContentType={setContentType}
+					setContentType={onContentTypeChange}
 					expiresTime={expiresTime}
 					setExpiresTime={setExpiresTime}
 					setIsCustomExpiryDialogOpen={setIsCustomExpiryDialogOpen}
@@ -392,12 +461,30 @@ const HomePage = () => {
 
 				<div className="flex flex-wrap items-center gap-3">
 					{(isDetecting || contentType === "code") && (
-						<div className="w-full sm:w-auto">
+						<div className="w-full sm:w-auto flex items-center gap-2">
 							<LanguageSelector
 								value={language}
 								onValueChange={setLanguage}
 								isDetecting={isDetecting}
 							/>
+							{!isDetecting && (
+								<Button
+									variant="outline"
+									size="icon"
+									className="h-10 w-10 shrink-0 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm"
+									onClick={() => {
+										// allow manual detection even if previously pasted
+										hasDetectedRef.current = false;
+										handleLanguageDetection(textValue);
+									}}
+									title={t(
+										"home.auto_detecting",
+										"Auto-detect language",
+									)}
+								>
+									<Code2 className="h-4 w-4 text-muted-foreground" />
+								</Button>
+							)}
 						</div>
 					)}
 

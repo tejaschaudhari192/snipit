@@ -206,3 +206,19 @@ export function playUndoSound() {
 		console.error("Audio error:", e);
 	}
 }
+export function saveDraft(mode: string, content: string, id?: string) {
+	const key = id ? `draft_${id}_${mode}` : `draft_${mode}`;
+	localStorage.setItem(key, content);
+}
+
+export function getDraft(mode: string, id?: string): string | null {
+	const key = id ? `draft_${id}_${mode}` : `draft_${mode}`;
+	return localStorage.getItem(key);
+}
+
+export function clearDrafts(id?: string) {
+	const modes = ["text", "code", "draw", "link", "file"];
+	modes.forEach((mode) => {
+		localStorage.removeItem(id ? `draft_${id}_${mode}` : `draft_${mode}`);
+	});
+}

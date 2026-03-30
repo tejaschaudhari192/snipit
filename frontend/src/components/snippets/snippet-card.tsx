@@ -206,9 +206,15 @@ export const SnippetCard = ({
 				<div className="relative">
 					<div className="bg-muted/30 rounded-lg p-4 border border-border/20">
 						<pre className="text-sm font-mono text-foreground/70 whitespace-pre-wrap break-words line-clamp-2 italic leading-relaxed">
-							{item.contentMode === "file" && item.fileName
-								? item.fileName
-								: item.content}
+							{item.contentMode === "draw"
+								? t("common.drawing", "Drawing")
+								: item.contentMode === "link" ||
+									  item.redirectUrl
+									? item.content
+									: item.contentMode === "file" &&
+										  item.fileName
+										? item.fileName
+										: item.content}
 						</pre>
 					</div>
 					<div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent rounded-xl pointer-events-none" />

@@ -7,6 +7,8 @@ interface AutosaveStatusProps {
 }
 
 export const AutosaveStatus = ({ status }: AutosaveStatusProps) => {
+	if (status === "idle") return null;
+
 	if (status === "saving") {
 		return (
 			<div className="flex items-center gap-1.5 px-3 py-1.5 bg-background/50 backdrop-blur-md rounded-full border border-border/50 text-[10px] font-bold shadow-sm transition-all duration-300">
@@ -37,15 +39,19 @@ export const AutosaveStatus = ({ status }: AutosaveStatusProps) => {
 		);
 	}
 
-	return (
-		<div className="flex items-center gap-1.5 px-3 py-1.5 bg-background/50 backdrop-blur-md rounded-full border border-border/50 text-[10px] font-bold shadow-sm transition-all duration-300">
-			<div className="flex items-center gap-2 text-emerald-500 animate-in fade-in slide-in-from-left-2">
-				<div className="relative flex items-center justify-center">
-					<Cloud className="h-4 w-4 fill-emerald-500/10" />
-					<Check className="absolute h-2 w-2 text-emerald-500 font-black" />
+	if (status === "saved") {
+		return (
+			<div className="flex items-center gap-1.5 px-3 py-1.5 bg-background/50 backdrop-blur-md rounded-full border border-border/50 text-[10px] font-bold shadow-sm transition-all duration-300">
+				<div className="flex items-center gap-2 text-emerald-500 animate-in fade-in slide-in-from-left-2">
+					<div className="relative flex items-center justify-center">
+						<Cloud className="h-4 w-4 fill-emerald-500/10" />
+						<Check className="absolute h-2 w-2 text-emerald-500 font-black" />
+					</div>
+					<span className="hidden sm:inline opacity-80">Saved</span>
 				</div>
-				<span className="hidden sm:inline opacity-80">Saved</span>
 			</div>
-		</div>
-	);
+		);
+	}
+
+	return null;
 };

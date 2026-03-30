@@ -97,7 +97,7 @@ export const DisplayToolbar = ({
 			/>
 
 			<div className="flex flex-1 items-center gap-2 justify-end">
-				<AutosaveStatus status={saveStatus} />
+				{isEdit && <AutosaveStatus status={saveStatus} />}
 				<UserAvatarList users={activeUsers} />
 
 				{showFontControls && (

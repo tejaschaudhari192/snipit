@@ -1,11 +1,10 @@
 import { type BeforeMount, type OnMount } from "@monaco-editor/react";
-import { Link } from "lucide-react";
-import { useTranslation } from "react-i18next";
 
 import type { PasteData, ContentMode } from "@/types";
 import { MarkdownDisplay } from "./content/markdown-display";
 import { FileDisplay } from "./content/file-display";
 import { CodeEditorView } from "./content/code-editor-view";
+import { LinkView } from "./content/link-view";
 
 import type { Socket } from "socket.io-client";
 import type { ActiveUser } from "@/types";
@@ -44,8 +43,6 @@ export const DisplayContent = ({
 	socketRef,
 	activeUsers,
 }: DisplayContentProps) => {
-	const { t } = useTranslation();
-
 	if (contentType === "file") {
 		return <FileDisplay paste={paste} contentRef={contentRef} />;
 	}
@@ -66,44 +63,46 @@ export const DisplayContent = ({
 		);
 	}
 
-	if (contentType === "link" && !isEdit) {
+	if (contentType === "link") {
 		return (
-			<div
-				ref={contentRef}
-				className="flex flex-col items-center justify-center py-24 px-4 bg-background/60 backdrop-blur-xl rounded-3xl border border-border/50 shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-700 max-w-[600px] mx-auto mt-10"
-			>
-				<div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6 shadow-xl shadow-primary/5">
-					<Link className="w-10 h-10 text-primary" />
-				</div>
-				<h3 className="text-2xl font-black mb-3">
-					{t("common.redirect_ready", "Redirect Ready")}
-				</h3>
-				<p className="text-muted-foreground mb-8 text-center max-w-md font-medium">
-					{t(
-						"common.redirect_desc",
-						"Click the button below to visit the shared destination link.",
-					)}
-				</p>
-				<a
-					href={
-						/^https?:\/\//i.test(content)
-							? content
-							: `https://${content}`
-					}
-					target="_blank"
-					rel="noopener noreferrer"
-					className="group relative inline-flex items-center justify-center px-10 py-4 font-bold text-white transition-all duration-200 bg-primary rounded-2xl hover:bg-primary/90 shadow-xl shadow-primary/20 active:scale-95"
-				>
-					{t("common.visit_link", "Visit Destination")}
-					<div className="ml-2 group-hover:translate-x-1 transition-transform">
-						🚀
-					</div>
-				</a>
-			</div>
+			<LinkView
+				isEdit={isEdit}
+				content={content}
+				onContentChange={onContentChange}
+				contentRef={contentRef}
+			/>
 		);
 	}
 
-	if (language === "markdown" && !isEdit) {
+	if (language === "markdown") {
+		if (isEdit) {
+			return (
+				<div className="flex flex-col md:flex-row gap-4">
+					<div className="flex-1">
+						<CodeEditorView
+							id={id}
+							isEdit={isEdit}
+							contentType={contentType}
+							language={language}
+							content={content}
+							onContentChange={onContentChange}
+							theme={theme}
+							fontSize={fontSize}
+							handleEditorWillMount={handleEditorWillMount}
+							contentRef={contentRef}
+							onMount={onMount}
+						/>
+					</div>
+					<div className="flex-1 overflow-auto">
+						<MarkdownDisplay
+							content={content}
+							fontSize={fontSize}
+							contentRef={contentRef}
+						/>
+					</div>
+				</div>
+			);
+		}
 		return (
 			<MarkdownDisplay
 				content={content}

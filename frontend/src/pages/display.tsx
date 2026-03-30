@@ -12,6 +12,9 @@ import {
 	playErrorSound,
 	playRemoveSound,
 	detectContentMode,
+	saveDraft,
+	getDraft,
+	clearDrafts,
 } from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
@@ -88,7 +91,6 @@ const DisplayPage = () => {
 	const [paste, setPaste] = useState<PasteData>();
 	const [updatedContent, setUpdatedContent] = useState<string>();
 	const [loading, setLoading] = useState(true);
-	const [language, setLanguage] = useState(CONFIG.DEFAULTS.LANGUAGE);
 	const [contentType, setContentType] = useState<ContentMode>(
 		CONFIG.DEFAULTS.CONTENT_MODE,
 	);
@@ -120,6 +122,46 @@ const DisplayPage = () => {
 	const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
 	const [activeUsers, setActiveUsers] = useState<ActiveUser[]>([]);
 	const [isAutosave, setIsAutosave] = useState(true);
+
+	const onContentTypeChange = (newMode: ContentMode) => {
+		const isTextOrCode = (m: ContentMode) => m === "text" || m === "code";
+
+		if (isTextOrCode(contentType) && isTextOrCode(newMode)) {
+			if (newMode === "text") {
+				_setLanguage("text");
+			} else if (newMode === "code" && language === "text") {
+				const backendLang = paste?.language;
+				_setLanguage(
+					backendLang && backendLang !== "text"
+						? backendLang
+						: "javascript",
+				);
+			}
+			setContentType(newMode);
+			return;
+		}
+
+		if (id) saveDraft(contentType, updatedContent || "", id);
+		const draft = id ? getDraft(newMode, id) : null;
+		if (draft !== null) {
+			setUpdatedContent(draft);
+		} else if (newMode === "draw") {
+			if (paste && detectContentMode(paste) === "draw") {
+				setUpdatedContent(paste.content);
+			} else {
+				setUpdatedContent(
+					JSON.stringify({ elements: [], appState: {} }),
+				);
+			}
+		} else {
+			if (paste && detectContentMode(paste) === newMode) {
+				setUpdatedContent(paste.content);
+			} else {
+				setUpdatedContent("");
+			}
+		}
+		setContentType(newMode);
+	};
 	const [remoteCursors, setRemoteCursors] = useState<
 		Record<string, CursorPosition>
 	>({});
@@ -132,8 +174,19 @@ const DisplayPage = () => {
 	const syncStateRef = useRef<SyncState>({});
 	const isRemoteUpdate = useRef(false);
 	const isEditRef = useRef(isEdit);
+	const hasDetectedRef = useRef(false);
 
 	const { isDetecting, detectLanguage } = useLanguageDetection();
+	const [language, _setLanguage] = useState(CONFIG.DEFAULTS.LANGUAGE);
+	const setLanguage = (newLang: string) => {
+		_setLanguage(newLang);
+		if (newLang === "text") {
+			if (contentType === "code") setContentType("text");
+		} else {
+			if (isDetecting) return; // Don't flip tab while detecting
+			if (contentType === "text") setContentType("code");
+		}
+	};
 	const { fontSize, ref: contentRef, setFontSize } = usePinchZoom(14);
 
 	const isOwner = !paste?.owner || (!!user && paste.owner === user._id);
@@ -368,11 +421,27 @@ const DisplayPage = () => {
 
 	useEffect(() => {
 		if (paste) {
-			const cleanContent = paste.content?.replace(/\r?\n|\r/g, " ") ?? "";
+			let displayContent = "";
+			const mode = paste.contentMode || contentType;
+
+			if (mode === "draw") {
+				displayContent = "Drawing";
+			} else if (mode === "link" || paste.redirectUrl) {
+				displayContent = "Link";
+			} else if (mode === "file") {
+				displayContent = paste.fileName || "File";
+			} else {
+				displayContent =
+					(updatedContent || paste.content)?.replace(
+						/\r?\n|\r/g,
+						" ",
+					) ?? "";
+			}
+
 			const trimmed =
-				cleanContent.length > 30
-					? `${cleanContent.substring(0, 30).trim()}...`
-					: cleanContent;
+				displayContent.length > 30
+					? `${displayContent.substring(0, 30).trim()}...`
+					: displayContent;
 			document.title = `${paste.id}${trimmed ? ` - ${trimmed}` : ""} | Snipit`;
 		} else {
 			document.title = "Snipit";
@@ -380,7 +449,7 @@ const DisplayPage = () => {
 		return () => {
 			document.title = "Snipit";
 		};
-	}, [paste]);
+	}, [paste, updatedContent, contentType]);
 
 	useEffect(() => {
 		if (socketRef.current && id) {
@@ -408,7 +477,7 @@ const DisplayPage = () => {
 			expiresTime !== (paste?.expiresTime ?? "1d");
 
 		const isContentChanged = updatedContent !== paste?.content;
-
+		if (!isSettingsChanged && !isContentChanged) return;
 		if (!isSettingsChanged && isContentChanged && !isAutosave) return;
 
 		const timer = setTimeout(() => handleEditSave(false), 2000);
@@ -500,6 +569,13 @@ const DisplayPage = () => {
 		setEditorInstance(ed);
 		editorRef.current = ed;
 
+		ed.onDidPaste(() => {
+			const value = ed.getValue();
+			if (updatedContent?.trim() === "") {
+				handleLanguageDetection(value);
+			}
+		});
+
 		ed.onDidChangeCursorPosition((e) => {
 			if (
 				!isRemoteUpdate.current &&
@@ -516,8 +592,12 @@ const DisplayPage = () => {
 	};
 
 	const handleLanguageDetection = async (content: string) => {
+		if (hasDetectedRef.current) return;
 		const result = await detectLanguage(content);
-		if (result) setLanguage(result.language);
+		if (result) {
+			hasDetectedRef.current = true;
+			setLanguage(result.language);
+		}
 	};
 
 	const confirmDelete = () => {
@@ -646,6 +726,7 @@ const DisplayPage = () => {
 				}
 				setPaste(data);
 				setSaveStatus("saved");
+				setTimeout(() => setSaveStatus("idle"), 3000);
 				setUpdatedContent(data.content);
 				setLanguage(data.language ?? "text");
 				setContentType(
@@ -666,11 +747,16 @@ const DisplayPage = () => {
 				setEditPassword("");
 				if (!user) saveToLocal(data);
 				if (data.id !== id) navigate(`/${data.id}`, { replace: true });
+				if (id) clearDrafts(id);
 			}
 
-			if (shouldClose) setIsEdit(false);
+			if (shouldClose) {
+				setIsEdit(false);
+				if (id) clearDrafts(id);
+			}
 		} catch (error) {
 			setSaveStatus("error");
+			setTimeout(() => setSaveStatus("idle"), 5000);
 			const axiosError = error as AxiosError<{ error: string }>;
 			toast.error(
 				axiosError.response?.data?.error ??
@@ -701,9 +787,12 @@ const DisplayPage = () => {
 		setIsPasswordEnabled(!!paste?.password || !!paste?.isPasswordProtected);
 		setAllowComments(paste?.allowComments ?? false);
 		setExpiresTime(paste?.expiresTime ?? "1d");
+		setSaveStatus("idle");
+		if (id) clearDrafts(id);
 	};
 
 	const handleContentChange = (val: string) => {
+		if (val === updatedContent) return;
 		setUpdatedContent(val);
 		if (isAutosave) setSaveStatus("saving");
 	};
@@ -788,6 +877,7 @@ const DisplayPage = () => {
 								setAllowComments(paste?.allowComments ?? false);
 							}
 							setIsEdit(val);
+							setSaveStatus("idle");
 						}}
 						onDelete={handleDelete}
 						onSave={handleEditSave}
@@ -815,7 +905,7 @@ const DisplayPage = () => {
 						<div className="mb-4">
 							<EditControls
 								contentType={contentType}
-								setContentType={setContentType}
+								setContentType={onContentTypeChange}
 								language={language}
 								setLanguage={setLanguage}
 								visibility={visibility}
