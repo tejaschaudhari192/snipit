@@ -129,8 +129,8 @@ export function useRemoteCursors(
 	}, [editor, remoteCursors, activeUsers]);
 
 	useEffect(() => {
+		const widgetMap = widgetMapRef.current;
 		return () => {
-			const widgetMap = widgetMapRef.current;
 			if (editor) {
 				const ed = editor as unknown as {
 					removeContentWidget(w: IContentWidget): void;

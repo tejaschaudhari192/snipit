@@ -49,12 +49,20 @@
 				50% 50%,
 				50% 50%;
 		}
-
 		to {
 			background-position:
 				350% 50%,
 				350% 50%;
 		}
+	}
+}
+
+@layer base {
+	:root {
+		--aurora: oklch(0.95 0.1 280);
+	}
+	.dark {
+		--aurora: oklch(0.2 0.05 280);
 	}
 }
 
@@ -135,7 +143,22 @@
 	}
 
 	body {
-		@apply bg-background text-foreground;
+		@apply bg-background text-foreground min-h-screen relative overflow-x-hidden transition-colors duration-500;
+	}
+
+	body::before {
+		content: "";
+		@apply fixed inset-0 -z-10 opacity-50 dark:opacity-30 pointer-events-none;
+		background-image:
+			radial-gradient(
+				circle at 100% 100%,
+				var(--aurora) 0%,
+				transparent 50%
+			),
+			radial-gradient(circle at 0% 0%, var(--primary) 0%, transparent 50%);
+		background-size: 200% 200%;
+		animation: aurora 30s ease infinite alternate;
+		filter: blur(100px);
 	}
 
 	button,
@@ -206,5 +229,13 @@
 
 	.animate-moving-border {
 		animation: moving-border 3.5s linear infinite;
+	}
+
+	.glass-card {
+		@apply bg-background/60 backdrop-blur-xl border border-border/50 shadow-2xl ring-1 ring-white/10 dark:ring-white/5;
+	}
+
+	.glass-morphism {
+		@apply bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)];
 	}
 }

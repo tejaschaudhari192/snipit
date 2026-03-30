@@ -1,19 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-	FileDown,
-	File as FileIcon,
-	FileImage,
-	FileAudio,
-	FileVideo,
-	FileArchive,
-	FileCode,
-	FileText,
-	Terminal,
-} from "lucide-react";
+import { FileDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { PasteData } from "@/types";
-import { FILE_EXTENSIONS } from "@/constants";
+import { FileTypeIcon } from "@/components/common/file-type-icon";
+import { FilePreview } from "@/components/common/file-preview";
 
 interface FileDisplayProps {
 	paste: PasteData;
@@ -23,67 +14,15 @@ interface FileDisplayProps {
 export const FileDisplay = ({ paste, contentRef }: FileDisplayProps) => {
 	const { t } = useTranslation();
 
-	const mime = paste.fileMimeType?.toLowerCase() || "";
-	const ext =
-		paste.fileName?.toLowerCase().split(".").pop() ||
-		mime.split("/")[1] ||
-		"";
+	const isImage = paste.fileMimeType?.startsWith("image/");
+	const isVideo = paste.fileMimeType?.startsWith("video/");
+	const isAudio = paste.fileMimeType?.startsWith("audio/");
+	const isPdf =
+		paste.fileMimeType === "application/pdf" ||
+		paste.fileName?.toLowerCase().endsWith(".pdf");
 
-	const isImage = mime.startsWith("image/");
-	const isVideo = mime.startsWith("video/");
-	const isAudio = mime.startsWith("audio/");
-	const isPdf = mime === "application/pdf" || ext === "pdf";
 	const hasPreview =
 		paste.fileUrl && (isImage || isVideo || isAudio || isPdf);
-
-	const getFileIcon = () => {
-		if (isImage) return FileImage;
-		if (isAudio) return FileAudio;
-		if (isVideo) return FileVideo;
-
-		const archiveExts = FILE_EXTENSIONS.ARCHIVE;
-		if (
-			archiveExts.includes(ext) ||
-			mime.includes("zip") ||
-			mime.includes("archive") ||
-			mime.includes("compressed")
-		)
-			return FileArchive;
-
-		const codeExts = FILE_EXTENSIONS.CODE;
-		if (
-			codeExts.includes(ext) ||
-			mime.includes("code") ||
-			mime.includes("javascript") ||
-			mime.includes("json")
-		)
-			return FileCode;
-
-		if (isPdf) return FileText;
-
-		const textExts = FILE_EXTENSIONS.TEXT;
-		if (
-			textExts.includes(ext) ||
-			mime.includes("text") ||
-			mime.includes("document") ||
-			mime.includes("sheet") ||
-			mime.includes("presentation")
-		)
-			return FileText;
-
-		const execExts = FILE_EXTENSIONS.EXEC;
-		if (
-			execExts.includes(ext) ||
-			mime.includes("shell") ||
-			mime.includes("executable") ||
-			mime.includes("application/octet-stream")
-		)
-			return Terminal;
-
-		return FileIcon;
-	};
-
-	const Icon = getFileIcon();
 
 	const formatFileSize = (bytes: number) => {
 		if (bytes === 0) return "0 Bytes";
@@ -106,45 +45,20 @@ export const FileDisplay = ({ paste, contentRef }: FileDisplayProps) => {
 		>
 			<Card className="w-full max-w-md border border-border/50 bg-background/60 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden group hover:border-primary/50 transition-all ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-500">
 				{hasPreview ? (
-					<div className="w-full bg-background/40 flex items-center justify-center relative overflow-hidden border-b border-border/50">
-						{isImage && (
-							<img
-								src={paste.fileUrl}
-								alt={paste.fileName}
-								className="w-full h-auto max-h-[350px] object-cover bg-muted/10 pattern-boxes pattern-muted/20 pattern-bg-transparent pattern-size-4"
-							/>
-						)}
-						{isVideo && (
-							<video
-								src={paste.fileUrl}
-								controls
-								className="w-full h-auto max-h-[350px] bg-black"
-							/>
-						)}
-						{isAudio && (
-							<div className="w-full py-10 px-4 flex flex-col items-center justify-center bg-gradient-to-br from-primary/5 via-primary/10 to-transparent gap-4">
-								<FileAudio className="w-16 h-16 text-primary animate-pulse drop-shadow-lg" />
-								<audio
-									src={paste.fileUrl}
-									controls
-									className="w-full max-w-sm shadow-xl rounded-full"
-								/>
-							</div>
-						)}
-						{isPdf && (
-							<iframe
-								src={paste.fileUrl}
-								className="w-full h-[350px] border-0 bg-white"
-								title={paste.fileName}
-							/>
-						)}
-					</div>
+					<FilePreview
+						url={paste.fileUrl!}
+						fileName={paste.fileName}
+						mimeType={paste.fileMimeType}
+						className="border-b"
+					/>
 				) : (
 					<div className="h-32 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent flex items-center justify-center relative overflow-hidden">
 						<div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,transparent,black)]" />
 						<div className="relative transform group-hover:scale-110 transition-transform duration-500">
 							<div className="p-4 rounded-2xl bg-background shadow-xl border border-border/50">
-								<Icon
+								<FileTypeIcon
+									fileName={paste.fileName}
+									mimeType={paste.fileMimeType}
 									className="w-12 h-12 text-primary transition-colors duration-300"
 									strokeWidth={1.5}
 								/>

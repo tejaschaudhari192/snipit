@@ -152,7 +152,7 @@ export const EditControls = ({
 							/>
 						</div>
 
-						{contentType === "code" && (
+						{(isDetecting || contentType === "code") && (
 							<div className="flex items-center gap-2 animate-in fade-in zoom-in-95 duration-200">
 								<LanguageSelector
 									value={language}

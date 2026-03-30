@@ -1,9 +1,8 @@
 import { Editor, type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { Textarea } from "@/components/ui/textarea";
-import { Maximize, Minimize } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect } from "react";
 import type { ContentMode } from "@/types";
+import { ZenModeToggle } from "@/components/common/zen-mode-toggle";
 
 interface CodeEditorViewProps {
 	id: string;
@@ -65,24 +64,14 @@ export const CodeEditorView = ({
 					containerRef.current = node;
 					if (typeof contentRef === "function") contentRef(node);
 				}}
-				className={`rounded-2xl border border-border/50 shadow-2xl overflow-hidden bg-background/60 backdrop-blur-xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-500 flex flex-col ${isFullscreen ? "h-screen w-screen rounded-none" : ""}`}
+				className={`glass-card rounded-2xl overflow-hidden relative z-10 animate-in fade-in zoom-in-95 duration-500 flex flex-col ${isFullscreen ? "h-screen w-screen rounded-none" : ""}`}
 			>
 				{!hideFullscreen && (
-					<div className="absolute top-4 right-8 z-50 transition-opacity">
-						<Button
-							variant="ghost"
-							size="icon"
-							className="bg-background/80 hover:bg-background shadow-sm backdrop-blur-sm"
-							onClick={toggleFullscreen}
-							title="Toggle Fullscreen"
-						>
-							{isFullscreen ? (
-								<Minimize className="h-4 w-4" />
-							) : (
-								<Maximize className="h-4 w-4" />
-							)}
-						</Button>
-					</div>
+					<ZenModeToggle
+						isFullscreen={isFullscreen}
+						onToggle={toggleFullscreen}
+						className="absolute top-8 right-8"
+					/>
 				)}
 				<div className="flex-1 w-full h-full relative">
 					<Editor
@@ -142,21 +131,11 @@ export const CodeEditorView = ({
 			className={`relative z-10 ${isFullscreen ? "h-screen w-screen flex flex-col bg-background" : ""}`}
 		>
 			{!hideFullscreen && (
-				<div className="absolute top-4 right-8 z-50 transition-opacity">
-					<Button
-						variant="ghost"
-						size="icon"
-						className="bg-background/80 hover:bg-background shadow-sm backdrop-blur-sm"
-						onClick={toggleFullscreen}
-						title="Toggle Fullscreen"
-					>
-						{isFullscreen ? (
-							<Minimize className="h-4 w-4" />
-						) : (
-							<Maximize className="h-4 w-4" />
-						)}
-					</Button>
-				</div>
+				<ZenModeToggle
+					isFullscreen={isFullscreen}
+					onToggle={toggleFullscreen}
+					className="absolute top-8 right-8 z-50"
+				/>
 			)}
 			<Textarea
 				readOnly={!isEdit}
@@ -164,7 +143,7 @@ export const CodeEditorView = ({
 				onChange={
 					isEdit ? (e) => onContentChange(e.target.value) : undefined
 				}
-				className={`font-mono text-sm resize-none bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 leading-relaxed shadow-2xl ring-1 ring-white/5 animate-in fade-in zoom-in-95 duration-500 ${
+				className={`font-mono text-sm resize-none glass-card rounded-2xl p-6 leading-relaxed animate-in fade-in zoom-in-95 duration-500 ${
 					!isEdit
 						? "select-all cursor-text"
 						: "focus-visible:ring-primary/20"

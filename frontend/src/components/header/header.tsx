@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
 	DropdownMenu,
@@ -9,22 +9,14 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, QrCode } from "lucide-react";
-import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
-import { QRCodeSVG } from "qrcode.react";
+import { Menu, Search, User, LogOut } from "lucide-react";
 import ThemeTogglePositionsDemo from "./theme-toggle";
 import { LanguageSwitcher } from "./language-switcher";
-import icon from "@/assets/brand/icon.png";
 import { useAuth } from "@/context/AuthContext";
-import { User, LogOut, Search } from "lucide-react";
 import { JumpToDialog } from "./jump-to-dialog";
 import { LogoutDialog } from "./logout-dialog";
+import { BrandLogo } from "../common/brand-logo";
+import { ActionUrlBar } from "../common/action-url-bar";
 
 interface HeaderProps {
 	className?: string;
@@ -101,15 +93,10 @@ const Header = ({ className }: HeaderProps) => {
 	const id = nonShareablePaths.some((p) => path.includes(p)) ? null : path;
 	const { t } = useTranslation();
 	const { user } = useAuth();
-	const [isQRDialogOpen, setIsQRDialogOpen] = useState(false);
 	const [isJumpToDialogOpen, setIsJumpToDialogOpen] = useState(false);
 	const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 
-	const [url, setUrl] = useState(window.location.href);
-
-	useEffect(() => {
-		setUrl(window.location.href);
-	}, [path]);
+	const url = window.location.href;
 
 	return (
 		<header
@@ -119,45 +106,13 @@ const Header = ({ className }: HeaderProps) => {
 			)}
 		>
 			<div className="flex items-center h-full gap-4 md:gap-8 min-w-0">
-				<Link
-					to={"/"}
-					className="flex items-center gap-2.5 group shrink-0"
-				>
-					<img
-						src={icon}
-						alt="Snipit Logo"
-						loading="lazy"
-						className="h-8 w-auto transform transition-transform duration-300 ease-in-out group-hover:scale-105"
-					/>
-					<p
-						className={cn(
-							"text-xl md:text-2xl font-black tracking-tight bg-clip-text transform transition-transform duration-300 ease-in-out group-hover:scale-105",
-							id && id.length > 1 ? "hidden sm:block" : "block",
-						)}
-					>
-						Snipit
-					</p>
-				</Link>
+				<BrandLogo
+					textClassName={
+						id && id.length > 1 ? "hidden sm:block" : "block"
+					}
+				/>
 				{id && id.length > 1 && (
-					<div className="flex items-center h-9 md:h-8 gap-2 min-w-0 flex-1 px-3 rounded-full bg-muted/50 border border-border/50 max-w-sm ml-1 sm:ml-0 overflow-hidden">
-						<p className="text-xs text-muted-foreground truncate flex-1 min-w-0">
-							{url}
-						</p>
-						<div className="w-px h-3 bg-border mx-1 shrink-0" />
-						<CopyButton
-							content={url}
-							variant="ghost"
-							className="h-6 w-6 p-0 hover:bg-transparent shrink-0"
-						/>
-						<Button
-							variant="ghost"
-							size="icon"
-							className="h-6 w-6 p-0 hover:bg-transparent shrink-0"
-							onClick={() => setIsQRDialogOpen(true)}
-						>
-							<QrCode className="h-3.5 w-3.5" />
-						</Button>
-					</div>
+					<ActionUrlBar url={url} className="ml-1 sm:ml-0" />
 				)}
 			</div>
 
@@ -336,42 +291,6 @@ const Header = ({ className }: HeaderProps) => {
 				isOpen={isJumpToDialogOpen}
 				onOpenChange={setIsJumpToDialogOpen}
 			/>
-			<Dialog open={isQRDialogOpen} onOpenChange={setIsQRDialogOpen}>
-				<DialogContent className="sm:max-w-md border border-border/50 bg-background/60 backdrop-blur-2xl shadow-2xl rounded-2xl ring-1 ring-white/5 overflow-hidden">
-					<DialogHeader>
-						<div className="flex items-center gap-2 mb-1">
-							<div className="p-2 rounded-lg bg-primary/10 text-primary">
-								<QrCode className="h-5 w-5" />
-							</div>
-							<DialogTitle>{t("header.qr_button")}</DialogTitle>
-						</div>
-						<p className="text-sm text-muted-foreground">
-							{t(
-								"header.qr_scan_desc",
-								"Scan this code to open the snippet on another device.",
-							)}
-						</p>
-					</DialogHeader>
-					<div className="flex flex-col items-center justify-center p-6 bg-white rounded-xl shadow-inner my-4 relative group">
-						<QRCodeSVG
-							value={url}
-							size={200}
-							level="H"
-							includeMargin={true}
-						/>
-						<div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/5 rounded-xl">
-							<CopyButton
-								content={url}
-								variant="outline"
-								className="bg-background shadow-lg scale-125"
-							/>
-						</div>
-					</div>
-					<div className="text-center text-xs text-muted-foreground break-all px-4">
-						{url}
-					</div>
-				</DialogContent>
-			</Dialog>
 			<LogoutDialog
 				open={isLogoutDialogOpen}
 				onOpenChange={setIsLogoutDialogOpen}

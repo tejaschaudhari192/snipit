@@ -40,20 +40,20 @@ import { MainToolbar } from "@/components/home/main-toolbar";
 import { EditorContent } from "@/components/home/editor-content";
 
 const HomePage = () => {
-	const userInputRef = useRef<HTMLTextAreaElement>(null);
-	const valueRef = useRef("");
-	const previousLengthRef = useRef(0);
-	const {
-		fontSize,
-		ref: editorContainerRef,
-		setFontSize,
-	} = usePinchZoom(CONFIG.DEFAULTS.FONT_SIZE);
+	const { t } = useTranslation();
+	const theme = useTheme().theme;
 	const { user } = useAuth();
 	const navigate = useNavigate();
 	const apiHelpers = useApiHelpers();
-	const { t } = useTranslation();
-	const { theme } = useTheme();
 
+	// Refs
+	const userInputRef = useRef<HTMLTextAreaElement>(null);
+	const valueRef = useRef("");
+	const previousLengthRef = useRef(0);
+	const hasDetectedRef = useRef(false);
+	const uploadPromiseRef = useRef<Promise<UploadState> | null>(null);
+
+	// State
 	const [visibility, setVisibility] = useState<Visibility>(
 		CONFIG.DEFAULTS.VISIBILITY,
 	);
@@ -69,18 +69,108 @@ const HomePage = () => {
 	);
 	const [allowComments, setAllowComments] = useState(false);
 	const [expiresTime, setExpiresTime] = useState(CONFIG.DEFAULTS.EXPIRY);
-	const [textValue, _setTextValue] = useState(() => {
-		return getDraft(CONFIG.DEFAULTS.CONTENT_MODE) || "";
-	});
 	const [contentType, setContentType] = useState<ContentMode>(
 		CONFIG.DEFAULTS.CONTENT_MODE,
 	);
+	const [language, _setLanguage] = useState(CONFIG.DEFAULTS.LANGUAGE);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [pendingFile, setPendingFile] = useState<File | null>(null);
+	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+	const [isDialogOpen, setIsDialogOpen] = useState(false);
+	const [isCustomExpiryDialogOpen, setIsCustomExpiryDialogOpen] =
+		useState(false);
+	const [customExpiryDate, setCustomExpiryDate] = useState<Date | undefined>(
+		new Date(Date.now() + 24 * 60 * 60 * 1000),
+	);
+	const [customId, setCustomId] = useState("");
+	const [password, setPassword] = useState("");
+	const [idTypeTab, setIdTypeTab] = useState<"system" | "dynamic">("system");
+	const [dialogError, setDialogError] = useState("");
+	const [fastRedirect, setFastRedirect] = useState(false);
+
+	const {
+		fontSize,
+		ref: editorContainerRef,
+		setFontSize,
+	} = usePinchZoom(CONFIG.DEFAULTS.FONT_SIZE);
+
+	const {
+		isUploading,
+		progress: uploadProgress,
+		error: uploadError,
+		fileUrl,
+		fileName,
+		fileSize,
+		fileMimeType,
+		uploadFile,
+		setFile: setFileUpload,
+		reset: resetFileUpload,
+	} = useFileUpload();
+
+	const { isDetecting, detectLanguage } = useLanguageDetection();
+
+	const [textValue, _setTextValue] = useState(() => {
+		const draft = getDraft(CONFIG.DEFAULTS.CONTENT_MODE) || "";
+		valueRef.current = draft;
+		previousLengthRef.current = draft.trim().length;
+		return draft;
+	});
+
+	// Effects
+	useEffect(() => {
+		const handleGlobalPaste = (e: ClipboardEvent) => {
+			if (isSubmitting || isUploading || contentType === "draw") return;
+			const items = e.clipboardData?.items;
+			if (!items) return;
+
+			for (const item of items) {
+				if (item.kind === "file") {
+					const file = item.getAsFile();
+					if (file) {
+						setContentType("file");
+						setPendingFile(file);
+						setFileUpload(file);
+						// We don't preventDefault here because we want standard text paste to still work if it's not JUST a file,
+						// but usually if it's a file kind it's what we want.
+						toast.success(
+							t(
+								"home.file_selected_via_paste",
+								"File selected via paste!",
+							),
+						);
+						break;
+					}
+				}
+			}
+		};
+
+		document.addEventListener("paste", handleGlobalPaste);
+		return () => {
+			document.removeEventListener("paste", handleGlobalPaste);
+		};
+	}, [isSubmitting, isUploading, contentType, t, setFileUpload]);
+
+	useEffect(() => {
+		if (contentType === "file") {
+			setExpiresTime("1d");
+		}
+	}, [contentType]);
+
+	useEffect(() => {
+		if (!pendingFile) {
+			setPreviewUrl(null);
+			return;
+		}
+		const objectUrl = URL.createObjectURL(pendingFile);
+		setPreviewUrl(objectUrl);
+		return () => URL.revokeObjectURL(objectUrl);
+	}, [pendingFile]);
+
+	// Handlers
 	const onContentTypeChange = (newMode: ContentMode) => {
-		// Update language based on target mode
 		if (newMode === "text") {
 			_setLanguage("text");
 		} else if (newMode === "code") {
-			// If currently plain text, switch to default code language
 			_setLanguage(
 				CONFIG.DEFAULTS.LANGUAGE === "text"
 					? "javascript"
@@ -88,10 +178,8 @@ const HomePage = () => {
 			);
 		}
 
-		// Persist current content
 		saveDraft(contentType, textValue);
 
-		// Load appropriate draft for the new mode
 		const draft = getDraft(newMode);
 		if (draft !== null) {
 			_setTextValue(draft);
@@ -107,64 +195,16 @@ const HomePage = () => {
 
 		setContentType(newMode);
 	};
-	const { isDetecting, detectLanguage } = useLanguageDetection();
-	const [language, _setLanguage] = useState(CONFIG.DEFAULTS.LANGUAGE);
+
 	const setLanguage = (newLang: string) => {
 		_setLanguage(newLang);
 		if (newLang === "text") {
 			if (contentType === "code") setContentType("text");
 		} else {
-			if (isDetecting) return; // Don't flip tab while detecting
+			if (isDetecting) return;
 			if (contentType === "text") setContentType("code");
 		}
 	};
-	const hasDetectedRef = useRef(false);
-	const uploadPromiseRef = useRef<Promise<UploadState> | null>(null);
-	const [pendingFile, setPendingFile] = useState<File | null>(null);
-	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-	const [isDialogOpen, setIsDialogOpen] = useState(false);
-	const [isCustomExpiryDialogOpen, setIsCustomExpiryDialogOpen] =
-		useState(false);
-	const [customExpiryDate, setCustomExpiryDate] = useState<Date | undefined>(
-		new Date(Date.now() + 24 * 60 * 60 * 1000),
-	);
-
-	useEffect(() => {
-		if (contentType === "file") {
-			setExpiresTime("1d");
-		}
-	}, [contentType]);
-
-	// Reset detection flag whenever the editor is cleared or mode changes
-
-	useEffect(() => {
-		if (!pendingFile) {
-			setPreviewUrl(null);
-			return;
-		}
-		const objectUrl = URL.createObjectURL(pendingFile);
-		setPreviewUrl(objectUrl);
-		return () => URL.revokeObjectURL(objectUrl);
-	}, [pendingFile]);
-
-	const [customId, setCustomId] = useState("");
-	const [password, setPassword] = useState("");
-	const [idTypeTab, setIdTypeTab] = useState<"system" | "dynamic">("system");
-	const [dialogError, setDialogError] = useState("");
-	const [fastRedirect, setFastRedirect] = useState(false);
-	const [isSubmitting, setIsSubmitting] = useState(false);
-	const {
-		isUploading,
-		progress: uploadProgress,
-		error: uploadError,
-		fileUrl,
-		fileName,
-		fileSize,
-		fileMimeType,
-		uploadFile,
-		setFile: setFileUpload,
-		reset: resetFileUpload,
-	} = useFileUpload();
 
 	const setTextValue = (val: string) => {
 		previousLengthRef.current = valueRef.current.trim().length;
@@ -364,7 +404,6 @@ const HomePage = () => {
 
 	const handleLanguageDetection = async (content: string) => {
 		if (hasDetectedRef.current) return;
-		// Mark as attempted so subsequent pastes are ignored
 		hasDetectedRef.current = true;
 		const result = await detectLanguage(content);
 		if (result) {
@@ -378,7 +417,6 @@ const HomePage = () => {
 	};
 
 	const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
-		// Only detect on first paste when editor is empty
 		if (valueRef.current.trim() !== "") return;
 		handleLanguageDetection(
 			e.clipboardData.getData("text/plain") ||
@@ -389,7 +427,6 @@ const HomePage = () => {
 	const handleEditorMount: OnMount = (editor) => {
 		editor.onDidPaste(() => {
 			const value = editor.getValue();
-			// Only auto detect if the editor was completely empty before the paste
 			if (previousLengthRef.current === 0) {
 				handleLanguageDetection(value);
 			}

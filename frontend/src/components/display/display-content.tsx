@@ -1,7 +1,7 @@
 import { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { useState, useRef, useEffect } from "react";
-import { Maximize, Minimize } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { ZenModeToggle } from "@/components/common/zen-mode-toggle";
 import type { PasteData, ContentMode } from "@/types";
 import { MarkdownDisplay } from "./content/markdown-display";
 import { FileDisplay } from "./content/file-display";
@@ -161,31 +161,33 @@ export const DisplayContent = ({
 
 	return (
 		<div
+			className="flex-1 flex flex-col min-h-0 relative"
 			ref={containerRef}
-			className={`relative w-full h-full ${isFullscreen ? "bg-background p-4" : ""}`}
 		>
 			{(contentType === "code" ||
 				contentType === "text" ||
 				contentType === "draw") && (
-				<div
-					className={`absolute top-4 right-8 z-50 transition-opacity ${isFullscreen ? "fixed" : ""}`}
-				>
-					<Button
-						variant="ghost"
-						size="icon"
-						className="bg-background/80 hover:bg-background shadow-sm backdrop-blur-sm"
-						onClick={toggleFullscreen}
-						title="Toggle Fullscreen"
-					>
-						{isFullscreen ? (
-							<Minimize className="h-4 w-4" />
-						) : (
-							<Maximize className="h-4 w-4" />
-						)}
-					</Button>
-				</div>
+				<ZenModeToggle
+					isFullscreen={isFullscreen}
+					onToggle={toggleFullscreen}
+					className={cn(
+						contentType === "draw"
+							? "absolute right-3 top-3"
+							: "absolute top-8 right-8",
+						isFullscreen ? "fixed top-4 right-8" : "",
+					)}
+				/>
 			)}
-			<div className="h-full w-full">{renderContent()}</div>
+			<div
+				className={cn(
+					"relative w-full h-full",
+					isFullscreen ? "bg-background p-4" : "",
+				)}
+			>
+				<div className="flex-1 w-full h-full relative">
+					{renderContent()}
+				</div>
+			</div>
 		</div>
 	);
 };

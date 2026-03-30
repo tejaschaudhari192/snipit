@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { type BeforeMount, type OnMount } from "@monaco-editor/react";
@@ -178,15 +178,181 @@ const DisplayPage = () => {
 
 	const { isDetecting, detectLanguage } = useLanguageDetection();
 	const [language, _setLanguage] = useState(CONFIG.DEFAULTS.LANGUAGE);
-	const setLanguage = (newLang: string) => {
-		_setLanguage(newLang);
-		if (newLang === "text") {
-			if (contentType === "code") setContentType("text");
-		} else {
-			if (isDetecting) return; // Don't flip tab while detecting
-			if (contentType === "text") setContentType("code");
-		}
-	};
+	const setLanguage = useCallback(
+		(newLang: string) => {
+			_setLanguage(newLang);
+			if (newLang === "text") {
+				if (contentType === "code") setContentType("text");
+			} else {
+				if (isDetecting) return; // Don't flip tab while detecting
+				if (contentType === "text") setContentType("code");
+			}
+		},
+		[contentType, isDetecting],
+	);
+
+	const handleEditSave = useCallback(
+		async (shouldClose = true) => {
+			setSaveStatus("saving");
+
+			const hasContent =
+				contentType === "file"
+					? !!paste?.fileUrl
+					: (updatedContent?.trim().length ?? 0) > 0;
+
+			if (!hasContent) {
+				playErrorSound();
+				toast.warning(
+					contentType === "file"
+						? t(
+								"messages.empty_file",
+								"Please select a file first!",
+							)
+						: t(
+								"messages.empty_content",
+								"Please enter some content first!",
+							),
+				);
+				return;
+			}
+
+			const wasProtected =
+				!!paste?.password || !!paste?.isPasswordProtected;
+			const passwordChanged =
+				isPasswordEnabled !== wasProtected || !!editPassword;
+
+			const isUnchanged =
+				updatedContent === paste?.content &&
+				(contentType === "link") === paste?.redirectUrl &&
+				language === paste?.language &&
+				visibility === paste?.visibility &&
+				editPermission === (paste?.editPermission ?? "owner") &&
+				customId.trim() === paste?.id &&
+				!passwordChanged &&
+				JSON.stringify(allowedUsers) ===
+					JSON.stringify(paste?.allowedUsers) &&
+				JSON.stringify(shareList) ===
+					JSON.stringify(paste?.shareList) &&
+				publicRole === paste?.publicRole &&
+				allowComments === (paste?.allowComments ?? false) &&
+				expiresTime === (paste?.expiresTime ?? "1d") &&
+				contentType ===
+					(paste?.contentMode ??
+						(paste?.redirectUrl
+							? "link"
+							: paste?.language !== "text"
+								? "code"
+								: "text"));
+
+			if (isUnchanged) {
+				if (shouldClose) setIsEdit(false);
+				return;
+			}
+
+			const passwordPayload =
+				!isPasswordEnabled && wasProtected
+					? ""
+					: isPasswordEnabled && editPassword
+						? editPassword
+						: undefined;
+
+			try {
+				setIsSaving(true);
+				const data = await apiHelpers.updatePaste(
+					id!,
+					updatedContent!,
+					contentType === "link",
+					isDetecting || contentType === "code" ? language : "text",
+					visibility,
+					visibility === "shared" || editPermission === "shared"
+						? allowedUsers
+						: [],
+					customId.trim() !== id ? customId.trim() : undefined,
+					passwordPayload,
+					editPermission,
+					shareList,
+					publicRole,
+					allowComments,
+					expiresTime,
+					contentType,
+				);
+
+				if (data) {
+					if (shouldClose) {
+						toast.success(
+							t(
+								"messages.snippet_updated",
+								"Snippet updated successfully",
+							),
+						);
+					}
+					setPaste(data);
+					setSaveStatus("saved");
+					setTimeout(() => setSaveStatus("idle"), 3000);
+					setUpdatedContent(data.content);
+					setLanguage(data.language ?? "text");
+					setContentType(
+						data.contentMode ??
+							(data.redirectUrl
+								? "link"
+								: data.language !== "text"
+									? "code"
+									: "text"),
+					);
+					setVisibility(data.visibility ?? "public");
+					setAllowedUsers(data.allowedUsers ?? []);
+					setEditPermission(data.editPermission ?? "owner");
+					setAllowComments(data.allowComments ?? false);
+					setIsPasswordEnabled(
+						!!data.password || !!data.isPasswordProtected,
+					);
+					setEditPassword("");
+					if (!user) saveToLocal(data);
+					if (data.id !== id)
+						navigate(`/${data.id}`, { replace: true });
+					if (id) clearDrafts(id);
+				}
+
+				if (shouldClose) {
+					setIsEdit(false);
+					if (id) clearDrafts(id);
+				}
+			} catch (error) {
+				setSaveStatus("error");
+				setTimeout(() => setSaveStatus("idle"), 5000);
+				const axiosError = error as AxiosError<{ error: string }>;
+				toast.error(
+					axiosError.response?.data?.error ??
+						t("messages.update_failed", "Failed to update snippet"),
+				);
+			} finally {
+				setIsSaving(false);
+			}
+		},
+		[
+			contentType,
+			paste,
+			updatedContent,
+			t,
+			isPasswordEnabled,
+			editPassword,
+			language,
+			visibility,
+			editPermission,
+			customId,
+			allowedUsers,
+			shareList,
+			publicRole,
+			allowComments,
+			expiresTime,
+			id,
+			apiHelpers,
+			isDetecting,
+			setLanguage,
+			user,
+			navigate,
+		],
+	);
 	const { fontSize, ref: contentRef, setFontSize } = usePinchZoom(14);
 
 	const isOwner = !paste?.owner || (!!user && paste.owner === user._id);
@@ -277,7 +443,7 @@ const DisplayPage = () => {
 			}
 		}
 		loadData();
-	}, [id, apiHelpers, location.state, user]);
+	}, [id, apiHelpers, location.state, user, setLanguage]);
 
 	useEffect(() => {
 		if (!paste) return;
@@ -417,7 +583,7 @@ const DisplayPage = () => {
 			socket.disconnect();
 			socketRef.current = null;
 		};
-	}, [id, loading, paste?.id, user?.username, updatedContent]);
+	}, [id, loading, paste, user?.username, updatedContent, setLanguage]);
 
 	useEffect(() => {
 		if (paste) {
@@ -495,17 +661,9 @@ const DisplayPage = () => {
 		expiresTime,
 		isAutosave,
 		isEdit,
-		paste?.redirectUrl,
-		paste?.language,
-		paste?.visibility,
-		paste?.editPermission,
-		paste?.id,
-		paste?.allowedUsers,
-		paste?.shareList,
-		paste?.publicRole,
-		paste?.allowComments,
-		paste?.expiresTime,
-		paste?.content,
+		paste,
+		handleEditSave,
+		shareList,
 	]);
 
 	useEffect(() => {
@@ -591,12 +749,20 @@ const DisplayPage = () => {
 		});
 	};
 
-	const handleLanguageDetection = async (content: string) => {
-		if (hasDetectedRef.current) return;
+	const handleLanguageDetection = async (
+		content: string,
+		isManual = false,
+	) => {
+		if (hasDetectedRef.current && !isManual) return;
 		const result = await detectLanguage(content);
 		if (result) {
 			hasDetectedRef.current = true;
 			setLanguage(result.language);
+			if (result.isCode) {
+				setContentType("code");
+			} else {
+				setContentType("text");
+			}
 		}
 	};
 
@@ -634,138 +800,6 @@ const DisplayPage = () => {
 	};
 
 	const handleDelete = () => setIsDeleteDialogOpen(true);
-
-	const handleEditSave = async (shouldClose = true) => {
-		setSaveStatus("saving");
-
-		const hasContent =
-			contentType === "file"
-				? !!paste?.fileUrl
-				: (updatedContent?.trim().length ?? 0) > 0;
-
-		if (!hasContent) {
-			playErrorSound();
-			toast.warning(
-				contentType === "file"
-					? t("messages.empty_file", "Please select a file first!")
-					: t(
-							"messages.empty_content",
-							"Please enter some content first!",
-						),
-			);
-			return;
-		}
-
-		const wasProtected = !!paste?.password || !!paste?.isPasswordProtected;
-		const passwordChanged =
-			isPasswordEnabled !== wasProtected || !!editPassword;
-
-		const isUnchanged =
-			updatedContent === paste?.content &&
-			(contentType === "link") === paste?.redirectUrl &&
-			language === paste?.language &&
-			visibility === paste?.visibility &&
-			editPermission === (paste?.editPermission ?? "owner") &&
-			customId.trim() === paste?.id &&
-			!passwordChanged &&
-			JSON.stringify(allowedUsers) ===
-				JSON.stringify(paste?.allowedUsers) &&
-			JSON.stringify(shareList) === JSON.stringify(paste?.shareList) &&
-			publicRole === paste?.publicRole &&
-			allowComments === (paste?.allowComments ?? false) &&
-			expiresTime === (paste?.expiresTime ?? "1d") &&
-			contentType ===
-				(paste?.contentMode ??
-					(paste?.redirectUrl
-						? "link"
-						: paste?.language !== "text"
-							? "code"
-							: "text"));
-
-		if (isUnchanged) {
-			if (shouldClose) setIsEdit(false);
-			return;
-		}
-
-		const passwordPayload =
-			!isPasswordEnabled && wasProtected
-				? ""
-				: isPasswordEnabled && editPassword
-					? editPassword
-					: undefined;
-
-		try {
-			setIsSaving(true);
-			const data = await apiHelpers.updatePaste(
-				id!,
-				updatedContent!,
-				contentType === "link",
-				contentType === "code" ? language : "text",
-				visibility,
-				visibility === "shared" || editPermission === "shared"
-					? allowedUsers
-					: [],
-				customId.trim() !== id ? customId.trim() : undefined,
-				passwordPayload,
-				editPermission,
-				shareList,
-				publicRole,
-				allowComments,
-				expiresTime,
-				contentType,
-			);
-
-			if (data) {
-				if (shouldClose) {
-					toast.success(
-						t(
-							"messages.snippet_updated",
-							"Snippet updated successfully",
-						),
-					);
-				}
-				setPaste(data);
-				setSaveStatus("saved");
-				setTimeout(() => setSaveStatus("idle"), 3000);
-				setUpdatedContent(data.content);
-				setLanguage(data.language ?? "text");
-				setContentType(
-					data.contentMode ??
-						(data.redirectUrl
-							? "link"
-							: data.language !== "text"
-								? "code"
-								: "text"),
-				);
-				setVisibility(data.visibility ?? "public");
-				setAllowedUsers(data.allowedUsers ?? []);
-				setEditPermission(data.editPermission ?? "owner");
-				setAllowComments(data.allowComments ?? false);
-				setIsPasswordEnabled(
-					!!data.password || !!data.isPasswordProtected,
-				);
-				setEditPassword("");
-				if (!user) saveToLocal(data);
-				if (data.id !== id) navigate(`/${data.id}`, { replace: true });
-				if (id) clearDrafts(id);
-			}
-
-			if (shouldClose) {
-				setIsEdit(false);
-				if (id) clearDrafts(id);
-			}
-		} catch (error) {
-			setSaveStatus("error");
-			setTimeout(() => setSaveStatus("idle"), 5000);
-			const axiosError = error as AxiosError<{ error: string }>;
-			toast.error(
-				axiosError.response?.data?.error ??
-					t("messages.update_failed", "Failed to update snippet"),
-			);
-		} finally {
-			setIsSaving(false);
-		}
-	};
 
 	const handleCancel = () => {
 		setIsEdit(false);
@@ -914,7 +948,10 @@ const DisplayPage = () => {
 								setAllowedUsers={setAllowedUsers}
 								isDetecting={isDetecting}
 								onAutoDetect={() =>
-									handleLanguageDetection(updatedContent!)
+									handleLanguageDetection(
+										updatedContent || "",
+										true,
+									)
 								}
 								customId={customId}
 								setCustomId={setCustomId}
