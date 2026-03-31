@@ -701,11 +701,11 @@ const DisplayPage = () => {
 			isAutosave,
 		};
 
-		syncStateRef.current = { ...sync, ...newState };
-
 		const timer = setTimeout(() => {
-			socketRef.current?.emit("edit-paste", newState);
-		}, 10);
+			if (!socketRef.current) return;
+			socketRef.current.emit("edit-paste", newState);
+			syncStateRef.current = { ...sync, ...newState };
+		}, 400);
 		return () => clearTimeout(timer);
 	}, [
 		updatedContent,

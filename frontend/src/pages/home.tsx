@@ -210,8 +210,15 @@ const HomePage = () => {
 		previousLengthRef.current = valueRef.current.trim().length;
 		_setTextValue(val);
 		valueRef.current = val;
-		saveDraft(contentType, val);
+		// saveDraft(contentType, val); // Debounced via useEffect
 	};
+
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			saveDraft(contentType, textValue);
+		}, 1000);
+		return () => clearTimeout(timer);
+	}, [textValue, contentType]);
 
 	const handleSubmit = async (
 		selectedIdType: IdType,
