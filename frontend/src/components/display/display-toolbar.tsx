@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Globe, Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { FontSizeControls } from "@/components/editor/font-size-controls";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { ExpirySelector } from "@/components/common/expiry-selector";
 import {
 	Sheet,
 	SheetContent,
@@ -34,7 +37,13 @@ interface DisplayToolbarProps {
 	onCommentAdded: (updatedPaste: PasteData) => void;
 	activeUsers?: ActiveUser[];
 	isAutosave?: boolean;
+	setIsAutosave?: (v: boolean) => void;
 	saveStatus?: SaveStatus;
+	customId?: string;
+	setCustomId?: (v: string) => void;
+	expiresTime?: string;
+	setExpiresTime?: (v: string) => void;
+	setIsCustomExpiryDialogOpen?: (v: boolean) => void;
 }
 
 export const DisplayToolbar = ({
@@ -54,7 +63,13 @@ export const DisplayToolbar = ({
 	onCommentAdded,
 	activeUsers = [],
 	isAutosave = false,
+	setIsAutosave,
 	saveStatus = "idle",
+	customId = "",
+	setCustomId,
+	expiresTime = "",
+	setExpiresTime,
+	setIsCustomExpiryDialogOpen,
 }: DisplayToolbarProps) => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
@@ -80,6 +95,7 @@ export const DisplayToolbar = ({
 		userRole === "editor" ||
 		paste?.editPermission === "public";
 	const canDelete = isOwner || userRole === "admin";
+	const isAdmin = userRole === "admin";
 
 	return (
 		<div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 md:px-6 bg-background/40 backdrop-blur-xl relative z-20 shadow-sm border-b border-border/50">
@@ -99,14 +115,69 @@ export const DisplayToolbar = ({
 			<div className="flex flex-1 items-center gap-2 justify-end">
 				{isEdit && <AutosaveStatus status={saveStatus} />}
 				<UserAvatarList users={activeUsers} />
+				// slide-in-from-right-2
+				{isEdit && (
+					<div className="flex items-center gap-3 animate-in fade-in duration-300 ml-2">
+						{(isOwner || isAdmin) && setCustomId && (
+							<div className="relative group w-32 md:w-40">
+								<Globe className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground group-focus-within:text-primary transition-colors z-10 pointer-events-none" />
+								<Input
+									value={customId}
+									onChange={(e) =>
+										setCustomId(e.target.value)
+									}
+									placeholder={t(
+										"home.dynamic_id_dialog.placeholder",
+										"ID...",
+									)}
+									className="pl-8 h-9 text-xs bg-background/50 border-border/50 focus:border-primary/50 !ring-0 shadow-sm transition-all"
+								/>
+							</div>
+						)}
 
+						{setIsAutosave && (
+							<div
+								className={`flex items-center gap-2 px-2 py-1 rounded-lg border transition-all duration-300 shadow-sm h-9 ${
+									isAutosave
+										? "bg-emerald-500/5 border-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+										: "bg-background/50 border-border/50"
+								}`}
+							>
+								<span className="text-[10px] font-bold tracking-tight flex items-center gap-1.5 select-none uppercase">
+									<Save
+										className={`h-3 w-3 ${isAutosave ? "animate-pulse" : ""}`}
+									/>
+									Autosave
+								</span>
+								<Switch
+									checked={isAutosave}
+									onCheckedChange={setIsAutosave}
+									className="scale-[0.7] data-[state=checked]:bg-emerald-500 origin-right"
+								/>
+							</div>
+						)}
+
+						{(isOwner || isAdmin) &&
+							expiresTime &&
+							setExpiresTime &&
+							setIsCustomExpiryDialogOpen && (
+								<ExpirySelector
+									expiresTime={expiresTime}
+									setExpiresTime={setExpiresTime}
+									setIsCustomExpiryDialogOpen={
+										setIsCustomExpiryDialogOpen
+									}
+									className="h-9 min-w-[120px] text-xs"
+								/>
+							)}
+					</div>
+				)}
 				{showFontControls && (
 					<FontSizeControls
 						fontSize={fontSize}
 						setFontSize={setFontSize}
 					/>
 				)}
-
 				{(allowComments || (paste && !paste.owner)) && (
 					<Sheet modal={false}>
 						<SheetTrigger asChild>

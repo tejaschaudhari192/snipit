@@ -444,6 +444,10 @@ const HomePage = () => {
 					isSubmitting={isSubmitting}
 					isUploading={isUploading}
 					uploadProgress={uploadProgress}
+					hideTypeSelector={
+						textValue.trim().length > 0 ||
+						(contentType === "file" && fileName !== "")
+					}
 				/>
 
 				<div className="flex flex-wrap items-center gap-3">

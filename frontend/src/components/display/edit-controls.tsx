@@ -1,5 +1,4 @@
-import { ContentTypeSelector } from "@/components/common/content-type-selector";
-import { Code2, ShieldCheck, Lock, Globe, Save } from "lucide-react";
+import { Code2, ShieldCheck, Lock } from "lucide-react";
 import {
 	Dialog,
 	DialogContent,
@@ -13,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { ExpirySelector } from "@/components/common/expiry-selector";
 import { VisibilitySelector } from "@/components/common/access-control/visibility-selector";
 import { CollaboratorsManager } from "@/components/common/access-control/collaborators-manager";
 
@@ -36,8 +34,6 @@ interface EditControlsProps {
 	setAllowedUsers: (v: string[]) => void;
 	isDetecting: boolean;
 	onAutoDetect: () => void;
-	customId: string;
-	setCustomId: (v: string) => void;
 	newPassword: string;
 	setNewPassword: (v: string) => void;
 	isPasswordEnabled: boolean;
@@ -60,11 +56,6 @@ interface EditControlsProps {
 	setPublicRole: (v: PublicRole) => void;
 	allowComments: boolean;
 	setAllowComments: (v: boolean) => void;
-	expiresTime: string;
-	setExpiresTime: (v: string) => void;
-	setIsCustomExpiryDialogOpen: (v: boolean) => void;
-	isAutosave: boolean;
-	setIsAutosave: (v: boolean) => void;
 }
 
 export const EditControls = ({
@@ -78,8 +69,6 @@ export const EditControls = ({
 	setAllowedUsers,
 	isDetecting,
 	onAutoDetect,
-	customId,
-	setCustomId,
 	newPassword,
 	setNewPassword,
 	isPasswordEnabled,
@@ -93,65 +82,14 @@ export const EditControls = ({
 	setPublicRole,
 	allowComments,
 	setAllowComments,
-	expiresTime,
-	setExpiresTime,
-	setIsCustomExpiryDialogOpen,
-	isAutosave,
-	setIsAutosave,
 }: EditControlsProps) => {
 	const { t } = useTranslation();
 
 	return (
 		<div className="flex flex-col gap-4 animate-in fade-in slide-in-from-top-4 duration-300">
 			<div className="flex flex-col gap-4">
-				<div className="flex flex-col xl:flex-row gap-4 justify-between items-start xl:items-center -mb-1">
-					<ContentTypeSelector
-						value={contentType}
-						onValueChange={setContentType}
-						className="w-full xl:w-auto"
-						listClassName="xl:w-fit h-10"
-						showFileOption={contentType === "file"}
-					/>
-
+				<div className="flex flex-col xl:flex-row gap-4 justify-end items-start xl:items-center -mb-1">
 					<div className="w-full xl:w-auto flex flex-wrap items-center gap-3">
-						{(isOwner || isAdmin) && (
-							<div className="relative group w-44">
-								<Globe className="absolute left-3.5 top-[50%] -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors z-10 pointer-events-none" />
-								<Input
-									value={customId}
-									onChange={(e) =>
-										setCustomId(e.target.value)
-									}
-									placeholder={t(
-										"home.dynamic_id_dialog.placeholder",
-										"Custom ID...",
-									)}
-									disabled={!isOwner && !isAdmin}
-									className="pl-9 h-10 text-sm bg-background/80 backdrop-blur-sm border-border/50 focus:border-primary/50 shadow-sm transition-all ring-offset-background"
-								/>
-							</div>
-						)}
-
-						<div
-							className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border border-border/50 transition-all duration-300 shadow-sm ${
-								isAutosave
-									? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
-									: "bg-background/80"
-							}`}
-						>
-							<span className="text-xs font-bold tracking-wide flex items-center gap-1.5 select-none">
-								<Save
-									className={`h-3.5 w-3.5 ${isAutosave ? "animate-pulse" : ""}`}
-								/>
-								Autosave
-							</span>
-							<Switch
-								checked={isAutosave}
-								onCheckedChange={setIsAutosave}
-								className="scale-75 data-[state=checked]:bg-emerald-500"
-							/>
-						</div>
-
 						{(isDetecting || contentType === "code") && (
 							<div className="flex items-center gap-2 animate-in fade-in zoom-in-95 duration-200">
 								<LanguageSelector
@@ -183,20 +121,6 @@ export const EditControls = ({
 
 				{(isOwner || isAdmin) && (
 					<div className="flex flex-wrap items-center gap-4 p-3 rounded-xl bg-muted/30 border border-border/50 shadow-sm animate-in slide-in-from-top-2 duration-300">
-						<div className="flex flex-col sm:flex-row sm:items-center gap-2 pr-0 md:pr-4 md:border-r border-border/50">
-							<Label className="text-[10px] uppercase font-bold text-muted-foreground ml-1 sm:hidden">
-								{t("common.expires", "Expires")}
-							</Label>
-							<ExpirySelector
-								expiresTime={expiresTime}
-								setExpiresTime={setExpiresTime}
-								setIsCustomExpiryDialogOpen={
-									setIsCustomExpiryDialogOpen
-								}
-								className="w-full sm:w-fit h-9"
-							/>
-						</div>
-
 						<div className="flex items-center gap-3 pr-0 md:pr-4 md:border-r border-border/50">
 							<Switch
 								id="password-protected"

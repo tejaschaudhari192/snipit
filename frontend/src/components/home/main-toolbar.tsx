@@ -29,6 +29,7 @@ interface MainToolbarProps {
 	isUploading?: boolean;
 	uploadProgress?: number;
 	handleQuickPaste: () => void;
+	hideTypeSelector?: boolean;
 }
 
 export const MainToolbar = memo(
@@ -44,6 +45,7 @@ export const MainToolbar = memo(
 		isUploading = false,
 		uploadProgress = 0,
 		handleQuickPaste,
+		hideTypeSelector = false,
 	}: MainToolbarProps) => {
 		const { t } = useTranslation();
 
@@ -64,11 +66,14 @@ export const MainToolbar = memo(
 		return (
 			<div className="flex flex-col gap-3 p-3 rounded-2xl bg-background/40 backdrop-blur-xl border border-border/50 shadow-sm relative z-10 sm:p-4">
 				<div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
-					<ContentTypeSelector
-						value={contentType}
-						onValueChange={setContentType}
-						className="w-full lg:w-auto"
-					/>
+					{!hideTypeSelector && (
+						<ContentTypeSelector
+							value={contentType}
+							onValueChange={setContentType}
+							className="w-full lg:w-auto"
+						/>
+					)}
+					{hideTypeSelector && <div className="w-0 lg:w-auto" />}
 
 					<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
 						<div className="flex items-center justify-between sm:justify-start gap-4 px-4 py-2.5 rounded-xl transition-all duration-300 border shadow-sm bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400 min-w-fit sm:h-11">

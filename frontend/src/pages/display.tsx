@@ -583,7 +583,7 @@ const DisplayPage = () => {
 			socket.disconnect();
 			socketRef.current = null;
 		};
-	}, [id, loading, paste, user?.username, updatedContent, setLanguage]);
+	}, [id, loading, paste, user?.username, setLanguage]);
 
 	useEffect(() => {
 		if (paste) {
@@ -888,8 +888,9 @@ const DisplayPage = () => {
 						activeUsers={visibleActiveUsers}
 						isEdit={isEdit}
 						isAutosave={isAutosave}
+						setIsAutosave={setIsAutosave}
 						saveStatus={saveStatus}
-						content={paste.content}
+						content={updatedContent || paste.content}
 						onEdit={(val) => {
 							if (val) {
 								setUpdatedContent(paste?.content);
@@ -911,7 +912,7 @@ const DisplayPage = () => {
 							setSaveStatus("idle");
 						}}
 						onDelete={handleDelete}
-						onSave={handleEditSave}
+						onSave={() => handleEditSave()}
 						onCancel={handleCancel}
 						isSaving={isSaving}
 						fontSize={fontSize}
@@ -926,6 +927,13 @@ const DisplayPage = () => {
 						paste={paste}
 						onCommentAdded={(updated: PasteData) =>
 							setPaste(updated)
+						}
+						customId={customId}
+						setCustomId={setCustomId}
+						expiresTime={expiresTime}
+						setExpiresTime={setExpiresTime}
+						setIsCustomExpiryDialogOpen={
+							setIsCustomExpiryDialogOpen
 						}
 					/>
 					{!isEdit && <DisplayMetadata paste={paste} />}
@@ -950,14 +958,10 @@ const DisplayPage = () => {
 										true,
 									)
 								}
-								customId={customId}
-								setCustomId={setCustomId}
 								newPassword={editPassword}
 								setNewPassword={setEditPassword}
 								isPasswordEnabled={isPasswordEnabled}
 								setIsPasswordEnabled={setIsPasswordEnabled}
-								isAutosave={isAutosave}
-								setIsAutosave={setIsAutosave}
 								editPermission={editPermission}
 								setEditPermission={setEditPermission}
 								isOwner={isOwner}
@@ -975,11 +979,6 @@ const DisplayPage = () => {
 								setPublicRole={setPublicRole}
 								allowComments={allowComments}
 								setAllowComments={setAllowComments}
-								expiresTime={expiresTime}
-								setExpiresTime={setExpiresTime}
-								setIsCustomExpiryDialogOpen={
-									setIsCustomExpiryDialogOpen
-								}
 							/>
 						</div>
 					)}
