@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
@@ -41,27 +40,39 @@
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
 
-	--animate-aurora: aurora 60s linear infinite;
+	--animate-cursor-blink: cursor-blink 1s step-end infinite;
+	--animate-progress: progress linear forwards;
+	--animate-pulse-subtle: pulse-subtle 2s ease-in-out infinite;
 
-	@keyframes aurora {
-		0% {
-			transform: translate(0, 0) scale(1);
+	@keyframes cursor-blink {
+		0%,
+		100% {
+			opacity: 1;
 		}
 		50% {
-			transform: translate(-5%, 5%) scale(1.1);
-		}
-		100% {
-			transform: translate(5%, -5%) scale(1);
+			opacity: 0;
 		}
 	}
-}
 
-@layer base {
-	:root {
-		--aurora: oklch(0.95 0.1 280);
+	@keyframes progress {
+		from {
+			width: 0%;
+		}
+		to {
+			width: 100%;
+		}
 	}
-	.dark {
-		--aurora: oklch(0.2 0.05 280);
+
+	@keyframes pulse-subtle {
+		0%,
+		100% {
+			opacity: 1;
+			transform: scale(1);
+		}
+		50% {
+			opacity: 0.8;
+			transform: scale(0.98);
+		}
 	}
 }
 
@@ -145,22 +156,7 @@
 		@apply bg-background text-foreground min-h-screen relative overflow-x-hidden transition-colors duration-500;
 	}
 
-	body::before {
-		content: "";
-		@apply fixed inset-0 -z-10 opacity-40 dark:opacity-20 pointer-events-none;
-		background-image:
-			radial-gradient(
-				circle at 100% 100%,
-				var(--aurora) 0%,
-				transparent 50%
-			),
-			radial-gradient(circle at 0% 0%, var(--primary) 0%, transparent 50%);
-		background-size: 150% 150%;
-		animation: aurora 20s ease-in-out infinite alternate;
-		filter: blur(80px);
-		will-change: transform;
-		transform: translateZ(0);
-	}
+	/* Removed heavy aurora background for performance */
 
 	button,
 	[role="button"],

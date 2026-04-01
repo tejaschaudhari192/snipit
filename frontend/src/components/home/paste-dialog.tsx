@@ -8,7 +8,6 @@ import {
 	DialogFooter,
 } from "@/components/ui/dialog";
 import { LogIn } from "lucide-react";
-import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import type {
@@ -186,14 +185,10 @@ export const PasteDialog = ({
 				</div>
 
 				{dialogError && (
-					<motion.div
-						initial={{ opacity: 0, y: -5 }}
-						animate={{ opacity: 1, y: 0 }}
-						className="p-3 mb-4 rounded-lg bg-red-500/10 border border-red-500/20 text-sm text-red-500 flex items-start gap-2 theme-error-box"
-					>
+					<div className="animate-in fade-in slide-in-from-top-2 duration-300 p-3 mb-4 rounded-lg bg-red-500/10 border border-red-500/20 text-sm text-red-500 flex items-start gap-2 theme-error-box">
 						<div className="mt-0.5">⚠️</div>
 						<p>{dialogError}</p>
-					</motion.div>
+					</div>
 				)}
 
 				<DialogFooter className="sm:justify-between gap-2">

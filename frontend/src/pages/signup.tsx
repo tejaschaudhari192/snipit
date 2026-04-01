@@ -14,7 +14,6 @@ import {
 	CardFooter,
 } from "@/components/ui/card";
 import { toast } from "sonner";
-import { motion } from "motion/react";
 import {
 	UserPlus,
 	Mail,
@@ -23,11 +22,10 @@ import {
 	ArrowRight,
 	Eye,
 	EyeOff,
+	Loader2,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { Particles } from "@/components/ui/shadcn-io/particles";
-import { useTheme } from "@/hooks/use-theme";
 
 const SignupPage = () => {
 	const [username, setUsername] = useState("");
@@ -38,8 +36,6 @@ const SignupPage = () => {
 	const { user } = useAuth();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const { theme } = useTheme();
-	const particleColor = theme === "dark" ? "#818cf8" : "#4f46e5";
 
 	if (user) {
 		navigate("/");
@@ -69,42 +65,17 @@ const SignupPage = () => {
 
 	return (
 		<div className="relative flex-1 flex flex-col items-center justify-center bg-background px-4 py-8 md:py-12 overflow-hidden">
-			{/* Ambient Background Glows */}
-			<div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-500/10 blur-[100px] rounded-full pointer-events-none" />
-			<div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-primary/10 blur-[100px] rounded-full pointer-events-none" />
-
-			{/* Particles Background */}
-			<Particles
-				className="absolute inset-0 z-0"
-				quantity={80}
-				staticity={40}
-				ease={60}
-				size={0.4}
-				color={particleColor}
-				vx={0.02}
-				vy={0.02}
-			/>
-
-			<motion.div
-				initial={{ opacity: 0, scale: 0.95 }}
-				animate={{ opacity: 1, scale: 1 }}
-				transition={{ duration: 0.3 }}
-				className="w-full max-w-sm relative z-10"
-			>
+			<div className="w-full max-w-sm relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
 				<Card className="border-border/50 bg-background/60 backdrop-blur-xl shadow-2xl">
 					<CardHeader className="space-y-2 pb-6">
 						<div className="flex items-center justify-center mb-6">
 							<div className="relative flex items-center justify-center w-20 h-20">
-								{/* Animated decorative rings */}
-								<div className="absolute inset-0 rounded-full border border-primary/30 border-dashed animate-[spin_8s_linear_infinite]" />
-								<div className="absolute inset-2 rounded-full border border-primary/20 animate-[spin_6s_linear_infinite_reverse]" />
-								<div className="absolute inset-0 bg-primary/10 blur-xl rounded-full animate-pulse" />
-								<div className="relative z-10 p-3 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 shadow-lg text-primary backdrop-blur-sm">
-									<UserPlus className="h-8 w-8 drop-shadow-md" />
+								<div className="relative z-10 p-3 rounded-2xl bg-primary/10 border border-primary/20 shadow-sm text-primary">
+									<UserPlus className="h-8 w-8 drop-shadow-sm" />
 								</div>
 							</div>
 						</div>
-						<CardTitle className="text-3xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-foreground via-foreground to-muted-foreground drop-shadow-sm text-center">
+						<CardTitle className="text-3xl font-black tracking-tight text-center">
 							{t("auth.signup_title")}
 						</CardTitle>
 						<CardDescription className="text-base text-muted-foreground text-center">
@@ -129,7 +100,7 @@ const SignupPage = () => {
 											"auth.username_placeholder",
 										)}
 										required
-										className="pl-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all"
+										className="pl-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all font-medium"
 										value={username}
 										onChange={(e) =>
 											setUsername(e.target.value)
@@ -153,7 +124,7 @@ const SignupPage = () => {
 											"auth.email_placeholder",
 										)}
 										required
-										className="pl-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all"
+										className="pl-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all font-medium"
 										value={email}
 										onChange={(e) =>
 											setEmail(e.target.value)
@@ -206,21 +177,13 @@ const SignupPage = () => {
 								</div>
 							</div>
 							<Button
-								className="w-full h-11 text-base font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all gap-2"
+								className="w-full h-11 text-base font-bold transition-all gap-2"
 								type="submit"
 								disabled={isLoading}
 							>
 								{isLoading ? (
 									<>
-										<motion.div
-											animate={{ rotate: 360 }}
-											transition={{
-												repeat: Infinity,
-												duration: 1,
-												ease: "linear",
-											}}
-											className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full"
-										/>
+										<Loader2 className="w-5 h-5 animate-spin" />
 										{t("auth.creating_account")}
 									</>
 								) : (
@@ -255,7 +218,7 @@ const SignupPage = () => {
 						</p>
 					</CardFooter>
 				</Card>
-			</motion.div>
+			</div>
 		</div>
 	);
 };

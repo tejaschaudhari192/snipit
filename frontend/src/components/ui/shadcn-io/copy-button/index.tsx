@@ -1,12 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { AnimatePresence, motion, type HTMLMotionProps } from "motion/react";
 import { CheckIcon, CopyIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants, type ButtonVariants } from "./variants";
 
-type CopyButtonProps = Omit<HTMLMotionProps<"button">, "onCopy"> &
+type CopyButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
 	ButtonVariants & {
 		content?: string;
 		delay?: number;
@@ -30,7 +29,6 @@ export function CopyButton({
 	...props
 }: CopyButtonProps) {
 	const [localIsCopied, setLocalIsCopied] = React.useState(isCopied ?? false);
-	const Icon = localIsCopied ? CheckIcon : CopyIcon;
 
 	React.useEffect(() => {
 		setLocalIsCopied(isCopied ?? false);
@@ -46,7 +44,7 @@ export function CopyButton({
 
 	const handleCopy = React.useCallback(
 		(e: React.MouseEvent<HTMLButtonElement>) => {
-			if (isCopied) return;
+			if (localIsCopied) return;
 			if (content) {
 				navigator.clipboard
 					.writeText(content)
@@ -59,35 +57,38 @@ export function CopyButton({
 			}
 			onClick?.(e);
 		},
-		[isCopied, content, delay, onClick, onCopy, handleIsCopied],
+		[localIsCopied, content, delay, onClick, onCopy, handleIsCopied],
 	);
 
 	return (
-		<motion.button
-			data-slot="copy-button"
-			whileHover={{ scale: 1.05 }}
-			whileTap={{ scale: 0.95 }}
+		<button
 			className={cn(
 				buttonVariants({ variant, size }),
-				"gap-2",
+				"gap-2 transition-all active:scale-95 group",
 				className,
 			)}
 			onClick={handleCopy}
 			{...props}
 		>
-			<AnimatePresence mode="wait">
-				<motion.span
-					key={localIsCopied ? "check" : "copy"}
-					data-slot="copy-button-icon"
-					initial={{ scale: 0 }}
-					animate={{ scale: 1 }}
-					exit={{ scale: 0 }}
-					transition={{ duration: 0.15 }}
-				>
-					<Icon />
-				</motion.span>
-			</AnimatePresence>
+			<div className="relative w-4 h-4 flex items-center justify-center">
+				<CheckIcon
+					className={cn(
+						"absolute transition-all duration-200",
+						localIsCopied
+							? "scale-100 opacity-100"
+							: "scale-0 opacity-0",
+					)}
+				/>
+				<CopyIcon
+					className={cn(
+						"absolute transition-all duration-200",
+						localIsCopied
+							? "scale-0 opacity-0"
+							: "scale-100 opacity-100",
+					)}
+				/>
+			</div>
 			{children}
-		</motion.button>
+		</button>
 	);
 }

@@ -9,14 +9,13 @@ import {
 	useMemo,
 	useCallback,
 } from "react";
-import { gsap } from "gsap";
 
 interface TextTypeProps {
 	className?: string;
 	showCursor?: boolean;
 	hideCursorWhileTyping?: boolean;
 	cursorCharacter?: string | React.ReactNode;
-	cursorBlinkDuration?: number;
+	cursorBlinkDuration?: number; // Kept for API compatibility, though CSS uses fixed speed
 	cursorClassName?: string;
 	text: string | string[];
 	as?: ElementType;
@@ -45,7 +44,6 @@ const TextType = ({
 	hideCursorWhileTyping = false,
 	cursorCharacter = "|",
 	cursorClassName = "",
-	cursorBlinkDuration = 0.5,
 	textColors = [],
 	variableSpeed,
 	onSentenceComplete,
@@ -58,7 +56,6 @@ const TextType = ({
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [currentTextIndex, setCurrentTextIndex] = useState(0);
 	const [isVisible, setIsVisible] = useState(!startOnVisible);
-	const cursorRef = useRef<HTMLSpanElement>(null);
 	const containerRef = useRef<HTMLElement>(null);
 
 	const textArray = useMemo(
@@ -96,19 +93,6 @@ const TextType = ({
 	}, [startOnVisible]);
 
 	useEffect(() => {
-		if (showCursor && cursorRef.current) {
-			gsap.set(cursorRef.current, { opacity: 1 });
-			gsap.to(cursorRef.current, {
-				opacity: 0,
-				duration: cursorBlinkDuration,
-				repeat: -1,
-				yoyo: true,
-				ease: "power2.inOut",
-			});
-		}
-	}, [showCursor, cursorBlinkDuration]);
-
-	useEffect(() => {
 		if (!isVisible) return;
 
 		let timeout: NodeJS.Timeout;
@@ -137,7 +121,6 @@ const TextType = ({
 						(prev) => (prev + 1) % textArray.length,
 					);
 					setCurrentCharIndex(0);
-					timeout = setTimeout(() => {}, pauseDuration);
 				} else {
 					timeout = setTimeout(() => {
 						setDisplayedText((prev) => prev.slice(0, -1));
@@ -209,8 +192,7 @@ const TextType = ({
 		</span>,
 		showCursor && (
 			<span
-				ref={cursorRef}
-				className={`ml-1 inline-block opacity-100 ${shouldHideCursor ? "hidden" : ""} ${cursorClassName}`}
+				className={`ml-1 inline-block animate-cursor-blink ${shouldHideCursor ? "hidden" : ""} ${cursorClassName}`}
 			>
 				{cursorCharacter}
 			</span>

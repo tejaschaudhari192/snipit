@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { CalendarIcon, ChevronUp, ChevronDown, Clock } from "lucide-react";
-import { format } from "date-fns";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -109,6 +108,22 @@ function AmPmToggle({ value, onChange }: AmPmToggleProps) {
 	);
 }
 
+const formatDate = (date: Date): string => {
+	return new Intl.DateTimeFormat("en-US", {
+		month: "short",
+		day: "2-digit",
+		year: "numeric",
+	}).format(date);
+};
+
+const formatTime = (date: Date): string => {
+	return new Intl.DateTimeFormat("en-US", {
+		hour: "2-digit",
+		minute: "2-digit",
+		hour12: true,
+	}).format(date);
+};
+
 export function DatePicker({
 	date,
 	setDate,
@@ -140,11 +155,7 @@ export function DatePicker({
 					)}
 				>
 					<CalendarIcon className="mr-2 h-4 w-4" />
-					{date ? (
-						format(date, "MMM dd, yyyy")
-					) : (
-						<span>Pick a date</span>
-					)}
+					{date ? formatDate(date) : <span>Pick a date</span>}
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent
@@ -223,7 +234,7 @@ export function TimePicker({
 					)}
 				>
 					<Clock className="mr-2 h-4 w-4" />
-					{date ? format(date, "hh:mm aa") : <span>Set time</span>}
+					{date ? formatTime(date) : <span>Set time</span>}
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent

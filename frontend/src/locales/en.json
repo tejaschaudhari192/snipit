@@ -304,7 +304,9 @@
 			"title": "Want to Contribute?",
 			"desc": "Snipit is open source and we welcome contributions from the community. Whether it's bug fixes, new features, or documentation improvements, every contribution matters.",
 			"github_button": "View on GitHub",
-			"contact_button": "Get in Touch"
+			"gitlab_button": "View on GitLab",
+			"contact_button": "Get in Touch",
+			"telegram_button": "Join Telegram"
 		},
 		"faq": {
 			"title": "Frequently Asked Questions",

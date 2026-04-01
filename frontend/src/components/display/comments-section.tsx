@@ -2,8 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { MessageSquare, Send } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
-import { enUS, de, hi, ja } from "date-fns/locale";
+import { timeAgo } from "@/lib/utils";
 import { AxiosError } from "axios";
 
 import { Button } from "@/components/ui/button";
@@ -22,7 +21,7 @@ export const CommentsSection = ({
 	paste,
 	onCommentAdded,
 }: CommentsSectionProps) => {
-	const { t, i18n } = useTranslation();
+	const { t } = useTranslation();
 	const { user } = useAuth();
 	const apiHelpers = useApiHelpers();
 	const [newComment, setNewComment] = useState("");
@@ -104,24 +103,7 @@ export const CommentsSection = ({
 											{comment.author}
 										</span>
 										<span className="text-[10px] text-muted-foreground whitespace-nowrap">
-											{formatDistanceToNow(
-												new Date(comment.createdAt),
-												{
-													addSuffix: true,
-													locale:
-														i18n.language === "de"
-															? de
-															: i18n.language ===
-																		"hi" ||
-																  i18n.language ===
-																		"mr"
-																? hi
-																: i18n.language ===
-																	  "ja"
-																	? ja
-																	: enUS,
-												},
-											)}
+											{timeAgo(comment.createdAt, t)}
 										</span>
 									</div>
 									<p className="text-sm text-foreground/80 leading-relaxed break-words">

@@ -3,7 +3,6 @@ import type { PasteData } from "@/types";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { ExternalLink, Calendar } from "lucide-react";
-import { motion } from "motion/react";
 import { LanguageBadge } from "../common/language-badge";
 import { ExpirationBadge } from "../common/expiration-badge";
 
@@ -35,10 +34,9 @@ export const SnippetCard = ({
 		item.expiresAt && !expired && isExpiringSoon(item.expiresAt);
 
 	return (
-		<motion.div
-			initial={{ opacity: 0, y: 20 }}
-			animate={{ opacity: 1, y: 0 }}
-			transition={{ delay: index * 0.05 }}
+		<div
+			className="animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both"
+			style={{ animationDelay: `${index * 50}ms` }}
 		>
 			<Link
 				to={"/" + item.id}
@@ -129,6 +127,6 @@ export const SnippetCard = ({
 					</div>
 				</div>
 			</Link>
-		</motion.div>
+		</div>
 	);
 };

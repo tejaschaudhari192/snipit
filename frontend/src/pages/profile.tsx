@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { ProfileInfo } from "@/components/profile/profile-info";
 import { ProfileSnippetList } from "@/components/profile/profile-snippet-list";
 import type { PasteData } from "@/types";
-import { motion } from "motion/react";
 
 const ProfilePage = () => {
 	const { t } = useTranslation();
@@ -89,11 +88,7 @@ const ProfilePage = () => {
 	if (!user) {
 		return (
 			<div className="flex flex-col items-center justify-center min-h-[80vh] container mx-auto px-4">
-				<motion.div
-					initial={{ opacity: 0, scale: 0.9 }}
-					animate={{ opacity: 1, scale: 1 }}
-					className="text-center space-y-4"
-				>
+				<div className="text-center space-y-4 animate-in fade-in zoom-in-95 duration-500">
 					<div className="p-4 rounded-full bg-muted inline-block">
 						<User className="h-12 w-12 text-muted-foreground" />
 					</div>
@@ -111,18 +106,14 @@ const ProfilePage = () => {
 							{t("header.login", "Login Now")}
 						</Button>
 					</Link>
-				</motion.div>
+				</div>
 			</div>
 		);
 	}
 
 	return (
 		<div className="relative min-h-screen bg-background overflow-x-hidden flex flex-col items-center w-full">
-			{/* Ambient Background Glows */}
-			<div className="absolute top-[10%] right-[10%] w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full pointer-events-none opacity-50" />
-			<div className="absolute bottom-[20%] left-[5%] w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full pointer-events-none opacity-50" />
-
-			<div className="relative z-10 container mx-auto px-4 py-8 md:py-12 max-w-7xl w-full">
+			<div className="relative z-10 container mx-auto px-4 py-8 md:py-12 max-w-7xl w-full animate-in fade-in duration-700">
 				<div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 items-start">
 					<div className="w-full lg:col-span-4 lg:sticky lg:top-24 max-w-2xl mx-auto lg:max-w-none">
 						<ProfileInfo

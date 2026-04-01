@@ -5,13 +5,10 @@ import { FileText, Trash2, Inbox } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { motion } from "motion/react";
 import { useAuth } from "@/context/AuthContext";
 import { useApiHelpers } from "@/lib/api";
 import { Loader2 } from "lucide-react";
 import { SnippetCard } from "@/components/snippets/snippet-card";
-import { Particles } from "@/components/ui/shadcn-io/particles";
-import { useTheme } from "@/hooks/use-theme";
 import { playRemoveSound } from "@/lib/utils";
 import {
 	AlertDialog,
@@ -29,9 +26,6 @@ const HistoryPage = () => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
 	const apiHelpers = useApiHelpers();
-	const { theme } = useTheme();
-	// Warm amber/orange for history - feels like memories/records
-	const particleColor = theme === "dark" ? "#fbbf24" : "#d97706";
 
 	const [items, setItems] = useState<Array<PasteData>>([]);
 	const [loading, setLoading] = useState(true);
@@ -97,26 +91,8 @@ const HistoryPage = () => {
 
 	return (
 		<div className="relative min-h-[90vh] bg-background p-4 md:p-8 overflow-x-hidden w-full">
-			<div className="absolute top-[10%] right-[10%] w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full pointer-events-none opacity-50" />
-			<div className="absolute bottom-[20%] left-[5%] w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full pointer-events-none opacity-50" />
-			{/* Particles Background */}
-			<Particles
-				className="absolute inset-0 z-0"
-				quantity={80}
-				staticity={60}
-				ease={80}
-				size={0.4}
-				color={particleColor}
-				vx={0.02}
-				vy={0.02}
-			/>
-
-			<div className="max-w-3xl mx-auto relative z-10">
-				<motion.div
-					initial={{ opacity: 0, y: -20 }}
-					animate={{ opacity: 1, y: 0 }}
-					className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8"
-				>
+			<div className="max-w-3xl mx-auto relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+				<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
 					<div>
 						<h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
 							{t("history.title")}
@@ -147,7 +123,7 @@ const HistoryPage = () => {
 							{t("history.clear_history")}
 						</Button>
 					)}
-				</motion.div>
+				</div>
 
 				{loading ? (
 					<div className="flex flex-col items-center justify-center p-20 gap-4">
@@ -160,11 +136,7 @@ const HistoryPage = () => {
 						</p>
 					</div>
 				) : items.length === 0 ? (
-					<motion.div
-						initial={{ opacity: 0, scale: 0.95 }}
-						animate={{ opacity: 1, scale: 1 }}
-						className="bg-background/60 backdrop-blur-2xl rounded-3xl border border-border/50 p-16 text-center shadow-2xl ring-1 ring-white/5 relative z-10"
-					>
+					<div className="bg-background/60 backdrop-blur-2xl rounded-3xl border border-border/50 p-16 text-center shadow-2xl shadow-black/5 relative z-10 animate-in fade-in zoom-in-95 duration-500">
 						<div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted/50 flex items-center justify-center">
 							<Inbox className="h-10 w-10 text-muted-foreground" />
 						</div>
@@ -183,7 +155,7 @@ const HistoryPage = () => {
 								{t("history.create_first")}
 							</Button>
 						</Link>
-					</motion.div>
+					</div>
 				) : (
 					<div className="grid gap-4">
 						{items.map((item, index) => (

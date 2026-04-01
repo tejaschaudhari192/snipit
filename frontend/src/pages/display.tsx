@@ -882,9 +882,6 @@ const DisplayPage = () => {
 
 	return (
 		<div className="relative flex-1 flex flex-col min-h-0 bg-background overflow-hidden">
-			<div className="absolute top-[-5%] right-[-5%] w-[500px] h-[500px] bg-blue-500/10 blur-[100px] rounded-full pointer-events-none" />
-			<div className="absolute bottom-[-5%] left-[-5%] w-[500px] h-[500px] bg-primary/10 blur-[100px] rounded-full pointer-events-none" />
-
 			<div className="relative z-10 flex-1 overflow-y-auto">
 				<div className="flex flex-col border-b bg-background/50 backdrop-blur-md sticky top-0 z-40">
 					<DisplayToolbar

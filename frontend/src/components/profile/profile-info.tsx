@@ -1,4 +1,3 @@
-import { motion, AnimatePresence } from "motion/react";
 import { User, Mail, Calendar, Edit2, Check, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,11 +46,7 @@ export const ProfileInfo = ({
 
 	return (
 		<div className="space-y-6">
-			<motion.div
-				initial={{ opacity: 0, scale: 0.95 }}
-				animate={{ opacity: 1, scale: 1 }}
-				transition={{ duration: 0.4 }}
-			>
+			<div className="animate-in fade-in zoom-in-95 duration-500">
 				<Card className="border border-border/50 bg-background/60 backdrop-blur-3xl shadow-2xl rounded-[2.5rem] ring-1 ring-white/5 overflow-hidden">
 					<div className="h-32 bg-gradient-to-br from-primary/30 via-primary/10 to-transparent relative">
 						<div className="absolute inset-0 bg-grid-white/[0.05]" />
@@ -59,26 +54,17 @@ export const ProfileInfo = ({
 					<CardContent className="relative pt-0 px-8 pb-10">
 						<div className="flex flex-col items-center -mt-16 mb-6">
 							<div className="relative group">
-								<motion.div
-									whileHover={{ scale: 1.05 }}
-									className="h-32 w-32 rounded-3xl bg-gradient-to-br from-primary to-primary/60 p-1.5 shadow-2xl ring-8 ring-background/80"
-								>
+								<div className="h-32 w-32 rounded-3xl bg-gradient-to-br from-primary to-primary/60 p-1.5 shadow-2xl ring-8 ring-background/80 transition-transform hover:scale-105 duration-300">
 									<div className="h-full w-full rounded-2xl bg-background flex items-center justify-center overflow-hidden">
 										<User className="h-14 w-14 text-primary" />
 									</div>
-								</motion.div>
+								</div>
 							</div>
 
 							<div className="mt-6 w-full text-center space-y-4">
-								<AnimatePresence mode="wait">
+								<div className="min-h-[48px] flex items-center justify-center">
 									{isEditingName ? (
-										<motion.div
-											key="edit"
-											initial={{ opacity: 0, y: -10 }}
-											animate={{ opacity: 1, y: 0 }}
-											exit={{ opacity: 0, y: 10 }}
-											className="flex items-center gap-2 max-w-sm mx-auto"
-										>
+										<div className="flex items-center gap-2 max-w-sm mx-auto animate-in fade-in slide-in-from-top-2 duration-300">
 											<Input
 												value={newName}
 												onChange={(e) =>
@@ -117,15 +103,9 @@ export const ProfileInfo = ({
 													<X className="h-5 w-5" />
 												</Button>
 											</div>
-										</motion.div>
+										</div>
 									) : (
-										<motion.div
-											key="view"
-											initial={{ opacity: 0, y: 10 }}
-											animate={{ opacity: 1, y: 0 }}
-											exit={{ opacity: 0, y: -10 }}
-											className="flex items-center justify-center gap-2 group"
-										>
+										<div className="flex items-center justify-center gap-2 group animate-in fade-in slide-in-from-bottom-2 duration-300">
 											<h1 className="text-3xl font-black tracking-tight flex items-center gap-3">
 												{user.username}
 												<span className="h-2.5 w-2.5 rounded-full bg-green-500 shadow-[0_0_12px_rgba(34,197,94,0.6)] animate-pulse shrink-0" />
@@ -140,9 +120,9 @@ export const ProfileInfo = ({
 											>
 												<Edit2 className="h-4 w-4" />
 											</Button>
-										</motion.div>
+										</div>
 									)}
-								</AnimatePresence>
+								</div>
 
 								<div className="space-y-1.5 pt-1">
 									<div className="flex items-center justify-center gap-2 text-sm text-muted-foreground/80 font-medium">
@@ -183,13 +163,9 @@ export const ProfileInfo = ({
 						</div>
 					</CardContent>
 				</Card>
-			</motion.div>
+			</div>
 
-			<motion.div
-				initial={{ opacity: 0, y: 20 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ delay: 0.2 }}
-			>
+			<div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200 fill-mode-both">
 				<Card className="border border-border/50 bg-background/60 backdrop-blur-3xl shadow-xl rounded-[2rem] overflow-hidden ring-1 ring-white/5">
 					<CardContent className="p-8 space-y-6">
 						<div className="flex items-center justify-between border-b border-border/50 pb-4">
@@ -235,7 +211,7 @@ export const ProfileInfo = ({
 						</div>
 					</CardContent>
 				</Card>
-			</motion.div>
+			</div>
 		</div>
 	);
 };

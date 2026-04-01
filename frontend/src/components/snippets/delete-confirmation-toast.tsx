@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { motion } from "motion/react";
 import { playUndoSound } from "@/lib/utils";
 
 interface DeleteConfirmationToastProps {
@@ -17,14 +16,15 @@ export const DeleteConfirmationToast = ({
 	const { t } = useTranslation();
 
 	return (
-		<div className="bg-background/80 backdrop-blur-2xl text-foreground border border-border/50 rounded-2xl p-4 w-[350px] relative overflow-hidden pointer-events-auto shadow-2xl ring-1 ring-white/5">
+		<div className="bg-background/80 backdrop-blur-2xl text-foreground border border-border/50 rounded-2xl p-4 w-[350px] relative overflow-hidden pointer-events-auto shadow-2xl ring-1 ring-white/5 animate-in fade-in slide-in-from-right-4 duration-300">
 			<div className="absolute bottom-0 left-0 right-0 h-[2px] bg-muted" />
-			<motion.div
-				className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-blue-400 to-indigo-600 shadow-[0_0_12px_rgba(99,102,241,0.3)]"
-				initial={{ width: "0%" }}
-				animate={{ width: "100%" }}
-				transition={{ duration: duration, ease: "linear" }}
-				onAnimationComplete={onConfirm}
+			<div
+				className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-blue-400 to-indigo-600 shadow-[0_0_12px_rgba(99,102,241,0.3)] animate-progress"
+				style={{
+					animationDuration: `${duration}s`,
+					animationTimingFunction: "linear",
+				}}
+				onAnimationEnd={onConfirm}
 			/>
 
 			<div className="flex items-center justify-between gap-4 relative z-10 px-1">

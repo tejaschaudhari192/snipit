@@ -1,5 +1,5 @@
 import { type BeforeMount, type OnMount } from "@monaco-editor/react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 import { cn } from "@/lib/utils";
 import { ZenModeToggle } from "@/components/common/zen-mode-toggle";
 import type { PasteData, ContentMode } from "@/types";
@@ -29,165 +29,175 @@ interface DisplayContentProps {
 	activeUsers?: ActiveUser[];
 }
 
-export const DisplayContent = ({
-	id,
-	isEdit,
-	contentType,
-	language,
-	content,
-	onContentChange,
-	theme,
-	fontSize,
-	contentRef,
-	handleEditorWillMount,
-	paste,
-	onMount,
-	socketRef,
-	activeUsers,
-}: DisplayContentProps) => {
-	const containerRef = useRef<HTMLDivElement>(null);
-	const [isFullscreen, setIsFullscreen] = useState(false);
+export const DisplayContent = memo(
+	({
+		id,
+		isEdit,
+		contentType,
+		language,
+		content,
+		onContentChange,
+		theme,
+		fontSize,
+		contentRef,
+		handleEditorWillMount,
+		paste,
+		onMount,
+		socketRef,
+		activeUsers,
+	}: DisplayContentProps) => {
+		const containerRef = useRef<HTMLDivElement>(null);
+		const [isFullscreen, setIsFullscreen] = useState(false);
 
-	useEffect(() => {
-		const handleFullscreenChange = () => {
-			setIsFullscreen(!!document.fullscreenElement);
-		};
-		document.addEventListener("fullscreenchange", handleFullscreenChange);
-		return () =>
-			document.removeEventListener(
+		useEffect(() => {
+			const handleFullscreenChange = () => {
+				setIsFullscreen(!!document.fullscreenElement);
+			};
+			document.addEventListener(
 				"fullscreenchange",
 				handleFullscreenChange,
 			);
-	}, []);
+			return () =>
+				document.removeEventListener(
+					"fullscreenchange",
+					handleFullscreenChange,
+				);
+		}, []);
 
-	const toggleFullscreen = () => {
-		if (!document.fullscreenElement) {
-			containerRef.current?.requestFullscreen().catch((err) => {
-				console.error("Error attempting to enable fullscreen:", err);
-			});
-		} else {
-			document.exitFullscreen().catch((err) => console.error(err));
-		}
-	};
+		const toggleFullscreen = () => {
+			if (!document.fullscreenElement) {
+				containerRef.current?.requestFullscreen().catch((err) => {
+					console.error(
+						"Error attempting to enable fullscreen:",
+						err,
+					);
+				});
+			} else {
+				document.exitFullscreen().catch((err) => console.error(err));
+			}
+		};
 
-	const renderContent = () => {
-		if (contentType === "file") {
-			return <FileDisplay paste={paste} contentRef={contentRef} />;
-		}
+		const renderContent = () => {
+			if (contentType === "file") {
+				return <FileDisplay paste={paste} contentRef={contentRef} />;
+			}
 
-		if (contentType === "draw") {
-			return (
-				<div className="h-full w-full">
-					<CollabDraw
-						id={id}
-						socketRef={socketRef}
-						isEdit={isEdit}
-						content={content}
-						onContentChange={onContentChange}
-						theme={theme as "light" | "dark" | "system"}
-						activeUsers={activeUsers}
-					/>
-				</div>
-			);
-		}
-
-		if (contentType === "link") {
-			return (
-				<LinkView
-					isEdit={isEdit}
-					content={content}
-					onContentChange={onContentChange}
-					contentRef={contentRef}
-				/>
-			);
-		}
-
-		if (language === "markdown") {
-			if (isEdit) {
+			if (contentType === "draw") {
 				return (
-					<div className="flex flex-col md:flex-row gap-4 h-full">
-						<div className="flex-1 min-h-[300px]">
-							<CodeEditorView
-								id={id}
-								isEdit={isEdit}
-								contentType={contentType}
-								language={language}
-								content={content}
-								onContentChange={onContentChange}
-								theme={theme}
-								fontSize={fontSize}
-								handleEditorWillMount={handleEditorWillMount}
-								contentRef={contentRef}
-								onMount={onMount}
-								hideFullscreen={true}
-							/>
-						</div>
-						<div className="flex-1 overflow-auto">
-							<MarkdownDisplay
-								content={content}
-								fontSize={fontSize}
-								contentRef={contentRef}
-							/>
-						</div>
+					<div className="h-full w-full">
+						<CollabDraw
+							id={id}
+							socketRef={socketRef}
+							isEdit={isEdit}
+							content={content}
+							onContentChange={onContentChange}
+							theme={theme as "light" | "dark" | "system"}
+							activeUsers={activeUsers}
+						/>
 					</div>
 				);
 			}
+
+			if (contentType === "link") {
+				return (
+					<LinkView
+						isEdit={isEdit}
+						content={content}
+						onContentChange={onContentChange}
+						contentRef={contentRef}
+					/>
+				);
+			}
+
+			if (language === "markdown") {
+				if (isEdit) {
+					return (
+						<div className="flex flex-col md:flex-row gap-4 h-full">
+							<div className="flex-1 min-h-[300px]">
+								<CodeEditorView
+									id={id}
+									isEdit={isEdit}
+									contentType={contentType}
+									language={language}
+									content={content}
+									onContentChange={onContentChange}
+									theme={theme}
+									fontSize={fontSize}
+									handleEditorWillMount={
+										handleEditorWillMount
+									}
+									contentRef={contentRef}
+									onMount={onMount}
+									hideFullscreen={true}
+								/>
+							</div>
+							<div className="flex-1 overflow-auto">
+								<MarkdownDisplay
+									content={content}
+									fontSize={fontSize}
+									contentRef={contentRef}
+								/>
+							</div>
+						</div>
+					);
+				}
+				return (
+					<MarkdownDisplay
+						content={content}
+						fontSize={fontSize}
+						contentRef={contentRef}
+					/>
+				);
+			}
+
 			return (
-				<MarkdownDisplay
+				<CodeEditorView
+					id={id}
+					isEdit={isEdit}
+					contentType={contentType}
+					language={language}
 					content={content}
+					onContentChange={onContentChange}
+					theme={theme}
 					fontSize={fontSize}
+					handleEditorWillMount={handleEditorWillMount}
 					contentRef={contentRef}
+					onMount={onMount}
+					hideFullscreen={true}
 				/>
 			);
-		}
+		};
 
 		return (
-			<CodeEditorView
-				id={id}
-				isEdit={isEdit}
-				contentType={contentType}
-				language={language}
-				content={content}
-				onContentChange={onContentChange}
-				theme={theme}
-				fontSize={fontSize}
-				handleEditorWillMount={handleEditorWillMount}
-				contentRef={contentRef}
-				onMount={onMount}
-				hideFullscreen={true}
-			/>
-		);
-	};
-
-	return (
-		<div
-			className="flex-1 flex flex-col min-h-0 relative"
-			ref={containerRef}
-		>
-			{(contentType === "code" ||
-				contentType === "text" ||
-				contentType === "draw") && (
-				<ZenModeToggle
-					isFullscreen={isFullscreen}
-					onToggle={toggleFullscreen}
-					className={cn(
-						contentType === "draw"
-							? "absolute right-3 top-3"
-							: "absolute top-8 right-8",
-						isFullscreen ? "fixed top-4 right-8" : "",
-					)}
-				/>
-			)}
 			<div
-				className={cn(
-					"relative w-full h-full",
-					isFullscreen ? "bg-background p-4" : "",
-				)}
+				className="flex-1 flex flex-col min-h-0 relative"
+				ref={containerRef}
 			>
-				<div className="flex-1 w-full h-full relative">
-					{renderContent()}
+				{(contentType === "code" ||
+					contentType === "text" ||
+					contentType === "draw") && (
+					<ZenModeToggle
+						isFullscreen={isFullscreen}
+						onToggle={toggleFullscreen}
+						className={cn(
+							contentType === "draw"
+								? "absolute right-3 top-3"
+								: "absolute top-8 right-8",
+							isFullscreen ? "fixed top-4 right-8" : "",
+						)}
+					/>
+				)}
+				<div
+					className={cn(
+						"relative w-full h-full",
+						isFullscreen ? "bg-background p-4" : "",
+					)}
+				>
+					<div className="flex-1 w-full h-full relative">
+						{renderContent()}
+					</div>
 				</div>
 			</div>
-		</div>
-	);
-};
+		);
+	},
+);

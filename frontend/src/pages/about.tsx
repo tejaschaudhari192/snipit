@@ -1,50 +1,28 @@
 import Footer from "@/components/ui/footer";
-import { Mail, Users, Github, Zap, Heart, Linkedin } from "lucide-react";
+import {
+	Mail,
+	Users,
+	Github,
+	Zap,
+	Heart,
+	Linkedin,
+	Gitlab,
+	Send,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import appScreenshot from "@/assets/brand/app.png";
 import app from "@/lib/data";
-import { Particles } from "@/components/ui/shadcn-io/particles";
-import { useTheme } from "@/hooks/use-theme";
 
 const AboutPage = () => {
 	const { t } = useTranslation();
-	const { theme } = useTheme();
-	const particleColor = theme === "dark" ? "#5eead4" : "#14b8a6";
 
 	return (
 		<div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
 			<div className="flex-1 overflow-x-hidden">
-				{/* Hero Section */}
 				<section className="relative min-h-[60vh] flex items-center justify-center py-16 md:py-24 px-4 overflow-hidden">
-					{/* Particles Background */}
-					<Particles
-						className="absolute inset-0 z-0"
-						quantity={100}
-						staticity={50}
-						ease={70}
-						size={0.5}
-						color={particleColor}
-						vx={0.03}
-						vy={0.03}
-					/>
-
-					{/* Ambient Background Glows */}
-					<div className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] opacity-40 pointer-events-none" />
-					<div className="absolute bottom-[20%] right-[10%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] opacity-40 pointer-events-none" />
-
-					<div className="max-w-4xl mx-auto text-center relative z-10 w-full">
-						<motion.div
-							initial={{
-								opacity: 0,
-								y: 20,
-								filter: "blur(10px)",
-							}}
-							animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-							transition={{ duration: 0.8, ease: "easeOut" }}
-							className="flex flex-col items-center justify-center w-full"
-						>
+					<div className="max-w-4xl mx-auto text-center relative z-10 w-full animate-in fade-in slide-in-from-bottom-8 duration-1000">
+						<div className="flex flex-col items-center justify-center w-full">
 							<div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary dark:bg-primary/20 text-xs md:text-sm font-bold mb-8 ring-1 ring-primary/20 backdrop-blur-sm shadow-lg shadow-primary/5">
 								<Zap className="w-4 h-4 fill-current animate-pulse" />
 								{t("about_page.features_title")}
@@ -58,33 +36,25 @@ const AboutPage = () => {
 							<p className="text-lg md:text-xl lg:text-2xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed px-4">
 								{t("about_page.subtitle")}
 							</p>
-						</motion.div>
+						</div>
 					</div>
 				</section>
 
-				{/* App Screenshot Section - Improved for Dark Mode visibility */}
+				{/* App Screenshot Section */}
 				<section className="pb-16 px-4 md:px-8">
 					<div className="max-w-xl mx-auto">
-						<motion.div
-							initial={{ opacity: 0, y: 40 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							viewport={{ once: true }}
-							transition={{ duration: 0.8, delay: 0.2 }}
-							className="relative rounded-2xl md:rounded-3xl overflow-hidden border border-border/50 shadow-2xl shadow-primary/20 bg-card"
-						>
+						<div className="relative rounded-2xl md:rounded-3xl overflow-hidden border border-border/50 shadow-2xl shadow-black/5 bg-card animate-in fade-in slide-in-from-bottom-12 duration-1000">
 							<img
 								src={appScreenshot}
 								alt="Snipit App Screenshot"
 								loading="lazy"
 								className="w-full h-auto transition-transform duration-700 hover:scale-[1.02] dark:brightness-90 dark:contrast-110"
 							/>
-							{/* Overlay gradient to blend bottom edge if needed */}
 							<div className="absolute inset-0 pointer-events-none ring-1 ring-inset ring-white/10" />
-						</motion.div>
+						</div>
 					</div>
 				</section>
 
-				{/* Features Grid */}
 				<section className="py-16 md:py-24 px-4 relative z-10">
 					<div className="max-w-6xl mx-auto">
 						<div className="text-center mb-12 md:mb-16">
@@ -97,18 +67,8 @@ const AboutPage = () => {
 						</div>
 
 						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-							{app.features.map((feature, index) => (
-								<motion.div
-									key={feature.key}
-									initial={{ opacity: 0, scale: 0.9 }}
-									whileInView={{ opacity: 1, scale: 1 }}
-									viewport={{ once: true }}
-									transition={{
-										duration: 0.4,
-										delay: index * 0.05,
-									}}
-									className="group"
-								>
+							{app.features.map((feature) => (
+								<div key={feature.key} className="group">
 									<div className="h-full p-6 md:p-8 rounded-2xl border border-border/50 bg-background/60 backdrop-blur-xl shadow-2xl ring-1 ring-white/5 hover:border-primary/40 transition-all duration-300 hover:shadow-primary/10 dark:hover:bg-accent/5">
 										<div
 											className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-black/10`}
@@ -126,21 +86,15 @@ const AboutPage = () => {
 											)}
 										</p>
 									</div>
-								</motion.div>
+								</div>
 							))}
 						</div>
 					</div>
 				</section>
 
-				{/* Story Section */}
 				<section className="py-16 md:py-24 px-4">
 					<div className="max-w-4xl mx-auto">
-						<motion.div
-							initial={{ opacity: 0 }}
-							whileInView={{ opacity: 1 }}
-							viewport={{ once: true }}
-							className="space-y-8"
-						>
+						<div className="space-y-8">
 							<h2 className="text-2xl md:text-4xl font-bold mb-8 italic border-l-4 border-primary pl-4">
 								{t("about_page.story.title")}
 							</h2>
@@ -157,31 +111,22 @@ const AboutPage = () => {
 									{t("about_page.story.p3")}
 								</p>
 							</div>
-						</motion.div>
+						</div>
 					</div>
 				</section>
 
-				{/* Team Section */}
 				<section className="py-16 md:py-24 px-4 relative z-10">
 					<div className="max-w-5xl mx-auto">
 						<h2 className="text-2xl md:text-4xl font-bold mb-12 text-center text-foreground">
 							{t("about_page.team.title")}
 						</h2>
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-							{app.team.map((member, index) => (
-								<motion.div
+							{app.team.map((member) => (
+								<div
 									key={member.name}
-									initial={{ opacity: 0, y: 20 }}
-									whileInView={{ opacity: 1, y: 0 }}
-									viewport={{ once: true }}
-									transition={{
-										duration: 0.4,
-										delay: index * 0.1,
-									}}
 									className="p-6 md:p-8 rounded-3xl bg-background/60 backdrop-blur-xl border border-border/50 shadow-2xl ring-1 ring-white/5 hover:border-primary/30 transition-all duration-300 group"
 								>
 									<div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-6">
-										{/* Avatar Container with Dark Mode Ring */}
 										<div className="relative shrink-0">
 											<div className="w-20 h-20 rounded-2xl overflow-hidden ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all duration-300">
 												<img
@@ -236,26 +181,21 @@ const AboutPage = () => {
 											</div>
 										</div>
 									</div>
-								</motion.div>
+								</div>
 							))}
 						</div>
 					</div>
 				</section>
 
-				{/* FAQ Section */}
 				<section className="py-16 md:py-24 px-4 relative z-10">
 					<div className="max-w-4xl mx-auto">
 						<h2 className="text-2xl md:text-4xl font-bold mb-12 text-center">
 							{t("about_page.faq.title")}
 						</h2>
 						<div className="grid gap-6">
-							{app.faq.map((item, index) => (
-								<motion.div
+							{app.faq.map((item) => (
+								<div
 									key={item.key}
-									initial={{ opacity: 0, x: -20 }}
-									whileInView={{ opacity: 1, x: 0 }}
-									viewport={{ once: true }}
-									transition={{ delay: index * 0.1 }}
 									className="p-6 rounded-2xl bg-background/60 backdrop-blur-xl border border-border/50 shadow-2xl ring-1 ring-white/5 hover:border-primary/30 transition-all duration-300"
 								>
 									<h3 className="text-lg font-bold mb-2">
@@ -268,21 +208,15 @@ const AboutPage = () => {
 											`about_page.faq.items.${item.key}.answer`,
 										)}
 									</p>
-								</motion.div>
+								</div>
 							))}
 						</div>
 					</div>
 				</section>
 
-				{/* CTA Section */}
 				<section className="py-20 md:py-32 px-4">
 					<div className="max-w-5xl mx-auto">
-						<motion.div
-							initial={{ opacity: 0, scale: 0.95 }}
-							whileInView={{ opacity: 1, scale: 1 }}
-							viewport={{ once: true }}
-							className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] bg-primary p-8 md:p-20 text-center"
-						>
+						<div className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] bg-primary p-8 md:p-20 text-center">
 							<div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-black/20" />
 							<div className="relative z-10 max-w-2xl mx-auto text-primary-foreground">
 								<div className="inline-flex p-3 rounded-2xl bg-white/10 backdrop-blur-sm mb-6">
@@ -296,7 +230,7 @@ const AboutPage = () => {
 								</p>
 								<div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
 									<a
-										href="https://github.com/durgeshkapade/snipit"
+										href="https://gitlab.com/tejaschaudhari192/snipit"
 										target="_blank"
 										rel="noopener noreferrer"
 										className="w-full sm:w-auto"
@@ -306,14 +240,14 @@ const AboutPage = () => {
 											variant="secondary"
 											className="w-full sm:w-auto gap-3 px-10 h-14 text-base font-bold shadow-xl hover:scale-105 transition-transform"
 										>
-											<Github className="w-6 h-6" />
+											<Gitlab className="w-6 h-6" />
 											{t(
-												"about_page.contribute.github_button",
+												"about_page.contribute.gitlab_button",
 											)}
 										</Button>
 									</a>
 									<a
-										href="mailto:durgeshkapade26@gmail.com"
+										href="mailto:jaybalaji192@gmail.com"
 										className="w-full sm:w-auto"
 									>
 										<Button
@@ -327,9 +261,26 @@ const AboutPage = () => {
 											)}
 										</Button>
 									</a>
+									<a
+										href="https://t.me/jaybalaji192"
+										target="_blank"
+										rel="noopener noreferrer"
+										className="w-full sm:w-auto"
+									>
+										<Button
+											size="lg"
+											variant="outline"
+											className="w-full sm:w-auto gap-3 px-10 h-14 text-base font-bold bg-[#229ED9]/20 border-[#229ED9]/40 text-white hover:bg-[#229ED9]/40"
+										>
+											<Send className="w-6 h-6" />
+											{t(
+												"about_page.contribute.telegram_button",
+											)}
+										</Button>
+									</a>
 								</div>
 							</div>
-						</motion.div>
+						</div>
 					</div>
 				</section>
 			</div>
