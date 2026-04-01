@@ -12,18 +12,14 @@ import {
 	saveToLocal,
 	playErrorSound,
 	playSuccessSound,
-	saveDraft,
-	getDraft,
 	clearDrafts,
 } from "@/lib/utils";
-import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { useAuth } from "@/context/AuthContext";
-import { useFileUpload, type UploadState } from "@/hooks/use-file-upload";
+import { type UploadState } from "@/hooks/use-file-upload";
 import type {
 	IdType,
-	ContentMode,
 	Visibility,
 	EditPermission,
 	PublicRole,
@@ -31,6 +27,7 @@ import type {
 } from "@/types";
 import { CONFIG } from "@/configurations";
 import { useLanguageDetection } from "@/hooks/use-language-detection";
+import { usePaste } from "@/context/PasteContext";
 
 import { LanguageSelector } from "@/components/editor/language-selector";
 import { FontSizeControls } from "@/components/editor/font-size-controls";
@@ -41,7 +38,6 @@ import { EditorContent } from "@/components/home/editor-content";
 
 const HomePage = () => {
 	const { t } = useTranslation();
-	const theme = useTheme().theme;
 	const { user } = useAuth();
 	const navigate = useNavigate();
 	const apiHelpers = useApiHelpers();
@@ -53,27 +49,40 @@ const HomePage = () => {
 	const hasDetectedRef = useRef(false);
 	const uploadPromiseRef = useRef<Promise<UploadState> | null>(null);
 
-	// State
-	const [visibility, setVisibility] = useState<Visibility>(
-		CONFIG.DEFAULTS.VISIBILITY,
-	);
-	const [editPermission, setEditPermission] = useState<EditPermission>(
-		CONFIG.DEFAULTS.EDIT_PERMISSION,
-	);
-	const [allowedUsers, setAllowedUsers] = useState<string[]>([]);
-	const [shareList, setShareList] = useState<
-		{ email: string; role: ShareRole }[]
-	>([]);
-	const [publicRole, setPublicRole] = useState<PublicRole>(
-		CONFIG.DEFAULTS.PUBLIC_ROLE,
-	);
-	const [allowComments, setAllowComments] = useState(false);
-	const [expiresTime, setExpiresTime] = useState(CONFIG.DEFAULTS.EXPIRY);
-	const [contentType, setContentType] = useState<ContentMode>(
-		CONFIG.DEFAULTS.CONTENT_MODE,
-	);
-	const [language, _setLanguage] = useState(CONFIG.DEFAULTS.LANGUAGE);
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	const {
+		visibility,
+		editPermission,
+		allowedUsers,
+		shareList,
+		publicRole,
+		allowComments,
+		expiresTime,
+		setExpiresTime,
+		contentType,
+		setContentType,
+		language,
+		setLanguage,
+		textValue,
+		password,
+		setPassword,
+		idTypeTab,
+		customId,
+		setCustomId,
+		fastRedirect,
+		isSubmitting,
+		setIsSubmitting,
+		isUploading,
+		uploadProgress,
+		uploadFile,
+		setFileUpload,
+		resetFileUpload,
+		fileUrl,
+		fileName,
+		fileSize,
+		fileMimeType,
+		onContentTypeChange,
+	} = usePaste();
+
 	const [pendingFile, setPendingFile] = useState<File | null>(null);
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -82,11 +91,7 @@ const HomePage = () => {
 	const [customExpiryDate, setCustomExpiryDate] = useState<Date | undefined>(
 		new Date(Date.now() + 24 * 60 * 60 * 1000),
 	);
-	const [customId, setCustomId] = useState("");
-	const [password, setPassword] = useState("");
-	const [idTypeTab, setIdTypeTab] = useState<"system" | "dynamic">("system");
 	const [dialogError, setDialogError] = useState("");
-	const [fastRedirect, setFastRedirect] = useState(false);
 
 	const {
 		fontSize,
@@ -94,27 +99,13 @@ const HomePage = () => {
 		setFontSize,
 	} = usePinchZoom(CONFIG.DEFAULTS.FONT_SIZE);
 
-	const {
-		isUploading,
-		progress: uploadProgress,
-		error: uploadError,
-		fileUrl,
-		fileName,
-		fileSize,
-		fileMimeType,
-		uploadFile,
-		setFile: setFileUpload,
-		reset: resetFileUpload,
-	} = useFileUpload();
-
 	const { isDetecting, detectLanguage } = useLanguageDetection();
 
-	const [textValue, _setTextValue] = useState(() => {
-		const draft = getDraft(CONFIG.DEFAULTS.CONTENT_MODE) || "";
-		valueRef.current = draft;
-		previousLengthRef.current = draft.trim().length;
-		return draft;
-	});
+	// Keep valueRef in sync with context's textValue
+	useEffect(() => {
+		previousLengthRef.current = valueRef.current.trim().length;
+		valueRef.current = textValue;
+	}, [textValue]);
 
 	// Effects
 	useEffect(() => {
@@ -148,13 +139,20 @@ const HomePage = () => {
 		return () => {
 			document.removeEventListener("paste", handleGlobalPaste);
 		};
-	}, [isSubmitting, isUploading, contentType, t, setFileUpload]);
+	}, [
+		isSubmitting,
+		isUploading,
+		contentType,
+		t,
+		setFileUpload,
+		setContentType,
+	]);
 
 	useEffect(() => {
 		if (contentType === "file") {
 			setExpiresTime("1d");
 		}
-	}, [contentType]);
+	}, [contentType, setExpiresTime]);
 
 	useEffect(() => {
 		if (!pendingFile) {
@@ -167,58 +165,7 @@ const HomePage = () => {
 	}, [pendingFile]);
 
 	// Handlers
-	const onContentTypeChange = (newMode: ContentMode) => {
-		if (newMode === "text") {
-			_setLanguage("text");
-		} else if (newMode === "code") {
-			_setLanguage(
-				CONFIG.DEFAULTS.LANGUAGE === "text"
-					? "javascript"
-					: CONFIG.DEFAULTS.LANGUAGE,
-			);
-		}
-
-		saveDraft(contentType, textValue);
-
-		const draft = getDraft(newMode);
-		if (draft !== null) {
-			_setTextValue(draft);
-			valueRef.current = draft;
-		} else if (newMode === "draw") {
-			const emptyDraw = JSON.stringify({ elements: [], appState: {} });
-			_setTextValue(emptyDraw);
-			valueRef.current = emptyDraw;
-		} else {
-			_setTextValue("");
-			valueRef.current = "";
-		}
-
-		setContentType(newMode);
-	};
-
-	const setLanguage = (newLang: string) => {
-		_setLanguage(newLang);
-		if (newLang === "text") {
-			if (contentType === "code") setContentType("text");
-		} else {
-			if (isDetecting) return;
-			if (contentType === "text") setContentType("code");
-		}
-	};
-
-	const setTextValue = (val: string) => {
-		previousLengthRef.current = valueRef.current.trim().length;
-		_setTextValue(val);
-		valueRef.current = val;
-		// saveDraft(contentType, val); // Debounced via useEffect
-	};
-
-	useEffect(() => {
-		const timer = setTimeout(() => {
-			saveDraft(contentType, textValue);
-		}, 1000);
-		return () => clearTimeout(timer);
-	}, [textValue, contentType]);
+	// Removed duplicate logic since it's in PasteContext now
 
 	const handleSubmit = async (
 		selectedIdType: IdType,
@@ -542,32 +489,9 @@ const HomePage = () => {
 			<PasteDialog
 				isOpen={isDialogOpen}
 				onOpenChange={setIsDialogOpen}
-				idTypeTab={idTypeTab}
-				setIdTypeTab={setIdTypeTab}
-				customId={customId}
-				setCustomId={setCustomId}
-				visibility={visibility}
-				setVisibility={setVisibility}
-				allowedUsers={allowedUsers}
-				setAllowedUsers={setAllowedUsers}
-				password={password}
-				setPassword={setPassword}
-				editPermission={editPermission}
-				setEditPermission={setEditPermission}
-				shareList={shareList}
-				setShareList={setShareList}
-				publicRole={publicRole}
-				setPublicRole={setPublicRole}
-				allowComments={allowComments}
-				setAllowComments={setAllowComments}
 				dialogError={dialogError}
 				user={user}
-				isSubmitting={isSubmitting}
 				onSubmit={handleDialogSubmit}
-				fastRedirect={fastRedirect}
-				setFastRedirect={setFastRedirect}
-				contentType={contentType}
-				isUploading={isUploading}
 				uploadProgress={uploadProgress}
 			/>
 
@@ -583,11 +507,6 @@ const HomePage = () => {
 			/>
 
 			<EditorContent
-				contentType={contentType}
-				language={language}
-				textValue={textValue}
-				setTextValue={setTextValue}
-				theme={theme}
 				fontSize={fontSize}
 				editorContainerRef={editorContainerRef}
 				userInputRef={userInputRef}
@@ -598,15 +517,10 @@ const HomePage = () => {
 					setPendingFile(file);
 					setFileUpload(file);
 				}}
-				uploadProgress={uploadProgress}
-				isUploading={isUploading}
-				uploadedFileName={fileName}
-				uploadError={uploadError}
 				onClearFile={() => {
 					resetFileUpload();
 					setPendingFile(null);
 				}}
-				fileMimeType={fileMimeType}
 				previewUrl={previewUrl}
 			/>
 		</div>

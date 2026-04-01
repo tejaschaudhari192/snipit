@@ -16,42 +16,27 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { CONFIG } from "@/configurations";
-import type { ContentMode } from "@/types";
 import { MarkdownDisplay } from "@/components/display/content/markdown-display";
 import { ZenModeToggle } from "@/components/common/zen-mode-toggle";
 import { FileTypeIcon } from "@/components/common/file-type-icon";
 import { FilePreview } from "@/components/common/file-preview";
+import { usePaste } from "@/context/PasteContext";
+import { useTheme } from "@/hooks/use-theme";
 
 interface EditorContentProps {
-	contentType: ContentMode;
-	language: string;
-	textValue: string;
-	setTextValue: (val: string) => void;
-	theme: string;
 	fontSize: number;
 	editorContainerRef: (node: HTMLElement | null) => void;
 	userInputRef: RefObject<HTMLTextAreaElement | null>;
 	handleEditorWillMount: BeforeMount;
 	handleEditorMount: OnMount;
 	handlePaste: (e: React.ClipboardEvent<HTMLTextAreaElement>) => void;
-	// File upload props
 	onFileSelect?: (file: File) => void;
-	uploadProgress?: number;
-	isUploading?: boolean;
-	uploadedFileName?: string | null;
-	uploadError?: string | null;
 	onClearFile?: () => void;
-	fileMimeType?: string | null;
 	previewUrl?: string | null;
 }
 
 export const EditorContent = memo(
 	({
-		contentType,
-		language,
-		textValue,
-		setTextValue,
-		theme,
 		fontSize,
 		editorContainerRef,
 		userInputRef,
@@ -59,14 +44,21 @@ export const EditorContent = memo(
 		handleEditorMount,
 		handlePaste,
 		onFileSelect,
-		uploadProgress = 0,
-		isUploading = false,
-		uploadedFileName,
-		uploadError,
 		onClearFile,
-		fileMimeType,
 		previewUrl,
 	}: EditorContentProps) => {
+		const {
+			contentType,
+			language,
+			textValue,
+			setTextValue,
+			isUploading,
+			uploadProgress,
+			fileName: uploadedFileName,
+			uploadError,
+			fileMimeType,
+		} = usePaste();
+		const { theme } = useTheme();
 		const { t } = useTranslation();
 		const containerRef = useRef<HTMLDivElement>(null);
 		const [isFullscreen, setIsFullscreen] = useState(false);

@@ -10,89 +10,54 @@ import {
 import { LogIn } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import type {
-	User,
-	ContentMode,
-	Visibility,
-	EditPermission,
-	PublicRole,
-	ShareRole,
-} from "@/types";
+import type { User } from "@/types";
 import { IdTypeTabs } from "./paste-dialog/id-type-tabs";
 import { BasicSettings } from "./paste-dialog/basic-settings";
 import { VisibilitySelector } from "@/components/common/access-control/visibility-selector";
 import { CollaboratorsManager } from "@/components/common/access-control/collaborators-manager";
+import { usePaste } from "@/context/PasteContext";
 
 interface PasteDialogProps {
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
-	idTypeTab: "system" | "dynamic";
-	setIdTypeTab: (v: "system" | "dynamic") => void;
-	customId: string;
-	setCustomId: (v: string) => void;
-	visibility: Visibility;
-	setVisibility: (v: Visibility) => void;
-	allowedUsers: string[];
-	setAllowedUsers: (v: string[]) => void;
-	password: string;
-	setPassword: (v: string) => void;
-	editPermission: EditPermission;
-	setEditPermission: (v: EditPermission) => void;
-	shareList: {
-		email: string;
-		role: ShareRole;
-	}[];
-	setShareList: (
-		v: {
-			email: string;
-			role: ShareRole;
-		}[],
-	) => void;
-	publicRole: PublicRole;
-	setPublicRole: (v: PublicRole) => void;
-	allowComments: boolean;
-	setAllowComments: (v: boolean) => void;
-	fastRedirect: boolean;
-	setFastRedirect: (v: boolean) => void;
 	dialogError: string;
 	user: User | null;
-	isSubmitting: boolean;
 	onSubmit: () => void;
-	contentType: ContentMode;
-	isUploading?: boolean;
 	uploadProgress?: number;
 }
 
 export const PasteDialog = ({
 	isOpen,
 	onOpenChange,
-	idTypeTab,
-	setIdTypeTab,
-	customId,
-	setCustomId,
-	visibility,
-	setVisibility,
-	allowedUsers,
-	setAllowedUsers,
-	password,
-	setPassword,
-	setEditPermission,
-	shareList,
-	setShareList,
-	publicRole,
-	setPublicRole,
 	dialogError,
 	user,
-	isSubmitting,
 	onSubmit,
-	allowComments,
-	setAllowComments,
-	fastRedirect,
-	setFastRedirect,
-	contentType,
-	isUploading = false,
 	uploadProgress = 0,
 }: PasteDialogProps) => {
+	const {
+		idTypeTab,
+		setIdTypeTab,
+		customId,
+		setCustomId,
+		visibility,
+		setVisibility,
+		password,
+		setPassword,
+		setEditPermission,
+		shareList,
+		setShareList,
+		allowedUsers,
+		setAllowedUsers,
+		publicRole,
+		setPublicRole,
+		allowComments,
+		setAllowComments,
+		fastRedirect,
+		setFastRedirect,
+		contentType,
+		isSubmitting,
+		isUploading,
+	} = usePaste();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 

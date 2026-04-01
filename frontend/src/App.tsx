@@ -5,6 +5,7 @@ import { useApiHelpers } from "./lib/api";
 import Header from "@/components/header/header";
 import ThemeProvider from "@/lib/theme";
 import { AuthProvider } from "@/context/AuthContext";
+import { PasteProvider } from "@/context/PasteContext";
 import Loader from "@/components/common/core/loader";
 
 const HomePage = lazy(() => import("@/pages/home"));
@@ -40,45 +41,56 @@ const App = () => {
 	return (
 		<ThemeProvider>
 			<AuthProvider>
-				<Router>
-					<div className="min-h-screen w-full m-0 p-0 box-border flex flex-col">
-						<Header />
-						<Suspense
-							fallback={
-								<div className="flex-1 flex items-center justify-center">
-									<Loader />
-								</div>
-							}
-						>
-							<Routes>
-								<Route path="/" element={<HomePage />} />
-								<Route path="/login" element={<LoginPage />} />
-								<Route
-									path="/signup"
-									element={<SignupPage />}
-								/>
-								<Route
-									path="/forgot-password"
-									element={<ForgotPasswordPage />}
-								/>
-								<Route
-									path="/reset-password/:token"
-									element={<ResetPasswordPage />}
-								/>
-								<Route
-									path="/profile"
-									element={<ProfilePage />}
-								/>
-								<Route path="/:id" element={<DisplayPage />} />
-								<Route path="/about" element={<AboutPage />} />
-								<Route
-									path="/history"
-									element={<HistoryPage />}
-								/>
-							</Routes>
-						</Suspense>
-					</div>
-				</Router>
+				<PasteProvider>
+					<Router>
+						<div className="min-h-screen w-full m-0 p-0 box-border flex flex-col">
+							<Header />
+							<Suspense
+								fallback={
+									<div className="flex-1 flex items-center justify-center">
+										<Loader />
+									</div>
+								}
+							>
+								<Routes>
+									<Route path="/" element={<HomePage />} />
+									<Route
+										path="/login"
+										element={<LoginPage />}
+									/>
+									<Route
+										path="/signup"
+										element={<SignupPage />}
+									/>
+									<Route
+										path="/forgot-password"
+										element={<ForgotPasswordPage />}
+									/>
+									<Route
+										path="/reset-password/:token"
+										element={<ResetPasswordPage />}
+									/>
+									<Route
+										path="/profile"
+										element={<ProfilePage />}
+									/>
+									<Route
+										path="/:id"
+										element={<DisplayPage />}
+									/>
+									<Route
+										path="/about"
+										element={<AboutPage />}
+									/>
+									<Route
+										path="/history"
+										element={<HistoryPage />}
+									/>
+								</Routes>
+							</Suspense>
+						</div>
+					</Router>
+				</PasteProvider>
 			</AuthProvider>
 		</ThemeProvider>
 	);
