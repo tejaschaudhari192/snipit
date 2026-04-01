@@ -294,7 +294,9 @@
 			"title": "Mitmachen?",
 			"desc": "Snipit ist Open Source und wir freuen uns über Beiträge aus der Community. Ob Fehlerbehebung, neue Funktionen oder Verbesserungen der Dokumentation – jeder Beitrag zählt.",
 			"github_button": "Auf GitHub ansehen",
-			"contact_button": "Kontakt aufnehmen"
+			"gitlab_button": "Auf GitLab ansehen",
+			"contact_button": "Kontakt aufnehmen",
+			"telegram_button": "Telegram beitreten"
 		},
 		"faq": {
 			"title": "Häufig gestellte Fragen (FAQ)",
