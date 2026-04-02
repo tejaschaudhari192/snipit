@@ -86,7 +86,12 @@
 			"minute": "{{count}} 分",
 			"minutes": "{{count}} 分"
 		},
-		"undo": "元に戻す"
+		"undo": "元に戻す",
+		"drawing": "ドローイング",
+		"shrink": "縮小",
+		"expand": "タブまで拡大",
+		"exit_fullscreen": "フルスクリーンを終了",
+		"window_fullscreen": "ウィンドウ・フルスクリーン"
 	},
 	"profile": {
 		"title": "ユーザープロフィール",
@@ -116,7 +121,8 @@
 			"private": "非公開",
 			"shared": "共有"
 		},
-		"not_applicable": "該当なし"
+		"not_applicable": "該当なし",
+		"checking_auth": "認証を確認中..."
 	},
 	"home": {
 		"select_expire_time": "有効期限を選択",
@@ -141,6 +147,8 @@
 		"tab_text_short": "テキスト",
 		"tab_code": "コード",
 		"tab_code_short": "コード",
+		"tab_draw": "ドローイング",
+		"tab_draw_short": "ドロー",
 		"tab_link": "リンクを短縮",
 		"tab_link_short": "リンク",
 		"tab_file": "ファイル",
@@ -163,6 +171,9 @@
 		},
 		"auto_detecting": "自動検出中...",
 		"detected_language": "検出された言語: {{language}}",
+		"collaborative_session": "共同編集セッション",
+		"collaborative_session_desc": "リアルタイムマルチプレイヤー・スニペットを作成",
+		"file_selected_via_paste": "ペーストによりファイルが選択されました！",
 		"dynamic_id_dialog": {
 			"title": "カスタムIDの入力",
 			"description": "一意の識別子を選択してください。これはスニペットのURLに使用されます。",
@@ -217,6 +228,8 @@
 		"snippet_updated": "スニペットが正常に更新されました",
 		"update_failed": "スニペットの更新に失敗しました",
 		"password_incorrect": "パスワードが間違っています",
+		"comment_added": "コメントが正常に追加されました",
+		"comment_failed": "コメントの追加に失敗しました",
 		"empty_content": "貼り付けるコンテンツを入力してください。",
 		"empty_file": "アップロードするファイルを選択してください。"
 	},
@@ -259,8 +272,12 @@
 				"desc": "任意の宛先に即座にリダイレクトする、短くて管理しやすいリンクを作成します。"
 			},
 			"sharing": {
-				"title": "Easy Sharing",
-				"desc": "Share your snippets effortlessly with a simple link or QR code."
+				"title": "簡単な共有",
+				"desc": "シンプルなリンクやQRコードでスニペットを簡単に共有できます。"
+			},
+			"file_share": {
+				"title": "ファイル共有",
+				"desc": "固有のリンクを使用してファイルを安全にアップロードして共有できます。"
 			},
 			"access_control": {
 				"title": "ロールベースのアクセス制御 (RBAC)",

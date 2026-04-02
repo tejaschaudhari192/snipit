@@ -26,43 +26,45 @@ export const IdTypeTabs = ({
 			onValueChange={(v) => setIdTypeTab(v as "system" | "dynamic")}
 			className="w-full"
 		>
-			<TabsList className="grid w-full grid-cols-2 mb-4 h-12 sm:h-auto">
-				<TabsTrigger
-					value="system"
-					className="text-[11px] sm:text-sm px-1 sm:px-3"
-				>
-					<Wand2 className="h-4 w-4 hidden min-[400px]:block mr-1 sm:mr-2" />
-					{t("home.paste_system_id")}
+			<TabsList className="grid w-full grid-cols-2 h-9 mb-4">
+				<TabsTrigger value="system" className="text-xs">
+					<Wand2 className="h-3.5 w-3.5 mr-2" />
+					{t("home.paste_system_id", "System ID")}
 				</TabsTrigger>
-				<TabsTrigger
-					value="dynamic"
-					className="text-[11px] sm:text-sm px-1 sm:px-3"
-				>
-					<Fingerprint className="h-4 w-4 hidden min-[400px]:block mr-1 sm:mr-2" />
-					{t("home.paste_dynamic_id")}
+				<TabsTrigger value="dynamic" className="text-xs">
+					<Fingerprint className="h-3.5 w-3.5 mr-2" />
+					{t("home.paste_dynamic_id", "Custom ID")}
 				</TabsTrigger>
 			</TabsList>
 
-			<TabsContent value="system" className="mt-0 mb-4">
-				<p className="text-sm text-muted-foreground text-center py-2 bg-muted/30 rounded-md">
-					{t("home.paste_system_id_desc")}
-				</p>
+			<TabsContent value="system" className="mt-0">
+				<div className="flex flex-col items-center justify-center p-4 rounded-lg bg-card/40 border border-dashed border-border/40 min-h-[80px]">
+					<p className="text-[13px] text-muted-foreground font-medium text-center">
+						{t(
+							"home.paste_system_id_desc",
+							"Get a random URL automatically",
+						)}
+					</p>
+				</div>
 			</TabsContent>
 
-			<TabsContent value="dynamic" className="mt-0 space-y-4 mb-4">
-				<div className="space-y-2">
+			<TabsContent value="dynamic" className="mt-0">
+				<div className="flex flex-col space-y-2 min-h-[80px]">
 					<Input
-						placeholder={t("home.dynamic_id_dialog.placeholder")}
+						placeholder={t(
+							"home.dynamic_id_dialog.placeholder",
+							"e.g. my-awesome-post",
+						)}
 						value={customId}
-						className="h-11 focus-visible:ring-primary/50"
+						className="h-10 text-sm focus-visible:ring-primary/40 transition-shadow bg-card/40 hover:bg-card/60"
 						onChange={(e) => setCustomId(e.target.value)}
 						onKeyDown={(e) => e.key === "Enter" && onSubmit()}
 					/>
 					{customId.trim() && (
-						<p className="text-xs text-muted-foreground ml-1 flex items-center gap-1">
-							{t("home.dynamic_id_dialog.preview")}{" "}
-							<span className="text-primary font-medium">
-								{window.location.origin}/{customId}
+						<p className="text-xs text-muted-foreground ml-1 flex items-center gap-1 animate-in fade-in duration-200">
+							{t("home.dynamic_id_dialog.preview", "Preview:")}{" "}
+							<span className="text-primary font-medium truncate">
+								/{customId}
 							</span>
 						</p>
 					)}

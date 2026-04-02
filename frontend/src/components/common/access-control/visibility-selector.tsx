@@ -1,4 +1,3 @@
-import { Label } from "@/components/ui/label";
 import {
 	Select,
 	SelectContent,
@@ -44,11 +43,8 @@ export const VisibilitySelector = ({
 	};
 
 	return (
-		<div className="space-y-2">
-			<Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground ml-1">
-				{t("common.access_control", "Access Level")}
-			</Label>
-			<div className="flex flex-col min-[440px]:flex-row min-[440px]:items-center justify-between p-3 gap-3 rounded-xl border bg-card hover:bg-muted/50 transition-all shadow-sm group">
+		<div className="flex flex-col gap-2">
+			<div className="flex flex-col min-[440px]:flex-row min-[440px]:items-center justify-between p-3 gap-3 rounded-lg border bg-card/40 hover:bg-card/80 transition-all shadow-sm group">
 				<div className="flex items-center gap-3">
 					<div className="p-2.5 rounded-full bg-primary/10 border border-primary/20 group-hover:scale-105 transition-transform">
 						{visibility === "public" ? (

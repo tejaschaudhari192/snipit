@@ -1,4 +1,4 @@
-import { Maximize, Minimize } from "lucide-react";
+import { Maximize2, Minimize2, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
@@ -6,38 +6,81 @@ import { memo } from "react";
 
 interface ZenModeToggleProps {
 	isFullscreen: boolean;
+	isWindowFullscreen: boolean;
 	onToggle: () => void;
+	onWindowToggle: () => void;
 	className?: string;
 }
 
 export const ZenModeToggle = memo(
-	({ isFullscreen, onToggle, className }: ZenModeToggleProps) => {
+	({
+		isFullscreen,
+		isWindowFullscreen,
+		onToggle,
+		onWindowToggle,
+		className,
+	}: ZenModeToggleProps) => {
 		const { t } = useTranslation();
 
 		return (
 			<div
 				className={cn(
-					"z-50 transition-opacity animate-in fade-in duration-300",
+					"z-[100] transition-all animate-in fade-in duration-300 flex items-center gap-2",
 					className,
 				)}
 			>
-				<Button
-					variant="ghost"
-					size="icon"
-					className="h-8 w-8 rounded-full bg-black/80 hover:bg-black text-white shadow-2xl backdrop-blur-md border border-white/10 transition-all duration-300 group"
-					onClick={onToggle}
-					title={
-						isFullscreen
-							? t("common.exit_zen")
-							: t("common.zen_mode")
-					}
-				>
-					{isFullscreen ? (
-						<Minimize className="h-3.5 w-3.5 group-hover:scale-110 transition-transform" />
-					) : (
-						<Maximize className="h-3.5 w-3.5 group-hover:scale-110 transition-transform" />
-					)}
-				</Button>
+				{!isWindowFullscreen && (
+					<Button
+						variant="ghost"
+						size="icon"
+						className={cn(
+							"h-9 w-9 rounded-full shadow-2xl backdrop-blur-md border transition-all duration-300 group",
+							isFullscreen
+								? "bg-primary text-primary-foreground hover:bg-primary/90 border-primary/20 scale-110"
+								: "bg-black/80 hover:bg-black text-white border-white/10",
+						)}
+						onClick={onToggle}
+						title={
+							isFullscreen
+								? t("common.shrink", "Shrink back")
+								: t("common.expand", "Expand to tab")
+						}
+					>
+						{isFullscreen ? (
+							<Minimize2 className="h-4 w-4 group-hover:scale-110 transition-transform" />
+						) : (
+							<Maximize2 className="h-4 w-4 group-hover:scale-110 transition-transform" />
+						)}
+					</Button>
+				)}
+
+				{(isFullscreen || isWindowFullscreen) && (
+					<Button
+						variant="ghost"
+						size="icon"
+						className={cn(
+							"h-9 w-9 rounded-full shadow-2xl backdrop-blur-md border transition-all duration-300 group",
+							isWindowFullscreen
+								? "bg-primary text-primary-foreground hover:bg-primary/90 border-primary/20"
+								: "bg-black/80 hover:bg-black text-white border-white/10",
+						)}
+						onClick={onWindowToggle}
+						title={
+							isWindowFullscreen
+								? t("common.exit_fullscreen", "Exit Fullscreen")
+								: t(
+										"common.window_fullscreen",
+										"Window Fullscreen",
+									)
+						}
+					>
+						{isWindowFullscreen ? (
+							<Minimize2 className="h-4 w-4 group-hover:scale-110 transition-transform" />
+						) : (
+							<Monitor className="h-4 w-4 group-hover:scale-110 transition-transform" />
+						)}
+					</Button>
+				)}
 			</div>
 		);
 	},

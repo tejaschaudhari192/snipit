@@ -32,7 +32,6 @@ import { usePaste } from "@/context/PasteContext";
 import { LanguageSelector } from "@/components/editor/language-selector";
 import { FontSizeControls } from "@/components/editor/font-size-controls";
 import { CustomExpiryDialog } from "@/components/home/custom-expiry-dialog";
-import { PasteDialog } from "@/components/home/paste-dialog";
 import { MainToolbar } from "@/components/home/main-toolbar";
 import { EditorContent } from "@/components/home/editor-content";
 
@@ -85,7 +84,6 @@ const HomePage = () => {
 
 	const [pendingFile, setPendingFile] = useState<File | null>(null);
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [isCustomExpiryDialogOpen, setIsCustomExpiryDialogOpen] =
 		useState(false);
 	const [customExpiryDate, setCustomExpiryDate] = useState<Date | undefined>(
@@ -387,29 +385,6 @@ const HomePage = () => {
 		});
 	};
 
-	const handleCreationClick = () => {
-		const hasContent =
-			contentType === "file"
-				? !!fileName
-				: contentType === "draw"
-					? true
-					: valueRef.current.trim().length > 0;
-		if (!hasContent) {
-			playErrorSound();
-			toast.warning(
-				contentType === "file"
-					? t("messages.empty_file", "Please select a file first!")
-					: t(
-							"messages.empty_content",
-							"Please enter some content first!",
-						),
-			);
-			return;
-		}
-		setIsDialogOpen(true);
-		setDialogError("");
-	};
-
 	const handleDialogSubmit = async () => {
 		setDialogError("");
 		const selectedId =
@@ -418,7 +393,6 @@ const HomePage = () => {
 			redirectUrl: fastRedirect,
 		});
 		if (result === true) {
-			setIsDialogOpen(false);
 			if (idTypeTab === "dynamic") setCustomId("");
 			setPassword("");
 		} else {
@@ -431,26 +405,24 @@ const HomePage = () => {
 
 	return (
 		<div className="relative flex-1 flex flex-col bg-background overflow-hidden">
-			<div className="relative z-10 flex flex-col gap-4 my-2 mx-3 md:my-4 md:mx-5">
+			{/* Toolbar: fixed height, does not grow */}
+			<div className="relative z-10 flex flex-col gap-1.5 my-1 mx-2 md:my-1.5 md:mx-4 shrink-0">
 				<MainToolbar
 					contentType={contentType}
 					setContentType={onContentTypeChange}
 					expiresTime={expiresTime}
 					setExpiresTime={setExpiresTime}
 					setIsCustomExpiryDialogOpen={setIsCustomExpiryDialogOpen}
-					handleCreationClick={handleCreationClick}
 					handleQuickPaste={handleQuickPaste}
 					handleCollaborative={handleCollaborative}
 					isSubmitting={isSubmitting}
 					isUploading={isUploading}
 					uploadProgress={uploadProgress}
-					hideTypeSelector={
-						textValue.trim().length > 0 ||
-						(contentType === "file" && fileName !== "")
-					}
+					handleDialogSubmit={handleDialogSubmit}
+					dialogError={dialogError}
 				/>
 
-				<div className="flex flex-wrap items-center gap-3">
+				<div className="flex flex-wrap items-center gap-2">
 					{(isDetecting || contentType === "code") && (
 						<div className="w-full sm:w-auto flex items-center gap-2">
 							<LanguageSelector
@@ -490,15 +462,6 @@ const HomePage = () => {
 				</div>
 			</div>
 
-			<PasteDialog
-				isOpen={isDialogOpen}
-				onOpenChange={setIsDialogOpen}
-				dialogError={dialogError}
-				user={user}
-				onSubmit={handleDialogSubmit}
-				uploadProgress={uploadProgress}
-			/>
-
 			<CustomExpiryDialog
 				isOpen={isCustomExpiryDialogOpen}
 				onOpenChange={setIsCustomExpiryDialogOpen}
@@ -510,6 +473,7 @@ const HomePage = () => {
 				}}
 			/>
 
+			{/* Editor: takes all remaining space */}
 			<EditorContent
 				fontSize={fontSize}
 				editorContainerRef={editorContainerRef}

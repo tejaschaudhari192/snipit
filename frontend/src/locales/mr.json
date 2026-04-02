@@ -86,7 +86,12 @@
 			"minute": "{{count}} मिनिट",
 			"minutes": "{{count}} मिनिटे"
 		},
-		"undo": "पूर्ववत करा"
+		"undo": "पूर्ववत करा",
+		"drawing": "ड्रॉइंग",
+		"shrink": "वापस लहान करा",
+		"expand": "टॅबमध्ये मोठे करा",
+		"exit_fullscreen": "फुलस्क्रीन मधून बाहेर पडा",
+		"window_fullscreen": "विंडो फुलस्क्रीन"
 	},
 	"profile": {
 		"title": "तुमची प्रोफाइल",
@@ -116,7 +121,8 @@
 			"private": "खाजगी",
 			"shared": "शेअर केलेले"
 		},
-		"not_applicable": "लागू नाही"
+		"not_applicable": "लागू नाही",
+		"checking_auth": "प्रमाणीकरण तपासत आहे..."
 	},
 	"home": {
 		"select_expire_time": "मुदतची वेळ निवडा",
@@ -141,6 +147,8 @@
 		"tab_text_short": "मजकूर",
 		"tab_code": "कोड",
 		"tab_code_short": "कोड",
+		"tab_draw": "ड्रॉइंग",
+		"tab_draw_short": "ड्रॉ",
 		"tab_link": "लिंक लहान करा",
 		"tab_link_short": "लिंक",
 		"tab_file": "फाईल",
@@ -163,6 +171,9 @@
 		},
 		"auto_detecting": "आपोआप ओळखत आहे...",
 		"detected_language": "ओळखलेली भाषा: {{language}}",
+		"collaborative_session": "सहयोग सत्र",
+		"collaborative_session_desc": "रिअल-टाइम मल्टीप्लेयर स्निपेट तयार करा",
+		"file_selected_via_paste": "पेस्ट द्वारे फाईल निवडली गेली!",
 		"dynamic_id_dialog": {
 			"title": "कस्टम ID टाका",
 			"description": "एक युनिक आयडेंटिफायर निवडा. याचा वापर तुमच्या स्निपेटच्या URL मध्ये केला जाईल.",
@@ -217,6 +228,8 @@
 		"snippet_updated": "स्निपेट यशस्वीरित्या अपडेट केले",
 		"update_failed": "स्निपेट अपडेट करण्यात अयशस्वी",
 		"password_incorrect": "पासवर्ड चुकीचा आहे",
+		"comment_added": "टिप्पणी यशस्वीरित्या जोडली गेली",
+		"comment_failed": "टिप्पणी जोडण्यात अयशस्वी",
 		"empty_content": "कृपया प्रथम काही मजकूर प्रविष्ट करा!",
 		"empty_file": "कृपया प्रथम फाइल निवडा!"
 	},

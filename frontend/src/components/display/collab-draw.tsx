@@ -3,6 +3,7 @@ import { Excalidraw } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
 import type { Socket } from "socket.io-client";
 import { useAuth } from "@/context/AuthContext";
+import { useTranslation } from "react-i18next";
 import type { ActiveUser } from "@/types";
 
 // Infer types from Excalidraw component props for robustness
@@ -59,6 +60,7 @@ export const CollabDraw = ({
 	activeUsers = [],
 }: CollabDrawProps) => {
 	const { user } = useAuth();
+	const { t, i18n } = useTranslation();
 	const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawAPI | null>(
 		null,
 	);
@@ -168,7 +170,9 @@ export const CollabDraw = ({
 					(u) => u.socketId === data.socketId,
 				);
 				const displayName =
-					data.username || roomUser?.name || "Anonymous";
+					data.username ||
+					roomUser?.name ||
+					t("common.anonymus", "Anonymous");
 				const displayColor =
 					roomUser?.color || data.color?.background || "#ff0000";
 
@@ -282,7 +286,10 @@ export const CollabDraw = ({
 		const ourSelf = activeUsers.find(
 			(u) => u.socketId === socketRef.current?.id,
 		);
-		const myName = user?.username || ourSelf?.name || "Anonymous";
+		const myName =
+			user?.username ||
+			ourSelf?.name ||
+			t("common.anonymus", "Anonymous");
 
 		// payload.pointer natively contains scene coordinates from Excalidraw
 		socketRef.current.emit("draw-update", {
@@ -361,10 +368,7 @@ export const CollabDraw = ({
 		);
 
 	return (
-		<div
-			className="w-full h-full relative touch-none"
-			style={{ minHeight: "60vh" }}
-		>
+		<div className="w-full h-full relative touch-none">
 			<div className="absolute inset-0 rounded-2xl overflow-hidden shadow-sm touch-none">
 				<Excalidraw
 					excalidrawAPI={(api) => setExcalidrawAPI(api)}
@@ -373,6 +377,17 @@ export const CollabDraw = ({
 					onPointerUpdate={handlePointerUpdate}
 					viewModeEnabled={!isEdit}
 					theme={theme === "dark" ? "dark" : "light"}
+					langCode={
+						i18n.language.startsWith("hi")
+							? "hi-IN"
+							: i18n.language.startsWith("mr")
+								? "mr-IN"
+								: i18n.language.startsWith("ja")
+									? "ja-JP"
+									: i18n.language.startsWith("de")
+										? "de-DE"
+										: i18n.language
+					}
 					UIOptions={{
 						canvasActions: {
 							loadScene: false,

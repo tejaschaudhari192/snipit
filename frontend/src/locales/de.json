@@ -86,7 +86,12 @@
 			"minute": "{{count}} Minute",
 			"minutes": "{{count}} Minuten"
 		},
-		"undo": "Rückgängig"
+		"undo": "Rückgängig",
+		"drawing": "Zeichnung",
+		"shrink": "Verkleinern",
+		"expand": "Auf Tab erweitern",
+		"exit_fullscreen": "Vollbild beenden",
+		"window_fullscreen": "Fenster-Vollbild"
 	},
 	"profile": {
 		"title": "Ihr Profil",
@@ -141,6 +146,8 @@
 		"tab_text_short": "Text",
 		"tab_code": "Code",
 		"tab_code_short": "Code",
+		"tab_draw": "Zeichnen",
+		"tab_draw_short": "Zeichn.",
 		"tab_link": "Link kürzen",
 		"tab_link_short": "Link",
 		"tab_file": "Datei",
@@ -163,6 +170,9 @@
 		},
 		"auto_detecting": "Automatische Erkennung...",
 		"detected_language": "Erkannte Sprache: {{language}}",
+		"collaborative_session": "Zusammenarbeitssitzung",
+		"collaborative_session_desc": "Erstelle ein Echtzeit-Multiplayer-Snippet",
+		"file_selected_via_paste": "Datei über Einfügen ausgewählt!",
 		"dynamic_id_dialog": {
 			"title": "Benutzerdefinierte ID eingeben",
 			"description": "Wählen Sie eine eindeुते Kennung. Diese wird in der URL Ihres Snippets verwendet.",
@@ -187,6 +197,8 @@
 		"title": "Verlauf",
 		"plain_text_snippet": "Klartext-Snippet",
 		"code_snippet": "Code-Snippet",
+		"link_snippet": "Link kürzen",
+		"file_snippet": "Dateifreigabe",
 		"created_ago": "Erstellt",
 		"clear_history": "Verlauf löschen",
 		"clear_confirm": "Gesamten Verlauf löschen?",
@@ -215,6 +227,8 @@
 		"snippet_updated": "Snippet erfolgreich aktualisiert",
 		"update_failed": "Snippet konnte nicht aktualisiert werden",
 		"password_incorrect": "Falsches Passwort",
+		"comment_added": "Kommentar erfolgreich hinzugefügt",
+		"comment_failed": "Kommentar konnte nicht hinzugefügt werden",
 		"empty_content": "Bitte geben Sie zuerst einen Inhalt ein!",
 		"empty_file": "Bitte wählen Sie zuerst eine Datei aus!"
 	},

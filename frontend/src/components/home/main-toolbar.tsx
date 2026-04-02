@@ -3,17 +3,14 @@ import { Button } from "@/components/ui/button";
 import { ContentTypeSelector } from "@/components/common/content-type-selector";
 
 import { ExpirySelector } from "@/components/common/expiry-selector";
-import { Switch } from "@/components/ui/switch";
 import { useTranslation } from "react-i18next";
 
 import { ButtonGroup } from "@/components/ui/button-group";
-import { Settings2, ChevronDown } from "lucide-react";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { ChevronDown, Users } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
+import { useState } from "react";
+import { AdvancedOptions } from "./advanced-options";
 
 import type { ContentMode } from "@/types";
 
@@ -23,13 +20,14 @@ interface MainToolbarProps {
 	expiresTime: string;
 	setExpiresTime: (val: string) => void;
 	setIsCustomExpiryDialogOpen: (val: boolean) => void;
-	handleCreationClick: () => void;
-	handleCollaborative: () => void;
 	isSubmitting?: boolean;
 	isUploading?: boolean;
 	uploadProgress?: number;
 	handleQuickPaste: () => void;
+	handleCollaborative: () => void;
+	handleDialogSubmit: () => void;
 	hideTypeSelector?: boolean;
+	dialogError?: string;
 }
 
 export const MainToolbar = memo(
@@ -39,15 +37,17 @@ export const MainToolbar = memo(
 		expiresTime,
 		setExpiresTime,
 		setIsCustomExpiryDialogOpen,
-		handleCreationClick,
-		handleCollaborative,
 		isSubmitting = false,
 		isUploading = false,
 		uploadProgress = 0,
 		handleQuickPaste,
+		handleCollaborative,
 		hideTypeSelector = false,
+		handleDialogSubmit,
+		dialogError = "",
 	}: MainToolbarProps) => {
 		const { t } = useTranslation();
+		const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
 		const renderButtonText = () => {
 			if (isSubmitting) {
@@ -64,8 +64,8 @@ export const MainToolbar = memo(
 		};
 
 		return (
-			<div className="flex flex-col gap-3 p-3 rounded-2xl bg-background/40 backdrop-blur-xl border border-border/50 shadow-sm relative z-10 sm:p-4">
-				<div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
+			<div className="flex flex-col gap-2 p-1.5 rounded-xl bg-background/40 backdrop-blur-xl border border-border/50 shadow-sm relative z-10 sm:p-2 overflow-visible">
+				<div className="flex flex-col lg:flex-row gap-1.5 items-stretch lg:items-center justify-between">
 					{!hideTypeSelector && (
 						<ContentTypeSelector
 							value={contentType}
@@ -76,26 +76,6 @@ export const MainToolbar = memo(
 					{hideTypeSelector && <div className="w-0 lg:w-auto" />}
 
 					<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
-						<div className="flex items-center justify-between sm:justify-start gap-4 px-4 py-2.5 rounded-xl transition-all duration-300 border shadow-sm bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400 min-w-fit sm:h-11">
-							<span className="text-sm font-semibold tracking-wide flex items-center gap-2">
-								<span className="relative flex h-2 w-2">
-									<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-									<span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-								</span>
-								{t(
-									"home.collaborative_session",
-									"Collaborative",
-								)}
-							</span>
-
-							<Switch
-								checked={false}
-								onCheckedChange={handleCollaborative}
-								disabled={isSubmitting}
-								className="data-[state=checked]:bg-blue-500 scale-90 sm:scale-100"
-							/>
-						</div>
-
 						<div className="flex items-center gap-2 flex-1 sm:flex-none">
 							<ExpirySelector
 								expiresTime={expiresTime}
@@ -103,10 +83,10 @@ export const MainToolbar = memo(
 								setIsCustomExpiryDialogOpen={
 									setIsCustomExpiryDialogOpen
 								}
-								className="flex-1 sm:w-[160px]"
+								className="flex-1 sm:w-40"
 							/>
 
-							<ButtonGroup className="shadow-lg shadow-primary/20 overflow-hidden shrink-0 h-11">
+							<ButtonGroup className="shadow-lg shadow-primary/20 overflow-visible shrink-0 h-11">
 								<Button
 									disabled={isSubmitting}
 									size="lg"
@@ -116,46 +96,74 @@ export const MainToolbar = memo(
 									{renderButtonText()}
 								</Button>
 								<div className="w-[1px] bg-primary-foreground/20 self-stretch my-2" />
-								<DropdownMenu>
-									<DropdownMenuTrigger asChild>
-										<Button
-											disabled={isSubmitting}
-											size="icon"
-											className="h-11 w-10 shrink-0 rounded-l-none border-l-0 hover:bg-primary/90 transition-colors"
-										>
-											<ChevronDown className="h-4 w-4" />
-										</Button>
-									</DropdownMenuTrigger>
-									<DropdownMenuContent
-										align="end"
-										className="w-56"
-									>
-										<DropdownMenuItem
-											onClick={handleCreationClick}
-											className="flex items-center gap-2 cursor-pointer"
-										>
-											<Settings2 className="h-4 w-4 text-muted-foreground" />
-											<div className="flex flex-col">
-												<span className="font-medium">
-													{t(
-														"home.paste_advanced",
-														"Advanced Creation",
-													)}
-												</span>
-												<span className="text-[10px] text-muted-foreground">
-													{t(
-														"home.paste_advanced_desc",
-														"Configure privacy, password, and more",
-													)}
-												</span>
-											</div>
-										</DropdownMenuItem>
-									</DropdownMenuContent>
-								</DropdownMenu>
+								<Button
+									disabled={isSubmitting}
+									size="icon"
+									className={cn(
+										"h-11 w-10 shrink-0 rounded-l-none border-l-0 hover:bg-primary/90 transition-all",
+										isOptionsOpen && "bg-primary/80",
+									)}
+									onClick={() =>
+										setIsOptionsOpen(!isOptionsOpen)
+									}
+								>
+									<ChevronDown
+										className={cn(
+											"h-4 w-4 transition-transform duration-300",
+											isOptionsOpen && "rotate-180",
+										)}
+									/>
+								</Button>
 							</ButtonGroup>
 						</div>
 					</div>
 				</div>
+
+				<Collapsible
+					open={isOptionsOpen}
+					onOpenChange={setIsOptionsOpen}
+					className="mt-1"
+				>
+					<CollapsibleContent>
+						<div className="border-t border-border/10 pt-2 mt-1.5 px-1.5 sm:px-2">
+							<div className="flex items-center gap-2 mb-3 px-1 py-1 group">
+								<div className="w-1.5 h-5 bg-primary/30 group-hover:bg-primary transition-colors rounded-full" />
+								<h3 className="font-black text-sm uppercase tracking-widest text-primary/70 group-hover:text-primary transition-colors">
+									{t(
+										"home.advanced_config",
+										"Advanced Configuration",
+									)}
+								</h3>
+								<div className="flex-1 h-[1px] bg-border/5 ml-2" />
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={handleCollaborative}
+									className="gap-2 h-8 text-xs font-bold bg-primary/5 hover:bg-primary/10 border-primary/20 text-primary transition-all shadow-sm rounded-md ml-2"
+								>
+									<Users className="h-3.5 w-3.5" />
+									{t(
+										"home.collaborative_session",
+										"Start Collaboration",
+									)}
+								</Button>
+							</div>
+
+							<AdvancedOptions onSubmit={handleDialogSubmit} />
+
+							{dialogError && (
+								<div className="animate-in fade-in slide-in-from-top-2 duration-300 p-4 mt-4 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-500 flex items-start gap-3 shadow-sm shadow-red-500/5">
+									<div className="mt-0.5 shrink-0 bg-red-500/20 w-5 h-5 rounded-full flex items-center justify-center text-[10px]">
+										⚠️
+									</div>
+									<p className="font-medium leading-relaxed italic">
+										{dialogError}
+									</p>
+								</div>
+							)}
+						</div>
+					</CollapsibleContent>
+				</Collapsible>
 			</div>
 		);
 	},

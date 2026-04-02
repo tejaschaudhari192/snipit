@@ -90,7 +90,12 @@
 			"minute": "{{count}} मिनट",
 			"minutes": "{{count}} मिनट"
 		},
-		"undo": "पूर्ववत करें"
+		"undo": "पूर्ववत करें",
+		"drawing": "ड्रॉइंग",
+		"shrink": "वापस छोटा करें",
+		"expand": "टैब में बड़ा करें",
+		"exit_fullscreen": "फ़ुलस्क्रीन से बाहर निकलें",
+		"window_fullscreen": "विंडो फ़ुलस्क्रीन"
 	},
 	"profile": {
 		"title": "आपकी प्रोफ़ाइल",
@@ -121,7 +126,8 @@
 			"shared": "साझा"
 		},
 		"not_applicable": "N/A",
-		"checking_auth": "प्रमाणीकरण की जाँच हो रही है..."
+		"checking_auth": "प्रमाणीकरण की जाँच हो रही है...",
+		"logged_in_as": "के रूप में लॉग इन किया"
 	},
 	"home": {
 		"select_expire_time": "समाप्ति का समय चुनें",
@@ -133,6 +139,8 @@
 		"paste_system_id_desc": "अपने आप एक रैंडम URL प्राप्त करें",
 		"paste_advanced": "उन्नत निर्माण",
 		"paste_advanced_desc": "गोपनीयता, पासवर्ड और बहुत कुछ कॉन्फिगर करें",
+		"advanced_config": "उन्नत कॉन्फ़िगरेशन",
+		"identification_type": "पहचान और प्रकार",
 		"expire_options": {
 			"one_time_snippet": "एक बार का स्निपेट",
 			"expire_in_1_hour": "1 घंटे में समाप्त",
@@ -142,10 +150,12 @@
 			"expire_in_1_year": "1 साल में समाप्त",
 			"custom": "कस्टम समाप्ति"
 		},
-		"tab_text": "Plain Text",
+		"tab_text": "साधारण टेक्स्ट",
 		"tab_text_short": "टेक्स्ट",
-		"tab_code": "Code",
+		"tab_code": "कोड",
 		"tab_code_short": "कोड",
+		"tab_draw": "ड्रॉइंग",
+		"tab_draw_short": "ड्रॉ",
 		"tab_link": "लिंक छोटा करें",
 		"tab_link_short": "लिंक",
 		"tab_file": "फ़ाइल",
@@ -168,6 +178,9 @@
 		},
 		"auto_detecting": "ऑटो डिटेक्ट हो रहा है...",
 		"detected_language": "पहचानी गई भाषा: {{language}}",
+		"collaborative_session": "सहयोग सत्र",
+		"collaborative_session_desc": "रीयल-टाइम मल्टीप्लेयर स्निपेट बनाएं",
+		"file_selected_via_paste": "पेस्ट के माध्यम से फ़ाइल चुनी गई!",
 		"dynamic_id_dialog": {
 			"title": "कस्टम आईडी दर्ज करें",
 			"description": "एक अनूठा पहचानकर्ता चुनें। यह आपके स्निपेट के URL में उपयोग किया जाएगा।",

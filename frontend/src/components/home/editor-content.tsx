@@ -62,10 +62,11 @@ export const EditorContent = memo(
 		const { t } = useTranslation();
 		const containerRef = useRef<HTMLDivElement>(null);
 		const [isFullscreen, setIsFullscreen] = useState(false);
+		const [isWindowFullscreen, setIsWindowFullscreen] = useState(false);
 
 		useEffect(() => {
 			const handleFullscreenChange = () => {
-				setIsFullscreen(!!document.fullscreenElement);
+				setIsWindowFullscreen(!!document.fullscreenElement);
 			};
 			document.addEventListener(
 				"fullscreenchange",
@@ -78,7 +79,27 @@ export const EditorContent = memo(
 				);
 		}, []);
 
+		useEffect(() => {
+			const handleKeyDown = (e: KeyboardEvent) => {
+				if (e.key === "Escape") {
+					if (isWindowFullscreen) {
+						document
+							.exitFullscreen()
+							.catch((err) => console.error(err));
+					} else if (isFullscreen) {
+						setIsFullscreen(false);
+					}
+				}
+			};
+			window.addEventListener("keydown", handleKeyDown);
+			return () => window.removeEventListener("keydown", handleKeyDown);
+		}, [isFullscreen, isWindowFullscreen]);
+
 		const toggleFullscreen = () => {
+			setIsFullscreen((prev) => !prev);
+		};
+
+		const toggleWindowFullscreen = () => {
 			if (!document.fullscreenElement) {
 				containerRef.current?.requestFullscreen().catch((err) => {
 					console.error(
@@ -126,30 +147,31 @@ export const EditorContent = memo(
 
 		return (
 			<div className="flex-1 flex flex-col min-h-0 relative">
-				{(contentType === "code" ||
-					contentType === "text" ||
-					contentType === "draw") && (
-					<ZenModeToggle
-						isFullscreen={isFullscreen}
-						onToggle={toggleFullscreen}
-						className={cn(
-							contentType === "draw"
-								? "absolute right-3 top-3"
-								: "absolute top-8 right-8",
-							isFullscreen ? "fixed top-4 right-8" : "",
-						)}
-					/>
-				)}
 				<div
 					ref={stableRefCallback}
 					className={cn(
-						"m-3 sm:m-5 glass-card overflow-hidden touch-none relative z-20 flex flex-col",
+						"mx-2 mt-0.5 sm:mx-4 sm:mt-1 mb-4 glass-card overflow-hidden touch-none relative z-20 flex flex-col rounded-2xl",
 						isFullscreen
-							? "fixed inset-0 m-0 z-50 rounded-none h-screen"
-							: "h-[60vh] rounded-2xl",
+							? "fixed inset-0 m-0 z-50 rounded-none h-screen border-none"
+							: "flex-1 min-h-[50vh]",
 					)}
 				>
-					<div className="flex-1 w-full h-full relative">
+					{(contentType === "code" ||
+						contentType === "text" ||
+						contentType === "draw") && (
+						<ZenModeToggle
+							isFullscreen={isFullscreen}
+							isWindowFullscreen={isWindowFullscreen}
+							onToggle={toggleFullscreen}
+							onWindowToggle={toggleWindowFullscreen}
+							className={cn(
+								contentType === "draw"
+									? "absolute right-0 top-0"
+									: "absolute top-8 right-8",
+							)}
+						/>
+					)}
+					<div className="flex-1 w-full h-full relative min-h-0 flex flex-col">
 						{contentType === "draw" ? (
 							<CollabDraw
 								isEdit={true}
@@ -181,6 +203,7 @@ export const EditorContent = memo(
 												padding: { top: 16 },
 												mouseWheelZoom: true,
 												wordWrap: "on",
+												automaticLayout: true,
 											}}
 										/>
 									</div>
@@ -213,6 +236,7 @@ export const EditorContent = memo(
 										padding: { top: 16 },
 										mouseWheelZoom: true,
 										wordWrap: "on",
+										automaticLayout: true,
 									}}
 								/>
 							)

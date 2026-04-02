@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Label } from "@/components/ui/label";
+
 import {
 	Select,
 	SelectContent,
@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { MultiEmailInput } from "@/components/ui/multi-email-input";
 import { Button } from "@/components/ui/button";
-import { Users, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { ShareRole } from "@/types";
 
@@ -80,13 +80,9 @@ export const CollaboratorsManager = ({
 	};
 
 	return (
-		<div className="space-y-3">
-			<Label className="flex items-center gap-2 text-sm font-medium">
-				<Users className="h-4 w-4 text-muted-foreground" />
-				{t("common.share_with_people", "Share with people")}
-			</Label>
-			<div className="flex flex-col sm:flex-row gap-2 p-1">
-				<div className="flex-1 min-w-0">
+		<div className="flex flex-col gap-2">
+			<div className="flex flex-col sm:flex-row items-center p-1 gap-1 sm:gap-2 rounded-lg border border-input/50 bg-card/40 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/30 transition-all shadow-sm">
+				<div className="flex-1 min-w-0 w-full">
 					<MultiEmailInput
 						value={pendingEmails}
 						onChange={setPendingEmails}
@@ -96,17 +92,17 @@ export const CollaboratorsManager = ({
 							"common.add_people_placeholder",
 							"Add people...",
 						)}
-						className="min-h-[44px] bg-background"
+						className="min-h-[42px] border-none bg-transparent shadow-none focus-within:ring-0 focus-within:ring-offset-0 text-[13px] px-2 py-1"
 						isReadOnly={disabled}
 					/>
 				</div>
-				<div className="flex gap-2 items-center">
+				<div className="flex gap-1 items-center px-1 sm:pr-1 w-full sm:w-auto justify-end border-t sm:border-t-0 sm:border-l border-border/10 pt-2 sm:pt-0 pl-0 sm:pl-2">
 					<Select
 						value={pendingRole}
 						onValueChange={(r: ShareRole) => setPendingRole(r)}
 						disabled={disabled}
 					>
-						<SelectTrigger className="flex-1 h-[44px] bg-background border-input focus:ring-primary/20">
+						<SelectTrigger className="w-[100px] h-8 text-xs font-medium border-none bg-transparent hover:bg-muted/50 focus:ring-0 shadow-none">
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>
@@ -125,6 +121,8 @@ export const CollaboratorsManager = ({
 						</SelectContent>
 					</Select>
 					<Button
+						variant="secondary"
+						size="sm"
 						onClick={handleAddPeople}
 						disabled={
 							disabled ||
@@ -133,7 +131,7 @@ export const CollaboratorsManager = ({
 									inputValue.trim(),
 								))
 						}
-						className="h-[44px] px-4 sm:px-6 min-w-[70px] sm:min-w-[80px] font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm transition-colors border-none flex-1 sm:flex-none"
+						className="h-8 px-4 font-bold shadow-none"
 					>
 						{t("common.add", "Add")}
 					</Button>
@@ -142,9 +140,9 @@ export const CollaboratorsManager = ({
 
 			{shareList.length > 0 && (
 				<div className="flex flex-col gap-2 mt-2 max-h-[150px] overflow-y-auto pr-1">
-					<Label className="text-xs text-muted-foreground mt-2">
+					<p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mt-3 mb-1 px-1">
 						{t("common.people_with_access", "People with access")}
-					</Label>
+					</p>
 					{shareList.map((item) => (
 						<div
 							key={item.email}
