@@ -43,36 +43,54 @@ export const ExpirySelector = memo(
 			>
 				<SelectTrigger
 					className={cn(
-						"flex-1 sm:w-fit h-11 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm hover:bg-muted/30 transition-all",
+						"w-full sm:w-fit min-w-[140px] px-4 h-11 bg-background/95 backdrop-blur-sm border-border/50 shadow-sm hover:bg-muted/50 hover:border-border transition-all rounded-lg font-bold text-sm",
 						className,
 					)}
 				>
-					<div className="flex items-center gap-2">
-						<Clock className="h-4 w-4 text-muted-foreground" />
+					<div className="flex items-center gap-2 whitespace-nowrap">
+						<Clock className="h-4 w-4 text-primary shrink-0" />
 						<SelectValue
 							placeholder={t("home.select_expire_time")}
 						/>
 					</div>
 				</SelectTrigger>
 
-				<SelectContent>
-					<SelectGroup>
-						<SelectItem value="one-time">
+				<SelectContent className="rounded-xl shadow-xl border-border/40 p-1">
+					<SelectGroup className="space-y-0.5">
+						<SelectItem
+							value="one-time"
+							className="rounded-lg cursor-pointer"
+						>
 							{t("home.expire_options.one_time_snippet")}
 						</SelectItem>
-						<SelectItem value="1h">
+						<SelectItem
+							value="1h"
+							className="rounded-lg cursor-pointer"
+						>
 							{t("home.expire_options.expire_in_1_hour")}
 						</SelectItem>
-						<SelectItem value="1d">
+						<SelectItem
+							value="1d"
+							className="rounded-lg cursor-pointer"
+						>
 							{t("home.expire_options.expire_in_1_day")}
 						</SelectItem>
-						<SelectItem value="1w">
+						<SelectItem
+							value="1w"
+							className="rounded-lg cursor-pointer"
+						>
 							{t("home.expire_options.expire_in_1_week")}
 						</SelectItem>
-						<SelectItem value="1m">
+						<SelectItem
+							value="1m"
+							className="rounded-lg cursor-pointer"
+						>
 							{t("home.expire_options.expire_in_1_month")}
 						</SelectItem>
-						<SelectItem value="1y">
+						<SelectItem
+							value="1y"
+							className="rounded-lg cursor-pointer"
+						>
 							{t("home.expire_options.expire_in_1_year")}
 						</SelectItem>
 
@@ -80,7 +98,10 @@ export const ExpirySelector = memo(
                       Visible item for picking/uploading custom date. 
                       Always clickable because value is stable 'custom_action'.
                     */}
-						<SelectItem value="custom_action">
+						<SelectItem
+							value="custom_action"
+							className="rounded-lg cursor-pointer font-semibold text-primary"
+						>
 							{t("home.expire_options.custom")}
 						</SelectItem>
 

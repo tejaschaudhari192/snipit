@@ -48,10 +48,11 @@ export const DisplayContent = memo(
 	}: DisplayContentProps) => {
 		const containerRef = useRef<HTMLDivElement>(null);
 		const [isFullscreen, setIsFullscreen] = useState(false);
+		const [isWindowFullscreen, setIsWindowFullscreen] = useState(false);
 
 		useEffect(() => {
 			const handleFullscreenChange = () => {
-				setIsFullscreen(!!document.fullscreenElement);
+				setIsWindowFullscreen(!!document.fullscreenElement);
 			};
 			document.addEventListener(
 				"fullscreenchange",
@@ -64,7 +65,7 @@ export const DisplayContent = memo(
 				);
 		}, []);
 
-		const toggleFullscreen = () => {
+		const toggleWindowFullscreen = () => {
 			if (!document.fullscreenElement) {
 				containerRef.current?.requestFullscreen().catch((err) => {
 					console.error(
@@ -75,6 +76,10 @@ export const DisplayContent = memo(
 			} else {
 				document.exitFullscreen().catch((err) => console.error(err));
 			}
+		};
+
+		const toggleFullscreen = () => {
+			setIsFullscreen(!isFullscreen);
 		};
 
 		const renderContent = () => {
@@ -178,19 +183,25 @@ export const DisplayContent = memo(
 					contentType === "draw") && (
 					<ZenModeToggle
 						isFullscreen={isFullscreen}
+						isWindowFullscreen={isWindowFullscreen}
 						onToggle={toggleFullscreen}
+						onWindowToggle={toggleWindowFullscreen}
 						className={cn(
 							contentType === "draw"
 								? "absolute right-3 top-3"
 								: "absolute top-8 right-8",
-							isFullscreen ? "fixed top-4 right-8" : "",
+							isFullscreen || isWindowFullscreen
+								? "fixed top-4 right-8"
+								: "",
 						)}
 					/>
 				)}
 				<div
 					className={cn(
 						"relative w-full h-full",
-						isFullscreen ? "bg-background p-4" : "",
+						isFullscreen || isWindowFullscreen
+							? "bg-background p-4"
+							: "",
 					)}
 				>
 					<div className="flex-1 w-full h-full relative">

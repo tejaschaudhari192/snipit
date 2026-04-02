@@ -22,12 +22,7 @@ const ThemeTogglePositionsDemo = () => {
 		return null;
 	}
 	return (
-		<ThemeToggleButton
-			theme={currentTheme}
-			onClick={handleThemeToggle}
-			variant="circle"
-			start="top-right"
-		/>
+		<ThemeToggleButton theme={currentTheme} onClick={handleThemeToggle} />
 	);
 };
 export default ThemeTogglePositionsDemo;

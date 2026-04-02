@@ -83,7 +83,7 @@ export const MainToolbar = memo(
 								setIsCustomExpiryDialogOpen={
 									setIsCustomExpiryDialogOpen
 								}
-								className="flex-1 sm:w-40"
+								className="w-full sm:w-fit"
 							/>
 
 							<ButtonGroup className="shadow-lg shadow-primary/20 overflow-visible shrink-0 h-11">

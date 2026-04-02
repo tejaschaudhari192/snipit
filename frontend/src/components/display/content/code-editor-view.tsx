@@ -35,10 +35,11 @@ export const CodeEditorView = ({
 }: CodeEditorViewProps) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [isFullscreen, setIsFullscreen] = useState(false);
+	const [isWindowFullscreen, setIsWindowFullscreen] = useState(false);
 
 	useEffect(() => {
 		const handleFullscreenChange = () => {
-			setIsFullscreen(!!document.fullscreenElement);
+			setIsWindowFullscreen(!!document.fullscreenElement);
 		};
 		document.addEventListener("fullscreenchange", handleFullscreenChange);
 		return () =>
@@ -48,7 +49,7 @@ export const CodeEditorView = ({
 			);
 	}, []);
 
-	const toggleFullscreen = () => {
+	const toggleWindowFullscreen = () => {
 		if (!document.fullscreenElement) {
 			containerRef.current?.requestFullscreen().catch((err) => {
 				console.error("Error attempting to enable fullscreen:", err);
@@ -57,6 +58,10 @@ export const CodeEditorView = ({
 			document.exitFullscreen();
 		}
 	};
+
+	const toggleFullscreen = () => {
+		setIsFullscreen(!isFullscreen);
+	};
 	if (contentType === "code" || contentType === "text") {
 		return (
 			<div
@@ -64,12 +69,14 @@ export const CodeEditorView = ({
 					containerRef.current = node;
 					if (typeof contentRef === "function") contentRef(node);
 				}}
-				className={`glass-card rounded-2xl overflow-hidden relative z-10 animate-in fade-in zoom-in-95 duration-500 flex flex-col ${isFullscreen ? "h-screen w-screen rounded-none" : ""}`}
+				className={`glass-card rounded-2xl overflow-hidden relative z-10 animate-in fade-in zoom-in-95 duration-500 flex flex-col ${isFullscreen || isWindowFullscreen ? "fixed inset-0 m-0 z-50 rounded-none h-screen border-none" : ""}`}
 			>
 				{!hideFullscreen && (
 					<ZenModeToggle
 						isFullscreen={isFullscreen}
+						isWindowFullscreen={isWindowFullscreen}
 						onToggle={toggleFullscreen}
+						onWindowToggle={toggleWindowFullscreen}
 						className="absolute top-8 right-8"
 					/>
 				)}
@@ -128,12 +135,14 @@ export const CodeEditorView = ({
 				containerRef.current = node;
 				if (typeof contentRef === "function") contentRef(node);
 			}}
-			className={`relative z-10 ${isFullscreen ? "h-screen w-screen flex flex-col bg-background" : ""}`}
+			className={`relative z-10 ${isFullscreen || isWindowFullscreen ? "fixed inset-0 m-0 z-50 rounded-none h-screen border-none bg-background flex flex-col" : ""}`}
 		>
 			{!hideFullscreen && (
 				<ZenModeToggle
 					isFullscreen={isFullscreen}
+					isWindowFullscreen={isWindowFullscreen}
 					onToggle={toggleFullscreen}
+					onWindowToggle={toggleWindowFullscreen}
 					className="absolute top-8 right-8 z-50"
 				/>
 			)}
@@ -147,7 +156,7 @@ export const CodeEditorView = ({
 					!isEdit
 						? "select-all cursor-text"
 						: "focus-visible:ring-primary/20"
-				} ${isFullscreen ? "flex-1 rounded-none border-0" : "min-h-[500px]"}`}
+				} ${isFullscreen || isWindowFullscreen ? "flex-1 rounded-none border-0" : "min-h-[500px]"}`}
 				style={{ fontSize: `${fontSize}px` }}
 				placeholder="Start typing your content here..."
 			/>
