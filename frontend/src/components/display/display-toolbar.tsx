@@ -115,7 +115,6 @@ export const DisplayToolbar = ({
 			<div className="flex flex-1 items-center gap-2 justify-end">
 				{isEdit && <AutosaveStatus status={saveStatus} />}
 				<UserAvatarList users={activeUsers} />
-				// slide-in-from-right-2
 				{isEdit && (
 					<div className="flex items-center gap-3 animate-in fade-in duration-300 ml-2">
 						{(isOwner || isAdmin) && setCustomId && (

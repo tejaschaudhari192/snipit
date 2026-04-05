@@ -80,35 +80,30 @@ const UserMenu = () => {
 
 			<CollapsibleContent
 				className={cn(
-					"absolute top-full right-0 mt-2 w-56 p-1 rounded-xl bg-background/95 backdrop-blur-xl border border-border/50 shadow-2xl transition-all duration-300 origin-top-right z-[100]",
+					"absolute top-full right-0 mt-2 w-56 p-1 rounded-xl bg-background/98 backdrop-blur-xl border border-border/50 shadow-2xl transition-all duration-300 origin-top-right z-[100]",
 					isOpen
 						? "scale-100 opacity-100 visible translate-y-0"
 						: "scale-95 opacity-0 invisible -translate-y-2 pointer-events-none",
 				)}
 			>
-				<div className="p-3 border-b border-border/20 mb-1">
-					<p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">
-						{t("profile.logged_in_as", "Logged in as")}
-					</p>
-					<div className="flex flex-col">
-						<p className="text-sm font-black truncate text-primary">
-							{user.username}
-						</p>
-						<p className="text-[10px] text-muted-foreground truncate italic">
-							{user.email}
-						</p>
-					</div>
-				</div>
-
 				<Link
 					to="/profile"
-					className="flex items-center gap-2 w-full px-3 py-2 text-sm font-semibold rounded-lg hover:bg-primary/5 transition-all group"
+					className="block p-3 border-b border-border/20 mb-1 hover:bg-primary/5 transition-all group"
 					onClick={() => setIsOpen(false)}
 				>
-					<div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-						<User className="h-4 w-4 text-primary" />
+					<div className="flex items-center gap-3">
+						<div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors shrink-0">
+							<User className="h-5 w-5 text-primary" />
+						</div>
+						<div className="flex flex-col min-w-0">
+							<p className="text-sm font-black truncate text-primary leading-tight">
+								{user.username}
+							</p>
+							<p className="text-[10px] text-muted-foreground truncate italic">
+								{user.email}
+							</p>
+						</div>
 					</div>
-					{t("header.profile", "Profile")}
 				</Link>
 
 				<button

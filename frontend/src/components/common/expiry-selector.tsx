@@ -43,7 +43,7 @@ export const ExpirySelector = memo(
 			>
 				<SelectTrigger
 					className={cn(
-						"w-full sm:w-fit min-w-[140px] px-4 h-11 bg-background/95 backdrop-blur-sm border-border/50 shadow-sm hover:bg-muted/50 hover:border-border transition-all rounded-lg font-bold text-sm",
+						"w-full sm:w-fit min-w-[140px] px-4 h-11 bg-background/95 backdrop-blur-xl border-border/50 shadow-sm hover:bg-primary/5 hover:border-primary/20 transition-all rounded-lg font-bold text-sm",
 						className,
 					)}
 				>

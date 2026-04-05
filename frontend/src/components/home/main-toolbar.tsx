@@ -64,8 +64,8 @@ export const MainToolbar = memo(
 		};
 
 		return (
-			<div className="flex flex-col gap-2 p-1.5 rounded-xl bg-background/40 backdrop-blur-xl border border-border/50 shadow-sm relative z-10 sm:p-2 overflow-visible">
-				<div className="flex flex-col lg:flex-row gap-1.5 items-stretch lg:items-center justify-between">
+			<div className="flex flex-col p-1 rounded-xl bg-background/50 backdrop-blur-3xl border border-border/50 shadow-sm relative z-10 overflow-visible">
+				<div className="flex flex-col lg:flex-row gap-1 items-stretch lg:items-center justify-between">
 					{!hideTypeSelector && (
 						<ContentTypeSelector
 							value={contentType}
@@ -86,11 +86,11 @@ export const MainToolbar = memo(
 								className="w-full sm:w-fit"
 							/>
 
-							<ButtonGroup className="shadow-lg shadow-primary/20 overflow-visible shrink-0 h-11">
+							<ButtonGroup className="shadow-lg shadow-primary/20 overflow-visible shrink-0 h-9">
 								<Button
 									disabled={isSubmitting}
 									size="lg"
-									className="px-4 h-11 font-bold rounded-r-none border-r-0 hover:bg-primary/90 transition-colors min-w-[100px]"
+									className="px-4 h-9 font-bold rounded-r-none border-r-0 hover:bg-primary/90 transition-colors min-w-[100px]"
 									onClick={handleQuickPaste}
 								>
 									{renderButtonText()}
@@ -100,7 +100,7 @@ export const MainToolbar = memo(
 									disabled={isSubmitting}
 									size="icon"
 									className={cn(
-										"h-11 w-10 shrink-0 rounded-l-none border-l-0 hover:bg-primary/90 transition-all",
+										"h-9 w-10 shrink-0 rounded-l-none border-l-0 hover:bg-primary/90 transition-all",
 										isOptionsOpen && "bg-primary/80",
 									)}
 									onClick={() =>

@@ -41,39 +41,10 @@
 	--color-sidebar-ring: var(--sidebar-ring);
 
 	--animate-cursor-blink: cursor-blink 1s step-end infinite;
-	--animate-progress: progress linear forwards;
+	--animate-progress: toast-progress linear forwards;
 	--animate-pulse-subtle: pulse-subtle 2s ease-in-out infinite;
-
-	@keyframes cursor-blink {
-		0%,
-		100% {
-			opacity: 1;
-		}
-		50% {
-			opacity: 0;
-		}
-	}
-
-	@keyframes progress {
-		from {
-			width: 0%;
-		}
-		to {
-			width: 100%;
-		}
-	}
-
-	@keyframes pulse-subtle {
-		0%,
-		100% {
-			opacity: 1;
-			transform: scale(1);
-		}
-		50% {
-			opacity: 0.8;
-			transform: scale(0.98);
-		}
-	}
+	--animate-collapsible-down: collapsible-down 300ms ease-out;
+	--animate-collapsible-up: collapsible-up 300ms ease-out;
 }
 
 :root {
@@ -234,5 +205,58 @@
 
 	.glass-morphism {
 		@apply bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)];
+	}
+}
+
+@keyframes cursor-blink {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0;
+	}
+}
+
+@keyframes toast-progress {
+	from {
+		transform: scaleX(1);
+	}
+	to {
+		transform: scaleX(0);
+	}
+}
+
+@keyframes pulse-subtle {
+	0%,
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+	50% {
+		opacity: 0.8;
+		transform: scale(0.98);
+	}
+}
+
+@keyframes collapsible-down {
+	from {
+		height: 0;
+		opacity: 0;
+	}
+	to {
+		height: var(--radix-collapsible-content-height);
+		opacity: 1;
+	}
+}
+
+@keyframes collapsible-up {
+	from {
+		height: var(--radix-collapsible-content-height);
+		opacity: 1;
+	}
+	to {
+		height: 0;
+		opacity: 0;
 	}
 }

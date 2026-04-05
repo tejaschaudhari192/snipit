@@ -18,11 +18,13 @@ function CollapsibleTrigger({
 }
 
 function CollapsibleContent({
+	className,
 	...props
 }: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleContent>) {
 	return (
 		<CollapsiblePrimitive.CollapsibleContent
 			data-slot="collapsible-content"
+			className={`overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up ${className || ""}`}
 			{...props}
 		/>
 	);
