@@ -24,6 +24,7 @@ import type {
 	EditPermission,
 	PublicRole,
 	ShareRole,
+	ContentMode,
 } from "@/types";
 import { CONFIG } from "@/configurations";
 import { useLanguageDetection } from "@/hooks/use-language-detection";
@@ -89,6 +90,7 @@ const HomePage = () => {
 	const [customExpiryDate, setCustomExpiryDate] = useState<Date | undefined>(
 		new Date(Date.now() + 24 * 60 * 60 * 1000),
 	);
+	const [isFullscreen, setIsFullscreen] = useState(false);
 	const [dialogError, setDialogError] = useState("");
 
 	const {
@@ -104,6 +106,52 @@ const HomePage = () => {
 		previousLengthRef.current = valueRef.current.trim().length;
 		valueRef.current = textValue;
 	}, [textValue]);
+
+	useEffect(() => {
+		const params = new URLSearchParams(window.location.search);
+		const tab = params.get("tab");
+		const fs = params.get("fullscreen");
+
+		if (
+			tab &&
+			["text", "code", "draw", "link", "file"].includes(tab) &&
+			tab !== contentType
+		) {
+			setContentType(tab as ContentMode);
+		}
+
+		if (fs === "true") {
+			setIsFullscreen(true);
+		}
+	}, []);
+
+	useEffect(() => {
+		const params = new URLSearchParams(window.location.search);
+		let changed = false;
+
+		if (contentType !== params.get("tab")) {
+			if (contentType === CONFIG.DEFAULTS.CONTENT_MODE) {
+				params.delete("tab");
+			} else {
+				params.set("tab", contentType);
+			}
+			changed = true;
+		}
+
+		if (isFullscreen.toString() !== (params.get("fullscreen") || "false")) {
+			if (isFullscreen) params.set("fullscreen", "true");
+			else params.delete("fullscreen");
+			changed = true;
+		}
+
+		if (changed) {
+			const newRelativePathQuery =
+				window.location.pathname +
+				(params.toString() ? "?" + params.toString() : "") +
+				window.location.hash;
+			window.history.replaceState(null, "", newRelativePathQuery);
+		}
+	}, [contentType, isFullscreen]);
 
 	// Effects
 	useEffect(() => {
@@ -481,6 +529,8 @@ const HomePage = () => {
 				handleEditorWillMount={handleEditorWillMount}
 				handleEditorMount={handleEditorMount}
 				handlePaste={handlePaste}
+				isFullscreen={isFullscreen}
+				setIsFullscreen={setIsFullscreen}
 				onFileSelect={(file) => {
 					setPendingFile(file);
 					setFileUpload(file);

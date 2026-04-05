@@ -33,6 +33,8 @@ interface EditorContentProps {
 	onFileSelect?: (file: File) => void;
 	onClearFile?: () => void;
 	previewUrl?: string | null;
+	isFullscreen: boolean;
+	setIsFullscreen: (val: boolean | ((p: boolean) => boolean)) => void;
 }
 
 export const EditorContent = memo(
@@ -46,6 +48,8 @@ export const EditorContent = memo(
 		onFileSelect,
 		onClearFile,
 		previewUrl,
+		isFullscreen,
+		setIsFullscreen,
 	}: EditorContentProps) => {
 		const {
 			contentType,
@@ -61,7 +65,6 @@ export const EditorContent = memo(
 		const { theme } = useTheme();
 		const { t } = useTranslation();
 		const containerRef = useRef<HTMLDivElement>(null);
-		const [isFullscreen, setIsFullscreen] = useState(false);
 		const [isWindowFullscreen, setIsWindowFullscreen] = useState(false);
 
 		useEffect(() => {

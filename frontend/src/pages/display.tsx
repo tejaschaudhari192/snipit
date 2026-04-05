@@ -123,6 +123,35 @@ const DisplayPage = () => {
 	const [activeUsers, setActiveUsers] = useState<ActiveUser[]>([]);
 	const [isAutosave, setIsAutosave] = useState(true);
 
+	useEffect(() => {
+		const params = new URLSearchParams(location.search);
+		const editParam = params.get("edit");
+
+		if (editParam === "true") {
+			setIsEdit(true);
+		}
+	}, []);
+
+	useEffect(() => {
+		const params = new URLSearchParams(location.search);
+		let changed = false;
+
+		const currentEdit = params.get("edit");
+		if (isEdit.toString() !== currentEdit) {
+			if (isEdit) params.set("edit", "true");
+			else params.delete("edit");
+			changed = true;
+		}
+
+		if (changed) {
+			const newRel =
+				location.pathname +
+				(params.toString() ? "?" + params.toString() : "") +
+				location.hash;
+			window.history.replaceState(null, "", newRel);
+		}
+	}, [isEdit, location.pathname, location.search, location.hash]);
+
 	const onContentTypeChange = (newMode: ContentMode) => {
 		const isTextOrCode = (m: ContentMode) => m === "text" || m === "code";
 

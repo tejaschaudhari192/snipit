@@ -51,6 +51,27 @@ export const DisplayContent = memo(
 		const [isWindowFullscreen, setIsWindowFullscreen] = useState(false);
 
 		useEffect(() => {
+			const params = new URLSearchParams(window.location.search);
+			if (params.get("fullscreen") === "true") {
+				setIsFullscreen(true);
+			}
+		}, []);
+
+		useEffect(() => {
+			const params = new URLSearchParams(window.location.search);
+			if (isFullscreen.toString() !== params.get("fullscreen")) {
+				if (isFullscreen) params.set("fullscreen", "true");
+				else params.delete("fullscreen");
+
+				const newRel =
+					window.location.pathname +
+					(params.toString() ? "?" + params.toString() : "") +
+					window.location.hash;
+				window.history.replaceState(null, "", newRel);
+			}
+		}, [isFullscreen]);
+
+		useEffect(() => {
 			const handleFullscreenChange = () => {
 				setIsWindowFullscreen(!!document.fullscreenElement);
 			};
