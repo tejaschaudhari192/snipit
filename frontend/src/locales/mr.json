@@ -4,6 +4,7 @@
 		"history": "इतिहास",
 		"new_snippet": "नवीन स्निपेट",
 		"copied": "कॉपी केले!",
+		"copied_link": "{{id}} कॉपी केले!",
 		"qr_button": "QR कोड",
 		"profile": "प्रोफाइल",
 		"logout": "लॉगआउट",
@@ -128,6 +129,8 @@
 		"select_expire_time": "मुदतची वेळ निवडा",
 		"enter_snippet_placeholder": "तुमचा स्निपेट इथे लिहा...",
 		"paste_button": "पेस्ट करा",
+		"shorten_button": "लहान करा",
+		"upload_button": "अपलोड करा",
 		"paste_dynamic_id": "तुमची स्वतःची ID",
 		"paste_system_id": "ऑटो-जेनरेटेड ID",
 		"paste_dynamic_id_desc": "तुमचा स्वतःचा URL निवडा",
@@ -155,6 +158,10 @@
 		"tab_file_short": "फाईल",
 		"link_placeholder": "लहान करण्यासाठी URL प्रविष्ट करा (उदा. https://example.xyz)",
 		"link_desc": "लहान, रीडायरेक्टिंग लिंक तयार करण्यासाठी खाली मोठी URL पेस्ट करा.",
+		"link_shortened": "लिंक लहान केली!",
+		"link_ready_desc": "तुमची शॉर्ट लिंक शेअर करण्यासाठी तयार आहे",
+		"alias": "टोपणनाव",
+		"create_another": "दुसरी तयार करा",
 		"link_features": {
 			"fast": "जलद रीडायरेक्शन",
 			"custom": "सानुकूल स्लग"
@@ -163,7 +170,7 @@
 		"file_drop": "तुमची फाईल येथे ड्रॉप करा किंवा ब्राउझ करण्यासाठी क्लिक करा",
 		"file_max_size": "कमाल फाईल आकार: 50MB",
 		"file_uploading": "अपलोड होत आहे...",
-		"file_selected": "निवडलेले - पेस्ट वर क्लिक करा",
+		"file_selected": "निवडलेले - अपलोड वर क्लिक करा",
 		"file_ready": "शेअर करण्यासाठी तयार",
 		"file_features": {
 			"secure": "सुरक्षित अपलोड",
@@ -217,12 +224,13 @@
 		"sync_failed": "तुमचे खाते स्निपेट्स सिंक करण्यात अयशस्वी"
 	},
 	"messages": {
-		"snippet_created": "स्निपेट यशस्वीरित्या तयार केले!",
+		"snippet_created": "स्निपेट {{id}} यशस्वीरित्या तयार केले!",
 		"snippet_failed": "स्निपेट तयार करण्यात अडचण आली",
 		"id_conflict": "ही ID आधीच घेतली आहे. कृपया दुसरी ID वापरून पहा.",
 		"detected_language": "ओळखलेली भाषा: {{language}}",
 		"delete_confirm": "तुम्हाला खात्री आहे की तुम्ही हे स्निपेट हटवू इच्छिता?",
 		"snippet_deleted": "स्निपेट हटवले",
+		"snippet_deleted_id": "स्निपेट {{id}} काढून टाकले",
 		"delete_failed": "स्निपेट हटवण्यात अयशस्वी",
 		"action_cancelled": "क्रिया रद्द केली",
 		"snippet_updated": "स्निपेट यशस्वीरित्या अपडेट केले",

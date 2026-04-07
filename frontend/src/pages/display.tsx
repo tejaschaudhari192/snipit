@@ -15,6 +15,7 @@ import {
 	saveDraft,
 	getDraft,
 	clearDrafts,
+	cn,
 } from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
@@ -122,6 +123,41 @@ const DisplayPage = () => {
 	const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
 	const [activeUsers, setActiveUsers] = useState<ActiveUser[]>([]);
 	const [isAutosave, setIsAutosave] = useState(true);
+	const [isFullscreen, setIsFullscreen] = useState(false);
+	const [isWindowFullscreen, setIsWindowFullscreen] = useState(false);
+
+	useEffect(() => {
+		const params = new URLSearchParams(window.location.search);
+		if (params.get("fullscreen") === "true") {
+			setIsFullscreen(true);
+		}
+	}, []);
+
+	useEffect(() => {
+		const params = new URLSearchParams(window.location.search);
+		if (isFullscreen.toString() !== params.get("fullscreen")) {
+			if (isFullscreen) params.set("fullscreen", "true");
+			else params.delete("fullscreen");
+
+			const newRel =
+				window.location.pathname +
+				(params.toString() ? "?" + params.toString() : "") +
+				window.location.hash;
+			window.history.replaceState(null, "", newRel);
+		}
+	}, [isFullscreen]);
+
+	useEffect(() => {
+		const handleFullscreenChange = () => {
+			setIsWindowFullscreen(!!document.fullscreenElement);
+		};
+		document.addEventListener("fullscreenchange", handleFullscreenChange);
+		return () =>
+			document.removeEventListener(
+				"fullscreenchange",
+				handleFullscreenChange,
+			);
+	}, []);
 
 	useEffect(() => {
 		const params = new URLSearchParams(location.search);
@@ -910,135 +946,161 @@ const DisplayPage = () => {
 	);
 
 	return (
-		<div className="relative flex-1 flex flex-col min-h-0 bg-background overflow-hidden">
-			<div className="relative z-10 flex-1 overflow-y-auto">
-				<div className="flex flex-col border-b bg-background/50 backdrop-blur-md sticky top-0 z-40">
-					<DisplayToolbar
-						activeUsers={visibleActiveUsers}
-						isEdit={isEdit}
-						isAutosave={isAutosave}
-						setIsAutosave={setIsAutosave}
-						saveStatus={saveStatus}
-						content={updatedContent || paste.content}
-						onEdit={(val) => {
-							if (val) {
-								setUpdatedContent(paste?.content);
-								setVisibility(paste?.visibility ?? "public");
-								setAllowedUsers(paste?.allowedUsers ?? []);
-								setLanguage(paste?.language ?? "text");
-								setContentType(detectContentMode(paste));
-								setCustomId(paste?.id ?? "");
-								setEditPermission(
-									paste?.editPermission ?? "owner",
-								);
-								setIsPasswordEnabled(
-									!!paste?.password ||
-										!!paste?.isPasswordProtected,
-								);
-								setAllowComments(paste?.allowComments ?? false);
+		<>
+			<div
+				className={cn(
+					"relative z-10 flex-1 flex flex-col overflow-hidden",
+					isFullscreen || isWindowFullscreen
+						? "fixed inset-0 z-[100] bg-background"
+						: "",
+				)}
+			>
+				{!isFullscreen && !isWindowFullscreen && (
+					<div className="flex flex-col border-b bg-background/50 backdrop-blur-md sticky top-0 z-40 shrink-0">
+						<DisplayToolbar
+							activeUsers={visibleActiveUsers}
+							isEdit={isEdit}
+							isAutosave={isAutosave}
+							setIsAutosave={setIsAutosave}
+							saveStatus={saveStatus}
+							content={updatedContent || paste.content}
+							onEdit={(val) => {
+								if (val) {
+									setUpdatedContent(paste?.content);
+									setVisibility(
+										paste?.visibility ?? "public",
+									);
+									setAllowedUsers(paste?.allowedUsers ?? []);
+									setLanguage(paste?.language ?? "text");
+									setContentType(detectContentMode(paste));
+									setCustomId(paste?.id ?? "");
+									setEditPermission(
+										paste?.editPermission ?? "owner",
+									);
+									setIsPasswordEnabled(
+										!!paste?.password ||
+											!!paste?.isPasswordProtected,
+									);
+									setAllowComments(
+										paste?.allowComments ?? false,
+									);
+								}
+								setIsEdit(val);
+								setSaveStatus("idle");
+							}}
+							onDelete={handleDelete}
+							onSave={() => handleEditSave()}
+							onCancel={handleCancel}
+							isSaving={isSaving}
+							fontSize={fontSize}
+							setFontSize={setFontSize}
+							showFontControls={
+								contentType !== "link" &&
+								contentType !== "file" &&
+								contentType !== "draw"
 							}
-							setIsEdit(val);
-							setSaveStatus("idle");
-						}}
-						onDelete={handleDelete}
-						onSave={() => handleEditSave()}
-						onCancel={handleCancel}
-						isSaving={isSaving}
-						fontSize={fontSize}
-						setFontSize={setFontSize}
-						showFontControls={
-							contentType !== "link" &&
-							contentType !== "file" &&
-							contentType !== "draw"
-						}
-						allowComments={allowComments}
-						commentCount={paste.comments?.length ?? 0}
-						paste={paste}
-						onCommentAdded={(updated: PasteData) =>
-							setPaste(updated)
-						}
-						customId={customId}
-						setCustomId={setCustomId}
-						expiresTime={expiresTime}
-						setExpiresTime={setExpiresTime}
-						setIsCustomExpiryDialogOpen={
-							setIsCustomExpiryDialogOpen
-						}
-					/>
-					{!isEdit && <DisplayMetadata paste={paste} />}
-				</div>
+							allowComments={allowComments}
+							commentCount={paste.comments?.length ?? 0}
+							paste={paste}
+							onCommentAdded={(updated: PasteData) =>
+								setPaste(updated)
+							}
+							customId={customId}
+							setCustomId={setCustomId}
+							expiresTime={expiresTime}
+							setExpiresTime={setExpiresTime}
+							setIsCustomExpiryDialogOpen={
+								setIsCustomExpiryDialogOpen
+							}
+						/>
+						{!isEdit && <DisplayMetadata paste={paste} />}
+					</div>
+				)}
 
-				<div className="w-full px-3 sm:px-5 py-6">
-					{isEdit && (
-						<div className="mb-4">
-							<EditControls
-								contentType={contentType}
-								setContentType={onContentTypeChange}
-								language={language}
-								setLanguage={setLanguage}
-								visibility={visibility}
-								setVisibility={setVisibility}
-								allowedUsers={allowedUsers}
-								setAllowedUsers={setAllowedUsers}
-								isDetecting={isDetecting}
-								onAutoDetect={() =>
-									handleLanguageDetection(
-										updatedContent || "",
-										true,
-									)
-								}
-								newPassword={editPassword}
-								setNewPassword={setEditPassword}
-								isPasswordEnabled={isPasswordEnabled}
-								setIsPasswordEnabled={setIsPasswordEnabled}
-								editPermission={editPermission}
-								setEditPermission={setEditPermission}
-								isOwner={isOwner}
-								isAdmin={
-									!!user &&
-									shareList.some(
-										(item) =>
-											item.email === user.email &&
-											item.role === "admin",
-									)
-								}
-								shareList={shareList}
-								setShareList={setShareList}
-								publicRole={publicRole}
-								setPublicRole={setPublicRole}
-								allowComments={allowComments}
-								setAllowComments={setAllowComments}
-							/>
-						</div>
-					)}
+				<div className="flex-1 flex flex-col w-full min-h-0 overflow-y-auto">
+					<div
+						className={cn(
+							"w-full flex-1 flex flex-col transition-all duration-300",
+							!isFullscreen && !isWindowFullscreen
+								? "px-3 sm:px-5 py-6"
+								: "p-4",
+						)}
+					>
+						{isEdit && !isFullscreen && !isWindowFullscreen && (
+							<div className="mb-4 shrink-0 px-1">
+								<EditControls
+									contentType={contentType}
+									setContentType={onContentTypeChange}
+									language={language}
+									setLanguage={setLanguage}
+									visibility={visibility}
+									setVisibility={setVisibility}
+									allowedUsers={allowedUsers}
+									setAllowedUsers={setAllowedUsers}
+									isDetecting={isDetecting}
+									onAutoDetect={() =>
+										handleLanguageDetection(
+											updatedContent || "",
+											true,
+										)
+									}
+									newPassword={editPassword}
+									setNewPassword={setEditPassword}
+									isPasswordEnabled={isPasswordEnabled}
+									setIsPasswordEnabled={setIsPasswordEnabled}
+									editPermission={editPermission}
+									setEditPermission={setEditPermission}
+									isOwner={isOwner}
+									isAdmin={
+										!!user &&
+										shareList.some(
+											(item) =>
+												item.email === user.email &&
+												item.role === "admin",
+										)
+									}
+									shareList={shareList}
+									setShareList={setShareList}
+									publicRole={publicRole}
+									setPublicRole={setPublicRole}
+									allowComments={allowComments}
+									setAllowComments={setAllowComments}
+								/>
+							</div>
+						)}
 
-					<CustomExpiryDialog
-						isOpen={isCustomExpiryDialogOpen}
-						onOpenChange={setIsCustomExpiryDialogOpen}
-						customExpiryDate={customExpiryDate}
-						setCustomExpiryDate={setCustomExpiryDate}
-						onConfirm={(date) => {
-							setExpiresTime(date.toISOString());
-							setIsCustomExpiryDialogOpen(false);
-						}}
-					/>
+						<CustomExpiryDialog
+							isOpen={isCustomExpiryDialogOpen}
+							onOpenChange={setIsCustomExpiryDialogOpen}
+							customExpiryDate={customExpiryDate}
+							setCustomExpiryDate={setCustomExpiryDate}
+							onConfirm={(date) => {
+								setExpiresTime(date.toISOString());
+								setIsCustomExpiryDialogOpen(false);
+							}}
+						/>
 
-					<DisplayContent
-						id={id ?? ""}
-						isEdit={isEdit}
-						contentType={contentType}
-						language={language}
-						content={updatedContent ?? ""}
-						onContentChange={handleContentChange}
-						theme={theme}
-						fontSize={fontSize}
-						contentRef={contentRef}
-						handleEditorWillMount={handleEditorWillMount}
-						paste={paste}
-						onMount={handleEditorMount}
-						socketRef={socketRef}
-						activeUsers={activeUsers}
-					/>
+						<DisplayContent
+							id={id ?? ""}
+							isEdit={isEdit}
+							contentType={contentType}
+							language={language}
+							content={updatedContent ?? ""}
+							onContentChange={handleContentChange}
+							theme={theme}
+							fontSize={fontSize}
+							contentRef={contentRef}
+							handleEditorWillMount={handleEditorWillMount}
+							paste={paste}
+							onMount={handleEditorMount}
+							socketRef={socketRef}
+							activeUsers={activeUsers}
+							isFullscreen={isFullscreen}
+							setIsFullscreen={setIsFullscreen}
+							isWindowFullscreen={isWindowFullscreen}
+							setIsWindowFullscreen={setIsWindowFullscreen}
+						/>
+					</div>
 				</div>
 			</div>
 
@@ -1075,7 +1137,7 @@ const DisplayPage = () => {
 					</AlertDialogFooter>
 				</AlertDialogContent>
 			</AlertDialog>
-		</div>
+		</>
 	);
 };
 

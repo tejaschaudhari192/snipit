@@ -9,11 +9,15 @@ const Error = () => {
 	const { t } = useTranslation();
 
 	useEffect(() => {
+		document.body.classList.add("is-404");
 		const timer = setTimeout(() => {
 			playBruhSound();
 		}, 3000);
 
-		return () => clearTimeout(timer);
+		return () => {
+			clearTimeout(timer);
+			document.body.classList.remove("is-404");
+		};
 	}, []);
 
 	return (

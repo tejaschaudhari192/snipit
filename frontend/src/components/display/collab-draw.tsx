@@ -48,6 +48,7 @@ interface DrawUpdateData {
 	username?: string;
 	color?: { background: string; stroke: string };
 	selectedElementIds?: AppState["selectedElementIds"];
+	files?: BinaryFiles;
 }
 
 export const CollabDraw = ({
@@ -73,12 +74,12 @@ export const CollabDraw = ({
 		theme?: string;
 		viewBackgroundColor?: string;
 	}>({});
+	const initializedRef = useRef(false);
 
 	useEffect(() => {
 		if (content) {
 			try {
 				const parsed = JSON.parse(content);
-				// Ensure appState has required fields or is casted correctly
 				const data: DrawData = {
 					elements: parsed?.elements || [],
 					appState: parsed?.appState || {},
@@ -88,13 +89,45 @@ export const CollabDraw = ({
 				if (!initialData) {
 					setInitialData(data);
 					lastElementsRef.current = JSON.stringify(data.elements);
-				} else if (excalidrawAPI && !isEdit) {
-					// If in view mode, sync scene with remote content changes
-					excalidrawAPI.updateScene({
-						elements: data.elements,
-						appState: data.appState as AppState,
-					});
-					lastElementsRef.current = JSON.stringify(data.elements);
+				} else if (excalidrawAPI) {
+					const currentElementsJson = JSON.stringify(data.elements);
+					const elementsChanged =
+						currentElementsJson !== lastElementsRef.current;
+					const appStateChanged =
+						data.appState?.theme !==
+							lastAppStateRef.current.theme ||
+						data.appState?.viewBackgroundColor !==
+							lastAppStateRef.current.viewBackgroundColor;
+
+					// Force sync if not yet initialized OR if content actually changed
+					if (
+						elementsChanged ||
+						appStateChanged ||
+						!initializedRef.current
+					) {
+						isRemoteUpdate.current = true;
+						excalidrawAPI.updateScene({
+							elements: data.elements,
+							appState: data.appState as Parameters<
+								ExcalidrawAPI["updateScene"]
+							>[0]["appState"],
+						});
+						if (data.files) {
+							excalidrawAPI.addFiles(Object.values(data.files));
+						}
+						lastElementsRef.current = currentElementsJson;
+						if (data.appState) {
+							lastAppStateRef.current = {
+								theme: data.appState.theme,
+								viewBackgroundColor:
+									data.appState.viewBackgroundColor,
+							};
+						}
+						initializedRef.current = true;
+						setTimeout(() => {
+							isRemoteUpdate.current = false;
+						}, 100);
+					}
 				}
 			} catch (e) {
 				console.error("Failed to parse draw content", e);
@@ -104,7 +137,7 @@ export const CollabDraw = ({
 		} else if (!content && !initialData) {
 			setInitialData({ elements: [] as ExcalidrawElement[] });
 		}
-	}, [content, initialData, excalidrawAPI, isEdit]);
+	}, [content, initialData, excalidrawAPI]);
 
 	useEffect(() => {
 		const socket = socketRef?.current;
@@ -151,6 +184,9 @@ export const CollabDraw = ({
 						ExcalidrawAPI["updateScene"]
 					>[0]["appState"],
 				});
+				if (data.files) {
+					excalidrawAPI.addFiles(Object.values(data.files));
+				}
 
 				// Small delay to ensure all synchronous onChange events are ignored
 				setTimeout(() => {

@@ -2,7 +2,18 @@ import { Editor, type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { CollabDraw } from "@/components/display/collab-draw";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { Link, FileUp, X, CheckCircle2, Loader2 } from "lucide-react";
+import {
+	Link,
+	FileUp,
+	X,
+	CheckCircle2,
+	Loader2,
+	Copy,
+	ExternalLink,
+	History,
+	RefreshCw,
+	Trash2,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
 	useEffect,
@@ -14,7 +25,7 @@ import {
 } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { cn } from "@/lib/utils";
+import { cn, timeAgo } from "@/lib/utils";
 import { CONFIG } from "@/configurations";
 import { MarkdownDisplay } from "@/components/display/content/markdown-display";
 import { ZenModeToggle } from "@/components/common/zen-mode-toggle";
@@ -22,6 +33,8 @@ import { FileTypeIcon } from "@/components/common/file-type-icon";
 import { FilePreview } from "@/components/common/file-preview";
 import { usePaste } from "@/context/PasteContext";
 import { useTheme } from "@/hooks/use-theme";
+import { toast } from "sonner";
+import type { PasteData } from "@/types";
 
 interface EditorContentProps {
 	fontSize: number;
@@ -35,6 +48,12 @@ interface EditorContentProps {
 	previewUrl?: string | null;
 	isFullscreen: boolean;
 	setIsFullscreen: (val: boolean | ((p: boolean) => boolean)) => void;
+	shortenedResult?: {
+		id: string;
+		url: string;
+	} | null;
+	historyItems?: Array<PasteData>;
+	onDeleteHistoryItem?: (id: string) => void;
 }
 
 export const EditorContent = memo(
@@ -50,6 +69,9 @@ export const EditorContent = memo(
 		previewUrl,
 		isFullscreen,
 		setIsFullscreen,
+		shortenedResult,
+		historyItems = [],
+		onDeleteHistoryItem,
 	}: EditorContentProps) => {
 		const {
 			contentType,
@@ -146,6 +168,10 @@ export const EditorContent = memo(
 				}
 			},
 			[contentType, editorContainerRef],
+		);
+
+		const linkHistory = (historyItems || []).filter(
+			(item) => item.contentMode === "link",
 		);
 
 		return (
@@ -351,7 +377,7 @@ export const EditorContent = memo(
 																			<div className="h-1.5 w-1.5 rounded-full bg-amber-500" />
 																			{t(
 																				"home.file_selected",
-																				"Selected - click Paste",
+																				"Selected - click Upload",
 																			)}
 																		</span>
 																	)}
@@ -459,34 +485,277 @@ export const EditorContent = memo(
 								</div>
 							</div>
 						) : contentType === "link" ? (
-							<div className="h-full w-full flex items-center justify-center p-6 bg-muted/5">
-								<div className="w-full max-w-xl space-y-6">
-									<div className="flex flex-col items-center gap-2 text-center">
-										<div className="p-3 rounded-lg bg-primary/10 text-primary border border-primary/20">
-											<Link className="h-6 w-6" />
+							<div className="h-full w-full grid grid-cols-1 md:grid-cols-12 overflow-hidden">
+								<div className="md:col-span-8 flex items-center justify-center p-6 bg-muted/5 overflow-y-auto border-r border-border/10">
+									{shortenedResult ? (
+										<div className="w-full max-w-xl animate-in zoom-in-95 duration-500">
+											<div className="glass-card p-8 flex flex-col items-center gap-6 text-center border-primary/20 bg-primary/5">
+												<div className="p-4 rounded-2xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shadow-lg shadow-emerald-500/10">
+													<CheckCircle2 className="h-10 w-10" />
+												</div>
+
+												<div className="space-y-2">
+													<h2 className="text-2xl font-black tracking-tight text-foreground">
+														{t(
+															"home.link_shortened",
+															"Link Shortened!",
+														)}
+													</h2>
+													<p className="text-muted-foreground font-medium">
+														{t(
+															"home.link_ready_desc",
+															"Your short link is ready to share",
+														)}
+													</p>
+												</div>
+
+												<div className="w-full space-y-4">
+													<div className="relative group/link">
+														<div className="absolute -inset-0.5 bg-gradient-to-r from-primary/50 to-emerald-500/50 rounded-xl blur opacity-20 group-hover/link:opacity-40 transition duration-500"></div>
+														<div className="relative flex items-center gap-2 p-1 pl-4 bg-background border border-border/50 rounded-xl">
+															<span className="flex-1 text-sm font-bold truncate text-left text-foreground/90">
+																{
+																	shortenedResult.url
+																}
+															</span>
+															<Button
+																size="sm"
+																variant="ghost"
+																className="h-9 px-4 font-bold gap-2 hover:bg-primary/10 hover:text-primary transition-all"
+																onClick={() => {
+																	navigator.clipboard.writeText(
+																		shortenedResult.url,
+																	);
+																	toast.success(
+																		t(
+																			"header.copied_link",
+																			{
+																				id: `/${shortenedResult.id}`,
+																				defaultValue: `Copied /${shortenedResult.id}`,
+																			},
+																		),
+																	);
+																}}
+															>
+																<Copy className="h-3.5 w-3.5" />
+																{t(
+																	"display.copy_button",
+																)}
+															</Button>
+														</div>
+													</div>
+
+													<div className="flex items-center justify-between px-2 text-[11px] font-bold text-muted-foreground/80 tracking-wide">
+														<span>
+															{t(
+																"home.alias",
+																"Alias",
+															)}
+															:{" "}
+															{shortenedResult.id}
+														</span>
+													</div>
+												</div>
+
+												<div className="flex flex-col sm:flex-row gap-3 w-full pt-2">
+													<Button
+														className="flex-1 h-11 font-black uppercase tracking-wider shadow-lg shadow-primary/20"
+														onClick={() =>
+															window.open(
+																shortenedResult.url,
+																"_blank",
+															)
+														}
+													>
+														<ExternalLink className="h-4 w-4 mr-2" />
+														{t("common.visit_link")}
+													</Button>
+													<Button
+														variant="outline"
+														className="flex-1 h-11 font-bold border-border/50 bg-background/50 backdrop-blur-sm"
+														onClick={() =>
+															setTextValue("")
+														}
+													>
+														{t(
+															"home.create_another",
+															"Create Another",
+														)}
+													</Button>
+												</div>
+											</div>
 										</div>
-										<h2 className="text-xl font-bold tracking-tight">
-											{t("home.tab_link")}
-										</h2>
-										<p className="text-muted-foreground text-sm font-medium">
-											{t("home.link_desc")}
-										</p>
+									) : (
+										<div className="w-full max-w-xl space-y-6">
+											<div className="flex flex-col items-center gap-2 text-center">
+												<div className="p-3 rounded-lg bg-primary/10 text-primary border border-primary/20">
+													<Link className="h-6 w-6" />
+												</div>
+												<h2 className="text-xl font-bold tracking-tight">
+													{t("home.tab_link")}
+												</h2>
+												<p className="text-muted-foreground text-sm font-medium">
+													{t("home.link_desc")}
+												</p>
+											</div>
+											<Input
+												value={textValue}
+												onChange={(e) =>
+													setTextValue(e.target.value)
+												}
+												placeholder={t(
+													"home.link_placeholder",
+												)}
+												className="h-12 text-base px-5 rounded-xl border-primary/20 focus-visible:ring-primary/20 bg-background"
+											/>
+											<div className="flex items-center justify-center gap-4 text-xs text-muted-foreground font-bold">
+												<span className="px-3 py-1 rounded-lg bg-muted border border-border/50">
+													✅{" "}
+													{t(
+														"home.link_features.fast",
+													)}
+												</span>
+												<span className="px-3 py-1 rounded-lg bg-muted border border-border/50">
+													✅{" "}
+													{t(
+														"home.link_features.custom",
+													)}
+												</span>
+											</div>
+										</div>
+									)}
+								</div>
+
+								{/* Recent Links Sidebar */}
+								<div className="md:col-span-4 bg-background/30 flex flex-col min-h-0">
+									<div className="p-4 border-b border-border/10 flex items-center justify-between bg-background/40 backdrop-blur-md sticky top-0 z-10">
+										<div className="flex items-center gap-2">
+											<div className="p-1.5 rounded-lg bg-primary/10 text-primary">
+												<History className="h-3.5 w-3.5" />
+											</div>
+											<h3 className="text-xs font-black uppercase tracking-widest text-primary/80">
+												{t(
+													"history.title",
+													"Recent Links",
+												)}
+											</h3>
+										</div>
+										<button
+											className="p-1.5 rounded-md hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"
+											onClick={() =>
+												window.location.reload()
+											}
+										>
+											<RefreshCw className="h-3 w-3" />
+										</button>
 									</div>
-									<Input
-										value={textValue}
-										onChange={(e) =>
-											setTextValue(e.target.value)
-										}
-										placeholder={t("home.link_placeholder")}
-										className="h-12 text-base px-5 rounded-xl border-primary/20 focus-visible:ring-primary/20 bg-background"
-									/>
-									<div className="flex items-center justify-center gap-4 text-xs text-muted-foreground font-bold">
-										<span className="px-3 py-1 rounded-lg bg-muted border border-border/50">
-											✅ {t("home.link_features.fast")}
-										</span>
-										<span className="px-3 py-1 rounded-lg bg-muted border border-border/50">
-											✅ {t("home.link_features.custom")}
-										</span>
+
+									<div className="flex-1 overflow-y-auto p-3 space-y-2.5">
+										{linkHistory.length === 0 ? (
+											<div className="h-full flex flex-col items-center justify-center p-8 text-center gap-3">
+												<div className="w-12 h-12 rounded-full bg-muted/30 flex items-center justify-center">
+													<Link className="h-5 w-5 text-muted-foreground/40" />
+												</div>
+												<p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest leading-relaxed">
+													{t(
+														"history.no_history_desc",
+														"No history yet",
+													)}
+												</p>
+											</div>
+										) : (
+											linkHistory.map((item) => (
+												<div
+													key={item.id}
+													className={cn(
+														"group/history-item w-full p-3 rounded-xl border border-border/40 bg-background/50 hover:bg-primary/[0.02] hover:border-primary/20 transition-all flex flex-col gap-2 relative overflow-hidden",
+													)}
+												>
+													<div className="flex items-center justify-between">
+														<span className="text-[10px] font-bold tracking-wider text-primary/80">
+															/{item.id}
+														</span>
+														<span className="text-[9px] font-bold text-muted-foreground/50">
+															{timeAgo(
+																item.createdAt,
+																t,
+															)}
+														</span>
+													</div>
+													<p className="text-[11px] font-medium text-foreground/70 truncate leading-relaxed">
+														{item.content}
+													</p>
+
+													<div className="flex items-center gap-2 mt-1.5">
+														<Button
+															variant="secondary"
+															size="sm"
+															className="h-7 px-2.5 text-[9px] font-black uppercase tracking-wider gap-1.5 flex-1 bg-primary/10 hover:bg-primary/20 text-primary border-none transition-all"
+															onClick={() => {
+																const shortUrl = `${window.location.origin}/${item.id}`;
+																navigator.clipboard.writeText(
+																	shortUrl,
+																);
+																toast.success(
+																	t(
+																		"header.copied_link",
+																		{
+																			id: `/${item.id}`,
+																			defaultValue: `Copied /${item.id}`,
+																		},
+																	),
+																);
+															}}
+														>
+															<Copy className="h-3 w-3" />
+															{t(
+																"display.copy_button",
+																"Copy",
+															)}
+														</Button>
+														<Button
+															variant="secondary"
+															size="sm"
+															className="h-7 px-2.5 text-[9px] font-black uppercase tracking-wider gap-1.5 flex-1 bg-muted/60 hover:bg-muted text-muted-foreground border-none transition-all"
+															onClick={() => {
+																const shortUrl = `${window.location.origin}/${item.id}`;
+																window.open(
+																	shortUrl,
+																	"_blank",
+																);
+															}}
+														>
+															<ExternalLink className="h-3 w-3" />
+															{t(
+																"common.visit_link",
+																"Visit",
+															)}
+														</Button>
+														{onDeleteHistoryItem && (
+															<Button
+																variant="secondary"
+																size="sm"
+																className="h-7 w-9 flex items-center justify-center bg-muted/60 hover:bg-destructive/10 text-muted-foreground hover:text-destructive border-none transition-all"
+																onClick={(
+																	e,
+																) => {
+																	e.stopPropagation();
+																	onDeleteHistoryItem(
+																		item.id,
+																	);
+																}}
+																title={t(
+																	"display.delete_button",
+																	"Delete",
+																)}
+															>
+																<Trash2 className="h-3 w-3" />
+															</Button>
+														)}
+													</div>
+												</div>
+											))
+										)}
 									</div>
 								</div>
 							</div>

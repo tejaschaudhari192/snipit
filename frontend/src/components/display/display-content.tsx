@@ -1,5 +1,5 @@
 import { type BeforeMount, type OnMount } from "@monaco-editor/react";
-import { useState, useRef, useEffect, memo } from "react";
+import { useRef, useEffect, memo } from "react";
 import { cn } from "@/lib/utils";
 import { ZenModeToggle } from "@/components/common/zen-mode-toggle";
 import type { PasteData, ContentMode } from "@/types";
@@ -27,6 +27,10 @@ interface DisplayContentProps {
 	onMount?: OnMount;
 	socketRef?: React.MutableRefObject<Socket | null>;
 	activeUsers?: ActiveUser[];
+	isFullscreen: boolean;
+	setIsFullscreen: (v: boolean) => void;
+	isWindowFullscreen: boolean;
+	setIsWindowFullscreen: (v: boolean) => void;
 }
 
 export const DisplayContent = memo(
@@ -45,31 +49,12 @@ export const DisplayContent = memo(
 		onMount,
 		socketRef,
 		activeUsers,
+		isFullscreen,
+		setIsFullscreen,
+		isWindowFullscreen,
+		setIsWindowFullscreen,
 	}: DisplayContentProps) => {
 		const containerRef = useRef<HTMLDivElement>(null);
-		const [isFullscreen, setIsFullscreen] = useState(false);
-		const [isWindowFullscreen, setIsWindowFullscreen] = useState(false);
-
-		useEffect(() => {
-			const params = new URLSearchParams(window.location.search);
-			if (params.get("fullscreen") === "true") {
-				setIsFullscreen(true);
-			}
-		}, []);
-
-		useEffect(() => {
-			const params = new URLSearchParams(window.location.search);
-			if (isFullscreen.toString() !== params.get("fullscreen")) {
-				if (isFullscreen) params.set("fullscreen", "true");
-				else params.delete("fullscreen");
-
-				const newRel =
-					window.location.pathname +
-					(params.toString() ? "?" + params.toString() : "") +
-					window.location.hash;
-				window.history.replaceState(null, "", newRel);
-			}
-		}, [isFullscreen]);
 
 		useEffect(() => {
 			const handleFullscreenChange = () => {
@@ -84,7 +69,7 @@ export const DisplayContent = memo(
 					"fullscreenchange",
 					handleFullscreenChange,
 				);
-		}, []);
+		}, [setIsWindowFullscreen]);
 
 		const toggleWindowFullscreen = () => {
 			if (!document.fullscreenElement) {
@@ -196,8 +181,11 @@ export const DisplayContent = memo(
 
 		return (
 			<div
-				className="flex-1 flex flex-col min-h-0 relative"
 				ref={containerRef}
+				className={cn(
+					"flex-1 flex flex-col min-h-0 relative",
+					isFullscreen || isWindowFullscreen ? "bg-background" : "",
+				)}
 			>
 				{(contentType === "code" ||
 					contentType === "text" ||
@@ -208,26 +196,19 @@ export const DisplayContent = memo(
 						onToggle={toggleFullscreen}
 						onWindowToggle={toggleWindowFullscreen}
 						className={cn(
+							"z-[101]",
 							contentType === "draw"
-								? "absolute right-3 top-3"
-								: "absolute top-8 right-8",
-							isFullscreen || isWindowFullscreen
-								? "fixed top-4 right-8"
-								: "",
+								? isFullscreen || isWindowFullscreen
+									? "fixed top-4 right-4"
+									: "absolute right-3 top-3"
+								: isFullscreen || isWindowFullscreen
+									? "fixed top-8 right-8"
+									: "absolute top-8 right-8",
 						)}
 					/>
 				)}
-				<div
-					className={cn(
-						"relative w-full h-full",
-						isFullscreen || isWindowFullscreen
-							? "bg-background p-4"
-							: "",
-					)}
-				>
-					<div className="flex-1 w-full h-full relative">
-						{renderContent()}
-					</div>
+				<div className="flex-1 w-full h-full relative overflow-hidden">
+					{renderContent()}
 				</div>
 			</div>
 		);

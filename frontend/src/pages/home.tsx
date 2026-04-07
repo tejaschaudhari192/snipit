@@ -25,6 +25,7 @@ import type {
 	PublicRole,
 	ShareRole,
 	ContentMode,
+	PasteData,
 } from "@/types";
 import { CONFIG } from "@/configurations";
 import { useLanguageDetection } from "@/hooks/use-language-detection";
@@ -123,7 +124,7 @@ const HomePage = () => {
 		if (fs === "true") {
 			setIsFullscreen(true);
 		}
-	}, []);
+	}, [contentType, setContentType]);
 
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
@@ -156,7 +157,31 @@ const HomePage = () => {
 	// Effects
 	useEffect(() => {
 		const handleGlobalPaste = (e: ClipboardEvent) => {
-			if (isSubmitting || isUploading || contentType === "draw") return;
+			if (isSubmitting || isUploading) return;
+
+			// 1. Detect Snipit Drawing JSON
+			const textData =
+				e.clipboardData?.getData("text/plain") ||
+				e.clipboardData?.getData("text");
+			if (textData) {
+				try {
+					const parsed = JSON.parse(textData);
+					if (
+						parsed &&
+						Array.isArray(parsed.elements) &&
+						parsed.appState
+					) {
+						if (contentType !== "draw") setContentType("draw");
+						return;
+					}
+				} catch {
+					// Not JSON, continue
+				}
+			}
+
+			// 2. Ignore file pastes if already in Drawing mode (let Excalidraw handle it)
+			if (contentType === "draw") return;
+
 			const items = e.clipboardData?.items;
 			if (!items) return;
 
@@ -167,8 +192,6 @@ const HomePage = () => {
 						setContentType("file");
 						setPendingFile(file);
 						setFileUpload(file);
-						// We don't preventDefault here because we want standard text paste to still work if it's not JUST a file,
-						// but usually if it's a file kind it's what we want.
 						toast.success(
 							t(
 								"home.file_selected_via_paste",
@@ -212,6 +235,93 @@ const HomePage = () => {
 
 	// Handlers
 	// Removed duplicate logic since it's in PasteContext now
+
+	const [shortenedResult, setShortenedResult] = useState<{
+		id: string;
+		url: string;
+	} | null>(null);
+	const [historyItems, setHistoryItems] = useState<Array<PasteData>>([]);
+
+	// Effects
+	useEffect(() => {
+		const loadHistory = async () => {
+			const stored = localStorage.getItem("items");
+			const localItems: Array<PasteData> = stored
+				? JSON.parse(stored)
+				: [];
+			let finalItems = [...localItems];
+
+			if (user) {
+				try {
+					const userPastes = await apiHelpers.getUserPastes();
+					const userPasteIds = new Set(
+						userPastes.map((p: PasteData) => p.id),
+					);
+					const filteredLocal = localItems.filter(
+						(p) => !userPasteIds.has(p.id),
+					);
+					finalItems = [...userPastes, ...filteredLocal];
+				} catch (err) {
+					console.error("Failed to fetch user pastes", err);
+				}
+			}
+
+			finalItems.sort(
+				(a, b) =>
+					new Date(b.createdAt).getTime() -
+					new Date(a.createdAt).getTime(),
+			);
+			setHistoryItems(finalItems);
+		};
+
+		loadHistory();
+	}, [user, apiHelpers]);
+
+	const handleDeleteHistory = async (id: string) => {
+		try {
+			// Find the item first to see if it's a server paste
+			const item = historyItems.find((p) => p.id === id);
+
+			if (user && item && item.owner) {
+				// If logged in and paste has a userId, try deleting from server
+				await apiHelpers.deletePaste(id);
+			}
+
+			// Update state
+			const newItems = historyItems.filter((p) => p.id !== id);
+			setHistoryItems(newItems);
+
+			// Update localStorage
+			const stored = localStorage.getItem("items");
+			if (stored) {
+				const localItems: Array<PasteData> = JSON.parse(stored);
+				const updatedLocal = localItems.filter((p) => p.id !== id);
+				localStorage.setItem("items", JSON.stringify(updatedLocal));
+			}
+
+			toast.success(
+				t("messages.snippet_deleted_id", {
+					id: `/${id}`,
+					defaultValue: `Snippet /${id} deleted`,
+				}),
+			);
+		} catch (error) {
+			console.error("Failed to delete history item", error);
+			toast.error(
+				t("messages.delete_failed", "Failed to delete snippet"),
+			);
+		}
+	};
+
+	useEffect(() => {
+		setShortenedResult(null);
+	}, [contentType]);
+
+	useEffect(() => {
+		if (textValue === "" && shortenedResult) {
+			setShortenedResult(null);
+		}
+	}, [textValue, shortenedResult]);
 
 	const handleSubmit = async (
 		selectedIdType: IdType,
@@ -302,11 +412,24 @@ const HomePage = () => {
 			});
 			playSuccessSound();
 			toast.success(
-				t("messages.snippet_created", { idType: selectedIdType }),
+				t("messages.snippet_created", {
+					idType: selectedIdType,
+					id: `/${data.id}`,
+					defaultValue: `Snippet created: /${data.id}`,
+				}),
 				{
 					position: "bottom-right",
 				},
 			);
+
+			if (contentType === "link") {
+				setShortenedResult({
+					id: data.id,
+					url: window.location.origin + "/" + data.id,
+				});
+				return true;
+			}
+
 			navigate("/" + data.id, {
 				state: {
 					pasteData: data,
@@ -404,6 +527,19 @@ const HomePage = () => {
 
 	const handleLanguageDetection = async (content: string) => {
 		if (hasDetectedRef.current) return;
+
+		// 1. Local check for Drawing JSON
+		try {
+			const parsed = JSON.parse(content);
+			if (parsed && Array.isArray(parsed.elements) && parsed.appState) {
+				hasDetectedRef.current = true;
+				setContentType("draw");
+				return;
+			}
+		} catch {
+			// Not JSON, continue to API detection
+		}
+
 		hasDetectedRef.current = true;
 		const result = await detectLanguage(content);
 		if (result) {
@@ -540,6 +676,9 @@ const HomePage = () => {
 					setPendingFile(null);
 				}}
 				previewUrl={previewUrl}
+				shortenedResult={shortenedResult}
+				historyItems={historyItems}
+				onDeleteHistoryItem={handleDeleteHistory}
 			/>
 		</div>
 	);

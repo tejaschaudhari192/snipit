@@ -149,6 +149,8 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const onContentTypeChange = useCallback(
 		(newMode: ContentMode) => {
+			if (newMode === contentType) return;
+
 			if (newMode === "text") {
 				setLanguageState("text");
 			} else if (newMode === "code") {
@@ -159,18 +161,41 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 				);
 			}
 
-			saveDraft(contentType, valueRef.current);
-			const draft = getDraft(newMode);
-			if (draft !== null) {
-				setTextValue(draft);
-			} else if (newMode === "draw") {
-				const emptyDraw = JSON.stringify({
-					elements: [],
-					appState: {},
-				});
-				setTextValue(emptyDraw);
-			} else {
-				setTextValue("");
+			// Capture current value before switching
+			const currentVal = valueRef.current;
+			saveDraft(contentType, currentVal);
+
+			// Special Case: Priority migration to 'draw' if current value is already a valid drawing
+			let migrationApplied = false;
+			if (newMode === "draw") {
+				try {
+					const parsed = JSON.parse(currentVal);
+					if (
+						parsed &&
+						Array.isArray(parsed.elements) &&
+						(parsed.appState || parsed.type === "excalidraw")
+					) {
+						migrationApplied = true;
+						// Keep currentVal (textValue) as it's already a valid drawing
+					}
+				} catch {
+					migrationApplied = false;
+				}
+			}
+
+			if (!migrationApplied) {
+				const draft = getDraft(newMode);
+				if (draft !== null) {
+					setTextValue(draft);
+				} else if (newMode === "draw") {
+					const emptyDraw = JSON.stringify({
+						elements: [],
+						appState: {},
+					});
+					setTextValue(emptyDraw);
+				} else {
+					setTextValue("");
+				}
 			}
 			setContentType(newMode);
 		},
@@ -241,20 +266,35 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 		}),
 		[
 			visibility,
+			setVisibility,
 			editPermission,
+			setEditPermission,
 			allowedUsers,
+			setAllowedUsers,
 			shareList,
+			setShareList,
 			publicRole,
+			setPublicRole,
 			allowComments,
+			setAllowComments,
 			expiresTime,
+			setExpiresTime,
 			contentType,
+			setContentType,
 			language,
+			setLanguage,
 			textValue,
+			setTextValue,
 			password,
+			setPassword,
 			customId,
+			setCustomId,
 			idTypeTab,
+			setIdTypeTab,
 			fastRedirect,
+			setFastRedirect,
 			isSubmitting,
+			setIsSubmitting,
 			isUploading,
 			uploadProgress,
 			uploadError,
@@ -265,8 +305,6 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			uploadFile,
 			setFileUpload,
 			resetFileUpload,
-			setLanguage,
-			setTextValue,
 			onContentTypeChange,
 			resetPaste,
 		],

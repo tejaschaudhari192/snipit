@@ -60,6 +60,15 @@ export const MainToolbar = memo(
 				}
 				return t("common.submitting", "Submitting...");
 			}
+
+			if (contentType === "link") {
+				return t("home.shorten_button", "Shorten");
+			}
+
+			if (contentType === "file") {
+				return t("home.upload_button", "Upload");
+			}
+
 			return t("home.paste_button");
 		};
 

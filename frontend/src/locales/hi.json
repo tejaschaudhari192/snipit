@@ -4,6 +4,7 @@
 		"history": "इतिहास",
 		"new_snippet": "नया स्निपेट",
 		"copied": "कॉपी किया गया!",
+		"copied_link": "{{id}} कॉपी किया गया!",
 		"qr_button": "QR कोड",
 		"profile": "प्रोफ़ाइल",
 		"logout": "लॉगआउट",
@@ -224,12 +225,13 @@
 		"sync_failed": "आपके खाता स्निपेट सिंक करने में विफल"
 	},
 	"messages": {
-		"snippet_created": "स्निपेट सफलतापूर्वक बनाया गया!",
+		"snippet_created": "स्निपेट {{id}} सफलतापूर्वक बनाया गया!",
 		"snippet_failed": "स्निपेट बनाने में विफल",
 		"id_conflict": "यह आईडी पहले से ली गई है। कृपया दूसरी कोशिश करें।",
 		"detected_language": "पहचानी गई भाषा: {{language}}",
 		"delete_confirm": "क्या आप वाकई इस स्निपेट को हटाना चाहते हैं?",
 		"snippet_deleted": "स्निपेट हटा दिया गया है",
+		"snippet_deleted_id": "स्निपेट {{id}} हटा दिया गया है",
 		"delete_failed": "स्निपेट हटाने में विफल",
 		"action_cancelled": "कार्रवाई रद्द की गई",
 		"snippet_updated": "स्निपेट सफलतापूर्वक अपडेट किया गया",

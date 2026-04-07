@@ -4,6 +4,7 @@
 		"history": "History",
 		"new_snippet": "New Snippet",
 		"copied": "Copied!",
+		"copied_link": "Copied {{id}}!",
 		"qr_button": "QR Code",
 		"profile": "Profile",
 		"logout": "Logout",
@@ -137,6 +138,8 @@
 		"select_expire_time": "Select Expire Time",
 		"enter_snippet_placeholder": "Enter your snippet here...",
 		"paste_button": "Paste",
+		"shorten_button": "Shorten",
+		"upload_button": "Upload",
 		"paste_dynamic_id": "Custom ID",
 		"paste_system_id": "Auto-generated ID",
 		"paste_dynamic_id_desc": "Choose your own unique URL",
@@ -166,6 +169,10 @@
 		"tab_file_short": "File",
 		"link_placeholder": "Enter URL to shorten (e.g., https://example.xyz)",
 		"link_desc": "Paste the long URL below to create a short, redirecting link.",
+		"link_shortened": "Link Shortened!",
+		"link_ready_desc": "Your short link is ready to share",
+		"alias": "Alias",
+		"create_another": "Create Another",
 		"link_features": {
 			"fast": "Fast Redirection",
 			"custom": "Custom Slugs"
@@ -174,7 +181,7 @@
 		"file_drop": "Drop your file here or click to browse",
 		"file_max_size": "Maximum file size: 50MB",
 		"file_uploading": "Uploading...",
-		"file_selected": "Selected - click Paste",
+		"file_selected": "Selected - click Upload",
 		"file_ready": "Ready to share",
 		"file_features": {
 			"secure": "Secure Upload",
@@ -228,12 +235,13 @@
 		"sync_failed": "Failed to sync your account snippets"
 	},
 	"messages": {
-		"snippet_created": "Snippet created successfully!",
+		"snippet_created": "Snippet {{id}} created successfully!",
 		"snippet_failed": "Failed to create snippet",
 		"id_conflict": "This ID is already taken. Please try another one.",
 		"detected_language": "Detected language: {{language}}",
 		"delete_confirm": "Are you sure you want to delete this snippet?",
 		"snippet_deleted": "Snippet has been deleted",
+		"snippet_deleted_id": "Snippet {{id}} has been deleted",
 		"delete_failed": "Failed to delete snippet",
 		"action_cancelled": "Action cancelled",
 		"snippet_updated": "Snippet updated successfully",

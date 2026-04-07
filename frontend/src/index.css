@@ -208,6 +208,10 @@
 	}
 }
 
+body.is-404 .action-url-bar {
+	display: none;
+}
+
 @keyframes cursor-blink {
 	0%,
 	100% {

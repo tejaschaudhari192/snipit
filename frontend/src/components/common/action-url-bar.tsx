@@ -16,7 +16,7 @@ export const ActionUrlBar = ({ url, className }: ActionUrlBarProps) => {
 	return (
 		<div
 			className={cn(
-				"flex items-center h-9 md:h-8 gap-2 min-w-0 flex-1 px-3 rounded-full glass-card max-w-sm overflow-hidden",
+				"action-url-bar flex items-center h-9 md:h-8 gap-2 min-w-0 flex-1 px-3 rounded-full glass-card max-w-sm overflow-hidden",
 				className,
 			)}
 		>
