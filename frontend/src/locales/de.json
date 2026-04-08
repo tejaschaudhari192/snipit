@@ -91,7 +91,14 @@
 		"shrink": "Verkleinern",
 		"expand": "Auf Tab erweitern",
 		"exit_fullscreen": "Vollbild beenden",
-		"window_fullscreen": "Fenster-Vollbild"
+		"window_fullscreen": "Fenster-Vollbild",
+		"identification": "Identifikation",
+		"close": "Schließen",
+		"refresh": "Aktualisieren",
+		"edit_permission": "Wer kann bearbeiten?",
+		"only_me": "Nur ich",
+		"specific_people": "Bestimmte Personen",
+		"everyone": "Jeder"
 	},
 	"profile": {
 		"title": "Ihr Profil",
@@ -171,6 +178,7 @@
 		"auto_detecting": "Automatische Erkennung...",
 		"detected_language": "Erkannte Sprache: {{language}}",
 		"collaborative_session": "Zusammenarbeitssitzung",
+		"collaborative_session_btn": "Zusammenarbeit starten",
 		"collaborative_session_desc": "Erstelle ein Echtzeit-Multiplayer-Snippet",
 		"file_selected_via_paste": "Datei über Einfügen ausgewählt!",
 		"dynamic_id_dialog": {
@@ -195,6 +203,7 @@
 	},
 	"history": {
 		"title": "Verlauf",
+		"recent_links": "Aktuelle Links",
 		"plain_text_snippet": "Klartext-Snippet",
 		"code_snippet": "Code-Snippet",
 		"link_snippet": "Link kürzen",

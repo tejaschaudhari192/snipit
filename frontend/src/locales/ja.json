@@ -91,7 +91,14 @@
 		"shrink": "縮小",
 		"expand": "タブまで拡大",
 		"exit_fullscreen": "フルスクリーンを終了",
-		"window_fullscreen": "ウィンドウ・フルスクリーン"
+		"window_fullscreen": "ウィンドウ・フルスクリーン",
+		"identification": "識別",
+		"close": "閉じる",
+		"refresh": "更新",
+		"edit_permission": "編集できる人",
+		"only_me": "自分のみ",
+		"specific_people": "特定のユーザー",
+		"everyone": "全員"
 	},
 	"profile": {
 		"title": "ユーザープロフィール",
@@ -172,6 +179,7 @@
 		"auto_detecting": "自動検出中...",
 		"detected_language": "検出された言語: {{language}}",
 		"collaborative_session": "共同編集セッション",
+		"collaborative_session_btn": "共同編集を開始",
 		"collaborative_session_desc": "リアルタイムマルチプレイヤー・スニペットを作成",
 		"file_selected_via_paste": "ペーストによりファイルが選択されました！",
 		"dynamic_id_dialog": {
@@ -196,6 +204,7 @@
 	},
 	"history": {
 		"title": "履歴",
+		"recent_links": "最近のリンク",
 		"plain_text_snippet": "プレーンテキストのスニペット",
 		"code_snippet": "コードスニペット",
 		"link_snippet": "リンクを短縮",

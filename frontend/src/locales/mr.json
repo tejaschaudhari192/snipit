@@ -92,7 +92,14 @@
 		"shrink": "वापस लहान करा",
 		"expand": "टॅबमध्ये मोठे करा",
 		"exit_fullscreen": "फुलस्क्रीन मधून बाहेर पडा",
-		"window_fullscreen": "विंडो फुलस्क्रीन"
+		"window_fullscreen": "विंडो फुलस्क्रीन",
+		"identification": "ओळख",
+		"close": "बंद करा",
+		"refresh": "रीफ्रेश करा",
+		"edit_permission": "कोण संपादित करू शकते?",
+		"only_me": "फक्त मी",
+		"specific_people": "विशिष्ट लोक",
+		"everyone": "प्रत्येकजण"
 	},
 	"profile": {
 		"title": "तुमची प्रोफाइल",
@@ -179,6 +186,7 @@
 		"auto_detecting": "आपोआप ओळखत आहे...",
 		"detected_language": "ओळखलेली भाषा: {{language}}",
 		"collaborative_session": "सहयोग सत्र",
+		"collaborative_session_btn": "सहयोग सुरू करा",
 		"collaborative_session_desc": "रिअल-टाइम मल्टीप्लेयर स्निपेट तयार करा",
 		"file_selected_via_paste": "पेस्ट द्वारे फाईल निवडली गेली!",
 		"dynamic_id_dialog": {
@@ -203,6 +211,7 @@
 	},
 	"history": {
 		"title": "इतिहास",
+		"recent_links": "अलीकडील दुवे",
 		"plain_text_snippet": "साधा मजकूर स्निपेट",
 		"code_snippet": "कोड स्निपेट",
 		"link_snippet": "लिंक लहान करा",

@@ -100,7 +100,9 @@
 		"settings": "General Settings",
 		"privacy": "Privacy & Security",
 		"collaborators": "Collaborators",
-		"identification": "Identification"
+		"identification": "Identification",
+		"close": "Close",
+		"refresh": "Refresh"
 	},
 	"profile": {
 		"title": "Your Profile",
@@ -190,6 +192,7 @@
 		"auto_detecting": "Auto Detecting...",
 		"detected_language": "Detected language: {{language}}",
 		"collaborative_session": "Collaboration Session",
+		"collaborative_session_btn": "Start Collaboration",
 		"collaborative_session_desc": "Create a real-time multiplayer snippet",
 		"file_selected_via_paste": "File selected via paste!",
 		"dynamic_id_dialog": {
@@ -214,6 +217,7 @@
 	},
 	"history": {
 		"title": "History",
+		"recent_links": "Recent Links",
 		"plain_text_snippet": "Plain Text Snippet",
 		"code_snippet": "Code Snippet",
 		"link_snippet": "Shorten Link",

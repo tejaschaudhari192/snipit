@@ -152,7 +152,7 @@ export const MainToolbar = memo(
 								>
 									<Users className="h-3.5 w-3.5" />
 									{t(
-										"home.collaborative_session",
+										"home.collaborative_session_btn",
 										"Start Collaboration",
 									)}
 								</Button>
