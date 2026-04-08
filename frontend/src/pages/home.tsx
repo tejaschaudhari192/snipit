@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { type OnMount, type BeforeMount } from "@monaco-editor/react";
@@ -41,6 +41,7 @@ const HomePage = () => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
 	const navigate = useNavigate();
+	const location = useLocation();
 	const apiHelpers = useApiHelpers();
 
 	// Refs
@@ -102,6 +103,11 @@ const HomePage = () => {
 
 	const { isDetecting, detectLanguage } = useLanguageDetection();
 
+	const onContentTypeChangeRef = useRef(onContentTypeChange);
+	useEffect(() => {
+		onContentTypeChangeRef.current = onContentTypeChange;
+	}, [onContentTypeChange]);
+
 	// Keep valueRef in sync with context's textValue
 	useEffect(() => {
 		previousLengthRef.current = valueRef.current.trim().length;
@@ -109,25 +115,21 @@ const HomePage = () => {
 	}, [textValue]);
 
 	useEffect(() => {
-		const params = new URLSearchParams(window.location.search);
+		const params = new URLSearchParams(location.search);
 		const tab = params.get("tab");
 		const fs = params.get("fullscreen");
 
-		if (
-			tab &&
-			["text", "code", "draw", "link", "file"].includes(tab) &&
-			tab !== contentType
-		) {
-			setContentType(tab as ContentMode);
+		if (tab && ["text", "code", "draw", "link", "file"].includes(tab)) {
+			onContentTypeChangeRef.current(tab as ContentMode);
 		}
 
 		if (fs === "true") {
 			setIsFullscreen(true);
 		}
-	}, [contentType, setContentType]);
+	}, [location.search]); // Sync from URL only when URL actually changes via navigation/back button
 
 	useEffect(() => {
-		const params = new URLSearchParams(window.location.search);
+		const params = new URLSearchParams(location.search);
 		let changed = false;
 
 		if (contentType !== params.get("tab")) {
@@ -147,12 +149,12 @@ const HomePage = () => {
 
 		if (changed) {
 			const newRelativePathQuery =
-				window.location.pathname +
+				location.pathname +
 				(params.toString() ? "?" + params.toString() : "") +
-				window.location.hash;
+				location.hash;
 			window.history.replaceState(null, "", newRelativePathQuery);
 		}
-	}, [contentType, isFullscreen]);
+	}, [contentType, isFullscreen, location.pathname]);
 
 	// Effects
 	useEffect(() => {
