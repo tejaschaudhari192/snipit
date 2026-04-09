@@ -368,7 +368,8 @@ class PasteController {
 					});
 				}
 			}
-
+			//wait on this line for 3s
+			await new Promise((resolve) => setTimeout(resolve, 3000));
 			return res.json(result.toObject());
 		} catch (error) {
 			this.logger.error("Error fetching paste", id, error);

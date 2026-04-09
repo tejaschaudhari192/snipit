@@ -83,8 +83,9 @@ const ProfilePage = () => {
 						<ShimmerSection type="card" className="h-[400px]" />
 					</div>
 					<div className="lg:col-span-8 flex flex-col gap-4">
-						<ShimmerSection type="toolbar" />
-						<ShimmerSection type="editor" />
+						<ShimmerSection type="card" />
+						<ShimmerSection type="card" />
+						<ShimmerSection type="card" />
 					</div>
 				</div>
 			</div>

@@ -123,17 +123,17 @@ export const ShimmerSection = ({
 			return (
 				<div
 					className={cn(
-						"flex items-center gap-4 p-2.5 px-4 rounded-2xl glass-card bg-background/40 border border-border/10",
+						"flex items-center gap-4 p-2.5 px-4 rounded-2xl bg-muted/10 border border-border/10",
 						className,
 					)}
 				>
 					<div className="flex items-center gap-2">
-						{[...Array(5)].map((_, i) => (
+						{[...Array(3)].map((_, i) => (
 							<ShimmerDiv
 								key={i}
-								height={40}
-								width={100}
-								rounded={12}
+								height={36}
+								width={80}
+								rounded={8}
 								mode={mode}
 							/>
 						))}
@@ -141,15 +141,16 @@ export const ShimmerSection = ({
 					<div className="flex-1" />
 					<div className="flex items-center gap-3">
 						<ShimmerDiv
-							height={40}
-							width={120}
-							rounded={12}
+							height={32}
+							width={60}
+							rounded={8}
 							mode={mode}
 						/>
-						<ShimmerButton
-							size="md"
+						<ShimmerDiv
+							height={32}
+							width={32}
+							rounded={8}
 							mode={mode}
-							className="rounded-xl w-24"
 						/>
 					</div>
 				</div>
