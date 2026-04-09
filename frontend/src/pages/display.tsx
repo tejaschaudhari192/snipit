@@ -932,22 +932,17 @@ const DisplayPage = () => {
 
 	if (loading) {
 		return (
-			<div className="flex-1 flex flex-col animate-in fade-in duration-500">
-				<div className="flex flex-col border-b bg-background/50 backdrop-blur-md sticky top-0 z-40 shrink-0">
-					<ShimmerSection
-						type="toolbar"
-						className="border-none bg-transparent shadow-none rounded-none w-full py-4 px-6"
-					/>
-					<div className="flex items-center px-6 py-3 border-y border-border/50">
-						<ShimmerSection
-							type="text"
-							lines={1}
-							className="w-1/3 opacity-50"
-						/>
-					</div>
-				</div>
+			<div className="flex-1 flex flex-col bg-background">
+				<ShimmerSection
+					type="toolbar"
+					className="sticky top-0 z-40 rounded-none border-x-0 !bg-background/40 backdrop-blur-xl h-[60px]"
+				/>
+				<ShimmerSection
+					type="metadata"
+					className="sticky top-[60px] z-30"
+				/>
 				<div className="flex-1 flex flex-col px-3 sm:px-5 py-6">
-					<ShimmerSection type="editor" />
+					<ShimmerSection type="editor" className="min-h-[70vh]" />
 				</div>
 			</div>
 		);

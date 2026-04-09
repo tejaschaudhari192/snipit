@@ -10,7 +10,8 @@ interface ShimmerSectionProps {
 		| "toolbar"
 		| "button"
 		| "loader"
-		| "mini-loader";
+		| "mini-loader"
+		| "metadata";
 	className?: string;
 	lines?: number;
 }
@@ -92,7 +93,7 @@ export const ShimmerSection = ({
 			return (
 				<div
 					className={cn(
-						"flex-1 p-6 space-y-6 rounded-2xl glass-card min-h-[500px]",
+						"flex-1 p-6 space-y-6 rounded-2xl bg-muted/40 dark:bg-muted/20 border border-border/20 shadow-sm ring-1 ring-border/5 min-h-[500px]",
 						className,
 					)}
 				>
@@ -112,6 +113,7 @@ export const ShimmerSection = ({
 							width={100}
 							rounded={8}
 							mode={mode}
+							className="!bg-muted-foreground/10 dark:!bg-muted/20"
 						/>
 					</div>
 					<div className="space-y-4 py-4">
@@ -123,36 +125,76 @@ export const ShimmerSection = ({
 			return (
 				<div
 					className={cn(
-						"flex items-center gap-4 p-2.5 px-4 rounded-2xl bg-muted/10 border border-border/10",
+						"flex items-center justify-between gap-4 p-2.5 px-4 rounded-2xl bg-muted/60 dark:bg-muted/20 border border-border/30 dark:border-border/20 shadow-sm transition-all duration-300",
 						className,
 					)}
 				>
 					<div className="flex items-center gap-2">
-						{[...Array(3)].map((_, i) => (
-							<ShimmerDiv
-								key={i}
-								height={36}
-								width={80}
-								rounded={8}
-								mode={mode}
-							/>
-						))}
-					</div>
-					<div className="flex-1" />
-					<div className="flex items-center gap-3">
 						<ShimmerDiv
-							height={32}
-							width={60}
+							height={36}
+							width={100}
 							rounded={8}
 							mode={mode}
+							className="!bg-muted-foreground/20 dark:!bg-muted/30"
 						/>
 						<ShimmerDiv
-							height={32}
-							width={32}
+							height={36}
+							width={80}
 							rounded={8}
 							mode={mode}
+							className="hidden sm:block !bg-muted-foreground/10 dark:!bg-muted/20"
+						/>
+						<ShimmerDiv
+							height={36}
+							width={80}
+							rounded={8}
+							mode={mode}
+							className="hidden sm:block !bg-muted-foreground/10 dark:!bg-muted/20"
 						/>
 					</div>
+					<div className="flex items-center gap-2">
+						<ShimmerDiv
+							height={36}
+							width={120}
+							rounded={8}
+							mode={mode}
+							className="!bg-muted-foreground/20 dark:!bg-muted/30"
+						/>
+					</div>
+				</div>
+			);
+
+		case "metadata":
+			return (
+				<div
+					className={cn(
+						"flex items-center gap-4 py-3 px-6 bg-muted/30 dark:bg-muted/10 border-y border-border/20 transition-all duration-300",
+						className,
+					)}
+				>
+					<ShimmerDiv
+						height={18}
+						width={120}
+						mode={mode}
+						rounded={4}
+						className="!bg-muted-foreground/20 dark:!bg-muted/30"
+					/>
+					<div className="w-px h-3 bg-border/40 hidden sm:block" />
+					<ShimmerDiv
+						height={18}
+						width={150}
+						mode={mode}
+						rounded={4}
+						className="!bg-muted-foreground/20 dark:!bg-muted/30"
+					/>
+					<div className="w-px h-3 bg-border/40 hidden sm:block" />
+					<ShimmerDiv
+						height={18}
+						width={80}
+						mode={mode}
+						rounded={4}
+						className="!bg-muted-foreground/20 dark:!bg-muted/30"
+					/>
 				</div>
 			);
 		case "button":
