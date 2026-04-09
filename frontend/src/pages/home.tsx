@@ -31,8 +31,6 @@ import { CONFIG } from "@/configurations";
 import { useLanguageDetection } from "@/hooks/use-language-detection";
 import { usePaste } from "@/context/PasteContext";
 
-import { ShimmerSection } from "@/components/common/shimmer-section";
-
 const LanguageSelector = lazy(() =>
 	import("@/components/editor/language-selector").then((m) => ({
 		default: m.LanguageSelector,
@@ -176,7 +174,13 @@ const HomePage = () => {
 				location.hash;
 			window.history.replaceState(null, "", newRelativePathQuery);
 		}
-	}, [contentType, isFullscreen, location.pathname]);
+	}, [
+		contentType,
+		isFullscreen,
+		location.pathname,
+		location.search,
+		location.hash,
+	]);
 
 	// Effects
 	useEffect(() => {
@@ -615,7 +619,7 @@ const HomePage = () => {
 		<div className="relative flex-1 flex flex-col bg-background overflow-hidden">
 			{/* Toolbar: fixed height, does not grow */}
 			<div className="relative z-10 flex flex-col gap-1.5 my-1 mx-2 md:my-1.5 md:mx-4 shrink-0">
-				<Suspense fallback={<ShimmerSection type="toolbar" />}>
+				<Suspense fallback={null}>
 					<MainToolbar
 						contentType={contentType}
 						setContentType={onContentTypeChange}
@@ -637,14 +641,7 @@ const HomePage = () => {
 				<div className="flex flex-wrap items-center gap-2">
 					{(isDetecting || contentType === "code") && (
 						<div className="w-full sm:w-auto flex items-center gap-2">
-							<Suspense
-								fallback={
-									<ShimmerSection
-										type="button"
-										className="w-32"
-									/>
-								}
-							>
+							<Suspense fallback={null}>
 								<LanguageSelector
 									value={language}
 									onValueChange={setLanguage}
@@ -675,14 +672,7 @@ const HomePage = () => {
 					{contentType !== "link" &&
 						contentType !== "file" &&
 						contentType !== "draw" && (
-							<Suspense
-								fallback={
-									<ShimmerSection
-										type="button"
-										className="w-24"
-									/>
-								}
-							>
+							<Suspense fallback={null}>
 								<FontSizeControls
 									fontSize={fontSize}
 									setFontSize={setFontSize}
@@ -706,7 +696,7 @@ const HomePage = () => {
 			</Suspense>
 
 			{/* Editor: takes all remaining space */}
-			<Suspense fallback={<ShimmerSection type="editor" />}>
+			<Suspense fallback={null}>
 				<EditorContent
 					fontSize={fontSize}
 					editorContainerRef={editorContainerRef}

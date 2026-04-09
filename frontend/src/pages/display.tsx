@@ -1042,9 +1042,7 @@ const DisplayPage = () => {
 						</Suspense>
 						{!isEdit && (
 							<Suspense
-								fallback={
-									<ShimmerSection type="text" lines={1} />
-								}
+								fallback={<ShimmerSection type="metadata" />}
 							>
 								<DisplayMetadata paste={paste} />
 							</Suspense>

@@ -45,6 +45,7 @@
 	--animate-pulse-subtle: pulse-subtle 2s ease-in-out infinite;
 	--animate-collapsible-down: collapsible-down 300ms ease-out;
 	--animate-collapsible-up: collapsible-up 300ms ease-out;
+	--animate-shimmer-fast: shimmer-gradient 2s infinite linear;
 }
 
 :root {
@@ -181,22 +182,27 @@
 		animation: progress-gradient-flow 3s ease infinite;
 	}
 
-	@keyframes shimmer {
-		from {
-			transform: translateX(-100%);
+	@keyframes shimmer-gradient {
+		0% {
+			background-position: -200% 0;
 		}
-
-		to {
-			transform: translateX(100%);
+		100% {
+			background-position: 200% 0;
 		}
 	}
 
-	.animate-shimmer {
-		animation: shimmer 2s infinite;
-	}
-
-	.animate-moving-border {
-		animation: moving-border 3.5s linear infinite;
+	.skeleton {
+		@apply relative overflow-hidden bg-muted-foreground/15 dark:bg-muted-foreground/10 border border-border/5;
+		background-image: linear-gradient(
+			90deg,
+			transparent 0%,
+			rgba(255, 255, 255, 0.05) 25%,
+			rgba(255, 255, 255, 0.12) 50%,
+			rgba(255, 255, 255, 0.05) 75%,
+			transparent 100%
+		);
+		background-size: 200% 100%;
+		animation: shimmer-gradient 2s infinite linear;
 	}
 
 	.glass-card {

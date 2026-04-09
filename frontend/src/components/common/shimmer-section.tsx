@@ -1,6 +1,25 @@
-import { ShimmerText, ShimmerDiv, ShimmerButton } from "shimmer-effects-react";
 import { cn } from "@/lib/utils";
-import { useTheme } from "@/hooks/use-theme";
+
+interface SkeletonProps {
+	className?: string;
+	width?: string | number;
+	height?: string | number;
+	rounded?: string;
+}
+
+const Skeleton = ({
+	className,
+	width,
+	height,
+	rounded = "rounded-md",
+}: SkeletonProps) => {
+	const style: React.CSSProperties = {
+		width: typeof width === "number" ? `${width}px` : width,
+		height: typeof height === "number" ? `${height}px` : height,
+	};
+
+	return <div className={cn("skeleton", rounded, className)} style={style} />;
+};
 
 interface ShimmerSectionProps {
 	type?:
@@ -21,9 +40,6 @@ export const ShimmerSection = ({
 	className,
 	lines = 3,
 }: ShimmerSectionProps) => {
-	const { theme } = useTheme();
-	const mode = theme === "dark" ? "dark" : "light";
-
 	switch (type) {
 		case "card":
 			return (
@@ -36,59 +52,51 @@ export const ShimmerSection = ({
 					{/* Header Row */}
 					<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 						<div className="flex items-center gap-3">
-							<ShimmerDiv
+							<Skeleton
 								height={24}
 								width={80}
-								rounded={6}
-								mode={mode}
+								rounded="rounded-md"
 							/>
-							<ShimmerDiv
+							<Skeleton
 								height={16}
 								width={60}
-								rounded={4}
-								mode={mode}
+								rounded="rounded-sm"
 							/>
 						</div>
 						<div className="flex items-center gap-3">
-							<ShimmerDiv
+							<Skeleton
 								height={16}
 								width={100}
-								rounded={4}
-								mode={mode}
+								rounded="rounded-sm"
 							/>
 						</div>
 					</div>
 
 					{/* Content Block */}
-					<div className="bg-muted/30 rounded-lg p-4 border border-border/20">
-						<ShimmerText line={2} gap={10} mode={mode} />
+					<div className="bg-muted/30 rounded-lg p-4 border border-border/20 space-y-2">
+						<Skeleton height={14} width="90%" />
+						<Skeleton height={14} width="70%" />
 					</div>
 
 					{/* Footer Row */}
 					<div className="flex items-center justify-between">
 						<div className="flex items-center gap-4">
-							<ShimmerDiv
+							<Skeleton
 								height={20}
 								width={70}
-								rounded={6}
-								mode={mode}
+								rounded="rounded-md"
 							/>
-							<ShimmerDiv
+							<Skeleton
 								height={20}
 								width={80}
-								rounded={6}
-								mode={mode}
+								rounded="rounded-md"
 							/>
 						</div>
-						<ShimmerDiv
-							height={16}
-							width={40}
-							rounded={4}
-							mode={mode}
-						/>
+						<Skeleton height={16} width={40} rounded="rounded-sm" />
 					</div>
 				</div>
 			);
+
 		case "editor":
 			return (
 				<div
@@ -99,28 +107,38 @@ export const ShimmerSection = ({
 				>
 					<div className="flex items-center gap-2 border-b pb-4 border-border/20">
 						{[...Array(6)].map((_, i) => (
-							<ShimmerDiv
+							<Skeleton
 								key={i}
 								height={32}
 								width={32}
-								rounded={8}
-								mode={mode}
+								rounded="rounded-lg"
 							/>
 						))}
 						<div className="flex-1" />
-						<ShimmerDiv
+						<Skeleton
 							height={32}
 							width={100}
-							rounded={8}
-							mode={mode}
-							className="!bg-muted-foreground/10 dark:!bg-muted/20"
+							rounded="rounded-lg"
 						/>
 					</div>
 					<div className="space-y-4 py-4">
-						<ShimmerText line={20} gap={14} mode={mode} />
+						{[...Array(15)].map((_, i) => (
+							<Skeleton
+								key={i}
+								height={14}
+								width={
+									i % 2 === 0
+										? "100%"
+										: i % 3 === 0
+											? "85%"
+											: "95%"
+								}
+							/>
+						))}
 					</div>
 				</div>
 			);
+
 		case "toolbar":
 			return (
 				<div
@@ -130,35 +148,29 @@ export const ShimmerSection = ({
 					)}
 				>
 					<div className="flex items-center gap-2">
-						<ShimmerDiv
+						<Skeleton
 							height={36}
 							width={100}
-							rounded={8}
-							mode={mode}
-							className="!bg-muted-foreground/20 dark:!bg-muted/30"
+							rounded="rounded-lg"
 						/>
-						<ShimmerDiv
+						<Skeleton
 							height={36}
 							width={80}
-							rounded={8}
-							mode={mode}
-							className="hidden sm:block !bg-muted-foreground/10 dark:!bg-muted/20"
+							rounded="rounded-lg"
+							className="hidden sm:block"
 						/>
-						<ShimmerDiv
+						<Skeleton
 							height={36}
 							width={80}
-							rounded={8}
-							mode={mode}
-							className="hidden sm:block !bg-muted-foreground/10 dark:!bg-muted/20"
+							rounded="rounded-lg"
+							className="hidden sm:block"
 						/>
 					</div>
 					<div className="flex items-center gap-2">
-						<ShimmerDiv
+						<Skeleton
 							height={36}
 							width={120}
-							rounded={8}
-							mode={mode}
-							className="!bg-muted-foreground/20 dark:!bg-muted/30"
+							rounded="rounded-lg"
 						/>
 					</div>
 				</div>
@@ -172,39 +184,24 @@ export const ShimmerSection = ({
 						className,
 					)}
 				>
-					<ShimmerDiv
-						height={18}
-						width={120}
-						mode={mode}
-						rounded={4}
-						className="!bg-muted-foreground/20 dark:!bg-muted/30"
-					/>
+					<Skeleton height={18} width={120} rounded="rounded-sm" />
 					<div className="w-px h-3 bg-border/40 hidden sm:block" />
-					<ShimmerDiv
-						height={18}
-						width={150}
-						mode={mode}
-						rounded={4}
-						className="!bg-muted-foreground/20 dark:!bg-muted/30"
-					/>
+					<Skeleton height={18} width={150} rounded="rounded-sm" />
 					<div className="w-px h-3 bg-border/40 hidden sm:block" />
-					<ShimmerDiv
-						height={18}
-						width={80}
-						mode={mode}
-						rounded={4}
-						className="!bg-muted-foreground/20 dark:!bg-muted/30"
-					/>
+					<Skeleton height={18} width={80} rounded="rounded-sm" />
 				</div>
 			);
+
 		case "button":
 			return (
-				<ShimmerButton
-					size="md"
-					className={cn("rounded-lg", className)}
-					mode={mode}
+				<Skeleton
+					height={40}
+					width={120}
+					rounded="rounded-lg"
+					className={className}
 				/>
 			);
+
 		case "loader":
 			return (
 				<div
@@ -213,33 +210,38 @@ export const ShimmerSection = ({
 						className,
 					)}
 				>
-					<ShimmerDiv
+					<Skeleton
 						height={40}
 						width={40}
-						rounded={9999}
-						mode={mode}
+						rounded="rounded-full shadow-sm"
 					/>
 				</div>
 			);
+
 		case "mini-loader":
 			return (
-				<ShimmerDiv
+				<Skeleton
 					height={20}
 					width={20}
-					rounded={9999}
-					mode={mode}
+					rounded="rounded-full"
 					className={className}
 				/>
 			);
+
 		case "text":
 		default:
 			return (
-				<ShimmerText
-					line={lines}
-					gap={10}
-					className={className}
-					mode={mode}
-				/>
+				<div className={cn("space-y-2.5 w-full", className)}>
+					{[...Array(lines)].map((_, i) => (
+						<Skeleton
+							key={i}
+							height={14}
+							width={
+								i === lines - 1 && lines > 1 ? "60%" : "100%"
+							}
+						/>
+					))}
+				</div>
 			);
 	}
 };
