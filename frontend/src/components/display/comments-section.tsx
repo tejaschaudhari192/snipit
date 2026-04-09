@@ -11,6 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import type { PasteData, CommentData } from "@/types";
 import { useApiHelpers } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
+import { ShimmerSection } from "@/components/common/shimmer-section";
 
 interface CommentsSectionProps {
 	paste: PasteData;
@@ -169,7 +170,10 @@ export const CommentsSection = ({
 									className="gap-2 h-8"
 								>
 									{isSubmitting ? (
-										<div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+										<ShimmerSection
+											type="mini-loader"
+											className="w-3 h-3"
+										/>
 									) : (
 										<Send className="w-3 h-3" />
 									)}

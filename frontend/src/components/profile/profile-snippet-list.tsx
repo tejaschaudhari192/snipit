@@ -1,4 +1,5 @@
-import { FileText, ChevronRight, Loader2, Inbox } from "lucide-react";
+import { FileText, ChevronRight, Inbox } from "lucide-react";
+import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { SnippetCard } from "@/components/snippets/snippet-card";
@@ -35,14 +36,10 @@ export const ProfileSnippetList = ({
 			</div>
 
 			{loading ? (
-				<div className="flex flex-col items-center justify-center py-24 gap-4 bg-background/60 backdrop-blur-2xl shadow-2xl ring-1 ring-white/5 rounded-3xl border border-border/50 relative z-10 animate-in fade-in duration-500">
-					<Loader2 className="h-10 w-10 animate-spin text-primary/50" />
-					<p className="text-muted-foreground italic">
-						{t(
-							"profile.loading_pastes",
-							"Summoning your creations...",
-						)}
-					</p>
+				<div className="grid gap-4 mt-8">
+					{[...Array(3)].map((_, i) => (
+						<ShimmerSection key={i} type="card" />
+					))}
 				</div>
 			) : pastes.length === 0 ? (
 				<div className="bg-background/60 backdrop-blur-2xl shadow-2xl ring-1 ring-white/5 rounded-3xl border border-border/50 p-8 md:p-20 text-center relative z-10 animate-in fade-in zoom-in-95 duration-500">

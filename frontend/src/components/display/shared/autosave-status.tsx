@@ -1,4 +1,5 @@
-import { Cloud, Loader2, AlertCircle, Check } from "lucide-react";
+import { Cloud, AlertCircle, Check } from "lucide-react";
+import { ShimmerSection } from "@/components/common/shimmer-section";
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
 
@@ -15,7 +16,10 @@ export const AutosaveStatus = ({ status }: AutosaveStatusProps) => {
 				<div className="flex items-center gap-2 text-primary">
 					<div className="relative flex items-center justify-center">
 						<Cloud className="h-4 w-4 fill-primary/10" />
-						<Loader2 className="absolute h-2 w-2 animate-spin text-primary" />
+						<ShimmerSection
+							type="mini-loader"
+							className="absolute h-2 w-2"
+						/>
 					</div>
 					<span className="hidden sm:inline opacity-70">
 						Saving...

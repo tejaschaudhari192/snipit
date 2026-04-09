@@ -4,7 +4,8 @@ import { useAuth } from "@/context/AuthContext";
 import { useApiHelpers } from "@/lib/api";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
-import { User, Loader2 } from "lucide-react";
+import { User } from "lucide-react";
+import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
 import { ProfileInfo } from "@/components/profile/profile-info";
 import { ProfileSnippetList } from "@/components/profile/profile-snippet-list";
@@ -76,11 +77,16 @@ const ProfilePage = () => {
 
 	if (authLoading) {
 		return (
-			<div className="flex flex-col items-center justify-center min-h-[80vh] container mx-auto px-4">
-				<Loader2 className="h-12 w-12 animate-spin text-primary" />
-				<p className="mt-4 text-muted-foreground animate-pulse">
-					{t("profile.checking_auth", "Checking authentication...")}
-				</p>
+			<div className="container mx-auto px-4 py-12 max-w-7xl animate-in fade-in duration-500">
+				<div className="flex flex-col lg:grid lg:grid-cols-12 gap-8">
+					<div className="lg:col-span-4">
+						<ShimmerSection type="card" className="h-[400px]" />
+					</div>
+					<div className="lg:col-span-8 flex flex-col gap-4">
+						<ShimmerSection type="toolbar" />
+						<ShimmerSection type="editor" />
+					</div>
+				</div>
 			</div>
 		);
 	}

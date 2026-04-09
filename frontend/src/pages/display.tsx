@@ -1,4 +1,11 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import {
+	useEffect,
+	useState,
+	useRef,
+	useCallback,
+	lazy,
+	Suspense,
+} from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { type BeforeMount, type OnMount } from "@monaco-editor/react";
@@ -34,17 +41,42 @@ import type {
 	ShareRole,
 } from "@/types";
 
-import Loader from "@/components/common/core/loader";
+import { ShimmerSection } from "@/components/common/shimmer-section";
 import Error from "@/components/common/core/error";
 
-import { DisplayToolbar } from "@/components/display/display-toolbar";
-import { DisplayMetadata } from "@/components/display/display-metadata";
-import { DisplayContent } from "@/components/display/display-content";
+const DisplayToolbar = lazy(() =>
+	import("@/components/display/display-toolbar").then((m) => ({
+		default: m.DisplayToolbar,
+	})),
+);
+const DisplayMetadata = lazy(() =>
+	import("@/components/display/display-metadata").then((m) => ({
+		default: m.DisplayMetadata,
+	})),
+);
+const DisplayContent = lazy(() =>
+	import("@/components/display/display-content").then((m) => ({
+		default: m.DisplayContent,
+	})),
+);
+const EditControls = lazy(() =>
+	import("@/components/display/edit-controls").then((m) => ({
+		default: m.EditControls,
+	})),
+);
+const CustomExpiryDialog = lazy(() =>
+	import("@/components/home/custom-expiry-dialog").then((m) => ({
+		default: m.CustomExpiryDialog,
+	})),
+);
+const PasswordGate = lazy(() =>
+	import("@/components/display/password-gate").then((m) => ({
+		default: m.PasswordGate,
+	})),
+);
+
 import { useLanguageDetection } from "@/hooks/use-language-detection";
-import { EditControls } from "@/components/display/edit-controls";
-import { CustomExpiryDialog } from "@/components/home/custom-expiry-dialog";
-import { PasswordGate } from "@/components/display/password-gate";
-import { DeleteConfirmationToast } from "@/components/snippets/delete-confirmation-toast";
+
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -247,13 +279,13 @@ const DisplayPage = () => {
 		(newLang: string) => {
 			_setLanguage(newLang);
 			if (newLang === "text") {
-				if (contentType === "code") setContentType("text");
+				setContentType((prev) => (prev === "code" ? "text" : prev));
 			} else {
 				if (isDetecting) return; // Don't flip tab while detecting
-				if (contentType === "text") setContentType("code");
+				setContentType((prev) => (prev === "text" ? "code" : prev));
 			}
 		},
-		[contentType, isDetecting],
+		[isDetecting],
 	);
 
 	const handleEditSave = useCallback(
@@ -508,7 +540,7 @@ const DisplayPage = () => {
 			}
 		}
 		loadData();
-	}, [id, apiHelpers, location.state, user, setLanguage]);
+	}, [id, apiHelpers, location.state, user]);
 
 	useEffect(() => {
 		if (!paste) return;
@@ -648,7 +680,7 @@ const DisplayPage = () => {
 			socket.disconnect();
 			socketRef.current = null;
 		};
-	}, [id, loading, paste, user?.username, setLanguage]);
+	}, [id, loading, paste, user?.username]);
 
 	useEffect(() => {
 		if (paste) {
@@ -831,37 +863,16 @@ const DisplayPage = () => {
 		}
 	};
 
-	const confirmDelete = () => {
-		playRemoveSound();
-		const originalId = id!;
-		const originalPath = location.pathname;
-
-		navigate("/");
-
-		toast.custom(
-			(tId) => (
-				<DeleteConfirmationToast
-					onUndo={() => {
-						toast.dismiss(tId);
-						navigate(originalPath);
-					}}
-					onConfirm={async () => {
-						toast.dismiss(tId);
-						const data = await apiHelpers.deletePaste(originalId);
-						if (!data) {
-							toast.error(
-								t(
-									"messages.delete_failed",
-									"Failed to delete snippet",
-								),
-								{ position: "bottom-right" },
-							);
-						}
-					}}
-				/>
-			),
-			{ position: "bottom-right", duration: Infinity },
-		);
+	const confirmDelete = async () => {
+		try {
+			playRemoveSound();
+			await apiHelpers.deletePaste(id!);
+			toast.success(t("messages.deleted_success"));
+			navigate("/");
+		} catch (error) {
+			console.error("Delete failed", error);
+			toast.error(t("messages.delete_failed"));
+		}
 	};
 
 	const handleDelete = () => setIsDeleteDialogOpen(true);
@@ -921,8 +932,12 @@ const DisplayPage = () => {
 
 	if (loading) {
 		return (
-			<div className="flex-1 flex justify-center items-center">
-				<Loader />
+			<div className="flex-1 flex flex-col gap-4 p-4 md:p-8 animate-in fade-in duration-500">
+				<ShimmerSection type="toolbar" />
+				<div className="flex-1 flex flex-col md:flex-row gap-6">
+					<ShimmerSection type="editor" className="md:w-3/4" />
+					<ShimmerSection type="card" className="md:w-1/4 h-fit" />
+				</div>
 			</div>
 		);
 	}
@@ -957,63 +972,77 @@ const DisplayPage = () => {
 			>
 				{!isFullscreen && !isWindowFullscreen && (
 					<div className="flex flex-col border-b bg-background/50 backdrop-blur-md sticky top-0 z-40 shrink-0">
-						<DisplayToolbar
-							activeUsers={visibleActiveUsers}
-							isEdit={isEdit}
-							isAutosave={isAutosave}
-							setIsAutosave={setIsAutosave}
-							saveStatus={saveStatus}
-							content={updatedContent || paste.content}
-							onEdit={(val) => {
-								if (val) {
-									setUpdatedContent(paste?.content);
-									setVisibility(
-										paste?.visibility ?? "public",
-									);
-									setAllowedUsers(paste?.allowedUsers ?? []);
-									setLanguage(paste?.language ?? "text");
-									setContentType(detectContentMode(paste));
-									setCustomId(paste?.id ?? "");
-									setEditPermission(
-										paste?.editPermission ?? "owner",
-									);
-									setIsPasswordEnabled(
-										!!paste?.password ||
-											!!paste?.isPasswordProtected,
-									);
-									setAllowComments(
-										paste?.allowComments ?? false,
-									);
+						<Suspense fallback={<ShimmerSection type="toolbar" />}>
+							<DisplayToolbar
+								activeUsers={visibleActiveUsers}
+								isEdit={isEdit}
+								isAutosave={isAutosave}
+								setIsAutosave={setIsAutosave}
+								saveStatus={saveStatus}
+								content={updatedContent || paste.content}
+								onEdit={(val) => {
+									if (val) {
+										setUpdatedContent(paste?.content);
+										setVisibility(
+											paste?.visibility ?? "public",
+										);
+										setAllowedUsers(
+											paste?.allowedUsers ?? [],
+										);
+										setLanguage(paste?.language ?? "text");
+										setContentType(
+											detectContentMode(paste),
+										);
+										setCustomId(paste?.id ?? "");
+										setEditPermission(
+											paste?.editPermission ?? "owner",
+										);
+										setIsPasswordEnabled(
+											!!paste?.password ||
+												!!paste?.isPasswordProtected,
+										);
+										setAllowComments(
+											paste?.allowComments ?? false,
+										);
+									}
+									setIsEdit(val);
+									setSaveStatus("idle");
+								}}
+								onDelete={handleDelete}
+								onSave={() => handleEditSave()}
+								onCancel={handleCancel}
+								isSaving={isSaving}
+								fontSize={fontSize}
+								setFontSize={setFontSize}
+								showFontControls={
+									contentType !== "link" &&
+									contentType !== "file" &&
+									contentType !== "draw"
 								}
-								setIsEdit(val);
-								setSaveStatus("idle");
-							}}
-							onDelete={handleDelete}
-							onSave={() => handleEditSave()}
-							onCancel={handleCancel}
-							isSaving={isSaving}
-							fontSize={fontSize}
-							setFontSize={setFontSize}
-							showFontControls={
-								contentType !== "link" &&
-								contentType !== "file" &&
-								contentType !== "draw"
-							}
-							allowComments={allowComments}
-							commentCount={paste.comments?.length ?? 0}
-							paste={paste}
-							onCommentAdded={(updated: PasteData) =>
-								setPaste(updated)
-							}
-							customId={customId}
-							setCustomId={setCustomId}
-							expiresTime={expiresTime}
-							setExpiresTime={setExpiresTime}
-							setIsCustomExpiryDialogOpen={
-								setIsCustomExpiryDialogOpen
-							}
-						/>
-						{!isEdit && <DisplayMetadata paste={paste} />}
+								allowComments={allowComments}
+								commentCount={paste.comments?.length ?? 0}
+								paste={paste}
+								onCommentAdded={(updated: PasteData) =>
+									setPaste(updated)
+								}
+								customId={customId}
+								setCustomId={setCustomId}
+								expiresTime={expiresTime}
+								setExpiresTime={setExpiresTime}
+								setIsCustomExpiryDialogOpen={
+									setIsCustomExpiryDialogOpen
+								}
+							/>
+						</Suspense>
+						{!isEdit && (
+							<Suspense
+								fallback={
+									<ShimmerSection type="text" lines={1} />
+								}
+							>
+								<DisplayMetadata paste={paste} />
+							</Suspense>
+						)}
 					</div>
 				)}
 
@@ -1028,115 +1057,125 @@ const DisplayPage = () => {
 					>
 						{isEdit && !isFullscreen && !isWindowFullscreen && (
 							<div className="mb-4 shrink-0 px-1">
-								<EditControls
-									contentType={contentType}
-									setContentType={onContentTypeChange}
-									language={language}
-									setLanguage={setLanguage}
-									visibility={visibility}
-									setVisibility={setVisibility}
-									allowedUsers={allowedUsers}
-									setAllowedUsers={setAllowedUsers}
-									isDetecting={isDetecting}
-									onAutoDetect={() =>
-										handleLanguageDetection(
-											updatedContent || "",
-											true,
-										)
-									}
-									newPassword={editPassword}
-									setNewPassword={setEditPassword}
-									isPasswordEnabled={isPasswordEnabled}
-									setIsPasswordEnabled={setIsPasswordEnabled}
-									editPermission={editPermission}
-									setEditPermission={setEditPermission}
-									isOwner={isOwner}
-									isAdmin={
-										!!user &&
-										shareList.some(
-											(item) =>
-												item.email === user.email &&
-												item.role === "admin",
-										)
-									}
-									shareList={shareList}
-									setShareList={setShareList}
-									publicRole={publicRole}
-									setPublicRole={setPublicRole}
-									allowComments={allowComments}
-									setAllowComments={setAllowComments}
-								/>
+								<Suspense
+									fallback={<ShimmerSection type="toolbar" />}
+								>
+									<EditControls
+										contentType={contentType}
+										setContentType={onContentTypeChange}
+										language={language}
+										setLanguage={setLanguage}
+										visibility={visibility}
+										setVisibility={setVisibility}
+										allowedUsers={allowedUsers}
+										setAllowedUsers={setAllowedUsers}
+										isDetecting={isDetecting}
+										onAutoDetect={() =>
+											handleLanguageDetection(
+												updatedContent || "",
+												true,
+											)
+										}
+										newPassword={editPassword}
+										setNewPassword={setEditPassword}
+										isPasswordEnabled={isPasswordEnabled}
+										setIsPasswordEnabled={
+											setIsPasswordEnabled
+										}
+										editPermission={editPermission}
+										setEditPermission={setEditPermission}
+										isOwner={isOwner}
+										isAdmin={
+											!!user &&
+											shareList.some(
+												(item) =>
+													item.email === user.email &&
+													item.role === "admin",
+											)
+										}
+										shareList={shareList}
+										setShareList={setShareList}
+										publicRole={publicRole}
+										setPublicRole={setPublicRole}
+										allowComments={allowComments}
+										setAllowComments={setAllowComments}
+									/>
+								</Suspense>
 							</div>
 						)}
 
-						<CustomExpiryDialog
-							isOpen={isCustomExpiryDialogOpen}
-							onOpenChange={setIsCustomExpiryDialogOpen}
-							customExpiryDate={customExpiryDate}
-							setCustomExpiryDate={setCustomExpiryDate}
-							onConfirm={(date) => {
-								setExpiresTime(date.toISOString());
-								setIsCustomExpiryDialogOpen(false);
-							}}
-						/>
-
-						<DisplayContent
-							id={id ?? ""}
-							isEdit={isEdit}
-							contentType={contentType}
-							language={language}
-							content={updatedContent ?? ""}
-							onContentChange={handleContentChange}
-							theme={theme}
-							fontSize={fontSize}
-							contentRef={contentRef}
-							handleEditorWillMount={handleEditorWillMount}
-							paste={paste}
-							onMount={handleEditorMount}
-							socketRef={socketRef}
-							activeUsers={activeUsers}
-							isFullscreen={isFullscreen}
-							setIsFullscreen={setIsFullscreen}
-							isWindowFullscreen={isWindowFullscreen}
-							setIsWindowFullscreen={setIsWindowFullscreen}
-						/>
+						<Suspense fallback={<ShimmerSection type="editor" />}>
+							<DisplayContent
+								id={id ?? ""}
+								isEdit={isEdit}
+								contentType={contentType}
+								language={language}
+								content={updatedContent ?? ""}
+								onContentChange={handleContentChange}
+								theme={theme}
+								fontSize={fontSize}
+								contentRef={contentRef}
+								handleEditorWillMount={handleEditorWillMount}
+								paste={paste}
+								onMount={handleEditorMount}
+								socketRef={socketRef}
+								activeUsers={activeUsers}
+								isFullscreen={isFullscreen}
+								setIsFullscreen={setIsFullscreen}
+								isWindowFullscreen={isWindowFullscreen}
+								setIsWindowFullscreen={setIsWindowFullscreen}
+							/>
+						</Suspense>
 					</div>
 				</div>
 			</div>
 
-			<AlertDialog
-				open={isDeleteDialogOpen}
-				onOpenChange={setIsDeleteDialogOpen}
-			>
-				<AlertDialogContent
-					size="sm"
-					className="border border-border/50 bg-background/60 backdrop-blur-2xl shadow-2xl rounded-2xl ring-1 ring-white/5 overflow-hidden"
+			<Suspense fallback={null}>
+				<CustomExpiryDialog
+					isOpen={isCustomExpiryDialogOpen}
+					onOpenChange={setIsCustomExpiryDialogOpen}
+					customExpiryDate={customExpiryDate}
+					setCustomExpiryDate={setCustomExpiryDate}
+					onConfirm={(date) => {
+						setExpiresTime(date.toISOString());
+						setIsCustomExpiryDialogOpen(false);
+					}}
+				/>
+
+				<AlertDialog
+					open={isDeleteDialogOpen}
+					onOpenChange={setIsDeleteDialogOpen}
 				>
-					<AlertDialogHeader>
-						<AlertDialogMedia className="bg-destructive/10 text-destructive">
-							<Trash2 className="size-8" />
-						</AlertDialogMedia>
-						<AlertDialogTitle>
-							{t("display.delete_button")}
-						</AlertDialogTitle>
-						<AlertDialogDescription>
-							{t("messages.delete_confirm")}
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel variant="ghost">
-							{t("history.cancel")}
-						</AlertDialogCancel>
-						<AlertDialogAction
-							variant="destructive"
-							onClick={confirmDelete}
-							className="font-bold"
-						>
-							{t("display.delete_button")}
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+					<AlertDialogContent
+						size="sm"
+						className="border border-border/50 bg-background/60 backdrop-blur-2xl shadow-2xl rounded-2xl ring-1 ring-white/5 overflow-hidden"
+					>
+						<AlertDialogHeader>
+							<AlertDialogMedia className="bg-destructive/10 text-destructive">
+								<Trash2 className="size-8" />
+							</AlertDialogMedia>
+							<AlertDialogTitle>
+								{t("display.delete_button")}
+							</AlertDialogTitle>
+							<AlertDialogDescription>
+								{t("messages.delete_confirm")}
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogCancel variant="ghost">
+								{t("history.cancel")}
+							</AlertDialogCancel>
+							<AlertDialogAction
+								variant="destructive"
+								onClick={confirmDelete}
+								className="font-bold"
+							>
+								{t("display.delete_button")}
+							</AlertDialogAction>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+			</Suspense>
 		</>
 	);
 };

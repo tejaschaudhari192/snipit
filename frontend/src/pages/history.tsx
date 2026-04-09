@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { useApiHelpers } from "@/lib/api";
-import { Loader2 } from "lucide-react";
+import { ShimmerSection } from "@/components/common/shimmer-section";
 import { SnippetCard } from "@/components/snippets/snippet-card";
 import { playRemoveSound } from "@/lib/utils";
 import {
@@ -126,14 +126,10 @@ const HistoryPage = () => {
 				</div>
 
 				{loading ? (
-					<div className="flex flex-col items-center justify-center p-20 gap-4">
-						<Loader2 className="h-8 w-8 animate-spin text-primary" />
-						<p className="text-muted-foreground italic">
-							{t(
-								"history.fetching_history",
-								"Fetching your history...",
-							)}
-						</p>
+					<div className="grid gap-4 mt-8">
+						{[...Array(5)].map((_, i) => (
+							<ShimmerSection key={i} type="card" />
+						))}
 					</div>
 				) : items.length === 0 ? (
 					<div className="bg-background/60 backdrop-blur-2xl rounded-3xl border border-border/50 p-16 text-center shadow-2xl shadow-black/5 relative z-10 animate-in fade-in zoom-in-95 duration-500">

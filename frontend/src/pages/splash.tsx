@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import icon from "@/assets/brand/icon.png";
-import { Loader2 } from "lucide-react";
+import { ShimmerSection } from "@/components/common/shimmer-section";
 import { useTranslation } from "react-i18next";
 
 const SplashPage = () => {
@@ -63,7 +63,10 @@ const SplashPage = () => {
 				<div className="w-72 flex flex-col gap-4 mt-8">
 					<div className="flex w-full justify-between items-center text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] px-1 h-4">
 						<span className="flex items-center gap-2">
-							<Loader2 className="w-3.5 h-3.5 animate-spin" />
+							<ShimmerSection
+								type="mini-loader"
+								className="w-3.5 h-3.5"
+							/>
 							<span className="animate-pulse">
 								{loadingPhrases[phraseIndex]}
 							</span>

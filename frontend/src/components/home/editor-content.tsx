@@ -7,7 +7,6 @@ import {
 	FileUp,
 	X,
 	CheckCircle2,
-	Loader2,
 	Copy,
 	ExternalLink,
 	History,
@@ -33,6 +32,7 @@ import { FileTypeIcon } from "@/components/common/file-type-icon";
 import { FilePreview } from "@/components/common/file-preview";
 import { usePaste } from "@/context/PasteContext";
 import { useTheme } from "@/hooks/use-theme";
+import { ShimmerSection } from "@/components/common/shimmer-section";
 import { toast } from "sonner";
 import type { PasteData } from "@/types";
 
@@ -325,8 +325,11 @@ export const EditorContent = memo(
 												<div className="flex items-center gap-5 relative z-10">
 													<div className="relative">
 														{isUploading ? (
-															<div className="p-3.5 rounded-xl bg-primary text-primary-foreground transition-colors duration-300">
-																<Loader2 className="h-6 w-6 animate-spin" />
+															<div className="p-3.5 rounded-xl transition-colors duration-300">
+																<ShimmerSection
+																	type="loader"
+																	className="h-6 w-6 p-0"
+																/>
 															</div>
 														) : uploadProgress ===
 														  100 ? (

@@ -22,8 +22,8 @@ import {
 	ArrowRight,
 	Eye,
 	EyeOff,
-	Loader2,
 } from "lucide-react";
+import { ShimmerSection } from "@/components/common/shimmer-section";
 import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "react-i18next";
 
@@ -183,7 +183,7 @@ const SignupPage = () => {
 							>
 								{isLoading ? (
 									<>
-										<Loader2 className="w-5 h-5 animate-spin" />
+										<ShimmerSection type="mini-loader" />
 										{t("auth.creating_account")}
 									</>
 								) : (

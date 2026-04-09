@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
-import { Edit, Trash2, Save, X, Loader2 } from "lucide-react";
+import { Edit, Trash2, Save, X } from "lucide-react";
+import { ShimmerSection } from "@/components/common/shimmer-section";
 import { useTranslation } from "react-i18next";
 
 interface ToolbarActionButtonsProps {
@@ -80,7 +81,10 @@ export const ToolbarActionButtons = ({
 						>
 							{isSaving ? (
 								<>
-									<Loader2 className="h-4 w-4 animate-spin" />
+									<ShimmerSection
+										type="mini-loader"
+										className="h-4 w-4"
+									/>
 									<span>{t("common.saving")}</span>
 								</>
 							) : (

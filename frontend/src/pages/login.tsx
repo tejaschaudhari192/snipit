@@ -15,15 +15,8 @@ import {
 	CardFooter,
 } from "@/components/ui/card";
 import { toast } from "sonner";
-import {
-	LogIn,
-	Mail,
-	Lock,
-	ArrowRight,
-	Eye,
-	EyeOff,
-	Loader2,
-} from "lucide-react";
+import { LogIn, Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
+import { ShimmerSection } from "@/components/common/shimmer-section";
 import { useTranslation } from "react-i18next";
 
 const LoginPage = () => {
@@ -162,7 +155,7 @@ const LoginPage = () => {
 							>
 								{isLoading ? (
 									<>
-										<Loader2 className="w-5 h-5 animate-spin" />
+										<ShimmerSection type="mini-loader" />
 										{t("auth.logging_in")}
 									</>
 								) : (

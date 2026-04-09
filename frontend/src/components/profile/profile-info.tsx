@@ -1,4 +1,5 @@
-import { User, Mail, Calendar, Edit2, Check, X, Loader2 } from "lucide-react";
+import { User, Mail, Calendar, Edit2, Check, X } from "lucide-react";
+import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -87,7 +88,7 @@ export const ProfileInfo = ({
 													className="h-12 w-12 flex items-center justify-center rounded-xl shadow-lg shadow-primary/20"
 												>
 													{isUpdating ? (
-														<Loader2 className="h-5 w-5 animate-spin" />
+														<ShimmerSection type="mini-loader" />
 													) : (
 														<Check className="h-5 w-5" />
 													)}

@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, lazy, Suspense } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -31,11 +31,33 @@ import { CONFIG } from "@/configurations";
 import { useLanguageDetection } from "@/hooks/use-language-detection";
 import { usePaste } from "@/context/PasteContext";
 
-import { LanguageSelector } from "@/components/editor/language-selector";
-import { FontSizeControls } from "@/components/editor/font-size-controls";
-import { CustomExpiryDialog } from "@/components/home/custom-expiry-dialog";
-import { MainToolbar } from "@/components/home/main-toolbar";
-import { EditorContent } from "@/components/home/editor-content";
+import { ShimmerSection } from "@/components/common/shimmer-section";
+
+const LanguageSelector = lazy(() =>
+	import("@/components/editor/language-selector").then((m) => ({
+		default: m.LanguageSelector,
+	})),
+);
+const FontSizeControls = lazy(() =>
+	import("@/components/editor/font-size-controls").then((m) => ({
+		default: m.FontSizeControls,
+	})),
+);
+const CustomExpiryDialog = lazy(() =>
+	import("@/components/home/custom-expiry-dialog").then((m) => ({
+		default: m.CustomExpiryDialog,
+	})),
+);
+const MainToolbar = lazy(() =>
+	import("@/components/home/main-toolbar").then((m) => ({
+		default: m.MainToolbar,
+	})),
+);
+const EditorContent = lazy(() =>
+	import("@/components/home/editor-content").then((m) => ({
+		default: m.EditorContent,
+	})),
+);
 
 const HomePage = () => {
 	const { t } = useTranslation();
@@ -593,29 +615,42 @@ const HomePage = () => {
 		<div className="relative flex-1 flex flex-col bg-background overflow-hidden">
 			{/* Toolbar: fixed height, does not grow */}
 			<div className="relative z-10 flex flex-col gap-1.5 my-1 mx-2 md:my-1.5 md:mx-4 shrink-0">
-				<MainToolbar
-					contentType={contentType}
-					setContentType={onContentTypeChange}
-					expiresTime={expiresTime}
-					setExpiresTime={setExpiresTime}
-					setIsCustomExpiryDialogOpen={setIsCustomExpiryDialogOpen}
-					handleQuickPaste={handleQuickPaste}
-					handleCollaborative={handleCollaborative}
-					isSubmitting={isSubmitting}
-					isUploading={isUploading}
-					uploadProgress={uploadProgress}
-					handleDialogSubmit={handleDialogSubmit}
-					dialogError={dialogError}
-				/>
+				<Suspense fallback={<ShimmerSection type="toolbar" />}>
+					<MainToolbar
+						contentType={contentType}
+						setContentType={onContentTypeChange}
+						expiresTime={expiresTime}
+						setExpiresTime={setExpiresTime}
+						setIsCustomExpiryDialogOpen={
+							setIsCustomExpiryDialogOpen
+						}
+						handleQuickPaste={handleQuickPaste}
+						handleCollaborative={handleCollaborative}
+						isSubmitting={isSubmitting}
+						isUploading={isUploading}
+						uploadProgress={uploadProgress}
+						handleDialogSubmit={handleDialogSubmit}
+						dialogError={dialogError}
+					/>
+				</Suspense>
 
 				<div className="flex flex-wrap items-center gap-2">
 					{(isDetecting || contentType === "code") && (
 						<div className="w-full sm:w-auto flex items-center gap-2">
-							<LanguageSelector
-								value={language}
-								onValueChange={setLanguage}
-								isDetecting={isDetecting}
-							/>
+							<Suspense
+								fallback={
+									<ShimmerSection
+										type="button"
+										className="w-32"
+									/>
+								}
+							>
+								<LanguageSelector
+									value={language}
+									onValueChange={setLanguage}
+									isDetecting={isDetecting}
+								/>
+							</Suspense>
 							{!isDetecting && (
 								<Button
 									variant="outline"
@@ -640,48 +675,61 @@ const HomePage = () => {
 					{contentType !== "link" &&
 						contentType !== "file" &&
 						contentType !== "draw" && (
-							<FontSizeControls
-								fontSize={fontSize}
-								setFontSize={setFontSize}
-							/>
+							<Suspense
+								fallback={
+									<ShimmerSection
+										type="button"
+										className="w-24"
+									/>
+								}
+							>
+								<FontSizeControls
+									fontSize={fontSize}
+									setFontSize={setFontSize}
+								/>
+							</Suspense>
 						)}
 				</div>
 			</div>
 
-			<CustomExpiryDialog
-				isOpen={isCustomExpiryDialogOpen}
-				onOpenChange={setIsCustomExpiryDialogOpen}
-				customExpiryDate={customExpiryDate}
-				setCustomExpiryDate={setCustomExpiryDate}
-				onConfirm={(date) => {
-					setExpiresTime(date.toISOString());
-					setIsCustomExpiryDialogOpen(false);
-				}}
-			/>
+			<Suspense fallback={null}>
+				<CustomExpiryDialog
+					isOpen={isCustomExpiryDialogOpen}
+					onOpenChange={setIsCustomExpiryDialogOpen}
+					customExpiryDate={customExpiryDate}
+					setCustomExpiryDate={setCustomExpiryDate}
+					onConfirm={(date) => {
+						setExpiresTime(date.toISOString());
+						setIsCustomExpiryDialogOpen(false);
+					}}
+				/>
+			</Suspense>
 
 			{/* Editor: takes all remaining space */}
-			<EditorContent
-				fontSize={fontSize}
-				editorContainerRef={editorContainerRef}
-				userInputRef={userInputRef}
-				handleEditorWillMount={handleEditorWillMount}
-				handleEditorMount={handleEditorMount}
-				handlePaste={handlePaste}
-				isFullscreen={isFullscreen}
-				setIsFullscreen={setIsFullscreen}
-				onFileSelect={(file) => {
-					setPendingFile(file);
-					setFileUpload(file);
-				}}
-				onClearFile={() => {
-					resetFileUpload();
-					setPendingFile(null);
-				}}
-				previewUrl={previewUrl}
-				shortenedResult={shortenedResult}
-				historyItems={historyItems}
-				onDeleteHistoryItem={handleDeleteHistory}
-			/>
+			<Suspense fallback={<ShimmerSection type="editor" />}>
+				<EditorContent
+					fontSize={fontSize}
+					editorContainerRef={editorContainerRef}
+					userInputRef={userInputRef}
+					handleEditorWillMount={handleEditorWillMount}
+					handleEditorMount={handleEditorMount}
+					handlePaste={handlePaste}
+					isFullscreen={isFullscreen}
+					setIsFullscreen={setIsFullscreen}
+					onFileSelect={(file) => {
+						setPendingFile(file);
+						setFileUpload(file);
+					}}
+					onClearFile={() => {
+						resetFileUpload();
+						setPendingFile(null);
+					}}
+					previewUrl={previewUrl}
+					shortenedResult={shortenedResult}
+					historyItems={historyItems}
+					onDeleteHistoryItem={handleDeleteHistory}
+				/>
+			</Suspense>
 		</div>
 	);
 };

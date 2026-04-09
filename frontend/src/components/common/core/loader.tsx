@@ -1,10 +1,13 @@
-import { Loader2 } from "lucide-react";
+import { ShimmerSection } from "../shimmer-section";
+import { cn } from "@/lib/utils";
 
-const Loader: React.FC = () => {
+interface LoaderProps {
+	className?: string;
+}
+
+const Loader: React.FC<LoaderProps> = ({ className }) => {
 	return (
-		<div>
-			<Loader2 className="animate-spin size-16" />
-		</div>
+		<ShimmerSection type="loader" className={cn("size-16", className)} />
 	);
 };
 

@@ -14,14 +14,8 @@ import {
 	CardFooter,
 } from "@/components/ui/card";
 import { toast } from "sonner";
-import {
-	Lock,
-	ArrowRight,
-	Eye,
-	EyeOff,
-	CheckCircle2,
-	Loader2,
-} from "lucide-react";
+import { Lock, ArrowRight, Eye, EyeOff, CheckCircle2 } from "lucide-react";
+import { ShimmerSection } from "@/components/common/shimmer-section";
 import { useAuth } from "@/context/AuthContext";
 
 const ResetPasswordPage = () => {
@@ -159,7 +153,7 @@ const ResetPasswordPage = () => {
 							>
 								{isLoading ? (
 									<>
-										<Loader2 className="w-5 h-5 animate-spin" />
+										<ShimmerSection type="mini-loader" />
 										Resetting...
 									</>
 								) : (

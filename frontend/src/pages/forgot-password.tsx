@@ -14,7 +14,8 @@ import {
 	CardFooter,
 } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Mail, ArrowLeft, ArrowRight, KeyRound, Loader2 } from "lucide-react";
+import { Mail, ArrowLeft, ArrowRight, KeyRound } from "lucide-react";
+import { ShimmerSection } from "@/components/common/shimmer-section";
 
 const ForgotPasswordPage = () => {
 	const [email, setEmail] = useState("");
@@ -94,7 +95,7 @@ const ForgotPasswordPage = () => {
 								>
 									{isLoading ? (
 										<>
-											<Loader2 className="w-5 h-5 animate-spin" />
+											<ShimmerSection type="mini-loader" />
 											Sending...
 										</>
 									) : (
