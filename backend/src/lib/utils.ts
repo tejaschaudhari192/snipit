@@ -4,7 +4,7 @@ export function uniqueIdGenerator(): string {
 }
 
 export function dateConverter(expiresTime: string) {
-	let expiresAt = null;
+	let expiresAt: Date | null;
 	const now = new Date();
 
 	switch (expiresTime) {
@@ -26,14 +26,11 @@ export function dateConverter(expiresTime: string) {
 		case "one-time":
 			expiresAt = null; // special handling (e.g. delete after first view)
 			break;
-		default:
-			// Check if it's a valid date string (for custom expiry)
+		default: {
 			const customDate = new Date(expiresTime);
-			if (expiresTime && !isNaN(customDate.getTime())) {
-				expiresAt = customDate;
-			} else {
-				expiresAt = null;
-			}
+			expiresAt =
+				expiresTime && !isNaN(customDate.getTime()) ? customDate : null;
+		}
 	}
 
 	return expiresAt;

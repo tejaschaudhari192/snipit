@@ -408,6 +408,7 @@ class PasteController {
 	async updatePaste(req: AuthRequest, res: Response, next: NextFunction) {
 		const id = req.params.id;
 		const { content, redirectUrl, language } = req.body;
+		const { expiresTime } = req.body;
 		let {
 			visibility,
 			allowedUsers,
@@ -417,7 +418,6 @@ class PasteController {
 			shareList,
 			publicRole,
 			allowComments,
-			expiresTime,
 		} = req.body;
 		try {
 			const existingPaste = await this.pasteService.getPasteById(id!);

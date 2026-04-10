@@ -90,7 +90,7 @@ Rules:
 			temperature: 0,
 		});
 
-		let result = chatCompletion.choices[0]?.message?.content || "";
+		const result = chatCompletion.choices[0]?.message?.content || "";
 
 		res.json({ result: result.trim() });
 	} catch (error) {

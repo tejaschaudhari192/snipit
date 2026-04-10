@@ -1,4 +1,8 @@
-import express, { type Request, type Response } from "express";
+import express, {
+	type Application,
+	type Request,
+	type Response,
+} from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import configurations from "@/config/configurations.js";
@@ -10,7 +14,7 @@ import authRouter from "@/routes/auth.routes.js";
 import { ZodError } from "zod";
 import logger from "@/config/logger.js";
 
-const app = express();
+const app: Application = express();
 
 app.set("trust proxy", 1);
 
