@@ -18,6 +18,24 @@ export const MarkdownLayoutToggles = ({
 }: MarkdownLayoutTogglesProps) => {
 	const { t } = useTranslation();
 
+	const MODES = [
+		{
+			id: "editor" as const,
+			icon: EyeOff,
+			title: t("common.editor_only", "Editor Only"),
+		},
+		{
+			id: "split" as const,
+			icon: Layout,
+			title: t("common.split_view", "Split View"),
+		},
+		{
+			id: "preview" as const,
+			icon: Eye,
+			title: t("common.preview_only", "Preview Only"),
+		},
+	];
+
 	return (
 		<div
 			className={cn(
@@ -25,48 +43,23 @@ export const MarkdownLayoutToggles = ({
 				className,
 			)}
 		>
-			<Button
-				variant="ghost"
-				size="icon"
-				onClick={() => onModeChange("editor")}
-				className={cn(
-					"h-8 w-8 rounded-full transition-all duration-300",
-					mode === "editor"
-						? "bg-primary text-primary-foreground shadow-lg"
-						: "text-white/60 hover:text-white hover:bg-white/10",
-				)}
-				title={t("common.editor_only", "Editor Only")}
-			>
-				<EyeOff className="h-3.5 w-3.5" />
-			</Button>
-			<Button
-				variant="ghost"
-				size="icon"
-				onClick={() => onModeChange("split")}
-				className={cn(
-					"h-8 w-8 rounded-full transition-all duration-300",
-					mode === "split"
-						? "bg-primary text-primary-foreground shadow-lg"
-						: "text-white/60 hover:text-white hover:bg-white/10",
-				)}
-				title={t("common.split_view", "Split View")}
-			>
-				<Layout className="h-3.5 w-3.5" />
-			</Button>
-			<Button
-				variant="ghost"
-				size="icon"
-				onClick={() => onModeChange("preview")}
-				className={cn(
-					"h-8 w-8 rounded-full transition-all duration-300",
-					mode === "preview"
-						? "bg-primary text-primary-foreground shadow-lg"
-						: "text-white/60 hover:text-white hover:bg-white/10",
-				)}
-				title={t("common.preview_only", "Preview Only")}
-			>
-				<Eye className="h-3.5 w-3.5" />
-			</Button>
+			{MODES.map(({ id, icon: Icon, title }) => (
+				<Button
+					key={id}
+					variant="ghost"
+					size="icon"
+					onClick={() => onModeChange(id)}
+					className={cn(
+						"h-8 w-8 rounded-full transition-all duration-300",
+						mode === id
+							? "bg-primary text-primary-foreground shadow-lg"
+							: "text-white/60 hover:text-white hover:bg-white/10",
+					)}
+					title={title}
+				>
+					<Icon className="h-3.5 w-3.5" />
+				</Button>
+			))}
 		</div>
 	);
 };

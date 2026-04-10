@@ -1,5 +1,5 @@
 import { Cloud, AlertCircle, Check } from "lucide-react";
-import { ShimmerSection } from "@/components/common/shimmer-section";
+import { StatusBadge } from "./status-badge";
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
 
@@ -8,54 +8,46 @@ interface AutosaveStatusProps {
 }
 
 export const AutosaveStatus = ({ status }: AutosaveStatusProps) => {
-	if (status === "idle") return null;
-
-	if (status === "saving") {
-		return (
-			<div className="flex items-center gap-1.5 px-3 py-1.5 bg-background/50 backdrop-blur-md rounded-full border border-border/50 text-[10px] font-bold shadow-sm transition-all duration-300">
-				<div className="flex items-center gap-2 text-primary">
-					<div className="relative flex items-center justify-center">
-						<Cloud className="h-4 w-4 fill-primary/10" />
-						<ShimmerSection
-							type="mini-loader"
-							className="absolute h-2 w-2"
-						/>
-					</div>
-					<span className="hidden sm:inline opacity-70">
-						Saving...
-					</span>
-				</div>
-			</div>
-		);
+	switch (status) {
+		case "saving":
+			return (
+				<StatusBadge
+					className="text-primary"
+					labelClassName="opacity-70"
+					label="Saving..."
+					icon={
+						<Cloud className="h-4 w-4 fill-primary/10 animate-pulse" />
+					}
+				/>
+			);
+		case "error":
+			return (
+				<StatusBadge
+					className="text-destructive animate-bounce"
+					label="Save Failed"
+					icon={
+						<>
+							<Cloud className="h-4 w-4 text-destructive opacity-50" />
+							<AlertCircle className="absolute h-2.5 w-2.5 text-destructive fill-background" />
+						</>
+					}
+				/>
+			);
+		case "saved":
+			return (
+				<StatusBadge
+					className="text-emerald-500 animate-in fade-in slide-in-from-left-2"
+					labelClassName="opacity-80"
+					label="Saved"
+					icon={
+						<>
+							<Cloud className="h-4 w-4 fill-emerald-500/10" />
+							<Check className="absolute h-2 w-2 text-emerald-500 font-black" />
+						</>
+					}
+				/>
+			);
+		default:
+			return null;
 	}
-
-	if (status === "error") {
-		return (
-			<div className="flex items-center gap-1.5 px-3 py-1.5 bg-background/50 backdrop-blur-md rounded-full border border-border/50 text-[10px] font-bold shadow-sm transition-all duration-300">
-				<div className="flex items-center gap-2 text-destructive animate-bounce">
-					<div className="relative flex items-center justify-center">
-						<Cloud className="h-4 w-4 text-destructive opacity-50" />
-						<AlertCircle className="absolute h-2.5 w-2.5 text-destructive fill-background" />
-					</div>
-					<span className="hidden sm:inline">Save Failed</span>
-				</div>
-			</div>
-		);
-	}
-
-	if (status === "saved") {
-		return (
-			<div className="flex items-center gap-1.5 px-3 py-1.5 bg-background/50 backdrop-blur-md rounded-full border border-border/50 text-[10px] font-bold shadow-sm transition-all duration-300">
-				<div className="flex items-center gap-2 text-emerald-500 animate-in fade-in slide-in-from-left-2">
-					<div className="relative flex items-center justify-center">
-						<Cloud className="h-4 w-4 fill-emerald-500/10" />
-						<Check className="absolute h-2 w-2 text-emerald-500 font-black" />
-					</div>
-					<span className="hidden sm:inline opacity-80">Saved</span>
-				</div>
-			</div>
-		);
-	}
-
-	return null;
 };

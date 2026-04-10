@@ -1,14 +1,13 @@
 import { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { useRef, useEffect, memo } from "react";
 import { cn } from "@/lib/utils";
-import { ZenModeToggle } from "@/components/common/zen-mode-toggle";
+import { EditorToolbar } from "@/components/common/editor-toolbar";
 import type { PasteData, ContentMode } from "@/types";
 import { MarkdownDisplay } from "./content/markdown-display";
 import { ResizableSplitPane } from "@/components/common/resizable-split-pane";
 import { FileDisplay } from "./content/file-display";
 import { CodeEditorView } from "./content/code-editor-view";
 import { LinkView } from "./content/link-view";
-import { MarkdownLayoutToggles } from "@/components/common/markdown-layout-toggles";
 import { useMarkdownLayout } from "@/hooks/use-markdown-layout";
 
 import type { Socket } from "socket.io-client";
@@ -200,35 +199,18 @@ export const DisplayContent = memo(
 					isFullscreen || isWindowFullscreen ? "bg-background" : "",
 				)}
 			>
-				{(contentType === "code" ||
-					contentType === "text" ||
-					contentType === "draw") && (
-					<div
-						className={cn(
-							"z-[101] flex items-center gap-2",
-							contentType === "draw"
-								? isFullscreen || isWindowFullscreen
-									? "fixed top-4 right-4"
-									: "absolute right-3 top-3"
-								: isFullscreen || isWindowFullscreen
-									? "fixed top-8 right-8"
-									: "absolute top-8 right-8",
-						)}
-					>
-						{language === "markdown" && isEdit && (
-							<MarkdownLayoutToggles
-								mode={mdLayoutMode}
-								onModeChange={setMdLayoutMode}
-							/>
-						)}
-						<ZenModeToggle
-							isFullscreen={isFullscreen}
-							isWindowFullscreen={isWindowFullscreen}
-							onToggle={toggleFullscreen}
-							onWindowToggle={toggleWindowFullscreen}
-						/>
-					</div>
-				)}
+				<EditorToolbar
+					contentType={contentType}
+					language={language}
+					isFullscreen={isFullscreen}
+					isWindowFullscreen={isWindowFullscreen}
+					onToggleFullscreen={toggleFullscreen}
+					onToggleWindowFullscreen={toggleWindowFullscreen}
+					mdLayoutMode={mdLayoutMode}
+					onMdLayoutModeChange={setMdLayoutMode}
+					showMarkdownToggles={isEdit}
+				/>
+
 				<div className="flex-1 w-full h-full relative overflow-hidden">
 					{renderContent()}
 				</div>

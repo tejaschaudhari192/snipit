@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next";
-import { cn } from "@/lib/utils";
 import { LanguageIcon } from "@/components/snippets/language-icon";
 import { Link as LinkIcon } from "lucide-react";
 import { FileTypeIcon } from "./file-type-icon";
+import { GlassBadge } from "./core/glass-badge";
+import { cn } from "@/lib/utils";
 
 interface LanguageBadgeProps {
 	language?: string | null;
@@ -88,15 +89,8 @@ export const LanguageBadge = ({
 	const { icon, text, color } = getBadgeConfig();
 
 	return (
-		<div
-			className={cn(
-				"flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold border shrink-0 transition-colors",
-				color,
-				className,
-			)}
-		>
-			{icon}
+		<GlassBadge icon={icon} className={cn(color, className)} rounded="lg">
 			<span className="truncate max-w-[120px]">{text}</span>
-		</div>
+		</GlassBadge>
 	);
 };

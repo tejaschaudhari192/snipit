@@ -2,8 +2,11 @@ import { Editor, type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { CollabDraw } from "@/components/display/collab-draw";
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslation } from "react-i18next";
-import { MarkdownLayoutToggles } from "@/components/common/markdown-layout-toggles";
-import { useMarkdownLayout } from "@/hooks/use-markdown-layout";
+import { usePaste } from "@/context/PasteContext";
+import { useTheme } from "@/hooks/use-theme";
+import { EditorToolbar } from "@/components/common/editor-toolbar";
+import { FileUploadView } from "./file-upload-view";
+import { LinkResultView } from "./link-result-view";
 import {
 	useEffect,
 	useState,
@@ -15,12 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 import { MarkdownDisplay } from "@/components/display/content/markdown-display";
 import { ResizableSplitPane } from "@/components/common/resizable-split-pane";
-import { ZenModeToggle } from "@/components/common/zen-mode-toggle";
-import { usePaste } from "@/context/PasteContext";
-import { useTheme } from "@/hooks/use-theme";
-import type { PasteData } from "@/types";
-import { FileUploadView } from "./file-upload-view";
-import { LinkResultView } from "./link-result-view";
+import { useMarkdownLayout } from "@/hooks/use-markdown-layout";
 
 interface EditorContentProps {
 	fontSize: number;
@@ -187,35 +185,17 @@ export const EditorContent = memo(
 							: "flex-1 min-h-[50vh]",
 					)}
 				>
-					{(contentType === "code" ||
-						contentType === "text" ||
-						contentType === "draw") && (
-						<div
-							className={cn(
-								"flex items-center gap-2 z-[101]",
-								contentType === "draw"
-									? isFullscreen || isWindowFullscreen
-										? "fixed top-4 right-4"
-										: "absolute right-3 top-3"
-									: isFullscreen || isWindowFullscreen
-										? "fixed top-8 right-8"
-										: "absolute top-8 right-8",
-							)}
-						>
-							{language === "markdown" && (
-								<MarkdownLayoutToggles
-									mode={mdLayoutMode}
-									onModeChange={setMdLayoutMode}
-								/>
-							)}
-							<ZenModeToggle
-								isFullscreen={isFullscreen}
-								isWindowFullscreen={isWindowFullscreen}
-								onToggle={toggleFullscreen}
-								onWindowToggle={toggleWindowFullscreen}
-							/>
-						</div>
-					)}
+					<EditorToolbar
+						contentType={contentType}
+						language={language}
+						isFullscreen={isFullscreen}
+						isWindowFullscreen={isWindowFullscreen}
+						onToggleFullscreen={toggleFullscreen}
+						onToggleWindowFullscreen={toggleWindowFullscreen}
+						mdLayoutMode={mdLayoutMode}
+						onMdLayoutModeChange={setMdLayoutMode}
+					/>
+
 					<div className="flex-1 w-full h-full relative min-h-0 flex flex-col">
 						{contentType === "draw" ? (
 							<CollabDraw

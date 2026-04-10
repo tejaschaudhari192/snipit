@@ -1,7 +1,7 @@
 import { Timer } from "lucide-react";
-import { getTimeRemaining } from "@/lib/utils";
+import { cn, getTimeRemaining } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/lib/utils";
+import { GlassBadge } from "./core/glass-badge";
 
 interface ExpirationBadgeProps {
 	expiresAt: string | null;
@@ -47,17 +47,14 @@ export const ExpirationBadge = ({
 				: getTimeRemaining(expiresAt, t);
 
 	return (
-		<div
-			className={cn(
-				"flex items-center gap-1.5 font-black px-2.5 py-1.5 rounded-lg border shadow-sm transition-all",
-				statusColor,
-				className,
-			)}
+		<GlassBadge
+			icon={<Timer className="h-3.5 w-3.5" />}
+			className={cn(statusColor, className)}
+			rounded="lg"
 		>
-			<Timer className="h-3.5 w-3.5" />
 			<span className="uppercase tracking-tight inline-block min-w-[60px] text-center">
 				{text}
 			</span>
-		</div>
+		</GlassBadge>
 	);
 };

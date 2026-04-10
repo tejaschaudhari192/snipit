@@ -1,8 +1,19 @@
-import { User, Mail, Calendar, Edit2, Check, X } from "lucide-react";
+import {
+	User,
+	Mail,
+	Calendar,
+	Edit2,
+	Check,
+	X,
+	Eye,
+	Files,
+} from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { GlassBadge } from "@/components/common/core/glass-badge";
 import { useTranslation } from "react-i18next";
 import type { User as UserType, PasteData } from "@/types";
 
@@ -55,11 +66,15 @@ export const ProfileInfo = ({
 					<CardContent className="relative pt-0 px-8 pb-10">
 						<div className="flex flex-col items-center -mt-16 mb-6">
 							<div className="relative group">
-								<div className="h-32 w-32 rounded-3xl bg-gradient-to-br from-primary to-primary/60 p-1.5 shadow-2xl ring-8 ring-background/80 transition-transform hover:scale-105 duration-300">
-									<div className="h-full w-full rounded-2xl bg-background flex items-center justify-center overflow-hidden">
+								<Avatar className="h-32 w-32 rounded-3xl p-1.5 shadow-2xl ring-8 ring-background/80 transition-transform hover:scale-105 duration-300 bg-gradient-to-br from-primary to-primary/60">
+									<AvatarImage
+										className="rounded-2xl"
+										src=""
+									/>
+									<AvatarFallback className="rounded-2xl bg-background flex items-center justify-center">
 										<User className="h-14 w-14 text-primary" />
-									</div>
-								</div>
+									</AvatarFallback>
+								</Avatar>
 							</div>
 
 							<div className="mt-6 w-full text-center space-y-4">
@@ -145,16 +160,22 @@ export const ProfileInfo = ({
 						</div>
 
 						<div className="grid grid-cols-2 gap-4 pt-2">
-							<div className="bg-primary/[0.03] hover:bg-primary/[0.06] border border-primary/10 rounded-3xl p-5 text-center transition-all group/stat">
-								<div className="text-3xl font-black text-primary mb-1">
+							<div className="bg-primary/[0.03] hover:bg-primary/[0.06] border border-primary/10 rounded-[2rem] p-5 text-center transition-all group/stat">
+								<div className="flex justify-center mb-1">
+									<Files className="h-4 w-4 text-primary/40 group-hover/stat:text-primary/70 transition-colors" />
+								</div>
+								<div className="text-3xl font-black text-primary">
 									{pastes.length}
 								</div>
 								<div className="text-[10px] uppercase tracking-[0.15em] font-bold text-primary/60 group-hover/stat:text-primary transition-colors">
 									{t("profile.snippets_count", "Snippets")}
 								</div>
 							</div>
-							<div className="bg-muted/20 hover:bg-muted/30 border border-border/50 rounded-3xl p-5 text-center transition-all group/stat">
-								<div className="text-3xl font-black text-foreground mb-1">
+							<div className="bg-muted/20 hover:bg-muted/30 border border-border/50 rounded-[2rem] p-5 text-center transition-all group/stat">
+								<div className="flex justify-center mb-1">
+									<Eye className="h-4 w-4 text-muted-foreground/30 group-hover/stat:text-foreground/50 transition-colors" />
+								</div>
+								<div className="text-3xl font-black text-foreground">
 									{totalViews}
 								</div>
 								<div className="text-[10px] uppercase tracking-[0.15em] font-bold text-muted-foreground group-hover/stat:text-foreground transition-colors">
@@ -173,9 +194,13 @@ export const ProfileInfo = ({
 							<h3 className="font-black text-xs uppercase tracking-[0.2em] text-muted-foreground">
 								{t("profile.activity", "Stats")}
 							</h3>
-							<div className="text-[10px] font-bold text-primary/60 bg-primary/5 px-2 py-0.5 rounded italic">
+							<GlassBadge
+								size="xs"
+								className="italic text-primary/60"
+								variant="glass"
+							>
 								account history
-							</div>
+							</GlassBadge>
 						</div>
 						<div className="space-y-4">
 							<div className="flex items-center justify-between group/row">
@@ -193,9 +218,13 @@ export const ProfileInfo = ({
 										"Fav Language",
 									)}
 								</span>
-								<div className="px-3 py-1 rounded-full bg-muted/60 text-[10px] font-black uppercase tracking-widest text-foreground group-hover/row:bg-primary/10 group-hover/row:text-primary transition-all">
+								<GlassBadge
+									size="xs"
+									className="group-hover/row:bg-primary/10 transition-all uppercase tracking-widest"
+									variant="outline"
+								>
 									{favoriteLanguage}
-								</div>
+								</GlassBadge>
 							</div>
 							<div className="flex items-center justify-between group/row">
 								<span className="text-sm text-muted-foreground group-hover/row:text-foreground transition-colors">
