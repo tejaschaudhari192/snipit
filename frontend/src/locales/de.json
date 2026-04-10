@@ -24,7 +24,7 @@
 		"private": "Privat",
 		"shared": "Geteilt",
 		"auth_required": "Authentifizierung erforderlich",
-		"auth_required_desc": "Das Erstellen von {{visibility}} Snippets erfordert ein Konto.",
+		"auth_required_desc": "Das Erstellen von privaten oder geteilten Snippets erfordert ein Konto, um den Zugriff und das Eigentum zu verwalten.",
 		"allowed_users": "Zugelassene Benutzer",
 		"allowed_users_placeholder": "E-Mails eingeben...",
 		"password": "Passwort (Optional)",
@@ -104,9 +104,10 @@
 		"split_view": "Geteilte Ansicht",
 		"preview_only": "Nur Vorschau",
 		"settings": "General Settings",
-		"privacy": "Privacy & Security",
-		"collaborators": "Collaborators",
-		"drag_to_resize": "Zum Ändern der Größe ziehen"
+		"privacy": "Datenschutz",
+		"collaborators": "Im Raum",
+		"drag_to_resize": "Zum Ändern der Größe ziehen",
+		"me": "Du"
 	},
 	"profile": {
 		"title": "Ihr Profil",
@@ -371,13 +372,13 @@
 	},
 	"splash": {
 		"tagline": "Teilen Sie Ihre Snippets sofort",
-		"loading_phrases": [
-			"Initialisiere Core...",
-			"Engine wird aufgewärmt...",
-			"Lade Syntaxbäume...",
-			"Kompiliere Arbeitsbereich...",
-			"Bereite Snippets vor..."
-		]
+		"loading_phrases": {
+			"0": "Initialisiere Core...",
+			"1": "Engine wird aufgewärmt...",
+			"2": "Lade Syntaxbäume...",
+			"3": "Kompiliere Arbeitsbereich...",
+			"4": "Bereite Snippets vor..."
+		}
 	},
 	"error_page": {
 		"title": "Seite nicht gefunden",

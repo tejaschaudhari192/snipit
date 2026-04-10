@@ -20,6 +20,7 @@ export interface ActiveUser {
 	color: string;
 	isEditing: boolean;
 	pasteId: string;
+	isMe?: boolean;
 }
 
 export interface CursorPosition {

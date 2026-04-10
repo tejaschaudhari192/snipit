@@ -140,7 +140,7 @@ export const CollaboratorsManager = ({
 
 			{shareList.length > 0 && (
 				<div className="flex flex-col gap-2 mt-2 max-h-[150px] overflow-y-auto pr-1">
-					<p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mt-3 mb-1 px-1">
+					<p className="text-[11px] font-semibold text-muted-foreground tracking-wide mt-3 mb-1 px-1">
 						{t("common.people_with_access", "People with access")}
 					</p>
 					{shareList.map((item) => (

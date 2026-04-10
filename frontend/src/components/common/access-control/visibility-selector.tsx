@@ -57,7 +57,7 @@ export const VisibilitySelector = ({
 						<span className="text-sm font-bold">
 							{t("common.general_access", "General access")}
 						</span>
-						<span className="text-[10px] text-muted-foreground uppercase tracking-tight font-medium">
+						<span className="text-[10px] text-muted-foreground tracking-tight font-medium">
 							{visibility === "public"
 								? t(
 										"common.anyone_with_link",

@@ -24,7 +24,7 @@
 		"private": "Private",
 		"shared": "Shared",
 		"auth_required": "Authentication Required",
-		"auth_required_desc": "Creating {{visibility}} snippets requires an account to manage access control and ownership.",
+		"auth_required_desc": "Creating private or shared snippets requires an account to manage access control and ownership.",
 		"allowed_users": "Allowed Users",
 		"allowed_users_placeholder": "Enter emails...",
 		"password": "Password",
@@ -103,7 +103,8 @@
 		"drag_to_resize": "Drag to resize",
 		"settings": "General Settings",
 		"privacy": "Privacy & Security",
-		"collaborators": "Collaborators",
+		"collaborators": "In Room",
+		"me": "You",
 		"identification": "Identification",
 		"close": "Close",
 		"refresh": "Refresh"

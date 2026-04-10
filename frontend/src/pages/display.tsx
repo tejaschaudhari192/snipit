@@ -159,27 +159,6 @@ const DisplayPage = () => {
 	const [isWindowFullscreen, setIsWindowFullscreen] = useState(false);
 
 	useEffect(() => {
-		const params = new URLSearchParams(window.location.search);
-		if (params.get("fullscreen") === "true") {
-			setIsFullscreen(true);
-		}
-	}, []);
-
-	useEffect(() => {
-		const params = new URLSearchParams(window.location.search);
-		if (isFullscreen.toString() !== params.get("fullscreen")) {
-			if (isFullscreen) params.set("fullscreen", "true");
-			else params.delete("fullscreen");
-
-			const newRel =
-				window.location.pathname +
-				(params.toString() ? "?" + params.toString() : "") +
-				window.location.hash;
-			window.history.replaceState(null, "", newRel);
-		}
-	}, [isFullscreen]);
-
-	useEffect(() => {
 		const handleFullscreenChange = () => {
 			setIsWindowFullscreen(!!document.fullscreenElement);
 		};
@@ -190,35 +169,6 @@ const DisplayPage = () => {
 				handleFullscreenChange,
 			);
 	}, []);
-
-	useEffect(() => {
-		const params = new URLSearchParams(location.search);
-		const editParam = params.get("edit");
-
-		if (editParam === "true") {
-			setIsEdit(true);
-		}
-	}, [location.search]);
-
-	useEffect(() => {
-		const params = new URLSearchParams(location.search);
-		let changed = false;
-
-		const currentEdit = params.get("edit");
-		if (isEdit.toString() !== currentEdit) {
-			if (isEdit) params.set("edit", "true");
-			else params.delete("edit");
-			changed = true;
-		}
-
-		if (changed) {
-			const newRel =
-				location.pathname +
-				(params.toString() ? "?" + params.toString() : "") +
-				location.hash;
-			window.history.replaceState(null, "", newRel);
-		}
-	}, [isEdit, location.pathname, location.search, location.hash]);
 
 	const onContentTypeChange = (newMode: ContentMode) => {
 		const isTextOrCode = (m: ContentMode) => m === "text" || m === "code";
@@ -695,7 +645,7 @@ const DisplayPage = () => {
 			socket.disconnect();
 			socketRef.current = null;
 		};
-	}, [id, loading, paste, user?.username, setLanguage, updatedContent]);
+	}, [id, loading, paste?.id, user?.username, setLanguage]);
 
 	useEffect(() => {
 		if (paste) {
@@ -779,7 +729,7 @@ const DisplayPage = () => {
 	]);
 
 	useEffect(() => {
-		if (!socketRef.current || !isEdit || isRemoteUpdate.current) return;
+		if (!socketRef.current || !isEdit) return;
 
 		const sync = syncStateRef.current;
 		const isDifferent =
@@ -817,7 +767,7 @@ const DisplayPage = () => {
 			if (!socketRef.current) return;
 			socketRef.current.emit("edit-paste", newState);
 			syncStateRef.current = { ...sync, ...newState };
-		}, 400);
+		}, 50);
 		return () => clearTimeout(timer);
 	}, [
 		updatedContent,
@@ -920,6 +870,17 @@ const DisplayPage = () => {
 		if (val === updatedContent) return;
 		setUpdatedContent(val);
 		if (isAutosave) setSaveStatus("saving");
+
+		// Immediate socket emit for cursor position if editing
+		if (socketRef.current && id && isEdit) {
+			const position = editorRef.current?.getPosition();
+			if (position) {
+				socketRef.current.emit("cursor-move", {
+					pasteId: id,
+					position,
+				});
+			}
+		}
 	};
 
 	const handleVerifyPassword = async () => {
@@ -977,9 +938,10 @@ const DisplayPage = () => {
 		);
 	}
 
-	const visibleActiveUsers = activeUsers.filter(
-		(u) => u.socketId !== socketRef.current?.id,
-	);
+	const visibleActiveUsers = activeUsers.map((u) => ({
+		...u,
+		isMe: u.socketId === socketRef.current?.id,
+	}));
 
 	return (
 		<>
@@ -1075,12 +1037,12 @@ const DisplayPage = () => {
 						className={cn(
 							"w-full flex-1 flex flex-col transition-all duration-300",
 							!isFullscreen && !isWindowFullscreen
-								? "px-2 sm:px-5 py-3 sm:py-6"
-								: "p-4",
+								? "px-2 sm:px-5 py-1.5 sm:py-3"
+								: "p-3",
 						)}
 					>
 						{isEdit && !isFullscreen && !isWindowFullscreen && (
-							<div className="mb-2 sm:mb-4 shrink-0 px-1">
+							<div className="mb-1 sm:mb-2 shrink-0 px-1">
 								<Suspense
 									fallback={<ShimmerSection type="toolbar" />}
 								>

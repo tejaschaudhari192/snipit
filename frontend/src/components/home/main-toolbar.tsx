@@ -137,7 +137,7 @@ export const MainToolbar = memo(
 						<div className="border-t border-border/10 pt-2 mt-1.5 px-1.5 sm:px-2">
 							<div className="flex items-center gap-2 mb-3 px-1 py-1 group">
 								<div className="w-1.5 h-5 bg-primary/30 group-hover:bg-primary transition-colors rounded-full" />
-								<h3 className="font-black text-sm uppercase tracking-widest text-primary/70 group-hover:text-primary transition-colors">
+								<h3 className="font-bold text-sm text-primary/70 group-hover:text-primary transition-colors">
 									{t(
 										"home.advanced_config",
 										"Advanced Configuration",

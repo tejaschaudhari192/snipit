@@ -13,7 +13,7 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 
 	return (
 		<>
-			<div className="flex items-center justify-between px-6 py-3 bg-background/40 backdrop-blur-xl border-y border-border/50 text-[10px] sm:text-xs shadow-sm mt-0 relative z-10">
+			<div className="flex items-center justify-between px-6 py-1.5 bg-background/40 backdrop-blur-xl border-y border-border/50 text-[10px] sm:text-xs shadow-sm mt-0 relative z-10">
 				<div className="flex items-center gap-3">
 					{paste.language ? (
 						<div className="flex items-center gap-1.5 font-medium text-muted-foreground uppercase tracking-wider">

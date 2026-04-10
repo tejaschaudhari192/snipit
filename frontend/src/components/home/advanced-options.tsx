@@ -58,7 +58,7 @@ export const AdvancedOptions = ({ onSubmit }: AdvancedOptionsProps) => {
 		icon: React.ElementType;
 		label: string;
 	}) => (
-		<div className="flex items-center gap-2 text-primary/60 font-bold text-xs uppercase tracking-widest mb-4">
+		<div className="flex items-center gap-2 text-primary/60 font-semibold text-xs tracking-wide mb-4">
 			<Icon className="h-4 w-4" />
 			<span>{label}</span>
 		</div>

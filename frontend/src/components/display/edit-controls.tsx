@@ -86,11 +86,13 @@ export const EditControls = ({
 	const { t } = useTranslation();
 
 	return (
-		<div className="flex flex-col gap-4 animate-in fade-in slide-in-from-top-4 duration-300">
-			<div className="flex flex-col gap-4">
-				<div className="flex flex-col xl:flex-row gap-4 justify-end items-start xl:items-center -mb-1">
+		<div className="flex flex-col animate-in fade-in slide-in-from-top-4 duration-300">
+			<div className="flex flex-col gap-3">
+				<div className="flex flex-col xl:flex-row gap-2.5 justify-end items-start xl:items-center -mb-1">
 					<div className="w-full xl:w-auto flex flex-wrap items-center gap-3">
-						{(isDetecting || contentType === "code") && (
+						{(isDetecting ||
+							contentType === "code" ||
+							contentType === "text") && (
 							<div className="flex items-center gap-2 animate-in fade-in zoom-in-95 duration-200">
 								<LanguageSelector
 									value={language}
@@ -120,7 +122,7 @@ export const EditControls = ({
 				</div>
 
 				{(isOwner || isAdmin) && (
-					<div className="flex flex-wrap items-center gap-4 p-3 rounded-xl bg-muted/30 border border-border/50 shadow-sm animate-in slide-in-from-top-2 duration-300">
+					<div className="flex flex-wrap items-center gap-3 p-2 rounded-xl bg-muted/30 border border-border/50 shadow-sm animate-in slide-in-from-top-2 duration-300">
 						<div className="flex items-center gap-3 pr-0 md:pr-4 md:border-r border-border/50">
 							<Switch
 								id="password-protected"

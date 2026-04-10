@@ -38,8 +38,8 @@ export const LanguageSelector = memo(
 						className,
 					)}
 				>
-					<div className="absolute inset-[-200%] opacity-70 moving-border-gradient animate-moving-border" />
-					<div className="relative z-10 flex h-full w-full items-center justify-center gap-2 rounded-[5px] bg-background dark:bg-slate-900 text-sm font-medium">
+					<div className="absolute inset-[-100%] opacity-70 moving-border-gradient animate-moving-border" />
+					<div className="relative z-10 flex h-full w-full items-center justify-center gap-2 rounded-[5px] bg-background dark:bg-slate-900 text-sm font-bold">
 						<span className="whitespace-nowrap">
 							{t("home.auto_detecting")}
 						</span>
@@ -57,7 +57,7 @@ export const LanguageSelector = memo(
 			<Select value={value} onValueChange={onValueChange}>
 				<SelectTrigger
 					className={cn(
-						"w-full sm:w-[200px] h-10 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm transition-all focus:ring-primary/20",
+						"w-full sm:w-[180px] h-10 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm transition-all focus:ring-primary/20",
 						className,
 					)}
 				>

@@ -24,7 +24,7 @@
 		"private": "非公開",
 		"shared": "共有",
 		"auth_required": "認証が必要です",
-		"auth_required_desc": "{{visibility}} スニペットを作成するにはアカウントが必要です。",
+		"auth_required_desc": "非公開または共有スニペットを作成するには、アクセス制御と所有権を管理するためのアカウントが必要です。",
 		"allowed_users": "許可されたユーザー",
 		"allowed_users_placeholder": "メールアドレスを入力...",
 		"password": "パスワード（オプション）",
@@ -103,10 +103,12 @@
 		"editor_only": "エディタのみ",
 		"split_view": "分割ビュー",
 		"preview_only": "プレビューのみ",
-		"settings": "General Settings",
-		"privacy": "Privacy & Security",
-		"collaborators": "Collaborators",
-		"drag_to_resize": "ドラッグしてサイズ変更"
+		"preview_only": "プレビューのみ",
+		"settings": "全般設定",
+		"privacy": "プライバシーとセキュリティ",
+		"collaborators": "入室中",
+		"drag_to_resize": "ドラッグしてサイズ変更",
+		"me": "自分"
 	},
 	"profile": {
 		"title": "ユーザープロフィール",
@@ -371,13 +373,13 @@
 	},
 	"splash": {
 		"tagline": "スニペットを瞬時に共有",
-		"loading_phrases": [
-			"コアを初期化中...",
-			"エンジンをウォームアップ中...",
-			"構文木を読み込み中...",
-			"ワークスペースをコンパイル中...",
-			"スニペットを準備中..."
-		]
+		"loading_phrases": {
+			"0": "コアを初期化中...",
+			"1": "エンジンをウォームアップ中...",
+			"2": "構文木を読み込み中...",
+			"3": "ワークスペースをコンパイル中...",
+			"4": "スニペットを準備中..."
+		}
 	},
 	"error_page": {
 		"title": "ページが見つかりません",

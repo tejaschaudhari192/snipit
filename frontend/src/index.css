@@ -46,6 +46,8 @@
 	--animate-collapsible-down: collapsible-down 300ms ease-out;
 	--animate-collapsible-up: collapsible-up 300ms ease-out;
 	--animate-shimmer-fast: shimmer-gradient 2s infinite linear;
+	--animate-spin-slow: spin 3s linear infinite;
+	--animate-moving-border: moving-border 4s linear infinite;
 }
 
 :root {

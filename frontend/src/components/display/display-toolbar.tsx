@@ -98,7 +98,7 @@ export const DisplayToolbar = ({
 	const isAdmin = userRole === "admin";
 
 	return (
-		<div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 md:px-6 bg-background/40 backdrop-blur-xl relative z-20 shadow-sm border-b border-border/50">
+		<div className="flex flex-wrap items-center justify-between gap-3 px-4 py-1.5 md:px-6 bg-background/40 backdrop-blur-xl relative z-20 shadow-sm border-b border-border/50">
 			<ToolbarActionButtons
 				isEdit={isEdit}
 				canEdit={canEdit}
