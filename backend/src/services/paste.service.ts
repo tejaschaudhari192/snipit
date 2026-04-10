@@ -105,10 +105,11 @@ class PasteService {
 			paste.expiresAt = expiresAt;
 		}
 
-		if (fileUrl !== undefined) paste.fileUrl = fileUrl;
-		if (fileName !== undefined) paste.fileName = fileName;
-		if (fileSize !== undefined) paste.fileSize = fileSize;
-		if (fileMimeType !== undefined) paste.fileMimeType = fileMimeType;
+		if (fileUrl !== undefined) paste.fileUrl = fileUrl ?? undefined;
+		if (fileName !== undefined) paste.fileName = fileName ?? undefined;
+		if (fileSize !== undefined) paste.fileSize = fileSize ?? undefined;
+		if (fileMimeType !== undefined)
+			paste.fileMimeType = fileMimeType ?? undefined;
 
 		console.log(`[PasteService] Final Save Object for ${id}:`, {
 			contentMode: paste.contentMode,
