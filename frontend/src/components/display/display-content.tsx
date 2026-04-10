@@ -4,9 +4,12 @@ import { cn } from "@/lib/utils";
 import { ZenModeToggle } from "@/components/common/zen-mode-toggle";
 import type { PasteData, ContentMode } from "@/types";
 import { MarkdownDisplay } from "./content/markdown-display";
+import { ResizableSplitPane } from "@/components/common/resizable-split-pane";
 import { FileDisplay } from "./content/file-display";
 import { CodeEditorView } from "./content/code-editor-view";
 import { LinkView } from "./content/link-view";
+import { MarkdownLayoutToggles } from "@/components/common/markdown-layout-toggles";
+import { useMarkdownLayout } from "@/hooks/use-markdown-layout";
 
 import type { Socket } from "socket.io-client";
 import type { ActiveUser } from "@/types";
@@ -55,6 +58,7 @@ export const DisplayContent = memo(
 		setIsWindowFullscreen,
 	}: DisplayContentProps) => {
 		const containerRef = useRef<HTMLDivElement>(null);
+		const [mdLayoutMode, setMdLayoutMode] = useMarkdownLayout();
 
 		useEffect(() => {
 			const handleFullscreenChange = () => {
@@ -123,8 +127,11 @@ export const DisplayContent = memo(
 			if (language === "markdown") {
 				if (isEdit) {
 					return (
-						<div className="flex flex-col md:flex-row gap-4 h-full">
-							<div className="flex-1 min-h-[300px]">
+						<ResizableSplitPane
+							showHint={true}
+							initialWidth={50}
+							mode={mdLayoutMode}
+							left={
 								<CodeEditorView
 									id={id}
 									isEdit={isEdit}
@@ -141,23 +148,29 @@ export const DisplayContent = memo(
 									onMount={onMount}
 									hideFullscreen={true}
 								/>
-							</div>
-							<div className="flex-1 overflow-auto">
-								<MarkdownDisplay
-									content={content}
-									fontSize={fontSize}
-									contentRef={contentRef}
-								/>
-							</div>
-						</div>
+							}
+							right={
+								<div className="h-full overflow-y-auto bg-background/30 p-4">
+									<MarkdownDisplay
+										content={content}
+										fontSize={fontSize}
+										contentRef={contentRef}
+									/>
+								</div>
+							}
+						/>
 					);
 				}
 				return (
-					<MarkdownDisplay
-						content={content}
-						fontSize={fontSize}
-						contentRef={contentRef}
-					/>
+					<div className="h-full overflow-y-auto p-4 md:p-8 flex flex-col items-center">
+						<div className="my-auto w-full flex flex-col items-center px-2 md:px-4">
+							<MarkdownDisplay
+								content={content}
+								fontSize={fontSize}
+								contentRef={contentRef}
+							/>
+						</div>
+					</div>
 				);
 			}
 
@@ -190,13 +203,9 @@ export const DisplayContent = memo(
 				{(contentType === "code" ||
 					contentType === "text" ||
 					contentType === "draw") && (
-					<ZenModeToggle
-						isFullscreen={isFullscreen}
-						isWindowFullscreen={isWindowFullscreen}
-						onToggle={toggleFullscreen}
-						onWindowToggle={toggleWindowFullscreen}
+					<div
 						className={cn(
-							"z-[101]",
+							"z-[101] flex items-center gap-2",
 							contentType === "draw"
 								? isFullscreen || isWindowFullscreen
 									? "fixed top-4 right-4"
@@ -205,7 +214,20 @@ export const DisplayContent = memo(
 									? "fixed top-8 right-8"
 									: "absolute top-8 right-8",
 						)}
-					/>
+					>
+						{language === "markdown" && isEdit && (
+							<MarkdownLayoutToggles
+								mode={mdLayoutMode}
+								onModeChange={setMdLayoutMode}
+							/>
+						)}
+						<ZenModeToggle
+							isFullscreen={isFullscreen}
+							isWindowFullscreen={isWindowFullscreen}
+							onToggle={toggleFullscreen}
+							onWindowToggle={toggleWindowFullscreen}
+						/>
+					</div>
 				)}
 				<div className="flex-1 w-full h-full relative overflow-hidden">
 					{renderContent()}

@@ -242,7 +242,7 @@ export const CollabDraw = ({
 		return () => {
 			socket.off("draw-update", handler);
 		};
-	}, [socketRef, excalidrawAPI, activeUsers]);
+	}, [socketRef, excalidrawAPI, activeUsers, t]);
 
 	// Sync Excalidraw's collaborators list with our activeUsers prop to handle join/leave correctly
 	useEffect(() => {

@@ -99,7 +99,14 @@
 		"window_fullscreen": "विंडो फ़ुलस्क्रीन",
 		"identification": "पहचान",
 		"close": "बंद करें",
-		"refresh": "रीफ्रेश करें"
+		"refresh": "रीफ्रेश करें",
+		"editor_only": "केवल संपादक",
+		"split_view": "विभाजित दृश्य",
+		"preview_only": "केवल पूर्वावलोकन",
+		"settings": "General Settings",
+		"privacy": "Privacy & Security",
+		"collaborators": "Collaborators",
+		"drag_to_resize": "आकार बदलने के लिए खींचें"
 	},
 	"profile": {
 		"title": "आपकी प्रोफ़ाइल",
@@ -193,7 +200,13 @@
 			"preview": "पूर्वावलोकन:",
 			"cancel": "रद्द करें",
 			"submit": "स्निपेट बनाएं"
-		}
+		},
+		"shorten_button": "Shorten",
+		"upload_button": "Upload",
+		"link_shortened": "Link Shortened!",
+		"link_ready_desc": "Your short link is ready to share",
+		"alias": "Alias",
+		"create_another": "Create Another"
 	},
 	"display": {
 		"expires_in": "समाप्ति समय:",

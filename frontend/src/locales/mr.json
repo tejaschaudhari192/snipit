@@ -99,7 +99,14 @@
 		"edit_permission": "कोण संपादित करू शकते?",
 		"only_me": "फक्त मी",
 		"specific_people": "विशिष्ट लोक",
-		"everyone": "प्रत्येकजण"
+		"everyone": "प्रत्येकजण",
+		"editor_only": "केवळ संपादक",
+		"split_view": "विभाजित दृश्य",
+		"preview_only": "केवळ पूर्वावलोकन",
+		"settings": "General Settings",
+		"privacy": "Privacy & Security",
+		"collaborators": "Collaborators",
+		"drag_to_resize": "आकार बदलण्यासाठी ड्रॅग करा"
 	},
 	"profile": {
 		"title": "तुमची प्रोफाइल",
@@ -130,7 +137,8 @@
 			"shared": "शेअर केलेले"
 		},
 		"not_applicable": "लागू नाही",
-		"checking_auth": "प्रमाणीकरण तपासत आहे..."
+		"checking_auth": "प्रमाणीकरण तपासत आहे...",
+		"logged_in_as": "Logged in as"
 	},
 	"home": {
 		"select_expire_time": "मुदतची वेळ निवडा",
@@ -196,7 +204,9 @@
 			"preview": "पूर्वावलोकन:",
 			"cancel": "रद्द करा",
 			"submit": "स्निपेट तयार करा"
-		}
+		},
+		"advanced_config": "Advanced Configuration",
+		"identification_type": "Identification & Type"
 	},
 	"display": {
 		"expires_in": "यामध्ये मुदत संपेल:",

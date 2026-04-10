@@ -18,31 +18,31 @@ export const MarkdownDisplay = memo(
 			() => ({
 				h1: ({ node, ...props }) => (
 					<h1
-						className="text-3xl font-black mb-6 pb-2 border-b border-border/50"
+						className="text-[1.5em] font-black mb-3 pb-1 border-b border-border/50"
 						{...props}
 					/>
 				),
 				h2: ({ node, ...props }) => (
 					<h2
-						className="text-2xl font-bold mb-4 pb-1 border-b border-border/30"
+						className="text-[1.25em] font-bold mb-2 pb-0.5 border-b border-border/30"
 						{...props}
 					/>
 				),
 				h3: ({ node, ...props }) => (
-					<h3 className="text-xl font-bold mb-3" {...props} />
+					<h3 className="text-[1.1em] font-bold mb-2" {...props} />
 				),
 				ul: ({ node, ...props }) => (
-					<ul className="list-disc pl-6 mb-4 space-y-2" {...props} />
+					<ul className="list-disc pl-5 mb-3 space-y-1" {...props} />
 				),
 				ol: ({ node, ...props }) => (
 					<ol
-						className="list-decimal pl-6 mb-4 space-y-2"
+						className="list-decimal pl-5 mb-3 space-y-1"
 						{...props}
 					/>
 				),
 				blockquote: ({ node, ...props }) => (
 					<blockquote
-						className="border-l-4 border-primary/50 bg-primary/5 px-4 py-2 my-4 italic rounded-lg"
+						className="border-l-4 border-primary/50 bg-primary/5 px-4 py-1.5 my-3 italic rounded-lg"
 						{...props}
 					/>
 				),
@@ -58,14 +58,14 @@ export const MarkdownDisplay = memo(
 					const match = /language-(\w+)/.exec(className || "");
 					return !match ? (
 						<code
-							className="bg-muted px-1.5 py-0.5 rounded-md font-mono text-sm border border-border/50"
+							className="bg-muted px-1.5 py-0.5 rounded-md font-mono text-[0.85em] border border-border/50"
 							{...props}
 						>
 							{children}
 						</code>
 					) : (
 						<code
-							className="block bg-muted/50 p-4 rounded-xl font-mono text-sm border border-border/50 overflow-x-auto my-4"
+							className="block bg-muted/50 p-3 rounded-xl font-mono text-[0.85em] border border-border/50 overflow-x-auto my-3"
 							{...props}
 						>
 							{children}
@@ -73,7 +73,7 @@ export const MarkdownDisplay = memo(
 					);
 				},
 				p: ({ node, ...props }) => (
-					<p className="mb-4 leading-relaxed" {...props} />
+					<p className="mb-2 leading-relaxed" {...props} />
 				),
 			}),
 			[],
@@ -84,7 +84,7 @@ export const MarkdownDisplay = memo(
 		return (
 			<div
 				ref={contentRef}
-				className="prose prose-sm md:prose-base dark:prose-invert break-words p-8 md:p-12 rounded-2xl border border-border/50 bg-background/60 backdrop-blur-xl shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-500 max-w-[900px] mx-auto"
+				className="prose prose-sm md:prose-base dark:prose-invert break-words p-5 md:p-10 rounded-2xl border border-border/50 bg-background/60 backdrop-blur-xl shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-500 max-w-7xl w-full mx-auto"
 				style={{ fontSize: `${fontSize}px` }}
 			>
 				<ReactMarkdown

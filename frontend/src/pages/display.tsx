@@ -198,7 +198,7 @@ const DisplayPage = () => {
 		if (editParam === "true") {
 			setIsEdit(true);
 		}
-	}, []);
+	}, [location.search]);
 
 	useEffect(() => {
 		const params = new URLSearchParams(location.search);
@@ -540,7 +540,22 @@ const DisplayPage = () => {
 			}
 		}
 		loadData();
-	}, [id, apiHelpers, location.state, user]);
+	}, [
+		id,
+		apiHelpers,
+		location.state,
+		user,
+		setLanguage,
+		setContentType,
+		setVisibility,
+		setEditPermission,
+		setAllowComments,
+		setExpiresTime,
+		setPublicRole,
+		setCustomId,
+		setAllowedUsers,
+		setIsAutosave,
+	]);
 
 	useEffect(() => {
 		if (!paste) return;
@@ -680,7 +695,7 @@ const DisplayPage = () => {
 			socket.disconnect();
 			socketRef.current = null;
 		};
-	}, [id, loading, paste, user?.username]);
+	}, [id, loading, paste, user?.username, setLanguage, updatedContent]);
 
 	useEffect(() => {
 		if (paste) {
@@ -1050,17 +1065,22 @@ const DisplayPage = () => {
 					</div>
 				)}
 
-				<div className="flex-1 flex flex-col w-full min-h-0 overflow-y-auto">
+				<div
+					className={cn(
+						"flex-1 flex flex-col w-full min-h-0",
+						isEdit ? "overflow-hidden" : "overflow-y-auto",
+					)}
+				>
 					<div
 						className={cn(
 							"w-full flex-1 flex flex-col transition-all duration-300",
 							!isFullscreen && !isWindowFullscreen
-								? "px-3 sm:px-5 py-6"
+								? "px-2 sm:px-5 py-3 sm:py-6"
 								: "p-4",
 						)}
 					>
 						{isEdit && !isFullscreen && !isWindowFullscreen && (
-							<div className="mb-4 shrink-0 px-1">
+							<div className="mb-2 sm:mb-4 shrink-0 px-1">
 								<Suspense
 									fallback={<ShimmerSection type="toolbar" />}
 								>

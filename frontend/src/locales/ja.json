@@ -15,7 +15,8 @@
 		"jump_to": "移動",
 		"jump_to_title": "スニペットへ移動",
 		"jump_to_desc": "スニペットIDを入力して直接移動します。",
-		"jump_to_placeholder": "スニペットIDを入力..."
+		"jump_to_placeholder": "スニペットIDを入力...",
+		"copied_link": "Copied {{id}}!"
 	},
 	"common": {
 		"visibility": "公開設定",
@@ -98,7 +99,14 @@
 		"edit_permission": "編集できる人",
 		"only_me": "自分のみ",
 		"specific_people": "特定のユーザー",
-		"everyone": "全員"
+		"everyone": "全員",
+		"editor_only": "エディタのみ",
+		"split_view": "分割ビュー",
+		"preview_only": "プレビューのみ",
+		"settings": "General Settings",
+		"privacy": "Privacy & Security",
+		"collaborators": "Collaborators",
+		"drag_to_resize": "ドラッグしてサイズ変更"
 	},
 	"profile": {
 		"title": "ユーザープロフィール",
@@ -129,7 +137,8 @@
 			"shared": "共有"
 		},
 		"not_applicable": "該当なし",
-		"checking_auth": "認証を確認中..."
+		"checking_auth": "認証を確認中...",
+		"logged_in_as": "Logged in as"
 	},
 	"home": {
 		"select_expire_time": "有効期限を選択",
@@ -189,7 +198,15 @@
 			"preview": "プレビュー:",
 			"cancel": "キャンセル",
 			"submit": "スニペットを作成"
-		}
+		},
+		"shorten_button": "Shorten",
+		"upload_button": "Upload",
+		"advanced_config": "Advanced Configuration",
+		"identification_type": "Identification & Type",
+		"link_shortened": "Link Shortened!",
+		"link_ready_desc": "Your short link is ready to share",
+		"alias": "Alias",
+		"create_another": "Create Another"
 	},
 	"display": {
 		"expires_in": "有効期限:",
@@ -240,7 +257,8 @@
 		"comment_added": "コメントが正常に追加されました",
 		"comment_failed": "コメントの追加に失敗しました",
 		"empty_content": "貼り付けるコンテンツを入力してください。",
-		"empty_file": "アップロードするファイルを選択してください。"
+		"empty_file": "アップロードするファイルを選択してください。",
+		"snippet_deleted_id": "Snippet {{id}} has been deleted"
 	},
 	"about_page": {
 		"title": "について",

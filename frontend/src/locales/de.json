@@ -15,7 +15,8 @@
 		"jump_to": "Springen zu",
 		"jump_to_title": "Zum Snippet springen",
 		"jump_to_desc": "Geben Sie die Snippet-ID ein, um direkt dorthin zu gelangen.",
-		"jump_to_placeholder": "Snippet-ID eingeben..."
+		"jump_to_placeholder": "Snippet-ID eingeben...",
+		"copied_link": "Copied {{id}}!"
 	},
 	"common": {
 		"visibility": "Sichtbarkeit",
@@ -98,7 +99,14 @@
 		"edit_permission": "Wer kann bearbeiten?",
 		"only_me": "Nur ich",
 		"specific_people": "Bestimmte Personen",
-		"everyone": "Jeder"
+		"everyone": "Jeder",
+		"editor_only": "Nur Editor",
+		"split_view": "Geteilte Ansicht",
+		"preview_only": "Nur Vorschau",
+		"settings": "General Settings",
+		"privacy": "Privacy & Security",
+		"collaborators": "Collaborators",
+		"drag_to_resize": "Zum Ändern der Größe ziehen"
 	},
 	"profile": {
 		"title": "Ihr Profil",
@@ -128,7 +136,9 @@
 			"private": "Privat",
 			"shared": "Geteilt"
 		},
-		"not_applicable": "N/V"
+		"not_applicable": "N/V",
+		"checking_auth": "Checking authentication...",
+		"logged_in_as": "Logged in as"
 	},
 	"home": {
 		"select_expire_time": "Ablaufzeit auswählen",
@@ -188,7 +198,15 @@
 			"preview": "Vorschau:",
 			"cancel": "Abbrechen",
 			"submit": "Snippet erstellen"
-		}
+		},
+		"shorten_button": "Shorten",
+		"upload_button": "Upload",
+		"advanced_config": "Advanced Configuration",
+		"identification_type": "Identification & Type",
+		"link_shortened": "Link Shortened!",
+		"link_ready_desc": "Your short link is ready to share",
+		"alias": "Alias",
+		"create_another": "Create Another"
 	},
 	"display": {
 		"expires_in": "Läuft ab in:",
@@ -239,7 +257,8 @@
 		"comment_added": "Kommentar erfolgreich hinzugefügt",
 		"comment_failed": "Kommentar konnte nicht hinzugefügt werden",
 		"empty_content": "Bitte geben Sie zuerst einen Inhalt ein!",
-		"empty_file": "Bitte wählen Sie zuerst eine Datei aus!"
+		"empty_file": "Bitte wählen Sie zuerst eine Datei aus!",
+		"snippet_deleted_id": "Snippet {{id}} has been deleted"
 	},
 	"about_page": {
 		"title": "Über",
