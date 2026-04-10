@@ -13,6 +13,7 @@ import { useMarkdownLayout } from "@/hooks/use-markdown-layout";
 import type { Socket } from "socket.io-client";
 import type { ActiveUser } from "@/types";
 import { CollabDraw } from "./collab-draw";
+import { FileEditView } from "./content/file-edit-view";
 
 interface DisplayContentProps {
 	id: string;
@@ -33,6 +34,13 @@ interface DisplayContentProps {
 	setIsFullscreen: (v: boolean) => void;
 	isWindowFullscreen: boolean;
 	setIsWindowFullscreen: (v: boolean) => void;
+	onFileSelect?: (file: File) => void;
+	onClearFile?: () => void;
+	previewUrl?: string | null;
+	uploadedFileName?: string | null;
+	isFileUploading?: boolean;
+	fileUploadProgress?: number;
+	fileUploadError?: string | null;
 }
 
 export const DisplayContent = memo(
@@ -55,6 +63,13 @@ export const DisplayContent = memo(
 		setIsFullscreen,
 		isWindowFullscreen,
 		setIsWindowFullscreen,
+		onFileSelect,
+		onClearFile,
+		previewUrl,
+		uploadedFileName,
+		isFileUploading = false,
+		fileUploadProgress = 0,
+		fileUploadError = null,
 	}: DisplayContentProps) => {
 		const containerRef = useRef<HTMLDivElement>(null);
 		const [mdLayoutMode, setMdLayoutMode] = useMarkdownLayout();
@@ -93,6 +108,20 @@ export const DisplayContent = memo(
 
 		const renderContent = () => {
 			if (contentType === "file") {
+				if (isEdit) {
+					return (
+						<FileEditView
+							paste={paste || null}
+							uploadedFileName={uploadedFileName}
+							previewUrl={previewUrl}
+							isFileUploading={isFileUploading}
+							fileUploadProgress={fileUploadProgress}
+							fileUploadError={fileUploadError}
+							onFileSelect={onFileSelect || (() => {})}
+							onClearFile={onClearFile || (() => {})}
+						/>
+					);
+				}
 				return <FileDisplay paste={paste} contentRef={contentRef} />;
 			}
 

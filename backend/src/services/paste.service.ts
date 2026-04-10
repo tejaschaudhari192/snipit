@@ -47,6 +47,10 @@ class PasteService {
 		expiresTime?: string,
 		expiresAt?: Date | null,
 		contentMode?: ContentMode,
+		fileUrl?: string | null,
+		fileName?: string | null,
+		fileSize?: number | null,
+		fileMimeType?: string | null,
 	) {
 		const paste = await pasteModel.findOne({ id });
 		if (!paste) return null;
@@ -100,6 +104,11 @@ class PasteService {
 		if (expiresAt !== undefined && expiresAt !== null) {
 			paste.expiresAt = expiresAt;
 		}
+
+		if (fileUrl !== undefined) paste.fileUrl = fileUrl;
+		if (fileName !== undefined) paste.fileName = fileName;
+		if (fileSize !== undefined) paste.fileSize = fileSize;
+		if (fileMimeType !== undefined) paste.fileMimeType = fileMimeType;
 
 		console.log(`[PasteService] Final Save Object for ${id}:`, {
 			contentMode: paste.contentMode,

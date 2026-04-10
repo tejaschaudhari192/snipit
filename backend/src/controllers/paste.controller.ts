@@ -433,6 +433,23 @@ class PasteController {
 				});
 			}
 
+			const {
+				fileUrl,
+				fileName,
+				fileSize,
+				fileMimeType,
+				contentMode: reqContentMode,
+			} = req.body;
+
+			// If file is changed, delete the old file from storage
+			if (
+				fileUrl !== undefined &&
+				existingPaste.fileUrl &&
+				existingPaste.fileUrl !== fileUrl
+			) {
+				await deleteFileFromStorage(existingPaste.fileUrl);
+			}
+
 			if (userRole === "editor") {
 				visibility = undefined;
 				allowedUsers = undefined;
@@ -504,7 +521,11 @@ class PasteController {
 				allowComments,
 				expiresTime,
 				expiresAt,
-				req.body.contentMode,
+				reqContentMode,
+				fileUrl,
+				fileName,
+				fileSize,
+				fileMimeType,
 			);
 
 			if (shareList && result) {

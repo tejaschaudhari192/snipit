@@ -95,6 +95,10 @@ export const useApiHelpers = () => {
 			allowComments?: boolean,
 			expiresTime?: string,
 			contentMode?: ContentMode,
+			fileUrl?: string | null,
+			fileName?: string | null,
+			fileSize?: number | null,
+			fileMimeType?: string | null,
 		): Promise<PasteData> => {
 			const response = await api.put("/" + id, {
 				content,
@@ -110,6 +114,10 @@ export const useApiHelpers = () => {
 				allowComments,
 				expiresTime,
 				contentMode,
+				fileUrl,
+				fileName,
+				fileSize,
+				fileMimeType,
 			});
 			const data = response.data;
 			return data;

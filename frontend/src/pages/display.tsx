@@ -79,22 +79,15 @@ const AiEnhanceDialog = lazy(() =>
 		default: m.AiEnhanceDialog,
 	})),
 );
+const DeletePasteDialog = lazy(() =>
+	import("@/components/display/delete-paste-dialog").then((m) => ({
+		default: m.DeletePasteDialog,
+	})),
+);
 
 import { useLanguageDetection } from "@/hooks/use-language-detection";
 import { useAiEnhance } from "@/hooks/use-ai-enhance";
-
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogMedia,
-} from "@/components/ui/alert-dialog";
-import { Trash2 } from "lucide-react";
+import { useFileUpload } from "@/hooks/use-file-upload";
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
 
@@ -163,6 +156,29 @@ const DisplayPage = () => {
 	const [isAutosave, setIsAutosave] = useState(true);
 	const [isFullscreen, setIsFullscreen] = useState(false);
 	const [isWindowFullscreen, setIsWindowFullscreen] = useState(false);
+	const [isServerFileRemoved, setIsServerFileRemoved] = useState(false);
+
+	const [pendingFile, setPendingFile] = useState<File | null>(null);
+	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+	const {
+		isUploading: isFileUploading,
+		progress: fileUploadProgress,
+		error: fileUploadError,
+		fileName: uploadedFileName,
+		uploadFile,
+		setFile: setFileUpload,
+		reset: resetFileUpload,
+	} = useFileUpload();
+
+	useEffect(() => {
+		if (!pendingFile) {
+			setPreviewUrl(null);
+			return;
+		}
+		const objectUrl = URL.createObjectURL(pendingFile);
+		setPreviewUrl(objectUrl);
+		return () => URL.revokeObjectURL(objectUrl);
+	}, [pendingFile]);
 
 	const {
 		isAiDialogOpen,
@@ -258,7 +274,8 @@ const DisplayPage = () => {
 
 			const hasContent =
 				contentType === "file"
-					? !!paste?.fileUrl
+					? !!pendingFile ||
+						(!!paste?.fileUrl && !isServerFileRemoved)
 					: (updatedContent?.trim().length ?? 0) > 0;
 
 			if (!hasContent) {
@@ -283,7 +300,9 @@ const DisplayPage = () => {
 				isPasswordEnabled !== wasProtected || !!editPassword;
 
 			const isUnchanged =
-				updatedContent === paste?.content &&
+				(contentType === "file"
+					? !pendingFile && !isServerFileRemoved
+					: updatedContent === paste?.content) &&
 				(contentType === "link") === paste?.redirectUrl &&
 				language === paste?.language &&
 				visibility === paste?.visibility &&
@@ -319,9 +338,28 @@ const DisplayPage = () => {
 
 			try {
 				setIsSaving(true);
+
+				let currentFileUrl = paste?.fileUrl;
+				let currentFileName = paste?.fileName;
+				let currentFileSize = paste?.fileSize;
+				let currentFileMimeType = paste?.fileMimeType;
+
+				if (contentType === "file" && pendingFile) {
+					const uploadResult = await uploadFile(pendingFile);
+					if (uploadResult.error) {
+						throw new Error(uploadResult.error);
+					}
+					currentFileUrl = uploadResult.fileUrl!;
+					currentFileName = uploadResult.fileName!;
+					currentFileSize = uploadResult.fileSize!;
+					currentFileMimeType = uploadResult.fileMimeType!;
+				}
+
 				const data = await apiHelpers.updatePaste(
 					id!,
-					updatedContent!,
+					contentType === "file"
+						? currentFileUrl || "File upload"
+						: updatedContent!,
 					contentType === "link",
 					isDetecting || contentType === "code" ? language : "text",
 					visibility,
@@ -336,6 +374,10 @@ const DisplayPage = () => {
 					allowComments,
 					expiresTime,
 					contentType,
+					currentFileUrl,
+					currentFileName,
+					currentFileSize,
+					currentFileMimeType,
 				);
 
 				if (data) {
@@ -368,6 +410,8 @@ const DisplayPage = () => {
 						!!data.password || !!data.isPasswordProtected,
 					);
 					setEditPassword("");
+					setPendingFile(null);
+					setIsServerFileRemoved(false);
 					if (!user) saveToLocal(data);
 					if (data.id !== id)
 						navigate(`/${data.id}`, { replace: true });
@@ -412,6 +456,9 @@ const DisplayPage = () => {
 			setLanguage,
 			user,
 			navigate,
+			pendingFile,
+			uploadFile,
+			isServerFileRemoved,
 		],
 	);
 	const { fontSize, ref: contentRef, setFontSize } = usePinchZoom(14);
@@ -659,6 +706,7 @@ const DisplayPage = () => {
 			socket.disconnect();
 			socketRef.current = null;
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id, loading, paste?.id, user?.username, setLanguage]);
 
 	useEffect(() => {
@@ -703,7 +751,7 @@ const DisplayPage = () => {
 	}, [isEdit, id]);
 
 	useEffect(() => {
-		if (!isEdit) return;
+		if (!isEdit || contentType === "file") return;
 
 		const isSettingsChanged =
 			(contentType === "link") !== paste?.redirectUrl ||
@@ -718,7 +766,12 @@ const DisplayPage = () => {
 			allowComments !== (paste?.allowComments ?? false) ||
 			expiresTime !== (paste?.expiresTime ?? "1d");
 
-		const isContentChanged = updatedContent !== paste?.content;
+		const isFileChanged =
+			contentType === "file" && (!!pendingFile || isServerFileRemoved);
+		const isContentChanged =
+			contentType === "file"
+				? isFileChanged
+				: updatedContent !== paste?.content;
 		if (!isSettingsChanged && !isContentChanged) return;
 		if (!isSettingsChanged && isContentChanged && !isAutosave) return;
 
@@ -740,14 +793,20 @@ const DisplayPage = () => {
 		paste,
 		handleEditSave,
 		shareList,
+		pendingFile,
+		isServerFileRemoved,
 	]);
 
 	useEffect(() => {
 		if (!socketRef.current || !isEdit) return;
 
 		const sync = syncStateRef.current;
+		const isFileChanged =
+			contentType === "file" && (!!pendingFile || isServerFileRemoved);
 		const isDifferent =
-			updatedContent !== sync.content ||
+			(contentType === "file"
+				? isFileChanged
+				: updatedContent !== sync.content) ||
 			language !== sync.language ||
 			contentType !== sync.contentMode ||
 			visibility !== sync.visibility ||
@@ -797,6 +856,8 @@ const DisplayPage = () => {
 		isAutosave,
 		isEdit,
 		id,
+		pendingFile,
+		isServerFileRemoved,
 	]);
 
 	const handleEditorMount: OnMount = (ed, monaco) => {
@@ -878,6 +939,8 @@ const DisplayPage = () => {
 		setAllowComments(paste?.allowComments ?? false);
 		setExpiresTime(paste?.expiresTime ?? "1d");
 		setSaveStatus("idle");
+		setPendingFile(null);
+		setIsServerFileRemoved(false);
 		if (id) clearDrafts(id);
 	};
 
@@ -976,6 +1039,8 @@ const DisplayPage = () => {
 								isEdit={isEdit}
 								isAutosave={isAutosave}
 								setIsAutosave={setIsAutosave}
+								showAutosave={contentType !== "file"}
+								showSaveButton={contentType === "file"}
 								saveStatus={saveStatus}
 								content={updatedContent || paste.content}
 								onEdit={(val) => {
@@ -1125,6 +1190,33 @@ const DisplayPage = () => {
 								setIsFullscreen={setIsFullscreen}
 								isWindowFullscreen={isWindowFullscreen}
 								setIsWindowFullscreen={setIsWindowFullscreen}
+								onFileSelect={(file) => {
+									setPendingFile(file);
+									setFileUpload(file);
+									setUpdatedContent(
+										paste?.content || "File Update",
+									);
+								}}
+								onClearFile={() => {
+									resetFileUpload();
+									setPendingFile(null);
+									setIsServerFileRemoved(true);
+								}}
+								previewUrl={
+									previewUrl ||
+									(isServerFileRemoved
+										? null
+										: paste?.fileUrl)
+								}
+								uploadedFileName={
+									uploadedFileName ||
+									(isServerFileRemoved
+										? null
+										: paste?.fileName)
+								}
+								isFileUploading={isFileUploading}
+								fileUploadProgress={fileUploadProgress}
+								fileUploadError={fileUploadError}
 							/>
 						</Suspense>
 					</div>
@@ -1143,39 +1235,11 @@ const DisplayPage = () => {
 					}}
 				/>
 
-				<AlertDialog
-					open={isDeleteDialogOpen}
+				<DeletePasteDialog
+					isOpen={isDeleteDialogOpen}
 					onOpenChange={setIsDeleteDialogOpen}
-				>
-					<AlertDialogContent
-						size="sm"
-						className="border border-border/50 bg-background/60 backdrop-blur-2xl shadow-2xl rounded-2xl ring-1 ring-white/5 overflow-hidden"
-					>
-						<AlertDialogHeader>
-							<AlertDialogMedia className="bg-destructive/10 text-destructive">
-								<Trash2 className="size-8" />
-							</AlertDialogMedia>
-							<AlertDialogTitle>
-								{t("display.delete_button")}
-							</AlertDialogTitle>
-							<AlertDialogDescription>
-								{t("messages.delete_confirm")}
-							</AlertDialogDescription>
-						</AlertDialogHeader>
-						<AlertDialogFooter>
-							<AlertDialogCancel variant="ghost">
-								{t("history.cancel")}
-							</AlertDialogCancel>
-							<AlertDialogAction
-								variant="destructive"
-								onClick={confirmDelete}
-								className="font-bold"
-							>
-								{t("display.delete_button")}
-							</AlertDialogAction>
-						</AlertDialogFooter>
-					</AlertDialogContent>
-				</AlertDialog>
+					onConfirm={confirmDelete}
+				/>
 
 				<Suspense fallback={null}>
 					<AiEnhanceDialog

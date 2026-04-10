@@ -4,7 +4,7 @@ import { FileDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { PasteData } from "@/types";
 import { FileTypeIcon } from "@/components/common/file-type-icon";
-import { FilePreview } from "@/components/common/file-preview";
+import FilePreview from "../../common/file-preview";
 
 interface FileDisplayProps {
 	paste: PasteData;

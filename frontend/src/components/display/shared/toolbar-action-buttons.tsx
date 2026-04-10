@@ -14,6 +14,7 @@ interface ToolbarActionButtonsProps {
 	onCancel: () => void;
 	isSaving?: boolean;
 	isAutosave?: boolean;
+	showSaveButton?: boolean;
 }
 
 export const ToolbarActionButtons = ({
@@ -27,6 +28,7 @@ export const ToolbarActionButtons = ({
 	onCancel,
 	isSaving,
 	isAutosave,
+	showSaveButton = false,
 }: ToolbarActionButtonsProps) => {
 	const { t } = useTranslation();
 
@@ -70,7 +72,7 @@ export const ToolbarActionButtons = ({
 				</div>
 			) : (
 				<div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5 px-0.5 max-w-[75vw] sm:max-w-none">
-					{!isAutosave && (
+					{(!isAutosave || showSaveButton) && (
 						<Button
 							variant="default"
 							size="sm"

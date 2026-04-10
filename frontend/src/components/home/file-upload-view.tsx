@@ -5,7 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { CONFIG } from "@/configurations";
 import { FileTypeIcon } from "@/components/common/file-type-icon";
-import { FilePreview } from "@/components/common/file-preview";
+import FilePreview from "../common/file-preview";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 
 interface FileUploadViewProps {
@@ -19,6 +19,7 @@ interface FileUploadViewProps {
 	handleDragOver: (e: React.DragEvent) => void;
 	handleDrop: (e: React.DragEvent) => void;
 	handleFileInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	isEdit?: boolean;
 }
 
 export const FileUploadView = ({
@@ -32,6 +33,7 @@ export const FileUploadView = ({
 	handleDragOver,
 	handleDrop,
 	handleFileInputChange,
+	isEdit = false,
 }: FileUploadViewProps) => {
 	const { t } = useTranslation();
 
@@ -131,10 +133,19 @@ export const FileUploadView = ({
 												) : (
 													<span className="text-muted-foreground flex items-center gap-1.5">
 														<div className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-														{t(
-															"home.file_selected",
-															"Selected - click Upload",
-														)}
+														{isEdit &&
+														uploadProgress === 0 &&
+														!previewUrl?.startsWith(
+															"blob:",
+														)
+															? t(
+																	"home.file_previously_uploaded",
+																	"Previously Uploaded",
+																)
+															: t(
+																	"home.file_selected",
+																	"Selected - click Upload",
+																)}
 													</span>
 												)}
 											</div>
@@ -146,13 +157,25 @@ export const FileUploadView = ({
 											)}
 										</div>
 										<Progress
-											value={uploadProgress}
+											value={
+												isEdit &&
+												uploadProgress === 0 &&
+												!previewUrl?.startsWith("blob:")
+													? 100
+													: uploadProgress
+											}
 											className="h-1.5 bg-muted/50 rounded-full"
 											indicatorClassName={cn(
 												"transition-all duration-500 ease-out",
 												isUploading
 													? "bg-primary"
-													: uploadProgress === 100
+													: uploadProgress === 100 ||
+														  (isEdit &&
+																uploadProgress ===
+																	0 &&
+																!previewUrl?.startsWith(
+																	"blob:",
+																))
 														? "bg-emerald-500"
 														: "bg-primary/30",
 											)}

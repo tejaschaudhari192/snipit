@@ -44,6 +44,8 @@ interface DisplayToolbarProps {
 	expiresTime?: string;
 	setExpiresTime?: (v: string) => void;
 	setIsCustomExpiryDialogOpen?: (v: boolean) => void;
+	showAutosave?: boolean;
+	showSaveButton?: boolean;
 }
 
 export const DisplayToolbar = ({
@@ -70,6 +72,8 @@ export const DisplayToolbar = ({
 	expiresTime = "",
 	setExpiresTime,
 	setIsCustomExpiryDialogOpen,
+	showAutosave = true,
+	showSaveButton = false,
 }: DisplayToolbarProps) => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
@@ -110,6 +114,7 @@ export const DisplayToolbar = ({
 				onCancel={onCancel}
 				isSaving={isSaving}
 				isAutosave={isAutosave}
+				showSaveButton={showSaveButton}
 			/>
 
 			<div className="flex flex-1 items-center gap-2 justify-end">
@@ -134,7 +139,7 @@ export const DisplayToolbar = ({
 							</div>
 						)}
 
-						{setIsAutosave && (
+						{setIsAutosave && showAutosave && (
 							<div
 								className={`flex items-center gap-2 px-2 py-1 rounded-lg border transition-all duration-300 shadow-sm h-9 ${
 									isAutosave
