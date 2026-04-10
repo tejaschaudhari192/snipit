@@ -11,7 +11,7 @@ import { ShimmerSection } from "@/components/common/shimmer-section";
 interface FileUploadViewProps {
 	uploadedFileName?: string | null;
 	previewUrl?: string | null;
-	fileMimeType?: string;
+	fileMimeType?: string | null;
 	isUploading: boolean;
 	uploadProgress: number;
 	uploadError?: string | null;
