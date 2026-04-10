@@ -122,6 +122,17 @@ export const useApiHelpers = () => {
 			return response.data;
 		};
 
+		const enhanceContent = async (
+			content: string,
+			instruction: string,
+		): Promise<{ result: string }> => {
+			const response = await api.post("/enhance", {
+				content,
+				instruction,
+			});
+			return response.data;
+		};
+
 		const getUserPastes = async (): Promise<PasteData[]> => {
 			const response = await api.get("/user/pastes");
 			return response.data;
@@ -163,6 +174,7 @@ export const useApiHelpers = () => {
 			deletePaste,
 			updatePaste,
 			detectLanguage,
+			enhanceContent,
 			getUserPastes,
 			updateMe,
 			verifyPassword,

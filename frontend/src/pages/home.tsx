@@ -30,6 +30,7 @@ import type {
 import { CONFIG } from "@/configurations";
 import { useLanguageDetection } from "@/hooks/use-language-detection";
 import { usePaste } from "@/context/PasteContext";
+import { useAiEnhance } from "@/hooks/use-ai-enhance";
 
 const LanguageSelector = lazy(() =>
 	import("@/components/editor/language-selector").then((m) => ({
@@ -54,6 +55,11 @@ const MainToolbar = lazy(() =>
 const EditorContent = lazy(() =>
 	import("@/components/home/editor-content").then((m) => ({
 		default: m.EditorContent,
+	})),
+);
+const AiEnhanceDialog = lazy(() =>
+	import("@/components/editor/ai-enhance-dialog").then((m) => ({
+		default: m.AiEnhanceDialog,
 	})),
 );
 
@@ -122,6 +128,14 @@ const HomePage = () => {
 	} = usePinchZoom(CONFIG.DEFAULTS.FONT_SIZE);
 
 	const { isDetecting, detectLanguage } = useLanguageDetection();
+
+	const {
+		isAiDialogOpen,
+		setIsAiDialogOpen,
+		selectedText,
+		setupAiAction,
+		applyEnhancedText,
+	} = useAiEnhance();
 
 	const onContentTypeChangeRef = useRef(onContentTypeChange);
 	useEffect(() => {
@@ -588,7 +602,8 @@ const HomePage = () => {
 		);
 	};
 
-	const handleEditorMount: OnMount = (editor) => {
+	const handleEditorMount: OnMount = (editor, monaco) => {
+		setupAiAction(editor, monaco);
 		editor.onDidPaste(() => {
 			const value = editor.getValue();
 			if (previousLengthRef.current === 0) {
@@ -718,6 +733,15 @@ const HomePage = () => {
 					shortenedResult={shortenedResult}
 					historyItems={historyItems}
 					onDeleteHistoryItem={handleDeleteHistory}
+				/>
+			</Suspense>
+
+			<Suspense fallback={null}>
+				<AiEnhanceDialog
+					isOpen={isAiDialogOpen}
+					onClose={() => setIsAiDialogOpen(false)}
+					selectedText={selectedText}
+					onApply={applyEnhancedText}
 				/>
 			</Suspense>
 		</div>

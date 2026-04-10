@@ -74,8 +74,14 @@ const PasswordGate = lazy(() =>
 		default: m.PasswordGate,
 	})),
 );
+const AiEnhanceDialog = lazy(() =>
+	import("@/components/editor/ai-enhance-dialog").then((m) => ({
+		default: m.AiEnhanceDialog,
+	})),
+);
 
 import { useLanguageDetection } from "@/hooks/use-language-detection";
+import { useAiEnhance } from "@/hooks/use-ai-enhance";
 
 import {
 	AlertDialog,
@@ -157,6 +163,14 @@ const DisplayPage = () => {
 	const [isAutosave, setIsAutosave] = useState(true);
 	const [isFullscreen, setIsFullscreen] = useState(false);
 	const [isWindowFullscreen, setIsWindowFullscreen] = useState(false);
+
+	const {
+		isAiDialogOpen,
+		setIsAiDialogOpen,
+		selectedText,
+		setupAiAction,
+		applyEnhancedText,
+	} = useAiEnhance();
 
 	useEffect(() => {
 		const handleFullscreenChange = () => {
@@ -785,7 +799,8 @@ const DisplayPage = () => {
 		id,
 	]);
 
-	const handleEditorMount: OnMount = (ed) => {
+	const handleEditorMount: OnMount = (ed, monaco) => {
+		setupAiAction(ed, monaco);
 		setEditorInstance(ed);
 		editorRef.current = ed;
 
@@ -1161,6 +1176,15 @@ const DisplayPage = () => {
 						</AlertDialogFooter>
 					</AlertDialogContent>
 				</AlertDialog>
+
+				<Suspense fallback={null}>
+					<AiEnhanceDialog
+						isOpen={isAiDialogOpen}
+						onClose={() => setIsAiDialogOpen(false)}
+						selectedText={selectedText}
+						onApply={applyEnhancedText}
+					/>
+				</Suspense>
 			</Suspense>
 		</>
 	);

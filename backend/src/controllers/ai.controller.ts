@@ -56,3 +56,45 @@ ${content.slice(0, 1000)}`;
 		res.status(500).json({ error: "Failed to detect language" });
 	}
 };
+
+export const enhanceContent = async (req: Request, res: Response) => {
+	try {
+		const { content, instruction } = req.body;
+
+		if (!content || !instruction) {
+			res.status(400).json({
+				error: "Content and instruction are required",
+			});
+			return;
+		}
+
+		const systemPrompt = `You are an AI assistant embedded inside a text editor.
+Your job is to transform or analyze the user's selected text based on their instruction.
+
+Rules:
+- Only operate on the provided text.
+- Be concise and deterministic.
+- Do not add explanations unless explicitly asked.
+- Preserve formatting unless the user asks to change it.
+- If rewriting, keep the original meaning unless instructed otherwise.
+- Output only the final result (no commentary or conversational filler). Do not wrap the output in markdown code blocks unless the text itself is code and it makes sense to do so.`;
+
+		const userPrompt = `Instruction: ${instruction}\n\nSelected Text:\n${content}`;
+
+		const chatCompletion = await groq.chat.completions.create({
+			messages: [
+				{ role: "system", content: systemPrompt },
+				{ role: "user", content: userPrompt },
+			],
+			model: "llama-3.3-70b-versatile",
+			temperature: 0,
+		});
+
+		let result = chatCompletion.choices[0]?.message?.content || "";
+
+		res.json({ result: result.trim() });
+	} catch (error) {
+		console.error("Error enhancing content:", error);
+		res.status(500).json({ error: "Failed to enhance content" });
+	}
+};
