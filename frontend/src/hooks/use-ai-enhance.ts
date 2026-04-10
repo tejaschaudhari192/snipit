@@ -1,15 +1,16 @@
 import { useState, useCallback } from "react";
-import type { editor } from "monaco-editor";
 import type { Monaco } from "@monaco-editor/react";
 
 export const useAiEnhance = () => {
 	const [isAiDialogOpen, setIsAiDialogOpen] = useState(false);
 	const [selectedText, setSelectedText] = useState("");
 	const [editorInstance, setEditorInstance] =
-		useState<editor.IStandaloneCodeEditor | null>(null);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		useState<any | null>(null);
 
 	const setupAiAction = useCallback(
-		(ed: editor.IStandaloneCodeEditor, monaco: Monaco) => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		(ed: any, monaco: Monaco) => {
 			setEditorInstance(ed);
 
 			// Add "AI Enhance" action to the context menu
@@ -23,7 +24,8 @@ export const useAiEnhance = () => {
 				],
 				contextMenuGroupId: "navigation",
 				contextMenuOrder: 1,
-				run: (editor) => {
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				run: (editor: any) => {
 					const selection = editor.getSelection();
 					if (selection && !selection.isEmpty()) {
 						const text = editor
@@ -33,9 +35,6 @@ export const useAiEnhance = () => {
 							setSelectedText(text);
 							setIsAiDialogOpen(true);
 						}
-					} else {
-						// Fallback to warning if no selection, although normally context menu items can be conditionally enabled.
-						// But Monaco `precondition` can be complex, so handling it here is fine.
 					}
 				},
 			});

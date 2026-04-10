@@ -42,7 +42,7 @@ import type {
 } from "@/types";
 
 import { ShimmerSection } from "@/components/common/shimmer-section";
-import Error from "@/components/common/core/error";
+import DisplayError from "@/components/common/core/error";
 
 const DisplayToolbar = lazy(() =>
 	import("@/components/display/display-toolbar").then((m) => ({
@@ -242,12 +242,12 @@ const DisplayPage = () => {
 	const [remoteCursors, setRemoteCursors] = useState<
 		Record<string, CursorPosition>
 	>({});
-	const [editorInstance, setEditorInstance] = useState<
-		Parameters<OnMount>[0] | null
-	>(null);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const [editorInstance, setEditorInstance] = useState<any | null>(null);
 
 	const socketRef = useRef<Socket | null>(null);
-	const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const editorRef = useRef<any | null>(null);
 	const syncStateRef = useRef<SyncState>({});
 	const isRemoteUpdate = useRef(false);
 	const isEditRef = useRef(isEdit);
@@ -320,9 +320,11 @@ const DisplayPage = () => {
 					(paste?.contentMode ??
 						(paste?.redirectUrl
 							? "link"
-							: paste?.language !== "text"
-								? "code"
-								: "text"));
+							: paste?.fileUrl
+								? "file"
+								: paste?.language !== "text"
+									? "code"
+									: "text"));
 
 			if (isUnchanged) {
 				if (shouldClose) setIsEdit(false);
@@ -767,9 +769,10 @@ const DisplayPage = () => {
 			expiresTime !== (paste?.expiresTime ?? "1d");
 
 		const isFileChanged =
-			contentType === "file" && (!!pendingFile || isServerFileRemoved);
+			(contentType as ContentMode) === "file" &&
+			(!!pendingFile || isServerFileRemoved);
 		const isContentChanged =
-			contentType === "file"
+			(contentType as ContentMode) === "file"
 				? isFileChanged
 				: updatedContent !== paste?.content;
 		if (!isSettingsChanged && !isContentChanged) return;
@@ -1002,7 +1005,7 @@ const DisplayPage = () => {
 		);
 	}
 
-	if (!paste) return <Error />;
+	if (!paste) return <DisplayError />;
 
 	if ((paste.isPasswordProtected || !!paste.password) && !paste.content) {
 		return (
@@ -1039,8 +1042,12 @@ const DisplayPage = () => {
 								isEdit={isEdit}
 								isAutosave={isAutosave}
 								setIsAutosave={setIsAutosave}
-								showAutosave={contentType !== "file"}
-								showSaveButton={contentType === "file"}
+								showAutosave={
+									(contentType as ContentMode) !== "file"
+								}
+								showSaveButton={
+									(contentType as ContentMode) === "file"
+								}
 								saveStatus={saveStatus}
 								content={updatedContent || paste.content}
 								onEdit={(val) => {

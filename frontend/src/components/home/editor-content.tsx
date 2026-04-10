@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { MarkdownDisplay } from "@/components/display/content/markdown-display";
 import { ResizableSplitPane } from "@/components/common/resizable-split-pane";
 import { useMarkdownLayout } from "@/hooks/use-markdown-layout";
+import type { PasteData } from "@/types";
 
 interface EditorContentProps {
 	fontSize: number;
