@@ -107,7 +107,10 @@
 		"me": "You",
 		"identification": "Identification",
 		"close": "Close",
-		"refresh": "Refresh"
+		"refresh": "Refresh",
+		"enter_zen": "Enter Zen Mode",
+		"exit_zen": "Exit Zen Mode",
+		"markdown_layout": "Markdown Layout"
 	},
 	"profile": {
 		"title": "Your Profile",
@@ -303,6 +306,14 @@
 				"title": "Easy Sharing",
 				"desc": "Share your snippets effortlessly with a simple link or QR code."
 			},
+			"real_time_collaboration": {
+				"title": "Real-time Collaboration",
+				"desc": "Edit code and draw together in real-time with live cursors and presence."
+			},
+			"ai_edit_assistant": {
+				"title": "AI Edit Assistant",
+				"desc": "Enhance your code, fix bugs, or explain logic using integrated AI assistant."
+			},
 			"file_share": {
 				"title": "File Sharing",
 				"desc": "Upload and share files securely with a unique link."
@@ -330,7 +341,8 @@
 			"title": "Meet the Team",
 			"roles": {
 				"developer": "Developer",
-				"tester": "Tester"
+				"tester": "Tester",
+				"quality_engineer": "Quality Engineer"
 			}
 		},
 		"contribute": {
@@ -418,5 +430,35 @@
 		"logout_confirm_question": "Are you sure you want to logout?",
 		"logout_action": "Logout",
 		"logout_cancel": "Cancel"
+	},
+	"editor": {
+		"ai_enhance": "✨ AI Enhance Selection..."
+	},
+	"ai_dialog": {
+		"title": "AI Editor Assistant",
+		"description": "Transform the selected text. Tell the AI what you want to do.",
+		"placeholder": "e.g. Make this more professional, or summarize into bullet points.",
+		"cancel": "Cancel",
+		"run": "Run",
+		"replace": "Replace Text",
+		"enhancing": "Enhancing...",
+		"preview": "Preview Result",
+		"error_instruction": "Please enter an instruction.",
+		"error_failed": "Failed to get a valid response from AI.",
+		"success": "Content enhanced successfully.",
+		"actions": {
+			"professional": "professional",
+			"simplify": "simplify",
+			"grammar": "fix grammar",
+			"summarize": "summarize",
+			"comments": "add comments"
+		},
+		"tooltips": {
+			"professional": "Make it professional",
+			"simplify": "Simplify the text",
+			"grammar": "Fix grammar & spelling",
+			"summarize": "Summarize the text",
+			"comments": "Add code comments"
+		}
 	}
 }

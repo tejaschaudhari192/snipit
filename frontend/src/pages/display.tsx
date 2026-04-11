@@ -717,11 +717,11 @@ const DisplayPage = () => {
 			const mode = paste.contentMode || contentType;
 
 			if (mode === "draw") {
-				displayContent = "Drawing";
+				displayContent = t("home.tab_draw", "Drawing");
 			} else if (mode === "link" || paste.redirectUrl) {
-				displayContent = "Link";
+				displayContent = t("home.tab_link_short", "Link");
 			} else if (mode === "file") {
-				displayContent = paste.fileName || "File";
+				displayContent = paste.fileName || t("home.tab_file", "File");
 			} else {
 				displayContent =
 					(updatedContent || paste.content)?.replace(

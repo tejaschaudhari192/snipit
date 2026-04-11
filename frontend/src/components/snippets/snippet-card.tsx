@@ -17,7 +17,7 @@ export const SnippetCard = ({
 	index,
 	showViews = true,
 }: SnippetCardProps) => {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 
 	const isExpired = (expiresAt: string) => {
 		return new Date(expiresAt).getTime() < Date.now();
@@ -100,7 +100,10 @@ export const SnippetCard = ({
 						{showViews && (
 							<span className="flex items-center gap-1.5 bg-primary/5 px-2 py-1 rounded-md">
 								<span className="h-1.5 w-1.5 rounded-full bg-primary" />
-								{item.views || 0} {t("profile.views", "views")}
+								{new Intl.NumberFormat(i18n.language).format(
+									item.views || 0,
+								)}{" "}
+								{t("profile.views", "views")}
 							</span>
 						)}
 						{item.visibility && (

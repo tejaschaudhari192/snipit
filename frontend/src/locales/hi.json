@@ -100,6 +100,9 @@
 		"identification": "पहचान",
 		"close": "बंद करें",
 		"refresh": "रीफ्रेश करें",
+		"enter_zen": "ज़ेन मोड में प्रवेश करें",
+		"exit_zen": "ज़ेन मोड से बाहर निकलें",
+		"markdown_layout": "मार्कडाउन लेआउट",
 		"editor_only": "केवल संपादक",
 		"split_view": "विभाजित दृश्य",
 		"preview_only": "केवल पूर्वावलोकन",
@@ -203,12 +206,12 @@
 			"cancel": "रद्द करें",
 			"submit": "स्निपेट बनाएं"
 		},
-		"shorten_button": "Shorten",
-		"upload_button": "Upload",
-		"link_shortened": "Link Shortened!",
-		"link_ready_desc": "Your short link is ready to share",
-		"alias": "Alias",
-		"create_another": "Create Another"
+		"shorten_button": "छोटा करें",
+		"upload_button": "अपलोड करें",
+		"link_shortened": "लिंक छोटा हो गया!",
+		"link_ready_desc": "आपका छोटा लिंक साझा करने के लिए तैयार है",
+		"alias": "उपनाम",
+		"create_another": "एक और बनाएं"
 	},
 	"display": {
 		"expires_in": "समाप्ति समय:",
@@ -304,6 +307,14 @@
 				"title": "आसान साझाकरण",
 				"desc": "एक सरल लिंक या क्यूआर कोड के साथ अपने स्निपेट आसानी से साझा करें।"
 			},
+			"real_time_collaboration": {
+				"title": "रियल-टाइम सहयोग",
+				"desc": "लाइव कर्सर और उपस्थिति के साथ रीयल-टाइम में कोड और ड्राइंग को एक साथ संपादित करें।"
+			},
+			"ai_edit_assistant": {
+				"title": "AI संपादन सहायक",
+				"desc": "एकीकृत AI सहायक का उपयोग करके अपने कोड को बेहतर बनाएं, बग्स ठीक करें या तर्क को समझाएं।"
+			},
 			"file_share": {
 				"title": "फ़ाइल साझाकरण",
 				"desc": "एक अद्वितीय लिंक के साथ फ़ाइलों को सुरक्षित रूप से अपलोड और साझा करें।"
@@ -331,7 +342,8 @@
 			"title": "टीम से मिलें",
 			"roles": {
 				"developer": "डेवलपर",
-				"tester": "टेस्टर"
+				"tester": "टेस्टर",
+				"quality_engineer": "गुणवत्ता अभियंता"
 			}
 		},
 		"contribute": {
@@ -419,5 +431,35 @@
 		"logout_confirm_question": "क्या आप वाकई लॉगआउट करना चाहते हैं?",
 		"logout_action": "लॉगआउट",
 		"logout_cancel": "रद्द करें"
+	},
+	"editor": {
+		"ai_enhance": "✨ AI के साथ बेहतर बनाएं..."
+	},
+	"ai_dialog": {
+		"title": "AI संपादक सहायक",
+		"description": "चयनित टेक्स्ट को रूपांतरित करें। AI को बताएं कि आप क्या करना चाहते हैं।",
+		"placeholder": "उदा. इसे और अधिक प्रोफेशनल बनाएं, या मुख्य बिंदुओं में सारांशित करें।",
+		"cancel": "रद्द करें",
+		"run": "चलाएं",
+		"replace": "टेक्स्ट बदलें",
+		"enhancing": "बेहतर बनाया जा रहा है...",
+		"preview": "परिणाम पूर्वावलोकन",
+		"error_instruction": "कृपया एक निर्देश दर्ज करें।",
+		"error_failed": "AI से वैध प्रतिक्रिया प्राप्त करने में विफल।",
+		"success": "सामग्री सफलतापूर्वक बेहतर बनाई गई।",
+		"actions": {
+			"professional": "प्रोफेशनल",
+			"simplify": "सरल बनाएं",
+			"grammar": "व्याकरण ठीक करें",
+			"summarize": "सारांश",
+			"comments": "कमेंट जोड़ें"
+		},
+		"tooltips": {
+			"professional": "इसे प्रोफेशनल बनाएं",
+			"simplify": "टेक्स्ट को सरल बनाएं",
+			"grammar": "व्याकरण और वर्तनी ठीक करें",
+			"summarize": "टेक्स्ट को सारांशित करें",
+			"comments": "कोड कमेंट जोड़ें"
+		}
 	}
 }

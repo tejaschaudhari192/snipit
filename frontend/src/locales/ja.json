@@ -96,6 +96,9 @@
 		"identification": "識別",
 		"close": "閉じる",
 		"refresh": "更新",
+		"enter_zen": "ゼンモードに入る",
+		"exit_zen": "ゼンモードを終了する",
+		"markdown_layout": "Markdownレイアウト",
 		"edit_permission": "編集できる人",
 		"only_me": "自分のみ",
 		"specific_people": "特定のユーザー",
@@ -201,14 +204,14 @@
 			"cancel": "キャンセル",
 			"submit": "スニペットを作成"
 		},
-		"shorten_button": "Shorten",
-		"upload_button": "Upload",
-		"advanced_config": "Advanced Configuration",
-		"identification_type": "Identification & Type",
-		"link_shortened": "Link Shortened!",
-		"link_ready_desc": "Your short link is ready to share",
-		"alias": "Alias",
-		"create_another": "Create Another"
+		"shorten_button": "短縮する",
+		"upload_button": "アップロード",
+		"advanced_config": "高度な設定",
+		"identification_type": "識別とタイプ",
+		"link_shortened": "リンクを短縮しました！",
+		"link_ready_desc": "短縮リンクの共有準備が整いました",
+		"alias": "エイリアス",
+		"create_another": "新しく作成"
 	},
 	"display": {
 		"expires_in": "有効期限:",
@@ -304,6 +307,14 @@
 				"title": "簡単な共有",
 				"desc": "シンプルなリンクやQRコードでスニペットを簡単に共有できます。"
 			},
+			"real_time_collaboration": {
+				"title": "リアルタイム共同編集",
+				"desc": "ライブカーソルとプレゼンス機能により、リアルタイムでコードの編集や描画を共同で行えます。"
+			},
+			"ai_edit_assistant": {
+				"title": "AI編集アシスタント",
+				"desc": "統合されたAIアシスタントを使用して、コードの強化、バグ修正、ロジックの説明を行えます。"
+			},
 			"file_share": {
 				"title": "ファイル共有",
 				"desc": "固有のリンクを使用してファイルを安全にアップロードして共有できます。"
@@ -331,7 +342,8 @@
 			"title": "チームに会う",
 			"roles": {
 				"developer": "開発者",
-				"tester": "テスター"
+				"tester": "テスター",
+				"quality_engineer": "品質エンジニア"
 			}
 		},
 		"contribute": {
@@ -419,5 +431,35 @@
 		"logout_confirm_question": "ログアウトしてもよろしいですか？",
 		"logout_action": "ログアウト",
 		"logout_cancel": "キャンセル"
+	},
+	"editor": {
+		"ai_enhance": "✨ AIで選択範囲を強化..."
+	},
+	"ai_dialog": {
+		"title": "AIエディタアシスタント",
+		"description": "選択したテキストを変換します。AIに何をしたいか指示してください。",
+		"placeholder": "例：これをもっとプロフェッショナルな表現にするか、箇条書きで要約してください。",
+		"cancel": "キャンセル",
+		"run": "実行",
+		"replace": "テキストを置換",
+		"enhancing": "最適化中...",
+		"preview": "プレビュー結果",
+		"error_instruction": "指示を入力してください。",
+		"error_failed": "AIから有効な応答を取得できませんでした。",
+		"success": "コンテンツの最適化に成功しました。",
+		"actions": {
+			"professional": "プロフェッショナル",
+			"simplify": "簡略化",
+			"grammar": "文法修正",
+			"summarize": "要約",
+			"comments": "コメント追加"
+		},
+		"tooltips": {
+			"professional": "プロフェッショナルな表現にする",
+			"simplify": "テキストを簡略化する",
+			"grammar": "文法と綴りの間違いを修正する",
+			"summarize": "テキストを要約する",
+			"comments": "コードコメントを追加する"
+		}
 	}
 }

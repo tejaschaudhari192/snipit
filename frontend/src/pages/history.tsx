@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const HistoryPage = () => {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const { user } = useAuth();
 	const apiHelpers = useApiHelpers();
 
@@ -99,7 +99,9 @@ const HistoryPage = () => {
 						</h1>
 						{items.length > 0 && (
 							<p className="text-muted-foreground mt-1">
-								{items.length}{" "}
+								{new Intl.NumberFormat(i18n.language).format(
+									items.length,
+								)}{" "}
 								{items.length !== 1
 									? t(
 											"history.snippets_saved",

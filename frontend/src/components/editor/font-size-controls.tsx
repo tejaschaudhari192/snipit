@@ -3,6 +3,7 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 
 interface FontSizeControlsProps {
 	fontSize: number;
@@ -12,6 +13,8 @@ interface FontSizeControlsProps {
 
 export const FontSizeControls = memo(
 	({ fontSize, setFontSize, className }: FontSizeControlsProps) => {
+		const { i18n } = useTranslation();
+
 		return (
 			<div
 				className={cn(
@@ -31,7 +34,7 @@ export const FontSizeControls = memo(
 						<Minus className="h-4 w-4" />
 					</Button>
 					<div className="flex items-center justify-center px-4 bg-muted/30 text-xs font-bold min-w-[44px]">
-						{fontSize}
+						{new Intl.NumberFormat(i18n.language).format(fontSize)}
 					</div>
 					<Button
 						variant="outline"

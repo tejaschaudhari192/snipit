@@ -1,7 +1,9 @@
 import { useState, useCallback } from "react";
 import type { Monaco } from "@monaco-editor/react";
+import { useTranslation } from "react-i18next";
 
 export const useAiEnhance = () => {
+	const { t } = useTranslation();
 	const [isAiDialogOpen, setIsAiDialogOpen] = useState(false);
 	const [selectedText, setSelectedText] = useState("");
 	const [editorInstance, setEditorInstance] =
@@ -16,7 +18,7 @@ export const useAiEnhance = () => {
 			// Add "AI Enhance" action to the context menu
 			ed.addAction({
 				id: "ai-enhance-action",
-				label: "✨ AI Enhance Selection...",
+				label: t("editor.ai_enhance", "✨ AI Enhance Selection..."),
 				keybindings: [
 					monaco.KeyMod.CtrlCmd |
 						monaco.KeyMod.Shift |

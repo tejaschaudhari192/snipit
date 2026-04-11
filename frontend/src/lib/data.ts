@@ -12,6 +12,8 @@ import {
 	Lock,
 	ShieldCheck,
 	FileUp,
+	Users,
+	Wand2,
 } from "lucide-react";
 
 const app = {
@@ -40,6 +42,16 @@ const app = {
 			icon: Share2,
 			key: "sharing",
 			gradient: "from-blue-500 to-indigo-500",
+		},
+		{
+			icon: Users,
+			key: "real_time_collaboration",
+			gradient: "from-blue-600 to-cyan-500",
+		},
+		{
+			icon: Wand2,
+			key: "ai_edit_assistant",
+			gradient: "from-purple-600 to-indigo-500",
 		},
 		{
 			icon: FileUp,
@@ -97,7 +109,7 @@ const app = {
 			github: "https://github.com/durgeshkapade",
 			linkedin: "https://www.linkedin.com/in/durgeshkapade/",
 			avatar: "https://avatars.githubusercontent.com/u/135988213?v=4",
-			roleKey: "about_page.team.roles.tester",
+			roleKey: "about_page.team.roles.quality_engineer",
 		},
 	],
 	faq: [

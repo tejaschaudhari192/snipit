@@ -96,6 +96,9 @@
 		"identification": "ओळख",
 		"close": "बंद करा",
 		"refresh": "रीफ्रेश करा",
+		"enter_zen": "झेन मोड सुरू करा",
+		"exit_zen": "झेन मोड बंद करा",
+		"markdown_layout": "मार्कडाउन मांडणी (Layout)",
 		"edit_permission": "कोण संपादित करू शकते?",
 		"only_me": "फक्त मी",
 		"specific_people": "विशिष्ट लोक",
@@ -207,8 +210,8 @@
 			"cancel": "रद्द करा",
 			"submit": "स्निपेट तयार करा"
 		},
-		"advanced_config": "Advanced Configuration",
-		"identification_type": "Identification & Type"
+		"advanced_config": "प्रगत संरचना",
+		"identification_type": "ओळख आणि प्रकार"
 	},
 	"display": {
 		"expires_in": "यामध्ये मुदत संपेल:",
@@ -312,6 +315,14 @@
 				"title": "सोपे शेअरिंग",
 				"desc": "एक साधी लिंक किंवा QR कोड वापरून तुमचे स्निपेट्स सहज शेअर करा."
 			},
+			"real_time_collaboration": {
+				"title": "रिअल-टाइम सहयोग",
+				"desc": "लाईव्ह कर्सर आणि उपस्थितीसह रिअल-टाइममध्ये एकत्र कोड संपादित करा आणि रेखाटा."
+			},
+			"ai_edit_assistant": {
+				"title": "AI संपादन सहाय्यक",
+				"desc": "इंटिग्रेटेड AI सहाय्यक वापरून तुमचा कोड सुधारा, बग्स दुरुस्त करा किंवा लॉजिक स्पष्ट करा."
+			},
 			"file_share": {
 				"title": "फाईल शेअरिंग",
 				"desc": "युनिक लिंकसह फाईल्स सुरक्षितपणे अपलोड करा आणि शेअर करा."
@@ -331,7 +342,8 @@
 			"title": "टीम ला भेटा",
 			"roles": {
 				"developer": "डेव्हलपर",
-				"tester": "टेस्टर"
+				"tester": "टेस्टर",
+				"quality_engineer": "गुणवत्ता अभियंता"
 			}
 		},
 		"contribute": {
@@ -419,5 +431,35 @@
 		"logout_confirm_question": "तुम्हाला खात्री आहे की तुम्ही लॉगआउट करू इच्छिता?",
 		"logout_action": "लॉगआउट",
 		"logout_cancel": "रद्द करा"
+	},
+	"editor": {
+		"ai_enhance": "✨ AI द्वारे सुधारा..."
+	},
+	"ai_dialog": {
+		"title": "AI संपादक सहाय्यक",
+		"description": "निवडलेला मजकूर सुधारण्यासाठी AI ला सूचना दे.",
+		"placeholder": "उदा. याला अधिक प्रोफेशनल बनवा, किंवा महत्त्वाच्या मुद्द्यांचा सारांश द्या.",
+		"cancel": "रद्द करा",
+		"run": "सुरू करा",
+		"replace": "मजकूर बदला",
+		"enhancing": "सुधारत आहे...",
+		"preview": "पूर्वावलोकन",
+		"error_instruction": "कृपया एक सूचना प्रविष्ट करा.",
+		"error_failed": "AI कडून प्रतिसाद मिळवण्यात अपयश आले.",
+		"success": "मजकूर यशस्वीरित्या सुधारला.",
+		"actions": {
+			"professional": "प्रोफेशनल",
+			"simplify": "सोपे करा",
+			"grammar": "व्याकरण सुधारा",
+			"summarize": "सारांश द्या",
+			"comments": "कमेंट्स जोडा"
+		},
+		"tooltips": {
+			"professional": "व्यावसायिक बनवा",
+			"simplify": "मजकूर सोपा करा",
+			"grammar": "व्याकरण आणि शुद्धलेखन दुरुस्त करा",
+			"summarize": "मजकुराचा सारांश द्या",
+			"comments": "कोड कमेंट्स जोडा"
+		}
 	}
 }

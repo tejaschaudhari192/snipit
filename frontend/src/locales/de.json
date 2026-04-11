@@ -96,6 +96,9 @@
 		"identification": "Identifikation",
 		"close": "Schließen",
 		"refresh": "Aktualisieren",
+		"enter_zen": "Zen-Modus aktivieren",
+		"exit_zen": "Zen-Modus beenden",
+		"markdown_layout": "Markdown-Layout",
 		"edit_permission": "Wer kann bearbeiten?",
 		"only_me": "Nur ich",
 		"specific_people": "Bestimmte Personen",
@@ -200,14 +203,14 @@
 			"cancel": "Abbrechen",
 			"submit": "Snippet erstellen"
 		},
-		"shorten_button": "Shorten",
-		"upload_button": "Upload",
-		"advanced_config": "Advanced Configuration",
-		"identification_type": "Identification & Type",
-		"link_shortened": "Link Shortened!",
-		"link_ready_desc": "Your short link is ready to share",
+		"shorten_button": "Kürzen",
+		"upload_button": "Hochladen",
+		"advanced_config": "Erweiterte Konfiguration",
+		"identification_type": "Identifikationsart",
+		"link_shortened": "Link gekürzt!",
+		"link_ready_desc": "Ihre Kurz-URL ist bereit zum Teilen",
 		"alias": "Alias",
-		"create_another": "Create Another"
+		"create_another": "Weitere erstellen"
 	},
 	"display": {
 		"expires_in": "Läuft ab in:",
@@ -303,6 +306,14 @@
 				"title": "Einfaches Teilen",
 				"desc": "Teilen Sie Ihre Snippets mühelos mit einem einfachen Link oder QR-Code."
 			},
+			"real_time_collaboration": {
+				"title": "Echtzeit-Zusammenarbeit",
+				"desc": "Bearbeiten Sie Code und Zeichnungen gemeinsam in Echtzeit mit Live-Cursors und Präsenzanzeige."
+			},
+			"ai_edit_assistant": {
+				"title": "KI-Bearbeitungsassistent",
+				"desc": "Verbessern Sie Ihren Code, beheben Sie Fehler oder erklären Sie Logik mit dem integrierten KI-Assistenten."
+			},
 			"file_share": {
 				"title": "Dateifreigabe",
 				"desc": "Laden Sie Dateien sicher hoch und teilen Sie sie über einen eindeutigen Link."
@@ -330,7 +341,8 @@
 			"title": "Das Team",
 			"roles": {
 				"developer": "Entwickler",
-				"tester": "Tester"
+				"tester": "Tester",
+				"quality_engineer": "Qualitätsingenieur"
 			}
 		},
 		"contribute": {
@@ -418,5 +430,35 @@
 		"logout_confirm_question": "Sind Sie sicher, dass Sie sich abmelden möchten?",
 		"logout_action": "Abmelden",
 		"logout_cancel": "Abbrechen"
+	},
+	"editor": {
+		"ai_enhance": "✨ KI-Auswahl verbessern..."
+	},
+	"ai_dialog": {
+		"title": "KI-Editor-Assistent",
+		"description": "Transformieren Sie den ausgewählten Text. Sagen Sie der KI, was Sie tun möchten.",
+		"placeholder": "z. B. Machen Sie dies professioneller oder fassen Sie es in Stichpunkten zusammen.",
+		"cancel": "Abbrechen",
+		"run": "Ausführen",
+		"replace": "Text ersetzen",
+		"enhancing": "Wird optimiert...",
+		"preview": "Vorschau des Ergebnisses",
+		"error_instruction": "Bitte geben Sie eine Anweisung ein.",
+		"error_failed": "Keine gültige Antwort von der KI erhalten.",
+		"success": "Inhalt erfolgreich optimiert.",
+		"actions": {
+			"professional": "professionell",
+			"simplify": "vereinfachen",
+			"grammar": "Grammatik",
+			"summarize": "zusammenfassen",
+			"comments": "Kommentare"
+		},
+		"tooltips": {
+			"professional": "Professionell gestalten",
+			"simplify": "Text vereinfachen",
+			"grammar": "Grammatik und Rechtschreibung korrigieren",
+			"summarize": "Text zusammenfassen",
+			"comments": "Code-Kommentare hinzufügen"
+		}
 	}
 }

@@ -7,6 +7,8 @@ import ThemeProvider from "@/lib/theme";
 import { AuthProvider } from "@/context/AuthContext";
 import { PasteProvider } from "@/context/PasteContext";
 import Loader from "@/components/common/core/loader";
+import { loader } from "@monaco-editor/react";
+import { useTranslation } from "react-i18next";
 
 const HomePage = lazy(() => import("@/pages/home"));
 const DisplayPage = lazy(() => import("@/pages/display"));
@@ -19,9 +21,30 @@ const ForgotPasswordPage = lazy(() => import("@/pages/forgot-password"));
 const ResetPasswordPage = lazy(() => import("@/pages/reset-password"));
 
 const App = () => {
+	const { i18n } = useTranslation();
 	const apiHelpers = useApiHelpers();
 	const hasRun = useRef(false);
 	const [loading, setLoading] = useState<boolean>(true);
+
+	useEffect(() => {
+		// Map i18next language to Monaco supported locales
+		const localeMap: Record<string, string> = {
+			ja: "ja",
+			de: "de",
+			// mr and hi are not officially supported by monaco-editor defaults
+		};
+
+		const monacoLocale = localeMap[i18n.language] || "en";
+
+		loader.config({
+			"vs/nls": {
+				availableLanguages: {
+					"*": monacoLocale,
+				},
+			},
+		});
+	}, [i18n.language]);
+
 	useEffect(() => {
 		async function checkStatus() {
 			try {
