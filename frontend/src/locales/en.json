@@ -110,7 +110,8 @@
 		"refresh": "Refresh",
 		"enter_zen": "Enter Zen Mode",
 		"exit_zen": "Exit Zen Mode",
-		"markdown_layout": "Markdown Layout"
+		"markdown_layout": "Markdown Layout",
+		"download_qr": "Download QR"
 	},
 	"profile": {
 		"title": "Your Profile",
@@ -262,7 +263,8 @@
 		"comment_added": "Comment added successfully",
 		"comment_failed": "Failed to add comment",
 		"empty_content": "Please enter some content first!",
-		"empty_file": "Please select a file first!"
+		"empty_file": "Please select a file first!",
+		"qr_downloaded": "QR Code downloaded!"
 	},
 	"about_page": {
 		"title": "About",

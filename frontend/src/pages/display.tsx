@@ -1124,7 +1124,7 @@ const DisplayPage = () => {
 						className={cn(
 							"w-full flex-1 flex flex-col transition-all duration-300",
 							!isFullscreen && !isWindowFullscreen
-								? "px-2 sm:px-5 py-1.5 sm:py-3"
+								? "px-1 sm:px-5 py-1.5 sm:py-3"
 								: "p-3",
 						)}
 					>

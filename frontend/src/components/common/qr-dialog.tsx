@@ -3,11 +3,14 @@ import {
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
+	DialogFooter,
 } from "@/components/ui/dialog";
-import { QRCodeSVG } from "qrcode.react";
-import { QrCode } from "lucide-react";
+import { QRCodeCanvas } from "qrcode.react";
+import { QrCode, Download } from "lucide-react";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
 import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface QRDialogProps {
 	url: string;
@@ -17,6 +20,24 @@ interface QRDialogProps {
 
 export const QRDialog = ({ url, isOpen, onOpenChange }: QRDialogProps) => {
 	const { t } = useTranslation();
+
+	const downloadQR = () => {
+		const canvas = document.getElementById(
+			"dialog-qr",
+		) as HTMLCanvasElement;
+		if (canvas) {
+			const pngUrl = canvas
+				.toDataURL("image/png")
+				.replace("image/png", "image/octet-stream");
+			const downloadLink = document.createElement("a");
+			downloadLink.href = pngUrl;
+			downloadLink.download = `qr-code.png`;
+			document.body.appendChild(downloadLink);
+			downloadLink.click();
+			document.body.removeChild(downloadLink);
+			toast.success(t("messages.qr_downloaded", "QR Code downloaded!"));
+		}
+	};
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -36,7 +57,8 @@ export const QRDialog = ({ url, isOpen, onOpenChange }: QRDialogProps) => {
 					</p>
 				</DialogHeader>
 				<div className="flex flex-col items-center justify-center p-6 bg-white rounded-xl shadow-inner my-4 relative group">
-					<QRCodeSVG
+					<QRCodeCanvas
+						id="dialog-qr"
 						value={url}
 						size={200}
 						level="H"
@@ -50,9 +72,19 @@ export const QRDialog = ({ url, isOpen, onOpenChange }: QRDialogProps) => {
 						/>
 					</div>
 				</div>
-				<div className="text-center text-xs text-muted-foreground break-all px-4">
+				<div className="text-center text-xs text-muted-foreground break-all px-4 mb-4">
 					{url}
 				</div>
+				<DialogFooter className="sm:justify-center border-t border-border/10 pt-4 mt-2">
+					<Button
+						variant="outline"
+						className="w-full sm:w-auto font-black uppercase tracking-wider gap-2 shadow-lg"
+						onClick={downloadQR}
+					>
+						<Download className="h-4 w-4" />
+						{t("common.download_qr", "Download QR")}
+					</Button>
+				</DialogFooter>
 			</DialogContent>
 		</Dialog>
 	);

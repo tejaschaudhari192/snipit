@@ -99,6 +99,7 @@
 		"enter_zen": "Zen-Modus aktivieren",
 		"exit_zen": "Zen-Modus beenden",
 		"markdown_layout": "Markdown-Layout",
+		"download_qr": "QR-Code herunterladen",
 		"edit_permission": "Wer kann bearbeiten?",
 		"only_me": "Nur ich",
 		"specific_people": "Bestimmte Personen",
@@ -262,6 +263,7 @@
 		"comment_failed": "Kommentar konnte nicht hinzugefügt werden",
 		"empty_content": "Bitte geben Sie zuerst einen Inhalt ein!",
 		"empty_file": "Bitte wählen Sie zuerst eine Datei aus!",
+		"qr_downloaded": "QR-Code heruntergeladen!",
 		"snippet_deleted_id": "Snippet {{id}} has been deleted"
 	},
 	"about_page": {

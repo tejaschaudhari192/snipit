@@ -99,13 +99,13 @@
 		"enter_zen": "झेन मोड सुरू करा",
 		"exit_zen": "झेन मोड बंद करा",
 		"markdown_layout": "मार्कडाउन मांडणी (Layout)",
+		"download_qr": "QR कोड डाउनलोड करा",
 		"edit_permission": "कोण संपादित करू शकते?",
 		"only_me": "फक्त मी",
 		"specific_people": "विशिष्ट लोक",
 		"everyone": "प्रत्येकजण",
 		"editor_only": "केवळ संपादक",
 		"split_view": "विभाजित दृश्य",
-		"preview_only": "केवळ पूर्वावलोकन",
 		"preview_only": "केवळ पूर्वावलोकन",
 		"settings": "सामान्य सेटिंग्ज",
 		"privacy": "गोपनीयता आणि सुरक्षा",
@@ -263,7 +263,8 @@
 		"comment_added": "टिप्पणी यशस्वीरित्या जोडली गेली",
 		"comment_failed": "टिप्पणी जोडण्यात अयशस्वी",
 		"empty_content": "कृपया प्रथम काही मजकूर प्रविष्ट करा!",
-		"empty_file": "कृपया प्रथम फाइल निवडा!"
+		"empty_file": "कृपया प्रथम फाइल निवडा!",
+		"qr_downloaded": "QR कोड डाउनलोड झाला!"
 	},
 	"about_page": {
 		"title": "बद्दल",

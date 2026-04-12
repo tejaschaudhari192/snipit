@@ -53,8 +53,8 @@ export const EditorToolbar = ({
 							? "fixed top-4 right-4"
 							: "absolute right-3 top-3"
 						: isFullscreen || isWindowFullscreen
-							? "fixed top-8 right-8"
-							: "absolute top-8 right-8",
+							? "fixed top-4 right-4 sm:top-8 sm:right-8"
+							: "absolute top-4 right-4 sm:top-8 sm:right-8",
 				)}
 			>
 				{showMarkdownToggles && language === "markdown" && (

@@ -178,7 +178,7 @@ export const DisplayContent = memo(
 								/>
 							}
 							right={
-								<div className="h-full overflow-y-auto bg-background/30 p-4">
+								<div className="h-full overflow-y-auto bg-background/30 p-1 sm:p-4">
 									<MarkdownDisplay
 										content={content}
 										fontSize={fontSize}
@@ -190,8 +190,8 @@ export const DisplayContent = memo(
 					);
 				}
 				return (
-					<div className="h-full overflow-y-auto p-4 md:p-8 flex flex-col items-center">
-						<div className="my-auto w-full flex flex-col items-center px-2 md:px-4">
+					<div className="h-full overflow-y-auto p-1 sm:p-4 md:p-8 flex flex-col items-center">
+						<div className="my-auto w-full flex flex-col items-center">
 							<MarkdownDisplay
 								content={content}
 								fontSize={fontSize}

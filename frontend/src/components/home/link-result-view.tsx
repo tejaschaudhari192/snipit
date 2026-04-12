@@ -7,13 +7,18 @@ import {
 	History,
 	RefreshCw,
 	Trash2,
+	Download,
+	QrCode,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { QRCodeCanvas } from "qrcode.react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn, timeAgo } from "@/lib/utils";
 import { toast } from "sonner";
 import type { PasteData } from "@/types";
+import { QRDialog } from "@/components/common/qr-dialog";
+import { useState } from "react";
 
 interface LinkResultViewProps {
 	textValue: string;
@@ -38,6 +43,24 @@ export const LinkResultView = ({
 	onDeleteHistoryItem,
 }: LinkResultViewProps) => {
 	const { t } = useTranslation();
+	const [qrUrl, setQrUrl] = useState<string | null>(null);
+	const downloadQR = () => {
+		const canvas = document.getElementById(
+			"short-url-qr",
+		) as HTMLCanvasElement;
+		if (canvas && shortenedResult) {
+			const pngUrl = canvas
+				.toDataURL("image/png")
+				.replace("image/png", "image/octet-stream");
+			const downloadLink = document.createElement("a");
+			downloadLink.href = pngUrl;
+			downloadLink.download = `qr-${shortenedResult.id}.png`;
+			document.body.appendChild(downloadLink);
+			downloadLink.click();
+			document.body.removeChild(downloadLink);
+			toast.success(t("messages.qr_downloaded", "QR Code downloaded!"));
+		}
+	};
 
 	return (
 		<div className="h-full w-full grid grid-cols-1 md:grid-cols-12 overflow-hidden relative">
@@ -80,6 +103,28 @@ export const LinkResultView = ({
 										"Your short link is ready to share",
 									)}
 								</p>
+							</div>
+
+							<div className="flex flex-col items-center group/qr relative">
+								<div className="absolute -inset-4 bg-primary/10 blur-2xl rounded-full opacity-0 group-hover/qr:opacity-100 transition-opacity duration-500" />
+								<div className="p-3 bg-white rounded-2xl shadow-xl shadow-primary/10 border border-primary/10 relative z-10 transition-transform hover:scale-105 duration-300">
+									<QRCodeCanvas
+										id="short-url-qr"
+										value={shortenedResult.url}
+										size={140}
+										level="H"
+										includeMargin={false}
+									/>
+								</div>
+								<Button
+									variant="ghost"
+									size="sm"
+									className="mt-4 h-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 hover:text-primary transition-all gap-1.5"
+									onClick={downloadQR}
+								>
+									<Download className="h-3 w-3" />
+									{t("common.download_qr", "Download QR")}
+								</Button>
 							</div>
 
 							<div className="w-full space-y-4">
@@ -243,11 +288,11 @@ export const LinkResultView = ({
 										{item.content}
 									</p>
 
-									<div className="flex items-center gap-2 mt-1.5">
+									<div className="flex items-center gap-2 mt-1.5 transition-all">
 										<Button
 											variant="secondary"
 											size="sm"
-											className="h-7 px-2.5 text-[9px] font-black uppercase tracking-wider gap-1.5 flex-1 bg-primary/10 hover:bg-primary/20 text-primary border-none transition-all"
+											className="h-7 px-2 text-[9px] font-black uppercase tracking-wider gap-1.5 flex-1 bg-primary/10 hover:bg-primary/20 text-primary border-none transition-all"
 											onClick={() => {
 												const shortUrl = `${window.location.origin}/${item.id}`;
 												navigator.clipboard.writeText(
@@ -267,7 +312,20 @@ export const LinkResultView = ({
 										<Button
 											variant="secondary"
 											size="sm"
-											className="h-7 px-2.5 text-[9px] font-black uppercase tracking-wider gap-1.5 flex-1 bg-muted/60 hover:bg-muted text-muted-foreground border-none transition-all"
+											className="h-7 w-8 flex items-center justify-center bg-muted/60 hover:bg-primary/10 text-muted-foreground hover:text-primary border-none transition-all"
+											onClick={() => {
+												setQrUrl(
+													`${window.location.origin}/${item.id}`,
+												);
+											}}
+											title={t("header.qr_button")}
+										>
+											<QrCode className="h-3 w-3" />
+										</Button>
+										<Button
+											variant="secondary"
+											size="sm"
+											className="h-7 px-2 text-[9px] font-black uppercase tracking-wider gap-1.5 flex-1 bg-muted/60 hover:bg-muted text-muted-foreground border-none transition-all"
 											onClick={() => {
 												const shortUrl = `${window.location.origin}/${item.id}`;
 												window.open(shortUrl, "_blank");
@@ -280,7 +338,7 @@ export const LinkResultView = ({
 											<Button
 												variant="secondary"
 												size="sm"
-												className="h-7 w-9 flex items-center justify-center bg-muted/60 hover:bg-destructive/10 text-muted-foreground hover:text-destructive border-none transition-all"
+												className="h-7 w-8 flex items-center justify-center bg-muted/60 hover:bg-destructive/10 text-muted-foreground hover:text-destructive border-none transition-all"
 												onClick={(e) => {
 													e.stopPropagation();
 													onDeleteHistoryItem(
@@ -302,6 +360,11 @@ export const LinkResultView = ({
 					</div>
 				</div>
 			)}
+			<QRDialog
+				url={qrUrl || ""}
+				isOpen={!!qrUrl}
+				onOpenChange={(open) => !open && setQrUrl(null)}
+			/>
 		</div>
 	);
 };
