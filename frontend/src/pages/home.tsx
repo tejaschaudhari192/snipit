@@ -519,15 +519,13 @@ const HomePage = () => {
 			);
 			return;
 		}
-		const result = await handleSubmit("system", undefined, {
-			visibility: "public",
-			password: "",
-			editPermission: "owner",
-			allowedUsers: [],
-			shareList: [],
-			publicRole: "viewer",
-			allowComments: false,
+
+		const selectedId =
+			idTypeTab === "dynamic" ? customId.trim() : undefined;
+		const result = await handleSubmit(idTypeTab, selectedId, {
+			redirectUrl: fastRedirect,
 		});
+
 		if (result !== true) {
 			toast.error(result as string);
 		}
@@ -552,14 +550,12 @@ const HomePage = () => {
 			);
 			return;
 		}
-		const result = await handleSubmit("system", undefined, {
+		const selectedId =
+			idTypeTab === "dynamic" ? customId.trim() : undefined;
+		const result = await handleSubmit(idTypeTab, selectedId, {
 			visibility: "public",
-			password: "",
 			editPermission: "public",
-			allowedUsers: [],
-			shareList: [],
 			publicRole: "editor",
-			allowComments: false,
 			isCollaborative: true,
 		});
 		if (result !== true) {
