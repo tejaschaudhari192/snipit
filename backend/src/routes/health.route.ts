@@ -1,10 +1,5 @@
 import logger from "@/config/logger.js";
-import {
-	Router,
-	type NextFunction,
-	type Request,
-	type Response,
-} from "express";
+import { Router } from "express";
 const router: Router = Router();
 
 router.get("/", (req, res) => {

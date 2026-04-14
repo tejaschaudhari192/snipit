@@ -41,7 +41,7 @@ export const useAiEnhance = () => {
 				},
 			});
 		},
-		[],
+		[t],
 	);
 
 	const applyEnhancedText = useCallback(

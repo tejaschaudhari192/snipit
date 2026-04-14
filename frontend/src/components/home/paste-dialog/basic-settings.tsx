@@ -1,9 +1,8 @@
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
-import { Lock, MessageCircle, Zap } from "lucide-react";
+import { Lock, MessageCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { ContentMode } from "@/types";
 
 interface BasicSettingsProps {
 	isPasswordEnabled: boolean;
@@ -12,9 +11,6 @@ interface BasicSettingsProps {
 	setPassword: (v: string) => void;
 	allowComments: boolean;
 	setAllowComments: (v: boolean) => void;
-	fastRedirect: boolean;
-	setFastRedirect: (v: boolean) => void;
-	contentType: ContentMode;
 }
 
 export const BasicSettings = ({
@@ -24,9 +20,6 @@ export const BasicSettings = ({
 	setPassword,
 	allowComments,
 	setAllowComments,
-	fastRedirect,
-	setFastRedirect,
-	contentType,
 }: BasicSettingsProps) => {
 	const { t } = useTranslation();
 
@@ -94,41 +87,6 @@ export const BasicSettings = ({
 					onCheckedChange={(checked) => setAllowComments(checked)}
 				/>
 			</div>
-
-			{contentType === "link" && (
-				<div
-					className="flex items-center justify-between p-3 rounded-lg border bg-card/40 hover:bg-card/80 hover:shadow-sm transition-all cursor-pointer group"
-					onClick={() => setFastRedirect(!fastRedirect)}
-				>
-					<Label
-						htmlFor="fastRedirect"
-						className="flex items-center gap-2.5 text-[13px] font-semibold cursor-pointer pointer-events-none"
-					>
-						<div className="p-1.5 rounded-md bg-muted/50 group-hover:bg-primary/10 transition-colors">
-							<Zap className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
-						</div>
-						<div className="flex flex-col gap-0.5">
-							<span>
-								{t(
-									"common.fast_redirection",
-									"Fast Redirection",
-								)}
-							</span>
-							<span className="text-[10px] font-normal text-muted-foreground">
-								{t(
-									"common.fast_redirection_desc",
-									"Directly opens the content",
-								)}
-							</span>
-						</div>
-					</Label>
-					<Switch
-						id="fastRedirect"
-						checked={fastRedirect}
-						onCheckedChange={(checked) => setFastRedirect(checked)}
-					/>
-				</div>
-			)}
 		</div>
 	);
 };

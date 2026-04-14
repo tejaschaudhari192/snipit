@@ -357,30 +357,34 @@ const DisplayPage = () => {
 					currentFileMimeType = uploadResult.fileMimeType!;
 				}
 
-				const data = await apiHelpers.updatePaste(
-					id!,
-					contentType === "file"
-						? currentFileUrl || "File upload"
-						: updatedContent!,
-					contentType === "link",
-					isDetecting || contentType === "code" ? language : "text",
+				const data = await apiHelpers.updatePaste(id!, {
+					content:
+						contentType === "file"
+							? currentFileUrl || "File upload"
+							: updatedContent!,
+					redirectUrl: contentType === "link",
+					language:
+						isDetecting || contentType === "code"
+							? language
+							: "text",
 					visibility,
-					visibility === "shared" || editPermission === "shared"
-						? allowedUsers
-						: [],
-					customId.trim() !== id ? customId.trim() : undefined,
-					passwordPayload,
+					allowedUsers:
+						visibility === "shared" || editPermission === "shared"
+							? allowedUsers
+							: [],
+					newId: customId.trim() !== id ? customId.trim() : undefined,
+					password: passwordPayload,
 					editPermission,
 					shareList,
 					publicRole,
 					allowComments,
 					expiresTime,
-					contentType,
-					currentFileUrl,
-					currentFileName,
-					currentFileSize,
-					currentFileMimeType,
-				);
+					contentMode: contentType,
+					fileUrl: currentFileUrl,
+					fileName: currentFileName,
+					fileSize: currentFileSize,
+					fileMimeType: currentFileMimeType,
+				});
 
 				if (data) {
 					if (shouldClose) {
@@ -482,13 +486,6 @@ const DisplayPage = () => {
 					const data = location.state.pasteData as PasteData;
 					const detectedType = detectContentMode(data);
 
-					if (data.redirectUrl && detectedType === "link") {
-						let url = data.content;
-						if (!/^https?:\/\//i.test(url)) url = `https://${url}`;
-						window.location.href = url;
-						return;
-					}
-
 					setPaste(data);
 					setUpdatedContent(data.content);
 					setLanguage(data.language ?? "text");
@@ -513,13 +510,6 @@ const DisplayPage = () => {
 				const data = await apiHelpers.getPaste(id!);
 				if (data) {
 					const detectedType = detectContentMode(data);
-
-					if (data.redirectUrl && detectedType === "link") {
-						let url = data.content;
-						if (!/^https?:\/\//i.test(url)) url = `https://${url}`;
-						window.location.href = url;
-						return;
-					}
 
 					setContentType(detectedType);
 					setVisibility(data.visibility ?? "public");
@@ -741,7 +731,7 @@ const DisplayPage = () => {
 		return () => {
 			document.title = "Snipit";
 		};
-	}, [paste, updatedContent, contentType]);
+	}, [paste, updatedContent, contentType, t]);
 
 	useEffect(() => {
 		if (socketRef.current && id) {
@@ -980,6 +970,12 @@ const DisplayPage = () => {
 			setVisibility(data.visibility ?? "public");
 			setAllowedUsers(data.allowedUsers ?? []);
 			setEditPermission(data.editPermission ?? "owner");
+
+			// Redirect after password verification if it's a link
+			if (data.redirectUrl && data.contentMode === "link") {
+				const url = data.content;
+				window.location.href = url;
+			}
 		} catch {
 			setPasswordError(
 				t("messages.password_incorrect", "Incorrect password"),

@@ -32,7 +32,6 @@ interface PasteContextType {
 	password: string;
 	customId: string;
 	idTypeTab: "system" | "dynamic";
-	fastRedirect: boolean;
 	isSubmitting: boolean;
 
 	// File Upload State
@@ -58,7 +57,6 @@ interface PasteContextType {
 	setPassword: (v: string) => void;
 	setCustomId: (v: string) => void;
 	setIdTypeTab: (v: "system" | "dynamic") => void;
-	setFastRedirect: (v: boolean) => void;
 	setIsSubmitting: (v: boolean) => void;
 
 	// File Upload Actions
@@ -99,7 +97,6 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 	const [password, setPassword] = useState("");
 	const [customId, setCustomId] = useState("");
 	const [idTypeTab, setIdTypeTab] = useState<"system" | "dynamic">("system");
-	const [fastRedirect, setFastRedirect] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const {
@@ -216,7 +213,6 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 		setPassword("");
 		setCustomId("");
 		setIdTypeTab("system");
-		setFastRedirect(false);
 	}, [setTextValue]);
 
 	const value = React.useMemo(
@@ -247,8 +243,6 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			setCustomId,
 			idTypeTab,
 			setIdTypeTab,
-			fastRedirect,
-			setFastRedirect,
 			isSubmitting,
 			setIsSubmitting,
 			isUploading,
@@ -291,8 +285,6 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			setCustomId,
 			idTypeTab,
 			setIdTypeTab,
-			fastRedirect,
-			setFastRedirect,
 			isSubmitting,
 			setIsSubmitting,
 			isUploading,

@@ -214,9 +214,6 @@ export const LinkResultView = ({
 						/>
 						<div className="flex items-center justify-center gap-4 text-xs text-muted-foreground font-bold">
 							<span className="px-3 py-1 rounded-lg bg-muted border border-border/50">
-								✅ {t("home.link_features.fast", "Fast")}
-							</span>
-							<span className="px-3 py-1 rounded-lg bg-muted border border-border/50">
 								✅{" "}
 								{t("home.link_features.custom", "Custom Alias")}
 							</span>

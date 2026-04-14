@@ -28,6 +28,7 @@ interface MainToolbarProps {
 	handleDialogSubmit: () => void;
 	hideTypeSelector?: boolean;
 	dialogError?: string;
+	shortenedResult?: { id: string } | null;
 }
 
 export const MainToolbar = memo(
@@ -45,6 +46,7 @@ export const MainToolbar = memo(
 		hideTypeSelector = false,
 		handleDialogSubmit,
 		dialogError = "",
+		shortenedResult = null,
 	}: MainToolbarProps) => {
 		const { t } = useTranslation();
 		const [isOptionsOpen, setIsOptionsOpen] = useState(false);
@@ -85,46 +87,48 @@ export const MainToolbar = memo(
 					{hideTypeSelector && <div className="w-0 lg:w-auto" />}
 
 					<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
-						<div className="flex items-center gap-2 flex-1 sm:flex-none">
-							<ExpirySelector
-								expiresTime={expiresTime}
-								setExpiresTime={setExpiresTime}
-								setIsCustomExpiryDialogOpen={
-									setIsCustomExpiryDialogOpen
-								}
-								className="w-full sm:w-fit"
-							/>
-
-							<ButtonGroup className="shadow-lg shadow-primary/20 overflow-visible shrink-0 h-9">
-								<Button
-									disabled={isSubmitting}
-									size="lg"
-									className="px-4 h-9 font-bold rounded-r-none border-r-0 hover:bg-primary/90 transition-colors min-w-[100px]"
-									onClick={handleQuickPaste}
-								>
-									{renderButtonText()}
-								</Button>
-								<div className="w-[1px] bg-primary-foreground/20 self-stretch my-2" />
-								<Button
-									disabled={isSubmitting}
-									size="icon"
-									className={cn(
-										"h-9 w-10 shrink-0 rounded-l-none border-l-0 hover:bg-primary/90 transition-all",
-										isOptionsOpen && "bg-primary/80",
-									)}
-									onClick={() =>
-										setIsOptionsOpen(!isOptionsOpen)
+						{!(contentType === "link" && !!shortenedResult) && (
+							<div className="flex items-center gap-2 flex-1 sm:flex-none">
+								<ExpirySelector
+									expiresTime={expiresTime}
+									setExpiresTime={setExpiresTime}
+									setIsCustomExpiryDialogOpen={
+										setIsCustomExpiryDialogOpen
 									}
-								>
-									<ChevronDown
+									className="w-full sm:w-fit"
+								/>
+
+								<ButtonGroup className="shadow-lg shadow-primary/20 overflow-visible shrink-0 h-9">
+									<Button
+										disabled={isSubmitting}
+										size="lg"
+										className="px-4 h-9 font-bold rounded-r-none border-r-0 hover:bg-primary/90 transition-colors min-w-[100px]"
+										onClick={handleQuickPaste}
+									>
+										{renderButtonText()}
+									</Button>
+									<div className="w-[1px] bg-primary-foreground/20 self-stretch my-2" />
+									<Button
+										disabled={isSubmitting}
+										size="icon"
 										className={cn(
-											"h-4 w-4 transition-transform duration-300",
-											isOptionsOpen && "rotate-180",
+											"h-9 w-10 shrink-0 rounded-l-none border-l-0 hover:bg-primary/90 transition-all",
+											isOptionsOpen && "bg-primary/80",
 										)}
-									/>
-								</Button>
-							</ButtonGroup>
-						</div>
+										onClick={() =>
+											setIsOptionsOpen(!isOptionsOpen)
+										}
+									>
+										<ChevronDown
+											className={cn(
+												"h-4 w-4 transition-transform duration-300",
+												isOptionsOpen && "rotate-180",
+											)}
+										/>
+									</Button>
+								</ButtonGroup>
+							</div>
+						)}
 					</div>
 				</div>
 

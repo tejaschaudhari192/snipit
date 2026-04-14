@@ -38,9 +38,6 @@ export const AdvancedOptions = ({ onSubmit }: AdvancedOptionsProps) => {
 		setPublicRole,
 		allowComments,
 		setAllowComments,
-		fastRedirect,
-		setFastRedirect,
-		contentType,
 	} = usePaste();
 
 	const [isPasswordEnabled, setIsPasswordEnabled] = useState(!!password);
@@ -95,9 +92,6 @@ export const AdvancedOptions = ({ onSubmit }: AdvancedOptionsProps) => {
 						setPassword={setPassword}
 						allowComments={allowComments}
 						setAllowComments={setAllowComments}
-						fastRedirect={fastRedirect}
-						setFastRedirect={setFastRedirect}
-						contentType={contentType}
 					/>
 				</div>
 

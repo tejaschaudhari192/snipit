@@ -79,48 +79,32 @@ export const useApiHelpers = () => {
 
 		const updatePaste = async (
 			id: string,
-			content: string,
-			redirectUrl?: boolean,
-			language?: string,
-			visibility?: Visibility,
-			allowedUsers?: string[],
-			newId?: string,
-			password?: string,
-			editPermission?: EditPermission,
-			shareList?: {
-				email: string;
-				role: ShareRole;
-			}[],
-			publicRole?: PublicRole,
-			allowComments?: boolean,
-			expiresTime?: string,
-			contentMode?: ContentMode,
-			fileUrl?: string | null,
-			fileName?: string | null,
-			fileSize?: number | null,
-			fileMimeType?: string | null,
+			data: {
+				content: string;
+				redirectUrl?: boolean;
+				language?: string;
+				visibility?: Visibility;
+				allowedUsers?: string[];
+				newId?: string;
+				password?: string;
+				editPermission?: EditPermission;
+				shareList?: {
+					email: string;
+					role: ShareRole;
+				}[];
+				publicRole?: PublicRole;
+				allowComments?: boolean;
+				expiresTime?: string;
+				contentMode?: ContentMode;
+				fileUrl?: string | null;
+				fileName?: string | null;
+				fileSize?: number | null;
+				fileMimeType?: string | null;
+			},
 		): Promise<PasteData> => {
-			const response = await api.put("/" + id, {
-				content,
-				redirectUrl,
-				language,
-				visibility,
-				allowedUsers,
-				newId,
-				password,
-				editPermission,
-				shareList,
-				publicRole,
-				allowComments,
-				expiresTime,
-				contentMode,
-				fileUrl,
-				fileName,
-				fileSize,
-				fileMimeType,
-			});
-			const data = response.data;
-			return data;
+			const response = await api.put("/" + id, data);
+			const result = response.data;
+			return result;
 		};
 
 		const detectLanguage = async (

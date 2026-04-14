@@ -1,4 +1,4 @@
-import { Server as SocketIOServer } from "socket.io";
+import { Server as SocketIOServer, Socket } from "socket.io";
 import type { Server as HTTPServer } from "http";
 import configurations, {
 	ADJECTIVES,
@@ -17,7 +17,7 @@ const pasteService = new PasteService();
 const activeUsers = new Map<string, ActiveUser & { pasteId: string }>();
 
 // Helpers
-const getSocketUserId = (socket: any): string | null => {
+const getSocketUserId = (socket: Socket): string | null => {
 	const req = socket.request;
 	const token = extractTokenFromRequest(req);
 	return token ? getUserIdFromToken(token) : null;

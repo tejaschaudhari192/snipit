@@ -1,36 +1,22 @@
 import { useRef, useState, useEffect, lazy, Suspense } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { type OnMount, type BeforeMount } from "@monaco-editor/react";
-import { AxiosError } from "axios";
 import { Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import { useApiHelpers } from "@/lib/api";
-import {
-	saveToLocal,
-	playErrorSound,
-	playSuccessSound,
-	clearDrafts,
-} from "@/lib/utils";
+import { playErrorSound } from "@/lib/utils";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { useAuth } from "@/context/AuthContext";
-import { type UploadState } from "@/hooks/use-file-upload";
-import type {
-	IdType,
-	Visibility,
-	EditPermission,
-	PublicRole,
-	ShareRole,
-	ContentMode,
-	PasteData,
-} from "@/types";
+import type { PasteData } from "@/types";
 import { CONFIG } from "@/configurations";
 import { useLanguageDetection } from "@/hooks/use-language-detection";
 import { usePaste } from "@/context/PasteContext";
 import { useAiEnhance } from "@/hooks/use-ai-enhance";
+import { useHomeUrlSync } from "@/hooks/use-home-url-sync";
+import { usePasteSubmission } from "@/hooks/use-paste-submission";
 
 const LanguageSelector = lazy(() =>
 	import("@/components/editor/language-selector").then((m) => ({
@@ -66,8 +52,6 @@ const AiEnhanceDialog = lazy(() =>
 const HomePage = () => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
-	const navigate = useNavigate();
-	const location = useLocation();
 	const apiHelpers = useApiHelpers();
 
 	// Refs
@@ -75,15 +59,8 @@ const HomePage = () => {
 	const valueRef = useRef("");
 	const previousLengthRef = useRef(0);
 	const hasDetectedRef = useRef(false);
-	const uploadPromiseRef = useRef<Promise<UploadState> | null>(null);
 
 	const {
-		visibility,
-		editPermission,
-		allowedUsers,
-		shareList,
-		publicRole,
-		allowComments,
 		expiresTime,
 		setExpiresTime,
 		contentType,
@@ -91,27 +68,27 @@ const HomePage = () => {
 		language,
 		setLanguage,
 		textValue,
-		password,
 		setPassword,
 		idTypeTab,
 		customId,
 		setCustomId,
-		fastRedirect,
 		isSubmitting,
-		setIsSubmitting,
 		isUploading,
 		uploadProgress,
-		uploadFile,
 		setFileUpload,
 		resetFileUpload,
-		fileUrl,
 		fileName,
-		fileSize,
-		fileMimeType,
 		onContentTypeChange,
 	} = usePaste();
 
-	const [pendingFile, setPendingFile] = useState<File | null>(null);
+	const [shortenedResult, setShortenedResult] = useState<{
+		id: string;
+		url: string;
+	} | null>(null);
+
+	const { handleSubmit, pendingFile, setPendingFile } =
+		usePasteSubmission(setShortenedResult);
+
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [isCustomExpiryDialogOpen, setIsCustomExpiryDialogOpen] =
 		useState(false);
@@ -137,64 +114,18 @@ const HomePage = () => {
 		applyEnhancedText,
 	} = useAiEnhance();
 
-	const onContentTypeChangeRef = useRef(onContentTypeChange);
-	useEffect(() => {
-		onContentTypeChangeRef.current = onContentTypeChange;
-	}, [onContentTypeChange]);
+	useHomeUrlSync({
+		contentType,
+		isFullscreen,
+		onContentTypeChange,
+		setIsFullscreen,
+	});
 
 	// Keep valueRef in sync with context's textValue
 	useEffect(() => {
 		previousLengthRef.current = valueRef.current.trim().length;
 		valueRef.current = textValue;
 	}, [textValue]);
-
-	useEffect(() => {
-		const params = new URLSearchParams(location.search);
-		const tab = params.get("tab");
-		const fs = params.get("fullscreen");
-
-		if (tab && ["text", "code", "draw", "link", "file"].includes(tab)) {
-			onContentTypeChangeRef.current(tab as ContentMode);
-		}
-
-		if (fs === "true") {
-			setIsFullscreen(true);
-		}
-	}, [location.search]); // Sync from URL only when URL actually changes via navigation/back button
-
-	useEffect(() => {
-		const params = new URLSearchParams(location.search);
-		let changed = false;
-
-		if (contentType !== params.get("tab")) {
-			if (contentType === CONFIG.DEFAULTS.CONTENT_MODE) {
-				params.delete("tab");
-			} else {
-				params.set("tab", contentType);
-			}
-			changed = true;
-		}
-
-		if (isFullscreen.toString() !== (params.get("fullscreen") || "false")) {
-			if (isFullscreen) params.set("fullscreen", "true");
-			else params.delete("fullscreen");
-			changed = true;
-		}
-
-		if (changed) {
-			const newRelativePathQuery =
-				location.pathname +
-				(params.toString() ? "?" + params.toString() : "") +
-				location.hash;
-			window.history.replaceState(null, "", newRelativePathQuery);
-		}
-	}, [
-		contentType,
-		isFullscreen,
-		location.pathname,
-		location.search,
-		location.hash,
-	]);
 
 	// Effects
 	useEffect(() => {
@@ -257,6 +188,7 @@ const HomePage = () => {
 		t,
 		setFileUpload,
 		setContentType,
+		setPendingFile,
 	]);
 
 	useEffect(() => {
@@ -278,10 +210,6 @@ const HomePage = () => {
 	// Handlers
 	// Removed duplicate logic since it's in PasteContext now
 
-	const [shortenedResult, setShortenedResult] = useState<{
-		id: string;
-		url: string;
-	} | null>(null);
 	const [historyItems, setHistoryItems] = useState<Array<PasteData>>([]);
 
 	// Effects
@@ -365,141 +293,6 @@ const HomePage = () => {
 		}
 	}, [textValue, shortenedResult]);
 
-	const handleSubmit = async (
-		selectedIdType: IdType,
-		providedId?: string,
-		options: {
-			visibility?: Visibility;
-			password?: string;
-			editPermission?: EditPermission;
-			allowedUsers?: string[];
-			shareList?: {
-				email: string;
-				role: ShareRole;
-			}[];
-			publicRole?: PublicRole;
-			allowComments?: boolean;
-			redirectUrl?: boolean;
-			isCollaborative?: boolean;
-		} = {},
-	) => {
-		try {
-			setIsSubmitting(true);
-			const finalVisibility = options.visibility ?? visibility;
-			const finalEditPermission =
-				options.editPermission ?? editPermission;
-
-			let currentFileUrl = fileUrl;
-			let currentFileName = fileName;
-			let currentFileSize = fileSize;
-			let currentFileMimeType = fileMimeType;
-
-			if (contentType === "file" && pendingFile && !currentFileUrl) {
-				const uploadResult = await uploadFile(pendingFile);
-				if (uploadResult.error) {
-					throw new Error(uploadResult.error);
-				}
-				currentFileUrl = uploadResult.fileUrl;
-				currentFileName = uploadResult.fileName;
-				currentFileSize = uploadResult.fileSize;
-				currentFileMimeType = uploadResult.fileMimeType;
-				setPendingFile(null);
-			} else if (
-				contentType === "file" &&
-				isUploading &&
-				uploadPromiseRef.current
-			) {
-				const uploadResult = await uploadPromiseRef.current;
-				if (uploadResult.error) {
-					throw new Error(uploadResult.error);
-				}
-				currentFileUrl = uploadResult.fileUrl;
-				currentFileName = uploadResult.fileName;
-				currentFileSize = uploadResult.fileSize;
-				currentFileMimeType = uploadResult.fileMimeType;
-			}
-
-			const data = await apiHelpers.submitPaste({
-				content:
-					contentType === "file"
-						? currentFileUrl || currentFileName || "File upload"
-						: contentType === "draw" && !valueRef.current.trim()
-							? JSON.stringify({ elements: [], appState: {} })
-							: valueRef.current,
-				expiresTime,
-				idType: selectedIdType,
-				customId: providedId,
-				contentMode: contentType,
-				fileUrl: contentType === "file" ? currentFileUrl : undefined,
-				fileName: contentType === "file" ? currentFileName : undefined,
-				fileSize: contentType === "file" ? currentFileSize : undefined,
-				fileMimeType:
-					contentType === "file" ? currentFileMimeType : undefined,
-				redirectUrl:
-					contentType === "link" ||
-					(contentType === "file" && options.redirectUrl === true),
-				language: contentType === "code" ? language : "text",
-				burnAfterRead: expiresTime === "one-time",
-				visibility: finalVisibility,
-				allowedUsers:
-					finalVisibility === "shared" ||
-					finalEditPermission === "shared"
-						? (options.allowedUsers ?? allowedUsers)
-						: undefined,
-				password: (options.password ?? password) || undefined,
-				editPermission: finalEditPermission,
-				shareList: options.shareList ?? shareList,
-				publicRole: options.publicRole ?? publicRole,
-				allowComments: options.allowComments ?? allowComments,
-			});
-			playSuccessSound();
-			toast.success(
-				t("messages.snippet_created", {
-					idType: selectedIdType,
-					id: `/${data.id}`,
-					defaultValue: `Snippet created: /${data.id}`,
-				}),
-				{
-					position: "bottom-right",
-				},
-			);
-
-			if (contentType === "link") {
-				setShortenedResult({
-					id: data.id,
-					url: window.location.origin + "/" + data.id,
-				});
-				return true;
-			}
-
-			navigate("/" + data.id, {
-				state: {
-					pasteData: data,
-					isCollaborative: options.isCollaborative,
-				},
-			});
-			if (!user) {
-				saveToLocal(data);
-			}
-			clearDrafts();
-			return true;
-		} catch (error) {
-			const axiosError = error as AxiosError<{
-				error: string;
-				details?: { path: string[]; message: string }[];
-			}>;
-			if (axiosError.response?.status === 409)
-				return t("messages.id_conflict");
-			const details = axiosError.response?.data?.details;
-			if (details && details.length > 0) return details[0].message;
-			return (
-				axiosError.response?.data?.error || t("messages.snippet_failed")
-			);
-		} finally {
-			setIsSubmitting(false);
-		}
-	};
-
 	const handleQuickPaste = async () => {
 		const hasContent =
 			contentType === "file"
@@ -522,9 +315,7 @@ const HomePage = () => {
 
 		const selectedId =
 			idTypeTab === "dynamic" ? customId.trim() : undefined;
-		const result = await handleSubmit(idTypeTab, selectedId, {
-			redirectUrl: fastRedirect,
-		});
+		const result = await handleSubmit(idTypeTab, selectedId, {});
 
 		if (result !== true) {
 			toast.error(result as string);
@@ -612,9 +403,7 @@ const HomePage = () => {
 		setDialogError("");
 		const selectedId =
 			idTypeTab === "dynamic" ? customId.trim() : undefined;
-		const result = await handleSubmit(idTypeTab, selectedId, {
-			redirectUrl: fastRedirect,
-		});
+		const result = await handleSubmit(idTypeTab, selectedId, {});
 		if (result === true) {
 			if (idTypeTab === "dynamic") setCustomId("");
 			setPassword("");
@@ -646,50 +435,49 @@ const HomePage = () => {
 						uploadProgress={uploadProgress}
 						handleDialogSubmit={handleDialogSubmit}
 						dialogError={dialogError}
+						shortenedResult={shortenedResult}
 					/>
 				</Suspense>
 
 				<div className="flex flex-wrap items-center gap-2">
-					{(isDetecting || contentType === "code") && (
-						<div className="w-full sm:w-auto flex items-center gap-2">
-							<Suspense fallback={null}>
+					<Suspense fallback={null}>
+						{(isDetecting || contentType === "code") && (
+							<div className="w-full sm:w-auto flex items-center gap-2">
 								<LanguageSelector
 									value={language}
 									onValueChange={setLanguage}
 									isDetecting={isDetecting}
 								/>
-							</Suspense>
-							{!isDetecting && (
-								<Button
-									variant="outline"
-									size="icon"
-									className="h-10 w-10 shrink-0 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm"
-									onClick={() => {
-										// allow manual detection even if previously pasted
-										hasDetectedRef.current = false;
-										handleLanguageDetection(textValue);
-									}}
-									title={t(
-										"home.auto_detecting",
-										"Auto-detect language",
-									)}
-								>
-									<Code2 className="h-4 w-4 text-muted-foreground" />
-								</Button>
-							)}
-						</div>
-					)}
+								{!isDetecting && (
+									<Button
+										variant="outline"
+										size="icon"
+										className="h-10 w-10 shrink-0 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm"
+										onClick={() => {
+											// allow manual detection even if previously pasted
+											hasDetectedRef.current = false;
+											handleLanguageDetection(textValue);
+										}}
+										title={t(
+											"home.auto_detecting",
+											"Auto-detect language",
+										)}
+									>
+										<Code2 className="h-4 w-4 text-muted-foreground" />
+									</Button>
+								)}
+							</div>
+						)}
 
-					{contentType !== "link" &&
-						contentType !== "file" &&
-						contentType !== "draw" && (
-							<Suspense fallback={null}>
+						{contentType !== "link" &&
+							contentType !== "file" &&
+							contentType !== "draw" && (
 								<FontSizeControls
 									fontSize={fontSize}
 									setFontSize={setFontSize}
 								/>
-							</Suspense>
-						)}
+							)}
+					</Suspense>
 				</div>
 			</div>
 

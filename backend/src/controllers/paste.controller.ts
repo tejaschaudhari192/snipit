@@ -361,7 +361,11 @@ class PasteController {
 
 				if (!isOwner) {
 					const pasteObj = result.toObject();
-					const { content, password, ...rest } = pasteObj;
+					const {
+						content: _content,
+						password: _password,
+						...rest
+					} = pasteObj;
 					return res.json({
 						...rest,
 						isPasswordProtected: true,

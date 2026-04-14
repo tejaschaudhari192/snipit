@@ -52,8 +52,6 @@ export const PasteDialog = ({
 		setPublicRole,
 		allowComments,
 		setAllowComments,
-		fastRedirect,
-		setFastRedirect,
 		contentType,
 		isSubmitting,
 		isUploading,
@@ -90,9 +88,6 @@ export const PasteDialog = ({
 						setPassword={setPassword}
 						allowComments={allowComments}
 						setAllowComments={setAllowComments}
-						fastRedirect={fastRedirect}
-						setFastRedirect={setFastRedirect}
-						contentType={contentType}
 					/>
 
 					{!user ? (
