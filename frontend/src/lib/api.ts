@@ -10,6 +10,7 @@ import type {
 	PublicRole,
 	ShareRole,
 	IdType,
+	PaginatedResponse,
 } from "@/types";
 
 const api = axios.create({
@@ -125,8 +126,13 @@ export const useApiHelpers = () => {
 			return response.data;
 		};
 
-		const getUserPastes = async (): Promise<PasteData[]> => {
-			const response = await api.get("/user/pastes");
+		const getUserPastes = async (
+			page: number = 1,
+			limit: number = 10,
+		): Promise<PaginatedResponse<PasteData>> => {
+			const response = await api.get("/user/pastes", {
+				params: { page, limit },
+			});
 			return response.data;
 		};
 

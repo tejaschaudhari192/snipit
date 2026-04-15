@@ -1,15 +1,12 @@
-import type { PasteData } from "@/types";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { FileText, Trash2, Inbox } from "lucide-react";
+import { FileText, Trash2, Inbox, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import { toast } from "sonner";
-import { useAuth } from "@/context/AuthContext";
-import { useApiHelpers } from "@/lib/api";
+import { useState, useEffect, useRef } from "react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { SnippetCard } from "@/components/snippets/snippet-card";
 import { playRemoveSound } from "@/lib/utils";
+import { useSnippets } from "@/context/SnippetContext";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -24,69 +21,47 @@ import {
 
 const HistoryPage = () => {
 	const { t, i18n } = useTranslation();
-	const { user } = useAuth();
-	const apiHelpers = useApiHelpers();
-
-	const [items, setItems] = useState<Array<PasteData>>([]);
-	const [loading, setLoading] = useState(true);
+	const { history, loadHistory } = useSnippets();
+	const { items, loading, hasMore, isLoadingMore } = history;
 	const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
+	const loaderRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
-		const loadHistory = async () => {
-			setLoading(true);
-			try {
-				const stored = localStorage.getItem("items");
-				const localItems: Array<PasteData> = stored
-					? JSON.parse(stored)
-					: [];
+		if (items.length === 0) {
+			loadHistory(true);
+		}
+	}, [loadHistory, items.length]);
 
-				let finalItems = [...localItems];
-
-				if (user) {
-					try {
-						const userPastes = await apiHelpers.getUserPastes();
-
-						const userPasteIds = new Set(
-							userPastes.map((p: PasteData) => p.id),
-						);
-						const filteredLocal = localItems.filter(
-							(p) => !userPasteIds.has(p.id),
-						);
-						finalItems = [...userPastes, ...filteredLocal];
-					} catch (err) {
-						console.error("Failed to fetch user pastes", err);
-						toast.error(
-							t(
-								"history.sync_failed",
-								"Failed to sync your account snippets",
-							),
-						);
-					}
+	useEffect(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				const target = entries[0];
+				if (target.isIntersecting && hasMore && !isLoadingMore) {
+					loadHistory(false);
 				}
+			},
+			{ threshold: 0.1 },
+		);
 
-				finalItems.sort(
-					(a, b) =>
-						new Date(b.createdAt).getTime() -
-						new Date(a.createdAt).getTime(),
-				);
+		const currentLoader = loaderRef.current;
+		if (currentLoader) {
+			observer.observe(currentLoader);
+		}
 
-				setItems(finalItems);
-			} finally {
-				setLoading(false);
+		return () => {
+			if (currentLoader) {
+				observer.unobserve(currentLoader);
 			}
 		};
-
-		loadHistory();
-	}, [user, apiHelpers, t]);
+	}, [hasMore, isLoadingMore, loadHistory]);
 
 	const handleClearHistory = () => setIsClearDialogOpen(true);
 
 	const confirmClearHistory = () => {
 		playRemoveSound();
 		localStorage.removeItem("items");
-		setItems([]);
-		toast.success(t("history.cleared_success"));
-		setIsClearDialogOpen(false);
+		// Refresh both history and profile if needed, or just clear local
+		window.location.reload(); // Simplest way to clear everything and re-sync
 	};
 
 	return (
@@ -164,6 +139,21 @@ const HistoryPage = () => {
 								showViews={false}
 							/>
 						))}
+
+						{/* Infinite Scroll Trigger */}
+						<div
+							ref={loaderRef}
+							className="h-10 flex items-center justify-center mt-4"
+						>
+							{isLoadingMore && (
+								<div className="flex items-center gap-2 text-muted-foreground animate-in fade-in duration-300">
+									<Loader2 className="h-5 w-5 animate-spin text-primary" />
+									<span>
+										{t("common.loading", "Loading...")}
+									</span>
+								</div>
+							)}
+						</div>
 					</div>
 				)}
 			</div>

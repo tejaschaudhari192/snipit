@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import { useApiHelpers } from "@/lib/api";
@@ -9,40 +9,33 @@ import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
 import { ProfileInfo } from "@/components/profile/profile-info";
 import { ProfileSnippetList } from "@/components/profile/profile-snippet-list";
-import type { PasteData } from "@/types";
+
+import { useSnippets } from "@/context/SnippetContext";
 
 const ProfilePage = () => {
 	const { t } = useTranslation();
 	const { user, loading: authLoading, setUser } = useAuth();
 	const apiHelpers = useApiHelpers();
+	const { profile, loadProfile } = useSnippets();
+	const {
+		items: pastes,
+		loading: loadingPastes,
+		hasMore,
+		isLoadingMore,
+	} = profile;
 
 	const [isEditingName, setIsEditingName] = useState(false);
 	const [newName, setNewName] = useState("");
-	const [pastes, setPastes] = useState<PasteData[]>([]);
-	const [loadingPastes, setLoadingPastes] = useState(true);
 	const [isUpdating, setIsUpdating] = useState(false);
-
-	const fetchPastes = useCallback(async () => {
-		try {
-			setLoadingPastes(true);
-			const data = await apiHelpers.getUserPastes();
-			setPastes(data);
-		} catch (error) {
-			console.error("Failed to fetch pastes", error);
-			toast.error(
-				t("profile.loading_failed", "Failed to load your snippets"),
-			);
-		} finally {
-			setLoadingPastes(false);
-		}
-	}, [apiHelpers, t]);
 
 	useEffect(() => {
 		if (user) {
 			setNewName(user.username);
-			fetchPastes();
+			if (pastes.length === 0) {
+				loadProfile(true);
+			}
 		}
-	}, [user, fetchPastes]);
+	}, [user, loadProfile, pastes.length]);
 
 	const handleUpdateName = async () => {
 		if (!newName.trim() || newName === user?.username) {
@@ -138,6 +131,9 @@ const ProfilePage = () => {
 						<ProfileSnippetList
 							pastes={pastes}
 							loading={loadingPastes}
+							loadMore={() => loadProfile(false)}
+							hasMore={hasMore}
+							isLoadingMore={isLoadingMore}
 						/>
 					</div>
 				</div>

@@ -54,7 +54,7 @@ export const getUserIdFromToken = (token: string): string | null => {
 			id: string;
 		};
 		return decoded.id;
-	} catch (error) {
+	} catch {
 		return null;
 	}
 };

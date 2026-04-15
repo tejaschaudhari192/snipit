@@ -6,6 +6,7 @@ import Header from "@/components/header/header";
 import ThemeProvider from "@/lib/theme";
 import { AuthProvider } from "@/context/AuthContext";
 import { PasteProvider } from "@/context/PasteContext";
+import { SnippetProvider } from "@/context/SnippetContext";
 import Loader from "@/components/common/core/loader";
 import { loader } from "@monaco-editor/react";
 import { useTranslation } from "react-i18next";
@@ -65,61 +66,67 @@ const App = () => {
 				<SplashPage />
 			) : (
 				<AuthProvider>
-					<PasteProvider>
-						<Router>
-							<div className="h-screen w-full m-0 p-0 box-border flex flex-col overflow-hidden">
-								<Header />
-								<main className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
-									<Suspense
-										fallback={
-											<div className="flex-1 flex items-center justify-center">
-												<Loader />
-											</div>
-										}
-									>
-										<Routes>
-											<Route
-												path="/"
-												element={<HomePage />}
-											/>
-											<Route
-												path="/login"
-												element={<LoginPage />}
-											/>
-											<Route
-												path="/signup"
-												element={<SignupPage />}
-											/>
-											<Route
-												path="/forgot-password"
-												element={<ForgotPasswordPage />}
-											/>
-											<Route
-												path="/reset-password/:token"
-												element={<ResetPasswordPage />}
-											/>
-											<Route
-												path="/profile"
-												element={<ProfilePage />}
-											/>
-											<Route
-												path="/:id"
-												element={<DisplayPage />}
-											/>
-											<Route
-												path="/about"
-												element={<AboutPage />}
-											/>
-											<Route
-												path="/history"
-												element={<HistoryPage />}
-											/>
-										</Routes>
-									</Suspense>
-								</main>
-							</div>
-						</Router>
-					</PasteProvider>
+					<SnippetProvider>
+						<PasteProvider>
+							<Router>
+								<div className="h-screen w-full m-0 p-0 box-border flex flex-col overflow-hidden">
+									<Header />
+									<main className="flex-1 flex flex-col min-h-0 overflow-y-auto overflow-x-hidden relative custom-scrollbar">
+										<Suspense
+											fallback={
+												<div className="flex-1 flex items-center justify-center">
+													<Loader />
+												</div>
+											}
+										>
+											<Routes>
+												<Route
+													path="/"
+													element={<HomePage />}
+												/>
+												<Route
+													path="/login"
+													element={<LoginPage />}
+												/>
+												<Route
+													path="/signup"
+													element={<SignupPage />}
+												/>
+												<Route
+													path="/forgot-password"
+													element={
+														<ForgotPasswordPage />
+													}
+												/>
+												<Route
+													path="/reset-password/:token"
+													element={
+														<ResetPasswordPage />
+													}
+												/>
+												<Route
+													path="/profile"
+													element={<ProfilePage />}
+												/>
+												<Route
+													path="/:id"
+													element={<DisplayPage />}
+												/>
+												<Route
+													path="/about"
+													element={<AboutPage />}
+												/>
+												<Route
+													path="/history"
+													element={<HistoryPage />}
+												/>
+											</Routes>
+										</Suspense>
+									</main>
+								</div>
+							</Router>
+						</PasteProvider>
+					</SnippetProvider>
 				</AuthProvider>
 			)}
 		</ThemeProvider>

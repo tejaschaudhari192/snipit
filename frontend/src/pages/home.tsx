@@ -223,7 +223,8 @@ const HomePage = () => {
 
 			if (user) {
 				try {
-					const userPastes = await apiHelpers.getUserPastes();
+					const response = await apiHelpers.getUserPastes();
+					const userPastes = response.pastes;
 					const userPasteIds = new Set(
 						userPastes.map((p: PasteData) => p.id),
 					);

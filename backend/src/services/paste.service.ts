@@ -125,10 +125,24 @@ class PasteService {
 		const paste = await pasteModel.findOne({ id });
 		return paste ? new Date() > paste.expiresAt : false;
 	}
-	async getUserPastes(ownerId: string) {
-		return await pasteModel
+	async getUserPastes(ownerId: string, page: number = 1, limit: number = 10) {
+		const skip = (page - 1) * limit;
+		const pastes = await pasteModel
 			.find({ owner: ownerId })
-			.sort({ createdAt: -1 });
+			.sort({ createdAt: -1 })
+			.skip(skip)
+			.limit(limit);
+
+		const total = await pasteModel.countDocuments({ owner: ownerId });
+
+		return {
+			pastes,
+			total,
+			page,
+			limit,
+			totalPages: Math.ceil(total / limit),
+			hasMore: page * limit < total,
+		};
 	}
 	async addComment(id: string, comment: CommentData) {
 		return await pasteModel.findOneAndUpdate(

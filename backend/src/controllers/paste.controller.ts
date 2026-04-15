@@ -361,13 +361,12 @@ class PasteController {
 
 				if (!isOwner) {
 					const pasteObj = result.toObject();
-					const {
-						content: _content,
-						password: _password,
-						...rest
-					} = pasteObj;
+					const rest = { ...pasteObj };
+					delete (rest as any).content;
+					delete (rest as any).password;
+
 					return res.json({
-						...rest,
+						...(rest as any),
 						isPasswordProtected: true,
 					});
 				}
@@ -574,8 +573,18 @@ class PasteController {
 				return res.status(401).json({ error: "Unauthorized" });
 			}
 
-			const pastes = await this.pasteService.getUserPastes(userId);
-			return res.json(pastes.map((p) => p.toObject()));
+			const page = parseInt(req.query.page as string) || 1;
+			const limit = parseInt(req.query.limit as string) || 10;
+
+			const result = await this.pasteService.getUserPastes(
+				userId,
+				page,
+				limit,
+			);
+			return res.json({
+				...result,
+				pastes: result.pastes.map((p) => p.toObject()),
+			});
 		} catch (error) {
 			this.logger.error("Error fetching user pastes", error);
 			return next(error);

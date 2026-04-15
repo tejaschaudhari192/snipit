@@ -67,3 +67,12 @@ export interface PasteData {
 
 export type IdType = "system" | "dynamic";
 export type SaveStatus = "idle" | "saving" | "saved" | "error";
+
+export interface PaginatedResponse<T> {
+	pastes: T[];
+	total: number;
+	page: number;
+	limit: number;
+	totalPages: number;
+	hasMore: boolean;
+}

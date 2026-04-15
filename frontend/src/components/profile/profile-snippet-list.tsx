@@ -1,4 +1,5 @@
-import { FileText, ChevronRight, Inbox } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { FileText, ChevronRight, Inbox, Loader2 } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -9,13 +10,43 @@ import type { PasteData } from "@/types";
 interface ProfileSnippetListProps {
 	pastes: PasteData[];
 	loading: boolean;
+	loadMore: () => void;
+	hasMore: boolean;
+	isLoadingMore: boolean;
 }
 
 export const ProfileSnippetList = ({
 	pastes,
 	loading,
+	loadMore,
+	hasMore,
+	isLoadingMore,
 }: ProfileSnippetListProps) => {
 	const { t } = useTranslation();
+	const loaderRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				const target = entries[0];
+				if (target.isIntersecting && hasMore && !isLoadingMore) {
+					loadMore();
+				}
+			},
+			{ threshold: 0.1 },
+		);
+
+		const currentLoader = loaderRef.current;
+		if (currentLoader) {
+			observer.observe(currentLoader);
+		}
+
+		return () => {
+			if (currentLoader) {
+				observer.unobserve(currentLoader);
+			}
+		};
+	}, [hasMore, isLoadingMore, loadMore]);
 
 	return (
 		<div className="md:col-span-8 space-y-6">
@@ -72,6 +103,19 @@ export const ProfileSnippetList = ({
 					{pastes.map((paste, idx) => (
 						<SnippetCard key={paste.id} item={paste} index={idx} />
 					))}
+
+					{/* Infinite Scroll Trigger */}
+					<div
+						ref={loaderRef}
+						className="h-10 flex items-center justify-center mt-4"
+					>
+						{isLoadingMore && (
+							<div className="flex items-center gap-2 text-muted-foreground animate-in fade-in duration-300">
+								<Loader2 className="h-5 w-5 animate-spin text-primary" />
+								<span>{t("common.loading", "Loading...")}</span>
+							</div>
+						)}
+					</div>
 				</div>
 			)}
 		</div>

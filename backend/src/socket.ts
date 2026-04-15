@@ -19,7 +19,7 @@ const activeUsers = new Map<string, ActiveUser & { pasteId: string }>();
 // Helpers
 const getSocketUserId = (socket: Socket): string | null => {
 	const req = socket.request;
-	const token = extractTokenFromRequest(req);
+	const token = extractTokenFromRequest(req as any);
 	return token ? getUserIdFromToken(token) : null;
 };
 
