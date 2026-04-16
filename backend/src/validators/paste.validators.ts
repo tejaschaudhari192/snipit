@@ -40,3 +40,7 @@ export const createPasteSchema = z.object({
 		.default("viewer"),
 	allowComments: z.boolean().optional().default(false),
 });
+
+export const updatePasteSchema = createPasteSchema.partial().extend({
+	newId: z.string().optional(),
+});

@@ -52,7 +52,7 @@ class PasteService {
 		return await paste.save();
 	}
 	async isPasteExpired(id: string): Promise<boolean> {
-		const paste = await pasteModel.findOne({ id });
+		const paste = await pasteModel.findOne({ id }).lean();
 		return paste && paste.expiresAt ? new Date() > paste.expiresAt : false;
 	}
 	async getUserPastes(ownerId: string, page: number = 1, limit: number = 10) {

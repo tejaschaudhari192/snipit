@@ -68,7 +68,7 @@ export type PasteData = {
 };
 
 export interface UpdatePasteData {
-	content?: string;
+	content?: string | undefined;
 	redirectUrl?: boolean | undefined;
 	language?: string | undefined;
 	visibility?: Visibility | undefined;

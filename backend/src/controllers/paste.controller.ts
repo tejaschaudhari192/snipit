@@ -1,7 +1,10 @@
 import { dateConverter, uniqueIdGenerator } from "@/lib/utils.js";
 import type { NextFunction, Request, Response } from "express";
 import type { PasteData, IPaste } from "@/types/index.js";
-import { createPasteSchema } from "@/validators/paste.validators.js";
+import {
+	createPasteSchema,
+	updatePasteSchema,
+} from "@/validators/paste.validators.js";
 import type { Logger } from "winston";
 import User from "@/models/User.js";
 import type PasteService from "@/services/paste.service.js";
@@ -410,18 +413,6 @@ class PasteController {
 
 	async updatePaste(req: AuthRequest, res: Response, next: NextFunction) {
 		const id = req.params.id;
-		const { content, redirectUrl, language } = req.body;
-		const { expiresTime } = req.body;
-		let {
-			visibility,
-			allowedUsers,
-			newId,
-			password,
-			editPermission,
-			shareList,
-			publicRole,
-			allowComments,
-		} = req.body;
 		try {
 			const existingPaste = await this.pasteService.getPasteById(id!);
 			if (!existingPaste) {
@@ -436,42 +427,37 @@ class PasteController {
 				});
 			}
 
-			const {
-				fileUrl,
-				fileName,
-				fileSize,
-				fileMimeType,
-				contentMode: reqContentMode,
-			} = req.body;
+			const validatedBody = updatePasteSchema.parse(req.body);
 
 			// If file is changed, delete the old file from storage
 			if (
-				fileUrl !== undefined &&
+				validatedBody.fileUrl !== undefined &&
 				existingPaste.fileUrl &&
-				existingPaste.fileUrl !== fileUrl
+				existingPaste.fileUrl !== validatedBody.fileUrl
 			) {
 				await deleteFileFromStorage(existingPaste.fileUrl);
 			}
 
+			let finalUpdates = { ...validatedBody };
+
 			if (userRole === "editor") {
-				visibility = undefined;
-				allowedUsers = undefined;
-				newId = undefined;
-				password = undefined;
-				editPermission = undefined;
-				shareList = undefined;
-				publicRole = undefined;
-				allowComments = undefined;
+				// Prevent non-admins from changing these
+				finalUpdates.visibility = undefined;
+				finalUpdates.allowedUsers = undefined;
+				finalUpdates.newId = undefined;
+				finalUpdates.password = undefined;
+				finalUpdates.editPermission = undefined;
+				finalUpdates.shareList = undefined;
+				finalUpdates.publicRole = undefined;
+				finalUpdates.allowComments = undefined;
 			}
 
 			let expiresAt: Date | null | undefined;
-			if (expiresTime) {
-				const parsed = expiresTime
-					? dateConverter(expiresTime)
-					: dateConverter("1d");
-				if (expiresTime === "one-time") {
-					expiresAt = dateConverter("1d") || undefined;
-				} else if (expiresTime === "never") {
+			if (finalUpdates.expiresTime) {
+				const parsed = dateConverter(finalUpdates.expiresTime);
+				if (finalUpdates.expiresTime === "one-time") {
+					expiresAt = dateConverter("1d");
+				} else if (finalUpdates.expiresTime === "never") {
 					expiresAt = null;
 				} else if (parsed) {
 					expiresAt = parsed;
@@ -489,9 +475,12 @@ class PasteController {
 				}
 			}
 
-			if (password) {
+			if (finalUpdates.password) {
 				const salt = await bcrypt.genSalt(10);
-				password = await bcrypt.hash(password, salt);
+				finalUpdates.password = await bcrypt.hash(
+					finalUpdates.password,
+					salt,
+				);
 			}
 
 			const oldShareMap = new Map();
@@ -503,42 +492,26 @@ class PasteController {
 
 			this.logger.info(
 				`Update request for paste ${id}: ${JSON.stringify({
-					visibility,
-					newId,
-					contentMode: req.body.contentMode,
-					language,
+					visibility: finalUpdates.visibility,
+					newId: finalUpdates.newId,
+					contentMode: finalUpdates.contentMode,
+					language: finalUpdates.language,
 					expiresAt,
-					allowComments,
 				})} `,
 			);
+
 			const result = await this.pasteService.updatePaste(id!, {
-				content,
-				redirectUrl,
-				language,
-				visibility,
-				allowedUsers,
-				newId,
-				password,
-				editPermission,
-				shareList,
-				publicRole,
-				allowComments,
-				expiresTime,
+				...finalUpdates,
 				expiresAt,
-				contentMode: reqContentMode,
-				fileUrl,
-				fileName,
-				fileSize,
-				fileMimeType,
 			});
 
-			if (shareList && result) {
+			if (finalUpdates.shareList && result) {
 				const frontendUrl =
 					configurations.domain ||
 					(req.headers.origin
 						? req.headers.origin
 						: "http://localhost:5173");
-				for (const share of shareList) {
+				for (const share of finalUpdates.shareList) {
 					const oldRole = oldShareMap.get(share.email);
 					if (oldRole !== share.role) {
 						const pasteUrl = `${frontendUrl}/${result.id}`;
