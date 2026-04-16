@@ -51,28 +51,37 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const isHistoryFetching = useRef(false);
 	const isProfileFetching = useRef(false);
+	const historyStateRef = useRef(history);
+	const profileStateRef = useRef(profile);
+
+	// Update refs when state changes
+	useEffect(() => {
+		historyStateRef.current = history;
+	}, [history]);
+
+	useEffect(() => {
+		profileStateRef.current = profile;
+	}, [profile]);
 
 	const loadHistory = useCallback(
 		async (isFirstLoad = false) => {
 			if (isHistoryFetching.current) return;
 
-			setHistory((prev) => {
-				if (!isFirstLoad && (!prev.hasMore || prev.isLoadingMore)) {
-					return prev;
-				}
-				return {
-					...prev,
-					loading: isFirstLoad,
-					isLoadingMore: !isFirstLoad,
-				};
-			});
-
-			// We need to double check the state again because of how functional updates work
-			// Or better, just use a ref for the page too or capture it properly.
-			// Let's use a simpler approach: get the state directly from the variable.
-			// However, in a callback, 'history' might be stale.
+			const currentState = historyStateRef.current;
+			if (
+				!isFirstLoad &&
+				(!currentState.hasMore || currentState.isLoadingMore)
+			) {
+				return;
+			}
 
 			isHistoryFetching.current = true;
+			setHistory((prev) => ({
+				...prev,
+				loading: isFirstLoad,
+				isLoadingMore: !isFirstLoad,
+			}));
+
 			try {
 				const stored = localStorage.getItem("items");
 				const localItems: Array<PasteData> = stored
@@ -83,9 +92,9 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 				let hasMore = false;
 
 				if (user) {
-					// Use a functional setter to get the correct page and set loading
+					// Use current state for page number
 					const backendData = await apiHelpers.getUserPastes(
-						isFirstLoad ? 1 : history.page,
+						isFirstLoad ? 1 : historyStateRef.current.page,
 						10,
 					);
 					fetchedPastes = backendData.pastes;
@@ -140,12 +149,20 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 				isHistoryFetching.current = false;
 			}
 		},
-		[user, apiHelpers, t, history.page],
+		[user, apiHelpers, t], // removed history.page
 	);
 
 	const loadProfile = useCallback(
 		async (isFirstLoad = false) => {
 			if (!user || isProfileFetching.current) return;
+
+			const currentState = profileStateRef.current;
+			if (
+				!isFirstLoad &&
+				(!currentState.hasMore || currentState.isLoadingMore)
+			) {
+				return;
+			}
 
 			isProfileFetching.current = true;
 			setProfile((prev) => ({
@@ -156,7 +173,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 
 			try {
 				const data = await apiHelpers.getUserPastes(
-					isFirstLoad ? 1 : profile.page,
+					isFirstLoad ? 1 : profileStateRef.current.page,
 					10,
 				);
 
@@ -181,7 +198,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 				isProfileFetching.current = false;
 			}
 		},
-		[user, apiHelpers, t, profile.page],
+		[user, apiHelpers, t], // removed profile.page
 	);
 
 	const clearHistoryState = useCallback(() => {
