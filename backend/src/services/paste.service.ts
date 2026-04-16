@@ -123,7 +123,7 @@ class PasteService {
 	}
 	async isPasteExpired(id: string): Promise<boolean> {
 		const paste = await pasteModel.findOne({ id });
-		return paste ? new Date() > paste.expiresAt : false;
+		return paste && paste.expiresAt ? new Date() > paste.expiresAt : false;
 	}
 	async getUserPastes(ownerId: string, page: number = 1, limit: number = 10) {
 		const skip = (page - 1) * limit;

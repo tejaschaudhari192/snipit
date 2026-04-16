@@ -21,8 +21,7 @@ const configurations = {
 		origins: [
 			"https://cpaste.vercel.app",
 			"https://snipit-nu.vercel.app",
-			"http://localhost:5173",
-			"http://192.168.0.2:5173",
+			"snipit-client.onrender.com",
 		],
 	},
 	job_secret: process.env.JOB_SECRET,
