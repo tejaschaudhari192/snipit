@@ -159,6 +159,7 @@
 		"paste_advanced_desc": "गोपनीयता, पासवर्ड आणि बरेच काही कॉन्फिगर करा",
 		"expire_options": {
 			"one_time_snippet": "एक वेळचा स्निपेट",
+			"never": "कधीही नाही",
 			"expire_in_1_hour": "१ तासात मुदत संपेल",
 			"expire_in_1_day": "१ दिवसात मुदत संपेल",
 			"expire_in_1_week": "१ आठवड्यात मुदत संपेल",

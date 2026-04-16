@@ -68,7 +68,7 @@ export const SnippetCard = ({
 							<Calendar className="h-3.5 w-3.5" />
 							<span>{timeAgo(item.createdAt, t)}</span>
 						</div>
-						{item.expiresAt && (
+						{(item.expiresAt || item.expiresTime === "never") && (
 							<ExpirationBadge
 								expiresAt={item.expiresAt}
 								burnAfterRead={!!item.burnAfterRead}

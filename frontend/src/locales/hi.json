@@ -158,7 +158,8 @@
 		"advanced_config": "उन्नत कॉन्फ़िगरेशन",
 		"identification_type": "पहचान और प्रकार",
 		"expire_options": {
-			"one_time_snippet": "एक बार का स्निपेट",
+			"one_time_snippet": "एक बार के लिए स्निपेट",
+			"never": "कभी नहीं",
 			"expire_in_1_hour": "1 घंटे में समाप्त",
 			"expire_in_1_day": "1 दिन में समाप्त",
 			"expire_in_1_week": "1 सप्ताह में समाप्त",

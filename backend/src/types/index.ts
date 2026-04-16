@@ -43,7 +43,7 @@ export type CommentData = {
 export type PasteData = {
 	id: string;
 	content: string;
-	expiresAt: Date;
+	expiresAt: Date | null;
 	createdAt: Date;
 	contentMode?: ContentMode | undefined;
 	fileUrl?: string | undefined;
@@ -70,7 +70,7 @@ export type PasteData = {
 export type IPaste = Document & {
 	id: string;
 	content: string;
-	expiresAt: Date;
+	expiresAt: Date | null;
 	createdAt: Date;
 	contentMode?: ContentMode | undefined;
 	fileUrl?: string | undefined;

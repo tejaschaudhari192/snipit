@@ -156,7 +156,8 @@
 		"paste_advanced": "Erweiterte Erstellung",
 		"paste_advanced_desc": "Konfigurieren Sie Datenschutz, Passwort und mehr",
 		"expire_options": {
-			"one_time_snippet": "Einmaliger Snippet",
+			"one_time_snippet": "Einmaliges Snippet",
+			"never": "Niemals",
 			"expire_in_1_hour": "Läuft in 1 Stunde ab",
 			"expire_in_1_day": "Läuft in 1 Tag ab",
 			"expire_in_1_week": "Läuft in 1 Woche ab",

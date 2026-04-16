@@ -45,7 +45,7 @@ const pasteSchema = new Schema<IPaste>(
 		},
 		expiresAt: {
 			type: Date,
-			required: true,
+			required: false,
 			default: () => new Date(Date.now() + 24 * 60 * 60 * 1000),
 		},
 		createdAt: {

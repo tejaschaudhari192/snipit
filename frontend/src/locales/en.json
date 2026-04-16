@@ -161,6 +161,7 @@
 		"identification_type": "Identification & Type",
 		"expire_options": {
 			"one_time_snippet": "One Time Snippet",
+			"never": "Never",
 			"expire_in_1_hour": "Expire In 1 Hour",
 			"expire_in_1_day": "Expire In 1 Day",
 			"expire_in_1_week": "Expire In 1 Week",

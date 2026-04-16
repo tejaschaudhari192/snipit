@@ -64,6 +64,12 @@ export const ExpirySelector = memo(
 							{t("home.expire_options.one_time_snippet")}
 						</SelectItem>
 						<SelectItem
+							value="never"
+							className="rounded-lg cursor-pointer"
+						>
+							{t("home.expire_options.never")}
+						</SelectItem>
+						<SelectItem
 							value="1h"
 							className="rounded-lg cursor-pointer"
 						>

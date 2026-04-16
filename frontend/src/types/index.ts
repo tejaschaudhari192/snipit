@@ -38,7 +38,7 @@ export interface PasteData {
 	id: string;
 	content: string;
 	createdAt: string;
-	expiresAt: string;
+	expiresAt: string | null;
 	contentMode?: ContentMode;
 	fileUrl?: string;
 	fileName?: string;

@@ -109,7 +109,7 @@ class PasteController {
 				? dateConverter(expiresTime)
 				: dateConverter("1d");
 
-			if (!expiresAt && expiresTime !== "one-time") {
+			if (!expiresAt && !["one-time", "never"].includes(expiresTime)) {
 				this.logger.warn(
 					`Invalid expiration time format received: ${expiresTime} `,
 				);
@@ -142,7 +142,7 @@ class PasteController {
 				finalBurnAfterRead = true;
 			}
 
-			if (!finalExpiresAt) {
+			if (!finalExpiresAt && !["never"].includes(expiresTime)) {
 				finalExpiresAt = dateConverter("1d");
 			}
 
@@ -464,13 +464,15 @@ class PasteController {
 				allowComments = undefined;
 			}
 
-			let expiresAt: Date | undefined;
+			let expiresAt: Date | null | undefined;
 			if (expiresTime) {
 				const parsed = expiresTime
 					? dateConverter(expiresTime)
 					: dateConverter("1d");
 				if (expiresTime === "one-time") {
 					expiresAt = dateConverter("1d") || undefined;
+				} else if (expiresTime === "never") {
+					expiresAt = null;
 				} else if (parsed) {
 					expiresAt = parsed;
 				}

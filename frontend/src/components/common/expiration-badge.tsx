@@ -28,10 +28,10 @@ export const ExpirationBadge = ({
 		return hoursRemaining < 24 && hoursRemaining > 0;
 	};
 
-	if (!expiresAt) return null;
+	if (!expiresAt && expiresTime !== "never") return null;
 
-	const expired = isExpired(expiresAt);
-	const expiringSoon = !expired && isExpiringSoon(expiresAt);
+	const expired = expiresAt ? isExpired(expiresAt) : false;
+	const expiringSoon = expiresAt && !expired && isExpiringSoon(expiresAt);
 
 	const statusColor = expired
 		? "bg-destructive/5 text-destructive border-destructive/20"
@@ -40,11 +40,15 @@ export const ExpirationBadge = ({
 			: "bg-emerald-500/5 text-emerald-600 dark:text-emerald-400 border-emerald-500/20";
 
 	const text =
-		burnAfterRead || expiresTime === "one-time"
-			? t("home.expire_options.one_time_snippet")
-			: expired
-				? t("common.time.expired")
-				: getTimeRemaining(expiresAt, t);
+		expiresTime === "never"
+			? t("home.expire_options.never")
+			: burnAfterRead || expiresTime === "one-time"
+				? t("home.expire_options.one_time_snippet")
+				: expired
+					? t("common.time.expired")
+					: expiresAt
+						? getTimeRemaining(expiresAt, t)
+						: "";
 
 	return (
 		<GlassBadge

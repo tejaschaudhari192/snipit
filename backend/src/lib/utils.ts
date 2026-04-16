@@ -23,6 +23,9 @@ export function dateConverter(expiresTime: string) {
 		case "1y":
 			expiresAt = new Date(now.setFullYear(now.getFullYear() + 1)); // +1 year
 			break;
+		case "never":
+			expiresAt = null;
+			break;
 		case "one-time":
 			expiresAt = null; // special handling (e.g. delete after first view)
 			break;

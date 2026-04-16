@@ -156,7 +156,8 @@
 		"paste_advanced": "高度な作成",
 		"paste_advanced_desc": "プライバシー、パスワードなどを設定",
 		"expire_options": {
-			"one_time_snippet": "一回限りのスニペット",
+			"one_time_snippet": "使い捨てスニペット",
+			"never": "無期限",
 			"expire_in_1_hour": "1時間で期限切れ",
 			"expire_in_1_day": "1日で期限切れ",
 			"expire_in_1_week": "1週間で期限切れ",

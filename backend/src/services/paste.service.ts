@@ -101,7 +101,7 @@ class PasteService {
 		if (expiresTime !== undefined) {
 			paste.expiresTime = expiresTime;
 		}
-		if (expiresAt !== undefined && expiresAt !== null) {
+		if (expiresAt !== undefined) {
 			paste.expiresAt = expiresAt;
 		}
 
