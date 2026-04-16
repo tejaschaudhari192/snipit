@@ -38,6 +38,24 @@ const configurations = {
 	},
 };
 
+const requiredEnvVars = [
+	"DB_USER",
+	"DB_PASSWORD",
+	"DB_NAME",
+	"JWT_SECRET",
+	"SUPABASE_URL",
+	"SUPABASE_SERVICE_ROLE_KEY",
+	"SUPABASE_STORAGE_BUCKET",
+];
+
+requiredEnvVars.forEach((envVar) => {
+	if (!process.env[envVar]) {
+		console.warn(
+			`Warning: Environment variable ${envVar} is missing. This might cause issues.`,
+		);
+	}
+});
+
 export const CONTENT_MODES = ["text", "code", "link", "file", "draw"] as const;
 export const VISIBILITIES = ["public", "private", "shared"] as const;
 export const EDIT_PERMISSIONS = ["owner", "shared", "public"] as const;
