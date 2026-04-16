@@ -511,8 +511,7 @@ class PasteController {
 					allowComments,
 				})} `,
 			);
-			const result = await this.pasteService.updatePaste(
-				id!,
+			const result = await this.pasteService.updatePaste(id!, {
 				content,
 				redirectUrl,
 				language,
@@ -526,12 +525,12 @@ class PasteController {
 				allowComments,
 				expiresTime,
 				expiresAt,
-				reqContentMode,
+				contentMode: reqContentMode,
 				fileUrl,
 				fileName,
 				fileSize,
 				fileMimeType,
-			);
+			});
 
 			if (shareList && result) {
 				const frontendUrl =

@@ -67,6 +67,32 @@ export type PasteData = {
 	comments?: CommentData[] | undefined;
 };
 
+export interface UpdatePasteData {
+	content?: string;
+	redirectUrl?: boolean | undefined;
+	language?: string | undefined;
+	visibility?: Visibility | undefined;
+	allowedUsers?: string[] | undefined;
+	newId?: string | undefined;
+	password?: string | undefined;
+	editPermission?: EditPermission | undefined;
+	shareList?:
+		| {
+				email: string;
+				role: ShareRole;
+		  }[]
+		| undefined;
+	publicRole?: PublicRole | undefined;
+	allowComments?: boolean | undefined;
+	expiresTime?: string | undefined;
+	expiresAt?: Date | null | undefined;
+	contentMode?: ContentMode | undefined;
+	fileUrl?: string | null | undefined;
+	fileName?: string | null | undefined;
+	fileSize?: number | null | undefined;
+	fileMimeType?: string | null | undefined;
+}
+
 export type IPaste = Document & {
 	id: string;
 	content: string;

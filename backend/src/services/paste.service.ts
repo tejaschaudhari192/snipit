@@ -7,6 +7,7 @@ import type {
 	EditPermission,
 	PublicRole,
 	ShareRole,
+	UpdatePasteData,
 } from "@/types/index.js";
 
 class PasteService {
@@ -28,32 +29,11 @@ class PasteService {
 	): Promise<{ acknowledged: boolean; deletedCount: number }> {
 		return await pasteModel.deleteOne({ id });
 	}
-	async updatePaste(
-		id: string,
-		content: string,
-		redirectUrl?: boolean,
-		language?: string,
-		visibility?: Visibility,
-		allowedUsers?: string[],
-		newId?: string,
-		password?: string,
-		editPermission?: EditPermission,
-		shareList?: {
-			email: string;
-			role: ShareRole;
-		}[],
-		publicRole?: PublicRole,
-		allowComments?: boolean,
-		expiresTime?: string,
-		expiresAt?: Date | null,
-		contentMode?: ContentMode,
-		fileUrl?: string | null,
-		fileName?: string | null,
-		fileSize?: number | null,
-		fileMimeType?: string | null,
-	) {
+	async updatePaste(id: string, data: UpdatePasteData) {
 		const paste = await pasteModel.findOne({ id });
 		if (!paste) return null;
+
+		const { newId, ...updates } = data;
 
 		// If changing ID, check if new ID is already taken
 		if (newId && newId !== id) {
@@ -64,61 +44,11 @@ class PasteService {
 			paste.id = newId;
 		}
 
-		paste.content = content;
-		if (redirectUrl !== undefined) paste.redirectUrl = redirectUrl;
-		if (language !== undefined) paste.language = language;
-		if (contentMode !== undefined) paste.contentMode = contentMode;
+		// Apply updates using Mongoose set()
+		// This handles casting and only updates fields present in the object
+		paste.set(updates);
 
-		if (visibility !== undefined) {
-			paste.visibility = visibility;
-			paste.markModified("visibility");
-		}
-
-		if (allowedUsers !== undefined) {
-			paste.allowedUsers = allowedUsers;
-			paste.markModified("allowedUsers");
-		}
-
-		if (password !== undefined) {
-			paste.password = password;
-		}
-
-		if (editPermission !== undefined) {
-			paste.editPermission = editPermission;
-		}
-
-		if (shareList !== undefined) {
-			paste.shareList = shareList;
-			paste.markModified("shareList");
-		}
-
-		if (publicRole !== undefined) {
-			paste.publicRole = publicRole;
-		}
-		if (allowComments !== undefined) {
-			paste.allowComments = allowComments;
-		}
-		if (expiresTime !== undefined) {
-			paste.expiresTime = expiresTime;
-		}
-		if (expiresAt !== undefined) {
-			paste.expiresAt = expiresAt;
-		}
-
-		if (fileUrl !== undefined) paste.fileUrl = fileUrl ?? undefined;
-		if (fileName !== undefined) paste.fileName = fileName ?? undefined;
-		if (fileSize !== undefined) paste.fileSize = fileSize ?? undefined;
-		if (fileMimeType !== undefined)
-			paste.fileMimeType = fileMimeType ?? undefined;
-
-		console.log(`[PasteService] Final Save Object for ${id}:`, {
-			contentMode: paste.contentMode,
-			language: paste.language,
-			visibility: paste.visibility,
-			redirectUrl: paste.redirectUrl,
-			expiresTime: paste.expiresTime,
-		});
-
+		console.log(`[PasteService] Saving update for ${id}:`, updates);
 		return await paste.save();
 	}
 	async isPasteExpired(id: string): Promise<boolean> {
