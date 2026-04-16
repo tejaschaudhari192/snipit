@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { FileText, ChevronRight, Inbox, Loader2 } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
@@ -23,30 +23,11 @@ export const ProfileSnippetList = ({
 	isLoadingMore,
 }: ProfileSnippetListProps) => {
 	const { t } = useTranslation();
-	const loaderRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				const target = entries[0];
-				if (target.isIntersecting && hasMore && !isLoadingMore) {
-					loadMore();
-				}
-			},
-			{ threshold: 0.1 },
-		);
-
-		const currentLoader = loaderRef.current;
-		if (currentLoader) {
-			observer.observe(currentLoader);
-		}
-
-		return () => {
-			if (currentLoader) {
-				observer.unobserve(currentLoader);
-			}
-		};
-	}, [hasMore, isLoadingMore, loadMore]);
+	const loaderRef = useInfiniteScroll({
+		hasMore,
+		isLoading: isLoadingMore,
+		loadMore,
+	});
 
 	return (
 		<div className="md:col-span-8 space-y-6">

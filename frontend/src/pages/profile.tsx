@@ -11,9 +11,11 @@ import { ProfileInfo } from "@/components/profile/profile-info";
 import { ProfileSnippetList } from "@/components/profile/profile-snippet-list";
 
 import { useSnippets } from "@/context/SnippetContext";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 const ProfilePage = () => {
 	const { t } = useTranslation();
+	usePageTitle("profile.title");
 	const { user, loading: authLoading, setUser } = useAuth();
 	const apiHelpers = useApiHelpers();
 	const { profile, loadProfile } = useSnippets();

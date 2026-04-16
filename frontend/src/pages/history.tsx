@@ -2,7 +2,9 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { FileText, Trash2, Inbox, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
+import { usePageTitle } from "@/hooks/use-page-title";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { SnippetCard } from "@/components/snippets/snippet-card";
 import { playRemoveSound } from "@/lib/utils";
@@ -22,38 +24,21 @@ import {
 const HistoryPage = () => {
 	const { t, i18n } = useTranslation();
 	const { history, loadHistory } = useSnippets();
+	usePageTitle("history.title");
 	const { items, loading, hasMore, isLoadingMore } = history;
 	const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
-	const loaderRef = useRef<HTMLDivElement>(null);
+
+	const loaderRef = useInfiniteScroll({
+		hasMore,
+		isLoading: isLoadingMore,
+		loadMore: () => loadHistory(false),
+	});
 
 	useEffect(() => {
 		if (items.length === 0) {
 			loadHistory(true);
 		}
 	}, [loadHistory, items.length]);
-
-	useEffect(() => {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				const target = entries[0];
-				if (target.isIntersecting && hasMore && !isLoadingMore) {
-					loadHistory(false);
-				}
-			},
-			{ threshold: 0.1 },
-		);
-
-		const currentLoader = loaderRef.current;
-		if (currentLoader) {
-			observer.observe(currentLoader);
-		}
-
-		return () => {
-			if (currentLoader) {
-				observer.unobserve(currentLoader);
-			}
-		};
-	}, [hasMore, isLoadingMore, loadHistory]);
 
 	const handleClearHistory = () => setIsClearDialogOpen(true);
 

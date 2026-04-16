@@ -76,3 +76,51 @@ export interface PaginatedResponse<T> {
 	totalPages: number;
 	hasMore: boolean;
 }
+
+export interface CreatePasteData {
+	content: string;
+	expiresTime: string;
+	idType?: IdType;
+	customId?: string;
+	contentMode?: ContentMode;
+	fileUrl?: string | null;
+	fileName?: string | null;
+	fileSize?: number | null;
+	fileMimeType?: string | null;
+	redirectUrl?: boolean;
+	language?: string;
+	burnAfterRead?: boolean;
+	visibility?: Visibility;
+	allowedUsers?: string[];
+	password?: string;
+	editPermission?: EditPermission;
+	shareList?: {
+		email: string;
+		role: ShareRole;
+	}[];
+	publicRole?: PublicRole;
+	allowComments?: boolean;
+}
+
+export interface UpdatePasteData {
+	content?: string;
+	redirectUrl?: boolean;
+	language?: string;
+	visibility?: Visibility;
+	allowedUsers?: string[];
+	newId?: string;
+	password?: string;
+	editPermission?: EditPermission;
+	shareList?: {
+		email: string;
+		role: ShareRole;
+	}[];
+	publicRole?: PublicRole;
+	allowComments?: boolean;
+	expiresTime?: string;
+	contentMode?: ContentMode;
+	fileUrl?: string | null;
+	fileName?: string | null;
+	fileSize?: number | null;
+	fileMimeType?: string | null;
+}

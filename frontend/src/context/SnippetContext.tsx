@@ -27,6 +27,7 @@ interface SnippetContextType {
 	loadProfile: (isFirstLoad?: boolean) => Promise<void>;
 	clearHistoryState: () => void;
 	refreshSnippets: () => void;
+	deleteSnippet: (id: string) => Promise<void>;
 }
 
 const SnippetContext = createContext<SnippetContextType | undefined>(undefined);
@@ -211,6 +212,51 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 		if (user) loadProfile(true);
 	}, [loadHistory, loadProfile, user]);
 
+	const deleteSnippet = useCallback(
+		async (id: string) => {
+			try {
+				const itemInHistory = historyStateRef.current.items.find(
+					(p) => p.id === id,
+				);
+
+				if (user && itemInHistory && itemInHistory.owner) {
+					await apiHelpers.deletePaste(id);
+				}
+
+				// Update Local State
+				setHistory((prev) => ({
+					...prev,
+					items: prev.items.filter((p) => p.id !== id),
+				}));
+				setProfile((prev) => ({
+					...prev,
+					items: prev.items.filter((p) => p.id !== id),
+				}));
+
+				// Update LocalStorage
+				const stored = localStorage.getItem("items");
+				if (stored) {
+					const localItems: Array<PasteData> = JSON.parse(stored);
+					const updatedLocal = localItems.filter((p) => p.id !== id);
+					localStorage.setItem("items", JSON.stringify(updatedLocal));
+				}
+
+				toast.success(
+					t("messages.snippet_deleted_id", {
+						id: `/${id}`,
+						defaultValue: `Snippet /${id} deleted`,
+					}),
+				);
+			} catch (err) {
+				console.error("Failed to delete snippet", err);
+				toast.error(
+					t("messages.delete_failed", "Failed to delete snippet"),
+				);
+			}
+		},
+		[user, apiHelpers, t],
+	);
+
 	// Refresh items when user changes
 	useEffect(() => {
 		clearHistoryState();
@@ -227,6 +273,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 				loadProfile,
 				clearHistoryState,
 				refreshSnippets,
+				deleteSnippet,
 			}}
 		>
 			{children}

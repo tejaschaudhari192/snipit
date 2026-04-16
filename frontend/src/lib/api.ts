@@ -4,13 +4,9 @@ import { CONFIG } from "@/configurations";
 import type {
 	PasteData,
 	User,
-	ContentMode,
-	Visibility,
-	EditPermission,
-	PublicRole,
-	ShareRole,
-	IdType,
 	PaginatedResponse,
+	CreatePasteData,
+	UpdatePasteData,
 } from "@/types";
 
 const api = axios.create({
@@ -32,30 +28,9 @@ export const useApiHelpers = () => {
 			}
 		};
 
-		const submitPaste = async (data: {
-			content: string;
-			expiresTime: string;
-			idType?: IdType;
-			customId?: string;
-			contentMode?: ContentMode;
-			fileUrl?: string | null;
-			fileName?: string | null;
-			fileSize?: number | null;
-			fileMimeType?: string | null;
-			redirectUrl?: boolean;
-			language?: string;
-			burnAfterRead?: boolean;
-			visibility?: Visibility;
-			allowedUsers?: string[];
-			password?: string;
-			editPermission?: EditPermission;
-			shareList?: {
-				email: string;
-				role: ShareRole;
-			}[];
-			publicRole?: PublicRole;
-			allowComments?: boolean;
-		}): Promise<PasteData> => {
+		const submitPaste = async (
+			data: CreatePasteData,
+		): Promise<PasteData> => {
 			const response = await api.post("/", data);
 			return response.data;
 		};
@@ -80,28 +55,7 @@ export const useApiHelpers = () => {
 
 		const updatePaste = async (
 			id: string,
-			data: {
-				content: string;
-				redirectUrl?: boolean;
-				language?: string;
-				visibility?: Visibility;
-				allowedUsers?: string[];
-				newId?: string;
-				password?: string;
-				editPermission?: EditPermission;
-				shareList?: {
-					email: string;
-					role: ShareRole;
-				}[];
-				publicRole?: PublicRole;
-				allowComments?: boolean;
-				expiresTime?: string;
-				contentMode?: ContentMode;
-				fileUrl?: string | null;
-				fileName?: string | null;
-				fileSize?: number | null;
-				fileMimeType?: string | null;
-			},
+			data: UpdatePasteData,
 		): Promise<PasteData> => {
 			const response = await api.put("/" + id, data);
 			const result = response.data;

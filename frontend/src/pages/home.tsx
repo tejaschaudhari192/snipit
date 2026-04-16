@@ -5,18 +5,17 @@ import { type OnMount, type BeforeMount } from "@monaco-editor/react";
 import { Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-import { useApiHelpers } from "@/lib/api";
 import { playErrorSound } from "@/lib/utils";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
-import { useAuth } from "@/context/AuthContext";
-import type { PasteData } from "@/types";
 import { CONFIG } from "@/configurations";
 import { useLanguageDetection } from "@/hooks/use-language-detection";
 import { usePaste } from "@/context/PasteContext";
 import { useAiEnhance } from "@/hooks/use-ai-enhance";
 import { useHomeUrlSync } from "@/hooks/use-home-url-sync";
 import { usePasteSubmission } from "@/hooks/use-paste-submission";
+import { useSnippets } from "@/context/SnippetContext";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 const LanguageSelector = lazy(() =>
 	import("@/components/editor/language-selector").then((m) => ({
@@ -51,8 +50,9 @@ const AiEnhanceDialog = lazy(() =>
 
 const HomePage = () => {
 	const { t } = useTranslation();
-	const { user } = useAuth();
-	const apiHelpers = useApiHelpers();
+	usePageTitle("common.snipit", "Snipit");
+	const { history, deleteSnippet } = useSnippets();
+	const historyItems = history.items;
 
 	// Refs
 	const userInputRef = useRef<HTMLTextAreaElement>(null);
@@ -208,81 +208,7 @@ const HomePage = () => {
 	}, [pendingFile]);
 
 	// Handlers
-	// Removed duplicate logic since it's in PasteContext now
-
-	const [historyItems, setHistoryItems] = useState<Array<PasteData>>([]);
-
-	// Effects
-	useEffect(() => {
-		const loadHistory = async () => {
-			const stored = localStorage.getItem("items");
-			const localItems: Array<PasteData> = stored
-				? JSON.parse(stored)
-				: [];
-			let finalItems = [...localItems];
-
-			if (user) {
-				try {
-					const response = await apiHelpers.getUserPastes();
-					const userPastes = response.pastes;
-					const userPasteIds = new Set(
-						userPastes.map((p: PasteData) => p.id),
-					);
-					const filteredLocal = localItems.filter(
-						(p) => !userPasteIds.has(p.id),
-					);
-					finalItems = [...userPastes, ...filteredLocal];
-				} catch (err) {
-					console.error("Failed to fetch user pastes", err);
-				}
-			}
-
-			finalItems.sort(
-				(a, b) =>
-					new Date(b.createdAt).getTime() -
-					new Date(a.createdAt).getTime(),
-			);
-			setHistoryItems(finalItems);
-		};
-
-		loadHistory();
-	}, [user, apiHelpers]);
-
-	const handleDeleteHistory = async (id: string) => {
-		try {
-			// Find the item first to see if it's a server paste
-			const item = historyItems.find((p) => p.id === id);
-
-			if (user && item && item.owner) {
-				// If logged in and paste has a userId, try deleting from server
-				await apiHelpers.deletePaste(id);
-			}
-
-			// Update state
-			const newItems = historyItems.filter((p) => p.id !== id);
-			setHistoryItems(newItems);
-
-			// Update localStorage
-			const stored = localStorage.getItem("items");
-			if (stored) {
-				const localItems: Array<PasteData> = JSON.parse(stored);
-				const updatedLocal = localItems.filter((p) => p.id !== id);
-				localStorage.setItem("items", JSON.stringify(updatedLocal));
-			}
-
-			toast.success(
-				t("messages.snippet_deleted_id", {
-					id: `/${id}`,
-					defaultValue: `Snippet /${id} deleted`,
-				}),
-			);
-		} catch (error) {
-			console.error("Failed to delete history item", error);
-			toast.error(
-				t("messages.delete_failed", "Failed to delete snippet"),
-			);
-		}
-	};
+	const handleDeleteHistory = deleteSnippet;
 
 	useEffect(() => {
 		setShortenedResult(null);

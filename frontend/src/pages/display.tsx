@@ -29,6 +29,7 @@ import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { useRemoteCursors } from "@/hooks/use-remote-cursors";
 import { useAuth } from "@/context/AuthContext";
+import { usePageTitle } from "@/hooks/use-page-title";
 import { useTranslation } from "react-i18next";
 import type {
 	ActiveUser,
@@ -121,6 +122,10 @@ const DisplayPage = () => {
 
 	const [isEdit, setIsEdit] = useState(false);
 	const [paste, setPaste] = useState<PasteData>();
+	usePageTitle(
+		undefined,
+		paste ? `/${paste.id} (${paste.language || "text"})` : `/${id}`,
+	);
 	const [updatedContent, setUpdatedContent] = useState<string>();
 	const [loading, setLoading] = useState(true);
 	const [contentType, setContentType] = useState<ContentMode>(
