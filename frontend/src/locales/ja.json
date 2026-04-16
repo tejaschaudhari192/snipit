@@ -146,7 +146,7 @@
 		"logged_in_as": "Logged in as"
 	},
 	"home": {
-		"select_expire_time": "有効期限を選択",
+		"select_expire_time": "有効期限",
 		"enter_snippet_placeholder": "ここにスニペットを入力...",
 		"paste_button": "貼り付け",
 		"paste_dynamic_id": "ダイナミックIDで貼り付け",
@@ -156,14 +156,14 @@
 		"paste_advanced": "高度な作成",
 		"paste_advanced_desc": "プライバシー、パスワードなどを設定",
 		"expire_options": {
-			"one_time_snippet": "使い捨てスニペット",
+			"one_time_snippet": "使い捨て",
 			"never": "無期限",
-			"expire_in_1_hour": "1時間で期限切れ",
-			"expire_in_1_day": "1日で期限切れ",
-			"expire_in_1_week": "1週間で期限切れ",
-			"expire_in_1_month": "1ヶ月で期限切れ",
-			"expire_in_1_year": "1年で期限切れ",
-			"custom": "カスタムの有効期限"
+			"expire_in_1_hour": "1時間",
+			"expire_in_1_day": "1日",
+			"expire_in_1_week": "1週間",
+			"expire_in_1_month": "1ヶ月",
+			"expire_in_1_year": "1年",
+			"custom": "カスタム"
 		},
 		"tab_text": "プレーンテキスト",
 		"tab_text_short": "テキスト",

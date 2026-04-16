@@ -363,13 +363,9 @@ const HomePage = () => {
 						handleDialogSubmit={handleDialogSubmit}
 						dialogError={dialogError}
 						shortenedResult={shortenedResult}
-					/>
-				</Suspense>
-
-				<div className="flex flex-wrap items-center gap-2">
-					<Suspense fallback={null}>
+					>
 						{(isDetecting || contentType === "code") && (
-							<div className="w-full sm:w-auto flex items-center gap-2">
+							<div className="flex items-center gap-2">
 								<LanguageSelector
 									value={language}
 									onValueChange={setLanguage}
@@ -379,9 +375,8 @@ const HomePage = () => {
 									<Button
 										variant="outline"
 										size="icon"
-										className="h-10 w-10 shrink-0 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm"
+										className="h-9 w-9 shrink-0 bg-background/50 hover:bg-background/80 border-border/40 shadow-sm"
 										onClick={() => {
-											// allow manual detection even if previously pasted
 											hasDetectedRef.current = false;
 											handleLanguageDetection(textValue);
 										}}
@@ -404,8 +399,8 @@ const HomePage = () => {
 									setFontSize={setFontSize}
 								/>
 							)}
-					</Suspense>
-				</div>
+					</MainToolbar>
+				</Suspense>
 			</div>
 
 			<Suspense fallback={null}>

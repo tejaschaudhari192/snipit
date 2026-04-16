@@ -146,7 +146,7 @@
 		"logged_in_as": "के रूप में लॉग इन किया"
 	},
 	"home": {
-		"select_expire_time": "समाप्ति का समय चुनें",
+		"select_expire_time": "समाप्ति",
 		"enter_snippet_placeholder": "अपना स्निपेट यहाँ दर्ज करें...",
 		"paste_button": "पेष्ट करें",
 		"paste_dynamic_id": "कस्टम आईडी",
@@ -158,14 +158,14 @@
 		"advanced_config": "उन्नत कॉन्फ़िगरेशन",
 		"identification_type": "पहचान और प्रकार",
 		"expire_options": {
-			"one_time_snippet": "एक बार के लिए स्निपेट",
+			"one_time_snippet": "एक बार",
 			"never": "कभी नहीं",
-			"expire_in_1_hour": "1 घंटे में समाप्त",
-			"expire_in_1_day": "1 दिन में समाप्त",
-			"expire_in_1_week": "1 सप्ताह में समाप्त",
-			"expire_in_1_month": "1 महीने में समाप्त",
-			"expire_in_1_year": "1 साल में समाप्त",
-			"custom": "कस्टम समाप्ति"
+			"expire_in_1_hour": "1 घंटा",
+			"expire_in_1_day": "1 दिन",
+			"expire_in_1_week": "1 सप्ताह",
+			"expire_in_1_month": "1 महीना",
+			"expire_in_1_year": "1 साल",
+			"custom": "कस्टम"
 		},
 		"tab_text": "साधारण टेक्स्ट",
 		"tab_text_short": "टेक्स्ट",

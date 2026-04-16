@@ -146,7 +146,7 @@
 		"logged_in_as": "Logged in as"
 	},
 	"home": {
-		"select_expire_time": "Ablaufzeit auswählen",
+		"select_expire_time": "Ablauf",
 		"enter_snippet_placeholder": "Geben Sie Ihren Snippet hier ein...",
 		"paste_button": "Einfügen",
 		"paste_dynamic_id": "Eigene ID",
@@ -156,14 +156,14 @@
 		"paste_advanced": "Erweiterte Erstellung",
 		"paste_advanced_desc": "Konfigurieren Sie Datenschutz, Passwort und mehr",
 		"expire_options": {
-			"one_time_snippet": "Einmaliges Snippet",
+			"one_time_snippet": "Einmalig",
 			"never": "Niemals",
-			"expire_in_1_hour": "Läuft in 1 Stunde ab",
-			"expire_in_1_day": "Läuft in 1 Tag ab",
-			"expire_in_1_week": "Läuft in 1 Woche ab",
-			"expire_in_1_month": "Läuft in 1 Monat ab",
-			"expire_in_1_year": "Läuft in 1 Jahr ab",
-			"custom": "Benutzerdefiniertes Ablaufdatum"
+			"expire_in_1_hour": "1 Stunde",
+			"expire_in_1_day": "1 Tag",
+			"expire_in_1_week": "1 Woche",
+			"expire_in_1_month": "1 Monat",
+			"expire_in_1_year": "1 Jahr",
+			"custom": "Eigenes"
 		},
 		"tab_text": "Klartext",
 		"tab_text_short": "Text",

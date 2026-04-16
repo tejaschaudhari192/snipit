@@ -29,7 +29,7 @@ export const FontSizeControls = memo(
 						onClick={() =>
 							setFontSize((prev: number) => Math.max(prev - 1, 8))
 						}
-						className="h-10 w-10 px-0 shrink-0"
+						className="h-9 w-9 px-0 shrink-0"
 					>
 						<Minus className="h-4 w-4" />
 					</Button>
@@ -44,7 +44,7 @@ export const FontSizeControls = memo(
 								Math.min(prev + 1, 48),
 							)
 						}
-						className="h-10 w-10 px-0 shrink-0"
+						className="h-9 w-9 px-0 shrink-0"
 					>
 						<Plus className="h-4 w-4" />
 					</Button>

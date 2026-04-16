@@ -29,6 +29,7 @@ interface MainToolbarProps {
 	hideTypeSelector?: boolean;
 	dialogError?: string;
 	shortenedResult?: { id: string } | null;
+	children?: React.ReactNode;
 }
 
 export const MainToolbar = memo(
@@ -47,6 +48,7 @@ export const MainToolbar = memo(
 		handleDialogSubmit,
 		dialogError = "",
 		shortenedResult = null,
+		children,
 	}: MainToolbarProps) => {
 		const { t } = useTranslation();
 		const [isOptionsOpen, setIsOptionsOpen] = useState(false);
@@ -85,6 +87,13 @@ export const MainToolbar = memo(
 						/>
 					)}
 					{hideTypeSelector && <div className="w-0 lg:w-auto" />}
+
+					{children && (
+						<div className="flex-1 flex items-center justify-center gap-2 px-2 overflow-x-auto no-scrollbar py-1 lg:py-0">
+							{children}
+						</div>
+					)}
+					{!children && <div className="flex-1" />}
 
 					<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
 						{!(contentType === "link" && !!shortenedResult) && (
