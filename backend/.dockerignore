@@ -1,0 +1,7 @@
+node_modules
+dist
+.env
+*.log
+temp_codes
+Dockerfile
+.dockerignore
