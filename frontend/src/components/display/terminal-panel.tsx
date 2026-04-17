@@ -12,7 +12,12 @@ interface TerminalPanelProps {
 	socket: Socket | null;
 }
 
-export const TerminalPanel = ({ onClose, code, language, socket }: TerminalPanelProps) => {
+export const TerminalPanel = ({
+	onClose,
+	code,
+	language,
+	socket,
+}: TerminalPanelProps) => {
 	const terminalRef = useRef<HTMLDivElement>(null);
 	const termInstance = useRef<Terminal | null>(null);
 	const fitAddon = useRef<FitAddon | null>(null);
@@ -55,7 +60,8 @@ export const TerminalPanel = ({ onClose, code, language, socket }: TerminalPanel
 				brightCyan: "#9aedfe",
 				brightWhite: "#f1f1f1",
 			},
-			fontFamily: '"JetBrains Mono", "Fira Code", "Cascadia Code", Menlo, Monaco, "Courier New", monospace',
+			fontFamily:
+				'"JetBrains Mono", "Fira Code", "Cascadia Code", Menlo, Monaco, "Courier New", monospace',
 			fontSize: 13,
 			fontWeight: "400",
 			letterSpacing: 0.5,
@@ -70,11 +76,11 @@ export const TerminalPanel = ({ onClose, code, language, socket }: TerminalPanel
 		term.loadAddon(fit);
 		term.open(terminalRef.current);
 		fit.fit();
-		
+
 		termInstance.current = term;
 		fitAddon.current = fit;
 
-		term.onData((data) => {
+		term.onData((data: string) => {
 			if (socketRef.current && isRunningRef.current) {
 				socketRef.current.emit("code-input", data);
 			}
@@ -82,7 +88,7 @@ export const TerminalPanel = ({ onClose, code, language, socket }: TerminalPanel
 
 		const handleResize = () => {
 			setTimeout(() => {
-			   if(fitAddon.current) fitAddon.current.fit();
+				if (fitAddon.current) fitAddon.current.fit();
 			}, 100);
 		};
 		window.addEventListener("resize", handleResize);
@@ -99,7 +105,9 @@ export const TerminalPanel = ({ onClose, code, language, socket }: TerminalPanel
 		const handleOutput = (data: { output: string }) => {
 			if (termInstance.current) {
 				// Convert newlines to CRLF for xterm
-				const output = data.output.replace(/\n/g, "\r\n").replace(/\r\r\n/g, "\r\n");
+				const output = data.output
+					.replace(/\n/g, "\r\n")
+					.replace(/\r\r\n/g, "\r\n");
 				termInstance.current.write(output);
 			}
 		};
@@ -149,7 +157,7 @@ export const TerminalPanel = ({ onClose, code, language, socket }: TerminalPanel
 			}, 300);
 			return () => clearTimeout(timer);
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [socket]);
 
 	return (
@@ -162,12 +170,12 @@ export const TerminalPanel = ({ onClose, code, language, socket }: TerminalPanel
 						<div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]" />
 						<div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]" />
 					</div>
-					
+
 					<div className="flex items-center gap-3">
 						<span className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">
 							{language} — Terminal
 						</span>
-						
+
 						<div className="h-3 w-[1px] bg-white/10 mx-1" />
 
 						{isRunning ? (
@@ -182,12 +190,13 @@ export const TerminalPanel = ({ onClose, code, language, socket }: TerminalPanel
 								onClick={handleRun}
 								className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-400 hover:text-emerald-300 transition-colors uppercase tracking-wider"
 							>
-								<Play className="h-3 w-3 fill-current" /> Run Code
+								<Play className="h-3 w-3 fill-current" /> Run
+								Code
 							</button>
 						)}
 					</div>
 				</div>
-				
+
 				<button
 					onClick={onClose}
 					className="p-1 hover:bg-white/10 rounded-md transition-all text-white/40 hover:text-white"
@@ -195,9 +204,9 @@ export const TerminalPanel = ({ onClose, code, language, socket }: TerminalPanel
 					<X className="h-4 w-4" />
 				</button>
 			</div>
-			<div 
-				ref={terminalRef} 
-				className="flex-1 p-3 overflow-hidden cursor-text selection:bg-white/20" 
+			<div
+				ref={terminalRef}
+				className="flex-1 p-3 overflow-hidden cursor-text selection:bg-white/20"
 				onClick={() => {
 					termInstance.current?.focus();
 				}}
