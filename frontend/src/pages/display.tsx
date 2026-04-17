@@ -85,6 +85,11 @@ const DeletePasteDialog = lazy(() =>
 		default: m.DeletePasteDialog,
 	})),
 );
+const TerminalPanel = lazy(() =>
+	import("@/components/display/terminal-panel").then((m) => ({
+		default: m.TerminalPanel,
+	})),
+);
 
 import { useLanguageDetection } from "@/hooks/use-language-detection";
 import { useAiEnhance } from "@/hooks/use-ai-enhance";
@@ -162,6 +167,7 @@ const DisplayPage = () => {
 	const [isFullscreen, setIsFullscreen] = useState(false);
 	const [isWindowFullscreen, setIsWindowFullscreen] = useState(false);
 	const [isServerFileRemoved, setIsServerFileRemoved] = useState(false);
+	const [isTerminalOpen, setIsTerminalOpen] = useState(false);
 
 	const [pendingFile, setPendingFile] = useState<File | null>(null);
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -1103,6 +1109,9 @@ const DisplayPage = () => {
 								setIsCustomExpiryDialogOpen={
 									setIsCustomExpiryDialogOpen
 								}
+								isTerminalOpen={isTerminalOpen}
+								onToggleTerminal={() => setIsTerminalOpen(!isTerminalOpen)}
+								isCode={contentType === "code"}
 							/>
 						</Suspense>
 						{!isEdit && (
@@ -1228,6 +1237,17 @@ const DisplayPage = () => {
 							/>
 						</Suspense>
 					</div>
+
+					{isTerminalOpen && paste && contentType === "code" && (
+						<Suspense fallback={null}>
+							<TerminalPanel
+								onClose={() => setIsTerminalOpen(false)}
+								code={updatedContent ?? paste.content}
+								language={language}
+								socket={socketRef.current}
+							/>
+						</Suspense>
+					)}
 				</div>
 			</div>
 

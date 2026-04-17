@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { Button } from "@/components/ui/button";
+import { Play, X } from "lucide-react";
 import { ContentTypeSelector } from "@/components/common/content-type-selector";
 
 import { ExpirySelector } from "@/components/common/expiry-selector";
@@ -29,6 +30,9 @@ interface MainToolbarProps {
 	hideTypeSelector?: boolean;
 	dialogError?: string;
 	shortenedResult?: { id: string } | null;
+	isTerminalOpen?: boolean;
+	onToggleTerminal?: () => void;
+	isCode?: boolean;
 	children?: React.ReactNode;
 }
 
@@ -48,6 +52,9 @@ export const MainToolbar = memo(
 		handleDialogSubmit,
 		dialogError = "",
 		shortenedResult = null,
+		isTerminalOpen = false,
+		onToggleTerminal,
+		isCode = false,
 		children,
 	}: MainToolbarProps) => {
 		const { t } = useTranslation();
@@ -136,6 +143,19 @@ export const MainToolbar = memo(
 										/>
 									</Button>
 								</ButtonGroup>
+								{isCode && onToggleTerminal && (
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={onToggleTerminal}
+										className="gap-2 h-9 shrink-0 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 shadow-lg shadow-emerald-500/10"
+									>
+										{isTerminalOpen ? <X className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+										<span className="hidden sm:inline">
+											{isTerminalOpen ? "Close Terminal" : "Run Code"}
+										</span>
+									</Button>
+								)}
 							</div>
 						)}
 					</div>

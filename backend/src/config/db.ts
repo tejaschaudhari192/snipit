@@ -10,6 +10,5 @@ export const connectDB = async () => {
 		logger.info("Database Connnected Successfully");
 	} catch (error: unknown) {
 		logger.error("Error Connecting Database");
-		process.exit(1); // Exit process with failure
 	}
 };

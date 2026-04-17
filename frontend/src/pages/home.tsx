@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect, lazy, Suspense } from "react";
+import { io, type Socket } from "socket.io-client";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { type OnMount, type BeforeMount } from "@monaco-editor/react";
@@ -40,6 +41,11 @@ const MainToolbar = lazy(() =>
 const EditorContent = lazy(() =>
 	import("@/components/home/editor-content").then((m) => ({
 		default: m.EditorContent,
+	})),
+);
+const TerminalPanel = lazy(() =>
+	import("@/components/display/terminal-panel").then((m) => ({
+		default: m.TerminalPanel,
 	})),
 );
 const AiEnhanceDialog = lazy(() =>
@@ -96,7 +102,9 @@ const HomePage = () => {
 		new Date(Date.now() + 24 * 60 * 60 * 1000),
 	);
 	const [isFullscreen, setIsFullscreen] = useState(false);
+	const [isTerminalOpen, setIsTerminalOpen] = useState(false);
 	const [dialogError, setDialogError] = useState("");
+	const socketRef = useRef<Socket | null>(null);
 
 	const {
 		fontSize,
@@ -206,6 +214,19 @@ const HomePage = () => {
 		setPreviewUrl(objectUrl);
 		return () => URL.revokeObjectURL(objectUrl);
 	}, [pendingFile]);
+
+	useEffect(() => {
+		const socketUrl = CONFIG.API_BASE_URL
+			? CONFIG.API_BASE_URL.replace(/\/api\/?$/, "")
+			: "";
+		const socket = io(socketUrl, { withCredentials: true });
+		socketRef.current = socket;
+
+		return () => {
+			socket.disconnect();
+			socketRef.current = null;
+		};
+	}, []);
 
 	// Handlers
 	const handleDeleteHistory = deleteSnippet;
@@ -363,6 +384,9 @@ const HomePage = () => {
 						handleDialogSubmit={handleDialogSubmit}
 						dialogError={dialogError}
 						shortenedResult={shortenedResult}
+						isCode={contentType === "code"}
+						isTerminalOpen={isTerminalOpen}
+						onToggleTerminal={() => setIsTerminalOpen(!isTerminalOpen)}
 					>
 						{(isDetecting || contentType === "code") && (
 							<div className="flex items-center gap-2">
@@ -441,6 +465,17 @@ const HomePage = () => {
 					onDeleteHistoryItem={handleDeleteHistory}
 				/>
 			</Suspense>
+
+			{isTerminalOpen && contentType === "code" && (
+				<Suspense fallback={null}>
+					<TerminalPanel
+						onClose={() => setIsTerminalOpen(false)}
+						code={textValue}
+						language={language}
+						socket={socketRef.current}
+					/>
+				</Suspense>
+			)}
 
 			<Suspense fallback={null}>
 				<AiEnhanceDialog

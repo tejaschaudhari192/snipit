@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
-import { Edit, Trash2, Save, X } from "lucide-react";
+import { Edit, Trash2, Save, X, Play } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface ToolbarActionButtonsProps {
@@ -15,6 +15,9 @@ interface ToolbarActionButtonsProps {
 	isSaving?: boolean;
 	isAutosave?: boolean;
 	showSaveButton?: boolean;
+	isTerminalOpen?: boolean;
+	onToggleTerminal?: () => void;
+	isCode?: boolean;
 }
 
 export const ToolbarActionButtons = ({
@@ -29,6 +32,9 @@ export const ToolbarActionButtons = ({
 	isSaving,
 	isAutosave,
 	showSaveButton = false,
+	isTerminalOpen = false,
+	onToggleTerminal,
+	isCode = false,
 }: ToolbarActionButtonsProps) => {
 	const { t } = useTranslation();
 
@@ -43,6 +49,19 @@ export const ToolbarActionButtons = ({
 					>
 						<span>{t("display.copy_button")}</span>
 					</CopyButton>
+					{isCode && (
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={onToggleTerminal}
+							className="gap-2 h-9 shrink-0 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10"
+						>
+							{isTerminalOpen ? <X className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+							<span className="hidden sm:inline">
+								{isTerminalOpen ? "Close Terminal" : "Run Code"}
+							</span>
+						</Button>
+					)}
 					{canEdit && (
 						<Button
 							variant="outline"
@@ -106,6 +125,19 @@ export const ToolbarActionButtons = ({
 							{t("history.cancel")}
 						</span>
 					</Button>
+					{isCode && (
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={onToggleTerminal}
+							className="gap-2 h-9 shrink-0 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10"
+						>
+							{isTerminalOpen ? <X className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+							<span className="hidden sm:inline">
+								{isTerminalOpen ? "Close Terminal" : "Run Code"}
+							</span>
+						</Button>
+					)}
 				</div>
 			)}
 		</div>

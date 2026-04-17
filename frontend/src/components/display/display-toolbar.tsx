@@ -46,6 +46,9 @@ interface DisplayToolbarProps {
 	setIsCustomExpiryDialogOpen?: (v: boolean) => void;
 	showAutosave?: boolean;
 	showSaveButton?: boolean;
+	isTerminalOpen?: boolean;
+	onToggleTerminal?: () => void;
+	isCode?: boolean;
 }
 
 export const DisplayToolbar = ({
@@ -74,6 +77,9 @@ export const DisplayToolbar = ({
 	setIsCustomExpiryDialogOpen,
 	showAutosave = true,
 	showSaveButton = false,
+	isTerminalOpen = false,
+	onToggleTerminal,
+	isCode = false,
 }: DisplayToolbarProps) => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
@@ -115,6 +121,9 @@ export const DisplayToolbar = ({
 				isSaving={isSaving}
 				isAutosave={isAutosave}
 				showSaveButton={showSaveButton}
+				isTerminalOpen={isTerminalOpen}
+				onToggleTerminal={onToggleTerminal}
+				isCode={isCode}
 			/>
 
 			<div className="flex flex-1 items-center gap-2 justify-end">

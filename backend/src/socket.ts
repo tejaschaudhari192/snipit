@@ -12,6 +12,10 @@ import {
 	getUserIdFromToken,
 	extractTokenFromRequest,
 } from "@/lib/auth.utils.js";
+import { spawn, ChildProcess } from "child_process";
+import fs from "fs";
+import path from "path";
+import crypto from "crypto";
 
 const pasteService = new PasteService();
 const activeUsers = new Map<string, ActiveUser & { pasteId: string }>();
@@ -102,6 +106,9 @@ export const setupSocket = (server: HTTPServer) => {
 			methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 		},
 	});
+
+	const runningProcesses = new Map<string, ChildProcess>();
+	const inputBuffers = new Map<string, string>();
 
 	io.on("connection", (socket) => {
 		const userColor =
@@ -215,7 +222,206 @@ export const setupSocket = (server: HTTPServer) => {
 			}
 		});
 
+		socket.on("run-code", async ({ code, language }) => {
+			let cmd: string;
+			let args: string[] = [];
+			let fileExt: string;
+
+			switch (language.toLowerCase()) {
+				case "javascript":
+					cmd = "node";
+					fileExt = ".js";
+					break;
+				case "python":
+					cmd = "python";
+					args = ["-u"];
+					fileExt = ".py";
+					break;
+				case "typescript":
+					cmd = "npx";
+					args = ["tsx"];
+					fileExt = ".ts";
+					break;
+				case "php":
+					cmd = "php";
+					fileExt = ".php";
+					break;
+				case "go":
+					cmd = "go";
+					args = ["run"];
+					fileExt = ".go";
+					break;
+				case "java":
+					cmd = "java";
+					fileExt = ".java";
+					break;
+				case "c":
+					fileExt = ".c";
+					// On Windows use gcc, on deploy will likely have it too
+					cmd = "gcc";
+					break;
+				case "cpp":
+					fileExt = ".cpp";
+					cmd = "g++";
+					break;
+				case "rust":
+					fileExt = ".rs";
+					cmd = "rustc";
+					break;
+				case "csharp":
+					fileExt = ".cs";
+					cmd = "dotnet"; // Assumes dotnet-script or similar, but let's try 'dotnet run' in a temp project
+					break;
+				case "shell":
+				case "bash":
+					fileExt = process.platform === "win32" ? ".bat" : ".sh";
+					cmd = process.platform === "win32" ? "cmd" : "bash";
+					if (process.platform === "win32") args = ["/c"];
+					break;
+				default:
+					socket.emit("code-output", { output: `[Error] Unsupported language for execution: ${language}\r\n` });
+					return;
+			}
+
+			const tempId = crypto.randomUUID();
+			const baseDirPath = path.join(process.cwd(), "temp_codes");
+			const executionDirPath = path.join(baseDirPath, tempId);
+			
+			// Map specific file names for languages that care
+			let fileName = `${tempId}${fileExt}`;
+			if (language.toLowerCase() === "java") fileName = "Main.java";
+			if (language.toLowerCase() === "csharp") fileName = "Program.cs";
+
+			const filePath = path.join(executionDirPath, fileName);
+			
+			try {
+				if (!fs.existsSync(baseDirPath)) fs.mkdirSync(baseDirPath);
+				if (!fs.existsSync(executionDirPath)) fs.mkdirSync(executionDirPath);
+				fs.writeFileSync(filePath, code);
+			} catch (err: any) {
+				socket.emit("code-output", { output: `[Error] Failed to create temp file: ${err.message}\r\n` });
+				return;
+			}
+
+			// Kill existing process if any for this socket
+			const existingProc = runningProcesses.get(socket.id);
+			if (existingProc) {
+				try {
+					existingProc.kill();
+				} catch {
+					// Ignore kill errors
+				}
+				runningProcesses.delete(socket.id);
+			}
+
+			// For compiled languages, build the command
+			let finalCmd = cmd;
+			let finalArgs = [...args];
+
+			const isWindows = process.platform === "win32";
+			const exeName = isWindows ? "out.exe" : "./out";
+
+			if (language.toLowerCase() === "c" || language.toLowerCase() === "cpp") {
+				const compiler = language.toLowerCase() === "c" ? "gcc" : "g++";
+				finalCmd = `${compiler} ${fileName} -o ${exeName} && ${exeName}`;
+				finalArgs = [];
+			} else if (language.toLowerCase() === "rust") {
+				finalCmd = `rustc ${fileName} -o ${exeName} && ${exeName}`;
+				finalArgs = [];
+			} else if (language.toLowerCase() === "java") {
+				finalCmd = `java ${fileName}`;
+				finalArgs = [];
+			} else {
+				finalArgs.push(fileName);
+			}
+
+			const proc = spawn(finalCmd, finalArgs, { 
+				cwd: executionDirPath, 
+				shell: true 
+			});
+
+			runningProcesses.set(socket.id, proc);
+			inputBuffers.set(socket.id, "");
+
+			socket.emit("code-status", { status: "running" });
+			socket.emit("code-output", { output: `[System] Running ${language} code...\r\n\r\n` });
+
+			proc.stdout?.on("data", (data) => {
+				socket.emit("code-output", { output: data.toString() });
+			});
+
+			proc.stderr?.on("data", (data) => {
+				socket.emit("code-output", { output: data.toString() });
+			});
+
+			proc.on("close", (code) => {
+				socket.emit("code-output", { output: `\r\n[System] Process exited with code ${code}\r\n` });
+				socket.emit("code-status", { status: "stopped", exitCode: code });
+				runningProcesses.delete(socket.id);
+				try { 
+					// Cleanup the entire execution directory
+					fs.rmSync(executionDirPath, { recursive: true, force: true });
+				} catch {
+					// Ignore cleanup errors
+				}
+			});
+			
+			proc.on("error", (err) => {
+				socket.emit("code-output", { output: `\r\n[Error] Process error: ${err.message}\r\n` });
+				socket.emit("code-status", { status: "stopped", error: err.message });
+				runningProcesses.delete(socket.id);
+				try { 
+					fs.rmSync(executionDirPath, { recursive: true, force: true });
+				} catch {
+					// Ignore cleanup errors
+				}
+			});
+		});
+
+		socket.on("code-input", (data) => {
+			const proc = runningProcesses.get(socket.id);
+			if (proc && proc.stdin && proc.stdin.writable) {
+				const buffer = inputBuffers.get(socket.id) || "";
+
+				if (data === "\r") {
+					// Commit line to process
+					proc.stdin.write(buffer + "\n");
+					inputBuffers.set(socket.id, "");
+					socket.emit("code-output", { output: "\r\n" });
+				} else if (data === "\u007f" || data === "\b") {
+					// Handle backspace
+					if (buffer.length > 0) {
+						inputBuffers.set(socket.id, buffer.slice(0, -1));
+						// Echo backspace sequence to terminal: move back, clear, move back
+						socket.emit("code-output", { output: "\b \b" });
+					}
+				} else {
+					// Add to buffer and echo
+					inputBuffers.set(socket.id, buffer + data);
+					socket.emit("code-output", { output: data });
+				}
+			} else {
+				// No process or not writable
+			}
+		});
+
+		socket.on("stop-code", () => {
+			const proc = runningProcesses.get(socket.id);
+			if (proc) {
+				proc.kill();
+				runningProcesses.delete(socket.id);
+				socket.emit("code-status", { status: "stopped", reason: "manual" });
+				socket.emit("code-output", { output: `\r\n[System] Process forcefully terminated.\r\n` });
+			}
+		});
+
 		socket.on("disconnect", () => {
+			const proc = runningProcesses.get(socket.id);
+			if (proc) {
+				proc.kill();
+				runningProcesses.delete(socket.id);
+			}
+			inputBuffers.delete(socket.id);
 			const user = activeUsers.get(socket.id);
 			if (user && user.pasteId) {
 				const pasteId = user.pasteId;
