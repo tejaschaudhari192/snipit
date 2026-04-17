@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useMemo, memo } from "react";
 
@@ -79,7 +82,8 @@ export const MarkdownDisplay = memo(
 			[],
 		);
 
-		const remarkPlugins = useMemo(() => [remarkGfm], []);
+		const remarkPlugins = useMemo(() => [remarkGfm, remarkMath], []);
+		const rehypePlugins = useMemo(() => [rehypeKatex], []);
 
 		return (
 			<div
@@ -89,6 +93,7 @@ export const MarkdownDisplay = memo(
 			>
 				<ReactMarkdown
 					remarkPlugins={remarkPlugins}
+					rehypePlugins={rehypePlugins}
 					components={components}
 				>
 					{debouncedContent}
