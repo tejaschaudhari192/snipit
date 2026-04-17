@@ -180,7 +180,8 @@ export const EditorContent = memo(
 				<div
 					ref={stableRefCallback}
 					className={cn(
-						"mx-2 mt-0.5 sm:mx-4 sm:mt-1 mb-4 glass-card overflow-hidden touch-none relative z-20 flex flex-col rounded-2xl",
+						"mx-2 mt-0.5 sm:mx-4 sm:mt-1 mb-4 glass-card overflow-hidden relative z-20 flex flex-col rounded-2xl",
+						contentType === "draw" && "touch-none",
 						isFullscreen
 							? "fixed inset-0 m-0 z-50 rounded-none h-screen border-none"
 							: "flex-1 min-h-[50vh]",

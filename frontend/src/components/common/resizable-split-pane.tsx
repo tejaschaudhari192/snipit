@@ -89,12 +89,15 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
 	return (
 		<div
 			ref={containerRef}
-			className={cn("flex h-full w-full overflow-hidden", className)}
+			className={cn(
+				"flex min-h-0 min-w-0 h-full w-full overflow-hidden",
+				className,
+			)}
 		>
 			{/* Left Pane (Editor) */}
 			{mode !== "preview" && (
 				<div
-					className="h-full overflow-hidden relative"
+					className="h-full overflow-hidden relative min-h-0 min-w-0"
 					style={{
 						width:
 							mode === "editor"
@@ -160,7 +163,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
 			{mode !== "editor" && (
 				<div
 					className={cn(
-						"h-full overflow-hidden",
+						"h-full overflow-y-auto flex-1 min-h-0 min-w-0",
 						mode === "split" ? "hidden md:block" : "block",
 					)}
 					style={{

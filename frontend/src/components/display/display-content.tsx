@@ -240,7 +240,7 @@ export const DisplayContent = memo(
 					showMarkdownToggles={isEdit}
 				/>
 
-				<div className="flex-1 w-full h-full relative overflow-hidden">
+				<div className="flex-1 w-full h-full relative overflow-hidden min-h-0 flex flex-col">
 					{renderContent()}
 				</div>
 			</div>
