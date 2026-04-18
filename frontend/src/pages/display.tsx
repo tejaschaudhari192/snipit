@@ -47,6 +47,7 @@ import { ShimmerSection } from "@/components/common/shimmer-section";
 import DisplayError from "@/components/common/core/error";
 
 import { TerminalContainer } from "@/components/terminal/terminal-container";
+import { ResizablePanels } from "@/components/common/resizable-panels";
 const DisplayToolbar = lazy(() =>
 	import("@/components/display/display-toolbar").then((m) => ({
 		default: m.DisplayToolbar,
@@ -1202,86 +1203,122 @@ const DisplayPage = () => {
 							</div>
 						)}
 
-						<div
-							className={cn(
-								"flex-1 flex gap-4 min-h-0 overflow-hidden",
-								terminalPosition === "bottom"
-									? "flex-col"
-									: "flex-row",
-							)}
-						>
-							<div className="flex-1 min-h-0 min-w-0 h-full flex flex-col">
-								<Suspense
-									fallback={<ShimmerSection type="editor" />}
-								>
-									<DisplayContent
-										id={id ?? ""}
-										isEdit={isEdit}
-										contentType={contentType}
-										language={language}
-										content={updatedContent ?? ""}
-										onContentChange={handleContentChange}
-										theme={theme}
-										fontSize={fontSize}
-										contentRef={contentRef}
-										handleEditorWillMount={
-											handleEditorWillMount
-										}
-										paste={paste}
-										onMount={handleEditorMount}
-										socketRef={socketRef}
-										activeUsers={activeUsers}
-										isFullscreen={isFullscreen}
-										setIsFullscreen={setIsFullscreen}
-										isWindowFullscreen={isWindowFullscreen}
-										setIsWindowFullscreen={
-											setIsWindowFullscreen
-										}
-										onFileSelect={(file) => {
-											setPendingFile(file);
-											setFileUpload(file);
-											setUpdatedContent(
-												paste?.content || "File Update",
-											);
-										}}
-										onClearFile={() => {
-											resetFileUpload();
-											setPendingFile(null);
-											setIsServerFileRemoved(true);
-										}}
-										previewUrl={
-											previewUrl ||
-											(isServerFileRemoved
-												? null
-												: paste?.fileUrl)
-										}
-										uploadedFileName={
-											uploadedFileName ||
-											(isServerFileRemoved
-												? null
-												: paste?.fileName)
-										}
-										isFileUploading={isFileUploading}
-										fileUploadProgress={fileUploadProgress}
-										fileUploadError={fileUploadError}
-									/>
-								</Suspense>
-							</div>
+						{/* Editor + Terminal with resizable split */}
+						{(() => {
+							const isTerminalVisible =
+								isTerminalOpen &&
+								!!paste &&
+								contentType === "code";
 
-							<TerminalContainer
-								isOpen={
-									isTerminalOpen &&
-									!!paste &&
-									contentType === "code"
-								}
-								position={terminalPosition}
-								onPositionChange={setTerminalPosition}
-								onClose={() => setIsTerminalOpen(false)}
-								code={updatedContent ?? paste.content}
-								language={language}
-								socket={socket}
-							/>
-						</div>
+							const editorPanel = (
+								<div className="h-full w-full min-h-0 min-w-0 flex flex-col">
+									<Suspense
+										fallback={
+											<ShimmerSection type="editor" />
+										}
+									>
+										<DisplayContent
+											id={id ?? ""}
+											isEdit={isEdit}
+											contentType={contentType}
+											language={language}
+											content={updatedContent ?? ""}
+											onContentChange={
+												handleContentChange
+											}
+											theme={theme}
+											fontSize={fontSize}
+											contentRef={contentRef}
+											handleEditorWillMount={
+												handleEditorWillMount
+											}
+											paste={paste}
+											onMount={handleEditorMount}
+											socketRef={socketRef}
+											activeUsers={activeUsers}
+											isFullscreen={isFullscreen}
+											setIsFullscreen={setIsFullscreen}
+											isWindowFullscreen={
+												isWindowFullscreen
+											}
+											setIsWindowFullscreen={
+												setIsWindowFullscreen
+											}
+											onFileSelect={(file) => {
+												setPendingFile(file);
+												setFileUpload(file);
+												setUpdatedContent(
+													paste?.content ||
+														"File Update",
+												);
+											}}
+											onClearFile={() => {
+												resetFileUpload();
+												setPendingFile(null);
+												setIsServerFileRemoved(true);
+											}}
+											previewUrl={
+												previewUrl ||
+												(isServerFileRemoved
+													? null
+													: paste?.fileUrl)
+											}
+											uploadedFileName={
+												uploadedFileName ||
+												(isServerFileRemoved
+													? null
+													: paste?.fileName)
+											}
+											isFileUploading={isFileUploading}
+											fileUploadProgress={
+												fileUploadProgress
+											}
+											fileUploadError={fileUploadError}
+										/>
+									</Suspense>
+								</div>
+							);
+
+							const terminalPanel = (
+								<TerminalContainer
+									isOpen={isTerminalVisible}
+									position={terminalPosition}
+									onPositionChange={setTerminalPosition}
+									onClose={() => setIsTerminalOpen(false)}
+									code={updatedContent ?? paste.content}
+									language={language}
+									socket={socket}
+									className="mx-2 sm:mx-4 mb-2"
+								/>
+							);
+
+							if (!isTerminalVisible) {
+								return (
+									<div className="flex-1 min-h-0 min-w-0 h-full flex flex-col">
+										{editorPanel}
+									</div>
+								);
+							}
+
+							return (
+								<ResizablePanels
+									direction={
+										terminalPosition === "bottom"
+											? "vertical"
+											: "horizontal"
+									}
+									initialSize={
+										terminalPosition === "bottom" ? 62 : 65
+									}
+									minSize={20}
+									maxSize={85}
+									className="flex-1"
+									first={editorPanel}
+									second={terminalPanel}
+									storageKey={`display-terminal-split-${terminalPosition}`}
+								/>
+							);
+						})()}
 					</div>
 				</div>
 			</div>

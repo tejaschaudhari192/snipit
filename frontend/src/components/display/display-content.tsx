@@ -160,6 +160,7 @@ export const DisplayContent = memo(
 							showHint={true}
 							initialWidth={50}
 							mode={mdLayoutMode}
+							storageKey="display-markdown-preview-split"
 							left={
 								<CodeEditorView
 									id={id}

@@ -6,7 +6,7 @@ import { type OnMount, type BeforeMount } from "@monaco-editor/react";
 import { Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-import { playErrorSound, cn } from "@/lib/utils";
+import { playErrorSound } from "@/lib/utils";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { CONFIG } from "@/configurations";
@@ -19,6 +19,7 @@ import { useSnippets } from "@/context/SnippetContext";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { useTerminalLayout } from "@/hooks/use-terminal-layout";
 import { TerminalContainer } from "@/components/terminal/terminal-container";
+import { ResizablePanels } from "@/components/common/resizable-panels";
 
 const LanguageSelector = lazy(() =>
 	import("@/components/editor/language-selector").then((m) => ({
@@ -449,48 +450,78 @@ const HomePage = () => {
 			</Suspense>
 
 			{/* Editor + Terminal: takes all remaining space */}
-			<div
-				className={cn(
-					"flex-1 flex min-h-0 overflow-hidden",
-					terminalPosition === "bottom" ? "flex-col" : "flex-row",
-				)}
-			>
-				<Suspense fallback={null}>
-					<div className="flex-1 flex flex-col min-h-0 min-w-0 overflow-hidden">
-						<EditorContent
-							fontSize={fontSize}
-							editorContainerRef={editorContainerRef}
-							userInputRef={userInputRef}
-							handleEditorWillMount={handleEditorWillMount}
-							handleEditorMount={handleEditorMount}
-							handlePaste={handlePaste}
-							isFullscreen={isFullscreen}
-							setIsFullscreen={setIsFullscreen}
-							onFileSelect={(file) => {
-								setPendingFile(file);
-								setFileUpload(file);
-							}}
-							onClearFile={() => {
-								resetFileUpload();
-								setPendingFile(null);
-							}}
-							previewUrl={previewUrl}
-							shortenedResult={shortenedResult}
-							historyItems={historyItems}
-							onDeleteHistoryItem={handleDeleteHistory}
-						/>
-					</div>
-				</Suspense>
+			<div className="flex-1 flex min-h-0 min-w-0 w-full h-full overflow-hidden">
+				{(() => {
+					const isTerminalVisible =
+						isTerminalOpen && contentType === "code";
 
-				<TerminalContainer
-					isOpen={isTerminalOpen && contentType === "code"}
-					position={terminalPosition}
-					onPositionChange={setTerminalPosition}
-					onClose={() => setIsTerminalOpen(false)}
-					code={textValue}
-					language={language}
-					socket={socket}
-				/>
+					const editorPanel = (
+						<div className="flex-1 flex flex-col min-h-0 min-w-0 overflow-hidden h-full w-full">
+							<Suspense fallback={null}>
+								<EditorContent
+									fontSize={fontSize}
+									editorContainerRef={editorContainerRef}
+									userInputRef={userInputRef}
+									handleEditorWillMount={
+										handleEditorWillMount
+									}
+									handleEditorMount={handleEditorMount}
+									handlePaste={handlePaste}
+									isFullscreen={isFullscreen}
+									setIsFullscreen={setIsFullscreen}
+									onFileSelect={(file) => {
+										setPendingFile(file);
+										setFileUpload(file);
+									}}
+									onClearFile={() => {
+										resetFileUpload();
+										setPendingFile(null);
+									}}
+									previewUrl={previewUrl}
+									shortenedResult={shortenedResult}
+									historyItems={historyItems}
+									onDeleteHistoryItem={handleDeleteHistory}
+								/>
+							</Suspense>
+						</div>
+					);
+
+					const terminalPanel = (
+						<TerminalContainer
+							isOpen={isTerminalVisible}
+							position={terminalPosition}
+							onPositionChange={setTerminalPosition}
+							onClose={() => setIsTerminalOpen(false)}
+							code={textValue}
+							language={language}
+							socket={socket}
+							className="mx-2 md:mx-4 mb-2"
+						/>
+					);
+
+					if (!isTerminalVisible) {
+						return editorPanel;
+					}
+
+					return (
+						<ResizablePanels
+							direction={
+								terminalPosition === "bottom"
+									? "vertical"
+									: "horizontal"
+							}
+							initialSize={
+								terminalPosition === "bottom" ? 62 : 65
+							}
+							minSize={20}
+							maxSize={85}
+							className="flex-1"
+							first={editorPanel}
+							second={terminalPanel}
+							storageKey={`home-terminal-split-${terminalPosition}`}
+						/>
+					);
+				})()}
 			</div>
 
 			<Suspense fallback={null}>

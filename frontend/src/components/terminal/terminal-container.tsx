@@ -28,10 +28,7 @@ export const TerminalContainer = ({
 	return (
 		<div
 			className={cn(
-				"relative z-20 animate-in duration-300 shrink-0 rounded-2xl mx-2  sm:mx-4 mb-2 glass-card overflow-clip",
-				position === "bottom"
-					? "h-[30vh] min-h-[180px] max-h-[400px] slide-in-from-bottom-10"
-					: "w-[35vw] min-w-[300px] max-w-[600px] h-full slide-in-from-right-10",
+				"h-full w-full rounded-2xl glass-card overflow-clip animate-in slide-in-from-bottom-4 duration-300",
 				className,
 			)}
 		>

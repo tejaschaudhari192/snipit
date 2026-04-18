@@ -213,6 +213,7 @@ export const EditorContent = memo(
 									showHint={true}
 									initialWidth={50}
 									mode={mdLayoutMode}
+									storageKey="markdown-editor-preview-split"
 									left={
 										<Editor
 											height="100%"
