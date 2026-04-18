@@ -279,27 +279,32 @@ export const setupSocket = (server: HTTPServer) => {
 					if (process.platform === "win32") args = ["/c"];
 					break;
 				default:
-					socket.emit("code-output", { output: `[Error] Unsupported language for execution: ${language}\r\n` });
+					socket.emit("code-output", {
+						output: `[Error] Unsupported language for execution: ${language}\r\n`,
+					});
 					return;
 			}
 
 			const tempId = crypto.randomUUID();
 			const baseDirPath = path.join(process.cwd(), "temp_codes");
 			const executionDirPath = path.join(baseDirPath, tempId);
-			
+
 			// Map specific file names for languages that care
 			let fileName = `${tempId}${fileExt}`;
 			if (language.toLowerCase() === "java") fileName = "Main.java";
 			if (language.toLowerCase() === "csharp") fileName = "Program.cs";
 
 			const filePath = path.join(executionDirPath, fileName);
-			
+
 			try {
 				if (!fs.existsSync(baseDirPath)) fs.mkdirSync(baseDirPath);
-				if (!fs.existsSync(executionDirPath)) fs.mkdirSync(executionDirPath);
+				if (!fs.existsSync(executionDirPath))
+					fs.mkdirSync(executionDirPath);
 				fs.writeFileSync(filePath, code);
 			} catch (err: any) {
-				socket.emit("code-output", { output: `[Error] Failed to create temp file: ${err.message}\r\n` });
+				socket.emit("code-output", {
+					output: `[Error] Failed to create temp file: ${err.message}\r\n`,
+				});
 				return;
 			}
 
@@ -321,7 +326,10 @@ export const setupSocket = (server: HTTPServer) => {
 			const isWindows = process.platform === "win32";
 			const exeName = isWindows ? "out.exe" : "./out";
 
-			if (language.toLowerCase() === "c" || language.toLowerCase() === "cpp") {
+			if (
+				language.toLowerCase() === "c" ||
+				language.toLowerCase() === "cpp"
+			) {
 				const compiler = language.toLowerCase() === "c" ? "gcc" : "g++";
 				finalCmd = `${compiler} ${fileName} -o ${exeName} && ${exeName}`;
 				finalArgs = [];
@@ -335,43 +343,80 @@ export const setupSocket = (server: HTTPServer) => {
 				finalArgs.push(fileName);
 			}
 
-			const proc = spawn(finalCmd, finalArgs, { 
-				cwd: executionDirPath, 
-				shell: true 
+			const proc = spawn(finalCmd, finalArgs, {
+				cwd: executionDirPath,
+				shell: true,
 			});
-
 			runningProcesses.set(socket.id, proc);
 			inputBuffers.set(socket.id, "");
 
 			socket.emit("code-status", { status: "running" });
-			socket.emit("code-output", { output: `[System] Running ${language} code...\r\n\r\n` });
+
+			const spinnerFrames = ["/", "-", " \\", "|"].map((f) => f.trim());
+			let frameIndex = 0;
+
+			const spinnerInterval = setInterval(() => {
+				socket.emit("code-output", {
+					output: `\r\u001b[2KRunning your code... ${spinnerFrames[frameIndex]}`,
+				});
+				frameIndex = (frameIndex + 1) % spinnerFrames.length;
+			}, 100);
+
+			let hasReceivedOutput = false;
+
+			const clearSpinner = () => {
+				if (!hasReceivedOutput) {
+					hasReceivedOutput = true;
+					clearInterval(spinnerInterval);
+					socket.emit("code-output", { output: "\r\u001b[2K" });
+				}
+			};
 
 			proc.stdout?.on("data", (data) => {
+				clearSpinner();
 				socket.emit("code-output", { output: data.toString() });
 			});
 
 			proc.stderr?.on("data", (data) => {
+				clearSpinner();
 				socket.emit("code-output", { output: data.toString() });
 			});
 
 			proc.on("close", (code) => {
-				socket.emit("code-output", { output: `\r\n[System] Process exited with code ${code}\r\n` });
-				socket.emit("code-status", { status: "stopped", exitCode: code });
+				clearInterval(spinnerInterval);
+				socket.emit("code-output", {
+					output: `\r\nProcess finished with exit code ${code}\r\n`,
+				});
+				socket.emit("code-status", {
+					status: "stopped",
+					exitCode: code,
+				});
 				runningProcesses.delete(socket.id);
-				try { 
+				try {
 					// Cleanup the entire execution directory
-					fs.rmSync(executionDirPath, { recursive: true, force: true });
+					fs.rmSync(executionDirPath, {
+						recursive: true,
+						force: true,
+					});
 				} catch {
 					// Ignore cleanup errors
 				}
 			});
-			
+
 			proc.on("error", (err) => {
-				socket.emit("code-output", { output: `\r\n[Error] Process error: ${err.message}\r\n` });
-				socket.emit("code-status", { status: "stopped", error: err.message });
+				socket.emit("code-output", {
+					output: `\r\n[Error] Process error: ${err.message}\r\n`,
+				});
+				socket.emit("code-status", {
+					status: "stopped",
+					error: err.message,
+				});
 				runningProcesses.delete(socket.id);
-				try { 
-					fs.rmSync(executionDirPath, { recursive: true, force: true });
+				try {
+					fs.rmSync(executionDirPath, {
+						recursive: true,
+						force: true,
+					});
 				} catch {
 					// Ignore cleanup errors
 				}
@@ -410,8 +455,13 @@ export const setupSocket = (server: HTTPServer) => {
 			if (proc) {
 				proc.kill();
 				runningProcesses.delete(socket.id);
-				socket.emit("code-status", { status: "stopped", reason: "manual" });
-				socket.emit("code-output", { output: `\r\n[System] Process forcefully terminated.\r\n` });
+				socket.emit("code-status", {
+					status: "stopped",
+					reason: "manual",
+				});
+				socket.emit("code-output", {
+					output: "\r\nProcess forcefully terminated.\r\n",
+				});
 			}
 		});
 
