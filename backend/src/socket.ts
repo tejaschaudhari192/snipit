@@ -291,7 +291,19 @@ export const setupSocket = (server: HTTPServer) => {
 
 			// Map specific file names for languages that care
 			let fileName = `${tempId}${fileExt}`;
-			if (language.toLowerCase() === "java") fileName = "Main.java";
+			if (language.toLowerCase() === "java") {
+				const publicClassMatch = code.match(/public\s+class\s+(\w+)/);
+				const mainClassMatch = code.match(
+					/class\s+(\w+)(?:(?!\bclass\b)[\s\S])*?public\s+static\s+void\s+main/,
+				);
+				if (publicClassMatch) {
+					fileName = `${publicClassMatch[1]}.java`;
+				} else if (mainClassMatch) {
+					fileName = `${mainClassMatch[1]}.java`;
+				} else {
+					fileName = "Main.java";
+				}
+			}
 			if (language.toLowerCase() === "csharp") fileName = "Program.cs";
 
 			const filePath = path.join(executionDirPath, fileName);
@@ -337,7 +349,13 @@ export const setupSocket = (server: HTTPServer) => {
 				finalCmd = `rustc ${fileName} -o ${exeName} && ${exeName}`;
 				finalArgs = [];
 			} else if (language.toLowerCase() === "java") {
-				finalCmd = `java ${fileName}`;
+				const mainClassMatch = code.match(
+					/class\s+(\w+)(?:(?!\bclass\b)[\s\S])*?public\s+static\s+void\s+main/,
+				);
+				const mainClassName = mainClassMatch
+					? mainClassMatch[1]
+					: fileName.replace(".java", "");
+				finalCmd = `javac ${fileName} && java ${mainClassName}`;
 				finalArgs = [];
 			} else {
 				finalArgs.push(fileName);
