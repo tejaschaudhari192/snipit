@@ -7,8 +7,10 @@ export const connectDB = async () => {
 		await mongoose.connect(
 			`mongodb+srv://${configurations.database.user}:${configurations.database.password}@jaybalaji.s5azwy2.mongodb.net/${configurations.database.name}`,
 		);
-		logger.info("Database Connnected Successfully");
+		logger.info(`Connected to database: ${configurations.database.name}`);
 	} catch (error: unknown) {
-		logger.error("Error Connecting Database");
+		logger.error("Failed to connect to database", {
+			error: error instanceof Error ? error.message : error,
+		});
 	}
 };
