@@ -69,7 +69,7 @@ export const CodeEditorView = ({
 					containerRef.current = node;
 					if (typeof contentRef === "function") contentRef(node);
 				}}
-				className={`glass-card rounded-2xl animate-in fade-in zoom-in-95 duration-500 flex flex-col flex-1 ${isFullscreen || isWindowFullscreen ? "fixed inset-0 m-0 z-50 rounded-none h-screen border-none" : "min-h-0"}`}
+				className={`glass-card rounded-2xl animate-in fade-in zoom-in-95 duration-500 flex flex-col flex-1 h-full ${isFullscreen || isWindowFullscreen ? "fixed inset-0 m-0 z-50 rounded-none h-screen border-none" : "min-h-0"}`}
 			>
 				{!hideFullscreen && (
 					<ZenModeToggle

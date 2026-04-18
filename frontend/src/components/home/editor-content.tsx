@@ -209,6 +209,7 @@ export const EditorContent = memo(
 						) : contentType === "code" || contentType === "text" ? (
 							language === "markdown" ? (
 								<ResizableSplitPane
+									className="flex-1"
 									showHint={true}
 									initialWidth={50}
 									mode={mdLayoutMode}
@@ -260,6 +261,7 @@ export const EditorContent = memo(
 											? "snipit-dark"
 											: "snipit-light"
 									}
+									className="flex-1"
 									beforeMount={handleEditorWillMount}
 									onMount={handleEditorMount}
 									options={{

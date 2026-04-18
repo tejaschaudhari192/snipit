@@ -156,6 +156,7 @@ export const DisplayContent = memo(
 				if (isEdit) {
 					return (
 						<ResizableSplitPane
+							className="flex-1"
 							showHint={true}
 							initialWidth={50}
 							mode={mdLayoutMode}
