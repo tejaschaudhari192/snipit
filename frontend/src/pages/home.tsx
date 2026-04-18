@@ -495,6 +495,7 @@ const HomePage = () => {
 							onClose={() => setIsTerminalOpen(false)}
 							code={textValue}
 							language={language}
+							fontSize={fontSize}
 							socket={socket}
 							className="mx-2 md:mx-4 mb-2"
 						/>

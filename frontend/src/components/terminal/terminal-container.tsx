@@ -9,6 +9,7 @@ interface TerminalContainerProps {
 	onClose: () => void;
 	code: string;
 	language: string;
+	fontSize: number;
 	socket: Socket | null;
 	className?: string;
 }
@@ -20,6 +21,7 @@ export const TerminalContainer = ({
 	onClose,
 	code,
 	language,
+	fontSize,
 	socket,
 	className,
 }: TerminalContainerProps) => {
@@ -36,6 +38,7 @@ export const TerminalContainer = ({
 				onClose={onClose}
 				code={code}
 				language={language}
+				fontSize={fontSize}
 				socket={socket}
 				position={position}
 				onPositionChange={onPositionChange}

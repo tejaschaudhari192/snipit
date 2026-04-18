@@ -1288,6 +1288,7 @@ const DisplayPage = () => {
 									onClose={() => setIsTerminalOpen(false)}
 									code={updatedContent ?? paste.content}
 									language={language}
+									fontSize={fontSize}
 									socket={socket}
 									className="mx-2 sm:mx-4 mb-2"
 								/>

@@ -10,6 +10,7 @@ interface TerminalPanelProps {
 	onClose: () => void;
 	code: string;
 	language: string;
+	fontSize: number;
 	socket: Socket | null;
 	position: "bottom" | "right";
 	onPositionChange: (pos: "bottom" | "right") => void;
@@ -19,6 +20,7 @@ export const TerminalPanel = ({
 	onClose,
 	code,
 	language,
+	fontSize,
 	socket,
 	position,
 	onPositionChange,
@@ -49,7 +51,7 @@ export const TerminalPanel = ({
 				white: "#bfbfbf",
 			},
 			fontFamily: '"JetBrains Mono", "Fira Code", monospace',
-			fontSize: 13,
+			fontSize: fontSize, // Use prop for initial value
 			cursorStyle: "block",
 			cursorBlink: true,
 			convertEol: true,
@@ -69,7 +71,18 @@ export const TerminalPanel = ({
 		return () => {
 			term.dispose();
 		};
-	}, []);
+	}, []); // Re-initializing on fontSize change is expensive, better use useEffect below
+
+	// ── Sync font size ────────────────────────────────────────────────────
+	useEffect(() => {
+		if (termInstance.current) {
+			termInstance.current.options.fontSize = fontSize;
+			// Small delay to ensure xterm has updated before re-fitting
+			setTimeout(() => {
+				fitAddon.current?.fit();
+			}, 10);
+		}
+	}, [fontSize]);
 
 	// Forward keyboard data to backend via socket (always, no isRunning gate)
 	// Re-register whenever socket changes so we always have the live instance.
