@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { EditorToolbar } from "@/components/common/editor-toolbar";
 import type { PasteData, ContentMode } from "@/types";
 import { MarkdownDisplay } from "./content/markdown-display";
+import { HtmlDisplay } from "./content/html-display";
 import { ResizableSplitPane } from "@/components/common/resizable-split-pane";
 import { FileDisplay } from "./content/file-display";
 import { CodeEditorView } from "./content/code-editor-view";
@@ -152,7 +153,7 @@ export const DisplayContent = memo(
 				);
 			}
 
-			if (language === "markdown") {
+			if (language === "markdown" || language === "html") {
 				if (isEdit) {
 					return (
 						<ResizableSplitPane
@@ -160,7 +161,7 @@ export const DisplayContent = memo(
 							showHint={true}
 							initialWidth={50}
 							mode={mdLayoutMode}
-							storageKey="display-markdown-preview-split"
+							storageKey={`display-preview-split-${language}`}
 							left={
 								<CodeEditorView
 									id={id}
@@ -181,11 +182,15 @@ export const DisplayContent = memo(
 							}
 							right={
 								<div className="h-full overflow-y-auto bg-background/30 p-1 sm:p-4">
-									<MarkdownDisplay
-										content={content}
-										fontSize={fontSize}
-										contentRef={contentRef}
-									/>
+									{language === "markdown" ? (
+										<MarkdownDisplay
+											content={content}
+											fontSize={fontSize}
+											contentRef={contentRef}
+										/>
+									) : (
+										<HtmlDisplay content={content} />
+									)}
 								</div>
 							}
 						/>
@@ -193,12 +198,16 @@ export const DisplayContent = memo(
 				}
 				return (
 					<div className="h-full overflow-y-auto p-1 sm:p-4 md:p-8 flex flex-col items-center">
-						<div className="my-auto w-full flex flex-col items-center">
-							<MarkdownDisplay
-								content={content}
-								fontSize={fontSize}
-								contentRef={contentRef}
-							/>
+						<div className="my-auto w-full flex flex-col items-center h-full max-h-full">
+							{language === "markdown" ? (
+								<MarkdownDisplay
+									content={content}
+									fontSize={fontSize}
+									contentRef={contentRef}
+								/>
+							) : (
+								<HtmlDisplay content={content} />
+							)}
 						</div>
 					</div>
 				);

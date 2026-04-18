@@ -57,23 +57,22 @@ export const EditorToolbar = ({
 							: "absolute top-4 right-4 sm:top-8 sm:right-8",
 				)}
 			>
-				{showMarkdownToggles && language === "markdown" && (
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<div>
-								<MarkdownLayoutToggles
-									mode={mdLayoutMode}
-									onModeChange={onMdLayoutModeChange}
-								/>
-							</div>
-						</TooltipTrigger>
-						<TooltipContent side="left">
-							<p>
-								{t("common.markdown_layout", "Markdown Layout")}
-							</p>
-						</TooltipContent>
-					</Tooltip>
-				)}
+				{showMarkdownToggles &&
+					(language === "markdown" || language === "html") && (
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<div>
+									<MarkdownLayoutToggles
+										mode={mdLayoutMode}
+										onModeChange={onMdLayoutModeChange}
+									/>
+								</div>
+							</TooltipTrigger>
+							<TooltipContent side="left">
+								<p>{t("common.layout", "Layout Mode")}</p>
+							</TooltipContent>
+						</Tooltip>
+					)}
 
 				<Tooltip>
 					<TooltipTrigger asChild>
