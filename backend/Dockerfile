@@ -22,6 +22,7 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     software-properties-common \
     python3 \
+    python-is-python3 \
     php-cli \
     golang-go \
     openjdk-17-jdk-headless \
