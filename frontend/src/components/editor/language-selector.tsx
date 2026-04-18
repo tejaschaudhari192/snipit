@@ -38,7 +38,9 @@ export const LanguageSelector = memo(
 						className,
 					)}
 				>
-					<div className="absolute inset-[-100%] opacity-70 moving-border-gradient animate-moving-border" />
+					<div className="absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2">
+						<div className="h-full w-full opacity-70 moving-border-gradient animate-moving-border" />
+					</div>
 					<div className="relative z-10 flex h-full w-full items-center justify-center gap-2 rounded-[5px] bg-background dark:bg-slate-900 text-sm font-bold">
 						<span className="whitespace-nowrap">
 							{t("home.auto_detecting")}
