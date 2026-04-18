@@ -184,7 +184,7 @@ export const EditorContent = memo(
 						contentType === "draw" && "touch-none",
 						isFullscreen
 							? "fixed inset-0 m-0 z-50 rounded-none h-screen border-none"
-							: "flex-1 min-h-[50vh]",
+							: "flex-1 min-h-0",
 					)}
 				>
 					<EditorToolbar

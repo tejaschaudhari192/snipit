@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import "@xterm/xterm/css/xterm.css";
-import { X, Play, Square } from "lucide-react";
+import { X, Play, Square, Terminal as TerminalIcon } from "lucide-react";
 import type { Socket } from "socket.io-client";
+
+import { useTranslation } from "react-i18next";
 
 interface TerminalPanelProps {
 	onClose: () => void;
@@ -18,6 +20,7 @@ export const TerminalPanel = ({
 	language,
 	socket,
 }: TerminalPanelProps) => {
+	const { t } = useTranslation();
 	const terminalRef = useRef<HTMLDivElement>(null);
 	const termInstance = useRef<Terminal | null>(null);
 	const fitAddon = useRef<FitAddon | null>(null);
@@ -161,40 +164,49 @@ export const TerminalPanel = ({
 	}, [socket]);
 
 	return (
-		<div className="flex flex-col h-72 border border-white/5 bg-black/95 backdrop-blur-xl shadow-2xl rounded-lg overflow-hidden my-2 mx-1 animate-in slide-in-from-bottom-4 duration-300">
-			<div className="flex items-center justify-between px-4 py-2 bg-white/[0.03] border-b border-white/5 select-none">
+		<div className="flex flex-col h-full border border-white/5 bg-black/95 backdrop-blur-xl shadow-2xl rounded-2xl overflow-hidden w-full">
+			<div className="flex items-center justify-between p-2 px-4 bg-white/[0.03] border-b border-white/5 select-none">
 				<div className="flex items-center gap-6">
 					{/* Mac-style Window Controls */}
-					<div className="flex gap-1.5 mr-2">
-						<div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]" />
-						<div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]" />
-						<div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]" />
+					<div className="flex items-center gap-2">
+						<button
+							onClick={onClose}
+							className="group relative h-3 w-3 rounded-full bg-rose-500/80 hover:bg-rose-500 transition-colors flex items-center justify-center"
+							title={t("display.terminal.close")}
+						>
+							<X className="h-2 w-2 text-rose-950 opacity-0 group-hover:opacity-100 transition-opacity" />
+						</button>
+						<div className="h-3 w-3 rounded-full bg-amber-500/50" />
+						<div className="h-3 w-3 rounded-full bg-emerald-500/50" />
 					</div>
 
-					<div className="flex items-center gap-3">
-						<span className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">
-							{language} — Terminal
+					<div className="flex items-center gap-2.5 text-white/60">
+						<TerminalIcon className="h-4 w-4" />
+						<span className="text-[11px] font-bold tracking-tight text-white/70">
+							{language.charAt(0).toUpperCase() +
+								language.slice(1)}
 						</span>
-
-						<div className="h-3 w-[1px] bg-white/10 mx-1" />
-
-						{isRunning ? (
-							<button
-								onClick={handleStop}
-								className="flex items-center gap-1.5 text-[10px] font-bold text-rose-400 hover:text-rose-300 transition-colors uppercase tracking-wider"
-							>
-								<Square className="h-3 w-3 fill-current" /> Stop
-							</button>
-						) : (
-							<button
-								onClick={handleRun}
-								className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-400 hover:text-emerald-300 transition-colors uppercase tracking-wider"
-							>
-								<Play className="h-3 w-3 fill-current" /> Run
-								Code
-							</button>
-						)}
 					</div>
+
+					<div className="h-3 w-[1px] bg-white/10 mx-1" />
+
+					{isRunning ? (
+						<button
+							onClick={handleStop}
+							className="flex items-center gap-1.5 text-[10px] font-bold text-rose-400 hover:text-rose-300 transition-colors"
+						>
+							<Square className="h-3 w-3 fill-current" />{" "}
+							{t("display.terminal.stop")}
+						</button>
+					) : (
+						<button
+							onClick={handleRun}
+							className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-400 hover:text-emerald-300 transition-colors"
+						>
+							<Play className="h-3 w-3 fill-current" />{" "}
+							{t("display.terminal.run_code")}
+						</button>
+					)}
 				</div>
 
 				<button
@@ -206,7 +218,7 @@ export const TerminalPanel = ({
 			</div>
 			<div
 				ref={terminalRef}
-				className="flex-1 p-3 overflow-hidden cursor-text selection:bg-white/20"
+				className="flex-1 p-3 overflow-hidden cursor-text selection:bg-white/20 custom-scrollbar bg-black/20"
 				onClick={() => {
 					termInstance.current?.focus();
 				}}

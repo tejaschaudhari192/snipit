@@ -223,7 +223,12 @@
 		"burn_after_read_warning": "Warning: This is a one-time snippet and will be deleted after being read.",
 		"views_remaining_plural": "({{count}} views remaining)",
 		"views_remaining_singular": "(1 view remaining)",
-		"final_view": "(Final view)"
+		"final_view": "(Final view)",
+		"terminal": {
+			"run_code": "Run Code",
+			"stop": "Stop",
+			"close": "Close Terminal"
+		}
 	},
 	"history": {
 		"title": "History",

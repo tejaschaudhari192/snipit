@@ -223,7 +223,12 @@
 		"burn_after_read_warning": "Warnung: Dies ist ein einmaliges Snippet und wird nach dem Lesen gelöscht.",
 		"views_remaining_plural": "({{count}} Ansichten verbleibend)",
 		"views_remaining_singular": "(1 Ansicht verbleibend)",
-		"final_view": "(Letzte Ansicht)"
+		"final_view": "(Letzte Ansicht)",
+		"terminal": {
+			"run_code": "Code ausführen",
+			"stop": "Stopp",
+			"close": "Terminal schließen"
+		}
 	},
 	"history": {
 		"title": "Verlauf",

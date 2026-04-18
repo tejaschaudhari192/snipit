@@ -223,7 +223,12 @@
 		"burn_after_read_warning": "警告：これは一回限りのスニペットであり、読まれた後に削除されます。",
 		"views_remaining_plural": "(残り {{count}} 回の閲覧可能)",
 		"views_remaining_singular": "(残り 1 回の閲覧可能)",
-		"final_view": "(最後の閲覧)"
+		"final_view": "(最後の閲覧)",
+		"terminal": {
+			"run_code": "コードを実行",
+			"stop": "停止",
+			"close": "ターミナルを閉じる"
+		}
 	},
 	"history": {
 		"title": "履歴",

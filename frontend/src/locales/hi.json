@@ -223,7 +223,12 @@
 		"burn_after_read_warning": "चेतावनी: यह एक बार देखने वाला स्निपेट है और पढ़ने के बाद हटा दिया जाएगा।",
 		"views_remaining_plural": "({{count}} बार देखना शेष)",
 		"views_remaining_singular": "(1 बार देखना शेष)",
-		"final_view": "(अंतिम बार)"
+		"final_view": "(अंतिम बार)",
+		"terminal": {
+			"run_code": "कोड चलाएँ",
+			"stop": "रोकें",
+			"close": "टर्मिनल बंद करें"
+		}
 	},
 	"history": {
 		"title": "इतिहास",

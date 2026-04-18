@@ -386,7 +386,9 @@ const HomePage = () => {
 						shortenedResult={shortenedResult}
 						isCode={contentType === "code"}
 						isTerminalOpen={isTerminalOpen}
-						onToggleTerminal={() => setIsTerminalOpen(!isTerminalOpen)}
+						onToggleTerminal={() =>
+							setIsTerminalOpen(!isTerminalOpen)
+						}
 					>
 						{(isDetecting || contentType === "code") && (
 							<div className="flex items-center gap-2">
@@ -442,38 +444,42 @@ const HomePage = () => {
 
 			{/* Editor: takes all remaining space */}
 			<Suspense fallback={null}>
-				<EditorContent
-					fontSize={fontSize}
-					editorContainerRef={editorContainerRef}
-					userInputRef={userInputRef}
-					handleEditorWillMount={handleEditorWillMount}
-					handleEditorMount={handleEditorMount}
-					handlePaste={handlePaste}
-					isFullscreen={isFullscreen}
-					setIsFullscreen={setIsFullscreen}
-					onFileSelect={(file) => {
-						setPendingFile(file);
-						setFileUpload(file);
-					}}
-					onClearFile={() => {
-						resetFileUpload();
-						setPendingFile(null);
-					}}
-					previewUrl={previewUrl}
-					shortenedResult={shortenedResult}
-					historyItems={historyItems}
-					onDeleteHistoryItem={handleDeleteHistory}
-				/>
+				<div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+					<EditorContent
+						fontSize={fontSize}
+						editorContainerRef={editorContainerRef}
+						userInputRef={userInputRef}
+						handleEditorWillMount={handleEditorWillMount}
+						handleEditorMount={handleEditorMount}
+						handlePaste={handlePaste}
+						isFullscreen={isFullscreen}
+						setIsFullscreen={setIsFullscreen}
+						onFileSelect={(file) => {
+							setPendingFile(file);
+							setFileUpload(file);
+						}}
+						onClearFile={() => {
+							resetFileUpload();
+							setPendingFile(null);
+						}}
+						previewUrl={previewUrl}
+						shortenedResult={shortenedResult}
+						historyItems={historyItems}
+						onDeleteHistoryItem={handleDeleteHistory}
+					/>
+				</div>
 			</Suspense>
 
 			{isTerminalOpen && contentType === "code" && (
 				<Suspense fallback={null}>
-					<TerminalPanel
-						onClose={() => setIsTerminalOpen(false)}
-						code={textValue}
-						language={language}
-						socket={socketRef.current}
-					/>
+					<div className="mx-2 md:mx-4 mb-2 shrink-0 h-[30vh] min-h-[200px] max-h-[400px]">
+						<TerminalPanel
+							onClose={() => setIsTerminalOpen(false)}
+							code={textValue}
+							language={language}
+							socket={socketRef.current}
+						/>
+					</div>
 				</Suspense>
 			)}
 

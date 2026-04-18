@@ -69,7 +69,7 @@ export const CodeEditorView = ({
 					containerRef.current = node;
 					if (typeof contentRef === "function") contentRef(node);
 				}}
-				className={`glass-card rounded-2xl relative z-10 animate-in fade-in zoom-in-95 duration-500 flex flex-col flex-1 h-full ${isFullscreen || isWindowFullscreen ? "fixed inset-0 m-0 z-50 rounded-none h-screen border-none" : ""}`}
+				className={`glass-card rounded-2xl animate-in fade-in zoom-in-95 duration-500 flex flex-col flex-1 ${isFullscreen || isWindowFullscreen ? "fixed inset-0 m-0 z-50 rounded-none h-screen border-none" : "min-h-0"}`}
 			>
 				{!hideFullscreen && (
 					<ZenModeToggle
@@ -156,7 +156,7 @@ export const CodeEditorView = ({
 					!isEdit
 						? "select-all cursor-text"
 						: "focus-visible:ring-primary/20"
-				} ${isFullscreen || isWindowFullscreen ? "flex-1 rounded-none border-0" : "flex-1 h-full min-h-[300px]"}`}
+				} ${isFullscreen || isWindowFullscreen ? "flex-1 rounded-none border-0" : "flex-1 h-full min-h-0"}`}
 				style={{ fontSize: `${fontSize}px` }}
 				placeholder="Start typing your content here..."
 			/>

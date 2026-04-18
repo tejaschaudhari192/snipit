@@ -150,9 +150,17 @@ export const MainToolbar = memo(
 										onClick={onToggleTerminal}
 										className="gap-2 h-9 shrink-0 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 shadow-lg shadow-emerald-500/10"
 									>
-										{isTerminalOpen ? <X className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+										{isTerminalOpen ? (
+											<X className="h-4 w-4" />
+										) : (
+											<Play className="h-4 w-4" />
+										)}
 										<span className="hidden sm:inline">
-											{isTerminalOpen ? "Close Terminal" : "Run Code"}
+											{isTerminalOpen
+												? t("display.terminal.close")
+												: t(
+														"display.terminal.run_code",
+													)}
 										</span>
 									</Button>
 								)}

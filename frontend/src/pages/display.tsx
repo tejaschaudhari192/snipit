@@ -1110,7 +1110,9 @@ const DisplayPage = () => {
 									setIsCustomExpiryDialogOpen
 								}
 								isTerminalOpen={isTerminalOpen}
-								onToggleTerminal={() => setIsTerminalOpen(!isTerminalOpen)}
+								onToggleTerminal={() =>
+									setIsTerminalOpen(!isTerminalOpen)
+								}
 								isCode={contentType === "code"}
 							/>
 						</Suspense>
@@ -1126,13 +1128,12 @@ const DisplayPage = () => {
 
 				<div
 					className={cn(
-						"flex-1 flex flex-col w-full min-h-0",
-						isEdit ? "overflow-hidden" : "overflow-y-auto",
+						"flex-1 flex flex-col w-full min-h-0 overflow-hidden",
 					)}
 				>
 					<div
 						className={cn(
-							"w-full flex-1 flex flex-col transition-all duration-300",
+							"w-full flex-1 flex flex-col transition-all duration-300 min-h-0",
 							!isFullscreen && !isWindowFullscreen
 								? "px-1 sm:px-5 py-1.5 sm:py-3"
 								: "p-3",
@@ -1236,18 +1237,19 @@ const DisplayPage = () => {
 								fileUploadError={fileUploadError}
 							/>
 						</Suspense>
+						{isTerminalOpen && paste && contentType === "code" && (
+							<div className="mt-4 mb-2 shrink-0 h-[30vh] min-h-[180px] max-h-[350px] relative z-20 animate-in slide-in-from-bottom-4 duration-300">
+								<Suspense fallback={null}>
+									<TerminalPanel
+										onClose={() => setIsTerminalOpen(false)}
+										code={updatedContent ?? paste.content}
+										language={language}
+										socket={socketRef.current}
+									/>
+								</Suspense>
+							</div>
+						)}
 					</div>
-
-					{isTerminalOpen && paste && contentType === "code" && (
-						<Suspense fallback={null}>
-							<TerminalPanel
-								onClose={() => setIsTerminalOpen(false)}
-								code={updatedContent ?? paste.content}
-								language={language}
-								socket={socketRef.current}
-							/>
-						</Suspense>
-					)}
 				</div>
 			</div>
 

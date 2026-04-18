@@ -223,7 +223,12 @@
 		"burn_after_read_warning": "सूचना: हे एक वन टाइम स्निपेट आहे आणि वाचल्यानंतर हटवले जाईल।",
 		"views_remaining_plural": "({{count}} दृश्य शिल्लक)",
 		"views_remaining_singular": "(१ दृश्य शिल्लक)",
-		"final_view": "(अंतिम दृश्य)"
+		"final_view": "(अंतिम दृश्य)",
+		"terminal": {
+			"run_code": "कोड चालवा",
+			"stop": "थांबवा",
+			"close": "टर्मिनल बंद करा"
+		}
 	},
 	"history": {
 		"title": "इतिहास",
