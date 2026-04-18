@@ -108,3 +108,18 @@ export const COLLABORATOR_COLORS = [
 	"#d946ef",
 	"#f43f5e",
 ];
+
+export const SUPPORTED_RUN_LANGUAGES = [
+	"javascript",
+	"python",
+	"typescript",
+	"php",
+	"go",
+	"java",
+	"c",
+	"cpp",
+	"rust",
+	"csharp",
+	"shell",
+	"bash",
+];

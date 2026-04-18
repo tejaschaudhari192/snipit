@@ -49,6 +49,7 @@ interface DisplayToolbarProps {
 	isTerminalOpen?: boolean;
 	onToggleTerminal?: () => void;
 	isCode?: boolean;
+	language?: string;
 }
 
 export const DisplayToolbar = ({
@@ -80,6 +81,7 @@ export const DisplayToolbar = ({
 	isTerminalOpen = false,
 	onToggleTerminal,
 	isCode = false,
+	language = "text",
 }: DisplayToolbarProps) => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
@@ -124,6 +126,7 @@ export const DisplayToolbar = ({
 				isTerminalOpen={isTerminalOpen}
 				onToggleTerminal={onToggleTerminal}
 				isCode={isCode}
+				language={language}
 			/>
 
 			<div className="flex flex-1 items-center gap-2 justify-end">

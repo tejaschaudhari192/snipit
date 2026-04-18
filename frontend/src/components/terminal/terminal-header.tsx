@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
+import { SUPPORTED_RUN_LANGUAGES } from "@/constants";
 
 interface TerminalHeaderProps {
 	language: string;
@@ -71,23 +72,24 @@ export const TerminalHeader = ({
 
 				<div className="h-4 w-[1px] bg-white/10 mx-2" />
 
-				{isRunning ? (
-					<button
-						onClick={onStop}
-						className="flex items-center gap-2 group px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-all font-bold text-rose-400 text-[11px]"
-					>
-						<Square className="h-3 w-3 fill-rose-500 text-rose-500" />
-						{t("display.terminal.stop", "Stop")}
-					</button>
-				) : (
-					<button
-						onClick={onRun}
-						className="flex items-center gap-2 group px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 transition-all font-bold text-emerald-400 text-[11px]"
-					>
-						<Play className="h-3 w-3 fill-emerald-500 text-emerald-500" />
-						{t("display.terminal.run_code", "Run Code")}
-					</button>
-				)}
+				{SUPPORTED_RUN_LANGUAGES.includes(language.toLowerCase()) &&
+					(isRunning ? (
+						<button
+							onClick={onStop}
+							className="flex items-center gap-2 group px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-all font-bold text-rose-400 text-[11px]"
+						>
+							<Square className="h-3 w-3 fill-rose-500 text-rose-500" />
+							{t("display.terminal.stop", "Stop")}
+						</button>
+					) : (
+						<button
+							onClick={onRun}
+							className="flex items-center gap-2 group px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 transition-all font-bold text-emerald-400 text-[11px]"
+						>
+							<Play className="h-3 w-3 fill-emerald-500 text-emerald-500" />
+							{t("display.terminal.run_code", "Run Code")}
+						</button>
+					))}
 			</div>
 
 			<div className="flex items-center gap-2">

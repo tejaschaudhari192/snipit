@@ -1129,6 +1129,7 @@ const DisplayPage = () => {
 									}
 								}}
 								isCode={contentType === "code"}
+								language={language}
 							/>
 						</Suspense>
 						{!isEdit && (

@@ -385,6 +385,7 @@ const HomePage = () => {
 						dialogError={dialogError}
 						shortenedResult={shortenedResult}
 						isCode={contentType === "code"}
+						language={language}
 						isTerminalOpen={isTerminalOpen}
 						onToggleTerminal={() => {
 							const opening = !isTerminalOpen;

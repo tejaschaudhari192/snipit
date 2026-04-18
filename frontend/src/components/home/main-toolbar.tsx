@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import { useState } from "react";
 import { AdvancedOptions } from "./advanced-options";
+import { SUPPORTED_RUN_LANGUAGES } from "@/constants";
 
 import type { ContentMode } from "@/types";
 
@@ -33,6 +34,7 @@ interface MainToolbarProps {
 	isTerminalOpen?: boolean;
 	onToggleTerminal?: () => void;
 	isCode?: boolean;
+	language?: string;
 	children?: React.ReactNode;
 }
 
@@ -55,6 +57,7 @@ export const MainToolbar = memo(
 		isTerminalOpen = false,
 		onToggleTerminal,
 		isCode = false,
+		language = "text",
 		children,
 	}: MainToolbarProps) => {
 		const { t } = useTranslation();
@@ -143,27 +146,33 @@ export const MainToolbar = memo(
 										/>
 									</Button>
 								</ButtonGroup>
-								{isCode && onToggleTerminal && (
-									<Button
-										variant="outline"
-										size="sm"
-										onClick={onToggleTerminal}
-										className="gap-2 h-9 shrink-0 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 shadow-lg shadow-emerald-500/10"
-									>
-										{isTerminalOpen ? (
-											<X className="h-4 w-4" />
-										) : (
-											<Play className="h-4 w-4" />
-										)}
-										<span className="hidden sm:inline">
-											{isTerminalOpen
-												? t("display.terminal.close")
-												: t(
-														"display.terminal.run_code",
-													)}
-										</span>
-									</Button>
-								)}
+								{isCode &&
+									onToggleTerminal &&
+									SUPPORTED_RUN_LANGUAGES.includes(
+										language.toLowerCase(),
+									) && (
+										<Button
+											variant="outline"
+											size="sm"
+											onClick={onToggleTerminal}
+											className="gap-2 h-9 shrink-0 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 shadow-lg shadow-emerald-500/10"
+										>
+											{isTerminalOpen ? (
+												<X className="h-4 w-4" />
+											) : (
+												<Play className="h-4 w-4" />
+											)}
+											<span className="hidden sm:inline">
+												{isTerminalOpen
+													? t(
+															"display.terminal.close",
+														)
+													: t(
+															"display.terminal.run_code",
+														)}
+											</span>
+										</Button>
+									)}
 							</div>
 						)}
 					</div>
