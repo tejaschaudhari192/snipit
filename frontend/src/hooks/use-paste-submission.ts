@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 import { useApiHelpers } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { usePaste } from "@/context/PasteContext";
-import { saveToLocal, clearDrafts, playSuccessSound } from "@/lib/utils";
+import { saveToLocal, clearDrafts } from "@/lib/utils";
 import type {
 	IdType,
 	Visibility,
@@ -98,7 +98,10 @@ export const usePasteSubmission = (
 				fileMimeType:
 					contentType === "file" ? currentFileMimeType : undefined,
 				redirectUrl: contentType === "link",
-				language: contentType === "code" ? language : "text",
+				language:
+					contentType === "code" || contentType === "text"
+						? language
+						: "text",
 				burnAfterRead: expiresTime === "one-time",
 				visibility: finalVisibility,
 				allowedUsers:
@@ -113,7 +116,6 @@ export const usePasteSubmission = (
 				allowComments: options.allowComments ?? allowComments,
 			});
 
-			playSuccessSound();
 			toast.success(
 				t("messages.snippet_created", {
 					idType: selectedIdType,

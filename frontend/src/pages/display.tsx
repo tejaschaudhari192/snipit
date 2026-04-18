@@ -30,6 +30,7 @@ import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { useRemoteCursors } from "@/hooks/use-remote-cursors";
 import { useAuth } from "@/context/AuthContext";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { useTerminalLayout } from "@/hooks/use-terminal-layout";
 import { useTranslation } from "react-i18next";
 import type {
 	ActiveUser,
@@ -45,6 +46,7 @@ import type {
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import DisplayError from "@/components/common/core/error";
 
+import { TerminalContainer } from "@/components/terminal/terminal-container";
 const DisplayToolbar = lazy(() =>
 	import("@/components/display/display-toolbar").then((m) => ({
 		default: m.DisplayToolbar,
@@ -83,11 +85,6 @@ const AiEnhanceDialog = lazy(() =>
 const DeletePasteDialog = lazy(() =>
 	import("@/components/display/delete-paste-dialog").then((m) => ({
 		default: m.DeletePasteDialog,
-	})),
-);
-const TerminalPanel = lazy(() =>
-	import("@/components/display/terminal-panel").then((m) => ({
-		default: m.TerminalPanel,
 	})),
 );
 
@@ -168,6 +165,8 @@ const DisplayPage = () => {
 	const [isWindowFullscreen, setIsWindowFullscreen] = useState(false);
 	const [isServerFileRemoved, setIsServerFileRemoved] = useState(false);
 	const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+	const { terminalPosition, setTerminalPosition } = useTerminalLayout();
+	const [socket, setSocket] = useState<Socket | null>(null);
 
 	const [pendingFile, setPendingFile] = useState<File | null>(null);
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -594,23 +593,24 @@ const DisplayPage = () => {
 		const socketUrl = CONFIG.API_BASE_URL
 			? CONFIG.API_BASE_URL.replace(/\/api\/?$/, "")
 			: "";
-		const socket = io(socketUrl, { withCredentials: true });
-		socketRef.current = socket;
+		const s = io(socketUrl, { withCredentials: true });
+		socketRef.current = s;
+		setSocket(s);
 
-		socket.on("connect", () => {
-			socket.emit("join-paste", {
+		s.on("connect", () => {
+			s.emit("join-paste", {
 				pasteId: id,
 				userName: user?.username,
 			});
 			if (isEditRef.current) {
-				socket.emit("set-editing-status", {
+				s.emit("set-editing-status", {
 					pasteId: id,
 					isEditing: true,
 				});
 			}
 		});
 
-		socket.on("room-users", (users: ActiveUser[]) => {
+		s.on("room-users", (users: ActiveUser[]) => {
 			setActiveUsers(users);
 			const currentIds = new Set(users.map((u) => u.socketId));
 			setRemoteCursors((prev) => {
@@ -626,7 +626,7 @@ const DisplayPage = () => {
 			});
 		});
 
-		socket.on(
+		s.on(
 			"paste-updated",
 			(
 				data: Partial<PasteData> & {
@@ -694,7 +694,7 @@ const DisplayPage = () => {
 			},
 		);
 
-		socket.on(
+		s.on(
 			"user-cursor-move",
 			(data: { socketId: string; position: CursorPosition }) => {
 				setRemoteCursors((prev) => ({
@@ -705,8 +705,8 @@ const DisplayPage = () => {
 		);
 
 		return () => {
-			socket.emit("leave-paste", id);
-			socket.disconnect();
+			s.emit("leave-paste", id);
+			s.disconnect();
 			socketRef.current = null;
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1035,7 +1035,7 @@ const DisplayPage = () => {
 		<>
 			<div
 				className={cn(
-					"relative z-10 flex-1 flex flex-col overflow-hidden",
+					"relative z-10 flex-1 h-full flex flex-col overflow-hidden",
 					isFullscreen || isWindowFullscreen
 						? "fixed inset-0 z-[100] bg-background"
 						: "",
@@ -1110,9 +1110,23 @@ const DisplayPage = () => {
 									setIsCustomExpiryDialogOpen
 								}
 								isTerminalOpen={isTerminalOpen}
-								onToggleTerminal={() =>
-									setIsTerminalOpen(!isTerminalOpen)
-								}
+								onToggleTerminal={() => {
+									const opening = !isTerminalOpen;
+									setIsTerminalOpen(opening);
+									if (
+										opening &&
+										socket &&
+										(updatedContent ?? paste?.content)
+									) {
+										socket.emit("run-code", {
+											code:
+												updatedContent ??
+												paste?.content ??
+												"",
+											language,
+										});
+									}
+								}}
 								isCode={contentType === "code"}
 							/>
 						</Suspense>
@@ -1128,12 +1142,12 @@ const DisplayPage = () => {
 
 				<div
 					className={cn(
-						"flex-1 flex flex-col w-full min-h-0 overflow-hidden",
+						"flex-1 flex flex-col w-full min-h-0 h-full overflow-hidden",
 					)}
 				>
 					<div
 						className={cn(
-							"w-full flex-1 flex flex-col transition-all duration-300 min-h-0",
+							"w-full flex-1 flex flex-col transition-all duration-300 min-h-0 h-full",
 							!isFullscreen && !isWindowFullscreen
 								? "px-1 sm:px-5 py-1.5 sm:py-3"
 								: "p-3",
@@ -1188,67 +1202,86 @@ const DisplayPage = () => {
 							</div>
 						)}
 
-						<Suspense fallback={<ShimmerSection type="editor" />}>
-							<DisplayContent
-								id={id ?? ""}
-								isEdit={isEdit}
-								contentType={contentType}
-								language={language}
-								content={updatedContent ?? ""}
-								onContentChange={handleContentChange}
-								theme={theme}
-								fontSize={fontSize}
-								contentRef={contentRef}
-								handleEditorWillMount={handleEditorWillMount}
-								paste={paste}
-								onMount={handleEditorMount}
-								socketRef={socketRef}
-								activeUsers={activeUsers}
-								isFullscreen={isFullscreen}
-								setIsFullscreen={setIsFullscreen}
-								isWindowFullscreen={isWindowFullscreen}
-								setIsWindowFullscreen={setIsWindowFullscreen}
-								onFileSelect={(file) => {
-									setPendingFile(file);
-									setFileUpload(file);
-									setUpdatedContent(
-										paste?.content || "File Update",
-									);
-								}}
-								onClearFile={() => {
-									resetFileUpload();
-									setPendingFile(null);
-									setIsServerFileRemoved(true);
-								}}
-								previewUrl={
-									previewUrl ||
-									(isServerFileRemoved
-										? null
-										: paste?.fileUrl)
-								}
-								uploadedFileName={
-									uploadedFileName ||
-									(isServerFileRemoved
-										? null
-										: paste?.fileName)
-								}
-								isFileUploading={isFileUploading}
-								fileUploadProgress={fileUploadProgress}
-								fileUploadError={fileUploadError}
-							/>
-						</Suspense>
-						{isTerminalOpen && paste && contentType === "code" && (
-							<div className="mt-4 mb-2 shrink-0 h-[30vh] min-h-[180px] max-h-[350px] relative z-20 animate-in slide-in-from-bottom-4 duration-300">
-								<Suspense fallback={null}>
-									<TerminalPanel
-										onClose={() => setIsTerminalOpen(false)}
-										code={updatedContent ?? paste.content}
+						<div
+							className={cn(
+								"flex-1 flex gap-4 min-h-0 overflow-hidden",
+								terminalPosition === "bottom"
+									? "flex-col"
+									: "flex-row",
+							)}
+						>
+							<div className="flex-1 min-h-0 min-w-0 h-full flex flex-col">
+								<Suspense
+									fallback={<ShimmerSection type="editor" />}
+								>
+									<DisplayContent
+										id={id ?? ""}
+										isEdit={isEdit}
+										contentType={contentType}
 										language={language}
-										socket={socketRef.current}
+										content={updatedContent ?? ""}
+										onContentChange={handleContentChange}
+										theme={theme}
+										fontSize={fontSize}
+										contentRef={contentRef}
+										handleEditorWillMount={
+											handleEditorWillMount
+										}
+										paste={paste}
+										onMount={handleEditorMount}
+										socketRef={socketRef}
+										activeUsers={activeUsers}
+										isFullscreen={isFullscreen}
+										setIsFullscreen={setIsFullscreen}
+										isWindowFullscreen={isWindowFullscreen}
+										setIsWindowFullscreen={
+											setIsWindowFullscreen
+										}
+										onFileSelect={(file) => {
+											setPendingFile(file);
+											setFileUpload(file);
+											setUpdatedContent(
+												paste?.content || "File Update",
+											);
+										}}
+										onClearFile={() => {
+											resetFileUpload();
+											setPendingFile(null);
+											setIsServerFileRemoved(true);
+										}}
+										previewUrl={
+											previewUrl ||
+											(isServerFileRemoved
+												? null
+												: paste?.fileUrl)
+										}
+										uploadedFileName={
+											uploadedFileName ||
+											(isServerFileRemoved
+												? null
+												: paste?.fileName)
+										}
+										isFileUploading={isFileUploading}
+										fileUploadProgress={fileUploadProgress}
+										fileUploadError={fileUploadError}
 									/>
 								</Suspense>
 							</div>
-						)}
+
+							<TerminalContainer
+								isOpen={
+									isTerminalOpen &&
+									!!paste &&
+									contentType === "code"
+								}
+								position={terminalPosition}
+								onPositionChange={setTerminalPosition}
+								onClose={() => setIsTerminalOpen(false)}
+								code={updatedContent ?? paste.content}
+								language={language}
+								socket={socket}
+							/>
+						</div>
 					</div>
 				</div>
 			</div>

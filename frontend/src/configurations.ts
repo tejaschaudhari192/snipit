@@ -18,6 +18,7 @@ export const CONFIG = {
 		LANGUAGE: "snipit-last-language",
 		THEME: "snipit-theme",
 		HISTORY: "snipit-history",
+		TERMINAL_POSITION: "snipit-terminal-position",
 	},
 
 	// Default Values

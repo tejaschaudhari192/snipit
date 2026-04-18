@@ -6,7 +6,7 @@ import { type OnMount, type BeforeMount } from "@monaco-editor/react";
 import { Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-import { playErrorSound } from "@/lib/utils";
+import { playErrorSound, cn } from "@/lib/utils";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { CONFIG } from "@/configurations";
@@ -17,6 +17,8 @@ import { useHomeUrlSync } from "@/hooks/use-home-url-sync";
 import { usePasteSubmission } from "@/hooks/use-paste-submission";
 import { useSnippets } from "@/context/SnippetContext";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { useTerminalLayout } from "@/hooks/use-terminal-layout";
+import { TerminalContainer } from "@/components/terminal/terminal-container";
 
 const LanguageSelector = lazy(() =>
 	import("@/components/editor/language-selector").then((m) => ({
@@ -41,11 +43,6 @@ const MainToolbar = lazy(() =>
 const EditorContent = lazy(() =>
 	import("@/components/home/editor-content").then((m) => ({
 		default: m.EditorContent,
-	})),
-);
-const TerminalPanel = lazy(() =>
-	import("@/components/display/terminal-panel").then((m) => ({
-		default: m.TerminalPanel,
 	})),
 );
 const AiEnhanceDialog = lazy(() =>
@@ -103,8 +100,10 @@ const HomePage = () => {
 	);
 	const [isFullscreen, setIsFullscreen] = useState(false);
 	const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+	const { terminalPosition, setTerminalPosition } = useTerminalLayout();
+
 	const [dialogError, setDialogError] = useState("");
-	const socketRef = useRef<Socket | null>(null);
+	const [socket, setSocket] = useState<Socket | null>(null);
 
 	const {
 		fontSize,
@@ -219,12 +218,12 @@ const HomePage = () => {
 		const socketUrl = CONFIG.API_BASE_URL
 			? CONFIG.API_BASE_URL.replace(/\/api\/?$/, "")
 			: "";
-		const socket = io(socketUrl, { withCredentials: true });
-		socketRef.current = socket;
+		const s = io(socketUrl, { withCredentials: true });
+		setSocket(s);
 
 		return () => {
-			socket.disconnect();
-			socketRef.current = null;
+			s.disconnect();
+			setSocket(null);
 		};
 	}, []);
 
@@ -386,9 +385,16 @@ const HomePage = () => {
 						shortenedResult={shortenedResult}
 						isCode={contentType === "code"}
 						isTerminalOpen={isTerminalOpen}
-						onToggleTerminal={() =>
-							setIsTerminalOpen(!isTerminalOpen)
-						}
+						onToggleTerminal={() => {
+							const opening = !isTerminalOpen;
+							setIsTerminalOpen(opening);
+							if (opening && socket && textValue) {
+								socket.emit("run-code", {
+									code: textValue,
+									language,
+								});
+							}
+						}}
 					>
 						{(isDetecting || contentType === "code") && (
 							<div className="flex items-center gap-2">
@@ -442,46 +448,50 @@ const HomePage = () => {
 				/>
 			</Suspense>
 
-			{/* Editor: takes all remaining space */}
-			<Suspense fallback={null}>
-				<div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-					<EditorContent
-						fontSize={fontSize}
-						editorContainerRef={editorContainerRef}
-						userInputRef={userInputRef}
-						handleEditorWillMount={handleEditorWillMount}
-						handleEditorMount={handleEditorMount}
-						handlePaste={handlePaste}
-						isFullscreen={isFullscreen}
-						setIsFullscreen={setIsFullscreen}
-						onFileSelect={(file) => {
-							setPendingFile(file);
-							setFileUpload(file);
-						}}
-						onClearFile={() => {
-							resetFileUpload();
-							setPendingFile(null);
-						}}
-						previewUrl={previewUrl}
-						shortenedResult={shortenedResult}
-						historyItems={historyItems}
-						onDeleteHistoryItem={handleDeleteHistory}
-					/>
-				</div>
-			</Suspense>
-
-			{isTerminalOpen && contentType === "code" && (
+			{/* Editor + Terminal: takes all remaining space */}
+			<div
+				className={cn(
+					"flex-1 flex min-h-0 overflow-hidden",
+					terminalPosition === "bottom" ? "flex-col" : "flex-row",
+				)}
+			>
 				<Suspense fallback={null}>
-					<div className="mx-2 md:mx-4 mb-2 shrink-0 h-[30vh] min-h-[200px] max-h-[400px]">
-						<TerminalPanel
-							onClose={() => setIsTerminalOpen(false)}
-							code={textValue}
-							language={language}
-							socket={socketRef.current}
+					<div className="flex-1 flex flex-col min-h-0 min-w-0 overflow-hidden">
+						<EditorContent
+							fontSize={fontSize}
+							editorContainerRef={editorContainerRef}
+							userInputRef={userInputRef}
+							handleEditorWillMount={handleEditorWillMount}
+							handleEditorMount={handleEditorMount}
+							handlePaste={handlePaste}
+							isFullscreen={isFullscreen}
+							setIsFullscreen={setIsFullscreen}
+							onFileSelect={(file) => {
+								setPendingFile(file);
+								setFileUpload(file);
+							}}
+							onClearFile={() => {
+								resetFileUpload();
+								setPendingFile(null);
+							}}
+							previewUrl={previewUrl}
+							shortenedResult={shortenedResult}
+							historyItems={historyItems}
+							onDeleteHistoryItem={handleDeleteHistory}
 						/>
 					</div>
 				</Suspense>
-			)}
+
+				<TerminalContainer
+					isOpen={isTerminalOpen && contentType === "code"}
+					position={terminalPosition}
+					onPositionChange={setTerminalPosition}
+					onClose={() => setIsTerminalOpen(false)}
+					code={textValue}
+					language={language}
+					socket={socket}
+				/>
+			</div>
 
 			<Suspense fallback={null}>
 				<AiEnhanceDialog

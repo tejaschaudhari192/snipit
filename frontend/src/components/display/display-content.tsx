@@ -224,7 +224,7 @@ export const DisplayContent = memo(
 			<div
 				ref={containerRef}
 				className={cn(
-					"flex-1 flex flex-col min-h-0 relative",
+					"flex-1 flex flex-col min-h-0 h-full relative",
 					isFullscreen || isWindowFullscreen ? "bg-background" : "",
 				)}
 			>
