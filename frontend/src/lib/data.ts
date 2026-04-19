@@ -5,7 +5,6 @@ import {
 	Languages,
 	Moon,
 	Link2,
-	Heart,
 	Hash,
 	Share2,
 	User,
@@ -14,6 +13,9 @@ import {
 	FileUp,
 	Users,
 	Wand2,
+	Terminal,
+	FileDown,
+	Palette,
 } from "lucide-react";
 
 const app = {
@@ -24,29 +26,19 @@ const app = {
 			gradient: "from-violet-500 to-purple-500",
 		},
 		{
-			icon: Sparkles,
-			key: "ai_detection",
-			gradient: "from-pink-500 to-rose-500",
-		},
-		{
-			icon: Hash,
-			key: "custom_ids",
-			gradient: "from-cyan-500 to-blue-500",
-		},
-		{
-			icon: Clock,
-			key: "expiration",
-			gradient: "from-amber-500 to-orange-500",
-		},
-		{
 			icon: Share2,
 			key: "sharing",
 			gradient: "from-blue-500 to-indigo-500",
 		},
 		{
-			icon: Users,
-			key: "real_time_collaboration",
-			gradient: "from-blue-600 to-cyan-500",
+			icon: Palette,
+			key: "drawing",
+			gradient: "from-orange-500 to-amber-500",
+		},
+		{
+			icon: Terminal,
+			key: "terminal_execution",
+			gradient: "from-zinc-700 to-slate-900",
 		},
 		{
 			icon: Wand2,
@@ -54,9 +46,44 @@ const app = {
 			gradient: "from-purple-600 to-indigo-500",
 		},
 		{
+			icon: Users,
+			key: "real_time_collaboration",
+			gradient: "from-blue-600 to-cyan-500",
+		},
+		{
 			icon: FileUp,
 			key: "file_share",
 			gradient: "from-rose-500 to-pink-500",
+		},
+		{
+			icon: Link2,
+			key: "redirect_urls",
+			gradient: "from-indigo-500 to-purple-500",
+		},
+		{
+			icon: Sparkles,
+			key: "ai_detection",
+			gradient: "from-pink-500 to-rose-500",
+		},
+		{
+			icon: FileDown,
+			key: "save_as_export",
+			gradient: "from-blue-600 to-cyan-500",
+		},
+		{
+			icon: Clock,
+			key: "expiration",
+			gradient: "from-amber-500 to-orange-500",
+		},
+		{
+			icon: Hash,
+			key: "custom_ids",
+			gradient: "from-cyan-500 to-blue-500",
+		},
+		{
+			icon: Lock,
+			key: "password",
+			gradient: "from-red-500 to-rose-500",
 		},
 		{
 			icon: ShieldCheck,
@@ -69,29 +96,14 @@ const app = {
 			gradient: "from-green-500 to-emerald-500",
 		},
 		{
-			icon: Lock,
-			key: "password",
-			gradient: "from-red-500 to-rose-500",
-		},
-		{
-			icon: Languages,
-			key: "multi_language",
-			gradient: "from-emerald-500 to-teal-500",
-		},
-		{
 			icon: Moon,
 			key: "dark_mode",
 			gradient: "from-slate-500 to-zinc-600",
 		},
 		{
-			icon: Heart,
-			key: "open_source",
-			gradient: "from-red-500 to-pink-500",
-		},
-		{
-			icon: Link2,
-			key: "redirect_urls",
-			gradient: "from-indigo-500 to-purple-500",
+			icon: Languages,
+			key: "multi_language",
+			gradient: "from-emerald-500 to-teal-500",
 		},
 	],
 	team: [

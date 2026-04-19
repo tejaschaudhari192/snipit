@@ -283,49 +283,53 @@
 				"title": "Syntax Highlighting",
 				"desc": "Beautiful code display with support for 15+ programming languages."
 			},
-			"ai_detection": {
-				"title": "AI Language Detection",
-				"desc": "Automatically detects programming languages using AI technology."
-			},
-			"custom_ids": {
-				"title": "Custom URLs",
-				"desc": "Create memorable, custom URLs for easy snippet sharing."
-			},
-			"expiration": {
-				"title": "Expiration Control",
-				"desc": "Set snippets to expire after 1 hour to 1 year, choose a custom date, or keep them forever."
-			},
-			"multi_language": {
-				"title": "Multi-Language UI",
-				"desc": "Interface available in English, German, Hindi, Japanese, and Marathi."
-			},
-			"dark_mode": {
-				"title": "Dark Mode",
-				"desc": "Easy on the eyes with a beautiful dark theme option."
-			},
-			"open_source": {
-				"title": "Open Source",
-				"desc": "Free and open source. Contribute, fork, or self-host."
-			},
-			"redirect_urls": {
-				"title": "Shorten Links",
-				"desc": "Create short, manageable links that redirect to any destination instantly."
-			},
 			"sharing": {
 				"title": "Easy Sharing",
 				"desc": "Share your snippets effortlessly with a simple link or QR code."
 			},
-			"real_time_collaboration": {
-				"title": "Real-time Collaboration",
-				"desc": "Edit code and draw together in real-time with live cursors and presence."
+			"drawing": {
+				"title": "Interactive Drawing",
+				"desc": "Collaborative whiteboard to sketch ideas and diagrams alongside your code."
+			},
+			"terminal_execution": {
+				"title": "Interactive Terminal",
+				"desc": "Run your code snippets (Bash, Python, Java, etc.) directly in the integrated high-performance terminal."
 			},
 			"ai_edit_assistant": {
 				"title": "AI Edit Assistant",
 				"desc": "Enhance your code, fix bugs, or explain logic using integrated AI assistant."
 			},
+			"real_time_collaboration": {
+				"title": "Real-time Collaboration",
+				"desc": "Edit code and draw together in real-time with live cursors and presence."
+			},
 			"file_share": {
 				"title": "File Sharing",
 				"desc": "Upload and share files securely with a unique link."
+			},
+			"redirect_urls": {
+				"title": "Shorten Links",
+				"desc": "Create short, manageable links that redirect to any destination instantly."
+			},
+			"ai_detection": {
+				"title": "AI Language Detection",
+				"desc": "Automatically detects programming languages using AI technology."
+			},
+			"save_as_export": {
+				"title": "Flexible Export",
+				"desc": "Download your snippets in multiple formats including PDF, Plain Text, or language-specific extensions."
+			},
+			"expiration": {
+				"title": "Expiration Control",
+				"desc": "Set snippets to expire after 1 hour to 1 year, choose a custom date, or keep them forever."
+			},
+			"custom_ids": {
+				"title": "Custom URLs",
+				"desc": "Create memorable, custom URLs for easy snippet sharing."
+			},
+			"password": {
+				"title": "Enhanced Security",
+				"desc": "Protect sensitive code with passwords and manage granular access permissions."
 			},
 			"access_control": {
 				"title": "Role-Based Access Control",
@@ -335,9 +339,13 @@
 				"title": "User Profiles",
 				"desc": "Create an account to manage, edit, and keep track of your snippets."
 			},
-			"password": {
-				"title": "Enhanced Security",
-				"desc": "Protect sensitive code with passwords and manage granular access permissions."
+			"dark_mode": {
+				"title": "Dark Mode",
+				"desc": "Easy on the eyes with a beautiful dark theme option."
+			},
+			"multi_language": {
+				"title": "Multi-Language UI",
+				"desc": "Interface available in English, German, Hindi, Japanese, and Marathi."
 			}
 		},
 		"story": {
@@ -355,8 +363,8 @@
 			}
 		},
 		"contribute": {
-			"title": "Want to Contribute?",
-			"desc": "Snipit is open source and we welcome contributions from the community. Whether it's bug fixes, new features, or documentation improvements, every contribution matters.",
+			"title": "Get in Touch",
+			"desc": "We would love to hear from you! Whether you have questions, feedback, or just want to say hello, feel free to reach out to us through any of the channels below.",
 			"github_button": "View on GitHub",
 			"gitlab_button": "View on GitLab",
 			"contact_button": "Get in Touch",
@@ -367,7 +375,7 @@
 			"items": {
 				"free": {
 					"question": "Is Snipit free to use?",
-					"answer": "Yes! Snipit is completely free and open source. You can use it for personal or commercial projects without any cost."
+					"answer": "Yes! Snipit is completely free to use. You can use it for personal or commercial projects without any cost."
 				},
 				"expiration": {
 					"question": "How long do snippets last?",

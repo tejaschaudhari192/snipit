@@ -1,14 +1,5 @@
 import Footer from "@/components/ui/footer";
-import {
-	Mail,
-	Users,
-	Github,
-	Zap,
-	Heart,
-	Linkedin,
-	Gitlab,
-	Send,
-} from "lucide-react";
+import { Mail, Users, Github, Zap, Linkedin, Gitlab, Send } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import appScreenshot from "@/assets/brand/app.png";
@@ -219,7 +210,7 @@ const AboutPage = () => {
 							<div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-black/20" />
 							<div className="relative z-10 max-w-2xl mx-auto text-primary-foreground">
 								<div className="inline-flex p-3 rounded-2xl bg-white/10 backdrop-blur-sm mb-6">
-									<Heart className="w-8 h-8 animate-pulse fill-white" />
+									<Zap className="w-8 h-8 animate-pulse fill-white" />
 								</div>
 								<h3 className="text-2xl md:text-5xl font-black mb-6 tracking-tight">
 									{t("about_page.contribute.title")}

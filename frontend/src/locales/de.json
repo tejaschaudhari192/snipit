@@ -303,10 +303,6 @@
 				"title": "Dunkelmodus",
 				"desc": "Augenschonend mit einer schönen dunklen Theme-Option."
 			},
-			"open_source": {
-				"title": "Open Source",
-				"desc": "Kostenlos und Open Source. Beitragen, forken oder selbst hosten."
-			},
 			"redirect_urls": {
 				"title": "Links kürzen",
 				"desc": "Erstellen Sie kurze, handliche Links, die sofort zu jedem beliebigen Ziel weiterleiten."
@@ -338,6 +334,18 @@
 			"password": {
 				"title": "Erhöhte Sicherheit",
 				"desc": "Schützen Sie vertraulichen Code mit Passwörtern und verwalten Sie granulare Zugriffsberechtigungen."
+			},
+			"terminal_execution": {
+				"title": "Interaktives Terminal",
+				"desc": "Führen Sie Ihre Code-Snippets (Bash, Python, Java usw.) direkt im integrierten Hochleistungsterminal aus."
+			},
+			"save_as_export": {
+				"title": "Flexibler Export",
+				"desc": "Laden Sie Ihre Snippets in verschiedenen Formaten herunter, darunter PDF, Klartext oder sprachspezifische Erweiterungen."
+			},
+			"drawing": {
+				"title": "Interaktives Zeichnen",
+				"desc": "Kollaboratives Whiteboard zum Skizzieren von Ideen und Diagrammen neben Ihrem Code."
 			}
 		},
 		"story": {
@@ -367,7 +375,7 @@
 			"items": {
 				"free": {
 					"question": "Ist Snipit kostenlos?",
-					"answer": "Ja! Snipit ist komplett kostenlos und Open Source. Sie können es für persönliche oder kommerzielle Projekte ohne Kosten nutzen."
+					"answer": "Ja! Snipit ist komplett kostenlos. Sie können es ohne Kosten für persönliche oder kommerzielle Projekte nutzen."
 				},
 				"expiration": {
 					"question": "Wie lange bleiben Snippets erhalten?",
