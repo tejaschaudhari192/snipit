@@ -3,6 +3,7 @@ import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
 import { Edit, Trash2, Save, X, Play } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { SUPPORTED_RUN_LANGUAGES } from "@/constants";
+import { SaveAsButton } from "./save-as-button";
 
 interface ToolbarActionButtonsProps {
 	isEdit: boolean;
@@ -20,6 +21,7 @@ interface ToolbarActionButtonsProps {
 	onToggleTerminal?: () => void;
 	isCode?: boolean;
 	language?: string;
+	pasteId?: string;
 }
 
 export const ToolbarActionButtons = ({
@@ -38,6 +40,7 @@ export const ToolbarActionButtons = ({
 	onToggleTerminal,
 	isCode = false,
 	language = "text",
+	pasteId,
 }: ToolbarActionButtonsProps) => {
 	const { t } = useTranslation();
 
@@ -52,6 +55,17 @@ export const ToolbarActionButtons = ({
 					>
 						<span>{t("display.copy_button")}</span>
 					</CopyButton>
+
+					{(isCode || language.toLowerCase() === "text") && (
+						<SaveAsButton
+							content={content}
+							language={language}
+							pasteId={pasteId}
+							isCode={isCode}
+							className="gap-2 h-9 shrink-0"
+						/>
+					)}
+
 					{isCode &&
 						SUPPORTED_RUN_LANGUAGES.includes(
 							language.toLowerCase(),

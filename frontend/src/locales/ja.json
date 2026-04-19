@@ -100,6 +100,7 @@
 		"exit_zen": "ゼンモードを終了する",
 		"markdown_layout": "Markdownレイアウト",
 		"download_qr": "QRコードをダウンロード",
+		"save_as": "名前を付けて保存...",
 		"edit_permission": "編集できる人",
 		"only_me": "自分のみ",
 		"specific_people": "特定のユーザー",

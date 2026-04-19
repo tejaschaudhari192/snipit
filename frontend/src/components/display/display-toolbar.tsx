@@ -127,6 +127,7 @@ export const DisplayToolbar = ({
 				onToggleTerminal={onToggleTerminal}
 				isCode={isCode}
 				language={language}
+				pasteId={paste?.id}
 			/>
 
 			<div className="flex flex-1 items-center gap-2 justify-end">

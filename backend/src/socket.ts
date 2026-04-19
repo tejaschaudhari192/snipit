@@ -223,6 +223,11 @@ export const setupSocket = (server: HTTPServer) => {
 		});
 
 		socket.on("run-code", async ({ code, language }) => {
+			// Normalize line endings to LF and remove BOM to prevent issues on Linux
+			const normalizedCode = code
+				.replace(/\uFEFF/g, "")
+				.replace(/\r/g, "");
+
 			let cmd: string;
 			let args: string[] = [];
 			let fileExt: string;
@@ -292,8 +297,10 @@ export const setupSocket = (server: HTTPServer) => {
 			// Map specific file names for languages that care
 			let fileName = `${tempId}${fileExt}`;
 			if (language.toLowerCase() === "java") {
-				const publicClassMatch = code.match(/public\s+class\s+(\w+)/);
-				const mainClassMatch = code.match(
+				const publicClassMatch = normalizedCode.match(
+					/public\s+class\s+(\w+)/,
+				);
+				const mainClassMatch = normalizedCode.match(
 					/class\s+(\w+)(?:(?!\bclass\b)[\s\S])*?public\s+static\s+void\s+main/,
 				);
 				if (publicClassMatch) {
@@ -312,7 +319,7 @@ export const setupSocket = (server: HTTPServer) => {
 				if (!fs.existsSync(baseDirPath)) fs.mkdirSync(baseDirPath);
 				if (!fs.existsSync(executionDirPath))
 					fs.mkdirSync(executionDirPath);
-				fs.writeFileSync(filePath, code);
+				fs.writeFileSync(filePath, normalizedCode);
 			} catch (err: any) {
 				socket.emit("code-output", {
 					output: `[Error] Failed to create temp file: ${err.message}\r\n`,
@@ -349,7 +356,7 @@ export const setupSocket = (server: HTTPServer) => {
 				finalCmd = `rustc ${fileName} -o ${exeName} && ${exeName}`;
 				finalArgs = [];
 			} else if (language.toLowerCase() === "java") {
-				const mainClassMatch = code.match(
+				const mainClassMatch = normalizedCode.match(
 					/class\s+(\w+)(?:(?!\bclass\b)[\s\S])*?public\s+static\s+void\s+main/,
 				);
 				const mainClassName = mainClassMatch

@@ -26,6 +26,30 @@ export const LANGUAGES = [
 	{ name: "Other", value: "other" },
 ];
 
+export const LANGUAGE_EXTENSIONS: Record<string, string> = {
+	javascript: "js",
+	typescript: "ts",
+	python: "py",
+	java: "java",
+	c: "c",
+	cpp: "cpp",
+	csharp: "cs",
+	go: "go",
+	rust: "rs",
+	php: "php",
+	ruby: "rb",
+	shell: "sh",
+	bash: "sh",
+	sql: "sql",
+	html: "html",
+	css: "css",
+	json: "json",
+	markdown: "md",
+	yaml: "yaml",
+	yml: "yaml",
+	xml: "xml",
+};
+
 export const FILE_EXTENSIONS = {
 	ARCHIVE: ["zip", "rar", "7z", "tar", "gz", "bz2", "xz"],
 	CODE: [

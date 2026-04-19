@@ -111,7 +111,8 @@
 		"enter_zen": "Enter Zen Mode",
 		"exit_zen": "Exit Zen Mode",
 		"markdown_layout": "Markdown Layout",
-		"download_qr": "Download QR"
+		"download_qr": "Download QR",
+		"save_as": "Save as..."
 	},
 	"profile": {
 		"title": "Your Profile",
