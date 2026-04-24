@@ -21,6 +21,7 @@ import { useTerminalLayout } from "@/hooks/use-terminal-layout";
 import { TerminalContainer } from "@/components/terminal/terminal-container";
 import { ResizablePanels } from "@/components/common/resizable-panels";
 
+import { MainToolbar } from "@/components/home/main-toolbar";
 const LanguageSelector = lazy(() =>
 	import("@/components/editor/language-selector").then((m) => ({
 		default: m.LanguageSelector,
@@ -36,11 +37,6 @@ const CustomExpiryDialog = lazy(() =>
 		default: m.CustomExpiryDialog,
 	})),
 );
-const MainToolbar = lazy(() =>
-	import("@/components/home/main-toolbar").then((m) => ({
-		default: m.MainToolbar,
-	})),
-);
 const EditorContent = lazy(() =>
 	import("@/components/home/editor-content").then((m) => ({
 		default: m.EditorContent,
@@ -50,6 +46,21 @@ const AiEnhanceDialog = lazy(() =>
 	import("@/components/editor/ai-enhance-dialog").then((m) => ({
 		default: m.AiEnhanceDialog,
 	})),
+);
+
+// Shimmer Skeletons
+const EditorSkeleton = () => (
+	<div className="mx-2 mt-0.5 sm:mx-4 sm:mt-1 mb-4 glass-card overflow-hidden flex-1 flex flex-col rounded-2xl border border-border/20">
+		<div className="h-10 border-b border-border/10 flex items-center px-4 gap-4">
+			<div className="w-20 h-4 skeleton rounded" />
+			<div className="w-20 h-4 skeleton rounded" />
+		</div>
+		<div className="flex-1 p-6 space-y-4">
+			<div className="w-3/4 h-4 skeleton rounded" />
+			<div className="w-1/2 h-4 skeleton rounded" />
+			<div className="w-5/6 h-4 skeleton rounded" />
+		</div>
+	</div>
 );
 
 const HomePage = () => {
@@ -367,74 +378,82 @@ const HomePage = () => {
 		<div className="relative flex-1 flex flex-col bg-background overflow-hidden">
 			{/* Toolbar: fixed height, does not grow */}
 			<div className="relative z-10 flex flex-col gap-1.5 my-1 mx-2 md:my-1.5 md:mx-4 shrink-0">
-				<Suspense fallback={null}>
-					<MainToolbar
-						contentType={contentType}
-						setContentType={onContentTypeChange}
-						expiresTime={expiresTime}
-						setExpiresTime={setExpiresTime}
-						setIsCustomExpiryDialogOpen={
-							setIsCustomExpiryDialogOpen
+				<MainToolbar
+					contentType={contentType}
+					setContentType={onContentTypeChange}
+					expiresTime={expiresTime}
+					setExpiresTime={setExpiresTime}
+					setIsCustomExpiryDialogOpen={setIsCustomExpiryDialogOpen}
+					handleQuickPaste={handleQuickPaste}
+					handleCollaborative={handleCollaborative}
+					isSubmitting={isSubmitting}
+					isUploading={isUploading}
+					uploadProgress={uploadProgress}
+					handleDialogSubmit={handleDialogSubmit}
+					dialogError={dialogError}
+					shortenedResult={shortenedResult}
+					isCode={contentType === "code"}
+					language={language}
+					isTerminalOpen={isTerminalOpen}
+					onToggleTerminal={() => {
+						const opening = !isTerminalOpen;
+						setIsTerminalOpen(opening);
+						if (opening && socket && textValue) {
+							socket.emit("run-code", {
+								code: textValue,
+								language,
+							});
 						}
-						handleQuickPaste={handleQuickPaste}
-						handleCollaborative={handleCollaborative}
-						isSubmitting={isSubmitting}
-						isUploading={isUploading}
-						uploadProgress={uploadProgress}
-						handleDialogSubmit={handleDialogSubmit}
-						dialogError={dialogError}
-						shortenedResult={shortenedResult}
-						isCode={contentType === "code"}
-						language={language}
-						isTerminalOpen={isTerminalOpen}
-						onToggleTerminal={() => {
-							const opening = !isTerminalOpen;
-							setIsTerminalOpen(opening);
-							if (opening && socket && textValue) {
-								socket.emit("run-code", {
-									code: textValue,
-									language,
-								});
-							}
-						}}
-					>
-						{(isDetecting || contentType === "code") && (
-							<div className="flex items-center gap-2">
+					}}
+				>
+					{(isDetecting || contentType === "code") && (
+						<div className="flex items-center gap-2">
+							<Suspense
+								fallback={
+									<div className="w-24 h-9 skeleton rounded-lg" />
+								}
+							>
 								<LanguageSelector
 									value={language}
 									onValueChange={setLanguage}
 									isDetecting={isDetecting}
 								/>
-								{!isDetecting && (
-									<Button
-										variant="outline"
-										size="icon"
-										className="h-9 w-9 shrink-0 bg-background/50 hover:bg-background/80 border-border/40 shadow-sm"
-										onClick={() => {
-											hasDetectedRef.current = false;
-											handleLanguageDetection(textValue);
-										}}
-										title={t(
-											"home.auto_detecting",
-											"Auto-detect language",
-										)}
-									>
-										<Code2 className="h-4 w-4 text-muted-foreground" />
-									</Button>
-								)}
-							</div>
-						)}
+							</Suspense>
+							{!isDetecting && (
+								<Button
+									variant="outline"
+									size="icon"
+									className="h-9 w-9 shrink-0 bg-background/50 hover:bg-background/80 border-border/40 shadow-sm"
+									onClick={() => {
+										hasDetectedRef.current = false;
+										handleLanguageDetection(textValue);
+									}}
+									title={t(
+										"home.auto_detecting",
+										"Auto-detect language",
+									)}
+								>
+									<Code2 className="h-4 w-4 text-muted-foreground" />
+								</Button>
+							)}
+						</div>
+					)}
 
-						{contentType !== "link" &&
-							contentType !== "file" &&
-							contentType !== "draw" && (
+					{contentType !== "link" &&
+						contentType !== "file" &&
+						contentType !== "draw" && (
+							<Suspense
+								fallback={
+									<div className="w-20 h-9 skeleton rounded-lg" />
+								}
+							>
 								<FontSizeControls
 									fontSize={fontSize}
 									setFontSize={setFontSize}
 								/>
-							)}
-					</MainToolbar>
-				</Suspense>
+							</Suspense>
+						)}
+				</MainToolbar>
 			</div>
 
 			<Suspense fallback={null}>
@@ -458,7 +477,7 @@ const HomePage = () => {
 
 					const editorPanel = (
 						<div className="flex-1 flex flex-col min-h-0 min-w-0 overflow-hidden h-full w-full">
-							<Suspense fallback={null}>
+							<Suspense fallback={<EditorSkeleton />}>
 								<EditorContent
 									fontSize={fontSize}
 									editorContainerRef={editorContainerRef}

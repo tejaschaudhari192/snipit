@@ -58,24 +58,7 @@ const App = () => {
 			checkStatus();
 			hasRun.current = true;
 		}
-
-		// Background prefetch heavy components after initial load
-		if (!loading) {
-			const prefetch = () => {
-				// We don't need to do anything with the imports, just calling them
-				// triggers the browser to download the chunks in the background.
-				import("@monaco-editor/react").catch(() => {});
-				import("@excalidraw/excalidraw").catch(() => {});
-				import("@/components/display/content/markdown-display").catch(
-					() => {},
-				);
-			};
-
-			// Small delay to ensure main thread is free
-			const timer = setTimeout(prefetch, 2000);
-			return () => clearTimeout(timer);
-		}
-	}, [apiHelpers, loading]);
+	}, [apiHelpers]);
 
 	return (
 		<ThemeProvider>
