@@ -1,5 +1,18 @@
-import { Editor, type BeforeMount, type OnMount } from "@monaco-editor/react";
-import { CollabDraw } from "@/components/display/collab-draw";
+import { type BeforeMount, type OnMount } from "@monaco-editor/react";
+import { lazy, Suspense } from "react";
+const CollabDraw = lazy(() =>
+	import("@/components/display/collab-draw").then((m) => ({
+		default: m.CollabDraw,
+	})),
+);
+const MarkdownDisplay = lazy(() =>
+	import("@/components/display/content/markdown-display").then((m) => ({
+		default: m.MarkdownDisplay,
+	})),
+);
+const Editor = lazy(() =>
+	import("@monaco-editor/react").then((m) => ({ default: m.Editor })),
+);
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslation } from "react-i18next";
 import { usePaste } from "@/context/PasteContext";
@@ -16,7 +29,7 @@ import {
 	memo,
 } from "react";
 import { cn } from "@/lib/utils";
-import { MarkdownDisplay } from "@/components/display/content/markdown-display";
+
 import { ResizableSplitPane } from "@/components/common/resizable-split-pane";
 import { useMarkdownLayout } from "@/hooks/use-markdown-layout";
 import type { PasteData } from "@/types";
@@ -200,12 +213,18 @@ export const EditorContent = memo(
 
 					<div className="flex-1 w-full h-full relative min-h-0 flex flex-col">
 						{contentType === "draw" ? (
-							<CollabDraw
-								isEdit={true}
-								content={textValue}
-								onContentChange={setTextValue}
-								theme={theme as "light" | "dark" | "system"}
-							/>
+							<Suspense
+								fallback={
+									<div className="w-full h-full animate-pulse bg-muted/20 rounded-xl" />
+								}
+							>
+								<CollabDraw
+									isEdit={true}
+									content={textValue}
+									onContentChange={setTextValue}
+									theme={theme as "light" | "dark" | "system"}
+								/>
+							</Suspense>
 						) : contentType === "code" || contentType === "text" ? (
 							language === "markdown" ? (
 								<ResizableSplitPane
@@ -215,65 +234,85 @@ export const EditorContent = memo(
 									mode={mdLayoutMode}
 									storageKey="markdown-editor-preview-split"
 									left={
-										<Editor
-											height="100%"
-											language={language}
-											value={textValue}
-											onChange={(value) =>
-												setTextValue(value || "")
+										<Suspense
+											fallback={
+												<div className="h-full w-full bg-background animate-pulse" />
 											}
-											theme={
-												theme === "dark"
-													? "snipit-dark"
-													: "snipit-light"
-											}
-											beforeMount={handleEditorWillMount}
-											onMount={handleEditorMount}
-											options={{
-												minimap: { enabled: false },
-												fontSize: fontSize,
-												padding: { top: 16 },
-												mouseWheelZoom: true,
-												wordWrap: "on",
-												automaticLayout: true,
-											}}
-										/>
+										>
+											<Editor
+												height="100%"
+												language={language}
+												value={textValue}
+												onChange={(value) =>
+													setTextValue(value || "")
+												}
+												theme={
+													theme === "dark"
+														? "snipit-dark"
+														: "snipit-light"
+												}
+												beforeMount={
+													handleEditorWillMount
+												}
+												onMount={handleEditorMount}
+												options={{
+													minimap: { enabled: false },
+													fontSize: fontSize,
+													padding: { top: 16 },
+													mouseWheelZoom: true,
+													wordWrap: "on",
+													automaticLayout: true,
+												}}
+											/>
+										</Suspense>
 									}
 									right={
 										<div className="h-full w-full overflow-y-auto bg-background/50">
-											<MarkdownDisplay
-												content={textValue}
-												fontSize={fontSize}
-												contentRef={() => {}}
-											/>
+											<Suspense
+												fallback={
+													<div className="p-10 animate-pulse bg-muted/10 rounded-2xl h-64" />
+												}
+											>
+												<MarkdownDisplay
+													content={textValue}
+													fontSize={fontSize}
+													contentRef={() => {}}
+												/>
+											</Suspense>
 										</div>
 									}
 								/>
 							) : (
-								<Editor
-									height="100%"
-									language={language}
-									value={textValue}
-									onChange={(value) =>
-										setTextValue(value || "")
+								<Suspense
+									fallback={
+										<div className="h-full w-full bg-background animate-pulse" />
 									}
-									theme={
-										theme === "dark"
-											? "snipit-dark"
-											: "snipit-light"
-									}
-									className="flex-1"
-									beforeMount={handleEditorWillMount}
-									onMount={handleEditorMount}
-									options={{
-										minimap: { enabled: false },
-										fontSize: fontSize,
-										padding: { top: 16 },
-										mouseWheelZoom: true,
-										wordWrap: "on",
-										automaticLayout: true,
-									}}
-								/>
+								>
+									<Editor
+										height="100%"
+										language={language}
+										value={textValue}
+										onChange={(value) =>
+											setTextValue(value || "")
+										}
+										theme={
+											theme === "dark"
+												? "snipit-dark"
+												: "snipit-light"
+										}
+										className="flex-1"
+										beforeMount={handleEditorWillMount}
+										onMount={handleEditorMount}
+										options={{
+											minimap: { enabled: false },
+											fontSize: fontSize,
+											padding: { top: 16 },
+											mouseWheelZoom: true,
+											wordWrap: "on",
+											automaticLayout: true,
+										}}
+									/>
+								</Suspense>
 							)
 						) : contentType === "file" ? (
 							<FileUploadView

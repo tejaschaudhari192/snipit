@@ -9,7 +9,6 @@ import {
 	DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { jsPDF } from "jspdf";
 
 interface SaveAsButtonProps {
 	content: string;
@@ -28,10 +27,11 @@ export const SaveAsButton = ({
 }: SaveAsButtonProps) => {
 	const { t } = useTranslation();
 
-	const handleDownload = (format: "lang" | "txt" | "pdf") => {
+	const handleDownload = async (format: "lang" | "txt" | "pdf") => {
 		const fileName = pasteId || "snipit";
 
 		if (format === "pdf") {
+			const { jsPDF } = await import("jspdf");
 			const doc = new jsPDF();
 			doc.setFont("courier");
 			doc.setFontSize(10);
