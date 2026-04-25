@@ -27,7 +27,7 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.get("/api", (req: Request, res: Response) => {
+app.get("/api", (req: Request, res: any) => {
 	res.send("Hello");
 });
 
