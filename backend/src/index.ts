@@ -18,3 +18,4 @@ server.listen(port, () => {
 	logger.info(`🚀 Server listening on ${port}`);
 	logger.info(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
 });
+export default app;
