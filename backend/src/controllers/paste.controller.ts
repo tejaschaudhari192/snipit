@@ -438,7 +438,7 @@ class PasteController {
 				await deleteFileFromStorage(existingPaste.fileUrl);
 			}
 
-			let finalUpdates = { ...validatedBody };
+			const finalUpdates = { ...validatedBody };
 
 			if (userRole === "editor") {
 				// Prevent non-admins from changing these

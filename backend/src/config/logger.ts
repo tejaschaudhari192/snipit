@@ -11,11 +11,6 @@ const consoleFormat = format.combine(
 	}),
 );
 
-const fileFormat = format.combine(
-	format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
-	format.simple(),
-);
-
 const logger = createLogger({
 	level: "info",
 	transports: [

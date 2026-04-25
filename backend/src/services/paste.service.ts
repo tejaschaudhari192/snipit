@@ -1,14 +1,5 @@
 import pasteModel from "@/models/Paste.js";
-import type {
-	PasteData,
-	CommentData,
-	ContentMode,
-	Visibility,
-	EditPermission,
-	PublicRole,
-	ShareRole,
-	UpdatePasteData,
-} from "@/types/index.js";
+import type { PasteData, CommentData, UpdatePasteData } from "@/types/index.js";
 
 class PasteService {
 	async savePaste(pastedata: PasteData) {
