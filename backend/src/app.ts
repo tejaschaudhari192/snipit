@@ -1,8 +1,5 @@
-import express, {
-	type Application,
-	type Request,
-	type Response,
-} from "express";
+import express from "express";
+import type { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import configurations from "@/config/configurations.js";
@@ -14,7 +11,7 @@ import authRouter from "@/routes/auth.routes.js";
 import { ZodError } from "zod";
 import logger from "@/config/logger.js";
 
-const app: Application = express();
+const app: any = express();
 
 app.set("trust proxy", 1);
 
@@ -41,52 +38,42 @@ app.use("/api/", aiRouter);
 app.use("/job", jobRouter);
 
 // Error Handler
-app.use(
-	(
-		err: any,
-		req: Request,
-		res: Response,
-		_next: import("express").NextFunction,
-	) => {
-		if (res.headersSent) {
-			return _next(err);
-		}
+app.use((err: any, req: Request, res: any, _next: any) => {
+	if (res.headersSent) {
+		return _next(err);
+	}
 
-		const errorMessage = err?.message || "Internal Server Error";
-		const errorStack = err?.stack || "";
+	const errorMessage = err?.message || "Internal Server Error";
+	const errorStack = err?.stack || "";
 
-		console.error(`[API Error] ${errorMessage}`);
-		if (errorStack) console.error(errorStack);
+	console.error(`[API Error] ${errorMessage}`);
+	if (errorStack) console.error(errorStack);
 
-		if (logger) {
-			logger.error({ message: errorMessage, stack: errorStack });
-		}
+	if (logger) {
+		logger.error({ message: errorMessage, stack: errorStack });
+	}
 
-		if (err && (err.name === "ZodError" || err instanceof ZodError)) {
-			const issues = (err.issues || err.errors || []) as any[];
-			return res.status(400).json({
-				error: "Validation failed",
-				details: issues.map((e) => ({
-					path: e.path,
-					message: e.message,
-				})),
-			});
-		}
+	if (err && (err.name === "ZodError" || err instanceof ZodError)) {
+		const issues = (err.issues || err.errors || []) as any[];
+		return res.status(400).json({
+			error: "Validation failed",
+			details: issues.map((e) => ({
+				path: e.path,
+				message: e.message,
+			})),
+		});
+	}
 
-		if (
-			err &&
-			(err.name === "ValidationError" || err.name === "CastError")
-		) {
-			return res.status(400).json({
-				error: errorMessage,
-			});
-		}
-
-		const status = err?.status || err?.statusCode || 500;
-		res.status(status).json({
+	if (err && (err.name === "ValidationError" || err.name === "CastError")) {
+		return res.status(400).json({
 			error: errorMessage,
 		});
-	},
-);
+	}
+
+	const status = err?.status || err?.statusCode || 500;
+	res.status(status).json({
+		error: errorMessage,
+	});
+});
 
 export default app;
