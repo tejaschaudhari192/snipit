@@ -8,6 +8,7 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"dev": "nodemon --exec tsx ./src/index.ts",
 		"build": "tsc && tsc-alias",
+		"vercel-build": "pnpm run build",
 		"lint": "eslint .",
 		"format": "prettier --write ."
 	},
