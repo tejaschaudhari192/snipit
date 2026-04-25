@@ -46,7 +46,11 @@ ${content.slice(0, 1000)}`;
 		// Clean up any potential extra characters (like markdown code blocks if the model outputs them)
 		language = language.replace(/```/g, "").trim();
 
-		if (!VALID_LANGUAGES.includes(language as any)) {
+		if (
+			!VALID_LANGUAGES.includes(
+				language as (typeof VALID_LANGUAGES)[number],
+			)
+		) {
 			language = "text";
 		}
 

@@ -2,12 +2,17 @@ import type { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import configurations from "@/config/configurations.js";
 
-export const extractTokenFromRequest = (req: Request): string | null => {
+export const extractTokenFromRequest = (req: {
+	headers: { authorization?: string | string[] | undefined };
+	cookies?: { jwt?: string };
+}): string | null => {
+	const authHeader = req.headers.authorization;
 	if (
-		req.headers.authorization &&
-		req.headers.authorization.startsWith("Bearer")
+		authHeader &&
+		typeof authHeader === "string" &&
+		authHeader.startsWith("Bearer")
 	) {
-		return req.headers.authorization.split(" ")[1] ?? null;
+		return authHeader.split(" ")[1] ?? null;
 	} else if (req.cookies && req.cookies.jwt) {
 		return req.cookies.jwt ?? null;
 	}

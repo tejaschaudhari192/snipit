@@ -11,7 +11,7 @@ import authRouter from "@/routes/auth.routes.js";
 import { ZodError } from "zod";
 import logger from "@/config/logger.js";
 
-const app: any = express();
+const app: express.Application = express();
 
 app.set("trust proxy", 1);
 
@@ -27,7 +27,7 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.get("/api", (req: Request, res: any) => {
+app.get("/api", (req: Request, res: Response) => {
 	res.send("Hello");
 });
 
@@ -38,13 +38,14 @@ app.use("/api/", aiRouter);
 app.use("/job", jobRouter);
 
 // Error Handler
-app.use((err: any, req: Request, res: any, _next: any) => {
+app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
 	if (res.headersSent) {
 		return _next(err);
 	}
 
-	const errorMessage = err?.message || "Internal Server Error";
-	const errorStack = err?.stack || "";
+	const error = err as any; // Localized cast for error properties
+	const errorMessage = error?.message || "Internal Server Error";
+	const errorStack = error?.stack || "";
 
 	console.error(`[API Error] ${errorMessage}`);
 	if (errorStack) console.error(errorStack);
@@ -53,24 +54,26 @@ app.use((err: any, req: Request, res: any, _next: any) => {
 		logger.error({ message: errorMessage, stack: errorStack });
 	}
 
-	if (err && (err.name === "ZodError" || err instanceof ZodError)) {
-		const issues = (err.issues || err.errors || []) as any[];
+	if (err instanceof ZodError) {
 		return res.status(400).json({
 			error: "Validation failed",
-			details: issues.map((e) => ({
+			details: err.issues.map((e) => ({
 				path: e.path,
 				message: e.message,
 			})),
 		});
 	}
 
-	if (err && (err.name === "ValidationError" || err.name === "CastError")) {
+	if (
+		error &&
+		(error.name === "ValidationError" || error.name === "CastError")
+	) {
 		return res.status(400).json({
 			error: errorMessage,
 		});
 	}
 
-	const status = err?.status || err?.statusCode || 500;
+	const status = error?.status || error?.statusCode || 500;
 	res.status(status).json({
 		error: errorMessage,
 	});

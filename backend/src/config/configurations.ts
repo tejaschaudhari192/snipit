@@ -119,6 +119,6 @@ export const VALID_LANGUAGES = [
 	"bash",
 	"other",
 	"text",
-];
+] as const;
 
 export default configurations;

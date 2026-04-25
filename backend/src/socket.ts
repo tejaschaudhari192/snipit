@@ -23,7 +23,7 @@ const activeUsers = new Map<string, ActiveUser & { pasteId: string }>();
 // Helpers
 const getSocketUserId = (socket: Socket): string | null => {
 	const req = socket.request;
-	const token = extractTokenFromRequest(req as any);
+	const token = extractTokenFromRequest(req);
 	return token ? getUserIdFromToken(token) : null;
 };
 
@@ -46,9 +46,7 @@ const canUserEdit = async (
 	if (isOwner || isAnonymousOwner) return true;
 
 	if (paste.shareList && userEmail) {
-		const shareEntry = (paste.shareList as any).find(
-			(s: any) => s.email === userEmail,
-		);
+		const shareEntry = paste.shareList.find((s) => s.email === userEmail);
 		if (
 			shareEntry &&
 			(shareEntry.role === "editor" || shareEntry.role === "admin")
@@ -89,9 +87,7 @@ const canUserView = async (
 
 	let hasShareListAccess = false;
 	if (paste.shareList && userEmail) {
-		const shareEntry = (paste.shareList as any).find(
-			(s: any) => s.email === userEmail,
-		);
+		const shareEntry = paste.shareList.find((s) => s.email === userEmail);
 		if (shareEntry) hasShareListAccess = true;
 	}
 
@@ -105,7 +101,7 @@ export const setupSocket = (server: HTTPServer) => {
 			credentials: true,
 			methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 		},
-	} as any);
+	});
 
 	const runningProcesses = new Map<string, ChildProcess>();
 	const inputBuffers = new Map<string, string>();
@@ -320,9 +316,11 @@ export const setupSocket = (server: HTTPServer) => {
 				if (!fs.existsSync(executionDirPath))
 					fs.mkdirSync(executionDirPath);
 				fs.writeFileSync(filePath, normalizedCode);
-			} catch (err: any) {
+			} catch (error: unknown) {
+				const message =
+					error instanceof Error ? error.message : String(error);
 				socket.emit("code-output", {
-					output: `[Error] Failed to create temp file: ${err.message}\r\n`,
+					output: `[Error] Failed to create temp file: ${message}\r\n`,
 				});
 				return;
 			}
@@ -428,13 +426,13 @@ export const setupSocket = (server: HTTPServer) => {
 				}
 			});
 
-			proc.on("error", (err) => {
+			proc.on("error", (error: Error) => {
 				socket.emit("code-output", {
-					output: `\r\n[Error] Process error: ${err.message}\r\n`,
+					output: `\r\n[Error] Process error: ${error.message}\r\n`,
 				});
 				socket.emit("code-status", {
 					status: "stopped",
-					error: err.message,
+					error: error.message,
 				});
 				runningProcesses.delete(socket.id);
 				try {
