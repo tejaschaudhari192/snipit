@@ -7,10 +7,11 @@
 			"config": { "includeFiles": ["dist/**"] }
 		}
 	],
-	"routes": [
+	"rewrites": [
 		{
-			"src": "/(.*)",
-			"dest": "vercel-handler.js"
+			"source": "/(.*)",
+			"destination": "/vercel-handler.js"
 		}
 	]
 }
+
