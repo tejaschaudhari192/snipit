@@ -15,17 +15,14 @@ const app: express.Application = express();
 
 app.set("trust proxy", 1);
 
-app.options("*", cors());
+app.options("(.*)", cors());
 app.use(
 	cors({
 		origin: (origin, callback) => {
 			// Allow requests with no origin (like mobile apps or curl requests)
 			if (!origin) return callback(null, true);
 
-			const isAllowed =
-				configurations.cors.origins.includes(origin) ||
-				origin.endsWith(".vercel.app") ||
-				origin.includes("localhost");
+			const isAllowed = configurations.cors.origins.includes(origin);
 
 			if (isAllowed) {
 				callback(null, true);
