@@ -15,7 +15,6 @@ const app: express.Application = express();
 
 app.set("trust proxy", 1);
 
-app.options("(.*)", cors());
 app.use(
 	cors({
 		origin: (origin, callback) => {
