@@ -17,18 +17,7 @@ app.set("trust proxy", 1);
 
 app.use(
 	cors({
-		origin: (origin, callback) => {
-			// Allow requests with no origin (like mobile apps or curl requests)
-			if (!origin) return callback(null, true);
-
-			const isAllowed = configurations.cors.origins.includes(origin);
-
-			if (isAllowed) {
-				callback(null, true);
-			} else {
-				callback(new Error("Not allowed by CORS"));
-			}
-		},
+		origin: configurations.cors.origins,
 		credentials: true,
 		methods: "GET,POST,PUT,DELETE,OPTIONS",
 		allowedHeaders: "Content-Type,Authorization,X-Requested-With,Accept",
