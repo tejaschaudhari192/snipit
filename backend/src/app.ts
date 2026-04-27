@@ -15,12 +15,27 @@ const app: express.Application = express();
 
 app.set("trust proxy", 1);
 
+app.options("*", cors());
 app.use(
 	cors({
-		origin: configurations.cors.origins,
+		origin: (origin, callback) => {
+			// Allow requests with no origin (like mobile apps or curl requests)
+			if (!origin) return callback(null, true);
+
+			const isAllowed =
+				configurations.cors.origins.includes(origin) ||
+				origin.endsWith(".vercel.app") ||
+				origin.includes("localhost");
+
+			if (isAllowed) {
+				callback(null, true);
+			} else {
+				callback(new Error("Not allowed by CORS"));
+			}
+		},
 		credentials: true,
 		methods: "GET,POST,PUT,DELETE,OPTIONS",
-		allowedHeaders: "Content-Type,Authorization",
+		allowedHeaders: "Content-Type,Authorization,X-Requested-With,Accept",
 	}),
 );
 

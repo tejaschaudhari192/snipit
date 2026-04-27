@@ -97,7 +97,13 @@ const canUserView = async (
 export const setupSocket = (server: HTTPServer) => {
 	const io = new SocketIOServer(server, {
 		cors: {
-			origin: configurations.cors.origins,
+			origin: (origin, callback) => {
+				if (!origin || configurations.cors.origins.includes(origin)) {
+					callback(null, true);
+				} else {
+					callback(new Error("Not allowed by CORS"));
+				}
+			},
 			credentials: true,
 			methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 		},
