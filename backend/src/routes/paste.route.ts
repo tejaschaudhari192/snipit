@@ -1,6 +1,7 @@
 import logger from "@/config/logger.js";
 import PasteController from "@/controllers/paste.controller.js";
 import PasteService from "@/services/paste.service.js";
+import EmailService from "@/services/email.service.js";
 import {
 	Router,
 	type NextFunction,
@@ -11,7 +12,8 @@ import { protect } from "@/middleware/auth.middleware.js";
 const router: Router = Router();
 
 const pasteService = new PasteService();
-const pasteController = new PasteController(pasteService, logger);
+const emailService = new EmailService();
+const pasteController = new PasteController(pasteService, emailService, logger);
 
 router.get(
 	"/user/pastes",

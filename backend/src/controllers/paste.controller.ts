@@ -15,12 +15,13 @@ import {
 import bcrypt from "bcryptjs";
 import { deleteFileFromStorage } from "@/lib/supabase.js";
 import type { AuthRequest } from "@/middleware/auth.middleware.js";
-import { sendAccessGrantedEmail } from "@/lib/email.js";
+import type EmailService from "@/services/email.service.js";
 import configurations from "@/config/configurations.js";
 
 class PasteController {
 	constructor(
 		private readonly pasteService: PasteService,
+		private readonly emailService: EmailService,
 		private readonly logger: Logger,
 	) {}
 
@@ -236,15 +237,18 @@ class PasteController {
 						(req.headers.origin
 							? req.headers.origin
 							: "http://localhost:5173");
-					for (const share of validatedBody.shareList) {
-						const pasteUrl = `${frontendUrl}/${result.id}`;
-						sendAccessGrantedEmail(
-							share.email,
-							share.role,
-							result.id,
-							pasteUrl,
-						);
-					}
+					const emailPromises = validatedBody.shareList.map(
+						(share) => {
+							const pasteUrl = `${frontendUrl}/${result.id}`;
+							return this.emailService.sendAccessGrantedEmail(
+								share.email,
+								share.role,
+								result.id,
+								pasteUrl,
+							);
+						},
+					);
+					await Promise.all(emailPromises);
 				}
 
 				return res.status(201).json(result.toObject());
@@ -297,7 +301,7 @@ class PasteController {
 	}
 
 	async getPaste(req: AuthRequest, res: Response, next: NextFunction) {
-		const id = req.params.id;
+		const id = req.params.id as string;
 		try {
 			const result = await this.pasteService.incrementViews(id!);
 
@@ -384,7 +388,7 @@ class PasteController {
 	}
 
 	async deletePaste(req: AuthRequest, res: Response, next: NextFunction) {
-		const id = req.params.id;
+		const id = req.params.id as string;
 		try {
 			const existingPaste = await this.pasteService.getPasteById(id!);
 			if (!existingPaste) {
@@ -412,7 +416,7 @@ class PasteController {
 	}
 
 	async updatePaste(req: AuthRequest, res: Response, next: NextFunction) {
-		const id = req.params.id;
+		const id = req.params.id as string;
 		try {
 			const existingPaste = await this.pasteService.getPasteById(id!);
 			if (!existingPaste) {
@@ -511,18 +515,22 @@ class PasteController {
 					(req.headers.origin
 						? req.headers.origin
 						: "http://localhost:5173");
+				const emailPromises = [];
 				for (const share of finalUpdates.shareList) {
 					const oldRole = oldShareMap.get(share.email);
 					if (oldRole !== share.role) {
 						const pasteUrl = `${frontendUrl}/${result.id}`;
-						sendAccessGrantedEmail(
-							share.email,
-							share.role,
-							result.id,
-							pasteUrl,
+						emailPromises.push(
+							this.emailService.sendAccessGrantedEmail(
+								share.email,
+								share.role,
+								result.id,
+								pasteUrl,
+							),
 						);
 					}
 				}
+				await Promise.all(emailPromises);
 			}
 
 			this.logger.info(`Successfully updated paste: ${id} `);
@@ -566,7 +574,7 @@ class PasteController {
 	}
 
 	async verifyPassword(req: AuthRequest, res: Response, next: NextFunction) {
-		const id = req.params.id;
+		const id = req.params.id as string;
 		const { password } = req.body;
 
 		try {
@@ -594,7 +602,7 @@ class PasteController {
 	}
 
 	async addComment(req: AuthRequest, res: Response, next: NextFunction) {
-		const id = req.params.id;
+		const id = req.params.id as string;
 		const { content, author } = req.body;
 
 		try {

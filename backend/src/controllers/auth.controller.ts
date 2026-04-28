@@ -3,13 +3,14 @@ import User from "@/models/User.js";
 import bcrypt from "bcryptjs";
 import type { AuthRequest } from "@/middleware/auth.middleware.js";
 import nodeCrypto from "crypto";
-import nodemailer from "nodemailer";
-
+import EmailService from "@/services/email.service.js";
 import {
 	generateToken,
 	setAuthCookie,
 	clearAuthCookie,
 } from "@/lib/auth.utils.js";
+
+const emailService = new EmailService();
 
 const handleServerError = (res: Response, error: unknown) => {
 	const message =
@@ -157,24 +158,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 		const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
 
 		try {
-			const transporter = nodemailer.createTransport({
-				host: process.env.SMTP_HOST || "smtp.gmail.com",
-				port: Number(process.env.SMTP_PORT) || 587,
-				auth: {
-					user: process.env.SMTP_EMAIL,
-					pass: process.env.SMTP_PASSWORD,
-				},
-			});
-
-			await transporter.sendMail({
-				from: `${process.env.FROM_NAME || "Snipit"} <${
-					process.env.FROM_EMAIL || "noreply@snipit.com"
-				}>`,
-				to: user.email,
-				subject: "Password Reset Token",
-				text: message,
-			});
-
+			await emailService.sendPasswordResetEmail(user.email, resetUrl);
 			res.status(200).json({ success: true, data: "Email sent" });
 		} catch (err) {
 			console.log(err);
@@ -191,7 +175,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 };
 
 export const resetPassword = async (req: Request, res: Response) => {
-	const token = req.params.token;
+	const token = req.params.token as string;
 	if (!token) {
 		res.status(400).json({ message: "Invalid token" });
 		return;
