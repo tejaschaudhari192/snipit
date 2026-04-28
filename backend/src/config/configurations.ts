@@ -18,11 +18,7 @@ const configurations = {
 		maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
 	},
 	cors: {
-		origins: [
-			"https://cpaste.vercel.app",
-			"https://snipit-nu.vercel.app",
-			"http://localhost:5173",
-		],
+		origins: ["https://cpaste.vercel.app", "https://snipit-nu.vercel.app"],
 	},
 	job_secret: process.env.JOB_SECRET,
 	SUPABASE_URL: process.env.SUPABASE_URL,
