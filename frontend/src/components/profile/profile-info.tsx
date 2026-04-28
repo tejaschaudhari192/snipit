@@ -150,7 +150,7 @@ export const ProfileInfo = ({
 										<Calendar className="h-3.5 w-3.5" />
 										{t("profile.joined", "Joined")}{" "}
 										{formatDate(
-											user.createdAt || Date.now(),
+											user.createdAt || new Date(),
 											{
 												month: "long",
 												year: "numeric",

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import icon from "@/assets/brand/icon.png";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { useTranslation } from "react-i18next";
-import { HealthData, ServiceStatus } from "@/types";
+import type { HealthData, ServiceStatus } from "@/types";
 
 interface SplashPageProps {
 	healthData?: HealthData | null;

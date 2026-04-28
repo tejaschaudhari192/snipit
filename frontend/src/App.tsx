@@ -10,7 +10,7 @@ import { SnippetProvider } from "@/context/SnippetContext";
 import Loader from "@/components/common/core/loader";
 import { loader } from "@monaco-editor/react";
 import { useTranslation } from "react-i18next";
-import { HealthData } from "@/types";
+import type { HealthData } from "@/types";
 
 const HomePage = lazy(() => import("@/pages/home"));
 const DisplayPage = lazy(() => import("@/pages/display"));
