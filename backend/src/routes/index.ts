@@ -5,7 +5,7 @@ import aiRouter from "./ai.route.js";
 import healthRouter from "./health.route.js";
 import jobRouter from "./job.route.js";
 
-const router = Router();
+const router: Router = Router();
 
 // Route mappings
 router.use("/auth", authRouter);
