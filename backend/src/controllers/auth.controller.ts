@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import type { AuthRequest } from "@/middleware/auth.middleware.js";
 import nodeCrypto from "crypto";
 import EmailService from "@/services/email.service.js";
+import configurations from "@/config/configurations.js";
 import {
 	generateToken,
 	setAuthCookie,
@@ -152,7 +153,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
 		await user.save();
 
-		const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+		const frontendUrl = configurations.domain || "http://localhost:5173";
 		const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
 
 		const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
