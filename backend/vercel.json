@@ -2,18 +2,15 @@
 	"version": 2,
 	"trailingSlash": false,
 	"builds": [
-		{
-			"src": "vercel-handler.js",
-			"use": "@vercel/node",
-			"config": {
-				"includeFiles": ["dist/**"]
-			}
-		}
-	],
-	"rewrites": [
-		{
-			"source": "/(.*)",
-			"destination": "/vercel-handler.js"
-		}
-	]
+    {
+      "src": "index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "index.js"
+    }
+  ]
 }
