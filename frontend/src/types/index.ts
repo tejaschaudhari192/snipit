@@ -124,3 +124,13 @@ export interface UpdatePasteData {
 	fileSize?: number | null;
 	fileMimeType?: string | null;
 }
+
+export interface ServiceStatus {
+	status: string;
+	message: string;
+}
+
+export interface HealthData {
+	status: string;
+	services: Record<string, ServiceStatus>;
+}

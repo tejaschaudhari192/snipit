@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import configurations from "@/config/configurations.js";
 import logger from "@/config/logger.js";
 
-const transporter = nodemailer.createTransport({
+export const transporter = nodemailer.createTransport({
 	service: configurations.smtp.host ? undefined : configurations.smtp.service,
 	host: configurations.smtp.host,
 	port: configurations.smtp.port,

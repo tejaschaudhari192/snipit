@@ -10,6 +10,7 @@ import { SnippetProvider } from "@/context/SnippetContext";
 import Loader from "@/components/common/core/loader";
 import { loader } from "@monaco-editor/react";
 import { useTranslation } from "react-i18next";
+import { HealthData } from "@/types";
 
 const HomePage = lazy(() => import("@/pages/home"));
 const DisplayPage = lazy(() => import("@/pages/display"));
@@ -46,12 +47,24 @@ const App = () => {
 		});
 	}, [i18n.language]);
 
+	const [healthData, setHealthData] = useState<HealthData | null>(null);
+
 	useEffect(() => {
 		async function checkStatus() {
+			const startTime = Date.now();
 			try {
-				await apiHelpers.getServerStatus();
+				const data = await apiHelpers.getServerStatus();
+				setHealthData(data);
+			} catch {
+				setHealthData({ status: "down", services: {} });
 			} finally {
-				setLoading(false);
+				// Ensure splash screen shows for at least 3 seconds for a smooth transition
+				const elapsedTime = Date.now() - startTime;
+				const remainingTime = Math.max(0, 3000 - elapsedTime);
+
+				setTimeout(() => {
+					setLoading(false);
+				}, remainingTime);
 			}
 		}
 		if (!hasRun.current) {
@@ -63,7 +76,7 @@ const App = () => {
 	return (
 		<ThemeProvider>
 			{loading ? (
-				<SplashPage />
+				<SplashPage healthData={healthData} />
 			) : (
 				<AuthProvider>
 					<SnippetProvider>

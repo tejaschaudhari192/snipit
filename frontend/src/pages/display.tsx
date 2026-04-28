@@ -592,7 +592,7 @@ const DisplayPage = () => {
 		if (loading || !id || !paste) return;
 
 		const socketUrl = CONFIG.API_BASE_URL
-			? CONFIG.API_BASE_URL.replace(/\/api\/?$/, "")
+			? CONFIG.API_BASE_URL.replace(/\/api(\/v\d+)?\/?$/, "")
 			: "";
 		const s = io(socketUrl, { withCredentials: true });
 		socketRef.current = s;

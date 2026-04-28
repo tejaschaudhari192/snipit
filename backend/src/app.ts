@@ -3,11 +3,7 @@ import type { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import configurations from "@/config/configurations.js";
-import pasteRouter from "@/routes/paste.route.js";
-import healthRouter from "@/routes/health.route.js";
-import aiRouter from "@/routes/ai.route.js";
-import jobRouter from "@/routes/job.route.js";
-import authRouter from "@/routes/auth.routes.js";
+import apiRouter from "@/routes/index.js";
 import { ZodError } from "zod";
 import logger from "@/config/logger.js";
 
@@ -28,14 +24,10 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.get("/api", (req: Request, res: Response) => {
-	res.send("Hello");
+	res.send("Snipit API v1");
 });
 
-app.use("/api/auth", authRouter);
-app.use("/api/", pasteRouter);
-app.use("/health/", healthRouter);
-app.use("/api/", aiRouter);
-app.use("/job", jobRouter);
+app.use("/api/v1", apiRouter);
 
 // Error Handler
 app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {

@@ -1,21 +1,19 @@
 {
-    "version": 2,
-    "trailingSlash": false,
-    "builds": [
-        {
-            "src": "vercel-handler.js",
-            "use": "@vercel/node",
-            "config": {
-                "includeFiles": [
-                    "dist/**"
-                ]
-            }
-        }
-    ],
-    "rewrites": [
-        {
-            "source": "/(.*)",
-            "destination": "/vercel-handler.js"
-        }
-    ]
+	"version": 2,
+	"trailingSlash": false,
+	"builds": [
+		{
+			"src": "vercel-handler.js",
+			"use": "@vercel/node",
+			"config": {
+				"includeFiles": ["dist/**"]
+			}
+		}
+	],
+	"rewrites": [
+		{
+			"source": "/(.*)",
+			"destination": "/vercel-handler.js"
+		}
+	]
 }
