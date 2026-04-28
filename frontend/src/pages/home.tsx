@@ -6,7 +6,7 @@ import { type OnMount, type BeforeMount } from "@monaco-editor/react";
 import { Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-import { playErrorSound } from "@/lib/utils";
+import { playErrorSound, isSnipitDrawing } from "@/utils";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { CONFIG } from "@/configurations";
@@ -155,20 +155,9 @@ const HomePage = () => {
 			const textData =
 				e.clipboardData?.getData("text/plain") ||
 				e.clipboardData?.getData("text");
-			if (textData) {
-				try {
-					const parsed = JSON.parse(textData);
-					if (
-						parsed &&
-						Array.isArray(parsed.elements) &&
-						parsed.appState
-					) {
-						if (contentType !== "draw") setContentType("draw");
-						return;
-					}
-				} catch {
-					// Not JSON, continue
-				}
+			if (textData && isSnipitDrawing(textData)) {
+				if (contentType !== "draw") setContentType("draw");
+				return;
 			}
 
 			// 2. Ignore file pastes if already in Drawing mode (let Excalidraw handle it)
@@ -317,15 +306,10 @@ const HomePage = () => {
 		if (hasDetectedRef.current) return;
 
 		// 1. Local check for Drawing JSON
-		try {
-			const parsed = JSON.parse(content);
-			if (parsed && Array.isArray(parsed.elements) && parsed.appState) {
-				hasDetectedRef.current = true;
-				setContentType("draw");
-				return;
-			}
-		} catch {
-			// Not JSON, continue to API detection
+		if (isSnipitDrawing(content)) {
+			hasDetectedRef.current = true;
+			setContentType("draw");
+			return;
 		}
 
 		hasDetectedRef.current = true;

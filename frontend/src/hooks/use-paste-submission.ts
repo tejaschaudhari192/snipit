@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 import { useApiHelpers } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { usePaste } from "@/context/PasteContext";
-import { saveToLocal, clearDrafts } from "@/lib/utils";
+import { saveToLocal, clearDrafts } from "@/utils";
 import type {
 	IdType,
 	Visibility,

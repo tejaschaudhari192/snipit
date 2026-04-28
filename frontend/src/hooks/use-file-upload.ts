@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { CONFIG } from "@/configurations";
+import { sanitizeFileName } from "@/utils";
 
 export interface UploadState {
 	isUploading: boolean;
@@ -77,7 +78,7 @@ export const useFileUpload = () => {
 
 		try {
 			const timestamp = Date.now();
-			const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+			const sanitizedName = sanitizeFileName(file.name);
 			const filePath = `${timestamp}_${sanitizedName}`;
 
 			const { error: uploadError } = await supabase.storage

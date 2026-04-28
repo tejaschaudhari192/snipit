@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import { MarkdownLayoutToggles } from "@/components/common/markdown-layout-toggles";
 import { ZenModeToggle } from "@/components/common/zen-mode-toggle";
 import {

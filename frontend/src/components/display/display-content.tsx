@@ -1,6 +1,6 @@
 import { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { useRef, useEffect, memo } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import { EditorToolbar } from "@/components/common/editor-toolbar";
 import type { PasteData, ContentMode } from "@/types";
 import { MarkdownDisplay } from "./content/markdown-display";

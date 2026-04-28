@@ -15,6 +15,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { GlassBadge } from "@/components/common/core/glass-badge";
 import { useTranslation } from "react-i18next";
+import { formatDate } from "@/utils";
 import type { User as UserType, PasteData } from "@/types";
 
 interface ProfileInfoProps {
@@ -148,12 +149,13 @@ export const ProfileInfo = ({
 									<div className="flex items-center justify-center gap-2 text-xs text-muted-foreground/60 font-bold uppercase tracking-wider">
 										<Calendar className="h-3.5 w-3.5" />
 										{t("profile.joined", "Joined")}{" "}
-										{new Date(
+										{formatDate(
 											user.createdAt || Date.now(),
-										).toLocaleDateString(undefined, {
-											month: "long",
-											year: "numeric",
-										})}
+											{
+												month: "long",
+												year: "numeric",
+											},
+										)}
 									</div>
 								</div>
 							</div>

@@ -7,7 +7,7 @@ import React, {
 	useEffect,
 } from "react";
 import { CONFIG } from "@/configurations";
-import { getDraft, saveDraft } from "@/lib/utils";
+import { getDraft, saveDraft, isSnipitDrawing } from "@/utils";
 import { useFileUpload, type UploadState } from "@/hooks/use-file-upload";
 import type {
 	Visibility,
@@ -165,18 +165,9 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			// Special Case: Priority migration to 'draw' if current value is already a valid drawing
 			let migrationApplied = false;
 			if (newMode === "draw") {
-				try {
-					const parsed = JSON.parse(currentVal);
-					if (
-						parsed &&
-						Array.isArray(parsed.elements) &&
-						(parsed.appState || parsed.type === "excalidraw")
-					) {
-						migrationApplied = true;
-						// Keep currentVal (textValue) as it's already a valid drawing
-					}
-				} catch {
-					migrationApplied = false;
+				if (isSnipitDrawing(currentVal)) {
+					migrationApplied = true;
+					// Keep currentVal (textValue) as it's already a valid drawing
 				}
 			}
 

@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import { TerminalPanel } from "@/components/display/terminal-panel";
 import type { Socket } from "socket.io-client";
 

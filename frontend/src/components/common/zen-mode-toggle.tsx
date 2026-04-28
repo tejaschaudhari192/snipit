@@ -1,7 +1,7 @@
 import { Maximize2, Minimize2, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import { memo } from "react";
 
 interface ZenModeToggleProps {

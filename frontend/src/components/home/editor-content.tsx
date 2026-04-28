@@ -28,7 +28,7 @@ import {
 	useCallback,
 	memo,
 } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 
 import { ResizableSplitPane } from "@/components/common/resizable-split-pane";
 import { useMarkdownLayout } from "@/hooks/use-markdown-layout";

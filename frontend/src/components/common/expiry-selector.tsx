@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/select";
 import { Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import { memo } from "react";
 
 interface ExpirySelectorProps {

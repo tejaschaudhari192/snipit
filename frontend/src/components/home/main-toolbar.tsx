@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 
 import { ButtonGroup } from "@/components/ui/button-group";
 import { ChevronDown, Users } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import { useState } from "react";
 import { AdvancedOptions } from "./advanced-options";

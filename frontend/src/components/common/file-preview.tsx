@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import { FileAudio, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Editor } from "@monaco-editor/react";

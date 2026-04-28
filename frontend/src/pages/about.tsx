@@ -3,7 +3,7 @@ import { Mail, Users, Github, Zap, Linkedin, Gitlab, Send } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import appScreenshot from "@/assets/brand/app.png";
-import app from "@/lib/data";
+import app from "@/constants/data";
 
 const AboutPage = () => {
 	const { t } = useTranslation();

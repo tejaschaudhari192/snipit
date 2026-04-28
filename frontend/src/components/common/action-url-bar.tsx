@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { QrCode } from "lucide-react";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
 import { QRDialog } from "./qr-dialog";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 
 interface ActionUrlBarProps {
 	url: string;

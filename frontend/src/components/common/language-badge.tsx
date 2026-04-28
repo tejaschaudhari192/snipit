@@ -3,7 +3,7 @@ import { LanguageIcon } from "@/components/snippets/language-icon";
 import { Link as LinkIcon } from "lucide-react";
 import { FileTypeIcon } from "./file-type-icon";
 import { GlassBadge } from "./core/glass-badge";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 
 interface LanguageBadgeProps {
 	language?: string | null;

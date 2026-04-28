@@ -2,7 +2,7 @@ import { FileUp, X, CheckCircle2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import { CONFIG } from "@/configurations";
 import { FileTypeIcon } from "@/components/common/file-type-icon";
 import FilePreview from "../common/file-preview";

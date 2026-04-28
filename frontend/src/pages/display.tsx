@@ -23,7 +23,7 @@ import {
 	getDraft,
 	clearDrafts,
 	cn,
-} from "@/lib/utils";
+} from "@/utils";
 import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";

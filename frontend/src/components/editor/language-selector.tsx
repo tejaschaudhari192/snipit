@@ -9,7 +9,7 @@ import {
 import { LanguageIcon } from "@/components/snippets/language-icon";
 import { useTranslation } from "react-i18next";
 import aiGif from "@/assets/images/ai.gif";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import { LANGUAGES } from "@/constants";
 import { memo } from "react";
 

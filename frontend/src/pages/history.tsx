@@ -7,7 +7,7 @@ import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { SnippetCard } from "@/components/snippets/snippet-card";
-import { playRemoveSound } from "@/lib/utils";
+import { playRemoveSound } from "@/utils";
 import { useSnippets } from "@/context/SnippetContext";
 import {
 	AlertDialog,

@@ -3,7 +3,7 @@
 import * as React from "react";
 import { CalendarIcon, ChevronUp, ChevronDown, Clock } from "lucide-react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {

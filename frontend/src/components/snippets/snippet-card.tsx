@@ -1,4 +1,4 @@
-import { timeAgo } from "@/lib/utils";
+import { timeAgo } from "@/utils";
 import type { PasteData } from "@/types";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";

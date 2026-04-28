@@ -1,5 +1,5 @@
 import { Timer } from "lucide-react";
-import { cn, getTimeRemaining } from "@/lib/utils";
+import { cn, getTimeRemaining } from "@/utils";
 import { useTranslation } from "react-i18next";
 import { GlassBadge } from "./core/glass-badge";
 

@@ -1,7 +1,7 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText, Code2, Link, FileUp, Paintbrush } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import type { ContentMode } from "@/types";
 import { memo } from "react";
 

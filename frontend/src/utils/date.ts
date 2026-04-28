@@ -1,41 +1,10 @@
-import type { PasteData, ContentMode } from "@/types";
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+/**
+ * Date and Time utilities for formatting and calculations
+ */
 
-export function cn(...inputs: ClassValue[]) {
-	return twMerge(clsx(inputs));
-}
-
-export function detectContentMode(
-	data: Pick<
-		PasteData,
-		"contentMode" | "redirectUrl" | "fileUrl" | "language"
-	>,
-): ContentMode {
-	return (
-		data.contentMode ??
-		(data.redirectUrl
-			? "link"
-			: data.fileUrl
-				? "file"
-				: data.language !== "text"
-					? "code"
-					: "text")
-	);
-}
-
-export function saveToLocal(pasteData: PasteData) {
-	const key = "items";
-	const stored = localStorage.getItem(key);
-	let items: Array<PasteData> = stored ? JSON.parse(stored) : [];
-
-	items = items.filter((item: PasteData) => item.id !== pasteData.id);
-
-	items.unshift(pasteData);
-
-	localStorage.setItem(key, JSON.stringify(items));
-}
-
+/**
+ * Returns a human-readable "time ago" string
+ */
 export const timeAgo = (
 	timestamp: string,
 	t?: (key: string, options?: Record<string, unknown>) => string,
@@ -82,6 +51,9 @@ export const timeAgo = (
 	return t ? t("common.time.just_now") : "Just now";
 };
 
+/**
+ * Calculates remaining time until a given ISO date string
+ */
 export function getTimeRemaining(
 	isoString: string,
 	t?: (key: string, options?: Record<string, unknown>) => string,
@@ -152,24 +124,18 @@ export function getTimeRemaining(
 	return t ? t("common.time.less_than_minute") : "Less than a minute";
 }
 
-export function playErrorSound() {}
-export function playSuccessSound() {}
-export function playBruhSound() {}
-export function playRemoveSound() {}
-export function playUndoSound() {}
-export function saveDraft(mode: string, content: string, id?: string) {
-	const key = id ? `draft_${id}_${mode}` : `draft_${mode}`;
-	localStorage.setItem(key, content);
-}
-
-export function getDraft(mode: string, id?: string): string | null {
-	const key = id ? `draft_${id}_${mode}` : `draft_${mode}`;
-	return localStorage.getItem(key);
-}
-
-export function clearDrafts(id?: string) {
-	const modes = ["text", "code", "draw", "link", "file"];
-	modes.forEach((mode) => {
-		localStorage.removeItem(id ? `draft_${id}_${mode}` : `draft_${mode}`);
-	});
+/**
+ * Formats a date string into a human-readable format
+ */
+export function formatDate(
+	date: string | Date,
+	options: Intl.DateTimeFormatOptions = {
+		month: "long",
+		day: "numeric",
+		year: "numeric",
+	},
+	locale: string = "en-US",
+): string {
+	const d = typeof date === "string" ? new Date(date) : date;
+	return d.toLocaleDateString(locale, options);
 }

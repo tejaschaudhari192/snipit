@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 import { QRCodeCanvas } from "qrcode.react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cn, timeAgo } from "@/lib/utils";
+import { cn, timeAgo } from "@/utils";
 import { toast } from "sonner";
 import type { PasteData } from "@/types";
 import { QRDialog } from "@/components/common/qr-dialog";

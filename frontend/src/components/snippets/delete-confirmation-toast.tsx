@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { playUndoSound } from "@/lib/utils";
+import { playUndoSound } from "@/utils";
 
 interface DeleteConfirmationToastProps {
 	onConfirm: () => void;

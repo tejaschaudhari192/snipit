@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import { GripHorizontal, GripVertical } from "lucide-react";
 import { useTranslation } from "react-i18next";
 

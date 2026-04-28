@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import { GripHorizontal, GripVertical } from "lucide-react";
 
 /** Direction of the split: "vertical" = top+bottom, "horizontal" = left+right */

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { MessageSquare, Send } from "lucide-react";
-import { timeAgo } from "@/lib/utils";
+import { timeAgo } from "@/utils";
 import { AxiosError } from "axios";
 
 import { Button } from "@/components/ui/button";
