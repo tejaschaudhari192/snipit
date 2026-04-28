@@ -16,7 +16,7 @@ setupSocket(server);
 
 server.listen(port, () => {
 	logger.info(`🚀 Server listening on ${port}`);
-	logger.info(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
+	logger.info(`🌍 Environment: ${process.env.NODE_ENV}`);
 });
 
 export default app;

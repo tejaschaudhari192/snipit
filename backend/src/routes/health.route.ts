@@ -34,7 +34,6 @@ router.get("/", async (req, res) => {
 	// 1. Check MongoDB
 	try {
 		const dbState = mongoose.connection.readyState;
-		// 0: disconnected, 1: connected, 2: connecting, 3: disconnecting
 		if (dbState === 1) {
 			health.services.database.status = "ok";
 			health.services.database.message = "Connected to MongoDB";
@@ -56,7 +55,6 @@ router.get("/", async (req, res) => {
 			health.services.supabase.status = "error";
 			health.services.supabase.message = "Supabase not configured";
 		} else {
-			// Try a simple operation to verify connection
 			const { error } = await supabase.storage.listBuckets();
 			if (error) {
 				health.status = "error";
@@ -92,12 +90,106 @@ router.get("/", async (req, res) => {
 
 	const statusCode = health.status === "alive" ? 200 : 503;
 
-	// Final status check: if any service is down, the overall status shouldn't be "alive"
 	if (health.status === "error") {
 		health.status = "down";
 	}
 
 	return res.status(statusCode).json(health);
+});
+
+router.get("/stream", async (req, res) => {
+	res.setHeader("Content-Type", "text/event-stream");
+	res.setHeader("Cache-Control", "no-cache");
+	res.setHeader("Connection", "keep-alive");
+
+	const sendUpdate = (data: any) => {
+		res.write(`data: ${JSON.stringify(data)}\n\n`);
+	};
+
+	const health: any = {
+		status: "alive",
+		services: {},
+	};
+
+	// 1. Check MongoDB
+	try {
+		const dbState = mongoose.connection.readyState;
+		if (dbState === 1) {
+			health.services.Database = { status: "ok" };
+		} else {
+			health.status = "error";
+			health.services.Database = { status: "error" };
+		}
+	} catch (error: any) {
+		health.status = "error";
+		health.services.Database = { status: "error" };
+	}
+	sendUpdate({
+		step: "Database",
+		label: "Connecting to Database...",
+		status: health.services.Database.status,
+		progress: 25,
+	});
+
+	if (health.status === "error") return res.end();
+
+	// 2. Check Supabase
+	try {
+		if (!isSupabaseConfigured || !supabase) {
+			health.status = "error";
+			health.services.Supabase = { status: "error" };
+		} else {
+			const { error } = await supabase.storage.listBuckets();
+			if (error) {
+				health.status = "error";
+				health.services.Supabase = { status: "error" };
+			} else {
+				health.services.Supabase = { status: "ok" };
+			}
+		}
+	} catch (error: any) {
+		health.status = "error";
+		health.services.Supabase = { status: "error" };
+	}
+	sendUpdate({
+		step: "Supabase",
+		label: "Checking Supabase...",
+		status: health.services.Supabase.status,
+		progress: 50,
+	});
+
+	if (health.status === "error") return res.end();
+
+	// 3. Check SMTP
+	try {
+		if (!configurations.smtp.user) {
+			health.status = "error";
+			health.services.SMTP = { status: "error" };
+		} else {
+			await emailService.verify();
+			health.services.SMTP = { status: "ok" };
+		}
+	} catch (error: any) {
+		health.status = "error";
+		health.services.SMTP = { status: "error" };
+	}
+	sendUpdate({
+		step: "SMTP",
+		label: "Verifying Mail Server...",
+		status: health.services.SMTP.status,
+		progress: 75,
+	});
+
+	if (health.status === "error") return res.end();
+
+	sendUpdate({
+		step: "Ready",
+		label: "Starting Snipit...",
+		status: "ok",
+		progress: 100,
+	});
+
+	res.end();
 });
 
 export default router;

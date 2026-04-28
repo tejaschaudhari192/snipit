@@ -232,11 +232,7 @@ class PasteController {
 				this.logger.info(`Created paste with id: ${pasteId} `);
 
 				if (validatedBody.shareList && result) {
-					const frontendUrl =
-						configurations.domain ||
-						(req.headers.origin
-							? req.headers.origin
-							: "http://localhost:5173");
+					const frontendUrl = configurations.domain;
 					const emailPromises = validatedBody.shareList.map(
 						(share) => {
 							const pasteUrl = `${frontendUrl}/${result.id}`;
@@ -510,11 +506,7 @@ class PasteController {
 			});
 
 			if (finalUpdates.shareList && result) {
-				const frontendUrl =
-					configurations.domain ||
-					(req.headers.origin
-						? req.headers.origin
-						: "http://localhost:5173");
+				const frontendUrl = configurations.domain;
 				const emailPromises = [];
 				for (const share of finalUpdates.shareList) {
 					const oldRole = oldShareMap.get(share.email);

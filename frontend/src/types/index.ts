@@ -132,5 +132,7 @@ export interface ServiceStatus {
 
 export interface HealthData {
 	status: string;
+	progress?: number;
+	currentLabel?: string;
 	services: Record<string, ServiceStatus>;
 }

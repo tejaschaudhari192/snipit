@@ -1,73 +1,22 @@
-import { useEffect, useState } from "react";
 import icon from "@/assets/brand/icon.png";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { useTranslation } from "react-i18next";
-import type { HealthData, ServiceStatus } from "@/types";
+import type { HealthData } from "@/types";
 
 interface SplashPageProps {
 	healthData?: HealthData | null;
 }
 
-const steps = [
-	{ id: "database", label: "Connecting to Database..." },
-	{ id: "supabase", label: "Checking Supabase..." },
-	{ id: "smtp", label: "Verifying Mail Server..." },
-	{ id: "ready", label: "Starting Snipit..." },
-];
-
 const SplashPage = ({ healthData }: SplashPageProps) => {
 	useTranslation();
-	const [progress, setProgress] = useState(0);
-	const [currentStep, setCurrentStep] = useState(0);
 
-	useEffect(() => {
-		// Progress simulation logic based on healthData
-		const totalSteps = steps.length;
-		let stepIndex = 0;
+	const services = healthData?.services || {};
+	const progress = healthData?.progress || 0;
+	const currentLabel = healthData?.currentLabel || "Initializing...";
 
-		const interval = setInterval(() => {
-			if (stepIndex < totalSteps) {
-				const step = steps[stepIndex];
-				const serviceStatus =
-					healthData?.services?.[
-						step?.id as keyof typeof healthData.services
-					];
-
-				if (serviceStatus) {
-					if (serviceStatus.status === "ok") {
-						setProgress(((stepIndex + 1) / totalSteps) * 100);
-						stepIndex++;
-						setCurrentStep(stepIndex);
-					} else {
-						// Service error, stop progress
-						clearInterval(interval);
-						setProgress((stepIndex / totalSteps) * 100);
-					}
-				} else if (stepIndex === totalSteps - 1) {
-					// Final step
-					setProgress(100);
-					clearInterval(interval);
-				} else {
-					// Still waiting for data or intermediate progress
-					setProgress((prev) =>
-						Math.min(
-							prev + 0.5,
-							(stepIndex / totalSteps) * 100 + 20,
-						),
-					);
-				}
-			}
-		}, 100);
-
-		return () => clearInterval(interval);
-	}, [healthData]);
-
-	const currentLabel = steps[Math.min(currentStep, steps.length - 1)]?.label;
 	const isError =
 		healthData?.status === "down" ||
-		Object.values(healthData?.services || {}).some(
-			(s) => s.status === "error",
-		);
+		Object.values(services).some((s) => s.status === "error");
 
 	return (
 		<div className="relative h-screen w-screen overflow-hidden bg-background text-foreground transition-colors duration-300 flex flex-col items-center justify-center pointer-events-none">
@@ -120,32 +69,35 @@ const SplashPage = ({ healthData }: SplashPageProps) => {
 
 					{/* Service Status Details */}
 					<div className="mt-6 flex flex-col gap-2 bg-muted/30 p-4 rounded-xl border border-muted backdrop-blur-sm shadow-sm">
-						{Object.entries(healthData?.services || {}).map(
-							([key, service]: [string, ServiceStatus]) => (
-								<div
-									key={key}
-									className="flex items-center justify-between"
-								>
-									<span className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">
-										{key}
-									</span>
-									<div className="flex items-center gap-2">
-										<span
-											className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase ${
-												service.status === "ok"
-													? "bg-primary/10 text-primary border border-primary/20"
-													: "bg-destructive/10 text-destructive border border-destructive/20"
-											}`}
-										>
-											{service.status === "ok"
-												? "Connected"
-												: "Error"}
+						{Object.entries(services).filter(
+							([key]) => key !== "Ready",
+						).length > 0 ? (
+							Object.entries(services)
+								.filter(([key]) => key !== "Ready")
+								.map(([key, service]) => (
+									<div
+										key={key}
+										className="flex items-center justify-between"
+									>
+										<span className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">
+											{key}
 										</span>
+										<div className="flex items-center gap-2">
+											<span
+												className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase ${
+													service.status === "ok"
+														? "bg-primary/10 text-primary border border-primary/20"
+														: "bg-destructive/10 text-destructive border border-destructive/20"
+												}`}
+											>
+												{service.status === "ok"
+													? "Connected"
+													: "Error"}
+											</span>
+										</div>
 									</div>
-								</div>
-							),
-						)}
-						{!healthData && (
+								))
+						) : (
 							<div className="flex items-center justify-center py-2">
 								<span className="text-[10px] text-muted-foreground animate-pulse">
 									Initializing health probe...

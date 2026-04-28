@@ -153,7 +153,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
 		await user.save();
 
-		const frontendUrl = configurations.domain || "http://localhost:5173";
+		const frontendUrl = configurations.domain;
 		const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
 
 		const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
