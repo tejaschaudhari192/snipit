@@ -2,8 +2,10 @@ import logger from "@/config/logger.js";
 import { Router } from "express";
 import mongoose from "mongoose";
 import { supabase, isSupabaseConfigured } from "@/config/supabase.js";
-import { transporter } from "@/lib/email.js";
+import EmailService from "@/services/email.service.js";
 import configurations from "@/config/configurations.js";
+
+const emailService = new EmailService();
 
 const router: Router = Router();
 
@@ -78,7 +80,7 @@ router.get("/", async (req, res) => {
 			health.services.smtp.status = "error";
 			health.services.smtp.message = "SMTP not configured";
 		} else {
-			await transporter.verify();
+			await emailService.verify();
 			health.services.smtp.status = "ok";
 			health.services.smtp.message = "SMTP service is ready";
 		}

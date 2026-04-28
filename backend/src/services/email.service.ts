@@ -16,6 +16,10 @@ class EmailService {
 			: undefined,
 	});
 
+	async verify() {
+		return await this.transporter.verify();
+	}
+
 	async sendAccessGrantedEmail(
 		toEmail: string,
 		role: "viewer" | "editor" | "commenter" | "admin",
