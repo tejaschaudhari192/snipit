@@ -219,14 +219,14 @@ const SignupPage = () => {
 									</>
 								)}
 							</Button>
-							<div className="pt-2">
+							<div className="pt-2 w-full flex justify-center">
 								<GoogleLogin
 									onSuccess={handleGoogleSuccess}
 									onError={handleGoogleError}
 									useOneTap
 									theme="filled_blue"
-									shape="pill"
-									width="100%"
+									shape="rectangular"
+									width="340"
 								/>
 							</div>
 						</form>
