@@ -226,7 +226,7 @@
 	}
 
 	.custom-scrollbar::-webkit-scrollbar-thumb {
-		@apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
+		@apply bg-foreground/10 rounded-full hover:bg-foreground/20 transition-colors;
 	}
 
 	/* Xterm Specific Scrollbar */
