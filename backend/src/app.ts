@@ -9,6 +9,8 @@ import logger from "@/config/logger.js";
 
 import { connectDB } from "@/config/db.js";
 
+import { errorMiddleware } from "@/middleware/error.middleware.js";
+
 const app: express.Application = express();
 
 // Ensure DB is connected before any request
@@ -42,45 +44,6 @@ app.get("/api", (req: Request, res: Response) => {
 app.use("/api/v1", apiRouter);
 
 // Error Handler
-app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
-	if (res.headersSent) {
-		return _next(err);
-	}
-
-	const error = err as any; // Localized cast for error properties
-	const errorMessage = error?.message || "Internal Server Error";
-	const errorStack = error?.stack || "";
-
-	console.error(`[API Error] ${errorMessage}`);
-	if (errorStack) console.error(errorStack);
-
-	if (logger) {
-		logger.error({ message: errorMessage, stack: errorStack });
-	}
-
-	if (err instanceof ZodError) {
-		return res.status(400).json({
-			error: "Validation failed",
-			details: err.issues.map((e) => ({
-				path: e.path,
-				message: e.message,
-			})),
-		});
-	}
-
-	if (
-		error &&
-		(error.name === "ValidationError" || error.name === "CastError")
-	) {
-		return res.status(400).json({
-			error: errorMessage,
-		});
-	}
-
-	const status = error?.status || error?.statusCode || 500;
-	res.status(status).json({
-		error: errorMessage,
-	});
-});
+app.use(errorMiddleware);
 
 export default app;

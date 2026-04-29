@@ -4,96 +4,117 @@ import mongoose from "mongoose";
 import { supabase, isSupabaseConfigured } from "@/config/supabase.js";
 import EmailService from "@/services/email.service.js";
 import configurations from "@/config/configurations.js";
+import { catchAsync } from "@/lib/errors.js";
 
 const emailService = new EmailService();
-
 const router: Router = Router();
 
-router.get("/", async (req, res) => {
-	logger.info("Checking System Health Status");
+interface ServiceStatus {
+	status: "ok" | "error" | "unknown";
+	message?: string;
+}
 
-	const health: any = {
-		status: "alive",
-		timestamp: new Date().toISOString(),
-		services: {
-			database: {
-				status: "unknown",
-				message: "",
-			},
-			supabase: {
-				status: "unknown",
-				message: "",
-			},
-			smtp: {
-				status: "unknown",
-				message: "",
-			},
-		},
+interface HealthResponse {
+	status: "alive" | "down";
+	timestamp: string;
+	services: {
+		database: ServiceStatus;
+		supabase: ServiceStatus;
+		smtp: ServiceStatus;
 	};
+}
 
-	// 1. Check MongoDB
-	try {
-		const dbState = mongoose.connection.readyState;
-		if (dbState === 1) {
-			health.services.database.status = "ok";
-			health.services.database.message = "Connected to MongoDB";
-		} else {
-			health.status = "error";
-			health.services.database.status = "error";
-			health.services.database.message = `MongoDB state: ${dbState}`;
-		}
-	} catch (error: any) {
-		health.status = "error";
-		health.services.database.status = "error";
-		health.services.database.message = error.message;
-	}
+router.get(
+	"/",
+	catchAsync(async (req, res) => {
+		logger.info("Checking System Health Status");
 
-	// 2. Check Supabase
-	try {
-		if (!isSupabaseConfigured || !supabase) {
-			health.status = "error";
-			health.services.supabase.status = "error";
-			health.services.supabase.message = "Supabase not configured";
-		} else {
-			const { error } = await supabase.storage.listBuckets();
-			if (error) {
-				health.status = "error";
-				health.services.supabase.status = "error";
-				health.services.supabase.message = error.message;
+		const health: HealthResponse = {
+			status: "alive",
+			timestamp: new Date().toISOString(),
+			services: {
+				database: { status: "unknown" },
+				supabase: { status: "unknown" },
+				smtp: { status: "unknown" },
+			},
+		};
+
+		// 1. Check MongoDB (Critical)
+		try {
+			const dbState = mongoose.connection.readyState;
+			if (dbState === 1) {
+				health.services.database = {
+					status: "ok",
+					message: "Connected to MongoDB",
+				};
 			} else {
-				health.services.supabase.status = "ok";
-				health.services.supabase.message = "Connected to Supabase";
+				health.status = "down";
+				health.services.database = {
+					status: "error",
+					message: `MongoDB state: ${dbState}`,
+				};
 			}
+		} catch (error: any) {
+			health.status = "down";
+			health.services.database = {
+				status: "error",
+				message: error.message,
+			};
 		}
-	} catch (error: any) {
-		health.status = "error";
-		health.services.supabase.status = "error";
-		health.services.supabase.message = error.message;
-	}
 
-	// 3. Check SMTP
-	try {
-		if (!configurations.smtp.user) {
-			health.services.smtp.status = "error";
-			health.services.smtp.message = "SMTP not configured";
-		} else {
-			await emailService.verify();
-			health.services.smtp.status = "ok";
-			health.services.smtp.message = "SMTP service is ready";
+		// 2. Check Supabase (Non-Critical for health status)
+		try {
+			if (!isSupabaseConfigured || !supabase) {
+				health.services.supabase = {
+					status: "error",
+					message: "Supabase not configured",
+				};
+			} else {
+				const { error } = await supabase.storage.listBuckets();
+				if (error) {
+					health.services.supabase = {
+						status: "error",
+						message: error.message,
+					};
+				} else {
+					health.services.supabase = {
+						status: "ok",
+						message: "Connected to Supabase",
+					};
+				}
+			}
+		} catch (error: any) {
+			health.services.supabase = {
+				status: "error",
+				message: error.message,
+			};
 		}
-	} catch (error: any) {
-		health.services.smtp.status = "error";
-		health.services.smtp.message = error.message;
-	}
 
-	const statusCode = health.status === "alive" ? 200 : 503;
+		// 3. Check SMTP (Non-Critical for health status)
+		try {
+			if (!configurations.smtp.user) {
+				health.services.smtp = {
+					status: "error",
+					message: "SMTP not configured",
+				};
+			} else {
+				await emailService.verify();
+				health.services.smtp = {
+					status: "ok",
+					message: "SMTP service is ready",
+				};
+			}
+		} catch (error: any) {
+			health.services.smtp = {
+				status: "error",
+				message: error.message,
+			};
+		}
 
-	if (health.status === "error") {
-		health.status = "down";
-	}
-
-	return res.status(statusCode).json(health);
-});
+		const statusCode = health.status === "alive" ? 200 : 503;
+		return res.status(statusCode).json(health);
+	}),
+);
 
 router.get("/stream", async (req, res) => {
 	res.setHeader("Content-Type", "text/event-stream");
@@ -104,32 +125,26 @@ router.get("/stream", async (req, res) => {
 		res.write(`data: ${JSON.stringify(data)}\n\n`);
 	};
 
-	const health: any = {
-		status: "alive",
-		services: {},
-	};
+	let isDatabaseOk = true;
 
 	// 1. Check MongoDB
 	try {
 		const dbState = mongoose.connection.readyState;
-		if (dbState === 1) {
-			health.services.Database = { status: "ok" };
-		} else {
-			health.status = "error";
-			health.services.Database = { status: "error" };
+		if (dbState !== 1) {
+			isDatabaseOk = false;
 		}
 	} catch (error: any) {
-		health.status = "error";
-		health.services.Database = { status: "error" };
+		isDatabaseOk = false;
 	}
+
 	sendUpdate({
 		step: "Database",
 		label: "Connecting to Database...",
-		status: health.services.Database.status,
+		status: isDatabaseOk ? "ok" : "error",
 		progress: 25,
 	});
 
-	if (health.status === "error") return res.end();
+	if (!isDatabaseOk) return res.end();
 
 	// 2. Check Supabase
 	let supabaseStatus = "ok";
@@ -138,24 +153,18 @@ router.get("/stream", async (req, res) => {
 			supabaseStatus = "error";
 		} else {
 			const { error } = await supabase.storage.listBuckets();
-			if (error) {
-				supabaseStatus = "error";
-			} else {
-				supabaseStatus = "ok";
-			}
+			if (error) supabaseStatus = "error";
 		}
 	} catch (error: any) {
 		supabaseStatus = "error";
 	}
+
 	sendUpdate({
 		step: "Supabase",
 		label: "Checking Supabase...",
 		status: supabaseStatus,
 		progress: 50,
 	});
-
-	// Supabase is recommended but we won't hard-block the app if it's down
-	// (though some features will fail later)
 
 	// 3. Check SMTP
 	let smtpStatus = "ok";
@@ -164,11 +173,11 @@ router.get("/stream", async (req, res) => {
 			smtpStatus = "error";
 		} else {
 			await emailService.verify();
-			smtpStatus = "ok";
 		}
 	} catch (error: any) {
 		smtpStatus = "error";
 	}
+
 	sendUpdate({
 		step: "SMTP",
 		label: "Verifying Mail Server...",
