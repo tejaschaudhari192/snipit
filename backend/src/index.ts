@@ -5,9 +5,6 @@ import { connectDB } from "@/config/db.js";
 import configurations from "@/config/configurations.js";
 import logger from "@/config/logger.js";
 
-// Initialize Database
-connectDB();
-
 const port = configurations.port;
 const server = http.createServer(app);
 

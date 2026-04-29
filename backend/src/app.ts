@@ -7,7 +7,19 @@ import apiRouter from "@/routes/index.js";
 import { ZodError } from "zod";
 import logger from "@/config/logger.js";
 
+import { connectDB } from "@/config/db.js";
+
 const app: express.Application = express();
+
+// Ensure DB is connected before any request
+app.use(async (_req: Request, _res: Response, next: NextFunction) => {
+	try {
+		await connectDB();
+		next();
+	} catch (error) {
+		next(error);
+	}
+});
 
 app.use(
 	cors({
