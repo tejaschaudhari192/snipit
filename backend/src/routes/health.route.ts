@@ -74,7 +74,6 @@ router.get("/", async (req, res) => {
 	// 3. Check SMTP
 	try {
 		if (!configurations.smtp.user) {
-			health.status = "error";
 			health.services.smtp.status = "error";
 			health.services.smtp.message = "SMTP not configured";
 		} else {
@@ -83,7 +82,6 @@ router.get("/", async (req, res) => {
 			health.services.smtp.message = "SMTP service is ready";
 		}
 	} catch (error: any) {
-		health.status = "error";
 		health.services.smtp.status = "error";
 		health.services.smtp.message = error.message;
 	}
@@ -134,53 +132,49 @@ router.get("/stream", async (req, res) => {
 	if (health.status === "error") return res.end();
 
 	// 2. Check Supabase
+	let supabaseStatus = "ok";
 	try {
 		if (!isSupabaseConfigured || !supabase) {
-			health.status = "error";
-			health.services.Supabase = { status: "error" };
+			supabaseStatus = "error";
 		} else {
 			const { error } = await supabase.storage.listBuckets();
 			if (error) {
-				health.status = "error";
-				health.services.Supabase = { status: "error" };
+				supabaseStatus = "error";
 			} else {
-				health.services.Supabase = { status: "ok" };
+				supabaseStatus = "ok";
 			}
 		}
 	} catch (error: any) {
-		health.status = "error";
-		health.services.Supabase = { status: "error" };
+		supabaseStatus = "error";
 	}
 	sendUpdate({
 		step: "Supabase",
 		label: "Checking Supabase...",
-		status: health.services.Supabase.status,
+		status: supabaseStatus,
 		progress: 50,
 	});
 
-	if (health.status === "error") return res.end();
+	// Supabase is recommended but we won't hard-block the app if it's down
+	// (though some features will fail later)
 
 	// 3. Check SMTP
+	let smtpStatus = "ok";
 	try {
 		if (!configurations.smtp.user) {
-			health.status = "error";
-			health.services.SMTP = { status: "error" };
+			smtpStatus = "error";
 		} else {
 			await emailService.verify();
-			health.services.SMTP = { status: "ok" };
+			smtpStatus = "ok";
 		}
 	} catch (error: any) {
-		health.status = "error";
-		health.services.SMTP = { status: "error" };
+		smtpStatus = "error";
 	}
 	sendUpdate({
 		step: "SMTP",
 		label: "Verifying Mail Server...",
-		status: health.services.SMTP.status,
+		status: smtpStatus,
 		progress: 75,
 	});
-
-	if (health.status === "error") return res.end();
 
 	sendUpdate({
 		step: "Ready",

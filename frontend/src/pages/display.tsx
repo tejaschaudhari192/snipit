@@ -780,7 +780,7 @@ const DisplayPage = () => {
 		if (!isSettingsChanged && !isContentChanged) return;
 		if (!isSettingsChanged && isContentChanged && !isAutosave) return;
 
-		const timer = setTimeout(() => handleEditSave(false), 2000);
+		const timer = setTimeout(() => handleEditSave(false), 1000);
 		return () => clearTimeout(timer);
 	}, [
 		updatedContent,
@@ -913,7 +913,7 @@ const DisplayPage = () => {
 		try {
 			playRemoveSound();
 			await apiHelpers.deletePaste(id!);
-			toast.success(t("messages.deleted_success"));
+			toast.success(t("messages.snippet_deleted"));
 			navigate("/");
 		} catch (error) {
 			console.error("Delete failed", error);
