@@ -10,8 +10,10 @@ import {
 	setAuthCookie,
 	clearAuthCookie,
 } from "@/lib/auth.utils.js";
+import { OAuth2Client } from "google-auth-library";
 
 const emailService = new EmailService();
+const googleClient = new OAuth2Client(configurations.google_client_id);
 
 const handleServerError = (res: Response, error: unknown) => {
 	const message =
@@ -217,5 +219,73 @@ export const resetPassword = async (req: Request, res: Response) => {
 		});
 	} catch (error: unknown) {
 		handleServerError(res, error);
+	}
+};
+
+export const googleLogin = async (req: Request, res: Response) => {
+	const { idToken } = req.body;
+
+	if (!idToken) {
+		res.status(400).json({ message: "ID Token is required" });
+		return;
+	}
+
+	try {
+		const ticket = await googleClient.verifyIdToken({
+			idToken,
+			audience: configurations.google_client_id,
+		});
+
+		const payload = ticket.getPayload();
+		if (!payload) {
+			res.status(400).json({ message: "Invalid ID Token" });
+			return;
+		}
+
+		const { sub: googleId, email, name, picture } = payload;
+
+		if (!email) {
+			res.status(400).json({ message: "Email not provided by Google" });
+			return;
+		}
+
+		let user = await User.findOne({ $or: [{ googleId }, { email }] });
+
+		if (!user) {
+			// Create new user
+			// Generate a random username if name is not unique or not provided
+			let username =
+				name?.replace(/\s+/g, "").toLowerCase() || email.split("@")[0];
+
+			// Ensure username is unique
+			const existingUsername = await User.findOne({ username });
+			if (existingUsername) {
+				username = `${username}${Math.floor(Math.random() * 1000)}`;
+			}
+
+			user = await User.create({
+				username,
+				email,
+				googleId,
+				// password is not required for google users
+			});
+		} else if (!user.googleId) {
+			// Link google account to existing email account
+			user.googleId = googleId;
+			await user.save();
+		}
+
+		const token = generateToken(user._id as string);
+		setAuthCookie(res, token);
+
+		res.json({
+			_id: user._id,
+			username: user.username,
+			email: user.email,
+			token,
+		});
+	} catch (error: unknown) {
+		console.error("Google login error:", error);
+		res.status(401).json({ message: "Google authentication failed" });
 	}
 };

@@ -24,6 +24,7 @@ export type UserData = {
 	username: string;
 	email: string;
 	password?: string | undefined;
+	googleId?: string | undefined;
 	createdAt: Date;
 	resetPasswordToken?: string | undefined;
 	resetPasswordExpires?: Date | undefined;

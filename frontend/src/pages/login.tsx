@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { LogIn, Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { useTranslation } from "react-i18next";
+import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 
 const LoginPage = () => {
 	const [email, setEmail] = useState("");
@@ -49,6 +50,31 @@ const LoginPage = () => {
 		} finally {
 			setIsLoading(false);
 		}
+	};
+
+	const handleGoogleSuccess = async (
+		credentialResponse: CredentialResponse,
+	) => {
+		setIsLoading(true);
+		try {
+			const response = await api.post("/auth/google", {
+				idToken: credentialResponse.credential,
+			});
+			login(response.data);
+			toast.success(t("auth.login_success"));
+			navigate("/");
+		} catch (error) {
+			const axiosError = error as AxiosError<{ message: string }>;
+			toast.error(
+				axiosError.response?.data?.message || t("auth.login_failed"),
+			);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	const handleGoogleError = () => {
+		toast.error(t("auth.google_login_failed"));
 	};
 
 	return (
@@ -165,6 +191,16 @@ const LoginPage = () => {
 									</>
 								)}
 							</Button>
+							<div className="pt-2">
+								<GoogleLogin
+									onSuccess={handleGoogleSuccess}
+									onError={handleGoogleError}
+									useOneTap
+									theme="filled_blue"
+									shape="pill"
+									width="100%"
+								/>
+							</div>
 						</form>
 					</CardContent>
 					<CardFooter className="flex flex-col gap-4 pt-2">

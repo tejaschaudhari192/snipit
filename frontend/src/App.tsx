@@ -11,6 +11,7 @@ import { loader } from "@monaco-editor/react";
 import { useTranslation } from "react-i18next";
 import type { HealthData } from "@/types";
 import { CONFIG } from "@/configurations";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const HomePage = lazy(() => import("@/pages/home"));
 const DisplayPage = lazy(() => import("@/pages/display"));
@@ -133,65 +134,71 @@ const App = () => {
 
 	return (
 		<ThemeProvider>
-			<AuthProvider>
-				<SnippetProvider>
-					<PasteProvider>
-						<Router>
-							<div className="h-screen w-full m-0 p-0 box-border flex flex-col overflow-hidden">
-								<Header />
-								<main className="flex-1 flex flex-col min-h-0 overflow-y-auto overflow-x-hidden relative custom-scrollbar">
-									<Suspense
-										fallback={
-											<div className="flex-1 flex items-center justify-center">
-												<Loader />
-											</div>
-										}
-									>
-										<Routes>
-											<Route
-												path="/"
-												element={<HomePage />}
-											/>
-											<Route
-												path="/login"
-												element={<LoginPage />}
-											/>
-											<Route
-												path="/signup"
-												element={<SignupPage />}
-											/>
-											<Route
-												path="/forgot-password"
-												element={<ForgotPasswordPage />}
-											/>
-											<Route
-												path="/reset-password/:token"
-												element={<ResetPasswordPage />}
-											/>
-											<Route
-												path="/profile"
-												element={<ProfilePage />}
-											/>
-											<Route
-												path="/:id"
-												element={<DisplayPage />}
-											/>
-											<Route
-												path="/about"
-												element={<AboutPage />}
-											/>
-											<Route
-												path="/history"
-												element={<HistoryPage />}
-											/>
-										</Routes>
-									</Suspense>
-								</main>
-							</div>
-						</Router>
-					</PasteProvider>
-				</SnippetProvider>
-			</AuthProvider>
+			<GoogleOAuthProvider clientId={CONFIG.GOOGLE_CLIENT_ID || ""}>
+				<AuthProvider>
+					<SnippetProvider>
+						<PasteProvider>
+							<Router>
+								<div className="h-screen w-full m-0 p-0 box-border flex flex-col overflow-hidden">
+									<Header />
+									<main className="flex-1 flex flex-col min-h-0 overflow-y-auto overflow-x-hidden relative custom-scrollbar">
+										<Suspense
+											fallback={
+												<div className="flex-1 flex items-center justify-center">
+													<Loader />
+												</div>
+											}
+										>
+											<Routes>
+												<Route
+													path="/"
+													element={<HomePage />}
+												/>
+												<Route
+													path="/login"
+													element={<LoginPage />}
+												/>
+												<Route
+													path="/signup"
+													element={<SignupPage />}
+												/>
+												<Route
+													path="/forgot-password"
+													element={
+														<ForgotPasswordPage />
+													}
+												/>
+												<Route
+													path="/reset-password/:token"
+													element={
+														<ResetPasswordPage />
+													}
+												/>
+												<Route
+													path="/profile"
+													element={<ProfilePage />}
+												/>
+												<Route
+													path="/:id"
+													element={<DisplayPage />}
+												/>
+												<Route
+													path="/about"
+													element={<AboutPage />}
+												/>
+												<Route
+													path="/history"
+													element={<HistoryPage />}
+												/>
+											</Routes>
+										</Suspense>
+									</main>
+								</div>
+							</Router>
+						</PasteProvider>
+					</SnippetProvider>
+				</AuthProvider>
+			</GoogleOAuthProvider>
 		</ThemeProvider>
 	);
 };

@@ -9,6 +9,7 @@ const configurations = {
 		password: process.env.DB_PASSWORD,
 		name: process.env.DB_NAME,
 	},
+	google_client_id: process.env.GOOGLE_CLIENT_ID,
 	groq_api_key: process.env.GROQ_API_KEY,
 	jwt: {
 		secret: process.env.JWT_SECRET || "default_secret",
@@ -42,6 +43,7 @@ const requiredEnvVars = [
 	"SUPABASE_URL",
 	"SUPABASE_SERVICE_ROLE_KEY",
 	"SUPABASE_STORAGE_BUCKET",
+	"GOOGLE_CLIENT_ID",
 ];
 
 requiredEnvVars.forEach((envVar) => {

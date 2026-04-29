@@ -12,6 +12,9 @@ export const CONFIG = {
 	SUPABASE_STORAGE_BUCKET:
 		import.meta.env.VITE_SUPABASE_STORAGE_BUCKET || "uploads",
 
+	// Google Auth Configuration
+	GOOGLE_CLIENT_ID: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+
 	// Storage Keys
 	STORAGE_KEYS: {
 		FONT_SIZE: "snipit-font-size",
