@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SplashPage from "@/pages/splash";
 import Header from "@/components/header/header";
@@ -9,8 +9,6 @@ import { SnippetProvider } from "@/context/SnippetContext";
 import Loader from "@/components/common/core/loader";
 import { loader } from "@monaco-editor/react";
 import { useTranslation } from "react-i18next";
-import type { HealthData } from "@/types";
-import { CONFIG } from "@/configurations";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const HomePage = lazy(() => import("@/pages/home"));
@@ -24,12 +22,11 @@ const ForgotPasswordPage = lazy(() => import("@/pages/forgot-password"));
 const ResetPasswordPage = lazy(() => import("@/pages/reset-password"));
 const ServerErrorPage = lazy(() => import("@/pages/server-error"));
 
+import { useHealthCheck } from "@/hooks/use-health-check";
+
 const App = () => {
 	const { i18n } = useTranslation();
-	const hasRun = useRef(false);
-	const [loading, setLoading] = useState<boolean>(true);
-	const [healthData, setHealthData] = useState<HealthData | null>(null);
-	const [error, setError] = useState<boolean>(false);
+	const { loading, healthData, error } = useHealthCheck();
 
 	useEffect(() => {
 		const localeMap: Record<string, string> = {
@@ -47,69 +44,6 @@ const App = () => {
 			},
 		});
 	}, [i18n.language]);
-
-	useEffect(() => {
-		if (hasRun.current) return;
-		hasRun.current = true;
-
-		const checkHealthStream = () => {
-			const eventSource = new EventSource(
-				`${CONFIG.API_BASE_URL}/health/stream`,
-				{ withCredentials: true },
-			);
-
-			const currentHealth: HealthData = {
-				status: "alive",
-				services: {},
-				progress: 0,
-				currentLabel: "Initializing...",
-			};
-
-			eventSource.onmessage = (event) => {
-				try {
-					const data = JSON.parse(event.data);
-					currentHealth.services[data.step] = {
-						status: data.status,
-						message: data.message || "",
-					};
-					currentHealth.progress = data.progress;
-					currentHealth.currentLabel = data.label;
-
-					if (data.status === "error" && data.step === "Database") {
-						currentHealth.status = "down";
-						setError(true);
-						setLoading(false);
-						eventSource.close();
-					}
-
-					setHealthData({ ...currentHealth });
-
-					if (data.progress === 100) {
-						eventSource.close();
-						setTimeout(() => {
-							setLoading(false);
-						}, 1000);
-					}
-				} catch (err) {
-					console.error("Failed to parse health stream data", err);
-				}
-			};
-
-			eventSource.onerror = (e) => {
-				console.error("Health stream error:", e);
-				setError(true);
-				setHealthData((prev) => ({
-					status: "down",
-					services: prev?.services || {},
-				}));
-				eventSource.close();
-				// If it fails immediately, we want to show the error page
-				setLoading(false);
-			};
-		};
-
-		checkHealthStream();
-	}, []);
 
 	if (loading) {
 		return (
