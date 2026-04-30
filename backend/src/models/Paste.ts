@@ -1,5 +1,11 @@
 import type { IPaste } from "@/types/index.js";
 import mongoose, { Schema } from "mongoose";
+import {
+	CONTENT_MODES,
+	VISIBILITIES,
+	EDIT_PERMISSIONS,
+	ROLES,
+} from "@/config/constants.js";
 
 const pasteSchema = new Schema<IPaste>(
 	{
@@ -15,7 +21,7 @@ const pasteSchema = new Schema<IPaste>(
 		},
 		contentMode: {
 			type: String,
-			enum: ["text", "code", "draw", "link", "file"],
+			enum: CONTENT_MODES,
 			default: "text",
 		},
 		fileUrl: {
@@ -71,7 +77,7 @@ const pasteSchema = new Schema<IPaste>(
 		},
 		visibility: {
 			type: String,
-			enum: ["public", "private", "shared"],
+			enum: VISIBILITIES,
 			default: "public",
 		},
 		allowedUsers: {
@@ -84,7 +90,7 @@ const pasteSchema = new Schema<IPaste>(
 		},
 		editPermission: {
 			type: String,
-			enum: ["owner", "shared", "public"],
+			enum: EDIT_PERMISSIONS,
 			default: "owner",
 		},
 		shareList: [
@@ -93,7 +99,7 @@ const pasteSchema = new Schema<IPaste>(
 				email: { type: String, required: true },
 				role: {
 					type: String,
-					enum: ["viewer", "editor", "admin", "commenter"],
+					enum: ROLES,
 					required: true,
 				},
 			},

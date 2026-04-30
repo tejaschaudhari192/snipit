@@ -1,10 +1,11 @@
 import { Server as SocketIOServer, Socket } from "socket.io";
 import type { Server as HTTPServer } from "http";
-import configurations, {
+import configurations from "@/config/configurations.js";
+import {
 	ADJECTIVES,
 	ANIMALS,
 	COLLABORATOR_COLORS,
-} from "@/config/configurations.js";
+} from "@/config/constants.js";
 import type { ActiveUser } from "@/types/index.js";
 import PasteService from "@/services/paste.service.js";
 import UserModel from "@/models/User.js";

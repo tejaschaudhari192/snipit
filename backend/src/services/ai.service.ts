@@ -1,5 +1,7 @@
 import Groq from "groq-sdk";
-import configurations, { VALID_LANGUAGES } from "@/config/configurations.js";
+import configurations from "@/config/configurations.js";
+import { VALID_LANGUAGES } from "@/config/constants.js";
+import { PROMPTS } from "@/config/prompts.js";
 import { AppError } from "@/lib/errors.js";
 
 class AiService {
@@ -38,17 +40,11 @@ class AiService {
 	async detectLanguage(content: string): Promise<string> {
 		this.checkConfig();
 
-		const prompt = `Analyze the following code or text and detect its programming language.
-Return ONLY the name from this list: ${VALID_LANGUAGES.join(", ")}.
-If it is code but doesn't match a specific language, return 'code'.
-If it is clearly plain text, return 'text'.
-
-Content snippet:
-${content.slice(0, 1000)}`;
+		const prompt = PROMPTS.DETECT_LANGUAGE([...VALID_LANGUAGES], content);
 
 		const chatCompletion = await this.groq.chat.completions.create({
 			messages: [{ role: "user", content: prompt }],
-			model: configurations.groq_model,
+			model: configurations.groq_model!,
 		});
 
 		let language =
@@ -75,25 +71,15 @@ ${content.slice(0, 1000)}`;
 	): Promise<string> {
 		this.checkConfig();
 
-		const systemPrompt = `You are an AI assistant embedded inside a text editor.
-Your job is to transform or analyze the user's selected text based on their instruction.
-
-Rules:
-- Only operate on the provided text.
-- Be concise and deterministic.
-- Do not add explanations unless explicitly asked.
-- Preserve formatting unless the user asks to change it.
-- If rewriting, keep the original meaning unless instructed otherwise.
-- Output only the final result (no commentary or conversational filler). Do not wrap the output in markdown code blocks unless the text itself is code and it makes sense to do so.`;
-
-		const userPrompt = `Instruction: ${instruction}\n\nSelected Text:\n${content}`;
+		const systemPrompt = PROMPTS.ENHANCE_CONTENT.SYSTEM;
+		const userPrompt = PROMPTS.ENHANCE_CONTENT.USER(instruction, content);
 
 		const chatCompletion = await this.groq.chat.completions.create({
 			messages: [
 				{ role: "system", content: systemPrompt },
 				{ role: "user", content: userPrompt },
 			],
-			model: configurations.groq_model,
+			model: configurations.groq_model!,
 			temperature: 0,
 		});
 
