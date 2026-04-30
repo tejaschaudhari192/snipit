@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 const configurations = {
-	port: process.env.PORT || 3000,
+	port: process.env.PORT,
 	domain: process.env.DOMAIN,
 	database: {
 		user: process.env.DB_USER,
@@ -11,15 +11,20 @@ const configurations = {
 	},
 	google_client_id: process.env.GOOGLE_CLIENT_ID,
 	groq_api_key: process.env.GROQ_API_KEY,
+	groq_model: process.env.GROQ_MODEL as string,
 	jwt: {
-		secret: process.env.JWT_SECRET || "default_secret",
+		secret: process.env.JWT_SECRET,
 		expiry: "30d",
 	},
 	cookie: {
 		maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
 	},
 	cors: {
-		origins: ["https://cpaste.vercel.app", "https://snipit-nu.vercel.app"],
+		origins: [
+			"https://cpaste.vercel.app",
+			"https://snipit-nu.vercel.app",
+			"http://localhost:5173",
+		],
 	},
 	job_secret: process.env.JOB_SECRET,
 	SUPABASE_URL: process.env.SUPABASE_URL,

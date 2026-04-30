@@ -3,10 +3,12 @@ import { Router } from "express";
 import mongoose from "mongoose";
 import { supabase, isSupabaseConfigured } from "@/config/supabase.js";
 import EmailService from "@/services/email.service.js";
+import AiService from "@/services/ai.service.js";
 import configurations from "@/config/configurations.js";
 import { catchAsync } from "@/lib/errors.js";
 
 const emailService = new EmailService();
+const aiService = new AiService();
 const router: Router = Router();
 
 interface ServiceStatus {
@@ -126,7 +128,7 @@ router.get("/stream", async (req, res) => {
 	};
 
 	let completedSteps = 0;
-	const totalSteps = 3;
+	const totalSteps = 4;
 
 	const performCheck = async (
 		step: string,
@@ -173,11 +175,21 @@ router.get("/stream", async (req, res) => {
 		}
 	};
 
+	const checkAI = async () => {
+		try {
+			const isOk = await aiService.verify();
+			return isOk ? "ok" : "error";
+		} catch {
+			return "error";
+		}
+	};
+
 	// Start all checks in parallel
 	const checkPromises = [
 		performCheck("Database", "Connecting to Database...", checkDatabase),
 		performCheck("Storage", "Checking Storage...", checkSupabase),
 		performCheck("Email Server", "Verifying Email Server...", checkSMTP),
+		performCheck("AI Service", "Activating AI Engine...", checkAI),
 	];
 
 	const results = await Promise.all(checkPromises);

@@ -16,6 +16,16 @@ class AiService {
 		}
 	}
 
+	async verify() {
+		if (!this.groq) return false;
+		try {
+			const models = await this.groq.models.list();
+			return models.data.some((m) => m.id === configurations.groq_model);
+		} catch (error) {
+			return false;
+		}
+	}
+
 	private checkConfig() {
 		if (!this.groq) {
 			throw new AppError(
@@ -38,7 +48,7 @@ ${content.slice(0, 1000)}`;
 
 		const chatCompletion = await this.groq.chat.completions.create({
 			messages: [{ role: "user", content: prompt }],
-			model: "llama-3.3-70b-versatile",
+			model: configurations.groq_model,
 		});
 
 		let language =
@@ -83,7 +93,7 @@ Rules:
 				{ role: "system", content: systemPrompt },
 				{ role: "user", content: userPrompt },
 			],
-			model: "llama-3.3-70b-versatile",
+			model: configurations.groq_model,
 			temperature: 0,
 		});
 
