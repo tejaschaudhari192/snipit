@@ -1,24 +1,21 @@
 import type { Request, Response } from "express";
-import AiService from "@/services/ai.service.js";
-import { catchAsync } from "@/lib/errors.js";
+import type AiService from "@/services/ai.service.js";
 
-const aiService = new AiService();
+class AiController {
+	constructor(private readonly aiService: AiService) {}
 
-export const detectLanguage = catchAsync(
-	async (req: Request, res: Response) => {
+	async detectLanguage(req: Request, res: Response) {
 		const { content } = req.body;
 
 		if (!content) {
 			return res.status(400).json({ error: "Content is required" });
 		}
 
-		const language = await aiService.detectLanguage(content);
+		const language = await this.aiService.detectLanguage(content);
 		res.json({ language });
-	},
-);
+	}
 
-export const enhanceContent = catchAsync(
-	async (req: Request, res: Response) => {
+	async enhanceContent(req: Request, res: Response) {
 		const { content, instruction } = req.body;
 
 		if (!content || !instruction) {
@@ -27,7 +24,10 @@ export const enhanceContent = catchAsync(
 			});
 		}
 
-		const result = await aiService.enhanceContent(content, instruction);
+		const result = await this.aiService.enhanceContent(content, instruction);
 		res.json({ result });
-	},
-);
+	}
+}
+
+export default AiController;
+

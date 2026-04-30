@@ -4,9 +4,6 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import configurations from "@/config/configurations.js";
 import apiRouter from "@/routes/index.js";
-import { ZodError } from "zod";
-import logger from "@/config/logger.js";
-
 import { connectDB } from "@/config/db.js";
 
 import { errorMiddleware } from "@/middleware/error.middleware.js";

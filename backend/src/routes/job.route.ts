@@ -1,8 +1,14 @@
 import { Router } from "express";
-import { cleanupExpiredPastes } from "@/controllers/job.controller.js";
+import JobController from "@/controllers/job.controller.js";
+import JobService from "@/services/job.service.js";
+import { catchAsync } from "@/lib/errors.js";
 
 const router: Router = Router();
 
-router.get("/", cleanupExpiredPastes);
+const jobService = new JobService();
+const jobController = new JobController(jobService);
+
+router.get("/", catchAsync(jobController.cleanupExpiredPastes.bind(jobController)));
 
 export default router;
+
