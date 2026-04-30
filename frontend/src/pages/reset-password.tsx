@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { Lock, ArrowRight, Eye, EyeOff, CheckCircle2 } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/context/AuthContext";
 
 const ResetPasswordPage = () => {
 	const { token } = useParams<{ token: string }>();
