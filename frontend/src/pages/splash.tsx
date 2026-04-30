@@ -10,13 +10,10 @@ interface SplashPageProps {
 const SplashPage = ({ healthData }: SplashPageProps) => {
 	const { t } = useTranslation();
 
-	const services = healthData?.services || {};
 	const progress = healthData?.progress || 0;
 	const currentLabel = healthData?.currentLabel || "Initializing...";
 
-	const isError =
-		healthData?.status === "down" ||
-		Object.values(services).some((s) => s.status === "error");
+	const isError = healthData?.status === "down";
 
 	return (
 		<div className="relative h-screen w-screen overflow-hidden bg-background text-foreground transition-colors duration-300 flex flex-col items-center justify-center pointer-events-none">
@@ -65,45 +62,6 @@ const SplashPage = ({ healthData }: SplashPageProps) => {
 							className={`h-full transition-all duration-300 ease-out rounded-full ${isError ? "bg-destructive" : "bg-primary"}`}
 							style={{ width: `${progress}%` }}
 						/>
-					</div>
-
-					{/* Service Status Details */}
-					<div className="mt-6 flex flex-col gap-2 bg-muted/30 p-4 rounded-xl border border-muted backdrop-blur-sm shadow-sm">
-						{Object.entries(services).filter(
-							([key]) => key !== "Ready",
-						).length > 0 ? (
-							Object.entries(services)
-								.filter(([key]) => key !== "Ready")
-								.map(([key, service]) => (
-									<div
-										key={key}
-										className="flex items-center justify-between"
-									>
-										<span className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">
-											{key}
-										</span>
-										<div className="flex items-center gap-2">
-											<span
-												className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase ${
-													service.status === "ok"
-														? "bg-primary/10 text-primary border border-primary/20"
-														: "bg-destructive/10 text-destructive border border-destructive/20"
-												}`}
-											>
-												{service.status === "ok"
-													? t("splash.connected")
-													: t("splash.error")}
-											</span>
-										</div>
-									</div>
-								))
-						) : (
-							<div className="flex items-center justify-center py-2">
-								<span className="text-[10px] text-muted-foreground animate-pulse">
-									{t("splash.initializing_probe")}
-								</span>
-							</div>
-						)}
 					</div>
 				</div>
 			</div>

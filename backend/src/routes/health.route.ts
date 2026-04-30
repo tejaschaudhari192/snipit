@@ -125,65 +125,67 @@ router.get("/stream", async (req, res) => {
 		res.write(`data: ${JSON.stringify(data)}\n\n`);
 	};
 
-	let isDatabaseOk = true;
+	let completedSteps = 0;
+	const totalSteps = 3;
 
-	// 1. Check MongoDB
-	try {
-		const dbState = mongoose.connection.readyState;
-		if (dbState !== 1) {
-			isDatabaseOk = false;
+	const performCheck = async (
+		step: string,
+		label: string,
+		checkFn: () => Promise<string>,
+	) => {
+		const status = await checkFn();
+		completedSteps++;
+		sendUpdate({
+			step,
+			label,
+			status,
+			progress: Math.round((completedSteps / (totalSteps + 1)) * 100),
+		});
+		return status;
+	};
+
+	const checkDatabase = async () => {
+		try {
+			const dbState = mongoose.connection.readyState;
+			return dbState === 1 ? "ok" : "error";
+		} catch {
+			return "error";
 		}
-	} catch (error: any) {
-		isDatabaseOk = false;
-	}
+	};
 
-	sendUpdate({
-		step: "Database",
-		label: "Connecting to Database...",
-		status: isDatabaseOk ? "ok" : "error",
-		progress: 25,
-	});
-
-	if (!isDatabaseOk) return res.end();
-
-	// 2. Check Supabase
-	let supabaseStatus = "ok";
-	try {
-		if (!isSupabaseConfigured || !supabase) {
-			supabaseStatus = "error";
-		} else {
+	const checkSupabase = async () => {
+		try {
+			if (!isSupabaseConfigured || !supabase) return "error";
 			const { error } = await supabase.storage.listBuckets();
-			if (error) supabaseStatus = "error";
+			return error ? "error" : "ok";
+		} catch {
+			return "error";
 		}
-	} catch (error: any) {
-		supabaseStatus = "error";
-	}
+	};
 
-	sendUpdate({
-		step: "Supabase",
-		label: "Checking Supabase...",
-		status: supabaseStatus,
-		progress: 50,
-	});
-
-	// 3. Check SMTP
-	let smtpStatus = "ok";
-	try {
-		if (!configurations.smtp.user) {
-			smtpStatus = "error";
-		} else {
+	const checkSMTP = async () => {
+		try {
+			if (!configurations.smtp.user) return "error";
 			await emailService.verify();
+			return "ok";
+		} catch {
+			return "error";
 		}
-	} catch (error: any) {
-		smtpStatus = "error";
-	}
+	};
 
-	sendUpdate({
-		step: "SMTP",
-		label: "Verifying Mail Server...",
-		status: smtpStatus,
-		progress: 75,
-	});
+	// Start all checks in parallel
+	const checkPromises = [
+		performCheck("Database", "Connecting to Database...", checkDatabase),
+		performCheck("Supabase", "Checking Supabase...", checkSupabase),
+		performCheck("SMTP", "Verifying Mail Server...", checkSMTP),
+	];
+
+	const results = await Promise.all(checkPromises);
+
+	// If database (the first check in the array) failed, we stop here
+	if (results[0] === "error") {
+		return res.end();
+	}
 
 	sendUpdate({
 		step: "Ready",

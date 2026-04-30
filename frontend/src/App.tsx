@@ -75,7 +75,7 @@ const App = () => {
 					currentHealth.progress = data.progress;
 					currentHealth.currentLabel = data.label;
 
-					if (data.status === "error") {
+					if (data.status === "error" && data.step === "Database") {
 						currentHealth.status = "down";
 						setError(true);
 						setLoading(false);
