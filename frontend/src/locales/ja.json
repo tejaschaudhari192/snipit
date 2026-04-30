@@ -400,7 +400,11 @@
 		"made_by": "Durgesh & Tejas によって ❤️ で作られました"
 	},
 	"splash": {
-		"tagline": "スニペットを瞬時に共有",
+		"tagline": "スニペットを即座に共有",
+		"system_failure": "システム障害が検出されました",
+		"initializing_probe": "ヘルスプローブを初期化しています...",
+		"connected": "接続済み",
+		"error": "エラー",
 		"loading_phrases": {
 			"0": "コアを初期化中...",
 			"1": "エンジンをウォームアップ中...",
@@ -408,6 +412,15 @@
 			"3": "ワークスペースをコンパイル中...",
 			"4": "スニペットを準備中..."
 		}
+	},
+	"server_error": {
+		"title": "システムオフライン",
+		"subtitle": "コアサービスへの接続に問題が発生しています。チームに通知され、修正作業を行っています。",
+		"operational": "稼働中",
+		"service_down": "サービス停止中",
+		"error_details": "エラー詳細",
+		"retry_button": "再試行",
+		"safety_button": "安全な場所に戻る"
 	},
 	"error_page": {
 		"title": "ページが見つかりません",
@@ -446,7 +459,31 @@
 		"logout_confirm": "ログアウトしました",
 		"logout_confirm_question": "ログアウトしてもよろしいですか？",
 		"logout_action": "ログアウト",
-		"logout_cancel": "キャンセル"
+		"logout_cancel": "キャンセル",
+		"forgot_password_title": "パスワードをお忘れですか",
+		"forgot_password_subtitle": "リセットリンクを受け取るためのメールアドレスを入力してください",
+		"forgot_password_success_subtitle": "メールでリセットリンクを確認してください",
+		"forgot_password_email_label": "メールアドレス",
+		"forgot_password_button": "リセットリンクを送信",
+		"forgot_password_sending": "送信中...",
+		"forgot_password_success_message": "パスワードリセットリンクを送信しました：",
+		"forgot_password_success_check_inbox": "受信トレイを確認し、指示に従ってください。",
+		"forgot_password_try_another": "別のメールを試す",
+		"back_to_login": "ログインに戻る",
+		"forgot_password_success_toast": "リセットリンクをメールに送信しました",
+		"forgot_password_failed_toast": "リセットリンクの送信に失敗しました",
+		"reset_password_title": "パスワードのリセット",
+		"reset_password_subtitle": "新しいパスワードを入力してください",
+		"reset_password_new_password_label": "新しいパスワード",
+		"reset_password_confirm_password_label": "パスワードの確認",
+		"reset_password_button": "パスワードをリセット",
+		"reset_password_resetting": "リセット中...",
+		"reset_password_success_toast": "パスワードのリセットに成功しました",
+		"reset_password_failed_toast": "パスワードのリセットに失敗しました",
+		"reset_password_mismatch_toast": "パスワードが一致しません",
+		"reset_password_min_length_toast": "パスワードは6文字以上である必要があります",
+		"reset_password_invalid_token_toast": "無効なトークン",
+		"google_login_failed": "Googleログインに失敗しました"
 	},
 	"editor": {
 		"ai_enhance": "✨ AIで選択範囲を強化..."

@@ -16,7 +16,7 @@ import {
 import { toast } from "sonner";
 import { Lock, ArrowRight, Eye, EyeOff, CheckCircle2 } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
-import { useAuth } from "@/context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 const ResetPasswordPage = () => {
 	const { token } = useParams<{ token: string }>();
@@ -26,36 +26,37 @@ const ResetPasswordPage = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { resetPassword } = useApiHelpers();
 	const { login } = useAuth();
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
 		if (password !== confirmPassword) {
-			toast.error("Passwords do not match");
+			toast.error(t("auth.reset_password_mismatch_toast"));
 			return;
 		}
 
 		if (password.length < 6) {
-			toast.error("Password must be at least 6 characters");
+			toast.error(t("auth.reset_password_min_length_toast"));
 			return;
 		}
 
 		setIsLoading(true);
 		try {
 			if (!token) {
-				toast.error("Invalid token");
+				toast.error(t("auth.reset_password_invalid_token_toast"));
 				return;
 			}
 			const data = await resetPassword(token, password);
 			login(data);
-			toast.success("Password reset successfully");
+			toast.success(t("auth.reset_password_success_toast"));
 			navigate("/");
 		} catch (error) {
 			const axiosError = error as AxiosError<{ message: string }>;
 			toast.error(
 				axiosError.response?.data?.message ||
-					"Failed to reset password",
+					t("auth.reset_password_failed_toast"),
 			);
 		} finally {
 			setIsLoading(false);
@@ -63,10 +64,10 @@ const ResetPasswordPage = () => {
 	};
 
 	return (
-		<div className="relative flex-1 flex flex-col items-center justify-center bg-background px-4 py-8 md:py-12 overflow-hidden">
+		<div className="relative flex-1 flex flex-col items-center justify-center bg-background px-4 py-8 md:py-12">
 			<div className="w-full max-w-sm relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-				<Card className="border-border/50 bg-background/60 backdrop-blur-xl shadow-2xl">
-					<CardHeader className="space-y-2 pb-6">
+				<Card className="glass-card border-border/40 overflow-hidden shadow-2xl rounded-3xl gap-0 py-0">
+					<CardHeader className="space-y-1.5 pb-5 pt-7">
 						<div className="flex items-center justify-center mb-6">
 							<div className="relative flex items-center justify-center w-20 h-20">
 								<div className="relative z-10 p-3 rounded-2xl bg-primary/10 border border-primary/20 shadow-sm text-primary">
@@ -75,10 +76,10 @@ const ResetPasswordPage = () => {
 							</div>
 						</div>
 						<CardTitle className="text-3xl font-black tracking-tight text-center">
-							Reset Password
+							{t("auth.reset_password_title")}
 						</CardTitle>
 						<CardDescription className="text-base text-muted-foreground text-center">
-							Enter your new password below
+							{t("auth.reset_password_subtitle")}
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
@@ -86,9 +87,11 @@ const ResetPasswordPage = () => {
 							<div className="space-y-2">
 								<Label
 									htmlFor="password"
-									className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70"
+									className="text-[13px] font-semibold uppercase tracking-wider text-muted-foreground/80 ml-1"
 								>
-									New Password
+									{t(
+										"auth.reset_password_new_password_label",
+									)}
 								</Label>
 								<div className="relative group">
 									<Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground transition-colors group-focus-within:text-primary" />
@@ -97,7 +100,9 @@ const ResetPasswordPage = () => {
 										type={
 											showPassword ? "text" : "password"
 										}
-										placeholder="Abc.12345"
+										placeholder={t(
+											"auth.password_placeholder",
+										)}
 										required
 										className="pl-10 pr-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all font-mono"
 										value={password}
@@ -124,9 +129,11 @@ const ResetPasswordPage = () => {
 							<div className="space-y-2">
 								<Label
 									htmlFor="confirmPassword"
-									className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70"
+									className="text-[13px] font-semibold uppercase tracking-wider text-muted-foreground/80 ml-1"
 								>
-									Confirm Password
+									{t(
+										"auth.reset_password_confirm_password_label",
+									)}
 								</Label>
 								<div className="relative group">
 									<Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground transition-colors group-focus-within:text-primary" />
@@ -135,7 +142,9 @@ const ResetPasswordPage = () => {
 										type={
 											showPassword ? "text" : "password"
 										}
-										placeholder="Abc.12345"
+										placeholder={t(
+											"auth.password_placeholder",
+										)}
 										required
 										className="pl-10 pr-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all font-mono"
 										value={confirmPassword}
@@ -154,25 +163,25 @@ const ResetPasswordPage = () => {
 								{isLoading ? (
 									<>
 										<ShimmerSection type="mini-loader" />
-										Resetting...
+										{t("auth.reset_password_resetting")}
 									</>
 								) : (
 									<>
-										Reset Password
+										{t("auth.reset_password_button")}
 										<ArrowRight className="h-5 w-5" />
 									</>
 								)}
 							</Button>
 						</form>
 					</CardContent>
-					<CardFooter className="flex flex-col gap-4 pt-2">
+					<CardFooter className="flex flex-col gap-4 pb-7 pt-5 px-7">
 						<div className="relative w-full">
 							<div className="absolute inset-0 flex items-center">
 								<span className="w-full border-t border-border/50"></span>
 							</div>
-							<div className="relative flex justify-center text-xs uppercase">
-								<span className="bg-background/0 px-2 text-muted-foreground">
-									or
+							<div className="relative flex justify-center text-xs font-bold uppercase tracking-widest text-muted-foreground/60">
+								<span className="bg-background/80 backdrop-blur-sm px-4">
+									{t("auth.or")}
 								</span>
 							</div>
 						</div>
@@ -181,7 +190,7 @@ const ResetPasswordPage = () => {
 								to="/login"
 								className="font-bold text-primary hover:text-primary/80 transition-colors inline-flex items-center gap-1 mx-auto"
 							>
-								Back to Login
+								{t("auth.back_to_login")}
 							</Link>
 						</p>
 					</CardFooter>

@@ -90,35 +90,50 @@ const SignupPage = () => {
 	};
 
 	return (
-		<div className="relative flex-1 flex flex-col items-center justify-center bg-background px-4 py-8 md:py-12 overflow-hidden">
-			<div className="w-full max-w-sm relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-				<Card className="border-border/50 bg-background/60 backdrop-blur-xl shadow-2xl">
-					<CardHeader className="space-y-2 pb-6">
-						<div className="flex items-center justify-center mb-6">
-							<div className="relative flex items-center justify-center w-20 h-20">
-								<div className="relative z-10 p-3 rounded-2xl bg-primary/10 border border-primary/20 shadow-sm text-primary">
-									<UserPlus className="h-8 w-8 drop-shadow-sm" />
+		<div className="flex-1 w-full flex flex-col items-center justify-center bg-background px-4 py-8 transition-colors duration-500">
+			{/* Dynamic Background Accents - Theme Aware */}
+			<div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+				<div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary/10 blur-[100px] animate-pulse-subtle" />
+				<div
+					className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/15 blur-[100px] animate-pulse-subtle"
+					style={{ animationDelay: "2s" }}
+				/>
+			</div>
+
+			<div className="w-full max-w-[400px] relative z-10 animate-in fade-in slide-in-from-bottom-6 duration-700">
+				<Card className="glass-card border-border/40 overflow-hidden shadow-2xl rounded-3xl gap-0 py-0">
+					<div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+
+					<CardHeader className="space-y-1.5 pb-5 pt-7">
+						<div className="flex items-center justify-center mb-4">
+							<div className="relative group">
+								<div className="absolute -inset-2 bg-primary/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+								<div className="relative flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 text-primary transition-transform duration-500 group-hover:scale-105">
+									<UserPlus className="h-6 w-6" />
 								</div>
 							</div>
 						</div>
-						<CardTitle className="text-3xl font-black tracking-tight text-center">
+						<CardTitle className="text-2xl font-bold tracking-tight text-center">
 							{t("auth.signup_title")}
 						</CardTitle>
-						<CardDescription className="text-base text-muted-foreground text-center">
+						<CardDescription className="text-sm text-muted-foreground text-center font-medium">
 							{t("auth.signup_subtitle")}
 						</CardDescription>
 					</CardHeader>
-					<CardContent>
-						<form onSubmit={handleSubmit} className="space-y-4">
-							<div className="space-y-2">
+
+					<CardContent className="px-7">
+						<form onSubmit={handleSubmit} className="space-y-3.5">
+							<div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
 								<Label
 									htmlFor="username"
-									className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70"
+									className="text-[13px] font-semibold uppercase tracking-wider text-muted-foreground/80 ml-1"
 								>
 									{t("auth.username_label")}
 								</Label>
 								<div className="relative group">
-									<User className="absolute left-3 top-3 h-5 w-5 text-muted-foreground transition-colors group-focus-within:text-primary" />
+									<div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+										<User className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within:text-primary" />
+									</div>
 									<Input
 										id="username"
 										type="text"
@@ -126,7 +141,7 @@ const SignupPage = () => {
 											"auth.username_placeholder",
 										)}
 										required
-										className="pl-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all font-medium"
+										className="pl-10.5 h-11 bg-background/50 border-border/50 focus:border-primary/40 focus:ring-4 focus:ring-primary/10 transition-all rounded-xl font-medium"
 										value={username}
 										onChange={(e) =>
 											setUsername(e.target.value)
@@ -134,15 +149,18 @@ const SignupPage = () => {
 									/>
 								</div>
 							</div>
-							<div className="space-y-2">
+
+							<div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
 								<Label
 									htmlFor="email"
-									className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70"
+									className="text-[13px] font-semibold uppercase tracking-wider text-muted-foreground/80 ml-1"
 								>
 									{t("auth.email_label")}
 								</Label>
 								<div className="relative group">
-									<Mail className="absolute left-3 top-3 h-5 w-5 text-muted-foreground transition-colors group-focus-within:text-primary" />
+									<div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+										<Mail className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within:text-primary" />
+									</div>
 									<Input
 										id="email"
 										type="email"
@@ -150,7 +168,7 @@ const SignupPage = () => {
 											"auth.email_placeholder",
 										)}
 										required
-										className="pl-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all font-medium"
+										className="pl-10.5 h-11 bg-background/50 border-border/50 focus:border-primary/40 focus:ring-4 focus:ring-primary/10 transition-all rounded-xl font-medium"
 										value={email}
 										onChange={(e) =>
 											setEmail(e.target.value)
@@ -158,15 +176,18 @@ const SignupPage = () => {
 									/>
 								</div>
 							</div>
-							<div className="space-y-2">
+
+							<div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
 								<Label
 									htmlFor="password"
-									className="text-sm font-bold uppercase tracking-wider text-muted-foreground/70"
+									className="text-[13px] font-semibold uppercase tracking-wider text-muted-foreground/80 ml-1"
 								>
 									{t("auth.password_label")}
 								</Label>
 								<div className="relative group">
-									<Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground transition-colors group-focus-within:text-primary" />
+									<div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+										<Lock className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within:text-primary" />
+									</div>
 									<Input
 										id="password"
 										type={
@@ -176,7 +197,7 @@ const SignupPage = () => {
 											"auth.password_placeholder",
 										)}
 										required
-										className="pl-10 pr-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all font-mono"
+										className="pl-10.5 pr-10.5 h-11 bg-background/50 border-border/50 focus:border-primary/40 focus:ring-4 focus:ring-primary/10 transition-all rounded-xl font-medium"
 										value={password}
 										onChange={(e) =>
 											setPassword(e.target.value)
@@ -187,7 +208,7 @@ const SignupPage = () => {
 										onClick={() =>
 											setShowPassword(!showPassword)
 										}
-										className="absolute right-3 top-3 text-muted-foreground hover:text-primary transition-colors focus:outline-none"
+										className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/30 hover:text-primary transition-colors focus:outline-none"
 										aria-label={
 											showPassword
 												? t("auth.hide_password")
@@ -195,61 +216,67 @@ const SignupPage = () => {
 										}
 									>
 										{showPassword ? (
-											<EyeOff className="h-5 w-5" />
+											<EyeOff className="h-4 w-4" />
 										) : (
-											<Eye className="h-5 w-5" />
+											<Eye className="h-4 w-4" />
 										)}
 									</button>
 								</div>
 							</div>
-							<Button
-								className="w-full h-11 text-base font-bold transition-all gap-2"
-								type="submit"
-								disabled={isLoading}
-							>
-								{isLoading ? (
-									<>
-										<ShimmerSection type="mini-loader" />
-										{t("auth.creating_account")}
-									</>
-								) : (
-									<>
-										{t("auth.signup_button")}
-										<ArrowRight className="h-5 w-5" />
-									</>
-								)}
-							</Button>
-							<div className="pt-2 w-full flex justify-center">
+
+							<div className="pt-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-400">
+								<Button
+									className="w-full h-11 text-sm font-bold transition-all gap-2 rounded-xl bg-primary hover:shadow-lg hover:shadow-primary/20 active:scale-[0.98] transition-all duration-200"
+									type="submit"
+									disabled={isLoading}
+								>
+									{isLoading ? (
+										<>
+											<ShimmerSection type="mini-loader" />
+											{t("auth.creating_account")}
+										</>
+									) : (
+										<>
+											{t("auth.signup_button")}
+											<ArrowRight className="h-4 w-4" />
+										</>
+									)}
+								</Button>
+							</div>
+
+							<div className="pt-1.5 w-full flex justify-center animate-in fade-in slide-in-from-bottom-4 duration-500 delay-500">
 								<GoogleLogin
 									onSuccess={handleGoogleSuccess}
 									onError={handleGoogleError}
 									useOneTap
-									theme="filled_blue"
+									theme="outline"
 									shape="rectangular"
-									width="340"
+									width="346"
 								/>
 							</div>
 						</form>
 					</CardContent>
-					<CardFooter className="flex flex-col gap-4 pt-2">
+
+					<CardFooter className="flex flex-col gap-4 pb-7 pt-5 px-7 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-700">
 						<div className="relative w-full">
 							<div className="absolute inset-0 flex items-center">
-								<span className="w-full border-t border-border/50"></span>
+								<div className="w-full border-t border-border/50"></div>
 							</div>
-							<div className="relative flex justify-center text-xs uppercase">
-								<span className="bg-background/0 px-2 text-muted-foreground">
+							<div className="relative flex justify-center text-xs font-bold uppercase tracking-widest text-muted-foreground/60">
+								<span className="bg-background/80 backdrop-blur-sm px-4">
 									{t("auth.or")}
 								</span>
 							</div>
 						</div>
-						<p className="text-sm text-muted-foreground text-center">
+
+						<p className="text-sm text-muted-foreground/80 text-center font-medium">
 							{t("auth.already_have_account")}{" "}
 							<Link
 								to="/login"
-								className="font-bold text-primary hover:text-primary/80 transition-colors inline-flex items-center gap-1"
+								className="font-bold text-primary hover:text-primary/80 transition-colors inline-flex items-center gap-1 group"
 							>
 								{t("auth.login_here")}
-								<ArrowRight className="h-3 w-3" />
+								<ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
 							</Link>
 						</p>
 					</CardFooter>

@@ -134,7 +134,10 @@ const App = () => {
 
 	return (
 		<ThemeProvider>
-			<GoogleOAuthProvider clientId={CONFIG.GOOGLE_CLIENT_ID || ""}>
+			<GoogleOAuthProvider
+				clientId={CONFIG.GOOGLE_CLIENT_ID || ""}
+				locale={i18n.language}
+			>
 				<AuthProvider>
 					<SnippetProvider>
 						<PasteProvider>

@@ -8,7 +8,7 @@ interface SplashPageProps {
 }
 
 const SplashPage = ({ healthData }: SplashPageProps) => {
-	useTranslation();
+	const { t } = useTranslation();
 
 	const services = healthData?.services || {};
 	const progress = healthData?.progress || 0;
@@ -52,7 +52,7 @@ const SplashPage = ({ healthData }: SplashPageProps) => {
 								}
 							>
 								{isError
-									? "System failure detected"
+									? t("splash.system_failure")
 									: currentLabel}
 							</span>
 						</span>
@@ -91,8 +91,8 @@ const SplashPage = ({ healthData }: SplashPageProps) => {
 												}`}
 											>
 												{service.status === "ok"
-													? "Connected"
-													: "Error"}
+													? t("splash.connected")
+													: t("splash.error")}
 											</span>
 										</div>
 									</div>
@@ -100,7 +100,7 @@ const SplashPage = ({ healthData }: SplashPageProps) => {
 						) : (
 							<div className="flex items-center justify-center py-2">
 								<span className="text-[10px] text-muted-foreground animate-pulse">
-									Initializing health probe...
+									{t("splash.initializing_probe")}
 								</span>
 							</div>
 						)}

@@ -401,6 +401,10 @@
 	},
 	"splash": {
 		"tagline": "अपने स्निपेट तुरंत साझा करें",
+		"system_failure": "सिस्टम विफलता का पता चला",
+		"initializing_probe": "स्वास्थ्य जांच शुरू की जा रहा है...",
+		"connected": "जुड़ा हुआ",
+		"error": "त्रुटि",
 		"loading_phrases": {
 			"0": "कोर शुरू किया जा रहा है...",
 			"1": "इंजन चालू किया जा रहा है...",
@@ -408,6 +412,15 @@
 			"3": "वर्कस्पेस कंपाइल किया जा रहा है...",
 			"4": "स्निपेट तैयार किए जा रहे हैं..."
 		}
+	},
+	"server_error": {
+		"title": "सिस्टम ऑफलाइन",
+		"subtitle": "हमें अपनी मुख्य सेवाओं से जुड़ने में समस्या हो रही है। हमारी टीम को सूचित कर दिया गया है और वह समाधान पर काम कर रही है।",
+		"operational": "परिचालन",
+		"service_down": "सेवा बंद",
+		"error_details": "त्रुटि विवरण",
+		"retry_button": "कनेक्शन पुन: प्रयास करें",
+		"safety_button": "सुरक्षा पर वापस जाएं"
 	},
 	"error_page": {
 		"title": "पेज नहीं मिला",
@@ -446,7 +459,31 @@
 		"logout_confirm": "सफलतापूर्वक लॉगआउट हुआ",
 		"logout_confirm_question": "क्या आप वाकई लॉगआउट करना चाहते हैं?",
 		"logout_action": "लॉगआउट",
-		"logout_cancel": "रद्द करें"
+		"logout_cancel": "रद्द करें",
+		"forgot_password_title": "पासवर्ड भूल गए",
+		"forgot_password_subtitle": "रीसेट लिंक प्राप्त करने के लिए अपना ईमेल दर्ज करें",
+		"forgot_password_success_subtitle": "रीसेट लिंक के लिए अपना ईमेल देखें",
+		"forgot_password_email_label": "ईमेल पता",
+		"forgot_password_button": "रीसेट लिंक भेजें",
+		"forgot_password_sending": "भेजा जा रहा है...",
+		"forgot_password_success_message": "हमने पासवर्ड रीसेट लिंक भेजा है",
+		"forgot_password_success_check_inbox": "कृपया अपना इनबॉक्स देखें और निर्देशों का पालन करें।",
+		"forgot_password_try_another": "दूसरा ईमेल आज़माएं",
+		"back_to_login": "लॉगिन पर वापस जाएं",
+		"forgot_password_success_toast": "रीसेट लिंक आपके ईमेल पर भेज दिया गया है",
+		"forgot_password_failed_toast": "रीसेट लिंक भेजने में विफल",
+		"reset_password_title": "पासवर्ड रीसेट करें",
+		"reset_password_subtitle": "नीचे अपना नया पासवर्ड दर्ज करें",
+		"reset_password_new_password_label": "नया पासवर्ड",
+		"reset_password_confirm_password_label": "पासवर्ड की पुष्टि करें",
+		"reset_password_button": "पासवर्ड रीसेट करें",
+		"reset_password_resetting": "रीसेट किया जा रहा है...",
+		"reset_password_success_toast": "पासवर्ड सफलतापूर्वक रीसेट हो गया",
+		"reset_password_failed_toast": "पासवर्ड रीसेट करने में विफल",
+		"reset_password_mismatch_toast": "पासवर्ड मेल नहीं खाते",
+		"reset_password_min_length_toast": "पासवर्ड कम से कम 6 अक्षरों का होना चाहिए",
+		"reset_password_invalid_token_toast": "अमान्य टोकन",
+		"google_login_failed": "गूगल लॉगिन विफल"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI के साथ बेहतर बनाएं..."

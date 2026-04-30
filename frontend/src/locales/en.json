@@ -401,6 +401,10 @@
 	},
 	"splash": {
 		"tagline": "Share your snippets instantly",
+		"system_failure": "System failure detected",
+		"initializing_probe": "Initializing health probe...",
+		"connected": "Connected",
+		"error": "Error",
 		"loading_phrases": [
 			"Initializing Core...",
 			"Warming up engine...",
@@ -408,6 +412,15 @@
 			"Compiling workspace...",
 			"Readying snippets..."
 		]
+	},
+	"server_error": {
+		"title": "System Offline",
+		"subtitle": "We're having trouble connecting to our core services. Our team has been notified and is working on a fix.",
+		"operational": "Operational",
+		"service_down": "Service Down",
+		"error_details": "Error Details",
+		"retry_button": "Retry Connection",
+		"safety_button": "Back to Safety"
 	},
 	"error_page": {
 		"title": "Page Not Found",
@@ -441,12 +454,36 @@
 		"login_here": "Login here",
 		"signup_success": "Account created successfully. Please login.",
 		"signup_failed": "Signup failed",
+		"google_login_failed": "Google login failed",
 		"show_password": "Show password",
 		"hide_password": "Hide password",
 		"logout_confirm": "Logged out successfully",
 		"logout_confirm_question": "Are you sure you want to logout?",
 		"logout_action": "Logout",
-		"logout_cancel": "Cancel"
+		"logout_cancel": "Cancel",
+		"forgot_password_title": "Forgot Password",
+		"forgot_password_subtitle": "Enter your email to receive a reset link",
+		"forgot_password_success_subtitle": "Check your email for the reset link",
+		"forgot_password_email_label": "Email Address",
+		"forgot_password_button": "Send Reset Link",
+		"forgot_password_sending": "Sending...",
+		"forgot_password_success_message": "We've sent a password reset link to",
+		"forgot_password_success_check_inbox": "Please check your inbox and follow the instructions.",
+		"forgot_password_try_another": "Try another email",
+		"back_to_login": "Back to Login",
+		"forgot_password_success_toast": "Reset link sent to your email",
+		"forgot_password_failed_toast": "Failed to send reset link",
+		"reset_password_title": "Reset Password",
+		"reset_password_subtitle": "Enter your new password below",
+		"reset_password_new_password_label": "New Password",
+		"reset_password_confirm_password_label": "Confirm Password",
+		"reset_password_button": "Reset Password",
+		"reset_password_resetting": "Resetting...",
+		"reset_password_success_toast": "Password reset successfully",
+		"reset_password_failed_toast": "Failed to reset password",
+		"reset_password_mismatch_toast": "Passwords do not match",
+		"reset_password_min_length_toast": "Password must be at least 6 characters",
+		"reset_password_invalid_token_toast": "Invalid token"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI Enhance Selection..."

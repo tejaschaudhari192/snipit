@@ -9,7 +9,7 @@ interface ServerErrorPageProps {
 }
 
 const ServerErrorPage = ({ error, services }: ServerErrorPageProps) => {
-	useTranslation();
+	const { t } = useTranslation();
 
 	return (
 		<div className="relative h-screen w-screen overflow-hidden bg-background text-foreground flex flex-col items-center justify-center p-6">
@@ -22,12 +22,11 @@ const ServerErrorPage = ({ error, services }: ServerErrorPageProps) => {
 				</div>
 
 				<h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter text-center mb-4 bg-clip-text text-transparent bg-gradient-to-b from-foreground to-muted-foreground">
-					System Offline
+					{t("server_error.title")}
 				</h1>
 
 				<p className="text-muted-foreground text-center text-lg mb-12 max-w-md">
-					We're having trouble connecting to our core services. Our
-					team has been notified and is working on a fix.
+					{t("server_error.subtitle")}
 				</p>
 
 				{/* Detailed Status */}
@@ -62,8 +61,8 @@ const ServerErrorPage = ({ error, services }: ServerErrorPageProps) => {
 									}`}
 								>
 									{service.status === "ok"
-										? "Operational"
-										: "Service Down"}
+										? t("server_error.operational")
+										: t("server_error.service_down")}
 								</p>
 							</div>
 						))}
@@ -74,7 +73,7 @@ const ServerErrorPage = ({ error, services }: ServerErrorPageProps) => {
 						<AlertCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
 						<div className="flex flex-col gap-1">
 							<span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-								Error Details
+								{t("server_error.error_details")}
 							</span>
 							<p className="text-sm font-mono text-foreground/80 break-all">
 								{error}
@@ -89,7 +88,7 @@ const ServerErrorPage = ({ error, services }: ServerErrorPageProps) => {
 						className="group relative flex items-center gap-2 px-8 py-4 bg-foreground text-background rounded-full font-bold transition-all hover:scale-105 active:scale-95 overflow-hidden"
 					>
 						<RefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
-						Retry Connection
+						{t("server_error.retry_button")}
 					</button>
 
 					<Link
@@ -97,7 +96,7 @@ const ServerErrorPage = ({ error, services }: ServerErrorPageProps) => {
 						className="flex items-center gap-2 px-8 py-4 bg-muted hover:bg-muted/80 text-foreground rounded-full font-bold transition-all hover:scale-105 active:scale-95"
 					>
 						<Home className="w-4 h-4" />
-						Back to Safety
+						{t("server_error.safety_button")}
 					</Link>
 				</div>
 			</div>

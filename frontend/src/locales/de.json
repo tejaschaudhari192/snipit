@@ -401,6 +401,10 @@
 	},
 	"splash": {
 		"tagline": "Teilen Sie Ihre Snippets sofort",
+		"system_failure": "Systemfehler erkannt",
+		"initializing_probe": "Gesundheitsprüfung wird initialisiert...",
+		"connected": "Verbunden",
+		"error": "Fehler",
 		"loading_phrases": {
 			"0": "Initialisiere Core...",
 			"1": "Engine wird aufgewärmt...",
@@ -408,6 +412,15 @@
 			"3": "Kompiliere Arbeitsbereich...",
 			"4": "Bereite Snippets vor..."
 		}
+	},
+	"server_error": {
+		"title": "System Offline",
+		"subtitle": "Wir haben Probleme, eine Verbindung zu unseren Kerndiensten herzustellen. Unser Team wurde benachrichtigt und arbeitet an einer Lösung.",
+		"operational": "Betriebsbereit",
+		"service_down": "Dienst ausgefallen",
+		"error_details": "Fehlerdetails",
+		"retry_button": "Verbindung erneut versuchen",
+		"safety_button": "Zurück zur Sicherheit"
 	},
 	"error_page": {
 		"title": "Seite nicht gefunden",
@@ -446,7 +459,31 @@
 		"logout_confirm": "Erfolgreich abgemeldet",
 		"logout_confirm_question": "Sind Sie sicher, dass Sie sich abmelden möchten?",
 		"logout_action": "Abmelden",
-		"logout_cancel": "Abbrechen"
+		"logout_cancel": "Abbrechen",
+		"forgot_password_title": "Passwort vergessen",
+		"forgot_password_subtitle": "Geben Sie Ihre E-Mail-Adresse ein, um einen Reset-Link zu erhalten",
+		"forgot_password_success_subtitle": "Überprüfen Sie Ihre E-Mail auf den Reset-Link",
+		"forgot_password_email_label": "E-Mail-Adresse",
+		"forgot_password_button": "Reset-Link senden",
+		"forgot_password_sending": "Senden...",
+		"forgot_password_success_message": "Wir haben einen Link zum Zurücksetzen des Passworts gesendet an",
+		"forgot_password_success_check_inbox": "Bitte überprüfen Sie Ihren Posteingang und folgen Sie den Anweisungen.",
+		"forgot_password_try_another": "Andere E-Mail versuchen",
+		"back_to_login": "Zurück zum Login",
+		"forgot_password_success_toast": "Reset-Link an Ihre E-Mail gesendet",
+		"forgot_password_failed_toast": "Fehler beim Senden des Reset-Links",
+		"reset_password_title": "Passwort zurücksetzen",
+		"reset_password_subtitle": "Geben Sie unten Ihr neues Passwort ein",
+		"reset_password_new_password_label": "Neues Passwort",
+		"reset_password_confirm_password_label": "Passwort bestätigen",
+		"reset_password_button": "Passwort zurücksetzen",
+		"reset_password_resetting": "Zurücksetzen...",
+		"reset_password_success_toast": "Passwort erfolgreich zurückgesetzt",
+		"reset_password_failed_toast": "Passwort zurücksetzen fehlgeschlagen",
+		"reset_password_mismatch_toast": "Passwörter stimmen nicht überein",
+		"reset_password_min_length_toast": "Passwort muss mindestens 6 Zeichen lang sein",
+		"reset_password_invalid_token_toast": "Ungültiger Token",
+		"google_login_failed": "Google Login fehlgeschlagen"
 	},
 	"editor": {
 		"ai_enhance": "✨ KI-Auswahl verbessern..."
