@@ -176,8 +176,8 @@ router.get("/stream", async (req, res) => {
 	// Start all checks in parallel
 	const checkPromises = [
 		performCheck("Database", "Connecting to Database...", checkDatabase),
-		performCheck("Supabase", "Checking Supabase...", checkSupabase),
-		performCheck("SMTP", "Verifying Mail Server...", checkSMTP),
+		performCheck("Storage", "Checking Storage...", checkSupabase),
+		performCheck("Email Server", "Verifying Email Server...", checkSMTP),
 	];
 
 	const results = await Promise.all(checkPromises);
