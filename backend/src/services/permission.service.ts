@@ -4,7 +4,10 @@ import User from "@/models/User.js";
 export type UserRole = "admin" | "editor" | "viewer" | "commenter";
 
 class PermissionService {
-	async getUserRole(userId: string | null, paste: IPaste): Promise<UserRole> {
+	async getUserRole(
+		userId: string | null,
+		paste: IPaste,
+	): Promise<UserRole | null> {
 		let userEmail = null;
 		if (userId) {
 			const user = await User.findById(userId);
@@ -13,13 +16,12 @@ class PermissionService {
 
 		const isOwner =
 			paste.owner && userId && paste.owner.toString() === userId;
-		const isAnonymousOwner = !paste.owner;
 
-		if (isOwner || isAnonymousOwner) {
+		if (isOwner) {
 			return "admin";
 		}
 
-		let userRole: UserRole = "viewer";
+		let userRole: UserRole | null = null;
 
 		if (paste.shareList && userEmail) {
 			const shareEntry = paste.shareList.find(
@@ -31,7 +33,7 @@ class PermissionService {
 		}
 
 		if (
-			userRole === "viewer" &&
+			(!userRole || userRole === "viewer") &&
 			paste.allowedUsers &&
 			userEmail &&
 			paste.allowedUsers.includes(userEmail)
@@ -39,7 +41,7 @@ class PermissionService {
 			userRole = "editor";
 		}
 
-		if (userRole === "viewer") {
+		if (!userRole) {
 			if (paste.editPermission === "public") {
 				userRole = "editor";
 			} else if (
@@ -56,16 +58,19 @@ class PermissionService {
 	async canView(userId: string | null, paste: IPaste): Promise<boolean> {
 		if (paste.visibility === "public") return true;
 		const role = await this.getUserRole(userId, paste);
+		if (!role) return false;
 		return ["admin", "editor", "viewer", "commenter"].includes(role);
 	}
 
 	async canEdit(userId: string | null, paste: IPaste): Promise<boolean> {
 		const role = await this.getUserRole(userId, paste);
+		if (!role) return false;
 		return ["admin", "editor"].includes(role);
 	}
 
 	async canDelete(userId: string | null, paste: IPaste): Promise<boolean> {
 		const role = await this.getUserRole(userId, paste);
+		if (!role) return false;
 		return role === "admin";
 	}
 }

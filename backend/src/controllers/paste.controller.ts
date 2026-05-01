@@ -123,15 +123,18 @@ class PasteController {
 			if (!paste)
 				return res.status(404).json({ error: "Paste not found" });
 
-			const role = await this.permissionService.getUserRole(
-				this.getUserId(req),
-				paste,
-			);
-			if (role === "viewer" || role === "commenter") {
+			const userId = this.getUserId(req);
+			const canEdit = await this.permissionService.canEdit(userId, paste);
+			if (!canEdit) {
 				return res.status(403).json({
 					error: "Unauthorized: You do not have permission to edit this paste",
 				});
 			}
+
+			const role = (await this.permissionService.getUserRole(
+				userId,
+				paste,
+			))!;
 
 			const updates = { ...req.body };
 			if (role === "editor") {
@@ -188,6 +191,15 @@ class PasteController {
 			const paste = await this.pasteService.getPasteById(id);
 			if (!paste)
 				return res.status(404).json({ error: "Paste not found" });
+
+			const userId = this.getUserId(req);
+			const canView = await this.permissionService.canView(userId, paste);
+			if (!canView) {
+				return res.status(403).json({
+					error: "Access denied. Private or Shared snippet.",
+				});
+			}
+
 			if (!paste.password) return res.json(paste.toObject());
 
 			const bcrypt = await import("bcryptjs");

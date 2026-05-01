@@ -42,3 +42,28 @@ export const protect = async (
 		res.status(401).json({ message: "Not authorized, token failed" });
 	}
 };
+
+export const optionalProtect = async (
+	req: AuthRequest,
+	res: Response,
+	next: NextFunction,
+) => {
+	const token = extractTokenFromRequest(req);
+
+	if (!token) {
+		return next();
+	}
+
+	try {
+		const userId = getUserIdFromToken(token);
+		if (!userId) return next();
+
+		const user = await User.findById(userId).select("-password");
+		if (user) {
+			req.user = user;
+		}
+		next();
+	} catch (error) {
+		next();
+	}
+};

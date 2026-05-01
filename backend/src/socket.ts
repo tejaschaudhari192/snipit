@@ -8,6 +8,7 @@ import {
 } from "@/config/constants.js";
 import type { ActiveUser } from "@/types/index.js";
 import PasteService from "@/services/paste.service.js";
+import PermissionService from "@/services/permission.service.js";
 import UserModel from "@/models/User.js";
 import {
 	getUserIdFromToken,
@@ -19,6 +20,7 @@ import path from "path";
 import crypto from "crypto";
 
 const pasteService = new PasteService();
+const permissionService = new PermissionService();
 const activeUsers = new Map<string, ActiveUser & { pasteId: string }>();
 
 // Helpers
@@ -34,36 +36,7 @@ const canUserEdit = async (
 ): Promise<boolean> => {
 	const paste = await pasteService.getPasteById(pasteId);
 	if (!paste) return false;
-
-	let userEmail = null;
-	if (userId) {
-		const user = await UserModel.findById(userId);
-		if (user) userEmail = user.email;
-	}
-
-	const isOwner = paste.owner && userId && paste.owner.toString() === userId;
-	const isAnonymousOwner = !paste.owner;
-
-	if (isOwner || isAnonymousOwner) return true;
-
-	if (paste.shareList && userEmail) {
-		const shareEntry = paste.shareList.find((s) => s.email === userEmail);
-		if (
-			shareEntry &&
-			(shareEntry.role === "editor" || shareEntry.role === "admin")
-		)
-			return true;
-	}
-
-	if (
-		paste.allowedUsers &&
-		userEmail &&
-		paste.allowedUsers.includes(userEmail)
-	)
-		return true;
-	if (paste.editPermission === "public") return true;
-
-	return false;
+	return await permissionService.canEdit(userId, paste);
 };
 
 const canUserView = async (
@@ -72,27 +45,7 @@ const canUserView = async (
 ): Promise<boolean> => {
 	const paste = await pasteService.getPasteById(pasteId);
 	if (!paste) return false;
-	if (paste.visibility === "public") return true;
-
-	let userEmail = null;
-	if (userId) {
-		const user = await UserModel.findById(userId);
-		if (user) userEmail = user.email;
-	}
-
-	const isOwner = paste.owner && userId && paste.owner.toString() === userId;
-	const isAllowed =
-		paste.allowedUsers &&
-		userEmail &&
-		paste.allowedUsers.includes(userEmail);
-
-	let hasShareListAccess = false;
-	if (paste.shareList && userEmail) {
-		const shareEntry = paste.shareList.find((s) => s.email === userEmail);
-		if (shareEntry) hasShareListAccess = true;
-	}
-
-	return !!(isOwner || isAllowed || hasShareListAccess);
+	return await permissionService.canView(userId, paste);
 };
 
 export const setupSocket = (server: HTTPServer) => {
