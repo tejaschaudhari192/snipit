@@ -63,7 +63,7 @@ export const optionalProtect = async (
 			req.user = user;
 		}
 		next();
-	} catch (error) {
+	} catch {
 		next();
 	}
 };

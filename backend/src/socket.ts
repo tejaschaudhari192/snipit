@@ -9,7 +9,6 @@ import {
 import type { ActiveUser } from "@/types/index.js";
 import PasteService from "@/services/paste.service.js";
 import PermissionService from "@/services/permission.service.js";
-import UserModel from "@/models/User.js";
 import {
 	getUserIdFromToken,
 	extractTokenFromRequest,

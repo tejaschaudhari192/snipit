@@ -230,7 +230,7 @@ class PasteController {
 				this.getUserId(req),
 				paste,
 			);
-			if (!["admin", "editor", "commenter"].includes(role)) {
+			if (!role || !["admin", "editor", "commenter"].includes(role)) {
 				return res.status(403).json({
 					error: "Unauthorized: You do not have permission to comment",
 				});
