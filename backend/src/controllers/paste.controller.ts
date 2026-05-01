@@ -21,8 +21,14 @@ class PasteController {
 	async createPaste(req: AuthRequest, res: Response, next: NextFunction) {
 		try {
 			const owner = this.getUserId(req);
-			if (req.body.visibility && req.body.visibility !== "public" && !owner) {
-				return res.status(401).json({ error: "Login required for private/shared pastes" });
+			if (
+				req.body.visibility &&
+				req.body.visibility !== "public" &&
+				!owner
+			) {
+				return res.status(401).json({
+					error: "Login required for private/shared pastes",
+				});
 			}
 
 			const result = await this.pasteService.createPaste(req.body, owner);
@@ -40,7 +46,8 @@ class PasteController {
 		const id = req.params.id as string;
 		try {
 			const result = await this.pasteService.incrementViews(id);
-			if (!result) return res.status(404).json({ error: "Paste not found" });
+			if (!result)
+				return res.status(404).json({ error: "Paste not found" });
 
 			if (result.expiresAt && new Date() > result.expiresAt) {
 				await this.pasteService.deletePaste(id);
@@ -53,16 +60,28 @@ class PasteController {
 			}
 
 			const userId = this.getUserId(req);
-			const canView = await this.permissionService.canView(userId, result);
+			const canView = await this.permissionService.canView(
+				userId,
+				result,
+			);
 
 			if (!canView) {
-				return res.status(403).json({ error: "Access denied. Private or Shared snippet." });
+				return res.status(403).json({
+					error: "Access denied. Private or Shared snippet.",
+				});
 			}
 
 			if (result.password) {
-				const isOwner = result.owner && userId && result.owner.toString() === userId;
+				const isOwner =
+					result.owner &&
+					userId &&
+					result.owner.toString() === userId;
 				if (!isOwner) {
-					const { content: _, password: __, ...rest } = result.toObject();
+					const {
+						content: _,
+						password: __,
+						...rest
+					} = result.toObject();
 					return res.json({ ...rest, isPasswordProtected: true });
 				}
 			}
@@ -77,11 +96,17 @@ class PasteController {
 		const id = req.params.id as string;
 		try {
 			const paste = await this.pasteService.getPasteById(id);
-			if (!paste) return res.status(404).json({ error: "Paste not found" });
+			if (!paste)
+				return res.status(404).json({ error: "Paste not found" });
 
-			const canDelete = await this.permissionService.canDelete(this.getUserId(req), paste);
+			const canDelete = await this.permissionService.canDelete(
+				this.getUserId(req),
+				paste,
+			);
 			if (!canDelete) {
-				return res.status(403).json({ error: "Unauthorized: You do not have permission to delete this paste" });
+				return res.status(403).json({
+					error: "Unauthorized: You do not have permission to delete this paste",
+				});
 			}
 
 			const result = await this.pasteService.deletePaste(id);
@@ -95,18 +120,33 @@ class PasteController {
 		const id = req.params.id as string;
 		try {
 			const paste = await this.pasteService.getPasteById(id);
-			if (!paste) return res.status(404).json({ error: "Paste not found" });
+			if (!paste)
+				return res.status(404).json({ error: "Paste not found" });
 
-			const role = await this.permissionService.getUserRole(this.getUserId(req), paste);
+			const role = await this.permissionService.getUserRole(
+				this.getUserId(req),
+				paste,
+			);
 			if (role === "viewer" || role === "commenter") {
-				return res.status(403).json({ error: "Unauthorized: You do not have permission to edit this paste" });
+				return res.status(403).json({
+					error: "Unauthorized: You do not have permission to edit this paste",
+				});
 			}
 
 			const updates = { ...req.body };
 			if (role === "editor") {
 				// Restricted fields for editors
-				const restricted = ["visibility", "allowedUsers", "newId", "password", "editPermission", "shareList", "publicRole", "allowComments"];
-				restricted.forEach(field => delete updates[field]);
+				const restricted = [
+					"visibility",
+					"allowedUsers",
+					"newId",
+					"password",
+					"editPermission",
+					"shareList",
+					"publicRole",
+					"allowComments",
+				];
+				restricted.forEach((field) => delete updates[field]);
 			}
 
 			const result = await this.pasteService.updatePaste(id, updates);
@@ -127,7 +167,11 @@ class PasteController {
 			const page = parseInt(req.query.page as string) || 1;
 			const limit = parseInt(req.query.limit as string) || 10;
 
-			const result = await this.pasteService.getUserPastes(userId, page, limit);
+			const result = await this.pasteService.getUserPastes(
+				userId,
+				page,
+				limit,
+			);
 			return res.json({
 				...result,
 				pastes: result.pastes.map((p) => p.toObject()),
@@ -142,7 +186,8 @@ class PasteController {
 		const { password } = req.body;
 		try {
 			const paste = await this.pasteService.getPasteById(id);
-			if (!paste) return res.status(404).json({ error: "Paste not found" });
+			if (!paste)
+				return res.status(404).json({ error: "Paste not found" });
 			if (!paste.password) return res.json(paste.toObject());
 
 			const bcrypt = await import("bcryptjs");
@@ -160,15 +205,23 @@ class PasteController {
 		const { content, author } = req.body;
 		try {
 			const paste = await this.pasteService.getPasteById(id);
-			if (!paste) return res.status(404).json({ error: "Paste not found" });
+			if (!paste)
+				return res.status(404).json({ error: "Paste not found" });
 
 			if (!paste.allowComments) {
-				return res.status(403).json({ error: "Comments are disabled for this snippet" });
+				return res
+					.status(403)
+					.json({ error: "Comments are disabled for this snippet" });
 			}
 
-			const role = await this.permissionService.getUserRole(this.getUserId(req), paste);
+			const role = await this.permissionService.getUserRole(
+				this.getUserId(req),
+				paste,
+			);
 			if (!["admin", "editor", "commenter"].includes(role)) {
-				return res.status(403).json({ error: "Unauthorized: You do not have permission to comment" });
+				return res.status(403).json({
+					error: "Unauthorized: You do not have permission to comment",
+				});
 			}
 
 			const userId = this.getUserId(req);
@@ -208,4 +261,3 @@ class PasteController {
 }
 
 export default PasteController;
-

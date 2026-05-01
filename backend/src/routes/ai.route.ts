@@ -8,8 +8,13 @@ const router: express.Router = express.Router();
 const aiService = new AiService();
 const aiController = new AiController(aiService);
 
-router.post("/detect-language", catchAsync(aiController.detectLanguage.bind(aiController)));
-router.post("/enhance", catchAsync(aiController.enhanceContent.bind(aiController)));
+router.post(
+	"/detect-language",
+	catchAsync(aiController.detectLanguage.bind(aiController)),
+);
+router.post(
+	"/enhance",
+	catchAsync(aiController.enhanceContent.bind(aiController)),
+);
 
 export default router;
-

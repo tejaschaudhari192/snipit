@@ -8,7 +8,9 @@ const router: Router = Router();
 const jobService = new JobService();
 const jobController = new JobController(jobService);
 
-router.get("/", catchAsync(jobController.cleanupExpiredPastes.bind(jobController)));
+router.get(
+	"/",
+	catchAsync(jobController.cleanupExpiredPastes.bind(jobController)),
+);
 
 export default router;
-

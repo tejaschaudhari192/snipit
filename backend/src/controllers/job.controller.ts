@@ -6,14 +6,20 @@ class JobController {
 	constructor(private readonly jobService: JobService) {}
 
 	async cleanupExpiredPastes(req: Request, res: Response) {
-		const key = (req.query.key as string) || (req.headers["x-job-secret"] as string);
+		const key =
+			(req.query.key as string) ||
+			(req.headers["x-job-secret"] as string);
 
 		if (!configurations.job_secret) {
-			return res.status(500).json({ error: "Server misconfiguration: JOB_SECRET not set" });
+			return res
+				.status(500)
+				.json({ error: "Server misconfiguration: JOB_SECRET not set" });
 		}
 
 		if (!key || key !== configurations.job_secret) {
-			return res.status(401).json({ error: "Unauthorized: Invalid or missing key" });
+			return res
+				.status(401)
+				.json({ error: "Unauthorized: Invalid or missing key" });
 		}
 
 		const deletedIds = await this.jobService.cleanupExpiredPastes();
@@ -27,4 +33,3 @@ class JobController {
 }
 
 export default JobController;
-

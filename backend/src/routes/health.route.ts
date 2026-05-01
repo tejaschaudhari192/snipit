@@ -136,7 +136,16 @@ router.get("/stream", async (req, res) => {
 		icon: string,
 		checkFn: () => Promise<string>,
 	) => {
+		const startTime = Date.now();
+		logger.info(`[Health] Starting ${step} check...`);
+
 		const status = await checkFn();
+
+		const duration = Date.now() - startTime;
+		logger.info(
+			`[Health] ${step} check finished with status: ${status} (${duration}ms)`,
+		);
+
 		completedSteps++;
 		sendUpdate({
 			step,
@@ -188,10 +197,30 @@ router.get("/stream", async (req, res) => {
 
 	// Start all checks in parallel
 	const checkPromises = [
-		performCheck("Database", "Connecting to Database...", "database", checkDatabase),
-		performCheck("Storage", "Checking Storage...", "hard-drive", checkSupabase),
-		performCheck("Email Server", "Verifying Email Server...", "mail", checkSMTP),
-		performCheck("AI Service", "Activating AI Engine...", "sparkles", checkAI),
+		performCheck(
+			"Database",
+			"Connecting to Database...",
+			"database",
+			checkDatabase,
+		),
+		performCheck(
+			"Storage",
+			"Checking Storage...",
+			"hard-drive",
+			checkSupabase,
+		),
+		performCheck(
+			"Email Server",
+			"Verifying Email Server...",
+			"mail",
+			checkSMTP,
+		),
+		performCheck(
+			"AI Service",
+			"Activating AI Engine...",
+			"sparkles",
+			checkAI,
+		),
 	];
 
 	const results = await Promise.all(checkPromises);

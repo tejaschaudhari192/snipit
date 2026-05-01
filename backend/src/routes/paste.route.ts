@@ -12,7 +12,11 @@ const router: Router = Router();
 const emailService = new EmailService();
 const pasteService = new PasteService(emailService);
 const permissionService = new PermissionService();
-const pasteController = new PasteController(pasteService, permissionService, logger);
+const pasteController = new PasteController(
+	pasteService,
+	permissionService,
+	logger,
+);
 
 router.get(
 	"/user/pastes",
@@ -26,15 +30,9 @@ router.get(
 	catchAsync(pasteController.getUserStats.bind(pasteController)),
 );
 
-router.post(
-	"/",
-	catchAsync(pasteController.createPaste.bind(pasteController)),
-);
+router.post("/", catchAsync(pasteController.createPaste.bind(pasteController)));
 
-router.get(
-	"/:id",
-	catchAsync(pasteController.getPaste.bind(pasteController)),
-);
+router.get("/:id", catchAsync(pasteController.getPaste.bind(pasteController)));
 
 router.delete(
 	"/:id",
@@ -57,4 +55,3 @@ router.post(
 );
 
 export default router;
-

@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 import pasteModel from "@/models/Paste.js";
-import type { PasteData, CommentData, UpdatePasteData, IPaste } from "@/types/index.js";
+import type {
+	PasteData,
+	CommentData,
+	UpdatePasteData,
+	IPaste,
+} from "@/types/index.js";
 import { dateConverter, uniqueIdGenerator } from "@/lib/utils.js";
 import bcrypt from "bcryptjs";
 import type EmailService from "./email.service.js";
@@ -11,9 +16,19 @@ class PasteService {
 	constructor(private readonly emailService?: EmailService) {}
 
 	async createPaste(data: any, ownerId: string | null): Promise<IPaste> {
-		const { expiresTime, burnAfterRead, customId, idType, password, shareList, ...rest } = data;
+		const {
+			expiresTime,
+			burnAfterRead,
+			customId,
+			idType,
+			password,
+			shareList,
+			...rest
+		} = data;
 
-		let expiresAt = expiresTime ? dateConverter(expiresTime) : dateConverter("1d");
+		let expiresAt = expiresTime
+			? dateConverter(expiresTime)
+			: dateConverter("1d");
 		let finalBurnAfterRead = !!burnAfterRead;
 
 		if (expiresTime === "one-time") {
@@ -44,7 +59,7 @@ class PasteService {
 
 		try {
 			const paste = await pasteModel.create(pasteData);
-			
+
 			if (shareList && this.emailService) {
 				await this.sendShareEmails(paste, shareList);
 			}
@@ -58,10 +73,13 @@ class PasteService {
 						await this.deletePaste(pasteId);
 						return this.createPaste(data, ownerId);
 					}
-			throw new Error("ID_ALREADY_EXISTS", { cause: error });
+					throw new Error("ID_ALREADY_EXISTS", { cause: error });
 				}
 				// Retry with new ID if system generated
-				return this.createPaste({ ...data, customId: uniqueIdGenerator() }, ownerId);
+				return this.createPaste(
+					{ ...data, customId: uniqueIdGenerator() },
+					ownerId,
+				);
 			}
 			throw error;
 		}
@@ -122,11 +140,13 @@ class PasteService {
 
 		paste.set(updates);
 		if (shareList) paste.shareList = shareList;
-		
+
 		const updatedPaste = await paste.save();
 
 		if (shareList && this.emailService) {
-			const newShares = shareList.filter(s => oldShareMap.get(s.email) !== s.role);
+			const newShares = shareList.filter(
+				(s) => oldShareMap.get(s.email) !== s.role,
+			);
 			if (newShares.length > 0) {
 				await this.sendShareEmails(updatedPaste, newShares);
 			}
@@ -138,7 +158,7 @@ class PasteService {
 	private async sendShareEmails(paste: IPaste, shares: any[]) {
 		if (!this.emailService) return;
 		const frontendUrl = configurations.domain;
-		const emailPromises = shares.map(share => {
+		const emailPromises = shares.map((share) => {
 			const pasteUrl = `${frontendUrl}/${paste.id}`;
 			return this.emailService!.sendAccessGrantedEmail(
 				share.email,
@@ -182,7 +202,7 @@ class PasteService {
 			{ new: true },
 		);
 	}
-	
+
 	async getUserStats(ownerId: string) {
 		const stats = await pasteModel.aggregate([
 			{ $match: { owner: new mongoose.Types.ObjectId(ownerId) } },
@@ -204,20 +224,25 @@ class PasteService {
 			};
 		}
 
-		const { totalSnippets, totalViews, languages } = stats[0] as { 
-			totalSnippets: number; 
-			totalViews: number; 
-			languages: string[] 
+		const { totalSnippets, totalViews, languages } = stats[0] as {
+			totalSnippets: number;
+			totalViews: number;
+			languages: string[];
 		};
 
 		// Calculate most used language
-		const langCounts = languages.reduce((acc: Record<string, number>, lang: string) => {
-			const l = lang || "text";
-			acc[l] = (acc[l] || 0) + 1;
-			return acc;
-		}, {});
+		const langCounts = languages.reduce(
+			(acc: Record<string, number>, lang: string) => {
+				const l = lang || "text";
+				acc[l] = (acc[l] || 0) + 1;
+				return acc;
+			},
+			{},
+		);
 
-		const sortedEntries = Object.entries(langCounts).sort((a, b) => b[1] - a[1]);
+		const sortedEntries = Object.entries(langCounts).sort(
+			(a, b) => b[1] - a[1],
+		);
 		const mostUsedLanguage = sortedEntries[0]?.[0] || "N/A";
 
 		return {
@@ -229,4 +254,3 @@ class PasteService {
 }
 
 export default PasteService;
-

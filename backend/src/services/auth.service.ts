@@ -54,7 +54,10 @@ class AuthService {
 		const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
 
 		try {
-			await this.emailService.sendPasswordResetEmail(user.email, resetUrl);
+			await this.emailService.sendPasswordResetEmail(
+				user.email,
+				resetUrl,
+			);
 		} catch (err) {
 			user.resetPasswordToken = undefined;
 			user.resetPasswordExpires = undefined;
@@ -99,7 +102,8 @@ class AuthService {
 		let user = await User.findOne({ $or: [{ googleId }, { email }] });
 
 		if (!user) {
-			let username = name?.replace(/\s+/g, "").toLowerCase() || email.split("@")[0];
+			let username =
+				name?.replace(/\s+/g, "").toLowerCase() || email.split("@")[0];
 			const existingUsername = await User.findOne({ username });
 			if (existingUsername) {
 				username = `${username}${Math.floor(Math.random() * 1000)}`;

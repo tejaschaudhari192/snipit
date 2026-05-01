@@ -17,7 +17,10 @@ class JobService {
 				try {
 					await deleteFileFromStorage(paste.fileUrl);
 				} catch (storageError) {
-					console.error(`Error deleting file for paste ${paste.id}:`, storageError);
+					console.error(
+						`Error deleting file for paste ${paste.id}:`,
+						storageError,
+					);
 				}
 			}
 		}

@@ -4,10 +4,7 @@ import User from "@/models/User.js";
 export type UserRole = "admin" | "editor" | "viewer" | "commenter";
 
 class PermissionService {
-	async getUserRole(
-		userId: string | null,
-		paste: IPaste,
-	): Promise<UserRole> {
+	async getUserRole(userId: string | null, paste: IPaste): Promise<UserRole> {
 		let userEmail = null;
 		if (userId) {
 			const user = await User.findById(userId);

@@ -42,7 +42,9 @@ class AuthController {
 			});
 		} catch (error: any) {
 			if (error.message === "INVALID_CREDENTIALS") {
-				return res.status(401).json({ message: "Invalid email or password" });
+				return res
+					.status(401)
+					.json({ message: "Invalid email or password" });
 			}
 			res.status(500).json({ message: error.message });
 		}
@@ -70,8 +72,13 @@ class AuthController {
 		const { username } = req.body;
 		if (username) {
 			const userExists = await User.findOne({ username });
-			if (userExists && userExists._id.toString() !== user._id.toString()) {
-				return res.status(400).json({ message: "Username already exists" });
+			if (
+				userExists &&
+				userExists._id.toString() !== user._id.toString()
+			) {
+				return res
+					.status(400)
+					.json({ message: "Username already exists" });
 			}
 			user.username = username;
 		}
@@ -97,7 +104,10 @@ class AuthController {
 
 	async resetPassword(req: Request, res: Response) {
 		try {
-			const user = await this.authService.resetPassword(req.params.token as string, req.body.password);
+			const user = await this.authService.resetPassword(
+				req.params.token as string,
+				req.body.password,
+			);
 			const authToken = generateToken(user._id as string);
 			setAuthCookie(res, authToken);
 
@@ -132,4 +142,3 @@ class AuthController {
 }
 
 export default AuthController;
-

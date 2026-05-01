@@ -24,10 +24,12 @@ class AiController {
 			});
 		}
 
-		const result = await this.aiService.enhanceContent(content, instruction);
+		const result = await this.aiService.enhanceContent(
+			content,
+			instruction,
+		);
 		res.json({ result });
 	}
 }
 
 export default AiController;
-
