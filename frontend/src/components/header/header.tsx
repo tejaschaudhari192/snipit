@@ -53,23 +53,20 @@ const UserMenu = () => {
 
 	return (
 		<>
-				<Link
-					to="/profile"
-					className="flex items-center"
+			<Link to="/profile" className="flex items-center">
+				<Button
+					variant="ghost"
+					size="sm"
+					className="h-9 px-3 gap-2.5 transition-all hover:bg-primary/5 rounded-full"
 				>
-					<Button
-						variant="ghost"
-						size="sm"
-						className="h-9 px-3 gap-2.5 transition-all hover:bg-primary/5 rounded-full"
-					>
-						<div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-							<User className="h-3.5 w-3.5" />
-						</div>
-						<span className="text-sm font-bold hidden sm:inline-block">
-							{user.username}
-						</span>
-					</Button>
-				</Link>
+					<div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+						<User className="h-3.5 w-3.5" />
+					</div>
+					<span className="text-sm font-bold hidden sm:inline-block">
+						{user.username}
+					</span>
+				</Button>
+			</Link>
 
 			<LogoutDialog
 				open={isLogoutDialogOpen}
@@ -179,7 +176,10 @@ const Header = ({ className }: HeaderProps) => {
 							<Menu className="h-5 w-5" />
 						</Button>
 					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end" className="w-[220px] p-1 rounded-xl">
+					<DropdownMenuContent
+						align="end"
+						className="w-[220px] p-1 rounded-xl"
+					>
 						{!user ? (
 							<>
 								<DropdownMenuItem

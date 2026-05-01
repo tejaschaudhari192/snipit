@@ -5,9 +5,7 @@ export const useTerminalLayout = () => {
 	const [terminalPosition, setTerminalPosition] = useState<
 		"bottom" | "right"
 	>(() => {
-		const saved = localStorage.getItem(
-			CONFIG.storageKeys.terminalPosition,
-		);
+		const saved = localStorage.getItem(CONFIG.storageKeys.terminalPosition);
 		return saved === "right" ? "right" : "bottom";
 	});
 

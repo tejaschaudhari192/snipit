@@ -31,7 +31,6 @@ export const ProfileSnippetList = ({
 
 	return (
 		<div className="space-y-6">
-
 			{loading ? (
 				<div className="grid gap-4 mt-8">
 					{[...Array(3)].map((_, i) => (

@@ -1,12 +1,12 @@
 import icon from "@/assets/brand/icon.png";
 import { useTranslation } from "react-i18next";
 import type { HealthData } from "@/types";
-import { 
-	Database, 
-	HardDrive, 
-	Mail, 
-	Sparkles, 
-	Check, 
+import {
+	Database,
+	HardDrive,
+	Mail,
+	Sparkles,
+	Check,
 	Loader2,
 	AlertCircle,
 	Cloud,
@@ -35,10 +35,16 @@ const ICON_MAP: Record<string, LucideIcon> = {
 	lock: Lock,
 	shield: Shield,
 	refresh: RefreshCw,
-	alert: AlertCircle
+	alert: AlertCircle,
 };
 
-const DynamicIcon = ({ name, className }: { name?: string; className?: string }) => {
+const DynamicIcon = ({
+	name,
+	className,
+}: {
+	name?: string;
+	className?: string;
+}) => {
 	const IconComponent = ICON_MAP[name || ""] || Loader2;
 	return <IconComponent className={className} />;
 };
@@ -57,13 +63,16 @@ const SplashPage = ({ healthData }: SplashPageProps) => {
 	const isError = healthData?.status === "down";
 
 	const getStepIcon = () => {
-		if (isError) return <AlertCircle className="w-4 h-4 text-destructive" />;
+		if (isError)
+			return <AlertCircle className="w-4 h-4 text-destructive" />;
 		return (
-			<DynamicIcon 
-				name={backendIcon} 
+			<DynamicIcon
+				name={backendIcon}
 				className={`w-4 h-4 transition-all duration-300 ${
-					progress === 100 ? "text-green-500" : "text-primary animate-pulse"
-				} ${(!backendIcon || backendIcon === "loader") ? "animate-spin" : ""}`} 
+					progress === 100
+						? "text-green-500"
+						: "text-primary animate-pulse"
+				} ${!backendIcon || backendIcon === "loader" ? "animate-spin" : ""}`}
 			/>
 		);
 	};
