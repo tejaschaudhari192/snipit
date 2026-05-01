@@ -16,7 +16,9 @@
 		"jump_to_title": "スニペットへ移動",
 		"jump_to_desc": "スニペットIDを入力して直接移動します。",
 		"jump_to_placeholder": "スニペットIDを入力...",
-		"copied_link": "Copied {{id}}!"
+		"copied_link": "Copied {{id}}!",
+		"account": "Account",
+		"user_greeting": "Welcome back"
 	},
 	"common": {
 		"visibility": "公開設定",

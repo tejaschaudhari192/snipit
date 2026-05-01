@@ -20,11 +20,19 @@ interface SnippetState {
 	isLoadingMore: boolean;
 }
 
+interface UserStats {
+	totalSnippets: number;
+	totalViews: number;
+	mostUsedLanguage: string;
+}
+
 interface SnippetContextType {
 	history: SnippetState;
 	profile: SnippetState;
+	stats: UserStats | null;
 	loadHistory: (isFirstLoad?: boolean) => Promise<void>;
 	loadProfile: (isFirstLoad?: boolean) => Promise<void>;
+	loadStats: () => Promise<void>;
 	clearHistoryState: () => void;
 	refreshSnippets: () => void;
 	deleteSnippet: (id: string) => Promise<void>;
@@ -49,6 +57,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const [history, setHistory] = useState<SnippetState>(initialState);
 	const [profile, setProfile] = useState<SnippetState>(initialState);
+	const [stats, setStats] = useState<UserStats | null>(null);
 
 	const isHistoryFetching = useRef(false);
 	const isProfileFetching = useRef(false);
@@ -202,15 +211,29 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 		[user, apiHelpers, t], // removed profile.page
 	);
 
+	const loadStats = useCallback(async () => {
+		if (!user) return;
+		try {
+			const data = await apiHelpers.getUserStats();
+			setStats(data);
+		} catch (err) {
+			console.error("Failed to fetch user stats", err);
+		}
+	}, [user, apiHelpers]);
+
 	const clearHistoryState = useCallback(() => {
 		setHistory(initialState);
 		setProfile(initialState);
+		setStats(null);
 	}, []);
 
 	const refreshSnippets = useCallback(() => {
 		loadHistory(true);
-		if (user) loadProfile(true);
-	}, [loadHistory, loadProfile, user]);
+		if (user) {
+			loadProfile(true);
+			loadStats();
+		}
+	}, [loadHistory, loadProfile, loadStats, user]);
 
 	const deleteSnippet = useCallback(
 		async (id: string) => {
@@ -261,16 +284,21 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 	useEffect(() => {
 		clearHistoryState();
 		loadHistory(true);
-		if (user) loadProfile(true);
-	}, [user, clearHistoryState, loadHistory, loadProfile]);
+		if (user) {
+			loadProfile(true);
+			loadStats();
+		}
+	}, [user, clearHistoryState, loadHistory, loadProfile, loadStats]);
 
 	return (
 		<SnippetContext.Provider
 			value={{
 				history,
 				profile,
+				stats,
 				loadHistory,
 				loadProfile,
+				loadStats,
 				clearHistoryState,
 				refreshSnippets,
 				deleteSnippet,

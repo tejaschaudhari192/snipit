@@ -16,7 +16,9 @@
 		"jump_to_title": "Zum Snippet springen",
 		"jump_to_desc": "Geben Sie die Snippet-ID ein, um direkt dorthin zu gelangen.",
 		"jump_to_placeholder": "Snippet-ID eingeben...",
-		"copied_link": "Copied {{id}}!"
+		"copied_link": "Copied {{id}}!",
+		"account": "Account",
+		"user_greeting": "Welcome back"
 	},
 	"common": {
 		"visibility": "Sichtbarkeit",

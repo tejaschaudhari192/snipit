@@ -4,43 +4,43 @@
 
 export const CONFIG = {
 	// API Configuration
-	API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
+	apiBaseUrl: import.meta.env.VITE_API_BASE_URL,
 
 	// Supabase Configuration
-	SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL,
-	SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY,
-	SUPABASE_STORAGE_BUCKET:
+	supabaseUrl: import.meta.env.VITE_SUPABASE_URL,
+	supabaseAnonKey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+	supabaseStorageBucket:
 		import.meta.env.VITE_SUPABASE_STORAGE_BUCKET || "uploads",
 
 	// Google Auth Configuration
-	GOOGLE_CLIENT_ID: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+	googleClientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
 
 	// Storage Keys
-	STORAGE_KEYS: {
-		FONT_SIZE: "snipit-font-size",
-		LANGUAGE: "snipit-last-language",
-		THEME: "snipit-theme",
-		HISTORY: "snipit-history",
-		TERMINAL_POSITION: "snipit-terminal-position",
+	storageKeys: {
+		fontSize: "snipit-font-size",
+		language: "snipit-last-language",
+		theme: "snipit-theme",
+		history: "snipit-history",
+		terminalPosition: "snipit-terminal-position",
 	},
 
 	// Default Values
-	DEFAULTS: {
-		FONT_SIZE: 14,
-		MIN_FONT_SIZE: 8,
-		MAX_FONT_SIZE: 48,
-		LANGUAGE: "text",
-		EXPIRY: "1d",
-		VISIBILITY: "public" as const,
-		EDIT_PERMISSION: "owner" as const,
-		PUBLIC_ROLE: "viewer" as const,
-		CONTENT_MODE: "text" as const,
-		MAX_FILE_SIZE: 50 * 1024 * 1024, // 50MB
+	defaults: {
+		fontSize: 14,
+		minFontSize: 8,
+		maxFontSize: 48,
+		language: "text",
+		expiry: "1d",
+		visibility: "public" as const,
+		editPermission: "owner" as const,
+		publicRole: "viewer" as const,
+		contentMode: "text" as const,
+		maxFileSize: 50 * 1024 * 1024, // 50MB
 	},
 
 	// UI Constants
-	UI: {
-		DETECTION_DELAY: 2000,
-		TOAST_DURATION: 3000,
+	ui: {
+		detectionDelay: 2000,
+		toastDuration: 3000,
 	},
 };

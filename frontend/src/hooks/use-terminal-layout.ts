@@ -6,14 +6,14 @@ export const useTerminalLayout = () => {
 		"bottom" | "right"
 	>(() => {
 		const saved = localStorage.getItem(
-			CONFIG.STORAGE_KEYS.TERMINAL_POSITION,
+			CONFIG.storageKeys.terminalPosition,
 		);
 		return saved === "right" ? "right" : "bottom";
 	});
 
 	useEffect(() => {
 		localStorage.setItem(
-			CONFIG.STORAGE_KEYS.TERMINAL_POSITION,
+			CONFIG.storageKeys.terminalPosition,
 			terminalPosition,
 		);
 	}, [terminalPosition]);

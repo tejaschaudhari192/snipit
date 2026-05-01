@@ -1,7 +1,47 @@
 import icon from "@/assets/brand/icon.png";
-import { ShimmerSection } from "@/components/common/shimmer-section";
 import { useTranslation } from "react-i18next";
 import type { HealthData } from "@/types";
+import { 
+	Database, 
+	HardDrive, 
+	Mail, 
+	Sparkles, 
+	Check, 
+	Loader2,
+	AlertCircle,
+	Cloud,
+	Cpu,
+	Activity,
+	Terminal,
+	Server,
+	Lock,
+	Shield,
+	RefreshCw,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+const ICON_MAP: Record<string, LucideIcon> = {
+	database: Database,
+	"hard-drive": HardDrive,
+	cloud: Cloud,
+	mail: Mail,
+	sparkles: Sparkles,
+	check: Check,
+	loader: Loader2,
+	cpu: Cpu,
+	activity: Activity,
+	terminal: Terminal,
+	server: Server,
+	lock: Lock,
+	shield: Shield,
+	refresh: RefreshCw,
+	alert: AlertCircle
+};
+
+const DynamicIcon = ({ name, className }: { name?: string; className?: string }) => {
+	const IconComponent = ICON_MAP[name || ""] || Loader2;
+	return <IconComponent className={className} />;
+};
 
 interface SplashPageProps {
 	healthData?: HealthData | null;
@@ -12,8 +52,21 @@ const SplashPage = ({ healthData }: SplashPageProps) => {
 
 	const progress = healthData?.progress || 0;
 	const currentLabel = healthData?.currentLabel || "Initializing...";
+	const backendIcon = healthData?.icon;
 
 	const isError = healthData?.status === "down";
+
+	const getStepIcon = () => {
+		if (isError) return <AlertCircle className="w-4 h-4 text-destructive" />;
+		return (
+			<DynamicIcon 
+				name={backendIcon} 
+				className={`w-4 h-4 transition-all duration-300 ${
+					progress === 100 ? "text-green-500" : "text-primary animate-pulse"
+				} ${(!backendIcon || backendIcon === "loader") ? "animate-spin" : ""}`} 
+			/>
+		);
+	};
 
 	return (
 		<div className="relative h-screen w-screen overflow-hidden bg-background text-foreground transition-colors duration-300 flex flex-col items-center justify-center pointer-events-none">
@@ -33,33 +86,35 @@ const SplashPage = ({ healthData }: SplashPageProps) => {
 				</div>
 
 				<div className="w-80 flex flex-col gap-4 mt-8">
-					<div className="flex w-full justify-between items-center text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] px-1 h-4">
-						<span className="flex items-center gap-2">
-							{!isError && (
-								<ShimmerSection
-									type="mini-loader"
-									className="w-3.5 h-3.5"
-								/>
-							)}
+					<div className="flex w-full justify-between items-center text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] px-1 h-5">
+						<span className="flex items-center gap-3">
+							<div className="flex items-center justify-center w-6 h-6 rounded-lg bg-muted/40 border border-border/10">
+								{getStepIcon()}
+							</div>
 							<span
 								className={
 									isError
 										? "text-destructive"
-										: "animate-pulse"
+										: "relative overflow-hidden"
 								}
 							>
-								{isError
-									? t("splash.system_failure")
-									: currentLabel}
+								<span className={!isError ? "opacity-90" : ""}>
+									{isError
+										? t("splash.system_failure")
+										: currentLabel}
+								</span>
+								{!isError && (
+									<div className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/20 to-transparent -translate-x-full animate-[shimmer_2s_infinite] pointer-events-none" />
+								)}
 							</span>
 						</span>
-						<span className="tabular-nums">
+						<span className="tabular-nums font-black text-foreground/80">
 							{Math.floor(progress)}%
 						</span>
 					</div>
 					<div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
 						<div
-							className={`h-full transition-all duration-300 ease-out rounded-full ${isError ? "bg-destructive" : "bg-primary"}`}
+							className={`h-full transition-all duration-300 ease-out rounded-full shadow-[0_0_8px_rgba(99,102,241,0.5)] ${isError ? "bg-destructive" : "bg-primary"}`}
 							style={{ width: `${progress}%` }}
 						/>
 					</div>

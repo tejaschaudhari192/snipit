@@ -23,6 +23,7 @@ const ResetPasswordPage = lazy(() => import("@/pages/reset-password"));
 const ServerErrorPage = lazy(() => import("@/pages/server-error"));
 
 import { useHealthCheck } from "@/hooks/use-health-check";
+import { CONFIG } from "./configurations";
 
 const App = () => {
 	const { i18n } = useTranslation();
@@ -69,7 +70,7 @@ const App = () => {
 	return (
 		<ThemeProvider>
 			<GoogleOAuthProvider
-				clientId={CONFIG.GOOGLE_CLIENT_ID || ""}
+				clientId={CONFIG.googleClientId}
 				locale={i18n.language}
 			>
 				<AuthProvider>

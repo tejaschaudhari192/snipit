@@ -16,7 +16,9 @@
 		"jump_to": "येथे जा",
 		"jump_to_title": "स्निपेटवर जा",
 		"jump_to_desc": "थेट तिथे जाण्यासाठी स्निपेट आयडी प्रविष्ट करा.",
-		"jump_to_placeholder": "स्निपेट आयडी प्रविष्ट करा..."
+		"jump_to_placeholder": "स्निपेट आयडी प्रविष्ट करा...",
+		"account": "Account",
+		"user_greeting": "Welcome back"
 	},
 	"common": {
 		"visibility": "दृश्यमानता",

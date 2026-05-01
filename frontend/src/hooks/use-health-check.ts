@@ -14,7 +14,7 @@ export const useHealthCheck = () => {
 
 		const checkHealthStream = () => {
 			const eventSource = new EventSource(
-				`${CONFIG.API_BASE_URL}/health/stream`,
+				`${CONFIG.apiBaseUrl}/health/stream`,
 				{ withCredentials: true },
 			);
 
@@ -34,6 +34,7 @@ export const useHealthCheck = () => {
 					};
 					currentHealth.progress = data.progress;
 					currentHealth.currentLabel = data.label;
+					currentHealth.icon = data.icon;
 
 					if (data.status === "error" && data.step === "Database") {
 						currentHealth.status = "down";

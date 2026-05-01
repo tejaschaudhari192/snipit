@@ -16,7 +16,9 @@
 		"jump_to": "Jump to",
 		"jump_to_title": "Jump to Snippet",
 		"jump_to_desc": "Enter the snippet ID to navigate directly to it.",
-		"jump_to_placeholder": "Enter snippet ID..."
+		"jump_to_placeholder": "Enter snippet ID...",
+		"account": "Account",
+		"user_greeting": "Welcome back"
 	},
 	"common": {
 		"visibility": "Visibility",

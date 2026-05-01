@@ -11,7 +11,7 @@ import type {
 } from "@/types";
 
 const api = axios.create({
-	baseURL: CONFIG.API_BASE_URL,
+	baseURL: CONFIG.apiBaseUrl,
 	headers: {
 		"Content-Type": "application/json",
 	},
@@ -124,6 +124,15 @@ export const useApiHelpers = () => {
 			return response.data;
 		};
 
+		const getUserStats = async (): Promise<{
+			totalSnippets: number;
+			totalViews: number;
+			mostUsedLanguage: string;
+		}> => {
+			const response = await api.get("/pastes/user/stats");
+			return response.data;
+		};
+
 		return {
 			getServerStatus,
 			submitPaste,
@@ -133,6 +142,7 @@ export const useApiHelpers = () => {
 			detectLanguage,
 			enhanceContent,
 			getUserPastes,
+			getUserStats,
 			updateMe,
 			verifyPassword,
 			addComment,

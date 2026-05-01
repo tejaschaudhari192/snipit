@@ -1,10 +1,10 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { CONFIG } from "@/configurations";
 
-export function usePinchZoom(initialFontSize = CONFIG.DEFAULTS.FONT_SIZE) {
+export function usePinchZoom(initialFontSize = CONFIG.defaults.fontSize) {
 	const [fontSize, setFontSizeState] = useState(() => {
 		if (typeof window !== "undefined") {
-			const saved = localStorage.getItem(CONFIG.STORAGE_KEYS.FONT_SIZE);
+			const saved = localStorage.getItem(CONFIG.storageKeys.fontSize);
 			const parsed = saved ? parseInt(saved, 10) : initialFontSize;
 			return isNaN(parsed) ? initialFontSize : parsed;
 		}
@@ -17,11 +17,11 @@ export function usePinchZoom(initialFontSize = CONFIG.DEFAULTS.FONT_SIZE) {
 				const newValue =
 					typeof value === "function" ? value(prev) : value;
 				const validValue = Math.min(
-					Math.max(newValue, CONFIG.DEFAULTS.MIN_FONT_SIZE),
-					CONFIG.DEFAULTS.MAX_FONT_SIZE,
+					Math.max(newValue, CONFIG.defaults.minFontSize),
+					CONFIG.defaults.maxFontSize,
 				);
 				localStorage.setItem(
-					CONFIG.STORAGE_KEYS.FONT_SIZE,
+					CONFIG.storageKeys.fontSize,
 					validValue.toString(),
 				);
 				return validValue;
@@ -42,7 +42,7 @@ export function usePinchZoom(initialFontSize = CONFIG.DEFAULTS.FONT_SIZE) {
 	// Sync with other tabs
 	useEffect(() => {
 		const handleStorage = (e: StorageEvent) => {
-			if (e.key === CONFIG.STORAGE_KEYS.FONT_SIZE && e.newValue) {
+			if (e.key === CONFIG.storageKeys.fontSize && e.newValue) {
 				const newSize = parseInt(e.newValue, 10);
 				if (!isNaN(newSize)) {
 					setFontSizeState(newSize);

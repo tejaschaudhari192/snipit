@@ -12,13 +12,14 @@ import { ProfileSnippetList } from "@/components/profile/profile-snippet-list";
 
 import { useSnippets } from "@/context/SnippetContext";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { LogoutDialog } from "@/components/header/logout-dialog";
 
 const ProfilePage = () => {
 	const { t } = useTranslation();
 	usePageTitle("profile.title");
 	const { user, loading: authLoading, setUser } = useAuth();
 	const apiHelpers = useApiHelpers();
-	const { profile, loadProfile } = useSnippets();
+	const { profile, loadProfile, stats } = useSnippets();
 	const {
 		items: pastes,
 		loading: loadingPastes,
@@ -29,6 +30,7 @@ const ProfilePage = () => {
 	const [isEditingName, setIsEditingName] = useState(false);
 	const [newName, setNewName] = useState("");
 	const [isUpdating, setIsUpdating] = useState(false);
+	const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 
 	useEffect(() => {
 		if (user) {
@@ -127,9 +129,29 @@ const ProfilePage = () => {
 							handleUpdateName={handleUpdateName}
 							isUpdating={isUpdating}
 							pastes={pastes}
+							onLogout={() => setIsLogoutDialogOpen(true)}
+							stats={stats}
 						/>
 					</div>
 					<div className="w-full lg:col-span-8 max-w-4xl mx-auto lg:max-w-none">
+						<div className="flex items-center justify-between gap-4 mb-8 px-2">
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+									<User className="h-5 w-5" />
+								</div>
+								<h2 className="text-3xl font-black tracking-tight uppercase italic">
+									{t("profile.your_snippets", "Snippets")}
+								</h2>
+							</div>
+							<Link to="/">
+								<Button
+									size="sm"
+									className="gap-2 font-black rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all px-6"
+								>
+									{t("header.new_snippet", "New Snippet")}
+								</Button>
+							</Link>
+						</div>
 						<ProfileSnippetList
 							pastes={pastes}
 							loading={loadingPastes}
@@ -140,6 +162,10 @@ const ProfilePage = () => {
 					</div>
 				</div>
 			</div>
+			<LogoutDialog
+				open={isLogoutDialogOpen}
+				onOpenChange={setIsLogoutDialogOpen}
+			/>
 		</div>
 	);
 };

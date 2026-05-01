@@ -1,5 +1,5 @@
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
-import { FileText, ChevronRight, Inbox, Loader2 } from "lucide-react";
+import { Inbox, Loader2 } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -30,22 +30,7 @@ export const ProfileSnippetList = ({
 	});
 
 	return (
-		<div className="md:col-span-8 space-y-6">
-			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-2">
-				<h2 className="text-3xl font-black flex items-center gap-3 tracking-tight">
-					<FileText className="h-7 w-7 text-primary" />
-					{t("profile.your_snippets", "Snippets")}
-				</h2>
-				<Link to="/">
-					<Button
-						size="sm"
-						className="gap-2 font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform w-full sm:w-auto"
-					>
-						{t("header.new_snippet", "New")}
-						<ChevronRight className="h-4 w-4" />
-					</Button>
-				</Link>
-			</div>
+		<div className="space-y-6">
 
 			{loading ? (
 				<div className="grid gap-4 mt-8">

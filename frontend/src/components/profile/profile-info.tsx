@@ -7,6 +7,7 @@ import {
 	X,
 	Eye,
 	Files,
+	LogOut,
 } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,12 @@ interface ProfileInfoProps {
 	handleUpdateName: () => void;
 	isUpdating: boolean;
 	pastes: PasteData[];
+	onLogout: () => void;
+	stats: {
+		totalSnippets: number;
+		totalViews: number;
+		mostUsedLanguage: string;
+	} | null;
 }
 
 export const ProfileInfo = ({
@@ -38,24 +45,14 @@ export const ProfileInfo = ({
 	handleUpdateName,
 	isUpdating,
 	pastes,
+	onLogout,
+	stats,
 }: ProfileInfoProps) => {
 	const { t } = useTranslation();
 
-	const totalViews = pastes.reduce((acc, p) => acc + (p.views || 0), 0);
-
-	const favoriteLanguage =
-		pastes.length > 0
-			? Object.entries(
-					pastes.reduce(
-						(acc, p) => {
-							const lang = p.language || "text";
-							acc[lang] = (acc[lang] || 0) + 1;
-							return acc;
-						},
-						{} as Record<string, number>,
-					),
-				).sort((a, b) => b[1] - a[1])[0][0]
-			: "N/A";
+	const totalViews = stats?.totalViews ?? 0;
+	const favoriteLanguage = stats?.mostUsedLanguage ?? "N/A";
+	const totalSnippets = stats?.totalSnippets ?? pastes.length;
 
 	return (
 		<div className="space-y-6">
@@ -73,7 +70,7 @@ export const ProfileInfo = ({
 										src=""
 									/>
 									<AvatarFallback className="rounded-2xl bg-background flex items-center justify-center">
-										<User className="h-14 w-14 text-primary" />
+										<User className="h-20 w-20 text-primary/80" />
 									</AvatarFallback>
 								</Avatar>
 							</div>
@@ -167,9 +164,9 @@ export const ProfileInfo = ({
 									<Files className="h-4 w-4 text-primary/40 group-hover/stat:text-primary/70 transition-colors" />
 								</div>
 								<div className="text-3xl font-black text-primary">
-									{pastes.length}
+									{totalSnippets}
 								</div>
-								<div className="text-[10px] uppercase tracking-[0.15em] font-bold text-primary/60 group-hover/stat:text-primary transition-colors">
+								<div className="text-[10px] uppercase tracking-[0.2em] font-black text-primary/60 group-hover/stat:text-primary transition-colors">
 									{t("profile.snippets_count", "Snippets")}
 								</div>
 							</div>
@@ -177,13 +174,27 @@ export const ProfileInfo = ({
 								<div className="flex justify-center mb-1">
 									<Eye className="h-4 w-4 text-muted-foreground/30 group-hover/stat:text-foreground/50 transition-colors" />
 								</div>
-								<div className="text-3xl font-black text-foreground">
+								<div className="text-3xl font-black text-foreground tabular-nums">
 									{totalViews}
 								</div>
-								<div className="text-[10px] uppercase tracking-[0.15em] font-bold text-muted-foreground group-hover/stat:text-foreground transition-colors">
+								<div className="text-[10px] uppercase tracking-[0.2em] font-black text-muted-foreground group-hover/stat:text-foreground transition-colors">
 									{t("profile.views", "Views")}
 								</div>
 							</div>
+						</div>
+
+						<div className="pt-4">
+							<div className="h-px bg-border/40 mb-6 mx-4" />
+							<Button
+								variant="outline"
+								className="w-full h-11 rounded-2xl border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 font-black gap-3 group/logout bg-red-500/[0.02]"
+								onClick={onLogout}
+							>
+								<div className="flex items-center justify-center gap-2">
+									<LogOut className="h-3.5 w-3.5 transition-transform group-hover/logout:-translate-x-0.5" />
+									<span className="uppercase tracking-[0.2em] text-[10px]">{t("header.logout", "Sign Out")}</span>
+								</div>
+							</Button>
 						</div>
 					</CardContent>
 				</Card>

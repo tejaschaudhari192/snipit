@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import pasteModel from "@/models/Paste.js";
 import type { PasteData, CommentData, UpdatePasteData, IPaste } from "@/types/index.js";
 import { dateConverter, uniqueIdGenerator } from "@/lib/utils.js";
@@ -180,6 +181,50 @@ class PasteService {
 			{ $push: { comments: comment } },
 			{ new: true },
 		);
+	}
+	
+	async getUserStats(ownerId: string) {
+		const stats = await pasteModel.aggregate([
+			{ $match: { owner: new mongoose.Types.ObjectId(ownerId) } },
+			{
+				$group: {
+					_id: null,
+					totalSnippets: { $sum: 1 },
+					totalViews: { $sum: "$views" },
+					languages: { $push: "$language" },
+				},
+			},
+		]);
+
+		if (stats.length === 0) {
+			return {
+				totalSnippets: 0,
+				totalViews: 0,
+				mostUsedLanguage: "N/A",
+			};
+		}
+
+		const { totalSnippets, totalViews, languages } = stats[0] as { 
+			totalSnippets: number; 
+			totalViews: number; 
+			languages: string[] 
+		};
+
+		// Calculate most used language
+		const langCounts = languages.reduce((acc: Record<string, number>, lang: string) => {
+			const l = lang || "text";
+			acc[l] = (acc[l] || 0) + 1;
+			return acc;
+		}, {});
+
+		const sortedEntries = Object.entries(langCounts).sort((a, b) => b[1] - a[1]);
+		const mostUsedLanguage = sortedEntries[0]?.[0] || "N/A";
+
+		return {
+			totalSnippets,
+			totalViews,
+			mostUsedLanguage,
+		};
 	}
 }
 

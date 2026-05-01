@@ -132,18 +132,18 @@ const DisplayPage = () => {
 	const [updatedContent, setUpdatedContent] = useState<string>();
 	const [loading, setLoading] = useState(true);
 	const [contentType, setContentType] = useState<ContentMode>(
-		CONFIG.DEFAULTS.CONTENT_MODE,
+		CONFIG.defaults.contentMode,
 	);
 	const [visibility, setVisibility] = useState<Visibility>(
-		CONFIG.DEFAULTS.VISIBILITY,
+		CONFIG.defaults.visibility,
 	);
 	const [allowedUsers, setAllowedUsers] = useState<string[]>([]);
 	const [editPermission, setEditPermission] = useState<EditPermission>(
-		CONFIG.DEFAULTS.EDIT_PERMISSION,
+		CONFIG.defaults.editPermission,
 	);
 	const [shareList, setShareList] = useState<ShareEntry[]>([]);
 	const [publicRole, setPublicRole] = useState<PublicRole>(
-		CONFIG.DEFAULTS.PUBLIC_ROLE,
+		CONFIG.defaults.publicRole,
 	);
 	const [allowComments, setAllowComments] = useState(false);
 	const [customId, setCustomId] = useState("");
@@ -151,7 +151,7 @@ const DisplayPage = () => {
 	const [passwordError, setPasswordError] = useState("");
 	const [editPassword, setEditPassword] = useState("");
 	const [isPasswordEnabled, setIsPasswordEnabled] = useState(false);
-	const [expiresTime, setExpiresTime] = useState(CONFIG.DEFAULTS.EXPIRY);
+	const [expiresTime, setExpiresTime] = useState(CONFIG.defaults.expiry);
 	const [isCustomExpiryDialogOpen, setIsCustomExpiryDialogOpen] =
 		useState(false);
 	const [customExpiryDate, setCustomExpiryDate] = useState<Date | undefined>(
@@ -265,7 +265,7 @@ const DisplayPage = () => {
 	const hasDetectedRef = useRef(false);
 
 	const { isDetecting, detectLanguage } = useLanguageDetection();
-	const [language, _setLanguage] = useState(CONFIG.DEFAULTS.LANGUAGE);
+	const [language, _setLanguage] = useState(CONFIG.defaults.language);
 	const setLanguage = useCallback(
 		(newLang: string) => {
 			_setLanguage(newLang);
@@ -591,8 +591,8 @@ const DisplayPage = () => {
 	useEffect(() => {
 		if (loading || !id || !paste) return;
 
-		const socketUrl = CONFIG.API_BASE_URL
-			? CONFIG.API_BASE_URL.replace(/\/api(\/v\d+)?\/?$/, "")
+		const socketUrl = CONFIG.apiBaseUrl
+			? CONFIG.apiBaseUrl.replace(/\/api(\/v\d+)?\/?$/, "")
 			: "";
 		const s = io(socketUrl, { withCredentials: true });
 		socketRef.current = s;

@@ -193,6 +193,18 @@ class PasteController {
 			next(error);
 		}
 	}
+
+	async getUserStats(req: AuthRequest, res: Response, next: NextFunction) {
+		try {
+			const userId = this.getUserId(req);
+			if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+			const stats = await this.pasteService.getUserStats(userId);
+			return res.json(stats);
+		} catch (error) {
+			next(error);
+		}
+	}
 }
 
 export default PasteController;

@@ -62,9 +62,9 @@ const configurations = {
 		],
 	},
 	job_secret: env.JOB_SECRET,
-	SUPABASE_URL: env.SUPABASE_URL,
-	SUPABASE_SERVICE_ROLE_KEY: env.SUPABASE_SERVICE_ROLE_KEY,
-	SUPABASE_STORAGE_BUCKET: env.SUPABASE_STORAGE_BUCKET,
+	supabase_url: env.SUPABASE_URL,
+	supabase_service_role_key: env.SUPABASE_SERVICE_ROLE_KEY,
+	supabase_storage_bucket: env.SUPABASE_STORAGE_BUCKET,
 	smtp: {
 		service: env.SMTP_SERVICE,
 		host: env.SMTP_HOST,

@@ -2,8 +2,8 @@ import { createClient } from "@supabase/supabase-js";
 import configurations from "@/config/configurations.js";
 import logger from "@/config/logger.js";
 
-const supabaseUrl = configurations.SUPABASE_URL;
-const supabaseServiceKey = configurations.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseUrl = configurations.supabase_url;
+const supabaseServiceKey = configurations.supabase_service_role_key;
 
 export const supabase =
 	supabaseUrl && supabaseServiceKey
@@ -19,7 +19,7 @@ export const deleteFileFromStorage = async (fileUrl: string) => {
 	}
 
 	try {
-		const bucket = configurations.SUPABASE_STORAGE_BUCKET;
+		const bucket = configurations.supabase_storage_bucket;
 		if (!bucket) {
 			logger.warn(
 				"Supabase storage deletion skipped: Bucket not configured",

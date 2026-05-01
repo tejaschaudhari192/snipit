@@ -133,6 +133,7 @@ router.get("/stream", async (req, res) => {
 	const performCheck = async (
 		step: string,
 		label: string,
+		icon: string,
 		checkFn: () => Promise<string>,
 	) => {
 		const status = await checkFn();
@@ -140,6 +141,7 @@ router.get("/stream", async (req, res) => {
 		sendUpdate({
 			step,
 			label,
+			icon,
 			status,
 			progress: Math.round((completedSteps / (totalSteps + 1)) * 100),
 		});
@@ -186,10 +188,10 @@ router.get("/stream", async (req, res) => {
 
 	// Start all checks in parallel
 	const checkPromises = [
-		performCheck("Database", "Connecting to Database...", checkDatabase),
-		performCheck("Storage", "Checking Storage...", checkSupabase),
-		performCheck("Email Server", "Verifying Email Server...", checkSMTP),
-		performCheck("AI Service", "Activating AI Engine...", checkAI),
+		performCheck("Database", "Connecting to Database...", "database", checkDatabase),
+		performCheck("Storage", "Checking Storage...", "hard-drive", checkSupabase),
+		performCheck("Email Server", "Verifying Email Server...", "mail", checkSMTP),
+		performCheck("AI Service", "Activating AI Engine...", "sparkles", checkAI),
 	];
 
 	const results = await Promise.all(checkPromises);
@@ -202,6 +204,7 @@ router.get("/stream", async (req, res) => {
 	sendUpdate({
 		step: "Ready",
 		label: "Starting Snipit...",
+		icon: "check",
 		status: "ok",
 		progress: 100,
 	});

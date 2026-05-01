@@ -20,6 +20,12 @@ router.get(
 	catchAsync(pasteController.getUserPastes.bind(pasteController)),
 );
 
+router.get(
+	"/user/stats",
+	protect,
+	catchAsync(pasteController.getUserStats.bind(pasteController)),
+);
+
 router.post(
 	"/",
 	catchAsync(pasteController.createPaste.bind(pasteController)),

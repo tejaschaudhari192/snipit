@@ -121,7 +121,7 @@ const HomePage = () => {
 		fontSize,
 		ref: editorContainerRef,
 		setFontSize,
-	} = usePinchZoom(CONFIG.DEFAULTS.FONT_SIZE);
+	} = usePinchZoom(CONFIG.defaults.fontSize);
 
 	const { isDetecting, detectLanguage } = useLanguageDetection();
 
@@ -216,8 +216,8 @@ const HomePage = () => {
 	}, [pendingFile]);
 
 	useEffect(() => {
-		const socketUrl = CONFIG.API_BASE_URL
-			? CONFIG.API_BASE_URL.replace(/\/api(\/v\d+)?\/?$/, "")
+		const socketUrl = CONFIG.apiBaseUrl
+			? CONFIG.apiBaseUrl.replace(/\/api(\/v\d+)?\/?$/, "")
 			: "";
 		const s = io(socketUrl, { withCredentials: true });
 		setSocket(s);

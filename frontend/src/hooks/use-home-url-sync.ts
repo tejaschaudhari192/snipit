@@ -44,7 +44,7 @@ export const useHomeUrlSync = ({
 		let changed = false;
 
 		if (contentType !== params.get("tab")) {
-			if (contentType === CONFIG.DEFAULTS.CONTENT_MODE) {
+			if (contentType === CONFIG.defaults.contentMode) {
 				params.delete("tab");
 			} else {
 				params.set("tab", contentType);

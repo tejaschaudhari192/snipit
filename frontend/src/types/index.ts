@@ -134,5 +134,6 @@ export interface HealthData {
 	status: string;
 	progress?: number;
 	currentLabel?: string;
+	icon?: string;
 	services: Record<string, ServiceStatus>;
 }

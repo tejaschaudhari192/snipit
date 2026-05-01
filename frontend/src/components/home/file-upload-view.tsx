@@ -217,7 +217,7 @@ export const FileUploadView = ({
 								<p className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60 pt-2">
 									{t(
 										"home.file_max_size",
-										`Max Size: ${CONFIG.DEFAULTS.MAX_FILE_SIZE / (1024 * 1024)}MB`,
+										`Max Size: ${CONFIG.defaults.maxFileSize / (1024 * 1024)}MB`,
 									)}
 								</p>
 							</div>

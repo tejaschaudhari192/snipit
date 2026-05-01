@@ -76,24 +76,24 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
 	// State Initialization
 	const [visibility, setVisibility] = useState<Visibility>(
-		CONFIG.DEFAULTS.VISIBILITY,
+		CONFIG.defaults.visibility,
 	);
 	const [editPermission, setEditPermission] = useState<EditPermission>(
-		CONFIG.DEFAULTS.EDIT_PERMISSION,
+		CONFIG.defaults.editPermission,
 	);
 	const [allowedUsers, setAllowedUsers] = useState<string[]>([]);
 	const [shareList, setShareList] = useState<
 		{ email: string; role: ShareRole }[]
 	>([]);
 	const [publicRole, setPublicRole] = useState<PublicRole>(
-		CONFIG.DEFAULTS.PUBLIC_ROLE,
+		CONFIG.defaults.publicRole,
 	);
 	const [allowComments, setAllowComments] = useState(false);
-	const [expiresTime, setExpiresTime] = useState(CONFIG.DEFAULTS.EXPIRY);
+	const [expiresTime, setExpiresTime] = useState(CONFIG.defaults.expiry);
 	const [contentType, setContentType] = useState<ContentMode>(
-		CONFIG.DEFAULTS.CONTENT_MODE,
+		CONFIG.defaults.contentMode,
 	);
-	const [language, setLanguageState] = useState(CONFIG.DEFAULTS.LANGUAGE);
+	const [language, setLanguageState] = useState(CONFIG.defaults.language);
 	const [password, setPassword] = useState("");
 	const [customId, setCustomId] = useState("");
 	const [idTypeTab, setIdTypeTab] = useState<"system" | "dynamic">("system");
@@ -114,7 +114,7 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const valueRef = useRef("");
 	const [textValue, setTextValueState] = useState(() => {
-		const draft = getDraft(CONFIG.DEFAULTS.CONTENT_MODE) || "";
+		const draft = getDraft(CONFIG.defaults.contentMode) || "";
 		valueRef.current = draft;
 		return draft;
 	});
@@ -152,9 +152,9 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 				setLanguageState("text");
 			} else if (newMode === "code") {
 				setLanguageState(
-					CONFIG.DEFAULTS.LANGUAGE === "text"
+					CONFIG.defaults.language === "text"
 						? "javascript"
-						: CONFIG.DEFAULTS.LANGUAGE,
+						: CONFIG.defaults.language,
 				);
 			}
 
@@ -191,15 +191,15 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 	);
 
 	const resetPaste = useCallback(() => {
-		setVisibility(CONFIG.DEFAULTS.VISIBILITY);
-		setEditPermission(CONFIG.DEFAULTS.EDIT_PERMISSION);
+		setVisibility(CONFIG.defaults.visibility);
+		setEditPermission(CONFIG.defaults.editPermission);
 		setAllowedUsers([]);
 		setShareList([]);
-		setPublicRole(CONFIG.DEFAULTS.PUBLIC_ROLE);
+		setPublicRole(CONFIG.defaults.publicRole);
 		setAllowComments(false);
-		setExpiresTime(CONFIG.DEFAULTS.EXPIRY);
-		setContentType(CONFIG.DEFAULTS.CONTENT_MODE);
-		setLanguageState(CONFIG.DEFAULTS.LANGUAGE);
+		setExpiresTime(CONFIG.defaults.expiry);
+		setContentType(CONFIG.defaults.contentMode);
+		setLanguageState(CONFIG.defaults.language);
 		setTextValue("");
 		setPassword("");
 		setCustomId("");

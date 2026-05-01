@@ -16,7 +16,9 @@
 		"jump_to": "पर जाएं",
 		"jump_to_title": "स्निपेट पर जाएं",
 		"jump_to_desc": "सीधी नेविगेट करने के लिए स्निपेट आईडी दर्ज करें।",
-		"jump_to_placeholder": "स्निपेट आईडी दर्ज करें..."
+		"jump_to_placeholder": "स्निपेट आईडी दर्ज करें...",
+		"account": "Account",
+		"user_greeting": "Welcome back"
 	},
 	"common": {
 		"visibility": "दृश्यता",

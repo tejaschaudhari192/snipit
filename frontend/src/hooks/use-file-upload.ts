@@ -39,11 +39,11 @@ export const useFileUpload = () => {
 			return errorState;
 		}
 
-		if (file.size > CONFIG.DEFAULTS.MAX_FILE_SIZE) {
+		if (file.size > CONFIG.defaults.maxFileSize) {
 			const errorState: UploadState = {
 				isUploading: false,
 				progress: 0,
-				error: `File size exceeds ${CONFIG.DEFAULTS.MAX_FILE_SIZE / (1024 * 1024)}MB limit`,
+				error: `File size exceeds ${CONFIG.defaults.maxFileSize / (1024 * 1024)}MB limit`,
 				fileUrl: null,
 				fileName: null,
 				fileSize: null,
@@ -82,7 +82,7 @@ export const useFileUpload = () => {
 			const filePath = `${timestamp}_${sanitizedName}`;
 
 			const { error: uploadError } = await supabase.storage
-				.from(CONFIG.SUPABASE_STORAGE_BUCKET)
+				.from(CONFIG.supabaseStorageBucket)
 				.upload(filePath, file, {
 					cacheControl: "3600",
 					upsert: false,
@@ -108,7 +108,7 @@ export const useFileUpload = () => {
 			const {
 				data: { publicUrl },
 			} = supabase.storage
-				.from(CONFIG.SUPABASE_STORAGE_BUCKET)
+				.from(CONFIG.supabaseStorageBucket)
 				.getPublicUrl(filePath);
 
 			const successState: UploadState = {

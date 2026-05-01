@@ -19,7 +19,7 @@ export const useLanguageDetection = () => {
 
 			// Maintain loader for at least DETECTION_DELAY to avoid flickering
 			const elapsedTime = Date.now() - startTime;
-			const remainingDelay = CONFIG.UI.DETECTION_DELAY - elapsedTime;
+			const remainingDelay = CONFIG.ui.detectionDelay - elapsedTime;
 
 			if (remainingDelay > 0) {
 				await new Promise((resolve) =>
