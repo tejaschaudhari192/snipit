@@ -115,14 +115,6 @@ const app = {
 			avatar: "https://avatars.githubusercontent.com/u/104405128?s=400&u=1285d0293657159a9e85e0709ee549c37198667e&v=4",
 			roleKey: "about_page.team.roles.developer",
 		},
-		{
-			name: "Durgesh Kapade",
-			email: "durgeshkapade26@gmail.com",
-			github: "https://github.com/durgeshkapade",
-			linkedin: "https://www.linkedin.com/in/durgeshkapade/",
-			avatar: "https://avatars.githubusercontent.com/u/135988213?v=4",
-			roleKey: "about_page.team.roles.quality_engineer",
-		},
 	],
 	faq: [
 		{ key: "free" },

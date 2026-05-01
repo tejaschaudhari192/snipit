@@ -277,7 +277,7 @@
 	},
 	"about_page": {
 		"title": "Über",
-		"subtitle": "Ein Projekt zweier Entwickler, die Code-Sharing einfach und schön machen wollen.",
+		"subtitle": "Ein Projekt eines Entwicklers, der Code-Sharing einfach und schön machen will.",
 		"features_title": "Leistungsstarke Funktionen",
 		"features_subtitle": "Alles, was Sie für nahtloses Code-Sharing brauchen",
 		"features": {
@@ -357,7 +357,7 @@
 			"p3": "Mit modernen Webtechnologien und Fokus auf Benutzererfahrung gebaut, will Snipit die erste Wahl für Code-Sharing in der Entwickler-Community sein."
 		},
 		"team": {
-			"title": "Das Team",
+			"title": "Der Gründer",
 			"roles": {
 				"developer": "Entwickler",
 				"tester": "Tester",
@@ -399,7 +399,7 @@
 		"privacy": "Datenschutz",
 		"terms": "Nutzungsbedingungen",
 		"contact": "Kontakt",
-		"made_by": "Gemacht mit ❤️ von Durgesh & Tejas"
+		"made_by": "Gemacht mit ❤️ von Tejas"
 	},
 	"splash": {
 		"tagline": "Teilen Sie Ihre Snippets sofort",
