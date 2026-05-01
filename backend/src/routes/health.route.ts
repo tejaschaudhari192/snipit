@@ -41,7 +41,6 @@ router.get(
 			},
 		};
 
-		// 1. Check MongoDB (Critical)
 		try {
 			const dbState = mongoose.connection.readyState;
 			if (dbState === 1) {
@@ -64,7 +63,6 @@ router.get(
 			};
 		}
 
-		// 2. Check Supabase (Non-Critical for health status)
 		try {
 			if (!isSupabaseConfigured || !supabase) {
 				health.services.supabase = {
@@ -92,7 +90,6 @@ router.get(
 			};
 		}
 
-		// 3. Check SMTP (Non-Critical for health status)
 		try {
 			if (!configurations.smtp.user) {
 				health.services.smtp = {
@@ -195,37 +192,38 @@ router.get("/stream", async (req, res) => {
 		}
 	};
 
-	// Start all checks in parallel
-	const checkPromises = [
-		performCheck(
-			"Database",
-			"Connecting to Database...",
-			"database",
-			checkDatabase,
-		),
-		performCheck(
-			"Storage",
-			"Checking Storage...",
-			"hard-drive",
-			checkSupabase,
-		),
-		performCheck(
-			"Email Server",
-			"Verifying Email Server...",
-			"mail",
-			checkSMTP,
-		),
-		performCheck(
-			"AI Service",
-			"Activating AI Engine...",
-			"sparkles",
-			checkAI,
-		),
-	];
+	const databasePromise = performCheck(
+		"Database",
+		"Connecting to Database...",
+		"database",
+		checkDatabase,
+	);
+	const storagePromise = performCheck(
+		"Storage",
+		"Checking Storage...",
+		"hard-drive",
+		checkSupabase,
+	);
+	const aiPromise = performCheck(
+		"AI Service",
+		"Activating AI Engine...",
+		"sparkles",
+		checkAI,
+	);
 
-	const results = await Promise.all(checkPromises);
+	performCheck(
+		"Email Server",
+		"Verifying Email Server...",
+		"mail",
+		checkSMTP,
+	);
 
-	// If database (the first check in the array) failed, we stop here
+	const results = await Promise.all([
+		databasePromise,
+		storagePromise,
+		aiPromise,
+	]);
+
 	if (results[0] === "error") {
 		return res.end();
 	}
