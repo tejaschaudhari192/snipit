@@ -31,7 +31,7 @@ const AboutPage = () => {
 			</section>
 
 			<section className="pb-16 px-4 md:px-8">
-				<div className="max-w-xl mx-auto">
+				<div className="max-w-xs mx-auto">
 					<div className="relative rounded-2xl md:rounded-3xl overflow-hidden border border-border/50 shadow-2xl shadow-black/5 bg-card animate-in fade-in slide-in-from-bottom-12 duration-1000">
 						<img
 							src={appScreenshot}
