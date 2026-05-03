@@ -114,7 +114,11 @@
 		"exit_zen": "Exit Zen Mode",
 		"markdown_layout": "Markdown Layout",
 		"download_qr": "Download QR",
-		"save_as": "Save as..."
+		"save_as": "Save as...",
+		"add_label": "Add Label",
+		"edit_labels": "Edit Labels",
+		"labels": "Labels",
+		"login_to_label": "Login to organize with labels"
 	},
 	"profile": {
 		"title": "Your Profile",
@@ -348,6 +352,10 @@
 			"multi_language": {
 				"title": "Multi-Language UI",
 				"desc": "Interface available in English, German, Hindi, Japanese, and Marathi."
+			},
+			"labels": {
+				"title": "Smart Labels",
+				"desc": "Organize your snippets with a powerful, user-specific labeling system. Tag and categorize your code for instant retrieval and a personalized organization experience."
 			}
 		},
 		"story": {

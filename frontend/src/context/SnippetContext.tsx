@@ -29,9 +29,14 @@ interface UserStats {
 interface SnippetContextType {
 	history: SnippetState;
 	profile: SnippetState;
+	savedProfile: SnippetState;
+	filteredPastes: PasteData[] | null;
 	stats: UserStats | null;
 	loadHistory: (isFirstLoad?: boolean) => Promise<void>;
 	loadProfile: (isFirstLoad?: boolean) => Promise<void>;
+	loadSavedProfile: (isFirstLoad?: boolean) => Promise<void>;
+	loadFilteredPastes: (label: string) => Promise<void>;
+	clearFilter: () => void;
 	loadStats: () => Promise<void>;
 	clearHistoryState: () => void;
 	refreshSnippets: () => void;
@@ -57,12 +62,19 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const [history, setHistory] = useState<SnippetState>(initialState);
 	const [profile, setProfile] = useState<SnippetState>(initialState);
+	const [savedProfile, setSavedProfile] =
+		useState<SnippetState>(initialState);
+	const [filteredPastes, setFilteredPastes] = useState<PasteData[] | null>(
+		null,
+	);
 	const [stats, setStats] = useState<UserStats | null>(null);
 
 	const isHistoryFetching = useRef(false);
 	const isProfileFetching = useRef(false);
+	const isSavedProfileFetching = useRef(false);
 	const historyStateRef = useRef(history);
 	const profileStateRef = useRef(profile);
+	const savedProfileStateRef = useRef(savedProfile);
 
 	// Update refs when state changes
 	useEffect(() => {
@@ -72,6 +84,10 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 	useEffect(() => {
 		profileStateRef.current = profile;
 	}, [profile]);
+
+	useEffect(() => {
+		savedProfileStateRef.current = savedProfile;
+	}, [savedProfile]);
 
 	const loadHistory = useCallback(
 		async (isFirstLoad = false) => {
@@ -211,6 +227,56 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 		[user, apiHelpers, t], // removed profile.page
 	);
 
+	const loadSavedProfile = useCallback(
+		async (isFirstLoad = false) => {
+			if (!user || isSavedProfileFetching.current) return;
+
+			isSavedProfileFetching.current = true;
+			setSavedProfile((prev) => ({
+				...prev,
+				loading: isFirstLoad,
+			}));
+
+			try {
+				const data = await apiHelpers.getSavedPastes();
+
+				setSavedProfile({
+					items: data.snippets,
+					page: 1,
+					hasMore: false,
+					loading: false,
+					isLoadingMore: false,
+				});
+			} catch (err) {
+				console.error("Failed to fetch saved pastes", err);
+				setSavedProfile((prev) => ({
+					...prev,
+					loading: false,
+				}));
+			} finally {
+				isSavedProfileFetching.current = false;
+			}
+		},
+		[user, apiHelpers],
+	);
+
+	const loadFilteredPastes = useCallback(
+		async (label: string) => {
+			if (!user) return;
+			try {
+				const data = await apiHelpers.getSnippetsByLabel(label);
+				setFilteredPastes(data.snippets);
+			} catch (err) {
+				console.error("Failed to fetch filtered pastes", err);
+			}
+		},
+		[user, apiHelpers],
+	);
+
+	const clearFilter = useCallback(() => {
+		setFilteredPastes(null);
+	}, []);
+
 	const loadStats = useCallback(async () => {
 		if (!user) return;
 		try {
@@ -224,6 +290,8 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 	const clearHistoryState = useCallback(() => {
 		setHistory(initialState);
 		setProfile(initialState);
+		setSavedProfile(initialState);
+		setFilteredPastes(null);
 		setStats(null);
 	}, []);
 
@@ -231,9 +299,10 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 		loadHistory(true);
 		if (user) {
 			loadProfile(true);
+			loadSavedProfile(true);
 			loadStats();
 		}
-	}, [loadHistory, loadProfile, loadStats, user]);
+	}, [loadHistory, loadProfile, loadSavedProfile, loadStats, user]);
 
 	const deleteSnippet = useCallback(
 		async (id: string) => {
@@ -255,6 +324,13 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 					...prev,
 					items: prev.items.filter((p) => p.id !== id),
 				}));
+				setSavedProfile((prev) => ({
+					...prev,
+					items: prev.items.filter((p) => p.id !== id),
+				}));
+				setFilteredPastes((prev) =>
+					prev ? prev.filter((p) => p.id !== id) : null,
+				);
 
 				// Update LocalStorage
 				const stored = localStorage.getItem("items");
@@ -286,18 +362,31 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 		loadHistory(true);
 		if (user) {
 			loadProfile(true);
+			loadSavedProfile(true);
 			loadStats();
 		}
-	}, [user, clearHistoryState, loadHistory, loadProfile, loadStats]);
+	}, [
+		user,
+		clearHistoryState,
+		loadHistory,
+		loadProfile,
+		loadSavedProfile,
+		loadStats,
+	]);
 
 	return (
 		<SnippetContext.Provider
 			value={{
 				history,
 				profile,
+				savedProfile,
+				filteredPastes,
 				stats,
 				loadHistory,
 				loadProfile,
+				loadSavedProfile,
+				loadFilteredPastes,
+				clearFilter,
 				loadStats,
 				clearHistoryState,
 				refreshSnippets,

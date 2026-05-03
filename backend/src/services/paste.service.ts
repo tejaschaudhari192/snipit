@@ -177,11 +177,51 @@ class PasteService {
 
 	async getUserPastes(ownerId: string, page: number = 1, limit: number = 10) {
 		const skip = (page - 1) * limit;
-		const pastes = await pasteModel
-			.find({ owner: ownerId })
-			.sort({ createdAt: -1 })
-			.skip(skip)
-			.limit(limit);
+
+		// Use aggregate with $lookup to join with labels
+		const pastes = await pasteModel.aggregate([
+			{ $match: { owner: ownerId } },
+			{ $sort: { createdAt: -1 } },
+			{ $skip: skip },
+			{ $limit: limit },
+			{
+				$lookup: {
+					from: "labels",
+					let: { paste_id: "$id" },
+					pipeline: [
+						{
+							$match: {
+								$expr: {
+									$and: [
+										{ $eq: ["$pasteId", "$$paste_id"] },
+										{
+											$eq: [
+												"$userId",
+												new mongoose.Types.ObjectId(
+													ownerId,
+												),
+											],
+										},
+									],
+								},
+							},
+						},
+					],
+					as: "labelData",
+				},
+			},
+			{
+				$addFields: {
+					labels: {
+						$ifNull: [
+							{ $arrayElemAt: ["$labelData.labels", 0] },
+							[],
+						],
+					},
+				},
+			},
+			{ $project: { labelData: 0 } },
+		]);
 
 		const total = await pasteModel.countDocuments({ owner: ownerId });
 

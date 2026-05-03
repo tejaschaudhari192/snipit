@@ -146,6 +146,39 @@ export const useApiHelpers = () => {
 			updateMe,
 			verifyPassword,
 			addComment,
+			getLabels: async (
+				pasteId: string,
+			): Promise<{ labels: string[] }> => {
+				const response = await api.get(`/labels/snippet/${pasteId}`);
+				return response.data;
+			},
+			updateLabels: async (
+				pasteId: string,
+				labels: string[],
+			): Promise<{ labels: string[] }> => {
+				const response = await api.post(`/labels/snippet/${pasteId}`, {
+					labels,
+				});
+				return response.data;
+			},
+			getAllLabels: async (): Promise<{ labels: string[] }> => {
+				const response = await api.get("/labels/all");
+				return response.data;
+			},
+			getSnippetsByLabel: async (
+				label: string,
+			): Promise<{ snippets: PasteData[] }> => {
+				const response = await api.get(`/labels/filter/${label}`);
+				return response.data;
+			},
+			getSavedPastes: async (): Promise<{ snippets: PasteData[] }> => {
+				const response = await api.get("/labels/saved");
+				return response.data;
+			},
+			savePaste: async (pasteId: string): Promise<{ saved: boolean }> => {
+				const response = await api.post(`/labels/save/${pasteId}`);
+				return response.data;
+			},
 			forgotPassword: async (
 				email: string,
 			): Promise<{ success: boolean; data: string }> => {
