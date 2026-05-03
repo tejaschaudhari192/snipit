@@ -4,11 +4,13 @@ import { useAuth } from "@/context/AuthContext";
 import { useApiHelpers } from "@/lib/api";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
-import { User } from "lucide-react";
+import { User, Tag, Bookmark, FilterX } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
 import { ProfileInfo } from "@/components/profile/profile-info";
 import { ProfileSnippetList } from "@/components/profile/profile-snippet-list";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useLabels } from "@/hooks/use-labels";
 
 import { useSnippets } from "@/context/SnippetContext";
 import { usePageTitle } from "@/hooks/use-page-title";
@@ -19,7 +21,19 @@ const ProfilePage = () => {
 	usePageTitle("profile.title");
 	const { user, loading: authLoading, setUser } = useAuth();
 	const apiHelpers = useApiHelpers();
-	const { profile, loadProfile, stats } = useSnippets();
+	const {
+		profile,
+		savedProfile,
+		filteredPastes,
+		loadProfile,
+		loadSavedProfile,
+		loadFilteredPastes,
+		clearFilter,
+		stats,
+	} = useSnippets();
+
+	const { allLabels } = useLabels();
+
 	const {
 		items: pastes,
 		loading: loadingPastes,
@@ -27,19 +41,38 @@ const ProfilePage = () => {
 		isLoadingMore,
 	} = profile;
 
+	const { items: savedPastes, loading: loadingSaved } = savedProfile;
+
 	const [isEditingName, setIsEditingName] = useState(false);
 	const [newName, setNewName] = useState("");
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+	const [activeLabel, setActiveLabel] = useState<string | null>(null);
+	const [activeTab, setActiveTab] = useState("owned");
 
 	useEffect(() => {
 		if (user) {
 			setNewName(user.username);
-			if (pastes.length === 0) {
-				loadProfile(true);
-			}
+			if (pastes.length === 0) loadProfile(true);
+			if (savedPastes.length === 0) loadSavedProfile(true);
 		}
-	}, [user, loadProfile, pastes.length]);
+	}, [
+		user,
+		loadProfile,
+		loadSavedProfile,
+		pastes.length,
+		savedPastes.length,
+	]);
+
+	const handleLabelClick = (label: string) => {
+		if (activeLabel === label) {
+			setActiveLabel(null);
+			clearFilter();
+		} else {
+			setActiveLabel(label);
+			loadFilteredPastes(label);
+		}
+	};
 
 	const handleUpdateName = async () => {
 		if (!newName.trim() || newName === user?.username) {
@@ -117,8 +150,8 @@ const ProfilePage = () => {
 
 	return (
 		<div className="relative min-h-screen bg-background overflow-x-hidden flex flex-col items-center w-full">
-			<div className="relative z-10 container mx-auto px-4 py-8 md:py-12 max-w-7xl w-full animate-in fade-in duration-700">
-				<div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 items-start">
+			<div className="relative z-10 container mx-auto px-4 py-4 md:py-6 max-w-7xl w-full animate-in fade-in duration-700">
+				<div className="flex flex-col lg:grid lg:grid-cols-12 gap-4 items-start">
 					<div className="w-full lg:col-span-4 lg:sticky lg:top-24 max-w-2xl mx-auto lg:max-w-none">
 						<ProfileInfo
 							user={user}
@@ -134,7 +167,7 @@ const ProfilePage = () => {
 						/>
 					</div>
 					<div className="w-full lg:col-span-8 max-w-4xl mx-auto lg:max-w-none">
-						<div className="flex items-center justify-between gap-4 mb-8 px-2">
+						<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 px-2">
 							<div className="flex items-center gap-3">
 								<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
 									<User className="h-5 w-5" />
@@ -146,19 +179,113 @@ const ProfilePage = () => {
 							<Link to="/">
 								<Button
 									size="sm"
-									className="gap-2 font-black rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all px-6"
+									className="gap-2 font-black rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all px-6 w-full sm:w-auto"
 								>
 									{t("header.new_snippet", "New Snippet")}
 								</Button>
 							</Link>
 						</div>
-						<ProfileSnippetList
-							pastes={pastes}
-							loading={loadingPastes}
-							loadMore={() => loadProfile(false)}
-							hasMore={hasMore}
-							isLoadingMore={isLoadingMore}
-						/>
+
+						{/* Labels Filter Bar */}
+						{allLabels && allLabels.length > 0 && (
+							<div className="flex items-center gap-2 mb-4 px-2 overflow-x-auto no-scrollbar pb-2">
+								<div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider mr-2 shrink-0">
+									<Tag className="w-3 h-3" />
+									Filters
+								</div>
+								{allLabels.map((label) => (
+									<button
+										key={label}
+										onClick={() => handleLabelClick(label)}
+										className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 border ${
+											activeLabel === label
+												? "bg-primary text-primary-foreground border-primary shadow-md scale-105"
+												: "bg-background border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"
+										}`}
+									>
+										{label}
+									</button>
+								))}
+								{activeLabel && (
+									<button
+										onClick={() => {
+											setActiveLabel(null);
+											clearFilter();
+										}}
+										className="p-1.5 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors shrink-0"
+										title="Clear filter"
+									>
+										<FilterX className="w-4 h-4" />
+									</button>
+								)}
+							</div>
+						)}
+
+						{/* Content Area */}
+						{activeLabel ? (
+							<div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+								<div className="flex items-center gap-2 px-2 mb-4 text-sm text-muted-foreground">
+									<span>Showing results for</span>
+									<span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary font-bold">
+										{activeLabel}
+									</span>
+								</div>
+								<ProfileSnippetList
+									pastes={filteredPastes || []}
+									loading={filteredPastes === null}
+									loadMore={() => {}}
+									hasMore={false}
+									isLoadingMore={false}
+								/>
+							</div>
+						) : (
+							<Tabs
+								value={activeTab}
+								onValueChange={setActiveTab}
+								className="w-full"
+							>
+								<TabsList className="mb-4 mx-2">
+									<TabsTrigger
+										value="owned"
+										className="gap-2 px-6"
+									>
+										<User className="w-4 h-4" />
+										My Snippets
+									</TabsTrigger>
+									<TabsTrigger
+										value="saved"
+										className="gap-2 px-6"
+									>
+										<Bookmark className="w-4 h-4" />
+										Saved
+									</TabsTrigger>
+								</TabsList>
+								<TabsContent
+									value="owned"
+									className="mt-0 outline-none"
+								>
+									<ProfileSnippetList
+										pastes={pastes}
+										loading={loadingPastes}
+										loadMore={() => loadProfile(false)}
+										hasMore={hasMore}
+										isLoadingMore={isLoadingMore}
+									/>
+								</TabsContent>
+								<TabsContent
+									value="saved"
+									className="mt-0 outline-none"
+								>
+									<ProfileSnippetList
+										pastes={savedPastes}
+										loading={loadingSaved}
+										loadMore={() => {}}
+										hasMore={false}
+										isLoadingMore={false}
+									/>
+								</TabsContent>
+							</Tabs>
+						)}
 					</div>
 				</div>
 			</div>

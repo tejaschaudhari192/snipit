@@ -4,6 +4,7 @@ import pasteRouter from "./paste.route.js";
 import aiRouter from "./ai.route.js";
 import healthRouter from "./health.route.js";
 import jobRouter from "./job.route.js";
+import labelRouter from "./label.route.js";
 
 const router: Router = Router();
 
@@ -13,5 +14,6 @@ router.use("/pastes", pasteRouter);
 router.use("/ai", aiRouter);
 router.use("/health", healthRouter);
 router.use("/jobs", jobRouter);
+router.use("/labels", labelRouter);
 
 export default router;

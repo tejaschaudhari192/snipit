@@ -103,6 +103,10 @@
 		"markdown_layout": "Markdown-Layout",
 		"download_qr": "QR-Code herunterladen",
 		"save_as": "Speichern unter...",
+		"add_label": "Label hinzufügen",
+		"edit_labels": "Labels bearbeiten",
+		"labels": "Labels",
+		"login_to_label": "Anmelden, um mit Labels zu organisieren",
 		"edit_permission": "Wer kann bearbeiten?",
 		"only_me": "Nur ich",
 		"specific_people": "Bestimmte Personen",
@@ -348,6 +352,10 @@
 			"drawing": {
 				"title": "Interaktives Zeichnen",
 				"desc": "Kollaboratives Whiteboard zum Skizzieren von Ideen und Diagrammen neben Ihrem Code."
+			},
+			"labels": {
+				"title": "Smarte Labels",
+				"desc": "Organisieren Sie Ihre Snippets mit einem leistungsstarken, benutzerspezifischen Label-System. Kennzeichnen und kategorisieren Sie Ihren Code für den sofortigen Abruf und eine personalisierte Organisation."
 			}
 		},
 		"story": {

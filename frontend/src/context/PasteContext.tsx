@@ -58,6 +58,8 @@ interface PasteContextType {
 	setCustomId: (v: string) => void;
 	setIdTypeTab: (v: "system" | "dynamic") => void;
 	setIsSubmitting: (v: boolean) => void;
+	labels: string[];
+	setLabels: (v: string[]) => void;
 
 	// File Upload Actions
 	uploadFile: (file: File) => Promise<UploadState>;
@@ -98,6 +100,7 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 	const [customId, setCustomId] = useState("");
 	const [idTypeTab, setIdTypeTab] = useState<"system" | "dynamic">("system");
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [labels, setLabels] = useState<string[]>([]);
 
 	const {
 		isUploading,
@@ -204,6 +207,7 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 		setPassword("");
 		setCustomId("");
 		setIdTypeTab("system");
+		setLabels([]);
 	}, [setTextValue]);
 
 	const value = React.useMemo(
@@ -236,6 +240,8 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			setIdTypeTab,
 			isSubmitting,
 			setIsSubmitting,
+			labels,
+			setLabels,
 			isUploading,
 			uploadProgress,
 			uploadError,
@@ -278,6 +284,8 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			setIdTypeTab,
 			isSubmitting,
 			setIsSubmitting,
+			labels,
+			setLabels,
 			isUploading,
 			uploadProgress,
 			uploadError,
