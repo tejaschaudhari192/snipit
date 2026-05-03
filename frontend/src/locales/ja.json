@@ -366,6 +366,15 @@
 		},
 		"team": {
 			"title": "創設者に会う",
+			"quote": "\"コード共有は美しく、速く、簡単であるべき — 後回しにすべきではない。だからSnipitを作りました。\"",
+			"socials": {
+				"email": "メール"
+			},
+			"badges": {
+				"founder": "創設者 & ソロ開発者",
+				"open_source": "オープンソース",
+				"full_stack": "フルスタック"
+			},
 			"roles": {
 				"developer": "開発者",
 				"tester": "テスター",
