@@ -94,7 +94,7 @@ export class LabelService {
 
 		return LabelService.getSnippetsWithLabels(userId, {
 			id: { $in: pasteIds },
-			owner: { $ne: userId },
+			owner: { $ne: new mongoose.Types.ObjectId(userId) },
 		});
 	}
 

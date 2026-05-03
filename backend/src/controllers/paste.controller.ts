@@ -177,7 +177,9 @@ class PasteController {
 			);
 			return res.json({
 				...result,
-				pastes: result.pastes.map((p) => p.toObject()),
+				pastes: result.pastes.map((p: any) =>
+					p.toObject ? p.toObject() : p,
+				),
 			});
 		} catch (error) {
 			next(error);

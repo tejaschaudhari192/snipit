@@ -180,7 +180,7 @@ class PasteService {
 
 		// Use aggregate with $lookup to join with labels
 		const pastes = await pasteModel.aggregate([
-			{ $match: { owner: ownerId } },
+			{ $match: { owner: new mongoose.Types.ObjectId(ownerId) } },
 			{ $sort: { createdAt: -1 } },
 			{ $skip: skip },
 			{ $limit: limit },
@@ -223,7 +223,9 @@ class PasteService {
 			{ $project: { labelData: 0 } },
 		]);
 
-		const total = await pasteModel.countDocuments({ owner: ownerId });
+		const total = await pasteModel.countDocuments({
+			owner: new mongoose.Types.ObjectId(ownerId),
+		});
 
 		return {
 			pastes,
