@@ -51,6 +51,7 @@ export const usePasteSubmission = (
 		fileMimeType,
 		setIsSubmitting,
 		uploadFile,
+		labels,
 	} = usePaste();
 
 	const [pendingFile, setPendingFile] = useState<File | null>(null);
@@ -115,6 +116,14 @@ export const usePasteSubmission = (
 				publicRole: options.publicRole ?? publicRole,
 				allowComments: options.allowComments ?? allowComments,
 			});
+
+			if (user && labels.length > 0) {
+				try {
+					await apiHelpers.updateLabels(data.id, labels);
+				} catch (err) {
+					console.error("Failed to save labels during creation", err);
+				}
+			}
 
 			toast.success(
 				t("messages.snippet_created", {

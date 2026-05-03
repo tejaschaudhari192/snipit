@@ -63,6 +63,7 @@ export interface PasteData {
 	publicRole?: PublicRole;
 	allowComments?: boolean;
 	comments?: CommentData[];
+	labels?: string[];
 }
 
 export type IdType = "system" | "dynamic";

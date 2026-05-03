@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { IdTypeTabs } from "./paste-dialog/id-type-tabs";
 import { BasicSettings } from "./paste-dialog/basic-settings";
+import { LabelManager } from "@/components/common/label-manager";
 import { VisibilitySelector } from "@/components/common/access-control/visibility-selector";
 import { CollaboratorsManager } from "@/components/common/access-control/collaborators-manager";
 import { useState, useEffect } from "react";
@@ -80,19 +81,27 @@ export const AdvancedOptions = ({ onSubmit }: AdvancedOptionsProps) => {
 				</div>
 
 				{/* Column 2: General Settings */}
-				<div className="flex flex-col">
-					<SectionHeader
-						icon={Settings}
-						label={t("common.settings", "General Settings")}
-					/>
-					<BasicSettings
-						isPasswordEnabled={isPasswordEnabled}
-						setIsPasswordEnabled={setIsPasswordEnabled}
-						password={password}
-						setPassword={setPassword}
-						allowComments={allowComments}
-						setAllowComments={setAllowComments}
-					/>
+				<div className="flex flex-col space-y-4">
+					<div className="flex flex-col">
+						<SectionHeader
+							icon={Settings}
+							label={t("common.settings", "General Settings")}
+						/>
+						<BasicSettings
+							isPasswordEnabled={isPasswordEnabled}
+							setIsPasswordEnabled={setIsPasswordEnabled}
+							password={password}
+							setPassword={setPassword}
+							allowComments={allowComments}
+							setAllowComments={setAllowComments}
+						/>
+					</div>
+
+					{user && (
+						<div className="pt-2">
+							<LabelManager />
+						</div>
+					)}
 				</div>
 
 				{/* Column 3: Access & Collab */}

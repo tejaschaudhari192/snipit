@@ -2,9 +2,10 @@ import { timeAgo } from "@/utils";
 import type { PasteData } from "@/types";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { ExternalLink, Calendar } from "lucide-react";
+import { ExternalLink, Calendar, Tag } from "lucide-react";
 import { LanguageBadge } from "../common/language-badge";
 import { ExpirationBadge } from "../common/expiration-badge";
+import { useAuth } from "@/context/AuthContext";
 
 interface SnippetCardProps {
 	item: PasteData;
@@ -18,6 +19,7 @@ export const SnippetCard = ({
 	showViews = true,
 }: SnippetCardProps) => {
 	const { t, i18n } = useTranslation();
+	const { user } = useAuth();
 
 	const isExpired = (expiresAt: string) => {
 		return new Date(expiresAt).getTime() < Date.now();
@@ -32,6 +34,9 @@ export const SnippetCard = ({
 	const expired = item.expiresAt && isExpired(item.expiresAt);
 	const expiringSoon =
 		item.expiresAt && !expired && isExpiringSoon(item.expiresAt);
+
+	const isShared =
+		user && item.owner && item.owner.toString() !== user._id.toString();
 
 	return (
 		<div
@@ -61,6 +66,11 @@ export const SnippetCard = ({
 						<span className="text-[10px] sm:text-xs text-muted-foreground font-mono bg-muted/30 px-2 py-0.5 rounded italic truncate max-w-[80px] sm:max-w-none">
 							/{item.id}
 						</span>
+						{isShared && (
+							<span className="text-[10px] sm:text-xs font-bold text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded uppercase tracking-wider ml-auto sm:ml-0">
+								{t("common.shared", "Shared")}
+							</span>
+						)}
 					</div>
 
 					<div className="flex items-center gap-3 text-[10px] sm:text-xs shrink-0 self-end sm:self-auto">
@@ -94,6 +104,20 @@ export const SnippetCard = ({
 					</div>
 					<div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent rounded-xl pointer-events-none" />
 				</div>
+
+				{item.labels && item.labels.length > 0 && (
+					<div className="flex flex-wrap gap-1.5 mt-4 px-1">
+						{item.labels.map((label) => (
+							<span
+								key={label}
+								className="flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-bold bg-primary/10 text-primary uppercase tracking-tighter"
+							>
+								<Tag className="w-2.5 h-2.5" />
+								{label}
+							</span>
+						))}
+					</div>
+				)}
 
 				<div className="flex items-center justify-between mt-4 text-[10px] md:text-xs text-muted-foreground font-medium">
 					<div className="flex items-center gap-4">
