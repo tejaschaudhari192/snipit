@@ -366,15 +366,6 @@
 		},
 		"team": {
 			"title": "Meet the Founder",
-			"quote": "\"I built Snipit because code sharing should be beautiful, fast, and effortless — not an afterthought.\"",
-			"socials": {
-				"email": "Email"
-			},
-			"badges": {
-				"founder": "Founder & Solo Developer",
-				"open_source": "Open Source",
-				"full_stack": "Full Stack"
-			},
 			"roles": {
 				"developer": "Developer",
 				"tester": "Tester",

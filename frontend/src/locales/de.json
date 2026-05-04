@@ -366,15 +366,6 @@
 		},
 		"team": {
 			"title": "Der Gründer",
-			"quote": "\"Ich habe Snipit entwickelt, weil Code-Sharing schön, schnell und mühelos sein sollte — kein Nachgedanke.\"",
-			"socials": {
-				"email": "E-Mail"
-			},
-			"badges": {
-				"founder": "Gründer & Solo-Entwickler",
-				"open_source": "Open Source",
-				"full_stack": "Full Stack"
-			},
 			"roles": {
 				"developer": "Entwickler",
 				"tester": "Tester",
