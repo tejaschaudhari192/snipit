@@ -1,5 +1,5 @@
 import Footer from "@/components/ui/footer";
-import { Mail, Users, Github, Zap, Linkedin, Send } from "lucide-react";
+import { Mail, Users, Github, Zap, Linkedin, Gitlab, Send } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import appScreenshot from "@/assets/brand/app.png";
@@ -218,6 +218,23 @@ const AboutPage = () => {
 								{t("about_page.contribute.desc")}
 							</p>
 							<div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+								<a
+									href="https://gitlab.com/tejaschaudhari192/snipit"
+									target="_blank"
+									rel="noopener noreferrer"
+									className="w-full sm:w-auto"
+								>
+									<Button
+										size="lg"
+										variant="secondary"
+										className="w-full sm:w-auto gap-3 px-10 h-14 text-base font-bold shadow-xl hover:scale-105 transition-transform"
+									>
+										<Gitlab className="w-6 h-6" />
+										{t(
+											"about_page.contribute.gitlab_button",
+										)}
+									</Button>
+								</a>
 								<a
 									href="mailto:jaybalaji192@gmail.com"
 									className="w-full sm:w-auto"

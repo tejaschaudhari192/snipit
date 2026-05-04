@@ -281,7 +281,7 @@
 	},
 	"about_page": {
 		"title": "About",
-		"subtitle": "A passion project built by a developer who believes in making code sharing simple and beautiful.",
+		"subtitle": "A passion project built by two developers who believe in making code sharing simple and beautiful.",
 		"features_title": "Powerful Features",
 		"features_subtitle": "Everything you need for seamless code sharing",
 		"features": {
@@ -365,7 +365,7 @@
 			"p3": "Built with modern web technologies and a focus on user experience, Snipit aims to be the go-to platform for code sharing in the developer community."
 		},
 		"team": {
-			"title": "Meet the Founder",
+			"title": "Meet the Team",
 			"roles": {
 				"developer": "Developer",
 				"tester": "Tester",
@@ -407,7 +407,7 @@
 		"privacy": "Privacy Policy",
 		"terms": "Terms of Service",
 		"contact": "Contact",
-		"made_by": "Made with ❤️ by Tejas"
+		"made_by": "Made with ❤️ by Durgesh & Tejas"
 	},
 	"splash": {
 		"tagline": "Share your snippets instantly",
