@@ -101,6 +101,31 @@ export const MainToolbar = memo(
 					{children && (
 						<div className="flex-1 flex items-center justify-center gap-2 px-2 overflow-x-auto no-scrollbar py-1 lg:py-0">
 							{children}
+							{isCode &&
+								onToggleTerminal &&
+								SUPPORTED_RUN_LANGUAGES.includes(
+									language.toLowerCase(),
+								) && (
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={onToggleTerminal}
+										className="gap-2 h-9 shrink-0 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 shadow-lg shadow-emerald-500/10"
+									>
+										{isTerminalOpen ? (
+											<X className="h-4 w-4" />
+										) : (
+											<Play className="h-4 w-4" />
+										)}
+										<span className="hidden sm:inline">
+											{isTerminalOpen
+												? t("display.terminal.close")
+												: t(
+														"display.terminal.run_code",
+													)}
+										</span>
+									</Button>
+								)}
 						</div>
 					)}
 					{!children && <div className="flex-1" />}
@@ -146,33 +171,6 @@ export const MainToolbar = memo(
 										/>
 									</Button>
 								</ButtonGroup>
-								{isCode &&
-									onToggleTerminal &&
-									SUPPORTED_RUN_LANGUAGES.includes(
-										language.toLowerCase(),
-									) && (
-										<Button
-											variant="outline"
-											size="sm"
-											onClick={onToggleTerminal}
-											className="gap-2 h-9 shrink-0 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 shadow-lg shadow-emerald-500/10"
-										>
-											{isTerminalOpen ? (
-												<X className="h-4 w-4" />
-											) : (
-												<Play className="h-4 w-4" />
-											)}
-											<span className="hidden sm:inline">
-												{isTerminalOpen
-													? t(
-															"display.terminal.close",
-														)
-													: t(
-															"display.terminal.run_code",
-														)}
-											</span>
-										</Button>
-									)}
 							</div>
 						)}
 					</div>
@@ -208,7 +206,11 @@ export const MainToolbar = memo(
 								</Button>
 							</div>
 
-							<AdvancedOptions onSubmit={handleDialogSubmit} />
+							<div className="max-h-[450px] overflow-y-auto pr-2 custom-scrollbar">
+								<AdvancedOptions
+									onSubmit={handleDialogSubmit}
+								/>
+							</div>
 
 							{dialogError && (
 								<div className="animate-in fade-in slide-in-from-top-2 duration-300 p-4 mt-4 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-500 flex items-start gap-3 shadow-sm shadow-red-500/5">

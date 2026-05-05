@@ -16,12 +16,7 @@ export const FontSizeControls = memo(
 		const { i18n } = useTranslation();
 
 		return (
-			<div
-				className={cn(
-					"flex items-center gap-2 w-full sm:w-auto",
-					className,
-				)}
-			>
+			<div className={cn("flex items-center gap-2 shrink-0", className)}>
 				<ButtonGroup className="w-full sm:w-auto">
 					<Button
 						variant="outline"

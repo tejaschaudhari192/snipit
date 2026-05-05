@@ -111,9 +111,9 @@ export const AdvancedOptions = ({ onSubmit }: AdvancedOptionsProps) => {
 						label={t("common.privacy", "Privacy & Security")}
 					/>
 
-					<div className="flex-1 flex flex-col">
+					<div className="flex flex-col">
 						{!user ? (
-							<div className="flex flex-col justify-center items-center text-center p-4 rounded-xl border border-dashed border-primary/20 bg-primary/5 h-full">
+							<div className="flex flex-col justify-center items-center text-center p-4 rounded-xl border border-dashed border-primary/20 bg-primary/5 min-h-[140px]">
 								<LogIn className="h-5 w-5 text-primary/50 mb-2" />
 								<p className="text-primary font-bold text-sm mb-1">
 									{t("common.auth_required", "Auth Required")}
