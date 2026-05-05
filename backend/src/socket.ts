@@ -33,18 +33,28 @@ const canUserEdit = async (
 	pasteId: string,
 	userId: string | null,
 ): Promise<boolean> => {
-	const paste = await pasteService.getPasteById(pasteId);
-	if (!paste) return false;
-	return await permissionService.canEdit(userId, paste);
+	try {
+		const paste = await pasteService.getPasteById(pasteId);
+		if (!paste) return false;
+		return await permissionService.canEdit(userId, paste);
+	} catch (error) {
+		console.error("Socket: Error checking edit permissions", error);
+		return false;
+	}
 };
 
 const canUserView = async (
 	pasteId: string,
 	userId: string | null,
 ): Promise<boolean> => {
-	const paste = await pasteService.getPasteById(pasteId);
-	if (!paste) return false;
-	return await permissionService.canView(userId, paste);
+	try {
+		const paste = await pasteService.getPasteById(pasteId);
+		if (!paste) return false;
+		return await permissionService.canView(userId, paste);
+	} catch (error) {
+		console.error("Socket: Error checking view permissions", error);
+		return false;
+	}
 };
 
 export const setupSocket = (server: HTTPServer) => {

@@ -11,9 +11,20 @@ const server = http.createServer(app);
 // Setup Socket.IO
 setupSocket(server);
 
+// Start server immediately
 server.listen(port, () => {
 	logger.info(`🚀 Server listening on ${port}`);
 	logger.info(`🌍 Environment: ${process.env.NODE_ENV}`);
+});
+
+// Connect to Database in background
+connectDB().catch((err) => {
+	logger.error(
+		"Initial DB connection failed. Requests will retry on arrival.",
+		{
+			error: err instanceof Error ? err.message : err,
+		},
+	);
 });
 
 export default app;

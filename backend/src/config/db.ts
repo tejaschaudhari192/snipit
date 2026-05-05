@@ -28,11 +28,11 @@ export const connectDB = async () => {
 
 	if (!cached?.promise) {
 		const opts = {
-			bufferCommands: false,
-			serverSelectionTimeoutMS: 5000,
+			bufferCommands: true,
+			serverSelectionTimeoutMS: 10000,
 		};
 
-		const dbUri = `mongodb+srv://${configurations.database.user}:${configurations.database.password}@jaybalaji.s5azwy2.mongodb.net/${configurations.database.name}?retryWrites=true&w=majority&serverSelectionTimeoutMS=5000`;
+		const dbUri = `mongodb+srv://${configurations.database.user}:${configurations.database.password}@jaybalaji.s5azwy2.mongodb.net/${configurations.database.name}?retryWrites=true&w=majority&serverSelectionTimeoutMS=10000`;
 
 		cached!.promise = mongoose
 			.connect(dbUri, opts)
