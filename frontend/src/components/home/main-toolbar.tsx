@@ -99,36 +99,40 @@ export const MainToolbar = memo(
 					{hideTypeSelector && <div className="w-0 lg:w-auto" />}
 
 					{children && (
-						<div className="flex-1 flex items-center justify-center gap-2 px-2 overflow-x-auto no-scrollbar py-1 lg:py-0">
-							{children}
-							{isCode &&
-								onToggleTerminal &&
-								SUPPORTED_RUN_LANGUAGES.includes(
-									language.toLowerCase(),
-								) && (
-									<Button
-										variant="outline"
-										size="sm"
-										onClick={onToggleTerminal}
-										className="gap-2 h-9 shrink-0 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 shadow-lg shadow-emerald-500/10"
-									>
-										{isTerminalOpen ? (
-											<X className="h-4 w-4" />
-										) : (
-											<Play className="h-4 w-4" />
-										)}
-										<span className="hidden sm:inline">
-											{isTerminalOpen
-												? t("display.terminal.close")
-												: t(
-														"display.terminal.run_code",
-													)}
-										</span>
-									</Button>
-								)}
+						<div className="flex-1 flex items-center justify-center min-w-0 px-2 overflow-hidden">
+							<div className="flex items-center justify-start gap-2 overflow-x-auto no-scrollbar py-1 lg:py-0">
+								{children}
+								{isCode &&
+									onToggleTerminal &&
+									SUPPORTED_RUN_LANGUAGES.includes(
+										language.toLowerCase(),
+									) && (
+										<Button
+											variant="outline"
+											size="sm"
+											onClick={onToggleTerminal}
+											className="gap-2 h-9 shrink-0 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 shadow-lg shadow-emerald-500/10"
+										>
+											{isTerminalOpen ? (
+												<X className="h-4 w-4" />
+											) : (
+												<Play className="h-4 w-4" />
+											)}
+											<span className="hidden sm:inline">
+												{isTerminalOpen
+													? t(
+															"display.terminal.close",
+														)
+													: t(
+															"display.terminal.run_code",
+														)}
+											</span>
+										</Button>
+									)}
+							</div>
 						</div>
 					)}
-					{!children && <div className="flex-1" />}
+					{!children && <div />}
 
 					<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
 						{!(contentType === "link" && !!shortenedResult) && (

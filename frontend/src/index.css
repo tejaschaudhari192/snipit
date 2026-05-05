@@ -127,7 +127,7 @@
 	}
 
 	body {
-		@apply bg-background text-foreground min-h-screen relative overflow-x-hidden transition-colors duration-500;
+		@apply bg-background text-foreground min-h-screen relative overflow-x-hidden;
 	}
 
 	/* Removed heavy aurora background for performance */
@@ -312,4 +312,10 @@ body.is-404 .action-url-bar {
 		height: 0;
 		opacity: 0;
 	}
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation: none;
+	mix-blend-mode: normal;
 }

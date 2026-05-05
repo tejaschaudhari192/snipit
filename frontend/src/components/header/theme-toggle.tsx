@@ -10,13 +10,15 @@ const ThemeTogglePositionsDemo = () => {
 	useEffect(() => {
 		setMounted(true);
 	}, []);
-	const handleThemeToggle = useCallback(() => {
-		const newTheme = theme === "dark" ? "light" : "dark";
-
-		startTransition(() => {
-			setTheme(newTheme);
-		});
-	}, [theme, setTheme, startTransition]);
+	const handleThemeToggle = useCallback(
+		(e: React.MouseEvent) => {
+			const newTheme = theme === "dark" ? "light" : "dark";
+			startTransition(() => {
+				setTheme(newTheme);
+			}, e);
+		},
+		[theme, setTheme, startTransition],
+	);
 	const currentTheme = theme;
 	if (!mounted) {
 		return null;
