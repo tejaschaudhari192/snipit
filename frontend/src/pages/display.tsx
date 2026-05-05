@@ -15,7 +15,6 @@ import { CONFIG } from "@/configurations";
 
 import { useApiHelpers } from "@/lib/api";
 import {
-	saveToLocal,
 	playErrorSound,
 	playRemoveSound,
 	detectContentMode,
@@ -24,6 +23,7 @@ import {
 	clearDrafts,
 	cn,
 } from "@/utils";
+import { guestStorage } from "@/utils/guest-storage";
 import { useTheme } from "@/hooks/use-theme";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
@@ -468,7 +468,17 @@ const DisplayPage = () => {
 					setEditPassword("");
 					setPendingFile(null);
 					setIsServerFileRemoved(false);
-					if (!user) saveToLocal(data);
+					if (!user) {
+						guestStorage.addToHistory(data);
+						// If ID changed, it's a fork/new snippet created by guest
+						// Or if it was already in created_items, update it
+						if (
+							data.id !== id ||
+							guestStorage.isCreated(id || data.id)
+						) {
+							guestStorage.addCreated(data);
+						}
+					}
 					if (data.id !== id)
 						navigate(`/${data.id}`, { replace: true });
 					if (id) clearDrafts(id);
@@ -581,7 +591,7 @@ const DisplayPage = () => {
 						content: data.content,
 						id: data.id,
 					};
-					if (!user) saveToLocal(data);
+					if (!user) guestStorage.addToHistory(data);
 				} else {
 					setPaste(undefined);
 				}

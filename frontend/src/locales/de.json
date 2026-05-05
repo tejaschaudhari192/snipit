@@ -144,6 +144,9 @@
 		"profile_updated": "Profil erfolgreich aktualisiert",
 		"view_details": "Details anzeigen",
 		"views": "Ansichten",
+		"Views": "Ansichten",
+		"guest_mode": "Gast-Sitzung",
+		"guest_hint": "Erstellen Sie ein Konto, um Snippets auf allen Geräten zu synchronisieren",
 		"expired": "Abgelaufen",
 		"visibility": {
 			"public": "Öffentlich",
@@ -152,7 +155,8 @@
 		},
 		"not_applicable": "N/V",
 		"checking_auth": "Checking authentication...",
-		"logged_in_as": "Logged in as"
+		"logged_in_as": "Logged in as",
+		"avg_views": "Effizienz"
 	},
 	"home": {
 		"select_expire_time": "Ablauf",

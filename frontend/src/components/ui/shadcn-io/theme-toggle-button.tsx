@@ -7,7 +7,7 @@ export interface ThemeToggleButtonProps {
 	theme?: "light" | "dark";
 	showLabel?: boolean;
 	className?: string;
-	onClick?: () => void;
+	onClick?: (e: React.MouseEvent) => void;
 }
 
 export const ThemeToggleButton = ({

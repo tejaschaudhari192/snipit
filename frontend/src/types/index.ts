@@ -61,6 +61,7 @@ export interface PasteData {
 		role: ShareRole;
 	}[];
 	publicRole?: PublicRole;
+	role?: ShareRole;
 	allowComments?: boolean;
 	comments?: CommentData[];
 	labels?: string[];

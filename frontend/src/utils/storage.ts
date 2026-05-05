@@ -1,22 +1,6 @@
-import type { PasteData } from "@/types";
-
 /**
  * LocalStorage and Persistence utilities
  */
-
-/**
- * Saves a paste to the local history
- */
-export function saveToLocal(pasteData: PasteData) {
-	const key = "items";
-	const stored = localStorage.getItem(key);
-	let items: Array<PasteData> = stored ? JSON.parse(stored) : [];
-
-	items = items.filter((item: PasteData) => item.id !== pasteData.id);
-	items.unshift(pasteData);
-
-	localStorage.setItem(key, JSON.stringify(items));
-}
 
 /**
  * Saves a content draft for a specific mode/id

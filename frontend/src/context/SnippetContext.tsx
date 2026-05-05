@@ -11,6 +11,7 @@ import { useAuth } from "@/context/AuthContext";
 import type { PasteData } from "@/types";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { guestStorage } from "@/utils/guest-storage";
 
 interface SnippetState {
 	items: PasteData[];
@@ -109,11 +110,6 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 			}));
 
 			try {
-				const stored = localStorage.getItem("items");
-				const localItems: Array<PasteData> = stored
-					? JSON.parse(stored)
-					: [];
-
 				let fetchedPastes: PasteData[] = [];
 				let hasMore = false;
 
@@ -125,44 +121,65 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 					);
 					fetchedPastes = backendData.pastes;
 					hasMore = backendData.hasMore;
-				}
 
-				setHistory((prev) => {
-					let newItems = [];
-					if (isFirstLoad) {
-						const userPasteIds = new Set(
-							fetchedPastes.map((p) => p.id),
-						);
-						const filteredLocal = localItems.filter(
-							(p) => !userPasteIds.has(p.id),
-						);
-						newItems = [...fetchedPastes, ...filteredLocal].sort(
-							(a, b) =>
-								new Date(b.createdAt).getTime() -
-								new Date(a.createdAt).getTime(),
-						);
-					} else {
-						const existingIds = new Set(
-							prev.items.map((p) => p.id),
-						);
-						const newUniquePastes = fetchedPastes.filter(
-							(p) => !existingIds.has(p.id),
-						);
-						newItems = [...prev.items, ...newUniquePastes].sort(
-							(a, b) =>
-								new Date(b.createdAt).getTime() -
-								new Date(a.createdAt).getTime(),
-						);
-					}
+					setHistory((prev) => {
+						let newItems = [];
+						if (isFirstLoad) {
+							const localItems = guestStorage.getHistory();
+							const userPasteIds = new Set(
+								fetchedPastes.map((p) => p.id),
+							);
+							const filteredLocal = localItems.filter(
+								(p) => !userPasteIds.has(p.id),
+							);
+							newItems = [
+								...fetchedPastes,
+								...filteredLocal,
+							].sort(
+								(a, b) =>
+									new Date(b.createdAt).getTime() -
+									new Date(a.createdAt).getTime(),
+							);
+						} else {
+							const existingIds = new Set(
+								prev.items.map((p) => p.id),
+							);
+							const newUniquePastes = fetchedPastes.filter(
+								(p) => !existingIds.has(p.id),
+							);
+							newItems = [...prev.items, ...newUniquePastes].sort(
+								(a, b) =>
+									new Date(b.createdAt).getTime() -
+									new Date(a.createdAt).getTime(),
+							);
+						}
 
-					return {
-						items: newItems,
-						page: isFirstLoad ? 2 : prev.page + 1,
-						hasMore: user ? hasMore : false,
+						return {
+							items: newItems,
+							page: isFirstLoad ? 2 : prev.page + 1,
+							hasMore: user ? hasMore : false,
+							loading: false,
+							isLoadingMore: false,
+						};
+					});
+				} else {
+					// Guest Pagination for History
+					const allHistory = guestStorage.getHistory();
+					const limit = 10;
+					const page = isFirstLoad ? 1 : historyStateRef.current.page;
+					const startIndex = (page - 1) * limit;
+					const endIndex = startIndex + limit;
+
+					setHistory(() => ({
+						items: isFirstLoad
+							? allHistory.slice(0, limit)
+							: allHistory.slice(0, endIndex),
+						page: page + 1,
+						hasMore: endIndex < allHistory.length,
 						loading: false,
 						isLoadingMore: false,
-					};
-				});
+					}));
+				}
 			} catch (err) {
 				console.error("Failed to fetch history", err);
 				if (isFirstLoad) toast.error(t("history.sync_failed"));
@@ -180,7 +197,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const loadProfile = useCallback(
 		async (isFirstLoad = false) => {
-			if (!user || isProfileFetching.current) return;
+			if (isProfileFetching.current) return;
 
 			const currentState = profileStateRef.current;
 			if (
@@ -198,20 +215,39 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 			}));
 
 			try {
-				const data = await apiHelpers.getUserPastes(
-					isFirstLoad ? 1 : profileStateRef.current.page,
-					10,
-				);
+				if (user) {
+					const data = await apiHelpers.getUserPastes(
+						isFirstLoad ? 1 : profileStateRef.current.page,
+						10,
+					);
 
-				setProfile((prev) => ({
-					items: isFirstLoad
-						? data.pastes
-						: [...prev.items, ...data.pastes],
-					page: isFirstLoad ? 2 : prev.page + 1,
-					hasMore: data.hasMore,
-					loading: false,
-					isLoadingMore: false,
-				}));
+					setProfile((prev) => ({
+						items: isFirstLoad
+							? data.pastes
+							: [...prev.items, ...data.pastes],
+						page: isFirstLoad ? 2 : prev.page + 1,
+						hasMore: data.hasMore,
+						loading: false,
+						isLoadingMore: false,
+					}));
+				} else {
+					// Guest Pagination for Created
+					const allCreated = guestStorage.getCreated();
+					const limit = 10;
+					const page = isFirstLoad ? 1 : profileStateRef.current.page;
+					const startIndex = (page - 1) * limit;
+					const endIndex = startIndex + limit;
+
+					setProfile(() => ({
+						items: isFirstLoad
+							? allCreated.slice(0, limit)
+							: allCreated.slice(0, endIndex),
+						page: page + 1,
+						hasMore: endIndex < allCreated.length,
+						loading: false,
+						isLoadingMore: false,
+					}));
+				}
 			} catch (err) {
 				console.error("Failed to fetch profile pastes", err);
 				if (isFirstLoad) toast.error(t("profile.loading_failed"));
@@ -229,7 +265,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const loadSavedProfile = useCallback(
 		async (isFirstLoad = false) => {
-			if (!user || isSavedProfileFetching.current) return;
+			if (isSavedProfileFetching.current) return;
 
 			isSavedProfileFetching.current = true;
 			setSavedProfile((prev) => ({
@@ -238,15 +274,35 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 			}));
 
 			try {
-				const data = await apiHelpers.getSavedPastes();
+				if (user) {
+					const data = await apiHelpers.getSavedPastes();
+					setSavedProfile({
+						items: data.snippets,
+						page: 1,
+						hasMore: false,
+						loading: false,
+						isLoadingMore: false,
+					});
+				} else {
+					// Guest Pagination for Saved
+					const allSaved = guestStorage.getSaved();
+					const limit = 10;
+					const page = isFirstLoad
+						? 1
+						: savedProfileStateRef.current.page;
+					const startIndex = (page - 1) * limit;
+					const endIndex = startIndex + limit;
 
-				setSavedProfile({
-					items: data.snippets,
-					page: 1,
-					hasMore: false,
-					loading: false,
-					isLoadingMore: false,
-				});
+					setSavedProfile(() => ({
+						items: isFirstLoad
+							? allSaved.slice(0, limit)
+							: allSaved.slice(0, endIndex),
+						page: page + 1,
+						hasMore: endIndex < allSaved.length,
+						loading: false,
+						isLoadingMore: false,
+					}));
+				}
 			} catch (err) {
 				console.error("Failed to fetch saved pastes", err);
 				setSavedProfile((prev) => ({
@@ -332,13 +388,8 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 					prev ? prev.filter((p) => p.id !== id) : null,
 				);
 
-				// Update LocalStorage
-				const stored = localStorage.getItem("items");
-				if (stored) {
-					const localItems: Array<PasteData> = JSON.parse(stored);
-					const updatedLocal = localItems.filter((p) => p.id !== id);
-					localStorage.setItem("items", JSON.stringify(updatedLocal));
-				}
+				// Update Local Storage
+				guestStorage.removeSnippetEverywhere(id);
 
 				toast.success(
 					t("messages.snippet_deleted_id", {

@@ -54,6 +54,8 @@ export const ProfileInfo = ({
 	const favoriteLanguage = stats?.mostUsedLanguage ?? "N/A";
 	const totalSnippets = stats?.totalSnippets ?? pastes.length;
 
+	const isGuest = user.email === "Guest User";
+
 	return (
 		<div className="space-y-6">
 			<div className="animate-in fade-in zoom-in-95 duration-500">
@@ -77,7 +79,7 @@ export const ProfileInfo = ({
 
 							<div className="mt-6 w-full text-center space-y-4">
 								<div className="min-h-[48px] flex items-center justify-center">
-									{isEditingName ? (
+									{isEditingName && !isGuest ? (
 										<div className="flex items-center gap-2 max-w-sm mx-auto animate-in fade-in slide-in-from-top-2 duration-300">
 											<Input
 												value={newName}
@@ -122,37 +124,52 @@ export const ProfileInfo = ({
 										<div className="flex items-center justify-center gap-2 group animate-in fade-in slide-in-from-bottom-2 duration-300">
 											<h1 className="text-3xl font-black tracking-tight flex items-center gap-3">
 												{user.username}
-												<span className="h-2.5 w-2.5 rounded-full bg-green-500 shadow-[0_0_12px_rgba(34,197,94,0.6)] animate-pulse shrink-0" />
+												{!isGuest && (
+													<span className="h-2.5 w-2.5 rounded-full bg-green-500 shadow-[0_0_12px_rgba(34,197,94,0.6)] animate-pulse shrink-0" />
+												)}
 											</h1>
-											<Button
-												variant="ghost"
-												size="icon"
-												className="h-8 w-8 text-muted-foreground hover:text-primary transition-colors opacity-0 group-hover:opacity-100"
-												onClick={() =>
-													setIsEditingName(true)
-												}
-											>
-												<Edit2 className="h-4 w-4" />
-											</Button>
+											{!isGuest && (
+												<Button
+													variant="ghost"
+													size="icon"
+													className="h-8 w-8 text-muted-foreground hover:text-primary transition-colors opacity-0 group-hover:opacity-100"
+													onClick={() =>
+														setIsEditingName(true)
+													}
+												>
+													<Edit2 className="h-4 w-4" />
+												</Button>
+											)}
 										</div>
 									)}
 								</div>
 
 								<div className="space-y-1.5 pt-1">
-									<div className="flex items-center justify-center gap-2 text-sm text-muted-foreground/80 font-medium">
-										<Mail className="h-4 w-4" />
-										{user.email}
-									</div>
+									{!isGuest && (
+										<div className="flex items-center justify-center gap-2 text-sm text-muted-foreground/80 font-medium">
+											<Mail className="h-4 w-4" />
+											{user.email}
+										</div>
+									)}
 									<div className="flex items-center justify-center gap-2 text-xs text-muted-foreground/60 font-bold uppercase tracking-wider">
 										<Calendar className="h-3.5 w-3.5" />
-										{t("profile.joined", "Joined")}{" "}
-										{formatDate(
-											user.createdAt || new Date(),
-											{
-												month: "long",
-												year: "numeric",
-											},
-										)}
+										{isGuest
+											? t(
+													"profile.guest_mode",
+													"Guest Session",
+												)
+											: t(
+													"profile.joined",
+													"Joined",
+												)}{" "}
+										{!isGuest &&
+											formatDate(
+												user.createdAt || new Date(),
+												{
+													month: "long",
+													year: "numeric",
+												},
+											)}
 									</div>
 								</div>
 							</div>
@@ -185,18 +202,48 @@ export const ProfileInfo = ({
 
 						<div className="pt-4">
 							<div className="h-px bg-border/40 mb-6 mx-4" />
-							<Button
-								variant="outline"
-								className="w-full h-11 rounded-2xl border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 font-black gap-3 group/logout bg-red-500/[0.02]"
-								onClick={onLogout}
-							>
-								<div className="flex items-center justify-center gap-2">
-									<LogOut className="h-3.5 w-3.5 transition-transform group-hover/logout:-translate-x-0.5" />
-									<span className="uppercase tracking-[0.2em] text-[10px]">
-										{t("header.logout", "Sign Out")}
-									</span>
+							{isGuest ? (
+								<div className="flex flex-col gap-3">
+									<p className="text-[10px] text-center text-muted-foreground font-bold uppercase tracking-widest px-4 leading-relaxed">
+										{t(
+											"profile.guest_hint",
+											"Create an account to sync snippets across devices",
+										)}
+									</p>
+									<div className="flex gap-2">
+										<Button
+											asChild
+											className="flex-1 h-11 rounded-2xl font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+										>
+											<a href="/signup">
+												{t("header.signup", "Sign Up")}
+											</a>
+										</Button>
+										<Button
+											asChild
+											variant="outline"
+											className="flex-1 h-11 rounded-2xl font-black hover:bg-primary/5 transition-all"
+										>
+											<a href="/login">
+												{t("header.login", "Login")}
+											</a>
+										</Button>
+									</div>
 								</div>
-							</Button>
+							) : (
+								<Button
+									variant="outline"
+									className="w-full h-11 rounded-2xl border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 font-black gap-3 group/logout bg-red-500/[0.02]"
+									onClick={onLogout}
+								>
+									<div className="flex items-center justify-center gap-2">
+										<LogOut className="h-3.5 w-3.5 transition-transform group-hover/logout:-translate-x-0.5" />
+										<span className="uppercase tracking-[0.2em] text-[10px]">
+											{t("header.logout", "Sign Out")}
+										</span>
+									</div>
+								</Button>
+							)}
 						</div>
 					</CardContent>
 				</Card>

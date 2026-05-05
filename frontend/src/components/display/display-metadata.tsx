@@ -9,6 +9,7 @@ import { useApiHelpers } from "@/lib/api";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { useSnippets } from "@/context/SnippetContext";
+import { guestStorage } from "@/utils/guest-storage";
 
 interface DisplayMetadataProps {
 	paste: PasteData;
@@ -32,30 +33,66 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 	}, [user, savedProfile.items, paste.id]);
 
 	const handleSaveSnippet = async () => {
-		if (!user) return;
-		try {
-			setIsSaving(true);
-			const result = await apiHelpers.savePaste(paste.id);
-			setIsSaved(result.saved);
+		if (user) {
+			try {
+				setIsSaving(true);
+				const result = await apiHelpers.savePaste(paste.id);
+				setIsSaved(result.saved);
 
-			if (result.saved) {
-				toast.success(
-					t("display.snippet_saved", "Snippet saved to your profile"),
+				if (result.saved) {
+					toast.success(
+						t(
+							"display.snippet_saved",
+							"Snippet saved to your profile",
+						),
+					);
+				} else {
+					toast.success(
+						t(
+							"display.snippet_unsaved",
+							"Snippet removed from saved",
+						),
+					);
+				}
+
+				loadSavedProfile(true);
+			} catch (error) {
+				console.error("Failed to toggle save snippet", error);
+				toast.error(
+					t("display.save_failed", "Failed to update saved status"),
 				);
-			} else {
-				toast.success(
-					t("display.snippet_unsaved", "Snippet removed from saved"),
-				);
+			} finally {
+				setIsSaving(false);
 			}
+		} else {
+			// Handle guest save to localStorage
+			try {
+				setIsSaving(true);
+				const saved = guestStorage.toggleSaved(paste);
 
-			loadSavedProfile(true); // Refresh saved profile
-		} catch (error) {
-			console.error("Failed to toggle save snippet", error);
-			toast.error(
-				t("display.save_failed", "Failed to update saved status"),
-			);
-		} finally {
-			setIsSaving(false);
+				if (saved) {
+					toast.success(
+						t(
+							"display.snippet_saved",
+							"Snippet saved to your profile",
+						),
+					);
+				} else {
+					toast.success(
+						t(
+							"display.snippet_unsaved",
+							"Snippet removed from saved",
+						),
+					);
+				}
+
+				setIsSaved(saved);
+				loadSavedProfile(true);
+			} catch (error) {
+				console.error("Failed to save snippet locally", error);
+			} finally {
+				setIsSaving(false);
+			}
 		}
 	};
 
@@ -111,9 +148,9 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 				</div>
 
 				<div className="flex items-center gap-2 w-full sm:w-auto">
-					{user &&
-						paste.owner &&
-						paste.owner.toString() !== user._id.toString() &&
+					{(!user ||
+						(paste.owner &&
+							paste.owner.toString() !== user._id.toString())) &&
 						!isSavedByLabels &&
 						!isEditingLabels && (
 							<button

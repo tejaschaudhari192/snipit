@@ -144,6 +144,9 @@
 		"profile_updated": "Profile updated successfully",
 		"view_details": "View Details",
 		"views": "views",
+		"Views": "Views",
+		"guest_mode": "Guest Session",
+		"guest_hint": "Create an account to sync snippets across devices",
 		"expired": "Expired",
 		"visibility": {
 			"public": "Public",
@@ -152,7 +155,8 @@
 		},
 		"not_applicable": "N/A",
 		"checking_auth": "Checking authentication...",
-		"logged_in_as": "Logged in as"
+		"logged_in_as": "Logged in as",
+		"avg_views": "Efficiency"
 	},
 	"home": {
 		"select_expire_time": "Expiry",

@@ -30,21 +30,18 @@ const UserMenu = () => {
 	if (!user) {
 		return (
 			<div className="flex items-center gap-2">
-				<Link to="/login">
+				<Link to="/profile">
 					<Button
 						variant="ghost"
 						size="sm"
-						className="font-semibold px-4"
+						className="h-9 px-3 gap-2.5 transition-all hover:bg-primary/5 rounded-full"
 					>
-						{t("header.login", "Login")}
-					</Button>
-				</Link>
-				<Link to="/signup">
-					<Button
-						size="sm"
-						className="font-bold px-4 shadow-lg shadow-primary/20 transition-all hover:scale-105 active:scale-95"
-					>
-						{t("header.signup", "Signup")}
+						<div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+							<User className="h-3.5 w-3.5" />
+						</div>
+						<span className="text-sm font-bold hidden sm:inline-block">
+							{t("header.guest", "Guest")}
+						</span>
 					</Button>
 				</Link>
 			</div>
@@ -187,23 +184,17 @@ const Header = ({ className }: HeaderProps) => {
 									className="rounded-lg"
 								>
 									<Link
-										to="/login"
-										className="flex items-center gap-2 py-2"
+										to="/profile"
+										className="flex items-center gap-3 w-full p-3 bg-primary/5 rounded-xl border border-primary/10"
 									>
-										<User className="h-4 w-4" />
-										<span>{t("header.login")}</span>
-									</Link>
-								</DropdownMenuItem>
-								<DropdownMenuItem
-									asChild
-									className="rounded-lg"
-								>
-									<Link
-										to="/signup"
-										className="flex items-center gap-2 py-2"
-									>
-										<User className="h-4 w-4" />
-										<span>{t("header.signup")}</span>
+										<div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+											<User className="h-5 w-5" />
+										</div>
+										<div className="flex flex-col min-w-0">
+											<p className="text-sm font-black truncate text-primary leading-tight">
+												{t("header.guest", "Guest")}
+											</p>
+										</div>
 									</Link>
 								</DropdownMenuItem>
 								<div className="h-px bg-muted my-2" />

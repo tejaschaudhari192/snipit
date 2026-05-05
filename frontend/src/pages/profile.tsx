@@ -15,6 +15,7 @@ import { useLabels } from "@/hooks/use-labels";
 import { useSnippets } from "@/context/SnippetContext";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { LogoutDialog } from "@/components/header/logout-dialog";
+import type { User as UserType } from "@/types";
 
 const ProfilePage = () => {
 	const { t } = useTranslation();
@@ -53,6 +54,10 @@ const ProfilePage = () => {
 	useEffect(() => {
 		if (user) {
 			setNewName(user.username);
+			if (pastes.length === 0) loadProfile(true);
+			if (savedPastes.length === 0) loadSavedProfile(true);
+		} else {
+			setNewName("Guest");
 			if (pastes.length === 0) loadProfile(true);
 			if (savedPastes.length === 0) loadSavedProfile(true);
 		}
@@ -122,31 +127,8 @@ const ProfilePage = () => {
 		);
 	}
 
-	if (!user) {
-		return (
-			<div className="flex flex-col items-center justify-center min-h-[80vh] container mx-auto px-4">
-				<div className="text-center space-y-4 animate-in fade-in zoom-in-95 duration-500">
-					<div className="p-4 rounded-full bg-muted inline-block">
-						<User className="h-12 w-12 text-muted-foreground" />
-					</div>
-					<h2 className="text-2xl font-bold">
-						{t("profile.access_denied", "Access Denied")}
-					</h2>
-					<p className="text-muted-foreground max-w-sm">
-						{t(
-							"profile.login_required",
-							"Please login to view your profile and manage your snippets.",
-						)}
-					</p>
-					<Link to="/login">
-						<Button className="mt-4">
-							{t("header.login", "Login Now")}
-						</Button>
-					</Link>
-				</div>
-			</div>
-		);
-	}
+	const displayPastes = pastes;
+	const displayLoading = loadingPastes;
 
 	return (
 		<div className="relative min-h-screen bg-background overflow-x-hidden flex flex-col items-center w-full">
@@ -154,14 +136,20 @@ const ProfilePage = () => {
 				<div className="flex flex-col lg:grid lg:grid-cols-12 gap-4 items-start">
 					<div className="w-full lg:col-span-4 lg:sticky lg:top-24 max-w-2xl mx-auto lg:max-w-none">
 						<ProfileInfo
-							user={user}
+							user={
+								user ||
+								({
+									username: "Guest",
+									email: "Guest User",
+								} as UserType)
+							}
 							isEditingName={isEditingName}
 							setIsEditingName={setIsEditingName}
 							newName={newName}
 							setNewName={setNewName}
 							handleUpdateName={handleUpdateName}
 							isUpdating={isUpdating}
-							pastes={pastes}
+							pastes={displayPastes}
 							onLogout={() => setIsLogoutDialogOpen(true)}
 							stats={stats}
 						/>
@@ -265,11 +253,15 @@ const ProfilePage = () => {
 									className="mt-0 outline-none"
 								>
 									<ProfileSnippetList
-										pastes={pastes}
-										loading={loadingPastes}
-										loadMore={() => loadProfile(false)}
-										hasMore={hasMore}
-										isLoadingMore={isLoadingMore}
+										pastes={displayPastes}
+										loading={displayLoading}
+										loadMore={() =>
+											user && loadProfile(false)
+										}
+										hasMore={user ? hasMore : false}
+										isLoadingMore={
+											user ? isLoadingMore : false
+										}
 									/>
 								</TabsContent>
 								<TabsContent

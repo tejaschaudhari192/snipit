@@ -144,6 +144,9 @@
 		"profile_updated": "प्रोफ़ाइल सफलतापूर्वक अपडेट की गई",
 		"view_details": "विवरण देखें",
 		"views": "दृश्य",
+		"Views": "दृश्य",
+		"guest_mode": "अतिथि सत्र",
+		"guest_hint": "डिवाइसों के बीच स्निपेट्स को सिंक करने के लिए एक खाता बनाएं",
 		"expired": "समाप्त",
 		"visibility": {
 			"public": "सार्वजनिक",
@@ -152,7 +155,8 @@
 		},
 		"not_applicable": "N/A",
 		"checking_auth": "प्रमाणीकरण की जाँच हो रही है...",
-		"logged_in_as": "के रूप में लॉग इन किया"
+		"logged_in_as": "के रूप में लॉग इन किया",
+		"avg_views": "दक्षता"
 	},
 	"home": {
 		"select_expire_time": "समाप्ति",

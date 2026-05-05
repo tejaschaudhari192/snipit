@@ -144,6 +144,9 @@
 		"profile_updated": "プロフィールが更新されました",
 		"view_details": "詳細を見る",
 		"views": "回閲覧",
+		"Views": "閲覧数",
+		"guest_mode": "ゲストセッション",
+		"guest_hint": "デバイス間でスニペットを同期するにはアカウントを作成してください",
 		"expired": "期限切れ",
 		"visibility": {
 			"public": "公開",
@@ -152,7 +155,8 @@
 		},
 		"not_applicable": "該当なし",
 		"checking_auth": "認証を確認中...",
-		"logged_in_as": "Logged in as"
+		"logged_in_as": "Logged in as",
+		"avg_views": "効率"
 	},
 	"home": {
 		"select_expire_time": "有効期限",

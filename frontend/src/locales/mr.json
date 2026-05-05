@@ -144,6 +144,9 @@
 		"profile_updated": "प्रोफाइल यशस्वीरित्या अपडेट झाली",
 		"view_details": "तपशील पहा",
 		"views": "दृश्ये",
+		"Views": "दृश्ये",
+		"guest_mode": "पाहुणा सत्र",
+		"guest_hint": "डिव्हाइसवर स्निपेट्स सिंक करण्यासाठी खाते तयार करा",
 		"expired": "मुदत संपली",
 		"visibility": {
 			"public": "सार्वजनिक",
@@ -152,7 +155,8 @@
 		},
 		"not_applicable": "लागू नाही",
 		"checking_auth": "प्रमाणीकरण तपासत आहे...",
-		"logged_in_as": "Logged in as"
+		"logged_in_as": "Logged in as",
+		"avg_views": "कार्यक्षमता"
 	},
 	"home": {
 		"select_expire_time": "मुदतची वेळ निवडा",

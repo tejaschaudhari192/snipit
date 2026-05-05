@@ -6,7 +6,8 @@ import { AxiosError } from "axios";
 import { useApiHelpers } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { usePaste } from "@/context/PasteContext";
-import { saveToLocal, clearDrafts } from "@/utils";
+import { clearDrafts } from "@/utils";
+import { guestStorage } from "@/utils/guest-storage";
 import type {
 	IdType,
 	Visibility,
@@ -148,7 +149,10 @@ export const usePasteSubmission = (
 					isCollaborative: options.isCollaborative,
 				},
 			});
-			if (!user) saveToLocal(data);
+			if (!user) {
+				guestStorage.addToHistory(data);
+				guestStorage.addCreated(data);
+			}
 			clearDrafts();
 			return true;
 		} catch (error) {
