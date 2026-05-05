@@ -277,7 +277,8 @@
 		"comment_failed": "टिप्पणी जोडण्यात अयशस्वी",
 		"empty_content": "कृपया प्रथम काही मजकूर प्रविष्ट करा!",
 		"empty_file": "कृपया प्रथम फाइल निवडा!",
-		"qr_downloaded": "QR कोड डाउनलोड झाला!"
+		"qr_downloaded": "QR कोड डाउनलोड झाला!",
+		"autosaved": "ऑटोसेव्ह: {{fields}}"
 	},
 	"about_page": {
 		"title": "बद्दल",

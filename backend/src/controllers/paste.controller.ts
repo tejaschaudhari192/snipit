@@ -71,22 +71,42 @@ class PasteController {
 				});
 			}
 
+			const role = await this.permissionService.getUserRole(
+				userId,
+				result,
+			);
+			const pasteObj = result.toObject();
+
+			// Security: Filter sensitive collaborator data
+			if (role !== "admin") {
+				// Only allow the user to see their OWN entry in the share list
+				if (pasteObj.shareList && userId) {
+					const user = await User.findById(userId);
+					if (user) {
+						pasteObj.shareList = pasteObj.shareList.filter(
+							(s: any) => s.email === user.email,
+						);
+					} else {
+						delete pasteObj.shareList;
+					}
+				} else {
+					delete pasteObj.shareList;
+				}
+				delete pasteObj.allowedUsers;
+			}
+
+			// Add the calculated role to the response so the frontend doesn't have to guess
+			const responseData = { ...pasteObj, role };
+
 			if (result.password) {
-				const isOwner =
-					result.owner &&
-					userId &&
-					result.owner.toString() === userId;
+				const isOwner = role === "admin";
 				if (!isOwner) {
-					const {
-						content: _,
-						password: __,
-						...rest
-					} = result.toObject();
+					const { content: _, password: __, ...rest } = responseData;
 					return res.json({ ...rest, isPasswordProtected: true });
 				}
 			}
 
-			return res.json(result.toObject());
+			return res.json(responseData);
 		} catch (error) {
 			next(error);
 		}
@@ -202,12 +222,37 @@ class PasteController {
 				});
 			}
 
-			if (!paste.password) return res.json(paste.toObject());
+			const role = await this.permissionService.getUserRole(
+				userId,
+				paste,
+			);
+			const pasteObj = paste.toObject();
+
+			// Security: Filter sensitive collaborator data
+			if (role !== "admin") {
+				if (pasteObj.shareList && userId) {
+					const user = await User.findById(userId);
+					if (user) {
+						pasteObj.shareList = pasteObj.shareList.filter(
+							(s: any) => s.email === user.email,
+						);
+					} else {
+						delete pasteObj.shareList;
+					}
+				} else {
+					delete pasteObj.shareList;
+				}
+				delete pasteObj.allowedUsers;
+			}
+
+			const responseData = { ...pasteObj, role };
+
+			if (!paste.password) return res.json(responseData);
 
 			const bcrypt = await import("bcryptjs");
 			const isMatch = await bcrypt.compare(password, paste.password);
 
-			if (isMatch) return res.json(paste.toObject());
+			if (isMatch) return res.json(responseData);
 			return res.status(401).json({ error: "Incorrect password" });
 		} catch (error) {
 			next(error);
@@ -222,17 +267,17 @@ class PasteController {
 			if (!paste)
 				return res.status(404).json({ error: "Paste not found" });
 
-			if (!paste.allowComments) {
-				return res
-					.status(403)
-					.json({ error: "Comments are disabled for this snippet" });
-			}
-
-			const role = await this.permissionService.getUserRole(
+			const canComment = await this.permissionService.canComment(
 				this.getUserId(req),
 				paste,
 			);
-			if (!role || !["admin", "editor", "commenter"].includes(role)) {
+
+			if (!canComment) {
+				if (!paste.allowComments) {
+					return res.status(403).json({
+						error: "Comments are disabled for this snippet",
+					});
+				}
 				return res.status(403).json({
 					error: "Unauthorized: You do not have permission to comment",
 				});

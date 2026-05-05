@@ -277,7 +277,8 @@
 		"comment_failed": "टिप्पणी जोड़ने में विफल",
 		"empty_content": "कृपया पहले कुछ सामग्री दर्ज करें!",
 		"empty_file": "कृपया पहले एक फ़ाइल चुनें!",
-		"qr_downloaded": "QR कोड डाउनलोड हो गया!"
+		"qr_downloaded": "QR कोड डाउनलोड हो गया!",
+		"autosaved": "ऑटोसेव: {{fields}}"
 	},
 	"about_page": {
 		"title": "परिचय",

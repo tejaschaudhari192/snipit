@@ -86,10 +86,11 @@ export const DisplayToolbar = ({
 	const { t } = useTranslation();
 	const { user } = useAuth();
 
-	const isOwner = !paste?.owner || (user && paste.owner === user._id);
+	const isOwner = !!(user && paste?.owner === user._id);
 
 	const getUserRole = (): "admin" | "editor" | "viewer" | "commenter" => {
 		if (isOwner) return "admin";
+		if (paste?.role) return paste.role;
 
 		if (paste?.shareList && user?.email) {
 			const shareEntry = paste.shareList.find(
@@ -108,6 +109,14 @@ export const DisplayToolbar = ({
 		paste?.editPermission === "public";
 	const canDelete = isOwner || userRole === "admin";
 	const isAdmin = userRole === "admin";
+	const isExplicitUser =
+		isOwner ||
+		(paste?.shareList &&
+			user?.email &&
+			paste.shareList.some((s) => s.email === user.email));
+	const canShowDiscussion = isExplicitUser
+		? ["admin", "editor", "commenter"].includes(userRole)
+		: allowComments && ["admin", "editor", "commenter"].includes(userRole);
 
 	return (
 		<div className="flex flex-wrap items-center justify-between gap-3 px-4 py-1.5 md:px-6 bg-background/40 backdrop-blur-xl relative z-20 shadow-sm border-b border-border/50">
@@ -195,7 +204,7 @@ export const DisplayToolbar = ({
 						setFontSize={setFontSize}
 					/>
 				)}
-				{(allowComments || (paste && !paste.owner)) && (
+				{canShowDiscussion && (
 					<Sheet modal={false}>
 						<SheetTrigger asChild>
 							<Button

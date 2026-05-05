@@ -277,7 +277,8 @@
 		"empty_content": "内容を入力してください。",
 		"empty_file": "ファイルを選択してください。",
 		"qr_downloaded": "QRコードがダウンロードされました！",
-		"snippet_deleted_id": "Snippet {{id}} has been deleted"
+		"snippet_deleted_id": "スニペット {{id}} が削除されました",
+		"autosaved": "自動保存されました: {{fields}}"
 	},
 	"about_page": {
 		"title": "について",

@@ -139,6 +139,23 @@ class PasteService {
 		}
 
 		paste.set(updates);
+
+		// Sync logic: only update the other field if only one of them was changed
+		const roleModified = paste.isModified("publicRole");
+		const commentsModified = paste.isModified("allowComments");
+
+		if (roleModified && !commentsModified) {
+			if (paste.publicRole === "commenter") {
+				paste.allowComments = true;
+			} else if (paste.publicRole === "viewer") {
+				paste.allowComments = false;
+			}
+		} else if (commentsModified && !roleModified) {
+			if (paste.publicRole !== "editor") {
+				paste.publicRole = paste.allowComments ? "commenter" : "viewer";
+			}
+		}
+
 		if (shareList) paste.shareList = shareList;
 
 		const updatedPaste = await paste.save();

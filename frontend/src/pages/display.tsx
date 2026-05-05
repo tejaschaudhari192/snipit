@@ -405,6 +405,43 @@ const DisplayPage = () => {
 								"Snippet updated successfully",
 							),
 						);
+					} else {
+						const modifiedFields = [];
+						if (updatedContent !== paste?.content)
+							modifiedFields.push(t("common.snippet"));
+						if (visibility !== paste?.visibility)
+							modifiedFields.push(t("common.visibility"));
+						if (publicRole !== paste?.publicRole)
+							modifiedFields.push(t("common.general_access"));
+						if (allowComments !== (paste?.allowComments ?? false))
+							modifiedFields.push(t("common.open_discussion"));
+						if (expiresTime !== (paste?.expiresTime ?? "1d"))
+							modifiedFields.push(t("home.select_expire_time"));
+						if (language !== (paste?.language ?? "text"))
+							modifiedFields.push(t("home.tab_code_short"));
+						if (customId.trim() !== (paste?.id ?? ""))
+							modifiedFields.push(t("home.paste_dynamic_id"));
+						if (
+							editPermission !==
+							(paste?.editPermission ?? "owner")
+						)
+							modifiedFields.push(t("common.edit_permission"));
+						const wasProtected =
+							!!paste?.password || !!paste?.isPasswordProtected;
+						if (isPasswordEnabled !== wasProtected || editPassword)
+							modifiedFields.push(t("common.password"));
+
+						if (modifiedFields.length > 0) {
+							toast.success(
+								t("messages.autosaved", {
+									fields: modifiedFields.join(", "),
+								}),
+								{
+									duration: 2000,
+									id: `autosave-${id}`, // Prevent stacking
+								},
+							);
+						}
 					}
 					setPaste(data);
 					setSaveStatus("saved");
@@ -422,6 +459,7 @@ const DisplayPage = () => {
 					setVisibility(data.visibility ?? "public");
 					setAllowedUsers(data.allowedUsers ?? []);
 					setEditPermission(data.editPermission ?? "owner");
+					setPublicRole(data.publicRole ?? "viewer");
 					setAllowComments(data.allowComments ?? false);
 					setIsPasswordEnabled(
 						!!data.password || !!data.isPasswordProtected,
@@ -480,7 +518,7 @@ const DisplayPage = () => {
 	);
 	const { fontSize, ref: contentRef, setFontSize } = usePinchZoom(14);
 
-	const isOwner = !paste?.owner || (!!user && paste.owner === user._id);
+	const isOwner = !!(user && paste?.owner === user._id);
 
 	const handleEditorWillMount: BeforeMount = (m) => defineMonacoThemes(m);
 

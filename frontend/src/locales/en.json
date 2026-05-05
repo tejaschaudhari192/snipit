@@ -277,7 +277,8 @@
 		"comment_failed": "Failed to add comment",
 		"empty_content": "Please enter some content first!",
 		"empty_file": "Please select a file first!",
-		"qr_downloaded": "QR Code downloaded!"
+		"qr_downloaded": "QR Code downloaded!",
+		"autosaved": "Autosaved: {{fields}}"
 	},
 	"about_page": {
 		"title": "About",

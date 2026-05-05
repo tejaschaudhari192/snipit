@@ -267,6 +267,7 @@
 		"detected_language": "Erkannte Sprache: {{language}}",
 		"delete_confirm": "Sind Sie sicher, dass Sie dieses Snippet löschen möchten?",
 		"snippet_deleted": "Snippet wurde gelöscht",
+		"snippet_deleted_id": "Snippet {{id}} wurde gelöscht",
 		"delete_failed": "Löschen des Snippets fehlgeschlagen",
 		"action_cancelled": "Aktion abgebrochen",
 		"snippet_updated": "Snippet erfolgreich aktualisiert",
@@ -277,7 +278,7 @@
 		"empty_content": "Bitte geben Sie zuerst einen Inhalt ein!",
 		"empty_file": "Bitte wählen Sie zuerst eine Datei aus!",
 		"qr_downloaded": "QR-Code heruntergeladen!",
-		"snippet_deleted_id": "Snippet {{id}} has been deleted"
+		"autosaved": "Automatisch gespeichert: {{fields}}"
 	},
 	"about_page": {
 		"title": "Über",

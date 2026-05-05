@@ -37,10 +37,11 @@ export const CommentsSection = ({
 	}, [paste.comments]);
 
 	const userEmail = user?.email;
-	const isOwner = !paste.owner || (user && paste.owner === user._id);
+	const isOwner = !!(user && paste.owner === user._id);
 
 	const getUserRole = (): "admin" | "editor" | "viewer" | "commenter" => {
 		if (isOwner) return "admin";
+		if (paste.role) return paste.role;
 
 		if (paste.shareList && userEmail) {
 			const shareEntry = paste.shareList.find(
@@ -53,10 +54,15 @@ export const CommentsSection = ({
 	};
 
 	const userRole = getUserRole();
-	const canComment =
-		userRole === "admin" ||
-		userRole === "editor" ||
-		userRole === "commenter";
+	const isExplicitUser =
+		isOwner ||
+		(paste.shareList &&
+			userEmail &&
+			paste.shareList.some((s) => s.email === userEmail));
+	const canComment = isExplicitUser
+		? ["admin", "editor", "commenter"].includes(userRole)
+		: paste.allowComments &&
+			["admin", "editor", "commenter"].includes(userRole);
 
 	const handleSubmit = async () => {
 		if (!newComment.trim()) return;
