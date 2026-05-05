@@ -36,6 +36,7 @@
 		"password_protected": "Password Protected",
 		"enter_password_desc": "This snippet is password protected. Please enter the password to view it.",
 		"unlock": "Unlock Snippet",
+		"unlocking": "Unlocking...",
 		"edit_permission": "Who can edit?",
 		"only_me": "Only Me",
 		"specific_people": "Specific People",
@@ -118,7 +119,8 @@
 		"add_label": "Add Label",
 		"edit_labels": "Edit Labels",
 		"labels": "Labels",
-		"login_to_label": "Login to organize with labels"
+		"login_to_label": "Login to organize with labels",
+		"secure": "Secure"
 	},
 	"profile": {
 		"title": "Your Profile",

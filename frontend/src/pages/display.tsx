@@ -159,6 +159,7 @@ const DisplayPage = () => {
 	);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
+	const [isVerifyingPassword, setIsVerifyingPassword] = useState(false);
 	const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
 	const [activeUsers, setActiveUsers] = useState<ActiveUser[]>([]);
 	const [isAutosave, setIsAutosave] = useState(true);
@@ -1005,6 +1006,8 @@ const DisplayPage = () => {
 	};
 
 	const handleVerifyPassword = async () => {
+		if (isVerifyingPassword) return;
+		setIsVerifyingPassword(true);
 		try {
 			const data = await apiHelpers.verifyPassword(id!, passwordInput);
 			setPaste(data);
@@ -1030,6 +1033,8 @@ const DisplayPage = () => {
 			setPasswordError(
 				t("messages.password_incorrect", "Incorrect password"),
 			);
+		} finally {
+			setIsVerifyingPassword(false);
 		}
 	};
 
@@ -1061,6 +1066,7 @@ const DisplayPage = () => {
 				passwordError={passwordError}
 				setPasswordError={setPasswordError}
 				handleVerifyPassword={handleVerifyPassword}
+				isVerifying={isVerifyingPassword}
 			/>
 		);
 	}

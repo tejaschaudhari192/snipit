@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Lock } from "lucide-react";
+import { Lock, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface PasswordGateProps {
@@ -16,6 +16,7 @@ interface PasswordGateProps {
 	passwordError: string;
 	setPasswordError: (v: string) => void;
 	handleVerifyPassword: () => void;
+	isVerifying?: boolean;
 }
 
 export const PasswordGate = ({
@@ -24,6 +25,7 @@ export const PasswordGate = ({
 	passwordError,
 	setPasswordError,
 	handleVerifyPassword,
+	isVerifying = false,
 }: PasswordGateProps) => {
 	const { t } = useTranslation();
 
@@ -65,9 +67,12 @@ export const PasswordGate = ({
 								setPasswordError("");
 							}}
 							onKeyDown={(e) =>
-								e.key === "Enter" && handleVerifyPassword()
+								e.key === "Enter" &&
+								!isVerifying &&
+								handleVerifyPassword()
 							}
 							className={passwordError ? "border-red-500" : ""}
+							disabled={isVerifying}
 						/>
 						{passwordError && (
 							<p className="text-sm text-red-500 font-medium animate-in slide-in-from-top-1">
@@ -76,11 +81,42 @@ export const PasswordGate = ({
 						)}
 					</div>
 					<Button
-						className="w-full font-bold"
+						className="w-full font-bold relative overflow-hidden h-11"
 						onClick={handleVerifyPassword}
-						disabled={!passwordInput}
+						disabled={!passwordInput || isVerifying}
 					>
-						{t("common.unlock", "Unlock Snippet")}
+						<div className="relative flex items-center justify-center w-full h-full">
+							{isVerifying ? (
+								<div className="flex items-center gap-2">
+									<Loader2 className="h-4 w-4 animate-spin text-primary-foreground" />
+									<span className="flex overflow-hidden tracking-wide">
+										{t("common.unlocking", "Unlocking...")
+											.split("")
+											.map((char, i) => (
+												<span
+													key={i}
+													className="animate-in fade-in slide-in-from-bottom-2 duration-500"
+													style={{
+														animationDelay: `${i * 40}ms`,
+														animationFillMode:
+															"both",
+													}}
+												>
+													{char === " "
+														? "\u00A0"
+														: char}
+												</span>
+											))}
+									</span>
+								</div>
+							) : (
+								<div className="flex items-center gap-2 animate-in fade-in slide-in-from-top-4 duration-300">
+									<span>
+										{t("common.unlock", "Unlock Snippet")}
+									</span>
+								</div>
+							)}
+						</div>
 					</Button>
 				</CardContent>
 			</Card>

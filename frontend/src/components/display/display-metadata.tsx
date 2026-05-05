@@ -1,5 +1,5 @@
 import { LabelManager } from "@/components/common/label-manager";
-import { Clock, Bookmark } from "lucide-react";
+import { Clock, Bookmark, ShieldCheck } from "lucide-react";
 import { LanguageIcon } from "@/components/snippets/language-icon";
 import { getTimeRemaining } from "@/utils";
 import { useTranslation } from "react-i18next";
@@ -64,7 +64,7 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 			<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-6 py-1.5 bg-background/40 backdrop-blur-xl border-y border-border/50 text-[10px] sm:text-xs shadow-sm mt-0 relative z-10 gap-2 sm:gap-0">
 				<div className="flex flex-wrap items-center gap-3">
 					{paste.language ? (
-						<div className="flex items-center gap-1.5 font-medium text-muted-foreground uppercase tracking-wider">
+						<div className="flex items-center gap-1.5 font-medium text-muted-foreground">
 							<LanguageIcon
 								language={paste.language}
 								className="h-3 w-3"
@@ -75,7 +75,7 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 						</div>
 					) : null}
 					<div className="w-px h-3 bg-border hidden sm:block" />
-					<div className="flex items-center gap-1.5 text-muted-foreground">
+					<div className="flex items-center gap-1.5 text-muted-foreground font-medium">
 						<Clock className="h-3 w-3" />
 						{paste.expiresTime === "never"
 							? t("home.expire_options.never")
@@ -87,7 +87,7 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 									: ""}
 					</div>
 					<div className="w-px h-3 bg-border hidden sm:block" />
-					<div className="flex items-center gap-1.5 text-muted-foreground uppercase tracking-wider font-medium">
+					<div className="flex items-center gap-1.5 text-muted-foreground font-medium uppercase tracking-wider">
 						<span
 							className={`h-1.5 w-1.5 rounded-full ${
 								paste.visibility === "public"
@@ -99,6 +99,15 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 						/>
 						{t(`common.${paste.visibility || "public"}`)}
 					</div>
+					{(paste.isPasswordProtected || !!paste.password) && (
+						<>
+							<div className="w-px h-3 bg-border hidden sm:block" />
+							<div className="flex items-center gap-1.5 text-muted-foreground font-medium uppercase tracking-wider">
+								<ShieldCheck className="h-3.5 w-3.5 text-primary" />
+								{t("common.secure", "Secure")}
+							</div>
+						</>
+					)}
 				</div>
 
 				<div className="flex items-center gap-2 w-full sm:w-auto">

@@ -1,4 +1,5 @@
 import { cn } from "@/utils";
+import { Loader2 } from "lucide-react";
 
 interface SkeletonProps {
 	className?: string;
@@ -165,20 +166,16 @@ export const ShimmerSection = ({
 						className,
 					)}
 				>
-					<Skeleton
-						height={40}
-						width={40}
-						rounded="rounded-full shadow-sm"
-					/>
+					<Loader2 className="animate-spin text-primary h-10 w-10" />
 				</div>
 			);
 		case "mini-loader":
 			return (
-				<Skeleton
-					height={20}
-					width={20}
-					rounded="rounded-full"
-					className={className}
+				<Loader2
+					className={cn(
+						"animate-spin text-current h-4 w-4",
+						className,
+					)}
 				/>
 			);
 		case "text":
