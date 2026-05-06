@@ -20,10 +20,9 @@ export const createPasteSchema = z.object({
 	burnAfterRead: z.boolean().optional(),
 	expiresTime: z.string().optional(),
 	visibility: z.enum(VISIBILITIES).optional().default("public"),
-	allowedUsers: z.array(z.string()).optional(),
 	password: z.string().optional(),
 	editPermission: z.enum(EDIT_PERMISSIONS).optional().default("owner"),
-	shareList: z
+	collaborators: z
 		.array(
 			z.object({
 				email: z.string().email(),

@@ -77,26 +77,33 @@ class PasteController {
 			);
 			const pasteObj = result.toObject();
 
-			// Security: Filter sensitive collaborator data
-			if (role !== "admin") {
-				// Only allow the user to see their OWN entry in the share list
-				if (pasteObj.shareList && userId) {
-					const user = await User.findById(userId);
-					if (user) {
-						pasteObj.shareList = pasteObj.shareList.filter(
-							(s: any) => s.email === user.email,
-						);
-					} else {
-						delete pasteObj.shareList;
-					}
-				} else {
-					delete pasteObj.shareList;
+			// Fetch collaborators separately
+			const collaborators =
+				await this.pasteService.getCollaboratorsByPasteId(id);
+
+			// Filter collaborators based on role: only admins see everyone, others only see themselves
+			let filteredCollaborators: any[] = [];
+			if (role === "admin") {
+				filteredCollaborators = collaborators;
+			} else if (userId) {
+				const user = await User.findById(userId);
+				if (user) {
+					filteredCollaborators = collaborators.filter(
+						(c: any) =>
+							c.email === user.email ||
+							(c.userId && c.userId.toString() === userId),
+					);
 				}
-				delete pasteObj.allowedUsers;
 			}
 
-			// Add the calculated role to the response so the frontend doesn't have to guess
-			const responseData = { ...pasteObj, role };
+			// Fetch comments for this paste
+			const comments = await this.pasteService.getCommentsByPasteId(id);
+			const responseData = {
+				...pasteObj,
+				role,
+				comments,
+				collaborators: filteredCollaborators,
+			};
 
 			if (result.password) {
 				const isOwner = role === "admin";
@@ -161,11 +168,10 @@ class PasteController {
 				// Restricted fields for editors
 				const restricted = [
 					"visibility",
-					"allowedUsers",
 					"newId",
 					"password",
 					"editPermission",
-					"shareList",
+					"collaborators",
 					"publicRole",
 					"allowComments",
 				];
@@ -228,24 +234,32 @@ class PasteController {
 			);
 			const pasteObj = paste.toObject();
 
-			// Security: Filter sensitive collaborator data
-			if (role !== "admin") {
-				if (pasteObj.shareList && userId) {
-					const user = await User.findById(userId);
-					if (user) {
-						pasteObj.shareList = pasteObj.shareList.filter(
-							(s: any) => s.email === user.email,
-						);
-					} else {
-						delete pasteObj.shareList;
-					}
-				} else {
-					delete pasteObj.shareList;
+			// Fetch collaborators
+			const collaborators =
+				await this.pasteService.getCollaboratorsByPasteId(id);
+
+			let filteredCollaborators: any[] = [];
+			if (role === "admin") {
+				filteredCollaborators = collaborators;
+			} else if (userId) {
+				const user = await User.findById(userId);
+				if (user) {
+					filteredCollaborators = collaborators.filter(
+						(c: any) =>
+							c.email === user.email ||
+							(c.userId && c.userId.toString() === userId),
+					);
 				}
-				delete pasteObj.allowedUsers;
 			}
 
-			const responseData = { ...pasteObj, role };
+			// Fetch comments for this paste
+			const comments = await this.pasteService.getCommentsByPasteId(id);
+			const responseData = {
+				...pasteObj,
+				role,
+				comments,
+				collaborators: filteredCollaborators,
+			};
 
 			if (!paste.password) return res.json(responseData);
 

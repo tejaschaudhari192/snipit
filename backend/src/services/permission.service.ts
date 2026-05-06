@@ -1,5 +1,6 @@
 import type { IPaste } from "@/types/index.js";
 import User from "@/models/User.js";
+import Collaborator from "@/models/Collaborator.js";
 
 export type UserRole = "admin" | "editor" | "viewer" | "commenter";
 
@@ -8,12 +9,6 @@ class PermissionService {
 		userId: string | null,
 		paste: IPaste,
 	): Promise<UserRole | null> {
-		let userEmail = null;
-		if (userId) {
-			const user = await User.findById(userId);
-			if (user) userEmail = user.email;
-		}
-
 		const isOwner =
 			paste.owner && userId && paste.owner.toString() === userId;
 
@@ -23,22 +18,21 @@ class PermissionService {
 
 		let userRole: UserRole | null = null;
 
-		if (paste.shareList && userEmail) {
-			const shareEntry = paste.shareList.find(
-				(s: { email: string; role: string }) => s.email === userEmail,
-			);
-			if (shareEntry) {
-				userRole = shareEntry.role as UserRole;
-			}
-		}
+		// Check Collaborator collection for explicit permissions
+		if (userId || paste.visibility === "shared") {
+			const query: any = { pasteId: paste.id };
 
-		if (
-			(!userRole || userRole === "viewer") &&
-			paste.allowedUsers &&
-			userEmail &&
-			paste.allowedUsers.includes(userEmail)
-		) {
-			userRole = "editor";
+			if (userId) {
+				const user = await User.findById(userId);
+				if (user) {
+					query.$or = [{ userId: user._id }, { email: user.email }];
+				}
+			}
+
+			const collaborator = await Collaborator.findOne(query);
+			if (collaborator) {
+				userRole = collaborator.role as UserRole;
+			}
 		}
 
 		if (!userRole) {
@@ -75,44 +69,29 @@ class PermissionService {
 	}
 
 	async canComment(userId: string | null, paste: IPaste): Promise<boolean> {
-		let userEmail = null;
-		if (userId) {
-			const user = await User.findById(userId);
-			if (user) userEmail = user.email;
-		}
-
 		const isOwner =
 			paste.owner && userId && paste.owner.toString() === userId;
 
 		if (isOwner) return true;
 
-		// Check for explicit membership (Specific People)
-		let hasExplicitRole = false;
-		let explicitRole: UserRole | null = null;
-
-		if (paste.shareList && userEmail) {
-			const shareEntry = paste.shareList.find(
-				(s: { email: string; role: string }) => s.email === userEmail,
-			);
-			if (shareEntry) {
-				hasExplicitRole = true;
-				explicitRole = shareEntry.role as UserRole;
+		// Check for explicit membership
+		let userRole: UserRole | null = null;
+		if (userId) {
+			const user = await User.findById(userId);
+			if (user) {
+				const collaborator = await Collaborator.findOne({
+					pasteId: paste.id,
+					$or: [{ userId: user._id }, { email: user.email }],
+				});
+				if (collaborator) {
+					userRole = collaborator.role as UserRole;
+				}
 			}
 		}
 
-		if (
-			!hasExplicitRole &&
-			paste.allowedUsers &&
-			userEmail &&
-			paste.allowedUsers.includes(userEmail)
-		) {
-			hasExplicitRole = true;
-			explicitRole = "editor";
-		}
-
 		// If explicitly invited, they can comment if their role is admin, editor, or commenter
-		if (hasExplicitRole && explicitRole) {
-			return ["admin", "editor", "commenter"].includes(explicitRole);
+		if (userRole) {
+			return ["admin", "editor", "commenter"].includes(userRole);
 		}
 
 		// For public/non-explicit users, respect the allowComments master switch

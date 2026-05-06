@@ -4,7 +4,6 @@ import {
 	CONTENT_MODES,
 	VISIBILITIES,
 	EDIT_PERMISSIONS,
-	ROLES,
 } from "@/config/constants.js";
 
 const pasteSchema = new Schema<IPaste>(
@@ -80,10 +79,6 @@ const pasteSchema = new Schema<IPaste>(
 			enum: VISIBILITIES,
 			default: "public",
 		},
-		allowedUsers: {
-			type: [String],
-			default: [],
-		},
 		password: {
 			type: String,
 			required: false,
@@ -93,17 +88,6 @@ const pasteSchema = new Schema<IPaste>(
 			enum: EDIT_PERMISSIONS,
 			default: "owner",
 		},
-		shareList: [
-			{
-				_id: false,
-				email: { type: String, required: true },
-				role: {
-					type: String,
-					enum: ROLES,
-					required: true,
-				},
-			},
-		],
 		publicRole: {
 			type: String,
 			enum: ["viewer", "editor", "commenter"],
@@ -113,20 +97,6 @@ const pasteSchema = new Schema<IPaste>(
 			type: Boolean,
 			default: false,
 		},
-		comments: [
-			{
-				_id: false,
-				id: { type: String, required: true },
-				author: { type: String, required: true },
-				content: { type: String, required: true },
-				createdAt: { type: Date, default: Date.now },
-				userId: {
-					type: Schema.Types.ObjectId,
-					ref: "User",
-					required: false,
-				},
-			},
-		],
 	},
 	{
 		toJSON: { virtuals: true, versionKey: false },

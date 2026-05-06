@@ -5,6 +5,11 @@ import EmailService from "@/services/email.service.js";
 import PermissionService from "@/services/permission.service.js";
 import { Router } from "express";
 import { protect, optionalProtect } from "@/middleware/auth.middleware.js";
+import { validate } from "@/middleware/validate.middleware.js";
+import {
+	createPasteSchema,
+	updatePasteSchema,
+} from "@/validators/paste.validators.js";
 import { catchAsync } from "@/lib/errors.js";
 
 const router: Router = Router();
@@ -33,6 +38,7 @@ router.get(
 router.post(
 	"/",
 	optionalProtect,
+	validate(createPasteSchema),
 	catchAsync(pasteController.createPaste.bind(pasteController)),
 );
 
@@ -51,6 +57,7 @@ router.delete(
 router.put(
 	"/:id",
 	optionalProtect,
+	validate(updatePasteSchema),
 	catchAsync(pasteController.updatePaste.bind(pasteController)),
 );
 

@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 import pasteModel from "@/models/Paste.js";
+import commentModel from "@/models/Comment.js";
+import collaboratorModel from "@/models/Collaborator.js";
+import User from "@/models/User.js";
 import type {
 	PasteData,
 	CommentData,
@@ -22,7 +25,7 @@ class PasteService {
 			customId,
 			idType,
 			password,
-			shareList,
+			collaborators,
 			...rest
 		} = data;
 
@@ -49,7 +52,6 @@ class PasteService {
 			burnAfterRead: finalBurnAfterRead,
 			expiresTime,
 			owner: ownerId || undefined,
-			shareList,
 		};
 
 		if (password) {
@@ -60,8 +62,11 @@ class PasteService {
 		try {
 			const paste = await pasteModel.create(pasteData);
 
-			if (shareList && this.emailService) {
-				await this.sendShareEmails(paste, shareList);
+			if (collaborators && collaborators.length > 0) {
+				await this.addCollaborators(paste.id, collaborators);
+				if (this.emailService) {
+					await this.sendShareEmails(paste, collaborators);
+				}
 			}
 
 			return paste;
@@ -104,6 +109,7 @@ class PasteService {
 		if (paste?.fileUrl) {
 			await deleteFileFromStorage(paste.fileUrl);
 		}
+		await collaboratorModel.deleteMany({ pasteId: id });
 		return await pasteModel.deleteOne({ id });
 	}
 
@@ -111,7 +117,8 @@ class PasteService {
 		const paste = await pasteModel.findOne({ id });
 		if (!paste) return null;
 
-		const { newId, expiresTime, password, shareList, ...updates } = data;
+		const { newId, expiresTime, password, collaborators, ...updates } =
+			data;
 
 		if (newId && newId !== id) {
 			const existing = await pasteModel.findOne({ id: newId });
@@ -131,11 +138,10 @@ class PasteService {
 			paste.password = await bcrypt.hash(password, salt);
 		}
 
+		const oldCollaborators = await collaboratorModel.find({ pasteId: id });
 		const oldShareMap = new Map();
-		if (paste.shareList) {
-			for (const share of paste.shareList) {
-				oldShareMap.set(share.email, share.role);
-			}
+		for (const col of oldCollaborators) {
+			oldShareMap.set(col.email, col.role);
 		}
 
 		paste.set(updates);
@@ -156,23 +162,43 @@ class PasteService {
 			}
 		}
 
-		if (shareList) paste.shareList = shareList;
-
 		const updatedPaste = await paste.save();
 
-		if (shareList && this.emailService) {
-			const newShares = shareList.filter(
-				(s) => oldShareMap.get(s.email) !== s.role,
-			);
-			if (newShares.length > 0) {
-				await this.sendShareEmails(updatedPaste, newShares);
+		if (collaborators) {
+			await collaboratorModel.deleteMany({ pasteId: id });
+			await this.addCollaborators(id, collaborators);
+
+			if (this.emailService) {
+				const newShares = collaborators.filter(
+					(s) => oldShareMap.get(s.email) !== s.role,
+				);
+				if (newShares.length > 0) {
+					await this.sendShareEmails(updatedPaste, newShares);
+				}
 			}
 		}
 
 		return updatedPaste;
 	}
 
-	private async sendShareEmails(paste: IPaste, shares: any[]) {
+	async addCollaborators(pasteId: string, collaborators: any[]) {
+		const collaboratorPromises = collaborators.map(async (col) => {
+			const user = await User.findOne({ email: col.email });
+			return collaboratorModel.create({
+				pasteId,
+				email: col.email,
+				userId: user?._id || undefined,
+				role: col.role,
+			});
+		});
+		await Promise.all(collaboratorPromises);
+	}
+
+	async getCollaboratorsByPasteId(pasteId: string) {
+		return await collaboratorModel.find({ pasteId });
+	}
+
+	async sendShareEmails(paste: IPaste, shares: any[]) {
 		if (!this.emailService) return;
 		const frontendUrl = configurations.domain;
 		const emailPromises = shares.map((share) => {
@@ -192,12 +218,26 @@ class PasteService {
 		return !!(paste && paste.expiresAt && new Date() > paste.expiresAt);
 	}
 
-	async getUserPastes(ownerId: string, page: number = 1, limit: number = 10) {
+	async getUserPastes(userId: string, page: number = 1, limit: number = 10) {
 		const skip = (page - 1) * limit;
+		const user = await User.findById(userId);
+		if (!user) throw new Error("User not found");
 
-		// Use aggregate with $lookup to join with labels
+		// Find all paste IDs where the user is a collaborator
+		const collaborations = await collaboratorModel.find({
+			$or: [{ userId: user._id }, { email: user.email }],
+		});
+		const collaboratedPasteIds = collaborations.map((c) => c.pasteId);
+
+		const matchQuery = {
+			$or: [
+				{ owner: new mongoose.Types.ObjectId(userId) },
+				{ id: { $in: collaboratedPasteIds } },
+			],
+		};
+
 		const pastes = await pasteModel.aggregate([
-			{ $match: { owner: new mongoose.Types.ObjectId(ownerId) } },
+			{ $match: matchQuery },
 			{ $sort: { createdAt: -1 } },
 			{ $skip: skip },
 			{ $limit: limit },
@@ -215,7 +255,7 @@ class PasteService {
 											$eq: [
 												"$userId",
 												new mongoose.Types.ObjectId(
-													ownerId,
+													userId,
 												),
 											],
 										},
@@ -240,9 +280,7 @@ class PasteService {
 			{ $project: { labelData: 0 } },
 		]);
 
-		const total = await pasteModel.countDocuments({
-			owner: new mongoose.Types.ObjectId(ownerId),
-		});
+		const total = await pasteModel.countDocuments(matchQuery);
 
 		return {
 			pastes,
@@ -254,12 +292,15 @@ class PasteService {
 		};
 	}
 
-	async addComment(id: string, comment: CommentData) {
-		return await pasteModel.findOneAndUpdate(
-			{ id },
-			{ $push: { comments: comment } },
-			{ new: true },
-		);
+	async addComment(pasteId: string, comment: CommentData) {
+		return await commentModel.create({
+			...comment,
+			pasteId,
+		});
+	}
+
+	async getCommentsByPasteId(pasteId: string) {
+		return await commentModel.find({ pasteId }).sort({ createdAt: -1 });
 	}
 
 	async getUserStats(ownerId: string) {

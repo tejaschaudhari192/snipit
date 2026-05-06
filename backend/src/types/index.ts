@@ -41,6 +41,14 @@ export type CommentData = {
 	user?: UserData | undefined;
 };
 
+export type CollaboratorData = {
+	pasteId: string;
+	email: string;
+	userId?: string | undefined;
+	role: ShareRole;
+	createdAt: Date;
+};
+
 export type PasteData = {
 	id: string;
 	content: string;
@@ -59,13 +67,11 @@ export type PasteData = {
 	owner?: string | undefined;
 	ownerData?: UserData | undefined;
 	visibility?: Visibility | undefined;
-	allowedUsers?: string[] | undefined;
 	password?: string | undefined;
 	editPermission?: EditPermission | undefined;
-	shareList?: { email: string; role: ShareRole }[] | undefined;
+	collaborators?: CollaboratorData[] | undefined;
 	publicRole?: PublicRole | undefined;
 	allowComments?: boolean | undefined;
-	comments?: CommentData[] | undefined;
 };
 
 export interface UpdatePasteData {
@@ -73,18 +79,14 @@ export interface UpdatePasteData {
 	redirectUrl?: boolean | undefined;
 	language?: string | undefined;
 	visibility?: Visibility | undefined;
-	allowedUsers?: string[] | undefined;
-	newId?: string | undefined;
-	password?: string | undefined;
-	editPermission?: EditPermission | undefined;
-	shareList?:
+	publicRole?: PublicRole | undefined;
+	allowComments?: boolean | undefined;
+	collaborators?:
 		| {
 				email: string;
 				role: ShareRole;
 		  }[]
 		| undefined;
-	publicRole?: PublicRole | undefined;
-	allowComments?: boolean | undefined;
 	expiresTime?: string | undefined;
 	expiresAt?: Date | null | undefined;
 	contentMode?: ContentMode | undefined;
@@ -92,6 +94,9 @@ export interface UpdatePasteData {
 	fileName?: string | null | undefined;
 	fileSize?: number | null | undefined;
 	fileMimeType?: string | null | undefined;
+	newId?: string | undefined;
+	password?: string | undefined;
+	editPermission?: EditPermission | undefined;
 }
 
 export type IPaste = Document & {
@@ -112,11 +117,9 @@ export type IPaste = Document & {
 	owner?: string | undefined; // User ID
 	ownerData?: UserData | undefined; // Populated User
 	visibility?: Visibility | undefined;
-	allowedUsers?: string[] | undefined;
 	password?: string | undefined;
 	editPermission?: EditPermission | undefined;
-	shareList?: { email: string; role: ShareRole }[] | undefined;
+	collaborators?: CollaboratorData[] | undefined;
 	publicRole?: PublicRole | undefined;
 	allowComments?: boolean | undefined;
-	comments?: CommentData[] | undefined;
 };
