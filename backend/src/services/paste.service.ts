@@ -198,6 +198,10 @@ class PasteService {
 		return await collaboratorModel.find({ pasteId });
 	}
 
+	async removeCollaborator(pasteId: string, email: string) {
+		return await collaboratorModel.deleteOne({ pasteId, email });
+	}
+
 	async sendShareEmails(paste: IPaste, shares: any[]) {
 		if (!this.emailService) return;
 		const frontendUrl = configurations.domain;

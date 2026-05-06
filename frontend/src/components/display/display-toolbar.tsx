@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/sheet";
 import { CommentsSection } from "@/components/display/comments-section";
 import { useAuth } from "@/context/AuthContext";
-import type { PasteData, ActiveUser, SaveStatus } from "@/types";
+import type { PasteData, ActiveUser, SaveStatus, CommentData } from "@/types";
 import { UserAvatarList } from "./shared/user-avatar-list";
 import { AutosaveStatus } from "./shared/autosave-status";
 import { ToolbarActionButtons } from "./shared/toolbar-action-buttons";
@@ -34,7 +34,7 @@ interface DisplayToolbarProps {
 	allowComments: boolean;
 	commentCount: number;
 	paste: PasteData | undefined;
-	onCommentAdded: (updatedPaste: PasteData) => void;
+	onCommentAdded: (comment: CommentData) => void;
 	activeUsers?: ActiveUser[];
 	isAutosave?: boolean;
 	setIsAutosave?: (v: boolean) => void;
@@ -116,7 +116,8 @@ export const DisplayToolbar = ({
 			paste.shareList.some((s) => s.email === user.email));
 	const canShowDiscussion = isExplicitUser
 		? ["admin", "editor", "commenter"].includes(userRole)
-		: allowComments && ["admin", "editor", "commenter"].includes(userRole);
+		: allowComments &&
+			["admin", "editor", "commenter", "viewer"].includes(userRole);
 
 	return (
 		<div className="flex flex-wrap items-center justify-between gap-3 px-4 py-1.5 md:px-6 bg-background/40 backdrop-blur-xl relative z-20 shadow-sm border-b border-border/50">
@@ -156,7 +157,7 @@ export const DisplayToolbar = ({
 										"home.dynamic_id_dialog.placeholder",
 										"ID...",
 									)}
-									className="pl-8 h-9 text-xs bg-background/50 border-border/50 focus:border-primary/50 !ring-0 shadow-sm transition-all"
+									className="pl-8 h-9 text-xs bg-background/50 border-border/50 focus:border-primary/50 ring-0! shadow-sm transition-all"
 								/>
 							</div>
 						)}

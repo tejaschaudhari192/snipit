@@ -3,7 +3,6 @@ import { AxiosError } from "axios";
 import { useApiHelpers } from "@/lib/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
 	Card,
@@ -14,16 +13,16 @@ import {
 	CardFooter,
 } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Lock, ArrowRight, Eye, EyeOff, CheckCircle2 } from "lucide-react";
+import { Lock, ArrowRight, CheckCircle2 } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const ResetPasswordPage = () => {
 	const { token } = useParams<{ token: string }>();
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
-	const [showPassword, setShowPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const { resetPassword } = useApiHelpers();
 	const { login } = useAuth();
@@ -95,35 +94,21 @@ const ResetPasswordPage = () => {
 									)}
 								</Label>
 								<div className="relative group">
-									<Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground transition-colors group-focus-within:text-primary" />
-									<Input
+									<div className="absolute left-3 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+										<Lock className="h-5 w-5 text-muted-foreground transition-colors group-focus-within:text-primary" />
+									</div>
+									<PasswordInput
 										id="password"
-										type={
-											showPassword ? "text" : "password"
-										}
 										placeholder={t(
 											"auth.password_placeholder",
 										)}
 										required
-										className="pl-10 pr-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all font-mono"
+										className="pl-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all font-mono"
 										value={password}
 										onChange={(e) =>
 											setPassword(e.target.value)
 										}
 									/>
-									<button
-										type="button"
-										onClick={() =>
-											setShowPassword(!showPassword)
-										}
-										className="absolute right-3 top-3 text-muted-foreground hover:text-primary transition-colors focus:outline-none"
-									>
-										{showPassword ? (
-											<EyeOff className="h-5 w-5" />
-										) : (
-											<Eye className="h-5 w-5" />
-										)}
-									</button>
 								</div>
 							</div>
 
@@ -137,17 +122,16 @@ const ResetPasswordPage = () => {
 									)}
 								</Label>
 								<div className="relative group">
-									<Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground transition-colors group-focus-within:text-primary" />
-									<Input
+									<div className="absolute left-3 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+										<Lock className="h-5 w-5 text-muted-foreground transition-colors group-focus-within:text-primary" />
+									</div>
+									<PasswordInput
 										id="confirmPassword"
-										type={
-											showPassword ? "text" : "password"
-										}
 										placeholder={t(
 											"auth.password_placeholder",
 										)}
 										required
-										className="pl-10 pr-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all font-mono"
+										className="pl-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all font-mono"
 										value={confirmPassword}
 										onChange={(e) =>
 											setConfirmPassword(e.target.value)

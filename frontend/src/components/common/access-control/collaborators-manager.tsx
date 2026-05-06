@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { ShareRole } from "@/types";
+import { useApiHelpers } from "@/lib/api";
+import { toast } from "sonner";
 
 interface ShareItem {
 	email: string;
@@ -19,6 +21,7 @@ interface ShareItem {
 }
 
 interface CollaboratorsManagerProps {
+	pasteId?: string;
 	shareList: ShareItem[];
 	setShareList: (v: ShareItem[]) => void;
 	allowedUsers: string[];
@@ -27,6 +30,7 @@ interface CollaboratorsManagerProps {
 }
 
 export const CollaboratorsManager = ({
+	pasteId,
 	shareList,
 	setShareList,
 	allowedUsers,
@@ -34,11 +38,13 @@ export const CollaboratorsManager = ({
 	disabled = false,
 }: CollaboratorsManagerProps) => {
 	const { t } = useTranslation();
+	const apiHelpers = useApiHelpers();
 	const [pendingEmails, setPendingEmails] = useState<string[]>([]);
 	const [inputValue, setInputValue] = useState("");
 	const [pendingRole, setPendingRole] = useState<ShareRole>("editor");
+	const [isUpdating, setIsUpdating] = useState(false);
 
-	const handleAddPeople = () => {
+	const handleAddPeople = async () => {
 		const emailsToAdd = [...pendingEmails];
 
 		if (inputValue.trim()) {
@@ -51,32 +57,118 @@ export const CollaboratorsManager = ({
 
 		if (emailsToAdd.length === 0) return;
 
-		const newShareItems = emailsToAdd.map((email) => ({
-			email,
-			role: pendingRole,
-		}));
-
-		const uniqueItems = newShareItems.filter(
-			(newItem) =>
-				!shareList.some((existing) => existing.email === newItem.email),
+		const uniqueEmails = emailsToAdd.filter(
+			(email) => !shareList.some((existing) => existing.email === email),
 		);
 
-		setShareList([...shareList, ...uniqueItems]);
+		if (uniqueEmails.length === 0) return;
+
+		if (pasteId) {
+			setIsUpdating(true);
+			try {
+				const updatePromises = uniqueEmails.map((email) =>
+					apiHelpers.addCollaborator(pasteId, email, pendingRole),
+				);
+				const results = await Promise.all(updatePromises);
+				setShareList([...shareList, ...(results as ShareItem[])]);
+				setAllowedUsers([
+					...allowedUsers,
+					...results.map((i) => i.email),
+				]);
+				toast.success(
+					t("messages.collaborators_added", "Collaborators added"),
+				);
+			} catch {
+				toast.error(
+					t(
+						"messages.collaborators_failed",
+						"Failed to add collaborators",
+					),
+				);
+			} finally {
+				setIsUpdating(false);
+			}
+		} else {
+			const newShareItems = uniqueEmails.map((email) => ({
+				email,
+				role: pendingRole,
+			}));
+			setShareList([...shareList, ...newShareItems]);
+			setAllowedUsers([
+				...allowedUsers,
+				...newShareItems.map((i) => i.email),
+			]);
+		}
+
 		setPendingEmails([]);
-		setAllowedUsers([...allowedUsers, ...uniqueItems.map((i) => i.email)]);
 	};
 
-	const handleRemovePerson = (emailToRemove: string) => {
-		setShareList(shareList.filter((i) => i.email !== emailToRemove));
-		setAllowedUsers(allowedUsers.filter((e) => e !== emailToRemove));
+	const handleRemovePerson = async (emailToRemove: string) => {
+		if (pasteId) {
+			setIsUpdating(true);
+			try {
+				await apiHelpers.removeCollaborator(pasteId, emailToRemove);
+				setShareList(
+					shareList.filter((i) => i.email !== emailToRemove),
+				);
+				setAllowedUsers(
+					allowedUsers.filter((e) => e !== emailToRemove),
+				);
+				toast.success(
+					t("messages.collaborator_removed", "Collaborator removed"),
+				);
+			} catch {
+				toast.error(
+					t(
+						"messages.collaborator_remove_failed",
+						"Failed to remove collaborator",
+					),
+				);
+			} finally {
+				setIsUpdating(false);
+			}
+		} else {
+			setShareList(shareList.filter((i) => i.email !== emailToRemove));
+			setAllowedUsers(allowedUsers.filter((e) => e !== emailToRemove));
+		}
 	};
 
-	const handleUpdateRole = (email: string, newRole: ShareRole) => {
-		setShareList(
-			shareList.map((item) =>
-				item.email === email ? { ...item, role: newRole } : item,
-			),
-		);
+	const handleUpdateRole = async (email: string, newRole: ShareRole) => {
+		if (pasteId) {
+			setIsUpdating(true);
+			try {
+				const result = await apiHelpers.addCollaborator(
+					pasteId,
+					email,
+					newRole,
+				);
+				setShareList(
+					shareList.map((item) =>
+						item.email === email
+							? { ...item, role: result.role as ShareRole }
+							: item,
+					),
+				);
+				toast.success(
+					t("messages.collaborator_updated", "Collaborator updated"),
+				);
+			} catch {
+				toast.error(
+					t(
+						"messages.collaborator_update_failed",
+						"Failed to update collaborator",
+					),
+				);
+			} finally {
+				setIsUpdating(false);
+			}
+		} else {
+			setShareList(
+				shareList.map((item) =>
+					item.email === email ? { ...item, role: newRole } : item,
+				),
+			);
+		}
 	};
 
 	return (
@@ -93,14 +185,14 @@ export const CollaboratorsManager = ({
 							"Add people...",
 						)}
 						className="min-h-[42px] border-none bg-transparent shadow-none focus-within:ring-0 focus-within:ring-offset-0 text-[13px] px-2 py-1"
-						isReadOnly={disabled}
+						isReadOnly={disabled || isUpdating}
 					/>
 				</div>
 				<div className="flex gap-1 items-center px-1 sm:pr-1 w-full sm:w-auto justify-end border-t sm:border-t-0 sm:border-l border-border/10 pt-2 sm:pt-0 pl-0 sm:pl-2">
 					<Select
 						value={pendingRole}
 						onValueChange={(r: ShareRole) => setPendingRole(r)}
-						disabled={disabled}
+						disabled={disabled || isUpdating}
 					>
 						<SelectTrigger className="w-[100px] h-8 text-xs font-medium border-none bg-transparent hover:bg-muted/50 focus:ring-0 shadow-none">
 							<SelectValue />
@@ -126,6 +218,7 @@ export const CollaboratorsManager = ({
 						onClick={handleAddPeople}
 						disabled={
 							disabled ||
+							isUpdating ||
 							(pendingEmails.length === 0 &&
 								!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
 									inputValue.trim(),
@@ -133,7 +226,11 @@ export const CollaboratorsManager = ({
 						}
 						className="h-8 px-4 font-bold shadow-none"
 					>
-						{t("common.add", "Add")}
+						{isUpdating ? (
+							<span className="animate-pulse">...</span>
+						) : (
+							t("common.add", "Add")
+						)}
 					</Button>
 				</div>
 			</div>
@@ -146,8 +243,9 @@ export const CollaboratorsManager = ({
 					{shareList.map((item) => (
 						<div
 							key={item.email}
-							className="flex flex-col min-[440px]:flex-row min-[440px]:items-center justify-between p-2.5 rounded-xl border bg-card/50 gap-3 shadow-sm"
+							className="relative flex flex-col min-[440px]:flex-row min-[440px]:items-center justify-between p-2.5 rounded-xl border bg-card/50 gap-3 shadow-sm overflow-hidden"
 						>
+							<div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-primary/40 to-transparent" />
 							<div className="flex items-center gap-2 overflow-hidden flex-1">
 								<div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0 border border-primary/20">
 									{item.email[0].toUpperCase()}

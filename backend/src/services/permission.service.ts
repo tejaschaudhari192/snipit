@@ -98,7 +98,9 @@ class PermissionService {
 		if (!paste.allowComments) return false;
 
 		const role = await this.getUserRole(userId, paste);
-		return role === "commenter" || role === "editor" || role === "admin";
+		return ["admin", "editor", "commenter", "viewer"].includes(
+			role as UserRole,
+		);
 	}
 }
 

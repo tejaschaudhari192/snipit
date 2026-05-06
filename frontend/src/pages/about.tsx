@@ -19,7 +19,7 @@ const AboutPage = () => {
 						</div>
 						<h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-8 tracking-tighter leading-[1.1] text-foreground">
 							{t("about_page.title")}{" "}
-							<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/80 to-primary/60 drop-shadow-sm">
+							<span className="text-transparent bg-clip-text bg-linear-to-r from-primary via-primary/80 to-primary/60 drop-shadow-sm">
 								Snipit
 							</span>
 						</h1>
@@ -60,7 +60,7 @@ const AboutPage = () => {
 							<div key={feature.key} className="group">
 								<div className="h-full p-6 md:p-8 rounded-2xl border border-border/50 bg-background/60 backdrop-blur-xl shadow-2xl ring-1 ring-white/5 hover:border-primary/40 transition-all duration-300 hover:shadow-primary/10 dark:hover:bg-accent/5">
 									<div
-										className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-black/10`}
+										className={`w-12 h-12 rounded-xl bg-linear-to-br ${feature.gradient} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-black/10`}
 									>
 										<feature.icon className="w-6 h-6 text-white" />
 									</div>
@@ -205,8 +205,8 @@ const AboutPage = () => {
 
 			<section className="py-20 md:py-32 px-4">
 				<div className="max-w-5xl mx-auto">
-					<div className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] bg-primary p-8 md:p-20 text-center">
-						<div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-black/20" />
+					<div className="relative overflow-hidden rounded-4xl md:rounded-[3rem] bg-primary p-8 md:p-20 text-center">
+						<div className="absolute inset-0 bg-linear-to-br from-white/20 via-transparent to-black/20" />
 						<div className="relative z-10 max-w-2xl mx-auto text-primary-foreground">
 							<div className="inline-flex p-3 rounded-2xl bg-white/10 backdrop-blur-sm mb-6">
 								<Zap className="w-8 h-8 animate-pulse fill-white" />

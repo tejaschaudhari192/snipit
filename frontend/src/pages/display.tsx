@@ -41,6 +41,7 @@ import type {
 	EditPermission,
 	PublicRole,
 	ShareRole,
+	CommentData,
 } from "@/types";
 
 import { ShimmerSection } from "@/components/common/shimmer-section";
@@ -1053,7 +1054,7 @@ const DisplayPage = () => {
 			<div className="flex-1 flex flex-col bg-background">
 				<ShimmerSection
 					type="toolbar"
-					className="sticky top-0 z-40 rounded-none border-x-0 !bg-background/40 backdrop-blur-xl h-[60px]"
+					className="sticky top-0 z-40 rounded-none border-x-0 bg-background/40! backdrop-blur-xl h-[60px]"
 				/>
 				<ShimmerSection
 					type="metadata"
@@ -1092,7 +1093,7 @@ const DisplayPage = () => {
 				className={cn(
 					"relative z-10 flex-1 h-full flex flex-col overflow-hidden",
 					isFullscreen || isWindowFullscreen
-						? "fixed inset-0 z-[100] bg-background"
+						? "fixed inset-0 z-100 bg-background"
 						: "",
 				)}
 			>
@@ -1154,8 +1155,19 @@ const DisplayPage = () => {
 								allowComments={allowComments}
 								commentCount={paste.comments?.length ?? 0}
 								paste={paste}
-								onCommentAdded={(updated: PasteData) =>
-									setPaste(updated)
+								onCommentAdded={(newComment: CommentData) =>
+									setPaste((prev) =>
+										prev
+											? {
+													...prev,
+													comments: [
+														newComment,
+														...(prev.comments ||
+															[]),
+													],
+												}
+											: prev,
+									)
 								}
 								customId={customId}
 								setCustomId={setCustomId}
@@ -1215,6 +1227,7 @@ const DisplayPage = () => {
 									fallback={<ShimmerSection type="toolbar" />}
 								>
 									<EditControls
+										pasteId={id}
 										contentType={contentType}
 										setContentType={onContentTypeChange}
 										language={language}

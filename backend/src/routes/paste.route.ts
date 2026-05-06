@@ -67,10 +67,4 @@ router.post(
 	catchAsync(pasteController.verifyPassword.bind(pasteController)),
 );
 
-router.post(
-	"/:id/comment",
-	optionalProtect,
-	catchAsync(pasteController.addComment.bind(pasteController)),
-);
-
 export default router;

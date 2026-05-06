@@ -15,15 +15,15 @@ import {
 	CardFooter,
 } from "@/components/ui/card";
 import { toast } from "sonner";
-import { LogIn, Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
+import { LogIn, Mail, Lock, ArrowRight } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { useTranslation } from "react-i18next";
 import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const LoginPage = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [showPassword, setShowPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const { login, user } = useAuth();
 	const navigate = useNavigate();
@@ -89,8 +89,8 @@ const LoginPage = () => {
 			</div>
 
 			<div className="w-full max-w-[400px] relative z-10 animate-in fade-in slide-in-from-bottom-6 duration-700">
-				<Card className="glass-card border-border/40 overflow-hidden shadow-2xl rounded-3xl gap-0 py-0">
-					<div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+				<Card className="glass-card border-border/40 overflow-hidden shadow-2xl rounded-3xl">
+					<div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-primary/40 to-transparent" />
 
 					<CardHeader className="space-y-1.5 pb-5 pt-7">
 						<div className="flex items-center justify-center mb-4">
@@ -154,48 +154,27 @@ const LoginPage = () => {
 									</Link>
 								</div>
 								<div className="relative group">
-									<div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+									<div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
 										<Lock className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within:text-primary" />
 									</div>
-									<Input
+									<PasswordInput
 										id="password"
-										type={
-											showPassword ? "text" : "password"
-										}
 										placeholder={t(
 											"auth.password_placeholder",
 										)}
 										required
-										className="pl-10.5 pr-10.5 h-11 bg-background/50 border-border/50 focus:border-primary/40 focus:ring-4 focus:ring-primary/10 transition-all rounded-xl font-medium"
+										className="pl-10.5 h-11 bg-background/50 border-border/50 focus:border-primary/40 focus:ring-4 focus:ring-primary/10 transition-all rounded-xl font-medium"
 										value={password}
 										onChange={(e) =>
 											setPassword(e.target.value)
 										}
 									/>
-									<button
-										type="button"
-										onClick={() =>
-											setShowPassword(!showPassword)
-										}
-										className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/30 hover:text-primary transition-colors focus:outline-none"
-										aria-label={
-											showPassword
-												? t("auth.hide_password")
-												: t("auth.show_password")
-										}
-									>
-										{showPassword ? (
-											<EyeOff className="h-4 w-4" />
-										) : (
-											<Eye className="h-4 w-4" />
-										)}
-									</button>
 								</div>
 							</div>
 
 							<div className="pt-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
 								<Button
-									className="w-full h-11 text-sm font-bold transition-all gap-2 rounded-xl bg-primary hover:shadow-lg hover:shadow-primary/20 active:scale-[0.98] transition-all duration-200"
+									className="w-full h-11 text-sm font-bold transition-all gap-2 rounded-xl bg-primary hover:shadow-lg hover:shadow-primary/20 active:scale-[0.98] duration-200"
 									type="submit"
 									disabled={isLoading}
 								>

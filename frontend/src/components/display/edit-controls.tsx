@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import { LanguageSelector } from "@/components/editor/language-selector";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Switch } from "@/components/ui/switch";
 import { VisibilitySelector } from "@/components/common/access-control/visibility-selector";
 import { CollaboratorsManager } from "@/components/common/access-control/collaborators-manager";
@@ -24,6 +24,7 @@ import type {
 } from "@/types";
 
 interface EditControlsProps {
+	pasteId?: string;
 	contentType: ContentMode;
 	setContentType: (v: ContentMode) => void;
 	language: string;
@@ -59,6 +60,7 @@ interface EditControlsProps {
 }
 
 export const EditControls = ({
+	pasteId,
 	contentType,
 	setContentType,
 	language,
@@ -143,8 +145,10 @@ export const EditControls = ({
 							</Label>
 							{isPasswordEnabled && (
 								<div className="relative group w-40 animate-in slide-in-from-left-2 fade-in duration-200 ml-2">
-									<Input
-										type="password"
+									<div className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+										<Lock className="h-3.5 w-3.5 text-muted-foreground" />
+									</div>
+									<PasswordInput
 										value={newPassword}
 										onChange={(e) =>
 											setNewPassword(e.target.value)
@@ -155,7 +159,6 @@ export const EditControls = ({
 										disabled={!isOwner && !isAdmin}
 										className="h-10 text-sm bg-background border-input focus:border-border transition-all shadow-sm pl-8"
 									/>
-									<Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
 								</div>
 							)}
 						</div>
@@ -216,6 +219,7 @@ export const EditControls = ({
 										/>
 
 										<CollaboratorsManager
+											pasteId={pasteId}
 											shareList={shareList}
 											setShareList={setShareList}
 											allowedUsers={allowedUsers}

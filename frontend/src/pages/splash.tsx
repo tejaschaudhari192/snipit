@@ -89,7 +89,7 @@ const SplashPage = ({ healthData }: SplashPageProps) => {
 						/>
 					</div>
 
-					<h1 className="text-7xl tracking-tighter font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-foreground via-foreground to-muted-foreground pb-2">
+					<h1 className="text-7xl tracking-tighter font-extrabold text-transparent bg-clip-text bg-linear-to-b from-foreground via-foreground to-muted-foreground pb-2">
 						Snipit
 					</h1>
 				</div>
@@ -113,7 +113,7 @@ const SplashPage = ({ healthData }: SplashPageProps) => {
 										: currentLabel}
 								</span>
 								{!isError && (
-									<div className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/20 to-transparent -translate-x-full animate-[shimmer_2s_infinite] pointer-events-none" />
+									<div className="absolute inset-0 bg-linear-to-r from-transparent via-foreground/20 to-transparent -translate-x-full animate-[shimmer_2s_infinite] pointer-events-none" />
 								)}
 							</span>
 						</span>

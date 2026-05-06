@@ -5,7 +5,7 @@ import {
 	CardTitle,
 	CardDescription,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
 import { Lock, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -38,12 +38,12 @@ export const PasswordGate = ({
 							<div className="absolute inset-0 rounded-full border border-primary/30 border-dashed animate-[spin_8s_linear_infinite]" />
 							<div className="absolute inset-2 rounded-full border border-primary/20 animate-[spin_6s_linear_infinite_reverse]" />
 							<div className="absolute inset-0 bg-primary/10 blur-xl rounded-full animate-pulse" />
-							<div className="relative z-10 p-3 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 shadow-lg text-primary backdrop-blur-sm">
+							<div className="relative z-10 p-3 rounded-2xl bg-linear-to-br from-primary/20 to-primary/5 border border-primary/20 shadow-lg text-primary backdrop-blur-sm">
 								<Lock className="h-8 w-8 drop-shadow-md" />
 							</div>
 						</div>
 					</div>
-					<CardTitle className="text-3xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-foreground via-foreground to-muted-foreground drop-shadow-sm text-center">
+					<CardTitle className="text-3xl font-black tracking-tight text-transparent bg-clip-text bg-linear-to-b from-foreground via-foreground to-muted-foreground drop-shadow-sm text-center">
 						{t("common.password_protected", "Password Protected")}
 					</CardTitle>
 					<CardDescription className="text-base text-muted-foreground text-center">
@@ -55,8 +55,7 @@ export const PasswordGate = ({
 				</CardHeader>
 				<CardContent className="space-y-4">
 					<div className="space-y-2">
-						<Input
-							type="password"
+						<PasswordInput
 							placeholder={t(
 								"common.password_placeholder",
 								"Enter password...",

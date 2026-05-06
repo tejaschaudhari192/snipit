@@ -15,7 +15,7 @@ import { ShimmerSection } from "@/components/common/shimmer-section";
 
 interface CommentsSectionProps {
 	paste: PasteData;
-	onCommentAdded: (updatedPaste: PasteData) => void;
+	onCommentAdded: (comment: CommentData) => void;
 }
 
 export const CommentsSection = ({
@@ -62,20 +62,20 @@ export const CommentsSection = ({
 	const canComment = isExplicitUser
 		? ["admin", "editor", "commenter"].includes(userRole)
 		: paste.allowComments &&
-			["admin", "editor", "commenter"].includes(userRole);
+			["admin", "editor", "commenter", "viewer"].includes(userRole);
 
 	const handleSubmit = async () => {
 		if (!newComment.trim()) return;
 
 		setIsSubmitting(true);
 		try {
-			const updatedPaste = await apiHelpers.addComment(
+			const newCommentData = await apiHelpers.addComment(
 				paste.id,
 				newComment,
 				authorName || undefined,
 			);
-			if (updatedPaste) {
-				onCommentAdded(updatedPaste);
+			if (newCommentData) {
+				onCommentAdded(newCommentData);
 				setNewComment("");
 				setAuthorName("");
 				toast.success(t("messages.comment_added", "Comment added"));
@@ -101,7 +101,7 @@ export const CommentsSection = ({
 								key={comment.id}
 								className="group flex gap-3 p-3 rounded-lg border bg-card/50 shadow-sm transition-all hover:bg-card hover:shadow-md"
 							>
-								<div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 text-xs font-bold text-primary border border-primary/20">
+								<div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 text-xs font-bold text-primary border border-primary/20">
 									{comment.author.charAt(0).toUpperCase()}
 								</div>
 								<div className="flex-1 min-w-0 grid gap-1">
@@ -113,7 +113,7 @@ export const CommentsSection = ({
 											{timeAgo(comment.createdAt, t)}
 										</span>
 									</div>
-									<p className="text-sm text-foreground/80 leading-relaxed break-words">
+									<p className="text-sm text-foreground/80 leading-relaxed wrap-break-word">
 										{comment.content}
 									</p>
 								</div>
@@ -131,7 +131,7 @@ export const CommentsSection = ({
 				</div>
 			</ScrollArea>
 
-			<div className="flex-shrink-0 space-y-3 pt-2 border-t mt-auto bg-background z-10">
+			<div className="shrink-0 space-y-3 pt-2 border-t mt-auto bg-background z-10">
 				{canComment ? (
 					<div className="space-y-3">
 						{!user && (

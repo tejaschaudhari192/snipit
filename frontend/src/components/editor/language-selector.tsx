@@ -34,7 +34,7 @@ export const LanguageSelector = memo(
 				<button
 					type="button"
 					className={cn(
-						"group relative w-[160px] h-9 shrink-0 rounded-md p-[1px] overflow-hidden focus:outline-none",
+						"group relative w-[160px] h-9 shrink-0 rounded-md p-px overflow-hidden focus:outline-none",
 						className,
 					)}
 				>

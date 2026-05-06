@@ -8,6 +8,8 @@ import type {
 	CreatePasteData,
 	UpdatePasteData,
 	HealthData,
+	CommentData,
+	ShareRole,
 } from "@/types";
 
 const api = axios.create({
@@ -116,8 +118,8 @@ export const useApiHelpers = () => {
 			id: string,
 			content: string,
 			author?: string,
-		): Promise<PasteData> => {
-			const response = await api.post(`/pastes/${id}/comment`, {
+		): Promise<CommentData> => {
+			const response = await api.post(`/comments/${id}`, {
 				content,
 				author,
 			});
@@ -195,6 +197,26 @@ export const useApiHelpers = () => {
 			> => {
 				const response = await api.put(`/auth/resetpassword/${token}`, {
 					password,
+				});
+				return response.data;
+			},
+			addCollaborator: async (
+				pasteId: string,
+				email: string,
+				role: ShareRole,
+			): Promise<{ email: string; role: ShareRole; userId?: string }> => {
+				const response = await api.post(`/collaborators/${pasteId}`, {
+					email,
+					role,
+				});
+				return response.data;
+			},
+			removeCollaborator: async (
+				pasteId: string,
+				email: string,
+			): Promise<{ success: boolean; email: string }> => {
+				const response = await api.delete(`/collaborators/${pasteId}`, {
+					data: { email },
 				});
 				return response.data;
 			},

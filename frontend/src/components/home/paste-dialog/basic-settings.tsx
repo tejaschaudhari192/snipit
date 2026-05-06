@@ -1,6 +1,6 @@
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Lock, MessageCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -54,8 +54,7 @@ export const BasicSettings = ({
 
 			{isPasswordEnabled && (
 				<div className="animate-in slide-in-from-top-1 fade-in duration-200">
-					<Input
-						type="text"
+					<PasswordInput
 						placeholder={t(
 							"common.password_placeholder",
 							"Enter password...",

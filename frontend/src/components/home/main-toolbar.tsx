@@ -155,7 +155,7 @@ export const MainToolbar = memo(
 									>
 										{renderButtonText()}
 									</Button>
-									<div className="w-[1px] bg-primary-foreground/20 self-stretch my-2" />
+									<div className="w-px bg-primary-foreground/20 self-stretch my-2" />
 									<Button
 										disabled={isSubmitting}
 										size="icon"
@@ -195,7 +195,7 @@ export const MainToolbar = memo(
 										"Advanced Configuration",
 									)}
 								</h3>
-								<div className="flex-1 h-[1px] bg-border/5 ml-2" />
+								<div className="flex-1 h-px bg-border/5 ml-2" />
 								<Button
 									variant="outline"
 									size="sm"

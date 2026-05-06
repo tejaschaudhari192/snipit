@@ -59,14 +59,14 @@ export const ProfileInfo = ({
 	return (
 		<div className="space-y-6">
 			<div className="animate-in fade-in zoom-in-95 duration-500">
-				<Card className="border border-border/50 bg-background/60 backdrop-blur-3xl shadow-2xl rounded-[2.5rem] ring-1 ring-white/5 overflow-hidden">
-					<div className="h-32 bg-gradient-to-br from-primary/30 via-primary/10 to-transparent relative">
-						<div className="absolute inset-0 bg-grid-white/[0.05]" />
+				<Card className="border border-border/50 bg-background/60 backdrop-blur-3xl shadow-2xl rounded-5xl ring-1 ring-white/5 overflow-hidden">
+					<div className="h-32 bg-linear-to-br from-primary/30 via-primary/10 to-transparent relative">
+						<div className="absolute inset-0 bg-grid-white/5" />
 					</div>
 					<CardContent className="relative pt-0 px-8 pb-10">
 						<div className="flex flex-col items-center -mt-16 mb-6">
 							<div className="relative group">
-								<Avatar className="h-32 w-32 rounded-3xl p-1.5 shadow-2xl ring-8 ring-background/80 transition-transform hover:scale-105 duration-300 bg-gradient-to-br from-primary to-primary/60">
+								<Avatar className="h-32 w-32 rounded-3xl p-1.5 shadow-2xl ring-8 ring-background/80 transition-transform hover:scale-105 duration-300 bg-linear-to-br from-primary to-primary/60">
 									<AvatarImage
 										className="rounded-2xl"
 										src=""
@@ -176,7 +176,7 @@ export const ProfileInfo = ({
 						</div>
 
 						<div className="grid grid-cols-2 gap-4 pt-2">
-							<div className="bg-primary/[0.03] hover:bg-primary/[0.06] border border-primary/10 rounded-[2rem] p-5 text-center transition-all group/stat">
+							<div className="bg-primary/3 hover:bg-primary/6 border border-primary/10 rounded-4xl p-5 text-center transition-all group/stat">
 								<div className="flex justify-center mb-1">
 									<Files className="h-4 w-4 text-primary/40 group-hover/stat:text-primary/70 transition-colors" />
 								</div>
@@ -187,7 +187,7 @@ export const ProfileInfo = ({
 									{t("profile.snippets_count", "Snippets")}
 								</div>
 							</div>
-							<div className="bg-muted/20 hover:bg-muted/30 border border-border/50 rounded-[2rem] p-5 text-center transition-all group/stat">
+							<div className="bg-muted/20 hover:bg-muted/30 border border-border/50 rounded-4xl p-5 text-center transition-all group/stat">
 								<div className="flex justify-center mb-1">
 									<Eye className="h-4 w-4 text-muted-foreground/30 group-hover/stat:text-foreground/50 transition-colors" />
 								</div>
@@ -233,7 +233,7 @@ export const ProfileInfo = ({
 							) : (
 								<Button
 									variant="outline"
-									className="w-full h-11 rounded-2xl border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 font-black gap-3 group/logout bg-red-500/[0.02]"
+									className="w-full h-11 rounded-2xl border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 font-black gap-3 group/logout bg-red-500/2"
 									onClick={onLogout}
 								>
 									<div className="flex items-center justify-center gap-2">
@@ -250,7 +250,7 @@ export const ProfileInfo = ({
 			</div>
 
 			<div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200 fill-mode-both">
-				<Card className="border border-border/50 bg-background/60 backdrop-blur-3xl shadow-xl rounded-[2rem] overflow-hidden ring-1 ring-white/5">
+				<Card className="border border-border/50 bg-background/60 backdrop-blur-3xl shadow-xl rounded-4xl overflow-hidden ring-1 ring-white/5">
 					<CardContent className="p-8 space-y-6">
 						<div className="flex items-center justify-between border-b border-border/50 pb-4">
 							<h3 className="font-black text-xs uppercase tracking-[0.2em] text-muted-foreground">
