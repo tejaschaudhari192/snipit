@@ -1,24 +1,73 @@
-import { createLogger, format, transports } from "winston";
+import { createLogger, format, transports, addColors } from "winston";
+import "winston-daily-rotate-file";
 
-const consoleFormat = format.combine(
-	format.colorize({ all: true }), // colorize level and message
-	format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
-	format.printf(({ timestamp, level, message, ...meta }) => {
+const { combine, timestamp, printf, colorize, errors, json } = format;
+
+const customLevels = {
+	crit: 0,
+	error: 1,
+	warn: 2,
+	notice: 3,
+	info: 4,
+	success: 5,
+	http: 6,
+	debug: 7,
+	trace: 8,
+};
+
+const customColors = {
+	crit: "red bgWhite bold",
+	error: "red",
+	warn: "yellow",
+	notice: "magenta",
+	info: "cyan",
+	success: "green",
+	http: "blue",
+	debug: "gray",
+	trace: "white",
+};
+
+addColors(customColors);
+
+const consoleFormat = combine(
+	colorize({ all: true }),
+	timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+	errors({ stack: true }),
+	printf(({ timestamp, level, message, stack, ...meta }) => {
 		const metaStr = Object.keys(meta).length
 			? ` ${JSON.stringify(meta)}`
 			: "";
-		return `${timestamp} ${level}: ${message}${metaStr}`;
+		return `${timestamp} ${level}: ${message}${stack ? `\n${stack}` : ""}${metaStr}`;
 	}),
 );
 
+const fileFormat = combine(timestamp(), errors({ stack: true }), json());
+
 const logger = createLogger({
-	level: "info",
+	levels: customLevels,
+	level: "debug",
 	transports: [
 		new transports.Console({
-			level: "debug",
 			format: consoleFormat,
 		}),
+		new transports.DailyRotateFile({
+			filename: "logs/error-%DATE%.log",
+			level: "error",
+			datePattern: "YYYY-MM-DD",
+			zippedArchive: true,
+			maxSize: "20m",
+			maxFiles: "14d",
+			format: fileFormat,
+		}),
+		new transports.DailyRotateFile({
+			filename: "logs/combined-%DATE%.log",
+			datePattern: "YYYY-MM-DD",
+			zippedArchive: true,
+			maxSize: "20m",
+			maxFiles: "14d",
+			format: fileFormat,
+		}),
 	],
-});
+}) as any;
 
 export default logger;

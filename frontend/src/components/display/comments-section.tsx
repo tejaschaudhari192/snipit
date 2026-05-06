@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { MessageSquare, Send } from "lucide-react";
-import { timeAgo } from "@/utils";
 import { AxiosError } from "axios";
 
 import { Button } from "@/components/ui/button";
@@ -12,6 +11,7 @@ import type { PasteData, CommentData } from "@/types";
 import { useApiHelpers } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { ShimmerSection } from "@/components/common/shimmer-section";
+import { CommentBubble } from "./comment-bubble";
 
 interface CommentsSectionProps {
 	paste: PasteData;
@@ -97,27 +97,11 @@ export const CommentsSection = ({
 				<div className="space-y-3 pr-3">
 					{paste.comments && paste.comments.length > 0 ? (
 						paste.comments.map((comment: CommentData) => (
-							<div
+							<CommentBubble
 								key={comment.id}
-								className="group flex gap-3 p-3 rounded-lg border bg-card/50 shadow-sm transition-all hover:bg-card hover:shadow-md"
-							>
-								<div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 text-xs font-bold text-primary border border-primary/20">
-									{comment.author.charAt(0).toUpperCase()}
-								</div>
-								<div className="flex-1 min-w-0 grid gap-1">
-									<div className="flex items-center justify-between gap-2">
-										<span className="font-semibold text-sm leading-none text-foreground">
-											{comment.author}
-										</span>
-										<span className="text-[10px] text-muted-foreground whitespace-nowrap">
-											{timeAgo(comment.createdAt, t)}
-										</span>
-									</div>
-									<p className="text-sm text-foreground/80 leading-relaxed wrap-break-word">
-										{comment.content}
-									</p>
-								</div>
-							</div>
+								comment={comment}
+								currentUser={user}
+							/>
 						))
 					) : (
 						<div className="flex flex-col items-center justify-center h-40 text-muted-foreground italic opacity-70">

@@ -2,8 +2,9 @@ import type { Response, NextFunction } from "express";
 import type { AuthRequest } from "@/middleware/auth.middleware.js";
 import type PasteService from "@/services/paste.service.js";
 import type PermissionService from "@/services/permission.service.js";
-import User from "@/models/User.js";
+import logger from "@/config/logger.js";
 import { uniqueIdGenerator } from "@/lib/utils.js";
+import User from "@/models/User.js";
 
 class CommentController {
 	constructor(
@@ -57,8 +58,10 @@ class CommentController {
 			};
 
 			const result = await this.pasteService.addComment(id, comment);
+			logger.info(`Comment added to paste ${id} by ${finalAuthor}`);
 			return res.status(201).json(result.toObject());
 		} catch (error) {
+			logger.error(`Failed to add comment to paste ${id}`, { error });
 			next(error);
 		}
 	}

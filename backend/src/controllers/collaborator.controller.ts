@@ -3,6 +3,7 @@ import type { AuthRequest } from "@/middleware/auth.middleware.js";
 import type PasteService from "@/services/paste.service.js";
 import type PermissionService from "@/services/permission.service.js";
 import User from "@/models/User.js";
+import logger from "@/config/logger.js";
 
 class CollaboratorController {
 	constructor(
@@ -38,6 +39,10 @@ class CollaboratorController {
 			const collaborator = await this.pasteService.addCollaborators(id, [
 				{ email, role },
 			]);
+
+			logger.info(
+				`Collaborator ${email} added to paste ${id} with role ${role}`,
+			);
 
 			if (this.pasteService.sendShareEmails) {
 				await this.pasteService.sendShareEmails(paste, [
@@ -89,8 +94,13 @@ class CollaboratorController {
 			// Actually, PasteService is already imported.
 
 			await this.pasteService.removeCollaborator(id, email);
+			logger.info(`Collaborator ${email} removed from paste ${id}`);
 			return res.json({ success: true, email });
 		} catch (error) {
+			logger.error(
+				`Failed to remove collaborator ${email} from paste ${id}`,
+				{ error },
+			);
 			next(error);
 		}
 	}

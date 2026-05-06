@@ -6,9 +6,20 @@ import configurations from "@/config/configurations.js";
 import apiRouter from "@/routes/index.js";
 import { connectDB } from "@/config/db.js";
 
+import morgan from "morgan";
+import logger from "@/config/logger.js";
 import { errorMiddleware } from "@/middleware/error.middleware.js";
 
 const app: express.Application = express();
+
+// HTTP Request Logger
+app.use(
+	morgan(":method :url :status :res[content-length] - :response-time ms", {
+		stream: {
+			write: (message) => logger.info(message.trim()),
+		},
+	}),
+);
 
 // Ensure DB is connected before any request
 app.use(async (_req: Request, _res: Response, next: NextFunction) => {
