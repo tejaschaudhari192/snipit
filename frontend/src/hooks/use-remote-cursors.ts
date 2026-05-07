@@ -49,7 +49,7 @@ function createCursorWidget(
 	domNode.appendChild(bar);
 	domNode.appendChild(tag);
 
-	const widget: IContentWidget = {
+	const widget: editor.IContentWidget = {
 		getId: () => `remote-cursor-${socketId}`,
 		getDomNode: () => domNode,
 		getPosition: () => ({
