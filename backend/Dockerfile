@@ -3,10 +3,11 @@ FROM node:22-slim AS builder
 WORKDIR /app
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+RUN npm install -g pnpm@latest
 RUN corepack enable
 
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm config set only-allow-trusted-dependencies false && pnpm install --no-frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 
 COPY . .
 RUN pnpm build
@@ -39,6 +40,7 @@ RUN wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod
     && rm -rf /var/lib/apt/lists/*
 
 # Install pnpm for the final stage
+RUN npm install -g pnpm@latest
 RUN corepack enable
 
 # Copy built backend files
