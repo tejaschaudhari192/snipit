@@ -507,8 +507,8 @@
 		"ai_explain": "📖 このコードを説明する",
 		"ai_refactor": "🛠️ 選択範囲をリファクタリング",
 		"ai_fix": "🐛 選択範囲のバグを修正",
-		"ai_autocomplete": "AI",
-		"ai_autocomplete_tooltip": "AIが入力中にコードを提案します。Tabで受け入れ。"
+		"autocomplete": "オートコンプリート",
+		"ai_autocomplete_tooltip": "入力中にコードを提案します。Tabで適用。"
 	},
 	"ai_dialog": {
 		"title": "AIエディタアシスタント",

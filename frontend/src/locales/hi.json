@@ -507,8 +507,8 @@
 		"ai_explain": "📖 इस कोड को समझाएं",
 		"ai_refactor": "🛠️ चयन को रिफैक्टर करें",
 		"ai_fix": "🐛 चयन में बग ठीक करें",
-		"ai_autocomplete": "AI",
-		"ai_autocomplete_tooltip": "AI टाइप करते समय कोड सुझाव देता है। स्वीकार करने के लिए Tab दबाएं।"
+		"autocomplete": "ऑटोकंपलीट",
+		"ai_autocomplete_tooltip": "आपके टाइप करते समय कोड सुझाव। स्वीकार करने के लिए Tab दबाएं।"
 	},
 	"ai_dialog": {
 		"title": "AI संपादक सहायक",

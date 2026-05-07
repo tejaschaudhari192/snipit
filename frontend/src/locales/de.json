@@ -507,8 +507,8 @@
 		"ai_explain": "📖 Diesen Code erklären",
 		"ai_refactor": "🛠️ Auswahl umgestalten",
 		"ai_fix": "🐛 Fehler in Auswahl beheben",
-		"ai_autocomplete": "KI",
-		"ai_autocomplete_tooltip": "KI schlägt Code vor, während Sie tippen. Tab zum Akzeptieren."
+		"autocomplete": "Autocomplete",
+		"ai_autocomplete_tooltip": "Autovervollständigung während der Eingabe. Tab zum Akzeptieren."
 	},
 	"ai_dialog": {
 		"title": "KI-Editor-Assistent",
