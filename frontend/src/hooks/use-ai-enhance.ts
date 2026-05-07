@@ -10,36 +10,72 @@ export const useAiEnhance = () => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		useState<any | null>(null);
 
+	const [prefillInstruction, setPrefillInstruction] = useState("");
+
 	const setupAiAction = useCallback(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(ed: any, monaco: Monaco) => {
 			setEditorInstance(ed);
 
-			// Add "AI Enhance" action to the context menu
-			ed.addAction({
-				id: "ai-enhance-action",
-				label: t("editor.ai_enhance", "✨ AI Enhance Selection..."),
-				keybindings: [
-					monaco.KeyMod.CtrlCmd |
-						monaco.KeyMod.Shift |
-						monaco.KeyCode.KeyE,
-				],
-				contextMenuGroupId: "navigation",
-				contextMenuOrder: 1,
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				run: (editor: any) => {
-					const selection = editor.getSelection();
-					if (selection && !selection.isEmpty()) {
-						const text = editor
-							.getModel()
-							?.getValueInRange(selection);
-						if (text) {
-							setSelectedText(text);
-							setIsAiDialogOpen(true);
+			const registerAiAction = (
+				id: string,
+				label: string,
+				instruction: string,
+				keybinding?: number,
+			) => {
+				ed.addAction({
+					id,
+					label,
+					keybindings: keybinding ? [keybinding] : undefined,
+					contextMenuGroupId: "navigation",
+					contextMenuOrder: 1,
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					run: (editor: any) => {
+						const selection = editor.getSelection();
+						if (selection && !selection.isEmpty()) {
+							const text = editor
+								.getModel()
+								?.getValueInRange(selection);
+							if (text) {
+								setSelectedText(text);
+								setPrefillInstruction(instruction);
+								setIsAiDialogOpen(true);
+							}
 						}
-					}
-				},
-			});
+					},
+				});
+			};
+
+			// 1. Generic Enhance
+			registerAiAction(
+				"ai-enhance-action",
+				t("editor.ai_enhance", "✨ AI Enhance Selection..."),
+				"",
+				monaco.KeyMod.CtrlCmd |
+					monaco.KeyMod.Shift |
+					monaco.KeyCode.KeyE,
+			);
+
+			// 2. Explain
+			registerAiAction(
+				"ai-explain-action",
+				t("editor.ai_explain", "📖 Explain this Code"),
+				"Explain this code logic simply but thoroughly.",
+			);
+
+			// 3. Refactor
+			registerAiAction(
+				"ai-refactor-action",
+				t("editor.ai_refactor", "🛠️ Refactor Selection"),
+				"Refactor this code to be more clean, efficient, and readable.",
+			);
+
+			// 4. Fix Bugs
+			registerAiAction(
+				"ai-fix-action",
+				t("editor.ai_fix", "🐛 Fix Bugs in Selection"),
+				"Identify and fix any potential bugs or edge cases in this code.",
+			);
 		},
 		[t],
 	);
@@ -66,6 +102,7 @@ export const useAiEnhance = () => {
 		isAiDialogOpen,
 		setIsAiDialogOpen,
 		selectedText,
+		prefillInstruction,
 		setupAiAction,
 		applyEnhancedText,
 	};

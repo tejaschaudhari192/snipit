@@ -1,7 +1,7 @@
 import { Editor, type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useRef, useEffect } from "react";
-import type { ContentMode } from "@/types";
+import type { ContentMode, EditorChange } from "@/types";
 import { ZenModeToggle } from "@/components/common/zen-mode-toggle";
 
 interface CodeEditorViewProps {
@@ -11,6 +11,10 @@ interface CodeEditorViewProps {
 	language: string;
 	content: string;
 	onContentChange: (val: string) => void;
+	onEditorChange?: (data: {
+		changes?: EditorChange[];
+		content?: string;
+	}) => void;
 	theme: string;
 	fontSize: number;
 	handleEditorWillMount: BeforeMount;
@@ -26,6 +30,7 @@ export const CodeEditorView = ({
 	language,
 	content,
 	onContentChange,
+	onEditorChange,
 	theme,
 	fontSize,
 	handleEditorWillMount,
@@ -88,7 +93,15 @@ export const CodeEditorView = ({
 						defaultValue={content}
 						onChange={
 							isEdit
-								? (val) => onContentChange(val ?? "")
+								? (val, ev) => {
+										onContentChange(val ?? "");
+										if (onEditorChange && ev.changes) {
+											onEditorChange({
+												changes: ev.changes,
+												content: val ?? undefined,
+											});
+										}
+									}
 								: undefined
 						}
 						onMount={onMount}

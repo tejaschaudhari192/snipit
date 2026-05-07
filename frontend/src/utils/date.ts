@@ -139,3 +139,42 @@ export function formatDate(
 	const d = typeof date === "string" ? new Date(date) : date;
 	return d.toLocaleDateString(locale, options);
 }
+
+/**
+ * Converts expiration time strings into actual Date objects
+ */
+export function dateConverter(expiresTime: string): Date | null {
+	let expiresAt: Date | null;
+	const now = new Date();
+
+	switch (expiresTime) {
+		case "1h":
+			expiresAt = new Date(now.getTime() + 1 * 60 * 60 * 1000); // +1 hour
+			break;
+		case "1d":
+			expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // +1 day
+			break;
+		case "1w":
+			expiresAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // +1 week
+			break;
+		case "1m":
+			expiresAt = new Date(now.setMonth(now.getMonth() + 1)); // +1 month
+			break;
+		case "1y":
+			expiresAt = new Date(now.setFullYear(now.getFullYear() + 1)); // +1 year
+			break;
+		case "never":
+			expiresAt = null;
+			break;
+		case "one-time":
+			expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // +1 day default, but burn-after-read handles logic
+			break;
+		default: {
+			const customDate = new Date(expiresTime);
+			expiresAt =
+				expiresTime && !isNaN(customDate.getTime()) ? customDate : null;
+		}
+	}
+
+	return expiresAt;
+}

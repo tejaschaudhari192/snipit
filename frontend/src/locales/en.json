@@ -503,7 +503,10 @@
 		"reset_password_invalid_token_toast": "Invalid token"
 	},
 	"editor": {
-		"ai_enhance": "✨ AI Enhance Selection..."
+		"ai_enhance": "✨ AI Enhance Selection...",
+		"ai_explain": "📖 Explain this Code",
+		"ai_refactor": "🛠️ Refactor Selection",
+		"ai_fix": "🐛 Fix Bugs in Selection"
 	},
 	"ai_dialog": {
 		"title": "AI Editor Assistant",

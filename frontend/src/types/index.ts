@@ -14,6 +14,13 @@ export interface User {
 	createdAt?: string;
 }
 
+export interface SelectionRange {
+	startLineNumber: number;
+	startColumn: number;
+	endLineNumber: number;
+	endColumn: number;
+}
+
 export interface ActiveUser {
 	socketId: string;
 	name: string;
@@ -40,10 +47,10 @@ export interface PasteData {
 	createdAt: string;
 	expiresAt: string | null;
 	contentMode?: ContentMode;
-	fileUrl?: string;
-	fileName?: string;
-	fileSize?: number;
-	fileMimeType?: string;
+	fileUrl?: string | null;
+	fileName?: string | null;
+	fileSize?: number | null;
+	fileMimeType?: string | null;
 	redirectUrl?: boolean;
 	language?: string;
 	burnAfterRead?: boolean;
@@ -82,6 +89,7 @@ export interface PaginatedResponse<T> {
 export interface CreatePasteData {
 	content: string;
 	expiresTime: string;
+	expiresAt: Date | null;
 	idType?: IdType;
 	customId?: string;
 	contentMode?: ContentMode;
@@ -120,6 +128,7 @@ export interface UpdatePasteData {
 	publicRole?: PublicRole;
 	allowComments?: boolean;
 	expiresTime?: string;
+	expiresAt?: Date | null;
 	contentMode?: ContentMode;
 	fileUrl?: string | null;
 	fileName?: string | null;
@@ -139,3 +148,18 @@ export interface HealthData {
 	icon?: string;
 	services: Record<string, ServiceStatus>;
 }
+export interface EditorChange {
+	range: {
+		startLineNumber: number;
+		startColumn: number;
+		endLineNumber: number;
+		endColumn: number;
+	};
+	text: string;
+}
+
+export type SocketUpdateData = Partial<PasteData> & {
+	changes?: EditorChange[];
+	isAutosave?: boolean;
+	socketId?: string;
+};

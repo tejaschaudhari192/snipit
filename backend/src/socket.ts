@@ -21,6 +21,7 @@ import crypto from "crypto";
 const pasteService = new PasteService();
 const permissionService = new PermissionService();
 const activeUsers = new Map<string, ActiveUser & { pasteId: string }>();
+const roomContent = new Map<string, string>(); // pasteId -> latest live content
 
 // Helpers
 const getSocketUserId = (socket: Socket): string | null => {
@@ -108,6 +109,13 @@ export const setupSocket = (server: HTTPServer) => {
 				user.isEditing = false;
 				if (userName) user.name = userName;
 				socket.join(pasteId);
+
+				// Send latest live content to new joiner
+				const currentContent = roomContent.get(pasteId);
+				if (currentContent !== undefined) {
+					socket.emit("room-state", { content: currentContent });
+				}
+
 				broadcastRoomUsers(pasteId);
 			}
 		});
@@ -146,6 +154,9 @@ export const setupSocket = (server: HTTPServer) => {
 			const allowed = await canUserEdit(data.pasteId, userId);
 
 			if (allowed) {
+				if (data.content !== undefined) {
+					roomContent.set(data.pasteId, data.content);
+				}
 				socket
 					.to(data.pasteId)
 					.emit("paste-updated", { ...data, socketId: socket.id });
@@ -166,7 +177,8 @@ export const setupSocket = (server: HTTPServer) => {
 			}
 		});
 
-		socket.on("cursor-move", async ({ pasteId, position }) => {
+		socket.on("cursor-move", async (data) => {
+			const { pasteId, ...cursorData } = data;
 			const user = activeUsers.get(socket.id);
 			if (!user || user.pasteId !== pasteId) return;
 
@@ -176,7 +188,7 @@ export const setupSocket = (server: HTTPServer) => {
 			if (allowed) {
 				socket.to(pasteId).emit("user-cursor-move", {
 					socketId: socket.id,
-					position,
+					...cursorData,
 				});
 			}
 		});

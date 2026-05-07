@@ -2,7 +2,7 @@ import { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { useRef, useEffect, memo } from "react";
 import { cn } from "@/utils";
 import { EditorToolbar } from "@/components/common/editor-toolbar";
-import type { PasteData, ContentMode } from "@/types";
+import type { PasteData, ContentMode, EditorChange } from "@/types";
 import { MarkdownDisplay } from "./content/markdown-display";
 import { HtmlDisplay } from "./content/html-display";
 import { ResizableSplitPane } from "@/components/common/resizable-split-pane";
@@ -23,6 +23,10 @@ interface DisplayContentProps {
 	language: string;
 	content: string;
 	onContentChange: (val: string) => void;
+	onEditorChange?: (data: {
+		changes?: EditorChange[];
+		content?: string;
+	}) => void;
 	theme: string;
 	fontSize: number;
 	contentRef: (node: HTMLElement | null) => void;
@@ -52,6 +56,7 @@ export const DisplayContent = memo(
 		language,
 		content,
 		onContentChange,
+		onEditorChange,
 		theme,
 		fontSize,
 		contentRef,
@@ -170,6 +175,7 @@ export const DisplayContent = memo(
 									language={language}
 									content={content}
 									onContentChange={onContentChange}
+									onEditorChange={onEditorChange}
 									theme={theme}
 									fontSize={fontSize}
 									handleEditorWillMount={
@@ -221,6 +227,7 @@ export const DisplayContent = memo(
 					language={language}
 					content={content}
 					onContentChange={onContentChange}
+					onEditorChange={onEditorChange}
 					theme={theme}
 					fontSize={fontSize}
 					handleEditorWillMount={handleEditorWillMount}

@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 import { useApiHelpers } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { usePaste } from "@/context/PasteContext";
-import { clearDrafts } from "@/utils";
+import { clearDrafts, dateConverter } from "@/utils";
 import { guestStorage } from "@/utils/guest-storage";
 import type {
 	IdType,
@@ -65,8 +65,15 @@ export const usePasteSubmission = (
 		try {
 			setIsSubmitting(true);
 			const finalVisibility = options.visibility ?? visibility;
-			const finalEditPermission =
-				options.editPermission ?? editPermission;
+
+			// For unauthenticated users, always default to public edit so they can manage their own snippet
+			let finalEditPermission = options.editPermission ?? editPermission;
+			let finalPublicRole = options.publicRole ?? publicRole;
+
+			if (!user) {
+				finalEditPermission = "public";
+				finalPublicRole = "editor";
+			}
 
 			let currentFileUrl = fileUrl;
 			let currentFileName = fileName;
@@ -91,6 +98,7 @@ export const usePasteSubmission = (
 							? JSON.stringify({ elements: [], appState: {} })
 							: textValue,
 				expiresTime,
+				expiresAt: dateConverter(expiresTime),
 				idType: selectedIdType,
 				customId: providedId,
 				contentMode: contentType,
@@ -114,7 +122,7 @@ export const usePasteSubmission = (
 				password: (options.password ?? password) || undefined,
 				editPermission: finalEditPermission,
 				shareList: options.shareList ?? shareList,
-				publicRole: options.publicRole ?? publicRole,
+				publicRole: finalPublicRole,
 				allowComments: options.allowComments ?? allowComments,
 			});
 
