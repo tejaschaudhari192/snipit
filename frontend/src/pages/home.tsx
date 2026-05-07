@@ -7,6 +7,7 @@ import {
 	type BeforeMount,
 	type Monaco,
 } from "@monaco-editor/react";
+import type { editor } from "monaco-editor";
 import { Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -146,8 +147,7 @@ const HomePage = () => {
 		storage.get(CONFIG.storageKeys.aiAutocomplete, false),
 	);
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const editorInstanceRef = useRef<any>(null);
+	const editorInstanceRef = useRef<editor.IStandaloneCodeEditor | null>(null);
 	const monacoInstanceRef = useRef<Monaco | null>(null);
 
 	const { setupAutocomplete } = useAiAutocomplete({

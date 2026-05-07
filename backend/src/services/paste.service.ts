@@ -7,6 +7,8 @@ import type {
 	PasteData,
 	CommentData,
 	UpdatePasteData,
+	CreatePasteData,
+	ShareEntry,
 	IPaste,
 } from "@/types/index.js";
 import { dateConverter, uniqueIdGenerator } from "@/lib/utils.js";
@@ -18,7 +20,10 @@ import { deleteFileFromStorage } from "@/lib/supabase.js";
 class PasteService {
 	constructor(private readonly emailService?: EmailService) {}
 
-	async createPaste(data: any, ownerId: string | null): Promise<IPaste> {
+	async createPaste(
+		data: CreatePasteData,
+		ownerId: string | null,
+	): Promise<IPaste> {
 		const {
 			expiresTime,
 			burnAfterRead,
@@ -70,21 +75,26 @@ class PasteService {
 			}
 
 			return paste;
-		} catch (error: any) {
-			if (error.code === 11000) {
-				if (customId) {
-					const expired = await this.isPasteExpired(pasteId);
-					if (expired) {
-						await this.deletePaste(pasteId);
-						return this.createPaste(data, ownerId);
+		} catch (error: unknown) {
+			if (error && typeof error === "object" && "code" in error) {
+				const err = error as { code: number };
+				if (err.code === 11000) {
+					if (customId) {
+						const expired = await this.isPasteExpired(pasteId);
+						if (expired) {
+							await this.deletePaste(pasteId);
+							return this.createPaste(data, ownerId);
+						}
+						throw new Error("ID_ALREADY_EXISTS", {
+							cause: error as Error,
+						});
 					}
-					throw new Error("ID_ALREADY_EXISTS", { cause: error });
+					// Retry with new ID if system generated
+					return this.createPaste(
+						{ ...data, customId: uniqueIdGenerator() },
+						ownerId,
+					);
 				}
-				// Retry with new ID if system generated
-				return this.createPaste(
-					{ ...data, customId: uniqueIdGenerator() },
-					ownerId,
-				);
 			}
 			throw error;
 		}
@@ -181,7 +191,7 @@ class PasteService {
 		return updatedPaste;
 	}
 
-	async addCollaborators(pasteId: string, collaborators: any[]) {
+	async addCollaborators(pasteId: string, collaborators: ShareEntry[]) {
 		const collaboratorPromises = collaborators.map(async (col) => {
 			const user = await User.findOne({ email: col.email });
 			return collaboratorModel.create({
@@ -202,7 +212,7 @@ class PasteService {
 		return await collaboratorModel.deleteOne({ pasteId, email });
 	}
 
-	async sendShareEmails(paste: IPaste, shares: any[]) {
+	async sendShareEmails(paste: IPaste, shares: ShareEntry[]) {
 		if (!this.emailService) return;
 		const frontendUrl = configurations.domain;
 		const emailPromises = shares.map((share) => {

@@ -20,11 +20,13 @@ class AuthController {
 				email: user.email,
 				message: "User registered successfully",
 			});
-		} catch (error: any) {
-			if (error.message === "USER_ALREADY_EXISTS") {
+		} catch (error: unknown) {
+			const message =
+				error instanceof Error ? error.message : String(error);
+			if (message === "USER_ALREADY_EXISTS") {
 				return res.status(400).json({ message: "User already exists" });
 			}
-			res.status(500).json({ message: error.message });
+			res.status(500).json({ message });
 		}
 	}
 
@@ -40,13 +42,15 @@ class AuthController {
 				email: user.email,
 				token,
 			});
-		} catch (error: any) {
-			if (error.message === "INVALID_CREDENTIALS") {
+		} catch (error: unknown) {
+			const message =
+				error instanceof Error ? error.message : String(error);
+			if (message === "INVALID_CREDENTIALS") {
 				return res
 					.status(401)
 					.json({ message: "Invalid email or password" });
 			}
-			res.status(500).json({ message: error.message });
+			res.status(500).json({ message });
 		}
 	}
 
@@ -96,9 +100,11 @@ class AuthController {
 		try {
 			await this.authService.forgotPassword(req.body.email);
 			res.status(200).json({ success: true, data: "Email sent" });
-		} catch (error: any) {
-			const status = error.message === "USER_NOT_FOUND" ? 404 : 500;
-			res.status(status).json({ message: error.message });
+		} catch (error: unknown) {
+			const message =
+				error instanceof Error ? error.message : String(error);
+			const status = message === "USER_NOT_FOUND" ? 404 : 500;
+			res.status(status).json({ message });
 		}
 	}
 
@@ -118,8 +124,10 @@ class AuthController {
 				username: user.username,
 				email: user.email,
 			});
-		} catch (error: any) {
-			res.status(400).json({ message: error.message });
+		} catch (error: unknown) {
+			const message =
+				error instanceof Error ? error.message : String(error);
+			res.status(400).json({ message });
 		}
 	}
 
@@ -135,8 +143,10 @@ class AuthController {
 				email: user.email,
 				token,
 			});
-		} catch (error: any) {
-			res.status(401).json({ message: error.message });
+		} catch (error: unknown) {
+			const message =
+				error instanceof Error ? error.message : String(error);
+			res.status(401).json({ message });
 		}
 	}
 }

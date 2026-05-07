@@ -1,6 +1,7 @@
 import LabelModel from "@/models/Label.js";
 import pasteModel from "@/models/Paste.js";
-import mongoose from "mongoose";
+import mongoose, { type FilterQuery } from "mongoose";
+import type { IPaste } from "@/types/index.js";
 
 export class LabelService {
 	/**
@@ -9,7 +10,7 @@ export class LabelService {
 	 */
 	private static async getSnippetsWithLabels(
 		userId: string,
-		matchQuery: any,
+		matchQuery: FilterQuery<IPaste>,
 	) {
 		return await pasteModel.aggregate([
 			{ $match: matchQuery },

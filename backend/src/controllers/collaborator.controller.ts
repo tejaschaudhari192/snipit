@@ -55,8 +55,13 @@ class CollaboratorController {
 				role,
 				userId: user?._id || undefined,
 			});
-		} catch (error: any) {
-			if (error.code === 11000) {
+		} catch (error: unknown) {
+			if (
+				error &&
+				typeof error === "object" &&
+				"code" in error &&
+				error.code === 11000
+			) {
 				return res
 					.status(409)
 					.json({ error: "User is already a collaborator" });

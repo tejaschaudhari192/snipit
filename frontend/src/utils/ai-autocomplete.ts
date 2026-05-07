@@ -27,12 +27,14 @@ export const processAiCompletion = (
 	return processed;
 };
 
+import type { editor, Position } from "monaco-editor";
+
 /**
  * Extracts the prefix and suffix context around a given position in a Monaco model.
  */
 export const getMonacoContext = (
-	model: any, // eslint-disable-line @typescript-eslint/no-explicit-any
-	position: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+	model: editor.ITextModel,
+	position: Position,
 ): { prefix: string; suffix: string } => {
 	const prefix = model.getValueInRange({
 		startLineNumber: 1,

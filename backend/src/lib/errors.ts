@@ -17,7 +17,7 @@ type AsyncFunction = (
 	req: Request,
 	res: Response,
 	next: NextFunction,
-) => Promise<any>;
+) => Promise<void | unknown>;
 
 export const catchAsync = (fn: AsyncFunction) => {
 	return (req: Request, res: Response, next: NextFunction) => {

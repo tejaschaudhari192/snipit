@@ -4,23 +4,24 @@ import logger from "@/config/logger.js";
 import { AppError } from "@/lib/errors.js";
 
 export const errorMiddleware = (
-	err: any,
+	err: unknown,
 	req: Request,
 	res: Response,
 	_next: NextFunction,
 ) => {
+	const error = err as any; // Temporary cast to access properties
 	if (res.headersSent) {
 		return _next(err);
 	}
 
-	const statusCode = err.statusCode || err.status || 500;
-	const message = err.message || "Internal Server Error";
+	const statusCode = error.statusCode || error.status || 500;
+	const message = error.message || "Internal Server Error";
 
 	// Log error
 	if (statusCode >= 500) {
 		logger.error({
 			message,
-			stack: err.stack,
+			stack: error.stack,
 			path: req.path,
 			method: req.method,
 		});
@@ -44,26 +45,26 @@ export const errorMiddleware = (
 	}
 
 	// Handle Mongoose Errors
-	if (err.name === "ValidationError") {
+	if (error.name === "ValidationError") {
 		return res.status(400).json({
 			error: message,
 		});
 	}
 
-	if (err.name === "CastError") {
+	if (error.name === "CastError") {
 		return res.status(400).json({
-			error: `Invalid ${err.path}: ${err.value}`,
+			error: `Invalid ${error.path}: ${error.value}`,
 		});
 	}
 
 	// Handle JWT Errors
-	if (err.name === "JsonWebTokenError") {
+	if (error.name === "JsonWebTokenError") {
 		return res.status(401).json({
 			error: "Invalid token. Please log in again.",
 		});
 	}
 
-	if (err.name === "TokenExpiredError") {
+	if (error.name === "TokenExpiredError") {
 		return res.status(401).json({
 			error: "Your token has expired. Please log in again.",
 		});
@@ -72,6 +73,6 @@ export const errorMiddleware = (
 	// Default Response
 	res.status(statusCode).json({
 		error: message,
-		...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+		...(process.env.NODE_ENV === "development" && { stack: error.stack }),
 	});
 };

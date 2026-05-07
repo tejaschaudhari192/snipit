@@ -16,6 +16,14 @@ interface ServiceStatus {
 	message?: string;
 }
 
+interface HealthStepUpdate {
+	step: string;
+	label: string;
+	icon: string;
+	status: string;
+	progress: number;
+}
+
 interface HealthResponse {
 	status: "alive" | "down";
 	timestamp: string;
@@ -55,11 +63,11 @@ router.get(
 					message: `MongoDB state: ${dbState}`,
 				};
 			}
-		} catch (error: any) {
+		} catch (error: unknown) {
 			health.status = "down";
 			health.services.database = {
 				status: "error",
-				message: error.message,
+				message: error instanceof Error ? error.message : String(error),
 			};
 		}
 
@@ -83,10 +91,10 @@ router.get(
 					};
 				}
 			}
-		} catch (error: any) {
+		} catch (error: unknown) {
 			health.services.supabase = {
 				status: "error",
-				message: error.message,
+				message: error instanceof Error ? error.message : String(error),
 			};
 		}
 
@@ -103,10 +111,10 @@ router.get(
 					message: "SMTP service is ready",
 				};
 			}
-		} catch (error: any) {
+		} catch (error: unknown) {
 			health.services.smtp = {
 				status: "error",
-				message: error.message,
+				message: error instanceof Error ? error.message : String(error),
 			};
 		}
 
@@ -120,7 +128,7 @@ router.get("/stream", async (req, res) => {
 	res.setHeader("Cache-Control", "no-cache");
 	res.setHeader("Connection", "keep-alive");
 
-	const sendUpdate = (data: any) => {
+	const sendUpdate = (data: HealthStepUpdate) => {
 		res.write(`data: ${JSON.stringify(data)}\n\n`);
 	};
 

@@ -1,4 +1,6 @@
 import type { IPaste } from "@/types/index.js";
+import type { FilterQuery } from "mongoose";
+import type { ICollaborator } from "@/models/Collaborator.js";
 import User from "@/models/User.js";
 import Collaborator from "@/models/Collaborator.js";
 
@@ -20,7 +22,7 @@ class PermissionService {
 
 		// Check Collaborator collection for explicit permissions
 		if (userId || paste.visibility === "shared") {
-			const query: any = { pasteId: paste.id };
+			const query: FilterQuery<ICollaborator> = { pasteId: paste.id };
 
 			if (userId) {
 				const user = await User.findById(userId);

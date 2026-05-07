@@ -1,20 +1,11 @@
 import { useEffect, useRef, useCallback } from "react";
-import type { OnMount } from "@monaco-editor/react";
+import type { editor } from "monaco-editor";
 import type { ActiveUser, CursorPosition, SelectionRange } from "@/types";
 
-type MonacoEditor = Parameters<OnMount>[0];
-
-interface IContentWidget {
-	getId(): string;
-	getDomNode(): HTMLElement;
-	getPosition(): {
-		position: { lineNumber: number; column: number };
-		preference: number[];
-	} | null;
-}
+type MonacoEditor = editor.IStandaloneCodeEditor;
 
 interface CursorWidget {
-	widget: IContentWidget;
+	widget: editor.IContentWidget;
 	setPosition: (pos: CursorPosition) => void;
 }
 
@@ -115,13 +106,11 @@ export function useRemoteCursors(
 			const existing = widgetMap.get(socketId);
 			if (existing) {
 				existing.setPosition(pos);
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				(editor as any).layoutContentWidget(existing.widget);
+				editor.layoutContentWidget(existing.widget);
 			} else {
 				const cursor = createCursorWidget(socketId, usr, pos);
 				widgetMap.set(socketId, cursor);
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				(editor as any).addContentWidget(cursor.widget);
+				editor.addContentWidget(cursor.widget);
 			}
 
 			if (
@@ -143,8 +132,7 @@ export function useRemoteCursors(
 					styleSheet.textContent += styleRule;
 				}
 
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				const newDecorations = (editor as any).deltaDecorations(
+				const newDecorations = editor.deltaDecorations(
 					decorationsMap.get(socketId) || [],
 					[
 						{
@@ -160,11 +148,7 @@ export function useRemoteCursors(
 			} else {
 				// Clear selection if it's just a cursor position
 				if (decorationsMap.has(socketId)) {
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					(editor as any).deltaDecorations(
-						decorationsMap.get(socketId)!,
-						[],
-					);
+					editor.deltaDecorations(decorationsMap.get(socketId)!, []);
 					decorationsMap.delete(socketId);
 				}
 			}
@@ -172,16 +156,11 @@ export function useRemoteCursors(
 
 		for (const [socketId, cursor] of widgetMap.entries()) {
 			if (!activeSocketIds.has(socketId)) {
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				(editor as any).removeContentWidget(cursor.widget);
+				editor.removeContentWidget(cursor.widget);
 				widgetMap.delete(socketId);
 
 				if (decorationsMap.has(socketId)) {
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					(editor as any).deltaDecorations(
-						decorationsMap.get(socketId)!,
-						[],
-					);
+					editor.deltaDecorations(decorationsMap.get(socketId)!, []);
 					decorationsMap.delete(socketId);
 				}
 			}
@@ -212,8 +191,7 @@ export function useRemoteCursors(
 		`;
 			styleSheet.textContent += styleRule;
 
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const decorId = (editor as any).deltaDecorations(
+			const decorId = editor.deltaDecorations(
 				[],
 				[
 					{
@@ -228,8 +206,7 @@ export function useRemoteCursors(
 
 			setTimeout(() => {
 				if (editor) {
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					(editor as any).deltaDecorations(decorId, []);
+					editor.deltaDecorations(decorId, []);
 				}
 			}, 2000);
 		},
@@ -242,8 +219,7 @@ export function useRemoteCursors(
 
 		return () => {
 			if (editor) {
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				const ed = editor as any;
+				const ed = editor;
 				for (const cursor of widgetMap.values()) {
 					try {
 						ed.removeContentWidget(cursor.widget);

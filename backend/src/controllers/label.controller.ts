@@ -5,18 +5,19 @@ import type { AuthRequest } from "@/middleware/auth.middleware.js";
 const handleRequest = async (
 	req: AuthRequest,
 	res: Response,
-	serviceCall: (userId: string) => Promise<any>,
+	serviceCall: (userId: string) => Promise<unknown>,
 ) => {
 	try {
 		const userId = req.user?._id;
 		if (!userId) return res.status(401).json({ error: "Unauthorized" });
 		const result = await serviceCall(userId.toString());
 		return res.status(200).json(result);
-	} catch (error: any) {
-		console.error(`Label Controller Error: ${error.message}`);
+	} catch (error: unknown) {
+		const message = error instanceof Error ? error.message : String(error);
+		console.error(`Label Controller Error: ${message}`);
 		return res
-			.status(error.message === "Snippet not found" ? 404 : 500)
-			.json({ error: error.message || "Internal server error" });
+			.status(message === "Snippet not found" ? 404 : 500)
+			.json({ error: message || "Internal server error" });
 	}
 };
 

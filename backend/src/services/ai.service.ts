@@ -5,14 +5,14 @@ import { PROMPTS } from "@/config/prompts.js";
 import { AppError } from "@/lib/errors.js";
 
 class AiService {
-	private groq: Groq;
+	private groq: Groq | null;
 
 	constructor() {
 		const apiKey = configurations.groq_api_key;
 		if (!apiKey) {
 			// Don't throw at initialization time to avoid crashing the server
 			// instead, handle it during service calls
-			this.groq = null as any;
+			this.groq = null;
 		} else {
 			this.groq = new Groq({ apiKey });
 		}
@@ -42,7 +42,7 @@ class AiService {
 
 		const prompt = PROMPTS.DETECT_LANGUAGE([...VALID_LANGUAGES], content);
 
-		const chatCompletion = await this.groq.chat.completions.create({
+		const chatCompletion = await this.groq!.chat.completions.create({
 			messages: [{ role: "user", content: prompt }],
 			model: configurations.groq_model!,
 		});
@@ -74,7 +74,7 @@ class AiService {
 		const systemPrompt = PROMPTS.ENHANCE_CONTENT.SYSTEM;
 		const userPrompt = PROMPTS.ENHANCE_CONTENT.USER(instruction, content);
 
-		const chatCompletion = await this.groq.chat.completions.create({
+		const chatCompletion = await this.groq!.chat.completions.create({
 			messages: [
 				{ role: "system", content: systemPrompt },
 				{ role: "user", content: userPrompt },
@@ -93,7 +93,7 @@ class AiService {
 	): Promise<string> {
 		this.checkConfig();
 
-		const chatCompletion = await this.groq.chat.completions.create({
+		const chatCompletion = await this.groq!.chat.completions.create({
 			messages: [
 				{ role: "system", content: PROMPTS.AUTOCOMPLETE.SYSTEM },
 				{

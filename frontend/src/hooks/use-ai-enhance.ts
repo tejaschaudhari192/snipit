@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import type { Monaco } from "@monaco-editor/react";
+import type { editor } from "monaco-editor";
 import { useTranslation } from "react-i18next";
 
 export const useAiEnhance = () => {
@@ -7,14 +8,12 @@ export const useAiEnhance = () => {
 	const [isAiDialogOpen, setIsAiDialogOpen] = useState(false);
 	const [selectedText, setSelectedText] = useState("");
 	const [editorInstance, setEditorInstance] =
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		useState<any | null>(null);
+		useState<editor.IStandaloneCodeEditor | null>(null);
 
 	const [prefillInstruction, setPrefillInstruction] = useState("");
 
 	const setupAiAction = useCallback(
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(ed: any, monaco: Monaco) => {
+		(ed: editor.IStandaloneCodeEditor, monaco: Monaco) => {
 			setEditorInstance(ed);
 
 			const registerAiAction = (
@@ -29,8 +28,7 @@ export const useAiEnhance = () => {
 					keybindings: keybinding ? [keybinding] : undefined,
 					contextMenuGroupId: "navigation",
 					contextMenuOrder: 1,
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					run: (editor: any) => {
+					run: (editor: editor.IStandaloneCodeEditor) => {
 						const selection = editor.getSelection();
 						if (selection && !selection.isEmpty()) {
 							const text = editor

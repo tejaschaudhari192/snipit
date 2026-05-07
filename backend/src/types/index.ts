@@ -30,6 +30,17 @@ export type UserData = {
 	resetPasswordExpires?: Date | undefined;
 };
 
+export interface RegisterUserData {
+	username: string;
+	email: string;
+	password: string;
+}
+
+export interface LoginCredentials {
+	email: string;
+	password: string;
+}
+
 export type IUser = Document & UserData;
 
 export type CommentData = {
@@ -74,6 +85,16 @@ export type PasteData = {
 	allowComments?: boolean | undefined;
 };
 
+export interface ShareEntry {
+	email: string;
+	role: ShareRole;
+}
+
+export interface CreatePasteData extends UpdatePasteData {
+	customId?: string;
+	idType?: string;
+}
+
 export interface UpdatePasteData {
 	content?: string | undefined;
 	redirectUrl?: boolean | undefined;
@@ -81,12 +102,7 @@ export interface UpdatePasteData {
 	visibility?: Visibility | undefined;
 	publicRole?: PublicRole | undefined;
 	allowComments?: boolean | undefined;
-	collaborators?:
-		| {
-				email: string;
-				role: ShareRole;
-		  }[]
-		| undefined;
+	collaborators?: ShareEntry[] | undefined;
 	expiresTime?: string | undefined;
 	expiresAt?: Date | null | undefined;
 	contentMode?: ContentMode | undefined;

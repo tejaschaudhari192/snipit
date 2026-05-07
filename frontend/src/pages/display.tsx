@@ -142,8 +142,7 @@ const DisplayPage = () => {
 		storage.get(CONFIG.storageKeys.aiAutocomplete, false),
 	);
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const editorInstanceRef = useRef<any>(null);
+	const editorInstanceRef = useRef<editor.IStandaloneCodeEditor | null>(null);
 	const monacoInstanceRef = useRef<Monaco | null>(null);
 
 	const { setupAutocomplete } = useAiAutocomplete({

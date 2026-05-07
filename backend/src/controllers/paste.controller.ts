@@ -1,10 +1,12 @@
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Response } from "express";
 import type { Logger } from "winston";
 import User from "@/models/User.js";
+import { type ICollaborator } from "@/models/Collaborator.js";
 import type PasteService from "@/services/paste.service.js";
 import type PermissionService from "@/services/permission.service.js";
 import { uniqueIdGenerator } from "@/lib/utils.js";
 import type { AuthRequest } from "@/middleware/auth.middleware.js";
+import type { IPaste } from "@/types/index.js";
 
 class PasteController {
 	constructor(
@@ -34,8 +36,11 @@ class PasteController {
 			const result = await this.pasteService.createPaste(req.body, owner);
 			this.logger.info(`Created paste with id: ${result.id}`);
 			return res.status(201).json(result.toObject());
-		} catch (error: any) {
-			if (error.message === "ID_ALREADY_EXISTS") {
+		} catch (error: unknown) {
+			if (
+				error instanceof Error &&
+				error.message === "ID_ALREADY_EXISTS"
+			) {
 				return res.status(409).json({ error: "ID already in use" });
 			}
 			next(error);
@@ -82,14 +87,14 @@ class PasteController {
 				await this.pasteService.getCollaboratorsByPasteId(id);
 
 			// Filter collaborators based on role: only admins see everyone, others only see themselves
-			let filteredCollaborators: any[] = [];
+			let filteredCollaborators: ICollaborator[] = [];
 			if (role === "admin") {
 				filteredCollaborators = collaborators;
 			} else if (userId) {
 				const user = await User.findById(userId);
 				if (user) {
 					filteredCollaborators = collaborators.filter(
-						(c: any) =>
+						(c: ICollaborator) =>
 							c.email === user.email ||
 							(c.userId && c.userId.toString() === userId),
 					);
@@ -180,8 +185,11 @@ class PasteController {
 
 			const result = await this.pasteService.updatePaste(id, updates);
 			return res.json(result!.toObject());
-		} catch (error: any) {
-			if (error.message === "ID_ALREADY_EXISTS") {
+		} catch (error: unknown) {
+			if (
+				error instanceof Error &&
+				error.message === "ID_ALREADY_EXISTS"
+			) {
 				return res.status(409).json({ error: "ID already in use" });
 			}
 			next(error);
@@ -203,7 +211,7 @@ class PasteController {
 			);
 			return res.json({
 				...result,
-				pastes: result.pastes.map((p: any) =>
+				pastes: result.pastes.map((p: IPaste) =>
 					p.toObject ? p.toObject() : p,
 				),
 			});
@@ -238,14 +246,14 @@ class PasteController {
 			const collaborators =
 				await this.pasteService.getCollaboratorsByPasteId(id);
 
-			let filteredCollaborators: any[] = [];
+			let filteredCollaborators: ICollaborator[] = [];
 			if (role === "admin") {
 				filteredCollaborators = collaborators;
 			} else if (userId) {
 				const user = await User.findById(userId);
 				if (user) {
 					filteredCollaborators = collaborators.filter(
-						(c: any) =>
+						(c: ICollaborator) =>
 							c.email === user.email ||
 							(c.userId && c.userId.toString() === userId),
 					);

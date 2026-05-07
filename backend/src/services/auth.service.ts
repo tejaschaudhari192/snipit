@@ -4,6 +4,7 @@ import nodeCrypto from "crypto";
 import type EmailService from "./email.service.js";
 import configurations from "@/config/configurations.js";
 import { OAuth2Client } from "google-auth-library";
+import type { RegisterUserData, LoginCredentials } from "@/types/index.js";
 
 class AuthService {
 	private googleClient: OAuth2Client;
@@ -12,7 +13,7 @@ class AuthService {
 		this.googleClient = new OAuth2Client(configurations.google_client_id);
 	}
 
-	async registerUser(userData: any) {
+	async registerUser(userData: RegisterUserData) {
 		const { username, email, password } = userData;
 		const userExists = await User.findOne({ email });
 		if (userExists) throw new Error("USER_ALREADY_EXISTS");
@@ -27,7 +28,7 @@ class AuthService {
 		});
 	}
 
-	async loginUser(credentials: any) {
+	async loginUser(credentials: LoginCredentials) {
 		const { email, password } = credentials;
 		const user = await User.findOne({ email });
 		if (user && (await bcrypt.compare(password, user.password as string))) {
@@ -66,7 +67,7 @@ class AuthService {
 		}
 	}
 
-	async resetPassword(token: string, password: any) {
+	async resetPassword(token: string, password: string) {
 		const resetPasswordToken = nodeCrypto
 			.createHash("sha256")
 			.update(token)

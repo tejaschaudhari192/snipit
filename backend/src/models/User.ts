@@ -18,7 +18,7 @@ const userSchema = new Schema<IUser>(
 		},
 		password: {
 			type: String,
-			required: function (this: any) {
+			required: function (this: IUser) {
 				return !this.googleId;
 			},
 		},
