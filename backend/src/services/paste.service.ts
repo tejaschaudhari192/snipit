@@ -28,7 +28,6 @@ class PasteService {
 			expiresTime,
 			burnAfterRead,
 			customId,
-			idType,
 			password,
 			collaborators,
 			...rest
@@ -44,19 +43,19 @@ class PasteService {
 			finalBurnAfterRead = true;
 		}
 
-		if (!expiresAt && !["never"].includes(expiresTime)) {
+		if (!expiresAt && expiresTime !== "never") {
 			expiresAt = dateConverter("1d");
 		}
 
 		const pasteId = customId || uniqueIdGenerator();
-
 		const pasteData: PasteData = {
 			...rest,
 			id: pasteId,
-			expiresAt,
+			expiresAt: expiresAt || dateConverter("1d"),
 			burnAfterRead: finalBurnAfterRead,
-			expiresTime,
+			expiresTime: expiresTime || "1d",
 			owner: ownerId || undefined,
+			createdAt: new Date(),
 		};
 
 		if (password) {
@@ -86,7 +85,7 @@ class PasteService {
 							return this.createPaste(data, ownerId);
 						}
 						throw new Error("ID_ALREADY_EXISTS", {
-							cause: error as Error,
+							cause: error,
 						});
 					}
 					// Retry with new ID if system generated

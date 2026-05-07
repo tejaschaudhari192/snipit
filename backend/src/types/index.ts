@@ -66,10 +66,10 @@ export type PasteData = {
 	expiresAt: Date | null;
 	createdAt: Date;
 	contentMode?: ContentMode | undefined;
-	fileUrl?: string | undefined;
-	fileName?: string | undefined;
-	fileSize?: number | undefined;
-	fileMimeType?: string | undefined;
+	fileUrl?: string | null | undefined;
+	fileName?: string | null | undefined;
+	fileSize?: number | null | undefined;
+	fileMimeType?: string | null | undefined;
 	redirectUrl?: boolean | undefined;
 	language?: string | undefined;
 	burnAfterRead?: boolean | undefined;
@@ -91,6 +91,7 @@ export interface ShareEntry {
 }
 
 export interface CreatePasteData extends UpdatePasteData {
+	content: string;
 	customId?: string;
 	idType?: string;
 }
@@ -113,6 +114,7 @@ export interface UpdatePasteData {
 	newId?: string | undefined;
 	password?: string | undefined;
 	editPermission?: EditPermission | undefined;
+	burnAfterRead?: boolean | undefined;
 }
 
 export type IPaste = Document & {
@@ -121,10 +123,10 @@ export type IPaste = Document & {
 	expiresAt: Date | null;
 	createdAt: Date;
 	contentMode?: ContentMode | undefined;
-	fileUrl?: string | undefined;
-	fileName?: string | undefined;
-	fileSize?: number | undefined;
-	fileMimeType?: string | undefined;
+	fileUrl?: string | null | undefined;
+	fileName?: string | null | undefined;
+	fileSize?: number | null | undefined;
+	fileMimeType?: string | null | undefined;
 	redirectUrl?: boolean | undefined;
 	language?: string | undefined;
 	burnAfterRead?: boolean | undefined;
