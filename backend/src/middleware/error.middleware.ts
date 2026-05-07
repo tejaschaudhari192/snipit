@@ -9,12 +9,15 @@ export const errorMiddleware = (
 	res: Response,
 	_next: NextFunction,
 ) => {
-	const error = err as any; // Temporary cast to access properties
+	const error =
+		err instanceof Error
+			? (err as AppError)
+			: (new Error(String(err)) as AppError);
 	if (res.headersSent) {
 		return _next(err);
 	}
 
-	const statusCode = error.statusCode || error.status || 500;
+	const statusCode = error.statusCode || 500;
 	const message = error.message || "Internal Server Error";
 
 	// Log error
