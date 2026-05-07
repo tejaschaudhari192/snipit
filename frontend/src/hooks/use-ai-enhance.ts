@@ -46,7 +46,6 @@ export const useAiEnhance = () => {
 				});
 			};
 
-			// 1. Generic Enhance
 			registerAiAction(
 				"ai-enhance-action",
 				t("editor.ai_enhance", "✨ AI Enhance Selection..."),
@@ -56,21 +55,18 @@ export const useAiEnhance = () => {
 					monaco.KeyCode.KeyE,
 			);
 
-			// 2. Explain
 			registerAiAction(
 				"ai-explain-action",
 				t("editor.ai_explain", "📖 Explain this Code"),
 				"Explain this code logic simply but thoroughly.",
 			);
 
-			// 3. Refactor
 			registerAiAction(
 				"ai-refactor-action",
 				t("editor.ai_refactor", "🛠️ Refactor Selection"),
 				"Refactor this code to be more clean, efficient, and readable.",
 			);
 
-			// 4. Fix Bugs
 			registerAiAction(
 				"ai-fix-action",
 				t("editor.ai_fix", "🐛 Fix Bugs in Selection"),

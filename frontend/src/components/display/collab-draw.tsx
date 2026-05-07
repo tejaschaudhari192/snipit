@@ -256,7 +256,6 @@ export const CollabDraw = ({
 		const activeSocketIds = new Set(activeUsers.map((u) => u.socketId));
 		let changed = false;
 
-		// 1. Remove stale collaborators who are no longer active
 		for (const socketId of Array.from(currentCollaborators.keys())) {
 			if (!activeSocketIds.has(socketId)) {
 				currentCollaborators.delete(socketId);
@@ -264,9 +263,8 @@ export const CollabDraw = ({
 			}
 		}
 
-		// 2. Ensure all active users exist in the collaborators map (with default props if needed)
 		activeUsers.forEach((user) => {
-			if (user.socketId === socketRef?.current?.id) return; // Skip ourselves
+			if (user.socketId === socketRef?.current?.id) return;
 
 			if (!currentCollaborators.has(user.socketId as SocketId)) {
 				currentCollaborators.set(

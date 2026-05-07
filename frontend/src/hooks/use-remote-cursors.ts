@@ -112,7 +112,6 @@ export function useRemoteCursors(
 			const pos = data.position;
 			const selection = data.selection;
 
-			// 1. Handle Cursor Widget
 			const existing = widgetMap.get(socketId);
 			if (existing) {
 				existing.setPosition(pos);
@@ -125,7 +124,6 @@ export function useRemoteCursors(
 				(editor as any).addContentWidget(cursor.widget);
 			}
 
-			// 2. Handle Selection Decorations
 			if (
 				selection &&
 				(selection.startLineNumber !== selection.endLineNumber ||
@@ -172,7 +170,6 @@ export function useRemoteCursors(
 			}
 		}
 
-		// 3. Cleanup stale widgets and decorations
 		for (const [socketId, cursor] of widgetMap.entries()) {
 			if (!activeSocketIds.has(socketId)) {
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any

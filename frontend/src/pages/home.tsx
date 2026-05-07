@@ -151,7 +151,6 @@ const HomePage = () => {
 		const handleGlobalPaste = (e: ClipboardEvent) => {
 			if (isSubmitting || isUploading) return;
 
-			// 1. Detect Snipit Drawing JSON
 			const textData =
 				e.clipboardData?.getData("text/plain") ||
 				e.clipboardData?.getData("text");
@@ -160,7 +159,6 @@ const HomePage = () => {
 				return;
 			}
 
-			// 2. Ignore file pastes if already in Drawing mode (let Excalidraw handle it)
 			if (contentType === "draw") return;
 
 			const items = e.clipboardData?.items;
@@ -305,7 +303,6 @@ const HomePage = () => {
 	const handleLanguageDetection = async (content: string) => {
 		if (hasDetectedRef.current) return;
 
-		// 1. Local check for Drawing JSON
 		if (isSnipitDrawing(content)) {
 			hasDetectedRef.current = true;
 			setContentType("draw");

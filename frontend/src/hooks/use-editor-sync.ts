@@ -43,7 +43,6 @@ export const useEditorSync = ({
 			const timeSinceLastLocalEdit =
 				Date.now() - lastLocalEditRef.current;
 
-			// 1. Sync Content / Changes
 			const shouldSkipContent =
 				(data.content !== undefined || data.changes !== undefined) &&
 				timeSinceLastLocalEdit < SYNC_QUARANTINE_MS;
@@ -52,7 +51,6 @@ export const useEditorSync = ({
 			let contentUpdated = false;
 
 			if (!shouldSkipContent) {
-				// Priority 1: Apply deltas if editor is available
 				if (data.changes && data.changes.length > 0 && editorInstance) {
 					const model = editorInstance.getModel();
 					if (model) {
@@ -66,7 +64,6 @@ export const useEditorSync = ({
 							() => null,
 						);
 
-						// Convergence check: Verify against full content if provided
 						if (data.content !== undefined) {
 							const currentVal = model.getValue();
 							if (currentVal !== data.content) {
@@ -86,7 +83,6 @@ export const useEditorSync = ({
 					contentUpdated = true;
 				}
 
-				// Priority 2: Fallback to full content sync if deltas weren't applied or if no editor
 				if (!contentUpdated && data.content !== undefined) {
 					if (editorInstance) {
 						const model = editorInstance.getModel();
@@ -94,12 +90,10 @@ export const useEditorSync = ({
 							model.setValue(data.content);
 						}
 					}
-					// Always update the string state for non-editor viewers (Markdown/Draw/Link)
 					setUpdatedContent(data.content);
 				}
 			}
 
-			// 2. Sync Metadata & Paste Object
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const { content: _c, changes: _ch, ...metadata } = data;
 			const finalMetadata = shouldSkipContent ? metadata : data;
