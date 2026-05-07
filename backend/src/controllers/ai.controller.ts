@@ -30,6 +30,21 @@ class AiController {
 		);
 		res.json({ result });
 	}
+
+	async autocomplete(req: Request, res: Response) {
+		const { language, prefix, suffix } = req.body;
+
+		if (!prefix && !suffix) {
+			return res.status(400).json({ error: "Context is required" });
+		}
+
+		const completion = await this.aiService.autocomplete(
+			language || "text",
+			prefix || "",
+			suffix || "",
+		);
+		res.json({ completion });
+	}
 }
 
 export default AiController;

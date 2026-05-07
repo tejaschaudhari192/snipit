@@ -22,6 +22,7 @@ export const CONFIG = {
 		theme: "snipit-theme",
 		history: "snipit-history",
 		terminalPosition: "snipit-terminal-position",
+		aiAutocomplete: "snipit-ai-autocomplete",
 	},
 
 	// Default Values

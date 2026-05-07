@@ -503,7 +503,12 @@
 		"google_login_failed": "Google Login fehlgeschlagen"
 	},
 	"editor": {
-		"ai_enhance": "✨ KI-Auswahl verbessern..."
+		"ai_enhance": "✨ KI-Auswahl verbessern...",
+		"ai_explain": "📖 Diesen Code erklären",
+		"ai_refactor": "🛠️ Auswahl umgestalten",
+		"ai_fix": "🐛 Fehler in Auswahl beheben",
+		"ai_autocomplete": "KI",
+		"ai_autocomplete_tooltip": "KI schlägt Code vor, während Sie tippen. Tab zum Akzeptieren."
 	},
 	"ai_dialog": {
 		"title": "KI-Editor-Assistent",

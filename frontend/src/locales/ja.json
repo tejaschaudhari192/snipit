@@ -503,7 +503,12 @@
 		"google_login_failed": "Googleログインに失敗しました"
 	},
 	"editor": {
-		"ai_enhance": "✨ AIで選択範囲を強化..."
+		"ai_enhance": "✨ AIで選択範囲を強化...",
+		"ai_explain": "📖 このコードを説明する",
+		"ai_refactor": "🛠️ 選択範囲をリファクタリング",
+		"ai_fix": "🐛 選択範囲のバグを修正",
+		"ai_autocomplete": "AI",
+		"ai_autocomplete_tooltip": "AIが入力中にコードを提案します。Tabで受け入れ。"
 	},
 	"ai_dialog": {
 		"title": "AIエディタアシスタント",

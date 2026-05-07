@@ -16,5 +16,9 @@ router.post(
 	"/enhance",
 	catchAsync(aiController.enhanceContent.bind(aiController)),
 );
+router.post(
+	"/autocomplete",
+	catchAsync(aiController.autocomplete.bind(aiController)),
+);
 
 export default router;

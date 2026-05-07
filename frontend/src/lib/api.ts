@@ -87,6 +87,19 @@ export const useApiHelpers = () => {
 			return response.data;
 		};
 
+		const getAutocomplete = async (
+			language: string,
+			prefix: string,
+			suffix: string,
+		): Promise<{ completion: string }> => {
+			const response = await api.post("/ai/autocomplete", {
+				language,
+				prefix: prefix.slice(-1500),
+				suffix: suffix.slice(0, 500),
+			});
+			return response.data;
+		};
+
 		const getUserPastes = async (
 			page: number = 1,
 			limit: number = 10,
@@ -143,6 +156,7 @@ export const useApiHelpers = () => {
 			updatePaste,
 			detectLanguage,
 			enhanceContent,
+			getAutocomplete,
 			getUserPastes,
 			getUserStats,
 			updateMe,

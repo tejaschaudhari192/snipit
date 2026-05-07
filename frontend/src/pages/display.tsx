@@ -8,7 +8,7 @@ import {
 } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import type { OnMount, BeforeMount } from "@monaco-editor/react";
+import type { OnMount, BeforeMount, Monaco } from "@monaco-editor/react";
 import { type editor } from "monaco-editor";
 import { type Socket } from "socket.io-client";
 
@@ -23,6 +23,8 @@ import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { useTerminalLayout } from "@/hooks/use-terminal-layout";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { cn } from "@/utils";
+import { storage } from "@/utils/storage";
+import { useAiAutocomplete } from "@/hooks/use-ai-autocomplete";
 
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import DisplayError from "@/components/common/core/error";
@@ -46,6 +48,7 @@ import type {
 	SelectionRange,
 	SocketUpdateData,
 } from "@/types";
+import { CONFIG } from "@/configurations";
 
 const DisplayToolbar = lazy(() =>
 	import("@/components/display/display-toolbar").then((m) => ({
@@ -134,6 +137,29 @@ const DisplayPage = () => {
 	const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
 	const isEditRef = useRef(isEdit);
 	const hasDetectedRef = useRef(false);
+
+	const [isAiAutocompleteEnabled, setIsAiAutocompleteEnabled] = useState(() =>
+		storage.get(CONFIG.storageKeys.aiAutocomplete, false),
+	);
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const editorInstanceRef = useRef<any>(null);
+	const monacoInstanceRef = useRef<Monaco | null>(null);
+
+	const { setupAutocomplete } = useAiAutocomplete({
+		language,
+		enabled: isAiAutocompleteEnabled,
+	});
+
+	useEffect(() => {
+		storage.set(CONFIG.storageKeys.aiAutocomplete, isAiAutocompleteEnabled);
+		if (editorInstanceRef.current && monacoInstanceRef.current) {
+			setupAutocomplete(
+				editorInstanceRef.current,
+				monacoInstanceRef.current,
+			);
+		}
+	}, [isAiAutocompleteEnabled, setupAutocomplete]);
 
 	const { isDetecting, detectLanguage } = useLanguageDetection();
 	const { terminalPosition, setTerminalPosition } = useTerminalLayout();
@@ -263,7 +289,10 @@ const DisplayPage = () => {
 	});
 
 	const handleEditorMount: OnMount = (ed, monaco) => {
+		editorInstanceRef.current = ed;
+		monacoInstanceRef.current = monaco;
 		setupAiAction(ed, monaco);
+		setupAutocomplete(ed, monaco);
 		setEditorInstance(ed);
 		editorRef.current = ed;
 		ed.onDidPaste(() => {
@@ -370,6 +399,7 @@ const DisplayPage = () => {
 								allowComments={allowComments}
 								commentCount={paste.comments?.length ?? 0}
 								paste={paste}
+								contentType={contentType}
 								onCommentAdded={(newComment: CommentData) =>
 									setPaste((prev) =>
 										prev
@@ -411,6 +441,12 @@ const DisplayPage = () => {
 								}}
 								isCode={contentType === "code"}
 								language={language}
+								isAiAutocompleteEnabled={
+									isAiAutocompleteEnabled
+								}
+								setIsAiAutocompleteEnabled={
+									setIsAiAutocompleteEnabled
+								}
 							/>
 						</Suspense>
 						{!isEdit && (

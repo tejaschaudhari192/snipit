@@ -85,6 +85,34 @@ class AiService {
 
 		return chatCompletion.choices[0]?.message?.content?.trim() || "";
 	}
+
+	async autocomplete(
+		language: string,
+		prefix: string,
+		suffix: string,
+	): Promise<string> {
+		this.checkConfig();
+
+		const chatCompletion = await this.groq.chat.completions.create({
+			messages: [
+				{ role: "system", content: PROMPTS.AUTOCOMPLETE.SYSTEM },
+				{
+					role: "user",
+					content: PROMPTS.AUTOCOMPLETE.USER(
+						language,
+						prefix,
+						suffix,
+					),
+				},
+			],
+			model: configurations.groq_model!,
+			temperature: 0,
+			max_tokens: 128,
+			stop: ["\n\n"],
+		});
+
+		return chatCompletion.choices[0]?.message?.content?.trim() || "";
+	}
 }
 
 export default AiService;

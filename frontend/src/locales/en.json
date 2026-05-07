@@ -506,7 +506,9 @@
 		"ai_enhance": "✨ AI Enhance Selection...",
 		"ai_explain": "📖 Explain this Code",
 		"ai_refactor": "🛠️ Refactor Selection",
-		"ai_fix": "🐛 Fix Bugs in Selection"
+		"ai_fix": "🐛 Fix Bugs in Selection",
+		"ai_autocomplete": "AI",
+		"ai_autocomplete_tooltip": "AI suggests code as you type. Press Tab to accept."
 	},
 	"ai_dialog": {
 		"title": "AI Editor Assistant",

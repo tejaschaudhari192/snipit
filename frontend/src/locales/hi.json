@@ -503,7 +503,12 @@
 		"google_login_failed": "गूगल लॉगिन विफल"
 	},
 	"editor": {
-		"ai_enhance": "✨ AI के साथ बेहतर बनाएं..."
+		"ai_enhance": "✨ AI के साथ बेहतर बनाएं...",
+		"ai_explain": "📖 इस कोड को समझाएं",
+		"ai_refactor": "🛠️ चयन को रिफैक्टर करें",
+		"ai_fix": "🐛 चयन में बग ठीक करें",
+		"ai_autocomplete": "AI",
+		"ai_autocomplete_tooltip": "AI टाइप करते समय कोड सुझाव देता है। स्वीकार करने के लिए Tab दबाएं।"
 	},
 	"ai_dialog": {
 		"title": "AI संपादक सहायक",

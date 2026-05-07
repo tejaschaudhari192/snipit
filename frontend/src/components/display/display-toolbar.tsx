@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { MessageSquare, Globe, Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { FontSizeControls } from "@/components/editor/font-size-controls";
+import { AiAutocompleteToggle } from "@/components/editor/ai-autocomplete-toggle";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { ExpirySelector } from "@/components/common/expiry-selector";
@@ -51,6 +52,9 @@ interface DisplayToolbarProps {
 	onToggleTerminal?: () => void;
 	isCode?: boolean;
 	language?: string;
+	contentType?: string;
+	isAiAutocompleteEnabled?: boolean;
+	setIsAiAutocompleteEnabled?: (v: boolean) => void;
 }
 
 export const DisplayToolbar = memo(
@@ -84,6 +88,9 @@ export const DisplayToolbar = memo(
 		onToggleTerminal,
 		isCode = false,
 		language = "text",
+		contentType = "text",
+		isAiAutocompleteEnabled = false,
+		setIsAiAutocompleteEnabled,
 	}: DisplayToolbarProps) => {
 		const { t } = useTranslation();
 		const { user } = useAuth();
@@ -197,6 +204,16 @@ export const DisplayToolbar = memo(
 											setIsCustomExpiryDialogOpen
 										}
 										className="h-9 min-w-[120px] text-xs"
+									/>
+								)}
+
+							{isEdit &&
+								setIsAiAutocompleteEnabled &&
+								contentType !== "file" &&
+								contentType !== "draw" && (
+									<AiAutocompleteToggle
+										enabled={isAiAutocompleteEnabled}
+										onToggle={setIsAiAutocompleteEnabled}
 									/>
 								)}
 						</div>

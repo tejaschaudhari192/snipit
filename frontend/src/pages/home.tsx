@@ -2,7 +2,11 @@ import { useRef, useState, useEffect, lazy, Suspense } from "react";
 import { io, type Socket } from "socket.io-client";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { type OnMount, type BeforeMount } from "@monaco-editor/react";
+import {
+	type OnMount,
+	type BeforeMount,
+	type Monaco,
+} from "@monaco-editor/react";
 import { Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -20,6 +24,10 @@ import { usePageTitle } from "@/hooks/use-page-title";
 import { useTerminalLayout } from "@/hooks/use-terminal-layout";
 import { TerminalContainer } from "@/components/terminal/terminal-container";
 import { ResizablePanels } from "@/components/common/resizable-panels";
+
+import { useAiAutocomplete } from "@/hooks/use-ai-autocomplete";
+import { AiAutocompleteToggle } from "@/components/editor/ai-autocomplete-toggle";
+import { storage } from "@/utils/storage";
 
 import { MainToolbar } from "@/components/home/main-toolbar";
 const LanguageSelector = lazy(() =>
@@ -133,6 +141,29 @@ const HomePage = () => {
 		setupAiAction,
 		applyEnhancedText,
 	} = useAiEnhance();
+
+	const [isAiAutocompleteEnabled, setIsAiAutocompleteEnabled] = useState(() =>
+		storage.get(CONFIG.storageKeys.aiAutocomplete, false),
+	);
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const editorInstanceRef = useRef<any>(null);
+	const monacoInstanceRef = useRef<Monaco | null>(null);
+
+	const { setupAutocomplete } = useAiAutocomplete({
+		language,
+		enabled: isAiAutocompleteEnabled,
+	});
+
+	useEffect(() => {
+		storage.set(CONFIG.storageKeys.aiAutocomplete, isAiAutocompleteEnabled);
+		if (editorInstanceRef.current && monacoInstanceRef.current) {
+			setupAutocomplete(
+				editorInstanceRef.current,
+				monacoInstanceRef.current,
+			);
+		}
+	}, [isAiAutocompleteEnabled, setupAutocomplete]);
 
 	useHomeUrlSync({
 		contentType,
@@ -331,7 +362,10 @@ const HomePage = () => {
 	};
 
 	const handleEditorMount: OnMount = (editor, monaco) => {
+		editorInstanceRef.current = editor;
+		monacoInstanceRef.current = monaco;
 		setupAiAction(editor, monaco);
+		setupAutocomplete(editor, monaco);
 		editor.onDidPaste(() => {
 			const value = editor.getValue();
 			if (previousLengthRef.current === 0) {
@@ -424,16 +458,22 @@ const HomePage = () => {
 					{contentType !== "link" &&
 						contentType !== "file" &&
 						contentType !== "draw" && (
-							<Suspense
-								fallback={
-									<div className="w-20 h-9 skeleton rounded-lg" />
-								}
-							>
-								<FontSizeControls
-									fontSize={fontSize}
-									setFontSize={setFontSize}
+							<>
+								<Suspense
+									fallback={
+										<div className="w-20 h-9 skeleton rounded-lg" />
+									}
+								>
+									<FontSizeControls
+										fontSize={fontSize}
+										setFontSize={setFontSize}
+									/>
+								</Suspense>
+								<AiAutocompleteToggle
+									enabled={isAiAutocompleteEnabled}
+									onToggle={setIsAiAutocompleteEnabled}
 								/>
-							</Suspense>
+							</>
 						)}
 				</MainToolbar>
 			</div>
