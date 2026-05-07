@@ -241,7 +241,14 @@ const DisplayPage = () => {
 	const isOwner = !!(user && paste?.owner === user._id);
 	const handleEditorWillMount: BeforeMount = (m) => defineMonacoThemes(m);
 
-	const { setupAiAction } = useAiEnhance();
+	const {
+		isAiDialogOpen,
+		setIsAiDialogOpen,
+		selectedText,
+		prefillInstruction,
+		setupAiAction,
+		applyEnhancedText,
+	} = useAiEnhance();
 
 	useAutosave({
 		isAutosave: state.isAutosave,
@@ -535,6 +542,11 @@ const DisplayPage = () => {
 				isDeleteDialogOpen={isDeleteDialogOpen}
 				setIsDeleteDialogOpen={setIsDeleteDialogOpen}
 				onDeleteConfirm={onDeleteConfirm}
+				isAiDialogOpen={isAiDialogOpen}
+				setIsAiDialogOpen={setIsAiDialogOpen}
+				selectedText={selectedText}
+				prefillInstruction={prefillInstruction}
+				applyEnhancedText={applyEnhancedText}
 			/>
 		</>
 	);

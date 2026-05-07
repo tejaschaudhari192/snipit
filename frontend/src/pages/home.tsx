@@ -129,6 +129,7 @@ const HomePage = () => {
 		isAiDialogOpen,
 		setIsAiDialogOpen,
 		selectedText,
+		prefillInstruction,
 		setupAiAction,
 		applyEnhancedText,
 	} = useAiEnhance();
@@ -532,6 +533,7 @@ const HomePage = () => {
 					onClose={() => setIsAiDialogOpen(false)}
 					selectedText={selectedText}
 					onApply={applyEnhancedText}
+					initialInstruction={prefillInstruction}
 				/>
 			</Suspense>
 		</div>

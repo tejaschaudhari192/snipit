@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 import { CustomExpiryDialog } from "@/components/home/custom-expiry-dialog";
 import { DeletePasteDialog } from "@/components/display/delete-paste-dialog";
+import { AiEnhanceDialog } from "@/components/editor/ai-enhance-dialog";
 
 interface DisplayDialogsProps {
 	isCustomExpiryDialogOpen: boolean;
@@ -11,6 +12,12 @@ interface DisplayDialogsProps {
 	isDeleteDialogOpen: boolean;
 	setIsDeleteDialogOpen: (val: boolean) => void;
 	onDeleteConfirm: () => void;
+	// AI Dialog Props
+	isAiDialogOpen: boolean;
+	setIsAiDialogOpen: (val: boolean) => void;
+	selectedText: string;
+	prefillInstruction: string;
+	applyEnhancedText: (text: string) => void;
 }
 
 export const DisplayDialogs: React.FC<DisplayDialogsProps> = ({
@@ -22,6 +29,11 @@ export const DisplayDialogs: React.FC<DisplayDialogsProps> = ({
 	isDeleteDialogOpen,
 	setIsDeleteDialogOpen,
 	onDeleteConfirm,
+	isAiDialogOpen,
+	setIsAiDialogOpen,
+	selectedText,
+	prefillInstruction,
+	applyEnhancedText,
 }) => {
 	return (
 		<Suspense fallback={null}>
@@ -36,6 +48,13 @@ export const DisplayDialogs: React.FC<DisplayDialogsProps> = ({
 				isOpen={isDeleteDialogOpen}
 				onOpenChange={setIsDeleteDialogOpen}
 				onConfirm={onDeleteConfirm}
+			/>
+			<AiEnhanceDialog
+				isOpen={isAiDialogOpen}
+				onClose={() => setIsAiDialogOpen(false)}
+				selectedText={selectedText}
+				onApply={applyEnhancedText}
+				initialInstruction={prefillInstruction}
 			/>
 		</Suspense>
 	);

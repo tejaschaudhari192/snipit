@@ -20,6 +20,7 @@ export interface AiEnhanceDialogProps {
 	onClose: () => void;
 	selectedText: string;
 	onApply: (newText: string) => void;
+	initialInstruction?: string;
 }
 
 export const AiEnhanceDialog = ({
@@ -27,21 +28,22 @@ export const AiEnhanceDialog = ({
 	onClose,
 	selectedText,
 	onApply,
+	initialInstruction = "",
 }: AiEnhanceDialogProps) => {
 	const { t } = useTranslation();
 	const apiHelpers = useApiHelpers();
-	const [instruction, setInstruction] = useState("");
+	const [instruction, setInstruction] = useState(initialInstruction);
 	const [isLoading, setIsLoading] = useState(false);
 	const [result, setResult] = useState<string | null>(null);
 
 	// Reset state when dialog opens
 	useEffect(() => {
 		if (isOpen) {
-			setInstruction("");
+			setInstruction(initialInstruction);
 			setResult(null);
 			setIsLoading(false);
 		}
-	}, [isOpen]);
+	}, [isOpen, initialInstruction]);
 
 	const handleEnhance = async () => {
 		if (!instruction.trim()) {
