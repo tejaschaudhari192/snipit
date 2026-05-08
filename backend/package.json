@@ -24,11 +24,13 @@
 	"dependencies": {
 		"@supabase/supabase-js": "^2.105.0",
 		"@types/cors": "^2.8.19",
+		"@types/dagre": "^0.7.54",
 		"@types/morgan": "^1.9.10",
 		"bcryptjs": "^3.0.3",
 		"cookie-parser": "^1.4.7",
 		"cors": "^2.8.6",
 		"crypto-random-string": "^5.0.0",
+		"dagre": "^0.8.5",
 		"dotenv": "^17.4.2",
 		"express": "^5.2.1",
 		"google-auth-library": "^10.6.2",

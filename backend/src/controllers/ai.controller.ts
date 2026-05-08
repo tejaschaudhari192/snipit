@@ -45,6 +45,17 @@ class AiController {
 		);
 		res.json({ completion });
 	}
+
+	async generateDrawContent(req: Request, res: Response) {
+		const { description } = req.body;
+
+		if (!description) {
+			return res.status(400).json({ error: "Description is required" });
+		}
+
+		const elements = await this.aiService.generateDrawContent(description);
+		res.json({ elements });
+	}
 }
 
 export default AiController;

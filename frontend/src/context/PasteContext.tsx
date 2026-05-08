@@ -63,7 +63,7 @@ interface PasteContextType {
 
 	// File Upload Actions
 	uploadFile: (file: File) => Promise<UploadState>;
-	setFileUpload: (file: File) => void;
+	setFileUpload: (file: File | null) => void;
 	resetFileUpload: () => void;
 
 	// Complex actions

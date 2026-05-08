@@ -100,6 +100,13 @@ export const useApiHelpers = () => {
 			return response.data;
 		};
 
+		const generateDrawContent = async (
+			description: string,
+		): Promise<{ elements: string }> => {
+			const response = await api.post("/ai/draw", { description });
+			return response.data;
+		};
+
 		const getUserPastes = async (
 			page: number = 1,
 			limit: number = 10,
@@ -157,6 +164,7 @@ export const useApiHelpers = () => {
 			detectLanguage,
 			enhanceContent,
 			getAutocomplete,
+			generateDrawContent,
 			getUserPastes,
 			getUserStats,
 			updateMe,

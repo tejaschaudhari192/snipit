@@ -20,5 +20,9 @@ router.post(
 	"/autocomplete",
 	catchAsync(aiController.autocomplete.bind(aiController)),
 );
+router.post(
+	"/draw",
+	catchAsync(aiController.generateDrawContent.bind(aiController)),
+);
 
 export default router;

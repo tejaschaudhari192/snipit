@@ -32,6 +32,7 @@ class AuthService {
 		const { email, password } = credentials;
 		const user = await User.findOne({ email });
 		if (user && (await bcrypt.compare(password, user.password as string))) {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const { password: _, ...userWithoutPassword } = user.toObject();
 			return userWithoutPassword;
 		}

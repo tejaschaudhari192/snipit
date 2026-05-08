@@ -219,7 +219,7 @@ router.get("/stream", async (req, res) => {
 		checkAI,
 	);
 
-	performCheck(
+	const emailPromise = performCheck(
 		"Email Server",
 		"Verifying Email Server...",
 		"mail",
@@ -230,6 +230,7 @@ router.get("/stream", async (req, res) => {
 		databasePromise,
 		storagePromise,
 		aiPromise,
+		emailPromise,
 	]);
 
 	if (results[0] === "error") {

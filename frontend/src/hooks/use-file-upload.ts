@@ -138,18 +138,6 @@ export const useFileUpload = () => {
 		}
 	}, []);
 
-	const setFile = useCallback((file: File) => {
-		setUploadState((prev) => ({
-			...prev,
-			fileName: file.name,
-			fileSize: file.size,
-			fileMimeType: file.type,
-			error: null,
-			fileUrl: null,
-			progress: 0,
-		}));
-	}, []);
-
 	const reset = useCallback(() => {
 		setUploadState({
 			isUploading: false,
@@ -161,6 +149,25 @@ export const useFileUpload = () => {
 			fileMimeType: null,
 		});
 	}, []);
+
+	const setFile = useCallback(
+		(file: File | null) => {
+			if (!file) {
+				reset();
+				return;
+			}
+			setUploadState((prev) => ({
+				...prev,
+				fileName: file.name,
+				fileSize: file.size,
+				fileMimeType: file.type,
+				error: null,
+				fileUrl: null,
+				progress: 0,
+			}));
+		},
+		[reset],
+	);
 
 	return {
 		...uploadState,

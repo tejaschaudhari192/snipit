@@ -1,36 +1,39 @@
-import { useRef, useState, useEffect, lazy, Suspense } from "react";
-import { io, type Socket } from "socket.io-client";
-import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
 import {
-	type OnMount,
-	type BeforeMount,
-	type Monaco,
-} from "@monaco-editor/react";
-import type { editor } from "monaco-editor";
-import { Code2 } from "lucide-react";
+	useRef,
+	useState,
+	useEffect,
+	lazy,
+	Suspense,
+	useCallback,
+} from "react";
+import { type Monaco } from "@monaco-editor/react";
+import { type editor } from "monaco-editor";
+import { useTranslation } from "react-i18next";
+import { Code2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
-import { playErrorSound, isSnipitDrawing } from "@/utils";
+import { playErrorSound } from "@/utils";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { CONFIG } from "@/configurations";
-import { useLanguageDetection } from "@/hooks/use-language-detection";
 import { usePaste } from "@/context/PasteContext";
 import { useAiEnhance } from "@/hooks/use-ai-enhance";
 import { useHomeUrlSync } from "@/hooks/use-home-url-sync";
 import { usePasteSubmission } from "@/hooks/use-paste-submission";
 import { useSnippets } from "@/context/SnippetContext";
 import { usePageTitle } from "@/hooks/use-page-title";
-import { useTerminalLayout } from "@/hooks/use-terminal-layout";
+import { useAiDraw } from "@/hooks/use-ai-draw";
 import { TerminalContainer } from "@/components/terminal/terminal-container";
 import { ResizablePanels } from "@/components/common/resizable-panels";
-
 import { useAiAutocomplete } from "@/hooks/use-ai-autocomplete";
 import { AiAutocompleteToggle } from "@/components/editor/ai-autocomplete-toggle";
 import { storage } from "@/utils/storage";
-
+import { AiDrawDialog } from "@/components/editor/ai-draw-dialog";
 import { MainToolbar } from "@/components/home/main-toolbar";
+import { usePasteHandlers } from "@/hooks/use-paste-handlers";
+import { useTerminalExecution } from "@/hooks/use-terminal-execution";
+
 const LanguageSelector = lazy(() =>
 	import("@/components/editor/language-selector").then((m) => ({
 		default: m.LanguageSelector,
@@ -76,14 +79,8 @@ const HomePage = () => {
 	const { t } = useTranslation();
 	usePageTitle("common.snipit", "Snipit");
 	const { history, deleteSnippet } = useSnippets();
-	const historyItems = history.items;
 
-	// Refs
-	const userInputRef = useRef<HTMLTextAreaElement>(null);
-	const valueRef = useRef("");
-	const previousLengthRef = useRef(0);
-	const hasDetectedRef = useRef(false);
-
+	// Paste Context
 	const {
 		expiresTime,
 		setExpiresTime,
@@ -92,6 +89,7 @@ const HomePage = () => {
 		language,
 		setLanguage,
 		textValue,
+		setTextValue,
 		setPassword,
 		idTypeTab,
 		customId,
@@ -105,14 +103,11 @@ const HomePage = () => {
 		onContentTypeChange,
 	} = usePaste();
 
+	// UI States
 	const [shortenedResult, setShortenedResult] = useState<{
 		id: string;
 		url: string;
 	} | null>(null);
-
-	const { handleSubmit, pendingFile, setPendingFile } =
-		usePasteSubmission(setShortenedResult);
-
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [isCustomExpiryDialogOpen, setIsCustomExpiryDialogOpen] =
 		useState(false);
@@ -120,19 +115,22 @@ const HomePage = () => {
 		new Date(Date.now() + 24 * 60 * 60 * 1000),
 	);
 	const [isFullscreen, setIsFullscreen] = useState(false);
-	const [isTerminalOpen, setIsTerminalOpen] = useState(false);
-	const { terminalPosition, setTerminalPosition } = useTerminalLayout();
-
 	const [dialogError, setDialogError] = useState("");
-	const [socket, setSocket] = useState<Socket | null>(null);
+	const [drawRevision, setDrawRevision] = useState(0);
 
+	// Refs
+	const userInputRef = useRef<HTMLTextAreaElement>(null);
+	const editorInstanceRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+	const monacoInstanceRef = useRef<Monaco | null>(null);
+
+	// Custom Hooks
+	const { handleSubmit, pendingFile, setPendingFile } =
+		usePasteSubmission(setShortenedResult);
 	const {
 		fontSize,
 		ref: editorContainerRef,
 		setFontSize,
 	} = usePinchZoom(CONFIG.defaults.fontSize);
-
-	const { isDetecting, detectLanguage } = useLanguageDetection();
 
 	const {
 		isAiDialogOpen,
@@ -147,14 +145,48 @@ const HomePage = () => {
 		storage.get(CONFIG.storageKeys.aiAutocomplete, false),
 	);
 
-	const editorInstanceRef = useRef<editor.IStandaloneCodeEditor | null>(null);
-	const monacoInstanceRef = useRef<Monaco | null>(null);
-
 	const { setupAutocomplete } = useAiAutocomplete({
 		language,
 		enabled: isAiAutocompleteEnabled,
 	});
 
+	const { isAiDrawDialogOpen, setIsAiDrawDialogOpen, handleAiDrawApply } =
+		useAiDraw({
+			drawRevision,
+			setDrawRevision,
+			setTextValue,
+		});
+
+	const {
+		isTerminalOpen,
+		setIsTerminalOpen,
+		socket,
+		terminalPosition,
+		setTerminalPosition,
+		toggleTerminal,
+	} = useTerminalExecution({ textValue, language });
+
+	const {
+		handlePaste,
+		handleEditorMount,
+		handleLanguageDetection,
+		isDetecting,
+		valueRef,
+		hasDetectedRef,
+	} = usePasteHandlers({
+		isSubmitting,
+		isUploading,
+		contentType,
+		setContentType,
+		setPendingFile,
+		setFileUpload,
+		textValue,
+		setLanguage,
+		setupAiAction,
+		setupAutocomplete,
+	});
+
+	// Sync Autocomplete
 	useEffect(() => {
 		storage.set(CONFIG.storageKeys.aiAutocomplete, isAiAutocompleteEnabled);
 		if (editorInstanceRef.current && monacoInstanceRef.current) {
@@ -165,6 +197,7 @@ const HomePage = () => {
 		}
 	}, [isAiAutocompleteEnabled, setupAutocomplete]);
 
+	// URL Sync
 	useHomeUrlSync({
 		contentType,
 		isFullscreen,
@@ -172,68 +205,15 @@ const HomePage = () => {
 		setIsFullscreen,
 	});
 
-	// Keep valueRef in sync with context's textValue
+	// Handle File Context
 	useEffect(() => {
-		previousLengthRef.current = valueRef.current.trim().length;
-		valueRef.current = textValue;
-	}, [textValue]);
-
-	// Effects
-	useEffect(() => {
-		const handleGlobalPaste = (e: ClipboardEvent) => {
-			if (isSubmitting || isUploading) return;
-
-			const textData =
-				e.clipboardData?.getData("text/plain") ||
-				e.clipboardData?.getData("text");
-			if (textData && isSnipitDrawing(textData)) {
-				if (contentType !== "draw") setContentType("draw");
-				return;
-			}
-
-			if (contentType === "draw") return;
-
-			const items = e.clipboardData?.items;
-			if (!items) return;
-
-			for (const item of items) {
-				if (item.kind === "file") {
-					const file = item.getAsFile();
-					if (file) {
-						setContentType("file");
-						setPendingFile(file);
-						setFileUpload(file);
-						toast.success(
-							t(
-								"home.file_selected_via_paste",
-								"File selected via paste!",
-							),
-						);
-						break;
-					}
-				}
-			}
-		};
-
-		document.addEventListener("paste", handleGlobalPaste);
-		return () => {
-			document.removeEventListener("paste", handleGlobalPaste);
-		};
-	}, [
-		isSubmitting,
-		isUploading,
-		contentType,
-		t,
-		setFileUpload,
-		setContentType,
-		setPendingFile,
-	]);
-
-	useEffect(() => {
-		if (contentType === "file") {
-			setExpiresTime("1d");
-		}
+		if (contentType === "file") setExpiresTime("1d");
+		setShortenedResult(null);
 	}, [contentType, setExpiresTime]);
+
+	useEffect(() => {
+		if (textValue === "" && shortenedResult) setShortenedResult(null);
+	}, [textValue, shortenedResult]);
 
 	useEffect(() => {
 		if (!pendingFile) {
@@ -245,32 +225,7 @@ const HomePage = () => {
 		return () => URL.revokeObjectURL(objectUrl);
 	}, [pendingFile]);
 
-	useEffect(() => {
-		const socketUrl = CONFIG.apiBaseUrl
-			? CONFIG.apiBaseUrl.replace(/\/api(\/v\d+)?\/?$/, "")
-			: "";
-		const s = io(socketUrl, { withCredentials: true });
-		setSocket(s);
-
-		return () => {
-			s.disconnect();
-			setSocket(null);
-		};
-	}, []);
-
-	// Handlers
-	const handleDeleteHistory = deleteSnippet;
-
-	useEffect(() => {
-		setShortenedResult(null);
-	}, [contentType]);
-
-	useEffect(() => {
-		if (textValue === "" && shortenedResult) {
-			setShortenedResult(null);
-		}
-	}, [textValue, shortenedResult]);
-
+	// Actions
 	const handleQuickPaste = async () => {
 		const hasContent =
 			contentType === "file"
@@ -281,23 +236,20 @@ const HomePage = () => {
 		if (!hasContent) {
 			playErrorSound();
 			toast.warning(
-				contentType === "file"
-					? t("messages.empty_file", "Please select a file first!")
-					: t(
-							"messages.empty_content",
-							"Please enter some content first!",
-						),
+				t(
+					contentType === "file"
+						? "messages.empty_file"
+						: "messages.empty_content",
+				),
 			);
 			return;
 		}
-
-		const selectedId =
-			idTypeTab === "dynamic" ? customId.trim() : undefined;
-		const result = await handleSubmit(idTypeTab, selectedId, {});
-
-		if (result !== true) {
-			toast.error(result as string);
-		}
+		const result = await handleSubmit(
+			idTypeTab,
+			idTypeTab === "dynamic" ? customId.trim() : undefined,
+			{},
+		);
+		if (result !== true) toast.error(result as string);
 	};
 
 	const handleCollaborative = async () => {
@@ -310,75 +262,34 @@ const HomePage = () => {
 		if (!hasContent) {
 			playErrorSound();
 			toast.warning(
-				contentType === "file"
-					? t("messages.empty_file", "Please select a file first!")
-					: t(
-							"messages.empty_content",
-							"Please enter some content first!",
-						),
+				t(
+					contentType === "file"
+						? "messages.empty_file"
+						: "messages.empty_content",
+				),
 			);
 			return;
 		}
-		const selectedId =
-			idTypeTab === "dynamic" ? customId.trim() : undefined;
-		const result = await handleSubmit(idTypeTab, selectedId, {
-			visibility: "public",
-			editPermission: "public",
-			publicRole: "editor",
-			isCollaborative: true,
-		});
-		if (result !== true) {
-			toast.error(result as string);
-		}
-	};
-
-	const handleLanguageDetection = async (content: string) => {
-		if (hasDetectedRef.current) return;
-
-		if (isSnipitDrawing(content)) {
-			hasDetectedRef.current = true;
-			setContentType("draw");
-			return;
-		}
-
-		hasDetectedRef.current = true;
-		const result = await detectLanguage(content);
-		if (result) {
-			setLanguage(result.language);
-			if (result.isCode) {
-				setContentType("code");
-			} else {
-				setContentType("text");
-			}
-		}
-	};
-
-	const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
-		if (valueRef.current.trim() !== "") return;
-		handleLanguageDetection(
-			e.clipboardData.getData("text/plain") ||
-				e.clipboardData.getData("text"),
+		const result = await handleSubmit(
+			idTypeTab,
+			idTypeTab === "dynamic" ? customId.trim() : undefined,
+			{
+				visibility: "public",
+				editPermission: "public",
+				publicRole: "editor",
+				isCollaborative: true,
+			},
 		);
-	};
-
-	const handleEditorMount: OnMount = (editor, monaco) => {
-		editorInstanceRef.current = editor;
-		monacoInstanceRef.current = monaco;
-		setupAiAction(editor, monaco);
-		setupAutocomplete(editor, monaco);
-		editor.onDidPaste(() => {
-			const value = editor.getValue();
-			if (previousLengthRef.current === 0) {
-				handleLanguageDetection(value);
-			}
-		});
+		if (result !== true) toast.error(result as string);
 	};
 
 	const handleDialogSubmit = async () => {
 		setDialogError("");
-		const selectedId =
-			idTypeTab === "dynamic" ? customId.trim() : undefined;
-		const result = await handleSubmit(idTypeTab, selectedId, {});
+		const result = await handleSubmit(
+			idTypeTab,
+			idTypeTab === "dynamic" ? customId.trim() : undefined,
+			{},
+		);
 		if (result === true) {
 			if (idTypeTab === "dynamic") setCustomId("");
 			setPassword("");
@@ -387,12 +298,17 @@ const HomePage = () => {
 		}
 	};
 
-	const handleEditorWillMount: BeforeMount = (monaco) =>
-		defineMonacoThemes(monaco);
+	const onEditorMount = useCallback(
+		(editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
+			editorInstanceRef.current = editor;
+			monacoInstanceRef.current = monaco;
+			handleEditorMount(editor, monaco);
+		},
+		[handleEditorMount],
+	);
 
 	return (
 		<div className="relative flex-1 flex flex-col bg-background overflow-hidden">
-			{/* Toolbar: fixed height, does not grow */}
 			<div className="relative z-10 flex flex-col gap-1.5 my-1 mx-2 md:my-1.5 md:mx-4 shrink-0">
 				<MainToolbar
 					contentType={contentType}
@@ -411,16 +327,7 @@ const HomePage = () => {
 					isCode={contentType === "code"}
 					language={language}
 					isTerminalOpen={isTerminalOpen}
-					onToggleTerminal={() => {
-						const opening = !isTerminalOpen;
-						setIsTerminalOpen(opening);
-						if (opening && socket && textValue) {
-							socket.emit("run-code", {
-								code: textValue,
-								language,
-							});
-						}
-					}}
+					onToggleTerminal={toggleTerminal}
 				>
 					{(isDetecting || contentType === "code") && (
 						<div className="flex items-center gap-2">
@@ -444,10 +351,7 @@ const HomePage = () => {
 										hasDetectedRef.current = false;
 										handleLanguageDetection(textValue);
 									}}
-									title={t(
-										"home.auto_detecting",
-										"Auto-detect language",
-									)}
+									title={t("home.auto_detecting")}
 								>
 									<Code2 className="h-4 w-4 text-muted-foreground" />
 								</Button>
@@ -455,26 +359,36 @@ const HomePage = () => {
 						</div>
 					)}
 
-					{contentType !== "link" &&
-						contentType !== "file" &&
-						contentType !== "draw" && (
-							<>
-								<Suspense
-									fallback={
-										<div className="w-20 h-9 skeleton rounded-lg" />
-									}
-								>
-									<FontSizeControls
-										fontSize={fontSize}
-										setFontSize={setFontSize}
-									/>
-								</Suspense>
-								<AiAutocompleteToggle
-									enabled={isAiAutocompleteEnabled}
-									onToggle={setIsAiAutocompleteEnabled}
+					{contentType === "draw" && (
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={() => setIsAiDrawDialogOpen(true)}
+							className="gap-2 h-9 text-primary border-primary/20 bg-primary/5 hover:bg-primary/10 shadow-lg shadow-primary/5 shrink-0"
+						>
+							<Sparkles className="h-4 w-4" />
+							<span>{t("ai.draw_title", "Ask AI to Draw")}</span>
+						</Button>
+					)}
+
+					{["text", "code"].includes(contentType) && (
+						<>
+							<Suspense
+								fallback={
+									<div className="w-20 h-9 skeleton rounded-lg" />
+								}
+							>
+								<FontSizeControls
+									fontSize={fontSize}
+									setFontSize={setFontSize}
 								/>
-							</>
-						)}
+							</Suspense>
+							<AiAutocompleteToggle
+								enabled={isAiAutocompleteEnabled}
+								onToggle={setIsAiAutocompleteEnabled}
+							/>
+						</>
+					)}
 				</MainToolbar>
 			</div>
 
@@ -491,12 +405,10 @@ const HomePage = () => {
 				/>
 			</Suspense>
 
-			{/* Editor + Terminal: takes all remaining space */}
 			<div className="flex-1 flex min-h-0 min-w-0 w-full h-full overflow-hidden">
 				{(() => {
 					const isTerminalVisible =
 						isTerminalOpen && contentType === "code";
-
 					const editorPanel = (
 						<div className="flex-1 flex flex-col min-h-0 min-w-0 overflow-hidden h-full w-full">
 							<Suspense fallback={<EditorSkeleton />}>
@@ -504,10 +416,8 @@ const HomePage = () => {
 									fontSize={fontSize}
 									editorContainerRef={editorContainerRef}
 									userInputRef={userInputRef}
-									handleEditorWillMount={
-										handleEditorWillMount
-									}
-									handleEditorMount={handleEditorMount}
+									handleEditorWillMount={defineMonacoThemes}
+									handleEditorMount={onEditorMount}
 									handlePaste={handlePaste}
 									isFullscreen={isFullscreen}
 									setIsFullscreen={setIsFullscreen}
@@ -521,8 +431,9 @@ const HomePage = () => {
 									}}
 									previewUrl={previewUrl}
 									shortenedResult={shortenedResult}
-									historyItems={historyItems}
-									onDeleteHistoryItem={handleDeleteHistory}
+									historyItems={history.items}
+									onDeleteHistoryItem={deleteSnippet}
+									drawRevision={drawRevision}
 								/>
 							</Suspense>
 						</div>
@@ -542,9 +453,7 @@ const HomePage = () => {
 						/>
 					);
 
-					if (!isTerminalVisible) {
-						return editorPanel;
-					}
+					if (!isTerminalVisible) return editorPanel;
 
 					return (
 						<ResizablePanels
@@ -574,6 +483,11 @@ const HomePage = () => {
 					selectedText={selectedText}
 					onApply={applyEnhancedText}
 					initialInstruction={prefillInstruction}
+				/>
+				<AiDrawDialog
+					isOpen={isAiDrawDialogOpen}
+					onClose={() => setIsAiDrawDialogOpen(false)}
+					onApply={handleAiDrawApply}
 				/>
 			</Suspense>
 		</div>

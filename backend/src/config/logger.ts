@@ -1,4 +1,10 @@
-import { createLogger, format, transports, addColors } from "winston";
+import {
+	createLogger,
+	format,
+	transports,
+	addColors,
+	type Logger,
+} from "winston";
 import "winston-daily-rotate-file";
 
 const { combine, timestamp, printf, colorize, errors, json } = format;
@@ -68,6 +74,11 @@ const logger = createLogger({
 			format: fileFormat,
 		}),
 	],
-}) as any;
+}) as unknown as Logger & {
+	crit: (message: string, ...meta: any[]) => Logger;
+	notice: (message: string, ...meta: any[]) => Logger;
+	success: (message: string, ...meta: any[]) => Logger;
+	trace: (message: string, ...meta: any[]) => Logger;
+};
 
 export default logger;

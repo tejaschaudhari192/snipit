@@ -36,9 +36,7 @@ class CollaboratorController {
 			}
 
 			const user = await User.findOne({ email });
-			const collaborator = await this.pasteService.addCollaborators(id, [
-				{ email, role },
-			]);
+			await this.pasteService.addCollaborators(id, [{ email, role }]);
 
 			logger.info(
 				`Collaborator ${email} added to paste ${id} with role ${role}`,

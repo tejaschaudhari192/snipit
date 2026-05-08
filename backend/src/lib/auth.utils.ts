@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { Response } from "express";
 import jwt from "jsonwebtoken";
 import configurations from "@/config/configurations.js";
 

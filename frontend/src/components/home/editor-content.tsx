@@ -1,5 +1,27 @@
-import { type BeforeMount, type OnMount } from "@monaco-editor/react";
-import { lazy, Suspense } from "react";
+import { type BeforeMount, type OnMount, Editor } from "@monaco-editor/react";
+import {
+	lazy,
+	Suspense,
+	useEffect,
+	useState,
+	useRef,
+	type RefObject,
+	useCallback,
+	memo,
+} from "react";
+import { useTranslation } from "react-i18next";
+import { usePaste } from "@/context/PasteContext";
+import { useTheme } from "@/hooks/use-theme";
+import { EditorToolbar } from "@/components/common/editor-toolbar";
+import { FileUploadView } from "./file-upload-view";
+import { LinkResultView } from "./link-result-view";
+import { cn } from "@/utils";
+import { ResizableSplitPane } from "@/components/common/resizable-split-pane";
+import { useEditorLayout } from "@/hooks/use-editor-layout";
+import { useFileDrop } from "@/hooks/use-file-drop";
+import type { PasteData } from "@/types";
+import { Textarea } from "@/components/ui/textarea";
+
 const CollabDraw = lazy(() =>
 	import("@/components/display/collab-draw").then((m) => ({
 		default: m.CollabDraw,
@@ -10,29 +32,6 @@ const MarkdownDisplay = lazy(() =>
 		default: m.MarkdownDisplay,
 	})),
 );
-const Editor = lazy(() =>
-	import("@monaco-editor/react").then((m) => ({ default: m.Editor })),
-);
-import { Textarea } from "@/components/ui/textarea";
-import { useTranslation } from "react-i18next";
-import { usePaste } from "@/context/PasteContext";
-import { useTheme } from "@/hooks/use-theme";
-import { EditorToolbar } from "@/components/common/editor-toolbar";
-import { FileUploadView } from "./file-upload-view";
-import { LinkResultView } from "./link-result-view";
-import {
-	useEffect,
-	useState,
-	useRef,
-	type RefObject,
-	useCallback,
-	memo,
-} from "react";
-import { cn } from "@/utils";
-
-import { ResizableSplitPane } from "@/components/common/resizable-split-pane";
-import { useMarkdownLayout } from "@/hooks/use-markdown-layout";
-import type { PasteData } from "@/types";
 
 interface EditorContentProps {
 	fontSize: number;
@@ -46,12 +45,10 @@ interface EditorContentProps {
 	previewUrl?: string | null;
 	isFullscreen: boolean;
 	setIsFullscreen: (val: boolean | ((p: boolean) => boolean)) => void;
-	shortenedResult?: {
-		id: string;
-		url: string;
-	} | null;
+	shortenedResult?: { id: string; url: string } | null;
 	historyItems?: Array<PasteData>;
 	onDeleteHistoryItem?: (id: string) => void;
+	drawRevision?: number;
 }
 
 export const EditorContent = memo(
@@ -70,6 +67,7 @@ export const EditorContent = memo(
 		shortenedResult,
 		historyItems = [],
 		onDeleteHistoryItem,
+		drawRevision = 0,
 	}: EditorContentProps) => {
 		const {
 			contentType,
@@ -85,8 +83,17 @@ export const EditorContent = memo(
 		const { theme } = useTheme();
 		const { t } = useTranslation();
 		const containerRef = useRef<HTMLDivElement>(null);
-		const [isWindowFullscreen, setIsWindowFullscreen] = useState(false);
-		const [mdLayoutMode, setMdLayoutMode] = useMarkdownLayout();
+
+		const {
+			isWindowFullscreen,
+			mdLayoutMode,
+			setMdLayoutMode,
+			toggleFullscreen,
+			toggleWindowFullscreen,
+		} = useEditorLayout({ isFullscreen, setIsFullscreen, containerRef });
+
+		const { handleDragOver, handleDrop, handleFileInputChange } =
+			useFileDrop({ onFileSelect });
 
 		const [isHistoryVisible, setIsHistoryVisible] = useState(() => {
 			if (typeof window !== "undefined") {
@@ -103,80 +110,11 @@ export const EditorContent = memo(
 			);
 		}, [isHistoryVisible]);
 
-		useEffect(() => {
-			const handleFullscreenChange = () => {
-				setIsWindowFullscreen(!!document.fullscreenElement);
-			};
-			document.addEventListener(
-				"fullscreenchange",
-				handleFullscreenChange,
-			);
-			return () =>
-				document.removeEventListener(
-					"fullscreenchange",
-					handleFullscreenChange,
-				);
-		}, []);
-
-		useEffect(() => {
-			const handleKeyDown = (e: KeyboardEvent) => {
-				if (e.key === "Escape") {
-					if (isWindowFullscreen) {
-						document
-							.exitFullscreen()
-							.catch((err) => console.error(err));
-					} else if (isFullscreen) {
-						setIsFullscreen(false);
-					}
-				}
-			};
-			window.addEventListener("keydown", handleKeyDown);
-			return () => window.removeEventListener("keydown", handleKeyDown);
-		}, [isFullscreen, isWindowFullscreen, setIsFullscreen]);
-
-		const toggleFullscreen = () => {
-			setIsFullscreen((prev) => !prev);
-		};
-
-		const toggleWindowFullscreen = () => {
-			if (!document.fullscreenElement) {
-				containerRef.current?.requestFullscreen().catch((err) => {
-					console.error(
-						"Error attempting to enable fullscreen:",
-						err,
-					);
-				});
-			} else {
-				document.exitFullscreen().catch((err) => console.error(err));
-			}
-		};
-
-		const handleDragOver = (e: React.DragEvent) => {
-			e.preventDefault();
-			e.stopPropagation();
-		};
-
-		const handleDrop = (e: React.DragEvent) => {
-			e.preventDefault();
-			e.stopPropagation();
-			const file = e.dataTransfer.files[0];
-			if (file && onFileSelect) {
-				onFileSelect(file);
-			}
-		};
-
-		const handleFileInputChange = (
-			e: React.ChangeEvent<HTMLInputElement>,
-		) => {
-			const file = e.target.files?.[0];
-			if (file && onFileSelect) {
-				onFileSelect(file);
-			}
-		};
-
 		const stableRefCallback = useCallback(
 			(node: HTMLDivElement | null) => {
-				containerRef.current = node;
+				(
+					containerRef as React.MutableRefObject<HTMLDivElement | null>
+				).current = node;
 				if (contentType !== "draw" && editorContainerRef) {
 					editorContainerRef(node);
 				}
@@ -219,6 +157,7 @@ export const EditorContent = memo(
 								}
 							>
 								<CollabDraw
+									key={`draw-${drawRevision}`}
 									isEdit={true}
 									content={textValue}
 									onContentChange={setTextValue}

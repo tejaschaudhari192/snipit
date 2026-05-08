@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { ErrorBoundary } from "@/components/common/error-boundary";
 import { Excalidraw } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
 import type { Socket } from "socket.io-client";
@@ -73,6 +74,8 @@ export const CollabDraw = ({
 	const lastAppStateRef = useRef<{
 		theme?: string;
 		viewBackgroundColor?: string;
+		scrollX?: number;
+		scrollY?: number;
 	}>({});
 	const initializedRef = useRef(false);
 
@@ -97,7 +100,11 @@ export const CollabDraw = ({
 						data.appState?.theme !==
 							lastAppStateRef.current.theme ||
 						data.appState?.viewBackgroundColor !==
-							lastAppStateRef.current.viewBackgroundColor;
+							lastAppStateRef.current.viewBackgroundColor ||
+						data.appState?.scrollX !==
+							lastAppStateRef.current.scrollX ||
+						data.appState?.scrollY !==
+							lastAppStateRef.current.scrollY;
 
 					// Force sync if not yet initialized OR if content actually changed
 					if (
@@ -112,6 +119,11 @@ export const CollabDraw = ({
 								ExcalidrawAPI["updateScene"]
 							>[0]["appState"],
 						});
+						if (elementsChanged && data.elements.length > 0) {
+							excalidrawAPI.scrollToContent(data.elements, {
+								fitToViewport: true,
+							});
+						}
 						if (data.files) {
 							excalidrawAPI.addFiles(Object.values(data.files));
 						}
@@ -121,6 +133,8 @@ export const CollabDraw = ({
 								theme: data.appState.theme,
 								viewBackgroundColor:
 									data.appState.viewBackgroundColor,
+								scrollX: data.appState.scrollX,
+								scrollY: data.appState.scrollY,
 							};
 						}
 						initializedRef.current = true;
@@ -404,32 +418,34 @@ export const CollabDraw = ({
 	return (
 		<div className="w-full h-full relative touch-none">
 			<div className="absolute inset-0 rounded-2xl overflow-hidden shadow-sm touch-none">
-				<Excalidraw
-					excalidrawAPI={(api) => setExcalidrawAPI(api)}
-					initialData={initialData}
-					onChange={handleChange}
-					onPointerUpdate={handlePointerUpdate}
-					viewModeEnabled={!isEdit}
-					theme={theme === "dark" ? "dark" : "light"}
-					langCode={
-						i18n.language.startsWith("hi")
-							? "hi-IN"
-							: i18n.language.startsWith("mr")
-								? "mr-IN"
-								: i18n.language.startsWith("ja")
-									? "ja-JP"
-									: i18n.language.startsWith("de")
-										? "de-DE"
-										: i18n.language
-					}
-					UIOptions={{
-						canvasActions: {
-							loadScene: false,
-							export: false,
-							saveAsImage: true,
-						},
-					}}
-				/>
+				<ErrorBoundary>
+					<Excalidraw
+						excalidrawAPI={(api) => setExcalidrawAPI(api)}
+						initialData={initialData}
+						onChange={handleChange}
+						onPointerUpdate={handlePointerUpdate}
+						viewModeEnabled={!isEdit}
+						theme={theme === "dark" ? "dark" : "light"}
+						langCode={
+							i18n.language.startsWith("hi")
+								? "hi-IN"
+								: i18n.language.startsWith("mr")
+									? "mr-IN"
+									: i18n.language.startsWith("ja")
+										? "ja-JP"
+										: i18n.language.startsWith("de")
+											? "de-DE"
+											: i18n.language
+						}
+						UIOptions={{
+							canvasActions: {
+								loadScene: false,
+								export: false,
+								saveAsImage: true,
+							},
+						}}
+					/>
+				</ErrorBoundary>
 			</div>
 		</div>
 	);

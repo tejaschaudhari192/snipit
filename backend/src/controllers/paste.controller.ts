@@ -113,7 +113,8 @@ class PasteController {
 			if (result.password) {
 				const isOwner = role === "admin";
 				if (!isOwner) {
-					const { content: _, password: __, ...rest } = responseData;
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
+					const { content, password, ...rest } = responseData;
 					return res.json({ ...rest, isPasswordProtected: true });
 				}
 			}
