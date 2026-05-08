@@ -138,7 +138,6 @@ export const usePasteSubmission = (
 				t("messages.snippet_created", {
 					idType: selectedIdType,
 					id: `/${data.id}`,
-					defaultValue: `Snippet created: /${data.id}`,
 				}),
 				{ position: "bottom-right" },
 			);

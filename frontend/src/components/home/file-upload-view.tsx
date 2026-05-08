@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/utils";
-import { CONFIG } from "@/configurations";
 import { FileTypeIcon } from "@/components/common/file-type-icon";
 import FilePreview from "../common/file-preview";
 import { ShimmerSection } from "@/components/common/shimmer-section";
@@ -184,21 +183,18 @@ export const FileUploadView = ({
 						<label
 							className={cn(
 								"relative flex flex-col items-center justify-center gap-6 p-10 min-h-[300px] rounded-2xl border-2 border-dashed cursor-pointer transition-all duration-200",
-								"border-primary/20 bg-background",
-								"hover:border-primary/40 hover:bg-primary/5",
+								"hover:bg-primary/5 hover:border-primary/30 group/upload",
 							)}
 						>
 							<input
 								type="file"
-								className="absolute inset-0 opacity-0 cursor-pointer z-20"
+								className="hidden"
 								onChange={handleFileInputChange}
 							/>
-
-							<div className="p-2 rounded-xl bg-primary/10 text-primary border border-primary/20 transition-all duration-200">
-								<FileUp className="h-8 w-8" />
-							</div>
-
-							<div className="text-center space-y-2 max-w-sm">
+							<div className="flex flex-col items-center gap-4 text-center">
+								<div className="p-4 rounded-2xl bg-primary/10 text-primary group-hover/upload:scale-110 group-hover/upload:bg-primary group-hover/upload:text-white transition-all duration-500">
+									<FileUp className="h-8 w-8" />
+								</div>
 								<h2 className="text-xl font-bold tracking-tight">
 									{t("home.tab_file")}
 								</h2>
@@ -206,14 +202,10 @@ export const FileUploadView = ({
 									{t("home.file_drop")}
 								</p>
 								<p className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60 pt-2">
-									{t(
-										"home.file_max_size",
-										`Max Size: ${CONFIG.defaults.maxFileSize / (1024 * 1024)}MB`,
-									)}
+									{t("home.file_max_size")}
 								</p>
 							</div>
-
-							<div className="flex items-center gap-4 pt-4 text-[11px] font-bold text-muted-foreground/70">
+							<div className="flex items-center gap-4 text-xs font-bold text-muted-foreground/60">
 								<div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-muted/50 border border-border/50">
 									<span className="text-emerald-500">✓</span>{" "}
 									{t("home.file_features.secure")}

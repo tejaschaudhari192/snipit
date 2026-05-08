@@ -9,7 +9,7 @@ interface LabelInputSectionProps {
 	currentLabels: string[];
 	allLabels: string[];
 	onTagsChange: (tags: string[]) => void;
-	t: (key: string, defaultValue: string) => string;
+	t: (key: string) => string;
 }
 
 export const LabelInputSection = ({

@@ -18,7 +18,8 @@
 		"jump_to_desc": "Enter the snippet ID to navigate directly to it.",
 		"jump_to_placeholder": "Enter snippet ID...",
 		"account": "Account",
-		"user_greeting": "Welcome back"
+		"user_greeting": "Welcome back",
+		"guest": "Guest"
 	},
 	"common": {
 		"visibility": "Visibility",
@@ -120,7 +121,8 @@
 		"edit_labels": "Edit Labels",
 		"labels": "Labels",
 		"login_to_label": "Login to organize with labels",
-		"secure": "Secure"
+		"secure": "Secure",
+		"cancel": "Cancel"
 	},
 	"profile": {
 		"title": "Your Profile",
@@ -510,6 +512,33 @@
 		"autocomplete": "Autocomplete",
 		"ai_autocomplete_tooltip": "Autocomplete suggestions as you type. Press Tab to accept."
 	},
+	"ai_dialog": {
+		"title": "AI Editor Assistant",
+		"description": "Transform the selected text. Tell AI what you want to do.",
+		"placeholder": "e.g. Make this more professional, or summarize into key points.",
+		"cancel": "Cancel",
+		"run": "Run",
+		"replace": "Replace Text",
+		"enhancing": "Enhancing...",
+		"preview": "Result Preview",
+		"error_instruction": "Please enter an instruction.",
+		"error_failed": "Failed to get a valid response from AI.",
+		"success": "Content enhanced successfully.",
+		"actions": {
+			"professional": "Professional",
+			"simplify": "Simplify",
+			"grammar": "Fix Grammar",
+			"summarize": "Summarize",
+			"comments": "Add Comments"
+		},
+		"tooltips": {
+			"professional": "Make it professional",
+			"simplify": "Simplify the text",
+			"grammar": "Fix grammar and spelling",
+			"summarize": "Summarize the text",
+			"comments": "Add code comments"
+		}
+	},
 	"ai": {
 		"draw_title": "AI Diagram Generator",
 		"draw_description": "Describe the diagram or flowchart you want to create, and AI will generate it for you.",
@@ -518,6 +547,13 @@
 		"draw_success": "Diagram generated successfully!",
 		"draw_error": "Failed to generate diagram. Please try again.",
 		"generating": "Generating...",
-		"generate": "Generate"
+		"generate": "Generate",
+		"draw_clear_board": "Clear board before generating",
+		"mermaid_button": "Mermaid",
+		"mermaid_title": "Mermaid to Diagram",
+		"mermaid_placeholder": "Enter Mermaid syntax here (e.g., graph TD...)",
+		"mermaid_success": "Mermaid diagram imported successfully!",
+		"mermaid_error": "Failed to parse Mermaid syntax.",
+		"import": "Import"
 	}
 }

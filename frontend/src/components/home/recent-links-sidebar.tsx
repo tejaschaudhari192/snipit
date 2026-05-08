@@ -97,7 +97,6 @@ export const RecentLinksSidebar = ({
 										toast.success(
 											t("header.copied_link", {
 												id: `/${item.id}`,
-												defaultValue: `Copied /${item.id}`,
 											}),
 										);
 									}}

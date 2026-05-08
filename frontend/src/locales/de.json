@@ -17,8 +17,9 @@
 		"jump_to_desc": "Geben Sie die Snippet-ID ein, um direkt dorthin zu gelangen.",
 		"jump_to_placeholder": "Snippet-ID eingeben...",
 		"copied_link": "Copied {{id}}!",
-		"account": "Account",
-		"user_greeting": "Welcome back"
+		"account": "Konto",
+		"user_greeting": "Willkommen zurück",
+		"guest": "Gast"
 	},
 	"common": {
 		"visibility": "Sichtbarkeit",
@@ -536,5 +537,22 @@
 			"summarize": "Text zusammenfassen",
 			"comments": "Code-Kommentare hinzufügen"
 		}
+	},
+	"ai": {
+		"draw_title": "AI-Diagramm-Generator",
+		"draw_description": "Beschreiben Sie das Diagramm oder den Flussplan, den Sie erstellen möchten, und die KI wird ihn für Sie generieren.",
+		"draw_placeholder": "z. B. Ein einfacher Flussplan für den Benutzeranmeldeprozess mit Erfolgs- und Fehlerzuständen.",
+		"draw_empty_description": "Bitte beschreiben Sie, was Sie zeichnen möchten",
+		"draw_success": "Diagramm erfolgreich generiert!",
+		"draw_error": "Generierung des Diagramms fehlgeschlagen. Bitte versuchen Sie es erneut.",
+		"generating": "Wird generiert...",
+		"generate": "Generieren",
+		"draw_clear_board": "Board vor dem Generieren leeren",
+		"mermaid_button": "Mermaid",
+		"mermaid_title": "Mermaid zu Diagramm",
+		"mermaid_placeholder": "Geben Sie hier die Mermaid-Syntax ein (z. B. graph TD...)",
+		"mermaid_success": "Mermaid-Diagramm erfolgreich importiert!",
+		"mermaid_error": "Mermaid-Syntax konnte nicht analysiert werden.",
+		"import": "Importieren"
 	}
 }

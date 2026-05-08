@@ -6,6 +6,8 @@ import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useMemo, memo } from "react";
+import { FlowchartRenderer } from "./flowchart-renderer";
+import { MermaidRenderer } from "./mermaid-renderer";
 
 interface MarkdownDisplayProps {
 	content: string;
@@ -59,6 +61,15 @@ export const MarkdownDisplay = memo(
 				),
 				code: ({ node, className, children, ...props }) => {
 					const match = /language-(\w+)/.exec(className || "");
+
+					if (match && match[1] === "flowchart") {
+						return <FlowchartRenderer content={String(children)} />;
+					}
+
+					if (match && match[1] === "mermaid") {
+						return <MermaidRenderer content={String(children)} />;
+					}
+
 					return !match ? (
 						<code
 							className="bg-muted px-1.5 py-0.5 rounded-md font-mono text-[0.85em] border border-border/50"
@@ -88,7 +99,7 @@ export const MarkdownDisplay = memo(
 		return (
 			<div
 				ref={contentRef}
-				className="prose prose-sm md:prose-base max-w-none dark:prose-invert break-words p-3 md:p-10 rounded-2xl border border-border/50 bg-background/60 backdrop-blur-xl shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-500 md:max-w-7xl w-full mx-auto"
+				className="prose prose-sm md:prose-base max-w-none dark:prose-invert wrap-break-word p-3 md:p-10 rounded-2xl border border-border/50 bg-background/60 backdrop-blur-xl shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-500 md:max-w-7xl w-full mx-auto"
 				style={{ fontSize: `${fontSize}px` }}
 			>
 				<ReactMarkdown

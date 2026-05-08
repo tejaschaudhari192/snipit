@@ -394,7 +394,6 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 				toast.success(
 					t("messages.snippet_deleted_id", {
 						id: `/${id}`,
-						defaultValue: `Snippet /${id} deleted`,
 					}),
 				);
 			} catch (err) {

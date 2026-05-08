@@ -17,8 +17,9 @@
 		"jump_to_desc": "スニペットIDを入力して直接移動します。",
 		"jump_to_placeholder": "スニペットIDを入力...",
 		"copied_link": "Copied {{id}}!",
-		"account": "Account",
-		"user_greeting": "Welcome back"
+		"account": "アカウント",
+		"user_greeting": "おかえりなさい",
+		"guest": "ゲスト"
 	},
 	"common": {
 		"visibility": "公開設定",
@@ -120,7 +121,8 @@
 		"privacy": "プライバシーとセキュリティ",
 		"collaborators": "入室中",
 		"drag_to_resize": "ドラッグしてサイズ変更",
-		"me": "自分"
+		"me": "自分",
+		"cancel": "キャンセル"
 	},
 	"profile": {
 		"title": "ユーザープロフィール",
@@ -536,5 +538,22 @@
 			"summarize": "テキストを要約する",
 			"comments": "コードコメントを追加する"
 		}
+	},
+	"ai": {
+		"draw_title": "AIダイアグラムジェネレーター",
+		"draw_description": "作成したい図やフローチャートを説明してください。AIが自動的に生成します。",
+		"draw_placeholder": "例：成功と失敗の状態を含むユーザーログインプロセスの簡単なフローチャート。",
+		"draw_empty_description": "描画したい内容を説明してください",
+		"draw_success": "ダイアグラムが正常に生成されました！",
+		"draw_error": "ダイアグラムの生成に失敗しました。もう一度お試しください。",
+		"generating": "生成中...",
+		"generate": "生成",
+		"draw_clear_board": "生成前にボードをクリアする",
+		"mermaid_button": "Mermaid",
+		"mermaid_title": "Mermaidから図形へ",
+		"mermaid_placeholder": "ここにMermaid構文を入力してください（例：graph TD...）",
+		"mermaid_success": "Mermaid図形を正常にインポートしました！",
+		"mermaid_error": "Mermaid構文の解析に失敗しました。",
+		"import": "インポート"
 	}
 }

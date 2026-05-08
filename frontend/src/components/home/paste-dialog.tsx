@@ -97,9 +97,7 @@ export const PasteDialog = ({
 								<span>{t("common.auth_required")}</span>
 							</div>
 							<p className="text-sm text-muted-foreground leading-relaxed">
-								{t("common.auth_required_desc", {
-									defaultValue: `Advanced access control requires an account.`,
-								})}
+								{t("common.auth_required_desc")}
 							</p>
 							<div className="flex gap-2 pt-1">
 								<Button
