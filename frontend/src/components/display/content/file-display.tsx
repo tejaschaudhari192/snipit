@@ -52,8 +52,8 @@ export const FileDisplay = ({ paste, contentRef }: FileDisplayProps) => {
 						className="border-b"
 					/>
 				) : (
-					<div className="h-32 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent flex items-center justify-center relative overflow-hidden">
-						<div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,transparent,black)]" />
+					<div className="h-32 bg-linear-to-br from-primary/10 via-primary/5 to-transparent flex items-center justify-center relative overflow-hidden">
+						<div className="absolute inset-0 bg-grid-white/10 mask-[linear-gradient(0deg,transparent,black)]" />
 						<div className="relative transform group-hover:scale-110 transition-transform duration-500">
 							<div className="p-4 rounded-2xl bg-background shadow-xl border border-border/50">
 								<FileTypeIcon
@@ -85,7 +85,7 @@ export const FileDisplay = ({ paste, contentRef }: FileDisplayProps) => {
 						onClick={handleDownload}
 					>
 						<FileDown className="w-5 h-5" />
-						{t("common.download_file", "Download File")}
+						{t("common.download_file")}
 					</Button>
 				</CardContent>
 			</Card>

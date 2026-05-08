@@ -48,7 +48,7 @@ export const TerminalHeader = ({
 						className="group relative h-3 w-3 rounded-full bg-amber-500 hover:bg-amber-400 transition-all flex items-center justify-center shadow-inner"
 						title="Minimize"
 					>
-						<div className="h-[1px] w-1.5 bg-amber-950 opacity-0 group-hover/dots:opacity-100 transition-opacity" />
+						<div className="h-px w-1.5 bg-amber-950 opacity-0 group-hover/dots:opacity-100 transition-opacity" />
 					</button>
 					<button
 						onClick={() =>
@@ -70,7 +70,7 @@ export const TerminalHeader = ({
 					</span>
 				</div>
 
-				<div className="h-4 w-[1px] bg-white/10 mx-2" />
+				<div className="h-4 w-px bg-white/10 mx-2" />
 
 				{SUPPORTED_RUN_LANGUAGES.includes(language.toLowerCase()) &&
 					(isRunning ? (
@@ -79,7 +79,7 @@ export const TerminalHeader = ({
 							className="flex items-center gap-2 group px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-all font-bold text-rose-400 text-[11px]"
 						>
 							<Square className="h-3 w-3 fill-rose-500 text-rose-500" />
-							{t("display.terminal.stop", "Stop")}
+							{t("display.terminal.stop")}
 						</button>
 					) : (
 						<button
@@ -87,7 +87,7 @@ export const TerminalHeader = ({
 							className="flex items-center gap-2 group px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 transition-all font-bold text-emerald-400 text-[11px]"
 						>
 							<Play className="h-3 w-3 fill-emerald-500 text-emerald-500" />
-							{t("display.terminal.run_code", "Run Code")}
+							{t("display.terminal.run_code")}
 						</button>
 					))}
 			</div>

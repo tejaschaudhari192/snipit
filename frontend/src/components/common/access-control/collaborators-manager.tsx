@@ -75,16 +75,9 @@ export const CollaboratorsManager = ({
 					...allowedUsers,
 					...results.map((i) => i.email),
 				]);
-				toast.success(
-					t("messages.collaborators_added", "Collaborators added"),
-				);
+				toast.success(t("messages.collaborators_added"));
 			} catch {
-				toast.error(
-					t(
-						"messages.collaborators_failed",
-						"Failed to add collaborators",
-					),
-				);
+				toast.error(t("messages.collaborators_failed"));
 			} finally {
 				setIsUpdating(false);
 			}
@@ -114,16 +107,9 @@ export const CollaboratorsManager = ({
 				setAllowedUsers(
 					allowedUsers.filter((e) => e !== emailToRemove),
 				);
-				toast.success(
-					t("messages.collaborator_removed", "Collaborator removed"),
-				);
+				toast.success(t("messages.collaborator_removed"));
 			} catch {
-				toast.error(
-					t(
-						"messages.collaborator_remove_failed",
-						"Failed to remove collaborator",
-					),
-				);
+				toast.error(t("messages.collaborator_remove_failed"));
 			} finally {
 				setIsUpdating(false);
 			}
@@ -149,16 +135,9 @@ export const CollaboratorsManager = ({
 							: item,
 					),
 				);
-				toast.success(
-					t("messages.collaborator_updated", "Collaborator updated"),
-				);
+				toast.success(t("messages.collaborator_updated"));
 			} catch {
-				toast.error(
-					t(
-						"messages.collaborator_update_failed",
-						"Failed to update collaborator",
-					),
-				);
+				toast.error(t("messages.collaborator_update_failed"));
 			} finally {
 				setIsUpdating(false);
 			}
@@ -180,10 +159,7 @@ export const CollaboratorsManager = ({
 						onChange={setPendingEmails}
 						inputValue={inputValue}
 						onInputChange={setInputValue}
-						placeholder={t(
-							"common.add_people_placeholder",
-							"Add people...",
-						)}
+						placeholder={t("common.add_people_placeholder")}
 						className="min-h-[42px] border-none bg-transparent shadow-none focus-within:ring-0 focus-within:ring-offset-0 text-[13px] px-2 py-1"
 						isReadOnly={disabled || isUpdating}
 					/>
@@ -199,16 +175,16 @@ export const CollaboratorsManager = ({
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="viewer">
-								{t("common.viewer", "Viewer")}
+								{t("common.viewer")}
 							</SelectItem>
 							<SelectItem value="editor">
-								{t("common.editor", "Editor")}
+								{t("common.editor")}
 							</SelectItem>
 							<SelectItem value="admin">
-								{t("common.admin", "Admin")}
+								{t("common.admin")}
 							</SelectItem>
 							<SelectItem value="commenter">
-								{t("common.commenter", "Commenter")}
+								{t("common.commenter")}
 							</SelectItem>
 						</SelectContent>
 					</Select>
@@ -229,7 +205,7 @@ export const CollaboratorsManager = ({
 						{isUpdating ? (
 							<span className="animate-pulse">...</span>
 						) : (
-							t("common.add", "Add")
+							t("common.add")
 						)}
 					</Button>
 				</div>
@@ -238,7 +214,7 @@ export const CollaboratorsManager = ({
 			{shareList.length > 0 && (
 				<div className="flex flex-col gap-2 mt-2 max-h-[150px] overflow-y-auto pr-1">
 					<p className="text-[11px] font-semibold text-muted-foreground tracking-wide mt-3 mb-1 px-1">
-						{t("common.people_with_access", "People with access")}
+						{t("common.people_with_access")}
 					</p>
 					{shareList.map((item) => (
 						<div
@@ -270,16 +246,16 @@ export const CollaboratorsManager = ({
 									</SelectTrigger>
 									<SelectContent>
 										<SelectItem value="viewer">
-											{t("common.viewer", "Viewer")}
+											{t("common.viewer")}
 										</SelectItem>
 										<SelectItem value="editor">
-											{t("common.editor", "Editor")}
+											{t("common.editor")}
 										</SelectItem>
 										<SelectItem value="admin">
-											{t("common.admin", "Admin")}
+											{t("common.admin")}
 										</SelectItem>
 										<SelectItem value="commenter">
-											{t("common.commenter", "Commenter")}
+											{t("common.commenter")}
 										</SelectItem>
 									</SelectContent>
 								</Select>
@@ -293,7 +269,7 @@ export const CollaboratorsManager = ({
 									disabled={disabled}
 								>
 									<span className="sr-only">
-										{t("common.remove", "Remove")}
+										{t("common.remove")}
 									</span>
 									<X width="14" height="14" />
 								</Button>

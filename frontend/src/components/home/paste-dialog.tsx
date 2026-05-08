@@ -94,12 +94,7 @@ export const PasteDialog = ({
 						<div className="p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-3">
 							<div className="flex items-center gap-2 text-primary font-semibold">
 								<LogIn className="h-4 w-4" />
-								<span>
-									{t(
-										"common.auth_required",
-										"Authentication Required",
-									)}
-								</span>
+								<span>{t("common.auth_required")}</span>
 							</div>
 							<p className="text-sm text-muted-foreground leading-relaxed">
 								{t("common.auth_required_desc", {
@@ -113,14 +108,14 @@ export const PasteDialog = ({
 									className="h-8 text-xs font-bold"
 									onClick={() => navigate("/login")}
 								>
-									{t("header.login", "Login")}
+									{t("header.login")}
 								</Button>
 								<Button
 									size="sm"
 									className="h-8 text-xs font-bold"
 									onClick={() => navigate("/signup")}
 								>
-									{t("header.signup", "Sign Up")}
+									{t("header.signup")}
 								</Button>
 							</div>
 						</div>
@@ -168,8 +163,8 @@ export const PasteDialog = ({
 							? contentType === "file" &&
 								isUploading &&
 								uploadProgress < 100
-								? t("home.file_uploading", "Uploading...")
-								: t("common.submitting", "Submitting...")
+								? t("home.file_uploading")
+								: t("common.submitting")
 							: t("home.dynamic_id_dialog.submit")}
 					</Button>
 				</DialogFooter>

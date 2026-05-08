@@ -68,7 +68,7 @@ export const SnippetCard = ({
 						</span>
 						{isShared && (
 							<span className="text-[10px] sm:text-xs font-bold text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded uppercase tracking-wider ml-auto sm:ml-0">
-								{t("common.shared", "Shared")}
+								{t("common.shared")}
 							</span>
 						)}
 					</div>
@@ -90,9 +90,9 @@ export const SnippetCard = ({
 
 				<div className="relative">
 					<div className="bg-muted/30 rounded-lg p-4 border border-border/20">
-						<pre className="text-sm font-mono text-foreground/70 whitespace-pre-wrap break-words line-clamp-2 italic leading-relaxed">
+						<pre className="text-sm font-mono text-foreground/70 whitespace-pre-wrap wrap-break-word line-clamp-2 italic leading-relaxed">
 							{item.contentMode === "draw"
-								? t("common.drawing", "Drawing")
+								? t("common.drawing")
 								: item.contentMode === "link" ||
 									  item.redirectUrl
 									? item.content
@@ -102,7 +102,7 @@ export const SnippetCard = ({
 										: item.content}
 						</pre>
 					</div>
-					<div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent rounded-xl pointer-events-none" />
+					<div className="absolute inset-0 bg-linear-to-t from-background/40 to-transparent rounded-xl pointer-events-none" />
 				</div>
 
 				{item.labels && item.labels.length > 0 && (
@@ -127,7 +127,7 @@ export const SnippetCard = ({
 								{new Intl.NumberFormat(i18n.language).format(
 									item.views || 0,
 								)}{" "}
-								{t("profile.views", "views")}
+								{t("profile.views")}
 							</span>
 						)}
 						{item.visibility && (
@@ -149,7 +149,7 @@ export const SnippetCard = ({
 						)}
 					</div>
 					<div className="flex items-center gap-1 text-primary opacity-0 group-hover:opacity-100 transition-all transform group-hover:translate-x-1 font-bold uppercase tracking-widest">
-						<span>{t("history.view_snippet", "View")}</span>
+						<span>{t("history.view_snippet")}</span>
 						<ExternalLink className="h-3 w-3" />
 					</div>
 				</div>

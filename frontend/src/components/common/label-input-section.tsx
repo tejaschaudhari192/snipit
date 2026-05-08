@@ -27,7 +27,7 @@ export const LabelInputSection = ({
 				tags={currentLabels}
 				onTagsChange={onTagsChange}
 				suggestions={allLabels}
-				placeholder={t("common.add_label", "Add a label...")}
+				placeholder={t("common.add_label")}
 			/>
 		);
 	}
@@ -40,7 +40,7 @@ export const LabelInputSection = ({
 						tags={currentLabels}
 						onTagsChange={onTagsChange}
 						suggestions={allLabels}
-						placeholder={t("common.add_label", "Add a label...")}
+						placeholder={t("common.add_label")}
 						autoFocus
 						hideTags={true}
 					/>
@@ -65,7 +65,7 @@ export const LabelInputSection = ({
 			onClick={() => setShowInput(true)}
 		>
 			<Plus className="w-3 h-3" />
-			{t("common.add_label", "Add Label")}
+			{t("common.add_label")}
 		</Button>
 	);
 };

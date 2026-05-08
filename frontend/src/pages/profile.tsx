@@ -91,9 +91,7 @@ const ProfilePage = () => {
 				username: newName,
 			});
 			setUser({ ...user!, username: updatedUser.username });
-			toast.success(
-				t("profile.profile_updated", "Profile updated successfully"),
-			);
+			toast.success(t("profile.profile_updated"));
 			setIsEditingName(false);
 		} catch (error: unknown) {
 			const errorMessage =
@@ -101,10 +99,7 @@ const ProfilePage = () => {
 					? (error as { response?: { data?: { message?: string } } })
 							.response?.data?.message
 					: undefined;
-			toast.error(
-				errorMessage ||
-					t("profile.update_failed", "Failed to update profile"),
-			);
+			toast.error(errorMessage || t("profile.update_failed"));
 		} finally {
 			setIsUpdating(false);
 		}
@@ -161,7 +156,7 @@ const ProfilePage = () => {
 									<User className="h-5 w-5" />
 								</div>
 								<h2 className="text-3xl font-black tracking-tight uppercase italic">
-									{t("profile.your_snippets", "Snippets")}
+									{t("profile.your_snippets")}
 								</h2>
 							</div>
 							<Link to="/">
@@ -169,7 +164,7 @@ const ProfilePage = () => {
 									size="sm"
 									className="gap-2 font-black rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all px-6 w-full sm:w-auto"
 								>
-									{t("header.new_snippet", "New Snippet")}
+									{t("header.new_snippet")}
 								</Button>
 							</Link>
 						</div>

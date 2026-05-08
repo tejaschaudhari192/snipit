@@ -46,7 +46,7 @@ export const useAiEnhance = () => {
 
 			registerAiAction(
 				"ai-enhance-action",
-				t("editor.ai_enhance", "✨ AI Enhance Selection..."),
+				t("editor.ai_enhance"),
 				"",
 				monaco.KeyMod.CtrlCmd |
 					monaco.KeyMod.Shift |
@@ -55,19 +55,19 @@ export const useAiEnhance = () => {
 
 			registerAiAction(
 				"ai-explain-action",
-				t("editor.ai_explain", "📖 Explain this Code"),
+				t("editor.ai_explain"),
 				"Explain this code logic simply but thoroughly.",
 			);
 
 			registerAiAction(
 				"ai-refactor-action",
-				t("editor.ai_refactor", "🛠️ Refactor Selection"),
+				t("editor.ai_refactor"),
 				"Refactor this code to be more clean, efficient, and readable.",
 			);
 
 			registerAiAction(
 				"ai-fix-action",
-				t("editor.ai_fix", "🐛 Fix Bugs in Selection"),
+				t("editor.ai_fix"),
 				"Identify and fix any potential bugs or edge cases in this code.",
 			);
 		},

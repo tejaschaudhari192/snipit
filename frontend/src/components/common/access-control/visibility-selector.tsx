@@ -55,18 +55,12 @@ export const VisibilitySelector = ({
 					</div>
 					<div className="flex flex-col">
 						<span className="text-sm font-bold">
-							{t("common.general_access", "General access")}
+							{t("common.general_access")}
 						</span>
 						<span className="text-[10px] text-muted-foreground tracking-tight font-medium">
 							{visibility === "public"
-								? t(
-										"common.anyone_with_link",
-										"Anyone with link",
-									)
-								: t(
-										"common.restricted",
-										"Private (Restricted)",
-									)}
+								? t("common.anyone_with_link")
+								: t("common.restricted")}
 						</span>
 					</div>
 				</div>
@@ -80,16 +74,16 @@ export const VisibilitySelector = ({
 					</SelectTrigger>
 					<SelectContent>
 						<SelectItem value="restricted">
-							{t("common.restricted", "Private")}
+							{t("common.restricted")}
 						</SelectItem>
 						<SelectItem value="viewer">
-							{t("common.viewer", "Can view")}
+							{t("common.viewer")}
 						</SelectItem>
 						<SelectItem value="editor">
-							{t("common.editor", "Can edit")}
+							{t("common.editor")}
 						</SelectItem>
 						<SelectItem value="commenter">
-							{t("common.commenter", "Can comment")}
+							{t("common.commenter")}
 						</SelectItem>
 					</SelectContent>
 				</Select>

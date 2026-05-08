@@ -67,7 +67,7 @@ export const LanguageBadge = ({
 						className="h-3.5 w-3.5"
 					/>
 				),
-				text: t("home.tab_file", "File"),
+				text: t("home.tab_file"),
 				color: "bg-primary/10 text-primary border-primary/20",
 			};
 		}

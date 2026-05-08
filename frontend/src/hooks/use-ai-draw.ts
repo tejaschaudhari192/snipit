@@ -79,12 +79,7 @@ export const useAiDraw = ({
 				setDrawRevision(drawRevision + 1);
 			} catch (error) {
 				console.error("Failed to apply AI drawing:", error);
-				toast.error(
-					t(
-						"ai.draw_apply_error",
-						"Failed to apply the generated diagram to the canvas.",
-					),
-				);
+				toast.error(t("ai.draw_apply_error"));
 			}
 		},
 		[drawRevision, setDrawRevision, setTextValue, t],

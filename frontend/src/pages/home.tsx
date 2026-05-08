@@ -367,7 +367,7 @@ const HomePage = () => {
 							className="gap-2 h-9 text-primary border-primary/20 bg-primary/5 hover:bg-primary/10 shadow-lg shadow-primary/5 shrink-0"
 						>
 							<Sparkles className="h-4 w-4" />
-							<span>{t("ai.draw_title", "Ask AI to Draw")}</span>
+							<span>{t("ai.draw_title")}</span>
 						</Button>
 					)}
 

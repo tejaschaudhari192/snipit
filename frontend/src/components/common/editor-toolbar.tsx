@@ -47,7 +47,7 @@ export const EditorToolbar = ({
 		<TooltipProvider>
 			<div
 				className={cn(
-					"flex items-center gap-2 z-[101]",
+					"flex items-center gap-2 z-101",
 					contentType === "draw"
 						? isFullscreen || isWindowFullscreen
 							? "fixed top-4 right-4"
@@ -69,7 +69,7 @@ export const EditorToolbar = ({
 								</div>
 							</TooltipTrigger>
 							<TooltipContent side="left">
-								<p>{t("common.layout", "Layout Mode")}</p>
+								<p>{t("common.layout")}</p>
 							</TooltipContent>
 						</Tooltip>
 					)}
@@ -88,8 +88,8 @@ export const EditorToolbar = ({
 					<TooltipContent side="left">
 						<p>
 							{isFullscreen
-								? t("common.exit_zen", "Exit Zen Mode")
-								: t("common.enter_zen", "Enter Zen Mode")}
+								? t("common.exit_zen")
+								: t("common.enter_zen")}
 						</p>
 					</TooltipContent>
 				</Tooltip>

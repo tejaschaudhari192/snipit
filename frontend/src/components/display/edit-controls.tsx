@@ -176,7 +176,7 @@ export const EditControls = ({
 								htmlFor="allow-comments"
 								className={`cursor-pointer font-bold select-none text-sm flex items-center gap-2 ${!isOwner && !isAdmin ? "opacity-50 cursor-not-allowed" : ""}`}
 							>
-								{t("common.open_discussion", "Open discussion")}
+								{t("common.open_discussion")}
 							</Label>
 						</div>
 
@@ -189,20 +189,14 @@ export const EditControls = ({
 										className="h-9 gap-2 font-bold px-4 border-primary/20 hover:bg-primary/5 hover:border-primary/40 transition-all shadow-sm text-primary"
 									>
 										<ShieldCheck className="h-4 w-4" />
-										{t(
-											"common.manage_access",
-											"Manage Access",
-										)}
+										{t("common.manage_access")}
 									</Button>
 								</DialogTrigger>
 								<DialogContent className="sm:max-w-[500px]">
 									<DialogHeader>
 										<DialogTitle className="flex items-center gap-2">
 											<ShieldCheck className="h-5 w-5 text-primary" />
-											{t(
-												"common.manage_access",
-												"Manage Access",
-											)}
+											{t("common.manage_access")}
 										</DialogTitle>
 									</DialogHeader>
 

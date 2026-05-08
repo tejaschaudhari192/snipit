@@ -54,7 +54,7 @@ const HistoryPage = () => {
 			<div className="max-w-3xl mx-auto relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
 				<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
 					<div>
-						<h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+						<h1 className="text-3xl font-bold bg-linear-to-r from-foreground to-foreground/70 bg-clip-text">
 							{t("history.title")}
 						</h1>
 						{items.length > 0 && (
@@ -63,14 +63,8 @@ const HistoryPage = () => {
 									items.length,
 								)}{" "}
 								{items.length !== 1
-									? t(
-											"history.snippets_saved",
-											"snippets saved",
-										)
-									: t(
-											"history.snippet_saved",
-											"snippet saved",
-										)}
+									? t("history.snippets_saved")
+									: t("history.snippet_saved")}
 							</p>
 						)}
 					</div>
@@ -133,9 +127,7 @@ const HistoryPage = () => {
 							{isLoadingMore && (
 								<div className="flex items-center gap-2 text-muted-foreground animate-in fade-in duration-300">
 									<Loader2 className="h-5 w-5 animate-spin text-primary" />
-									<span>
-										{t("common.loading", "Loading...")}
-									</span>
+									<span>{t("common.loading")}</span>
 								</div>
 							)}
 						</div>

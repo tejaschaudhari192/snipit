@@ -39,7 +39,7 @@ export const ContentTypeSelector = memo(
 							{t("home.tab_text")}
 						</span>
 						<span className="inline min-[440px]:hidden whitespace-nowrap">
-							{t("home.tab_text_short", "Text")}
+							{t("home.tab_text_short")}
 						</span>
 					</TabsTrigger>
 					<TabsTrigger
@@ -51,7 +51,7 @@ export const ContentTypeSelector = memo(
 							{t("home.tab_code")}
 						</span>
 						<span className="inline min-[440px]:hidden whitespace-nowrap">
-							{t("home.tab_code_short", "Code")}
+							{t("home.tab_code_short")}
 						</span>
 					</TabsTrigger>
 					<TabsTrigger
@@ -60,10 +60,10 @@ export const ContentTypeSelector = memo(
 					>
 						<Paintbrush className="h-4 w-4 shrink-0" />
 						<span className="hidden min-[440px]:inline whitespace-nowrap">
-							{t("home.tab_draw", "Draw")}
+							{t("home.tab_draw")}
 						</span>
 						<span className="inline min-[440px]:hidden whitespace-nowrap">
-							{t("home.tab_draw_short", "Draw")}
+							{t("home.tab_draw_short")}
 						</span>
 					</TabsTrigger>
 					<TabsTrigger
@@ -75,7 +75,7 @@ export const ContentTypeSelector = memo(
 							{t("home.tab_link")}
 						</span>
 						<span className="inline min-[440px]:hidden whitespace-nowrap">
-							{t("home.tab_link_short", "Link")}
+							{t("home.tab_link_short")}
 						</span>
 					</TabsTrigger>
 					{showFileOption && (
@@ -88,7 +88,7 @@ export const ContentTypeSelector = memo(
 								{t("home.tab_file")}
 							</span>
 							<span className="inline min-[440px]:hidden whitespace-nowrap">
-								{t("home.tab_file_short", "File")}
+								{t("home.tab_file_short")}
 							</span>
 						</TabsTrigger>
 					)}

@@ -154,14 +154,8 @@ export const ProfileInfo = ({
 									<div className="flex items-center justify-center gap-2 text-xs text-muted-foreground/60 font-bold uppercase tracking-wider">
 										<Calendar className="h-3.5 w-3.5" />
 										{isGuest
-											? t(
-													"profile.guest_mode",
-													"Guest Session",
-												)
-											: t(
-													"profile.joined",
-													"Joined",
-												)}{" "}
+											? t("profile.guest_mode")
+											: t("profile.joined")}{" "}
 										{!isGuest &&
 											formatDate(
 												user.createdAt || new Date(),
@@ -184,7 +178,7 @@ export const ProfileInfo = ({
 									{totalSnippets}
 								</div>
 								<div className="text-[10px] uppercase tracking-[0.2em] font-black text-primary/60 group-hover/stat:text-primary transition-colors">
-									{t("profile.snippets_count", "Snippets")}
+									{t("profile.snippets_count")}
 								</div>
 							</div>
 							<div className="bg-muted/20 hover:bg-muted/30 border border-border/50 rounded-4xl p-5 text-center transition-all group/stat">
@@ -195,7 +189,7 @@ export const ProfileInfo = ({
 									{totalViews}
 								</div>
 								<div className="text-[10px] uppercase tracking-[0.2em] font-black text-muted-foreground group-hover/stat:text-foreground transition-colors">
-									{t("profile.views", "Views")}
+									{t("profile.views")}
 								</div>
 							</div>
 						</div>
@@ -205,10 +199,7 @@ export const ProfileInfo = ({
 							{isGuest ? (
 								<div className="flex flex-col gap-3">
 									<p className="text-[10px] text-center text-muted-foreground font-bold uppercase tracking-widest px-4 leading-relaxed">
-										{t(
-											"profile.guest_hint",
-											"Create an account to sync snippets across devices",
-										)}
+										{t("profile.guest_hint")}
 									</p>
 									<div className="flex gap-2">
 										<Button
@@ -216,7 +207,7 @@ export const ProfileInfo = ({
 											className="flex-1 h-11 rounded-2xl font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
 										>
 											<a href="/signup">
-												{t("header.signup", "Sign Up")}
+												{t("header.signup")}
 											</a>
 										</Button>
 										<Button
@@ -225,7 +216,7 @@ export const ProfileInfo = ({
 											className="flex-1 h-11 rounded-2xl font-black hover:bg-primary/5 transition-all"
 										>
 											<a href="/login">
-												{t("header.login", "Login")}
+												{t("header.login")}
 											</a>
 										</Button>
 									</div>
@@ -239,7 +230,7 @@ export const ProfileInfo = ({
 									<div className="flex items-center justify-center gap-2">
 										<LogOut className="h-3.5 w-3.5 transition-transform group-hover/logout:-translate-x-0.5" />
 										<span className="uppercase tracking-[0.2em] text-[10px]">
-											{t("header.logout", "Sign Out")}
+											{t("header.logout")}
 										</span>
 									</div>
 								</Button>
@@ -254,7 +245,7 @@ export const ProfileInfo = ({
 					<CardContent className="p-8 space-y-6">
 						<div className="flex items-center justify-between border-b border-border/50 pb-4">
 							<h3 className="font-black text-xs uppercase tracking-[0.2em] text-muted-foreground">
-								{t("profile.activity", "Stats")}
+								{t("profile.activity")}
 							</h3>
 							<GlassBadge
 								size="xs"
@@ -267,7 +258,7 @@ export const ProfileInfo = ({
 						<div className="space-y-4">
 							<div className="flex items-center justify-between group/row">
 								<span className="text-sm text-muted-foreground group-hover/row:text-foreground transition-colors">
-									{t("profile.total_views", "Total Views")}
+									{t("profile.total_views")}
 								</span>
 								<div className="font-black text-lg text-primary tabular-nums">
 									{totalViews}
@@ -275,10 +266,7 @@ export const ProfileInfo = ({
 							</div>
 							<div className="flex items-center justify-between group/row">
 								<span className="text-sm text-muted-foreground group-hover/row:text-foreground transition-colors">
-									{t(
-										"profile.most_used_language",
-										"Fav Language",
-									)}
+									{t("profile.most_used_language")}
 								</span>
 								<GlassBadge
 									size="xs"
@@ -290,7 +278,7 @@ export const ProfileInfo = ({
 							</div>
 							<div className="flex items-center justify-between group/row">
 								<span className="text-sm text-muted-foreground group-hover/row:text-foreground transition-colors">
-									{t("profile.avg_views", "Efficiency")}
+									{t("profile.avg_views")}
 								</span>
 								<div className="font-black text-md text-foreground/80 italic font-mono">
 									{pastes.length > 0

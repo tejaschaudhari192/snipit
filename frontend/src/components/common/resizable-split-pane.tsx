@@ -171,10 +171,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
 								<div className="bg-primary text-primary-foreground text-[10px] font-bold px-3 py-1.5 rounded-full shadow-2xl animate-bounce whitespace-nowrap tracking-tighter flex items-center gap-2 border border-white/20">
 									<GripVertical className="h-3 w-3" />
 									{mode === "split"
-										? t(
-												"common.drag_to_resize",
-												"Drag to resize",
-											)
+										? t("common.drag_to_resize")
 										: ""}
 								</div>
 								<div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rotate-45 -mt-1 shadow-sm" />

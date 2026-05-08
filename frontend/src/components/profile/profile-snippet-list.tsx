@@ -43,23 +43,17 @@ export const ProfileSnippetList = ({
 						<Inbox className="h-8 w-8 md:h-10 md:w-10 text-muted-foreground" />
 					</div>
 					<h3 className="text-2xl font-semibold mb-2">
-						{t("profile.no_snippets", "No snippets yet")}
+						{t("profile.no_snippets")}
 					</h3>
 					<p className="text-muted-foreground mb-8 text-lg">
-						{t(
-							"profile.no_snippets_desc",
-							"Your shared code masterpieces will appear here!",
-						)}
+						{t("profile.no_snippets_desc")}
 					</p>
 					<Link to="/">
 						<Button
 							size="lg"
 							className="rounded-full px-8 shadow-xl shadow-primary/20 hover:scale-105 transition-transform font-bold"
 						>
-							{t(
-								"profile.create_first",
-								"Create Your First Snippet",
-							)}
+							{t("profile.create_first")}
 						</Button>
 					</Link>
 				</div>
@@ -77,7 +71,7 @@ export const ProfileSnippetList = ({
 						{isLoadingMore && (
 							<div className="flex items-center gap-2 text-muted-foreground animate-in fade-in duration-300">
 								<Loader2 className="h-5 w-5 animate-spin text-primary" />
-								<span>{t("common.loading", "Loading...")}</span>
+								<span>{t("common.loading")}</span>
 							</div>
 						)}
 					</div>

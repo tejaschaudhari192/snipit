@@ -123,12 +123,7 @@ export const usePasteHandlers = ({
 						setContentType("file");
 						setPendingFile(file);
 						setFileUpload(file);
-						toast.success(
-							t(
-								"home.file_selected_via_paste",
-								"File selected via paste!",
-							),
-						);
+						toast.success(t("home.file_selected_via_paste"));
 						break;
 					}
 				}

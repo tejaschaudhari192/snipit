@@ -49,15 +49,10 @@ export const JumpToDialog = ({ isOpen, onOpenChange }: JumpToDialogProps) => {
 						<div className="p-2 rounded-lg bg-primary/10 text-primary">
 							<Search className="h-5 w-5" />
 						</div>
-						<DialogTitle>
-							{t("header.jump_to_title", "Jump to Snippet")}
-						</DialogTitle>
+						<DialogTitle>{t("header.jump_to_title")}</DialogTitle>
 					</div>
 					<p className="text-sm text-muted-foreground">
-						{t(
-							"header.jump_to_desc",
-							"Enter the snippet ID to navigate directly to it.",
-						)}
+						{t("header.jump_to_desc")}
 					</p>
 				</DialogHeader>
 				<form
@@ -66,10 +61,7 @@ export const JumpToDialog = ({ isOpen, onOpenChange }: JumpToDialogProps) => {
 				>
 					<div className="relative flex-1 group">
 						<Input
-							placeholder={t(
-								"header.jump_to_placeholder",
-								"Enter snippet ID...",
-							)}
+							placeholder={t("header.jump_to_placeholder")}
 							value={snippetId}
 							onChange={(e) => setSnippetId(e.target.value)}
 							className="pr-12 transition-all duration-200 focus:ring-2 focus:ring-primary/20"

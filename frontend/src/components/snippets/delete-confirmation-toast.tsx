@@ -20,10 +20,7 @@ export const DeleteConfirmationToast = ({
 			<div className="flex items-center justify-between gap-4 p-4 pb-3 relative z-10">
 				<div className="flex items-center gap-3">
 					<span className="text-sm font-semibold tracking-tight text-foreground">
-						{t(
-							"messages.snippet_deleted",
-							"Snippet has been deleted",
-						)}
+						{t("messages.snippet_deleted")}
 					</span>
 				</div>
 				<Button
@@ -35,14 +32,14 @@ export const DeleteConfirmationToast = ({
 						onUndo();
 					}}
 				>
-					{t("common.undo", "Undo")}
+					{t("common.undo")}
 				</Button>
 			</div>
 
 			<div className="px-4 pb-2">
 				<div className="h-1.5 w-full bg-muted/40 rounded-full overflow-hidden">
 					<div
-						className="h-full bg-gradient-to-r from-blue-400 via-indigo-500 to-indigo-600 shadow-[0_0_12px_rgba(99,102,241,0.6)] origin-left"
+						className="h-full bg-linear-to-r from-blue-400 via-indigo-500 to-indigo-600 shadow-[0_0_12px_rgba(99,102,241,0.6)] origin-left"
 						style={{
 							width: "100%",
 							animationName: "toast-progress",

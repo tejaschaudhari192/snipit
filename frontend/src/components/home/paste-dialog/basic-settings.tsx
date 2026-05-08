@@ -40,7 +40,7 @@ export const BasicSettings = ({
 					<div className="p-1.5 rounded-md bg-muted/50 group-hover:bg-primary/10 transition-colors">
 						<Lock className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
 					</div>
-					{t("common.password", "Password")}
+					{t("common.password")}
 				</Label>
 				<Switch
 					id="password-switch"
@@ -55,10 +55,7 @@ export const BasicSettings = ({
 			{isPasswordEnabled && (
 				<div className="animate-in slide-in-from-top-1 fade-in duration-200">
 					<PasswordInput
-						placeholder={t(
-							"common.password_placeholder",
-							"Enter password...",
-						)}
+						placeholder={t("common.password_placeholder")}
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
 						className="h-9 text-[13px] bg-card/40"
@@ -78,7 +75,7 @@ export const BasicSettings = ({
 					<div className="p-1.5 rounded-md bg-muted/50 group-hover:bg-primary/10 transition-colors">
 						<MessageCircle className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
 					</div>
-					{t("common.open_discussion", "Open discussion")}
+					{t("common.open_discussion")}
 				</Label>
 				<Switch
 					id="allowComments"

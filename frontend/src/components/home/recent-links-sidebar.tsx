@@ -37,21 +37,21 @@ export const RecentLinksSidebar = ({
 						<History className="h-3.5 w-3.5" />
 					</div>
 					<h3 className="text-xs font-black uppercase tracking-widest text-primary/80">
-						{t("history.recent_links", "Recent Links")}
+						{t("history.recent_links")}
 					</h3>
 				</div>
 				<div className="flex items-center gap-1">
 					<button
 						className="p-1.5 rounded-md hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"
 						onClick={() => window.location.reload()}
-						title={t("common.refresh", "Refresh")}
+						title={t("common.refresh")}
 					>
 						<RefreshCw className="h-3 w-3" />
 					</button>
 					<button
 						className="p-1.5 rounded-md hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
 						onClick={() => setIsHistoryVisible(false)}
-						title={t("common.close", "Close")}
+						title={t("common.close")}
 					>
 						<X className="h-3 w-3" />
 					</button>
@@ -65,7 +65,7 @@ export const RecentLinksSidebar = ({
 							<LinkIcon className="h-5 w-5 text-muted-foreground/40" />
 						</div>
 						<p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest leading-relaxed">
-							{t("history.no_history_desc", "No history yet")}
+							{t("history.no_history_desc")}
 						</p>
 					</div>
 				) : (
@@ -103,7 +103,7 @@ export const RecentLinksSidebar = ({
 									}}
 								>
 									<Copy className="h-3 w-3" />
-									{t("display.copy_button", "Copy")}
+									{t("display.copy_button")}
 								</Button>
 								<Button
 									variant="secondary"
@@ -130,7 +130,7 @@ export const RecentLinksSidebar = ({
 									}
 								>
 									<ExternalLink className="h-3 w-3" />
-									{t("common.visit_link", "Visit")}
+									{t("common.visit_link")}
 								</Button>
 								{onDeleteHistoryItem && (
 									<Button
@@ -141,10 +141,7 @@ export const RecentLinksSidebar = ({
 											e.stopPropagation();
 											onDeleteHistoryItem(item.id);
 										}}
-										title={t(
-											"display.delete_button",
-											"Delete",
-										)}
+										title={t("display.delete_button")}
 									>
 										<Trash2 className="h-3 w-3" />
 									</Button>

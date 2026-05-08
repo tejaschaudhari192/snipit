@@ -22,17 +22,17 @@ export const MarkdownLayoutToggles = ({
 		{
 			id: "editor" as const,
 			icon: EyeOff,
-			title: t("common.editor_only", "Editor Only"),
+			title: t("common.editor_only"),
 		},
 		{
 			id: "split" as const,
 			icon: Layout,
-			title: t("common.split_view", "Split View"),
+			title: t("common.split_view"),
 		},
 		{
 			id: "preview" as const,
 			icon: Eye,
-			title: t("common.preview_only", "Preview Only"),
+			title: t("common.preview_only"),
 		},
 	];
 

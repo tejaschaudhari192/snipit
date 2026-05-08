@@ -164,7 +164,6 @@ export const DisplayToolbar = memo(
 										}
 										placeholder={t(
 											"home.dynamic_id_dialog.placeholder",
-											"ID...",
 										)}
 										className="pl-8 h-9 text-xs bg-background/50 border-border/50 focus:border-primary/50 ring-0! shadow-sm transition-all"
 									/>

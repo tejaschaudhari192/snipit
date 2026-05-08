@@ -25,8 +25,8 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
 					className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/30 hover:text-primary transition-colors focus:outline-none"
 					aria-label={
 						showPassword
-							? t("auth.hide_password", "Hide password")
-							: t("auth.show_password", "Show password")
+							? t("auth.hide_password")
+							: t("auth.show_password")
 					}
 				>
 					{showPassword ? (

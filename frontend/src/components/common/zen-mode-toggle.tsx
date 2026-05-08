@@ -25,7 +25,7 @@ export const ZenModeToggle = memo(
 		return (
 			<div
 				className={cn(
-					"z-[100] transition-all animate-in fade-in duration-300 flex items-center gap-2",
+					"z-100 transition-all animate-in fade-in duration-300 flex items-center gap-2",
 					className,
 				)}
 			>
@@ -42,8 +42,8 @@ export const ZenModeToggle = memo(
 						onClick={onToggle}
 						title={
 							isFullscreen
-								? t("common.shrink", "Shrink back")
-								: t("common.expand", "Expand to tab")
+								? t("common.shrink")
+								: t("common.expand")
 						}
 					>
 						{isFullscreen ? (
@@ -67,11 +67,8 @@ export const ZenModeToggle = memo(
 						onClick={onWindowToggle}
 						title={
 							isWindowFullscreen
-								? t("common.exit_fullscreen", "Exit Fullscreen")
-								: t(
-										"common.window_fullscreen",
-										"Window Fullscreen",
-									)
+								? t("common.exit_fullscreen")
+								: t("common.window_fullscreen")
 						}
 					>
 						{isWindowFullscreen ? (

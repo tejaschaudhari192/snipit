@@ -399,9 +399,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 				);
 			} catch (err) {
 				console.error("Failed to delete snippet", err);
-				toast.error(
-					t("messages.delete_failed", "Failed to delete snippet"),
-				);
+				toast.error(t("messages.delete_failed"));
 			}
 		},
 		[user, apiHelpers, t],

@@ -32,17 +32,14 @@ export const ShortenedResultCard = ({
 			document.body.appendChild(downloadLink);
 			downloadLink.click();
 			document.body.removeChild(downloadLink);
-			toast.success(t("messages.qr_downloaded", "QR Code downloaded!"));
+			toast.success(t("messages.qr_downloaded"));
 		}
 	};
 
 	const copyLink = () => {
 		navigator.clipboard.writeText(shortenedResult.url);
 		toast.success(
-			t("header.copied_link", {
-				id: `/${shortenedResult.id}`,
-				defaultValue: `Copied /${shortenedResult.id}`,
-			}),
+			t("header.copied_link", { id: `/${shortenedResult.id}` }),
 		);
 	};
 
@@ -55,13 +52,10 @@ export const ShortenedResultCard = ({
 
 				<div className="space-y-2">
 					<h2 className="text-2xl font-black tracking-tight text-foreground">
-						{t("home.link_shortened", "Link Shortened!")}
+						{t("home.link_shortened")}
 					</h2>
 					<p className="text-muted-foreground font-medium">
-						{t(
-							"home.link_ready_desc",
-							"Your short link is ready to share",
-						)}
+						{t("home.link_ready_desc")}
 					</p>
 				</div>
 
@@ -83,7 +77,7 @@ export const ShortenedResultCard = ({
 						onClick={downloadQR}
 					>
 						<Download className="h-3 w-3" />
-						{t("common.download_qr", "Download QR")}
+						{t("common.download_qr")}
 					</Button>
 				</div>
 
@@ -101,13 +95,13 @@ export const ShortenedResultCard = ({
 								onClick={copyLink}
 							>
 								<Copy className="h-3.5 w-3.5" />
-								{t("display.copy_button", "Copy")}
+								{t("display.copy_button")}
 							</Button>
 						</div>
 					</div>
 					<div className="flex items-center justify-between px-2 text-[11px] font-bold text-muted-foreground/80 tracking-wide">
 						<span>
-							{t("home.alias", "Alias")}: {shortenedResult.id}
+							{t("home.alias")}: {shortenedResult.id}
 						</span>
 					</div>
 				</div>
@@ -127,7 +121,7 @@ export const ShortenedResultCard = ({
 						className="flex-1 h-11 font-bold border-border/50 bg-background/50 backdrop-blur-sm"
 						onClick={() => setTextValue("")}
 					>
-						{t("home.create_another", "Create Another")}
+						{t("home.create_another")}
 					</Button>
 				</div>
 			</div>

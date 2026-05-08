@@ -40,27 +40,15 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 				setIsSaved(result.saved);
 
 				if (result.saved) {
-					toast.success(
-						t(
-							"display.snippet_saved",
-							"Snippet saved to your profile",
-						),
-					);
+					toast.success(t("display.snippet_saved"));
 				} else {
-					toast.success(
-						t(
-							"display.snippet_unsaved",
-							"Snippet removed from saved",
-						),
-					);
+					toast.success(t("display.snippet_unsaved"));
 				}
 
 				loadSavedProfile(true);
 			} catch (error) {
 				console.error("Failed to toggle save snippet", error);
-				toast.error(
-					t("display.save_failed", "Failed to update saved status"),
-				);
+				toast.error(t("display.save_failed"));
 			} finally {
 				setIsSaving(false);
 			}
@@ -71,19 +59,9 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 				const saved = guestStorage.toggleSaved(paste);
 
 				if (saved) {
-					toast.success(
-						t(
-							"display.snippet_saved",
-							"Snippet saved to your profile",
-						),
-					);
+					toast.success(t("display.snippet_saved"));
 				} else {
-					toast.success(
-						t(
-							"display.snippet_unsaved",
-							"Snippet removed from saved",
-						),
-					);
+					toast.success(t("display.snippet_unsaved"));
 				}
 
 				setIsSaved(saved);
@@ -107,7 +85,7 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 								className="h-3 w-3"
 							/>
 							{paste.language === "text"
-								? t("home.tab_text", "Plain Text")
+								? t("home.tab_text")
 								: paste.language}
 						</div>
 					) : null}
@@ -141,7 +119,7 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 							<div className="w-px h-3 bg-border hidden sm:block" />
 							<div className="flex items-center gap-1.5 text-muted-foreground font-medium uppercase tracking-wider">
 								<ShieldCheck className="h-3.5 w-3.5 text-primary" />
-								{t("common.secure", "Secure")}
+								{t("common.secure")}
 							</div>
 						</>
 					)}

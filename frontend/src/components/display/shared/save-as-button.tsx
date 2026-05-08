@@ -74,7 +74,7 @@ export const SaveAsButton = ({
 				<Button variant="outline" size="sm" className={className}>
 					<Download className="h-4 w-4" />
 					<span className="hidden sm:inline">
-						{t("common.save_as", "Save as...")}
+						{t("common.save_as")}
 					</span>
 				</Button>
 			</DropdownMenuTrigger>

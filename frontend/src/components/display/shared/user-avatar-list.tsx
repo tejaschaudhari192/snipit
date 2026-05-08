@@ -44,15 +44,14 @@ export const UserAvatarList = ({ users }: UserAvatarListProps) => {
 
 						<div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-background/95 backdrop-blur-md border border-border text-foreground text-[10px] sm:text-xs rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none shadow-2xl transform origin-top scale-90 group-hover:scale-100 flex flex-col items-center min-w-[120px] z-999">
 							<span className="font-bold whitespace-nowrap">
-								{u.name}{" "}
-								{u.isMe && `(${t("common.me", "You")})`}
+								{u.name} {u.isMe && `(${t("common.me")})`}
 							</span>
 							<span
 								className={`text-[9px] opacity-70 ${u.isEditing ? "text-green-500 font-bold" : ""}`}
 							>
 								{u.isEditing
-									? t("display.status_editing", "Editing...")
-									: t("display.status_viewing", "Viewing")}
+									? t("display.status_editing")
+									: t("display.status_viewing")}
 							</span>
 							<div className="absolute bottom-[98%] left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 bg-background border-l border-t border-border" />
 						</div>
@@ -65,8 +64,7 @@ export const UserAvatarList = ({ users }: UserAvatarListProps) => {
 						</div>
 						<div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-background/95 backdrop-blur-md border border-border text-foreground text-[10px] sm:text-xs rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none shadow-2xl transform origin-top scale-90 group-hover:scale-100 flex flex-col items-center min-w-[80px] z-999">
 							<span className="font-bold whitespace-nowrap">
-								{remainingCount}{" "}
-								{t("common.more_users", "more users")}
+								{remainingCount} {t("common.more_users")}
 							</span>
 							<div className="absolute bottom-[98%] left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 bg-background border-l border-t border-border" />
 						</div>

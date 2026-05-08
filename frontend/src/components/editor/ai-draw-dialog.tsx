@@ -33,12 +33,7 @@ export const AiDrawDialog = ({
 
 	const handleGenerate = async () => {
 		if (!description.trim()) {
-			toast.warning(
-				t(
-					"ai.draw_empty_description",
-					"Please describe what you want to draw",
-				),
-			);
+			toast.warning(t("ai.draw_empty_description"));
 			return;
 		}
 
@@ -50,18 +45,11 @@ export const AiDrawDialog = ({
 				onApply(elements, clearBoard);
 				onClose();
 				setDescription("");
-				toast.success(
-					t("ai.draw_success", "Diagram generated successfully!"),
-				);
+				toast.success(t("ai.draw_success"));
 			}
 		} catch (error) {
 			console.error("Failed to generate diagram:", error);
-			toast.error(
-				t(
-					"ai.draw_error",
-					"Failed to generate diagram. Please try again.",
-				),
-			);
+			toast.error(t("ai.draw_error"));
 		} finally {
 			setIsGenerating(false);
 		}
@@ -73,22 +61,16 @@ export const AiDrawDialog = ({
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2 text-xl">
 						<Sparkles className="w-5 h-5 text-primary animate-pulse" />
-						{t("ai.draw_title", "AI Diagram Generator")}
+						{t("ai.draw_title")}
 					</DialogTitle>
 					<DialogDescription>
-						{t(
-							"ai.draw_description",
-							"Describe the diagram or flowchart you want to create, and AI will generate it for you.",
-						)}
+						{t("ai.draw_description")}
 					</DialogDescription>
 				</DialogHeader>
 
 				<div className="space-y-4 py-4">
 					<Textarea
-						placeholder={t(
-							"ai.draw_placeholder",
-							"e.g., A simple flowchart for user login process with success and failure states.",
-						)}
+						placeholder={t("ai.draw_placeholder")}
 						value={description}
 						onChange={(e) => setDescription(e.target.value)}
 						className="min-h-[120px] bg-background/50 border-border/40 focus:border-primary/50 transition-colors"
@@ -107,10 +89,7 @@ export const AiDrawDialog = ({
 							htmlFor="clear-board"
 							className="text-sm font-medium leading-none cursor-pointer text-muted-foreground"
 						>
-							{t(
-								"ai.draw_clear_board",
-								"Clear board before generating",
-							)}
+							{t("ai.draw_clear_board")}
 						</label>
 					</div>
 				</div>
@@ -121,7 +100,7 @@ export const AiDrawDialog = ({
 						onClick={onClose}
 						disabled={isGenerating}
 					>
-						{t("common.cancel", "Cancel")}
+						{t("common.cancel")}
 					</Button>
 					<Button
 						onClick={handleGenerate}
@@ -131,12 +110,12 @@ export const AiDrawDialog = ({
 						{isGenerating ? (
 							<>
 								<Loader2 className="w-4 h-4 mr-2 animate-spin" />
-								{t("ai.generating", "Generating...")}
+								{t("ai.generating")}
 							</>
 						) : (
 							<>
 								<Wand2 className="w-4 h-4 mr-2" />
-								{t("ai.generate", "Generate")}
+								{t("ai.generate")}
 							</>
 						)}
 					</Button>

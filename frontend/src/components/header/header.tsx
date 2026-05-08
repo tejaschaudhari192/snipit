@@ -40,7 +40,7 @@ const UserMenu = () => {
 							<User className="h-3.5 w-3.5" />
 						</div>
 						<span className="text-sm font-bold hidden sm:inline-block">
-							{t("header.guest", "Guest")}
+							{t("header.guest")}
 						</span>
 					</Button>
 				</Link>
@@ -192,7 +192,7 @@ const Header = ({ className }: HeaderProps) => {
 										</div>
 										<div className="flex flex-col min-w-0">
 											<p className="text-sm font-black truncate text-primary leading-tight">
-												{t("header.guest", "Guest")}
+												{t("header.guest")}
 											</p>
 										</div>
 									</Link>
@@ -255,13 +255,13 @@ const Header = ({ className }: HeaderProps) => {
 						<div className="px-2 py-2 space-y-3">
 							<div className="flex items-center justify-between">
 								<span className="text-xs font-bold text-muted-foreground/70">
-									{t("header.theme", "Theme")}
+									{t("header.theme")}
 								</span>
 								<ThemeTogglePositionsDemo />
 							</div>
 							<div className="space-y-1.5">
 								<span className="text-xs font-bold text-muted-foreground/70">
-									{t("header.language", "Language")}
+									{t("header.language")}
 								</span>
 								<LanguageSwitcher className="w-full h-9" />
 							</div>

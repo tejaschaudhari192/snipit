@@ -60,7 +60,7 @@ export const FileUploadView = ({
 									<FileUp className="h-5 w-5" />
 								</div>
 								<h2 className="text-lg font-bold tracking-tight">
-									{t("home.tab_file", "Upload File")}
+									{t("home.tab_file")}
 								</h2>
 							</div>
 						)}
@@ -119,16 +119,12 @@ export const FileUploadView = ({
 														<span className="flex h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
 														{t(
 															"home.file_uploading",
-															"Uploading...",
 														)}
 													</span>
 												) : uploadProgress === 100 ? (
 													<span className="text-emerald-500 flex items-center gap-1.5">
 														<CheckCircle2 className="h-3.5 w-3.5" />
-														{t(
-															"home.file_ready",
-															"File ready",
-														)}
+														{t("home.file_ready")}
 													</span>
 												) : (
 													<span className="text-muted-foreground flex items-center gap-1.5">
@@ -140,11 +136,9 @@ export const FileUploadView = ({
 														)
 															? t(
 																	"home.file_previously_uploaded",
-																	"Previously Uploaded",
 																)
 															: t(
 																	"home.file_selected",
-																	"Selected - click Upload",
 																)}
 													</span>
 												)}
@@ -206,13 +200,10 @@ export const FileUploadView = ({
 
 							<div className="text-center space-y-2 max-w-sm">
 								<h2 className="text-xl font-bold tracking-tight">
-									{t("home.tab_file", "Upload File")}
+									{t("home.tab_file")}
 								</h2>
 								<p className="text-muted-foreground text-sm font-medium">
-									{t(
-										"home.file_drop",
-										"Drag and drop your file here or click to browse",
-									)}
+									{t("home.file_drop")}
 								</p>
 								<p className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60 pt-2">
 									{t(
@@ -225,11 +216,11 @@ export const FileUploadView = ({
 							<div className="flex items-center gap-4 pt-4 text-[11px] font-bold text-muted-foreground/70">
 								<div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-muted/50 border border-border/50">
 									<span className="text-emerald-500">✓</span>{" "}
-									{t("home.file_features.secure", "Secure")}
+									{t("home.file_features.secure")}
 								</div>
 								<div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-muted/50 border border-border/50">
 									<span className="text-emerald-500">✓</span>{" "}
-									{t("home.file_features.share", "Encrypted")}
+									{t("home.file_features.share")}
 								</div>
 							</div>
 						</label>

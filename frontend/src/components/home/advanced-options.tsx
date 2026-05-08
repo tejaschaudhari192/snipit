@@ -69,7 +69,7 @@ export const AdvancedOptions = ({ onSubmit }: AdvancedOptionsProps) => {
 				<div className="flex flex-col">
 					<SectionHeader
 						icon={Tag}
-						label={t("home.identification_type", "Identification")}
+						label={t("home.identification_type")}
 					/>
 					<IdTypeTabs
 						idTypeTab={idTypeTab}
@@ -85,7 +85,7 @@ export const AdvancedOptions = ({ onSubmit }: AdvancedOptionsProps) => {
 					<div className="flex flex-col">
 						<SectionHeader
 							icon={Settings}
-							label={t("common.settings", "General Settings")}
+							label={t("common.settings")}
 						/>
 						<BasicSettings
 							isPasswordEnabled={isPasswordEnabled}
@@ -106,23 +106,17 @@ export const AdvancedOptions = ({ onSubmit }: AdvancedOptionsProps) => {
 
 				{/* Column 3: Access & Collab */}
 				<div className="flex flex-col">
-					<SectionHeader
-						icon={Shield}
-						label={t("common.privacy", "Privacy & Security")}
-					/>
+					<SectionHeader icon={Shield} label={t("common.privacy")} />
 
 					<div className="flex flex-col">
 						{!user ? (
 							<div className="flex flex-col justify-center items-center text-center p-4 rounded-xl border border-dashed border-primary/20 bg-primary/5 min-h-[140px]">
 								<LogIn className="h-5 w-5 text-primary/50 mb-2" />
 								<p className="text-primary font-bold text-sm mb-1">
-									{t("common.auth_required", "Auth Required")}
+									{t("common.auth_required")}
 								</p>
 								<p className="text-xs text-muted-foreground mb-3 leading-relaxed">
-									{t(
-										"common.auth_required_desc",
-										"Sign in to control access, visibility and collaborators.",
-									)}
+									{t("common.auth_required_desc")}
 								</p>
 								<div className="flex items-center gap-2 w-full">
 									<Button
@@ -131,14 +125,14 @@ export const AdvancedOptions = ({ onSubmit }: AdvancedOptionsProps) => {
 										className="h-8 text-xs flex-1"
 										onClick={() => navigate("/login")}
 									>
-										{t("header.login", "Login")}
+										{t("header.login")}
 									</Button>
 									<Button
 										size="sm"
 										className="h-8 text-xs flex-1"
 										onClick={() => navigate("/signup")}
 									>
-										{t("header.signup", "Sign Up")}
+										{t("header.signup")}
 									</Button>
 								</div>
 							</div>

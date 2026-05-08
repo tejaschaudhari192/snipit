@@ -70,17 +70,17 @@ export const MainToolbar = memo(
 					isUploading &&
 					uploadProgress < 100
 				) {
-					return t("home.file_uploading", "Uploading...");
+					return t("home.file_uploading");
 				}
-				return t("common.submitting", "Submitting...");
+				return t("common.submitting");
 			}
 
 			if (contentType === "link") {
-				return t("home.shorten_button", "Shorten");
+				return t("home.shorten_button");
 			}
 
 			if (contentType === "file") {
-				return t("home.upload_button", "Upload");
+				return t("home.upload_button");
 			}
 
 			return t("home.paste_button");
@@ -190,10 +190,7 @@ export const MainToolbar = memo(
 							<div className="flex items-center gap-2 mb-3 px-1 py-1 group">
 								<div className="w-1.5 h-5 bg-primary/30 group-hover:bg-primary transition-colors rounded-full" />
 								<h3 className="font-bold text-sm text-primary/70 group-hover:text-primary transition-colors">
-									{t(
-										"home.advanced_config",
-										"Advanced Configuration",
-									)}
+									{t("home.advanced_config")}
 								</h3>
 								<div className="flex-1 h-px bg-border/5 ml-2" />
 								<Button
@@ -203,10 +200,7 @@ export const MainToolbar = memo(
 									className="gap-2 h-8 text-xs font-bold bg-primary/5 hover:bg-primary/10 border-primary/20 text-primary transition-all shadow-sm rounded-md ml-2"
 								>
 									<Users className="h-3.5 w-3.5" />
-									{t(
-										"home.collaborative_session_btn",
-										"Start Collaboration",
-									)}
+									{t("home.collaborative_session_btn")}
 								</Button>
 							</div>
 

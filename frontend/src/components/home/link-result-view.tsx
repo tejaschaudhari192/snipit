@@ -52,7 +52,7 @@ export const LinkResultView = ({
 						onClick={() => setIsHistoryVisible(true)}
 					>
 						<History className="h-3.5 w-3.5" />
-						{t("history.recent_links", "Recent Links")}
+						{t("history.recent_links")}
 					</Button>
 				)}
 
@@ -68,28 +68,21 @@ export const LinkResultView = ({
 								<Link className="h-6 w-6" />
 							</div>
 							<h2 className="text-xl font-bold tracking-tight">
-								{t("home.tab_link", "Link")}
+								{t("home.tab_link")}
 							</h2>
 							<p className="text-muted-foreground text-sm font-medium">
-								{t(
-									"home.link_desc",
-									"Paste a long link to shorten it",
-								)}
+								{t("home.link_desc")}
 							</p>
 						</div>
 						<Input
 							value={textValue}
 							onChange={(e) => setTextValue(e.target.value)}
-							placeholder={t(
-								"home.link_placeholder",
-								"Paste long URL and click Shorten",
-							)}
+							placeholder={t("home.link_placeholder")}
 							className="h-12 text-base px-5 rounded-xl border-primary/20 focus-visible:ring-primary/20 bg-background"
 						/>
 						<div className="flex items-center justify-center gap-4 text-xs text-muted-foreground font-bold">
 							<span className="px-3 py-1 rounded-lg bg-muted border border-border/50">
-								✅{" "}
-								{t("home.link_features.custom", "Custom Alias")}
+								✅ {t("home.link_features.custom")}
 							</span>
 						</div>
 					</div>

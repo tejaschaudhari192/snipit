@@ -35,7 +35,7 @@ export const QRDialog = ({ url, isOpen, onOpenChange }: QRDialogProps) => {
 			document.body.appendChild(downloadLink);
 			downloadLink.click();
 			document.body.removeChild(downloadLink);
-			toast.success(t("messages.qr_downloaded", "QR Code downloaded!"));
+			toast.success(t("messages.qr_downloaded"));
 		}
 	};
 
@@ -50,10 +50,7 @@ export const QRDialog = ({ url, isOpen, onOpenChange }: QRDialogProps) => {
 						<DialogTitle>{t("header.qr_button")}</DialogTitle>
 					</div>
 					<p className="text-sm text-muted-foreground">
-						{t(
-							"header.qr_scan_desc",
-							"Scan this code to open the snippet on another device.",
-						)}
+						{t("header.qr_scan_desc")}
 					</p>
 				</DialogHeader>
 				<div className="flex flex-col items-center justify-center p-6 bg-white rounded-xl shadow-inner my-4 relative group">
@@ -82,7 +79,7 @@ export const QRDialog = ({ url, isOpen, onOpenChange }: QRDialogProps) => {
 						onClick={downloadQR}
 					>
 						<Download className="h-4 w-4" />
-						{t("common.download_qr", "Download QR")}
+						{t("common.download_qr")}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

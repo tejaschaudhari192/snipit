@@ -25,10 +25,7 @@ export const AiAutocompleteToggle = ({
 					: "bg-background/80 backdrop-blur-sm border-border/50 text-muted-foreground hover:border-border",
 				className,
 			)}
-			title={t(
-				"editor.ai_autocomplete_tooltip",
-				"Autocomplete suggestions as you type. Press Tab to accept.",
-			)}
+			title={t("editor.ai_autocomplete_tooltip")}
 		>
 			<Sparkles
 				className={cn(
@@ -37,7 +34,7 @@ export const AiAutocompleteToggle = ({
 				)}
 			/>
 			<span className="text-xs font-bold tracking-tight uppercase">
-				{t("editor.autocomplete", "Autocomplete")}
+				{t("editor.autocomplete")}
 			</span>
 			<Switch
 				checked={enabled}

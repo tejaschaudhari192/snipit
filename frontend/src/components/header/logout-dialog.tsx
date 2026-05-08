@@ -34,30 +34,25 @@ export const LogoutDialog = ({ open, onOpenChange }: LogoutDialogProps) => {
 						<LogOut className="h-8 w-8" />
 					</AlertDialogMedia>
 					<AlertDialogTitle>
-						{t("auth.logout_action", "Logout")}
+						{t("auth.logout_action")}
 					</AlertDialogTitle>
 					<AlertDialogDescription>
-						{t(
-							"auth.logout_confirm_question",
-							"Are you sure you want to logout?",
-						)}
+						{t("auth.logout_confirm_question")}
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel variant="ghost">
-						{t("auth.logout_cancel", "Cancel")}
+						{t("auth.logout_cancel")}
 					</AlertDialogCancel>
 					<AlertDialogAction
 						variant="destructive"
 						onClick={async () => {
 							await logout();
-							toast.success(
-								t("auth.logout_confirm", "Logged out"),
-							);
+							toast.success(t("auth.logout_confirm"));
 						}}
 						className="font-bold"
 					>
-						{t("auth.logout_action", "Logout")}
+						{t("auth.logout_action")}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>

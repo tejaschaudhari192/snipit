@@ -100,8 +100,7 @@ export const TagInput = ({
 						onBlur={() => setIsFocused(false)}
 						placeholder={
 							tags.length === 0
-								? placeholder ||
-									t("common.add_label", "Add a label...")
+								? placeholder || t("common.add_label")
 								: ""
 						}
 						className="flex-1 min-w-[120px] bg-transparent border-none outline-none text-[13px] placeholder:text-muted-foreground focus:ring-0 p-0"

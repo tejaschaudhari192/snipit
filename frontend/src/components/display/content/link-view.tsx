@@ -27,22 +27,16 @@ export const LinkView = ({
 					<LinkIcon className="w-10 h-10 text-primary" />
 				</div>
 				<h3 className="text-2xl font-black mb-3">
-					{t("home.tab_link", "Shorten Link")}
+					{t("home.tab_link")}
 				</h3>
 				<p className="text-muted-foreground mb-8 text-center max-w-sm font-medium">
-					{t(
-						"home.link_desc",
-						"Paste the long URL below to create a short, redirecting link.",
-					)}
+					{t("home.link_desc")}
 				</p>
 				<div className="w-full max-w-md">
 					<Input
 						value={content}
 						onChange={(e) => onContentChange(e.target.value)}
-						placeholder={t(
-							"home.link_placeholder",
-							"Enter URL to shorten...",
-						)}
+						placeholder={t("home.link_placeholder")}
 						className="h-12 text-base px-5 rounded-xl border-primary/20 focus-visible:ring-primary/20 bg-background shadow-inner text-center"
 					/>
 				</div>
@@ -59,13 +53,10 @@ export const LinkView = ({
 				<LinkIcon className="w-10 h-10 text-primary" />
 			</div>
 			<h3 className="text-2xl font-black mb-3">
-				{t("common.redirect_ready", "Redirect Ready")}
+				{t("common.redirect_ready")}
 			</h3>
 			<p className="text-muted-foreground mb-8 text-center max-w-md font-medium">
-				{t(
-					"common.redirect_desc",
-					"Click the button below to visit the shared destination link.",
-				)}
+				{t("common.redirect_desc")}
 			</p>
 			<a
 				href={
@@ -77,7 +68,7 @@ export const LinkView = ({
 				rel="noopener noreferrer"
 				className="group relative inline-flex items-center justify-center px-10 py-4 font-bold text-white transition-all duration-200 bg-primary rounded-2xl hover:bg-primary/90 shadow-xl shadow-primary/20 active:scale-95"
 			>
-				{t("common.visit_link", "Visit Destination")}
+				{t("common.visit_link")}
 				<div className="ml-2 group-hover:translate-x-1 transition-transform">
 					🚀
 				</div>

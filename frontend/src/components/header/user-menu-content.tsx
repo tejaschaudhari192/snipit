@@ -19,7 +19,7 @@ export const UserMenuContent = ({ user, onLogout }: UserMenuContentProps) => {
 		<div className="w-64 p-1 select-none">
 			<div className="px-3 py-3 mb-1 bg-muted/30 rounded-lg border border-border/5">
 				<p className="text-[10px] font-black text-primary/60 uppercase tracking-[0.15em] mb-2.5">
-					{t("header.account", "Account")}
+					{t("header.account")}
 				</p>
 				<div className="flex items-center gap-3">
 					<div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0 border border-primary/5">

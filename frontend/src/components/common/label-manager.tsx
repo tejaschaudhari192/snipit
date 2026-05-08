@@ -67,12 +67,7 @@ export const LabelManager = ({
 		return compact ? null : (
 			<div className="flex items-center gap-2 text-xs text-muted-foreground p-2 rounded-lg border border-dashed bg-card/20">
 				<TagIcon className="w-4 h-4 opacity-50" />
-				<span>
-					{t(
-						"common.login_to_label",
-						"Login to organize with labels",
-					)}
-				</span>
+				<span>{t("common.login_to_label")}</span>
 			</div>
 		);
 
@@ -91,7 +86,7 @@ export const LabelManager = ({
 			{!compact && (
 				<div className="flex items-center gap-2 mb-2 text-[13px] font-semibold text-primary/80">
 					<TagIcon className="w-4 h-4" />
-					<span>{t("common.labels", "Labels")}</span>
+					<span>{t("common.labels")}</span>
 				</div>
 			)}
 
