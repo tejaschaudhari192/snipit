@@ -79,13 +79,19 @@ export const MarkdownDisplay = memo(
 						</code>
 					) : (
 						<code
-							className="block bg-muted/50 p-3 rounded-xl font-mono text-[0.85em] border border-border/50 overflow-x-auto my-3"
+							className="block bg-muted/50 p-4 rounded-2xl font-mono text-[0.85em] border border-border/50 overflow-x-auto my-4 shadow-sm"
 							{...props}
 						>
 							{children}
 						</code>
 					);
 				},
+				pre: ({ node, ...props }) => (
+					<pre
+						className="bg-transparent p-0 m-0 border-none shadow-none overflow-visible"
+						{...props}
+					/>
+				),
 				p: ({ node, ...props }) => (
 					<p className="mb-2 leading-relaxed" {...props} />
 				),
