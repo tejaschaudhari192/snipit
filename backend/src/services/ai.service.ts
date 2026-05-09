@@ -10,25 +10,24 @@ import { z } from "zod";
 interface CompactElement {
 	id?: string | undefined;
 	type:
-		| "box"
-		| "text"
-		| "arrow"
-		| "ellipse"
-		| "diamond"
-		| "cloud"
-		| "cylinder"
-		| "image_placeholder"
-		| "stickman";
+		| "start"
+		| "end"
+		| "process"
+		| "decision"
+		| "io"
+		| "data"
+		| "edge"
+		| "annotation";
 	text?: string | undefined;
-	position?: string | undefined;
+	category?: string | undefined;
 	from?: string | undefined;
 	to?: string | undefined;
 	label?: string | undefined;
-	strokeColor?: string | undefined;
-	backgroundColor?: string | undefined;
 }
 
 interface CompactDrawing {
+	title?: string | undefined;
+	direction?: "TB" | "LR" | undefined;
 	elements: CompactElement[];
 }
 
@@ -38,26 +37,25 @@ const dagre: any = (dagreModule as any).default || dagreModule;
 const CompactElementSchema = z.object({
 	id: z.string().optional(),
 	type: z.enum([
-		"box",
-		"text",
-		"arrow",
-		"ellipse",
-		"diamond",
-		"cloud",
-		"cylinder",
-		"image_placeholder",
-		"stickman",
+		"start",
+		"end",
+		"process",
+		"decision",
+		"io",
+		"data",
+		"edge",
+		"annotation",
 	]),
 	text: z.string().optional(),
-	position: z.string().optional(),
+	category: z.string().optional(),
 	from: z.string().optional(),
 	to: z.string().optional(),
 	label: z.string().optional(),
-	strokeColor: z.string().optional(),
-	backgroundColor: z.string().optional(),
 });
 
 const CompactDrawingSchema = z.object({
+	title: z.string().optional(),
+	direction: z.enum(["TB", "LR"]).optional(),
 	elements: z.array(CompactElementSchema),
 });
 
@@ -191,7 +189,7 @@ class AiService {
 					);
 				}
 
-				const elements = this.layoutWithDagre(parsed.elements);
+				const elements = this.layoutWithDagre(parsed);
 				return JSON.stringify(elements);
 			} catch (error: any) {
 				lastError = error;
@@ -244,14 +242,15 @@ class AiService {
 		}
 	}
 
-	private layoutWithDagre(compactElements: CompactElement[]): any[] {
+	private layoutWithDagre(drawing: CompactDrawing): any[] {
 		const g = new dagre.graphlib.Graph();
 		g.setGraph({
-			rankdir: "TB",
-			marginx: 80,
-			marginy: 80,
+			rankdir: drawing.direction || "TB",
+			marginx: 100,
+			marginy: 100,
 			nodesep: 100,
-			ranksep: 120,
+			ranksep: 140,
+			align: "DL",
 		});
 		g.setDefaultEdgeLabel(() => ({}));
 
@@ -259,25 +258,22 @@ class AiService {
 		let nodeCounter = 0;
 
 		// 1. Add Nodes
-		compactElements.forEach((el: CompactElement) => {
-			if (el.type === "arrow") return;
+		drawing.elements.forEach((el: CompactElement) => {
+			if (el.type === "edge" || el.type === "annotation") return;
 			const id = el.id || `node_${++nodeCounter}`;
 			el.id = id;
 
-			const text = el.text || "";
-			const width = Math.max(180, text.length * 10 + 60);
-			const height = 80;
-
+			const { width, height } = this.getNodeDimensions(el);
 			g.setNode(id, { width, height, data: el });
 		});
 
 		// 2. Add Edges
-		compactElements.forEach((el: CompactElement, index: number) => {
-			if (el.type === "arrow" && el.from && el.to) {
+		drawing.elements.forEach((el: CompactElement, index: number) => {
+			if (el.type === "edge" && el.from && el.to) {
 				if (g.node(el.from) && g.node(el.to)) {
 					g.setEdge(el.from, el.to, {
 						label: el.label,
-						id: `arrow_${index}`,
+						id: `edge_${index}`,
 					});
 				}
 			}
@@ -287,6 +283,25 @@ class AiService {
 
 		// 3. Map to Excalidraw
 		const excalidrawElements: any[] = [];
+		let processColorIndex = 0;
+
+		// Optional: Add Title
+		if (drawing.title) {
+			excalidrawElements.push(
+				this.createTextElement(
+					`title_${now}`,
+					"",
+					drawing.title,
+					g.graph().width / 2 - 150,
+					20,
+					300,
+					50,
+					"#1e1e1e",
+					now,
+					36, // Larger font
+				),
+			);
+		}
 
 		g.nodes().forEach((id: string) => {
 			const node = g.node(id);
@@ -295,7 +310,11 @@ class AiService {
 			const el: CompactElement = node.data;
 			const x = node.x - node.width / 2;
 			const y = node.y - node.height / 2;
-			const { strokeColor, backgroundColor } = this.getElementStyles(el);
+
+			const { strokeColor, backgroundColor, fillStyle, strokeStyle } =
+				this.getWhiteboardStyles(el, processColorIndex);
+			if (el.type === "process" && !el.category) processColorIndex++;
+
 			const textId = `text_${id}`;
 
 			excalidrawElements.push({
@@ -307,11 +326,12 @@ class AiService {
 				height: node.height,
 				strokeColor,
 				backgroundColor,
-				fillStyle: "hachure", // Organic hand-drawn fill
-				strokeWidth: 1.5,
-				strokeStyle: "solid",
-				roughness: 2, // High roughness for whiteboard feel
+				fillStyle,
+				strokeWidth: 2,
+				strokeStyle,
+				roughness: 1.5,
 				opacity: 100,
+				roundness: { type: 3, value: 16 },
 				seed: Math.floor(Math.random() * 100000),
 				version: now,
 				versionNonce: Math.floor(Math.random() * 100000),
@@ -346,49 +366,129 @@ class AiService {
 				excalidrawElements.push(
 					this.createArrowElement(edge, e, fromNode, toNode, now),
 				);
+				if (edge.label) {
+					excalidrawElements.push(
+						this.createEdgeLabelElement(
+							edge,
+							fromNode,
+							toNode,
+							now,
+						),
+					);
+				}
+			}
+		});
+
+		// Add annotations
+		drawing.elements.forEach((el: CompactElement) => {
+			if (el.type === "annotation" && el.from && g.node(el.from)) {
+				const targetNode = g.node(el.from);
+				excalidrawElements.push(
+					this.createAnnotationElement(el, targetNode, now),
+				);
 			}
 		});
 
 		return excalidrawElements;
 	}
 
-	private mapElementToExcalidrawType(type: string): string {
-		const map: Record<string, string> = {
-			box: "rectangle",
-			ellipse: "ellipse",
-			diamond: "diamond",
-			cloud: "rectangle",
-			cylinder: "rectangle",
-			image_placeholder: "rectangle",
-			stickman: "ellipse",
-		};
-		return map[type] || "rectangle";
+	private getNodeDimensions(el: CompactElement): {
+		width: number;
+		height: number;
+	} {
+		const textLen = el.text ? el.text.length : 0;
+		switch (el.type) {
+			case "start":
+			case "end":
+				return { width: Math.max(160, textLen * 12 + 60), height: 60 };
+			case "decision":
+				return {
+					width: Math.max(220, textLen * 14 + 100),
+					height: 150,
+				};
+			case "io":
+			case "data":
+			case "process":
+			default:
+				return { width: Math.max(200, textLen * 13 + 80), height: 85 };
+		}
 	}
 
-	private getElementStyles(el: CompactElement): {
+	private mapElementToExcalidrawType(type: string): string {
+		switch (type) {
+			case "start":
+			case "end":
+				return "ellipse";
+			case "decision":
+				return "diamond";
+			case "process":
+			case "io":
+			case "data":
+			default:
+				return "rectangle";
+		}
+	}
+
+	private getWhiteboardStyles(
+		el: CompactElement,
+		processColorIndex: number,
+	): {
 		strokeColor: string;
 		backgroundColor: string;
+		fillStyle: string;
+		strokeStyle: string;
 	} {
-		if (el.strokeColor || el.backgroundColor) {
-			return {
-				strokeColor: el.strokeColor || "#1e1e1e",
-				backgroundColor: el.backgroundColor || "transparent",
-			};
+		const WHITEBOARD_PALETTE: Record<string, any> = {
+			start: { bg: "#b2f2bb", stroke: "#2b8a3e" },
+			end: { bg: "#ffc9c9", stroke: "#c92a2a" },
+			decision: { bg: "#ffec99", stroke: "#e67700" },
+			io: { bg: "#99e9f2", stroke: "#0c8599" },
+			data: { bg: "#b2f2bb", stroke: "#2b8a3e" },
+			process: [
+				{ bg: "#a5d8ff", stroke: "#1971c2" },
+				{ bg: "#d0bfff", stroke: "#7048e8" },
+				{ bg: "#ffc9c9", stroke: "#e03131" },
+				{ bg: "#ffd8a8", stroke: "#e8590c" },
+				{ bg: "#99e9f2", stroke: "#0c8599" },
+				{ bg: "#eebefa", stroke: "#9c36b5" },
+				{ bg: "#b2f2bb", stroke: "#2b8a3e" },
+				{ bg: "#ffec99", stroke: "#e67700" },
+			],
+			categories: {
+				auth: { bg: "#a5d8ff", stroke: "#1971c2" },
+				database: { bg: "#b2f2bb", stroke: "#2b8a3e" },
+				error: { bg: "#ffc9c9", stroke: "#c92a2a" },
+				success: { bg: "#b2f2bb", stroke: "#2b8a3e" },
+				network: { bg: "#d0bfff", stroke: "#7048e8" },
+				security: { bg: "#ffec99", stroke: "#e67700" },
+				ui: { bg: "#eebefa", stroke: "#9c36b5" },
+			},
+		};
+
+		let style = { bg: "transparent", stroke: "#1e1e1e" };
+		let fillStyle = "hachure";
+		let strokeStyle = "solid";
+
+		if (el.type === "io" || el.type === "data") {
+			fillStyle = "cross-hatch";
+			strokeStyle = "dashed";
 		}
 
-		// Use very subtle colors to maintain whiteboard aesthetic
-		const text = (el.text || "").toLowerCase();
-		if (text.includes("user") || text.includes("client")) {
-			return { backgroundColor: "#d0ebff", strokeColor: "#1e1e1e" };
-		}
-		if (text.includes("db") || text.includes("data")) {
-			return { backgroundColor: "#d3f9d8", strokeColor: "#1e1e1e" };
-		}
-		if (text.includes("api") || text.includes("server")) {
-			return { backgroundColor: "#eebefa", strokeColor: "#1e1e1e" };
+		if (el.category && WHITEBOARD_PALETTE.categories[el.category]) {
+			style = WHITEBOARD_PALETTE.categories[el.category];
+		} else if (el.type === "process") {
+			const processPalette = WHITEBOARD_PALETTE.process;
+			style = processPalette[processColorIndex % processPalette.length];
+		} else if (WHITEBOARD_PALETTE[el.type]) {
+			style = WHITEBOARD_PALETTE[el.type];
 		}
 
-		return { backgroundColor: "transparent", strokeColor: "#1e1e1e" };
+		return {
+			strokeColor: style.stroke,
+			backgroundColor: style.bg,
+			fillStyle,
+			strokeStyle,
+		};
 	}
 
 	private createTextElement(
@@ -401,6 +501,7 @@ class AiService {
 		h: number,
 		strokeColor: string,
 		now: number,
+		fontSize = 18,
 	) {
 		return {
 			id,
@@ -408,17 +509,17 @@ class AiService {
 			x: x + w / 2,
 			y: y + h / 2,
 			text,
-			fontSize: 20,
-			fontFamily: 2, // Comic/Handwritten font
+			fontSize,
+			fontFamily: 1, // Virgil (Handwritten)
 			textAlign: "center",
 			verticalAlign: "middle",
-			containerId,
+			containerId: containerId || undefined,
 			strokeColor,
 			backgroundColor: "transparent",
-			fillStyle: "solid",
-			strokeWidth: 1,
+			fillStyle: "hachure",
+			strokeWidth: 2,
 			strokeStyle: "solid",
-			roughness: 0,
+			roughness: 1,
 			opacity: 100,
 			seed: Math.floor(Math.random() * 100000),
 			version: now,
@@ -426,8 +527,8 @@ class AiService {
 			updated: now,
 			isDeleted: false,
 			locked: false,
-			width: w * 0.9,
-			height: h * 0.9,
+			width: w,
+			height: h,
 		};
 	}
 
@@ -450,13 +551,14 @@ class AiService {
 			y: startY,
 			width: Math.abs(endX - startX),
 			height: Math.abs(endY - startY),
-			strokeColor: "#1e1e1e",
+			strokeColor: "#495057",
 			backgroundColor: "transparent",
 			fillStyle: "solid",
-			strokeWidth: 1.5,
+			strokeWidth: 2,
 			strokeStyle: "solid",
-			roughness: 2,
+			roughness: 1,
 			opacity: 100,
+			roundness: { type: 2 },
 			seed: Math.floor(Math.random() * 100000),
 			version: now,
 			versionNonce: Math.floor(Math.random() * 100000),
@@ -467,10 +569,85 @@ class AiService {
 				[0, 0],
 				[endX - startX, endY - startY],
 			],
-			elbowed: false, // Organic straight lines look better for sketchy style
+			elbowed: false,
 			startBinding: { elementId: e.v, gap: 5, focus: 0 },
 			endBinding: { elementId: e.w, gap: 5, focus: 0 },
 			endArrowhead: "arrow",
+		};
+	}
+
+	private createEdgeLabelElement(
+		edge: any,
+		fromNode: any,
+		toNode: any,
+		now: number,
+	) {
+		const startX = fromNode.x;
+		const startY = fromNode.y + fromNode.height / 2;
+		const endX = toNode.x;
+		const endY = toNode.y - toNode.height / 2;
+
+		const midX = (startX + endX) / 2;
+		const midY = (startY + endY) / 2;
+
+		return {
+			id: `label_${edge.id}`,
+			type: "text",
+			x: midX - 20,
+			y: midY - 12,
+			text: edge.label,
+			fontSize: 16,
+			fontFamily: 1,
+			textAlign: "center",
+			strokeColor: "#1e1e1e",
+			backgroundColor: "transparent",
+			fillStyle: "solid",
+			strokeWidth: 1,
+			strokeStyle: "solid",
+			roughness: 1,
+			opacity: 100,
+			seed: Math.floor(Math.random() * 100000),
+			version: now,
+			versionNonce: Math.floor(Math.random() * 100000),
+			updated: now,
+			isDeleted: false,
+			locked: false,
+			width: 40,
+			height: 24,
+		};
+	}
+
+	private createAnnotationElement(
+		el: CompactElement,
+		targetNode: any,
+		now: number,
+	) {
+		const x = targetNode.x + targetNode.width / 2 + 20;
+		const y = targetNode.y - targetNode.height / 2 - 20;
+		return {
+			id: el.id || `annotation_${Math.random()}`,
+			type: "text",
+			x,
+			y,
+			text: el.text || "",
+			fontSize: 16,
+			fontFamily: 1,
+			textAlign: "left",
+			strokeColor: "#7048e8",
+			backgroundColor: "transparent",
+			fillStyle: "solid",
+			strokeWidth: 1,
+			strokeStyle: "solid",
+			roughness: 1,
+			opacity: 100,
+			seed: Math.floor(Math.random() * 100000),
+			version: now,
+			versionNonce: Math.floor(Math.random() * 100000),
+			updated: now,
+			isDeleted: false,
+			locked: false,
+			width: 150,
+			height: 40,
 		};
 	}
 }

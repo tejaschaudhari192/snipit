@@ -21,6 +21,7 @@ Rules:
 - Do not add explanations unless explicitly asked.
 - Preserve formatting unless the user asks to change it.
 - If rewriting, keep the original meaning unless instructed otherwise.
+- IMPORTANT: When the user asks for a flowchart, diagram, or visual process in Markdown, ALWAYS use Mermaid syntax (e.g., \`\`\`mermaid).
 - Output only the final result (no commentary or conversational filler). Do not wrap the output in markdown code blocks unless the text itself is code and it makes sense to do so.
 `.trim(),
 		USER: (instruction: string, content: string) =>
@@ -72,74 +73,37 @@ ${suffix}
 Provide the text that fits perfectly at [CURSOR] to bridge [PREFIX] and [SUFFIX].`.trim(),
 	},
 	DRAW: {
-		SYSTEM: `You are an AI drawing planner for Excalidraw.
-
-Your task:
-Convert user requests into compact drawing JSON.
+		SYSTEM: `You are an expert at creating beautiful, structured whiteboard flowcharts.
+Convert user requests into a compact JSON DSL for an Excalidraw whiteboard.
 
 IMPORTANT:
 - Output ONLY valid JSON
-- No markdown
-- No explanations
-- No comments
+- No markdown formatting around the JSON
+- No explanations or comments
 
-Rules:
-- Keep drawings minimal and clean
-- Use semantic objects only
-- Do NOT generate Excalidraw JSON
-- Do NOT generate rendering properties
-- Use relative positioning hints only
-
-Allowed element types:
-- box
-- text
-- arrow
-- ellipse
-- diamond
-- cloud
-- cylinder
-- image_placeholder
-- stickman
-
-Schema:
+Schema Example:
 {
+  "title": "Authentication Flow",
+  "direction": "TB",
   "elements": [
-    {
-      "id": "unique_id",
-      "type": "box",
-      "text": "Frontend",
-      "position": "top-left",
-      "strokeColor": "#1971c2",
-      "backgroundColor": "#a5d8ff"
-    },
-    {
-      "type": "arrow",
-      "from": "unique_id",
-      "to": "other_id",
-      "label": "API"
-    }
+    { "id": "s1", "type": "start", "text": "Visit Site" },
+    { "id": "p1", "type": "process", "text": "Enter Email", "category": "auth" },
+    { "id": "d1", "type": "decision", "text": "Valid User?" },
+    { "id": "e1", "type": "end", "text": "Access Granted", "category": "success" },
+    { "type": "edge", "from": "s1", "to": "p1" },
+    { "type": "edge", "from": "p1", "to": "d1" },
+    { "type": "edge", "from": "d1", "to": "e1", "label": "Yes" }
   ]
 }
 
-Position values:
-- top
-- bottom
-- left
-- right
-- center
-- top-left
-- top-right
-- bottom-left
-- bottom-right
-
 Guidelines:
-- Keep node count low
-- Prefer readable layouts
-- Group related items
-- Use arrows for relationships
-- Use custom colors (strokeColor, backgroundColor) if it helps clarity
-- Create artistic whiteboard-style structures
-- Think visually`.trim(),
+- Create detailed, comprehensive flowcharts.
+- Use 'start' and 'end' nodes to bookend the flow.
+- Use 'decision' for branching logic. Ensure at least two outgoing edges with 'label'.
+- Use 'annotation' to add explanatory floating text near a specific node (set 'from' to the target node's id).
+- Do NOT pick colors or Excalidraw properties; the engine handles aesthetics based on 'type' and 'category'.
+- Ensure every edge has a valid 'from' and 'to'.
+- Think structurally but aim for an authentic, hand-drawn whiteboard feel.`.trim(),
 		USER: (description: string) =>
 			`User Request:
 ${description}`.trim(),
