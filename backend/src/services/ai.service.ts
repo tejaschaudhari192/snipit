@@ -242,6 +242,16 @@ class AiService {
 		}
 	}
 
+	/**
+	 * WHITEBOARD FLOWCHART GENERATION ALGORITHM:
+	 * 1. INITIALIZATION: Setup Dagre graph with semantic spacing and TB/LR direction.
+	 * 2. NODE DISCOVERY: Map semantic DSL nodes to Dagre with type-specific dimensions.
+	 * 3. EDGE ROUTING: Link nodes with Dagre edges, capturing semantic labels.
+	 * 4. LAYOUT COMPUTATION: Execute Dagre layout engine to find optimal (x, y) coordinates.
+	 * 5. VISUAL MAPPING: Transform Dagre nodes into Excalidraw shapes (hachure, Virgil font, vibrant colors).
+	 * 6. LABEL INJECTION: Calculate arrow midpoints and inject floating Excalidraw text for edge labels.
+	 * 7. ANNOTATION PASS: Place free-floating sticky notes (annotations) near their target nodes.
+	 */
 	private layoutWithDagre(drawing: CompactDrawing): any[] {
 		const g = new dagre.graphlib.Graph();
 		g.setGraph({
