@@ -59,12 +59,7 @@ const CompactDrawingSchema = z.object({
 	elements: z.array(CompactElementSchema),
 });
 
-const GROQ_MODELS = [
-	configurations.groq_model!, // User's preference
-	"llama-3.3-70b-versatile",
-	"llama-3.1-8b-instant",
-	"qwen/qwen3-32b",
-];
+const GROQ_MODELS = configurations.groq_models;
 
 class AiService {
 	private groq: Groq;
@@ -76,7 +71,9 @@ class AiService {
 	async verify(): Promise<boolean> {
 		try {
 			const models = await this.groq.models.list();
-			return models.data.some((m) => m.id === configurations.groq_model);
+			return models.data.some(
+				(m) => m.id === configurations.groq_smart_model,
+			);
 		} catch (error) {
 			return false;
 		}
@@ -86,12 +83,14 @@ class AiService {
 		const prompt = PROMPTS.DETECT_LANGUAGE([...VALID_LANGUAGES], content);
 
 		try {
-			const chatCompletion = await this.groq.chat.completions.create({
-				messages: [{ role: "user", content: prompt }],
-				model: configurations.groq_model!,
-				temperature: 0.1,
-				max_tokens: 10,
-			});
+			const chatCompletion = await this.requestWithFallback(
+				{
+					messages: [{ role: "user", content: prompt }],
+					temperature: 0.1,
+					max_tokens: 10,
+				},
+				{ preferredModel: configurations.groq_dumb_model },
+			);
 
 			let language =
 				chatCompletion.choices[0]?.message?.content
@@ -114,16 +113,23 @@ class AiService {
 		const systemPrompt = PROMPTS.ENHANCE_CONTENT.SYSTEM;
 		const userPrompt = PROMPTS.ENHANCE_CONTENT.USER(instruction, content);
 
-		const chatCompletion = await this.groq.chat.completions.create({
-			messages: [
-				{ role: "system", content: systemPrompt },
-				{ role: "user", content: userPrompt },
-			],
-			model: configurations.groq_model!,
-			temperature: 0,
-		});
+		try {
+			const chatCompletion = await this.requestWithFallback(
+				{
+					messages: [
+						{ role: "system", content: systemPrompt },
+						{ role: "user", content: userPrompt },
+					],
+					temperature: 0,
+				},
+				{ preferredModel: configurations.groq_smart_model },
+			);
 
-		return chatCompletion.choices[0]?.message?.content?.trim() || "";
+			return chatCompletion.choices[0]?.message?.content?.trim() || "";
+		} catch (error) {
+			logger.error("Error enhancing content:", error);
+			return content;
+		}
 	}
 
 	async autocomplete(
@@ -136,36 +142,38 @@ class AiService {
 			? PROMPTS.AUTOCOMPLETE.TEXT.SYSTEM
 			: PROMPTS.AUTOCOMPLETE.CODE.SYSTEM;
 
-		const chatCompletion = await this.groq.chat.completions.create({
-			messages: [
-				{ role: "system", content: systemPrompt },
+		try {
+			const chatCompletion = await this.requestWithFallback(
 				{
-					role: "user",
-					content: PROMPTS.AUTOCOMPLETE.USER(
-						language,
-						prefix,
-						suffix,
-					),
+					messages: [
+						{ role: "system", content: systemPrompt },
+						{
+							role: "user",
+							content: PROMPTS.AUTOCOMPLETE.USER(
+								language,
+								prefix,
+								suffix,
+							),
+						},
+					],
+					temperature: 0,
+					max_tokens: isText ? 64 : 128,
+					stop: isText ? ["\n", "\n\n"] : ["\n\n", "```"],
 				},
-			],
-			model: "llama-3.1-8b-instant",
-			temperature: 0,
-			max_tokens: isText ? 64 : 128,
-			stop: isText ? ["\n", "\n\n"] : ["\n\n", "```"],
-		});
+				{ preferredModel: configurations.groq_smart_model },
+			);
 
-		return chatCompletion.choices[0]?.message?.content?.trim() || "";
+			return chatCompletion.choices[0]?.message?.content?.trim() || "";
+		} catch (error) {
+			logger.error("Error in autocomplete:", error);
+			return "";
+		}
 	}
 
 	async generateDrawContent(description: string): Promise<string> {
-		let lastError;
-
-		for (const model of GROQ_MODELS) {
-			try {
-				logger.info(
-					`Attempting diagram generation with model: ${model}`,
-				);
-				const chatCompletion = await this.groq.chat.completions.create({
+		try {
+			return await this.requestWithFallback(
+				{
 					messages: [
 						{ role: "system", content: PROMPTS.DRAW.SYSTEM },
 						{
@@ -173,44 +181,95 @@ class AiService {
 							content: PROMPTS.DRAW.USER(description),
 						},
 					],
-					model,
 					temperature: 0,
 					max_tokens: 5000,
+				},
+				{
+					validator: (completion) => {
+						const raw =
+							completion.choices[0]?.message?.content?.trim() ||
+							"[]";
+						const cleaned = this.cleanAiJson(raw);
+						const parsed = this.parseAndValidateDrawing(cleaned);
+						if (!parsed) return null;
+
+						const elements = this.layoutWithDagre(parsed);
+						return JSON.stringify(elements);
+					},
+				},
+			);
+		} catch (error) {
+			logger.error("All models failed diagram generation:", error);
+			return "[]";
+		}
+	}
+
+	/**
+	 * Executes a Groq completion request with automatic model fallback and optional validation.
+	 * Prioritizes the preferred model if provided, then falls through the GROQ_MODELS list.
+	 */
+	private async requestWithFallback<T = Groq.Chat.ChatCompletion>(
+		params: Omit<
+			Parameters<typeof this.groq.chat.completions.create>[0],
+			"model" | "stream"
+		>,
+		options: {
+			preferredModel?: string;
+			validator?: (completion: Groq.Chat.ChatCompletion) => T | null;
+		} = {},
+	): Promise<T> {
+		const { preferredModel, validator } = options;
+		const models = [
+			preferredModel,
+			...GROQ_MODELS,
+		].filter((m, i, self) => m && self.indexOf(m) === i) as string[];
+
+		let lastError;
+
+		for (const model of models) {
+			try {
+				logger.debug(`Attempting Groq request with model: ${model}`);
+				const completion = await this.groq.chat.completions.create({
+					...params,
+					model,
+					stream: false,
 				});
 
-				const rawContent =
-					chatCompletion.choices[0]?.message?.content?.trim() || "[]";
-				const cleanedContent = this.cleanAiJson(rawContent);
-				const parsed = this.parseAndValidateDrawing(cleanedContent);
-
-				if (!parsed) {
+				if (validator) {
+					const validated = validator(completion);
+					if (validated !== null) return validated;
 					throw new Error(
-						`AI model ${model} returned invalid or unparseable schema.`,
+						`Validation failed for model output: ${model}`,
 					);
 				}
 
-				const elements = this.layoutWithDagre(parsed);
-				return JSON.stringify(elements);
+				return completion as T;
 			} catch (error: any) {
 				lastError = error;
-				if (
+
+				const isRateLimit =
 					error?.status === 429 ||
 					error?.status === 413 ||
-					error?.message?.includes("rate_limit")
-				) {
+					error?.message?.includes("rate_limit");
+
+				if (isRateLimit) {
 					logger.warn(
-						`Model ${model} rate limited or overloaded. Waiting 1s and trying next...`,
+						`Model ${model} rate limited or overloaded. Falling back...`,
 					);
-					await new Promise((resolve) => setTimeout(resolve, 1000));
 					continue;
 				}
-				logger.error(`Model ${model} failed:`, error);
-				break;
+
+				// If validator failed or other non-rate-limit error, we still try next model
+				// unless it's a critical error (like API key invalid)
+				if (error?.status === 401) throw error;
+
+				logger.error(`Model ${model} failed, trying next...`, {
+					error: error.message,
+				});
 			}
 		}
 
-		logger.error("All models failed or rate limited.", lastError);
-		return "[]";
+		throw lastError || new Error("All models exhausted without success");
 	}
 
 	private cleanAiJson(content: string): string {
