@@ -3,6 +3,11 @@ import { ZodError } from "zod";
 import logger from "@/config/logger.js";
 import { AppError } from "@/lib/errors.js";
 
+interface MongooseCastError extends Error {
+	path: string;
+	value: string;
+}
+
 export const errorMiddleware = (
 	err: unknown,
 	req: Request,
@@ -55,8 +60,9 @@ export const errorMiddleware = (
 	}
 
 	if (error.name === "CastError") {
+		const castErr = error as unknown as MongooseCastError;
 		return res.status(400).json({
-			error: `Invalid ${error.path}: ${error.value}`,
+			error: `Invalid ${castErr.path}: ${castErr.value}`,
 		});
 	}
 
