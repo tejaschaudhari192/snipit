@@ -16,30 +16,38 @@ class EmailService {
 	});
 
 	private isVerified = false;
+	private lastErrorMessage: string | null = null;
 	private verificationPromise: Promise<boolean> | null = null;
 
 	constructor() {
 		// Verification will be triggered on demand by health checks
 	}
 
+	public getLastError(): string | null {
+		return this.lastErrorMessage;
+	}
+
 	public async ensureVerification(): Promise<boolean> {
 		if (this.isVerified) return true;
 		if (this.verificationPromise) return this.verificationPromise;
 
+		this.lastErrorMessage = null;
 		this.verificationPromise = this.transporter
 			.verify()
 			.then(() => {
 				this.isVerified = true;
 				this.verificationPromise = null;
+				this.lastErrorMessage = null;
 				logger.info("✅ Email Service Verified and Ready");
 				return true;
 			})
 			.catch((err) => {
 				this.isVerified = false;
 				this.verificationPromise = null;
+				this.lastErrorMessage = err.message || "Unknown SMTP error";
 				logger.error(
 					"❌ Email Service Verification Failed:",
-					err.message,
+					this.lastErrorMessage,
 				);
 				return false;
 			});

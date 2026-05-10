@@ -219,10 +219,9 @@ class AiService {
 		} = {},
 	): Promise<T> {
 		const { preferredModel, validator } = options;
-		const models = [
-			preferredModel,
-			...GROQ_MODELS,
-		].filter((m, i, self) => m && self.indexOf(m) === i) as string[];
+		const models = [preferredModel, ...GROQ_MODELS].filter(
+			(m, i, self) => m && self.indexOf(m) === i,
+		) as string[];
 
 		let lastError;
 

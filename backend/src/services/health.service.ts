@@ -25,6 +25,7 @@ export interface HealthResponse {
 		database: ServiceStatus;
 		supabase: ServiceStatus;
 		smtp: ServiceStatus;
+		ai: ServiceStatus;
 	};
 }
 
@@ -79,6 +80,7 @@ class HealthService {
 				database: { status: "unknown" },
 				supabase: { status: "unknown" },
 				smtp: { status: "unknown" },
+				ai: { status: "unknown" },
 			},
 		};
 
@@ -176,13 +178,20 @@ class HealthService {
 		// 3. AI Service Check
 		try {
 			const isOk = await this.aiService.verify();
+			health.services.ai = {
+				status: isOk ? "ok" : "error",
+				message: isOk ? "AI Engine Ready" : "AI Engine Failed",
+			};
 			addUpdate(
 				"AI Service",
-				"AI Engine Ready",
+				isOk ? "AI Engine Ready" : "AI Engine Error",
 				"sparkles",
 				isOk ? "ok" : "error",
 			);
-		} catch {
+		} catch (error: unknown) {
+			const message =
+				error instanceof Error ? error.message : String(error);
+			health.services.ai = { status: "error", message };
 			addUpdate("AI Service", "AI Engine Error", "sparkles", "error");
 		}
 
@@ -196,11 +205,12 @@ class HealthService {
 				addUpdate("Email Server", "SMTP Config Error", "mail", "error");
 			} else if (forceRefresh) {
 				const isOk = await this.emailService.ensureVerification();
+				const errorMessage = this.emailService.getLastError();
 				health.services.smtp = {
 					status: isOk ? "ok" : "error",
 					message: isOk
 						? "SMTP service is ready"
-						: "SMTP verification failed",
+						: `SMTP error: ${errorMessage || "Verification failed"}`,
 				};
 				addUpdate(
 					"Email Server",
