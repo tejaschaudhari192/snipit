@@ -50,7 +50,7 @@ class HealthService {
 			};
 		}
 
-		const { health } = await this.refreshHealthCache();
+		const { health } = await this.refreshHealthCache(forceRefresh);
 		return health;
 	}
 
@@ -65,11 +65,11 @@ class HealthService {
 			return this.cachedStreamUpdates;
 		}
 
-		const { updates } = await this.refreshHealthCache();
+		const { updates } = await this.refreshHealthCache(forceRefresh);
 		return updates;
 	}
 
-	private async refreshHealthCache() {
+	private async refreshHealthCache(forceRefresh = false) {
 		logger.info("[Health] Refreshing health cache...");
 
 		const health: HealthResponse = {
@@ -194,18 +194,36 @@ class HealthService {
 					message: "SMTP not configured",
 				};
 				addUpdate("Email Server", "SMTP Config Error", "mail", "error");
+			} else if (forceRefresh) {
+				const isOk = await this.emailService.ensureVerification();
+				health.services.smtp = {
+					status: isOk ? "ok" : "error",
+					message: isOk
+						? "SMTP service is ready"
+						: "SMTP verification failed",
+				};
+				addUpdate(
+					"Email Server",
+					isOk ? "Email Server Ready" : "Email Server Error",
+					"mail",
+					isOk ? "ok" : "error",
+				);
 			} else {
-				await this.emailService.verify();
+				// Non-blocking for standard checks
+				this.emailService.ensureVerification();
 				health.services.smtp = {
 					status: "ok",
-					message: "SMTP service is ready",
+					message: "SMTP service verification in progress",
 				};
 				addUpdate("Email Server", "Email Server Ready", "mail", "ok");
 			}
 		} catch (error: unknown) {
-			const message =
-				error instanceof Error ? error.message : String(error);
-			health.services.smtp = { status: "error", message };
+			logger.error("Health check email error (non-fatal):", error);
+			// We don't set health.status to 'down' for email issues
+			health.services.smtp = {
+				status: "error",
+				message: "Email background check failed",
+			};
 			addUpdate("Email Server", "Email Server Error", "mail", "error");
 		}
 

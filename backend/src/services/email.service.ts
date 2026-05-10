@@ -15,8 +15,40 @@ class EmailService {
 		},
 	});
 
+	private isVerified = false;
+	private verificationPromise: Promise<boolean> | null = null;
+
+	constructor() {
+		// Verification will be triggered on demand by health checks
+	}
+
+	public async ensureVerification(): Promise<boolean> {
+		if (this.isVerified) return true;
+		if (this.verificationPromise) return this.verificationPromise;
+
+		this.verificationPromise = this.transporter
+			.verify()
+			.then(() => {
+				this.isVerified = true;
+				this.verificationPromise = null;
+				logger.info("✅ Email Service Verified and Ready");
+				return true;
+			})
+			.catch((err) => {
+				this.isVerified = false;
+				this.verificationPromise = null;
+				logger.error(
+					"❌ Email Service Verification Failed:",
+					err.message,
+				);
+				return false;
+			});
+
+		return this.verificationPromise;
+	}
+
 	async verify() {
-		return await this.transporter.verify();
+		return this.isVerified;
 	}
 
 	async sendAccessGrantedEmail(

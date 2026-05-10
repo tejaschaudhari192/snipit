@@ -10,7 +10,8 @@ const router: Router = Router();
 router.get(
 	"/",
 	catchAsync(async (req, res) => {
-		const health = await healthService.getHealth();
+		const isLive = req.query.live === "true" || req.query.force === "true";
+		const health = await healthService.getHealth(isLive);
 		const statusCode = health.status === "alive" ? 200 : 503;
 		return res.status(statusCode).json(health);
 	}),
@@ -25,7 +26,8 @@ router.get("/stream", async (req, res) => {
 		res.write(`data: ${JSON.stringify(data)}\n\n`);
 	};
 
-	const updates = await healthService.getStreamUpdates();
+	const isLive = req.query.live === "true" || req.query.force === "true";
+	const updates = await healthService.getStreamUpdates(isLive);
 
 	// Determine if updates are from cache (already completed) or fresh
 	const isCached = updates.every(
