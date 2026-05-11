@@ -509,7 +509,17 @@
 		"ai_refactor": "🛠️ निवड रिफॅक्टर करा",
 		"ai_fix": "🐛 निवडीमधील बग दुरुस्त करा",
 		"autocomplete": "ऑटोकंपलीट",
-		"ai_autocomplete_tooltip": "आपण टाइप करताना कोड सूचना. स्वीकारण्यासाठी Tab दाबा."
+		"ai_autocomplete_tooltip": "ऑटोकंपलीट सूचना",
+		"transcribing": "ट्रान्सक्राइब होत आहे...",
+		"transcription_success": "आवाज यशस्वीरित्या ट्रान्सक्राइब झाला",
+		"transcription_failed": "ऑडिओ ट्रान्सक्राइब करण्यात अपयशी",
+		"start_recording": "व्हॉइस रेकॉर्डिंग सुरू करा",
+		"stop_recording": "रेकॉर्डिंग थांबवा",
+		"plain_text": "साधा मजकूर",
+		"code": "कोड",
+		"drawing": "ड्राइंग",
+		"shorten_link": "लिंक लहान करा",
+		"file": "फाईल"
 	},
 	"ai_dialog": {
 		"title": "AI संपादक सहाय्यक",

@@ -33,6 +33,7 @@ import { AiDrawDialog } from "@/components/editor/ai-draw-dialog";
 import { MainToolbar } from "@/components/home/main-toolbar";
 import { usePasteHandlers } from "@/hooks/use-paste-handlers";
 import { useTerminalExecution } from "@/hooks/use-terminal-execution";
+import { VoiceInputButton } from "@/components/editor/voice-input-button";
 
 const LanguageSelector = lazy(() =>
 	import("@/components/editor/language-selector").then((m) => ({
@@ -77,8 +78,6 @@ const EditorSkeleton = () => (
 
 const HomePage = () => {
 	const { t } = useTranslation();
-	usePageTitle("common.snipit", "Snipit");
-	const { history, deleteSnippet } = useSnippets();
 
 	// Paste Context
 	const {
@@ -102,6 +101,20 @@ const HomePage = () => {
 		fileName,
 		onContentTypeChange,
 	} = usePaste();
+
+	const getTitle = useCallback(() => {
+		const mapping: Record<string, string> = {
+			text: t("editor.plain_text"),
+			code: t("editor.code"),
+			draw: t("editor.drawing"),
+			link: t("editor.shorten_link"),
+			file: t("editor.file"),
+		};
+		return mapping[contentType] || t("common.share_code_text");
+	}, [contentType, t]);
+
+	usePageTitle(undefined, getTitle());
+	const { history, deleteSnippet } = useSnippets();
 
 	// UI States
 	const [shortenedResult, setShortenedResult] = useState<{
@@ -387,6 +400,7 @@ const HomePage = () => {
 								enabled={isAiAutocompleteEnabled}
 								onToggle={setIsAiAutocompleteEnabled}
 							/>
+							<VoiceInputButton />
 						</>
 					)}
 				</MainToolbar>

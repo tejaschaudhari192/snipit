@@ -56,6 +56,18 @@ class AiController {
 		const elements = await this.aiService.generateDrawContent(description);
 		res.json({ elements });
 	}
+
+	async transcribeAudio(req: Request, res: Response) {
+		if (!req.file) {
+			return res.status(400).json({ error: "Audio file is required" });
+		}
+
+		const text = await this.aiService.transcribeAudio(
+			req.file.path,
+			req.file.originalname,
+		);
+		res.json({ text });
+	}
 }
 
 export default AiController;

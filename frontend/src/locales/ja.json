@@ -510,7 +510,17 @@
 		"ai_refactor": "🛠️ 選択範囲をリファクタリング",
 		"ai_fix": "🐛 選択範囲のバグを修正",
 		"autocomplete": "オートコンプリート",
-		"ai_autocomplete_tooltip": "入力中にコードを提案します。Tabで適用。"
+		"ai_autocomplete_tooltip": "オートコンプリートの提案",
+		"transcribing": "文字起こし中...",
+		"transcription_success": "音声の文字起こしに成功しました",
+		"transcription_failed": "音声の文字起こしに失敗しました",
+		"start_recording": "音声録音を開始",
+		"stop_recording": "録音を停止",
+		"plain_text": "プレーンテキスト",
+		"code": "コード",
+		"drawing": "描画",
+		"shorten_link": "リンクを短縮",
+		"file": "ファイル"
 	},
 	"ai_dialog": {
 		"title": "AIエディタアシスタント",
