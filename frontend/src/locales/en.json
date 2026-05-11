@@ -58,6 +58,8 @@
 		"manage_access": "Manage Access",
 		"commenter": "Can comment",
 		"open_discussion": "Open discussion",
+		"share_code_text": "Share Code & Text",
+		"snipit": "Snipit",
 		"snippet": "Snippet",
 		"discussion": "Discussion",
 		"discussion_title": "Snippet Discussion",
@@ -510,7 +512,17 @@
 		"ai_refactor": "🛠️ Refactor Selection",
 		"ai_fix": "🐛 Fix Bugs in Selection",
 		"autocomplete": "Autocomplete",
-		"ai_autocomplete_tooltip": "Autocomplete suggestions as you type. Press Tab to accept."
+		"ai_autocomplete_tooltip": "Autocomplete Suggestions",
+		"transcribing": "Transcribing...",
+		"transcription_success": "Voice transcribed successfully",
+		"transcription_failed": "Failed to transcribe audio",
+		"start_recording": "Start Voice Recording",
+		"stop_recording": "Stop Recording",
+		"plain_text": "Plain Text",
+		"code": "Code",
+		"drawing": "Drawing",
+		"shorten_link": "Shorten Link",
+		"file": "File"
 	},
 	"ai_dialog": {
 		"title": "AI Editor Assistant",

@@ -1,9 +1,15 @@
 import express from "express";
+import multer from "multer";
+import os from "os";
+import path from "path";
 import AiController from "@/controllers/ai.controller.js";
 import AiService from "@/services/ai.service.js";
 import { catchAsync } from "@/lib/errors.js";
 
 const router: express.Router = express.Router();
+
+// Configure multer for temporary storage
+const upload = multer({ dest: path.join(os.tmpdir(), "snipit-uploads") });
 
 const aiService = new AiService();
 const aiController = new AiController(aiService);
@@ -23,6 +29,11 @@ router.post(
 router.post(
 	"/draw",
 	catchAsync(aiController.generateDrawContent.bind(aiController)),
+);
+router.post(
+	"/transcribe",
+	upload.single("audio"),
+	catchAsync(aiController.transcribeAudio.bind(aiController)),
 );
 
 export default router;
