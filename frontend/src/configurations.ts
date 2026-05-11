@@ -43,5 +43,6 @@ export const CONFIG = {
 	ui: {
 		detectionDelay: 2000,
 		toastDuration: 3000,
+		waveformSpeed: 4, // Higher = Slower (skip frames)
 	},
 };

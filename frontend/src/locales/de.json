@@ -507,9 +507,19 @@
 		"ai_enhance": "✨ KI-Auswahl verbessern...",
 		"ai_explain": "📖 Diesen Code erklären",
 		"ai_refactor": "🛠️ Auswahl umgestalten",
-		"ai_fix": "🐛 Fehler in Auswahl beheben",
-		"autocomplete": "Autocomplete",
-		"ai_autocomplete_tooltip": "Autovervollständigung während der Eingabe. Tab zum Akzeptieren."
+		"ai_fix": "🐛 Fehler in der Auswahl beheben",
+		"autocomplete": "Autovervollständigung",
+		"ai_autocomplete_tooltip": "Vorschläge zur Autovervollständigung",
+		"transcribing": "Transkribieren...",
+		"transcription_success": "Sprache erfolgreich transkribiert",
+		"transcription_failed": "Transkription der Audiodaten fehlgeschlagen",
+		"start_recording": "Sprachaufnahme starten",
+		"stop_recording": "Aufnahme stoppen",
+		"plain_text": "Klartext",
+		"code": "Code",
+		"drawing": "Zeichnung",
+		"shorten_link": "Link kürzen",
+		"file": "Datei"
 	},
 	"ai_dialog": {
 		"title": "KI-Editor-Assistent",

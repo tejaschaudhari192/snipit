@@ -4,7 +4,7 @@ import { z } from "zod";
 dotenv.config();
 
 const envSchema = z.object({
-	PORT: z.string().default("3000"),
+	PORT: z.string(),
 	DOMAIN: z.string().url(),
 	DB_USER: z.string(),
 	DB_PASSWORD: z.string(),
@@ -13,6 +13,7 @@ const envSchema = z.object({
 	GROQ_API_KEY: z.string(),
 	GROQ_DUMB_MODEL: z.string(),
 	GROQ_SMART_MODEL: z.string(),
+	GROQ_WHISPER_MODEL: z.string(),
 	GROQ_MODELS: z.string(),
 	JWT_SECRET: z.string(),
 	JOB_SECRET: z.string(),
@@ -51,6 +52,7 @@ const configurations = {
 	groq_api_key: env.GROQ_API_KEY,
 	groq_dumb_model: env.GROQ_DUMB_MODEL,
 	groq_smart_model: env.GROQ_SMART_MODEL,
+	groq_whisper_model: env.GROQ_WHISPER_MODEL,
 	groq_models: env.GROQ_MODELS.split(",").map((m) => m.trim()),
 	jwt: {
 		secret: env.JWT_SECRET,

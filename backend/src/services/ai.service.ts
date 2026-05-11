@@ -1,4 +1,6 @@
 import Groq from "groq-sdk";
+import fs from "fs";
+import { Readable } from "stream";
 import configurations from "@/config/configurations.js";
 import { VALID_LANGUAGES } from "@/config/constants.js";
 import { PROMPTS } from "@/config/prompts.js";
@@ -201,6 +203,39 @@ class AiService {
 		} catch (error) {
 			logger.error("All models failed diagram generation:", error);
 			return "[]";
+		}
+	}
+
+	async transcribeAudio(
+		filePath: string,
+		originalName: string,
+	): Promise<string> {
+		const extension = originalName.split(".").pop() || "webm";
+		const filePathWithExt = `${filePath}.${extension}`;
+		
+		try {
+			// Rename file to include extension so Groq can detect format
+			fs.renameSync(filePath, filePathWithExt);
+
+			const transcription = await this.groq.audio.transcriptions.create({
+				file: fs.createReadStream(filePathWithExt),
+				model: configurations.groq_whisper_model,
+				response_format: "json",
+			});
+
+			return transcription.text;
+		} catch (error) {
+			logger.error("Error transcribing audio:", error);
+			throw error;
+		} finally {
+			// Clean up the temporary files
+			[filePath, filePathWithExt].forEach(path => {
+				if (fs.existsSync(path)) {
+					fs.unlink(path, (err) => {
+						if (err) logger.error(`Failed to delete temp file ${path}:`, err);
+					});
+				}
+			});
 		}
 	}
 
