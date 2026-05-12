@@ -35,5 +35,9 @@ router.post(
 	upload.single("audio"),
 	catchAsync(aiController.transcribeAudio.bind(aiController)),
 );
+router.post(
+	"/prepare-speech",
+	catchAsync(aiController.prepareSpeech.bind(aiController)),
+);
 
 export default router;

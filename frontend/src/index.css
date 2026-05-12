@@ -319,3 +319,23 @@ body.is-404 .action-url-bar {
 	animation: none;
 	mix-blend-mode: normal;
 }
+
+/* Text-to-Speech Highlighting */
+.speech-highlight {
+	background-color: var(--primary);
+	opacity: 0.15;
+	border-radius: 2px;
+}
+
+.speech-highlight-inline {
+	color: var(--primary) !important;
+	font-weight: 700 !important;
+	text-decoration: underline;
+	text-underline-offset: 4px;
+	transition: all 0.2s ease;
+}
+
+.dark .speech-highlight {
+	background-color: var(--primary);
+	opacity: 0.25;
+}

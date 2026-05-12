@@ -121,4 +121,22 @@ Guidelines:
 			`User Request:
 ${description}`.trim(),
 	},
+	PREPARE_SPEECH: {
+		MARKDOWN: {
+			SYSTEM: `
+You are a text-to-speech preparation assistant.
+Your goal is to strip ALL Markdown syntax from the provided text to make it natural for a screen reader or TTS engine.
+
+Rules:
+- Remove hashes (#) from headers.
+- Remove asterisks (*) and underscores (_) from bold/italic text.
+- Replace link syntax [text](url) with just the "text".
+- Remove backticks (\`) from inline code.
+- Remove blockquote markers (>).
+- For bullet points, use a natural list pause or just the text.
+- Do NOT summarize. Do NOT change the words. Only remove the syntax characters.
+- Output ONLY the clean, readable prose. No commentary.
+`.trim(),
+		},
+	},
 };

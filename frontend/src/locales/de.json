@@ -515,6 +515,8 @@
 		"transcription_failed": "Transkription der Audiodaten fehlgeschlagen",
 		"start_recording": "Sprachaufnahme starten",
 		"stop_recording": "Aufnahme stoppen",
+		"start_speaking": "Vorlesen",
+		"stop_speaking": "Stopp",
 		"plain_text": "Klartext",
 		"code": "Code",
 		"drawing": "Zeichnung",

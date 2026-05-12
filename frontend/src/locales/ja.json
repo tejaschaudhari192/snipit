@@ -516,6 +516,8 @@
 		"transcription_failed": "音声の文字起こしに失敗しました",
 		"start_recording": "音声録音を開始",
 		"stop_recording": "録音を停止",
+		"start_speaking": "読み上げ",
+		"stop_speaking": "停止",
 		"plain_text": "プレーンテキスト",
 		"code": "コード",
 		"drawing": "描画",

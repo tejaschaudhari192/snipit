@@ -68,6 +68,20 @@ class AiController {
 		);
 		res.json({ text });
 	}
+
+	async prepareSpeech(req: Request, res: Response) {
+		const { content, contentType } = req.body;
+
+		if (!content) {
+			return res.status(400).json({ error: "Content is required" });
+		}
+
+		const text = await this.aiService.prepareForSpeech(
+			content,
+			contentType || "text",
+		);
+		res.json({ text });
+	}
 }
 
 export default AiController;
