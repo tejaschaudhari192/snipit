@@ -122,7 +122,11 @@
 		"collaborators": "入室中",
 		"drag_to_resize": "ドラッグしてサイズ変更",
 		"me": "自分",
-		"cancel": "キャンセル"
+		"cancel": "キャンセル",
+		"more_users": "人のユーザー",
+		"autosave": "自動保存",
+		"saved": "保存済み",
+		"save_failed": "保存失敗"
 	},
 	"profile": {
 		"title": "ユーザープロフィール",
@@ -249,7 +253,10 @@
 			"run_code": "コードを実行",
 			"stop": "停止",
 			"close": "ターミナルを閉じる"
-		}
+		},
+		"status_editing": "編集中",
+		"status_viewing": "閲覧中",
+		"status_recording": "録音中"
 	},
 	"history": {
 		"title": "履歴",

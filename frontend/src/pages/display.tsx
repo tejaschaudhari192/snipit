@@ -26,8 +26,16 @@ import { cn } from "@/utils";
 import { storage } from "@/utils/storage";
 import { useAiAutocomplete } from "@/hooks/use-ai-autocomplete";
 
-import { ShimmerSection } from "@/components/common/shimmer-section";
-import DisplayError from "@/components/common/core/error";
+const DisplayLoading = lazy(() =>
+	import("@/components/display/display-loading").then((m) => ({
+		default: m.DisplayLoading,
+	})),
+);
+const DisplayError = lazy(() =>
+	import("@/components/common/core/error").then((m) => ({
+		default: m.default,
+	})),
+);
 import { useRemoteCursors } from "@/hooks/use-remote-cursors";
 
 import { useDisplayState } from "@/hooks/use-display-state";
@@ -44,7 +52,7 @@ import type {
 	SocketUpdateData,
 } from "@/types";
 import { CONFIG } from "@/configurations";
-import { DisplayLoading } from "@/components/display/display-loading";
+import { Skeleton } from "@/components/ui/skeleton";
 const DisplayToolbar = lazy(() =>
 	import("@/components/display/display-toolbar").then((m) => ({
 		default: m.DisplayToolbar,
@@ -277,6 +285,40 @@ const DisplayPage = () => {
 	} = useDisplayActions({ id, state, user, pendingFile, uploadFile });
 	useDisplayInit({ id, state, user });
 
+	const handleRecordingChange = useCallback(
+		(isRecording: boolean) => {
+			if (sharedSocketRef.current && id) {
+				sharedSocketRef.current.emit("set-recording-status", {
+					pasteId: id,
+					isRecording,
+				});
+			}
+		},
+		[id],
+	);
+
+	const onContentChange = useCallback(
+		(val: string) => {
+			handleContentChange(
+				val,
+				isRemoteUpdateRef,
+				editorInstance,
+				handleEditorChange,
+			);
+			if (editorInstance) {
+				handleEditorChange({
+					content: val,
+				});
+			}
+		},
+		[
+			handleContentChange,
+			isRemoteUpdateRef,
+			editorInstance,
+			handleEditorChange,
+		],
+	);
+
 	const { fontSize, ref: contentRef, setFontSize } = usePinchZoom(14);
 	const isOwner = !!(user && paste?.owner === user._id);
 	const handleEditorWillMount: BeforeMount = (m) => defineMonacoThemes(m);
@@ -343,17 +385,45 @@ const DisplayPage = () => {
 		paste ? `/${paste.id} (${paste.language || "text"})` : `/${id}`,
 	);
 
-	if (loading) return <DisplayLoading />;
-	if (!paste) return <DisplayError />;
+	if (loading) {
+		return (
+			<Suspense
+				fallback={
+					<div className="flex flex-col items-center justify-center h-screen space-y-6 animate-pulse">
+						<Skeleton className="h-16 w-16 rounded-full" />
+						<div className="space-y-2 flex flex-col items-center">
+							<Skeleton className="h-6 w-48 rounded" />
+							<Skeleton className="h-4 w-32 rounded" />
+						</div>
+					</div>
+				}
+			>
+				<DisplayLoading />
+			</Suspense>
+		);
+	}
+	if (!paste) {
+		return (
+			<Suspense fallback={null}>
+				<DisplayError />
+			</Suspense>
+		);
+	}
 
 	if ((paste.isPasswordProtected || !!paste.password) && !paste.content) {
 		return (
 			<Suspense
 				fallback={
-					<ShimmerSection
-						type="card"
-						className="max-w-md mx-auto mt-20"
-					/>
+					<div className="max-w-md mx-auto mt-20 p-8 glass-card space-y-6 animate-pulse">
+						<div className="flex flex-col items-center gap-4">
+							<Skeleton className="h-12 w-12 rounded-xl" />
+							<Skeleton className="h-8 w-40" />
+						</div>
+						<div className="space-y-3">
+							<Skeleton className="h-10 w-full rounded-lg" />
+							<Skeleton className="h-10 w-full rounded-lg" />
+						</div>
+					</div>
 				}
 			>
 				<PasswordGate
@@ -400,7 +470,23 @@ const DisplayPage = () => {
 			<div className="flex flex-col h-screen overflow-hidden bg-background">
 				{!isFullscreen && !isWindowFullscreen && (
 					<div className="shrink-0">
-						<Suspense fallback={<ShimmerSection type="toolbar" />}>
+						<Suspense
+							fallback={
+								<div className="flex items-center justify-between gap-3 px-4 py-1.5 md:px-6 bg-background/40 backdrop-blur-xl relative z-20 shadow-sm border-b border-border/50 animate-pulse h-[52px]">
+									<div className="flex items-center gap-2">
+										<Skeleton className="h-9 w-24 rounded-lg" />
+										<Skeleton className="h-9 w-20 rounded-lg hidden sm:block" />
+									</div>
+									<div className="flex-1" />
+									<div className="flex items-center gap-3">
+										<Skeleton className="h-8 w-32 rounded-full hidden md:block" />
+										<Skeleton className="h-9 w-9 rounded-lg" />
+										<Skeleton className="h-9 w-9 rounded-lg" />
+										<Skeleton className="h-9 w-32 rounded-lg" />
+									</div>
+								</div>
+							}
+						>
 							<DisplayToolbar
 								activeUsers={visibleActiveUsers}
 								isEdit={isEdit}
@@ -408,6 +494,7 @@ const DisplayPage = () => {
 								showSaveButton={contentType === "file"}
 								saveStatus={saveStatus}
 								content={updatedContent || paste.content}
+								onRecordingChange={handleRecordingChange}
 								onEdit={(val) => {
 									if (val && paste) updateAllFromData(paste);
 									setIsEdit(val);
@@ -474,6 +561,7 @@ const DisplayPage = () => {
 								setIsAiAutocompleteEnabled={
 									setIsAiAutocompleteEnabled
 								}
+								onContentChange={onContentChange}
 								onAiWriterClick={() => {
 									if (editorInstanceRef.current) {
 										const selection =
@@ -496,7 +584,13 @@ const DisplayPage = () => {
 						</Suspense>
 						{!isEdit && (
 							<Suspense
-								fallback={<ShimmerSection type="metadata" />}
+								fallback={
+									<div className="px-4 py-2 border-b border-border/10 flex gap-4 animate-pulse">
+										<Skeleton className="h-4 w-24" />
+										<Skeleton className="h-4 w-24" />
+										<Skeleton className="h-4 w-24" />
+									</div>
+								}
 							>
 								<DisplayMetadata paste={paste} />
 							</Suspense>
@@ -516,7 +610,15 @@ const DisplayPage = () => {
 						{isEdit && !isFullscreen && !isWindowFullscreen && (
 							<div className="mb-1 sm:mb-2 shrink-0 px-1">
 								<Suspense
-									fallback={<ShimmerSection type="toolbar" />}
+									fallback={
+										<div className="h-10 w-full flex items-center gap-4 px-2 animate-pulse">
+											<Skeleton className="h-8 w-32 rounded-lg" />
+											<Skeleton className="h-8 w-24 rounded-lg" />
+											<Skeleton className="h-8 w-24 rounded-lg" />
+											<div className="flex-1" />
+											<Skeleton className="h-8 w-8 rounded-lg" />
+										</div>
+									}
 								>
 									<EditControls
 										pasteId={id}
@@ -558,10 +660,14 @@ const DisplayPage = () => {
 
 						<Suspense
 							fallback={
-								<ShimmerSection
-									type="editor"
-									className="flex-1"
-								/>
+								<div className="flex-1 flex flex-col p-6 space-y-4 animate-pulse bg-background/50 rounded-xl">
+									<div className="space-y-2">
+										<Skeleton className="h-4 w-[80%]" />
+										<Skeleton className="h-4 w-[60%]" />
+										<Skeleton className="h-4 w-[70%]" />
+									</div>
+									<div className="flex-1 bg-muted/5 rounded-lg border border-border/50" />
+								</div>
 							}
 						>
 							<DisplayWorkspace

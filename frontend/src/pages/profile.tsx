@@ -235,13 +235,19 @@ const ProfilePage = () => {
 										{activeLabel}
 									</span>
 								</div>
-								<ProfileSnippetList
-									pastes={filteredPastes || []}
-									loading={filteredPastes === null}
-									loadMore={() => {}}
-									hasMore={false}
-									isLoadingMore={false}
-								/>
+								<Suspense
+									fallback={
+										<ShimmerSection type="card" lines={3} />
+									}
+								>
+									<ProfileSnippetList
+										pastes={filteredPastes || []}
+										loading={filteredPastes === null}
+										loadMore={() => {}}
+										hasMore={false}
+										isLoadingMore={false}
+									/>
+								</Suspense>
 							</div>
 						) : (
 							<Tabs

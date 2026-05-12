@@ -121,7 +121,11 @@
 		"privacy": "Datenschutz",
 		"collaborators": "Im Raum",
 		"drag_to_resize": "Zum Ändern der Größe ziehen",
-		"me": "Du"
+		"me": "Du",
+		"more_users": "weitere Benutzer",
+		"autosave": "Autospeichern",
+		"saved": "Gespeichert",
+		"save_failed": "Speichern fehlgeschlagen"
 	},
 	"profile": {
 		"title": "Ihr Profil",
@@ -242,7 +246,10 @@
 			"run_code": "Code ausführen",
 			"stop": "Stopp",
 			"close": "Terminal schließen"
-		}
+		},
+		"status_editing": "Bearbeiten",
+		"status_viewing": "Ansehen",
+		"status_recording": "Aufnahme"
 	},
 	"history": {
 		"title": "Verlauf",

@@ -90,7 +90,7 @@ export const CodeEditorView = ({
 						key={id}
 						height="100%"
 						language={contentType === "text" ? "text" : language}
-						defaultValue={content}
+						value={content}
 						onChange={
 							isEdit
 								? (val, ev) => {

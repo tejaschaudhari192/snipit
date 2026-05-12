@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { ActiveUser } from "@/types";
+import { cn } from "@/utils";
 
 interface UserAvatarListProps {
 	users: ActiveUser[];
@@ -25,19 +26,33 @@ export const UserAvatarList = ({ users }: UserAvatarListProps) => {
 							className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-[11px] sm:text-xs font-black border-2 border-background shadow-lg shadow-black/10 transition-transform group-hover:-translate-y-1 relative`}
 							style={{ backgroundColor: u.color, color: "white" }}
 						>
-							{u.isEditing && (
+							{(u.isEditing || u.isRecording) && (
 								<div
-									className="absolute inset-0 rounded-full animate-pulse border-2 shadow-[0_0_8px_rgba(0,0,0,0.3)]"
-									style={{ borderColor: "white" }}
+									className={cn(
+										"absolute inset-0 rounded-full animate-pulse border-2 shadow-[0_0_8px_rgba(0,0,0,0.3)]",
+										u.isRecording &&
+											"animate-[pulse_1s_infinite] border-red-500 shadow-red-500/50",
+									)}
+									style={{
+										borderColor: u.isRecording
+											? undefined
+											: "white",
+									}}
 								/>
 							)}
 
 							<span>{u.name.charAt(0).toUpperCase()}</span>
 
-							{u.isEditing && (
+							{u.isEditing && !u.isRecording && (
 								<span
 									className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border border-background ring-1 ring-white/50"
 									style={{ backgroundColor: "#22c55e" }}
+								/>
+							)}
+							{u.isRecording && (
+								<span
+									className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border border-background ring-1 ring-white/50 animate-pulse"
+									style={{ backgroundColor: "#ef4444" }}
 								/>
 							)}
 						</div>
@@ -47,11 +62,19 @@ export const UserAvatarList = ({ users }: UserAvatarListProps) => {
 								{u.name} {u.isMe && `(${t("common.me")})`}
 							</span>
 							<span
-								className={`text-[9px] opacity-70 ${u.isEditing ? "text-green-500 font-bold" : ""}`}
+								className={`text-[9px] opacity-70 ${
+									u.isRecording
+										? "text-red-500 font-bold"
+										: u.isEditing
+											? "text-green-500 font-bold"
+											: ""
+								}`}
 							>
-								{u.isEditing
-									? t("display.status_editing")
-									: t("display.status_viewing")}
+								{u.isRecording
+									? t("display.status_recording")
+									: u.isEditing
+										? t("display.status_editing")
+										: t("display.status_viewing")}
 							</span>
 							<div className="absolute bottom-[98%] left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 bg-background border-l border-t border-border" />
 						</div>

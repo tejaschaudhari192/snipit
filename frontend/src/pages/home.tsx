@@ -38,8 +38,16 @@ const ResizablePanels = lazy(() =>
 );
 import { useAiAutocomplete } from "@/hooks/use-ai-autocomplete";
 import { storage } from "@/utils/storage";
-import { AiDrawDialog } from "@/components/editor/ai-draw-dialog";
-import { MainToolbar } from "@/components/home/main-toolbar";
+const MainToolbar = lazy(() =>
+	import("@/components/home/main-toolbar").then((m) => ({
+		default: m.MainToolbar,
+	})),
+);
+const AiDrawDialog = lazy(() =>
+	import("@/components/editor/ai-draw-dialog").then((m) => ({
+		default: m.AiDrawDialog,
+	})),
+);
 import { usePasteHandlers } from "@/hooks/use-paste-handlers";
 import { useTerminalExecution } from "@/hooks/use-terminal-execution";
 
@@ -373,121 +381,169 @@ const HomePage = () => {
 	return (
 		<div className="relative flex-1 flex flex-col bg-background overflow-hidden">
 			<div className="relative z-10 flex flex-col gap-1.5 my-1 mx-2 md:my-1.5 md:mx-4 shrink-0">
-				<MainToolbar
-					contentType={contentType}
-					setContentType={onContentTypeChange}
-					expiresTime={expiresTime}
-					setExpiresTime={setExpiresTime}
-					setIsCustomExpiryDialogOpen={setIsCustomExpiryDialogOpen}
-					handleQuickPaste={handleQuickPaste}
-					handleCollaborative={handleCollaborative}
-					isSubmitting={isSubmitting}
-					isUploading={isUploading}
-					uploadProgress={uploadProgress}
-					handleDialogSubmit={handleDialogSubmit}
-					dialogError={dialogError}
-					shortenedResult={shortenedResult}
-					isCode={contentType === "code"}
-					language={language}
-					isTerminalOpen={isTerminalOpen}
-					onToggleTerminal={toggleTerminal}
+				<Suspense
+					fallback={
+						<div className="flex flex-col p-1 rounded-xl bg-background/50 backdrop-blur-3xl border border-border/50 shadow-sm relative z-10 animate-pulse">
+							<div className="flex flex-col lg:flex-row gap-2 items-stretch lg:items-center justify-between">
+								{/* Tab types skeleton */}
+								<div className="flex p-1 bg-muted/20 rounded-lg lg:w-auto overflow-x-auto no-scrollbar">
+									<div className="flex gap-1">
+										<Skeleton className="h-8 w-16 rounded-md" />
+										<Skeleton className="h-8 w-16 rounded-md" />
+										<Skeleton className="h-8 w-16 rounded-md" />
+										<Skeleton className="h-8 w-16 rounded-md" />
+										<Skeleton className="h-8 w-16 rounded-md" />
+									</div>
+								</div>
+
+								{/* AI buttons skeleton area */}
+								<div className="flex-1 flex items-center justify-center px-4">
+									<div className="flex items-center gap-2">
+										<Skeleton className="h-9 w-9 rounded-lg" />
+										<Skeleton className="h-9 w-32 rounded-lg" />
+										<div className="w-px h-6 bg-border/20 mx-1" />
+										<Skeleton className="h-9 w-9 rounded-lg" />
+										<Skeleton className="h-9 w-20 rounded-lg" />
+									</div>
+								</div>
+
+								{/* Right side controls skeleton */}
+								<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+									<div className="flex items-center gap-2">
+										<Skeleton className="h-9 w-24 rounded-lg" />
+										<div className="flex rounded-lg overflow-hidden">
+											<Skeleton className="h-9 w-24 rounded-r-none" />
+											<div className="w-px bg-white/10 h-full" />
+											<Skeleton className="h-9 w-10 rounded-l-none" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					}
 				>
-					{(isDetecting || contentType === "code") && (
-						<div className="flex items-center gap-2">
+					<MainToolbar
+						contentType={contentType}
+						setContentType={onContentTypeChange}
+						expiresTime={expiresTime}
+						setExpiresTime={setExpiresTime}
+						setIsCustomExpiryDialogOpen={
+							setIsCustomExpiryDialogOpen
+						}
+						handleQuickPaste={handleQuickPaste}
+						handleCollaborative={handleCollaborative}
+						isSubmitting={isSubmitting}
+						isUploading={isUploading}
+						uploadProgress={uploadProgress}
+						handleDialogSubmit={handleDialogSubmit}
+						dialogError={dialogError}
+						shortenedResult={shortenedResult}
+						isCode={contentType === "code"}
+						language={language}
+						isTerminalOpen={isTerminalOpen}
+						onToggleTerminal={toggleTerminal}
+					>
+						{(isDetecting || contentType === "code") && (
 							<Suspense
 								fallback={
-									<div className="w-24 h-9 skeleton rounded-lg" />
+									<div className="flex items-center gap-2">
+										<Skeleton className="w-24 h-9 rounded-lg" />
+										<Skeleton className="w-9 h-9 rounded-lg" />
+									</div>
 								}
 							>
-								<LanguageSelector
-									value={language}
-									onValueChange={setLanguage}
-									isDetecting={isDetecting}
+								<div className="flex items-center gap-2">
+									<LanguageSelector
+										value={language}
+										onValueChange={setLanguage}
+										isDetecting={isDetecting}
+									/>
+									{!isDetecting && (
+										<Button
+											variant="outline"
+											size="icon"
+											className="h-9 w-9 shrink-0 bg-background/50 hover:bg-background/80 border-border/40 shadow-sm"
+											onClick={() => {
+												hasDetectedRef.current = false;
+												handleLanguageDetection(
+													textValue,
+												);
+											}}
+											title={t("home.auto_detecting")}
+										>
+											<Code2 className="h-4 w-4 text-muted-foreground" />
+										</Button>
+									)}
+								</div>
+							</Suspense>
+						)}
+
+						{contentType === "draw" && (
+							<Suspense
+								fallback={<ButtonSkeleton width="w-24" />}
+							>
+								<AiDrawButton
+									onClick={() => setIsAiDrawDialogOpen(true)}
 								/>
 							</Suspense>
-							{!isDetecting && (
-								<Button
-									variant="outline"
-									size="icon"
-									className="h-9 w-9 shrink-0 bg-background/50 hover:bg-background/80 border-border/40 shadow-sm"
-									onClick={() => {
-										hasDetectedRef.current = false;
-										handleLanguageDetection(textValue);
-									}}
-									title={t("home.auto_detecting")}
-								>
-									<Code2 className="h-4 w-4 text-muted-foreground" />
-								</Button>
-							)}
-						</div>
-					)}
+						)}
 
-					{contentType === "draw" && (
-						<Suspense fallback={<ButtonSkeleton width="w-24" />}>
-							<AiDrawButton
-								onClick={() => setIsAiDrawDialogOpen(true)}
-							/>
-						</Suspense>
-					)}
-
-					{["text", "code"].includes(contentType) && (
-						<div className="flex items-center gap-2">
+						{["text", "code"].includes(contentType) && (
 							<Suspense
 								fallback={
-									<div className="w-9 h-9 skeleton rounded-md" />
+									<div className="flex items-center gap-2">
+										<Skeleton className="h-9 w-9 rounded-lg" />
+										<Skeleton className="h-9 w-32 rounded-lg" />
+										<div className="w-px h-6 bg-border/20 mx-1" />
+										<Skeleton className="h-9 w-9 rounded-lg" />
+										<Skeleton className="h-9 w-20 rounded-lg" />
+									</div>
 								}
 							>
-								<AiWriterButton
-									onClick={() => {
-										if (editorInstanceRef.current) {
-											const selection =
-												editorInstanceRef.current.getSelection();
-											if (
-												selection &&
-												!selection.isEmpty()
-											) {
-												const text =
-													editorInstanceRef.current
-														.getModel()
-														?.getValueInRange(
-															selection,
-														);
-												if (text) setSelectedText(text);
-											} else {
-												setSelectedText("");
+								<div className="flex items-center gap-2">
+									<AiWriterButton
+										onClick={() => {
+											if (editorInstanceRef.current) {
+												const selection =
+													editorInstanceRef.current.getSelection();
+												if (
+													selection &&
+													!selection.isEmpty()
+												) {
+													const text =
+														editorInstanceRef.current
+															.getModel()
+															?.getValueInRange(
+																selection,
+															);
+													if (text)
+														setSelectedText(text);
+												} else {
+													setSelectedText("");
+												}
 											}
-										}
-										setIsAiWriterDialogOpen(true);
-									}}
-								/>
-							</Suspense>
+											setIsAiWriterDialogOpen(true);
+										}}
+									/>
 
-							<Suspense
-								fallback={<ButtonSkeleton width="w-32" />}
-							>
-								<AiAutocompleteToggle
-									enabled={isAiAutocompleteEnabled}
-									onToggle={setIsAiAutocompleteEnabled}
-								/>
-							</Suspense>
+									<AiAutocompleteToggle
+										enabled={isAiAutocompleteEnabled}
+										onToggle={setIsAiAutocompleteEnabled}
+									/>
 
-							<div className="w-px h-6 bg-border/40 mx-1" />
+									<div className="w-px h-6 bg-border/40 mx-1" />
 
-							<Suspense fallback={<ButtonSkeleton width="w-9" />}>
-								<VoiceInputButton />
-							</Suspense>
+									<VoiceInputButton />
 
-							<Suspense
-								fallback={<ButtonSkeleton width="w-20" />}
-							>
-								<FontSizeControls
-									fontSize={fontSize}
-									setFontSize={setFontSize}
-								/>
+									<FontSizeControls
+										fontSize={fontSize}
+										setFontSize={setFontSize}
+									/>
+								</div>
 							</Suspense>
-						</div>
-					)}
-				</MainToolbar>
+						)}
+					</MainToolbar>
+				</Suspense>
 			</div>
 
 			<Suspense fallback={null}>
@@ -599,11 +655,13 @@ const HomePage = () => {
 					onApply={applyWriterText}
 					selectedText={selectedText}
 				/>
-				<AiDrawDialog
-					isOpen={isAiDrawDialogOpen}
-					onClose={() => setIsAiDrawDialogOpen(false)}
-					onApply={handleAiDrawApply}
-				/>
+				<Suspense fallback={null}>
+					<AiDrawDialog
+						isOpen={isAiDrawDialogOpen}
+						onClose={() => setIsAiDrawDialogOpen(false)}
+						onApply={handleAiDrawApply}
+					/>
+				</Suspense>
 			</Suspense>
 		</div>
 	);

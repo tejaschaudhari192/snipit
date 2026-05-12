@@ -16,6 +16,7 @@ export interface ActiveUser {
 	name: string;
 	color: string;
 	isEditing: boolean;
+	isRecording: boolean;
 	pasteId: string;
 }
 

@@ -122,7 +122,11 @@
 		"collaborators": "कमरे में",
 		"drag_to_resize": "आकार बदलने के लिए खींचें",
 		"me": "आप",
-		"cancel": "रद्द करें"
+		"cancel": "रद्द करें",
+		"more_users": "और उपयोगकर्ता",
+		"autosave": "ऑटोसेव",
+		"saved": "सहेजा गया",
+		"save_failed": "सहेजना विफल"
 	},
 	"profile": {
 		"title": "आपकी प्रोफ़ाइल",
@@ -249,7 +253,10 @@
 			"run_code": "कोड चलाएँ",
 			"stop": "रोकें",
 			"close": "टर्मिनल बंद करें"
-		}
+		},
+		"status_editing": "संपादन कर रहे हैं",
+		"status_viewing": "देख रहे हैं",
+		"status_recording": "रिकॉर्डिंग"
 	},
 	"history": {
 		"title": "इतिहास",

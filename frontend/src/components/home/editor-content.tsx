@@ -13,15 +13,36 @@ import {
 import { useTranslation } from "react-i18next";
 import { usePaste } from "@/context/PasteContext";
 import { useTheme } from "@/hooks/use-theme";
-import { EditorToolbar } from "@/components/common/editor-toolbar";
-import { FileUploadView } from "./file-upload-view";
-import { LinkResultView } from "./link-result-view";
-import { cn } from "@/utils";
-import { ResizableSplitPane } from "@/components/common/resizable-split-pane";
-import { useEditorLayout } from "@/hooks/use-editor-layout";
 import { useFileDrop } from "@/hooks/use-file-drop";
 import type { PasteData } from "@/types";
 import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useEditorLayout } from "@/hooks/use-editor-layout";
+import { cn } from "@/utils";
+
+const EditorToolbar = lazy(() =>
+	import("@/components/common/editor-toolbar").then((m) => ({
+		default: m.EditorToolbar,
+	})),
+);
+
+const FileUploadView = lazy(() =>
+	import("./file-upload-view").then((m) => ({
+		default: m.FileUploadView,
+	})),
+);
+
+const LinkResultView = lazy(() =>
+	import("./link-result-view").then((m) => ({
+		default: m.LinkResultView,
+	})),
+);
+
+const ResizableSplitPane = lazy(() =>
+	import("@/components/common/resizable-split-pane").then((m) => ({
+		default: m.ResizableSplitPane,
+	})),
+);
 
 const CollabDraw = lazy(() =>
 	import("@/components/display/collab-draw").then((m) => ({
@@ -147,24 +168,34 @@ export const EditorContent = memo(
 							: "flex-1 min-h-0",
 					)}
 				>
-					<EditorToolbar
-						contentType={contentType}
-						content={textValue}
-						language={language}
-						isFullscreen={isFullscreen}
-						isWindowFullscreen={isWindowFullscreen}
-						onToggleFullscreen={toggleFullscreen}
-						onToggleWindowFullscreen={toggleWindowFullscreen}
-						mdLayoutMode={mdLayoutMode}
-						onMdLayoutModeChange={setMdLayoutMode}
-						editor={editorInstance}
-					/>
+					<Suspense
+						fallback={
+							<div className="absolute top-4 right-4 sm:top-8 sm:right-8 flex gap-2">
+								<Skeleton className="h-9 w-9 rounded-lg" />
+								<Skeleton className="h-9 w-9 rounded-lg" />
+								<Skeleton className="h-9 w-9 rounded-lg" />
+							</div>
+						}
+					>
+						<EditorToolbar
+							contentType={contentType}
+							content={textValue}
+							language={language}
+							isFullscreen={isFullscreen}
+							isWindowFullscreen={isWindowFullscreen}
+							onToggleFullscreen={toggleFullscreen}
+							onToggleWindowFullscreen={toggleWindowFullscreen}
+							mdLayoutMode={mdLayoutMode}
+							onMdLayoutModeChange={setMdLayoutMode}
+							editor={editorInstance}
+						/>
+					</Suspense>
 
 					<div className="flex-1 w-full h-full relative min-h-0 flex flex-col">
 						{contentType === "draw" ? (
 							<Suspense
 								fallback={
-									<div className="w-full h-full animate-pulse bg-muted/20 rounded-xl" />
+									<Skeleton className="w-full h-full rounded-xl" />
 								}
 							>
 								<CollabDraw
@@ -177,65 +208,75 @@ export const EditorContent = memo(
 							</Suspense>
 						) : contentType === "code" || contentType === "text" ? (
 							language === "markdown" ? (
-								<ResizableSplitPane
-									className="flex-1"
-									showHint={true}
-									initialWidth={50}
-									mode={mdLayoutMode}
-									storageKey="markdown-editor-preview-split"
-									left={
-										<Suspense
-											fallback={
-												<div className="h-full w-full bg-background animate-pulse" />
-											}
-										>
-											<Editor
-												height="100%"
-												language={language}
-												value={textValue}
-												onChange={(value) =>
-													setTextValue(value || "")
-												}
-												theme={
-													theme === "dark"
-														? "snipit-dark"
-														: "snipit-light"
-												}
-												beforeMount={
-													handleEditorWillMount
-												}
-												onMount={onMount}
-												options={{
-													minimap: { enabled: false },
-													fontSize: fontSize,
-													padding: { top: 16 },
-													mouseWheelZoom: true,
-													wordWrap: "on",
-													automaticLayout: true,
-												}}
-											/>
-										</Suspense>
+								<Suspense
+									fallback={
+										<Skeleton className="flex-1 w-full h-full" />
 									}
-									right={
-										<div className="h-full w-full overflow-y-auto bg-background/50">
+								>
+									<ResizableSplitPane
+										className="flex-1"
+										showHint={true}
+										initialWidth={50}
+										mode={mdLayoutMode}
+										storageKey="markdown-editor-preview-split"
+										left={
 											<Suspense
 												fallback={
-													<div className="p-10 animate-pulse bg-muted/10 rounded-2xl h-64" />
+													<Skeleton className="h-full w-full" />
 												}
 											>
-												<MarkdownDisplay
-													content={textValue}
-													fontSize={fontSize}
-													contentRef={() => {}}
+												<Editor
+													height="100%"
+													language={language}
+													value={textValue}
+													onChange={(value) =>
+														setTextValue(
+															value || "",
+														)
+													}
+													theme={
+														theme === "dark"
+															? "snipit-dark"
+															: "snipit-light"
+													}
+													beforeMount={
+														handleEditorWillMount
+													}
+													onMount={onMount}
+													options={{
+														minimap: {
+															enabled: false,
+														},
+														fontSize: fontSize,
+														padding: { top: 16 },
+														mouseWheelZoom: true,
+														wordWrap: "on",
+														automaticLayout: true,
+													}}
 												/>
 											</Suspense>
-										</div>
-									}
-								/>
+										}
+										right={
+											<div className="h-full w-full overflow-y-auto bg-background/50">
+												<Suspense
+													fallback={
+														<Skeleton className="p-10 rounded-2xl h-64 w-full" />
+													}
+												>
+													<MarkdownDisplay
+														content={textValue}
+														fontSize={fontSize}
+														contentRef={() => {}}
+													/>
+												</Suspense>
+											</div>
+										}
+									/>
+								</Suspense>
 							) : (
 								<Suspense
 									fallback={
-										<div className="h-full w-full bg-background animate-pulse" />
+										<Skeleton className="h-full w-full" />
 									}
 								>
 									<Editor
@@ -265,28 +306,60 @@ export const EditorContent = memo(
 								</Suspense>
 							)
 						) : contentType === "file" ? (
-							<FileUploadView
-								uploadedFileName={uploadedFileName}
-								previewUrl={previewUrl}
-								fileMimeType={fileMimeType}
-								isUploading={isUploading}
-								uploadProgress={uploadProgress}
-								uploadError={uploadError}
-								onClearFile={onClearFile}
-								handleDragOver={handleDragOver}
-								handleDrop={handleDrop}
-								handleFileInputChange={handleFileInputChange}
-							/>
+							<Suspense
+								fallback={
+									<div className="h-full w-full flex items-center justify-center p-10">
+										<div className="w-full max-w-xl space-y-6">
+											<div className="flex flex-col items-center gap-4">
+												<Skeleton className="h-12 w-12 rounded-xl" />
+												<Skeleton className="h-8 w-48" />
+												<Skeleton className="h-4 w-64" />
+											</div>
+											<Skeleton className="h-[300px] w-full rounded-2xl border-2 border-dashed" />
+										</div>
+									</div>
+								}
+							>
+								<FileUploadView
+									uploadedFileName={uploadedFileName}
+									previewUrl={previewUrl}
+									fileMimeType={fileMimeType}
+									isUploading={isUploading}
+									uploadProgress={uploadProgress}
+									uploadError={uploadError}
+									onClearFile={onClearFile}
+									handleDragOver={handleDragOver}
+									handleDrop={handleDrop}
+									handleFileInputChange={
+										handleFileInputChange
+									}
+								/>
+							</Suspense>
 						) : contentType === "link" ? (
-							<LinkResultView
-								textValue={textValue}
-								setTextValue={setTextValue}
-								shortenedResult={shortenedResult}
-								isHistoryVisible={isHistoryVisible}
-								setIsHistoryVisible={setIsHistoryVisible}
-								linkHistory={linkHistory}
-								onDeleteHistoryItem={onDeleteHistoryItem}
-							/>
+							<Suspense
+								fallback={
+									<div className="h-full w-full flex items-center justify-center p-6">
+										<div className="w-full max-w-xl space-y-8">
+											<div className="flex flex-col items-center gap-4">
+												<Skeleton className="h-14 w-14 rounded-xl" />
+												<Skeleton className="h-8 w-40" />
+												<Skeleton className="h-4 w-60" />
+											</div>
+											<Skeleton className="h-12 w-full rounded-xl" />
+										</div>
+									</div>
+								}
+							>
+								<LinkResultView
+									textValue={textValue}
+									setTextValue={setTextValue}
+									shortenedResult={shortenedResult}
+									isHistoryVisible={isHistoryVisible}
+									setIsHistoryVisible={setIsHistoryVisible}
+									linkHistory={linkHistory}
+									onDeleteHistoryItem={onDeleteHistoryItem}
+								/>
+							</Suspense>
 						) : (
 							<Textarea
 								ref={userInputRef}

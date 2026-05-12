@@ -18,10 +18,16 @@ import {
 
 interface VoiceInputButtonProps {
 	className?: string;
+	value?: string;
+	setTextValue?: (val: string) => void;
+	onRecordingChange?: (isRecording: boolean) => void;
 }
 
 export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 	className,
+	value: propValue,
+	setTextValue: propSetTextValue,
+	onRecordingChange,
 }) => {
 	const { t } = useTranslation();
 	const {
@@ -35,41 +41,60 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 		setAudioBlob,
 	} = useAudioRecorder();
 	const { transcribeAudio } = useApiHelpers();
-	const { setTextValue, textValue } = usePaste();
+	const pasteContext = usePaste();
+
+	const textValue =
+		propValue !== undefined ? propValue : pasteContext.textValue;
+	const setTextValue =
+		propSetTextValue !== undefined
+			? propSetTextValue
+			: pasteContext.setTextValue;
+
 	const [isTranscribing, setIsTranscribing] = useState(false);
 
 	useEffect(() => {
-		if (audioBlob) {
-			const handleTranscribe = async (blob: Blob) => {
-				setIsTranscribing(true);
-				const loadingToast = toast.loading(t("editor.transcribing"));
-				try {
-					const { text } = await transcribeAudio(blob);
-					if (text) {
-						const newValue = textValue
-							? `${textValue}\n${text}`
-							: text;
-						setTextValue(newValue);
-						toast.success(t("editor.transcription_success"), {
-							id: loadingToast,
-						});
-					} else {
-						toast.dismiss(loadingToast);
-					}
-				} catch (error) {
-					console.error("Transcription error:", error);
-					toast.error(t("editor.transcription_failed"), {
+		onRecordingChange?.(isRecording);
+	}, [isRecording, onRecordingChange]);
+
+	useEffect(() => {
+		if (!audioBlob || isTranscribing) return;
+
+		const handleTranscribe = async (blob: Blob) => {
+			setIsTranscribing(true);
+			setAudioBlob(null); // Clear immediately to prevent re-triggering from state changes
+			const loadingToast = toast.loading(t("editor.transcribing"));
+			try {
+				const { text } = await transcribeAudio(blob);
+				if (text) {
+					// Use a functional approach if possible, but here we append to current textValue
+					const newValue = textValue ? `${textValue}\n${text}` : text;
+					setTextValue(newValue);
+					toast.success(t("editor.transcription_success"), {
 						id: loadingToast,
 					});
-				} finally {
-					setIsTranscribing(false);
-					setAudioBlob(null);
+				} else {
+					toast.dismiss(loadingToast);
 				}
-			};
+			} catch (error) {
+				console.error("Transcription error:", error);
+				toast.error(t("editor.transcription_failed"), {
+					id: loadingToast,
+				});
+			} finally {
+				setIsTranscribing(false);
+			}
+		};
 
-			handleTranscribe(audioBlob);
-		}
-	}, [audioBlob, transcribeAudio, setTextValue, textValue, setAudioBlob, t]);
+		handleTranscribe(audioBlob);
+	}, [
+		audioBlob,
+		isTranscribing,
+		transcribeAudio,
+		setTextValue,
+		textValue,
+		setAudioBlob,
+		t,
+	]);
 
 	return (
 		<div className={cn("flex items-center gap-2", className)}>
@@ -111,14 +136,14 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 								onClick={startRecording}
 								disabled={isTranscribing}
 								className={cn(
-									"relative transition-all duration-300",
+									"h-9 w-9 shrink-0 relative transition-all duration-300",
 									isTranscribing && "opacity-80",
 								)}
 							>
 								{isTranscribing ? (
 									<Loader2 className="h-4 w-4 animate-spin" />
 								) : (
-									<Mic className="h-[18px] w-[18px] text-red-500 fill-red-500/10" />
+									<Mic className="h-5 w-5 text-red-500 fill-red-500/10" />
 								)}
 							</Button>
 						</TooltipTrigger>

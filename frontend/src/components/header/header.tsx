@@ -10,10 +10,23 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Menu, Search, User } from "lucide-react";
-import ThemeTogglePositionsDemo from "./theme-toggle";
+const ThemeToggle = lazy(() =>
+	import("./theme-toggle").then((m) => ({
+		default: m.default,
+	})),
+);
+const BrandLogo = lazy(() =>
+	import("../common/brand-logo").then((m) => ({
+		default: m.BrandLogo,
+	})),
+);
+const ActionUrlBar = lazy(() =>
+	import("../common/action-url-bar").then((m) => ({
+		default: m.ActionUrlBar,
+	})),
+);
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/context/AuthContext";
-import { BrandLogo } from "../common/brand-logo";
-import { ActionUrlBar } from "../common/action-url-bar";
 
 const LanguageSwitcher = lazy(() =>
 	import("./language-switcher").then((m) => ({
@@ -114,13 +127,23 @@ const Header = ({ className }: HeaderProps) => {
 			)}
 		>
 			<div className="flex items-center h-full gap-4 md:gap-8 min-w-0">
-				<BrandLogo
-					textClassName={
-						id && id.length > 1 ? "hidden sm:block" : "block"
-					}
-				/>
+				<Suspense
+					fallback={<Skeleton className="h-8 w-24 rounded-lg" />}
+				>
+					<BrandLogo
+						textClassName={
+							id && id.length > 1 ? "hidden sm:block" : "block"
+						}
+					/>
+				</Suspense>
 				{id && id.length > 1 && (
-					<ActionUrlBar url={url} className="ml-1 sm:ml-0" />
+					<Suspense
+						fallback={
+							<Skeleton className="h-8 w-48 rounded-lg hidden sm:block" />
+						}
+					>
+						<ActionUrlBar url={url} className="ml-1 sm:ml-0" />
+					</Suspense>
 				)}
 			</div>
 
@@ -178,7 +201,11 @@ const Header = ({ className }: HeaderProps) => {
 				)}
 
 				<div className="w-px h-4 bg-border mx-1" />
-				<ThemeTogglePositionsDemo />
+				<Suspense
+					fallback={<Skeleton className="h-8 w-8 rounded-full" />}
+				>
+					<ThemeToggle />
+				</Suspense>
 				<div className="w-px h-4 bg-border mx-1" />
 				<UserMenu />
 			</div>
@@ -278,7 +305,13 @@ const Header = ({ className }: HeaderProps) => {
 								<span className="text-xs font-bold text-muted-foreground/70">
 									{t("header.theme")}
 								</span>
-								<ThemeTogglePositionsDemo />
+								<Suspense
+									fallback={
+										<Skeleton className="h-8 w-8 rounded-full" />
+									}
+								>
+									<ThemeToggle />
+								</Suspense>
 							</div>
 							<div className="space-y-1.5">
 								<span className="text-xs font-bold text-muted-foreground/70">

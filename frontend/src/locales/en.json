@@ -124,7 +124,11 @@
 		"labels": "Labels",
 		"login_to_label": "Login to organize with labels",
 		"secure": "Secure",
-		"cancel": "Cancel"
+		"cancel": "Cancel",
+		"more_users": "more users",
+		"autosave": "Autosave",
+		"saved": "Saved",
+		"save_failed": "Save Failed"
 	},
 	"profile": {
 		"title": "Your Profile",
@@ -251,7 +255,10 @@
 			"run_code": "Run Code",
 			"stop": "Stop",
 			"close": "Close Terminal"
-		}
+		},
+		"status_editing": "Editing",
+		"status_viewing": "Viewing",
+		"status_recording": "Recording"
 	},
 	"history": {
 		"title": "History",

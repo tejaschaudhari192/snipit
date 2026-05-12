@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { FontSizeControls } from "@/components/editor/font-size-controls";
 import { AiAutocompleteToggle } from "@/components/editor/ai-autocomplete-toggle";
 import { AiWriterButton } from "@/components/editor/ai-writer-button";
+import { VoiceInputButton } from "@/components/editor/voice-input-button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { ExpirySelector } from "@/components/common/expiry-selector";
@@ -57,6 +58,8 @@ interface DisplayToolbarProps {
 	isAiAutocompleteEnabled?: boolean;
 	setIsAiAutocompleteEnabled?: (v: boolean) => void;
 	onAiWriterClick?: () => void;
+	onContentChange?: (val: string) => void;
+	onRecordingChange?: (val: boolean) => void;
 }
 
 export const DisplayToolbar = memo(
@@ -94,6 +97,8 @@ export const DisplayToolbar = memo(
 		isAiAutocompleteEnabled = false,
 		setIsAiAutocompleteEnabled,
 		onAiWriterClick,
+		onContentChange,
+		onRecordingChange,
 	}: DisplayToolbarProps) => {
 		const { t } = useTranslation();
 		const { user } = useAuth();
@@ -185,7 +190,7 @@ export const DisplayToolbar = memo(
 										<Save
 											className={`h-3 w-3 ${isAutosave ? "animate-pulse" : ""}`}
 										/>
-										Autosave
+										{t("common.autosave")}
 									</span>
 									<Switch
 										checked={isAutosave}
@@ -223,6 +228,17 @@ export const DisplayToolbar = memo(
 									<AiAutocompleteToggle
 										enabled={isAiAutocompleteEnabled}
 										onToggle={setIsAiAutocompleteEnabled}
+									/>
+								)}
+
+							{isEdit &&
+								onContentChange &&
+								contentType !== "file" &&
+								contentType !== "draw" && (
+									<VoiceInputButton
+										value={content}
+										setTextValue={onContentChange}
+										onRecordingChange={onRecordingChange}
 									/>
 								)}
 

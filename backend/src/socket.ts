@@ -82,6 +82,7 @@ export const setupSocket = (server: HTTPServer) => {
 			name: userName,
 			color: userColor,
 			isEditing: false,
+			isRecording: false,
 			pasteId: "",
 		});
 
@@ -107,6 +108,7 @@ export const setupSocket = (server: HTTPServer) => {
 			if (user) {
 				user.pasteId = pasteId;
 				user.isEditing = false;
+				user.isRecording = false;
 				if (userName) user.name = userName;
 				socket.join(pasteId);
 
@@ -136,11 +138,30 @@ export const setupSocket = (server: HTTPServer) => {
 			broadcastRoomUsers(pasteId);
 		});
 
+		socket.on("set-recording-status", async ({ pasteId, isRecording }) => {
+			const user = activeUsers.get(socket.id);
+			if (!user || user.pasteId !== pasteId) return;
+
+			const userId = getSocketUserId(socket);
+			const allowed = await canUserEdit(pasteId, userId);
+
+			if (!allowed) {
+				socket.emit("error", {
+					message: "Recording status update not permitted",
+				});
+				return;
+			}
+
+			user.isRecording = isRecording;
+			broadcastRoomUsers(pasteId);
+		});
+
 		socket.on("leave-paste", (pasteId) => {
 			const user = activeUsers.get(socket.id);
 			if (user && user.pasteId === pasteId) {
 				user.pasteId = "";
 				user.isEditing = false;
+				user.isRecording = false;
 				socket.leave(pasteId);
 				broadcastRoomUsers(pasteId);
 			}
