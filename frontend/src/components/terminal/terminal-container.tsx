@@ -30,7 +30,7 @@ export const TerminalContainer = ({
 	return (
 		<div
 			className={cn(
-				"h-full w-full rounded-2xl glass-card overflow-clip animate-in slide-in-from-bottom-4 duration-300",
+				"rounded-2xl glass-card overflow-clip animate-in slide-in-from-bottom-4 duration-300",
 				className,
 			)}
 		>
