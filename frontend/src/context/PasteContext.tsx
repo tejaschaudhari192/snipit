@@ -95,7 +95,17 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 	const [contentType, setContentType] = useState<ContentMode>(
 		CONFIG.defaults.contentMode,
 	);
-	const [language, setLanguageState] = useState(CONFIG.defaults.language);
+	const [language, setLanguageState] = useState(() => {
+		// Initialize from localStorage if available
+		const saved = localStorage.getItem(`language_${contentType}`);
+		return saved || CONFIG.defaults.language;
+	});
+
+	// Persistence for language
+	useEffect(() => {
+		localStorage.setItem(`language_${contentType}`, language);
+	}, [language, contentType]);
+
 	const [password, setPassword] = useState("");
 	const [customId, setCustomId] = useState("");
 	const [idTypeTab, setIdTypeTab] = useState<"system" | "dynamic">("system");
@@ -154,10 +164,12 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			if (newMode === "text") {
 				setLanguageState("text");
 			} else if (newMode === "code") {
+				const savedLang = localStorage.getItem(`language_${newMode}`);
 				setLanguageState(
-					CONFIG.defaults.language === "text"
-						? "javascript"
-						: CONFIG.defaults.language,
+					savedLang ||
+						(CONFIG.defaults.language === "text"
+							? "javascript"
+							: CONFIG.defaults.language),
 				);
 			}
 

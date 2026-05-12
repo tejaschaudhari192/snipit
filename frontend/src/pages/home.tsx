@@ -388,6 +388,7 @@ const HomePage = () => {
 
 					{["text", "code"].includes(contentType) && (
 						<>
+							<VoiceInputButton />
 							<Suspense
 								fallback={
 									<div className="w-20 h-9 skeleton rounded-lg" />
