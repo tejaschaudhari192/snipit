@@ -61,6 +61,6 @@ export const VALID_LANGUAGES = [
 	"markdown",
 	"shell",
 	"bash",
-	"other",
 	"text",
-] as const;
+	"other",
+];

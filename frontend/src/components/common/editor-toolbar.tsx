@@ -9,9 +9,12 @@ import {
 } from "@/components/ui/tooltip";
 import { useTranslation } from "react-i18next";
 import type { ContentMode } from "@/types";
+import { TtsButton } from "@/components/editor/tts-button";
+import { type editor } from "monaco-editor";
 
 interface EditorToolbarProps {
 	contentType: ContentMode;
+	content: string;
 	language: string;
 	isFullscreen: boolean;
 	isWindowFullscreen: boolean;
@@ -20,10 +23,12 @@ interface EditorToolbarProps {
 	mdLayoutMode: "split" | "preview" | "editor";
 	onMdLayoutModeChange: (mode: "split" | "preview" | "editor") => void;
 	showMarkdownToggles?: boolean;
+	editor: editor.IStandaloneCodeEditor | null;
 }
 
 export const EditorToolbar = ({
 	contentType,
+	content,
 	language,
 	isFullscreen,
 	isWindowFullscreen,
@@ -32,6 +37,7 @@ export const EditorToolbar = ({
 	mdLayoutMode,
 	onMdLayoutModeChange,
 	showMarkdownToggles = true,
+	editor,
 }: EditorToolbarProps) => {
 	const { t } = useTranslation();
 
@@ -57,6 +63,14 @@ export const EditorToolbar = ({
 							: "absolute top-4 right-4 sm:top-8 sm:right-8",
 				)}
 			>
+				{["code", "text"].includes(contentType) && (
+					<TtsButton
+						content={content}
+						contentType={contentType}
+						editor={editor}
+					/>
+				)}
+
 				{showMarkdownToggles &&
 					(language === "markdown" || language === "html") && (
 						<Tooltip>

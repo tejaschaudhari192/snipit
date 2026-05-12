@@ -518,6 +518,8 @@
 		"transcription_failed": "Failed to transcribe audio",
 		"start_recording": "Start Voice Recording",
 		"stop_recording": "Stop Recording",
+		"start_speaking": "Read Aloud",
+		"stop_speaking": "Stop Reading",
 		"plain_text": "Plain Text",
 		"code": "Code",
 		"drawing": "Drawing",

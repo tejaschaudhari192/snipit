@@ -141,9 +141,11 @@ const HomePage = () => {
 		usePasteSubmission(setShortenedResult);
 	const {
 		fontSize,
-		ref: editorContainerRef,
+		ref: editorContainerRefSetter,
 		setFontSize,
 	} = usePinchZoom(CONFIG.defaults.fontSize);
+
+	const editorContainerRef = useRef<HTMLElement | null>(null);
 
 	const {
 		isAiDialogOpen,
@@ -419,16 +421,19 @@ const HomePage = () => {
 				/>
 			</Suspense>
 
-			<div className="flex-1 flex min-h-0 min-w-0 w-full h-full overflow-hidden">
+			<div className="flex-1 flex min-h-0 min-w-0 w-full h-full">
 				{(() => {
 					const isTerminalVisible =
 						isTerminalOpen && contentType === "code";
 					const editorPanel = (
-						<div className="flex-1 flex flex-col min-h-0 min-w-0 overflow-hidden h-full w-full">
+						<div className="flex-1 flex flex-col min-h-0 min-w-0 overflow-clip h-full w-full">
 							<Suspense fallback={<EditorSkeleton />}>
 								<EditorContent
 									fontSize={fontSize}
-									editorContainerRef={editorContainerRef}
+									editorContainerRef={(node) => {
+										editorContainerRef.current = node;
+										editorContainerRefSetter(node);
+									}}
 									userInputRef={userInputRef}
 									handleEditorWillMount={defineMonacoThemes}
 									handleEditorMount={onEditorMount}
@@ -463,7 +468,7 @@ const HomePage = () => {
 							language={language}
 							fontSize={fontSize}
 							socket={socket}
-							className="mx-2 md:mx-4 mb-2"
+							className="m-2 md:mx-4 "
 						/>
 					);
 

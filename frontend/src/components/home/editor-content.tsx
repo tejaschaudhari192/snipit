@@ -1,4 +1,5 @@
 import { type BeforeMount, type OnMount, Editor } from "@monaco-editor/react";
+import { type editor } from "monaco-editor";
 import {
 	lazy,
 	Suspense,
@@ -103,6 +104,14 @@ export const EditorContent = memo(
 			return true;
 		});
 
+		const [editorInstance, setEditorInstance] =
+			useState<editor.IStandaloneCodeEditor | null>(null);
+
+		const onMount: OnMount = (ed, monaco) => {
+			setEditorInstance(ed);
+			handleEditorMount(ed, monaco);
+		};
+
 		useEffect(() => {
 			localStorage.setItem(
 				"link-history-visible",
@@ -140,6 +149,7 @@ export const EditorContent = memo(
 				>
 					<EditorToolbar
 						contentType={contentType}
+						content={textValue}
 						language={language}
 						isFullscreen={isFullscreen}
 						isWindowFullscreen={isWindowFullscreen}
@@ -147,6 +157,7 @@ export const EditorContent = memo(
 						onToggleWindowFullscreen={toggleWindowFullscreen}
 						mdLayoutMode={mdLayoutMode}
 						onMdLayoutModeChange={setMdLayoutMode}
+						editor={editorInstance}
 					/>
 
 					<div className="flex-1 w-full h-full relative min-h-0 flex flex-col">
@@ -193,7 +204,7 @@ export const EditorContent = memo(
 												beforeMount={
 													handleEditorWillMount
 												}
-												onMount={handleEditorMount}
+												onMount={onMount}
 												options={{
 													minimap: { enabled: false },
 													fontSize: fontSize,
@@ -241,7 +252,7 @@ export const EditorContent = memo(
 										}
 										className="flex-1"
 										beforeMount={handleEditorWillMount}
-										onMount={handleEditorMount}
+										onMount={onMount}
 										options={{
 											minimap: { enabled: false },
 											fontSize: fontSize,
