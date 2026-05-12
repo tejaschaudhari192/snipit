@@ -516,6 +516,8 @@
 		"transcription_failed": "ऑडियो ट्रांसक्राइब करने में विफल",
 		"start_recording": "वॉयस रिकॉर्डिंग शुरू करें",
 		"stop_recording": "रिकॉर्डिंग रोकें",
+		"start_speaking": "ज़ोर से पढ़ें",
+		"stop_speaking": "पढ़ना बंद करें",
 		"plain_text": "सादा टेक्स्ट",
 		"code": "कोड",
 		"drawing": "ड्राइंग",
