@@ -82,23 +82,41 @@ class AiService {
 	}
 
 	async detectLanguage(content: string): Promise<string> {
-		const prompt = PROMPTS.DETECT_LANGUAGE([...VALID_LANGUAGES], content);
+		const systemPrompt = PROMPTS.DETECT_LANGUAGE.SYSTEM([
+			...VALID_LANGUAGES,
+		]);
+		const userPrompt = PROMPTS.DETECT_LANGUAGE.USER(content);
 
 		try {
 			const chatCompletion = await this.requestWithFallback(
 				{
-					messages: [{ role: "user", content: prompt }],
+					messages: [
+						{ role: "system", content: systemPrompt },
+						{ role: "user", content: userPrompt },
+					],
 					temperature: 0.1,
 					max_tokens: 10,
 				},
 				{ preferredModel: configurations.groq_dumb_model },
 			);
 
-			let language =
-				chatCompletion.choices[0]?.message?.content
-					?.trim()
-					.toLowerCase() || "text";
-			language = language.replace(/```/g, "").trim();
+			const rawResponse =
+				chatCompletion.choices[0]?.message?.content?.trim() || "text";
+
+			// Clean the response: lowercase and remove any non-alphanumeric characters except # and + (for C++/C#)
+			let language = rawResponse
+				.toLowerCase()
+				.replace(/[^a-z0-9#+]/g, "")
+				.trim();
+
+			// If the model returned a longer sentence, try to see if any valid language is contained within it
+			if (!VALID_LANGUAGES.includes(language as any)) {
+				const found = VALID_LANGUAGES.find((lang) =>
+					rawResponse.toLowerCase().includes(lang),
+				);
+				if (found) language = found;
+			}
+
 			return VALID_LANGUAGES.includes(language as any)
 				? language
 				: "text";
@@ -212,7 +230,7 @@ class AiService {
 	): Promise<string> {
 		const extension = originalName.split(".").pop() || "webm";
 		const filePathWithExt = `${filePath}.${extension}`;
-		
+
 		try {
 			// Rename file to include extension so Groq can detect format
 			fs.renameSync(filePath, filePathWithExt);
@@ -229,10 +247,14 @@ class AiService {
 			throw error;
 		} finally {
 			// Clean up the temporary files
-			[filePath, filePathWithExt].forEach(path => {
+			[filePath, filePathWithExt].forEach((path) => {
 				if (fs.existsSync(path)) {
 					fs.unlink(path, (err) => {
-						if (err) logger.error(`Failed to delete temp file ${path}:`, err);
+						if (err)
+							logger.error(
+								`Failed to delete temp file ${path}:`,
+								err,
+							);
 					});
 				}
 			});

@@ -1,14 +1,27 @@
 export const PROMPTS = {
-	DETECT_LANGUAGE: (languages: string[], content: string) =>
-		`
-Analyze the following code or text and detect its programming language.
-Return ONLY the name from this list: ${languages.join(", ")}.
-If it is code but doesn't match a specific language, return 'code'.
-If it is clearly plain text, return 'text'.
+	DETECT_LANGUAGE: {
+		SYSTEM: (languages: string[]) =>
+			`
+You are a specialized programming language detector.
+Your task is to identify the language of the provided code or text snippet.
 
-Content snippet:
-${content.slice(0, 1000)}
+Available languages:
+${languages.join(", ")}
+
+Rules:
+- Respond ONLY with the language name from the list above.
+- Do NOT include any explanations, markdown backticks, or conversational filler.
+- If it is code but not in the list, return 'code'.
+- If it is clearly plain text, return 'text'.
 `.trim(),
+		USER: (content: string) => {
+			const snippet =
+				content.length > 1000
+					? `${content.slice(0, 500)}\n\n[...]\n\n${content.slice(-500)}`
+					: content;
+			return `Detect the language for this snippet:\n\n${snippet}`;
+		},
+	},
 
 	ENHANCE_CONTENT: {
 		SYSTEM: `
