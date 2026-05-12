@@ -403,7 +403,6 @@ const HomePage = () => {
 								enabled={isAiAutocompleteEnabled}
 								onToggle={setIsAiAutocompleteEnabled}
 							/>
-							<VoiceInputButton />
 						</>
 					)}
 				</MainToolbar>
