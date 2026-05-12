@@ -364,6 +364,14 @@ class PasteService {
 			mostUsedLanguage,
 		};
 	}
+
+	async checkIdAvailability(id: string): Promise<boolean> {
+		const existing = await pasteModel.findOne({ id }).lean();
+		if (!existing) return true;
+
+		const expired = await this.isPasteExpired(id);
+		return expired;
+	}
 }
 
 export default PasteService;

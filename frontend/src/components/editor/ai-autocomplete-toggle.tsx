@@ -1,7 +1,7 @@
-import { Wand2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/utils";
+import { AiCursorIcon } from "@/components/icons/ai-cursor-icon";
 import {
 	Tooltip,
 	TooltipContent,
@@ -27,26 +27,31 @@ export const AiAutocompleteToggle = ({
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<div
+						onClick={() => onToggle(!enabled)}
 						className={cn(
-							"flex items-center gap-1 px-1.5 h-8 rounded-md border transition-all duration-300 shadow-sm select-none cursor-pointer",
+							"flex items-center gap-2.5 px-2.5 h-9 rounded-md border transition-all duration-300 shadow-sm select-none cursor-pointer active:scale-95 group",
 							enabled
-								? "bg-violet-500/5 border-violet-500/30 text-violet-600 dark:text-violet-400"
-								: "bg-background/80 backdrop-blur-sm border-border/50 text-muted-foreground hover:border-border",
+								? "bg-violet-500/10 border-violet-500/30 text-violet-600 dark:text-violet-400 shadow-md shadow-violet-500/5"
+								: "bg-background border-border text-foreground hover:border-primary/40 hover:bg-muted/50",
 							className,
 						)}
 					>
-						<Wand2
+						<AiCursorIcon
 							className={cn(
-								"h-5 w-5 transition-transform duration-300",
+								"h-[18px] w-[18px] transition-all duration-300",
 								enabled
-									? "fill-current"
-									: "text-foreground/60 hover:text-foreground/80",
+									? "scale-110 text-violet-600 dark:text-violet-400"
+									: "text-foreground opacity-70 group-hover:opacity-100",
 							)}
 						/>
 						<Switch
 							checked={enabled}
 							onCheckedChange={onToggle}
-							className="scale-[0.7] data-[state=checked]:bg-violet-500"
+							className={cn(
+								"scale-[0.8] transition-all duration-300",
+								"data-[state=checked]:bg-violet-500 data-[state=unchecked]:bg-foreground/20",
+								enabled && "shadow-sm shadow-violet-500/20",
+							)}
 						/>
 					</div>
 				</TooltipTrigger>

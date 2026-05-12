@@ -4,6 +4,7 @@ import { MessageSquare, Globe, Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { FontSizeControls } from "@/components/editor/font-size-controls";
 import { AiAutocompleteToggle } from "@/components/editor/ai-autocomplete-toggle";
+import { AiWriterButton } from "@/components/editor/ai-writer-button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { ExpirySelector } from "@/components/common/expiry-selector";
@@ -55,6 +56,7 @@ interface DisplayToolbarProps {
 	contentType?: string;
 	isAiAutocompleteEnabled?: boolean;
 	setIsAiAutocompleteEnabled?: (v: boolean) => void;
+	onAiWriterClick?: () => void;
 }
 
 export const DisplayToolbar = memo(
@@ -91,6 +93,7 @@ export const DisplayToolbar = memo(
 		contentType = "text",
 		isAiAutocompleteEnabled = false,
 		setIsAiAutocompleteEnabled,
+		onAiWriterClick,
 	}: DisplayToolbarProps) => {
 		const { t } = useTranslation();
 		const { user } = useAuth();
@@ -207,6 +210,13 @@ export const DisplayToolbar = memo(
 								)}
 
 							{isEdit &&
+								onAiWriterClick &&
+								contentType !== "file" &&
+								contentType !== "draw" && (
+									<AiWriterButton onClick={onAiWriterClick} />
+								)}
+
+							{isEdit &&
 								setIsAiAutocompleteEnabled &&
 								contentType !== "file" &&
 								contentType !== "draw" && (
@@ -215,6 +225,8 @@ export const DisplayToolbar = memo(
 										onToggle={setIsAiAutocompleteEnabled}
 									/>
 								)}
+
+							<div className="w-px h-6 bg-border/40 mx-1" />
 						</div>
 					)}
 					{showFontControls && (

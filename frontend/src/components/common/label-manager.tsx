@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Tag as TagIcon } from "lucide-react";
 import { usePaste } from "@/context/PasteContext";
 import { useState, useEffect, useCallback, lazy, Suspense } from "react";
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const LabelsDisplay = lazy(() =>
 	import("./labels-display").then((m) => ({ default: m.LabelsDisplay })),

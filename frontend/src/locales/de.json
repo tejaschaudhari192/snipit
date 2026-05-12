@@ -521,7 +521,8 @@
 		"code": "Code",
 		"drawing": "Zeichnung",
 		"shorten_link": "Link kürzen",
-		"file": "Datei"
+		"file": "Datei",
+		"ai_writer": "AI Autor"
 	},
 	"ai_dialog": {
 		"title": "KI-Editor-Assistent",
@@ -566,5 +567,23 @@
 		"mermaid_success": "Mermaid-Diagramm erfolgreich importiert!",
 		"mermaid_error": "Mermaid-Syntax konnte nicht analysiert werden.",
 		"import": "Importieren"
+	},
+	"ai_writer": {
+		"title": "AI Autor",
+		"description": "Beschreiben Sie, was Sie schreiben möchten, und die KI wird es für Sie generieren.",
+		"placeholder": "z. B. Schreibe eine React-Komponente für ein Login-Formular...",
+		"generating": "Generierung...",
+		"run": "Generieren",
+		"apply": "Code einfügen",
+		"actions": {
+			"write_code": "Code schreiben",
+			"explain_write": "Erklären & Schreiben",
+			"refactor_ideas": "Refactoring-Ideen"
+		},
+		"tooltips": {
+			"write_code": "Schreiben Sie einen hochwertigen Code-Snippet basierend auf meiner Anfrage.",
+			"explain_write": "Erklären Sie die Logik und schreiben Sie dann den Code.",
+			"refactor_ideas": "Schlagen Sie Wege vor, diese Idee in Code umzugestalten."
+		}
 	}
 }

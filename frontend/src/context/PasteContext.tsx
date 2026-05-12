@@ -31,7 +31,7 @@ interface PasteContextType {
 	textValue: string;
 	password: string;
 	customId: string;
-	idTypeTab: "system" | "dynamic";
+	idTypeTab: "system" | "dynamic" | "semantic";
 	isSubmitting: boolean;
 
 	// File Upload State
@@ -56,7 +56,7 @@ interface PasteContextType {
 	setTextValue: (v: string) => void;
 	setPassword: (v: string) => void;
 	setCustomId: (v: string) => void;
-	setIdTypeTab: (v: "system" | "dynamic") => void;
+	setIdTypeTab: (v: "system" | "dynamic" | "semantic") => void;
 	setIsSubmitting: (v: boolean) => void;
 	labels: string[];
 	setLabels: (v: string[]) => void;
@@ -108,7 +108,9 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const [password, setPassword] = useState("");
 	const [customId, setCustomId] = useState("");
-	const [idTypeTab, setIdTypeTab] = useState<"system" | "dynamic">("system");
+	const [idTypeTab, setIdTypeTab] = useState<
+		"system" | "dynamic" | "semantic"
+	>("system");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [labels, setLabels] = useState<string[]>([]);
 

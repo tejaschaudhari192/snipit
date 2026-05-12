@@ -18,7 +18,7 @@ class AiController {
 	async enhanceContent(req: Request, res: Response) {
 		const { content, instruction } = req.body;
 
-		if (!content || !instruction) {
+		if (content === undefined || !instruction) {
 			return res.status(400).json({
 				error: "Content and instruction are required",
 			});
@@ -81,6 +81,17 @@ class AiController {
 			contentType || "text",
 		);
 		res.json({ text });
+	}
+
+	async suggestId(req: Request, res: Response) {
+		const { content } = req.body;
+
+		if (!content) {
+			return res.status(400).json({ error: "Content is required" });
+		}
+
+		const id = await this.aiService.suggestId(content);
+		res.json({ id });
 	}
 }
 

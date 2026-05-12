@@ -165,9 +165,9 @@
 		"enter_snippet_placeholder": "अपना स्निपेट यहाँ दर्ज करें...",
 		"paste_button": "पेष्ट करें",
 		"paste_dynamic_id": "कस्टम आईडी",
-		"paste_system_id": "ऑटो-जेनरेटेड आईडी",
+		"paste_system_id": "स्वचालित",
 		"paste_dynamic_id_desc": "अपना स्वयं का अनूठा URL चुनें",
-		"paste_system_id_desc": "अपने आप एक रैंडम URL प्राप्त करें",
+		"paste_system_id_desc": "एक सुरक्षित 5-अक्षरी अल्फान्यूमेरिक ID (उदा. a1b2c) तैयार करता है",
 		"paste_advanced": "उन्नत निर्माण",
 		"paste_advanced_desc": "गोपनीयता, पासवर्ड और बहुत कुछ कॉन्फिगर करें",
 		"advanced_config": "उन्नत कॉन्फ़िगरेशन",
@@ -227,7 +227,13 @@
 		"link_shortened": "लिंक छोटा हो गया!",
 		"link_ready_desc": "आपका छोटा लिंक साझा करने के लिए तैयार है",
 		"alias": "उपनाम",
-		"create_another": "एक और बनाएं"
+		"create_another": "एक और बनाएं",
+		"suggest_id_ai": "AI का उपयोग करके आईडी सुझाएं",
+		"ai_id_suggested": "सामग्री के आधार पर AI ने एक आईडी सुझाई!",
+		"semantic_id_tab": "शब्द",
+		"semantic_id_placeholder": "आपकी सिमेंटिक आईडी...",
+		"semantic_id_generate": "शब्द उत्पन्न करें",
+		"semantic_id_words": "शब्द"
 	},
 	"display": {
 		"expires_in": "समाप्ति समय:",
@@ -522,7 +528,8 @@
 		"code": "कोड",
 		"drawing": "ड्राइंग",
 		"shorten_link": "लिंक छोटा करें",
-		"file": "फ़ाइल"
+		"file": "फ़ाइल",
+		"ai_writer": "AI लेखक"
 	},
 	"ai_dialog": {
 		"title": "AI संपादक सहायक",
@@ -567,5 +574,23 @@
 		"mermaid_success": "मरमेड आरेख सफलतापूर्वक आयात किया गया!",
 		"mermaid_error": "मरमेड सिंटैक्स को पार्स करने में विफल।",
 		"import": "आयात करें"
+	},
+	"ai_writer": {
+		"title": "AI लेखक",
+		"description": "बताएं कि आप क्या लिखना चाहते हैं, और AI आपके लिए इसे तैयार कर देगा।",
+		"placeholder": "जैसे: लॉगिन फॉर्म के लिए React कंपोनेंट लिखें...",
+		"generating": "तैयार किया जा रहा है...",
+		"run": "तैयार करें",
+		"apply": "कोड डालें",
+		"actions": {
+			"write_code": "कोड लिखें",
+			"explain_write": "समझाएं और लिखें",
+			"refactor_ideas": "रिफैक्टर विचार"
+		},
+		"tooltips": {
+			"write_code": "मेरे अनुरोध के आधार पर एक उच्च गुणवत्ता वाला कोड स्निपेट लिखें।",
+			"explain_write": "तर्क समझाएं और फिर कोड लिखें।",
+			"refactor_ideas": "इस विचार को कोड में रिफैक्टर करने के तरीके सुझाएं।"
+		}
 	}
 }

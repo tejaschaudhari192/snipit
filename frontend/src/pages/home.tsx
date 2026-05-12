@@ -9,9 +9,11 @@ import {
 import { type Monaco } from "@monaco-editor/react";
 import { type editor } from "monaco-editor";
 import { useTranslation } from "react-i18next";
-import { Code2, Sparkles } from "lucide-react";
+import { Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { cn } from "@/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { playErrorSound } from "@/utils";
 import { defineMonacoThemes } from "@/lib/monaco";
@@ -24,16 +26,22 @@ import { usePasteSubmission } from "@/hooks/use-paste-submission";
 import { useSnippets } from "@/context/SnippetContext";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { useAiDraw } from "@/hooks/use-ai-draw";
-import { TerminalContainer } from "@/components/terminal/terminal-container";
-import { ResizablePanels } from "@/components/common/resizable-panels";
+const TerminalContainer = lazy(() =>
+	import("@/components/terminal/terminal-container").then((m) => ({
+		default: m.TerminalContainer,
+	})),
+);
+const ResizablePanels = lazy(() =>
+	import("@/components/common/resizable-panels").then((m) => ({
+		default: m.ResizablePanels,
+	})),
+);
 import { useAiAutocomplete } from "@/hooks/use-ai-autocomplete";
-import { AiAutocompleteToggle } from "@/components/editor/ai-autocomplete-toggle";
 import { storage } from "@/utils/storage";
 import { AiDrawDialog } from "@/components/editor/ai-draw-dialog";
 import { MainToolbar } from "@/components/home/main-toolbar";
 import { usePasteHandlers } from "@/hooks/use-paste-handlers";
 import { useTerminalExecution } from "@/hooks/use-terminal-execution";
-import { VoiceInputButton } from "@/components/editor/voice-input-button";
 
 const LanguageSelector = lazy(() =>
 	import("@/components/editor/language-selector").then((m) => ({
@@ -55,9 +63,36 @@ const EditorContent = lazy(() =>
 		default: m.EditorContent,
 	})),
 );
+const VoiceInputButton = lazy(() =>
+	import("@/components/editor/voice-input-button").then((m) => ({
+		default: m.VoiceInputButton,
+	})),
+);
+const AiAutocompleteToggle = lazy(() =>
+	import("@/components/editor/ai-autocomplete-toggle").then((m) => ({
+		default: m.AiAutocompleteToggle,
+	})),
+);
 const AiEnhanceDialog = lazy(() =>
 	import("@/components/editor/ai-enhance-dialog").then((m) => ({
 		default: m.AiEnhanceDialog,
+	})),
+);
+const AiWriterDialog = lazy(() =>
+	import("@/components/editor/ai-writer-dialog").then((m) => ({
+		default: m.AiWriterDialog,
+	})),
+);
+
+// New Lazy Buttons
+const AiDrawButton = lazy(() =>
+	import("@/components/editor/ai-draw-button").then((m) => ({
+		default: m.AiDrawButton,
+	})),
+);
+const AiWriterButton = lazy(() =>
+	import("@/components/editor/ai-writer-button").then((m) => ({
+		default: m.AiWriterButton,
 	})),
 );
 
@@ -65,15 +100,24 @@ const AiEnhanceDialog = lazy(() =>
 const EditorSkeleton = () => (
 	<div className="mx-2 mt-0.5 sm:mx-4 sm:mt-1 mb-4 glass-card overflow-hidden flex-1 flex flex-col rounded-2xl border border-border/20">
 		<div className="h-10 border-b border-border/10 flex items-center px-4 gap-4">
-			<div className="w-20 h-4 skeleton rounded" />
-			<div className="w-20 h-4 skeleton rounded" />
+			<Skeleton className="w-20 h-4 rounded" />
+			<Skeleton className="w-20 h-4 rounded" />
 		</div>
 		<div className="flex-1 p-6 space-y-4">
-			<div className="w-3/4 h-4 skeleton rounded" />
-			<div className="w-1/2 h-4 skeleton rounded" />
-			<div className="w-5/6 h-4 skeleton rounded" />
+			<Skeleton className="w-3/4 h-4 rounded" />
+			<Skeleton className="w-1/2 h-4 rounded" />
+			<Skeleton className="w-5/6 h-4 rounded" />
+			<div className="pt-4 space-y-2">
+				<Skeleton className="w-full h-3 rounded-full opacity-60" />
+				<Skeleton className="w-full h-3 rounded-full opacity-60" />
+				<Skeleton className="w-2/3 h-3 rounded-full opacity-60" />
+			</div>
 		</div>
 	</div>
+);
+
+const ButtonSkeleton = ({ width = "w-9" }: { width?: string }) => (
+	<Skeleton className={cn("h-9 rounded-lg shrink-0", width)} />
 );
 
 const HomePage = () => {
@@ -150,10 +194,14 @@ const HomePage = () => {
 	const {
 		isAiDialogOpen,
 		setIsAiDialogOpen,
+		isAiWriterDialogOpen,
+		setIsAiWriterDialogOpen,
 		selectedText,
+		setSelectedText,
 		prefillInstruction,
 		setupAiAction,
 		applyEnhancedText,
+		applyWriterText,
 	} = useAiEnhance();
 
 	const [isAiAutocompleteEnabled, setIsAiAutocompleteEnabled] = useState(() =>
@@ -375,35 +423,69 @@ const HomePage = () => {
 					)}
 
 					{contentType === "draw" && (
-						<Button
-							variant="outline"
-							size="sm"
-							onClick={() => setIsAiDrawDialogOpen(true)}
-							className="gap-2 h-9 text-primary border-primary/20 bg-primary/5 hover:bg-primary/10 shadow-lg shadow-primary/5 shrink-0"
-						>
-							<Sparkles className="h-4 w-4" />
-							<span>{t("ai.draw_title")}</span>
-						</Button>
+						<Suspense fallback={<ButtonSkeleton width="w-24" />}>
+							<AiDrawButton
+								onClick={() => setIsAiDrawDialogOpen(true)}
+							/>
+						</Suspense>
 					)}
 
 					{["text", "code"].includes(contentType) && (
-						<>
-							<VoiceInputButton />
+						<div className="flex items-center gap-2">
 							<Suspense
 								fallback={
-									<div className="w-20 h-9 skeleton rounded-lg" />
+									<div className="w-9 h-9 skeleton rounded-md" />
 								}
+							>
+								<AiWriterButton
+									onClick={() => {
+										if (editorInstanceRef.current) {
+											const selection =
+												editorInstanceRef.current.getSelection();
+											if (
+												selection &&
+												!selection.isEmpty()
+											) {
+												const text =
+													editorInstanceRef.current
+														.getModel()
+														?.getValueInRange(
+															selection,
+														);
+												if (text) setSelectedText(text);
+											} else {
+												setSelectedText("");
+											}
+										}
+										setIsAiWriterDialogOpen(true);
+									}}
+								/>
+							</Suspense>
+
+							<Suspense
+								fallback={<ButtonSkeleton width="w-32" />}
+							>
+								<AiAutocompleteToggle
+									enabled={isAiAutocompleteEnabled}
+									onToggle={setIsAiAutocompleteEnabled}
+								/>
+							</Suspense>
+
+							<div className="w-px h-6 bg-border/40 mx-1" />
+
+							<Suspense fallback={<ButtonSkeleton width="w-9" />}>
+								<VoiceInputButton />
+							</Suspense>
+
+							<Suspense
+								fallback={<ButtonSkeleton width="w-20" />}
 							>
 								<FontSizeControls
 									fontSize={fontSize}
 									setFontSize={setFontSize}
 								/>
 							</Suspense>
-							<AiAutocompleteToggle
-								enabled={isAiAutocompleteEnabled}
-								onToggle={setIsAiAutocompleteEnabled}
-							/>
-						</>
+						</div>
 					)}
 				</MainToolbar>
 			</div>
@@ -459,38 +541,46 @@ const HomePage = () => {
 					);
 
 					const terminalPanel = (
-						<TerminalContainer
-							isOpen={isTerminalVisible}
-							position={terminalPosition}
-							onPositionChange={setTerminalPosition}
-							onClose={() => setIsTerminalOpen(false)}
-							code={textValue}
-							language={language}
-							fontSize={fontSize}
-							socket={socket}
-							className="m-2 md:mx-4 "
-						/>
+						<Suspense
+							fallback={
+								<div className="m-2 md:mx-4 h-40 skeleton rounded-xl opacity-50" />
+							}
+						>
+							<TerminalContainer
+								isOpen={isTerminalVisible}
+								position={terminalPosition}
+								onPositionChange={setTerminalPosition}
+								onClose={() => setIsTerminalOpen(false)}
+								code={textValue}
+								language={language}
+								fontSize={fontSize}
+								socket={socket}
+								className="m-2 md:mx-4 "
+							/>
+						</Suspense>
 					);
 
 					if (!isTerminalVisible) return editorPanel;
 
 					return (
-						<ResizablePanels
-							direction={
-								terminalPosition === "bottom"
-									? "vertical"
-									: "horizontal"
-							}
-							initialSize={
-								terminalPosition === "bottom" ? 62 : 65
-							}
-							minSize={20}
-							maxSize={85}
-							className="flex-1"
-							first={editorPanel}
-							second={terminalPanel}
-							storageKey={`home-terminal-split-${terminalPosition}`}
-						/>
+						<Suspense fallback={<EditorSkeleton />}>
+							<ResizablePanels
+								direction={
+									terminalPosition === "bottom"
+										? "vertical"
+										: "horizontal"
+								}
+								initialSize={
+									terminalPosition === "bottom" ? 62 : 65
+								}
+								minSize={20}
+								maxSize={85}
+								className="flex-1"
+								first={editorPanel}
+								second={terminalPanel}
+								storageKey={`home-terminal-split-${terminalPosition}`}
+							/>
+						</Suspense>
 					);
 				})()}
 			</div>
@@ -502,6 +592,12 @@ const HomePage = () => {
 					selectedText={selectedText}
 					onApply={applyEnhancedText}
 					initialInstruction={prefillInstruction}
+				/>
+				<AiWriterDialog
+					isOpen={isAiWriterDialogOpen}
+					onClose={() => setIsAiWriterDialogOpen(false)}
+					onApply={applyWriterText}
+					selectedText={selectedText}
 				/>
 				<AiDrawDialog
 					isOpen={isAiDrawDialogOpen}

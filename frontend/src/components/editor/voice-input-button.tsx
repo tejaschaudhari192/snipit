@@ -9,6 +9,12 @@ import { cn } from "@/utils";
 import { useTranslation } from "react-i18next";
 import { formatAudioDuration } from "@/utils/audio";
 import { VoiceWaveform } from "./voice-waveform";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface VoiceInputButtonProps {
 	className?: string;
@@ -96,23 +102,31 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 			)}
 
 			{!isRecording && (
-				<Button
-					variant="outline"
-					size="icon-sm"
-					onClick={startRecording}
-					disabled={isTranscribing}
-					className={cn(
-						"relative transition-all duration-300",
-						isTranscribing && "opacity-80",
-					)}
-					title={t("editor.start_recording")}
-				>
-					{isTranscribing ? (
-						<Loader2 className="h-4 w-4 animate-spin" />
-					) : (
-						<Mic className="h-[18px] w-[18px] text-red-500 fill-red-500/10" />
-					)}
-				</Button>
+				<TooltipProvider>
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<Button
+								variant="outline"
+								size="icon-sm"
+								onClick={startRecording}
+								disabled={isTranscribing}
+								className={cn(
+									"relative transition-all duration-300",
+									isTranscribing && "opacity-80",
+								)}
+							>
+								{isTranscribing ? (
+									<Loader2 className="h-4 w-4 animate-spin" />
+								) : (
+									<Mic className="h-[18px] w-[18px] text-red-500 fill-red-500/10" />
+								)}
+							</Button>
+						</TooltipTrigger>
+						<TooltipContent side="top">
+							<p>{t("editor.start_recording")}</p>
+						</TooltipContent>
+					</Tooltip>
+				</TooltipProvider>
 			)}
 		</div>
 	);

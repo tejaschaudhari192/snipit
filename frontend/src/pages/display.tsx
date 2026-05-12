@@ -28,7 +28,6 @@ import { useAiAutocomplete } from "@/hooks/use-ai-autocomplete";
 
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import DisplayError from "@/components/common/core/error";
-import { PasswordGate } from "@/components/display/password-gate";
 import { useRemoteCursors } from "@/hooks/use-remote-cursors";
 
 import { useDisplayState } from "@/hooks/use-display-state";
@@ -36,10 +35,6 @@ import { usePasteSync } from "@/hooks/use-paste-sync";
 import { useEditorSync } from "@/hooks/use-editor-sync";
 import { useDisplayInit } from "@/hooks/display/use-display-init";
 import { useDisplayActions } from "@/hooks/display/use-display-actions";
-
-import { DisplayLoading } from "@/components/display/display-loading";
-import { DisplayWorkspace } from "@/components/display/display-workspace";
-import { DisplayDialogs } from "@/components/display/display-dialogs";
 import { useAutosave } from "@/hooks/display/use-autosave";
 
 import type {
@@ -49,10 +44,15 @@ import type {
 	SocketUpdateData,
 } from "@/types";
 import { CONFIG } from "@/configurations";
-
+import { DisplayLoading } from "@/components/display/display-loading";
 const DisplayToolbar = lazy(() =>
 	import("@/components/display/display-toolbar").then((m) => ({
 		default: m.DisplayToolbar,
+	})),
+);
+const AiWriterDialog = lazy(() =>
+	import("@/components/editor/ai-writer-dialog").then((m) => ({
+		default: m.AiWriterDialog,
 	})),
 );
 const DisplayMetadata = lazy(() =>
@@ -63,6 +63,21 @@ const DisplayMetadata = lazy(() =>
 const EditControls = lazy(() =>
 	import("@/components/display/edit-controls").then((m) => ({
 		default: m.EditControls,
+	})),
+);
+const PasswordGate = lazy(() =>
+	import("@/components/display/password-gate").then((m) => ({
+		default: m.PasswordGate,
+	})),
+);
+const DisplayWorkspace = lazy(() =>
+	import("@/components/display/display-workspace").then((m) => ({
+		default: m.DisplayWorkspace,
+	})),
+);
+const DisplayDialogs = lazy(() =>
+	import("@/components/display/display-dialogs").then((m) => ({
+		default: m.DisplayDialogs,
 	})),
 );
 
@@ -269,10 +284,14 @@ const DisplayPage = () => {
 	const {
 		isAiDialogOpen,
 		setIsAiDialogOpen,
+		isAiWriterDialogOpen,
+		setIsAiWriterDialogOpen,
 		selectedText,
+		setSelectedText,
 		prefillInstruction,
 		setupAiAction,
 		applyEnhancedText,
+		applyWriterText,
 	} = useAiEnhance();
 
 	useAutosave({
@@ -329,29 +348,38 @@ const DisplayPage = () => {
 
 	if ((paste.isPasswordProtected || !!paste.password) && !paste.content) {
 		return (
-			<PasswordGate
-				passwordInput={passwordInput}
-				setPasswordInput={setPasswordInput}
-				passwordError={passwordError}
-				setPasswordError={setPasswordError}
-				handleVerifyPassword={async () => {
-					setIsVerifyingPassword(true);
-					try {
-						const data = await apiHelpers.verifyPassword(
-							id!,
-							passwordInput,
-						);
-						updateAllFromData(data);
-						if (data.redirectUrl && data.contentMode === "link")
-							window.location.href = data.content;
-					} catch {
-						setPasswordError(t("messages.password_incorrect"));
-					} finally {
-						setIsVerifyingPassword(false);
-					}
-				}}
-				isVerifying={isVerifyingPassword}
-			/>
+			<Suspense
+				fallback={
+					<ShimmerSection
+						type="card"
+						className="max-w-md mx-auto mt-20"
+					/>
+				}
+			>
+				<PasswordGate
+					passwordInput={passwordInput}
+					setPasswordInput={setPasswordInput}
+					passwordError={passwordError}
+					setPasswordError={setPasswordError}
+					handleVerifyPassword={async () => {
+						setIsVerifyingPassword(true);
+						try {
+							const data = await apiHelpers.verifyPassword(
+								id!,
+								passwordInput,
+							);
+							updateAllFromData(data);
+							if (data.redirectUrl && data.contentMode === "link")
+								window.location.href = data.content;
+						} catch {
+							setPasswordError(t("messages.password_incorrect"));
+						} finally {
+							setIsVerifyingPassword(false);
+						}
+					}}
+					isVerifying={isVerifyingPassword}
+				/>
+			</Suspense>
 		);
 	}
 
@@ -446,6 +474,24 @@ const DisplayPage = () => {
 								setIsAiAutocompleteEnabled={
 									setIsAiAutocompleteEnabled
 								}
+								onAiWriterClick={() => {
+									if (editorInstanceRef.current) {
+										const selection =
+											editorInstanceRef.current.getSelection();
+										if (selection && !selection.isEmpty()) {
+											const text =
+												editorInstanceRef.current
+													.getModel()
+													?.getValueInRange(
+														selection,
+													);
+											if (text) setSelectedText(text);
+										} else {
+											setSelectedText("");
+										}
+									}
+									setIsAiWriterDialogOpen(true);
+								}}
 							/>
 						</Suspense>
 						{!isEdit && (
@@ -510,79 +556,98 @@ const DisplayPage = () => {
 							</div>
 						)}
 
-						<DisplayWorkspace
-							id={id ?? ""}
-							isEdit={isEdit}
-							contentType={contentType}
-							language={language}
-							updatedContent={updatedContent}
-							paste={paste}
-							handleContentChange={(val) =>
-								handleContentChange(
-									val,
-									isRemoteUpdateRef,
-									editorInstance,
-									handleEditorChange,
-								)
+						<Suspense
+							fallback={
+								<ShimmerSection
+									type="editor"
+									className="flex-1"
+								/>
 							}
-							handleEditorChange={handleEditorChange}
-							handleEditorMount={handleEditorMount}
-							handleEditorWillMount={handleEditorWillMount}
-							theme={theme}
-							fontSize={fontSize}
-							contentRef={contentRef}
-							sharedSocketRef={sharedSocketRef}
-							syncUsers={syncUsers}
-							isFullscreen={isFullscreen}
-							setIsFullscreen={setIsFullscreen}
-							isWindowFullscreen={isWindowFullscreen}
-							setIsWindowFullscreen={setIsWindowFullscreen}
-							isTerminalOpen={isTerminalOpen}
-							setIsTerminalOpen={setIsTerminalOpen}
-							terminalPosition={terminalPosition}
-							setTerminalPosition={setTerminalPosition}
-							socket={socket}
-							onFileSelect={(file) => {
-								setPendingFile(file);
-								setFileUpload(file);
-								setUpdatedContent(
-									paste?.content || "File Update",
-								);
-							}}
-							onClearFile={() => {
-								setPendingFile(null);
-								resetFileUpload();
-								setIsServerFileRemoved(true);
-							}}
-							isServerFileRemoved={isServerFileRemoved}
-							uploadedFileName={uploadedFileName}
-							isFileUploading={isFileUploading}
-							fileUploadProgress={fileUploadProgress}
-							fileUploadError={fileUploadError}
-						/>
+						>
+							<DisplayWorkspace
+								id={id ?? ""}
+								isEdit={isEdit}
+								contentType={contentType}
+								language={language}
+								updatedContent={updatedContent}
+								paste={paste}
+								handleContentChange={(val) =>
+									handleContentChange(
+										val,
+										isRemoteUpdateRef,
+										editorInstance,
+										handleEditorChange,
+									)
+								}
+								handleEditorChange={handleEditorChange}
+								handleEditorMount={handleEditorMount}
+								handleEditorWillMount={handleEditorWillMount}
+								theme={theme}
+								fontSize={fontSize}
+								contentRef={contentRef}
+								sharedSocketRef={sharedSocketRef}
+								syncUsers={syncUsers}
+								isFullscreen={isFullscreen}
+								setIsFullscreen={setIsFullscreen}
+								isWindowFullscreen={isWindowFullscreen}
+								setIsWindowFullscreen={setIsWindowFullscreen}
+								isTerminalOpen={isTerminalOpen}
+								setIsTerminalOpen={setIsTerminalOpen}
+								terminalPosition={terminalPosition}
+								setTerminalPosition={setTerminalPosition}
+								socket={socket}
+								onFileSelect={(file) => {
+									setPendingFile(file);
+									setFileUpload(file);
+									setUpdatedContent(
+										paste?.content || "File Update",
+									);
+								}}
+								onClearFile={() => {
+									setPendingFile(null);
+									resetFileUpload();
+									setIsServerFileRemoved(true);
+								}}
+								isServerFileRemoved={isServerFileRemoved}
+								uploadedFileName={uploadedFileName}
+								isFileUploading={isFileUploading}
+								fileUploadProgress={fileUploadProgress}
+								fileUploadError={fileUploadError}
+							/>
+						</Suspense>
 					</div>
 				</div>
 			</div>
 
-			<DisplayDialogs
-				isCustomExpiryDialogOpen={isCustomExpiryDialogOpen}
-				setIsCustomExpiryDialogOpen={setIsCustomExpiryDialogOpen}
-				customExpiryDate={state.customExpiryDate}
-				setCustomExpiryDate={state.setCustomExpiryDate}
-				onCustomExpiryConfirm={async () => {
-					setIsCustomExpiryDialogOpen(false);
-					if (state.customExpiryDate)
-						setExpiresTime(state.customExpiryDate.toISOString());
-				}}
-				isDeleteDialogOpen={isDeleteDialogOpen}
-				setIsDeleteDialogOpen={setIsDeleteDialogOpen}
-				onDeleteConfirm={onDeleteConfirm}
-				isAiDialogOpen={isAiDialogOpen}
-				setIsAiDialogOpen={setIsAiDialogOpen}
-				selectedText={selectedText}
-				prefillInstruction={prefillInstruction}
-				applyEnhancedText={applyEnhancedText}
-			/>
+			<Suspense fallback={null}>
+				<DisplayDialogs
+					isCustomExpiryDialogOpen={isCustomExpiryDialogOpen}
+					setIsCustomExpiryDialogOpen={setIsCustomExpiryDialogOpen}
+					customExpiryDate={state.customExpiryDate}
+					setCustomExpiryDate={state.setCustomExpiryDate}
+					onCustomExpiryConfirm={async () => {
+						setIsCustomExpiryDialogOpen(false);
+						if (state.customExpiryDate)
+							setExpiresTime(
+								state.customExpiryDate.toISOString(),
+							);
+					}}
+					isDeleteDialogOpen={isDeleteDialogOpen}
+					setIsDeleteDialogOpen={setIsDeleteDialogOpen}
+					onDeleteConfirm={onDeleteConfirm}
+					isAiDialogOpen={isAiDialogOpen}
+					setIsAiDialogOpen={setIsAiDialogOpen}
+					selectedText={selectedText}
+					prefillInstruction={prefillInstruction}
+					applyEnhancedText={applyEnhancedText}
+				/>
+				<AiWriterDialog
+					isOpen={isAiWriterDialogOpen}
+					onClose={() => setIsAiWriterDialogOpen(false)}
+					onApply={applyWriterText}
+					selectedText={selectedText}
+				/>
+			</Suspense>
 		</>
 	);
 };

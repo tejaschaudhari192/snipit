@@ -2,24 +2,63 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { FileText, Trash2, Inbox, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { ShimmerSection } from "@/components/common/shimmer-section";
-import { SnippetCard } from "@/components/snippets/snippet-card";
 import { playRemoveSound } from "@/utils";
 import { useSnippets } from "@/context/SnippetContext";
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogMedia,
-} from "@/components/ui/alert-dialog";
+
+const SnippetCard = lazy(() =>
+	import("@/components/snippets/snippet-card").then((m) => ({
+		default: m.SnippetCard,
+	})),
+);
+const AlertDialog = lazy(() =>
+	import("@/components/ui/alert-dialog").then((m) => ({
+		default: m.AlertDialog,
+	})),
+);
+const AlertDialogAction = lazy(() =>
+	import("@/components/ui/alert-dialog").then((m) => ({
+		default: m.AlertDialogAction,
+	})),
+);
+const AlertDialogCancel = lazy(() =>
+	import("@/components/ui/alert-dialog").then((m) => ({
+		default: m.AlertDialogCancel,
+	})),
+);
+const AlertDialogContent = lazy(() =>
+	import("@/components/ui/alert-dialog").then((m) => ({
+		default: m.AlertDialogContent,
+	})),
+);
+const AlertDialogDescription = lazy(() =>
+	import("@/components/ui/alert-dialog").then((m) => ({
+		default: m.AlertDialogDescription,
+	})),
+);
+const AlertDialogFooter = lazy(() =>
+	import("@/components/ui/alert-dialog").then((m) => ({
+		default: m.AlertDialogFooter,
+	})),
+);
+const AlertDialogHeader = lazy(() =>
+	import("@/components/ui/alert-dialog").then((m) => ({
+		default: m.AlertDialogHeader,
+	})),
+);
+const AlertDialogTitle = lazy(() =>
+	import("@/components/ui/alert-dialog").then((m) => ({
+		default: m.AlertDialogTitle,
+	})),
+);
+const AlertDialogMedia = lazy(() =>
+	import("@/components/ui/alert-dialog").then((m) => ({
+		default: m.AlertDialogMedia,
+	})),
+);
 
 const HistoryPage = () => {
 	const { t, i18n } = useTranslation();
@@ -111,12 +150,16 @@ const HistoryPage = () => {
 				) : (
 					<div className="grid gap-4">
 						{items.map((item, index) => (
-							<SnippetCard
+							<Suspense
 								key={item.id}
-								item={item}
-								index={index}
-								showViews={false}
-							/>
+								fallback={<ShimmerSection type="card" />}
+							>
+								<SnippetCard
+									item={item}
+									index={index}
+									showViews={false}
+								/>
+							</Suspense>
 						))}
 
 						{/* Infinite Scroll Trigger */}
@@ -135,39 +178,41 @@ const HistoryPage = () => {
 				)}
 			</div>
 
-			<AlertDialog
-				open={isClearDialogOpen}
-				onOpenChange={setIsClearDialogOpen}
-			>
-				<AlertDialogContent
-					size="sm"
-					className="border border-border/50 bg-background/60 backdrop-blur-2xl shadow-2xl rounded-2xl ring-1 ring-white/5 overflow-hidden"
+			<Suspense fallback={null}>
+				<AlertDialog
+					open={isClearDialogOpen}
+					onOpenChange={setIsClearDialogOpen}
 				>
-					<AlertDialogHeader>
-						<AlertDialogMedia className="bg-destructive/10 text-destructive">
-							<Trash2 className="size-8" />
-						</AlertDialogMedia>
-						<AlertDialogTitle>
-							{t("history.clear_history")}
-						</AlertDialogTitle>
-						<AlertDialogDescription>
-							{t("history.clear_confirm")}
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel variant="ghost">
-							{t("history.cancel")}
-						</AlertDialogCancel>
-						<AlertDialogAction
-							variant="destructive"
-							onClick={confirmClearHistory}
-							className="font-bold"
-						>
-							{t("history.clear_action")}
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+					<AlertDialogContent
+						size="sm"
+						className="border border-border/50 bg-background/60 backdrop-blur-2xl shadow-2xl rounded-2xl ring-1 ring-white/5 overflow-hidden"
+					>
+						<AlertDialogHeader>
+							<AlertDialogMedia className="bg-destructive/10 text-destructive">
+								<Trash2 className="size-8" />
+							</AlertDialogMedia>
+							<AlertDialogTitle>
+								{t("history.clear_history")}
+							</AlertDialogTitle>
+							<AlertDialogDescription>
+								{t("history.clear_confirm")}
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogCancel variant="ghost">
+								{t("history.cancel")}
+							</AlertDialogCancel>
+							<AlertDialogAction
+								variant="destructive"
+								onClick={confirmClearHistory}
+								className="font-bold"
+							>
+								{t("history.clear_action")}
+							</AlertDialogAction>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+			</Suspense>
 		</div>
 	);
 };

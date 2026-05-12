@@ -43,6 +43,21 @@ router.post(
 );
 
 router.get(
+	"/check/:id",
+	catchAsync(pasteController.checkIdAvailability.bind(pasteController)),
+);
+
+router.get(
+	"/generate-word-id",
+	catchAsync(pasteController.generateWordId.bind(pasteController)),
+);
+
+router.get(
+	"/word-categories",
+	catchAsync(pasteController.getWordCategories.bind(pasteController)),
+);
+
+router.get(
 	"/:id",
 	optionalProtect,
 	catchAsync(pasteController.getPaste.bind(pasteController)),

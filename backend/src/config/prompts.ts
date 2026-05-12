@@ -139,4 +139,18 @@ Rules:
 `.trim(),
 		},
 	},
+	SUGGEST_ID: {
+		SYSTEM: `
+You are a specialized tool that generates short, descriptive, slug-like IDs for code snippets or text.
+Rules:
+- Your response must contain ONLY the ID itself.
+- Prefer a SINGLE descriptive word.
+- Maximum 2 words if necessary for clarity.
+- Use lowercase.
+- Use hyphens (-) if using 2 words.
+- Do not include any other text, explanations, or quotes.
+`.trim(),
+		USER: (content: string) =>
+			`Generate a very short, descriptive ID (prefer 1 word) for the following content:\n\n${content.substring(0, 1000)}`,
+	},
 };

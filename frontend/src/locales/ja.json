@@ -165,9 +165,9 @@
 		"enter_snippet_placeholder": "ここにスニペットを入力...",
 		"paste_button": "貼り付け",
 		"paste_dynamic_id": "ダイナミックIDで貼り付け",
-		"paste_system_id": "システムIDで貼り付け",
+		"paste_system_id": "自動",
 		"paste_dynamic_id_desc": "独自のIDを選択",
-		"paste_system_id_desc": "IDを自動生成",
+		"paste_system_id_desc": "安全な5文字の英数字IDを生成します (例: a1b2c)",
 		"paste_advanced": "高度な作成",
 		"paste_advanced_desc": "プライバシー、パスワードなどを設定",
 		"expire_options": {
@@ -227,7 +227,13 @@
 		"link_shortened": "リンクを短縮しました！",
 		"link_ready_desc": "短縮リンクの共有準備が整いました",
 		"alias": "エイリアス",
-		"create_another": "新しく作成"
+		"create_another": "新しく作成",
+		"suggest_id_ai": "AIを使用してIDを提案",
+		"ai_id_suggested": "コンテンツに基づいてAIがIDを提案しました！",
+		"semantic_id_tab": "単語",
+		"semantic_id_placeholder": "セマンティックIDを入力...",
+		"semantic_id_generate": "単語を生成",
+		"semantic_id_words": "単語"
 	},
 	"display": {
 		"expires_in": "有効期限:",
@@ -522,7 +528,8 @@
 		"code": "コード",
 		"drawing": "描画",
 		"shorten_link": "リンクを短縮",
-		"file": "ファイル"
+		"file": "ファイル",
+		"ai_writer": "AI ライター"
 	},
 	"ai_dialog": {
 		"title": "AIエディタアシスタント",
@@ -567,5 +574,23 @@
 		"mermaid_success": "Mermaid図形を正常にインポートしました！",
 		"mermaid_error": "Mermaid構文の解析に失敗しました。",
 		"import": "インポート"
+	},
+	"ai_writer": {
+		"title": "AI ライター",
+		"description": "書きたい内容を説明すると、AIが生成します。",
+		"placeholder": "例：ログインフォームのReactコンポーネントを書いて...",
+		"generating": "生成中...",
+		"run": "生成する",
+		"apply": "コードを挿入",
+		"actions": {
+			"write_code": "コードを書く",
+			"explain_write": "説明して書く",
+			"refactor_ideas": "リファクタリング案"
+		},
+		"tooltips": {
+			"write_code": "リクエストに基づいて高品質なコードスニペットを書きます。",
+			"explain_write": "ロジックを説明してからコードを書きます。",
+			"refactor_ideas": "このアイデアをコードにリファクタリングする方法を提案します。"
+		}
 	}
 }

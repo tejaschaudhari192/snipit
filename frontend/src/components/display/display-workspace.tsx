@@ -1,8 +1,16 @@
 import React, { Suspense, memo } from "react";
 import { ResizablePanels } from "@/components/common/resizable-panels";
 import { ShimmerSection } from "@/components/common/shimmer-section";
-import { TerminalContainer } from "@/components/terminal/terminal-container";
-import { DisplayContent } from "@/components/display/display-content";
+const TerminalContainer = React.lazy(() =>
+	import("@/components/terminal/terminal-container").then((m) => ({
+		default: m.TerminalContainer,
+	})),
+);
+const DisplayContent = React.lazy(() =>
+	import("@/components/display/display-content").then((m) => ({
+		default: m.DisplayContent,
+	})),
+);
 import type { PasteData, ContentMode, ActiveUser, EditorChange } from "@/types";
 import { Socket } from "socket.io-client";
 import { type BeforeMount, type OnMount } from "@monaco-editor/react";
@@ -120,17 +128,23 @@ export const DisplayWorkspace = memo(
 		);
 
 		const terminalPanel = (
-			<TerminalContainer
-				isOpen={isTerminalVisible}
-				position={terminalPosition}
-				onPositionChange={setTerminalPosition}
-				onClose={() => setIsTerminalOpen(false)}
-				code={updatedContent ?? paste.content}
-				language={language}
-				fontSize={fontSize}
-				socket={socket}
-				className="mx-2 sm:mx-4 mb-2"
-			/>
+			<Suspense
+				fallback={
+					<div className="mx-2 sm:mx-4 mb-2 h-40 skeleton rounded-xl opacity-50" />
+				}
+			>
+				<TerminalContainer
+					isOpen={isTerminalVisible}
+					position={terminalPosition}
+					onPositionChange={setTerminalPosition}
+					onClose={() => setIsTerminalOpen(false)}
+					code={updatedContent ?? paste.content}
+					language={language}
+					fontSize={fontSize}
+					socket={socket}
+					className="mx-2 sm:mx-4 mb-2"
+				/>
+			</Suspense>
 		);
 
 		if (!isTerminalVisible) {

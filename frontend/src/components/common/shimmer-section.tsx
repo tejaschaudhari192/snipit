@@ -1,26 +1,6 @@
 import { cn } from "@/utils";
 import { Loader2 } from "lucide-react";
-
-interface SkeletonProps {
-	className?: string;
-	width?: string | number;
-	height?: string | number;
-	rounded?: string;
-}
-
-const Skeleton = ({
-	className,
-	width,
-	height,
-	rounded = "rounded-md",
-}: SkeletonProps) => {
-	const style: React.CSSProperties = {
-		width: typeof width === "number" ? `${width}px` : width,
-		height: typeof height === "number" ? `${height}px` : height,
-	};
-
-	return <div className={cn("skeleton", rounded, className)} style={style} />;
-};
+import { Skeleton } from "@/components/ui/skeleton";
 
 const CardShimmer = ({ className }: { className?: string }) => (
 	<div
@@ -31,23 +11,23 @@ const CardShimmer = ({ className }: { className?: string }) => (
 	>
 		<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 			<div className="flex items-center gap-3">
-				<Skeleton height={24} width={80} rounded="rounded-md" />
-				<Skeleton height={16} width={60} rounded="rounded-sm" />
+				<Skeleton className="h-6 w-20 rounded-md" />
+				<Skeleton className="h-4 w-14 rounded-sm" />
 			</div>
 			<div className="flex items-center gap-3">
-				<Skeleton height={16} width={100} rounded="rounded-sm" />
+				<Skeleton className="h-4 w-24 rounded-sm" />
 			</div>
 		</div>
 		<div className="bg-muted/30 rounded-lg p-4 border border-border/20 space-y-2">
-			<Skeleton height={14} width="90%" />
-			<Skeleton height={14} width="70%" />
+			<Skeleton className="h-3.5 w-[90%]" />
+			<Skeleton className="h-3.5 w-[70%]" />
 		</div>
 		<div className="flex items-center justify-between">
 			<div className="flex items-center gap-4">
-				<Skeleton height={20} width={70} rounded="rounded-md" />
-				<Skeleton height={20} width={80} rounded="rounded-md" />
+				<Skeleton className="h-5 w-16 rounded-md" />
+				<Skeleton className="h-5 w-20 rounded-md" />
 			</div>
-			<Skeleton height={16} width={40} rounded="rounded-sm" />
+			<Skeleton className="h-4 w-10 rounded-sm" />
 		</div>
 	</div>
 );
@@ -61,17 +41,23 @@ const EditorShimmer = ({ className }: { className?: string }) => (
 	>
 		<div className="flex items-center gap-2 border-b pb-4 border-border/20">
 			{[...Array(6)].map((_, i) => (
-				<Skeleton key={i} height={32} width={32} rounded="rounded-lg" />
+				<Skeleton key={i} className="h-8 w-8 rounded-lg" />
 			))}
 			<div className="flex-1" />
-			<Skeleton height={32} width={100} rounded="rounded-lg" />
+			<Skeleton className="h-8 w-24 rounded-lg" />
 		</div>
 		<div className="space-y-4 py-4">
 			{[...Array(15)].map((_, i) => (
 				<Skeleton
 					key={i}
-					height={14}
-					width={i % 2 === 0 ? "100%" : i % 3 === 0 ? "85%" : "95%"}
+					className={cn(
+						"h-3.5",
+						i % 2 === 0
+							? "w-full"
+							: i % 3 === 0
+								? "w-[85%]"
+								: "w-[95%]",
+					)}
 				/>
 			))}
 		</div>
@@ -81,27 +67,18 @@ const EditorShimmer = ({ className }: { className?: string }) => (
 const ToolbarShimmer = ({ className }: { className?: string }) => (
 	<div
 		className={cn(
-			"flex items-center justify-between gap-4 p-2.5 px-4 rounded-2xl bg-muted/60 dark:bg-muted/20 border border-border/30 dark:border-border/20 shadow-sm transition-all duration-300",
+			"flex items-center justify-between gap-4 p-1 rounded-xl bg-background/50 backdrop-blur-3xl border border-border/50 shadow-sm transition-all duration-300",
 			className,
 		)}
 	>
 		<div className="flex items-center gap-2">
-			<Skeleton height={36} width={100} rounded="rounded-lg" />
-			<Skeleton
-				height={36}
-				width={80}
-				rounded="rounded-lg"
-				className="hidden sm:block"
-			/>
-			<Skeleton
-				height={36}
-				width={80}
-				rounded="rounded-lg"
-				className="hidden sm:block"
-			/>
+			<Skeleton className="h-9 w-24 rounded-lg" />
+			<Skeleton className="h-9 w-20 rounded-lg hidden sm:block" />
+			<Skeleton className="h-9 w-20 rounded-lg hidden sm:block" />
 		</div>
+		<div className="flex-1" />
 		<div className="flex items-center gap-2">
-			<Skeleton height={36} width={120} rounded="rounded-lg" />
+			<Skeleton className="h-9 w-32 rounded-lg" />
 		</div>
 	</div>
 );
@@ -113,11 +90,11 @@ const MetadataShimmer = ({ className }: { className?: string }) => (
 			className,
 		)}
 	>
-		<Skeleton height={18} width={120} rounded="rounded-sm" />
+		<Skeleton className="h-4 w-32 rounded-sm" />
 		<div className="w-px h-3 bg-border/40 hidden sm:block" />
-		<Skeleton height={18} width={150} rounded="rounded-sm" />
+		<Skeleton className="h-4 w-40 rounded-sm" />
 		<div className="w-px h-3 bg-border/40 hidden sm:block" />
-		<Skeleton height={18} width={80} rounded="rounded-sm" />
+		<Skeleton className="h-4 w-20 rounded-sm" />
 	</div>
 );
 
@@ -151,12 +128,7 @@ export const ShimmerSection = ({
 			return <MetadataShimmer className={className} />;
 		case "button":
 			return (
-				<Skeleton
-					height={40}
-					width={120}
-					rounded="rounded-lg"
-					className={className}
-				/>
+				<Skeleton className={cn("h-10 w-32 rounded-lg", className)} />
 			);
 		case "loader":
 			return (
@@ -185,10 +157,12 @@ export const ShimmerSection = ({
 					{[...Array(lines)].map((_, i) => (
 						<Skeleton
 							key={i}
-							height={14}
-							width={
-								i === lines - 1 && lines > 1 ? "60%" : "100%"
-							}
+							className={cn(
+								"h-3.5",
+								i === lines - 1 && lines > 1
+									? "w-[60%]"
+									: "w-full",
+							)}
 						/>
 					))}
 				</div>

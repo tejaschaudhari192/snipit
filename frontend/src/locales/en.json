@@ -169,9 +169,9 @@
 		"shorten_button": "Shorten",
 		"upload_button": "Upload",
 		"paste_dynamic_id": "Custom ID",
-		"paste_system_id": "Auto-generated ID",
+		"paste_system_id": "Automatic",
 		"paste_dynamic_id_desc": "Choose your own unique URL",
-		"paste_system_id_desc": "Get a random URL automatically",
+		"paste_system_id_desc": "Generates a secure 5-character alphanumeric ID (e.g., a1b2c)",
 		"paste_advanced": "Advanced Creation",
 		"paste_advanced_desc": "Configure privacy, password, and more",
 		"advanced_config": "Advanced Configuration",
@@ -229,7 +229,13 @@
 			"preview": "Preview:",
 			"cancel": "Cancel",
 			"submit": "Create Snippet"
-		}
+		},
+		"suggest_id_ai": "Suggest ID using AI",
+		"ai_id_suggested": "AI Suggested an ID based on content!",
+		"semantic_id_tab": "Words",
+		"semantic_id_placeholder": "Your semantic ID...",
+		"semantic_id_generate": "Generate Words",
+		"semantic_id_words": "Words"
 	},
 	"display": {
 		"expires_in": "Expires in:",
@@ -524,7 +530,8 @@
 		"code": "Code",
 		"drawing": "Drawing",
 		"shorten_link": "Shorten Link",
-		"file": "File"
+		"file": "File",
+		"ai_writer": "AI Writer"
 	},
 	"ai_dialog": {
 		"title": "AI Editor Assistant",
@@ -569,5 +576,23 @@
 		"mermaid_success": "Mermaid diagram imported successfully!",
 		"mermaid_error": "Failed to parse Mermaid syntax.",
 		"import": "Import"
+	},
+	"ai_writer": {
+		"title": "AI Writer",
+		"description": "Describe what you want to write, and AI will generate it for you.",
+		"placeholder": "e.g. Write a React component for a login form...",
+		"generating": "Generating...",
+		"run": "Generate",
+		"apply": "Insert Code",
+		"actions": {
+			"write_code": "Write Code",
+			"explain_write": "Explain & Write",
+			"refactor_ideas": "Refactor Ideas"
+		},
+		"tooltips": {
+			"write_code": "Write a high-quality code snippet based on my request.",
+			"explain_write": "Explain the logic and then write the code.",
+			"refactor_ideas": "Suggest ways to refactor this idea into code."
+		}
 	}
 }

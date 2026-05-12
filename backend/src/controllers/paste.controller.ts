@@ -1,4 +1,4 @@
-import type { NextFunction, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import type { Logger } from "winston";
 import User from "@/models/User.js";
 import { type ICollaborator } from "@/models/Collaborator.js";
@@ -7,6 +7,7 @@ import type PermissionService from "@/services/permission.service.js";
 import { uniqueIdGenerator } from "@/lib/utils.js";
 import type { AuthRequest } from "@/middleware/auth.middleware.js";
 import type { IPaste } from "@/types/index.js";
+import { generateWordId, type WordCategory } from "@/lib/word-generator.js";
 
 class PasteController {
 	constructor(
@@ -339,6 +340,35 @@ class PasteController {
 		} catch (error) {
 			next(error);
 		}
+	}
+
+	async checkIdAvailability(
+		req: AuthRequest,
+		res: Response,
+		next: NextFunction,
+	) {
+		const id = req.params.id as string;
+		try {
+			const available = await this.pasteService.checkIdAvailability(id);
+			return res.json({ available });
+		} catch (error) {
+			next(error);
+		}
+	}
+
+	async generateWordId(req: AuthRequest, res: Response) {
+		const count = parseInt(req.query.count as string) || 2;
+		const categories = (req.query.categories as string)?.split(
+			",",
+		) as WordCategory[];
+
+		const id = generateWordId(count, categories);
+		res.json({ id });
+	}
+
+	async getWordCategories(_req: Request, res: Response) {
+		const { WORD_CATEGORIES } = await import("@/lib/word-generator.js");
+		res.json({ categories: WORD_CATEGORIES });
 	}
 }
 

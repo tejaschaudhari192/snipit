@@ -57,55 +57,75 @@ export const AiDrawDialog = ({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-			<DialogContent className="sm:max-w-[500px] glass-card border-border/20 shadow-2xl">
-				<DialogHeader>
-					<DialogTitle className="flex items-center gap-2 text-xl">
-						<Sparkles className="w-5 h-5 text-primary animate-pulse" />
-						{t("ai.draw_title")}
-					</DialogTitle>
-					<DialogDescription>
-						{t("ai.draw_description")}
-					</DialogDescription>
+			<DialogContent className="sm:max-w-[550px] p-0 border-border/20 bg-background/80 backdrop-blur-2xl overflow-hidden rounded-3xl shadow-2xl ring-1 ring-white/10">
+				<div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-primary/5 pointer-events-none" />
+
+				<DialogHeader className="p-6 pb-2 relative z-10">
+					<div className="space-y-1">
+						<DialogTitle className="text-2xl font-black flex items-center gap-2 tracking-tight">
+							<div className="p-2 rounded-xl bg-primary/10 text-primary shadow-lg shadow-primary/5">
+								<Sparkles className="w-5 h-5 animate-pulse" />
+							</div>
+							{t("ai.draw_title")}
+						</DialogTitle>
+						<DialogDescription className="text-sm font-medium opacity-70">
+							{t("ai.draw_description")}
+						</DialogDescription>
+					</div>
 				</DialogHeader>
 
-				<div className="space-y-4 py-4">
-					<Textarea
-						placeholder={t("ai.draw_placeholder")}
-						value={description}
-						onChange={(e) => setDescription(e.target.value)}
-						className="min-h-[120px] bg-background/50 border-border/40 focus:border-primary/50 transition-colors"
-						disabled={isGenerating}
-					/>
-
-					<div className="flex items-center space-x-2">
-						<input
-							type="checkbox"
-							id="clear-board"
-							checked={clearBoard}
-							onChange={(e) => setClearBoard(e.target.checked)}
-							className="w-4 h-4 rounded border-border text-primary focus:ring-primary cursor-pointer bg-background"
+				<div className="px-6 py-4 space-y-6 relative z-10">
+					<div className="relative group">
+						<Textarea
+							placeholder={t("ai.draw_placeholder")}
+							value={description}
+							onChange={(e) => setDescription(e.target.value)}
+							className="min-h-[140px] bg-muted/20 border-border/40 focus:border-primary/50 focus:ring-primary/20 
+								rounded-2xl resize-none transition-all duration-300 text-sm leading-relaxed custom-scrollbar p-4"
+							disabled={isGenerating}
 						/>
+						<div className="absolute bottom-3 right-3 flex items-center gap-2 pointer-events-none opacity-40 group-focus-within:opacity-100 transition-opacity">
+							<span className="text-[10px] font-black uppercase tracking-widest bg-muted px-2 py-0.5 rounded-md">
+								Enter ↵
+							</span>
+						</div>
+					</div>
+
+					<div className="flex items-center space-x-3 px-1">
+						<div className="relative flex items-center">
+							<input
+								type="checkbox"
+								id="clear-board"
+								checked={clearBoard}
+								onChange={(e) =>
+									setClearBoard(e.target.checked)
+								}
+								className="w-5 h-5 rounded-lg border-border/50 text-primary focus:ring-primary/30 cursor-pointer bg-background/50 transition-all hover:border-primary/50"
+							/>
+						</div>
 						<label
 							htmlFor="clear-board"
-							className="text-sm font-medium leading-none cursor-pointer text-muted-foreground"
+							className="text-sm font-bold uppercase tracking-wider opacity-60 hover:opacity-100 transition-opacity cursor-pointer select-none"
 						>
 							{t("ai.draw_clear_board")}
 						</label>
 					</div>
 				</div>
 
-				<DialogFooter className="gap-2">
+				<DialogFooter className="p-6 pt-2 bg-muted/10 border-t border-border/10 flex flex-col sm:flex-row gap-3">
 					<Button
 						variant="ghost"
 						onClick={onClose}
 						disabled={isGenerating}
+						className="rounded-xl font-bold uppercase tracking-wider text-xs h-11"
 					>
 						{t("common.cancel")}
 					</Button>
 					<Button
 						onClick={handleGenerate}
 						disabled={isGenerating || !description.trim()}
-						className="bg-primary hover:bg-primary/90 text-primary-foreground min-w-[120px]"
+						className="rounded-xl font-black uppercase tracking-wider text-xs h-11 px-8 shadow-xl shadow-primary/20
+							bg-primary hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-[0.98]"
 					>
 						{isGenerating ? (
 							<>

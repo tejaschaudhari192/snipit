@@ -166,9 +166,9 @@
 		"shorten_button": "लहान करा",
 		"upload_button": "अपलोड करा",
 		"paste_dynamic_id": "तुमची स्वतःची ID",
-		"paste_system_id": "ऑटो-जेनरेटेड ID",
+		"paste_system_id": "स्वयंचलित",
 		"paste_dynamic_id_desc": "तुमचा स्वतःचा URL निवडा",
-		"paste_system_id_desc": "एक नवीन URL आपोआप तयार होईल",
+		"paste_system_id_desc": "एक सुरक्षित ५-अक्षरी अल्फान्यूमेरिक ID (उदा. a1b2c) तयार करते",
 		"paste_advanced": "प्रगत निर्मिती",
 		"paste_advanced_desc": "गोपनीयता, पासवर्ड आणि बरेच काही कॉन्फिगर करा",
 		"expire_options": {
@@ -226,7 +226,13 @@
 			"submit": "स्निपेट तयार करा"
 		},
 		"advanced_config": "प्रगत संरचना",
-		"identification_type": "ओळख आणि प्रकार"
+		"identification_type": "ओळख आणि प्रकार",
+		"suggest_id_ai": "AI वापरून आयडी सुचवा",
+		"ai_id_suggested": "सामग्रीवर आधारित AI ने आयडी सुचवला!",
+		"semantic_id_tab": "शब्द",
+		"semantic_id_placeholder": "तुमचा सिमेंटिक आयडी...",
+		"semantic_id_generate": "शब्द तयार करा",
+		"semantic_id_words": "शब्द"
 	},
 	"display": {
 		"expires_in": "यामध्ये मुदत संपेल:",
@@ -521,7 +527,8 @@
 		"code": "कोड",
 		"drawing": "ड्राइंग",
 		"shorten_link": "लिंक लहान करा",
-		"file": "फाईल"
+		"file": "फाईल",
+		"ai_writer": "AI लेखक"
 	},
 	"ai_dialog": {
 		"title": "AI संपादक सहाय्यक",
@@ -566,5 +573,23 @@
 		"mermaid_success": "मरमेड आकृती यशस्वीरित्या आयात केली!",
 		"mermaid_error": "मरमेड सिंटॅक्स पार्स करण्यात अपयश.",
 		"import": "आयात करा"
+	},
+	"ai_writer": {
+		"title": "AI लेखक",
+		"description": "तुम्हाला काय लिहायचे आहे याचे वर्णन करा आणि AI तुमच्यासाठी ते तयार करेल.",
+		"placeholder": "उदा. लॉगिन फॉर्मसाठी React घटक लिहा...",
+		"generating": "तयार करत आहे...",
+		"run": "तयार करा",
+		"apply": "कोड टाका",
+		"actions": {
+			"write_code": "कोड लिहा",
+			"explain_write": "स्पष्ट करा आणि लिहा",
+			"refactor_ideas": "रिफॅक्टर कल्पना"
+		},
+		"tooltips": {
+			"write_code": "माझ्या विनंतीवर आधारित उच्च-गुणवत्तेचा कोड स्निपेट लिहा.",
+			"explain_write": "लॉजिक स्पष्ट करा आणि नंतर कोड लिहा.",
+			"refactor_ideas": "या कल्पनेला कोडमध्ये रिफॅक्टर करण्याचे मार्ग सुचवा."
+		}
 	}
 }

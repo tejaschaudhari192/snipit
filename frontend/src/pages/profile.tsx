@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import { useApiHelpers } from "@/lib/api";
@@ -7,15 +7,28 @@ import { Link } from "react-router-dom";
 import { User, Tag, Bookmark, FilterX } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
-import { ProfileInfo } from "@/components/profile/profile-info";
-import { ProfileSnippetList } from "@/components/profile/profile-snippet-list";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLabels } from "@/hooks/use-labels";
 
 import { useSnippets } from "@/context/SnippetContext";
 import { usePageTitle } from "@/hooks/use-page-title";
-import { LogoutDialog } from "@/components/header/logout-dialog";
 import type { User as UserType } from "@/types";
+
+const ProfileInfo = lazy(() =>
+	import("@/components/profile/profile-info").then((m) => ({
+		default: m.ProfileInfo,
+	})),
+);
+const ProfileSnippetList = lazy(() =>
+	import("@/components/profile/profile-snippet-list").then((m) => ({
+		default: m.ProfileSnippetList,
+	})),
+);
+const LogoutDialog = lazy(() =>
+	import("@/components/header/logout-dialog").then((m) => ({
+		default: m.LogoutDialog,
+	})),
+);
 
 const ProfilePage = () => {
 	const { t } = useTranslation();
@@ -130,24 +143,33 @@ const ProfilePage = () => {
 			<div className="relative z-10 container mx-auto px-4 py-4 md:py-6 max-w-7xl w-full animate-in fade-in duration-700">
 				<div className="flex flex-col lg:grid lg:grid-cols-12 gap-4 items-start">
 					<div className="w-full lg:col-span-4 lg:sticky lg:top-24 max-w-2xl mx-auto lg:max-w-none">
-						<ProfileInfo
-							user={
-								user ||
-								({
-									username: "Guest",
-									email: "Guest User",
-								} as UserType)
+						<Suspense
+							fallback={
+								<ShimmerSection
+									type="card"
+									className="h-[400px]"
+								/>
 							}
-							isEditingName={isEditingName}
-							setIsEditingName={setIsEditingName}
-							newName={newName}
-							setNewName={setNewName}
-							handleUpdateName={handleUpdateName}
-							isUpdating={isUpdating}
-							pastes={displayPastes}
-							onLogout={() => setIsLogoutDialogOpen(true)}
-							stats={stats}
-						/>
+						>
+							<ProfileInfo
+								user={
+									user ||
+									({
+										username: "Guest",
+										email: "Guest User",
+									} as UserType)
+								}
+								isEditingName={isEditingName}
+								setIsEditingName={setIsEditingName}
+								newName={newName}
+								setNewName={setNewName}
+								handleUpdateName={handleUpdateName}
+								isUpdating={isUpdating}
+								pastes={displayPastes}
+								onLogout={() => setIsLogoutDialogOpen(true)}
+								stats={stats}
+							/>
+						</Suspense>
 					</div>
 					<div className="w-full lg:col-span-8 max-w-4xl mx-auto lg:max-w-none">
 						<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 px-2">
@@ -247,39 +269,53 @@ const ProfilePage = () => {
 									value="owned"
 									className="mt-0 outline-none"
 								>
-									<ProfileSnippetList
-										pastes={displayPastes}
-										loading={displayLoading}
-										loadMore={() =>
-											user && loadProfile(false)
+									<Suspense
+										fallback={
+											<ShimmerSection type="card" />
 										}
-										hasMore={user ? hasMore : false}
-										isLoadingMore={
-											user ? isLoadingMore : false
-										}
-									/>
+									>
+										<ProfileSnippetList
+											pastes={displayPastes}
+											loading={displayLoading}
+											loadMore={() =>
+												user && loadProfile(false)
+											}
+											hasMore={user ? hasMore : false}
+											isLoadingMore={
+												user ? isLoadingMore : false
+											}
+										/>
+									</Suspense>
 								</TabsContent>
 								<TabsContent
 									value="saved"
 									className="mt-0 outline-none"
 								>
-									<ProfileSnippetList
-										pastes={savedPastes}
-										loading={loadingSaved}
-										loadMore={() => {}}
-										hasMore={false}
-										isLoadingMore={false}
-									/>
+									<Suspense
+										fallback={
+											<ShimmerSection type="card" />
+										}
+									>
+										<ProfileSnippetList
+											pastes={savedPastes}
+											loading={loadingSaved}
+											loadMore={() => {}}
+											hasMore={false}
+											isLoadingMore={false}
+										/>
+									</Suspense>
 								</TabsContent>
 							</Tabs>
 						)}
 					</div>
 				</div>
 			</div>
-			<LogoutDialog
-				open={isLogoutDialogOpen}
-				onOpenChange={setIsLogoutDialogOpen}
-			/>
+			<Suspense fallback={null}>
+				<LogoutDialog
+					open={isLogoutDialogOpen}
+					onOpenChange={setIsLogoutDialogOpen}
+				/>
+			</Suspense>
 		</div>
 	);
 };

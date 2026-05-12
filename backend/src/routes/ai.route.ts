@@ -39,5 +39,9 @@ router.post(
 	"/prepare-speech",
 	catchAsync(aiController.prepareSpeech.bind(aiController)),
 );
+router.post(
+	"/suggest-id",
+	catchAsync(aiController.suggestId.bind(aiController)),
+);
 
 export default router;

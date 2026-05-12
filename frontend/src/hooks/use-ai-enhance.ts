@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 export const useAiEnhance = () => {
 	const { t } = useTranslation();
 	const [isAiDialogOpen, setIsAiDialogOpen] = useState(false);
+	const [isAiWriterDialogOpen, setIsAiWriterDialogOpen] = useState(false);
 	const [selectedText, setSelectedText] = useState("");
 	const [editorInstance, setEditorInstance] =
 		useState<editor.IStandaloneCodeEditor | null>(null);
@@ -92,12 +93,39 @@ export const useAiEnhance = () => {
 		[editorInstance],
 	);
 
+	const applyWriterText = useCallback(
+		(newText: string) => {
+			if (!editorInstance) return;
+			const position = editorInstance.getPosition();
+			if (position) {
+				editorInstance.executeEdits("ai-writer", [
+					{
+						range: {
+							startLineNumber: position.lineNumber,
+							startColumn: position.column,
+							endLineNumber: position.lineNumber,
+							endColumn: position.column,
+						},
+						text: newText,
+						forceMoveMarkers: true,
+					},
+				]);
+				editorInstance.focus();
+			}
+		},
+		[editorInstance],
+	);
+
 	return {
 		isAiDialogOpen,
 		setIsAiDialogOpen,
+		isAiWriterDialogOpen,
+		setIsAiWriterDialogOpen,
 		selectedText,
+		setSelectedText,
 		prefillInstruction,
 		setupAiAction,
 		applyEnhancedText,
+		applyWriterText,
 	};
 };

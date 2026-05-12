@@ -6,6 +6,7 @@ export const CONTENT_MODES = ["text", "code", "draw", "link", "file"] as const;
 export const VISIBILITIES = ["public", "private", "shared"] as const;
 export const EDIT_PERMISSIONS = ["owner", "shared", "public"] as const;
 export const ROLES = ["viewer", "editor", "admin", "commenter"] as const;
+export const ID_TYPES = ["system", "dynamic", "semantic"] as const;
 
 export const LANGUAGES = [
 	{ name: "Plain Text", value: "text" },

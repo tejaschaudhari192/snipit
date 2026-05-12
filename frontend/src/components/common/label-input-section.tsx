@@ -1,5 +1,5 @@
 import { Plus, X } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { TagInput } from "./tag-input";
 
 interface LabelInputSectionProps {

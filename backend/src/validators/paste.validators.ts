@@ -4,11 +4,12 @@ import {
 	VISIBILITIES,
 	EDIT_PERMISSIONS,
 	ROLES,
+	ID_TYPES,
 } from "@/config/constants.js";
 export const createPasteSchema = z.object({
 	content: z.string().min(1, { message: "Content can not be Empty" }),
 	expiresAt: z.coerce.date().nullable(),
-	idType: z.enum(["system", "dynamic"]).optional().default("dynamic"),
+	idType: z.enum(ID_TYPES).optional().default("dynamic"),
 	customId: z.string().optional(),
 	contentMode: z.enum(CONTENT_MODES).optional().default("text"),
 	fileUrl: z.string().optional(),

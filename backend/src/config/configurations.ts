@@ -13,7 +13,7 @@ const envSchema = z.object({
 	GROQ_API_KEY: z.string(),
 	GROQ_DUMB_MODEL: z.string(),
 	GROQ_SMART_MODEL: z.string(),
-	GROQ_WHISPER_MODEL: z.string(),
+	GROQ_AUDIO_MODEL: z.string(),
 	GROQ_MODELS: z.string(),
 	JWT_SECRET: z.string(),
 	JOB_SECRET: z.string(),
@@ -52,7 +52,7 @@ const configurations = {
 	groq_api_key: env.GROQ_API_KEY,
 	groq_dumb_model: env.GROQ_DUMB_MODEL,
 	groq_smart_model: env.GROQ_SMART_MODEL,
-	groq_whisper_model: env.GROQ_WHISPER_MODEL,
+	groq_audio_model: env.GROQ_AUDIO_MODEL,
 	groq_models: env.GROQ_MODELS.split(",").map((m) => m.trim()),
 	jwt: {
 		secret: env.JWT_SECRET,
@@ -62,10 +62,7 @@ const configurations = {
 		maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
 	},
 	cors: {
-		origins: [
-			"https://cpaste.vercel.app",
-			"https://snipit-nu.vercel.app"
-		],
+		origins: ["https://cpaste.vercel.app", "https://snipit-nu.vercel.app"],
 	},
 	job_secret: env.JOB_SECRET,
 	supabase_url: env.SUPABASE_URL,

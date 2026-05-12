@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/utils";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
 	DropdownMenu,
@@ -11,12 +11,25 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Menu, Search, User } from "lucide-react";
 import ThemeTogglePositionsDemo from "./theme-toggle";
-import { LanguageSwitcher } from "./language-switcher";
 import { useAuth } from "@/context/AuthContext";
-import { JumpToDialog } from "./jump-to-dialog";
-import { LogoutDialog } from "./logout-dialog";
 import { BrandLogo } from "../common/brand-logo";
 import { ActionUrlBar } from "../common/action-url-bar";
+
+const LanguageSwitcher = lazy(() =>
+	import("./language-switcher").then((m) => ({
+		default: m.LanguageSwitcher,
+	})),
+);
+const JumpToDialog = lazy(() =>
+	import("./jump-to-dialog").then((m) => ({
+		default: m.JumpToDialog,
+	})),
+);
+const LogoutDialog = lazy(() =>
+	import("./logout-dialog").then((m) => ({
+		default: m.LogoutDialog,
+	})),
+);
 
 interface HeaderProps {
 	className?: string;
@@ -65,10 +78,12 @@ const UserMenu = () => {
 				</Button>
 			</Link>
 
-			<LogoutDialog
-				open={isLogoutDialogOpen}
-				onOpenChange={setIsLogoutDialogOpen}
-			/>
+			<Suspense fallback={null}>
+				<LogoutDialog
+					open={isLogoutDialogOpen}
+					onOpenChange={setIsLogoutDialogOpen}
+				/>
+			</Suspense>
 		</>
 	);
 };
@@ -142,7 +157,13 @@ const Header = ({ className }: HeaderProps) => {
 					</Button>
 				</nav>
 
-				<LanguageSwitcher className="w-[140px] h-9" />
+				<Suspense
+					fallback={
+						<div className="w-[140px] h-9 skeleton rounded-lg" />
+					}
+				>
+					<LanguageSwitcher className="w-[140px] h-9" />
+				</Suspense>
 
 				{path.length > 1 && (
 					<Link to={"/"}>
@@ -263,16 +284,24 @@ const Header = ({ className }: HeaderProps) => {
 								<span className="text-xs font-bold text-muted-foreground/70">
 									{t("header.language")}
 								</span>
-								<LanguageSwitcher className="w-full h-9" />
+								<Suspense
+									fallback={
+										<div className="w-full h-9 skeleton rounded-lg" />
+									}
+								>
+									<LanguageSwitcher className="w-full h-9" />
+								</Suspense>
 							</div>
 						</div>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</div>
-			<JumpToDialog
-				isOpen={isJumpToDialogOpen}
-				onOpenChange={setIsJumpToDialogOpen}
-			/>
+			<Suspense fallback={null}>
+				<JumpToDialog
+					isOpen={isJumpToDialogOpen}
+					onOpenChange={setIsJumpToDialogOpen}
+				/>
+			</Suspense>
 		</header>
 	);
 };

@@ -1,3 +1,5 @@
+import { ID_TYPES } from "@/constants";
+
 export interface CommentData {
 	id: string;
 	author: string;
@@ -74,7 +76,7 @@ export interface PasteData {
 	labels?: string[];
 }
 
-export type IdType = "system" | "dynamic";
+export type IdType = (typeof ID_TYPES)[number];
 export type SaveStatus = "idle" | "saving" | "saved" | "error";
 
 export interface PaginatedResponse<T> {

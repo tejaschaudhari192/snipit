@@ -2,6 +2,7 @@ import Groq from "groq-sdk";
 import fs from "fs";
 import { Readable } from "stream";
 import configurations from "@/config/configurations.js";
+import pasteModel from "@/models/Paste.js";
 import { VALID_LANGUAGES } from "@/config/constants.js";
 import { PROMPTS } from "@/config/prompts.js";
 import logger from "@/config/logger.js";
@@ -150,6 +151,82 @@ class AiService {
 		}
 	}
 
+	async suggestId(content: string): Promise<string> {
+		const systemPrompt = PROMPTS.SUGGEST_ID.SYSTEM;
+		const userPrompt = PROMPTS.SUGGEST_ID.USER(content);
+
+		try {
+			const chatCompletion = await this.requestWithFallback(
+				{
+					messages: [
+						{ role: "system", content: systemPrompt },
+						{ role: "user", content: userPrompt },
+					],
+					temperature: 0.3,
+					max_tokens: 20,
+				},
+				{ preferredModel: configurations.groq_dumb_model },
+			);
+
+			const takenIds: string[] = [];
+			let finalId = "";
+			let attempts = 0;
+
+			while (attempts < 3) {
+				const systemPrompt = PROMPTS.SUGGEST_ID.SYSTEM;
+				let userPrompt = PROMPTS.SUGGEST_ID.USER(content);
+
+				if (takenIds.length > 0) {
+					userPrompt += `\n\nIMPORTANT: The following IDs are already taken, do NOT use them: ${takenIds.join(", ")}. Suggest a completely different nice word.`;
+				}
+
+				const chatCompletion = await this.requestWithFallback(
+					{
+						messages: [
+							{ role: "system", content: systemPrompt },
+							{ role: "user", content: userPrompt },
+						],
+						temperature: 0.5 + attempts * 0.2, // Increase variety on retries
+						max_tokens: 20,
+					},
+					{ preferredModel: configurations.groq_dumb_model },
+				);
+
+				let id =
+					chatCompletion.choices[0]?.message?.content?.trim() || "";
+				id = id
+					.toLowerCase()
+					.replace(/\s+/g, "-")
+					.replace(/[^a-z0-9-]/g, "")
+					.substring(0, 50);
+
+				if (!id) break;
+
+				const existing = await pasteModel.findOne({ id }).lean();
+				const isExpired =
+					existing &&
+					(existing as any).expiresAt &&
+					new Date() > new Date((existing as any).expiresAt);
+
+				if (!existing || isExpired) {
+					finalId = id;
+					break;
+				} else {
+					takenIds.push(id);
+					attempts++;
+				}
+			}
+
+			return (
+				finalId ||
+				takenIds[0] + "-" + Math.random().toString(36).substring(2, 5)
+			); // Fallback if all retries fail
+		} catch (error) {
+			logger.error("Error suggesting ID:", error);
+			return "";
+		}
+	}
+
 	async autocomplete(
 		language: string,
 		prefix: string,
@@ -280,7 +357,7 @@ class AiService {
 
 			const transcription = await this.groq.audio.transcriptions.create({
 				file: fs.createReadStream(filePathWithExt),
-				model: configurations.groq_whisper_model,
+				model: configurations.groq_audio_model,
 				response_format: "json",
 			});
 

@@ -131,6 +131,11 @@ export const useApiHelpers = () => {
 			return response.data;
 		};
 
+		const suggestId = async (content: string): Promise<{ id: string }> => {
+			const response = await api.post("/ai/suggest-id", { content });
+			return response.data;
+		};
+
 		const getUserPastes = async (
 			page: number = 1,
 			limit: number = 10,
@@ -138,6 +143,30 @@ export const useApiHelpers = () => {
 			const response = await api.get("/pastes/user/pastes", {
 				params: { page, limit },
 			});
+			return response.data;
+		};
+
+		const checkIdAvailability = async (
+			id: string,
+		): Promise<{ available: boolean }> => {
+			const response = await api.get(`/pastes/check/${id}`);
+			return response.data;
+		};
+
+		const generateWordId = async (
+			count: number,
+			categories: string[],
+		): Promise<{ id: string }> => {
+			const response = await api.get("/pastes/generate-word-id", {
+				params: { count, categories: categories.join(",") },
+			});
+			return response.data;
+		};
+
+		const getWordCategories = async (): Promise<{
+			categories: string[];
+		}> => {
+			const response = await api.get("/pastes/word-categories");
 			return response.data;
 		};
 
@@ -191,7 +220,11 @@ export const useApiHelpers = () => {
 			generateDrawContent,
 			transcribeAudio,
 			prepareSpeech,
+			suggestId,
 			getUserPastes,
+			checkIdAvailability,
+			generateWordId,
+			getWordCategories,
 			getUserStats,
 			updateMe,
 			verifyPassword,

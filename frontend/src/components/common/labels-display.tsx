@@ -1,5 +1,5 @@
 import { Tag as TagIcon, X } from "lucide-react";
-import { Badge } from "../ui/badge";
+import { Badge } from "@/components/ui/badge";
 
 interface LabelsDisplayProps {
 	labels: string[];
