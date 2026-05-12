@@ -34,7 +34,7 @@ interface CompactDrawing {
 }
 
 // Robust dagre access
-const dagre: any = (dagreModule as any).default || dagreModule;
+const dagre = (dagreModule as any).default || dagreModule;
 
 const CompactElementSchema = z.object({
 	id: z.string().optional(),
@@ -110,16 +110,14 @@ class AiService {
 				.trim();
 
 			// If the model returned a longer sentence, try to see if any valid language is contained within it
-			if (!VALID_LANGUAGES.includes(language as any)) {
+			if (!VALID_LANGUAGES.includes(language)) {
 				const found = VALID_LANGUAGES.find((lang) =>
 					rawResponse.toLowerCase().includes(lang),
 				);
 				if (found) language = found;
 			}
 
-			return VALID_LANGUAGES.includes(language as any)
-				? language
-				: "text";
+			return VALID_LANGUAGES.includes(language) ? language : "text";
 		} catch (error) {
 			logger.error("Error detecting language:", error);
 			return "text";
@@ -224,6 +222,51 @@ class AiService {
 		}
 	}
 
+	async prepareForSpeech(
+		content: string,
+		contentType: string,
+	): Promise<string> {
+		// Plaintext, Code, and Draw content are returned directly
+		if (
+			contentType === "text" ||
+			contentType === "code" ||
+			contentType === "draw"
+		) {
+			return content;
+		}
+
+		// Only Markdown is processed via Groq for natural reading
+		if (contentType === "markdown") {
+			try {
+				const systemPrompt = PROMPTS.PREPARE_SPEECH.MARKDOWN.SYSTEM;
+
+				const chatCompletion = await this.requestWithFallback(
+					{
+						messages: [
+							{ role: "system", content: systemPrompt },
+							{ role: "user", content },
+						],
+						temperature: 0,
+					},
+					{ preferredModel: configurations.groq_dumb_model },
+				);
+
+				return (
+					chatCompletion.choices[0]?.message?.content?.trim() ||
+					content
+				);
+			} catch (error: unknown) {
+				const err = error as { message?: string };
+				logger.error("Error preparing text for speech:", {
+					error: err?.message,
+				});
+				return content;
+			}
+		}
+
+		return content;
+	}
+
 	async transcribeAudio(
 		filePath: string,
 		originalName: string,
@@ -300,13 +343,14 @@ class AiService {
 				}
 
 				return completion as T;
-			} catch (error: any) {
-				lastError = error;
+			} catch (error: unknown) {
+				const err = error as { status?: number; message?: string };
+				lastError = err;
 
 				const isRateLimit =
-					error?.status === 429 ||
-					error?.status === 413 ||
-					error?.message?.includes("rate_limit");
+					err?.status === 429 ||
+					err?.status === 413 ||
+					err?.message?.includes("rate_limit");
 
 				if (isRateLimit) {
 					logger.warn(
@@ -317,10 +361,10 @@ class AiService {
 
 				// If validator failed or other non-rate-limit error, we still try next model
 				// unless it's a critical error (like API key invalid)
-				if (error?.status === 401) throw error;
+				if (err?.status === 401) throw err;
 
 				logger.error(`Model ${model} failed, trying next...`, {
-					error: error.message,
+					error: err?.message,
 				});
 			}
 		}
