@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/utils";
 
 export interface ThemeToggleButtonProps {
-	theme?: "light" | "dark";
+	theme?: "light" | "dark" | "system";
 	showLabel?: boolean;
 	className?: string;
 	onClick?: (e: React.MouseEvent) => void;

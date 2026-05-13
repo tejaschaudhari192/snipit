@@ -8,7 +8,7 @@ type ThemeProviderProps = {
 
 function ThemeProvider({
 	children,
-	defaultTheme = "light",
+	defaultTheme = "system",
 }: ThemeProviderProps) {
 	const [theme, setTheme] = useState<Theme>(
 		() => (localStorage.getItem("theme") as Theme) || defaultTheme,
@@ -16,6 +16,7 @@ function ThemeProvider({
 
 	useEffect(() => {
 		const root = window.document.documentElement;
+
 		root.classList.remove("light", "dark");
 		root.classList.add(theme);
 		localStorage.setItem("theme", theme);
