@@ -152,15 +152,15 @@ export const CollaboratorsManager = ({
 
 	return (
 		<div className="flex flex-col gap-2">
-			<div className="flex flex-col sm:flex-row items-center p-1 gap-1 sm:gap-2 rounded-lg border border-input/50 bg-card/40 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/30 transition-all shadow-sm">
-				<div className="flex-1 min-w-0 w-full">
+			<div className="flex flex-col sm:flex-row items-center p-1.5 gap-2 rounded-xl border border-input/50 bg-card/40 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/30 transition-all shadow-sm">
+				<div className="flex-1 min-w-0 w-full flex items-center">
 					<MultiEmailInput
 						value={pendingEmails}
 						onChange={setPendingEmails}
 						inputValue={inputValue}
 						onInputChange={setInputValue}
 						placeholder={t("common.add_people_placeholder")}
-						className="min-h-[42px] border-none bg-transparent shadow-none focus-within:ring-0 focus-within:ring-offset-0 text-[13px] px-2 py-1"
+						className="min-h-[36px] border-none bg-transparent shadow-none focus-within:ring-0 focus-within:ring-offset-0 text-[13px] px-2 py-0"
 						isReadOnly={disabled || isUpdating}
 					/>
 				</div>
@@ -189,7 +189,7 @@ export const CollaboratorsManager = ({
 						</SelectContent>
 					</Select>
 					<Button
-						variant="secondary"
+						variant="default"
 						size="sm"
 						onClick={handleAddPeople}
 						disabled={
@@ -200,7 +200,7 @@ export const CollaboratorsManager = ({
 									inputValue.trim(),
 								))
 						}
-						className="h-8 px-4 font-bold shadow-none"
+						className="h-8 px-4 font-bold shadow-md hover:shadow-lg transition-all"
 					>
 						{isUpdating ? (
 							<span className="animate-pulse">...</span>
