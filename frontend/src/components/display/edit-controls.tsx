@@ -12,8 +12,20 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Switch } from "@/components/ui/switch";
-import { VisibilitySelector } from "@/components/common/access-control/visibility-selector";
-import { CollaboratorsManager } from "@/components/common/access-control/collaborators-manager";
+import { lazy, Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const VisibilitySelector = lazy(() =>
+	import("@/components/common/access-control/visibility-selector").then(
+		(m) => ({ default: m.VisibilitySelector }),
+	),
+);
+
+const CollaboratorsManager = lazy(() =>
+	import("@/components/common/access-control/collaborators-manager").then(
+		(m) => ({ default: m.CollaboratorsManager }),
+	),
+);
 
 import type {
 	ContentMode,
@@ -201,25 +213,39 @@ export const EditControls = ({
 									</DialogHeader>
 
 									<div className="space-y-6 pt-4">
-										<VisibilitySelector
-											visibility={visibility}
-											setVisibility={setVisibility}
-											publicRole={publicRole}
-											setPublicRole={setPublicRole}
-											setEditPermission={
-												setEditPermission
+										<Suspense
+											fallback={
+												<Skeleton className="h-[62px] w-full rounded-lg" />
 											}
-											disabled={!isOwner && !isAdmin}
-										/>
+										>
+											<VisibilitySelector
+												visibility={visibility}
+												setVisibility={setVisibility}
+												publicRole={publicRole}
+												setPublicRole={setPublicRole}
+												setEditPermission={
+													setEditPermission
+												}
+												disabled={!isOwner && !isAdmin}
+											/>
+										</Suspense>
 
-										<CollaboratorsManager
-											pasteId={pasteId}
-											shareList={shareList}
-											setShareList={setShareList}
-											allowedUsers={allowedUsers}
-											setAllowedUsers={setAllowedUsers}
-											disabled={!isOwner && !isAdmin}
-										/>
+										<Suspense
+											fallback={
+												<Skeleton className="h-[46px] w-full rounded-lg" />
+											}
+										>
+											<CollaboratorsManager
+												pasteId={pasteId}
+												shareList={shareList}
+												setShareList={setShareList}
+												allowedUsers={allowedUsers}
+												setAllowedUsers={
+													setAllowedUsers
+												}
+												disabled={!isOwner && !isAdmin}
+											/>
+										</Suspense>
 									</div>
 								</DialogContent>
 							</Dialog>

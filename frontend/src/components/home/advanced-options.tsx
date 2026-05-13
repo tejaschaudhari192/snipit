@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { usePaste } from "@/context/PasteContext";
 import { useAuth } from "@/context/AuthContext";
@@ -7,11 +8,26 @@ import { LogIn, Shield, Settings, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { IdTypeTabs } from "./paste-dialog/id-type-tabs";
-import { BasicSettings } from "./paste-dialog/basic-settings";
+import { Skeleton } from "@/components/ui/skeleton";
 import { LabelManager } from "@/components/common/label-manager";
-import { VisibilitySelector } from "@/components/common/access-control/visibility-selector";
-import { CollaboratorsManager } from "@/components/common/access-control/collaborators-manager";
-import { useState, useEffect } from "react";
+
+const BasicSettings = lazy(() =>
+	import("./paste-dialog/basic-settings").then((m) => ({
+		default: m.BasicSettings,
+	})),
+);
+
+const VisibilitySelector = lazy(() =>
+	import("@/components/common/access-control/visibility-selector").then(
+		(m) => ({ default: m.VisibilitySelector }),
+	),
+);
+
+const CollaboratorsManager = lazy(() =>
+	import("@/components/common/access-control/collaborators-manager").then(
+		(m) => ({ default: m.CollaboratorsManager }),
+	),
+);
 
 interface AdvancedOptionsProps {
 	onSubmit: () => void;
@@ -87,14 +103,23 @@ export const AdvancedOptions = ({ onSubmit }: AdvancedOptionsProps) => {
 							icon={Settings}
 							label={t("common.settings")}
 						/>
-						<BasicSettings
-							isPasswordEnabled={isPasswordEnabled}
-							setIsPasswordEnabled={setIsPasswordEnabled}
-							password={password}
-							setPassword={setPassword}
-							allowComments={allowComments}
-							setAllowComments={setAllowComments}
-						/>
+						<Suspense
+							fallback={
+								<div className="flex flex-col gap-3">
+									<Skeleton className="h-[46px] w-full rounded-lg" />
+									<Skeleton className="h-[46px] w-full rounded-lg" />
+								</div>
+							}
+						>
+							<BasicSettings
+								isPasswordEnabled={isPasswordEnabled}
+								setIsPasswordEnabled={setIsPasswordEnabled}
+								password={password}
+								setPassword={setPassword}
+								allowComments={allowComments}
+								setAllowComments={setAllowComments}
+							/>
+						</Suspense>
 					</div>
 
 					{user && (
@@ -138,21 +163,33 @@ export const AdvancedOptions = ({ onSubmit }: AdvancedOptionsProps) => {
 							</div>
 						) : (
 							<div className="space-y-4">
-								<VisibilitySelector
-									visibility={visibility}
-									setVisibility={setVisibility}
-									publicRole={publicRole}
-									setPublicRole={setPublicRole}
-									setEditPermission={setEditPermission}
-								/>
+								<Suspense
+									fallback={
+										<Skeleton className="h-[62px] w-full rounded-lg" />
+									}
+								>
+									<VisibilitySelector
+										visibility={visibility}
+										setVisibility={setVisibility}
+										publicRole={publicRole}
+										setPublicRole={setPublicRole}
+										setEditPermission={setEditPermission}
+									/>
+								</Suspense>
 
 								<div className="pt-4 border-t border-border/10">
-									<CollaboratorsManager
-										shareList={shareList}
-										setShareList={setShareList}
-										allowedUsers={allowedUsers}
-										setAllowedUsers={setAllowedUsers}
-									/>
+									<Suspense
+										fallback={
+											<Skeleton className="h-[46px] w-full rounded-lg" />
+										}
+									>
+										<CollaboratorsManager
+											shareList={shareList}
+											setShareList={setShareList}
+											allowedUsers={allowedUsers}
+											setAllowedUsers={setAllowedUsers}
+										/>
+									</Suspense>
 								</div>
 							</div>
 						)}
