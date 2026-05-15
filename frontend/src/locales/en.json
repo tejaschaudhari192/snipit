@@ -22,6 +22,7 @@
 		"guest": "Guest"
 	},
 	"common": {
+		"loading": "Loading...",
 		"visibility": "Visibility",
 		"public": "Public",
 		"private": "Private",
@@ -136,6 +137,8 @@
 		"workspace_preferences": "Workspace Preferences"
 	},
 	"profile": {
+		"loading": "Loading...",
+		"overview": "Profile Overview",
 		"title": "Your Profile",
 		"account_info": "Account Info",
 		"username": "Username",
@@ -172,6 +175,8 @@
 		"avg_views": "Efficiency"
 	},
 	"home": {
+		"loading": "Loading...",
+		"overview": "Overview",
 		"select_expire_time": "Expiry",
 		"enter_snippet_placeholder": "Enter your snippet here...",
 		"paste_button": "Paste",
@@ -250,6 +255,8 @@
 		"add_files": "Add Files"
 	},
 	"display": {
+		"loading": "Loading...",
+		"overview": "Overview",
 		"expires_in": "Expires in:",
 		"edit_button": "Edit",
 		"copy_button": "Copy",
@@ -269,6 +276,8 @@
 		"status_recording": "Recording"
 	},
 	"history": {
+		"loading": "Loading...",
+		"overview": "Overview",
 		"title": "History",
 		"recent_links": "Recent Links",
 		"plain_text_snippet": "Plain Text Snippet",
@@ -292,6 +301,8 @@
 		"sync_failed": "Failed to sync your account snippets"
 	},
 	"messages": {
+		"loading": "Loading...",
+		"overview": "Overview",
 		"snippet_created": "Snippet {{id}} created successfully!",
 		"snippet_failed": "Failed to create snippet",
 		"id_conflict": "This ID is already taken. Please try another one.",
@@ -312,6 +323,8 @@
 		"autosaved": "Autosaved: {{fields}}"
 	},
 	"about_page": {
+		"loading": "Loading...",
+		"overview": "Overview",
 		"title": "About",
 		"subtitle": "A passion project built by two developers who believe in making code sharing simple and beautiful.",
 		"features_title": "Powerful Features",

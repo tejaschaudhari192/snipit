@@ -63,6 +63,7 @@ const ProfilePage = () => {
 	const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 	const [activeLabel, setActiveLabel] = useState<string | null>(null);
 	const [activeTab, setActiveTab] = useState("owned");
+	const [searchQuery, setSearchQuery] = useState("");
 
 	useEffect(() => {
 		if (user) {
@@ -135,14 +136,60 @@ const ProfilePage = () => {
 		);
 	}
 
-	const displayPastes = pastes;
+	const displayPastes = searchQuery.trim()
+		? pastes.filter(
+				(p) =>
+					p.id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+					p.fileName
+						?.toLowerCase()
+						.includes(searchQuery.toLowerCase()) ||
+					p.content
+						?.toLowerCase()
+						.includes(searchQuery.toLowerCase()),
+			)
+		: pastes;
 	const displayLoading = loadingPastes;
 
 	return (
 		<div className="relative min-h-screen bg-background overflow-x-hidden flex flex-col items-center w-full">
 			<div className="relative z-10 container mx-auto px-4 py-4 md:py-6 max-w-7xl w-full animate-in fade-in duration-700">
 				<div className="flex flex-col lg:grid lg:grid-cols-12 gap-4 items-start">
-					<div className="w-full lg:col-span-4 lg:sticky lg:top-24 max-w-2xl mx-auto lg:max-w-none">
+					<div className="w-full lg:col-span-4 lg:sticky lg:top-8 max-w-2xl mx-auto lg:max-w-none flex flex-col gap-6 pt-1">
+						{/* Alignment Header & Search */}
+						<div className="px-2 space-y-4">
+							<div className="flex items-center gap-3 h-10">
+								<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+									<User className="h-5 w-5" />
+								</div>
+								<h2 className="text-3xl font-black tracking-tight italic leading-none truncate">
+									{t("profile.overview", "Profile Overview")}
+								</h2>
+							</div>
+
+							<div className="relative group">
+								<div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors">
+									<Tag className="h-4 w-4" />
+								</div>
+								<input
+									type="text"
+									placeholder="Search your snippets..."
+									value={searchQuery}
+									onChange={(e) =>
+										setSearchQuery(e.target.value)
+									}
+									className="w-full pl-11 pr-4 h-12 bg-background/50 border border-border/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all text-sm font-medium"
+								/>
+								{searchQuery && (
+									<button
+										onClick={() => setSearchQuery("")}
+										className="absolute inset-y-0 right-4 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+									>
+										<FilterX className="h-4 w-4" />
+									</button>
+								)}
+							</div>
+						</div>
+
 						<Suspense
 							fallback={
 								<ShimmerSection
@@ -177,7 +224,7 @@ const ProfilePage = () => {
 								<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
 									<User className="h-5 w-5" />
 								</div>
-								<h2 className="text-3xl font-black tracking-tight uppercase italic">
+								<h2 className="text-3xl font-black tracking-tight italic">
 									{t("profile.your_snippets")}
 								</h2>
 							</div>

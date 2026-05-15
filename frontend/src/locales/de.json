@@ -22,6 +22,7 @@
 		"guest": "Gast"
 	},
 	"common": {
+		"loading": "Wird geladen...",
 		"visibility": "Sichtbarkeit",
 		"public": "Öffentlich",
 		"private": "Privat",
@@ -131,6 +132,7 @@
 		"clear_all": "Alles löschen"
 	},
 	"profile": {
+		"overview": "Profilübersicht",
 		"title": "Ihr Profil",
 		"account_info": "Kontoinformationen",
 		"username": "Benutzername",
