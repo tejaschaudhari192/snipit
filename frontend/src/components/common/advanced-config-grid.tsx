@@ -26,6 +26,7 @@ import type {
 	EditPermission,
 	PublicRole,
 	ShareRole,
+	AiIdFileContext,
 } from "@/types";
 
 export interface AdvancedConfigGridProps {
@@ -61,6 +62,8 @@ export interface AdvancedConfigGridProps {
 	isAdmin: boolean;
 	disabled?: boolean;
 	onSubmit?: () => void;
+	textValue?: string;
+	files?: AiIdFileContext[];
 }
 
 export const AdvancedConfigSkeleton = () => (
@@ -134,6 +137,8 @@ export const AdvancedConfigGrid = ({
 	isAdmin,
 	disabled = false,
 	onSubmit,
+	textValue,
+	files,
 }: AdvancedConfigGridProps) => {
 	const { t } = useTranslation();
 
@@ -153,6 +158,8 @@ export const AdvancedConfigGrid = ({
 						setCustomId={setCustomId}
 						onSubmit={onSubmit || (() => {})}
 						compact={true}
+						textValue={textValue}
+						files={files}
 					/>
 				</div>
 

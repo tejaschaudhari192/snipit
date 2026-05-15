@@ -1,5 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { CONFIG } from "@/configurations";
+import { type PasteData } from "@/types";
+import type { ShareEntry } from "../use-display-state";
 
 interface UseAutosaveProps {
 	isAutosave: boolean;
@@ -11,6 +13,22 @@ interface UseAutosaveProps {
 	onSave: () => Promise<void>;
 	isRemoteUpdateRef: React.MutableRefObject<boolean>;
 	lastLocalEditRef: React.MutableRefObject<number>;
+	setSaveStatus: (status: "idle" | "saving" | "saved" | "error") => void;
+	// Advanced Config
+	config: {
+		language: string;
+		visibility: string;
+		editPermission: string;
+		allowedUsers: string[];
+		shareList: ShareEntry[];
+		publicRole: string;
+		allowComments: boolean;
+		expiresTime: string;
+		customId: string;
+		isPasswordEnabled: boolean;
+		editPassword: string;
+	};
+	originalPaste: PasteData | undefined;
 }
 
 export const useAutosave = ({
@@ -23,24 +41,59 @@ export const useAutosave = ({
 	onSave,
 	isRemoteUpdateRef,
 	lastLocalEditRef,
+	setSaveStatus,
+	config,
+	originalPaste,
 }: UseAutosaveProps) => {
+	const onSaveRef = useRef(onSave);
+
+	// Keep the latest onSave function without triggering effects
+	useEffect(() => {
+		onSaveRef.current = onSave;
+	}, [onSave]);
+
 	useEffect(() => {
 		if (!isAutosave || !isEdit || loading || isSaving) return;
 
-		const hasChanged = content !== undefined && content !== originalContent;
+		const hasContentChanged =
+			content !== undefined && content !== originalContent;
+
+		const hasConfigChanged =
+			config.language !== originalPaste?.language ||
+			config.visibility !== originalPaste?.visibility ||
+			config.editPermission !== originalPaste?.editPermission ||
+			JSON.stringify(config.allowedUsers) !==
+				JSON.stringify(originalPaste?.allowedUsers || []) ||
+			JSON.stringify(config.shareList) !==
+				JSON.stringify(originalPaste?.shareList || []) ||
+			config.publicRole !== (originalPaste?.publicRole || "viewer") ||
+			config.allowComments !== (originalPaste?.allowComments || false) ||
+			config.expiresTime !== (originalPaste?.expiresTime || "") ||
+			config.customId !== (originalPaste?.id || "") ||
+			config.isPasswordEnabled !==
+				(!!originalPaste?.isPasswordProtected ||
+					!!originalPaste?.password) ||
+			(config.isPasswordEnabled && config.editPassword !== "");
+
 		const timeSinceLastLocalEdit = Date.now() - lastLocalEditRef.current;
 
 		if (
-			!hasChanged ||
+			(!hasContentChanged && !hasConfigChanged) ||
 			isRemoteUpdateRef.current ||
-			timeSinceLastLocalEdit < CONFIG.ui.syncQuarantineMs
+			(hasContentChanged &&
+				timeSinceLastLocalEdit < CONFIG.ui.syncQuarantineMs)
 		) {
 			return;
 		}
 
-		const timer = setTimeout(() => {
-			onSave();
-		}, 3000);
+		// Use a shorter delay for config changes vs content changes if desired,
+		// but 3s is generally safe.
+		const timer = setTimeout(
+			() => {
+				onSaveRef.current();
+			},
+			hasContentChanged ? 3000 : 1000,
+		);
 
 		return () => clearTimeout(timer);
 	}, [
@@ -50,8 +103,69 @@ export const useAutosave = ({
 		isSaving,
 		content,
 		originalContent,
-		onSave,
+		// we explicitly exclude onSave from dependencies to avoid timer resets
 		isRemoteUpdateRef,
 		lastLocalEditRef,
+		// Deep compare trigger for config
+		config.language,
+		config.visibility,
+		config.editPermission,
+		JSON.stringify(config.allowedUsers),
+		JSON.stringify(config.shareList),
+		config.publicRole,
+		config.allowComments,
+		config.expiresTime,
+		config.customId,
+		config.isPasswordEnabled,
+		config.editPassword,
+		originalPaste,
+	]);
+
+	useEffect(() => {
+		if (!isAutosave || !isEdit || loading || isSaving) return;
+
+		const hasContentChanged =
+			content !== undefined && content !== originalContent;
+
+		const hasConfigChanged =
+			config.language !== originalPaste?.language ||
+			config.visibility !== originalPaste?.visibility ||
+			config.editPermission !== originalPaste?.editPermission ||
+			JSON.stringify(config.allowedUsers) !==
+				JSON.stringify(originalPaste?.allowedUsers || []) ||
+			JSON.stringify(config.shareList) !==
+				JSON.stringify(originalPaste?.shareList || []) ||
+			config.publicRole !== (originalPaste?.publicRole || "viewer") ||
+			config.allowComments !== (originalPaste?.allowComments || false) ||
+			config.expiresTime !== (originalPaste?.expiresTime || "") ||
+			config.customId !== (originalPaste?.id || "") ||
+			config.isPasswordEnabled !==
+				(!!originalPaste?.isPasswordProtected ||
+					!!originalPaste?.password) ||
+			(config.isPasswordEnabled && config.editPassword !== "");
+
+		if (hasContentChanged || hasConfigChanged) {
+			setSaveStatus("saving");
+		}
+	}, [
+		isAutosave,
+		isEdit,
+		loading,
+		isSaving,
+		content,
+		originalContent,
+		config.language,
+		config.visibility,
+		config.editPermission,
+		JSON.stringify(config.allowedUsers),
+		JSON.stringify(config.shareList),
+		config.publicRole,
+		config.allowComments,
+		config.expiresTime,
+		config.customId,
+		config.isPasswordEnabled,
+		config.editPassword,
+		originalPaste,
+		setSaveStatus,
 	]);
 };

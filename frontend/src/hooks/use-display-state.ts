@@ -91,6 +91,7 @@ export const useDisplayState = () => {
 			data.isPasswordProtected !== undefined
 		) {
 			setIsPasswordEnabled(!!data.password || !!data.isPasswordProtected);
+			setEditPassword("");
 		}
 		// Reset removed files when loading new data
 		setRemovedServerFileUrls(new Set());

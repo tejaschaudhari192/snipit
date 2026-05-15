@@ -2,17 +2,19 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import api from "@/lib/api";
+import { type AiIdFileContext } from "@/types";
 
 export const useAiIdSuggester = (
-	textValue: string,
+	textValue: string | undefined,
 	setCustomId: (v: string) => void,
-	files?: Array<{ fileName: string; fileMimeType: string }>,
+	files?: AiIdFileContext[],
 ) => {
 	const { t } = useTranslation();
 	const [isSuggesting, setIsSuggesting] = useState(false);
 
 	const handleSuggestId = async () => {
-		const hasContent = textValue.trim();
+		const content = textValue || "";
+		const hasContent = content.trim();
 		const hasFiles = files && files.length > 0;
 
 		if (!hasContent && !hasFiles) {
@@ -23,10 +25,10 @@ export const useAiIdSuggester = (
 		setIsSuggesting(true);
 		try {
 			const response = await api.post("/ai/suggest-id", {
-				content: textValue,
+				content,
 				files: files?.map((f) => ({
-					name: f.fileName,
-					type: f.fileMimeType,
+					name: f.name || f.fileName,
+					type: f.mimeType || f.fileMimeType,
 				})),
 			});
 			if (response.data?.id) {

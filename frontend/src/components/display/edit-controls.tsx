@@ -15,6 +15,7 @@ import type {
 	EditPermission,
 	PublicRole,
 	ShareRole,
+	AiIdFileContext,
 } from "@/types";
 
 interface EditControlsProps {
@@ -57,6 +58,8 @@ interface EditControlsProps {
 	setCustomId: (v: string) => void;
 	isOptionsOpen: boolean;
 	setIsOptionsOpen: (v: boolean) => void;
+	textValue?: string;
+	files?: AiIdFileContext[];
 }
 
 export const EditControls = (props: EditControlsProps) => {

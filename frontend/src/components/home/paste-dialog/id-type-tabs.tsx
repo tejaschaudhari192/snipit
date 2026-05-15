@@ -9,6 +9,7 @@ import { IdTabSkeleton } from "./id-tab-skeleton";
 const AutoIdTab = lazy(() => import("./auto-id-tab"));
 const CustomIdTab = lazy(() => import("./custom-id-tab"));
 const SemanticIdTab = lazy(() => import("./semantic-id-tab"));
+import { type AiIdFileContext } from "@/types";
 
 interface IdTypeTabsProps {
 	idTypeTab: "system" | "dynamic" | "semantic";
@@ -17,6 +18,8 @@ interface IdTypeTabsProps {
 	setCustomId: (v: string) => void;
 	onSubmit: () => void;
 	compact?: boolean;
+	textValue?: string;
+	files?: AiIdFileContext[];
 }
 
 export const IdTypeTabs = ({
@@ -26,6 +29,8 @@ export const IdTypeTabs = ({
 	setCustomId,
 	onSubmit,
 	compact = false,
+	textValue,
+	files,
 }: IdTypeTabsProps) => {
 	const { t } = useTranslation();
 
@@ -68,6 +73,8 @@ export const IdTypeTabs = ({
 							customId={customId}
 							setCustomId={setCustomId}
 							onSubmit={onSubmit}
+							textValue={textValue}
+							files={files}
 						/>
 					</TabsContent>
 

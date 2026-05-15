@@ -6,22 +6,34 @@ import { IdAvailabilityIndicator } from "./availability-indicator";
 import { useIdAvailability } from "@/hooks/paste-id/use-id-availability";
 import { useAiIdSuggester } from "@/hooks/paste-id/use-ai-id-suggester";
 import { usePaste } from "@/context/PasteContext";
+import { type AiIdFileContext } from "@/types";
 
 interface Props {
 	customId: string;
 	setCustomId: (v: string) => void;
 	onSubmit: () => void;
+	textValue?: string;
+	files?: AiIdFileContext[];
 }
 
-export const CustomIdTab = ({ customId, setCustomId, onSubmit }: Props) => {
+export const CustomIdTab = ({
+	customId,
+	setCustomId,
+	onSubmit,
+	textValue,
+	files,
+}: Props) => {
 	const { t } = useTranslation();
-	const { textValue, files } = usePaste();
+	const pasteContext = usePaste();
+
+	const effectiveTextValue = textValue ?? pasteContext.textValue;
+	const effectiveFiles = files ?? pasteContext.files;
 
 	const { isAvailable, isChecking } = useIdAvailability(customId, "dynamic");
 	const { isSuggesting, handleSuggestId } = useAiIdSuggester(
-		textValue,
+		effectiveTextValue,
 		setCustomId,
-		files,
+		effectiveFiles,
 	);
 
 	return (

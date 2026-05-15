@@ -171,6 +171,14 @@ export interface EditorChange {
 	text: string;
 }
 
+export interface AiIdFileContext {
+	name?: string;
+	fileName?: string;
+	type?: string;
+	fileMimeType?: string;
+	mimeType?: string;
+}
+
 export type SocketUpdateData = Partial<PasteData> & {
 	changes?: EditorChange[];
 	isAutosave?: boolean;

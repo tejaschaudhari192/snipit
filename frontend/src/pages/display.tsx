@@ -155,6 +155,7 @@ const DisplayPage = () => {
 		setIsVerifyingPassword,
 		isServerFileRemoved,
 		setIsServerFileRemoved,
+		_setLanguage,
 	} = state;
 
 	const [remoteCursors, setRemoteCursors] = useState<
@@ -203,7 +204,7 @@ const DisplayPage = () => {
 
 	const setLanguage = useCallback(
 		(newLang: string) => {
-			updateAllFromData({ language: newLang });
+			_setLanguage(newLang);
 			if (newLang === "text") {
 				setContentType((prev) => (prev === "code" ? "text" : prev));
 			} else {
@@ -355,6 +356,21 @@ const DisplayPage = () => {
 		onSave: () => handleEditSave(false),
 		isRemoteUpdateRef,
 		lastLocalEditRef,
+		setSaveStatus: state.setSaveStatus,
+		config: {
+			language,
+			visibility,
+			editPermission,
+			allowedUsers,
+			shareList,
+			publicRole,
+			allowComments,
+			expiresTime,
+			customId,
+			isPasswordEnabled,
+			editPassword,
+		},
+		originalPaste: paste,
 	});
 
 	const handleEditorMount: OnMount = (ed, monaco) => {
@@ -669,6 +685,14 @@ const DisplayPage = () => {
 										setCustomId={setCustomId}
 										isOptionsOpen={isOptionsOpen}
 										setIsOptionsOpen={setIsOptionsOpen}
+										textValue={
+											updatedContent || paste?.content
+										}
+										files={
+											uploadedFiles.length > 0
+												? uploadedFiles
+												: paste?.files
+										}
 									/>
 								</Suspense>
 							</div>
