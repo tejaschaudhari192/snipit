@@ -97,6 +97,15 @@ const pasteSchema = new Schema<IPaste>(
 			type: Boolean,
 			default: false,
 		},
+		files: [
+			{
+				_id: false,
+				url: { type: String, required: true },
+				name: { type: String, required: true },
+				size: { type: Number, required: true },
+				mimeType: { type: String, required: true },
+			},
+		],
 	},
 	{
 		toJSON: { virtuals: true, versionKey: false },

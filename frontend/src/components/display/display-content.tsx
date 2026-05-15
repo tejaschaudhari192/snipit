@@ -16,6 +16,7 @@ import type { Socket } from "socket.io-client";
 import type { ActiveUser } from "@/types";
 import { CollabDraw } from "./collab-draw";
 import { FileEditView } from "./content/file-edit-view";
+import type { FileUploadStatus } from "@/lib/file-service";
 
 interface DisplayContentProps {
 	id: string;
@@ -40,12 +41,16 @@ interface DisplayContentProps {
 	setIsFullscreen: (v: boolean) => void;
 	isWindowFullscreen: boolean;
 	setIsWindowFullscreen: (v: boolean) => void;
-	onFileSelect?: (file: File) => void;
+	onFileSelect?: (files: File[]) => void;
 	onClearFile?: () => void;
+	isServerFileRemoved?: boolean;
+	onRemoveServerFile?: (url: string) => void;
+	onRemovePendingFile?: (id: string) => void;
+	onClearAll?: () => void;
+	removedServerFileUrls?: Set<string>;
 	previewUrl?: string | null;
-	uploadedFileName?: string | null;
+	files?: FileUploadStatus[];
 	isFileUploading?: boolean;
-	fileUploadProgress?: number;
 	fileUploadError?: string | null;
 }
 
@@ -72,10 +77,14 @@ export const DisplayContent = memo(
 		setIsWindowFullscreen,
 		onFileSelect,
 		onClearFile,
+		isServerFileRemoved,
+		onRemoveServerFile,
+		onRemovePendingFile,
+		onClearAll,
+		removedServerFileUrls,
 		previewUrl,
-		uploadedFileName,
+		files = [],
 		isFileUploading = false,
-		fileUploadProgress = 0,
 		fileUploadError = null,
 	}: DisplayContentProps) => {
 		const containerRef = useRef<HTMLDivElement>(null);
@@ -126,13 +135,23 @@ export const DisplayContent = memo(
 					return (
 						<FileEditView
 							paste={paste || null}
-							uploadedFileName={uploadedFileName}
 							previewUrl={previewUrl}
+							files={files}
 							isFileUploading={isFileUploading}
-							fileUploadProgress={fileUploadProgress}
 							fileUploadError={fileUploadError}
 							onFileSelect={onFileSelect || (() => {})}
+							onRemoveServerFile={
+								onRemoveServerFile || (() => {})
+							}
+							onRemovePendingFile={
+								onRemovePendingFile || (() => {})
+							}
+							onClearAll={onClearAll || (() => {})}
 							onClearFile={onClearFile || (() => {})}
+							removedServerFileUrls={
+								removedServerFileUrls || new Set()
+							}
+							isServerFileRemoved={isServerFileRemoved || false}
 						/>
 					);
 				}

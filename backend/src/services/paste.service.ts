@@ -118,6 +118,12 @@ class PasteService {
 		if (paste?.fileUrl) {
 			await deleteFileFromStorage(paste.fileUrl);
 		}
+		if (paste?.files && paste.files.length > 0) {
+			const deletePromises = paste.files.map((file) =>
+				deleteFileFromStorage(file.url),
+			);
+			await Promise.all(deletePromises);
+		}
 		await collaboratorModel.deleteMany({ pasteId: id });
 		return await pasteModel.deleteOne({ id });
 	}
@@ -154,6 +160,10 @@ class PasteService {
 		}
 
 		paste.set(updates);
+
+		if (updates.files) {
+			paste.markModified("files");
+		}
 
 		// Sync logic: only update the other field if only one of them was changed
 		const roleModified = paste.isModified("publicRole");

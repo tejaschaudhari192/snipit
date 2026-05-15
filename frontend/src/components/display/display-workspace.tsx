@@ -14,6 +14,7 @@ const DisplayContent = React.lazy(() =>
 import type { PasteData, ContentMode, ActiveUser, EditorChange } from "@/types";
 import { Socket } from "socket.io-client";
 import { type BeforeMount, type OnMount } from "@monaco-editor/react";
+import type { FileUploadStatus } from "@/lib/file-service";
 
 interface DisplayWorkspaceProps {
 	id: string;
@@ -43,12 +44,15 @@ interface DisplayWorkspaceProps {
 	terminalPosition: "bottom" | "right";
 	setTerminalPosition: (pos: "bottom" | "right") => void;
 	socket: Socket | null;
-	onFileSelect: (file: File) => void;
+	onFileSelect: (files: File[]) => void;
 	onClearFile: () => void;
 	isServerFileRemoved: boolean;
-	uploadedFileName: string | null;
+	onRemoveServerFile?: (url: string) => void;
+	onRemovePendingFile?: (id: string) => void;
+	onClearAll?: () => void;
+	removedServerFileUrls?: Set<string>;
+	files: FileUploadStatus[];
 	isFileUploading: boolean;
-	fileUploadProgress: number;
 	fileUploadError: string | null;
 }
 
@@ -81,9 +85,12 @@ export const DisplayWorkspace = memo(
 		onFileSelect,
 		onClearFile,
 		isServerFileRemoved,
-		uploadedFileName,
+		onRemoveServerFile,
+		onRemovePendingFile,
+		onClearAll,
+		removedServerFileUrls,
+		files,
 		isFileUploading,
-		fileUploadProgress,
 		fileUploadError,
 	}: DisplayWorkspaceProps) => {
 		const isTerminalVisible =
@@ -114,13 +121,23 @@ export const DisplayWorkspace = memo(
 						setIsWindowFullscreen={setIsWindowFullscreen}
 						onFileSelect={onFileSelect}
 						onClearFile={onClearFile}
-						previewUrl={isServerFileRemoved ? null : paste?.fileUrl}
-						uploadedFileName={
-							uploadedFileName ||
-							(isServerFileRemoved ? null : paste?.fileName)
+						onRemoveServerFile={onRemoveServerFile}
+						onRemovePendingFile={onRemovePendingFile}
+						onClearAll={onClearAll}
+						removedServerFileUrls={removedServerFileUrls}
+						previewUrl={
+							isServerFileRemoved
+								? null
+								: paste?.fileUrl &&
+									  (!removedServerFileUrls ||
+											!removedServerFileUrls.has(
+												paste.fileUrl,
+											))
+									? paste.fileUrl
+									: null
 						}
+						files={files}
 						isFileUploading={isFileUploading}
-						fileUploadProgress={fileUploadProgress}
 						fileUploadError={fileUploadError}
 					/>
 				</Suspense>

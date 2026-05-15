@@ -148,9 +148,11 @@ const HomePage = () => {
 		isSubmitting,
 		isUploading,
 		uploadProgress,
-		setFileUpload,
+		addFiles,
 		resetFileUpload,
-		fileName,
+		files,
+		previewUrl: contextPreviewUrl,
+		hasPending,
 		onContentTypeChange,
 	} = usePaste();
 
@@ -189,8 +191,7 @@ const HomePage = () => {
 	const monacoInstanceRef = useRef<Monaco | null>(null);
 
 	// Custom Hooks
-	const { handleSubmit, pendingFile, setPendingFile } =
-		usePasteSubmission(setShortenedResult);
+	const { handleSubmit } = usePasteSubmission(setShortenedResult);
 	const {
 		fontSize,
 		ref: editorContainerRefSetter,
@@ -249,8 +250,7 @@ const HomePage = () => {
 		isUploading,
 		contentType,
 		setContentType,
-		setPendingFile,
-		setFileUpload,
+		addFiles,
 		textValue,
 		setLanguage,
 		setupAiAction,
@@ -276,7 +276,6 @@ const HomePage = () => {
 		setIsFullscreen,
 	});
 
-	// Handle File Context
 	useEffect(() => {
 		if (contentType === "file") setExpiresTime("1d");
 		setShortenedResult(null);
@@ -287,20 +286,18 @@ const HomePage = () => {
 	}, [textValue, shortenedResult]);
 
 	useEffect(() => {
-		if (!pendingFile) {
+		if (contextPreviewUrl) {
+			setPreviewUrl(contextPreviewUrl);
+		} else {
 			setPreviewUrl(null);
-			return;
 		}
-		const objectUrl = URL.createObjectURL(pendingFile);
-		setPreviewUrl(objectUrl);
-		return () => URL.revokeObjectURL(objectUrl);
-	}, [pendingFile]);
+	}, [contextPreviewUrl]);
 
 	// Actions
 	const handleQuickPaste = async () => {
 		const hasContent =
 			contentType === "file"
-				? !!fileName
+				? files.length > 0 || hasPending
 				: contentType === "draw"
 					? true
 					: valueRef.current.trim().length > 0;
@@ -326,7 +323,7 @@ const HomePage = () => {
 	const handleCollaborative = async () => {
 		const hasContent =
 			contentType === "file"
-				? !!fileName
+				? files.length > 0 || hasPending
 				: contentType === "draw"
 					? true
 					: valueRef.current.trim().length > 0;
@@ -578,13 +575,11 @@ const HomePage = () => {
 									handlePaste={handlePaste}
 									isFullscreen={isFullscreen}
 									setIsFullscreen={setIsFullscreen}
-									onFileSelect={(file) => {
-										setPendingFile(file);
-										setFileUpload(file);
+									onFileSelect={(selectedFiles) => {
+										addFiles(selectedFiles);
 									}}
 									onClearFile={() => {
 										resetFileUpload();
-										setPendingFile(null);
 									}}
 									previewUrl={previewUrl}
 									shortenedResult={shortenedResult}

@@ -1,38 +1,64 @@
-import { FileUploadView } from "../../home/file-upload-view";
+import { FileUploadView } from "@/components/common/file-upload-view";
+import { FileService, type FileUploadStatus } from "@/lib/file-service";
 import type { PasteData } from "@/types";
 
 interface FileEditViewProps {
 	paste: PasteData | null;
-	uploadedFileName?: string | null;
-	previewUrl?: string | null;
 	isFileUploading: boolean;
-	fileUploadProgress: number;
 	fileUploadError: string | null;
-	onFileSelect: (file: File) => void;
+	onFileSelect: (files: File[]) => void;
+	onRemoveServerFile: (url: string) => void;
+	onRemovePendingFile: (id: string) => void;
+	onClearAll: () => void;
 	onClearFile: () => void;
+	removedServerFileUrls: Set<string>;
+	isServerFileRemoved: boolean;
+	previewUrl?: string | null;
+	files: FileUploadStatus[];
 }
 
 export const FileEditView = ({
 	paste,
-	uploadedFileName,
-	previewUrl,
 	isFileUploading,
-	fileUploadProgress,
 	fileUploadError,
 	onFileSelect,
+	onRemoveServerFile,
+	onRemovePendingFile,
+	onClearAll,
 	onClearFile,
+	removedServerFileUrls,
+	isServerFileRemoved,
+	previewUrl,
+	files,
 }: FileEditViewProps) => {
+	const allFiles = [
+		...FileService.mapPasteToStatus(paste).filter(
+			(f) =>
+				f.fileUrl &&
+				!removedServerFileUrls.has(f.fileUrl) &&
+				!isServerFileRemoved,
+		),
+		...files,
+	];
+
 	return (
 		<FileUploadView
-			uploadedFileName={
-				uploadedFileName || (previewUrl ? "New File" : paste?.fileName)
-			}
-			previewUrl={previewUrl || paste?.fileUrl}
-			fileMimeType={paste?.fileMimeType}
+			files={allFiles}
+			previewUrl={previewUrl}
 			isUploading={isFileUploading}
-			uploadProgress={fileUploadProgress}
 			uploadError={fileUploadError}
-			onClearFile={onClearFile}
+			onClearFile={() => {
+				onClearFile();
+				onClearAll();
+			}}
+			onRemoveFile={(id) => {
+				const serverFile = allFiles.find((f) => f.id === id);
+				if (serverFile?.fileUrl) {
+					onRemoveServerFile(serverFile.fileUrl);
+				} else {
+					onRemovePendingFile(id);
+				}
+			}}
 			handleDragOver={(e) => {
 				e.preventDefault();
 				e.stopPropagation();
@@ -40,18 +66,17 @@ export const FileEditView = ({
 			handleDrop={(e) => {
 				e.preventDefault();
 				e.stopPropagation();
-				const file = e.dataTransfer.files[0];
-				if (file) {
-					onFileSelect(file);
+				const files = Array.from(e.dataTransfer.files);
+				if (files.length > 0) {
+					onFileSelect(files);
 				}
 			}}
 			handleFileInputChange={(e) => {
-				const file = e.target.files?.[0];
-				if (file) {
-					onFileSelect(file);
+				const files = e.target.files ? Array.from(e.target.files) : [];
+				if (files.length > 0) {
+					onFileSelect(files);
 				}
 			}}
-			isEdit={true}
 		/>
 	);
 };

@@ -6,6 +6,13 @@ export type EditPermission = "owner" | "shared" | "public";
 export type PublicRole = "viewer" | "editor" | "commenter";
 export type ShareRole = "viewer" | "editor" | "admin" | "commenter";
 
+export interface FileAttachment {
+	url: string;
+	name: string;
+	size: number;
+	mimeType: string;
+}
+
 export interface CursorPosition {
 	lineNumber: number;
 	column: number;
@@ -84,6 +91,7 @@ export type PasteData = {
 	collaborators?: CollaboratorData[] | undefined;
 	publicRole?: PublicRole | undefined;
 	allowComments?: boolean | undefined;
+	files?: FileAttachment[] | undefined;
 };
 
 export interface ShareEntry {
@@ -116,6 +124,7 @@ export interface UpdatePasteData {
 	password?: string | undefined;
 	editPermission?: EditPermission | undefined;
 	burnAfterRead?: boolean | undefined;
+	files?: FileAttachment[] | undefined;
 }
 
 export type IPaste = Document & {
@@ -141,4 +150,5 @@ export type IPaste = Document & {
 	collaborators?: CollaboratorData[] | undefined;
 	publicRole?: PublicRole | undefined;
 	allowComments?: boolean | undefined;
+	files?: FileAttachment[] | undefined;
 };

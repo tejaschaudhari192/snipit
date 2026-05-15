@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -6,8 +6,8 @@ import { AxiosError } from "axios";
 import { useApiHelpers } from "@/lib/api";
 import { guestStorage } from "@/utils/guest-storage";
 import { clearDrafts, playRemoveSound } from "@/utils";
-import type { User, ContentMode } from "@/types";
-import type { UploadState } from "@/hooks/use-file-upload";
+import type { User, ContentMode, FileAttachment } from "@/types";
+import { FileService, type FileUploadStatus } from "@/lib/file-service";
 import type { DisplayState } from "../use-display-state";
 
 import { type editor } from "monaco-editor";
@@ -16,16 +16,16 @@ interface UseDisplayActionsProps {
 	id: string | undefined;
 	state: DisplayState;
 	user: User | null;
-	pendingFile: File | null;
-	uploadFile: (file: File) => Promise<UploadState>;
+	hasPending: boolean;
+	uploadFiles: () => Promise<FileUploadStatus[]>;
 }
 
 export const useDisplayActions = ({
 	id,
 	state,
 	user,
-	pendingFile,
-	uploadFile,
+	hasPending,
+	uploadFiles,
 }: UseDisplayActionsProps) => {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
@@ -45,7 +45,7 @@ export const useDisplayActions = ({
 		publicRole,
 		allowComments,
 		expiresTime,
-		isServerFileRemoved,
+		removedServerFileUrls,
 		updateAllFromData,
 		setIsEdit,
 		setIsSaving,
@@ -60,7 +60,15 @@ export const useDisplayActions = ({
 
 			const hasContent =
 				contentType === "file"
-					? !!(pendingFile || paste?.fileUrl)
+					? !!(
+							hasPending ||
+							(paste?.files &&
+								paste.files.some(
+									(f) => !removedServerFileUrls.has(f.url),
+								)) ||
+							(paste?.fileUrl &&
+								!removedServerFileUrls.has(paste.fileUrl))
+						)
 					: (updatedContent || paste?.content)?.trim() !== "";
 
 			if (!hasContent) {
@@ -71,23 +79,36 @@ export const useDisplayActions = ({
 
 			try {
 				setIsSaving(true);
-				let currentFileUrl = isServerFileRemoved
-					? null
-					: paste?.fileUrl;
-				let currentFileName = isServerFileRemoved
-					? null
-					: paste?.fileName;
-				let currentFileSize = isServerFileRemoved ? 0 : paste?.fileSize;
-				let currentFileMimeType = isServerFileRemoved
-					? null
-					: paste?.fileMimeType;
 
-				if (pendingFile) {
-					const uploadRes = await uploadFile(pendingFile);
-					currentFileUrl = uploadRes.fileUrl;
-					currentFileName = uploadRes.fileName;
-					currentFileSize = uploadRes.fileSize;
-					currentFileMimeType = uploadRes.fileMimeType;
+				const finalFiles = [
+					...(paste?.files?.filter(
+						(f) => !removedServerFileUrls.has(f.url),
+					) || []),
+					...(paste?.fileUrl &&
+					!removedServerFileUrls.has(paste.fileUrl)
+						? [
+								{
+									url: paste.fileUrl,
+									name: paste.fileName || "File",
+									size: paste.fileSize || 0,
+									mimeType:
+										paste.fileMimeType ||
+										"application/octet-stream",
+								},
+							]
+						: []),
+				];
+
+				// Handle pending file uploads
+				if (contentType === "file" && hasPending) {
+					const uploadResults = await uploadFiles();
+					const errors = uploadResults.filter((r) => r.error);
+					if (errors.length > 0) throw new Error(errors[0].error!);
+
+					const newUploadedFiles = uploadResults
+						.map(FileService.toAttachment)
+						.filter((f): f is FileAttachment => f !== null);
+					finalFiles.push(...newUploadedFiles);
 				}
 
 				const data = await apiHelpers.updatePaste(id!, {
@@ -103,10 +124,12 @@ export const useDisplayActions = ({
 					allowComments,
 					expiresTime,
 					contentMode: contentType as ContentMode,
-					fileUrl: currentFileUrl,
-					fileName: currentFileName,
-					fileSize: currentFileSize,
-					fileMimeType: currentFileMimeType,
+					// Legacy fields for backward compatibility
+					fileUrl: finalFiles[0]?.url,
+					fileName: finalFiles[0]?.name,
+					fileSize: finalFiles[0]?.size,
+					fileMimeType: finalFiles[0]?.mimeType,
+					files: finalFiles,
 				});
 
 				if (data) {
@@ -159,13 +182,13 @@ export const useDisplayActions = ({
 			apiHelpers,
 			user,
 			navigate,
-			isServerFileRemoved,
+			removedServerFileUrls,
 			updateAllFromData,
 			setIsEdit,
 			setIsSaving,
 			setSaveStatus,
-			pendingFile,
-			uploadFile,
+			hasPending,
+			uploadFiles,
 		],
 	);
 

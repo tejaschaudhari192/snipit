@@ -191,16 +191,14 @@ const DisplayPage = () => {
 	const { isDetecting, detectLanguage } = useLanguageDetection();
 	const { terminalPosition, setTerminalPosition } = useTerminalLayout();
 
-	const [pendingFile, setPendingFile] = useState<File | null>(null);
-
 	const {
 		isUploading: isFileUploading,
-		progress: fileUploadProgress,
 		error: fileUploadError,
-		fileName: uploadedFileName,
-		uploadFile,
-		setFile: setFileUpload,
+		files: uploadedFiles,
+		uploadAll,
+		addFiles,
 		reset: resetFileUpload,
+		hasPending,
 	} = useFileUpload();
 
 	const setLanguage = useCallback(
@@ -287,7 +285,13 @@ const DisplayPage = () => {
 		handleCancel,
 		handleContentChange,
 		onDeleteConfirm,
-	} = useDisplayActions({ id, state, user, pendingFile, uploadFile });
+	} = useDisplayActions({
+		id,
+		state,
+		user,
+		hasPending,
+		uploadFiles: uploadAll,
+	});
 	useDisplayInit({ id, state, user });
 
 	const handleRecordingChange = useCallback(
@@ -714,22 +718,19 @@ const DisplayPage = () => {
 								terminalPosition={terminalPosition}
 								setTerminalPosition={setTerminalPosition}
 								socket={socket}
-								onFileSelect={(file) => {
-									setPendingFile(file);
-									setFileUpload(file);
+								onFileSelect={(selectedFiles) => {
+									addFiles(selectedFiles);
 									setUpdatedContent(
 										paste?.content || "File Update",
 									);
 								}}
 								onClearFile={() => {
-									setPendingFile(null);
 									resetFileUpload();
 									setIsServerFileRemoved(true);
 								}}
 								isServerFileRemoved={isServerFileRemoved}
-								uploadedFileName={uploadedFileName}
+								files={uploadedFiles}
 								isFileUploading={isFileUploading}
-								fileUploadProgress={fileUploadProgress}
 								fileUploadError={fileUploadError}
 							/>
 						</Suspense>

@@ -1,178 +1,191 @@
-import { useState, useCallback } from "react";
-import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { isSupabaseConfigured } from "@/lib/supabase";
+import { FileService, type FileUploadStatus } from "@/lib/file-service";
 import { CONFIG } from "@/configurations";
-import { sanitizeFileName } from "@/utils";
+import type { FileAttachment } from "@/types";
 
-export interface UploadState {
+export interface MultiUploadState {
+	files: FileUploadStatus[];
 	isUploading: boolean;
-	progress: number;
 	error: string | null;
-	fileUrl: string | null;
-	fileName: string | null;
-	fileSize: number | null;
-	fileMimeType: string | null;
 }
 
 export const useFileUpload = () => {
-	const [uploadState, setUploadState] = useState<UploadState>({
+	const [state, setState] = useState<MultiUploadState>({
+		files: [],
 		isUploading: false,
-		progress: 0,
 		error: null,
-		fileUrl: null,
-		fileName: null,
-		fileSize: null,
-		fileMimeType: null,
 	});
 
-	const uploadFile = useCallback(async (file: File): Promise<UploadState> => {
-		if (!isSupabaseConfigured || !supabase) {
-			const errorState: UploadState = {
-				isUploading: false,
-				progress: 0,
-				error: "File upload is not configured",
-				fileUrl: null,
-				fileName: null,
-				fileSize: null,
-				fileMimeType: null,
-			};
-			setUploadState(errorState);
-			return errorState;
+	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+	// Keep track of the actual File objects internally
+	const pendingFilesRef = useRef<Map<string, File>>(new Map());
+
+	// Update preview URL whenever the first pending file changes
+	useEffect(() => {
+		const firstFile = Array.from(pendingFilesRef.current.values())[0];
+		if (!firstFile) {
+			setPreviewUrl(null);
+			return;
 		}
 
-		if (file.size > CONFIG.defaults.maxFileSize) {
-			const errorState: UploadState = {
-				isUploading: false,
-				progress: 0,
-				error: `File size exceeds ${CONFIG.defaults.maxFileSize / (1024 * 1024)}MB limit`,
-				fileUrl: null,
-				fileName: null,
-				fileSize: null,
-				fileMimeType: null,
-			};
-			setUploadState(errorState);
-			return errorState;
-		}
+		const objectUrl = URL.createObjectURL(firstFile);
+		setPreviewUrl(objectUrl);
+		return () => URL.revokeObjectURL(objectUrl);
+	}, [state.files]); // Re-run when files list changes (which happens on add/remove)
 
-		setUploadState({
-			isUploading: true,
-			progress: 0,
-			error: null,
-			fileUrl: null,
-			fileName: file.name,
-			fileSize: file.size,
-			fileMimeType: file.type,
-		});
+	const updateFileStatus = useCallback(
+		(id: string, updates: Partial<FileUploadStatus>) => {
+			setState((prev) => ({
+				...prev,
+				files: prev.files.map((f) =>
+					f.id === id ? { ...f, ...updates } : f,
+				),
+			}));
+		},
+		[],
+	);
 
-		// Simulate progress for perceived performance
-		const progressInterval = setInterval(() => {
-			setUploadState((prev) => {
-				if (!prev.isUploading || prev.progress >= 95) return prev;
-				// Slowly increase progress up to 95%
-				const increment = Math.max(0.5, (95 - prev.progress) / 15);
-				return {
-					...prev,
-					progress: Math.min(95, prev.progress + increment),
-				};
-			});
-		}, 200);
+	const uploadSingleFile = useCallback(
+		async (id: string, file: File): Promise<FileUploadStatus | null> => {
+			updateFileStatus(id, { isUploading: true, error: null });
 
-		try {
-			const timestamp = Date.now();
-			const sanitizedName = sanitizeFileName(file.name);
-			const filePath = `${timestamp}_${sanitizedName}`;
-
-			const { error: uploadError } = await supabase.storage
-				.from(CONFIG.supabaseStorageBucket)
-				.upload(filePath, file, {
-					cacheControl: "3600",
-					upsert: false,
-					contentType: file.type,
-				});
-
-			clearInterval(progressInterval);
-
-			if (uploadError) {
-				const errorState: UploadState = {
+			// Validation
+			const validationError = FileService.validate(file);
+			if (validationError) {
+				const errorStatus: Partial<FileUploadStatus> = {
 					isUploading: false,
-					progress: 0,
-					error: uploadError.message || "Upload failed",
-					fileUrl: null,
-					fileName: null,
-					fileSize: null,
-					fileMimeType: null,
+					error: validationError,
 				};
-				setUploadState(errorState);
-				return errorState;
+				updateFileStatus(id, errorStatus);
+				return {
+					...state.files.find((f) => f.id === id)!,
+					...errorStatus,
+				};
 			}
 
-			const {
-				data: { publicUrl },
-			} = supabase.storage
-				.from(CONFIG.supabaseStorageBucket)
-				.getPublicUrl(filePath);
+			// Progress simulation
+			let progress = 0;
+			const interval = setInterval(() => {
+				progress = Math.min(
+					95,
+					progress + Math.max(1, (95 - progress) / 10),
+				);
+				updateFileStatus(id, { progress });
+			}, CONFIG.ui.uploadProgressInterval);
 
-			const successState: UploadState = {
+			const { url, error } = await FileService.upload(file);
+
+			clearInterval(interval);
+
+			if (error) {
+				const errorStatus: Partial<FileUploadStatus> = {
+					isUploading: false,
+					error,
+				};
+				updateFileStatus(id, errorStatus);
+				return {
+					...state.files.find((f) => f.id === id)!,
+					...errorStatus,
+				};
+			}
+
+			const successStatus: Partial<FileUploadStatus> = {
 				isUploading: false,
 				progress: 100,
-				error: null,
-				fileUrl: publicUrl,
-				fileName: file.name,
-				fileSize: file.size,
-				fileMimeType: file.type,
+				fileUrl: url,
 			};
-			setUploadState(successState);
-			return successState;
-		} catch (error) {
-			clearInterval(progressInterval);
-			const errorState: UploadState = {
-				isUploading: false,
-				progress: 0,
-				error: (error as Error).message || "Failed to upload file",
-				fileUrl: null,
-				fileName: null,
-				fileSize: null,
-				fileMimeType: null,
+			updateFileStatus(id, successStatus);
+
+			// Remove from pending map once uploaded
+			pendingFilesRef.current.delete(id);
+
+			return {
+				...state.files.find((f) => f.id === id)!,
+				...successStatus,
 			};
-			setUploadState(errorState);
-			return errorState;
-		}
+		},
+		[updateFileStatus, state.files],
+	);
+
+	const addFiles = useCallback((newFiles: File[]) => {
+		const newStatuses = newFiles.map((file) => {
+			const status = FileService.createStatus(file);
+			pendingFilesRef.current.set(status.id, file);
+			return status;
+		});
+
+		setState((prev) => ({
+			...prev,
+			files: [...prev.files, ...newStatuses],
+			error: null,
+		}));
+	}, []);
+
+	const uploadAll = useCallback(async () => {
+		const pendingToUpload = Array.from(pendingFilesRef.current.entries());
+		if (pendingToUpload.length === 0) return state.files;
+
+		setState((prev) => ({ ...prev, isUploading: true }));
+
+		const results = await Promise.all(
+			pendingToUpload.map(([id, file]) => uploadSingleFile(id, file)),
+		);
+
+		const updatedFiles = results.map((r) => r!).filter(Boolean);
+
+		const hasError = updatedFiles.some((r) => r?.error !== null);
+		setState((prev) => ({
+			...prev,
+			isUploading: false,
+			error: hasError ? "Some uploads failed" : null,
+		}));
+
+		return updatedFiles;
+	}, [state.files, uploadSingleFile]);
+
+	const removeFile = useCallback((id: string) => {
+		pendingFilesRef.current.delete(id);
+		setState((prev) => ({
+			...prev,
+			files: prev.files.filter((f) => f.id !== id),
+		}));
 	}, []);
 
 	const reset = useCallback(() => {
-		setUploadState({
+		pendingFilesRef.current.clear();
+		setState({
+			files: [],
 			isUploading: false,
-			progress: 0,
 			error: null,
-			fileUrl: null,
-			fileName: null,
-			fileSize: null,
-			fileMimeType: null,
 		});
 	}, []);
 
-	const setFile = useCallback(
-		(file: File | null) => {
-			if (!file) {
-				reset();
-				return;
-			}
-			setUploadState((prev) => ({
-				...prev,
-				fileName: file.name,
-				fileSize: file.size,
-				fileMimeType: file.type,
-				error: null,
-				fileUrl: null,
-				progress: 0,
-			}));
-		},
-		[reset],
-	);
+	// Selectors
+	const uploadProgress =
+		state.files.length > 0
+			? Math.round(
+					state.files.reduce((acc, f) => acc + f.progress, 0) /
+						state.files.length,
+				)
+			: 0;
+
+	const readyAttachments: FileAttachment[] = state.files
+		.map(FileService.toAttachment)
+		.filter((a): a is FileAttachment => a !== null);
 
 	return {
-		...uploadState,
-		uploadFile,
-		setFile,
+		files: state.files,
+		isUploading: state.isUploading,
+		progress: uploadProgress,
+		error: state.error,
+		previewUrl,
+		readyAttachments,
+		hasPending: pendingFilesRef.current.size > 0,
+		addFiles,
+		uploadAll,
+		removeFile,
 		reset,
 		isConfigured: isSupabaseConfigured,
 	};

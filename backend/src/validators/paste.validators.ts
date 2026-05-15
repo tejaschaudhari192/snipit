@@ -36,6 +36,16 @@ export const createPasteSchema = z.object({
 		.optional()
 		.default("viewer"),
 	allowComments: z.boolean().optional().default(false),
+	files: z
+		.array(
+			z.object({
+				url: z.string().url(),
+				name: z.string(),
+				size: z.number(),
+				mimeType: z.string(),
+			}),
+		)
+		.optional(),
 });
 
 export const updatePasteSchema = createPasteSchema.partial().extend({

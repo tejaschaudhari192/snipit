@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 
 interface UseFileDropProps {
-	onFileSelect?: (file: File) => void;
+	onFileSelect?: (files: File[]) => void;
 }
 
 export const useFileDrop = ({ onFileSelect }: UseFileDropProps) => {
@@ -14,9 +14,9 @@ export const useFileDrop = ({ onFileSelect }: UseFileDropProps) => {
 		(e: React.DragEvent) => {
 			e.preventDefault();
 			e.stopPropagation();
-			const file = e.dataTransfer.files[0];
-			if (file && onFileSelect) {
-				onFileSelect(file);
+			const files = Array.from(e.dataTransfer.files);
+			if (files.length > 0 && onFileSelect) {
+				onFileSelect(files);
 			}
 		},
 		[onFileSelect],
@@ -24,9 +24,9 @@ export const useFileDrop = ({ onFileSelect }: UseFileDropProps) => {
 
 	const handleFileInputChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
-			const file = e.target.files?.[0];
-			if (file && onFileSelect) {
-				onFileSelect(file);
+			const files = e.target.files ? Array.from(e.target.files) : [];
+			if (files.length > 0 && onFileSelect) {
+				onFileSelect(files);
 			}
 		},
 		[onFileSelect],

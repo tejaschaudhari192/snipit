@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -14,7 +13,9 @@ import type {
 	EditPermission,
 	PublicRole,
 	ShareRole,
+	FileAttachment,
 } from "@/types";
+import { FileService } from "@/lib/file-service";
 
 interface SubmitOptions {
 	visibility?: Visibility;
@@ -46,16 +47,12 @@ export const usePasteSubmission = (
 		language,
 		password,
 		textValue,
-		fileUrl,
-		fileName,
-		fileSize,
-		fileMimeType,
+		readyAttachments,
+		hasPending,
 		setIsSubmitting,
-		uploadFile,
+		uploadFiles,
 		labels,
 	} = usePaste();
-
-	const [pendingFile, setPendingFile] = useState<File | null>(null);
 
 	const handleSubmit = async (
 		selectedIdType: IdType,
@@ -75,25 +72,26 @@ export const usePasteSubmission = (
 				finalPublicRole = "editor";
 			}
 
-			let currentFileUrl = fileUrl;
-			let currentFileName = fileName;
-			let currentFileSize = fileSize;
-			let currentFileMimeType = fileMimeType;
-
-			if (contentType === "file" && pendingFile && !currentFileUrl) {
-				const uploadResult = await uploadFile(pendingFile);
-				if (uploadResult.error) throw new Error(uploadResult.error);
-				currentFileUrl = uploadResult.fileUrl;
-				currentFileName = uploadResult.fileName;
-				currentFileSize = uploadResult.fileSize;
-				currentFileMimeType = uploadResult.fileMimeType;
-				setPendingFile(null);
+			// Handle pending file uploads if any
+			let finalFiles = contentType === "file" ? readyAttachments : [];
+			if (contentType === "file" && hasPending) {
+				const results = await uploadFiles();
+				const errors = results.filter((r) => r.error);
+				if (errors.length > 0) {
+					throw new Error(errors[0].error || "Upload failed");
+				}
+				// Use the actual results from upload instead of stale readyAttachments
+				finalFiles = results
+					.map(FileService.toAttachment)
+					.filter((a): a is FileAttachment => a !== null);
 			}
 
 			const data = await apiHelpers.submitPaste({
 				content:
 					contentType === "file"
-						? currentFileUrl || currentFileName || "File upload"
+						? finalFiles.length > 0
+							? finalFiles[0].url
+							: "File upload"
 						: contentType === "draw" && !textValue.trim()
 							? JSON.stringify({ elements: [], appState: {} })
 							: textValue,
@@ -102,11 +100,15 @@ export const usePasteSubmission = (
 				idType: selectedIdType,
 				customId: providedId,
 				contentMode: contentType,
-				fileUrl: contentType === "file" ? currentFileUrl : undefined,
-				fileName: contentType === "file" ? currentFileName : undefined,
-				fileSize: contentType === "file" ? currentFileSize : undefined,
+				// Keep legacy fields for first file if exists
+				fileUrl: finalFiles.length > 0 ? finalFiles[0].url : undefined,
+				fileName:
+					finalFiles.length > 0 ? finalFiles[0].name : undefined,
+				fileSize:
+					finalFiles.length > 0 ? finalFiles[0].size : undefined,
 				fileMimeType:
-					contentType === "file" ? currentFileMimeType : undefined,
+					finalFiles.length > 0 ? finalFiles[0].mimeType : undefined,
+				files: finalFiles.length > 0 ? finalFiles : undefined,
 				redirectUrl: contentType === "link",
 				language:
 					contentType === "code" || contentType === "text"
@@ -172,12 +174,14 @@ export const usePasteSubmission = (
 			const details = axiosError.response?.data?.details;
 			if (details && details.length > 0) return details[0].message;
 			return (
-				axiosError.response?.data?.error || t("messages.snippet_failed")
+				axiosError.response?.data?.error ||
+				(error as Error).message ||
+				t("messages.snippet_failed")
 			);
 		} finally {
 			setIsSubmitting(false);
 		}
 	};
 
-	return { handleSubmit, pendingFile, setPendingFile };
+	return { handleSubmit };
 };

@@ -12,8 +12,7 @@ interface UsePasteHandlersProps {
 	isUploading: boolean;
 	contentType: ContentMode;
 	setContentType: (type: ContentMode) => void;
-	setPendingFile: (file: File | null) => void;
-	setFileUpload: (file: File | null) => void;
+	addFiles: (files: File[]) => void;
 	setLanguage: (lang: string) => void;
 	textValue: string;
 	setupAiAction: (
@@ -31,8 +30,7 @@ export const usePasteHandlers = ({
 	isUploading,
 	contentType,
 	setContentType,
-	setPendingFile,
-	setFileUpload,
+	addFiles,
 	setLanguage,
 	textValue,
 	setupAiAction,
@@ -116,17 +114,22 @@ export const usePasteHandlers = ({
 			const items = e.clipboardData?.items;
 			if (!items) return;
 
+			const pastedFiles: File[] = [];
 			for (const item of items) {
 				if (item.kind === "file") {
 					const file = item.getAsFile();
-					if (file) {
-						setContentType("file");
-						setPendingFile(file);
-						setFileUpload(file);
-						toast.success(t("home.file_selected_via_paste"));
-						break;
-					}
+					if (file) pastedFiles.push(file);
 				}
+			}
+
+			if (pastedFiles.length > 0) {
+				setContentType("file");
+				addFiles(pastedFiles);
+				toast.success(
+					t("home.files_selected_via_paste", {
+						count: pastedFiles.length,
+					}),
+				);
 			}
 		};
 
@@ -134,15 +137,7 @@ export const usePasteHandlers = ({
 		return () => {
 			document.removeEventListener("paste", handleGlobalPaste);
 		};
-	}, [
-		isSubmitting,
-		isUploading,
-		contentType,
-		t,
-		setFileUpload,
-		setContentType,
-		setPendingFile,
-	]);
+	}, [isSubmitting, isUploading, contentType, t, addFiles, setContentType]);
 
 	return {
 		handlePaste,
