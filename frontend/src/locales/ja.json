@@ -92,6 +92,8 @@
 			"minutes": "{{count}} 分"
 		},
 		"undo": "元に戻す",
+		"show": "表示",
+		"hide": "非表示",
 		"drawing": "ドローイング",
 		"shrink": "縮小",
 		"expand": "タブまで拡大",
@@ -126,7 +128,8 @@
 		"more_users": "人のユーザー",
 		"autosave": "自動保存",
 		"saved": "保存済み",
-		"save_failed": "保存失敗"
+		"save_failed": "保存失敗",
+		"clear_all": "すべてクリア"
 	},
 	"profile": {
 		"title": "ユーザープロフィール",
@@ -237,7 +240,9 @@
 		"semantic_id_tab": "単語",
 		"semantic_id_placeholder": "セマンティックIDを入力...",
 		"semantic_id_generate": "単語を生成",
-		"semantic_id_words": "単語"
+		"semantic_id_words": "単語",
+		"files_selected": "{{count}} 個のファイルを選択中",
+		"add_files": "ファイルを追加"
 	},
 	"display": {
 		"expires_in": "有効期限:",

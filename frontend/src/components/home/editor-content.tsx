@@ -27,7 +27,7 @@ const EditorToolbar = lazy(() =>
 );
 
 const FileUploadView = lazy(() =>
-	import("./file-upload-view").then((m) => ({
+	import("../common/file-upload-view").then((m) => ({
 		default: m.FileUploadView,
 	})),
 );
@@ -62,7 +62,7 @@ interface EditorContentProps {
 	handleEditorWillMount: BeforeMount;
 	handleEditorMount: OnMount;
 	handlePaste: (e: React.ClipboardEvent<HTMLTextAreaElement>) => void;
-	onFileSelect?: (file: File) => void;
+	onFileSelect?: (files: File[]) => void;
 	onClearFile?: () => void;
 	previewUrl?: string | null;
 	isFullscreen: boolean;
@@ -97,10 +97,9 @@ export const EditorContent = memo(
 			textValue,
 			setTextValue,
 			isUploading,
-			uploadProgress,
-			fileName: uploadedFileName,
+			files,
+			removeFile,
 			uploadError,
-			fileMimeType,
 		} = usePaste();
 		const { theme } = useTheme();
 		const { t } = useTranslation();
@@ -321,13 +320,12 @@ export const EditorContent = memo(
 								}
 							>
 								<FileUploadView
-									uploadedFileName={uploadedFileName}
+									files={files}
 									previewUrl={previewUrl}
-									fileMimeType={fileMimeType}
 									isUploading={isUploading}
-									uploadProgress={uploadProgress}
 									uploadError={uploadError}
 									onClearFile={onClearFile}
+									onRemoveFile={removeFile}
 									handleDragOver={handleDragOver}
 									handleDrop={handleDrop}
 									handleFileInputChange={

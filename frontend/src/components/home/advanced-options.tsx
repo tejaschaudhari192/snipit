@@ -4,29 +4,15 @@ import { useState, useEffect, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { usePaste } from "@/context/PasteContext";
 import { useAuth } from "@/context/AuthContext";
-import { LogIn, Shield, Settings, Tag } from "lucide-react";
+import { LogIn, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { IdTypeTabs } from "./paste-dialog/id-type-tabs";
-import { Skeleton } from "@/components/ui/skeleton";
-import { LabelManager } from "@/components/common/label-manager";
+import { AdvancedConfigSkeleton } from "@/components/common/advanced-config-grid";
 
-const BasicSettings = lazy(() =>
-	import("./paste-dialog/basic-settings").then((m) => ({
-		default: m.BasicSettings,
+const AdvancedConfigGrid = lazy(() =>
+	import("@/components/common/advanced-config-grid").then((m) => ({
+		default: m.AdvancedConfigGrid,
 	})),
-);
-
-const VisibilitySelector = lazy(() =>
-	import("@/components/common/access-control/visibility-selector").then(
-		(m) => ({ default: m.VisibilitySelector }),
-	),
-);
-
-const CollaboratorsManager = lazy(() =>
-	import("@/components/common/access-control/collaborators-manager").then(
-		(m) => ({ default: m.CollaboratorsManager }),
-	),
 );
 
 interface AdvancedOptionsProps {
@@ -72,130 +58,114 @@ export const AdvancedOptions = ({ onSubmit }: AdvancedOptionsProps) => {
 		icon: React.ElementType;
 		label: string;
 	}) => (
-		<div className="flex items-center gap-2 text-primary/60 font-semibold text-xs tracking-wide mb-4">
-			<Icon className="h-4 w-4" />
-			<span>{label}</span>
+		<div className="flex items-center gap-2 mb-4 group/header">
+			<div className="p-1.5 rounded-lg bg-primary/5 text-primary group-hover/header:bg-primary group-hover/header:text-white transition-all duration-300">
+				<Icon className="h-3.5 w-3.5" />
+			</div>
+			<span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/70 group-hover/header:text-primary transition-colors">
+				{label}
+			</span>
 		</div>
 	);
 
-	return (
-		<div className="pt-2 pb-1 animate-in fade-in duration-300">
-			<div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-6">
-				{/* Column 1: Identification */}
-				<div className="flex flex-col">
-					<SectionHeader
-						icon={Tag}
-						label={t("home.identification_type")}
-					/>
-					<IdTypeTabs
-						idTypeTab={idTypeTab}
-						setIdTypeTab={setIdTypeTab}
-						customId={customId}
-						setCustomId={setCustomId}
-						onSubmit={onSubmit}
-					/>
-				</div>
-
-				{/* Column 2: General Settings */}
-				<div className="flex flex-col space-y-4">
-					<div className="flex flex-col">
-						<SectionHeader
-							icon={Settings}
-							label={t("common.settings")}
-						/>
-						<Suspense
-							fallback={
-								<div className="flex flex-col gap-3">
-									<Skeleton className="h-[46px] w-full rounded-lg" />
-									<Skeleton className="h-[46px] w-full rounded-lg" />
-								</div>
-							}
-						>
-							<BasicSettings
-								isPasswordEnabled={isPasswordEnabled}
-								setIsPasswordEnabled={setIsPasswordEnabled}
-								password={password}
-								setPassword={setPassword}
+	if (!user) {
+		return (
+			<div className="pt-2 pb-1 animate-in fade-in duration-300">
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+					<div className="col-span-1 md:col-span-2">
+						<Suspense fallback={<AdvancedConfigSkeleton />}>
+							<AdvancedConfigGrid
+								idTypeTab={idTypeTab}
+								setIdTypeTab={setIdTypeTab}
+								customId={customId}
+								setCustomId={setCustomId}
 								allowComments={allowComments}
 								setAllowComments={setAllowComments}
+								isPasswordEnabled={isPasswordEnabled}
+								setIsPasswordEnabled={setIsPasswordEnabled}
+								newPassword={password}
+								setNewPassword={setPassword}
+								visibility={visibility}
+								setVisibility={setVisibility}
+								publicRole={publicRole}
+								setPublicRole={setPublicRole}
+								setEditPermission={setEditPermission}
+								allowedUsers={allowedUsers}
+								setAllowedUsers={setAllowedUsers}
+								shareList={shareList}
+								setShareList={setShareList}
+								isOwner={true}
+								isAdmin={true}
+								onSubmit={onSubmit}
+								disabled={true}
 							/>
 						</Suspense>
 					</div>
-
-					{user && (
-						<div className="pt-2">
-							<LabelManager />
-						</div>
-					)}
-				</div>
-
-				{/* Column 3: Access & Collab */}
-				<div className="flex flex-col">
-					<SectionHeader icon={Shield} label={t("common.privacy")} />
-
 					<div className="flex flex-col">
-						{!user ? (
-							<div className="flex flex-col justify-center items-center text-center p-4 rounded-xl border border-dashed border-primary/20 bg-primary/5 min-h-[140px]">
-								<LogIn className="h-5 w-5 text-primary/50 mb-2" />
-								<p className="text-primary font-bold text-sm mb-1">
-									{t("common.auth_required")}
-								</p>
-								<p className="text-xs text-muted-foreground mb-3 leading-relaxed">
-									{t("common.auth_required_desc")}
-								</p>
-								<div className="flex items-center gap-2 w-full">
-									<Button
-										size="sm"
-										variant="outline"
-										className="h-8 text-xs flex-1"
-										onClick={() => navigate("/login")}
-									>
-										{t("header.login")}
-									</Button>
-									<Button
-										size="sm"
-										className="h-8 text-xs flex-1"
-										onClick={() => navigate("/signup")}
-									>
-										{t("header.signup")}
-									</Button>
-								</div>
-							</div>
-						) : (
-							<div className="space-y-4">
-								<Suspense
-									fallback={
-										<Skeleton className="h-[62px] w-full rounded-lg" />
-									}
+						<SectionHeader
+							icon={Shield}
+							label={t("common.privacy")}
+						/>
+						<div className="flex flex-col justify-center items-center text-center p-4 rounded-xl border border-dashed border-primary/20 bg-primary/5 min-h-[140px]">
+							<LogIn className="h-5 w-5 text-primary/50 mb-2" />
+							<p className="text-primary font-bold text-sm mb-1">
+								{t("common.auth_required")}
+							</p>
+							<p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+								{t("common.auth_required_desc")}
+							</p>
+							<div className="flex items-center gap-2 w-full">
+								<Button
+									size="sm"
+									variant="outline"
+									className="h-8 text-xs flex-1"
+									onClick={() => navigate("/login")}
 								>
-									<VisibilitySelector
-										visibility={visibility}
-										setVisibility={setVisibility}
-										publicRole={publicRole}
-										setPublicRole={setPublicRole}
-										setEditPermission={setEditPermission}
-									/>
-								</Suspense>
-
-								<div className="pt-4 border-t border-border/10">
-									<Suspense
-										fallback={
-											<Skeleton className="h-[46px] w-full rounded-lg" />
-										}
-									>
-										<CollaboratorsManager
-											shareList={shareList}
-											setShareList={setShareList}
-											allowedUsers={allowedUsers}
-											setAllowedUsers={setAllowedUsers}
-										/>
-									</Suspense>
-								</div>
+									{t("header.login")}
+								</Button>
+								<Button
+									size="sm"
+									className="h-8 text-xs flex-1"
+									onClick={() => navigate("/signup")}
+								>
+									{t("header.signup")}
+								</Button>
 							</div>
-						)}
+						</div>
 					</div>
 				</div>
 			</div>
+		);
+	}
+
+	return (
+		<div className="pt-2 pb-1 animate-in fade-in duration-300">
+			<Suspense fallback={<AdvancedConfigSkeleton />}>
+				<AdvancedConfigGrid
+					idTypeTab={idTypeTab}
+					setIdTypeTab={setIdTypeTab}
+					customId={customId}
+					setCustomId={setCustomId}
+					allowComments={allowComments}
+					setAllowComments={setAllowComments}
+					isPasswordEnabled={isPasswordEnabled}
+					setIsPasswordEnabled={setIsPasswordEnabled}
+					newPassword={password}
+					setNewPassword={setPassword}
+					visibility={visibility}
+					setVisibility={setVisibility}
+					publicRole={publicRole}
+					setPublicRole={setPublicRole}
+					setEditPermission={setEditPermission}
+					allowedUsers={allowedUsers}
+					setAllowedUsers={setAllowedUsers}
+					shareList={shareList}
+					setShareList={setShareList}
+					isOwner={true}
+					isAdmin={true}
+					onSubmit={onSubmit}
+				/>
+			</Suspense>
 		</div>
 	);
 };

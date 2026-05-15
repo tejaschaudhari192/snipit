@@ -44,5 +44,7 @@ export const CONFIG = {
 		detectionDelay: 2000,
 		toastDuration: 3000,
 		waveformSpeed: 4, // Higher = Slower (skip frames)
+		uploadProgressInterval: 200,
+		syncQuarantineMs: 1000,
 	},
 };

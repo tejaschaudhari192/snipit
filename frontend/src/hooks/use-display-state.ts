@@ -54,9 +54,23 @@ export const useDisplayState = () => {
 	const [isAutosave, setIsAutosave] = useState(true);
 	const [isFullscreen, setIsFullscreen] = useState(false);
 	const [isWindowFullscreen, setIsWindowFullscreen] = useState(false);
-	const [isServerFileRemoved, setIsServerFileRemoved] = useState(false);
+	const [removedServerFileUrls, setRemovedServerFileUrls] = useState<
+		Set<string>
+	>(new Set());
 	const [isTerminalOpen, setIsTerminalOpen] = useState(false);
 	const [language, _setLanguage] = useState(CONFIG.defaults.language);
+	const [idTypeTab, setIdTypeTab] = useState<
+		"system" | "dynamic" | "semantic"
+	>("system");
+	const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+
+	const removeServerFile = useCallback((url: string) => {
+		setRemovedServerFileUrls((prev) => {
+			const next = new Set(prev);
+			next.add(url);
+			return next;
+		});
+	}, []);
 
 	const updateAllFromData = useCallback((data: Partial<PasteData>) => {
 		setPaste((prev) => (prev ? { ...prev, ...data } : (data as PasteData)));
@@ -78,6 +92,8 @@ export const useDisplayState = () => {
 		) {
 			setIsPasswordEnabled(!!data.password || !!data.isPasswordProtected);
 		}
+		// Reset removed files when loading new data
+		setRemovedServerFileUrls(new Set());
 	}, []);
 
 	return {
@@ -133,12 +149,28 @@ export const useDisplayState = () => {
 		setIsFullscreen,
 		isWindowFullscreen,
 		setIsWindowFullscreen,
-		isServerFileRemoved,
-		setIsServerFileRemoved,
+		removedServerFileUrls,
+		removeServerFile,
+		isServerFileRemoved: removedServerFileUrls.size > 0,
+		setIsServerFileRemoved: (removed: boolean) => {
+			if (removed) {
+				const allUrls = new Set<string>();
+				if (paste?.files)
+					paste.files.forEach((f) => allUrls.add(f.url));
+				if (paste?.fileUrl) allUrls.add(paste.fileUrl);
+				setRemovedServerFileUrls(allUrls);
+			} else {
+				setRemovedServerFileUrls(new Set());
+			}
+		},
 		isTerminalOpen,
 		setIsTerminalOpen,
 		language,
 		_setLanguage,
+		idTypeTab,
+		setIdTypeTab,
+		isOptionsOpen,
+		setIsOptionsOpen,
 		updateAllFromData,
 	};
 };

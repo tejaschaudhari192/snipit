@@ -8,7 +8,7 @@ import type {
 } from "@/types";
 import type { editor } from "monaco-editor";
 import { type Socket } from "socket.io-client";
-import { SYNC_QUARANTINE_MS } from "@/constants";
+import { CONFIG } from "@/configurations";
 
 interface UseEditorSyncProps {
 	id: string | undefined;
@@ -45,7 +45,7 @@ export const useEditorSync = ({
 
 			const shouldSkipContent =
 				(data.content !== undefined || data.changes !== undefined) &&
-				timeSinceLastLocalEdit < SYNC_QUARANTINE_MS;
+				timeSinceLastLocalEdit < CONFIG.ui.syncQuarantineMs;
 
 			isRemoteUpdateRef.current = true;
 			let contentUpdated = false;

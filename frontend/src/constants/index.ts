@@ -148,5 +148,3 @@ export const SUPPORTED_RUN_LANGUAGES = [
 	"shell",
 	"bash",
 ];
-
-export const SYNC_QUARANTINE_MS = 1000;

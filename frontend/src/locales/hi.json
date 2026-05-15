@@ -96,6 +96,8 @@
 			"minutes": "{{count}} मिनट"
 		},
 		"undo": "पूर्ववत करें",
+		"show": "दिखाएं",
+		"hide": "छुपाएं",
 		"drawing": "ड्रॉइंग",
 		"shrink": "वापस छोटा करें",
 		"expand": "टैब में बड़ा करें",
@@ -126,7 +128,8 @@
 		"more_users": "और उपयोगकर्ता",
 		"autosave": "ऑटोसेव",
 		"saved": "सहेजा गया",
-		"save_failed": "सहेजना विफल"
+		"save_failed": "सहेजना विफल",
+		"clear_all": "सभी साफ़ करें"
 	},
 	"profile": {
 		"title": "आपकी प्रोफ़ाइल",
@@ -237,7 +240,10 @@
 		"semantic_id_tab": "शब्द",
 		"semantic_id_placeholder": "आपकी सिमेंटिक आईडी...",
 		"semantic_id_generate": "शब्द उत्पन्न करें",
-		"semantic_id_words": "शब्द"
+		"semantic_id_words": "शब्द",
+		"files_selected_one": "{{count}} फ़ाइल चयनित",
+		"files_selected_other": "{{count}} फ़ाइलें चयनित",
+		"add_files": "फ़ाइलें जोड़ें"
 	},
 	"display": {
 		"expires_in": "समाप्ति समय:",

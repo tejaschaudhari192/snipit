@@ -8,13 +8,15 @@ import React, {
 } from "react";
 import { CONFIG } from "@/configurations";
 import { getDraft, saveDraft, isSnipitDrawing } from "@/utils";
-import { useFileUpload, type UploadState } from "@/hooks/use-file-upload";
+import { useFileUpload } from "@/hooks/use-file-upload";
+import type { FileUploadStatus } from "@/lib/file-service";
 import type {
 	Visibility,
 	EditPermission,
 	PublicRole,
 	ShareRole,
 	ContentMode,
+	FileAttachment,
 } from "@/types";
 
 interface PasteContextType {
@@ -35,13 +37,17 @@ interface PasteContextType {
 	isSubmitting: boolean;
 
 	// File Upload State
+	files: FileUploadStatus[];
 	isUploading: boolean;
 	uploadProgress: number;
 	uploadError: string | null;
+	previewUrl: string | null;
 	fileUrl: string | null;
+	fileMimeType: string | null;
 	fileName: string | null;
 	fileSize: number | null;
-	fileMimeType: string | null;
+	readyAttachments: FileAttachment[];
+	hasPending: boolean;
 
 	// Setters
 	setVisibility: (v: Visibility) => void;
@@ -62,8 +68,9 @@ interface PasteContextType {
 	setLabels: (v: string[]) => void;
 
 	// File Upload Actions
-	uploadFile: (file: File) => Promise<UploadState>;
-	setFileUpload: (file: File | null) => void;
+	uploadFiles: () => Promise<FileUploadStatus[]>;
+	addFiles: (files: File[]) => void;
+	removeFile: (id: string) => void;
 	resetFileUpload: () => void;
 
 	// Complex actions
@@ -115,15 +122,15 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 	const [labels, setLabels] = useState<string[]>([]);
 
 	const {
+		files,
 		isUploading,
-		progress: uploadProgress,
 		error: uploadError,
-		fileUrl,
-		fileName,
-		fileSize,
-		fileMimeType,
-		uploadFile,
-		setFile: setFileUpload,
+		previewUrl,
+		readyAttachments,
+		hasPending,
+		addFiles,
+		uploadAll: uploadFiles,
+		removeFile,
 		reset: resetFileUpload,
 	} = useFileUpload();
 
@@ -224,6 +231,15 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 		setLabels([]);
 	}, [setTextValue]);
 
+	const uploadProgress = React.useMemo(() => {
+		if (files.length === 0) return 0;
+		return Math.round(
+			files.reduce((acc, f) => acc + f.progress, 0) / files.length,
+		);
+	}, [files]);
+
+	const firstFile = files[0] || null;
+
 	const value = React.useMemo(
 		() => ({
 			visibility,
@@ -256,15 +272,20 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			setIsSubmitting,
 			labels,
 			setLabels,
+			files,
 			isUploading,
 			uploadProgress,
 			uploadError,
-			fileUrl,
-			fileName,
-			fileSize,
-			fileMimeType,
-			uploadFile,
-			setFileUpload,
+			previewUrl,
+			fileUrl: firstFile?.fileUrl || null,
+			fileMimeType: firstFile?.fileMimeType || null,
+			fileName: firstFile?.fileName || null,
+			fileSize: firstFile?.fileSize || null,
+			readyAttachments,
+			hasPending,
+			uploadFiles,
+			addFiles,
+			removeFile,
 			resetFileUpload,
 			onContentTypeChange,
 			resetPaste,
@@ -300,15 +321,15 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			setIsSubmitting,
 			labels,
 			setLabels,
+			files,
 			isUploading,
 			uploadProgress,
 			uploadError,
-			fileUrl,
-			fileName,
-			fileSize,
-			fileMimeType,
-			uploadFile,
-			setFileUpload,
+			previewUrl,
+			firstFile,
+			uploadFiles,
+			addFiles,
+			removeFile,
 			resetFileUpload,
 			onContentTypeChange,
 			resetPaste,

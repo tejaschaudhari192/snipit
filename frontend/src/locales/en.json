@@ -98,6 +98,8 @@
 			"minutes": "{{count}} minutes"
 		},
 		"undo": "Undo",
+		"show": "Show",
+		"hide": "Hide",
 		"drawing": "Drawing",
 		"shrink": "Shrink back",
 		"expand": "Expand to tab",
@@ -126,9 +128,12 @@
 		"secure": "Secure",
 		"cancel": "Cancel",
 		"more_users": "more users",
+		"clear_all": "Clear All",
 		"autosave": "Autosave",
 		"saved": "Saved",
-		"save_failed": "Save Failed"
+		"save_failed": "Save Failed",
+		"ai_autocomplete": "AI Autocomplete",
+		"workspace_preferences": "Workspace Preferences"
 	},
 	"profile": {
 		"title": "Your Profile",
@@ -212,7 +217,7 @@
 		},
 		"file_desc": "Upload any file to share with a unique link",
 		"file_drop": "Drop your file here or click to browse",
-		"file_max_size": "Maximum file size: 50MB",
+		"file_max_size": "Maximum file size: {{size}}",
 		"file_uploading": "Uploading...",
 		"file_selected": "Selected - click Upload",
 		"file_ready": "Ready to share",
@@ -239,7 +244,10 @@
 		"semantic_id_tab": "Words",
 		"semantic_id_placeholder": "Your semantic ID...",
 		"semantic_id_generate": "Generate Words",
-		"semantic_id_words": "Words"
+		"semantic_id_words": "Words",
+		"files_selected_one": "{{count}} file selected",
+		"files_selected_other": "{{count}} files selected",
+		"add_files": "Add Files"
 	},
 	"display": {
 		"expires_in": "Expires in:",

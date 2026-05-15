@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import {
 	Select,
 	SelectContent,
@@ -11,6 +10,7 @@ import { MultiEmailInput } from "@/components/ui/multi-email-input";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { cn } from "@/utils";
 import type { ShareRole } from "@/types";
 import { useApiHelpers } from "@/lib/api";
 import { toast } from "sonner";
@@ -27,6 +27,7 @@ interface CollaboratorsManagerProps {
 	allowedUsers: string[];
 	setAllowedUsers: (v: string[]) => void;
 	disabled?: boolean;
+	compact?: boolean;
 }
 
 export const CollaboratorsManager = ({
@@ -36,6 +37,7 @@ export const CollaboratorsManager = ({
 	allowedUsers,
 	setAllowedUsers,
 	disabled = false,
+	compact = false,
 }: CollaboratorsManagerProps) => {
 	const { t } = useTranslation();
 	const apiHelpers = useApiHelpers();
@@ -212,10 +214,17 @@ export const CollaboratorsManager = ({
 			</div>
 
 			{shareList.length > 0 && (
-				<div className="flex flex-col gap-2 mt-2 max-h-[150px] overflow-y-auto pr-1">
-					<p className="text-[11px] font-semibold text-muted-foreground tracking-wide mt-3 mb-1 px-1">
-						{t("common.people_with_access")}
-					</p>
+				<div
+					className={cn(
+						"flex flex-col gap-2 mt-2 overflow-y-auto pr-1",
+						compact ? "max-h-[120px]" : "max-h-[150px]",
+					)}
+				>
+					{!compact && (
+						<p className="text-[11px] font-semibold text-muted-foreground tracking-wide mt-3 mb-1 px-1">
+							{t("common.people_with_access")}
+						</p>
+					)}
 					{shareList.map((item) => (
 						<div
 							key={item.email}

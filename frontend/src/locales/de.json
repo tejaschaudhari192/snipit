@@ -92,6 +92,8 @@
 			"minutes": "{{count}} Minuten"
 		},
 		"undo": "Rückgängig",
+		"show": "Anzeigen",
+		"hide": "Ausblenden",
 		"drawing": "Zeichnung",
 		"shrink": "Verkleinern",
 		"expand": "Auf Tab erweitern",
@@ -125,7 +127,8 @@
 		"more_users": "weitere Benutzer",
 		"autosave": "Autospeichern",
 		"saved": "Gespeichert",
-		"save_failed": "Speichern fehlgeschlagen"
+		"save_failed": "Speichern fehlgeschlagen",
+		"clear_all": "Alles löschen"
 	},
 	"profile": {
 		"title": "Ihr Profil",
@@ -230,7 +233,16 @@
 		"link_shortened": "Link gekürzt!",
 		"link_ready_desc": "Ihre Kurz-URL ist bereit zum Teilen",
 		"alias": "Alias",
-		"create_another": "Weitere erstellen"
+		"create_another": "Weitere erstellen",
+		"suggest_id_ai": "ID mit KI vorschlagen",
+		"ai_id_suggested": "KI hat eine ID basierend auf dem Inhalt vorgeschlagen!",
+		"semantic_id_tab": "Wörter",
+		"semantic_id_placeholder": "Deine semantische ID...",
+		"semantic_id_generate": "Wörter generieren",
+		"semantic_id_words": "Wörter",
+		"files_selected_one": "{{count}} Datei ausgewählt",
+		"files_selected_other": "{{count}} Dateien ausgewählt",
+		"add_files": "Dateien hinzufügen"
 	},
 	"display": {
 		"expires_in": "Läuft ab in:",

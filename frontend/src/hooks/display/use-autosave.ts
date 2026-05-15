@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { SYNC_QUARANTINE_MS } from "@/constants";
+import { CONFIG } from "@/configurations";
 
 interface UseAutosaveProps {
 	isAutosave: boolean;
@@ -33,7 +33,7 @@ export const useAutosave = ({
 		if (
 			!hasChanged ||
 			isRemoteUpdateRef.current ||
-			timeSinceLastLocalEdit < SYNC_QUARANTINE_MS
+			timeSinceLastLocalEdit < CONFIG.ui.syncQuarantineMs
 		) {
 			return;
 		}

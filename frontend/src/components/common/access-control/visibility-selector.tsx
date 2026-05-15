@@ -17,6 +17,7 @@ interface VisibilitySelectorProps {
 	setPublicRole: (v: PublicRole) => void;
 	setEditPermission: (v: EditPermission) => void;
 	disabled?: boolean;
+	compact?: boolean;
 }
 
 export const VisibilitySelector = ({
@@ -26,6 +27,7 @@ export const VisibilitySelector = ({
 	setPublicRole,
 	setEditPermission,
 	disabled = false,
+	compact = false,
 }: VisibilitySelectorProps) => {
 	const { t } = useTranslation();
 
@@ -57,11 +59,13 @@ export const VisibilitySelector = ({
 						<span className="text-sm font-bold">
 							{t("common.general_access")}
 						</span>
-						<span className="text-[10px] text-muted-foreground tracking-tight font-medium">
-							{visibility === "public"
-								? t("common.anyone_with_link")
-								: t("common.restricted")}
-						</span>
+						{!compact && (
+							<span className="text-[10px] text-muted-foreground tracking-tight font-medium">
+								{visibility === "public"
+									? t("common.anyone_with_link")
+									: t("common.restricted")}
+							</span>
+						)}
 					</div>
 				</div>
 				<Select

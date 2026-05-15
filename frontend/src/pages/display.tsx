@@ -128,8 +128,13 @@ const DisplayPage = () => {
 		expiresTime,
 		setExpiresTime,
 		saveStatus,
+		isAutosave,
 		setIsAutosave,
 		language,
+		idTypeTab,
+		setIdTypeTab,
+		isOptionsOpen,
+		setIsOptionsOpen,
 		updateAllFromData,
 		isTerminalOpen,
 		setIsTerminalOpen,
@@ -490,7 +495,6 @@ const DisplayPage = () => {
 							<DisplayToolbar
 								activeUsers={visibleActiveUsers}
 								isEdit={isEdit}
-								showAutosave={contentType !== "file"}
 								showSaveButton={contentType === "file"}
 								saveStatus={saveStatus}
 								content={updatedContent || paste.content}
@@ -528,13 +532,15 @@ const DisplayPage = () => {
 											: prev,
 									)
 								}
-								customId={customId}
-								setCustomId={setCustomId}
 								expiresTime={expiresTime}
 								setExpiresTime={setExpiresTime}
 								setIsCustomExpiryDialogOpen={
 									setIsCustomExpiryDialogOpen
 								}
+								isAutosave={isAutosave}
+								setIsAutosave={setIsAutosave}
+								isOptionsOpen={isOptionsOpen}
+								setIsOptionsOpen={setIsOptionsOpen}
 								isTerminalOpen={isTerminalOpen}
 								onToggleTerminal={() => {
 									const opening = !isTerminalOpen;
@@ -653,6 +659,12 @@ const DisplayPage = () => {
 										setPublicRole={setPublicRole}
 										allowComments={allowComments}
 										setAllowComments={setAllowComments}
+										idTypeTab={idTypeTab}
+										setIdTypeTab={setIdTypeTab}
+										customId={customId}
+										setCustomId={setCustomId}
+										isOptionsOpen={isOptionsOpen}
+										setIsOptionsOpen={setIsOptionsOpen}
 									/>
 								</Suspense>
 							</div>

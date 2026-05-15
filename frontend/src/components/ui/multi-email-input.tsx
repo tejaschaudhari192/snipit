@@ -100,7 +100,7 @@ export function MultiEmailInput({
 				<Input
 					ref={inputRef}
 					type="text"
-					className="flex-1 border-0 bg-transparent p-0 placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 min-w-[150px] h-8"
+					className="flex-1 border-0 bg-transparent p-0 placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 min-w-[150px]"
 					placeholder={value.length === 0 ? placeholder : ""}
 					value={currentInputValue}
 					onChange={(e) => setCurrentInputValue(e.target.value)}

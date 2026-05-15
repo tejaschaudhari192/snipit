@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Wand2, Fingerprint, Hash } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { cn } from "@/utils";
 
 import { IdTabSkeleton } from "./id-tab-skeleton";
 
@@ -15,6 +16,7 @@ interface IdTypeTabsProps {
 	customId: string;
 	setCustomId: (v: string) => void;
 	onSubmit: () => void;
+	compact?: boolean;
 }
 
 export const IdTypeTabs = ({
@@ -23,6 +25,7 @@ export const IdTypeTabs = ({
 	customId,
 	setCustomId,
 	onSubmit,
+	compact = false,
 }: IdTypeTabsProps) => {
 	const { t } = useTranslation();
 
@@ -49,7 +52,12 @@ export const IdTypeTabs = ({
 				</TabsTrigger>
 			</TabsList>
 
-			<div className="min-h-[140px]">
+			<div
+				className={cn(
+					"transition-all duration-300",
+					compact ? "min-h-0" : "min-h-[140px]",
+				)}
+			>
 				<Suspense fallback={<IdTabSkeleton rows={2} />}>
 					<TabsContent value="system" className="mt-0">
 						<AutoIdTab />

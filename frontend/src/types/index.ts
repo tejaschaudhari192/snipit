@@ -1,5 +1,12 @@
 import { ID_TYPES } from "@/constants";
 
+export interface FileAttachment {
+	url: string;
+	name: string;
+	size: number;
+	mimeType: string;
+}
+
 export interface CommentData {
 	id: string;
 	author: string;
@@ -75,6 +82,7 @@ export interface PasteData {
 	allowComments?: boolean;
 	comments?: CommentData[];
 	labels?: string[];
+	files?: FileAttachment[];
 }
 
 export type IdType = (typeof ID_TYPES)[number];
@@ -113,6 +121,7 @@ export interface CreatePasteData {
 	}[];
 	publicRole?: PublicRole;
 	allowComments?: boolean;
+	files?: FileAttachment[];
 }
 
 export interface UpdatePasteData {
@@ -137,6 +146,7 @@ export interface UpdatePasteData {
 	fileName?: string | null;
 	fileSize?: number | null;
 	fileMimeType?: string | null;
+	files?: FileAttachment[];
 }
 
 export interface ServiceStatus {
