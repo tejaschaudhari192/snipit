@@ -97,6 +97,13 @@ export const DisplayContent = memo(
 			if (onMount) onMount(ed, monaco);
 		};
 
+		// Cleanup editor instance on unmount to prevent using disposed instances
+		useEffect(() => {
+			return () => {
+				setEditorInstance(null);
+			};
+		}, []);
+
 		useEffect(() => {
 			const handleFullscreenChange = () => {
 				setIsWindowFullscreen(!!document.fullscreenElement);
@@ -196,7 +203,6 @@ export const DisplayContent = memo(
 							storageKey={`display-preview-split-${language}`}
 							left={
 								<CodeEditorView
-									id={id}
 									isEdit={isEdit}
 									contentType={contentType}
 									language={language}
@@ -248,7 +254,6 @@ export const DisplayContent = memo(
 
 			return (
 				<CodeEditorView
-					id={id}
 					isEdit={isEdit}
 					contentType={contentType}
 					language={language}

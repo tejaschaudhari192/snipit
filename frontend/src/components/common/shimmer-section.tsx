@@ -39,13 +39,6 @@ const EditorShimmer = ({ className }: { className?: string }) => (
 			className,
 		)}
 	>
-		<div className="flex items-center gap-2 border-b pb-4 border-border/20">
-			{[...Array(6)].map((_, i) => (
-				<Skeleton key={i} className="h-8 w-8 rounded-lg" />
-			))}
-			<div className="flex-1" />
-			<Skeleton className="h-8 w-24 rounded-lg" />
-		</div>
 		<div className="space-y-4 py-4">
 			{[...Array(15)].map((_, i) => (
 				<Skeleton

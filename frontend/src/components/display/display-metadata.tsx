@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { useSnippets } from "@/context/SnippetContext";
 import { guestStorage } from "@/utils/guest-storage";
 import { ShimmerSection } from "@/components/common/shimmer-section";
+import { LANGUAGES } from "@/constants";
 
 interface DisplayMetadataProps {
 	paste?: PasteData;
@@ -102,9 +103,18 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 								language={paste.language}
 								className="h-3 w-3"
 							/>
-							{paste.language === "text"
-								? t("home.tab_text")
-								: paste.language}
+							{(() => {
+								if (paste.language === "text")
+									return t("home.tab_text");
+								const lang = LANGUAGES.find(
+									(l) => l.value === paste.language,
+								);
+								if (lang) return lang.name;
+								return (
+									paste.language.charAt(0).toUpperCase() +
+									paste.language.slice(1)
+								);
+							})()}
 						</div>
 					) : null}
 					<div className="w-px h-3 bg-border hidden sm:block" />

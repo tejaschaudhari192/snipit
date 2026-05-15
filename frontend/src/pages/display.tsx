@@ -43,21 +43,9 @@ import type {
 } from "@/types";
 import { CONFIG } from "@/configurations";
 import { Skeleton } from "@/components/ui/skeleton";
-const DisplayToolbar = lazy(() =>
-	import("@/components/display/display-toolbar").then((m) => ({
-		default: m.DisplayToolbar,
-	})),
-);
-const AiWriterDialog = lazy(() =>
-	import("@/components/editor/ai-writer-dialog").then((m) => ({
-		default: m.AiWriterDialog,
-	})),
-);
-const DisplayMetadata = lazy(() =>
-	import("@/components/display/display-metadata").then((m) => ({
-		default: m.DisplayMetadata,
-	})),
-);
+import { DisplayToolbar } from "@/components/display/display-toolbar";
+import { AiWriterDialog } from "@/components/editor/ai-writer-dialog";
+import { DisplayMetadata } from "@/components/display/display-metadata";
 const EditControls = lazy(() =>
 	import("@/components/display/edit-controls").then((m) => ({
 		default: m.EditControls,
@@ -68,16 +56,8 @@ const PasswordGate = lazy(() =>
 		default: m.PasswordGate,
 	})),
 );
-const DisplayWorkspace = lazy(() =>
-	import("@/components/display/display-workspace").then((m) => ({
-		default: m.DisplayWorkspace,
-	})),
-);
-const DisplayDialogs = lazy(() =>
-	import("@/components/display/display-dialogs").then((m) => ({
-		default: m.DisplayDialogs,
-	})),
-);
+import { DisplayWorkspace } from "@/components/display/display-workspace";
+import { DisplayDialogs } from "@/components/display/display-dialogs";
 
 const DisplayPage = () => {
 	const { id } = useParams<{ id: string }>();
@@ -547,6 +527,15 @@ const DisplayPage = () => {
 							}}
 							isCode={contentType === "code"}
 							language={language}
+							setLanguage={setLanguage}
+							setContentType={setContentType}
+							isDetecting={isDetecting}
+							onAutoDetect={() =>
+								handleLanguageDetection(
+									updatedContent || "",
+									true,
+								)
+							}
 							isAiAutocompleteEnabled={isAiAutocompleteEnabled}
 							setIsAiAutocompleteEnabled={
 								setIsAiAutocompleteEnabled

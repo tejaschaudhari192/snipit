@@ -5,7 +5,6 @@ import type { ContentMode, EditorChange } from "@/types";
 import { ZenModeToggle } from "@/components/common/zen-mode-toggle";
 
 interface CodeEditorViewProps {
-	id: string;
 	isEdit: boolean;
 	contentType: ContentMode;
 	language: string;
@@ -24,7 +23,6 @@ interface CodeEditorViewProps {
 }
 
 export const CodeEditorView = ({
-	id,
 	isEdit,
 	contentType,
 	language,
@@ -87,23 +85,19 @@ export const CodeEditorView = ({
 				)}
 				<div className="flex-1 w-full h-full relative">
 					<Editor
-						key={id}
 						height="100%"
 						language={contentType === "text" ? "text" : language}
 						value={content}
-						onChange={
-							isEdit
-								? (val, ev) => {
-										onContentChange(val ?? "");
-										if (onEditorChange && ev.changes) {
-											onEditorChange({
-												changes: ev.changes,
-												content: val ?? undefined,
-											});
-										}
-									}
-								: undefined
-						}
+						onChange={(val, ev) => {
+							if (!isEdit) return;
+							onContentChange(val ?? "");
+							if (onEditorChange && ev.changes) {
+								onEditorChange({
+									changes: ev.changes,
+									content: val ?? undefined,
+								});
+							}
+						}}
 						onMount={onMount}
 						beforeMount={handleEditorWillMount}
 						theme={

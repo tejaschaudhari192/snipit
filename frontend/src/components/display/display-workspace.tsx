@@ -6,11 +6,7 @@ const TerminalContainer = React.lazy(() =>
 		default: m.TerminalContainer,
 	})),
 );
-const DisplayContent = React.lazy(() =>
-	import("@/components/display/display-content").then((m) => ({
-		default: m.DisplayContent,
-	})),
-);
+import { DisplayContent } from "@/components/display/display-content";
 import type { PasteData, ContentMode, ActiveUser, EditorChange } from "@/types";
 import { Socket } from "socket.io-client";
 import { type BeforeMount, type OnMount } from "@monaco-editor/react";
@@ -22,7 +18,7 @@ interface DisplayWorkspaceProps {
 	contentType: ContentMode;
 	language: string;
 	updatedContent: string | undefined;
-	paste: PasteData | undefined;
+	paste?: PasteData;
 	handleContentChange: (val: string | undefined) => void;
 	handleEditorChange: (data: {
 		changes?: EditorChange[];
@@ -170,7 +166,7 @@ export const DisplayWorkspace = memo(
 
 		if (!isTerminalVisible) {
 			return (
-				<div className="flex-1 min-h-0 min-w-0 h-full flex flex-col">
+				<div className="flex-1 min-h-0 min-w-0 flex flex-col">
 					{editorPanel}
 				</div>
 			);

@@ -36,6 +36,7 @@ Rules:
 - If rewriting, keep the original meaning unless instructed otherwise.
 - IMPORTANT: When the user asks for a flowchart, diagram, or visual process in Markdown, ALWAYS use Mermaid syntax (e.g., \`\`\`mermaid).
 - Output only the final result (no commentary or conversational filler). Do not wrap the output in markdown code blocks unless the text itself is code and it makes sense to do so.
+- ASCII SAFETY: Unless the user explicitly asks for emojis or special symbols, use ONLY standard ASCII characters. This is CRITICAL for code snippets to ensure they remain compilable and avoid encoding issues like 'unmappable character for encoding US-ASCII'.
 `.trim(),
 		USER: (instruction: string, content: string) =>
 			`

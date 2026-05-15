@@ -1,15 +1,8 @@
-import { memo } from "react";
+import { memo, lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Save } from "lucide-react";
+import { MessageSquare, Save, ChevronDown, Code2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Switch } from "@/components/ui/switch";
-import { FontSizeControls } from "@/components/editor/font-size-controls";
-import { LanguageSelector } from "@/components/editor/language-selector";
-import { AiAutocompleteToggle } from "@/components/editor/ai-autocomplete-toggle";
-import { AiWriterButton } from "@/components/editor/ai-writer-button";
-import { VoiceInputButton } from "@/components/editor/voice-input-button";
-import { Code2 } from "lucide-react";
-import { ExpirySelector } from "@/components/common/expiry-selector";
 import {
 	Sheet,
 	SheetContent,
@@ -18,8 +11,6 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
-import { ChevronDown } from "lucide-react";
-import { CommentsSection } from "@/components/display/comments-section";
 import { useAuth } from "@/context/AuthContext";
 import type {
 	PasteData,
@@ -28,11 +19,65 @@ import type {
 	CommentData,
 	ContentMode,
 } from "@/types";
-import { UserAvatarList } from "./shared/user-avatar-list";
-import { AutosaveStatus } from "./shared/autosave-status";
-import { ToolbarActionButtons } from "./shared/toolbar-action-buttons";
 import { cn } from "@/utils";
 import { ShimmerSection } from "@/components/common/shimmer-section";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// Lazy Loaded Components
+const FontSizeControls = lazy(() =>
+	import("@/components/editor/font-size-controls").then((m) => ({
+		default: m.FontSizeControls,
+	})),
+);
+const LanguageSelector = lazy(() =>
+	import("@/components/editor/language-selector").then((m) => ({
+		default: m.LanguageSelector,
+	})),
+);
+const AiAutocompleteToggle = lazy(() =>
+	import("@/components/editor/ai-autocomplete-toggle").then((m) => ({
+		default: m.AiAutocompleteToggle,
+	})),
+);
+const AiWriterButton = lazy(() =>
+	import("@/components/editor/ai-writer-button").then((m) => ({
+		default: m.AiWriterButton,
+	})),
+);
+const VoiceInputButton = lazy(() =>
+	import("@/components/editor/voice-input-button").then((m) => ({
+		default: m.VoiceInputButton,
+	})),
+);
+const ExpirySelector = lazy(() =>
+	import("@/components/common/expiry-selector").then((m) => ({
+		default: m.ExpirySelector,
+	})),
+);
+const CommentsSection = lazy(() =>
+	import("@/components/display/comments-section").then((m) => ({
+		default: m.CommentsSection,
+	})),
+);
+const UserAvatarList = lazy(() =>
+	import("./shared/user-avatar-list").then((m) => ({
+		default: m.UserAvatarList,
+	})),
+);
+const AutosaveStatus = lazy(() =>
+	import("./shared/autosave-status").then((m) => ({
+		default: m.AutosaveStatus,
+	})),
+);
+const ToolbarActionButtons = lazy(() =>
+	import("./shared/toolbar-action-buttons").then((m) => ({
+		default: m.ToolbarActionButtons,
+	})),
+);
+
+// Fallback Skeletons
+const ButtonSkeleton = () => <Skeleton className="h-9 w-9 rounded-lg" />;
+const SelectorSkeleton = () => <Skeleton className="h-9 w-32 rounded-lg" />;
 
 interface DisplayToolbarProps {
 	isEdit: boolean;
@@ -158,24 +203,26 @@ export const DisplayToolbar = memo(
 
 		return (
 			<div className="flex flex-wrap items-center justify-between gap-3 px-4 py-1.5 md:px-6 bg-background/40 backdrop-blur-xl relative z-20 shadow-sm border-b border-border/50">
-				<ToolbarActionButtons
-					isEdit={isEdit}
-					canEdit={canEdit}
-					canDelete={canDelete}
-					content={content}
-					onEdit={onEdit}
-					onDelete={onDelete}
-					onSave={onSave}
-					onCancel={onCancel}
-					isSaving={isSaving}
-					isAutosave={isAutosave}
-					showSaveButton={showSaveButton}
-					isTerminalOpen={isTerminalOpen}
-					onToggleTerminal={onToggleTerminal}
-					isCode={isCode}
-					language={language}
-					pasteId={paste?.id}
-				/>
+				<Suspense fallback={<div className="flex gap-2 w-32 h-9" />}>
+					<ToolbarActionButtons
+						isEdit={isEdit}
+						canEdit={canEdit}
+						canDelete={canDelete}
+						content={content}
+						onEdit={onEdit}
+						onDelete={onDelete}
+						onSave={onSave}
+						onCancel={onCancel}
+						isSaving={isSaving}
+						isAutosave={isAutosave}
+						showSaveButton={showSaveButton}
+						isTerminalOpen={isTerminalOpen}
+						onToggleTerminal={onToggleTerminal}
+						isCode={isCode}
+						language={language}
+						pasteId={paste?.id}
+					/>
+				</Suspense>
 
 				{isEdit &&
 					(isDetecting ||
@@ -184,19 +231,21 @@ export const DisplayToolbar = memo(
 					setLanguage &&
 					setContentType && (
 						<div className="flex items-center gap-2 animate-in fade-in zoom-in-95 duration-200 ml-2">
-							<LanguageSelector
-								value={language}
-								onValueChange={(val) => {
-									setLanguage(val);
-									if (val === "text") {
-										setContentType("text");
-									} else {
-										setContentType("code");
-									}
-								}}
-								isDetecting={isDetecting}
-								className="w-[160px] h-9 text-xs"
-							/>
+							<Suspense fallback={<SelectorSkeleton />}>
+								<LanguageSelector
+									value={language}
+									onValueChange={(val) => {
+										setLanguage(val);
+										if (val === "text") {
+											setContentType("text");
+										} else {
+											setContentType("code");
+										}
+									}}
+									isDetecting={isDetecting}
+									className="w-[160px] h-9 text-xs"
+								/>
+							</Suspense>
 							{!isDetecting && onAutoDetect && (
 								<Button
 									variant="outline"
@@ -235,51 +284,71 @@ export const DisplayToolbar = memo(
 							/>
 						</Button>
 					)}
-					{isEdit && <AutosaveStatus status={saveStatus} />}
-					<UserAvatarList users={activeUsers} />
+					{isEdit && (
+						<Suspense fallback={<div className="w-16 h-4" />}>
+							<AutosaveStatus status={saveStatus} />
+						</Suspense>
+					)}
+					<Suspense fallback={<div className="flex -space-x-2" />}>
+						<UserAvatarList users={activeUsers} />
+					</Suspense>
 					{isEdit && (
 						<div className="flex items-center gap-3 animate-in fade-in duration-300 ml-2">
 							{isEdit &&
 								setIsAiAutocompleteEnabled &&
 								contentType !== "file" &&
 								contentType !== "draw" && (
-									<AiAutocompleteToggle
-										enabled={isAiAutocompleteEnabled}
-										onToggle={setIsAiAutocompleteEnabled}
-										className="h-9"
-									/>
+									<Suspense fallback={<ButtonSkeleton />}>
+										<AiAutocompleteToggle
+											enabled={isAiAutocompleteEnabled}
+											onToggle={
+												setIsAiAutocompleteEnabled
+											}
+											className="h-9"
+										/>
+									</Suspense>
 								)}
 
 							{(isOwner || isAdmin) &&
 								expiresTime &&
 								setExpiresTime &&
 								setIsCustomExpiryDialogOpen && (
-									<ExpirySelector
-										expiresTime={expiresTime}
-										setExpiresTime={setExpiresTime}
-										setIsCustomExpiryDialogOpen={
-											setIsCustomExpiryDialogOpen
-										}
-										className="h-9 min-w-[120px] text-xs"
-									/>
+									<Suspense fallback={<SelectorSkeleton />}>
+										<ExpirySelector
+											expiresTime={expiresTime}
+											setExpiresTime={setExpiresTime}
+											setIsCustomExpiryDialogOpen={
+												setIsCustomExpiryDialogOpen
+											}
+											className="h-9 min-w-[120px] text-xs"
+										/>
+									</Suspense>
 								)}
 
 							{isEdit &&
 								onAiWriterClick &&
 								contentType !== "file" &&
 								contentType !== "draw" && (
-									<AiWriterButton onClick={onAiWriterClick} />
+									<Suspense fallback={<ButtonSkeleton />}>
+										<AiWriterButton
+											onClick={onAiWriterClick}
+										/>
+									</Suspense>
 								)}
 
 							{isEdit &&
 								onContentChange &&
 								contentType !== "file" &&
 								contentType !== "draw" && (
-									<VoiceInputButton
-										value={content}
-										setTextValue={onContentChange}
-										onRecordingChange={onRecordingChange}
-									/>
+									<Suspense fallback={<ButtonSkeleton />}>
+										<VoiceInputButton
+											value={content}
+											setTextValue={onContentChange}
+											onRecordingChange={
+												onRecordingChange
+											}
+										/>
+									</Suspense>
 								)}
 
 							<div className="w-px h-6 bg-border/40 mx-1" />
@@ -310,10 +379,12 @@ export const DisplayToolbar = memo(
 						</div>
 					)}
 					{showFontControls && (
-						<FontSizeControls
-							fontSize={fontSize}
-							setFontSize={setFontSize}
-						/>
+						<Suspense fallback={<ButtonSkeleton />}>
+							<FontSizeControls
+								fontSize={fontSize}
+								setFontSize={setFontSize}
+							/>
+						</Suspense>
 					)}
 					{canShowDiscussion && (
 						<Sheet modal={false}>
@@ -349,10 +420,12 @@ export const DisplayToolbar = memo(
 								</SheetHeader>
 								<div className="flex-1 min-h-0 p-6">
 									{paste && (
-										<CommentsSection
-											paste={paste}
-											onCommentAdded={onCommentAdded}
-										/>
+										<Suspense fallback={null}>
+											<CommentsSection
+												paste={paste}
+												onCommentAdded={onCommentAdded}
+											/>
+										</Suspense>
 									)}
 								</div>
 							</SheetContent>

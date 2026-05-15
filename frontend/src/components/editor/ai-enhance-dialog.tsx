@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
 	Dialog,
 	DialogContent,
@@ -35,6 +35,7 @@ export const AiEnhanceDialog = ({
 	const [instruction, setInstruction] = useState(initialInstruction);
 	const [isLoading, setIsLoading] = useState(false);
 	const [result, setResult] = useState<string | null>(null);
+	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 	// Reset state when dialog opens
 	useEffect(() => {
@@ -42,11 +43,14 @@ export const AiEnhanceDialog = ({
 			setInstruction(initialInstruction);
 			setResult(null);
 			setIsLoading(false);
+			// Auto-focus the textarea
+			setTimeout(() => textareaRef.current?.focus(), 100);
 		}
 	}, [isOpen, initialInstruction]);
 
-	const handleEnhance = async () => {
-		if (!instruction.trim()) {
+	const handleEnhance = async (overrideInstruction?: string) => {
+		const targetInstruction = overrideInstruction ?? instruction;
+		if (!targetInstruction.trim()) {
 			toast.error(t("ai_dialog.error_instruction"));
 			return;
 		}
@@ -55,7 +59,7 @@ export const AiEnhanceDialog = ({
 		try {
 			const res = await apiHelpers.enhanceContent(
 				selectedText,
-				instruction,
+				targetInstruction,
 			);
 			if (res && res.result) {
 				setResult(res.result);
@@ -125,18 +129,20 @@ export const AiEnhanceDialog = ({
 									key={action.label}
 									variant="secondary"
 									size="sm"
-									className="text-xs h-7 rounded-full bg-secondary/50 hover:bg-secondary"
-									onClick={() =>
-										setInstruction(action.tooltip)
-									}
+									className="text-xs h-7 rounded-full bg-secondary/50 hover:bg-secondary border border-transparent hover:border-primary/20 transition-all"
+									onClick={() => {
+										setInstruction(action.tooltip);
+										handleEnhance(action.tooltip);
+									}}
 								>
 									{action.label}
 								</Button>
 							))}
 						</div>
 						<Textarea
+							ref={textareaRef}
 							placeholder={t("ai_dialog.placeholder")}
-							className="min-h-[80px] resize-none focus-visible:ring-1 focus-visible:ring-primary/50"
+							className="min-h-[100px] resize-none focus-visible:ring-1 focus-visible:ring-primary/50 bg-background/50 border-border/40"
 							value={instruction}
 							onChange={(e) => setInstruction(e.target.value)}
 							onKeyDown={(e) => {
@@ -149,11 +155,22 @@ export const AiEnhanceDialog = ({
 					</div>
 
 					{result && (
-						<div className="flex flex-col gap-2 mt-2">
-							<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-								{t("ai_dialog.preview")}
-							</span>
-							<div className="p-3 bg-muted/50 rounded-md border border-border/50 text-sm max-h-[250px] overflow-y-auto whitespace-pre-wrap">
+						<div className="flex flex-col gap-2 mt-4 animate-in fade-in slide-in-from-top-2 duration-300">
+							<div className="flex items-center justify-between">
+								<span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
+									<div className="w-1 h-1 rounded-full bg-primary" />
+									{t("ai_dialog.preview")}
+								</span>
+								<Button
+									variant="ghost"
+									size="sm"
+									className="h-6 text-[10px] text-muted-foreground hover:text-primary"
+									onClick={() => setResult(null)}
+								>
+									{t("common.clear_all")}
+								</Button>
+							</div>
+							<div className="p-4 bg-muted/30 rounded-xl border border-border/30 text-sm max-h-[250px] overflow-y-auto whitespace-pre-wrap font-mono shadow-inner custom-scrollbar selection:bg-primary/20">
 								{result}
 							</div>
 						</div>
@@ -174,7 +191,7 @@ export const AiEnhanceDialog = ({
 						</Button>
 					) : (
 						<Button
-							onClick={handleEnhance}
+							onClick={() => handleEnhance()}
 							disabled={isLoading || !instruction.trim()}
 						>
 							{isLoading ? (
