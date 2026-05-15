@@ -26,18 +26,8 @@ import { cn } from "@/utils";
 import { storage } from "@/utils/storage";
 import { useAiAutocomplete } from "@/hooks/use-ai-autocomplete";
 
-const DisplayLoading = lazy(() =>
-	import("@/components/display/display-loading").then((m) => ({
-		default: m.DisplayLoading,
-	})),
-);
-const DisplayError = lazy(() =>
-	import("@/components/common/core/error").then((m) => ({
-		default: m.default,
-	})),
-);
+import DisplayError from "@/components/common/core/error";
 import { useRemoteCursors } from "@/hooks/use-remote-cursors";
-
 import { useDisplayState } from "@/hooks/use-display-state";
 import { usePasteSync } from "@/hooks/use-paste-sync";
 import { useEditorSync } from "@/hooks/use-editor-sync";
@@ -178,6 +168,15 @@ const DisplayPage = () => {
 		language,
 		enabled: isAiAutocompleteEnabled,
 	});
+
+	useEffect(() => {
+		// Preload Monaco Editor only if the content type is code or text
+		if (contentType === "code" || contentType === "text") {
+			import("@monaco-editor/react").then((m) => {
+				m.loader.init();
+			});
+		}
+	}, [contentType]);
 
 	useEffect(() => {
 		storage.set(CONFIG.storageKeys.aiAutocomplete, isAiAutocompleteEnabled);
@@ -410,24 +409,7 @@ const DisplayPage = () => {
 		paste ? `/${paste.id} (${paste.language || "text"})` : `/${id}`,
 	);
 
-	if (loading) {
-		return (
-			<Suspense
-				fallback={
-					<div className="flex flex-col items-center justify-center h-screen space-y-6 animate-pulse">
-						<Skeleton className="h-16 w-16 rounded-full" />
-						<div className="space-y-2 flex flex-col items-center">
-							<Skeleton className="h-6 w-48 rounded" />
-							<Skeleton className="h-4 w-32 rounded" />
-						</div>
-					</div>
-				}
-			>
-				<DisplayLoading />
-			</Suspense>
-		);
-	}
-	if (!paste) {
+	if (!loading && !paste) {
 		return (
 			<Suspense fallback={null}>
 				<DisplayError />
@@ -435,7 +417,11 @@ const DisplayPage = () => {
 		);
 	}
 
-	if ((paste.isPasswordProtected || !!paste.password) && !paste.content) {
+	if (
+		paste &&
+		(paste.isPasswordProtected || !!paste.password) &&
+		!paste.content
+	) {
 		return (
 			<Suspense
 				fallback={
@@ -495,131 +481,95 @@ const DisplayPage = () => {
 			<div className="flex flex-col h-screen overflow-hidden bg-background">
 				{!isFullscreen && !isWindowFullscreen && (
 					<div className="shrink-0">
-						<Suspense
-							fallback={
-								<div className="flex items-center justify-between gap-3 px-4 py-1.5 md:px-6 bg-background/40 backdrop-blur-xl relative z-20 shadow-sm border-b border-border/50 animate-pulse h-[52px]">
-									<div className="flex items-center gap-2">
-										<Skeleton className="h-9 w-24 rounded-lg" />
-										<Skeleton className="h-9 w-20 rounded-lg hidden sm:block" />
-									</div>
-									<div className="flex-1" />
-									<div className="flex items-center gap-3">
-										<Skeleton className="h-8 w-32 rounded-full hidden md:block" />
-										<Skeleton className="h-9 w-9 rounded-lg" />
-										<Skeleton className="h-9 w-9 rounded-lg" />
-										<Skeleton className="h-9 w-32 rounded-lg" />
-									</div>
-								</div>
+						<DisplayToolbar
+							activeUsers={visibleActiveUsers}
+							isEdit={isEdit}
+							showSaveButton={contentType === "file"}
+							saveStatus={saveStatus}
+							content={updatedContent || paste?.content || ""}
+							onRecordingChange={handleRecordingChange}
+							onEdit={(val) => {
+								if (val && paste) updateAllFromData(paste);
+								setIsEdit(val);
+							}}
+							onDelete={handleDelete}
+							onSave={() => handleEditSave()}
+							onCancel={handleCancel}
+							isSaving={isSaving}
+							fontSize={fontSize}
+							setFontSize={setFontSize}
+							showFontControls={
+								!["link", "file", "draw"].includes(contentType)
 							}
-						>
-							<DisplayToolbar
-								activeUsers={visibleActiveUsers}
-								isEdit={isEdit}
-								showSaveButton={contentType === "file"}
-								saveStatus={saveStatus}
-								content={updatedContent || paste.content}
-								onRecordingChange={handleRecordingChange}
-								onEdit={(val) => {
-									if (val && paste) updateAllFromData(paste);
-									setIsEdit(val);
-								}}
-								onDelete={handleDelete}
-								onSave={() => handleEditSave()}
-								onCancel={handleCancel}
-								isSaving={isSaving}
-								fontSize={fontSize}
-								setFontSize={setFontSize}
-								showFontControls={
-									!["link", "file", "draw"].includes(
-										contentType,
-									)
+							allowComments={allowComments}
+							commentCount={paste?.comments?.length ?? 0}
+							paste={paste}
+							contentType={contentType}
+							onCommentAdded={(newComment: CommentData) =>
+								setPaste((prev) =>
+									prev
+										? {
+												...prev,
+												comments: [
+													...(prev.comments || []),
+													newComment,
+												],
+											}
+										: prev,
+								)
+							}
+							expiresTime={expiresTime}
+							setExpiresTime={setExpiresTime}
+							setIsCustomExpiryDialogOpen={
+								setIsCustomExpiryDialogOpen
+							}
+							isAutosave={isAutosave}
+							setIsAutosave={setIsAutosave}
+							isOptionsOpen={isOptionsOpen}
+							setIsOptionsOpen={setIsOptionsOpen}
+							isTerminalOpen={isTerminalOpen}
+							onToggleTerminal={() => {
+								const opening = !isTerminalOpen;
+								setIsTerminalOpen(opening);
+								if (
+									opening &&
+									socket &&
+									(updatedContent ?? paste?.content)
+								) {
+									socket.emit("run-code", {
+										code:
+											updatedContent ??
+											paste?.content ??
+											"",
+										language,
+									});
 								}
-								allowComments={allowComments}
-								commentCount={paste.comments?.length ?? 0}
-								paste={paste}
-								contentType={contentType}
-								onCommentAdded={(newComment: CommentData) =>
-									setPaste((prev) =>
-										prev
-											? {
-													...prev,
-													comments: [
-														...(prev.comments ||
-															[]),
-														newComment,
-													],
-												}
-											: prev,
-									)
-								}
-								expiresTime={expiresTime}
-								setExpiresTime={setExpiresTime}
-								setIsCustomExpiryDialogOpen={
-									setIsCustomExpiryDialogOpen
-								}
-								isAutosave={isAutosave}
-								setIsAutosave={setIsAutosave}
-								isOptionsOpen={isOptionsOpen}
-								setIsOptionsOpen={setIsOptionsOpen}
-								isTerminalOpen={isTerminalOpen}
-								onToggleTerminal={() => {
-									const opening = !isTerminalOpen;
-									setIsTerminalOpen(opening);
-									if (
-										opening &&
-										socket &&
-										(updatedContent ?? paste?.content)
-									) {
-										socket.emit("run-code", {
-											code:
-												updatedContent ??
-												paste?.content ??
-												"",
-											language,
-										});
+							}}
+							isCode={contentType === "code"}
+							language={language}
+							isAiAutocompleteEnabled={isAiAutocompleteEnabled}
+							setIsAiAutocompleteEnabled={
+								setIsAiAutocompleteEnabled
+							}
+							onContentChange={onContentChange}
+							onAiWriterClick={() => {
+								if (editorInstanceRef.current) {
+									const selection =
+										editorInstanceRef.current.getSelection();
+									if (selection && !selection.isEmpty()) {
+										const text = editorInstanceRef.current
+											.getModel()
+											?.getValueInRange(selection);
+										if (text) setSelectedText(text);
+									} else {
+										setSelectedText("");
 									}
-								}}
-								isCode={contentType === "code"}
-								language={language}
-								isAiAutocompleteEnabled={
-									isAiAutocompleteEnabled
 								}
-								setIsAiAutocompleteEnabled={
-									setIsAiAutocompleteEnabled
-								}
-								onContentChange={onContentChange}
-								onAiWriterClick={() => {
-									if (editorInstanceRef.current) {
-										const selection =
-											editorInstanceRef.current.getSelection();
-										if (selection && !selection.isEmpty()) {
-											const text =
-												editorInstanceRef.current
-													.getModel()
-													?.getValueInRange(
-														selection,
-													);
-											if (text) setSelectedText(text);
-										} else {
-											setSelectedText("");
-										}
-									}
-									setIsAiWriterDialogOpen(true);
-								}}
-							/>
-						</Suspense>
+								setIsAiWriterDialogOpen(true);
+							}}
+						/>
 						{!isEdit && (
-							<Suspense
-								fallback={
-									<div className="px-4 py-2 border-b border-border/10 flex gap-4 animate-pulse">
-										<Skeleton className="h-4 w-24" />
-										<Skeleton className="h-4 w-24" />
-										<Skeleton className="h-4 w-24" />
-									</div>
-								}
-							>
-								<DisplayMetadata paste={paste} />
-							</Suspense>
+							<DisplayMetadata paste={paste} loading={loading} />
 						)}
 					</div>
 				)}
@@ -762,35 +712,31 @@ const DisplayPage = () => {
 				</div>
 			</div>
 
-			<Suspense fallback={null}>
-				<DisplayDialogs
-					isCustomExpiryDialogOpen={isCustomExpiryDialogOpen}
-					setIsCustomExpiryDialogOpen={setIsCustomExpiryDialogOpen}
-					customExpiryDate={state.customExpiryDate}
-					setCustomExpiryDate={state.setCustomExpiryDate}
-					onCustomExpiryConfirm={async () => {
-						setIsCustomExpiryDialogOpen(false);
-						if (state.customExpiryDate)
-							setExpiresTime(
-								state.customExpiryDate.toISOString(),
-							);
-					}}
-					isDeleteDialogOpen={isDeleteDialogOpen}
-					setIsDeleteDialogOpen={setIsDeleteDialogOpen}
-					onDeleteConfirm={onDeleteConfirm}
-					isAiDialogOpen={isAiDialogOpen}
-					setIsAiDialogOpen={setIsAiDialogOpen}
-					selectedText={selectedText}
-					prefillInstruction={prefillInstruction}
-					applyEnhancedText={applyEnhancedText}
-				/>
-				<AiWriterDialog
-					isOpen={isAiWriterDialogOpen}
-					onClose={() => setIsAiWriterDialogOpen(false)}
-					onApply={applyWriterText}
-					selectedText={selectedText}
-				/>
-			</Suspense>
+			<DisplayDialogs
+				isCustomExpiryDialogOpen={isCustomExpiryDialogOpen}
+				setIsCustomExpiryDialogOpen={setIsCustomExpiryDialogOpen}
+				customExpiryDate={state.customExpiryDate}
+				setCustomExpiryDate={state.setCustomExpiryDate}
+				onCustomExpiryConfirm={async () => {
+					setIsCustomExpiryDialogOpen(false);
+					if (state.customExpiryDate)
+						setExpiresTime(state.customExpiryDate.toISOString());
+				}}
+				isDeleteDialogOpen={isDeleteDialogOpen}
+				setIsDeleteDialogOpen={setIsDeleteDialogOpen}
+				onDeleteConfirm={onDeleteConfirm}
+				isAiDialogOpen={isAiDialogOpen}
+				setIsAiDialogOpen={setIsAiDialogOpen}
+				selectedText={selectedText}
+				prefillInstruction={prefillInstruction}
+				applyEnhancedText={applyEnhancedText}
+			/>
+			<AiWriterDialog
+				isOpen={isAiWriterDialogOpen}
+				onClose={() => setIsAiWriterDialogOpen(false)}
+				onApply={applyWriterText}
+				selectedText={selectedText}
+			/>
 		</>
 	);
 };

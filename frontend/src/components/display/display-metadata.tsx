@@ -10,12 +10,14 @@ import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { useSnippets } from "@/context/SnippetContext";
 import { guestStorage } from "@/utils/guest-storage";
+import { ShimmerSection } from "@/components/common/shimmer-section";
 
 interface DisplayMetadataProps {
-	paste: PasteData;
+	paste?: PasteData;
+	loading?: boolean;
 }
 
-export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
+export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
 	const apiHelpers = useApiHelpers();
@@ -26,13 +28,15 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 	const [isEditingLabels, setIsEditingLabels] = useState(false);
 
 	useEffect(() => {
+		if (!paste) return;
 		const savedItem = savedProfile.items.find((p) => p.id === paste.id);
 		if (user && savedItem) {
 			setIsSaved(true);
 		}
-	}, [user, savedProfile.items, paste.id]);
+	}, [user, savedProfile.items, paste?.id]);
 
 	const handleSaveSnippet = async () => {
+		if (!paste) return;
 		if (user) {
 			try {
 				setIsSaving(true);
@@ -73,6 +77,20 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 			}
 		}
 	};
+
+	const handleLabelsUpdate = useCallback(
+		(labels: string[]) => setIsSavedByLabels(labels.length > 0),
+		[],
+	);
+
+	const handleEditStateChange = useCallback(
+		(isEditing: boolean) => setIsEditingLabels(isEditing),
+		[],
+	);
+
+	if (loading || !paste) {
+		return <ShimmerSection type="metadata" />;
+	}
 
 	return (
 		<>
@@ -151,16 +169,8 @@ export const DisplayMetadata = ({ paste }: DisplayMetadataProps) => {
 						<LabelManager
 							pasteId={paste.id}
 							compact={true}
-							onLabelsUpdate={useCallback(
-								(labels: string[]) =>
-									setIsSavedByLabels(labels.length > 0),
-								[],
-							)}
-							onEditStateChange={useCallback(
-								(isEditing: boolean) =>
-									setIsEditingLabels(isEditing),
-								[],
-							)}
+							onLabelsUpdate={handleLabelsUpdate}
+							onEditStateChange={handleEditStateChange}
 						/>
 					</div>
 				</div>

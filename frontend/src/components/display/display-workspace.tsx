@@ -22,7 +22,7 @@ interface DisplayWorkspaceProps {
 	contentType: ContentMode;
 	language: string;
 	updatedContent: string | undefined;
-	paste: PasteData;
+	paste: PasteData | undefined;
 	handleContentChange: (val: string | undefined) => void;
 	handleEditorChange: (data: {
 		changes?: EditorChange[];
@@ -93,6 +93,10 @@ export const DisplayWorkspace = memo(
 		isFileUploading,
 		fileUploadError,
 	}: DisplayWorkspaceProps) => {
+		if (!paste) {
+			return <ShimmerSection type="editor" className="flex-1" />;
+		}
+
 		const isTerminalVisible =
 			isTerminalOpen && !!paste && contentType === "code";
 

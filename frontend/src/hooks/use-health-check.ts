@@ -49,7 +49,7 @@ export const useHealthCheck = () => {
 						eventSource.close();
 						setTimeout(() => {
 							setLoading(false);
-						}, 1000);
+						}, 100);
 					}
 				} catch (err) {
 					console.error("Failed to parse health stream data", err);

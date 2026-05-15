@@ -66,26 +66,24 @@ class PasteController {
 			}
 
 			const userId = this.getUserId(req);
-			const canView = await this.permissionService.canView(
+			const role = await this.permissionService.getUserRole(
 				userId,
 				result,
 			);
 
-			if (!canView) {
+			if (!role) {
 				return res.status(403).json({
 					error: "Access denied. Private or Shared snippet.",
 				});
 			}
 
-			const role = await this.permissionService.getUserRole(
-				userId,
-				result,
-			);
 			const pasteObj = result.toObject();
 
-			// Fetch collaborators separately
-			const collaborators =
-				await this.pasteService.getCollaboratorsByPasteId(id);
+			// Fetch collaborators and comments in parallel
+			const [collaborators, comments] = await Promise.all([
+				this.pasteService.getCollaboratorsByPasteId(id),
+				this.pasteService.getCommentsByPasteId(id),
+			]);
 
 			// Filter collaborators based on role: only admins see everyone, others only see themselves
 			let filteredCollaborators: ICollaborator[] = [];
@@ -101,9 +99,6 @@ class PasteController {
 					);
 				}
 			}
-
-			// Fetch comments for this paste
-			const comments = await this.pasteService.getCommentsByPasteId(id);
 			const responseData = {
 				...pasteObj,
 				role,
@@ -231,22 +226,24 @@ class PasteController {
 				return res.status(404).json({ error: "Paste not found" });
 
 			const userId = this.getUserId(req);
-			const canView = await this.permissionService.canView(userId, paste);
-			if (!canView) {
+			const role = await this.permissionService.getUserRole(
+				userId,
+				paste,
+			);
+
+			if (!role) {
 				return res.status(403).json({
 					error: "Access denied. Private or Shared snippet.",
 				});
 			}
 
-			const role = await this.permissionService.getUserRole(
-				userId,
-				paste,
-			);
 			const pasteObj = paste.toObject();
 
-			// Fetch collaborators
-			const collaborators =
-				await this.pasteService.getCollaboratorsByPasteId(id);
+			// Fetch collaborators and comments in parallel
+			const [collaborators, comments] = await Promise.all([
+				this.pasteService.getCollaboratorsByPasteId(id),
+				this.pasteService.getCommentsByPasteId(id),
+			]);
 
 			let filteredCollaborators: ICollaborator[] = [];
 			if (role === "admin") {
@@ -261,9 +258,6 @@ class PasteController {
 					);
 				}
 			}
-
-			// Fetch comments for this paste
-			const comments = await this.pasteService.getCommentsByPasteId(id);
 			const responseData = {
 				...pasteObj,
 				role,

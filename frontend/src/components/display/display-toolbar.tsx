@@ -32,6 +32,7 @@ import { UserAvatarList } from "./shared/user-avatar-list";
 import { AutosaveStatus } from "./shared/autosave-status";
 import { ToolbarActionButtons } from "./shared/toolbar-action-buttons";
 import { cn } from "@/utils";
+import { ShimmerSection } from "@/components/common/shimmer-section";
 
 interface DisplayToolbarProps {
 	isEdit: boolean;
@@ -117,6 +118,10 @@ export const DisplayToolbar = memo(
 	}: DisplayToolbarProps) => {
 		const { t } = useTranslation();
 		const { user } = useAuth();
+
+		if (!paste) {
+			return <ShimmerSection type="toolbar" />;
+		}
 
 		const isOwner = !!(user && paste?.owner === user._id);
 
