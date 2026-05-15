@@ -75,7 +75,7 @@ export const QRDialog = ({ url, isOpen, onOpenChange }: QRDialogProps) => {
 				<DialogFooter className="sm:justify-center border-t border-border/10 pt-4 mt-2">
 					<Button
 						variant="outline"
-						className="w-full sm:w-auto font-black uppercase tracking-wider gap-2 shadow-lg"
+						className="w-full sm:w-auto font-black tracking-wider gap-2 shadow-lg"
 						onClick={downloadQR}
 					>
 						<Download className="h-4 w-4" />

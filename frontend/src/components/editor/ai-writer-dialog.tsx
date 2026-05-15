@@ -151,7 +151,7 @@ export const AiWriterDialog = ({
 
 					{result && (
 						<div className="flex flex-col gap-2 mt-2">
-							<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+							<span className="text-xs font-semibold text-muted-foreground tracking-wider">
 								{t("ai_dialog.preview")}
 							</span>
 							<div className="p-3 bg-muted/50 rounded-md border border-border/50 text-sm max-h-[250px] overflow-y-auto whitespace-pre-wrap font-mono">

@@ -241,7 +241,7 @@ const ProfilePage = () => {
 						{/* Labels Filter Bar */}
 						{allLabels && allLabels.length > 0 && (
 							<div className="flex items-center gap-2 mb-4 px-2 overflow-x-auto no-scrollbar pb-2">
-								<div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider mr-2 shrink-0">
+								<div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground tracking-wider mr-2 shrink-0">
 									<Tag className="w-3 h-3" />
 									Filters
 								</div>

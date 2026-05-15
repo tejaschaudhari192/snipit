@@ -1,6 +1,13 @@
-import { Download, FileText, Code as CodeIcon, FileDown } from "lucide-react";
+import {
+	Download,
+	FileText,
+	Code as CodeIcon,
+	FileDown,
+	Loader2,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { LANGUAGE_EXTENSIONS } from "@/constants";
+import { useState } from "react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -9,6 +16,11 @@ import {
 	DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import {
+	exportToCodePdf,
+	exportToPreviewPdf,
+	downloadFile,
+} from "@/lib/export";
 
 interface SaveAsButtonProps {
 	content: string;
@@ -26,54 +38,48 @@ export const SaveAsButton = ({
 	className,
 }: SaveAsButtonProps) => {
 	const { t } = useTranslation();
+	const [isGenerating, setIsGenerating] = useState(false);
 
-	const handleDownload = async (format: "lang" | "txt" | "pdf") => {
+	const handleDownload = async (
+		format: "lang" | "txt" | "pdf" | "pdf-md",
+	) => {
 		const fileName = pasteId || "snipit";
 
-		if (format === "pdf") {
-			const { jsPDF } = await import("jspdf");
-			const doc = new jsPDF();
-			doc.setFont("courier");
-			doc.setFontSize(10);
-			const lines = doc.splitTextToSize(content, 180);
-
-			const margin = 10;
-			const lineHeight = 5;
-			const pageHeight = doc.internal.pageSize.getHeight();
-			let cursorY = margin;
-
-			lines.forEach((line: string) => {
-				if (cursorY + lineHeight > pageHeight - margin) {
-					doc.addPage();
-					cursorY = margin;
-				}
-				doc.text(line, margin, cursorY);
-				cursorY += lineHeight;
-			});
-
-			doc.save(`${fileName}.pdf`);
-			return;
+		try {
+			if (format === "pdf") {
+				setIsGenerating(true);
+				await exportToCodePdf(content, fileName);
+			} else if (format === "pdf-md") {
+				exportToPreviewPdf("markdown-preview-container", fileName);
+			} else if (format === "lang") {
+				const ext =
+					LANGUAGE_EXTENSIONS[language.toLowerCase()] || "txt";
+				downloadFile(content, fileName, ext);
+			} else if (format === "txt") {
+				downloadFile(content, fileName, "txt");
+			}
+		} catch (error) {
+			console.error("Export failed:", error);
+		} finally {
+			setIsGenerating(false);
 		}
-
-		const ext =
-			format === "txt"
-				? "txt"
-				: LANGUAGE_EXTENSIONS[language.toLowerCase()] || "txt";
-		const blob = new Blob([content], { type: "text/plain" });
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement("a");
-		a.href = url;
-		a.download = `${fileName}.${ext}`;
-		a.click();
-		URL.revokeObjectURL(url);
 	};
 
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" size="sm" className={className}>
-					<Download className="h-4 w-4" />
-					<span className="hidden sm:inline">
+				<Button
+					variant="outline"
+					size="sm"
+					className={className}
+					disabled={isGenerating}
+				>
+					{isGenerating ? (
+						<Loader2 className="h-4 w-4 animate-spin" />
+					) : (
+						<Download className="h-4 w-4" />
+					)}
+					<span className="hidden sm:inline ml-2">
 						{t("common.save_as")}
 					</span>
 				</Button>
@@ -82,7 +88,7 @@ export const SaveAsButton = ({
 				{isCode && (
 					<DropdownMenuItem
 						onClick={() => handleDownload("lang")}
-						className="gap-2"
+						className="gap-2 cursor-pointer"
 					>
 						<CodeIcon className="h-4 w-4" />
 						<span>
@@ -94,19 +100,38 @@ export const SaveAsButton = ({
 				)}
 				<DropdownMenuItem
 					onClick={() => handleDownload("txt")}
-					className="gap-2"
+					className="gap-2 cursor-pointer"
 				>
 					<FileText className="h-4 w-4" />
 					<span>.txt</span>
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem
-					onClick={() => handleDownload("pdf")}
-					className="gap-2"
-				>
-					<FileDown className="h-4 w-4" />
-					<span>.pdf</span>
-				</DropdownMenuItem>
+				{language.toLowerCase() === "markdown" ? (
+					<>
+						<DropdownMenuItem
+							onClick={() => handleDownload("pdf")}
+							className="gap-2 cursor-pointer"
+						>
+							<FileDown className="h-4 w-4" />
+							<span>.pdf (Code)</span>
+						</DropdownMenuItem>
+						<DropdownMenuItem
+							onClick={() => handleDownload("pdf-md")}
+							className="gap-2 cursor-pointer"
+						>
+							<FileDown className="h-4 w-4 text-primary" />
+							<span>.pdf (Preview)</span>
+						</DropdownMenuItem>
+					</>
+				) : (
+					<DropdownMenuItem
+						onClick={() => handleDownload("pdf")}
+						className="gap-2 cursor-pointer"
+					>
+						<FileDown className="h-4 w-4" />
+						<span>.pdf</span>
+					</DropdownMenuItem>
+				)}
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);

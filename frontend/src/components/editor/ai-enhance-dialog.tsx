@@ -157,7 +157,7 @@ export const AiEnhanceDialog = ({
 					{result && (
 						<div className="flex flex-col gap-2 mt-4 animate-in fade-in slide-in-from-top-2 duration-300">
 							<div className="flex items-center justify-between">
-								<span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
+								<span className="text-[10px] font-bold text-muted-foreground tracking-widest flex items-center gap-1.5">
 									<div className="w-1 h-1 rounded-full bg-primary" />
 									{t("ai_dialog.preview")}
 								</span>
