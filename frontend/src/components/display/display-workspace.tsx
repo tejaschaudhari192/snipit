@@ -147,7 +147,7 @@ export const DisplayWorkspace = memo(
 		const terminalPanel = (
 			<Suspense
 				fallback={
-					<div className="mx-2 sm:mx-4 mb-2 h-40 skeleton rounded-xl opacity-50" />
+					<div className="mx-2 sm:mx-4 mb-2 h-full skeleton rounded-xl opacity-50" />
 				}
 			>
 				<TerminalContainer

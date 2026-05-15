@@ -102,12 +102,16 @@ export const TerminalPanel = ({
 
 	// ── Fit on position / resize ───────────────────────────────────────────
 	useEffect(() => {
-		const handleResize = () => fitAddon.current?.fit();
-		window.addEventListener("resize", handleResize);
-		const t = setTimeout(() => fitAddon.current?.fit(), 150);
+		if (!terminalRef.current) return;
+
+		const resizeObserver = new ResizeObserver(() => {
+			fitAddon.current?.fit();
+		});
+
+		resizeObserver.observe(terminalRef.current);
+
 		return () => {
-			window.removeEventListener("resize", handleResize);
-			clearTimeout(t);
+			resizeObserver.disconnect();
 		};
 	}, [position]);
 

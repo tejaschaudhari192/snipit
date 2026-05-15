@@ -247,6 +247,10 @@
 		background: rgba(255, 255, 255, 0.2);
 	}
 
+	.xterm {
+		height: 100% !important;
+	}
+
 	.no-scrollbar::-webkit-scrollbar {
 		display: none;
 	}
