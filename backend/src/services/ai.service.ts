@@ -151,35 +151,23 @@ class AiService {
 		}
 	}
 
-	async suggestId(content: string): Promise<string> {
-		const systemPrompt = PROMPTS.SUGGEST_ID.SYSTEM;
-		const userPrompt = PROMPTS.SUGGEST_ID.USER(content);
+	async suggestId(
+		content: string,
+		files?: Array<{ name: string; type: string }>,
+	): Promise<string> {
+		const takenIds: string[] = [];
+		let finalId = "";
+		let attempts = 0;
 
-		try {
-			const chatCompletion = await this.requestWithFallback(
-				{
-					messages: [
-						{ role: "system", content: systemPrompt },
-						{ role: "user", content: userPrompt },
-					],
-					temperature: 0.3,
-					max_tokens: 20,
-				},
-				{ preferredModel: configurations.groq_dumb_model },
-			);
+		while (attempts < 3) {
+			const systemPrompt = PROMPTS.SUGGEST_ID.SYSTEM;
+			let userPrompt = PROMPTS.SUGGEST_ID.USER(content, files);
 
-			const takenIds: string[] = [];
-			let finalId = "";
-			let attempts = 0;
+			if (takenIds.length > 0) {
+				userPrompt += `\n\nIMPORTANT: The following IDs are already taken, do NOT use them: ${takenIds.join(", ")}. Suggest a completely different nice word.`;
+			}
 
-			while (attempts < 3) {
-				const systemPrompt = PROMPTS.SUGGEST_ID.SYSTEM;
-				let userPrompt = PROMPTS.SUGGEST_ID.USER(content);
-
-				if (takenIds.length > 0) {
-					userPrompt += `\n\nIMPORTANT: The following IDs are already taken, do NOT use them: ${takenIds.join(", ")}. Suggest a completely different nice word.`;
-				}
-
+			try {
 				const chatCompletion = await this.requestWithFallback(
 					{
 						messages: [
@@ -215,16 +203,21 @@ class AiService {
 					takenIds.push(id);
 					attempts++;
 				}
+			} catch (error) {
+				logger.error(
+					`Attempt ${attempts} failed for suggestId:`,
+					error,
+				);
+				attempts++;
 			}
-
-			return (
-				finalId ||
-				takenIds[0] + "-" + Math.random().toString(36).substring(2, 5)
-			); // Fallback if all retries fail
-		} catch (error) {
-			logger.error("Error suggesting ID:", error);
-			return "";
 		}
+
+		return (
+			finalId ||
+			(takenIds.length > 0
+				? takenIds[0] + "-" + Math.random().toString(36).substring(2, 5)
+				: "snippet-" + Math.random().toString(36).substring(2, 7))
+		); // Fallback if all retries fail
 	}
 
 	async autocomplete(

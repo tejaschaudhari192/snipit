@@ -150,7 +150,26 @@ Rules:
 - Use hyphens (-) if using 2 words.
 - Do not include any other text, explanations, or quotes.
 `.trim(),
-		USER: (content: string) =>
-			`Generate a very short, descriptive ID (prefer 1 word) for the following content:\n\n${content.substring(0, 1000)}`,
+		USER: (
+			content: string,
+			files?: Array<{ name: string; type: string }>,
+		) => {
+			let prompt =
+				"Generate a very short, descriptive ID (prefer 1 word) for the following ";
+
+			if (files && files.length > 0) {
+				const fileDetails = files
+					.map((f) => `${f.name}${f.type ? ` (${f.type})` : ""}`)
+					.join(", ");
+				prompt += `files: ${fileDetails}.`;
+				if (content.trim()) {
+					prompt += `\n\nAdditional content context:\n${content.substring(0, 500)}`;
+				}
+			} else {
+				prompt += `content:\n\n${content.substring(0, 1000)}`;
+			}
+
+			return prompt;
+		},
 	},
 };

@@ -84,13 +84,15 @@ class AiController {
 	}
 
 	async suggestId(req: Request, res: Response) {
-		const { content } = req.body;
+		const { content, files } = req.body;
 
-		if (!content) {
-			return res.status(400).json({ error: "Content is required" });
+		if (!content && (!files || files.length === 0)) {
+			return res.status(400).json({
+				error: "Content or files are required for ID suggestion",
+			});
 		}
 
-		const id = await this.aiService.suggestId(content);
+		const id = await this.aiService.suggestId(content || "", files);
 		res.json({ id });
 	}
 }

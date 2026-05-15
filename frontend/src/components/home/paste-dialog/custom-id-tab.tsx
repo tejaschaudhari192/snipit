@@ -15,12 +15,13 @@ interface Props {
 
 export const CustomIdTab = ({ customId, setCustomId, onSubmit }: Props) => {
 	const { t } = useTranslation();
-	const { textValue } = usePaste();
+	const { textValue, files } = usePaste();
 
 	const { isAvailable, isChecking } = useIdAvailability(customId, "dynamic");
 	const { isSuggesting, handleSuggestId } = useAiIdSuggester(
 		textValue,
 		setCustomId,
+		files,
 	);
 
 	return (
