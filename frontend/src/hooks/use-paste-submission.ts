@@ -22,7 +22,7 @@ interface SubmitOptions {
 	password?: string;
 	editPermission?: EditPermission;
 	allowedUsers?: string[];
-	shareList?: { email: string; role: ShareRole }[];
+	collaborators?: { email: string; role: ShareRole }[];
 	publicRole?: PublicRole;
 	allowComments?: boolean;
 	isCollaborative?: boolean;
@@ -39,7 +39,7 @@ export const usePasteSubmission = (
 		visibility,
 		editPermission,
 		allowedUsers,
-		shareList,
+		collaborators,
 		publicRole,
 		allowComments,
 		expiresTime,
@@ -123,7 +123,7 @@ export const usePasteSubmission = (
 						: undefined,
 				password: (options.password ?? password) || undefined,
 				editPermission: finalEditPermission,
-				shareList: options.shareList ?? shareList,
+				collaborators: options.collaborators ?? collaborators,
 				publicRole: finalPublicRole,
 				allowComments: options.allowComments ?? allowComments,
 			});

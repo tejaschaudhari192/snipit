@@ -306,7 +306,13 @@
 		"empty_content": "Bitte geben Sie zuerst einen Inhalt ein!",
 		"empty_file": "Bitte wählen Sie zuerst eine Datei aus!",
 		"qr_downloaded": "QR-Code heruntergeladen!",
-		"autosaved": "Automatisch gespeichert: {{fields}}"
+		"autosaved": "Automatisch gespeichert: {{fields}}",
+		"collaborators_added": "Mitarbeiter erfolgreich hinzugefügt",
+		"collaborators_failed": "Mitarbeiter konnten nicht hinzugefügt werden",
+		"collaborator_removed": "Mitarbeiter erfolgreich entfernt",
+		"collaborator_remove_failed": "Mitarbeiter konnte nicht entfernt werden",
+		"collaborator_updated": "Mitarbeiterberechtigung erfolgreich aktualisiert",
+		"collaborator_update_failed": "Aktualisierung der Mitarbeiterberechtigung fehlgeschlagen"
 	},
 	"about_page": {
 		"title": "Über",

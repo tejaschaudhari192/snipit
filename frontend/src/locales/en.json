@@ -320,7 +320,13 @@
 		"empty_content": "Please enter some content first!",
 		"empty_file": "Please select a file first!",
 		"qr_downloaded": "QR Code downloaded!",
-		"autosaved": "Autosaved: {{fields}}"
+		"autosaved": "Autosaved: {{fields}}",
+		"collaborators_added": "Collaborators added successfully",
+		"collaborators_failed": "Failed to add collaborators",
+		"collaborator_removed": "Collaborator removed successfully",
+		"collaborator_remove_failed": "Failed to remove collaborator",
+		"collaborator_updated": "Collaborator access updated successfully",
+		"collaborator_update_failed": "Failed to update collaborator access"
 	},
 	"about_page": {
 		"loading": "Loading...",

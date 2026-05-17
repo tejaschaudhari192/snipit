@@ -48,11 +48,11 @@ export interface AdvancedConfigGridProps {
 	setEditPermission: (v: EditPermission) => void;
 	allowedUsers: string[];
 	setAllowedUsers: (v: string[]) => void;
-	shareList: {
+	collaborators: {
 		email: string;
 		role: ShareRole;
 	}[];
-	setShareList: (
+	setCollaborators: (
 		v: {
 			email: string;
 			role: ShareRole;
@@ -131,8 +131,8 @@ export const AdvancedConfigGrid = ({
 	setEditPermission,
 	allowedUsers,
 	setAllowedUsers,
-	shareList,
-	setShareList,
+	collaborators,
+	setCollaborators,
 	isOwner,
 	isAdmin,
 	disabled = false,
@@ -318,8 +318,8 @@ export const AdvancedConfigGrid = ({
 						>
 							<CollaboratorsManager
 								pasteId={pasteId}
-								shareList={shareList}
-								setShareList={setShareList}
+								collaborators={collaborators}
+								setCollaborators={setCollaborators}
 								allowedUsers={allowedUsers}
 								setAllowedUsers={setAllowedUsers}
 								disabled={disabled || (!isOwner && !isAdmin)}

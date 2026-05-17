@@ -11,17 +11,20 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface DeletePasteDialogProps {
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
 	onConfirm: () => void;
+	isDeleting?: boolean;
 }
 
 export const DeletePasteDialog = ({
 	isOpen,
 	onOpenChange,
 	onConfirm,
+	isDeleting = false,
 }: DeletePasteDialogProps) => {
 	const { t } = useTranslation();
 
@@ -46,15 +49,26 @@ export const DeletePasteDialog = ({
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
-					<AlertDialogCancel variant="ghost">
+					<AlertDialogCancel variant="ghost" disabled={isDeleting}>
 						{t("history.cancel")}
 					</AlertDialogCancel>
 					<AlertDialogAction
 						variant="destructive"
-						onClick={onConfirm}
-						className="font-bold"
+						onClick={(e) => {
+							e.preventDefault();
+							onConfirm();
+						}}
+						disabled={isDeleting}
+						className="font-bold min-w-[100px] gap-2 flex items-center justify-center"
 					>
-						{t("display.delete_button")}
+						{isDeleting ? (
+							<>
+								<Skeleton className="h-3 w-3 rounded-full bg-white/40 shrink-0" />
+								<span>{t("common.submitting")}</span>
+							</>
+						) : (
+							t("display.delete_button")
+						)}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>

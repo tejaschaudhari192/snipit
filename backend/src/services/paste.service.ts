@@ -33,6 +33,8 @@ class PasteService {
 			...rest
 		} = data;
 
+		const finalCollaborators = collaborators;
+
 		let expiresAt = expiresTime
 			? dateConverter(expiresTime)
 			: dateConverter("1d");
@@ -66,10 +68,10 @@ class PasteService {
 		try {
 			const paste = await pasteModel.create(pasteData);
 
-			if (collaborators && collaborators.length > 0) {
-				await this.addCollaborators(paste.id, collaborators);
+			if (finalCollaborators && finalCollaborators.length > 0) {
+				await this.addCollaborators(paste.id, finalCollaborators);
 				if (this.emailService) {
-					await this.sendShareEmails(paste, collaborators);
+					await this.sendShareEmails(paste, finalCollaborators);
 				}
 			}
 
@@ -135,6 +137,8 @@ class PasteService {
 		const { newId, expiresTime, password, collaborators, ...updates } =
 			data;
 
+		const finalCollaborators = collaborators;
+
 		if (newId && newId !== id) {
 			const existing = await pasteModel.findOne({ id: newId });
 			if (existing) throw new Error("ID_ALREADY_EXISTS");
@@ -148,7 +152,9 @@ class PasteService {
 			paste.expiresAt = expiresAt;
 		}
 
-		if (password) {
+		if (password === null) {
+			paste.password = undefined;
+		} else if (password) {
 			const salt = await bcrypt.genSalt(10);
 			paste.password = await bcrypt.hash(password, salt);
 		}
@@ -183,12 +189,12 @@ class PasteService {
 
 		const updatedPaste = await paste.save();
 
-		if (collaborators) {
+		if (finalCollaborators) {
 			await collaboratorModel.deleteMany({ pasteId: id });
-			await this.addCollaborators(id, collaborators);
+			await this.addCollaborators(id, finalCollaborators);
 
 			if (this.emailService) {
-				const newShares = collaborators.filter(
+				const newShares = finalCollaborators.filter(
 					(s) => oldShareMap.get(s.email) !== s.role,
 				);
 				if (newShares.length > 0) {
@@ -203,12 +209,14 @@ class PasteService {
 	async addCollaborators(pasteId: string, collaborators: ShareEntry[]) {
 		const collaboratorPromises = collaborators.map(async (col) => {
 			const user = await User.findOne({ email: col.email });
-			return collaboratorModel.create({
-				pasteId,
-				email: col.email,
-				userId: user?._id || undefined,
-				role: col.role,
-			});
+			return collaboratorModel.findOneAndUpdate(
+				{ pasteId, email: col.email },
+				{
+					userId: user?._id || undefined,
+					role: col.role,
+				},
+				{ upsert: true, new: true },
+			);
 		});
 		await Promise.all(collaboratorPromises);
 	}

@@ -308,7 +308,13 @@
 		"empty_content": "कृपया प्रथम काही मजकूर प्रविष्ट करा!",
 		"empty_file": "कृपया प्रथम फाइल निवडा!",
 		"qr_downloaded": "QR कोड डाउनलोड झाला!",
-		"autosaved": "ऑटोसेव्ह: {{fields}}"
+		"autosaved": "ऑटोसेव्ह: {{fields}}",
+		"collaborators_added": "सहयोगी यशस्वीरित्या जोडले गेले",
+		"collaborators_failed": "सहयोगी जोडण्यात अपयशी",
+		"collaborator_removed": "सहयोगी यशस्वीरित्या काढला गेला",
+		"collaborator_remove_failed": "सहयोगी काढण्यात अपयशी",
+		"collaborator_updated": "सहयोगीची परवानगी यशस्वीरित्या अपडेट केली गेली",
+		"collaborator_update_failed": "सहयोगीची परवानगी अपडेट करण्यात अपयशी"
 	},
 	"about_page": {
 		"title": "बद्दल",

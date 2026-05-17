@@ -12,6 +12,7 @@ import { useSnippets } from "@/context/SnippetContext";
 import { guestStorage } from "@/utils/guest-storage";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { LANGUAGES } from "@/constants";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface DisplayMetadataProps {
 	paste?: PasteData;
@@ -162,17 +163,25 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 							<button
 								onClick={handleSaveSnippet}
 								disabled={isSaving}
-								className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-all text-xs font-bold ${
+								className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all text-xs font-bold ${
 									isSaved
 										? "bg-primary/20 text-primary"
 										: "bg-muted hover:bg-primary/10 text-muted-foreground hover:text-primary"
 								}`}
 								title="Save snippet"
 							>
-								<Bookmark
-									className={`w-3.5 h-3.5 ${isSaved ? "fill-current" : ""}`}
-								/>
-								{isSaved ? "Saved" : "Save"}
+								{isSaving ? (
+									<Skeleton className="w-3.5 h-3.5 rounded-full bg-primary/30 shrink-0" />
+								) : (
+									<Bookmark
+										className={`w-3.5 h-3.5 shrink-0 ${isSaved ? "fill-current" : ""}`}
+									/>
+								)}
+								{isSaving
+									? "Saving..."
+									: isSaved
+										? "Saved"
+										: "Save"}
 							</button>
 						)}
 					<div className="w-full sm:w-auto">

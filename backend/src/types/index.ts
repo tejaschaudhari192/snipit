@@ -121,7 +121,7 @@ export interface UpdatePasteData {
 	fileSize?: number | null | undefined;
 	fileMimeType?: string | null | undefined;
 	newId?: string | undefined;
-	password?: string | undefined;
+	password?: string | null | undefined;
 	editPermission?: EditPermission | undefined;
 	burnAfterRead?: boolean | undefined;
 	files?: FileAttachment[] | undefined;

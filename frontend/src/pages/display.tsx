@@ -83,8 +83,8 @@ const DisplayPage = () => {
 		setAllowedUsers,
 		editPermission,
 		setEditPermission,
-		shareList,
-		setShareList,
+		collaborators,
+		setCollaborators,
 		publicRole,
 		setPublicRole,
 		allowComments,
@@ -121,6 +121,7 @@ const DisplayPage = () => {
 		passwordError,
 		setPasswordError,
 		isSaving,
+		isDeleting,
 		isVerifyingPassword,
 		setIsVerifyingPassword,
 		isServerFileRemoved,
@@ -341,7 +342,7 @@ const DisplayPage = () => {
 			visibility,
 			editPermission,
 			allowedUsers,
-			shareList,
+			collaborators,
 			publicRole,
 			allowComments,
 			expiresTime,
@@ -452,7 +453,7 @@ const DisplayPage = () => {
 	const isOwnerOrAdmin =
 		isOwner ||
 		(!!user &&
-			shareList.some(
+			collaborators.some(
 				(item) => item.email === user.email && item.role === "admin",
 			));
 
@@ -612,8 +613,8 @@ const DisplayPage = () => {
 										setEditPermission={setEditPermission}
 										isOwner={isOwner}
 										isAdmin={isOwnerOrAdmin}
-										shareList={shareList}
-										setShareList={setShareList}
+										collaborators={collaborators}
+										setCollaborators={setCollaborators}
 										publicRole={publicRole}
 										setPublicRole={setPublicRole}
 										allowComments={allowComments}
@@ -714,6 +715,7 @@ const DisplayPage = () => {
 				isDeleteDialogOpen={isDeleteDialogOpen}
 				setIsDeleteDialogOpen={setIsDeleteDialogOpen}
 				onDeleteConfirm={onDeleteConfirm}
+				isDeleting={isDeleting}
 				isAiDialogOpen={isAiDialogOpen}
 				setIsAiDialogOpen={setIsAiDialogOpen}
 				selectedText={selectedText}

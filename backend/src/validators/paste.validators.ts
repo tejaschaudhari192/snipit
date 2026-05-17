@@ -31,6 +31,7 @@ export const createPasteSchema = z.object({
 			}),
 		)
 		.optional(),
+
 	publicRole: z
 		.enum(["viewer", "editor", "commenter"])
 		.optional()
@@ -50,4 +51,5 @@ export const createPasteSchema = z.object({
 
 export const updatePasteSchema = createPasteSchema.partial().extend({
 	newId: z.string().optional(),
+	password: z.string().nullable().optional(),
 });

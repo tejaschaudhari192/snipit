@@ -44,8 +44,8 @@ export const PasteDialog = ({
 		password,
 		setPassword,
 		setEditPermission,
-		shareList,
-		setShareList,
+		collaborators,
+		setCollaborators,
 		allowedUsers,
 		setAllowedUsers,
 		publicRole,
@@ -128,8 +128,8 @@ export const PasteDialog = ({
 							/>
 
 							<CollaboratorsManager
-								shareList={shareList}
-								setShareList={setShareList}
+								collaborators={collaborators}
+								setCollaborators={setCollaborators}
 								allowedUsers={allowedUsers}
 								setAllowedUsers={setAllowedUsers}
 							/>

@@ -31,7 +31,7 @@ export const useDisplayState = () => {
 	const [editPermission, setEditPermission] = useState<EditPermission>(
 		CONFIG.defaults.editPermission,
 	);
-	const [shareList, setShareList] = useState<ShareEntry[]>([]);
+	const [collaborators, setCollaborators] = useState<ShareEntry[]>([]);
 	const [publicRole, setPublicRole] = useState<PublicRole>(
 		CONFIG.defaults.publicRole,
 	);
@@ -49,6 +49,7 @@ export const useDisplayState = () => {
 	);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
+	const [isDeleting, setIsDeleting] = useState(false);
 	const [isVerifyingPassword, setIsVerifyingPassword] = useState(false);
 	const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
 	const [isAutosave, setIsAutosave] = useState(true);
@@ -80,7 +81,8 @@ export const useDisplayState = () => {
 		if (data.allowedUsers !== undefined) setAllowedUsers(data.allowedUsers);
 		if (data.editPermission !== undefined)
 			setEditPermission(data.editPermission);
-		if (data.shareList !== undefined) setShareList(data.shareList);
+		if (data.collaborators !== undefined)
+			setCollaborators(data.collaborators);
 		if (data.publicRole !== undefined) setPublicRole(data.publicRole);
 		if (data.allowComments !== undefined)
 			setAllowComments(data.allowComments);
@@ -114,8 +116,8 @@ export const useDisplayState = () => {
 		setAllowedUsers,
 		editPermission,
 		setEditPermission,
-		shareList,
-		setShareList,
+		collaborators,
+		setCollaborators,
 		publicRole,
 		setPublicRole,
 		allowComments,
@@ -140,6 +142,8 @@ export const useDisplayState = () => {
 		setIsDeleteDialogOpen,
 		isSaving,
 		setIsSaving,
+		isDeleting,
+		setIsDeleting,
 		isVerifyingPassword,
 		setIsVerifyingPassword,
 		saveStatus,

@@ -41,7 +41,7 @@ export const useDisplayActions = ({
 		editPermission,
 		customId,
 		allowedUsers,
-		shareList,
+		collaborators,
 		publicRole,
 		allowComments,
 		expiresTime,
@@ -49,6 +49,7 @@ export const useDisplayActions = ({
 		updateAllFromData,
 		setIsEdit,
 		setIsSaving,
+		setIsDeleting,
 		setSaveStatus,
 		setUpdatedContent,
 		setIsDeleteDialogOpen,
@@ -117,9 +118,11 @@ export const useDisplayActions = ({
 					visibility,
 					editPermission,
 					newId: customId,
-					password: isPasswordEnabled ? editPassword : undefined,
+					password: isPasswordEnabled
+						? editPassword || undefined
+						: null,
 					allowedUsers,
-					shareList,
+					collaborators,
 					publicRole,
 					allowComments,
 					expiresTime,
@@ -174,7 +177,7 @@ export const useDisplayActions = ({
 			editPermission,
 			customId,
 			allowedUsers,
-			shareList,
+			collaborators,
 			publicRole,
 			allowComments,
 			expiresTime,
@@ -235,13 +238,14 @@ export const useDisplayActions = ({
 
 	const onDeleteConfirm = async () => {
 		try {
+			setIsDeleting(true);
 			playRemoveSound();
 			await apiHelpers.deletePaste(id!);
 			toast.success(t("messages.snippet_deleted"));
 			navigate("/");
 		} catch {
 			toast.error(t("messages.delete_failed"));
-		} finally {
+			setIsDeleting(false);
 			setIsDeleteDialogOpen(false);
 		}
 	};

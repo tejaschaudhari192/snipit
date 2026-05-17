@@ -174,8 +174,8 @@ export const DisplayToolbar = memo(
 			if (isOwner) return "admin";
 			if (paste?.role) return paste.role;
 
-			if (paste?.shareList && user?.email) {
-				const shareEntry = paste.shareList.find(
+			if (paste?.collaborators && user?.email) {
+				const shareEntry = paste.collaborators.find(
 					(s) => s.email === user.email,
 				);
 				if (shareEntry) return shareEntry.role;
@@ -193,9 +193,9 @@ export const DisplayToolbar = memo(
 		const isAdmin = userRole === "admin";
 		const isExplicitUser =
 			isOwner ||
-			(paste?.shareList &&
+			(paste?.collaborators &&
 				user?.email &&
-				paste.shareList.some((s) => s.email === user.email));
+				paste.collaborators.some((s) => s.email === user.email));
 		const canShowDiscussion = isExplicitUser
 			? ["admin", "editor", "commenter"].includes(userRole)
 			: allowComments &&

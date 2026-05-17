@@ -73,7 +73,7 @@ export interface PasteData {
 	owner?: string;
 	ownerData?: User;
 	editPermission?: EditPermission;
-	shareList?: {
+	collaborators?: {
 		email: string;
 		role: ShareRole;
 	}[];
@@ -115,7 +115,7 @@ export interface CreatePasteData {
 	allowedUsers?: string[];
 	password?: string;
 	editPermission?: EditPermission;
-	shareList?: {
+	collaborators?: {
 		email: string;
 		role: ShareRole;
 	}[];
@@ -131,9 +131,9 @@ export interface UpdatePasteData {
 	visibility?: Visibility;
 	allowedUsers?: string[];
 	newId?: string;
-	password?: string;
+	password?: string | null;
 	editPermission?: EditPermission;
-	shareList?: {
+	collaborators?: {
 		email: string;
 		role: ShareRole;
 	}[];

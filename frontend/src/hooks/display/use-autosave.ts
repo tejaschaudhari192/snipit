@@ -20,7 +20,7 @@ interface UseAutosaveProps {
 		visibility: string;
 		editPermission: string;
 		allowedUsers: string[];
-		shareList: ShareEntry[];
+		collaborators: ShareEntry[];
 		publicRole: string;
 		allowComments: boolean;
 		expiresTime: string;
@@ -53,7 +53,7 @@ export const useAutosave = ({
 	}, [onSave]);
 
 	const allowedUsersStr = JSON.stringify(config.allowedUsers);
-	const shareListStr = JSON.stringify(config.shareList);
+	const collaboratorsStr = JSON.stringify(config.collaborators);
 
 	useEffect(() => {
 		if (!isAutosave || !isEdit || loading || isSaving) return;
@@ -67,7 +67,8 @@ export const useAutosave = ({
 			config.editPermission !== originalPaste?.editPermission ||
 			allowedUsersStr !==
 				JSON.stringify(originalPaste?.allowedUsers || []) ||
-			shareListStr !== JSON.stringify(originalPaste?.shareList || []) ||
+			collaboratorsStr !==
+				JSON.stringify(originalPaste?.collaborators || []) ||
 			config.publicRole !== (originalPaste?.publicRole || "viewer") ||
 			config.allowComments !== (originalPaste?.allowComments || false) ||
 			config.expiresTime !== (originalPaste?.expiresTime || "") ||
@@ -113,9 +114,9 @@ export const useAutosave = ({
 		config.visibility,
 		config.editPermission,
 		config.allowedUsers,
-		config.shareList,
+		config.collaborators,
 		allowedUsersStr,
-		shareListStr,
+		collaboratorsStr,
 		config.publicRole,
 		config.allowComments,
 		config.expiresTime,
@@ -137,7 +138,8 @@ export const useAutosave = ({
 			config.editPermission !== originalPaste?.editPermission ||
 			allowedUsersStr !==
 				JSON.stringify(originalPaste?.allowedUsers || []) ||
-			shareListStr !== JSON.stringify(originalPaste?.shareList || []) ||
+			collaboratorsStr !==
+				JSON.stringify(originalPaste?.collaborators || []) ||
 			config.publicRole !== (originalPaste?.publicRole || "viewer") ||
 			config.allowComments !== (originalPaste?.allowComments || false) ||
 			config.expiresTime !== (originalPaste?.expiresTime || "") ||
@@ -161,9 +163,9 @@ export const useAutosave = ({
 		config.visibility,
 		config.editPermission,
 		config.allowedUsers,
-		config.shareList,
+		config.collaborators,
 		allowedUsersStr,
-		shareListStr,
+		collaboratorsStr,
 		config.publicRole,
 		config.allowComments,
 		config.expiresTime,

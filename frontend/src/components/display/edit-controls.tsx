@@ -38,11 +38,11 @@ interface EditControlsProps {
 	setEditPermission: (v: EditPermission) => void;
 	isOwner: boolean;
 	isAdmin: boolean;
-	shareList: {
+	collaborators: {
 		email: string;
 		role: ShareRole;
 	}[];
-	setShareList: (
+	setCollaborators: (
 		v: {
 			email: string;
 			role: ShareRole;

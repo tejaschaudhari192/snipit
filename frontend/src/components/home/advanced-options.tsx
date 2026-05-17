@@ -33,8 +33,8 @@ export const AdvancedOptions = ({ onSubmit }: AdvancedOptionsProps) => {
 		password,
 		setPassword,
 		setEditPermission,
-		shareList,
-		setShareList,
+		collaborators,
+		setCollaborators,
 		allowedUsers,
 		setAllowedUsers,
 		publicRole,
@@ -92,8 +92,8 @@ export const AdvancedOptions = ({ onSubmit }: AdvancedOptionsProps) => {
 								setEditPermission={setEditPermission}
 								allowedUsers={allowedUsers}
 								setAllowedUsers={setAllowedUsers}
-								shareList={shareList}
-								setShareList={setShareList}
+								collaborators={collaborators}
+								setCollaborators={setCollaborators}
 								isOwner={true}
 								isAdmin={true}
 								onSubmit={onSubmit}
@@ -159,8 +159,8 @@ export const AdvancedOptions = ({ onSubmit }: AdvancedOptionsProps) => {
 					setEditPermission={setEditPermission}
 					allowedUsers={allowedUsers}
 					setAllowedUsers={setAllowedUsers}
-					shareList={shareList}
-					setShareList={setShareList}
+					collaborators={collaborators}
+					setCollaborators={setCollaborators}
 					isOwner={true}
 					isAdmin={true}
 					onSubmit={onSubmit}

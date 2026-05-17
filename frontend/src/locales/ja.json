@@ -306,7 +306,13 @@
 		"empty_file": "ファイルを選択してください。",
 		"qr_downloaded": "QRコードがダウンロードされました！",
 		"snippet_deleted_id": "スニペット {{id}} が削除されました",
-		"autosaved": "自動保存されました: {{fields}}"
+		"autosaved": "自動保存されました: {{fields}}",
+		"collaborators_added": "コラボレーターが正常に追加されました",
+		"collaborators_failed": "コラボレーターの追加に失敗しました",
+		"collaborator_removed": "コラボレーターが正常に削除されました",
+		"collaborator_remove_failed": "コラボレーターの削除に失敗しました",
+		"collaborator_updated": "コラボレーターの権限が正常に更新されました",
+		"collaborator_update_failed": "コラボレーターの権限の更新に失敗しました"
 	},
 	"about_page": {
 		"title": "について",

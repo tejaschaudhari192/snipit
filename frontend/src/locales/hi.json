@@ -307,7 +307,13 @@
 		"empty_content": "कृपया पहले कुछ सामग्री दर्ज करें!",
 		"empty_file": "कृपया पहले एक फ़ाइल चुनें!",
 		"qr_downloaded": "QR कोड डाउनलोड हो गया!",
-		"autosaved": "ऑटोसेव: {{fields}}"
+		"autosaved": "ऑटोसेव: {{fields}}",
+		"collaborators_added": "सहयोगी सफलतापूर्वक जोड़े गए",
+		"collaborators_failed": "सहयोगी जोड़ने में विफल",
+		"collaborator_removed": "सहयोगी सफलतापूर्वक हटाया गया",
+		"collaborator_remove_failed": "सहयोगी को हटाने में विफल",
+		"collaborator_updated": "सहयोगी की अनुमति सफलतापूर्वक अपडेट की गई",
+		"collaborator_update_failed": "सहयोगी की अनुमति अपडेट करने में विफल"
 	},
 	"about_page": {
 		"title": "परिचय",

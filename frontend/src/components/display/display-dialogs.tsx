@@ -12,6 +12,7 @@ interface DisplayDialogsProps {
 	isDeleteDialogOpen: boolean;
 	setIsDeleteDialogOpen: (val: boolean) => void;
 	onDeleteConfirm: () => void;
+	isDeleting: boolean;
 	// AI Dialog Props
 	isAiDialogOpen: boolean;
 	setIsAiDialogOpen: (val: boolean) => void;
@@ -29,6 +30,7 @@ export const DisplayDialogs: React.FC<DisplayDialogsProps> = ({
 	isDeleteDialogOpen,
 	setIsDeleteDialogOpen,
 	onDeleteConfirm,
+	isDeleting,
 	isAiDialogOpen,
 	setIsAiDialogOpen,
 	selectedText,
@@ -48,6 +50,7 @@ export const DisplayDialogs: React.FC<DisplayDialogsProps> = ({
 				isOpen={isDeleteDialogOpen}
 				onOpenChange={setIsDeleteDialogOpen}
 				onConfirm={onDeleteConfirm}
+				isDeleting={isDeleting}
 			/>
 			<AiEnhanceDialog
 				isOpen={isAiDialogOpen}
