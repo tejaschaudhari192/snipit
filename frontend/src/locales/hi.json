@@ -607,5 +607,38 @@
 			"explain_write": "तर्क समझाएं और फिर कोड लिखें।",
 			"refactor_ideas": "इस विचार को कोड में रिफैक्टर करने के तरीके सुझाएं।"
 		}
+	},
+	"music": {
+		"now_playing": "अब बज रहा है",
+		"up_next": "अगला",
+		"change_region": "क्षेत्र बदलें",
+		"refresh_playlist": "प्लेलिस्ट रीफ्रेश करें",
+		"no_tracks": "कोई ट्रैक उपलब्ध नहीं है",
+		"loading_playlist": "प्लेलिस्ट लोड हो रही है...",
+		"region_detected": "आपके स्थान के आधार पर {{region}} संगीत बजाया जा रहा है",
+		"region_changed": "{{region}} संगीत पर स्विच किया गया",
+		"permission_denied": "स्थान पहुंच अस्वीकार कर दी गई। हिंदी संगीत बज रहा है।",
+		"shuffle": "शफल",
+		"repeat": "दोहराएं",
+		"repeat_one": "एक को दोहराएं",
+		"repeat_all": "सभी को दोहराएं",
+		"volume": "आवाज़",
+		"open_player": "संगीत प्लेयर खोलें",
+		"close_player": "प्लेयर बंद करें",
+		"search": "खोजें",
+		"search_placeholder": "गाने या कलाकार खोजें...",
+		"tracks_available": "ट्रैक उपलब्ध",
+		"regions": {
+			"maharashtra": "मराठी",
+			"tamil_nadu": "तमिल",
+			"karnataka": "कन्नड़",
+			"kerala": "मलयालम",
+			"telangana": "तेलुगु",
+			"andhra_pradesh": "तेलुगु",
+			"west_bengal": "बंगाली",
+			"punjab": "पंजाबी",
+			"gujarat": "गुजराती",
+			"default": "हिंदी"
+		}
 	}
 }

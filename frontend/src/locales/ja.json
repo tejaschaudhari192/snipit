@@ -606,5 +606,40 @@
 			"explain_write": "ロジックを説明してからコードを書きます。",
 			"refactor_ideas": "このアイデアをコードにリファクタリングする方法を提案します。"
 		}
+	},
+	"music": {
+		"now_playing": "再生中",
+		"playing_from": "プレイリスト:",
+		"up_next": "次に再生",
+		"change_region": "地域を変更",
+		"refresh_playlist": "プレイリストを更新",
+		"no_tracks": "利用可能なトラックはありません",
+		"loading_playlist": "プレイリストを読み込み中...",
+		"region_detected": "位置情報に基づいて {{region}} の音楽を再生しています",
+		"region_changed": "{{region}} の音楽に切り替えました",
+		"permission_denied": "位置情報のアクセスが拒否されました。ヒンディー語の音楽を再生します。",
+		"shuffle": "シャッフル",
+		"repeat": "リピート",
+		"repeat_one": "1曲リピート",
+		"repeat_all": "すべてリピート",
+		"volume": "音量",
+		"open_player": "音楽プレーヤーを開く",
+		"close_player": "プレーヤーを閉じる",
+		"search": "検索",
+		"search_placeholder": "曲名やアーティストを検索...",
+		"tracks_available": "曲が利用可能",
+		"regions": {
+			"maharashtra": "マラーティー語",
+			"tamil_nadu": "タミル語",
+			"karnataka": "カンナダ語",
+			"kerala": "マラヤーラム語",
+			"telangana": "テルグ語",
+			"andhra_pradesh": "テルグ語",
+			"west_bengal": "ベンガル語",
+			"punjab": "パンジャーブ語",
+			"gujarat": "グジャラート語",
+			"english": "英語 / インターナショナル",
+			"default": "ヒンディー語"
+		}
 	}
 }
