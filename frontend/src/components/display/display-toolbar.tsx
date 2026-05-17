@@ -4,6 +4,12 @@ import { MessageSquare, Save, ChevronDown, Code2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Switch } from "@/components/ui/switch";
 import {
+	Tooltip,
+	TooltipTrigger,
+	TooltipContent,
+	TooltipProvider,
+} from "@/components/ui/tooltip";
+import {
 	Sheet,
 	SheetContent,
 	SheetDescription,
@@ -355,28 +361,39 @@ export const DisplayToolbar = memo(
 						</div>
 					)}
 					{isEdit && setIsAutosave && (
-						<div
-							className={cn(
-								"flex items-center gap-2 px-2.5 h-9 rounded-lg border transition-all cursor-pointer select-none active:scale-95",
-								isAutosave
-									? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
-									: "bg-background/50 border-border/50 hover:bg-muted/80",
-							)}
-							onClick={() => setIsAutosave(!isAutosave)}
-							title={t("common.autosave")}
-						>
-							<Save
-								className={cn(
-									"h-4 w-4",
-									isAutosave && "animate-pulse",
-								)}
-							/>
-							<Switch
-								checked={isAutosave}
-								onCheckedChange={setIsAutosave}
-								className="scale-[0.7] data-[state=checked]:bg-emerald-500"
-							/>
-						</div>
+						<TooltipProvider>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<div
+										className={cn(
+											"flex items-center gap-2 px-2.5 h-9 rounded-lg border transition-all cursor-pointer select-none active:scale-95",
+											isAutosave
+												? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
+												: "bg-background/50 border-border/50 hover:bg-muted/80",
+										)}
+										onClick={() =>
+											setIsAutosave(!isAutosave)
+										}
+									>
+										<Save className="h-4 w-4" />
+										<Switch
+											checked={isAutosave}
+											onCheckedChange={setIsAutosave}
+											className="scale-[0.7] data-[state=checked]:bg-emerald-500"
+										/>
+									</div>
+								</TooltipTrigger>
+								<TooltipContent
+									side="bottom"
+									align="center"
+									className="max-w-xs"
+								>
+									<span className="text-xs font-semibold">
+										{t("common.autosave")}
+									</span>
+								</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
 					)}
 					{showFontControls && (
 						<Suspense fallback={<ButtonSkeleton />}>
