@@ -34,7 +34,7 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 		if (user && savedItem) {
 			setIsSaved(true);
 		}
-	}, [user, savedProfile.items, paste?.id]);
+	}, [user, savedProfile.items, paste]);
 
 	const handleSaveSnippet = async () => {
 		if (!paste) return;
