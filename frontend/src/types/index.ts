@@ -184,3 +184,11 @@ export type SocketUpdateData = Partial<PasteData> & {
 	isAutosave?: boolean;
 	socketId?: string;
 };
+
+export interface MusicTrack {
+	videoId: string;
+	title: string;
+	channel: string;
+	thumbnail: string;
+	duration?: string;
+}

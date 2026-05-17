@@ -333,6 +333,8 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			resetFileUpload,
 			onContentTypeChange,
 			resetPaste,
+			readyAttachments,
+			hasPending,
 		],
 	);
 

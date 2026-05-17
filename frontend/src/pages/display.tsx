@@ -191,7 +191,7 @@ const DisplayPage = () => {
 				setContentType((prev) => (prev === "text" ? "code" : prev));
 			}
 		},
-		[isDetecting, updateAllFromData, setContentType],
+		[isDetecting, _setLanguage, setContentType],
 	);
 
 	const sharedSocketRef = useRef<Socket | null>(null);
