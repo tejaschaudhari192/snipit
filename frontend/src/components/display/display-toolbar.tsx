@@ -82,8 +82,12 @@ const ToolbarActionButtons = lazy(() =>
 );
 
 // Fallback Skeletons
-const ButtonSkeleton = () => <Skeleton className="h-9 w-9 rounded-lg" />;
-const SelectorSkeleton = () => <Skeleton className="h-9 w-32 rounded-lg" />;
+const ButtonSkeleton = () => (
+	<Skeleton className="h-9 w-9 rounded-lg shrink-0" />
+);
+const SelectorSkeleton = () => (
+	<Skeleton className="h-9 w-32 rounded-lg shrink-0" />
+);
 
 interface DisplayToolbarProps {
 	isEdit: boolean;
@@ -208,246 +212,259 @@ export const DisplayToolbar = memo(
 				["admin", "editor", "commenter", "viewer"].includes(userRole);
 
 		return (
-			<div className="flex flex-wrap items-center justify-between gap-3 px-4 py-1.5 md:px-6 bg-background/40 backdrop-blur-xl relative z-20 shadow-sm border-b border-border/50">
-				<Suspense fallback={<div className="flex gap-2 w-32 h-9" />}>
-					<ToolbarActionButtons
-						isEdit={isEdit}
-						canEdit={canEdit}
-						canDelete={canDelete}
-						content={content}
-						onEdit={onEdit}
-						onDelete={onDelete}
-						onSave={onSave}
-						onCancel={onCancel}
-						isSaving={isSaving}
-						isAutosave={isAutosave}
-						showSaveButton={showSaveButton}
-						isTerminalOpen={isTerminalOpen}
-						onToggleTerminal={onToggleTerminal}
-						isCode={isCode}
-						language={language}
-						pasteId={paste?.id}
-					/>
-				</Suspense>
-
-				{isEdit &&
-					(isDetecting ||
-						contentType === "code" ||
-						contentType === "text") &&
-					setLanguage &&
-					setContentType && (
-						<div className="flex items-center gap-2 animate-in fade-in zoom-in-95 duration-200 ml-2">
-							<Suspense fallback={<SelectorSkeleton />}>
-								<LanguageSelector
-									value={language}
-									onValueChange={(val) => {
-										setLanguage(val);
-										if (val === "text") {
-											setContentType("text");
-										} else {
-											setContentType("code");
-										}
-									}}
-									isDetecting={isDetecting}
-									className="w-[160px] h-9 text-xs"
-								/>
-							</Suspense>
-							{!isDetecting && onAutoDetect && (
-								<Button
-									variant="outline"
-									size="icon"
-									className="h-9 w-9 shrink-0 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm"
-									onClick={onAutoDetect}
-									title={t("home.auto_detecting")}
-								>
-									<Code2 className="h-4 w-4 text-muted-foreground" />
-								</Button>
-							)}
-						</div>
-					)}
-
-				<div className="flex flex-1 items-center gap-2 justify-end">
-					{isEdit && setIsOptionsOpen && (
-						<Button
-							variant="ghost"
-							size="sm"
-							className={cn(
-								"gap-2 h-9 text-xs font-bold px-3 transition-all rounded-lg shrink-0",
-								isOptionsOpen
-									? "bg-primary/10 text-primary"
-									: "text-muted-foreground hover:bg-primary/5 hover:text-primary",
-							)}
-							onClick={() => setIsOptionsOpen(!isOptionsOpen)}
+			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 px-4 py-1.5 md:px-6 bg-background/40 backdrop-blur-xl relative z-20 shadow-sm border-b border-border/50 w-full overflow-hidden select-none">
+				<div className="flex items-center gap-2 justify-start w-full sm:w-auto overflow-x-auto no-scrollbar py-0.5 shrink-0">
+					<div className="shrink-0 flex items-center">
+						<Suspense
+							fallback={<div className="flex gap-2 w-32 h-9" />}
 						>
-							<span className="hidden sm:inline">
-								{t("home.advanced_config")}
-							</span>
-							<ChevronDown
-								className={cn(
-									"h-4 w-4 transition-transform duration-300",
-									isOptionsOpen && "rotate-180",
-								)}
+							<ToolbarActionButtons
+								isEdit={isEdit}
+								canEdit={canEdit}
+								canDelete={canDelete}
+								content={content}
+								onEdit={onEdit}
+								onDelete={onDelete}
+								onSave={onSave}
+								onCancel={onCancel}
+								isSaving={isSaving}
+								isAutosave={isAutosave}
+								showSaveButton={showSaveButton}
+								isTerminalOpen={isTerminalOpen}
+								onToggleTerminal={onToggleTerminal}
+								isCode={isCode}
+								language={language}
+								pasteId={paste?.id}
 							/>
-						</Button>
-					)}
-					{isEdit && (
-						<Suspense fallback={<div className="w-16 h-4" />}>
-							<AutosaveStatus status={saveStatus} />
 						</Suspense>
-					)}
-					<Suspense fallback={<div className="flex -space-x-2" />}>
-						<UserAvatarList users={activeUsers} />
-					</Suspense>
-					{isEdit && (
-						<div className="flex items-center gap-3 animate-in fade-in duration-300 ml-2">
-							{isEdit &&
-								setIsAiAutocompleteEnabled &&
-								contentType !== "file" &&
-								contentType !== "draw" && (
-									<Suspense fallback={<ButtonSkeleton />}>
-										<AiAutocompleteToggle
-											enabled={isAiAutocompleteEnabled}
-											onToggle={
-												setIsAiAutocompleteEnabled
+					</div>
+
+					{isEdit &&
+						(isDetecting ||
+							contentType === "code" ||
+							contentType === "text") &&
+						setLanguage &&
+						setContentType && (
+							<div className="flex items-center gap-2 animate-in fade-in zoom-in-95 duration-200 shrink-0">
+								<Suspense fallback={<SelectorSkeleton />}>
+									<LanguageSelector
+										value={language}
+										onValueChange={(val) => {
+											setLanguage(val);
+											if (val === "text") {
+												setContentType("text");
+											} else {
+												setContentType("code");
 											}
-											className="h-9"
-										/>
-									</Suspense>
-								)}
-
-							{(isOwner || isAdmin) &&
-								expiresTime &&
-								setExpiresTime &&
-								setIsCustomExpiryDialogOpen && (
-									<Suspense fallback={<SelectorSkeleton />}>
-										<ExpirySelector
-											expiresTime={expiresTime}
-											setExpiresTime={setExpiresTime}
-											setIsCustomExpiryDialogOpen={
-												setIsCustomExpiryDialogOpen
-											}
-											className="h-9 min-w-[120px] text-xs"
-										/>
-									</Suspense>
-								)}
-
-							{isEdit &&
-								onAiWriterClick &&
-								contentType !== "file" &&
-								contentType !== "draw" && (
-									<Suspense fallback={<ButtonSkeleton />}>
-										<AiWriterButton
-											onClick={onAiWriterClick}
-										/>
-									</Suspense>
-								)}
-
-							{isEdit &&
-								onContentChange &&
-								contentType !== "file" &&
-								contentType !== "draw" && (
-									<Suspense fallback={<ButtonSkeleton />}>
-										<VoiceInputButton
-											value={content}
-											setTextValue={onContentChange}
-											onRecordingChange={
-												onRecordingChange
-											}
-										/>
-									</Suspense>
-								)}
-
-							<div className="w-px h-6 bg-border/40 mx-1" />
-						</div>
-					)}
-					{isEdit && setIsAutosave && (
-						<TooltipProvider>
-							<Tooltip>
-								<TooltipTrigger asChild>
-									<div
-										className={cn(
-											"flex items-center gap-2 px-2.5 h-9 rounded-lg border transition-all cursor-pointer select-none active:scale-95",
-											isAutosave
-												? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
-												: "bg-background/50 border-border/50 hover:bg-muted/80",
-										)}
-										onClick={() =>
-											setIsAutosave(!isAutosave)
-										}
+										}}
+										isDetecting={isDetecting}
+										className="w-[160px] h-9 text-xs"
+									/>
+								</Suspense>
+								{!isDetecting && onAutoDetect && (
+									<Button
+										variant="outline"
+										size="icon"
+										className="h-9 w-9 shrink-0 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm"
+										onClick={onAutoDetect}
+										title={t("home.auto_detecting")}
 									>
-										<Save className="h-4 w-4" />
-										<Switch
-											checked={isAutosave}
-											onCheckedChange={setIsAutosave}
-											className="scale-[0.7] data-[state=checked]:bg-emerald-500"
-										/>
-									</div>
-								</TooltipTrigger>
-								<TooltipContent
-									side="bottom"
-									align="center"
-									className="max-w-xs"
-								>
-									<span className="text-xs font-semibold">
-										{t("common.autosave")}
-									</span>
-								</TooltipContent>
-							</Tooltip>
-						</TooltipProvider>
-					)}
-					{showFontControls && (
-						<Suspense fallback={<ButtonSkeleton />}>
-							<FontSizeControls
-								fontSize={fontSize}
-								setFontSize={setFontSize}
-							/>
-						</Suspense>
-					)}
-					{canShowDiscussion && (
-						<Sheet modal={false}>
-							<SheetTrigger asChild>
-								<Button
-									variant="ghost"
-									size="sm"
-									className="gap-2 text-primary font-semibold hover:bg-primary/5"
-								>
-									<MessageSquare className="h-4 w-4" />
-									<span className="hidden sm:inline">
-										{t("common.discussion")}
-									</span>
-									{commentCount > 0 && (
-										<span className="bg-primary/10 px-1.5 py-0.5 rounded text-[10px] animate-in zoom-in-50">
-											{commentCount}
-										</span>
-									)}
-								</Button>
-							</SheetTrigger>
-							<SheetContent
-								hideOverlay
-								className="flex flex-col h-full sm:max-w-md w-full border-l shadow-2xl p-0 overflow-hidden"
+										<Code2 className="h-4 w-4 text-muted-foreground" />
+									</Button>
+								)}
+							</div>
+						)}
+				</div>
+
+				<div className="flex-1 overflow-x-auto no-scrollbar w-full sm:w-auto border-t border-border/10 sm:border-t-0 shrink-0">
+					<div className="flex items-center justify-start sm:justify-end gap-2.5 py-1 sm:py-0 shrink-0 min-w-max">
+						{isEdit && setIsOptionsOpen && (
+							<Button
+								variant="ghost"
+								size="sm"
+								className={cn(
+									"gap-2 h-9 text-xs font-bold px-3 transition-all rounded-lg shrink-0",
+									isOptionsOpen
+										? "bg-primary/10 text-primary"
+										: "text-muted-foreground hover:bg-primary/5 hover:text-primary",
+								)}
+								onClick={() => setIsOptionsOpen(!isOptionsOpen)}
 							>
-								<SheetHeader className="p-6 pb-2 border-b">
-									<SheetTitle className="flex items-center gap-2 text-xl">
-										<MessageSquare className="w-5 h-5 text-primary" />
-										{t("common.discussion_title")}
-									</SheetTitle>
-									<SheetDescription>
-										{t("common.discussion_desc")}
-									</SheetDescription>
-								</SheetHeader>
-								<div className="flex-1 min-h-0 p-6">
-									{paste && (
-										<Suspense fallback={null}>
-											<CommentsSection
-												paste={paste}
-												onCommentAdded={onCommentAdded}
-											/>
-										</Suspense>
+								<span className="hidden sm:inline">
+									{t("home.advanced_config")}
+								</span>
+								<ChevronDown
+									className={cn(
+										"h-4 w-4 transition-transform duration-300",
+										isOptionsOpen && "rotate-180",
 									)}
-								</div>
-							</SheetContent>
-						</Sheet>
-					)}
+								/>
+							</Button>
+						)}
+						{isEdit && (
+							<div className="shrink-0 flex items-center">
+								<Suspense
+									fallback={<div className="w-16 h-4" />}
+								>
+									<AutosaveStatus status={saveStatus} />
+								</Suspense>
+							</div>
+						)}
+						<div className="shrink-0 flex items-center">
+							<Suspense
+								fallback={<div className="flex -space-x-2" />}
+							>
+								<UserAvatarList users={activeUsers} />
+							</Suspense>
+						</div>
+						{isEdit &&
+							setIsAiAutocompleteEnabled &&
+							contentType !== "file" &&
+							contentType !== "draw" && (
+								<Suspense fallback={<ButtonSkeleton />}>
+									<AiAutocompleteToggle
+										enabled={isAiAutocompleteEnabled}
+										onToggle={setIsAiAutocompleteEnabled}
+										className="h-9 shrink-0"
+									/>
+								</Suspense>
+							)}
+
+						{isEdit &&
+							(isOwner || isAdmin) &&
+							expiresTime &&
+							setExpiresTime &&
+							setIsCustomExpiryDialogOpen && (
+								<Suspense fallback={<SelectorSkeleton />}>
+									<ExpirySelector
+										expiresTime={expiresTime}
+										setExpiresTime={setExpiresTime}
+										setIsCustomExpiryDialogOpen={
+											setIsCustomExpiryDialogOpen
+										}
+										className="h-9 min-w-[120px] text-xs shrink-0"
+									/>
+								</Suspense>
+							)}
+
+						{isEdit &&
+							onAiWriterClick &&
+							contentType !== "file" &&
+							contentType !== "draw" && (
+								<Suspense fallback={<ButtonSkeleton />}>
+									<AiWriterButton onClick={onAiWriterClick} />
+								</Suspense>
+							)}
+
+						{isEdit &&
+							onContentChange &&
+							contentType !== "file" &&
+							contentType !== "draw" && (
+								<Suspense fallback={<ButtonSkeleton />}>
+									<VoiceInputButton
+										value={content}
+										setTextValue={onContentChange}
+										onRecordingChange={onRecordingChange}
+									/>
+								</Suspense>
+							)}
+
+						{isEdit && (
+							<div className="w-px h-6 bg-border/40 mx-1 shrink-0" />
+						)}
+						{isEdit && setIsAutosave && (
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<div
+											className={cn(
+												"flex items-center gap-2 px-2.5 h-9 rounded-lg border transition-all cursor-pointer select-none active:scale-95 shrink-0",
+												isAutosave
+													? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
+													: "bg-background/50 border-border/50 hover:bg-muted/80",
+											)}
+											onClick={() =>
+												setIsAutosave(!isAutosave)
+											}
+										>
+											<Save className="h-4 w-4" />
+											<Switch
+												checked={isAutosave}
+												onCheckedChange={setIsAutosave}
+												className="scale-[0.7] data-[state=checked]:bg-emerald-500"
+											/>
+										</div>
+									</TooltipTrigger>
+									<TooltipContent
+										side="bottom"
+										align="center"
+										className="max-w-xs"
+									>
+										<span className="text-xs font-semibold">
+											{t("common.autosave")}
+										</span>
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
+						)}
+						{showFontControls && (
+							<div className="shrink-0 flex items-center">
+								<Suspense fallback={<ButtonSkeleton />}>
+									<FontSizeControls
+										fontSize={fontSize}
+										setFontSize={setFontSize}
+									/>
+								</Suspense>
+							</div>
+						)}
+						{canShowDiscussion && (
+							<Sheet modal={false}>
+								<SheetTrigger asChild>
+									<Button
+										variant="ghost"
+										size="sm"
+										className="gap-2 text-primary font-semibold hover:bg-primary/5 shrink-0"
+									>
+										<MessageSquare className="h-4 w-4" />
+										<span className="hidden sm:inline">
+											{t("common.discussion")}
+										</span>
+										{commentCount > 0 && (
+											<span className="bg-primary/10 px-1.5 py-0.5 rounded text-[10px] animate-in zoom-in-50">
+												{commentCount}
+											</span>
+										)}
+									</Button>
+								</SheetTrigger>
+								<SheetContent
+									hideOverlay
+									className="flex flex-col h-full sm:max-w-md w-full border-l shadow-2xl p-0 overflow-hidden"
+								>
+									<SheetHeader className="p-6 pb-2 border-b">
+										<SheetTitle className="flex items-center gap-2 text-xl">
+											<MessageSquare className="w-5 h-5 text-primary" />
+											{t("common.discussion_title")}
+										</SheetTitle>
+										<SheetDescription>
+											{t("common.discussion_desc")}
+										</SheetDescription>
+									</SheetHeader>
+									<div className="flex-1 min-h-0 p-6">
+										{paste && (
+											<Suspense fallback={null}>
+												<CommentsSection
+													paste={paste}
+													onCommentAdded={
+														onCommentAdded
+													}
+												/>
+											</Suspense>
+										)}
+									</div>
+								</SheetContent>
+							</Sheet>
+						)}
+					</div>
 				</div>
 			</div>
 		);
