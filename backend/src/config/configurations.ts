@@ -20,6 +20,7 @@ const envSchema = z.object({
 	SUPABASE_URL: z.string().url(),
 	SUPABASE_SERVICE_ROLE_KEY: z.string(),
 	SUPABASE_STORAGE_BUCKET: z.string(),
+	YOUTUBE_API_KEY: z.string(),
 	SMTP_SERVICE: z.string().optional(),
 	SMTP_HOST: z.string().optional(),
 	SMTP_PORT: z.string().optional(),
@@ -68,6 +69,7 @@ const configurations = {
 	supabase_url: env.SUPABASE_URL,
 	supabase_service_role_key: env.SUPABASE_SERVICE_ROLE_KEY,
 	supabase_storage_bucket: env.SUPABASE_STORAGE_BUCKET,
+	youtube_api_key: env.YOUTUBE_API_KEY,
 	smtp: {
 		service: env.SMTP_SERVICE,
 		host: env.SMTP_HOST,
