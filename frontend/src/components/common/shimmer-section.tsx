@@ -60,12 +60,12 @@ const EditorShimmer = ({ className }: { className?: string }) => (
 const ToolbarShimmer = ({ className }: { className?: string }) => (
 	<div
 		className={cn(
-			"flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 px-4 py-1.5 md:px-6 bg-background/40 backdrop-blur-xl border-b border-border/50 w-full select-none transition-all duration-300",
+			"flex flex-row items-center justify-between gap-4 px-4 py-1.5 md:px-6 bg-background/40 backdrop-blur-xl border-b border-border/50 w-full overflow-x-auto no-scrollbar select-none transition-all duration-300",
 			className,
 		)}
 	>
 		{/* Left actions & Language Selector Row */}
-		<div className="flex items-center gap-2 justify-start w-full sm:w-auto py-0.5 overflow-x-auto no-scrollbar shrink-0">
+		<div className="flex items-center gap-2 justify-start shrink-0">
 			<Skeleton className="h-9 w-16 rounded-lg shrink-0" />
 			<Skeleton className="h-9 w-24 rounded-lg shrink-0" />
 			<Skeleton className="h-9 w-28 rounded-lg shrink-0 hidden sm:block" />
@@ -74,7 +74,7 @@ const ToolbarShimmer = ({ className }: { className?: string }) => (
 		</div>
 
 		{/* Right options Row */}
-		<div className="flex items-center gap-2 justify-start sm:justify-end overflow-x-auto no-scrollbar w-full sm:w-auto py-1 sm:py-0 border-t border-border/10 sm:border-t-0 shrink-0">
+		<div className="flex items-center justify-end gap-2.5 shrink-0">
 			<Skeleton className="h-9 w-24 rounded-lg shrink-0" />
 			<Skeleton className="h-8 w-16 rounded-full shrink-0" />
 			<Skeleton className="h-9 w-28 rounded-lg shrink-0" />
