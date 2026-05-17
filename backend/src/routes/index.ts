@@ -7,6 +7,7 @@ import jobRouter from "./job.route.js";
 import labelRouter from "./label.route.js";
 import commentRouter from "./comment.route.js";
 import collaboratorRouter from "./collaborator.route.js";
+import musicRouter from "./music.route.js";
 
 const router: Router = Router();
 
@@ -19,5 +20,6 @@ router.use("/jobs", jobRouter);
 router.use("/labels", labelRouter);
 router.use("/comments", commentRouter);
 router.use("/collaborators", collaboratorRouter);
+router.use("/music", musicRouter);
 
 export default router;

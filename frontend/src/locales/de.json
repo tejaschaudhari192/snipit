@@ -606,5 +606,40 @@
 			"explain_write": "Erklären Sie die Logik und schreiben Sie dann den Code.",
 			"refactor_ideas": "Schlagen Sie Wege vor, diese Idee in Code umzugestalten."
 		}
+	},
+	"music": {
+		"now_playing": "Aktuelle Wiedergabe",
+		"playing_from": "Spielen von",
+		"up_next": "Als Nächstes",
+		"change_region": "Region ändern",
+		"refresh_playlist": "Playlist aktualisieren",
+		"no_tracks": "Keine Titel verfügbar",
+		"loading_playlist": "Playlist wird geladen...",
+		"region_detected": "Spiele {{region}} Musik basierend auf Ihrem Standort",
+		"region_changed": "Zu {{region}} Musik gewechselt",
+		"permission_denied": "Standortzugriff verweigert. Spiele Hindi Musik.",
+		"shuffle": "Zufallswiedergabe",
+		"repeat": "Wiederholen",
+		"repeat_one": "Titel wiederholen",
+		"repeat_all": "Alles wiederholen",
+		"volume": "Lautstärke",
+		"open_player": "Musik-Player öffnen",
+		"close_player": "Player schließen",
+		"search": "Suche",
+		"search_placeholder": "Suche nach Songs oder Künstlern...",
+		"tracks_available": "Titel verfügbar",
+		"regions": {
+			"maharashtra": "Marathi",
+			"tamil_nadu": "Tamil",
+			"karnataka": "Kannada",
+			"kerala": "Malayalam",
+			"telangana": "Telugu",
+			"andhra_pradesh": "Telugu",
+			"west_bengal": "Bengalisch",
+			"punjab": "Punjabi",
+			"gujarat": "Gujarati",
+			"english": "Englisch / International",
+			"default": "Hindi"
+		}
 	}
 }

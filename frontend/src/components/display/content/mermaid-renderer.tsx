@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import mermaid, { type MermaidConfig } from "mermaid";
 import { useTheme } from "next-themes";
 import { Loader2, AlertCircle } from "lucide-react";
@@ -15,16 +15,19 @@ export const MermaidRenderer = ({ content }: MermaidRendererProps) => {
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 
-	const getMermaidConfig = (): MermaidConfig => ({
-		startOnLoad: false,
-		theme: isDark ? "dark" : "default",
-		securityLevel: "loose",
-		fontFamily: "Inter, sans-serif",
-	});
+	const getMermaidConfig = useCallback(
+		(): MermaidConfig => ({
+			startOnLoad: false,
+			theme: isDark ? "dark" : "default",
+			securityLevel: "loose",
+			fontFamily: "Inter, sans-serif",
+		}),
+		[isDark],
+	);
 
 	useEffect(() => {
 		mermaid.initialize(getMermaidConfig());
-	}, [theme]);
+	}, [theme, getMermaidConfig]);
 
 	useEffect(() => {
 		const renderDiagram = async () => {
@@ -47,7 +50,7 @@ export const MermaidRenderer = ({ content }: MermaidRendererProps) => {
 		};
 
 		renderDiagram();
-	}, [content, theme]);
+	}, [content, theme, getMermaidConfig]);
 
 	if (error) {
 		return (

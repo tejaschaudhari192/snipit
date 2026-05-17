@@ -23,6 +23,9 @@ export const CONFIG = {
 		history: "snipit-history",
 		terminalPosition: "snipit-terminal-position",
 		aiAutocomplete: "snipit-ai-autocomplete",
+		musicVolume: "snipit-music-volume",
+		musicRegion: "snipit-music-region",
+		musicEnabled: "snipit-music-enabled",
 	},
 
 	// Default Values

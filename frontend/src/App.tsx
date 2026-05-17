@@ -24,6 +24,25 @@ const ServerErrorPage = lazy(() => import("@/pages/server-error"));
 
 import { useHealthCheck } from "@/hooks/use-health-check";
 import { CONFIG } from "./configurations";
+import { MusicProvider, useMusic } from "@/context/MusicContext";
+import MusicPlayerSkeleton from "@/components/common/music/music-player-skeleton";
+
+const MusicBubble = lazy(
+	() => import("@/components/common/music/music-bubble"),
+);
+const MusicPlayerModal = lazy(
+	() => import("@/components/common/music/music-player-modal"),
+);
+
+const MusicPlayerWrapper = () => {
+	const { isPlayerOpen } = useMusic();
+	if (!isPlayerOpen) return null;
+	return (
+		<Suspense fallback={<MusicPlayerSkeleton />}>
+			<MusicPlayerModal />
+		</Suspense>
+	);
+};
 
 const App = () => {
 	const { i18n } = useTranslation();
@@ -38,6 +57,9 @@ const App = () => {
 		const monacoLocale = localeMap[i18n.language] || "en";
 
 		loader.config({
+			paths: {
+				vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs",
+			},
 			"vs/nls": {
 				availableLanguages: {
 					"*": monacoLocale,
@@ -47,92 +69,88 @@ const App = () => {
 	}, [i18n.language]);
 
 	if (loading) {
-		return (
-			<ThemeProvider>
-				<SplashPage healthData={healthData} />
-			</ThemeProvider>
-		);
+		return <SplashPage healthData={healthData} />;
 	}
 
 	if (error) {
-		return (
-			<ThemeProvider>
-				<Router>
-					<ServerErrorPage
-						services={healthData?.services}
-						error="Initialization failed during health checks."
-					/>
-				</Router>
-			</ThemeProvider>
-		);
+		return <ServerErrorPage />;
 	}
 
 	return (
 		<ThemeProvider>
-			<GoogleOAuthProvider
-				clientId={CONFIG.googleClientId}
-				locale={i18n.language}
-			>
+			<GoogleOAuthProvider clientId={CONFIG.googleClientId}>
 				<AuthProvider>
 					<SnippetProvider>
 						<PasteProvider>
-							<Router>
-								<div className="h-screen w-full m-0 p-0 box-border flex flex-col overflow-hidden">
-									<Header />
-									<main className="flex-1 flex flex-col min-h-0 overflow-y-auto overflow-x-hidden relative custom-scrollbar">
-										<Suspense
-											fallback={
-												<div className="flex-1 flex items-center justify-center">
-													<Loader />
-												</div>
-											}
-										>
-											<Routes>
-												<Route
-													path="/"
-													element={<HomePage />}
-												/>
-												<Route
-													path="/login"
-													element={<LoginPage />}
-												/>
-												<Route
-													path="/signup"
-													element={<SignupPage />}
-												/>
-												<Route
-													path="/forgot-password"
-													element={
-														<ForgotPasswordPage />
-													}
-												/>
-												<Route
-													path="/reset-password/:token"
-													element={
-														<ResetPasswordPage />
-													}
-												/>
-												<Route
-													path="/profile"
-													element={<ProfilePage />}
-												/>
-												<Route
-													path="/:id"
-													element={<DisplayPage />}
-												/>
-												<Route
-													path="/about"
-													element={<AboutPage />}
-												/>
-												<Route
-													path="/history"
-													element={<HistoryPage />}
-												/>
-											</Routes>
-										</Suspense>
-									</main>
-								</div>
-							</Router>
+							<MusicProvider>
+								<Router>
+									<div className="flex flex-col min-h-screen bg-background text-foreground font-sans">
+										<Header />
+										<main className="flex-1 w-full max-w-[1400px] mx-auto px-4 md:px-6 py-6 min-w-0">
+											<Suspense fallback={<Loader />}>
+												<Routes>
+													<Route
+														path="/"
+														element={<HomePage />}
+													/>
+													<Route
+														path="/login"
+														element={<LoginPage />}
+													/>
+													<Route
+														path="/signup"
+														element={<SignupPage />}
+													/>
+													<Route
+														path="/forgot-password"
+														element={
+															<ForgotPasswordPage />
+														}
+													/>
+													<Route
+														path="/reset-password"
+														element={
+															<ResetPasswordPage />
+														}
+													/>
+													<Route
+														path="/profile"
+														element={
+															<ProfilePage />
+														}
+													/>
+													<Route
+														path="/server-error"
+														element={
+															<ServerErrorPage />
+														}
+													/>
+													<Route
+														path="/:id"
+														element={
+															<DisplayPage />
+														}
+													/>
+													<Route
+														path="/about"
+														element={<AboutPage />}
+													/>
+													<Route
+														path="/history"
+														element={
+															<HistoryPage />
+														}
+													/>
+												</Routes>
+											</Suspense>
+										</main>
+									</div>
+									<Suspense fallback={null}>
+										<MusicBubble />
+									</Suspense>
+									<MusicPlayerWrapper />
+								</Router>
+							</MusicProvider>
 						</PasteProvider>
 					</SnippetProvider>
 				</AuthProvider>

@@ -622,5 +622,40 @@
 			"explain_write": "Explain the logic and then write the code.",
 			"refactor_ideas": "Suggest ways to refactor this idea into code."
 		}
+	},
+	"music": {
+		"now_playing": "Now Playing",
+		"playing_from": "Playing From",
+		"up_next": "Up Next",
+		"change_region": "Change Region",
+		"refresh_playlist": "Refresh Playlist",
+		"no_tracks": "No tracks available",
+		"loading_playlist": "Loading playlist...",
+		"region_detected": "Playing {{region}} music based on your location",
+		"region_changed": "Switched to {{region}} music",
+		"permission_denied": "Location access denied. Playing Hindi music.",
+		"shuffle": "Shuffle",
+		"repeat": "Repeat",
+		"repeat_one": "Repeat One",
+		"repeat_all": "Repeat All",
+		"volume": "Volume",
+		"open_player": "Open Music Player",
+		"close_player": "Close Player",
+		"search": "Search",
+		"search_placeholder": "Search songs or artists...",
+		"tracks_available": "tracks available",
+		"regions": {
+			"maharashtra": "Marathi",
+			"tamil_nadu": "Tamil",
+			"karnataka": "Kannada",
+			"kerala": "Malayalam",
+			"telangana": "Telugu",
+			"andhra_pradesh": "Telugu",
+			"west_bengal": "Bengali",
+			"punjab": "Punjabi",
+			"gujarat": "Gujarati",
+			"english": "English / International",
+			"default": "Hindi"
+		}
 	}
 }

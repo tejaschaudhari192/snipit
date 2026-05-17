@@ -5,3 +5,4 @@ export * from "./content";
 export * from "./sound";
 export * from "./file";
 export * from "./name";
+export * from "./text";
