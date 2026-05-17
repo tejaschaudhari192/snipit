@@ -78,6 +78,16 @@ export const useDisplayActions = ({
 				return;
 			}
 
+			if (
+				isPasswordEnabled &&
+				!editPassword &&
+				!(paste?.isPasswordProtected || paste?.password)
+			) {
+				toast.error(t("messages.password_required"));
+				setSaveStatus("error");
+				return;
+			}
+
 			try {
 				setIsSaving(true);
 

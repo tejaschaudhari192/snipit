@@ -92,7 +92,17 @@ export const useDisplayState = () => {
 			data.password !== undefined ||
 			data.isPasswordProtected !== undefined
 		) {
-			setIsPasswordEnabled(!!data.password || !!data.isPasswordProtected);
+			const isPassEnabled = !!data.password || !!data.isPasswordProtected;
+			setIsPasswordEnabled(isPassEnabled);
+			if (!isPassEnabled) {
+				setPaste((prev) => {
+					if (!prev) return prev;
+					const next = { ...prev };
+					delete next.password;
+					next.isPasswordProtected = false;
+					return next;
+				});
+			}
 			setEditPassword("");
 		}
 		// Reset removed files when loading new data

@@ -314,6 +314,7 @@
 		"action_cancelled": "Action cancelled",
 		"snippet_updated": "Snippet updated successfully",
 		"update_failed": "Failed to update snippet",
+		"password_required": "Password is required when password protection is enabled",
 		"password_incorrect": "Incorrect password",
 		"comment_added": "Comment added successfully",
 		"comment_failed": "Failed to add comment",

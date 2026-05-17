@@ -61,6 +61,21 @@ export const useAutosave = ({
 		const hasContentChanged =
 			content !== undefined && content !== originalContent;
 
+		const originalHasPassword = !!(
+			originalPaste?.isPasswordProtected || originalPaste?.password
+		);
+		let hasPasswordChanged = false;
+		if (config.isPasswordEnabled !== originalHasPassword) {
+			if (config.isPasswordEnabled) {
+				hasPasswordChanged = config.editPassword.trim() !== "";
+			} else {
+				hasPasswordChanged = true;
+			}
+		} else {
+			hasPasswordChanged =
+				config.isPasswordEnabled && config.editPassword.trim() !== "";
+		}
+
 		const hasConfigChanged =
 			config.language !== originalPaste?.language ||
 			config.visibility !== originalPaste?.visibility ||
@@ -73,10 +88,7 @@ export const useAutosave = ({
 			config.allowComments !== (originalPaste?.allowComments || false) ||
 			config.expiresTime !== (originalPaste?.expiresTime || "") ||
 			config.customId !== (originalPaste?.id || "") ||
-			config.isPasswordEnabled !==
-				(!!originalPaste?.isPasswordProtected ||
-					!!originalPaste?.password) ||
-			(config.isPasswordEnabled && config.editPassword !== "");
+			hasPasswordChanged;
 
 		const timeSinceLastLocalEdit = Date.now() - lastLocalEditRef.current;
 
@@ -131,6 +143,20 @@ export const useAutosave = ({
 
 		const hasContentChanged =
 			content !== undefined && content !== originalContent;
+		const originalHasPassword = !!(
+			originalPaste?.isPasswordProtected || originalPaste?.password
+		);
+		let hasPasswordChanged = false;
+		if (config.isPasswordEnabled !== originalHasPassword) {
+			if (config.isPasswordEnabled) {
+				hasPasswordChanged = config.editPassword.trim() !== "";
+			} else {
+				hasPasswordChanged = true;
+			}
+		} else {
+			hasPasswordChanged =
+				config.isPasswordEnabled && config.editPassword.trim() !== "";
+		}
 
 		const hasConfigChanged =
 			config.language !== originalPaste?.language ||
@@ -144,10 +170,7 @@ export const useAutosave = ({
 			config.allowComments !== (originalPaste?.allowComments || false) ||
 			config.expiresTime !== (originalPaste?.expiresTime || "") ||
 			config.customId !== (originalPaste?.id || "") ||
-			config.isPasswordEnabled !==
-				(!!originalPaste?.isPasswordProtected ||
-					!!originalPaste?.password) ||
-			(config.isPasswordEnabled && config.editPassword !== "");
+			hasPasswordChanged;
 
 		if (hasContentChanged || hasConfigChanged) {
 			setSaveStatus("saving");

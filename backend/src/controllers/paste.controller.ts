@@ -181,7 +181,11 @@ class PasteController {
 			}
 
 			const result = await this.pasteService.updatePaste(id, updates);
-			return res.json(result!.toObject());
+			const responseData = result!.toObject();
+			return res.json({
+				...responseData,
+				isPasswordProtected: !!result!.password,
+			});
 		} catch (error: unknown) {
 			if (
 				error instanceof Error &&
