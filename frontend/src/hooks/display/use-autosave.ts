@@ -52,6 +52,9 @@ export const useAutosave = ({
 		onSaveRef.current = onSave;
 	}, [onSave]);
 
+	const allowedUsersStr = JSON.stringify(config.allowedUsers);
+	const shareListStr = JSON.stringify(config.shareList);
+
 	useEffect(() => {
 		if (!isAutosave || !isEdit || loading || isSaving) return;
 
@@ -62,10 +65,9 @@ export const useAutosave = ({
 			config.language !== originalPaste?.language ||
 			config.visibility !== originalPaste?.visibility ||
 			config.editPermission !== originalPaste?.editPermission ||
-			JSON.stringify(config.allowedUsers) !==
+			allowedUsersStr !==
 				JSON.stringify(originalPaste?.allowedUsers || []) ||
-			JSON.stringify(config.shareList) !==
-				JSON.stringify(originalPaste?.shareList || []) ||
+			shareListStr !== JSON.stringify(originalPaste?.shareList || []) ||
 			config.publicRole !== (originalPaste?.publicRole || "viewer") ||
 			config.allowComments !== (originalPaste?.allowComments || false) ||
 			config.expiresTime !== (originalPaste?.expiresTime || "") ||
@@ -110,8 +112,10 @@ export const useAutosave = ({
 		config.language,
 		config.visibility,
 		config.editPermission,
-		JSON.stringify(config.allowedUsers),
-		JSON.stringify(config.shareList),
+		config.allowedUsers,
+		config.shareList,
+		allowedUsersStr,
+		shareListStr,
 		config.publicRole,
 		config.allowComments,
 		config.expiresTime,
@@ -131,10 +135,9 @@ export const useAutosave = ({
 			config.language !== originalPaste?.language ||
 			config.visibility !== originalPaste?.visibility ||
 			config.editPermission !== originalPaste?.editPermission ||
-			JSON.stringify(config.allowedUsers) !==
+			allowedUsersStr !==
 				JSON.stringify(originalPaste?.allowedUsers || []) ||
-			JSON.stringify(config.shareList) !==
-				JSON.stringify(originalPaste?.shareList || []) ||
+			shareListStr !== JSON.stringify(originalPaste?.shareList || []) ||
 			config.publicRole !== (originalPaste?.publicRole || "viewer") ||
 			config.allowComments !== (originalPaste?.allowComments || false) ||
 			config.expiresTime !== (originalPaste?.expiresTime || "") ||
@@ -157,8 +160,10 @@ export const useAutosave = ({
 		config.language,
 		config.visibility,
 		config.editPermission,
-		JSON.stringify(config.allowedUsers),
-		JSON.stringify(config.shareList),
+		config.allowedUsers,
+		config.shareList,
+		allowedUsersStr,
+		shareListStr,
 		config.publicRole,
 		config.allowComments,
 		config.expiresTime,
