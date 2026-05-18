@@ -7,8 +7,11 @@ import {
 	clearAuthCookie,
 } from "@/lib/auth.utils.js";
 import User from "@/models/User.js";
+import EmailService from "@/services/email.service.js";
+import logger from "@/config/logger.js";
 
 class AuthController {
+	private emailService = new EmailService();
 	constructor(private readonly authService: AuthService) {}
 
 	async registerUser(req: Request, res: Response) {
@@ -35,6 +38,27 @@ class AuthController {
 			const user = await this.authService.loginUser(req.body);
 			const token = generateToken(user._id as string);
 			setAuthCookie(res, token);
+
+			// Trigger non-blocking login security notification email
+			const userAgent = req.headers["user-agent"] || "";
+			const ipAddress =
+				req.ip ||
+				req.headers["x-forwarded-for"] ||
+				req.socket.remoteAddress ||
+				"127.0.0.1";
+			this.emailService
+				.sendLoginNotificationEmail(
+					user.email,
+					user.username,
+					userAgent as string,
+					ipAddress as string,
+				)
+				.catch((err) =>
+					logger.error(
+						"Failed to send login notification email:",
+						err,
+					),
+				);
 
 			res.json({
 				_id: user._id,
@@ -136,6 +160,27 @@ class AuthController {
 			const user = await this.authService.googleLogin(req.body.idToken);
 			const token = generateToken(user._id as string);
 			setAuthCookie(res, token);
+
+			// Trigger non-blocking login security notification email
+			const userAgent = req.headers["user-agent"] || "";
+			const ipAddress =
+				req.ip ||
+				req.headers["x-forwarded-for"] ||
+				req.socket.remoteAddress ||
+				"127.0.0.1";
+			this.emailService
+				.sendLoginNotificationEmail(
+					user.email,
+					user.username,
+					userAgent as string,
+					ipAddress as string,
+				)
+				.catch((err) =>
+					logger.error(
+						"Failed to send login notification email:",
+						err,
+					),
+				);
 
 			res.json({
 				_id: user._id,
