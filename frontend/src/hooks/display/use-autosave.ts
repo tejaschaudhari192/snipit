@@ -91,13 +91,9 @@ export const useAutosave = ({
 				config.customId !== (originalPaste?.id || "")) ||
 			hasPasswordChanged;
 
-		const timeSinceLastLocalEdit = Date.now() - lastLocalEditRef.current;
-
 		if (
 			(!hasContentChanged && !hasConfigChanged) ||
-			isRemoteUpdateRef.current ||
-			(hasContentChanged &&
-				timeSinceLastLocalEdit < CONFIG.ui.syncQuarantineMs)
+			isRemoteUpdateRef.current
 		) {
 			return;
 		}
@@ -106,6 +102,14 @@ export const useAutosave = ({
 		// but 3s is generally safe.
 		const timer = setTimeout(
 			() => {
+				const timeSinceLastLocalEdit =
+					Date.now() - lastLocalEditRef.current;
+				if (
+					hasContentChanged &&
+					timeSinceLastLocalEdit < CONFIG.ui.syncQuarantineMs
+				) {
+					return;
+				}
 				onSaveRef.current();
 			},
 			hasContentChanged ? 3000 : 1000,

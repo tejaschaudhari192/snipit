@@ -1,4 +1,4 @@
-import { Cloud, AlertCircle, Check } from "lucide-react";
+import { Cloud, AlertCircle, Check, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { StatusBadge } from "./status-badge";
 
@@ -19,7 +19,7 @@ export const AutosaveStatus = ({ status }: AutosaveStatusProps) => {
 					labelClassName="opacity-70"
 					label={t("common.saving")}
 					icon={
-						<Cloud className="h-4 w-4 fill-primary/10 animate-pulse" />
+						<Loader2 className="h-3 w-3 text-primary animate-spin" />
 					}
 				/>
 			);
