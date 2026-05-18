@@ -87,7 +87,6 @@ export const useAutosave = ({
 			config.publicRole !== (originalPaste?.publicRole || "viewer") ||
 			config.allowComments !== (originalPaste?.allowComments || false) ||
 			config.expiresTime !== (originalPaste?.expiresTime || "") ||
-			config.customId !== (originalPaste?.id || "") ||
 			hasPasswordChanged;
 
 		const timeSinceLastLocalEdit = Date.now() - lastLocalEditRef.current;
@@ -132,7 +131,6 @@ export const useAutosave = ({
 		config.publicRole,
 		config.allowComments,
 		config.expiresTime,
-		config.customId,
 		config.isPasswordEnabled,
 		config.editPassword,
 		originalPaste,
@@ -169,7 +167,6 @@ export const useAutosave = ({
 			config.publicRole !== (originalPaste?.publicRole || "viewer") ||
 			config.allowComments !== (originalPaste?.allowComments || false) ||
 			config.expiresTime !== (originalPaste?.expiresTime || "") ||
-			config.customId !== (originalPaste?.id || "") ||
 			hasPasswordChanged;
 
 		if (hasContentChanged || hasConfigChanged) {
@@ -192,7 +189,6 @@ export const useAutosave = ({
 		config.publicRole,
 		config.allowComments,
 		config.expiresTime,
-		config.customId,
 		config.isPasswordEnabled,
 		config.editPassword,
 		originalPaste,

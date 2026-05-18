@@ -87,7 +87,12 @@ export const useDisplayState = () => {
 		if (data.allowComments !== undefined)
 			setAllowComments(data.allowComments);
 		if (data.expiresTime !== undefined) setExpiresTime(data.expiresTime);
-		if (data.id !== undefined) setCustomId(data.id);
+		if (data.id !== undefined) {
+			setCustomId(data.id);
+			if (data.id.length !== 5) {
+				setIdTypeTab("dynamic");
+			}
+		}
 		if (
 			data.password !== undefined ||
 			data.isPasswordProtected !== undefined

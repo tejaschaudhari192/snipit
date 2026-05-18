@@ -55,6 +55,21 @@ const MarkdownDisplay = lazy(() =>
 	})),
 );
 
+const EditorInnerSkeleton = () => (
+	<div className="flex-1 p-6 space-y-4 w-full h-full bg-background/50">
+		<div className="animate-pulse space-y-4">
+			<Skeleton className="w-3/4 h-4 rounded opacity-40 bg-muted-foreground/30" />
+			<Skeleton className="w-1/2 h-4 rounded opacity-40 bg-muted-foreground/30" />
+			<Skeleton className="w-5/6 h-4 rounded opacity-40 bg-muted-foreground/30" />
+			<div className="pt-4 space-y-2">
+				<Skeleton className="w-full h-3 rounded-full opacity-20 bg-muted-foreground/30" />
+				<Skeleton className="w-full h-3 rounded-full opacity-20 bg-muted-foreground/30" />
+				<Skeleton className="w-2/3 h-3 rounded-full opacity-20 bg-muted-foreground/30" />
+			</div>
+		</div>
+	</div>
+);
+
 interface EditorContentProps {
 	fontSize: number;
 	editorContainerRef: (node: HTMLElement | null) => void;
@@ -242,6 +257,9 @@ export const EditorContent = memo(
 														handleEditorWillMount
 													}
 													onMount={onMount}
+													loading={
+														<EditorInnerSkeleton />
+													}
 													options={{
 														minimap: {
 															enabled: false,
@@ -293,6 +311,7 @@ export const EditorContent = memo(
 										className="flex-1"
 										beforeMount={handleEditorWillMount}
 										onMount={onMount}
+										loading={<EditorInnerSkeleton />}
 										options={{
 											minimap: { enabled: false },
 											fontSize: fontSize,

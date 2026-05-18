@@ -7,6 +7,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { PasteProvider } from "@/context/PasteContext";
 import { SnippetProvider } from "@/context/SnippetContext";
 import Loader from "@/components/common/core/loader";
+import { HomeLoading } from "@/components/home/home-loading";
 import { loader } from "@monaco-editor/react";
 import { useTranslation } from "react-i18next";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -91,7 +92,15 @@ const App = () => {
 												<Routes>
 													<Route
 														path="/"
-														element={<HomePage />}
+														element={
+															<Suspense
+																fallback={
+																	<HomeLoading />
+																}
+															>
+																<HomePage />
+															</Suspense>
+														}
 													/>
 													<Route
 														path="/login"

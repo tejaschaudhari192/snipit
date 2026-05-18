@@ -53,6 +53,7 @@ export const useDisplayActions = ({
 		setSaveStatus,
 		setUpdatedContent,
 		setIsDeleteDialogOpen,
+		idTypeTab,
 	} = state;
 
 	const handleEditSave = useCallback(
@@ -74,6 +75,17 @@ export const useDisplayActions = ({
 
 			if (!hasContent) {
 				toast.error(t("messages.content_required"));
+				setSaveStatus("error");
+				return;
+			}
+
+			if (
+				(idTypeTab === "dynamic" || idTypeTab === "semantic") &&
+				!customId.trim()
+			) {
+				toast.error(
+					t("home.custom_id_required") || "Custom ID is required",
+				);
 				setSaveStatus("error");
 				return;
 			}
@@ -202,6 +214,7 @@ export const useDisplayActions = ({
 			setSaveStatus,
 			hasPending,
 			uploadFiles,
+			idTypeTab,
 		],
 	);
 
