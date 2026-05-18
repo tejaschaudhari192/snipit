@@ -8,6 +8,7 @@ import { PasteProvider } from "@/context/PasteContext";
 import { SnippetProvider } from "@/context/SnippetContext";
 import Loader from "@/components/common/core/loader";
 import { HomeLoading } from "@/components/home/home-loading";
+import { DisplayLoading } from "@/components/display/display-loading";
 import { loader } from "@monaco-editor/react";
 import { useTranslation } from "react-i18next";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -137,7 +138,13 @@ const App = () => {
 													<Route
 														path="/:id"
 														element={
-															<DisplayPage />
+															<Suspense
+																fallback={
+																	<DisplayLoading />
+																}
+															>
+																<DisplayPage />
+															</Suspense>
 														}
 													/>
 													<Route
