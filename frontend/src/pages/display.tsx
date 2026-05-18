@@ -311,6 +311,12 @@ const DisplayPage = () => {
 
 	const { fontSize, ref: contentRef, setFontSize } = usePinchZoom(14);
 	const isOwner = !!(user && paste?.owner === user._id);
+	const isOwnerOrAdmin =
+		isOwner ||
+		(!!user &&
+			collaborators.some(
+				(item) => item.email === user.email && item.role === "admin",
+			));
 	const handleEditorWillMount: BeforeMount = (m) => defineMonacoThemes(m);
 
 	const {
@@ -351,6 +357,7 @@ const DisplayPage = () => {
 			editPassword,
 		},
 		originalPaste: paste,
+		isAdmin: isOwnerOrAdmin,
 	});
 
 	const handleEditorMount: OnMount = (ed, monaco) => {
@@ -449,13 +456,6 @@ const DisplayPage = () => {
 		...u,
 		isMe: u.socketId === sharedSocketRef.current?.id,
 	}));
-
-	const isOwnerOrAdmin =
-		isOwner ||
-		(!!user &&
-			collaborators.some(
-				(item) => item.email === user.email && item.role === "admin",
-			));
 
 	return (
 		<>
