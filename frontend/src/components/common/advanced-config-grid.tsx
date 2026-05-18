@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
-import { Lock, Shield, Settings, Tag } from "lucide-react";
+import { LogIn, Lock, Shield, Settings, Tag } from "lucide-react";
 import { cn } from "@/utils";
 
 import { Switch } from "@/components/ui/switch";
@@ -8,6 +8,9 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { IdTypeTabs } from "@/components/home/paste-dialog/id-type-tabs";
 import { LabelManager } from "@/components/common/label-manager";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const VisibilitySelector = lazy(() =>
 	import("@/components/common/access-control/visibility-selector").then(
@@ -141,6 +144,8 @@ export const AdvancedConfigGrid = ({
 	files,
 }: AdvancedConfigGridProps) => {
 	const { t } = useTranslation();
+	const { user } = useAuth();
+	const navigate = useNavigate();
 
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -232,7 +237,7 @@ export const AdvancedConfigGrid = ({
 							)}
 						>
 							<div
-								className="flex items-center justify-between select-none"
+								className="flex items-between justify-between select-none"
 								onClick={() =>
 									!disabled &&
 									(isOwner || isAdmin) &&
@@ -290,44 +295,75 @@ export const AdvancedConfigGrid = ({
 				</div>
 			</div>
 
-			{/* Column 3: Access Control */}
+			{/* Column 3: Access Control / Auth Gate */}
 			<div className="flex flex-col">
 				<SectionHeader icon={Shield} label={t("common.privacy")} />
-				<div className="space-y-4">
-					<Suspense
-						fallback={
-							<Skeleton className="h-[62px] w-full rounded-xl" />
-						}
-					>
-						<VisibilitySelector
-							visibility={visibility}
-							setVisibility={setVisibility}
-							publicRole={publicRole}
-							setPublicRole={setPublicRole}
-							setEditPermission={setEditPermission}
-							disabled={disabled || (!isOwner && !isAdmin)}
-							compact={true}
-						/>
-					</Suspense>
-
-					<div className="pt-4 border-t border-border/10">
+				{!user ? (
+					<div className="flex flex-col justify-center items-center text-center p-4 rounded-xl border border-dashed border-primary/20 bg-primary/5 min-h-[140px] animate-in fade-in duration-300">
+						<LogIn className="h-5 w-5 text-primary/50 mb-2 animate-bounce" />
+						<p className="text-primary font-bold text-sm mb-1">
+							{t("common.auth_required")}
+						</p>
+						<p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+							{t("common.auth_required_desc")}
+						</p>
+						<div className="flex items-center gap-2 w-full">
+							<Button
+								size="sm"
+								variant="outline"
+								className="h-8 text-xs flex-1 bg-background/80"
+								onClick={() => navigate("/login")}
+							>
+								{t("header.login")}
+							</Button>
+							<Button
+								size="sm"
+								className="h-8 text-xs flex-1"
+								onClick={() => navigate("/signup")}
+							>
+								{t("header.signup")}
+							</Button>
+						</div>
+					</div>
+				) : (
+					<div className="space-y-4">
 						<Suspense
 							fallback={
-								<Skeleton className="h-[46px] w-full rounded-xl" />
+								<Skeleton className="h-[62px] w-full rounded-xl" />
 							}
 						>
-							<CollaboratorsManager
-								pasteId={pasteId}
-								collaborators={collaborators}
-								setCollaborators={setCollaborators}
-								allowedUsers={allowedUsers}
-								setAllowedUsers={setAllowedUsers}
+							<VisibilitySelector
+								visibility={visibility}
+								setVisibility={setVisibility}
+								publicRole={publicRole}
+								setPublicRole={setPublicRole}
+								setEditPermission={setEditPermission}
 								disabled={disabled || (!isOwner && !isAdmin)}
 								compact={true}
 							/>
 						</Suspense>
+
+						<div className="pt-4 border-t border-border/10">
+							<Suspense
+								fallback={
+									<Skeleton className="h-[46px] w-full rounded-xl" />
+								}
+							>
+								<CollaboratorsManager
+									pasteId={pasteId}
+									collaborators={collaborators}
+									setCollaborators={setCollaborators}
+									allowedUsers={allowedUsers}
+									setAllowedUsers={setAllowedUsers}
+									disabled={
+										disabled || (!isOwner && !isAdmin)
+									}
+									compact={true}
+								/>
+							</Suspense>
+						</div>
 					</div>
-				</div>
+				)}
 			</div>
 		</div>
 	);
