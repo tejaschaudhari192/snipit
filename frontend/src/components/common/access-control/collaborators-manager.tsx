@@ -182,7 +182,7 @@ export const CollaboratorsManager = ({
 						onValueChange={(r: ShareRole) => setPendingRole(r)}
 						disabled={disabled || isUpdating}
 					>
-						<SelectTrigger className="w-[100px] h-8 text-xs font-medium border-none bg-transparent hover:bg-muted/50 focus:ring-0 shadow-none">
+						<SelectTrigger className="w-[100px] h-10 text-sm font-medium border-none bg-transparent hover:bg-muted/50 focus:ring-0 shadow-none">
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>
@@ -212,7 +212,7 @@ export const CollaboratorsManager = ({
 									inputValue.trim(),
 								))
 						}
-						className="h-8 px-4 font-bold shadow-md hover:shadow-lg transition-all"
+						className="h-9 px-4 font-bold shadow-md hover:shadow-lg transition-all"
 					>
 						{isUpdating ? (
 							<span className="animate-pulse">...</span>
@@ -287,7 +287,7 @@ export const CollaboratorsManager = ({
 												updatingEmails.length > 0
 											}
 										>
-											<SelectTrigger className="flex-1 min-[440px]:w-[100px] h-8 text-[11px] bg-background border-input/50">
+											<SelectTrigger className="flex-1 min-[440px]:w-[100px] h-10 bg-background border-input/50">
 												<SelectValue />
 											</SelectTrigger>
 											<SelectContent>

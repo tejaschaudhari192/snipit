@@ -73,7 +73,7 @@ export const VisibilitySelector = ({
 					onValueChange={handleValueChange}
 					disabled={disabled}
 				>
-					<SelectTrigger className="w-full min-[440px]:w-[130px] h-9 text-xs font-medium bg-background border-input/50 focus:ring-primary/20">
+					<SelectTrigger className="w-full min-[440px]:w-[130px] h-10 font-medium bg-background border-input/50 focus:ring-primary/20">
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
