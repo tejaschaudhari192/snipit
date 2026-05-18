@@ -17,9 +17,43 @@ class EmailService {
 	}
 
 	public async ensureVerification(): Promise<boolean> {
-		this.isVerified = true;
-		this.lastErrorMessage = null;
-		return true;
+		try {
+			const controller = new AbortController();
+			const timeoutId = setTimeout(() => controller.abort(), 2000);
+
+			const response = await fetch("https://api.brevo.com/v3/account", {
+				method: "GET",
+				headers: {
+					accept: "application/json",
+					"api-key": configurations.brevo.apiKey,
+				},
+				signal: controller.signal,
+			});
+
+			clearTimeout(timeoutId);
+
+			if (response.ok) {
+				this.isVerified = true;
+				this.lastErrorMessage = null;
+				return true;
+			} else {
+				const errorData = (await response.json()) as {
+					message?: string;
+				};
+				this.isVerified = false;
+				this.lastErrorMessage = errorData.message || "Invalid API key";
+				return false;
+			}
+		} catch (error: unknown) {
+			this.isVerified = false;
+			this.lastErrorMessage =
+				error instanceof Error && error.name === "AbortError"
+					? "Verification timed out (Brevo API unreachable)"
+					: error instanceof Error
+						? error.message
+						: "Verification failed";
+			return false;
+		}
 	}
 
 	async verify() {

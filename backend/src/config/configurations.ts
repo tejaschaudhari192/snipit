@@ -21,12 +21,8 @@ const envSchema = z.object({
 	SUPABASE_SERVICE_ROLE_KEY: z.string(),
 	SUPABASE_STORAGE_BUCKET: z.string(),
 	YOUTUBE_API_KEY: z.string(),
-	SMTP_SERVICE: z.string().optional(),
-	SMTP_HOST: z.string().optional(),
-	SMTP_PORT: z.string().optional(),
-	SMTP_USER: z.string().optional(),
-	SMTP_PASS: z.string().optional(),
-	SMTP_FROM: z.string().optional(),
+	BREVO_SENDER: z.string(),
+	BREVO_API_KEY: z.string(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
@@ -70,13 +66,9 @@ const configurations = {
 	supabase_service_role_key: env.SUPABASE_SERVICE_ROLE_KEY,
 	supabase_storage_bucket: env.SUPABASE_STORAGE_BUCKET,
 	youtube_api_key: env.YOUTUBE_API_KEY,
-	smtp: {
-		service: env.SMTP_SERVICE,
-		host: env.SMTP_HOST,
-		port: parseInt(env.SMTP_PORT!, 10),
-		user: env.SMTP_USER,
-		pass: env.SMTP_PASS,
-		from: env.SMTP_FROM || env.SMTP_USER,
+	brevo: {
+		apiKey: env.BREVO_API_KEY,
+		sender: env.BREVO_SENDER,
 	},
 };
 
