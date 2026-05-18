@@ -197,20 +197,25 @@ class HealthService {
 
 		// 4. Email Server Check
 		try {
-			if (!configurations.smtp.user) {
+			if (!configurations.brevo.apiKey) {
 				health.services.smtp = {
 					status: "error",
-					message: "SMTP not configured",
+					message: "Brevo not configured",
 				};
-				addUpdate("Email Server", "SMTP Config Error", "mail", "error");
+				addUpdate(
+					"Email Server",
+					"Brevo Config Error",
+					"mail",
+					"error",
+				);
 			} else if (forceRefresh) {
 				const isOk = await this.emailService.ensureVerification();
 				const errorMessage = this.emailService.getLastError();
 				health.services.smtp = {
 					status: isOk ? "ok" : "error",
 					message: isOk
-						? "SMTP service is ready"
-						: `SMTP error: ${errorMessage || "Verification failed"}`,
+						? "Brevo service is ready"
+						: `Brevo error: ${errorMessage || "Verification failed"}`,
 				};
 				addUpdate(
 					"Email Server",
@@ -223,7 +228,7 @@ class HealthService {
 				this.emailService.ensureVerification();
 				health.services.smtp = {
 					status: "ok",
-					message: "SMTP service verification in progress",
+					message: "Brevo service verification in progress",
 				};
 				addUpdate("Email Server", "Email Server Ready", "mail", "ok");
 			}

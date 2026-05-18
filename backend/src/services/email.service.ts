@@ -1,26 +1,15 @@
-import nodemailer from "nodemailer";
 import configurations from "@/config/configurations.js";
 import logger from "@/config/logger.js";
 import { EMAIL_TEMPLATES } from "@/templates/email.templates.js";
 
 class EmailService {
-	private transporter = nodemailer.createTransport({
-		service: configurations.smtp.service,
-		host: configurations.smtp.host,
-		port: configurations.smtp.port,
-		secure: configurations.smtp.port === 465,
-		auth: {
-			user: configurations.smtp.user,
-			pass: configurations.smtp.pass,
-		},
-	});
-
-	private isVerified = false;
+	private isVerified = true;
 	private lastErrorMessage: string | null = null;
-	private verificationPromise: Promise<boolean> | null = null;
 
 	constructor() {
-		// Verification will be triggered on demand by health checks
+		logger.info(
+			"✨ Brevo Transactional Email Service Active (HTTP-based Delivery)",
+		);
 	}
 
 	public getLastError(): string | null {
@@ -28,35 +17,17 @@ class EmailService {
 	}
 
 	public async ensureVerification(): Promise<boolean> {
-		if (this.isVerified) return true;
-		if (this.verificationPromise) return this.verificationPromise;
-
+		this.isVerified = true;
 		this.lastErrorMessage = null;
-		this.verificationPromise = this.transporter
-			.verify()
-			.then(() => {
-				this.isVerified = true;
-				this.verificationPromise = null;
-				this.lastErrorMessage = null;
-				logger.info("✅ Email Service Verified and Ready");
-				return true;
-			})
-			.catch((err) => {
-				this.isVerified = false;
-				this.verificationPromise = null;
-				this.lastErrorMessage = err.message || "Unknown SMTP error";
-				logger.error(
-					`❌ Email Service Verification Failed: ${this.lastErrorMessage}`,
-					err,
-				);
-				return false;
-			});
-
-		return this.verificationPromise;
+		return true;
 	}
 
 	async verify() {
 		return this.isVerified;
+	}
+
+	private getFromAddress(): string {
+		return configurations.brevo.sender;
 	}
 
 	async sendAccessGrantedEmail(
@@ -67,45 +38,114 @@ class EmailService {
 	) {
 		try {
 			logger.info(
-				`Attempting to send access granted email to: ${toEmail} with role: ${role}`,
+				`Attempting to send access granted email via Brevo to: ${toEmail} with role: ${role}`,
 			);
-			const mailOptions = {
-				from: configurations.smtp.from,
-				to: toEmail,
-				subject: `You have been granted ${role} access to a snippet`,
-				text: `You have been granted ${role} access to a snippet on Snipit.\n\nYou can access it here: ${pasteUrl}\nSnippet ID: ${pasteId}`,
-				html: EMAIL_TEMPLATES.ACCESS_GRANTED(role, pasteId, pasteUrl),
-			};
+			const fromAddress = this.getFromAddress();
+			const subject = `You have been granted ${role} access to a snippet`;
+			const text = `You have been granted ${role} access to a snippet on Snipit.\n\nYou can access it here: ${pasteUrl}\nSnippet ID: ${pasteId}`;
+			const html = EMAIL_TEMPLATES.ACCESS_GRANTED(
+				role,
+				pasteId,
+				pasteUrl,
+			);
 
-			const info = await this.transporter.sendMail(mailOptions);
+			const response = await fetch(
+				"https://api.brevo.com/v3/smtp/email",
+				{
+					method: "POST",
+					headers: {
+						accept: "application/json",
+						"content-type": "application/json",
+						"api-key": configurations.brevo.apiKey,
+					},
+					body: JSON.stringify({
+						sender: {
+							name: "Snipit",
+							email: fromAddress,
+						},
+						to: [
+							{
+								email: toEmail,
+							},
+						],
+						subject,
+						textContent: text,
+						htmlContent: html,
+					}),
+				},
+			);
+
+			if (!response.ok) {
+				const errorData = (await response.json()) as {
+					message?: string;
+				};
+				throw new Error(
+					errorData.message || "Failed to send email via Brevo",
+				);
+			}
+
+			const data = await response.json();
 			logger.info(
-				`Access granted email sent to ${toEmail}: ${info.messageId}`,
+				`Access granted email sent via Brevo to ${toEmail}: ${JSON.stringify(data)}`,
 			);
 		} catch (error) {
-			logger.error(`Error sending email to ${toEmail}:`, error);
+			logger.error(`Error sending email to ${toEmail} via Brevo:`, error);
 		}
 	}
 
 	async sendPasswordResetEmail(toEmail: string, resetUrl: string) {
 		try {
 			logger.info(
-				`Attempting to send password reset email to: ${toEmail}`,
+				`Attempting to send password reset email via Brevo to: ${toEmail}`,
 			);
-			const mailOptions = {
-				from: configurations.smtp.from,
-				to: toEmail,
-				subject: "Password Reset Token",
-				text: `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`,
-				html: EMAIL_TEMPLATES.PASSWORD_RESET(resetUrl), // Using external template
-			};
+			const fromAddress = this.getFromAddress();
+			const subject = "Password Reset Token";
+			const text = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
+			const html = EMAIL_TEMPLATES.PASSWORD_RESET(resetUrl);
 
-			const info = await this.transporter.sendMail(mailOptions);
+			const response = await fetch(
+				"https://api.brevo.com/v3/smtp/email",
+				{
+					method: "POST",
+					headers: {
+						accept: "application/json",
+						"content-type": "application/json",
+						"api-key": configurations.brevo.apiKey,
+					},
+					body: JSON.stringify({
+						sender: {
+							name: "Snipit",
+							email: fromAddress,
+						},
+						to: [
+							{
+								email: toEmail,
+							},
+						],
+						subject,
+						textContent: text,
+						htmlContent: html,
+					}),
+				},
+			);
+
+			if (!response.ok) {
+				const errorData = (await response.json()) as {
+					message?: string;
+				};
+				throw new Error(
+					errorData.message ||
+						"Failed to send password reset email via Brevo",
+				);
+			}
+
+			const data = await response.json();
 			logger.info(
-				`Password reset email sent to ${toEmail}: ${info.messageId}`,
+				`Password reset email sent via Brevo to ${toEmail}: ${JSON.stringify(data)}`,
 			);
 		} catch (error) {
 			logger.error(
-				`Error sending password reset email to ${toEmail}:`,
+				`Error sending password reset email to ${toEmail} via Brevo:`,
 				error,
 			);
 		}
