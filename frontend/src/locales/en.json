@@ -134,7 +134,8 @@
 		"saved": "Saved",
 		"save_failed": "Save Failed",
 		"ai_autocomplete": "AI Autocomplete",
-		"workspace_preferences": "Workspace Preferences"
+		"workspace_preferences": "Workspace Preferences",
+		"no_edit_permitted": "Edit not permitted"
 	},
 	"profile": {
 		"loading": "Loading...",

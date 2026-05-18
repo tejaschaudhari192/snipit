@@ -130,7 +130,8 @@
 		"autosave": "自動保存",
 		"saved": "保存済み",
 		"save_failed": "保存失敗",
-		"clear_all": "すべてクリア"
+		"clear_all": "すべてクリア",
+		"no_edit_permitted": "編集は許可されていません"
 	},
 	"profile": {
 		"overview": "プロフィール概要",

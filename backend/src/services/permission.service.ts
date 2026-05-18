@@ -1,10 +1,8 @@
-import type { IPaste } from "@/types/index.js";
+import type { IPaste, UserRole } from "@/types/index.js";
 import type { FilterQuery } from "mongoose";
 import type { ICollaborator } from "@/models/Collaborator.js";
 import User from "@/models/User.js";
 import Collaborator from "@/models/Collaborator.js";
-
-export type UserRole = "admin" | "editor" | "viewer" | "commenter";
 
 class PermissionService {
 	async getUserRole(

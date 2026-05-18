@@ -129,7 +129,8 @@
 		"autosave": "Autospeichern",
 		"saved": "Gespeichert",
 		"save_failed": "Speichern fehlgeschlagen",
-		"clear_all": "Alles löschen"
+		"clear_all": "Alles löschen",
+		"no_edit_permitted": "Bearbeiten nicht erlaubt"
 	},
 	"profile": {
 		"overview": "Profilübersicht",

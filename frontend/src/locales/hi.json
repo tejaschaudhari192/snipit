@@ -130,7 +130,8 @@
 		"autosave": "ऑटोसेव",
 		"saved": "सहेजा गया",
 		"save_failed": "सहेजना विफल",
-		"clear_all": "सभी साफ़ करें"
+		"clear_all": "सभी साफ़ करें",
+		"no_edit_permitted": "संपादन की अनुमति नहीं है"
 	},
 	"profile": {
 		"overview": "प्रोफ़ाइल अवलोकन",

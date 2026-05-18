@@ -5,6 +5,7 @@ export type Visibility = "public" | "private" | "shared";
 export type EditPermission = "owner" | "shared" | "public";
 export type PublicRole = "viewer" | "editor" | "commenter";
 export type ShareRole = "viewer" | "editor" | "admin" | "commenter";
+export type UserRole = "admin" | "editor" | "viewer" | "commenter";
 
 export interface FileAttachment {
 	url: string;

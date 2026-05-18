@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { LogIn, Lock, Shield, Settings, Tag } from "lucide-react";
 import { cn } from "@/utils";
+import { LockedSettingWrapper } from "@/components/common/locked-setting-wrapper";
 
 import { Switch } from "@/components/ui/switch";
 import { PasswordInput } from "@/components/ui/password-input";
@@ -147,6 +148,8 @@ export const AdvancedConfigGrid = ({
 	const { user } = useAuth();
 	const navigate = useNavigate();
 
+	const isIdDisabled = disabled || (!isOwner && !isAdmin);
+
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 			{/* Column 1: Identification */}
@@ -156,16 +159,25 @@ export const AdvancedConfigGrid = ({
 						icon={Tag}
 						label={t("home.identification_type")}
 					/>
-					<IdTypeTabs
-						idTypeTab={idTypeTab}
-						setIdTypeTab={setIdTypeTab}
-						customId={customId}
-						setCustomId={setCustomId}
-						onSubmit={onSubmit || (() => {})}
-						compact={true}
-						textValue={textValue}
-						files={files}
-					/>
+					<LockedSettingWrapper
+						disabled={isIdDisabled}
+						tooltipText={
+							t("common.no_edit_permitted") ||
+							"Edit not permitted"
+						}
+					>
+						<IdTypeTabs
+							idTypeTab={idTypeTab}
+							setIdTypeTab={setIdTypeTab}
+							customId={customId}
+							setCustomId={setCustomId}
+							onSubmit={onSubmit || (() => {})}
+							compact={true}
+							textValue={textValue}
+							files={files}
+							disabled={isIdDisabled}
+						/>
+					</LockedSettingWrapper>
 				</div>
 
 				<div>
@@ -181,116 +193,136 @@ export const AdvancedConfigGrid = ({
 						label={t("common.settings")}
 					/>
 					<div className="flex flex-col gap-4">
-						<div
-							className={cn(
-								"flex items-center justify-between p-3 rounded-xl border shadow-sm group transition-all select-none",
-								allowComments
-									? "bg-emerald-500/5 border-emerald-500/20"
-									: "bg-background/60 border-border/50 hover:border-primary/30",
-								(isOwner || isAdmin) && !disabled
-									? "cursor-pointer"
-									: "opacity-70",
-							)}
-							onClick={() =>
-								!disabled &&
-								(isOwner || isAdmin) &&
-								setAllowComments(!allowComments)
+						<LockedSettingWrapper
+							disabled={!(isOwner || isAdmin) || disabled}
+							tooltipText={
+								t("common.no_edit_permitted") ||
+								"Edit not permitted"
 							}
 						>
-							<div className="flex items-center gap-3">
-								<div
-									className={cn(
-										"p-2 rounded-lg transition-colors",
-										allowComments
-											? "bg-emerald-500/10 text-emerald-600"
-											: "bg-primary/5 text-primary group-hover:bg-primary/10",
-									)}
-								>
-									<Settings className="h-4 w-4" />
-								</div>
-								<span className="text-sm font-semibold">
-									{t("common.open_discussion")}
-								</span>
-							</div>
-							<Switch
-								checked={allowComments}
-								onCheckedChange={setAllowComments}
-								disabled={disabled || (!isOwner && !isAdmin)}
-								className="scale-90 data-[state=checked]:bg-emerald-500"
-							/>
-						</div>
-					</div>
-				</div>
-
-				<div>
-					<SectionHeader icon={Lock} label={t("common.security")} />
-					<div className="flex flex-col gap-4">
-						<div
-							className={cn(
-								"flex flex-col gap-4 p-4 rounded-xl transition-all border shadow-sm",
-								isPasswordEnabled
-									? "bg-primary/5 border-primary/20"
-									: "bg-background/60 border-border/50 hover:border-primary/30",
-								(isOwner || isAdmin) && !disabled
-									? "cursor-pointer"
-									: "opacity-70",
-							)}
-						>
 							<div
-								className="flex items-between justify-between select-none"
+								className={cn(
+									"flex items-center justify-between p-3 rounded-xl border shadow-sm group transition-all select-none",
+									allowComments
+										? "bg-emerald-500/5 border-emerald-500/20"
+										: "bg-background/60 border-border/50 hover:border-primary/30",
+									(isOwner || isAdmin) && !disabled
+										? "cursor-pointer"
+										: "",
+								)}
 								onClick={() =>
 									!disabled &&
 									(isOwner || isAdmin) &&
-									setIsPasswordEnabled(!isPasswordEnabled)
+									setAllowComments(!allowComments)
 								}
 							>
 								<div className="flex items-center gap-3">
 									<div
 										className={cn(
 											"p-2 rounded-lg transition-colors",
-											isPasswordEnabled
-												? "bg-primary text-white"
-												: "bg-primary/5 text-primary",
+											allowComments
+												? "bg-emerald-500/10 text-emerald-600"
+												: "bg-primary/5 text-primary group-hover:bg-primary/10",
 										)}
 									>
-										<Lock className="h-4 w-4" />
+										<Settings className="h-4 w-4" />
 									</div>
 									<span className="text-sm font-semibold">
-										{t("common.password_protected")}
+										{t("common.open_discussion")}
 									</span>
 								</div>
 								<Switch
-									checked={isPasswordEnabled}
-									onCheckedChange={setIsPasswordEnabled}
+									checked={allowComments}
+									onCheckedChange={setAllowComments}
 									disabled={
 										disabled || (!isOwner && !isAdmin)
 									}
-									className="scale-90"
+									className="scale-90 data-[state=checked]:bg-emerald-500"
 								/>
 							</div>
+						</LockedSettingWrapper>
+					</div>
+				</div>
 
-							{isPasswordEnabled && (
-								<div className="animate-in slide-in-from-top-2 duration-200">
-									<div className="relative">
-										<Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
-										<PasswordInput
-											value={newPassword}
-											onChange={(e) =>
-												setNewPassword(e.target.value)
-											}
-											placeholder={t(
-												"common.password_placeholder",
+				<div>
+					<SectionHeader icon={Lock} label={t("common.security")} />
+					<div className="flex flex-col gap-4">
+						<LockedSettingWrapper
+							disabled={!(isOwner || isAdmin) || disabled}
+							tooltipText={
+								t("common.no_edit_permitted") ||
+								"Edit not permitted"
+							}
+						>
+							<div
+								className={cn(
+									"flex flex-col gap-4 p-4 rounded-xl transition-all border shadow-sm",
+									isPasswordEnabled
+										? "bg-primary/5 border-primary/20"
+										: "bg-background/60 border-border/50 hover:border-primary/30",
+									(isOwner || isAdmin) && !disabled
+										? "cursor-pointer"
+										: "",
+								)}
+							>
+								<div
+									className="flex items-between justify-between select-none"
+									onClick={() =>
+										!disabled &&
+										(isOwner || isAdmin) &&
+										setIsPasswordEnabled(!isPasswordEnabled)
+									}
+								>
+									<div className="flex items-center gap-3">
+										<div
+											className={cn(
+												"p-2 rounded-lg transition-colors",
+												isPasswordEnabled
+													? "bg-primary text-white"
+													: "bg-primary/5 text-primary",
 											)}
-											disabled={
-												disabled ||
-												(!isOwner && !isAdmin)
-											}
-											className="h-10 pl-10 text-sm bg-background/80"
-										/>
+										>
+											<Lock className="h-4 w-4" />
+										</div>
+										<span className="text-sm font-semibold">
+											{t("common.password_protected")}
+										</span>
 									</div>
+									<Switch
+										checked={isPasswordEnabled}
+										onCheckedChange={setIsPasswordEnabled}
+										disabled={
+											disabled || (!isOwner && !isAdmin)
+										}
+										className="scale-90"
+									/>
 								</div>
-							)}
-						</div>
+
+								{isPasswordEnabled && (
+									<div className="animate-in slide-in-from-top-2 duration-200">
+										<div className="relative">
+											<Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+											<PasswordInput
+												value={newPassword}
+												onChange={(e) =>
+													setNewPassword(
+														e.target.value,
+													)
+												}
+												placeholder={t(
+													"common.password_placeholder",
+												)}
+												disabled={
+													disabled ||
+													(!isOwner && !isAdmin)
+												}
+												className="h-10 pl-10 text-sm bg-background/80"
+											/>
+										</div>
+									</div>
+								)}
+							</div>
+						</LockedSettingWrapper>
 					</div>
 				</div>
 			</div>
