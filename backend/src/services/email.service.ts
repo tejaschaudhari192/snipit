@@ -46,8 +46,8 @@ class EmailService {
 				this.verificationPromise = null;
 				this.lastErrorMessage = err.message || "Unknown SMTP error";
 				logger.error(
-					"❌ Email Service Verification Failed:",
-					this.lastErrorMessage,
+					`❌ Email Service Verification Failed: ${this.lastErrorMessage}`,
+					err,
 				);
 				return false;
 			});
