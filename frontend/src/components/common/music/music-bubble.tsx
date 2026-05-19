@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Music, Music2 } from "lucide-react";
+import { Music, Music2, Share2 } from "lucide-react";
 import { useMusic } from "@/context/MusicContext";
 import { cn, decodeHtml } from "@/utils";
 import {
@@ -17,6 +17,7 @@ const MusicBubble: React.FC = () => {
 		openPlayer,
 		regionDisplayName,
 		isLoading,
+		isShared,
 	} = useMusic();
 	const { t } = useTranslation();
 	const [mounted, setMounted] = useState(false);
@@ -53,6 +54,11 @@ const MusicBubble: React.FC = () => {
 						/>
 					) : (
 						<Music2 className="w-4 h-4 text-muted-foreground" />
+					)}
+					{isShared && (
+						<div className="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center border border-background shadow animate-pulse">
+							<Share2 className="w-2.5 h-2.5 text-primary-foreground" />
+						</div>
 					)}
 					<div className="absolute inset-0 bg-foreground/5 pointer-events-none" />
 				</div>

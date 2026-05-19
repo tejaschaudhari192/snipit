@@ -6,7 +6,15 @@ import React, {
 	useRef,
 	useCallback,
 } from "react";
-import type { MusicTrack } from "@/types";
+import type {
+	MusicTrack,
+	SharedMusicState,
+	MusicSyncUpdate,
+	MusicPlayPauseUpdate,
+	MusicSeekUpdate,
+	MusicTrackUpdate,
+} from "@/types";
+import type { Socket } from "socket.io-client";
 import { CONFIG } from "@/configurations";
 import { useLocation } from "@/hooks/use-location";
 import { toast } from "sonner";
@@ -81,6 +89,12 @@ interface MusicContextType {
 	searchTracks: (query: string) => Promise<void>;
 	playSearchTrack: (track: MusicTrack) => Promise<void>;
 	clearSearch: () => void;
+	isShared: boolean;
+	isInitiator: boolean;
+	sharedByUser: string | null;
+	toggleShare: () => void;
+	setPasteSocket: (socket: Socket | null, pasteId: string | null) => void;
+	pasteId: string | null;
 }
 
 const MusicContext = createContext<MusicContextType | undefined>(undefined);
@@ -92,6 +106,24 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
+
+	const [socket, setSocket] = useState<Socket | null>(null);
+	const [pasteId, setPasteId] = useState<string | null>(null);
+	const [isShared, setIsShared] = useState(false);
+	const [isInitiator, setIsInitiator] = useState(false);
+	const [sharedByUser, setSharedByUser] = useState<string | null>(null);
+
+	const isRemoteActionRef = useRef(false);
+	const currentTrackRef = useRef<MusicTrack | null>(null);
+	const isPlayingRef = useRef(false);
+
+	useEffect(() => {
+		currentTrackRef.current = currentTrack;
+	}, [currentTrack]);
+
+	useEffect(() => {
+		isPlayingRef.current = isPlaying;
+	}, [isPlaying]);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [playlist, setPlaylist] = useState<MusicTrack[]>([]);
 	const [searchResults, setSearchResults] = useState<MusicTrack[]>([]);
@@ -167,13 +199,22 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 					playerRef.current.playVideo();
 					setCurrentTrack(track);
 					setIsPlaying(true);
+
+					if (
+						isShared &&
+						!isRemoteActionRef.current &&
+						socket &&
+						pasteId
+					) {
+						socket.emit("music:track-change", { pasteId, track });
+					}
 				} catch (error) {
 					console.error("Playback error:", error);
 					handleNextRef.current();
 				}
 			}
 		},
-		[isReady],
+		[isReady, isShared, socket, pasteId],
 	);
 
 	const handleTrackEnd = useCallback(() => {
@@ -277,6 +318,15 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				} else {
 					try {
 						playerRef.current.playVideo();
+						setIsPlaying(true);
+						if (
+							isShared &&
+							!isRemoteActionRef.current &&
+							socket &&
+							pasteId
+						) {
+							socket.emit("music:play", { pasteId, currentTime });
+						}
 					} catch {
 						playTrack(currentTrack);
 					}
@@ -303,13 +353,21 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		fetchPlaylist,
 		playTrack,
 		initPlayer,
+		isShared,
+		socket,
+		pasteId,
+		currentTime,
 	]);
 
 	const handlePause = useCallback(() => {
 		if (playerRef.current && playerRef.current.pauseVideo) {
 			playerRef.current.pauseVideo();
+			setIsPlaying(false);
+			if (isShared && !isRemoteActionRef.current && socket && pasteId) {
+				socket.emit("music:pause", { pasteId, currentTime });
+			}
 		}
-	}, []);
+	}, [isShared, socket, pasteId, currentTime]);
 
 	const handleSeek = useCallback(
 		(seconds: number) => {
@@ -319,9 +377,20 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				if (duration > 0) {
 					setProgress((seconds / duration) * 100);
 				}
+				if (
+					isShared &&
+					!isRemoteActionRef.current &&
+					socket &&
+					pasteId
+				) {
+					socket.emit("music:seek", {
+						pasteId,
+						currentTime: seconds,
+					});
+				}
 			}
 		},
-		[duration],
+		[duration, isShared, socket, pasteId],
 	);
 
 	const handleSetVolume = useCallback((vol: number) => {
@@ -523,6 +592,226 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		};
 	}, [isMounted, initPlayer]);
 
+	const toggleShare = useCallback(() => {
+		if (!socket || !pasteId) return;
+		const nextShared = !isShared;
+		socket.emit("music:share-toggle", {
+			pasteId,
+			enabled: nextShared,
+			track: currentTrack,
+			isPlaying,
+			currentTime,
+			playlist,
+			region,
+			shuffle,
+			repeat,
+		});
+	}, [
+		socket,
+		pasteId,
+		isShared,
+		currentTrack,
+		isPlaying,
+		currentTime,
+		playlist,
+		region,
+		shuffle,
+		repeat,
+	]);
+
+	const setPasteSocket = useCallback(
+		(newSocket: Socket | null, newPasteId: string | null) => {
+			setSocket(newSocket);
+			setPasteId(newPasteId);
+		},
+		[],
+	);
+
+	// Periodic sync from initiator/DJ to listeners
+	useEffect(() => {
+		if (isShared && isInitiator && socket && pasteId && isPlaying) {
+			const syncInterval = setInterval(() => {
+				if (isRemoteActionRef.current) return;
+				socket.emit("music:sync", {
+					pasteId,
+					track: currentTrack,
+					isPlaying,
+					currentTime,
+					playlist,
+					region,
+					shuffle,
+					repeat,
+				});
+			}, 3000);
+			return () => clearInterval(syncInterval);
+		}
+	}, [
+		isShared,
+		isInitiator,
+		socket,
+		pasteId,
+		isPlaying,
+		currentTrack,
+		currentTime,
+		playlist,
+		region,
+		shuffle,
+		repeat,
+	]);
+
+	// Socket listener subscriptions
+	useEffect(() => {
+		if (!socket || !pasteId) {
+			setIsShared(false);
+			setIsInitiator(false);
+			setSharedByUser(null);
+			return;
+		}
+
+		const handleShareState = (data: SharedMusicState) => {
+			isRemoteActionRef.current = true;
+			if (data.enabled) {
+				setIsShared(true);
+				const initiator = data.initiatorSocketId === socket.id;
+				setIsInitiator(initiator);
+
+				setSharedByUser(initiator ? "You" : "DJ");
+
+				if (!initiator) {
+					if (data.track) {
+						if (
+							currentTrackRef.current?.videoId !==
+							data.track.videoId
+						) {
+							playTrack(data.track);
+						}
+						setTimeout(() => {
+							if (data.isPlaying) {
+								playerRef.current?.playVideo();
+								setIsPlaying(true);
+							} else {
+								playerRef.current?.pauseVideo();
+								setIsPlaying(false);
+							}
+							const latency =
+								(Date.now() - data.lastSyncedAt) / 1000;
+							const targetTime =
+								data.currentTime +
+								(data.isPlaying ? latency : 0);
+							if (targetTime > 0) {
+								handleSeek(targetTime);
+							}
+						}, 300);
+					}
+					if (data.playlist) setPlaylist(data.playlist);
+					if (data.region) setRegion(data.region);
+					if (data.shuffle !== undefined) setShuffle(data.shuffle);
+					if (data.repeat) setRepeat(data.repeat);
+				}
+			} else {
+				setIsShared(false);
+				setIsInitiator(false);
+				setSharedByUser(null);
+			}
+			isRemoteActionRef.current = false;
+		};
+
+		const handleSyncUpdate = (data: MusicSyncUpdate) => {
+			isRemoteActionRef.current = true;
+			if (data.playlist) setPlaylist(data.playlist);
+			if (data.region) setRegion(data.region);
+			if (data.shuffle !== undefined) setShuffle(data.shuffle);
+			if (data.repeat) setRepeat(data.repeat);
+
+			if (
+				data.track &&
+				currentTrackRef.current?.videoId !== data.track.videoId
+			) {
+				playTrack(data.track);
+			}
+
+			setTimeout(() => {
+				if (data.isPlaying && !isPlayingRef.current) {
+					playerRef.current?.playVideo();
+					setIsPlaying(true);
+				} else if (!data.isPlaying && isPlayingRef.current) {
+					playerRef.current?.pauseVideo();
+					setIsPlaying(false);
+				}
+
+				const networkLatency = (Date.now() - data.timestamp) / 1000;
+				const targetTime =
+					data.currentTime + (data.isPlaying ? networkLatency : 0);
+				if (Math.abs(currentTimeRef.current - targetTime) > 2.5) {
+					handleSeek(targetTime);
+				}
+			}, 300);
+
+			isRemoteActionRef.current = false;
+		};
+
+		const handlePlayUpdate = (data: MusicPlayPauseUpdate) => {
+			isRemoteActionRef.current = true;
+			playerRef.current?.playVideo();
+			setIsPlaying(true);
+			if (
+				data.currentTime !== undefined &&
+				Math.abs(currentTimeRef.current - data.currentTime) > 2.5
+			) {
+				handleSeek(data.currentTime);
+			}
+			isRemoteActionRef.current = false;
+		};
+
+		const handlePauseUpdate = (data: MusicPlayPauseUpdate) => {
+			isRemoteActionRef.current = true;
+			playerRef.current?.pauseVideo();
+			setIsPlaying(false);
+			if (
+				data.currentTime !== undefined &&
+				Math.abs(currentTimeRef.current - data.currentTime) > 2.5
+			) {
+				handleSeek(data.currentTime);
+			}
+			isRemoteActionRef.current = false;
+		};
+
+		const handleSeekUpdate = (data: MusicSeekUpdate) => {
+			isRemoteActionRef.current = true;
+			if (Math.abs(currentTimeRef.current - data.currentTime) > 2.5) {
+				handleSeek(data.currentTime);
+			}
+			isRemoteActionRef.current = false;
+		};
+
+		const handleTrackUpdate = (data: MusicTrackUpdate) => {
+			isRemoteActionRef.current = true;
+			if (data.track) {
+				playTrack(data.track);
+			}
+			isRemoteActionRef.current = false;
+		};
+
+		socket.on("music:share-state", handleShareState);
+		socket.on("music:sync-update", handleSyncUpdate);
+		socket.on("music:play-update", handlePlayUpdate);
+		socket.on("music:pause-update", handlePauseUpdate);
+		socket.on("music:seek-update", handleSeekUpdate);
+		socket.on("music:track-update", handleTrackUpdate);
+
+		// Request state when joining
+		socket.emit("music:request-state", { pasteId });
+
+		return () => {
+			socket.off("music:share-state", handleShareState);
+			socket.off("music:sync-update", handleSyncUpdate);
+			socket.off("music:play-update", handlePlayUpdate);
+			socket.off("music:pause-update", handlePauseUpdate);
+			socket.off("music:seek-update", handleSeekUpdate);
+			socket.off("music:track-update", handleTrackUpdate);
+		};
+	}, [socket, pasteId, playTrack, handleSeek]);
+
 	return (
 		<MusicContext.Provider
 			value={{
@@ -558,6 +847,12 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				searchTracks: handleSearchTracks,
 				playSearchTrack: handlePlaySearchTrack,
 				clearSearch: handleClearSearch,
+				isShared,
+				isInitiator,
+				sharedByUser,
+				toggleShare,
+				setPasteSocket,
+				pasteId,
 			}}
 		>
 			{children}

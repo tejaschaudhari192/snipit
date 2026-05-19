@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Volume2, RefreshCw, X } from "lucide-react";
+import { Volume2, RefreshCw, X, Share2 } from "lucide-react";
 import { cn, decodeHtml } from "@/utils";
 import { useMusic } from "@/context/MusicContext";
 
@@ -55,6 +55,11 @@ const MusicPlayerModal: React.FC = () => {
 		searchTracks,
 		playSearchTrack,
 		clearSearch,
+		isShared,
+		isInitiator,
+		sharedByUser,
+		toggleShare,
+		pasteId,
 	} = useMusic();
 
 	const displayTitle = useMemo(
@@ -93,6 +98,27 @@ const MusicPlayerModal: React.FC = () => {
 					</div>
 
 					<div className="flex items-center gap-1.5 shrink-0">
+						{pasteId && (
+							<Button
+								variant={isShared ? "default" : "outline"}
+								size="sm"
+								onClick={toggleShare}
+								className={cn(
+									"h-8 px-2.5 text-xs font-semibold gap-1.5 transition-all duration-300 border",
+									isShared
+										? "bg-primary text-primary-foreground hover:bg-primary/95 shadow-lg shadow-primary/20 border-primary"
+										: "text-muted-foreground border-border hover:text-foreground hover:bg-muted/30",
+								)}
+							>
+								<Share2
+									className={cn(
+										"w-3.5 h-3.5",
+										isShared && "animate-pulse",
+									)}
+								/>
+								{isShared ? "Shared" : "Share"}
+							</Button>
+						)}
 						<RegionSelector
 							currentRegion={region}
 							onRegionChange={changeRegion}
@@ -161,6 +187,22 @@ const MusicPlayerModal: React.FC = () => {
 							</span>
 						</div>
 					</div>
+
+					{isShared && (
+						<div
+							className={cn(
+								"flex items-center gap-2 px-3 py-1.5 rounded-md text-[10px] font-semibold tracking-wide border transition-all duration-300",
+								isInitiator
+									? "bg-primary/10 border-primary/20 text-primary animate-pulse"
+									: "bg-muted border-border text-muted-foreground",
+							)}
+						>
+							<span className="w-1.5 h-1.5 rounded-full bg-current" />
+							{isInitiator
+								? "Broadcasting playback live to room members..."
+								: `Synced to shared room stream (${sharedByUser || "DJ"})`}
+						</div>
+					)}
 
 					<div className="space-y-3.5 w-full min-w-0">
 						<MusicProgress

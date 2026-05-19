@@ -28,6 +28,27 @@ export interface ActiveUser {
 	pasteId: string;
 }
 
+export interface SharedMusicTrack {
+	videoId: string;
+	title: string;
+	channel: string;
+	thumbnail: string;
+	duration?: string;
+}
+
+export interface SharedMusicState {
+	enabled: boolean;
+	initiatorSocketId: string;
+	track: SharedMusicTrack | null;
+	isPlaying: boolean;
+	currentTime: number;
+	lastSyncedAt: number;
+	playlist: SharedMusicTrack[];
+	region: string;
+	shuffle: boolean;
+	repeat: "off" | "one" | "all";
+}
+
 export type UserData = {
 	_id: string;
 	username: string;
