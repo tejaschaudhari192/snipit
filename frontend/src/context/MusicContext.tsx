@@ -9,16 +9,14 @@ import type {
 } from "@/types";
 import type { Socket } from "socket.io-client";
 import { CONFIG } from "@/configurations";
-import { useLocation } from "@/hooks/use-location";
 import { toast } from "sonner";
 import { decodeHtml } from "@/utils";
+import { downloadTrack } from "@/utils/music";
 import { MusicContext, type YTPlayer } from "./use-music";
 
 export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
 }) => {
-	const { region: detectedRegion } = useLocation();
-
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
 
@@ -42,12 +40,28 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [playlist, setPlaylist] = useState<MusicTrack[]>([]);
 	const [searchResults, setSearchResults] = useState<MusicTrack[]>([]);
-	const [region, setRegion] = useState("default");
-	const [regionDisplayName, setRegionDisplayName] = useState("Hindi");
+
+	// Dummy state variables for backward compatibility
+	const [region] = useState("default");
+	const [regionDisplayName] = useState("Hindi");
+
 	const [isPlayerOpen, setIsPlayerOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isReady, setIsReady] = useState(false);
-	const [volume, setVolumeState] = useState(50);
+	const [volume, setVolumeState] = useState<number>(() => {
+		if (typeof window !== "undefined") {
+			const saved = localStorage.getItem(CONFIG.storageKeys.musicVolume);
+			return saved ? parseInt(saved, 10) : 50;
+		}
+		return 50;
+	});
+	const [quality, setQualityState] = useState<string>(() => {
+		if (typeof window !== "undefined") {
+			const saved = localStorage.getItem(CONFIG.storageKeys.musicQuality);
+			return saved ?? "tiny";
+		}
+		return "tiny";
+	});
 	const [progress, setProgress] = useState(0);
 	const [duration, setDuration] = useState(0);
 	const [currentTime, setCurrentTime] = useState(0);
@@ -65,20 +79,20 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	useEffect(() => {
 		setIsMounted(true);
-		const savedRegion = localStorage.getItem(
-			CONFIG.storageKeys.musicRegion,
-		);
-		if (savedRegion) setRegion(savedRegion);
 	}, []);
 
-	const fetchPlaylist = useCallback(
-		async (targetRegion: string): Promise<MusicTrack[]> => {
+	const fetchTrackDetails = useCallback(
+		async (videoIds: string[]): Promise<MusicTrack[]> => {
+			if (videoIds.length === 0) return [];
 			setIsLoading(true);
 			try {
 				const response = await fetch(
-					`${CONFIG.apiBaseUrl}/music/playlist?region=${targetRegion}`,
+					`${CONFIG.apiBaseUrl}/music/details?ids=${encodeURIComponent(
+						videoIds.join(","),
+					)}`,
 				);
-				if (!response.ok) throw new Error("Failed to fetch playlist");
+				if (!response.ok)
+					throw new Error("Failed to fetch track details");
 				const data = await response.json();
 
 				const decodedTracks = data.tracks.map((track: MusicTrack) => ({
@@ -87,17 +101,9 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 					channel: decodeHtml(track.channel),
 				}));
 
-				setPlaylist(decodedTracks);
-				setRegion(data.region);
-				setRegionDisplayName(data.displayName);
-				if (decodedTracks.length > 0) {
-					setCurrentTrack(decodedTracks[0]);
-					setCurrentIndex(0);
-				}
 				return decodedTracks;
 			} catch (error) {
-				console.error("Music fetch error:", error);
-				toast.error("Failed to load music playlist");
+				console.error("Music fetch details error:", error);
 				return [];
 			} finally {
 				setIsLoading(false);
@@ -106,11 +112,97 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		[],
 	);
 
+	useEffect(() => {
+		if (isMounted) {
+			const savedIdsStr = localStorage.getItem(
+				CONFIG.storageKeys.musicPlaylistIds,
+			);
+			let savedIds: string[] = [];
+			try {
+				savedIds = savedIdsStr ? JSON.parse(savedIdsStr) : [];
+			} catch {
+				savedIds = [];
+			}
+
+			if (savedIds.length > 0) {
+				fetchTrackDetails(savedIds).then((tracks) => {
+					if (tracks && tracks.length > 0) {
+						setPlaylist(tracks);
+
+						const savedTrackId = localStorage.getItem(
+							CONFIG.storageKeys.musicCurrentTrackId,
+						);
+						const savedIndex = parseInt(
+							localStorage.getItem(
+								CONFIG.storageKeys.musicCurrentIndex,
+							) || "0",
+							10,
+						);
+
+						if (savedTrackId) {
+							const foundIndex = tracks.findIndex(
+								(t) => t.videoId === savedTrackId,
+							);
+							if (foundIndex !== -1) {
+								setCurrentTrack(tracks[foundIndex]);
+								setCurrentIndex(foundIndex);
+								return;
+							}
+						}
+
+						if (tracks[savedIndex]) {
+							setCurrentTrack(tracks[savedIndex]);
+							setCurrentIndex(savedIndex);
+						} else {
+							setCurrentTrack(tracks[0]);
+							setCurrentIndex(0);
+						}
+					}
+				});
+			}
+		}
+	}, [isMounted, fetchTrackDetails]);
+
+	useEffect(() => {
+		if (isMounted) {
+			const ids = playlist.map((t) => t.videoId);
+			localStorage.setItem(
+				CONFIG.storageKeys.musicPlaylistIds,
+				JSON.stringify(ids),
+			);
+		}
+	}, [playlist, isMounted]);
+
+	useEffect(() => {
+		if (isMounted) {
+			if (currentTrack) {
+				localStorage.setItem(
+					CONFIG.storageKeys.musicCurrentTrackId,
+					currentTrack.videoId,
+				);
+			} else {
+				localStorage.removeItem(CONFIG.storageKeys.musicCurrentTrackId);
+			}
+		}
+	}, [currentTrack, isMounted]);
+
+	useEffect(() => {
+		if (isMounted) {
+			localStorage.setItem(
+				CONFIG.storageKeys.musicCurrentIndex,
+				currentIndex.toString(),
+			);
+		}
+	}, [currentIndex, isMounted]);
+
 	const playTrack = useCallback(
 		(track: MusicTrack) => {
 			if (playerRef.current && isReady) {
 				try {
-					playerRef.current.loadVideoById(track.videoId);
+					playerRef.current.loadVideoById({
+						videoId: track.videoId,
+						suggestedQuality: quality,
+					});
 					playerRef.current.playVideo();
 					setCurrentTrack(track);
 					setIsPlaying(true);
@@ -129,7 +221,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				}
 			}
 		},
-		[isReady, isShared, socket, pasteId],
+		[isReady, isShared, socket, pasteId, quality],
 	);
 
 	const handleTrackEnd = useCallback(() => {
@@ -197,6 +289,24 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				onReady: (event: { target: YTPlayer }) => {
 					setIsReady(true);
 					event.target.setVolume(volume);
+					if (typeof event.target.setPlaybackQuality === "function") {
+						event.target.setPlaybackQuality(quality);
+					}
+
+					// Restore cued video details if there is a saved track
+					if (currentTrackRef.current) {
+						const savedTime = parseFloat(
+							localStorage.getItem(
+								CONFIG.storageKeys.musicPlaytime,
+							) || "0",
+						);
+						event.target.cueVideoById({
+							videoId: currentTrackRef.current.videoId,
+							startSeconds: savedTime,
+							suggestedQuality: quality,
+						});
+						setCurrentTime(savedTime);
+					}
 				},
 				onStateChange: (event: { data: number }) => {
 					const YT = window.YT;
@@ -204,6 +314,12 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 						setIsPlaying(true);
 						if (playerRef.current) {
 							setDuration(playerRef.current.getDuration());
+							if (
+								typeof playerRef.current.setPlaybackQuality ===
+								"function"
+							) {
+								playerRef.current.setPlaybackQuality(quality);
+							}
 						}
 					} else if (event.data === YT.PlayerState.PAUSED) {
 						setIsPlaying(false);
@@ -218,7 +334,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				},
 			},
 		});
-	}, [volume]);
+	}, [volume, quality]);
 
 	const handlePlay = useCallback(async () => {
 		if (playerRef.current) {
@@ -228,7 +344,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 						? playerRef.current.getPlayerState()
 						: -1;
 
-				if (state === -1 || state === 5) {
+				if (state === -1) {
 					playTrack(currentTrack);
 				} else {
 					try {
@@ -248,14 +364,6 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				}
 			} else if (!currentTrack && playlist.length > 0) {
 				playTrack(playlist[0]);
-			} else if (!currentTrack && playlist.length === 0) {
-				const savedRegion =
-					localStorage.getItem(CONFIG.storageKeys.musicRegion) ||
-					detectedRegion;
-				const tracks = await fetchPlaylist(savedRegion);
-				if (tracks && tracks.length > 0) {
-					playTrack(tracks[0]);
-				}
 			}
 		} else {
 			initPlayer();
@@ -264,8 +372,6 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		currentTrack,
 		isPlaying,
 		playlist,
-		detectedRegion,
-		fetchPlaylist,
 		playTrack,
 		initPlayer,
 		isShared,
@@ -289,6 +395,10 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			if (playerRef.current && playerRef.current.seekTo) {
 				playerRef.current.seekTo(seconds, true);
 				setCurrentTime(seconds);
+				localStorage.setItem(
+					CONFIG.storageKeys.musicPlaytime,
+					seconds.toFixed(1),
+				);
 				if (duration > 0) {
 					setProgress((seconds / duration) * 100);
 				}
@@ -316,6 +426,31 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		localStorage.setItem(CONFIG.storageKeys.musicVolume, vol.toString());
 	}, []);
 
+	const handleChangeQuality = useCallback((newQuality: string) => {
+		setQualityState(newQuality);
+		localStorage.setItem(CONFIG.storageKeys.musicQuality, newQuality);
+		if (
+			playerRef.current &&
+			typeof playerRef.current.setPlaybackQuality === "function"
+		) {
+			playerRef.current.setPlaybackQuality(newQuality);
+		}
+		toast.success(
+			`Audio quality set to ${newQuality === "tiny" ? "Low" : newQuality === "small" ? "Medium" : newQuality === "medium" ? "High" : "Auto"}`,
+		);
+	}, []);
+
+	const handleDownloadTrack = useCallback(
+		async (
+			videoId: string,
+			title: string,
+			downloadQuality: "128" | "320",
+		) => {
+			await downloadTrack(videoId, title, downloadQuality);
+		},
+		[],
+	);
+
 	const handleToggleShuffle = useCallback(() => setShuffle((s) => !s), []);
 
 	const handleToggleRepeat = useCallback(() => {
@@ -325,17 +460,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		});
 	}, []);
 
-	const handleChangeRegion = useCallback(
-		async (newRegion: string) => {
-			localStorage.setItem(CONFIG.storageKeys.musicRegion, newRegion);
-			const tracks = await fetchPlaylist(newRegion);
-			if (tracks && tracks.length > 0) {
-				playTrack(tracks[0]);
-			}
-			toast.success(`Playing ${newRegion} music`);
-		},
-		[fetchPlaylist, playTrack],
-	);
+	const handleChangeRegion = useCallback(async () => {}, []);
 
 	const handlePlayAtIndex = useCallback(
 		(index: number) => {
@@ -417,8 +542,147 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const handleClearSearch = useCallback(() => setSearchResults([]), []);
 
+	const handleRemoveFromQueue = useCallback(
+		(videoId: string) => {
+			setPlaylist((prevPlaylist) => {
+				const trackIndex = prevPlaylist.findIndex(
+					(t) => t.videoId === videoId,
+				);
+				if (trackIndex === -1) return prevPlaylist;
+
+				const nextPlaylist = prevPlaylist.filter(
+					(t) => t.videoId !== videoId,
+				);
+
+				if (trackIndex === currentIndex) {
+					if (nextPlaylist.length > 0) {
+						const newIndex = trackIndex % nextPlaylist.length;
+						setCurrentIndex(newIndex);
+						setTimeout(() => playTrack(nextPlaylist[newIndex]), 0);
+					} else {
+						setCurrentTrack(null);
+						setIsPlaying(false);
+						setCurrentIndex(0);
+					}
+				} else if (trackIndex < currentIndex) {
+					setCurrentIndex((prevIndex) => prevIndex - 1);
+				}
+
+				if (isShared && socket && pasteId) {
+					socket.emit("music:sync", {
+						pasteId,
+						track: currentTrackRef.current,
+						isPlaying: isPlayingRef.current,
+						currentTime: currentTimeRef.current,
+						playlist: nextPlaylist,
+						region,
+						shuffle,
+						repeat,
+					});
+				}
+
+				return nextPlaylist;
+			});
+			toast.success("Removed track from queue");
+		},
+		[
+			currentIndex,
+			isShared,
+			socket,
+			pasteId,
+			region,
+			shuffle,
+			repeat,
+			playTrack,
+		],
+	);
+
+	const handlePlayNext = useCallback(
+		(track: MusicTrack) => {
+			setPlaylist((prevPlaylist) => {
+				const filteredPlaylist = prevPlaylist.filter(
+					(t) => t.videoId !== track.videoId,
+				);
+
+				let nextPlaylist = [...filteredPlaylist];
+				if (filteredPlaylist.length === 0) {
+					nextPlaylist = [track];
+					setCurrentIndex(0);
+					setTimeout(() => playTrack(track), 0);
+				} else {
+					const insertIndex = currentIndex + 1;
+					nextPlaylist.splice(insertIndex, 0, track);
+				}
+
+				if (isShared && socket && pasteId) {
+					socket.emit("music:sync", {
+						pasteId,
+						track: currentTrackRef.current,
+						isPlaying: isPlayingRef.current,
+						currentTime: currentTimeRef.current,
+						playlist: nextPlaylist,
+						region,
+						shuffle,
+						repeat,
+					});
+				}
+
+				return nextPlaylist;
+			});
+			toast.success(`"${track.title}" will play next`);
+		},
+		[
+			currentIndex,
+			isShared,
+			socket,
+			pasteId,
+			region,
+			shuffle,
+			repeat,
+			playTrack,
+		],
+	);
+
+	const handleReorderQueue = useCallback(
+		(startIndex: number, endIndex: number) => {
+			if (startIndex === endIndex) return;
+			setPlaylist((prevPlaylist) => {
+				const nextPlaylist = [...prevPlaylist];
+				const [removed] = nextPlaylist.splice(startIndex, 1);
+				nextPlaylist.splice(endIndex, 0, removed);
+
+				const activeTrack = currentTrackRef.current;
+				if (activeTrack) {
+					const newIndex = nextPlaylist.findIndex(
+						(t) => t.videoId === activeTrack.videoId,
+					);
+					if (newIndex !== -1) {
+						setCurrentIndex(newIndex);
+					}
+				}
+
+				if (isShared && socket && pasteId) {
+					socket.emit("music:sync", {
+						pasteId,
+						track: currentTrackRef.current,
+						isPlaying: isPlayingRef.current,
+						currentTime: currentTimeRef.current,
+						playlist: nextPlaylist,
+						region,
+						shuffle,
+						repeat,
+					});
+				}
+
+				return nextPlaylist;
+			});
+		},
+		[isShared, socket, pasteId, region, shuffle, repeat],
+	);
+
 	const currentTimeRef = useRef(0);
 	const durationRef = useRef(240);
+	const lastSavedTimeRef = useRef(-10);
 
 	useEffect(() => {
 		currentTimeRef.current = currentTime;
@@ -470,6 +734,17 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				setCurrentTime(nextTime);
 				setDuration(nextDur);
 				setProgress((nextTime / nextDur) * 100);
+
+				if (
+					Math.floor(nextTime) % 10 === 0 &&
+					Math.floor(nextTime) >= lastSavedTimeRef.current + 10
+				) {
+					lastSavedTimeRef.current = Math.floor(nextTime);
+					localStorage.setItem(
+						CONFIG.storageKeys.musicPlaytime,
+						nextTime.toFixed(1),
+					);
+				}
 			}, 200);
 		} else {
 			if (progressInterval.current)
@@ -619,7 +894,6 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 						}, 300);
 					}
 					if (data.playlist) setPlaylist(data.playlist);
-					if (data.region) setRegion(data.region);
 					if (data.shuffle !== undefined) setShuffle(data.shuffle);
 					if (data.repeat) setRepeat(data.repeat);
 				}
@@ -634,7 +908,6 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		const handleSyncUpdate = (data: MusicSyncUpdate) => {
 			isRemoteActionRef.current = true;
 			if (data.playlist) setPlaylist(data.playlist);
-			if (data.region) setRegion(data.region);
 			if (data.shuffle !== undefined) setShuffle(data.shuffle);
 			if (data.repeat) setRepeat(data.repeat);
 
@@ -746,21 +1019,27 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				currentTime,
 				shuffle,
 				repeat,
+				quality,
 				play: handlePlay,
 				pause: handlePause,
 				next: handleNext,
 				previous: handlePrevious,
 				seekTo: handleSeek,
 				setVolume: handleSetVolume,
+				changeQuality: handleChangeQuality,
+				downloadTrack: handleDownloadTrack,
 				toggleShuffle: handleToggleShuffle,
 				toggleRepeat: handleToggleRepeat,
 				openPlayer: () => setIsPlayerOpen(true),
 				closePlayer: () => setIsPlayerOpen(false),
 				changeRegion: handleChangeRegion,
-				refreshPlaylist: () => fetchPlaylist(region),
+				refreshPlaylist: () => {},
 				playAtIndex: handlePlayAtIndex,
 				searchTracks: handleSearchTracks,
 				playSearchTrack: handlePlaySearchTrack,
+				removeFromQueue: handleRemoveFromQueue,
+				playNext: handlePlayNext,
+				reorderQueue: handleReorderQueue,
 				clearSearch: handleClearSearch,
 				isShared,
 				isInitiator,

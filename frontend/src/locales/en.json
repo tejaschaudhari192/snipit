@@ -410,6 +410,10 @@
 			"labels": {
 				"title": "Smart Labels",
 				"desc": "Organize your snippets with a powerful, user-specific labeling system. Tag and categorize your code for instant retrieval and a personalized organization experience."
+			},
+			"music_integration": {
+				"title": "Zero-Bandwidth Music",
+				"desc": "Stream your favorite songs directly within your workspace using low-bandwidth background players, custom bitrates, and a proxy-secured MP3 downloader."
 			}
 		},
 		"story": {

@@ -24,8 +24,12 @@ export const CONFIG = {
 		terminalPosition: "snipit-terminal-position",
 		aiAutocomplete: "snipit-ai-autocomplete",
 		musicVolume: "snipit-music-volume",
-		musicRegion: "snipit-music-region",
+		musicQuality: "snipit-music-quality",
 		musicEnabled: "snipit-music-enabled",
+		musicPlaylistIds: "snipit-music-playlist-ids",
+		musicCurrentTrackId: "snipit-music-current-track-id",
+		musicCurrentIndex: "snipit-music-current-index",
+		musicPlaytime: "snipit-music-playtime",
 		autosave: "snipit-autosave",
 	},
 

@@ -5,7 +5,7 @@ import {
 } from "@/config/music-playlists.js";
 import logger from "@/config/logger.js";
 
-interface MusicTrack {
+export interface MusicTrack {
 	videoId: string;
 	title: string;
 	channel: string;
@@ -13,7 +13,7 @@ interface MusicTrack {
 	duration?: string;
 }
 
-interface PlaylistResponse {
+export interface PlaylistResponse {
 	region: string;
 	displayName: string;
 	tracks: MusicTrack[];
@@ -30,6 +30,10 @@ class MusicService {
 	private CACHE_TTL = 3600 * 1000; // 1 hour
 
 	async getPlaylistByRegion(region: string): Promise<PlaylistResponse> {
+		logger.info(
+			`MusicService: Received playlist request for region: "${region}"`,
+		);
+
 		// Normalize region
 		let resolvedRegion = region.toLowerCase();
 		if (HINDI_BELT_STATES.includes(resolvedRegion)) {
@@ -43,6 +47,9 @@ class MusicService {
 		// Check cache
 		const cached = this.cache.get(resolvedRegion);
 		if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
+			logger.info(
+				`MusicService: Serving regional playlist from cache for: "${resolvedRegion}"`,
+			);
 			return cached.data;
 		}
 
@@ -64,8 +71,11 @@ class MusicService {
 				isRegionalSearch = true;
 			}
 
+			logger.info(
+				`MusicService: Fetching playlist from YouTube. RegionalSearch: ${isRegionalSearch}, RegionCode: ${regionCode}`,
+			);
+
 			if (isRegionalSearch) {
-				// For Indian states (like Tamil Nadu, Maharashtra, etc.), search YouTube for their regional music
 				const query = config.searchQueries[0] || "Music";
 				response = await fetch(
 					`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&q=${encodeURIComponent(
@@ -73,7 +83,6 @@ class MusicService {
 					)}&type=video&videoCategoryId=10&key=${configurations.youtube_api_key}`,
 				);
 			} else {
-				// For main country levels (Hindi/India, English/US), fetch official YouTube trending music charts directly
 				response = await fetch(
 					`https://www.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&videoCategoryId=10&maxResults=50&regionCode=${regionCode}&key=${configurations.youtube_api_key}`,
 				);
@@ -81,7 +90,10 @@ class MusicService {
 
 			if (!response.ok) {
 				const errorData = await response.json();
-				logger.error("YouTube API Error:", JSON.stringify(errorData));
+				logger.error(
+					"YouTube API Error Details:",
+					JSON.stringify(errorData),
+				);
 				throw new Error("Failed to fetch from YouTube API");
 			}
 
@@ -124,10 +136,15 @@ class MusicService {
 				timestamp: Date.now(),
 			});
 
+			logger.info(
+				`MusicService: Successfully retrieved ${tracks.length} tracks for region: "${resolvedRegion}"`,
+			);
 			return result;
 		} catch (error) {
-			logger.error("MusicService Error:", error);
-			// Fallback: return an empty list or a pre-defined set if available
+			logger.error(
+				`MusicService Playlist Error for "${resolvedRegion}":`,
+				error,
+			);
 			return {
 				region: resolvedRegion,
 				displayName:
@@ -139,6 +156,9 @@ class MusicService {
 	}
 
 	async searchTracks(query: string): Promise<MusicTrack[]> {
+		logger.info(
+			`MusicService: Executing YouTube search for query: "${query}"`,
+		);
 		try {
 			const response = await fetch(
 				`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=${encodeURIComponent(
@@ -149,7 +169,7 @@ class MusicService {
 			if (!response.ok) {
 				const errorData = await response.json();
 				logger.error(
-					"YouTube Search API Error:",
+					"YouTube Search API Error Details:",
 					JSON.stringify(errorData),
 				);
 				throw new Error("Failed to fetch from YouTube Search API");
@@ -179,9 +199,152 @@ class MusicService {
 				}
 			}
 
+			logger.info(
+				`MusicService: YouTube search resolved successfully. Found ${tracks.length} matching tracks.`,
+			);
 			return tracks;
 		} catch (error) {
-			logger.error("MusicService Search Error:", error);
+			logger.error(
+				`MusicService: Search failed for query "${query}":`,
+				error,
+			);
+			return [];
+		}
+	}
+
+	async getSuggestions(query: string): Promise<string[]> {
+		logger.info(
+			`MusicService: Retrieving autocompletion suggestions for query: "${query}"`,
+		);
+		try {
+			const response = await fetch(
+				`https://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=${encodeURIComponent(
+					query,
+				)}`,
+			);
+			if (!response.ok) {
+				throw new Error(
+					"Failed to fetch suggestions from Google Suggest API",
+				);
+			}
+			const data = (await response.json()) as [string, string[]];
+			if (Array.isArray(data) && Array.isArray(data[1])) {
+				logger.info(
+					`MusicService: Resolved ${data[1].length} autocomplete suggestions successfully.`,
+				);
+				return data[1];
+			}
+			return [];
+		} catch (error) {
+			logger.error(
+				`MusicService: Failed to retrieve suggestions for query "${query}":`,
+				error,
+			);
+			return [];
+		}
+	}
+
+	async getDownloadUrl(videoId: string, quality: string): Promise<string> {
+		logger.info(
+			`MusicService: Requesting download link for video "${videoId}", quality: ${quality}kbps`,
+		);
+
+		const cobaltInstances = [
+			"https://api.cobalt.blackcat.sweeux.org/",
+			"https://api.dl.woof.monster/",
+			"https://api.cobalt.tools/",
+			"https://cobalt.hnd.me/",
+		];
+
+		for (const instance of cobaltInstances) {
+			try {
+				logger.info(
+					`MusicService: Trying to resolve audio via instance: ${instance}`,
+				);
+				const response = await fetch(instance, {
+					method: "POST",
+					headers: {
+						Accept: "application/json",
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						url: `https://www.youtube.com/watch?v=${videoId}`,
+						downloadMode: "audio",
+						audioFormat: "mp3",
+						audioBitrate: quality,
+					}),
+				});
+
+				if (response.ok) {
+					const data = await response.json();
+					if (data.url) {
+						logger.info(
+							`MusicService: Successfully resolved download for video "${videoId}" via ${instance} -> ${data.url}`,
+						);
+						return data.url;
+					}
+				} else {
+					const errorText = await response.text();
+					logger.warn(
+						`MusicService: Instance ${instance} returned status ${response.status}: ${errorText}`,
+					);
+				}
+			} catch (err) {
+				logger.warn(
+					`MusicService: Failed to fetch from Cobalt instance ${instance}: ${err}`,
+				);
+			}
+		}
+
+		logger.warn(
+			`MusicService: All public Cobalt instances failed to resolve. Returning fallback converter URL.`,
+		);
+		return `https://y2mate.tools/en/download?url=https://www.youtube.com/watch?v=${videoId}`;
+	}
+
+	async getTrackDetails(videoIds: string): Promise<MusicTrack[]> {
+		logger.info(
+			`MusicService: Request details for video IDs: "${videoIds}"`,
+		);
+		try {
+			const response = await fetch(
+				`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${encodeURIComponent(
+					videoIds,
+				)}&key=${configurations.youtube_api_key}`,
+			);
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				logger.error(
+					"YouTube Videos API Error Details:",
+					JSON.stringify(errorData),
+				);
+				throw new Error("Failed to fetch from YouTube Videos API");
+			}
+
+			const data = await response.json();
+			const tracks: MusicTrack[] = [];
+
+			for (const item of data.items) {
+				tracks.push({
+					videoId: item.id,
+					title: item.snippet.title,
+					channel: item.snippet.channelTitle,
+					thumbnail:
+						item.snippet.thumbnails.high?.url ||
+						item.snippet.thumbnails.default?.url,
+				});
+			}
+
+			logger.info(
+				`MusicService: Successfully retrieved details for ${tracks.length} tracks.`,
+			);
+			return tracks;
+		} catch (error) {
+			logger.error(
+				`MusicService: getTrackDetails failed for "${videoIds}":`,
+				error,
+			);
 			return [];
 		}
 	}

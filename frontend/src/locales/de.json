@@ -393,6 +393,10 @@
 			"labels": {
 				"title": "Smarte Labels",
 				"desc": "Organisieren Sie Ihre Snippets mit einem leistungsstarken, benutzerspezifischen Label-System. Kennzeichnen und kategorisieren Sie Ihren Code für den sofortigen Abruf und eine personalisierte Organisation."
+			},
+			"music_integration": {
+				"title": "Zero-Bandbreiten Musik",
+				"desc": "Streamen Sie Ihre Lieblingslieder direkt in Ihrem Arbeitsbereich mit energiesparenden Hintergrund-Playern, benutzerdefinierten Bitraten und einem proxy-gesicherten MP3-Downloader."
 			}
 		},
 		"story": {

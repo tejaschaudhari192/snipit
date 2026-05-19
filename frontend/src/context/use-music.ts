@@ -3,7 +3,18 @@ import type { MusicTrack } from "@/types";
 import type { Socket } from "socket.io-client";
 
 export interface YTPlayer {
-	loadVideoById: (id: string) => void;
+	loadVideoById: (
+		options: string | { videoId: string; suggestedQuality: string },
+	) => void;
+	cueVideoById: (
+		options:
+			| string
+			| {
+					videoId: string;
+					startSeconds?: number;
+					suggestedQuality?: string;
+			  },
+	) => void;
 	playVideo: () => void;
 	pauseVideo: () => void;
 	getPlayerState: () => number;
@@ -11,6 +22,7 @@ export interface YTPlayer {
 	setVolume: (volume: number) => void;
 	getCurrentTime: () => number;
 	getDuration: () => number;
+	setPlaybackQuality: (suggestedQuality: string) => void;
 }
 
 export interface YTPlayerOptions {
@@ -55,12 +67,19 @@ export interface MusicContextType {
 	currentTime: number;
 	shuffle: boolean;
 	repeat: "off" | "one" | "all";
+	quality: string;
 	play: () => void;
 	pause: () => void;
 	next: () => void;
 	previous: () => void;
 	seekTo: (seconds: number) => void;
 	setVolume: (vol: number) => void;
+	changeQuality: (q: string) => void;
+	downloadTrack: (
+		videoId: string,
+		title: string,
+		quality: "128" | "320",
+	) => Promise<void>;
 	toggleShuffle: () => void;
 	toggleRepeat: () => void;
 	openPlayer: () => void;
@@ -70,6 +89,9 @@ export interface MusicContextType {
 	playAtIndex: (index: number) => void;
 	searchTracks: (query: string) => Promise<void>;
 	playSearchTrack: (track: MusicTrack) => Promise<void>;
+	removeFromQueue: (videoId: string) => void;
+	playNext: (track: MusicTrack) => void;
+	reorderQueue: (startIndex: number, endIndex: number) => void;
 	clearSearch: () => void;
 	isShared: boolean;
 	isInitiator: boolean;

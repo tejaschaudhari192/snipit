@@ -16,6 +16,7 @@ import {
 	Terminal,
 	FileDown,
 	Palette,
+	Music,
 } from "lucide-react";
 
 const app = {
@@ -109,6 +110,11 @@ const app = {
 			icon: Hash, // Using Hash or Tag icon for labels. Tag is better, let's import it. Wait, I'll use Hash if Tag is not imported. I'll import Tag at the top. Let's just use Hash for now, it's already imported.
 			key: "labels",
 			gradient: "from-pink-500 to-purple-500",
+		},
+		{
+			icon: Music,
+			key: "music_integration",
+			gradient: "from-purple-500 to-pink-500",
 		},
 	],
 	team: [
