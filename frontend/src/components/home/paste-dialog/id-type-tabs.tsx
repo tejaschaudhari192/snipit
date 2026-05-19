@@ -20,6 +20,7 @@ interface IdTypeTabsProps {
 	compact?: boolean;
 	textValue?: string;
 	files?: AiIdFileContext[];
+	disabled?: boolean;
 }
 
 export const IdTypeTabs = ({
@@ -31,6 +32,7 @@ export const IdTypeTabs = ({
 	compact = false,
 	textValue,
 	files,
+	disabled = false,
 }: IdTypeTabsProps) => {
 	const { t } = useTranslation();
 
@@ -38,20 +40,33 @@ export const IdTypeTabs = ({
 		<Tabs
 			value={idTypeTab}
 			onValueChange={(v) =>
+				!disabled &&
 				setIdTypeTab(v as "system" | "dynamic" | "semantic")
 			}
 			className="w-full"
 		>
 			<TabsList className="grid w-full grid-cols-3 h-9 mb-4">
-				<TabsTrigger value="system" className="text-xs">
+				<TabsTrigger
+					value="system"
+					className="text-xs"
+					disabled={disabled}
+				>
 					<Fingerprint className="h-3.5 w-3.5 mr-2" />
 					{t("home.paste_system_id")}
 				</TabsTrigger>
-				<TabsTrigger value="dynamic" className="text-xs">
+				<TabsTrigger
+					value="dynamic"
+					className="text-xs"
+					disabled={disabled}
+				>
 					<Wand2 className="h-3.5 w-3.5 mr-2" />
 					{t("home.paste_dynamic_id")}
 				</TabsTrigger>
-				<TabsTrigger value="semantic" className="text-xs">
+				<TabsTrigger
+					value="semantic"
+					className="text-xs"
+					disabled={disabled}
+				>
 					<Hash className="h-3.5 w-3.5 mr-2" />
 					{t("home.semantic_id_tab")}
 				</TabsTrigger>
@@ -75,6 +90,7 @@ export const IdTypeTabs = ({
 							onSubmit={onSubmit}
 							textValue={textValue}
 							files={files}
+							disabled={disabled}
 						/>
 					</TabsContent>
 
@@ -83,6 +99,7 @@ export const IdTypeTabs = ({
 							customId={customId}
 							setCustomId={setCustomId}
 							onSubmit={onSubmit}
+							disabled={disabled}
 						/>
 					</TabsContent>
 				</Suspense>

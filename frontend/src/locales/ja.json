@@ -113,6 +113,7 @@
 		"labels": "ラベル",
 		"login_to_label": "ラベルで整理するにはログインしてください",
 		"secure": "セキュア",
+		"security": "セキュリティ",
 		"edit_permission": "編集できる人",
 		"only_me": "自分のみ",
 		"specific_people": "特定のユーザー",
@@ -130,7 +131,8 @@
 		"autosave": "自動保存",
 		"saved": "保存済み",
 		"save_failed": "保存失敗",
-		"clear_all": "すべてクリア"
+		"clear_all": "すべてクリア",
+		"no_edit_permitted": "編集は許可されていません"
 	},
 	"profile": {
 		"overview": "プロフィール概要",
@@ -306,7 +308,13 @@
 		"empty_file": "ファイルを選択してください。",
 		"qr_downloaded": "QRコードがダウンロードされました！",
 		"snippet_deleted_id": "スニペット {{id}} が削除されました",
-		"autosaved": "自動保存されました: {{fields}}"
+		"autosaved": "自動保存されました: {{fields}}",
+		"collaborators_added": "コラボレーターが正常に追加されました",
+		"collaborators_failed": "コラボレーターの追加に失敗しました",
+		"collaborator_removed": "コラボレーターが正常に削除されました",
+		"collaborator_remove_failed": "コラボレーターの削除に失敗しました",
+		"collaborator_updated": "コラボレーターの権限が正常に更新されました",
+		"collaborator_update_failed": "コラボレーターの権限の更新に失敗しました"
 	},
 	"about_page": {
 		"title": "について",

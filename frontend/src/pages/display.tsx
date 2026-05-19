@@ -83,8 +83,8 @@ const DisplayPage = () => {
 		setAllowedUsers,
 		editPermission,
 		setEditPermission,
-		shareList,
-		setShareList,
+		collaborators,
+		setCollaborators,
 		publicRole,
 		setPublicRole,
 		allowComments,
@@ -121,6 +121,7 @@ const DisplayPage = () => {
 		passwordError,
 		setPasswordError,
 		isSaving,
+		isDeleting,
 		isVerifyingPassword,
 		setIsVerifyingPassword,
 		isServerFileRemoved,
@@ -310,6 +311,12 @@ const DisplayPage = () => {
 
 	const { fontSize, ref: contentRef, setFontSize } = usePinchZoom(14);
 	const isOwner = !!(user && paste?.owner === user._id);
+	const isOwnerOrAdmin =
+		isOwner ||
+		(!!user &&
+			collaborators.some(
+				(item) => item.email === user.email && item.role === "admin",
+			));
 	const handleEditorWillMount: BeforeMount = (m) => defineMonacoThemes(m);
 
 	const {
@@ -341,7 +348,7 @@ const DisplayPage = () => {
 			visibility,
 			editPermission,
 			allowedUsers,
-			shareList,
+			collaborators,
 			publicRole,
 			allowComments,
 			expiresTime,
@@ -350,6 +357,7 @@ const DisplayPage = () => {
 			editPassword,
 		},
 		originalPaste: paste,
+		isAdmin: isOwnerOrAdmin,
 	});
 
 	const handleEditorMount: OnMount = (ed, monaco) => {
@@ -448,13 +456,6 @@ const DisplayPage = () => {
 		...u,
 		isMe: u.socketId === sharedSocketRef.current?.id,
 	}));
-
-	const isOwnerOrAdmin =
-		isOwner ||
-		(!!user &&
-			shareList.some(
-				(item) => item.email === user.email && item.role === "admin",
-			));
 
 	return (
 		<>
@@ -612,8 +613,8 @@ const DisplayPage = () => {
 										setEditPermission={setEditPermission}
 										isOwner={isOwner}
 										isAdmin={isOwnerOrAdmin}
-										shareList={shareList}
-										setShareList={setShareList}
+										collaborators={collaborators}
+										setCollaborators={setCollaborators}
 										publicRole={publicRole}
 										setPublicRole={setPublicRole}
 										allowComments={allowComments}
@@ -714,6 +715,7 @@ const DisplayPage = () => {
 				isDeleteDialogOpen={isDeleteDialogOpen}
 				setIsDeleteDialogOpen={setIsDeleteDialogOpen}
 				onDeleteConfirm={onDeleteConfirm}
+				isDeleting={isDeleting}
 				isAiDialogOpen={isAiDialogOpen}
 				setIsAiDialogOpen={setIsAiDialogOpen}
 				selectedText={selectedText}

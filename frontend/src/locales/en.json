@@ -127,6 +127,7 @@
 		"labels": "Labels",
 		"login_to_label": "Login to organize with labels",
 		"secure": "Secure",
+		"security": "Security",
 		"cancel": "Cancel",
 		"more_users": "more users",
 		"clear_all": "Clear All",
@@ -134,7 +135,8 @@
 		"saved": "Saved",
 		"save_failed": "Save Failed",
 		"ai_autocomplete": "AI Autocomplete",
-		"workspace_preferences": "Workspace Preferences"
+		"workspace_preferences": "Workspace Preferences",
+		"no_edit_permitted": "Edit not permitted"
 	},
 	"profile": {
 		"loading": "Loading...",
@@ -314,13 +316,20 @@
 		"action_cancelled": "Action cancelled",
 		"snippet_updated": "Snippet updated successfully",
 		"update_failed": "Failed to update snippet",
+		"password_required": "Password is required when password protection is enabled",
 		"password_incorrect": "Incorrect password",
 		"comment_added": "Comment added successfully",
 		"comment_failed": "Failed to add comment",
 		"empty_content": "Please enter some content first!",
 		"empty_file": "Please select a file first!",
 		"qr_downloaded": "QR Code downloaded!",
-		"autosaved": "Autosaved: {{fields}}"
+		"autosaved": "Autosaved: {{fields}}",
+		"collaborators_added": "Collaborators added successfully",
+		"collaborators_failed": "Failed to add collaborators",
+		"collaborator_removed": "Collaborator removed successfully",
+		"collaborator_remove_failed": "Failed to remove collaborator",
+		"collaborator_updated": "Collaborator access updated successfully",
+		"collaborator_update_failed": "Failed to update collaborator access"
 	},
 	"about_page": {
 		"loading": "Loading...",

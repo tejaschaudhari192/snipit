@@ -38,11 +38,11 @@ interface EditControlsProps {
 	setEditPermission: (v: EditPermission) => void;
 	isOwner: boolean;
 	isAdmin: boolean;
-	shareList: {
+	collaborators: {
 		email: string;
 		role: ShareRole;
 	}[];
-	setShareList: (
+	setCollaborators: (
 		v: {
 			email: string;
 			role: ShareRole;
@@ -71,9 +71,11 @@ export const EditControls = (props: EditControlsProps) => {
 			>
 				<CollapsibleContent>
 					<div className="p-5 rounded-2xl bg-muted/20 border border-border/50 shadow-inner mb-4 animate-in slide-in-from-top-2 duration-300">
-						<Suspense fallback={<AdvancedConfigSkeleton />}>
-							<AdvancedConfigGrid {...props} />
-						</Suspense>
+						<div className="max-h-[400px] sm:max-h-[450px] overflow-y-auto pr-1 sm:pr-2 custom-scrollbar">
+							<Suspense fallback={<AdvancedConfigSkeleton />}>
+								<AdvancedConfigGrid {...props} />
+							</Suspense>
+						</div>
 					</div>
 				</CollapsibleContent>
 			</Collapsible>

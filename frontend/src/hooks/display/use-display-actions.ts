@@ -41,7 +41,7 @@ export const useDisplayActions = ({
 		editPermission,
 		customId,
 		allowedUsers,
-		shareList,
+		collaborators,
 		publicRole,
 		allowComments,
 		expiresTime,
@@ -49,9 +49,11 @@ export const useDisplayActions = ({
 		updateAllFromData,
 		setIsEdit,
 		setIsSaving,
+		setIsDeleting,
 		setSaveStatus,
 		setUpdatedContent,
 		setIsDeleteDialogOpen,
+		idTypeTab,
 	} = state;
 
 	const handleEditSave = useCallback(
@@ -73,6 +75,27 @@ export const useDisplayActions = ({
 
 			if (!hasContent) {
 				toast.error(t("messages.content_required"));
+				setSaveStatus("error");
+				return;
+			}
+
+			if (
+				(idTypeTab === "dynamic" || idTypeTab === "semantic") &&
+				!customId.trim()
+			) {
+				toast.error(
+					t("home.custom_id_required") || "Custom ID is required",
+				);
+				setSaveStatus("error");
+				return;
+			}
+
+			if (
+				isPasswordEnabled &&
+				!editPassword &&
+				!(paste?.isPasswordProtected || paste?.password)
+			) {
+				toast.error(t("messages.password_required"));
 				setSaveStatus("error");
 				return;
 			}
@@ -117,9 +140,11 @@ export const useDisplayActions = ({
 					visibility,
 					editPermission,
 					newId: customId,
-					password: isPasswordEnabled ? editPassword : undefined,
+					password: isPasswordEnabled
+						? editPassword || undefined
+						: null,
 					allowedUsers,
-					shareList,
+					collaborators,
 					publicRole,
 					allowComments,
 					expiresTime,
@@ -174,7 +199,7 @@ export const useDisplayActions = ({
 			editPermission,
 			customId,
 			allowedUsers,
-			shareList,
+			collaborators,
 			publicRole,
 			allowComments,
 			expiresTime,
@@ -189,6 +214,7 @@ export const useDisplayActions = ({
 			setSaveStatus,
 			hasPending,
 			uploadFiles,
+			idTypeTab,
 		],
 	);
 
@@ -235,13 +261,14 @@ export const useDisplayActions = ({
 
 	const onDeleteConfirm = async () => {
 		try {
+			setIsDeleting(true);
 			playRemoveSound();
 			await apiHelpers.deletePaste(id!);
 			toast.success(t("messages.snippet_deleted"));
 			navigate("/");
 		} catch {
 			toast.error(t("messages.delete_failed"));
-		} finally {
+			setIsDeleting(false);
 			setIsDeleteDialogOpen(false);
 		}
 	};

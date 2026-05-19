@@ -14,6 +14,7 @@ interface Props {
 	onSubmit: () => void;
 	textValue?: string;
 	files?: AiIdFileContext[];
+	disabled?: boolean;
 }
 
 export const CustomIdTab = ({
@@ -22,6 +23,7 @@ export const CustomIdTab = ({
 	onSubmit,
 	textValue,
 	files,
+	disabled = false,
 }: Props) => {
 	const { t } = useTranslation();
 	const pasteContext = usePaste();
@@ -45,13 +47,14 @@ export const CustomIdTab = ({
 					className="h-10 text-sm focus-visible:ring-primary/40 transition-shadow bg-card/40 hover:bg-card/60"
 					onChange={(e) => setCustomId(e.target.value)}
 					onKeyDown={(e) => e.key === "Enter" && onSubmit()}
+					disabled={disabled}
 				/>
 				<Button
 					variant="outline"
 					size="icon"
 					className="h-10 w-10 shrink-0 bg-primary/5 border-primary/20 hover:bg-primary/10 text-primary transition-all"
 					onClick={handleSuggestId}
-					disabled={isSuggesting}
+					disabled={disabled || isSuggesting}
 					title={t("home.suggest_id_ai")}
 				>
 					{isSuggesting ? (

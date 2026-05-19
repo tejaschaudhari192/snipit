@@ -13,9 +13,15 @@ interface Props {
 	customId: string;
 	setCustomId: (v: string) => void;
 	onSubmit: () => void;
+	disabled?: boolean;
 }
 
-export const SemanticIdTab = ({ customId, setCustomId, onSubmit }: Props) => {
+export const SemanticIdTab = ({
+	customId,
+	setCustomId,
+	onSubmit,
+	disabled = false,
+}: Props) => {
 	const { t } = useTranslation();
 	const {
 		wordCount,
@@ -39,12 +45,15 @@ export const SemanticIdTab = ({ customId, setCustomId, onSubmit }: Props) => {
 							selectedCats.includes(cat) ? "default" : "outline"
 						}
 						className={cn(
-							"cursor-pointer capitalize text-[10px] px-2 py-0 h-5 transition-all",
+							"capitalize text-[10px] px-2 py-0 h-5 transition-all",
+							disabled
+								? "opacity-50 cursor-not-allowed"
+								: "cursor-pointer",
 							selectedCats.includes(cat)
 								? "bg-primary/90 hover:bg-primary"
 								: "hover:bg-muted text-muted-foreground",
 						)}
-						onClick={() => toggleCategory(cat)}
+						onClick={() => !disabled && toggleCategory(cat)}
 					>
 						{cat}
 					</Badge>
@@ -65,13 +74,14 @@ export const SemanticIdTab = ({ customId, setCustomId, onSubmit }: Props) => {
 					className="h-10 text-sm focus-visible:ring-primary/40 transition-shadow bg-card/40 hover:bg-card/60"
 					onChange={(e) => setCustomId(e.target.value)}
 					onKeyDown={(e) => e.key === "Enter" && onSubmit()}
+					disabled={disabled}
 				/>
 				<Button
 					variant="outline"
 					size="icon"
 					className="h-10 w-10 shrink-0 bg-primary/5 border-primary/20 hover:bg-primary/10 text-primary transition-all active:scale-95"
 					onClick={handleGenerate}
-					disabled={isGenerating}
+					disabled={disabled || isGenerating}
 					title={t("home.semantic_id_generate")}
 				>
 					<RefreshCw
@@ -101,7 +111,8 @@ export const SemanticIdTab = ({ customId, setCustomId, onSubmit }: Props) => {
 						step="1"
 						value={wordCount}
 						onChange={(e) => setWordCount(parseInt(e.target.value))}
-						className="flex-1 h-1.5 bg-primary/10 rounded-lg appearance-none cursor-pointer accent-primary transition-all duration-300 hover:accent-primary/80"
+						disabled={disabled}
+						className="flex-1 h-1.5 bg-primary/10 rounded-lg appearance-none cursor-pointer accent-primary transition-all duration-300 hover:accent-primary/80 disabled:opacity-50 disabled:cursor-not-allowed"
 					/>
 					<div className="w-6 h-6 flex items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0">
 						{wordCount}

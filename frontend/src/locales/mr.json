@@ -115,6 +115,7 @@
 		"labels": "लेबल",
 		"login_to_label": "लेबलसह व्यवस्थापित करण्यासाठी लॉग इन करा",
 		"secure": "सुरक्षित",
+		"security": "सुरक्षा",
 		"edit_permission": "कोण संपादित करू शकते?",
 		"only_me": "फक्त मी",
 		"specific_people": "विशिष्ट लोक",
@@ -131,7 +132,8 @@
 		"autosave": "ऑटोसेव्ह",
 		"saved": "जतन केले",
 		"save_failed": "जतन करण्यात अयशस्वी",
-		"clear_all": "सर्व साफ करा"
+		"clear_all": "सर्व साफ करा",
+		"no_edit_permitted": "संपादन करण्याची परवानगी नाही"
 	},
 	"profile": {
 		"overview": "प्रोफाइल विहंगावलोकन",
@@ -308,7 +310,13 @@
 		"empty_content": "कृपया प्रथम काही मजकूर प्रविष्ट करा!",
 		"empty_file": "कृपया प्रथम फाइल निवडा!",
 		"qr_downloaded": "QR कोड डाउनलोड झाला!",
-		"autosaved": "ऑटोसेव्ह: {{fields}}"
+		"autosaved": "ऑटोसेव्ह: {{fields}}",
+		"collaborators_added": "सहयोगी यशस्वीरित्या जोडले गेले",
+		"collaborators_failed": "सहयोगी जोडण्यात अपयशी",
+		"collaborator_removed": "सहयोगी यशस्वीरित्या काढला गेला",
+		"collaborator_remove_failed": "सहयोगी काढण्यात अपयशी",
+		"collaborator_updated": "सहयोगीची परवानगी यशस्वीरित्या अपडेट केली गेली",
+		"collaborator_update_failed": "सहयोगीची परवानगी अपडेट करण्यात अपयशी"
 	},
 	"about_page": {
 		"title": "बद्दल",

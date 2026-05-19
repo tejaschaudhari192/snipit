@@ -97,7 +97,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 	]);
 
 	return (
-		<div className={cn("flex items-center gap-2", className)}>
+		<div className={cn("flex items-center gap-2 shrink-0", className)}>
 			{isRecording && (
 				<div className="flex items-center gap-3 h-10 px-3 bg-background/80 backdrop-blur-xl rounded-2xl border border-border/50 shadow-xl shadow-primary/5 animate-in fade-in slide-in-from-right-4 duration-500 w-full max-w-[400px]">
 					<VoiceWaveform waveform={waveform} />

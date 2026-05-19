@@ -167,6 +167,42 @@ class PasteController {
 
 			const updates = { ...req.body };
 			if (role === "editor") {
+				if (updates.newId && updates.newId !== paste.id) {
+					return res.status(403).json({
+						error: "Permission Denied: You do not have permission to modify the Custom ID for this paste.",
+					});
+				}
+
+				if (updates.password !== undefined) {
+					const hasPass = !!paste.password;
+					const wantPass =
+						updates.password !== null &&
+						updates.password !== undefined;
+					if (wantPass || hasPass) {
+						return res.status(403).json({
+							error: "Permission Denied: You do not have permission to modify the password for this paste.",
+						});
+					}
+				}
+
+				if (
+					updates.visibility &&
+					updates.visibility !== paste.visibility
+				) {
+					return res.status(403).json({
+						error: "Permission Denied: You do not have permission to modify the visibility of this paste.",
+					});
+				}
+
+				if (
+					updates.allowComments !== undefined &&
+					updates.allowComments !== paste.allowComments
+				) {
+					return res.status(403).json({
+						error: "Permission Denied: You do not have permission to toggle comments on this paste.",
+					});
+				}
+
 				// Restricted fields for editors
 				const restricted = [
 					"visibility",
@@ -181,7 +217,11 @@ class PasteController {
 			}
 
 			const result = await this.pasteService.updatePaste(id, updates);
-			return res.json(result!.toObject());
+			const responseData = result!.toObject();
+			return res.json({
+				...responseData,
+				isPasswordProtected: !!result!.password,
+			});
 		} catch (error: unknown) {
 			if (
 				error instanceof Error &&

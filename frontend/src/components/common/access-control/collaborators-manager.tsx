@@ -14,6 +14,7 @@ import { cn } from "@/utils";
 import type { ShareRole } from "@/types";
 import { useApiHelpers } from "@/lib/api";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ShareItem {
 	email: string;
@@ -22,8 +23,8 @@ interface ShareItem {
 
 interface CollaboratorsManagerProps {
 	pasteId?: string;
-	shareList: ShareItem[];
-	setShareList: (v: ShareItem[]) => void;
+	collaborators: ShareItem[];
+	setCollaborators: (v: ShareItem[]) => void;
 	allowedUsers: string[];
 	setAllowedUsers: (v: string[]) => void;
 	disabled?: boolean;
@@ -32,8 +33,8 @@ interface CollaboratorsManagerProps {
 
 export const CollaboratorsManager = ({
 	pasteId,
-	shareList,
-	setShareList,
+	collaborators,
+	setCollaborators,
 	allowedUsers,
 	setAllowedUsers,
 	disabled = false,
@@ -45,6 +46,7 @@ export const CollaboratorsManager = ({
 	const [inputValue, setInputValue] = useState("");
 	const [pendingRole, setPendingRole] = useState<ShareRole>("editor");
 	const [isUpdating, setIsUpdating] = useState(false);
+	const [updatingEmails, setUpdatingEmails] = useState<string[]>([]);
 
 	const handleAddPeople = async () => {
 		const emailsToAdd = [...pendingEmails];
@@ -60,7 +62,8 @@ export const CollaboratorsManager = ({
 		if (emailsToAdd.length === 0) return;
 
 		const uniqueEmails = emailsToAdd.filter(
-			(email) => !shareList.some((existing) => existing.email === email),
+			(email) =>
+				!collaborators.some((existing) => existing.email === email),
 		);
 
 		if (uniqueEmails.length === 0) return;
@@ -72,7 +75,10 @@ export const CollaboratorsManager = ({
 					apiHelpers.addCollaborator(pasteId, email, pendingRole),
 				);
 				const results = await Promise.all(updatePromises);
-				setShareList([...shareList, ...(results as ShareItem[])]);
+				setCollaborators([
+					...collaborators,
+					...(results as ShareItem[]),
+				]);
 				setAllowedUsers([
 					...allowedUsers,
 					...results.map((i) => i.email),
@@ -88,7 +94,7 @@ export const CollaboratorsManager = ({
 				email,
 				role: pendingRole,
 			}));
-			setShareList([...shareList, ...newShareItems]);
+			setCollaborators([...collaborators, ...newShareItems]);
 			setAllowedUsers([
 				...allowedUsers,
 				...newShareItems.map((i) => i.email),
@@ -100,11 +106,11 @@ export const CollaboratorsManager = ({
 
 	const handleRemovePerson = async (emailToRemove: string) => {
 		if (pasteId) {
-			setIsUpdating(true);
+			setUpdatingEmails((prev) => [...prev, emailToRemove]);
 			try {
 				await apiHelpers.removeCollaborator(pasteId, emailToRemove);
-				setShareList(
-					shareList.filter((i) => i.email !== emailToRemove),
+				setCollaborators(
+					collaborators.filter((i) => i.email !== emailToRemove),
 				);
 				setAllowedUsers(
 					allowedUsers.filter((e) => e !== emailToRemove),
@@ -113,25 +119,29 @@ export const CollaboratorsManager = ({
 			} catch {
 				toast.error(t("messages.collaborator_remove_failed"));
 			} finally {
-				setIsUpdating(false);
+				setUpdatingEmails((prev) =>
+					prev.filter((e) => e !== emailToRemove),
+				);
 			}
 		} else {
-			setShareList(shareList.filter((i) => i.email !== emailToRemove));
+			setCollaborators(
+				collaborators.filter((i) => i.email !== emailToRemove),
+			);
 			setAllowedUsers(allowedUsers.filter((e) => e !== emailToRemove));
 		}
 	};
 
 	const handleUpdateRole = async (email: string, newRole: ShareRole) => {
 		if (pasteId) {
-			setIsUpdating(true);
+			setUpdatingEmails((prev) => [...prev, email]);
 			try {
 				const result = await apiHelpers.addCollaborator(
 					pasteId,
 					email,
 					newRole,
 				);
-				setShareList(
-					shareList.map((item) =>
+				setCollaborators(
+					collaborators.map((item) =>
 						item.email === email
 							? { ...item, role: result.role as ShareRole }
 							: item,
@@ -141,11 +151,11 @@ export const CollaboratorsManager = ({
 			} catch {
 				toast.error(t("messages.collaborator_update_failed"));
 			} finally {
-				setIsUpdating(false);
+				setUpdatingEmails((prev) => prev.filter((e) => e !== email));
 			}
 		} else {
-			setShareList(
-				shareList.map((item) =>
+			setCollaborators(
+				collaborators.map((item) =>
 					item.email === email ? { ...item, role: newRole } : item,
 				),
 			);
@@ -172,7 +182,7 @@ export const CollaboratorsManager = ({
 						onValueChange={(r: ShareRole) => setPendingRole(r)}
 						disabled={disabled || isUpdating}
 					>
-						<SelectTrigger className="w-[100px] h-8 text-xs font-medium border-none bg-transparent hover:bg-muted/50 focus:ring-0 shadow-none">
+						<SelectTrigger className="w-[100px] h-10 text-sm font-medium border-none bg-transparent hover:bg-muted/50 focus:ring-0 shadow-none">
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>
@@ -202,7 +212,7 @@ export const CollaboratorsManager = ({
 									inputValue.trim(),
 								))
 						}
-						className="h-8 px-4 font-bold shadow-md hover:shadow-lg transition-all"
+						className="h-9 px-4 font-bold shadow-md hover:shadow-lg transition-all"
 					>
 						{isUpdating ? (
 							<span className="animate-pulse">...</span>
@@ -213,7 +223,7 @@ export const CollaboratorsManager = ({
 				</div>
 			</div>
 
-			{shareList.length > 0 && (
+			{collaborators.length > 0 && (
 				<div
 					className={cn(
 						"flex flex-col gap-2 mt-2 overflow-y-auto pr-1",
@@ -225,13 +235,23 @@ export const CollaboratorsManager = ({
 							{t("common.people_with_access")}
 						</p>
 					)}
-					{shareList.map((item) => (
+					{collaborators.map((item) => (
 						<div
 							key={item.email}
-							className="relative flex flex-col min-[440px]:flex-row min-[440px]:items-center justify-between p-2.5 rounded-xl border bg-card/50 gap-3 shadow-sm overflow-hidden"
+							className={cn(
+								"relative flex flex-col min-[440px]:flex-row min-[440px]:items-center justify-between p-2.5 rounded-xl border bg-card/50 gap-3 shadow-sm overflow-hidden transition-all duration-300",
+								updatingEmails.includes(item.email) &&
+									"border-primary/20 bg-muted/10",
+							)}
 						>
 							<div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-primary/40 to-transparent" />
-							<div className="flex items-center gap-2 overflow-hidden flex-1">
+							<div
+								className={cn(
+									"flex items-center gap-2 overflow-hidden flex-1",
+									updatingEmails.includes(item.email) &&
+										"opacity-60",
+								)}
+							>
 								<div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0 border border-primary/20">
 									{item.email[0].toUpperCase()}
 								</div>
@@ -243,45 +263,67 @@ export const CollaboratorsManager = ({
 								</span>
 							</div>
 							<div className="flex items-center gap-2 shrink-0 w-full min-[440px]:w-auto">
-								<Select
-									value={item.role}
-									onValueChange={(r: ShareRole) =>
-										handleUpdateRole(item.email, r)
-									}
-									disabled={disabled}
-								>
-									<SelectTrigger className="flex-1 min-[440px]:w-[100px] h-8 text-[11px] bg-background border-input/50">
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value="viewer">
-											{t("common.viewer")}
-										</SelectItem>
-										<SelectItem value="editor">
-											{t("common.editor")}
-										</SelectItem>
-										<SelectItem value="admin">
-											{t("common.admin")}
-										</SelectItem>
-										<SelectItem value="commenter">
-											{t("common.commenter")}
-										</SelectItem>
-									</SelectContent>
-								</Select>
-								<Button
-									variant="ghost"
-									size="icon"
-									className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors"
-									onClick={() =>
-										handleRemovePerson(item.email)
-									}
-									disabled={disabled}
-								>
-									<span className="sr-only">
-										{t("common.remove")}
-									</span>
-									<X width="14" height="14" />
-								</Button>
+								{updatingEmails.includes(item.email) ? (
+									<div className="flex items-center gap-2 h-8">
+										{/* Shimmer Select trigger skeleton */}
+										<Skeleton className="flex-1 min-[440px]:w-[100px] h-8 rounded-lg bg-muted/60 border border-input/20 flex items-center justify-between px-3">
+											<Skeleton className="h-2 w-10 bg-muted-foreground/20 rounded" />
+											<Skeleton className="h-3 w-3 bg-muted-foreground/20 rounded-sm" />
+										</Skeleton>
+										{/* Shimmer Delete icon button skeleton */}
+										<Skeleton className="h-8 w-8 rounded-lg bg-muted/60 border border-input/20 flex items-center justify-center">
+											<Skeleton className="h-3 w-3 bg-muted-foreground/20 rounded-full" />
+										</Skeleton>
+									</div>
+								) : (
+									<>
+										<Select
+											value={item.role}
+											onValueChange={(r: ShareRole) =>
+												handleUpdateRole(item.email, r)
+											}
+											disabled={
+												disabled ||
+												updatingEmails.length > 0
+											}
+										>
+											<SelectTrigger className="flex-1 min-[440px]:w-[100px] h-10 bg-background border-input/50">
+												<SelectValue />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="viewer">
+													{t("common.viewer")}
+												</SelectItem>
+												<SelectItem value="editor">
+													{t("common.editor")}
+												</SelectItem>
+												<SelectItem value="admin">
+													{t("common.admin")}
+												</SelectItem>
+												<SelectItem value="commenter">
+													{t("common.commenter")}
+												</SelectItem>
+											</SelectContent>
+										</Select>
+										<Button
+											variant="ghost"
+											size="icon"
+											className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors"
+											onClick={() =>
+												handleRemovePerson(item.email)
+											}
+											disabled={
+												disabled ||
+												updatingEmails.length > 0
+											}
+										>
+											<span className="sr-only">
+												{t("common.remove")}
+											</span>
+											<X width="14" height="14" />
+										</Button>
+									</>
+								)}
 							</div>
 						</div>
 					))}

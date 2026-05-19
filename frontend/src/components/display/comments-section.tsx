@@ -43,8 +43,8 @@ export const CommentsSection = ({
 		if (isOwner) return "admin";
 		if (paste.role) return paste.role;
 
-		if (paste.shareList && userEmail) {
-			const shareEntry = paste.shareList.find(
+		if (paste.collaborators && userEmail) {
+			const shareEntry = paste.collaborators.find(
 				(s) => s.email === userEmail,
 			);
 			if (shareEntry) return shareEntry.role;
@@ -56,9 +56,9 @@ export const CommentsSection = ({
 	const userRole = getUserRole();
 	const isExplicitUser =
 		isOwner ||
-		(paste.shareList &&
+		(paste.collaborators &&
 			userEmail &&
-			paste.shareList.some((s) => s.email === userEmail));
+			paste.collaborators.some((s) => s.email === userEmail));
 	const canComment = isExplicitUser
 		? ["admin", "editor", "commenter"].includes(userRole)
 		: paste.allowComments &&

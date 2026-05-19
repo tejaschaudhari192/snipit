@@ -24,7 +24,7 @@ interface PasteContextType {
 	visibility: Visibility;
 	editPermission: EditPermission;
 	allowedUsers: string[];
-	shareList: { email: string; role: ShareRole }[];
+	collaborators: { email: string; role: ShareRole }[];
 	publicRole: PublicRole;
 	allowComments: boolean;
 	expiresTime: string;
@@ -53,7 +53,7 @@ interface PasteContextType {
 	setVisibility: (v: Visibility) => void;
 	setEditPermission: (v: EditPermission) => void;
 	setAllowedUsers: (v: string[]) => void;
-	setShareList: (v: { email: string; role: ShareRole }[]) => void;
+	setCollaborators: (v: { email: string; role: ShareRole }[]) => void;
 	setPublicRole: (v: PublicRole) => void;
 	setAllowComments: (v: boolean) => void;
 	setExpiresTime: (v: string) => void;
@@ -91,7 +91,7 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 		CONFIG.defaults.editPermission,
 	);
 	const [allowedUsers, setAllowedUsers] = useState<string[]>([]);
-	const [shareList, setShareList] = useState<
+	const [collaborators, setCollaborators] = useState<
 		{ email: string; role: ShareRole }[]
 	>([]);
 	const [publicRole, setPublicRole] = useState<PublicRole>(
@@ -218,7 +218,7 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 		setVisibility(CONFIG.defaults.visibility);
 		setEditPermission(CONFIG.defaults.editPermission);
 		setAllowedUsers([]);
-		setShareList([]);
+		setCollaborators([]);
 		setPublicRole(CONFIG.defaults.publicRole);
 		setAllowComments(false);
 		setExpiresTime(CONFIG.defaults.expiry);
@@ -248,8 +248,8 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			setEditPermission,
 			allowedUsers,
 			setAllowedUsers,
-			shareList,
-			setShareList,
+			collaborators,
+			setCollaborators,
 			publicRole,
 			setPublicRole,
 			allowComments,
@@ -297,8 +297,8 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			setEditPermission,
 			allowedUsers,
 			setAllowedUsers,
-			shareList,
-			setShareList,
+			collaborators,
+			setCollaborators,
 			publicRole,
 			setPublicRole,
 			allowComments,

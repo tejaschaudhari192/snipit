@@ -1,13 +1,17 @@
 import { lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
-import { Lock, Shield, Settings, Tag } from "lucide-react";
+import { LogIn, Lock, Shield, Settings, Tag } from "lucide-react";
 import { cn } from "@/utils";
+import { LockedSettingWrapper } from "@/components/common/locked-setting-wrapper";
 
 import { Switch } from "@/components/ui/switch";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { IdTypeTabs } from "@/components/home/paste-dialog/id-type-tabs";
 import { LabelManager } from "@/components/common/label-manager";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const VisibilitySelector = lazy(() =>
 	import("@/components/common/access-control/visibility-selector").then(
@@ -48,11 +52,11 @@ export interface AdvancedConfigGridProps {
 	setEditPermission: (v: EditPermission) => void;
 	allowedUsers: string[];
 	setAllowedUsers: (v: string[]) => void;
-	shareList: {
+	collaborators: {
 		email: string;
 		role: ShareRole;
 	}[];
-	setShareList: (
+	setCollaborators: (
 		v: {
 			email: string;
 			role: ShareRole;
@@ -131,8 +135,8 @@ export const AdvancedConfigGrid = ({
 	setEditPermission,
 	allowedUsers,
 	setAllowedUsers,
-	shareList,
-	setShareList,
+	collaborators,
+	setCollaborators,
 	isOwner,
 	isAdmin,
 	disabled = false,
@@ -141,6 +145,10 @@ export const AdvancedConfigGrid = ({
 	files,
 }: AdvancedConfigGridProps) => {
 	const { t } = useTranslation();
+	const { user } = useAuth();
+	const navigate = useNavigate();
+
+	const isIdDisabled = disabled || (!isOwner && !isAdmin);
 
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -151,16 +159,25 @@ export const AdvancedConfigGrid = ({
 						icon={Tag}
 						label={t("home.identification_type")}
 					/>
-					<IdTypeTabs
-						idTypeTab={idTypeTab}
-						setIdTypeTab={setIdTypeTab}
-						customId={customId}
-						setCustomId={setCustomId}
-						onSubmit={onSubmit || (() => {})}
-						compact={true}
-						textValue={textValue}
-						files={files}
-					/>
+					<LockedSettingWrapper
+						disabled={isIdDisabled}
+						tooltipText={
+							t("common.no_edit_permitted") ||
+							"Edit not permitted"
+						}
+					>
+						<IdTypeTabs
+							idTypeTab={idTypeTab}
+							setIdTypeTab={setIdTypeTab}
+							customId={customId}
+							setCustomId={setCustomId}
+							onSubmit={onSubmit || (() => {})}
+							compact={true}
+							textValue={textValue}
+							files={files}
+							disabled={isIdDisabled}
+						/>
+					</LockedSettingWrapper>
 				</div>
 
 				<div>
@@ -176,158 +193,209 @@ export const AdvancedConfigGrid = ({
 						label={t("common.settings")}
 					/>
 					<div className="flex flex-col gap-4">
-						<div
-							className={cn(
-								"flex items-center justify-between p-3 rounded-xl border shadow-sm group transition-all select-none",
-								allowComments
-									? "bg-emerald-500/5 border-emerald-500/20"
-									: "bg-background/60 border-border/50 hover:border-primary/30",
-								(isOwner || isAdmin) && !disabled
-									? "cursor-pointer"
-									: "opacity-70",
-							)}
-							onClick={() =>
-								!disabled &&
-								(isOwner || isAdmin) &&
-								setAllowComments(!allowComments)
+						<LockedSettingWrapper
+							disabled={!(isOwner || isAdmin) || disabled}
+							tooltipText={
+								t("common.no_edit_permitted") ||
+								"Edit not permitted"
 							}
 						>
-							<div className="flex items-center gap-3">
-								<div
-									className={cn(
-										"p-2 rounded-lg transition-colors",
-										allowComments
-											? "bg-emerald-500/10 text-emerald-600"
-											: "bg-primary/5 text-primary group-hover:bg-primary/10",
-									)}
-								>
-									<Settings className="h-4 w-4" />
-								</div>
-								<span className="text-sm font-semibold">
-									{t("common.open_discussion")}
-								</span>
-							</div>
-							<Switch
-								checked={allowComments}
-								onCheckedChange={setAllowComments}
-								disabled={disabled || (!isOwner && !isAdmin)}
-								className="scale-90 data-[state=checked]:bg-emerald-500"
-							/>
-						</div>
-					</div>
-				</div>
-
-				<div>
-					<SectionHeader icon={Lock} label={t("common.security")} />
-					<div className="flex flex-col gap-4">
-						<div
-							className={cn(
-								"flex flex-col gap-4 p-4 rounded-xl transition-all border shadow-sm",
-								isPasswordEnabled
-									? "bg-primary/5 border-primary/20"
-									: "bg-background/60 border-border/50 hover:border-primary/30",
-								(isOwner || isAdmin) && !disabled
-									? "cursor-pointer"
-									: "opacity-70",
-							)}
-						>
 							<div
-								className="flex items-center justify-between select-none"
+								className={cn(
+									"flex items-center justify-between p-3 rounded-xl border shadow-sm group transition-all select-none",
+									allowComments
+										? "bg-emerald-500/5 border-emerald-500/20"
+										: "bg-background/60 border-border/50 hover:border-primary/30",
+									(isOwner || isAdmin) && !disabled
+										? "cursor-pointer"
+										: "",
+								)}
 								onClick={() =>
 									!disabled &&
 									(isOwner || isAdmin) &&
-									setIsPasswordEnabled(!isPasswordEnabled)
+									setAllowComments(!allowComments)
 								}
 							>
 								<div className="flex items-center gap-3">
 									<div
 										className={cn(
 											"p-2 rounded-lg transition-colors",
-											isPasswordEnabled
-												? "bg-primary text-white"
-												: "bg-primary/5 text-primary",
+											allowComments
+												? "bg-emerald-500/10 text-emerald-600"
+												: "bg-primary/5 text-primary group-hover:bg-primary/10",
 										)}
 									>
-										<Lock className="h-4 w-4" />
+										<Settings className="h-4 w-4" />
 									</div>
 									<span className="text-sm font-semibold">
-										{t("common.password_protected")}
+										{t("common.open_discussion")}
 									</span>
 								</div>
 								<Switch
-									checked={isPasswordEnabled}
-									onCheckedChange={setIsPasswordEnabled}
+									checked={allowComments}
+									onCheckedChange={setAllowComments}
 									disabled={
 										disabled || (!isOwner && !isAdmin)
 									}
-									className="scale-90"
+									className="scale-90 data-[state=checked]:bg-emerald-500"
 								/>
 							</div>
+						</LockedSettingWrapper>
+					</div>
+				</div>
 
-							{isPasswordEnabled && (
-								<div className="animate-in slide-in-from-top-2 duration-200">
-									<div className="relative">
-										<Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
-										<PasswordInput
-											value={newPassword}
-											onChange={(e) =>
-												setNewPassword(e.target.value)
-											}
-											placeholder={t(
-												"common.password_placeholder",
+				<div>
+					<SectionHeader icon={Lock} label={t("common.security")} />
+					<div className="flex flex-col gap-4">
+						<LockedSettingWrapper
+							disabled={!(isOwner || isAdmin) || disabled}
+							tooltipText={
+								t("common.no_edit_permitted") ||
+								"Edit not permitted"
+							}
+						>
+							<div
+								className={cn(
+									"flex flex-col gap-4 p-4 rounded-xl transition-all border shadow-sm",
+									isPasswordEnabled
+										? "bg-primary/5 border-primary/20"
+										: "bg-background/60 border-border/50 hover:border-primary/30",
+									(isOwner || isAdmin) && !disabled
+										? "cursor-pointer"
+										: "",
+								)}
+							>
+								<div
+									className="flex items-between justify-between select-none"
+									onClick={() =>
+										!disabled &&
+										(isOwner || isAdmin) &&
+										setIsPasswordEnabled(!isPasswordEnabled)
+									}
+								>
+									<div className="flex items-center gap-3">
+										<div
+											className={cn(
+												"p-2 rounded-lg transition-colors",
+												isPasswordEnabled
+													? "bg-primary text-white"
+													: "bg-primary/5 text-primary",
 											)}
-											disabled={
-												disabled ||
-												(!isOwner && !isAdmin)
-											}
-											className="h-10 pl-10 text-sm bg-background/80"
-										/>
+										>
+											<Lock className="h-4 w-4" />
+										</div>
+										<span className="text-sm font-semibold">
+											{t("common.password_protected")}
+										</span>
 									</div>
+									<Switch
+										checked={isPasswordEnabled}
+										onCheckedChange={setIsPasswordEnabled}
+										disabled={
+											disabled || (!isOwner && !isAdmin)
+										}
+										className="scale-90"
+									/>
 								</div>
-							)}
-						</div>
+
+								{isPasswordEnabled && (
+									<div className="animate-in slide-in-from-top-2 duration-200">
+										<div className="relative">
+											<Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+											<PasswordInput
+												value={newPassword}
+												onChange={(e) =>
+													setNewPassword(
+														e.target.value,
+													)
+												}
+												placeholder={t(
+													"common.password_placeholder",
+												)}
+												disabled={
+													disabled ||
+													(!isOwner && !isAdmin)
+												}
+												className="h-10 pl-10 text-sm bg-background/80"
+											/>
+										</div>
+									</div>
+								)}
+							</div>
+						</LockedSettingWrapper>
 					</div>
 				</div>
 			</div>
 
-			{/* Column 3: Access Control */}
+			{/* Column 3: Access Control / Auth Gate */}
 			<div className="flex flex-col">
 				<SectionHeader icon={Shield} label={t("common.privacy")} />
-				<div className="space-y-4">
-					<Suspense
-						fallback={
-							<Skeleton className="h-[62px] w-full rounded-xl" />
-						}
-					>
-						<VisibilitySelector
-							visibility={visibility}
-							setVisibility={setVisibility}
-							publicRole={publicRole}
-							setPublicRole={setPublicRole}
-							setEditPermission={setEditPermission}
-							disabled={disabled || (!isOwner && !isAdmin)}
-							compact={true}
-						/>
-					</Suspense>
-
-					<div className="pt-4 border-t border-border/10">
+				{!user ? (
+					<div className="flex flex-col justify-center items-center text-center p-4 rounded-xl border border-dashed border-primary/20 bg-primary/5 min-h-[140px] animate-in fade-in duration-300">
+						<LogIn className="h-5 w-5 text-primary/50 mb-2 animate-bounce" />
+						<p className="text-primary font-bold text-sm mb-1">
+							{t("common.auth_required")}
+						</p>
+						<p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+							{t("common.auth_required_desc")}
+						</p>
+						<div className="flex items-center gap-2 w-full">
+							<Button
+								size="sm"
+								variant="outline"
+								className="h-8 text-xs flex-1 bg-background/80"
+								onClick={() => navigate("/login")}
+							>
+								{t("header.login")}
+							</Button>
+							<Button
+								size="sm"
+								className="h-8 text-xs flex-1"
+								onClick={() => navigate("/signup")}
+							>
+								{t("header.signup")}
+							</Button>
+						</div>
+					</div>
+				) : (
+					<div className="space-y-4">
 						<Suspense
 							fallback={
-								<Skeleton className="h-[46px] w-full rounded-xl" />
+								<Skeleton className="h-[62px] w-full rounded-xl" />
 							}
 						>
-							<CollaboratorsManager
-								pasteId={pasteId}
-								shareList={shareList}
-								setShareList={setShareList}
-								allowedUsers={allowedUsers}
-								setAllowedUsers={setAllowedUsers}
+							<VisibilitySelector
+								visibility={visibility}
+								setVisibility={setVisibility}
+								publicRole={publicRole}
+								setPublicRole={setPublicRole}
+								setEditPermission={setEditPermission}
 								disabled={disabled || (!isOwner && !isAdmin)}
 								compact={true}
 							/>
 						</Suspense>
+
+						<div className="pt-4 border-t border-border/10">
+							<Suspense
+								fallback={
+									<Skeleton className="h-[46px] w-full rounded-xl" />
+								}
+							>
+								<CollaboratorsManager
+									pasteId={pasteId}
+									collaborators={collaborators}
+									setCollaborators={setCollaborators}
+									allowedUsers={allowedUsers}
+									setAllowedUsers={setAllowedUsers}
+									disabled={
+										disabled || (!isOwner && !isAdmin)
+									}
+									compact={true}
+								/>
+							</Suspense>
+						</div>
 					</div>
-				</div>
+				)}
 			</div>
 		</div>
 	);

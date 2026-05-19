@@ -60,18 +60,28 @@ const EditorShimmer = ({ className }: { className?: string }) => (
 const ToolbarShimmer = ({ className }: { className?: string }) => (
 	<div
 		className={cn(
-			"flex items-center justify-between gap-4 p-1 rounded-xl bg-background/50 backdrop-blur-3xl border border-border/50 shadow-sm transition-all duration-300",
+			"flex flex-row items-center justify-between gap-4 px-4 py-1.5 md:px-6 bg-background/40 backdrop-blur-xl border-b border-border/50 w-full overflow-x-auto no-scrollbar select-none transition-all duration-300",
 			className,
 		)}
 	>
-		<div className="flex items-center gap-2">
-			<Skeleton className="h-9 w-24 rounded-lg" />
-			<Skeleton className="h-9 w-20 rounded-lg hidden sm:block" />
-			<Skeleton className="h-9 w-20 rounded-lg hidden sm:block" />
+		{/* Left actions & Language Selector Row */}
+		<div className="flex items-center gap-2 justify-start shrink-0">
+			<Skeleton className="h-9 w-16 rounded-lg shrink-0" />
+			<Skeleton className="h-9 w-24 rounded-lg shrink-0" />
+			<Skeleton className="h-9 w-28 rounded-lg shrink-0 hidden sm:block" />
+			<div className="w-px h-6 bg-border/20 mx-1 hidden sm:block" />
+			<Skeleton className="h-9 w-32 rounded-lg shrink-0" />
 		</div>
-		<div className="flex-1" />
-		<div className="flex items-center gap-2">
-			<Skeleton className="h-9 w-32 rounded-lg" />
+
+		{/* Right options Row */}
+		<div className="flex items-center justify-end gap-2.5 shrink-0">
+			<Skeleton className="h-9 w-24 rounded-lg shrink-0" />
+			<Skeleton className="h-8 w-16 rounded-full shrink-0" />
+			<Skeleton className="h-9 w-28 rounded-lg shrink-0" />
+			<Skeleton className="h-9 w-32 rounded-lg shrink-0" />
+			<Skeleton className="h-9 w-9 rounded-lg shrink-0" />
+			<Skeleton className="h-9 w-9 rounded-lg shrink-0" />
+			<Skeleton className="h-9 w-16 rounded-lg shrink-0" />
 		</div>
 	</div>
 );

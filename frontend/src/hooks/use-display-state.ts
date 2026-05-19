@@ -31,7 +31,7 @@ export const useDisplayState = () => {
 	const [editPermission, setEditPermission] = useState<EditPermission>(
 		CONFIG.defaults.editPermission,
 	);
-	const [shareList, setShareList] = useState<ShareEntry[]>([]);
+	const [collaborators, setCollaborators] = useState<ShareEntry[]>([]);
 	const [publicRole, setPublicRole] = useState<PublicRole>(
 		CONFIG.defaults.publicRole,
 	);
@@ -49,6 +49,7 @@ export const useDisplayState = () => {
 	);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
+	const [isDeleting, setIsDeleting] = useState(false);
 	const [isVerifyingPassword, setIsVerifyingPassword] = useState(false);
 	const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
 	const [isAutosave, setIsAutosave] = useState(true);
@@ -80,17 +81,33 @@ export const useDisplayState = () => {
 		if (data.allowedUsers !== undefined) setAllowedUsers(data.allowedUsers);
 		if (data.editPermission !== undefined)
 			setEditPermission(data.editPermission);
-		if (data.shareList !== undefined) setShareList(data.shareList);
+		if (data.collaborators !== undefined)
+			setCollaborators(data.collaborators);
 		if (data.publicRole !== undefined) setPublicRole(data.publicRole);
 		if (data.allowComments !== undefined)
 			setAllowComments(data.allowComments);
 		if (data.expiresTime !== undefined) setExpiresTime(data.expiresTime);
-		if (data.id !== undefined) setCustomId(data.id);
+		if (data.id !== undefined) {
+			setCustomId(data.id);
+			if (data.id.length !== 5) {
+				setIdTypeTab("dynamic");
+			}
+		}
 		if (
 			data.password !== undefined ||
 			data.isPasswordProtected !== undefined
 		) {
-			setIsPasswordEnabled(!!data.password || !!data.isPasswordProtected);
+			const isPassEnabled = !!data.password || !!data.isPasswordProtected;
+			setIsPasswordEnabled(isPassEnabled);
+			if (!isPassEnabled) {
+				setPaste((prev) => {
+					if (!prev) return prev;
+					const next = { ...prev };
+					delete next.password;
+					next.isPasswordProtected = false;
+					return next;
+				});
+			}
 			setEditPassword("");
 		}
 		// Reset removed files when loading new data
@@ -114,8 +131,8 @@ export const useDisplayState = () => {
 		setAllowedUsers,
 		editPermission,
 		setEditPermission,
-		shareList,
-		setShareList,
+		collaborators,
+		setCollaborators,
 		publicRole,
 		setPublicRole,
 		allowComments,
@@ -140,6 +157,8 @@ export const useDisplayState = () => {
 		setIsDeleteDialogOpen,
 		isSaving,
 		setIsSaving,
+		isDeleting,
+		setIsDeleting,
 		isVerifyingPassword,
 		setIsVerifyingPassword,
 		saveStatus,
