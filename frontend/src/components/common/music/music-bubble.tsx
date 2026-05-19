@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Music, Music2, Share2 } from "lucide-react";
-import { useMusic } from "@/context/MusicContext";
+import { useMusic } from "@/context/use-music";
 import { cn, decodeHtml } from "@/utils";
 import {
 	Tooltip,

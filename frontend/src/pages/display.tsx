@@ -15,7 +15,7 @@ import { type Socket } from "socket.io-client";
 import { useApiHelpers } from "@/lib/api";
 import { useTheme } from "@/hooks/use-theme";
 import { useAuth } from "@/context/AuthContext";
-import { useMusic } from "@/context/MusicContext";
+import { useMusic } from "@/context/use-music";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { useFileUpload } from "@/hooks/use-file-upload";
 import { useAiEnhance } from "@/hooks/use-ai-enhance";

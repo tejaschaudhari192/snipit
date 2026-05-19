@@ -2,7 +2,7 @@ import React, { useMemo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Volume2, RefreshCw, X, Share2 } from "lucide-react";
 import { cn, decodeHtml } from "@/utils";
-import { useMusic } from "@/context/MusicContext";
+import { useMusic } from "@/context/use-music";
 
 import {
 	Dialog,

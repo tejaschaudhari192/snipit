@@ -26,7 +26,8 @@ const ServerErrorPage = lazy(() => import("@/pages/server-error"));
 
 import { useHealthCheck } from "@/hooks/use-health-check";
 import { CONFIG } from "./configurations";
-import { MusicProvider, useMusic } from "@/context/MusicContext";
+import { MusicProvider } from "@/context/MusicContext";
+import { useMusic } from "@/context/use-music";
 import MusicPlayerSkeleton from "@/components/common/music/music-player-skeleton";
 
 const MusicBubble = lazy(

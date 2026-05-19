@@ -1,11 +1,4 @@
-import React, {
-	createContext,
-	useContext,
-	useState,
-	useEffect,
-	useRef,
-	useCallback,
-} from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import type {
 	MusicTrack,
 	SharedMusicState,
@@ -19,85 +12,7 @@ import { CONFIG } from "@/configurations";
 import { useLocation } from "@/hooks/use-location";
 import { toast } from "sonner";
 import { decodeHtml } from "@/utils";
-
-interface YTPlayer {
-	loadVideoById: (id: string) => void;
-	playVideo: () => void;
-	pauseVideo: () => void;
-	getPlayerState: () => number;
-	seekTo: (seconds: number, allowSeekAhead: boolean) => void;
-	setVolume: (volume: number) => void;
-	getCurrentTime: () => number;
-	getDuration: () => number;
-}
-
-interface YTPlayerOptions {
-	height: string;
-	width: string;
-	playerVars: Record<string, unknown>;
-	events: {
-		onReady: (event: { target: YTPlayer }) => void;
-		onStateChange: (event: { data: number }) => void;
-		onError: (error: unknown) => void;
-	};
-}
-
-declare global {
-	interface Window {
-		YT: {
-			Player: new (id: string, options: YTPlayerOptions) => YTPlayer;
-			PlayerState: {
-				PLAYING: number;
-				PAUSED: number;
-				ENDED: number;
-			};
-		};
-		onYouTubeIframeAPIReady?: () => void;
-	}
-}
-
-interface MusicContextType {
-	isPlaying: boolean;
-	currentTrack: MusicTrack | null;
-	currentIndex: number;
-	playlist: MusicTrack[];
-	searchResults: MusicTrack[];
-	region: string;
-	regionDisplayName: string;
-	isPlayerOpen: boolean;
-	isLoading: boolean;
-	isReady: boolean;
-	volume: number;
-	progress: number;
-	duration: number;
-	currentTime: number;
-	shuffle: boolean;
-	repeat: "off" | "one" | "all";
-	play: () => void;
-	pause: () => void;
-	next: () => void;
-	previous: () => void;
-	seekTo: (seconds: number) => void;
-	setVolume: (vol: number) => void;
-	toggleShuffle: () => void;
-	toggleRepeat: () => void;
-	openPlayer: () => void;
-	closePlayer: () => void;
-	changeRegion: (region: string) => void;
-	refreshPlaylist: () => void;
-	playAtIndex: (index: number) => void;
-	searchTracks: (query: string) => Promise<void>;
-	playSearchTrack: (track: MusicTrack) => Promise<void>;
-	clearSearch: () => void;
-	isShared: boolean;
-	isInitiator: boolean;
-	sharedByUser: string | null;
-	toggleShare: () => void;
-	setPasteSocket: (socket: Socket | null, pasteId: string | null) => void;
-	pasteId: string | null;
-}
-
-const MusicContext = createContext<MusicContextType | undefined>(undefined);
+import { MusicContext, type YTPlayer } from "./use-music";
 
 export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
@@ -877,13 +792,4 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			)}
 		</MusicContext.Provider>
 	);
-};
-
-// eslint-disable-next-line react-refresh/only-export-components
-export const useMusic = () => {
-	const context = useContext(MusicContext);
-	if (context === undefined) {
-		throw new Error("useMusic must be used within a MusicProvider");
-	}
-	return context;
 };
