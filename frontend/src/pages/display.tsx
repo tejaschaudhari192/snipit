@@ -15,6 +15,7 @@ import { type Socket } from "socket.io-client";
 import { useApiHelpers } from "@/lib/api";
 import { useTheme } from "@/hooks/use-theme";
 import { useAuth } from "@/context/AuthContext";
+import { useMusic } from "@/context/MusicContext";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { useFileUpload } from "@/hooks/use-file-upload";
 import { useAiEnhance } from "@/hooks/use-ai-enhance";
@@ -212,6 +213,17 @@ const DisplayPage = () => {
 		(data) => hoistedRemoteUpdateRef.current?.(data),
 		sharedSocketRef,
 	);
+
+	const music = useMusic();
+
+	useEffect(() => {
+		if (socket && id) {
+			music.setPasteSocket(socket, id);
+		}
+		return () => {
+			music.setPasteSocket(null, null);
+		};
+	}, [socket, id, music]);
 
 	const { applyPulse } = useRemoteCursors(
 		editorInstance,
