@@ -23,6 +23,7 @@ export interface YTPlayer {
 	getCurrentTime: () => number;
 	getDuration: () => number;
 	setPlaybackQuality: (suggestedQuality: string) => void;
+	setPlaybackRate: (suggestedRate: number) => void;
 }
 
 export interface YTPlayerOptions {
@@ -44,6 +45,7 @@ declare global {
 				PLAYING: number;
 				PAUSED: number;
 				ENDED: number;
+				CUED: number;
 			};
 		};
 		onYouTubeIframeAPIReady?: () => void;

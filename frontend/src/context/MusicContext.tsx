@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { decodeHtml } from "@/utils";
 import { downloadTrack } from "@/utils/music";
 import { MusicContext, type YTPlayer } from "./use-music";
+import { GlobalClock, calculateTargetSeek } from "@/utils/latency-sync";
 
 export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
@@ -29,6 +30,11 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 	const isRemoteActionRef = useRef(false);
 	const currentTrackRef = useRef<MusicTrack | null>(null);
 	const isPlayingRef = useRef(false);
+	const lastRemoteStateRef = useRef<{
+		timestamp: number;
+		currentTime: number;
+		isPlaying: boolean;
+	} | null>(null);
 
 	useEffect(() => {
 		currentTrackRef.current = currentTrack;
@@ -180,8 +186,12 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 					CONFIG.storageKeys.musicCurrentTrackId,
 					currentTrack.videoId,
 				);
+				// Reset playtime in storage when music changes
+				localStorage.setItem(CONFIG.storageKeys.musicPlaytime, "0");
+				lastSavedTimeRef.current = 0;
 			} else {
 				localStorage.removeItem(CONFIG.storageKeys.musicCurrentTrackId);
+				localStorage.removeItem(CONFIG.storageKeys.musicPlaytime);
 			}
 		}
 	}, [currentTrack, isMounted]);
@@ -320,6 +330,28 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 							) {
 								playerRef.current.setPlaybackQuality(quality);
 							}
+
+							// Real-time synchronization check on post-load start!
+							if (
+								isShared &&
+								!isInitiator &&
+								lastRemoteStateRef.current
+							) {
+								const globalTime = globalClockRef.current
+									? globalClockRef.current.getGlobalTime()
+									: Date.now();
+								const targetTime = calculateTargetSeek(
+									lastRemoteStateRef.current.timestamp,
+									lastRemoteStateRef.current.currentTime,
+									lastRemoteStateRef.current.isPlaying,
+									globalTime,
+								);
+								const currentPos =
+									playerRef.current.getCurrentTime();
+								if (Math.abs(currentPos - targetTime) > 0.15) {
+									playerRef.current.seekTo(targetTime, true);
+								}
+							}
 						}
 					} else if (event.data === YT.PlayerState.PAUSED) {
 						setIsPlaying(false);
@@ -334,7 +366,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				},
 			},
 		});
-	}, [volume, quality]);
+	}, [volume, quality, isShared, isInitiator]);
 
 	const handlePlay = useCallback(async () => {
 		if (playerRef.current) {
@@ -418,13 +450,23 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		[duration, isShared, socket, pasteId],
 	);
 
-	const handleSetVolume = useCallback((vol: number) => {
-		setVolumeState(vol);
-		if (playerRef.current && playerRef.current.setVolume) {
-			playerRef.current.setVolume(vol);
-		}
-		localStorage.setItem(CONFIG.storageKeys.musicVolume, vol.toString());
-	}, []);
+	const handleSetVolume = useCallback(
+		(vol: number) => {
+			setVolumeState(vol);
+			if (playerRef.current && playerRef.current.setVolume) {
+				playerRef.current.setVolume(vol);
+			}
+			localStorage.setItem(
+				CONFIG.storageKeys.musicVolume,
+				vol.toString(),
+			);
+
+			if (isShared && !isRemoteActionRef.current && socket && pasteId) {
+				socket.emit("music:volume", { pasteId, volume: vol });
+			}
+		},
+		[isShared, socket, pasteId],
+	);
 
 	const handleChangeQuality = useCallback((newQuality: string) => {
 		setQualityState(newQuality);
@@ -680,6 +722,24 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		[isShared, socket, pasteId, region, shuffle, repeat],
 	);
 
+	const globalClockRef = useRef<GlobalClock | null>(null);
+
+	useEffect(() => {
+		if (socket) {
+			if (!globalClockRef.current) {
+				globalClockRef.current = new GlobalClock(socket);
+			} else {
+				globalClockRef.current.initialize(socket);
+			}
+		}
+		return () => {
+			if (globalClockRef.current) {
+				globalClockRef.current.destroy();
+				globalClockRef.current = null;
+			}
+		};
+	}, [socket]);
+
 	const currentTimeRef = useRef(0);
 	const durationRef = useRef(240);
 	const lastSavedTimeRef = useRef(-10);
@@ -795,6 +855,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			region,
 			shuffle,
 			repeat,
+			volume,
 		});
 	}, [
 		socket,
@@ -807,6 +868,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		region,
 		shuffle,
 		repeat,
+		volume,
 	]);
 
 	const setPasteSocket = useCallback(
@@ -868,6 +930,13 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				setSharedByUser(initiator ? "You" : "DJ");
 
 				if (!initiator) {
+					// Cache remote state for late-loading players
+					lastRemoteStateRef.current = {
+						timestamp: data.lastSyncedAt,
+						currentTime: data.currentTime,
+						isPlaying: data.isPlaying,
+					};
+
 					if (data.track) {
 						if (
 							currentTrackRef.current?.videoId !==
@@ -875,41 +944,61 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 						) {
 							playTrack(data.track);
 						}
-						setTimeout(() => {
-							if (data.isPlaying) {
-								playerRef.current?.playVideo();
-								setIsPlaying(true);
-							} else {
-								playerRef.current?.pauseVideo();
-								setIsPlaying(false);
-							}
-							const latency =
-								(Date.now() - data.lastSyncedAt) / 1000;
-							const targetTime =
-								data.currentTime +
-								(data.isPlaying ? latency : 0);
-							if (targetTime > 0) {
-								handleSeek(targetTime);
-							}
-						}, 300);
+
+						const globalTime = globalClockRef.current
+							? globalClockRef.current.getGlobalTime()
+							: Date.now();
+						const targetTime = calculateTargetSeek(
+							data.lastSyncedAt,
+							data.currentTime,
+							data.isPlaying,
+							globalTime,
+						);
+
+						if (data.isPlaying) {
+							playerRef.current?.playVideo();
+							setIsPlaying(true);
+						} else {
+							playerRef.current?.pauseVideo();
+							setIsPlaying(false);
+						}
+
+						if (targetTime > 0) {
+							handleSeek(targetTime);
+						}
 					}
 					if (data.playlist) setPlaylist(data.playlist);
 					if (data.shuffle !== undefined) setShuffle(data.shuffle);
 					if (data.repeat) setRepeat(data.repeat);
+
+					// Sync volume state from share session
+					if (data.volume !== undefined) {
+						handleSetVolume(data.volume);
+					}
 				}
 			} else {
 				setIsShared(false);
 				setIsInitiator(false);
 				setSharedByUser(null);
+				lastRemoteStateRef.current = null;
 			}
 			isRemoteActionRef.current = false;
 		};
 
-		const handleSyncUpdate = (data: MusicSyncUpdate) => {
+		const handleSyncUpdate = (
+			data: MusicSyncUpdate & { volume?: number },
+		) => {
 			isRemoteActionRef.current = true;
 			if (data.playlist) setPlaylist(data.playlist);
 			if (data.shuffle !== undefined) setShuffle(data.shuffle);
 			if (data.repeat) setRepeat(data.repeat);
+
+			// Cache remote state for late-loading players
+			lastRemoteStateRef.current = {
+				timestamp: data.timestamp,
+				currentTime: data.currentTime,
+				isPlaying: data.isPlaying,
+			};
 
 			if (
 				data.track &&
@@ -918,22 +1007,31 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				playTrack(data.track);
 			}
 
-			setTimeout(() => {
-				if (data.isPlaying && !isPlayingRef.current) {
-					playerRef.current?.playVideo();
-					setIsPlaying(true);
-				} else if (!data.isPlaying && isPlayingRef.current) {
-					playerRef.current?.pauseVideo();
-					setIsPlaying(false);
-				}
+			if (data.isPlaying && !isPlayingRef.current) {
+				playerRef.current?.playVideo();
+				setIsPlaying(true);
+			} else if (!data.isPlaying && isPlayingRef.current) {
+				playerRef.current?.pauseVideo();
+				setIsPlaying(false);
+			}
 
-				const networkLatency = (Date.now() - data.timestamp) / 1000;
-				const targetTime =
-					data.currentTime + (data.isPlaying ? networkLatency : 0);
-				if (Math.abs(currentTimeRef.current - targetTime) > 2.5) {
-					handleSeek(targetTime);
-				}
-			}, 300);
+			const globalTime = globalClockRef.current
+				? globalClockRef.current.getGlobalTime()
+				: Date.now();
+			const targetTime = calculateTargetSeek(
+				data.timestamp,
+				data.currentTime,
+				data.isPlaying,
+				globalTime,
+			);
+
+			if (Math.abs(currentTimeRef.current - targetTime) > 0.15) {
+				handleSeek(targetTime);
+			}
+
+			if (data.volume !== undefined) {
+				handleSetVolume(data.volume);
+			}
 
 			isRemoteActionRef.current = false;
 		};
@@ -942,11 +1040,26 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			isRemoteActionRef.current = true;
 			playerRef.current?.playVideo();
 			setIsPlaying(true);
-			if (
-				data.currentTime !== undefined &&
-				Math.abs(currentTimeRef.current - data.currentTime) > 2.5
-			) {
-				handleSeek(data.currentTime);
+			if (data.currentTime !== undefined) {
+				lastRemoteStateRef.current = {
+					timestamp: Date.now(),
+					currentTime: data.currentTime,
+					isPlaying: true,
+				};
+
+				const globalTime = globalClockRef.current
+					? globalClockRef.current.getGlobalTime()
+					: Date.now();
+				const targetTime = calculateTargetSeek(
+					Date.now(),
+					data.currentTime,
+					true,
+					globalTime,
+				);
+
+				if (Math.abs(currentTimeRef.current - targetTime) > 0.15) {
+					handleSeek(targetTime);
+				}
 			}
 			isRemoteActionRef.current = false;
 		};
@@ -955,18 +1068,31 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			isRemoteActionRef.current = true;
 			playerRef.current?.pauseVideo();
 			setIsPlaying(false);
-			if (
-				data.currentTime !== undefined &&
-				Math.abs(currentTimeRef.current - data.currentTime) > 2.5
-			) {
-				handleSeek(data.currentTime);
+			if (data.currentTime !== undefined) {
+				lastRemoteStateRef.current = {
+					timestamp: Date.now(),
+					currentTime: data.currentTime,
+					isPlaying: false,
+				};
+
+				if (
+					Math.abs(currentTimeRef.current - data.currentTime) > 0.15
+				) {
+					handleSeek(data.currentTime);
+				}
 			}
 			isRemoteActionRef.current = false;
 		};
 
 		const handleSeekUpdate = (data: MusicSeekUpdate) => {
 			isRemoteActionRef.current = true;
-			if (Math.abs(currentTimeRef.current - data.currentTime) > 2.5) {
+			lastRemoteStateRef.current = {
+				timestamp: Date.now(),
+				currentTime: data.currentTime,
+				isPlaying: isPlayingRef.current,
+			};
+
+			if (Math.abs(currentTimeRef.current - data.currentTime) > 0.15) {
 				handleSeek(data.currentTime);
 			}
 			isRemoteActionRef.current = false;
@@ -980,12 +1106,19 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			isRemoteActionRef.current = false;
 		};
 
+		const handleVolumeUpdate = (data: { volume: number }) => {
+			isRemoteActionRef.current = true;
+			handleSetVolume(data.volume);
+			isRemoteActionRef.current = false;
+		};
+
 		socket.on("music:share-state", handleShareState);
 		socket.on("music:sync-update", handleSyncUpdate);
 		socket.on("music:play-update", handlePlayUpdate);
 		socket.on("music:pause-update", handlePauseUpdate);
 		socket.on("music:seek-update", handleSeekUpdate);
 		socket.on("music:track-update", handleTrackUpdate);
+		socket.on("music:volume-update", handleVolumeUpdate);
 
 		// Request state when joining
 		socket.emit("music:request-state", { pasteId });
@@ -997,8 +1130,89 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			socket.off("music:pause-update", handlePauseUpdate);
 			socket.off("music:seek-update", handleSeekUpdate);
 			socket.off("music:track-update", handleTrackUpdate);
+			socket.off("music:volume-update", handleVolumeUpdate);
 		};
-	}, [socket, pasteId, playTrack, handleSeek]);
+	}, [socket, pasteId, playTrack, handleSeek, handleSetVolume]);
+
+	useEffect(() => {
+		if (!isMounted || !isShared || isInitiator) return;
+
+		const syncCheckInterval = setInterval(() => {
+			if (
+				!playerRef.current ||
+				typeof playerRef.current.getPlayerState !== "function" ||
+				typeof playerRef.current.getCurrentTime !== "function" ||
+				typeof playerRef.current.setPlaybackRate !== "function"
+			) {
+				return;
+			}
+
+			const remoteState = lastRemoteStateRef.current;
+			if (!remoteState || !remoteState.isPlaying) {
+				// Reset speed to normal if not playing
+				playerRef.current.setPlaybackRate(1.0);
+				return;
+			}
+
+			const YT = window.YT;
+			const localState = playerRef.current.getPlayerState();
+
+			// Autoplay/Unstarted recovery: force play if DJ is playing but we are paused/cued
+			if (localState !== YT.PlayerState.PLAYING) {
+				playerRef.current.playVideo();
+
+				// Show non-intrusive gesture prompt if cued
+				if (localState === YT.PlayerState.CUED) {
+					toast.info(
+						"Shared DJ session active. Tap anywhere on the page to start listening!",
+						{
+							id: "autoplay-restore-toast",
+							duration: 4000,
+						},
+					);
+				}
+				return;
+			}
+
+			// Dynamic rate scaling sync:
+			const globalTime = globalClockRef.current
+				? globalClockRef.current.getGlobalTime()
+				: Date.now();
+			const targetTime = calculateTargetSeek(
+				remoteState.timestamp,
+				remoteState.currentTime,
+				remoteState.isPlaying,
+				globalTime,
+			);
+			const currentPos = playerRef.current.getCurrentTime();
+			const deviation = targetTime - currentPos;
+
+			if (Math.abs(deviation) > 1.5) {
+				// Large deviation: perform a hard seek to align instantly
+				playerRef.current.seekTo(targetTime, true);
+				playerRef.current.setPlaybackRate(1.0);
+			} else if (deviation > 0.1) {
+				// Slightly behind: play 25% faster to catch up seamlessly without buffering
+				playerRef.current.setPlaybackRate(1.25);
+			} else if (deviation < -0.1) {
+				// Slightly ahead: play 25% slower to let the stream align seamlessly
+				playerRef.current.setPlaybackRate(0.75);
+			} else {
+				// Perfectly aligned: maintain normal speed
+				playerRef.current.setPlaybackRate(1.0);
+			}
+		}, 1000);
+
+		return () => {
+			clearInterval(syncCheckInterval);
+			if (
+				playerRef.current &&
+				typeof playerRef.current.setPlaybackRate === "function"
+			) {
+				playerRef.current.setPlaybackRate(1.0);
+			}
+		};
+	}, [isMounted, isShared, isInitiator]);
 
 	return (
 		<MusicContext.Provider

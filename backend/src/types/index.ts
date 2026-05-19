@@ -47,6 +47,7 @@ export interface SharedMusicState {
 	region: string;
 	shuffle: boolean;
 	repeat: "off" | "one" | "all";
+	volume?: number;
 }
 
 export type UserData = {

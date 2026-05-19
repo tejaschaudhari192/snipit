@@ -291,6 +291,17 @@ export const setupSocket = (server: HTTPServer) => {
 			}
 		});
 
+		socket.on("music:volume", ({ pasteId, volume }) => {
+			const user = activeUsers.get(socket.id);
+			if (!user || user.pasteId !== pasteId) return;
+
+			const mState = sharedMusicState.get(pasteId);
+			if (mState) {
+				mState.volume = volume;
+				socket.to(pasteId).emit("music:volume-update", { volume });
+			}
+		});
+
 		socket.on("music:track-change", ({ pasteId, track, currentIndex }) => {
 			const user = activeUsers.get(socket.id);
 			if (!user || user.pasteId !== pasteId) return;
@@ -313,6 +324,13 @@ export const setupSocket = (server: HTTPServer) => {
 			if (mState) {
 				socket.emit("music:share-state", mState);
 			}
+		});
+
+		socket.on("music:ping", ({ clientTimestamp }) => {
+			socket.emit("music:pong", {
+				clientTimestamp,
+				serverTimestamp: Date.now(),
+			});
 		});
 
 		socket.on("leave-paste", (pasteId) => {
