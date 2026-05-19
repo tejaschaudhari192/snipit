@@ -149,6 +149,10 @@ export const AdvancedConfigGrid = ({
 	const navigate = useNavigate();
 
 	const isIdDisabled = disabled || (!isOwner && !isAdmin);
+	const tooltipText =
+		!user && !pasteId
+			? t("common.auth_required") || "Authentication Required"
+			: t("common.no_edit_permitted") || "Edit not permitted";
 
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -161,10 +165,7 @@ export const AdvancedConfigGrid = ({
 					/>
 					<LockedSettingWrapper
 						disabled={isIdDisabled}
-						tooltipText={
-							t("common.no_edit_permitted") ||
-							"Edit not permitted"
-						}
+						tooltipText={tooltipText}
 					>
 						<IdTypeTabs
 							idTypeTab={idTypeTab}
@@ -195,10 +196,7 @@ export const AdvancedConfigGrid = ({
 					<div className="flex flex-col gap-4">
 						<LockedSettingWrapper
 							disabled={!(isOwner || isAdmin) || disabled}
-							tooltipText={
-								t("common.no_edit_permitted") ||
-								"Edit not permitted"
-							}
+							tooltipText={tooltipText}
 						>
 							<div
 								className={cn(
@@ -249,10 +247,7 @@ export const AdvancedConfigGrid = ({
 					<div className="flex flex-col gap-4">
 						<LockedSettingWrapper
 							disabled={!(isOwner || isAdmin) || disabled}
-							tooltipText={
-								t("common.no_edit_permitted") ||
-								"Edit not permitted"
-							}
+							tooltipText={tooltipText}
 						>
 							<div
 								className={cn(
