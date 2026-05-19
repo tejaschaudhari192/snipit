@@ -6,7 +6,7 @@ import {
 	ANIMALS,
 	COLLABORATOR_COLORS,
 } from "@/config/constants.js";
-import type { ActiveUser } from "@/types/index.js";
+import type { ActiveUser, SharedMusicState } from "@/types/index.js";
 import PasteService from "@/services/paste.service.js";
 import PermissionService from "@/services/permission.service.js";
 import {
@@ -21,7 +21,8 @@ import crypto from "crypto";
 const pasteService = new PasteService();
 const permissionService = new PermissionService();
 const activeUsers = new Map<string, ActiveUser & { pasteId: string }>();
-const roomContent = new Map<string, string>(); // pasteId -> latest live content
+const roomContent = new Map<string, string>();
+const sharedMusicState = new Map<string, SharedMusicState>();
 
 // Helpers
 const getSocketUserId = (socket: Socket): string | null => {
@@ -118,6 +119,12 @@ export const setupSocket = (server: HTTPServer) => {
 					socket.emit("room-state", { content: currentContent });
 				}
 
+				// Send shared music state to new joiner if active
+				const mState = sharedMusicState.get(pasteId);
+				if (mState) {
+					socket.emit("music:share-state", mState);
+				}
+
 				broadcastRoomUsers(pasteId);
 			}
 		});
@@ -156,6 +163,158 @@ export const setupSocket = (server: HTTPServer) => {
 			broadcastRoomUsers(pasteId);
 		});
 
+		// Shared Music Events
+		socket.on(
+			"music:share-toggle",
+			({
+				pasteId,
+				enabled,
+				track,
+				isPlaying,
+				currentTime,
+				playlist,
+				region,
+				shuffle,
+				repeat,
+			}) => {
+				const user = activeUsers.get(socket.id);
+				if (!user || user.pasteId !== pasteId) return;
+
+				if (enabled) {
+					const newState: SharedMusicState = {
+						enabled: true,
+						initiatorSocketId: socket.id,
+						track: track || null,
+						isPlaying: isPlaying || false,
+						currentTime: currentTime || 0,
+						lastSyncedAt: Date.now(),
+						playlist: playlist || [],
+						region: region || "default",
+						shuffle: shuffle || false,
+						repeat: repeat || "all",
+					};
+					sharedMusicState.set(pasteId, newState);
+					io.to(pasteId).emit("music:share-state", newState);
+				} else {
+					sharedMusicState.delete(pasteId);
+					io.to(pasteId).emit("music:share-state", {
+						enabled: false,
+					});
+				}
+			},
+		);
+
+		socket.on(
+			"music:sync",
+			({
+				pasteId,
+				track,
+				isPlaying,
+				currentTime,
+				playlist,
+				region,
+				shuffle,
+				repeat,
+			}) => {
+				const user = activeUsers.get(socket.id);
+				if (!user || user.pasteId !== pasteId) return;
+
+				const mState = sharedMusicState.get(pasteId);
+				if (mState && mState.initiatorSocketId === socket.id) {
+					mState.track = track;
+					mState.isPlaying = isPlaying;
+					mState.currentTime = currentTime;
+					mState.playlist = playlist;
+					mState.region = region;
+					mState.shuffle = shuffle;
+					mState.repeat = repeat;
+					mState.lastSyncedAt = Date.now();
+
+					socket.to(pasteId).emit("music:sync-update", {
+						track,
+						isPlaying,
+						currentTime,
+						playlist,
+						region,
+						shuffle,
+						repeat,
+						timestamp: mState.lastSyncedAt,
+					});
+				}
+			},
+		);
+
+		socket.on("music:play", ({ pasteId, currentTime }) => {
+			const user = activeUsers.get(socket.id);
+			if (!user || user.pasteId !== pasteId) return;
+
+			const mState = sharedMusicState.get(pasteId);
+			if (mState) {
+				mState.isPlaying = true;
+				if (currentTime !== undefined) mState.currentTime = currentTime;
+				mState.lastSyncedAt = Date.now();
+
+				socket.to(pasteId).emit("music:play-update", {
+					currentTime: mState.currentTime,
+				});
+			}
+		});
+
+		socket.on("music:pause", ({ pasteId, currentTime }) => {
+			const user = activeUsers.get(socket.id);
+			if (!user || user.pasteId !== pasteId) return;
+
+			const mState = sharedMusicState.get(pasteId);
+			if (mState) {
+				mState.isPlaying = false;
+				if (currentTime !== undefined) mState.currentTime = currentTime;
+				mState.lastSyncedAt = Date.now();
+
+				socket.to(pasteId).emit("music:pause-update", {
+					currentTime: mState.currentTime,
+				});
+			}
+		});
+
+		socket.on("music:seek", ({ pasteId, currentTime }) => {
+			const user = activeUsers.get(socket.id);
+			if (!user || user.pasteId !== pasteId) return;
+
+			const mState = sharedMusicState.get(pasteId);
+			if (mState) {
+				mState.currentTime = currentTime;
+				mState.lastSyncedAt = Date.now();
+
+				socket.to(pasteId).emit("music:seek-update", {
+					currentTime,
+				});
+			}
+		});
+
+		socket.on("music:track-change", ({ pasteId, track, currentIndex }) => {
+			const user = activeUsers.get(socket.id);
+			if (!user || user.pasteId !== pasteId) return;
+
+			const mState = sharedMusicState.get(pasteId);
+			if (mState) {
+				mState.track = track;
+				mState.currentTime = 0;
+				mState.lastSyncedAt = Date.now();
+
+				socket.to(pasteId).emit("music:track-update", {
+					track,
+					currentIndex,
+				});
+			}
+		});
+
+		socket.on("music:request-state", ({ pasteId }) => {
+			const mState = sharedMusicState.get(pasteId);
+			if (mState) {
+				socket.emit("music:share-state", mState);
+			}
+		});
+
 		socket.on("leave-paste", (pasteId) => {
 			const user = activeUsers.get(socket.id);
 			if (user && user.pasteId === pasteId) {
@@ -164,6 +323,14 @@ export const setupSocket = (server: HTTPServer) => {
 				user.isRecording = false;
 				socket.leave(pasteId);
 				broadcastRoomUsers(pasteId);
+
+				const mState = sharedMusicState.get(pasteId);
+				if (mState && mState.initiatorSocketId === socket.id) {
+					sharedMusicState.delete(pasteId);
+					io.to(pasteId).emit("music:share-state", {
+						enabled: false,
+					});
+				}
 			}
 		});
 
@@ -496,6 +663,14 @@ export const setupSocket = (server: HTTPServer) => {
 				const pasteId = user.pasteId;
 				activeUsers.delete(socket.id);
 				broadcastRoomUsers(pasteId);
+
+				const mState = sharedMusicState.get(pasteId);
+				if (mState && mState.initiatorSocketId === socket.id) {
+					sharedMusicState.delete(pasteId);
+					io.to(pasteId).emit("music:share-state", {
+						enabled: false,
+					});
+				}
 			} else {
 				activeUsers.delete(socket.id);
 			}
