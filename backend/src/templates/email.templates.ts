@@ -159,7 +159,8 @@ export const EMAIL_TEMPLATES = {
 </body>
 </html>`;
 	},
-	PASSWORD_RESET: (resetUrl: string) => `<!DOCTYPE html>
+	PASSWORD_RESET: (resetUrl: string) => {
+		return `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -286,7 +287,8 @@ export const EMAIL_TEMPLATES = {
         </tr>
     </table>
 </body>
-</html>`,
+</html>`;
+	},
 	LOGIN_NOTIFICATION: (
 		username: string,
 		deviceName: string,
@@ -321,7 +323,7 @@ export const EMAIL_TEMPLATES = {
 			deviceSvg = `
 <svg width="65" height="70" viewBox="0 0 90 110" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto; display: block;">
   <rect x="10" y="10" width="70" height="90" rx="8" fill="#f4f4f5" stroke="#e4e4e7" stroke-width="2"/>
-  <rect x="15" y="15" width="60" height="80" rx="4" fill="#e4e4e7" fill-opacity="0.5"/>
+  <rect x="15" y="15" width="60" height="80" rx="4" fill="#27272a" fill-opacity="0.5"/>
   <circle cx="45" cy="100" r="3" fill="#a1a1aa"/>
 </svg>`;
 		}
