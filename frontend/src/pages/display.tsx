@@ -585,70 +585,77 @@ const DisplayPage = () => {
 								: "p-3",
 						)}
 					>
-						{isEdit && !isFullscreen && !isWindowFullscreen && (
-							<div className="mb-1 sm:mb-2 shrink-0 px-1">
-								<Suspense
-									fallback={
-										<div className="h-10 w-full flex items-center gap-4 px-2 animate-pulse">
-											<Skeleton className="h-8 w-32 rounded-lg" />
-											<Skeleton className="h-8 w-24 rounded-lg" />
-											<Skeleton className="h-8 w-24 rounded-lg" />
-											<div className="flex-1" />
-											<Skeleton className="h-8 w-8 rounded-lg" />
-										</div>
-									}
-								>
-									<EditControls
-										pasteId={id}
-										contentType={contentType}
-										setContentType={setContentType}
-										language={language}
-										setLanguage={setLanguage}
-										visibility={visibility}
-										setVisibility={setVisibility}
-										allowedUsers={allowedUsers}
-										setAllowedUsers={setAllowedUsers}
-										isDetecting={isDetecting}
-										onAutoDetect={() =>
-											handleLanguageDetection(
-												updatedContent || "",
-												true,
-											)
+						{isEdit &&
+							user &&
+							!isFullscreen &&
+							!isWindowFullscreen && (
+								<div className="mb-1 sm:mb-2 shrink-0 px-1">
+									<Suspense
+										fallback={
+											<div className="h-10 w-full flex items-center gap-4 px-2 animate-pulse">
+												<Skeleton className="h-8 w-32 rounded-lg" />
+												<Skeleton className="h-8 w-24 rounded-lg" />
+												<Skeleton className="h-8 w-24 rounded-lg" />
+												<div className="flex-1" />
+												<Skeleton className="h-8 w-8 rounded-lg" />
+											</div>
 										}
-										newPassword={editPassword}
-										setNewPassword={setEditPassword}
-										isPasswordEnabled={isPasswordEnabled}
-										setIsPasswordEnabled={
-											setIsPasswordEnabled
-										}
-										editPermission={editPermission}
-										setEditPermission={setEditPermission}
-										isOwner={isOwner}
-										isAdmin={isOwnerOrAdmin}
-										collaborators={collaborators}
-										setCollaborators={setCollaborators}
-										publicRole={publicRole}
-										setPublicRole={setPublicRole}
-										allowComments={allowComments}
-										setAllowComments={setAllowComments}
-										idTypeTab={idTypeTab}
-										setIdTypeTab={setIdTypeTab}
-										customId={customId}
-										setCustomId={setCustomId}
-										isOptionsOpen={isOptionsOpen}
-										setIsOptionsOpen={setIsOptionsOpen}
-										textValue={
-											updatedContent || paste?.content
-										}
-										files={
-											uploadedFiles.length > 0
-												? uploadedFiles
-												: paste?.files
-										}
-									/>
-								</Suspense>
-							</div>
-						)}
+									>
+										<EditControls
+											pasteId={id}
+											contentType={contentType}
+											setContentType={setContentType}
+											language={language}
+											setLanguage={setLanguage}
+											visibility={visibility}
+											setVisibility={setVisibility}
+											allowedUsers={allowedUsers}
+											setAllowedUsers={setAllowedUsers}
+											isDetecting={isDetecting}
+											onAutoDetect={() =>
+												handleLanguageDetection(
+													updatedContent || "",
+													true,
+												)
+											}
+											newPassword={editPassword}
+											setNewPassword={setEditPassword}
+											isPasswordEnabled={
+												isPasswordEnabled
+											}
+											setIsPasswordEnabled={
+												setIsPasswordEnabled
+											}
+											editPermission={editPermission}
+											setEditPermission={
+												setEditPermission
+											}
+											isOwner={isOwner}
+											isAdmin={isOwnerOrAdmin}
+											collaborators={collaborators}
+											setCollaborators={setCollaborators}
+											publicRole={publicRole}
+											setPublicRole={setPublicRole}
+											allowComments={allowComments}
+											setAllowComments={setAllowComments}
+											idTypeTab={idTypeTab}
+											setIdTypeTab={setIdTypeTab}
+											customId={customId}
+											setCustomId={setCustomId}
+											isOptionsOpen={isOptionsOpen}
+											setIsOptionsOpen={setIsOptionsOpen}
+											textValue={
+												updatedContent || paste?.content
+											}
+											files={
+												uploadedFiles.length > 0
+													? uploadedFiles
+													: paste?.files
+											}
+										/>
+									</Suspense>
+								</div>
+							)}
 
 						<Suspense
 							fallback={

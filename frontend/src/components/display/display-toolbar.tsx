@@ -279,7 +279,7 @@ export const DisplayToolbar = memo(
 
 				{/* Right Options */}
 				<div className="flex items-center justify-end gap-2.5 shrink-0">
-					{isEdit && setIsOptionsOpen && (
+					{isEdit && setIsOptionsOpen && user && (
 						<Button
 							variant="ghost"
 							size="sm"
