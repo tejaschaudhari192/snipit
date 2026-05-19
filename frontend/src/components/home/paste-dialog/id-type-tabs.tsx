@@ -21,6 +21,7 @@ interface IdTypeTabsProps {
 	textValue?: string;
 	files?: AiIdFileContext[];
 	disabled?: boolean;
+	pasteId?: string;
 }
 
 export const IdTypeTabs = ({
@@ -33,6 +34,7 @@ export const IdTypeTabs = ({
 	textValue,
 	files,
 	disabled = false,
+	pasteId,
 }: IdTypeTabsProps) => {
 	const { t } = useTranslation();
 
@@ -91,6 +93,7 @@ export const IdTypeTabs = ({
 							textValue={textValue}
 							files={files}
 							disabled={disabled}
+							pasteId={pasteId}
 						/>
 					</TabsContent>
 
@@ -100,6 +103,7 @@ export const IdTypeTabs = ({
 							setCustomId={setCustomId}
 							onSubmit={onSubmit}
 							disabled={disabled}
+							pasteId={pasteId}
 						/>
 					</TabsContent>
 				</Suspense>

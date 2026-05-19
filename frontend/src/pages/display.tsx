@@ -652,6 +652,12 @@ const DisplayPage = () => {
 													? uploadedFiles
 													: paste?.files
 											}
+											onSubmit={() =>
+												handleEditSave(false)
+											}
+											originalPasswordProtected={
+												!!paste?.isPasswordProtected
+											}
 										/>
 									</Suspense>
 								</div>

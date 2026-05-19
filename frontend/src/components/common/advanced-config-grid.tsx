@@ -68,6 +68,7 @@ export interface AdvancedConfigGridProps {
 	onSubmit?: () => void;
 	textValue?: string;
 	files?: AiIdFileContext[];
+	originalPasswordProtected?: boolean;
 }
 
 export const AdvancedConfigSkeleton = () => (
@@ -143,6 +144,7 @@ export const AdvancedConfigGrid = ({
 	onSubmit,
 	textValue,
 	files,
+	originalPasswordProtected = false,
 }: AdvancedConfigGridProps) => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
@@ -316,6 +318,37 @@ export const AdvancedConfigGrid = ({
 										</div>
 									</div>
 								)}
+
+								{(() => {
+									const isPasswordDirty =
+										(originalPasswordProtected &&
+											!isPasswordEnabled) ||
+										(isPasswordEnabled &&
+											newPassword.trim().length > 0);
+
+									if (!pasteId || !isPasswordDirty)
+										return null;
+
+									return (
+										<div className="flex justify-end pt-2 border-t border-border/10 animate-in fade-in slide-in-from-top-1 duration-200">
+											<Button
+												size="sm"
+												variant="default"
+												className="h-8 text-xs px-4"
+												onClick={(e) => {
+													e.stopPropagation();
+													if (onSubmit) onSubmit();
+												}}
+												disabled={
+													disabled ||
+													(!isOwner && !isAdmin)
+												}
+											>
+												{t("common.set", "Set")}
+											</Button>
+										</div>
+									);
+								})()}
 							</div>
 						</LockedSettingWrapper>
 					</div>

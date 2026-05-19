@@ -15,6 +15,7 @@ interface Props {
 	textValue?: string;
 	files?: AiIdFileContext[];
 	disabled?: boolean;
+	pasteId?: string;
 }
 
 export const CustomIdTab = ({
@@ -24,6 +25,7 @@ export const CustomIdTab = ({
 	textValue,
 	files,
 	disabled = false,
+	pasteId,
 }: Props) => {
 	const { t } = useTranslation();
 	const pasteContext = usePaste();
@@ -31,7 +33,11 @@ export const CustomIdTab = ({
 	const effectiveTextValue = textValue ?? pasteContext.textValue;
 	const effectiveFiles = files ?? pasteContext.files;
 
-	const { isAvailable, isChecking } = useIdAvailability(customId, "dynamic");
+	const { isAvailable, isChecking } = useIdAvailability(
+		customId,
+		"dynamic",
+		pasteId,
+	);
 	const { isSuggesting, handleSuggestId } = useAiIdSuggester(
 		effectiveTextValue,
 		setCustomId,

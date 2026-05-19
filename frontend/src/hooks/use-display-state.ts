@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { CONFIG } from "@/configurations";
 import type {
 	PasteData,
@@ -52,12 +52,22 @@ export const useDisplayState = () => {
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isVerifyingPassword, setIsVerifyingPassword] = useState(false);
 	const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
-	const [isAutosave, setIsAutosave] = useState(true);
+	const [isAutosave, setIsAutosave] = useState<boolean>(() => {
+		const saved = localStorage.getItem(CONFIG.storageKeys.autosave);
+		return saved !== null ? saved === "true" : true;
+	});
 	const [isFullscreen, setIsFullscreen] = useState(false);
 	const [isWindowFullscreen, setIsWindowFullscreen] = useState(false);
 	const [removedServerFileUrls, setRemovedServerFileUrls] = useState<
 		Set<string>
 	>(new Set());
+
+	useEffect(() => {
+		localStorage.setItem(
+			CONFIG.storageKeys.autosave,
+			isAutosave.toString(),
+		);
+	}, [isAutosave]);
 	const [isTerminalOpen, setIsTerminalOpen] = useState(false);
 	const [language, _setLanguage] = useState(CONFIG.defaults.language);
 	const [idTypeTab, setIdTypeTab] = useState<

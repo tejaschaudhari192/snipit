@@ -14,6 +14,7 @@ interface Props {
 	setCustomId: (v: string) => void;
 	onSubmit: () => void;
 	disabled?: boolean;
+	pasteId?: string;
 }
 
 export const SemanticIdTab = ({
@@ -21,6 +22,7 @@ export const SemanticIdTab = ({
 	setCustomId,
 	onSubmit,
 	disabled = false,
+	pasteId,
 }: Props) => {
 	const { t } = useTranslation();
 	const {
@@ -33,7 +35,11 @@ export const SemanticIdTab = ({
 		toggleCategory,
 	} = useSemanticGenerator(setCustomId);
 
-	const { isAvailable, isChecking } = useIdAvailability(customId, "semantic");
+	const { isAvailable, isChecking } = useIdAvailability(
+		customId,
+		"semantic",
+		pasteId,
+	);
 
 	return (
 		<div className="flex flex-col space-y-3 min-h-[80px]">

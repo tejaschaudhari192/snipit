@@ -26,6 +26,7 @@ export const CONFIG = {
 		musicVolume: "snipit-music-volume",
 		musicRegion: "snipit-music-region",
 		musicEnabled: "snipit-music-enabled",
+		autosave: "snipit-autosave",
 	},
 
 	// Default Values

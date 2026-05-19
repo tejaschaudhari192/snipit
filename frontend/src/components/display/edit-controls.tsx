@@ -60,6 +60,8 @@ interface EditControlsProps {
 	setIsOptionsOpen: (v: boolean) => void;
 	textValue?: string;
 	files?: AiIdFileContext[];
+	onSubmit?: () => void;
+	originalPasswordProtected?: boolean;
 }
 
 export const EditControls = (props: EditControlsProps) => {

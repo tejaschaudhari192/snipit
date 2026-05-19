@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 import { useApiHelpers } from "@/lib/api";
 import { guestStorage } from "@/utils/guest-storage";
 import { clearDrafts, playRemoveSound } from "@/utils";
-import type { User, ContentMode, FileAttachment } from "@/types";
+import type { User, FileAttachment, UpdatePasteData } from "@/types";
 import { FileService, type FileUploadStatus } from "@/lib/file-service";
 import type { DisplayState } from "../use-display-state";
 
@@ -134,8 +134,11 @@ export const useDisplayActions = ({
 					finalFiles.push(...newUploadedFiles);
 				}
 
-				const data = await apiHelpers.updatePaste(id!, {
-					content: updatedContent || paste?.content || "",
+				const currentValues = {
+					content:
+						updatedContent !== undefined
+							? updatedContent
+							: paste?.content,
 					language,
 					visibility,
 					editPermission,
@@ -144,18 +147,83 @@ export const useDisplayActions = ({
 						? editPassword || undefined
 						: null,
 					allowedUsers,
-					collaborators,
+					collaborators: collaborators.map((c) => ({
+						email: c.email,
+						role: c.role,
+					})),
 					publicRole,
 					allowComments,
 					expiresTime,
-					contentMode: contentType as ContentMode,
-					// Legacy fields for backward compatibility
-					fileUrl: finalFiles[0]?.url,
-					fileName: finalFiles[0]?.name,
-					fileSize: finalFiles[0]?.size,
-					fileMimeType: finalFiles[0]?.mimeType,
+					contentMode: contentType,
 					files: finalFiles,
+				};
+
+				const originalValues = {
+					content: paste?.content,
+					language: paste?.language,
+					visibility: paste?.visibility,
+					editPermission: paste?.editPermission,
+					newId: paste?.id,
+					password: paste?.isPasswordProtected
+						? paste?.password
+						: null,
+					allowedUsers: paste?.allowedUsers || [],
+					collaborators: (paste?.collaborators || []).map((c) => ({
+						email: c.email,
+						role: c.role,
+					})),
+					publicRole: paste?.publicRole,
+					allowComments: paste?.allowComments,
+					expiresTime: paste?.expiresTime,
+					contentMode: paste?.contentMode,
+					files: paste?.files || [],
+				};
+
+				const updates: UpdatePasteData = {};
+
+				type Key = keyof typeof currentValues;
+
+				(Object.keys(currentValues) as Key[]).forEach((key) => {
+					const cur = currentValues[key];
+					const orig = originalValues[key];
+
+					let changed = false;
+
+					if (Array.isArray(cur) && Array.isArray(orig)) {
+						changed = JSON.stringify(cur) !== JSON.stringify(orig);
+					} else if (key === "password") {
+						const wasProtected = !!paste?.isPasswordProtected;
+						const isProtected = isPasswordEnabled;
+						changed =
+							isProtected !== wasProtected ||
+							(isProtected && !!editPassword);
+					} else {
+						changed = cur !== orig;
+					}
+
+					if (changed) {
+						if (key === "files") {
+							updates.fileUrl = finalFiles[0]?.url || null;
+							updates.fileName = finalFiles[0]?.name || null;
+							updates.fileSize = finalFiles[0]?.size || null;
+							updates.fileMimeType =
+								finalFiles[0]?.mimeType || null;
+							updates.files = finalFiles;
+						} else {
+							(updates as Record<string, unknown>)[key] = cur;
+						}
+					}
 				});
+
+				// If no changes have been made, skip request and succeed immediately
+				if (Object.keys(updates).length === 0) {
+					setSaveStatus("saved");
+					setTimeout(() => setSaveStatus("idle"), 3000);
+					if (shouldClose) setIsEdit(false);
+					return;
+				}
+
+				const data = await apiHelpers.updatePaste(id!, updates);
 
 				if (data) {
 					updateAllFromData(data);

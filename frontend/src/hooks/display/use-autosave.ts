@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react";
 import { CONFIG } from "@/configurations";
 import { type PasteData } from "@/types";
 import type { ShareEntry } from "../use-display-state";
+import { useApiHelpers } from "@/lib/api";
+import { toast } from "sonner";
 
 interface UseAutosaveProps {
 	isAutosave: boolean;
@@ -42,8 +44,11 @@ export const useAutosave = ({
 	isRemoteUpdateRef,
 	lastLocalEditRef,
 	setSaveStatus,
+	config,
+	originalPaste,
 }: UseAutosaveProps) => {
 	const onSaveRef = useRef(onSave);
+	const { checkIdAvailability } = useApiHelpers();
 
 	// Keep the latest onSave function without triggering effects
 	useEffect(() => {
@@ -56,16 +61,78 @@ export const useAutosave = ({
 		const hasContentChanged =
 			content !== undefined && content !== originalContent;
 
-		if (!hasContentChanged || isRemoteUpdateRef.current) {
+		const hasConfigChanged = (() => {
+			if (!config || !originalPaste) return false;
+
+			const collaboratorsChanged =
+				JSON.stringify(
+					config.collaborators.map((c) => ({
+						email: c.email,
+						role: c.role,
+					})),
+				) !==
+				JSON.stringify(
+					(originalPaste.collaborators || []).map((c) => ({
+						email: c.email,
+						role: c.role,
+					})),
+				);
+
+			const allowedUsersChanged =
+				JSON.stringify([...config.allowedUsers].sort()) !==
+				JSON.stringify([...(originalPaste.allowedUsers || [])].sort());
+
+			return (
+				config.language !== originalPaste.language ||
+				config.visibility !== originalPaste.visibility ||
+				config.editPermission !== originalPaste.editPermission ||
+				config.publicRole !== originalPaste.publicRole ||
+				config.allowComments !== originalPaste.allowComments ||
+				config.customId !== originalPaste.id ||
+				config.expiresTime !== originalPaste.expiresTime ||
+				collaboratorsChanged ||
+				allowedUsersChanged
+			);
+		})();
+
+		const hasChanged = hasContentChanged || hasConfigChanged;
+
+		if (!hasChanged || isRemoteUpdateRef.current) {
 			return;
 		}
 
-		const timer = setTimeout(() => {
+		const timer = setTimeout(async () => {
 			const timeSinceLastLocalEdit =
 				Date.now() - lastLocalEditRef.current;
 			if (timeSinceLastLocalEdit < CONFIG.ui.syncQuarantineMs) {
 				return;
 			}
+
+			// If customId has changed, check availability on the frontend first
+			if (
+				config &&
+				originalPaste &&
+				config.customId !== originalPaste.id
+			) {
+				const trimmedId = config.customId.trim();
+				if (!trimmedId) return;
+
+				try {
+					const { available } = await checkIdAvailability(trimmedId);
+					if (!available) {
+						setSaveStatus("error");
+						toast.error("Custom ID is not available");
+						return;
+					}
+				} catch (error) {
+					console.error(
+						"Autosave: failed to check ID availability:",
+						error,
+					);
+					return;
+				}
+			}
+
 			onSaveRef.current();
 		}, 3000);
 
@@ -79,6 +146,10 @@ export const useAutosave = ({
 		originalContent,
 		isRemoteUpdateRef,
 		lastLocalEditRef,
+		config,
+		originalPaste,
+		checkIdAvailability,
+		setSaveStatus,
 	]);
 
 	useEffect(() => {
@@ -87,7 +158,41 @@ export const useAutosave = ({
 		const hasContentChanged =
 			content !== undefined && content !== originalContent;
 
-		if (hasContentChanged) {
+		const hasConfigChanged = (() => {
+			if (!config || !originalPaste) return false;
+
+			const collaboratorsChanged =
+				JSON.stringify(
+					config.collaborators.map((c) => ({
+						email: c.email,
+						role: c.role,
+					})),
+				) !==
+				JSON.stringify(
+					(originalPaste.collaborators || []).map((c) => ({
+						email: c.email,
+						role: c.role,
+					})),
+				);
+
+			const allowedUsersChanged =
+				JSON.stringify([...config.allowedUsers].sort()) !==
+				JSON.stringify([...(originalPaste.allowedUsers || [])].sort());
+
+			return (
+				config.language !== originalPaste.language ||
+				config.visibility !== originalPaste.visibility ||
+				config.editPermission !== originalPaste.editPermission ||
+				config.publicRole !== originalPaste.publicRole ||
+				config.allowComments !== originalPaste.allowComments ||
+				config.customId !== originalPaste.id ||
+				config.expiresTime !== originalPaste.expiresTime ||
+				collaboratorsChanged ||
+				allowedUsersChanged
+			);
+		})();
+
+		if (hasContentChanged || hasConfigChanged) {
 			setSaveStatus("saving");
 		}
 	}, [
@@ -98,5 +203,7 @@ export const useAutosave = ({
 		content,
 		originalContent,
 		setSaveStatus,
+		config,
+		originalPaste,
 	]);
 };

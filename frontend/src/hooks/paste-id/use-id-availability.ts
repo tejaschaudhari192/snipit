@@ -1,14 +1,22 @@
 import { useState, useEffect } from "react";
 import { useApiHelpers } from "@/lib/api";
 
-export const useIdAvailability = (customId: string, idTypeTab: string) => {
+export const useIdAvailability = (
+	customId: string,
+	idTypeTab: string,
+	originalId?: string,
+) => {
 	const { checkIdAvailability } = useApiHelpers();
 	const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
 	const [isChecking, setIsChecking] = useState(false);
 
 	useEffect(() => {
 		const id = customId.trim();
-		if (!id || (idTypeTab !== "dynamic" && idTypeTab !== "semantic")) {
+		if (
+			!id ||
+			(idTypeTab !== "dynamic" && idTypeTab !== "semantic") ||
+			(originalId && id === originalId.trim())
+		) {
 			setIsAvailable(null);
 			return;
 		}
@@ -27,7 +35,7 @@ export const useIdAvailability = (customId: string, idTypeTab: string) => {
 		}, 500);
 
 		return () => clearTimeout(timer);
-	}, [customId, idTypeTab, checkIdAvailability]);
+	}, [customId, idTypeTab, checkIdAvailability, originalId]);
 
 	return { isAvailable, isChecking };
 };
