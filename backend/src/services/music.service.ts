@@ -156,9 +156,6 @@ class MusicService {
 	}
 
 	async searchTracks(query: string): Promise<MusicTrack[]> {
-		logger.info(
-			`MusicService: Executing YouTube search for query: "${query}"`,
-		);
 		try {
 			const response = await fetch(
 				`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=${encodeURIComponent(
@@ -200,7 +197,7 @@ class MusicService {
 			}
 
 			logger.info(
-				`MusicService: YouTube search resolved successfully. Found ${tracks.length} matching tracks.`,
+				`MusicService: YouTube search resolved successfully for query "${query}". Found ${tracks.length} matching tracks.`,
 			);
 			return tracks;
 		} catch (error) {
@@ -213,9 +210,6 @@ class MusicService {
 	}
 
 	async getSuggestions(query: string): Promise<string[]> {
-		logger.info(
-			`MusicService: Retrieving autocompletion suggestions for query: "${query}"`,
-		);
 		try {
 			const response = await fetch(
 				`https://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=${encodeURIComponent(
@@ -230,7 +224,7 @@ class MusicService {
 			const data = (await response.json()) as [string, string[]];
 			if (Array.isArray(data) && Array.isArray(data[1])) {
 				logger.info(
-					`MusicService: Resolved ${data[1].length} autocomplete suggestions successfully.`,
+					`MusicService: Resolved ${data[1].length} autocomplete suggestions successfully for query: "${query}".`,
 				);
 				return data[1];
 			}

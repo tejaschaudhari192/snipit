@@ -21,6 +21,7 @@ import type { FileUploadStatus } from "@/lib/file-service";
 interface DisplayContentProps {
 	id: string;
 	isEdit: boolean;
+	isAdmin?: boolean;
 	contentType: ContentMode;
 	language: string;
 	content: string;
@@ -58,6 +59,7 @@ export const DisplayContent = memo(
 	({
 		id,
 		isEdit,
+		isAdmin,
 		contentType,
 		language,
 		content,
@@ -188,6 +190,8 @@ export const DisplayContent = memo(
 						content={content}
 						onContentChange={onContentChange}
 						contentRef={contentRef}
+						isAdmin={isAdmin}
+						redirectionType={paste?.redirectionType}
 					/>
 				);
 			}

@@ -7,6 +7,7 @@ import type {
 	EditPermission,
 	PublicRole,
 	ShareRole,
+	RedirectionType,
 } from "@/types";
 
 export interface ShareEntry {
@@ -74,6 +75,8 @@ export const useDisplayState = () => {
 		"system" | "dynamic" | "semantic"
 	>("system");
 	const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+	const [redirectionType, setRedirectionType] =
+		useState<RedirectionType>("click");
 
 	const removeServerFile = useCallback((url: string) => {
 		setRemovedServerFileUrls((prev) => {
@@ -97,6 +100,8 @@ export const useDisplayState = () => {
 		if (data.allowComments !== undefined)
 			setAllowComments(data.allowComments);
 		if (data.expiresTime !== undefined) setExpiresTime(data.expiresTime);
+		if (data.redirectionType !== undefined)
+			setRedirectionType(data.redirectionType);
 		if (data.id !== undefined) {
 			setCustomId(data.id);
 			if (data.id.length !== 5) {
@@ -201,6 +206,8 @@ export const useDisplayState = () => {
 		setIdTypeTab,
 		isOptionsOpen,
 		setIsOptionsOpen,
+		redirectionType,
+		setRedirectionType,
 		updateAllFromData,
 	};
 };

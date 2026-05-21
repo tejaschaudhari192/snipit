@@ -50,6 +50,7 @@ export type Visibility = "public" | "private" | "shared";
 export type EditPermission = "owner" | "shared" | "public";
 export type PublicRole = "viewer" | "editor" | "commenter";
 export type ShareRole = "viewer" | "editor" | "admin" | "commenter";
+export type RedirectionType = "click" | "timer" | "direct";
 
 export interface PasteData {
 	id: string;
@@ -62,6 +63,7 @@ export interface PasteData {
 	fileSize?: number | null;
 	fileMimeType?: string | null;
 	redirectUrl?: boolean;
+	redirectionType?: RedirectionType;
 	language?: string;
 	burnAfterRead?: boolean;
 	expiresTime?: string;
@@ -109,6 +111,7 @@ export interface CreatePasteData {
 	fileSize?: number | null;
 	fileMimeType?: string | null;
 	redirectUrl?: boolean;
+	redirectionType?: RedirectionType;
 	language?: string;
 	burnAfterRead?: boolean;
 	visibility?: Visibility;
@@ -127,6 +130,7 @@ export interface CreatePasteData {
 export interface UpdatePasteData {
 	content?: string;
 	redirectUrl?: boolean;
+	redirectionType?: RedirectionType;
 	language?: string;
 	visibility?: Visibility;
 	allowedUsers?: string[];

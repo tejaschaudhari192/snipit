@@ -95,6 +95,7 @@ export interface MusicContextType {
 	playNext: (track: MusicTrack) => void;
 	reorderQueue: (startIndex: number, endIndex: number) => void;
 	clearSearch: () => void;
+	clearMusic: () => void;
 	isShared: boolean;
 	isInitiator: boolean;
 	sharedByUser: string | null;

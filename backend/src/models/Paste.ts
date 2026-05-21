@@ -44,6 +44,11 @@ const pasteSchema = new Schema<IPaste>(
 			required: false,
 			default: false,
 		},
+		redirectionType: {
+			type: String,
+			enum: ["click", "timer", "direct"],
+			default: "click",
+		},
 		language: {
 			type: String,
 			default: "text",

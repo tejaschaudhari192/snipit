@@ -658,6 +658,12 @@ const DisplayPage = () => {
 											originalPasswordProtected={
 												!!paste?.isPasswordProtected
 											}
+											redirectionType={
+												state.redirectionType
+											}
+											setRedirectionType={
+												state.setRedirectionType
+											}
 										/>
 									</Suspense>
 								</div>
@@ -678,6 +684,7 @@ const DisplayPage = () => {
 							<DisplayWorkspace
 								id={id ?? ""}
 								isEdit={isEdit}
+								isAdmin={isOwnerOrAdmin}
 								contentType={contentType}
 								language={language}
 								updatedContent={updatedContent}

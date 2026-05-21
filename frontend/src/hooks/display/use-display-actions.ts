@@ -54,6 +54,7 @@ export const useDisplayActions = ({
 		setUpdatedContent,
 		setIsDeleteDialogOpen,
 		idTypeTab,
+		redirectionType,
 	} = state;
 
 	const handleEditSave = useCallback(
@@ -156,6 +157,7 @@ export const useDisplayActions = ({
 					expiresTime,
 					contentMode: contentType,
 					files: finalFiles,
+					redirectionType,
 				};
 
 				const originalValues = {
@@ -177,6 +179,7 @@ export const useDisplayActions = ({
 					expiresTime: paste?.expiresTime,
 					contentMode: paste?.contentMode,
 					files: paste?.files || [],
+					redirectionType: paste?.redirectionType || "click",
 				};
 
 				const updates: UpdatePasteData = {};
@@ -283,6 +286,7 @@ export const useDisplayActions = ({
 			hasPending,
 			uploadFiles,
 			idTypeTab,
+			redirectionType,
 		],
 	);
 

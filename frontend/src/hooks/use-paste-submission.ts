@@ -52,6 +52,7 @@ export const usePasteSubmission = (
 		setIsSubmitting,
 		uploadFiles,
 		labels,
+		redirectionType,
 	} = usePaste();
 
 	const handleSubmit = async (
@@ -126,6 +127,8 @@ export const usePasteSubmission = (
 				collaborators: options.collaborators ?? collaborators,
 				publicRole: finalPublicRole,
 				allowComments: options.allowComments ?? allowComments,
+				redirectionType:
+					contentType === "link" ? redirectionType : undefined,
 			});
 
 			if (user && labels.length > 0) {

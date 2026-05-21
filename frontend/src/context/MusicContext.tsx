@@ -566,7 +566,12 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 								channel: decodeHtml(t.channel),
 							}),
 						);
-						setPlaylist(decodedTracks);
+						const filteredTracks = decodedTracks
+							.filter(
+								(t: MusicTrack) => t.videoId !== track.videoId,
+							)
+							.slice(0, 5);
+						setPlaylist([track, ...filteredTracks]);
 						setCurrentIndex(0);
 					}
 				}
@@ -583,6 +588,44 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 	);
 
 	const handleClearSearch = useCallback(() => setSearchResults([]), []);
+
+	const handleClearMusic = useCallback(() => {
+		if (playerRef.current && playerRef.current.pauseVideo) {
+			try {
+				playerRef.current.pauseVideo();
+			} catch (e) {
+				console.warn("Failed to pause video during clear:", e);
+			}
+		}
+		setIsPlaying(false);
+		setCurrentTrack(null);
+		setCurrentIndex(0);
+		setPlaylist([]);
+		setSearchResults([]);
+		setCurrentTime(0);
+		setProgress(0);
+		setDuration(0);
+
+		localStorage.removeItem(CONFIG.storageKeys.musicPlaylistIds);
+		localStorage.removeItem(CONFIG.storageKeys.musicCurrentTrackId);
+		localStorage.removeItem(CONFIG.storageKeys.musicCurrentIndex);
+		localStorage.removeItem(CONFIG.storageKeys.musicPlaytime);
+
+		if (isShared && socket && pasteId) {
+			socket.emit("music:sync", {
+				pasteId,
+				track: null,
+				isPlaying: false,
+				currentTime: 0,
+				playlist: [],
+				region,
+				shuffle,
+				repeat,
+			});
+		}
+
+		toast.success("Music queue and progress cleared");
+	}, [isShared, socket, pasteId, region, shuffle, repeat]);
 
 	const handleRemoveFromQueue = useCallback(
 		(videoId: string) => {
@@ -1255,6 +1298,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				playNext: handlePlayNext,
 				reorderQueue: handleReorderQueue,
 				clearSearch: handleClearSearch,
+				clearMusic: handleClearMusic,
 				isShared,
 				isInitiator,
 				sharedByUser,

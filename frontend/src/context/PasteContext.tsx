@@ -17,6 +17,7 @@ import type {
 	ShareRole,
 	ContentMode,
 	FileAttachment,
+	RedirectionType,
 } from "@/types";
 
 interface PasteContextType {
@@ -35,6 +36,8 @@ interface PasteContextType {
 	customId: string;
 	idTypeTab: "system" | "dynamic" | "semantic";
 	isSubmitting: boolean;
+	redirectionType: RedirectionType;
+	setRedirectionType: (v: RedirectionType) => void;
 
 	// File Upload State
 	files: FileUploadStatus[];
@@ -120,6 +123,8 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 	>("system");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [labels, setLabels] = useState<string[]>([]);
+	const [redirectionType, setRedirectionType] =
+		useState<RedirectionType>("click");
 
 	const {
 		files,
@@ -229,6 +234,7 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 		setCustomId("");
 		setIdTypeTab("system");
 		setLabels([]);
+		setRedirectionType("click");
 	}, [setTextValue]);
 
 	const uploadProgress = React.useMemo(() => {
@@ -270,6 +276,8 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			setIdTypeTab,
 			isSubmitting,
 			setIsSubmitting,
+			redirectionType,
+			setRedirectionType,
 			labels,
 			setLabels,
 			files,
@@ -319,6 +327,8 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			setIdTypeTab,
 			isSubmitting,
 			setIsSubmitting,
+			redirectionType,
+			setRedirectionType,
 			labels,
 			setLabels,
 			files,

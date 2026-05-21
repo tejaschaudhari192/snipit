@@ -15,6 +15,7 @@ import type { FileUploadStatus } from "@/lib/file-service";
 interface DisplayWorkspaceProps {
 	id: string;
 	isEdit: boolean;
+	isAdmin: boolean;
 	contentType: ContentMode;
 	language: string;
 	updatedContent: string | undefined;
@@ -56,6 +57,7 @@ export const DisplayWorkspace = memo(
 	({
 		id,
 		isEdit,
+		isAdmin,
 		contentType,
 		language,
 		updatedContent,
@@ -102,6 +104,7 @@ export const DisplayWorkspace = memo(
 					<DisplayContent
 						id={id}
 						isEdit={isEdit}
+						isAdmin={isAdmin}
 						contentType={contentType}
 						language={language}
 						content={updatedContent || ""}

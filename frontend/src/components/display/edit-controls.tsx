@@ -16,6 +16,8 @@ import type {
 	PublicRole,
 	ShareRole,
 	AiIdFileContext,
+	RedirectionType,
+	IdTypeTab,
 } from "@/types";
 
 interface EditControlsProps {
@@ -52,8 +54,8 @@ interface EditControlsProps {
 	setPublicRole: (v: PublicRole) => void;
 	allowComments: boolean;
 	setAllowComments: (v: boolean) => void;
-	idTypeTab: "system" | "dynamic" | "semantic";
-	setIdTypeTab: (v: "system" | "dynamic" | "semantic") => void;
+	idTypeTab: IdTypeTab;
+	setIdTypeTab: (v: IdTypeTab) => void;
 	customId: string;
 	setCustomId: (v: string) => void;
 	isOptionsOpen: boolean;
@@ -62,6 +64,8 @@ interface EditControlsProps {
 	files?: AiIdFileContext[];
 	onSubmit?: () => void;
 	originalPasswordProtected?: boolean;
+	redirectionType?: RedirectionType;
+	setRedirectionType?: (v: RedirectionType) => void;
 }
 
 export const EditControls = (props: EditControlsProps) => {

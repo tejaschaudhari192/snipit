@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Share2 } from "lucide-react";
+import { Share2, Eraser } from "lucide-react";
 import { cn } from "@/utils";
 import { useMusic } from "@/context/use-music";
 import {
@@ -12,8 +12,15 @@ import { Button } from "@/components/ui/button";
 
 export const MusicPlayerHeader: React.FC = () => {
 	const { t } = useTranslation();
-	const { searchResults, playlist, pasteId, isShared, toggleShare } =
-		useMusic();
+	const {
+		searchResults,
+		playlist,
+		pasteId,
+		isShared,
+		toggleShare,
+		clearMusic,
+		currentTrack,
+	} = useMusic();
 
 	return (
 		<DialogHeader className="flex flex-row items-center justify-between space-y-0 pr-8 w-full min-w-0 font-sans">
@@ -29,6 +36,19 @@ export const MusicPlayerHeader: React.FC = () => {
 			</div>
 
 			<div className="flex items-center gap-1.5 shrink-0">
+				{(playlist.length > 0 || currentTrack !== null) && (
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={clearMusic}
+						title="Clear queue and history"
+						className="h-8 px-2.5 text-xs font-semibold gap-1.5 text-muted-foreground border-border hover:text-destructive hover:bg-destructive/10 hover:border-destructive/30 transition-all duration-300"
+					>
+						<Eraser className="w-3.5 h-3.5" />
+						Clear
+					</Button>
+				)}
+
 				{pasteId && (
 					<Button
 						variant={isShared ? "default" : "outline"}

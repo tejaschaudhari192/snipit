@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { timeAgo } from "@/utils";
 import { toast } from "sonner";
 import type { PasteData } from "@/types";
+import { useSnippets } from "@/context/SnippetContext";
 
 interface RecentLinksSidebarProps {
 	linkHistory: Array<PasteData>;
@@ -28,6 +29,7 @@ export const RecentLinksSidebar = ({
 	onShowQR,
 }: RecentLinksSidebarProps) => {
 	const { t } = useTranslation();
+	const { refreshSnippets } = useSnippets();
 
 	return (
 		<div className="md:col-span-4 bg-background/30 flex flex-col min-h-0 border-l border-border/5">
@@ -43,7 +45,7 @@ export const RecentLinksSidebar = ({
 				<div className="flex items-center gap-1">
 					<button
 						className="p-1.5 rounded-md hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"
-						onClick={() => window.location.reload()}
+						onClick={() => refreshSnippets()}
 						title={t("common.refresh")}
 					>
 						<RefreshCw className="h-3 w-3" />

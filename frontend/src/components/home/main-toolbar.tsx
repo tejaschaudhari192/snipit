@@ -10,7 +10,7 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { ChevronDown, Users } from "lucide-react";
 import { cn } from "@/utils";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AdvancedOptions } from "./advanced-options";
 import { SUPPORTED_RUN_LANGUAGES } from "@/constants";
 
@@ -62,6 +62,12 @@ export const MainToolbar = memo(
 	}: MainToolbarProps) => {
 		const { t } = useTranslation();
 		const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+
+		useEffect(() => {
+			if (isSubmitting) {
+				setIsOptionsOpen(false);
+			}
+		}, [isSubmitting]);
 
 		const renderButtonText = () => {
 			if (isSubmitting) {
@@ -151,7 +157,10 @@ export const MainToolbar = memo(
 										disabled={isSubmitting}
 										size="lg"
 										className="px-4 h-9 font-bold rounded-r-none border-r-0 hover:bg-primary/90 transition-colors min-w-[100px]"
-										onClick={handleQuickPaste}
+										onClick={() => {
+											setIsOptionsOpen(false);
+											handleQuickPaste();
+										}}
 									>
 										{renderButtonText()}
 									</Button>

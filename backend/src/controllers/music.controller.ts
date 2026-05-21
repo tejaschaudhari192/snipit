@@ -21,9 +21,6 @@ export const getPlaylist = async (req: Request, req_res: Response) => {
 export const searchTracks = async (req: Request, req_res: Response) => {
 	try {
 		const query = req.query.q as string;
-		logger.info(
-			`MusicController: Request received for track search with query: "${query}"`,
-		);
 		if (!query) {
 			return req_res
 				.status(400)
@@ -40,9 +37,6 @@ export const searchTracks = async (req: Request, req_res: Response) => {
 export const getSuggestions = async (req: Request, req_res: Response) => {
 	try {
 		const query = req.query.q as string;
-		logger.info(
-			`MusicController: Request received for search suggestions with query: "${query}"`,
-		);
 		if (!query) {
 			return req_res.status(200).json([]);
 		}

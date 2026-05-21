@@ -17,6 +17,10 @@ export const createPasteSchema = z.object({
 	fileSize: z.number().optional(),
 	fileMimeType: z.string().optional(),
 	redirectUrl: z.boolean().optional().default(false),
+	redirectionType: z
+		.enum(["click", "timer", "direct"])
+		.optional()
+		.default("click"),
 	language: z.string().optional().default("text"),
 	burnAfterRead: z.boolean().optional(),
 	expiresTime: z.string().optional(),

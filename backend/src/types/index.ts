@@ -102,6 +102,7 @@ export type PasteData = {
 	fileSize?: number | null | undefined;
 	fileMimeType?: string | null | undefined;
 	redirectUrl?: boolean | undefined;
+	redirectionType?: "click" | "timer" | "direct" | undefined;
 	language?: string | undefined;
 	burnAfterRead?: boolean | undefined;
 	expiresTime?: string | undefined;
@@ -131,6 +132,7 @@ export interface CreatePasteData extends UpdatePasteData {
 export interface UpdatePasteData {
 	content?: string | undefined;
 	redirectUrl?: boolean | undefined;
+	redirectionType?: "click" | "timer" | "direct" | undefined;
 	language?: string | undefined;
 	visibility?: Visibility | undefined;
 	publicRole?: PublicRole | undefined;
@@ -161,6 +163,7 @@ export type IPaste = Document & {
 	fileSize?: number | null | undefined;
 	fileMimeType?: string | null | undefined;
 	redirectUrl?: boolean | undefined;
+	redirectionType?: "click" | "timer" | "direct" | undefined;
 	language?: string | undefined;
 	burnAfterRead?: boolean | undefined;
 	expiresTime?: string | undefined;
