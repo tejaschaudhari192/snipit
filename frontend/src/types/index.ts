@@ -51,6 +51,7 @@ export type EditPermission = "owner" | "shared" | "public";
 export type PublicRole = "viewer" | "editor" | "commenter";
 export type ShareRole = "viewer" | "editor" | "admin" | "commenter";
 export type RedirectionType = "click" | "timer" | "direct";
+export type IdTypeTab = "system" | "dynamic" | "semantic";
 
 export interface PasteData {
 	id: string;

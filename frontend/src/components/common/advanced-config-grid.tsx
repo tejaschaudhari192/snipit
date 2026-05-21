@@ -33,6 +33,7 @@ const CollaboratorsManager = lazy(() =>
 );
 
 import type {
+	IdTypeTab,
 	Visibility,
 	EditPermission,
 	PublicRole,
@@ -44,8 +45,8 @@ import type {
 
 export interface AdvancedConfigGridProps {
 	pasteId?: string;
-	idTypeTab: "system" | "dynamic" | "semantic";
-	setIdTypeTab: (v: "system" | "dynamic" | "semantic") => void;
+	idTypeTab: IdTypeTab;
+	setIdTypeTab: (v: IdTypeTab) => void;
 	customId: string;
 	setCustomId: (v: string) => void;
 	allowComments: boolean;

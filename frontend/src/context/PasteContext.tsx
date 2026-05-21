@@ -18,6 +18,7 @@ import type {
 	ContentMode,
 	FileAttachment,
 	RedirectionType,
+	IdTypeTab,
 } from "@/types";
 
 interface PasteContextType {
@@ -34,7 +35,7 @@ interface PasteContextType {
 	textValue: string;
 	password: string;
 	customId: string;
-	idTypeTab: "system" | "dynamic" | "semantic";
+	idTypeTab: IdTypeTab;
 	isSubmitting: boolean;
 	redirectionType: RedirectionType;
 	setRedirectionType: (v: RedirectionType) => void;
@@ -65,7 +66,7 @@ interface PasteContextType {
 	setTextValue: (v: string) => void;
 	setPassword: (v: string) => void;
 	setCustomId: (v: string) => void;
-	setIdTypeTab: (v: "system" | "dynamic" | "semantic") => void;
+	setIdTypeTab: (v: IdTypeTab) => void;
 	setIsSubmitting: (v: boolean) => void;
 	labels: string[];
 	setLabels: (v: string[]) => void;
@@ -118,9 +119,7 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const [password, setPassword] = useState("");
 	const [customId, setCustomId] = useState("");
-	const [idTypeTab, setIdTypeTab] = useState<
-		"system" | "dynamic" | "semantic"
-	>("system");
+	const [idTypeTab, setIdTypeTab] = useState<IdTypeTab>("system");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [labels, setLabels] = useState<string[]>([]);
 	const [redirectionType, setRedirectionType] =

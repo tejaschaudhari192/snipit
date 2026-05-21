@@ -9,11 +9,11 @@ import { IdTabSkeleton } from "./id-tab-skeleton";
 const AutoIdTab = lazy(() => import("./auto-id-tab"));
 const CustomIdTab = lazy(() => import("./custom-id-tab"));
 const SemanticIdTab = lazy(() => import("./semantic-id-tab"));
-import { type AiIdFileContext } from "@/types";
+import { type AiIdFileContext, type IdTypeTab } from "@/types";
 
 interface IdTypeTabsProps {
-	idTypeTab: "system" | "dynamic" | "semantic";
-	setIdTypeTab: (v: "system" | "dynamic" | "semantic") => void;
+	idTypeTab: IdTypeTab;
+	setIdTypeTab: (v: IdTypeTab) => void;
 	customId: string;
 	setCustomId: (v: string) => void;
 	onSubmit: () => void;
@@ -41,10 +41,7 @@ export const IdTypeTabs = ({
 	return (
 		<Tabs
 			value={idTypeTab}
-			onValueChange={(v) =>
-				!disabled &&
-				setIdTypeTab(v as "system" | "dynamic" | "semantic")
-			}
+			onValueChange={(v) => !disabled && setIdTypeTab(v as IdTypeTab)}
 			className="w-full"
 		>
 			<TabsList className="grid w-full grid-cols-3 h-9 mb-4">

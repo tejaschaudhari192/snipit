@@ -8,6 +8,7 @@ import type {
 	PublicRole,
 	ShareRole,
 	RedirectionType,
+	IdTypeTab,
 } from "@/types";
 
 export interface ShareEntry {
@@ -71,9 +72,7 @@ export const useDisplayState = () => {
 	}, [isAutosave]);
 	const [isTerminalOpen, setIsTerminalOpen] = useState(false);
 	const [language, _setLanguage] = useState(CONFIG.defaults.language);
-	const [idTypeTab, setIdTypeTab] = useState<
-		"system" | "dynamic" | "semantic"
-	>("system");
+	const [idTypeTab, setIdTypeTab] = useState<IdTypeTab>("system");
 	const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 	const [redirectionType, setRedirectionType] =
 		useState<RedirectionType>("click");
