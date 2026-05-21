@@ -32,7 +32,7 @@ export const RedirectionSelector = memo(
 						<ArrowRightLeft className="h-3.5 w-3.5" />
 					</div>
 					<span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/70 group-hover/header:text-primary transition-colors">
-						{t("common.redirection_mode", "Redirection Mode")}
+						{t("common.redirection_mode")}
 					</span>
 				</div>
 				<LockedSettingWrapper

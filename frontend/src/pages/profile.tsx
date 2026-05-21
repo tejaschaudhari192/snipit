@@ -162,7 +162,7 @@ const ProfilePage = () => {
 									<User className="h-5 w-5" />
 								</div>
 								<h2 className="text-3xl font-black tracking-tight italic leading-none truncate">
-									{t("profile.overview", "Profile Overview")}
+									{t("profile.overview")}
 								</h2>
 							</div>
 

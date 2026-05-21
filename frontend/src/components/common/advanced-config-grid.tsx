@@ -345,7 +345,7 @@ export const AdvancedConfigGrid = ({
 													(!isOwner && !isAdmin)
 												}
 											>
-												{t("common.set", "Set")}
+												{t("common.set")}
 											</Button>
 										</div>
 									);

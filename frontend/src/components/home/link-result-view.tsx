@@ -98,48 +98,33 @@ export const LinkResultView = ({
 										className="text-xs font-bold gap-1.5"
 									>
 										<MousePointerClick className="h-3.5 w-3.5 text-primary shrink-0" />
-										{t(
-											"common.redirection_click",
-											"Click to Visit",
-										)}
+										{t("common.redirection_click")}
 									</TabsTrigger>
 									<TabsTrigger
 										value="timer"
 										className="text-xs font-bold gap-1.5"
 									>
 										<Timer className="h-3.5 w-3.5 text-amber-500 shrink-0" />
-										{t(
-											"common.redirection_timer",
-											"5s Countdown",
-										)}
+										{t("common.redirection_timer")}
 									</TabsTrigger>
 									<TabsTrigger
 										value="direct"
 										className="text-xs font-bold gap-1.5"
 									>
 										<Zap className="h-3.5 w-3.5 text-indigo-500 shrink-0" />
-										{t(
-											"common.redirection_direct",
-											"Direct Redirect",
-										)}
+										{t("common.redirection_direct")}
 									</TabsTrigger>
 								</TabsList>
 							</Tabs>
 
-							<div className="flex items-center justify-between w-full gap-4 text-xs font-bold px-1 select-none">
-								<span className="px-3 py-1 rounded-lg bg-emerald-500/5 text-emerald-600 border border-emerald-500/20 shadow-sm flex items-center gap-1.5">
-									<span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-									{t("home.link_features.custom")}
-								</span>
-
+							<div className="flex items-center justify-center w-full text-xs font-bold px-1 select-none">
 								<div className="text-[11px] text-muted-foreground/80 font-medium flex items-center gap-1.5 animate-in fade-in duration-200">
 									{redirectionType === "click" && (
 										<>
-											<span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+											<span className="inline-block w-1.5 h-1.5 rounded-full bg-primary" />
 											<span>
 												{t(
 													"common.redirection_click_desc",
-													"Requires click",
 												)}
 											</span>
 										</>
@@ -150,7 +135,6 @@ export const LinkResultView = ({
 											<span>
 												{t(
 													"common.redirection_timer_desc",
-													"5s countdown",
 												)}
 											</span>
 										</>
@@ -161,7 +145,6 @@ export const LinkResultView = ({
 											<span>
 												{t(
 													"common.redirection_direct_desc",
-													"Instant redirect",
 												)}
 											</span>
 										</>
