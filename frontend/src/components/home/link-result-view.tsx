@@ -1,13 +1,15 @@
-import { Link, History } from "lucide-react";
+import { Link, History, MousePointerClick, Timer, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/utils";
-import type { PasteData } from "@/types";
+import type { PasteData, RedirectionType } from "@/types";
 import { QRDialog } from "@/components/common/qr-dialog";
 import { useState } from "react";
 import { ShortenedResultCard } from "./shortened-result-card";
 import { RecentLinksSidebar } from "./recent-links-sidebar";
+import { usePaste } from "@/context/PasteContext";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface LinkResultViewProps {
 	textValue: string;
@@ -33,6 +35,7 @@ export const LinkResultView = ({
 }: LinkResultViewProps) => {
 	const { t } = useTranslation();
 	const [qrUrl, setQrUrl] = useState<string | null>(null);
+	const { redirectionType, setRedirectionType } = usePaste();
 
 	return (
 		<div className="h-full w-full grid grid-cols-1 md:grid-cols-12 overflow-hidden relative">
@@ -80,10 +83,91 @@ export const LinkResultView = ({
 							placeholder={t("home.link_placeholder")}
 							className="h-12 text-base px-5 rounded-xl border-primary/20 focus-visible:ring-primary/20 bg-background"
 						/>
-						<div className="flex items-center justify-center gap-4 text-xs text-muted-foreground font-bold">
-							<span className="px-3 py-1 rounded-lg bg-muted border border-border/50">
-								✅ {t("home.link_features.custom")}
-							</span>
+
+						<div className="flex flex-col gap-4 items-center justify-center w-full max-w-md mx-auto animate-in fade-in duration-300">
+							<Tabs
+								value={redirectionType}
+								onValueChange={(v) =>
+									setRedirectionType?.(v as RedirectionType)
+								}
+								className="w-full"
+							>
+								<TabsList className="grid w-full grid-cols-3 h-9 bg-muted border border-border/50 p-[3px] rounded-lg">
+									<TabsTrigger
+										value="click"
+										className="text-xs font-bold gap-1.5"
+									>
+										<MousePointerClick className="h-3.5 w-3.5 text-primary shrink-0" />
+										{t(
+											"common.redirection_click",
+											"Click to Visit",
+										)}
+									</TabsTrigger>
+									<TabsTrigger
+										value="timer"
+										className="text-xs font-bold gap-1.5"
+									>
+										<Timer className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+										{t(
+											"common.redirection_timer",
+											"5s Countdown",
+										)}
+									</TabsTrigger>
+									<TabsTrigger
+										value="direct"
+										className="text-xs font-bold gap-1.5"
+									>
+										<Zap className="h-3.5 w-3.5 text-indigo-500 shrink-0" />
+										{t(
+											"common.redirection_direct",
+											"Direct Redirect",
+										)}
+									</TabsTrigger>
+								</TabsList>
+							</Tabs>
+
+							<div className="flex items-center justify-between w-full gap-4 text-xs font-bold px-1 select-none">
+								<span className="px-3 py-1 rounded-lg bg-emerald-500/5 text-emerald-600 border border-emerald-500/20 shadow-sm flex items-center gap-1.5">
+									<span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+									{t("home.link_features.custom")}
+								</span>
+
+								<div className="text-[11px] text-muted-foreground/80 font-medium flex items-center gap-1.5 animate-in fade-in duration-200">
+									{redirectionType === "click" && (
+										<>
+											<span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+											<span>
+												{t(
+													"common.redirection_click_desc",
+													"Requires click",
+												)}
+											</span>
+										</>
+									)}
+									{redirectionType === "timer" && (
+										<>
+											<span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+											<span>
+												{t(
+													"common.redirection_timer_desc",
+													"5s countdown",
+												)}
+											</span>
+										</>
+									)}
+									{redirectionType === "direct" && (
+										<>
+											<span className="inline-block w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+											<span>
+												{t(
+													"common.redirection_direct_desc",
+													"Instant redirect",
+												)}
+											</span>
+										</>
+									)}
+								</div>
+							</div>
 						</div>
 					</div>
 				)}

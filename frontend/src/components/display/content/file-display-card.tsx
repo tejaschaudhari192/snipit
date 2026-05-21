@@ -4,7 +4,8 @@ import { FileDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { FileAttachment } from "@/types";
 import { FileTypeIcon } from "@/components/common/file-type-icon";
-import FilePreview from "../../common/file-preview";
+import FilePreview from "@/components/common/file-preview";
+import { cn } from "@/utils";
 
 const formatFileSize = (bytes: number) => {
 	if (bytes === 0) return "0 Bytes";
@@ -23,7 +24,40 @@ export const FileDisplayCard = ({ file }: { file: FileAttachment }) => {
 		file.mimeType === "application/pdf" ||
 		file.name?.toLowerCase().endsWith(".pdf");
 
-	const hasPreview = file.url && (isImage || isVideo || isAudio || isPdf);
+	const textExtensions = [
+		"js",
+		"ts",
+		"tsx",
+		"jsx",
+		"json",
+		"py",
+		"java",
+		"c",
+		"cpp",
+		"h",
+		"hpp",
+		"sh",
+		"yml",
+		"yaml",
+		"md",
+		"css",
+		"html",
+		"php",
+		"go",
+		"rs",
+		"rb",
+		"sql",
+		"txt",
+		"xml",
+		"svg",
+		"log",
+	];
+	const ext = file.name?.split(".").pop()?.toLowerCase() || "";
+	const isText =
+		file.mimeType?.startsWith("text/") || textExtensions.includes(ext);
+
+	const hasPreview =
+		file.url && (isImage || isVideo || isAudio || isPdf || isText);
 
 	const handleDownload = () => {
 		if (file.url) {
@@ -31,14 +65,31 @@ export const FileDisplayCard = ({ file }: { file: FileAttachment }) => {
 		}
 	};
 
+	const cardWidthClass =
+		isPdf || isText
+			? "w-full md:w-[75vw] lg:w-[65vw] max-w-4xl"
+			: isImage || isVideo
+				? "w-full md:w-[55vw] max-w-2xl"
+				: "w-full md:w-sm";
+
 	return (
-		<Card className="w-full md:w-sm border border-border/50 bg-background/60 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden group hover:border-primary/50 transition-all ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-500 flex flex-col">
+		<Card
+			className={cn(
+				"border border-border/50 bg-background/60 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden group hover:border-primary/50 transition-all ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-500 flex flex-col",
+				cardWidthClass,
+			)}
+		>
 			{hasPreview ? (
 				<FilePreview
 					url={file.url!}
 					fileName={file.name}
 					mimeType={file.mimeType}
 					className="border-b"
+					maxHeight={
+						isPdf || isText
+							? "clamp(450px, 60vh, 750px)"
+							: "clamp(300px, 50vh, 600px)"
+					}
 				/>
 			) : (
 				<div className="h-32 bg-linear-to-br from-primary/10 via-primary/5 to-transparent flex items-center justify-center relative overflow-hidden">

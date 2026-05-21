@@ -33,9 +33,6 @@ export const AdvancedOptions = ({ onSubmit }: AdvancedOptionsProps) => {
 		setPublicRole,
 		allowComments,
 		setAllowComments,
-		redirectionType,
-		setRedirectionType,
-		contentType,
 	} = usePaste();
 
 	const [isPasswordEnabled, setIsPasswordEnabled] = useState(!!password);
@@ -72,9 +69,6 @@ export const AdvancedOptions = ({ onSubmit }: AdvancedOptionsProps) => {
 					isOwner={true}
 					isAdmin={true}
 					onSubmit={onSubmit}
-					contentType={contentType}
-					redirectionType={redirectionType}
-					setRedirectionType={setRedirectionType}
 				/>
 			</Suspense>
 		</div>

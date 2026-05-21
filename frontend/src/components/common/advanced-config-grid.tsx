@@ -1,13 +1,6 @@
 import { lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
-import {
-	LogIn,
-	Lock,
-	Shield,
-	Settings,
-	Tag,
-	ArrowRightLeft,
-} from "lucide-react";
+import { LogIn, Lock, Shield, Settings, Tag } from "lucide-react";
 import { cn } from "@/utils";
 import { LockedSettingWrapper } from "@/components/common/locked-setting-wrapper";
 
@@ -39,8 +32,6 @@ import type {
 	PublicRole,
 	ShareRole,
 	AiIdFileContext,
-	ContentMode,
-	RedirectionType,
 } from "@/types";
 
 export interface AdvancedConfigGridProps {
@@ -79,9 +70,6 @@ export interface AdvancedConfigGridProps {
 	textValue?: string;
 	files?: AiIdFileContext[];
 	originalPasswordProtected?: boolean;
-	contentType?: ContentMode;
-	redirectionType?: RedirectionType;
-	setRedirectionType?: (v: RedirectionType) => void;
 }
 
 export const AdvancedConfigSkeleton = () => (
@@ -158,9 +146,6 @@ export const AdvancedConfigGrid = ({
 	textValue,
 	files,
 	originalPasswordProtected = false,
-	contentType,
-	redirectionType = "click",
-	setRedirectionType,
 }: AdvancedConfigGridProps) => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
@@ -206,124 +191,6 @@ export const AdvancedConfigGrid = ({
 
 			{/* Column 2: General Settings */}
 			<div className="flex flex-col space-y-6 animate-in fade-in duration-300">
-				{contentType === "link" && (
-					<div className="animate-in fade-in slide-in-from-top-3 duration-300">
-						<SectionHeader
-							icon={ArrowRightLeft}
-							label={t(
-								"common.redirection_mode",
-								"Redirection Mode",
-							)}
-						/>
-						<LockedSettingWrapper
-							disabled={!(isOwner || isAdmin) || disabled}
-							tooltipText={tooltipText}
-						>
-							<div className="grid grid-cols-3 gap-2.5">
-								{[
-									{
-										id: "click",
-										title: t(
-											"common.redirection_click",
-											"Click to Visit",
-										),
-										desc: t(
-											"common.redirection_click_desc",
-											"Requires click",
-										),
-										icon: "🚀",
-										badgeColor:
-											"bg-primary/10 text-primary",
-										borderColor:
-											"hover:border-primary/30 select-none cursor-pointer",
-										selectedStyle:
-											"bg-primary/5 border-primary/40 ring-2 ring-primary/10",
-									},
-									{
-										id: "timer",
-										title: t(
-											"common.redirection_timer",
-											"5s Countdown",
-										),
-										desc: t(
-											"common.redirection_timer_desc",
-											"5s countdown",
-										),
-										icon: "⏱️",
-										badgeColor:
-											"bg-amber-500/10 text-amber-600",
-										borderColor:
-											"hover:border-amber-500/30 select-none cursor-pointer",
-										selectedStyle:
-											"bg-amber-500/5 border-amber-500/40 ring-2 ring-amber-500/10",
-									},
-									{
-										id: "direct",
-										title: t(
-											"common.redirection_direct",
-											"Direct Redirect",
-										),
-										desc: t(
-											"common.redirection_direct_desc",
-											"Instant redirect",
-										),
-										icon: "⚡",
-										badgeColor:
-											"bg-indigo-500/10 text-indigo-600",
-										borderColor:
-											"hover:border-indigo-500/30 select-none cursor-pointer",
-										selectedStyle:
-											"bg-indigo-500/5 border-indigo-500/40 ring-2 ring-indigo-500/10",
-									},
-								].map((mode) => {
-									const isSelected =
-										redirectionType === mode.id;
-									const isClickable =
-										(isOwner || isAdmin) && !disabled;
-
-									return (
-										<div
-											key={mode.id}
-											onClick={() =>
-												isClickable &&
-												setRedirectionType?.(
-													mode.id as RedirectionType,
-												)
-											}
-											className={cn(
-												"flex flex-col items-center justify-center p-3.5 rounded-2xl border text-center transition-all duration-300 active:scale-95 group",
-												isSelected
-													? mode.selectedStyle
-													: "bg-background/60 border-border/50 hover:bg-muted/10",
-												isClickable
-													? mode.borderColor
-													: "opacity-60 cursor-not-allowed",
-											)}
-										>
-											<div
-												className={cn(
-													"w-10 h-10 rounded-xl flex items-center justify-center text-xl mb-2 transition-transform duration-300 group-hover:scale-110",
-													isSelected
-														? mode.badgeColor
-														: "bg-muted/30 text-muted-foreground",
-												)}
-											>
-												{mode.icon}
-											</div>
-											<span className="text-xs font-bold block mb-0.5 leading-none transition-colors group-hover:text-primary">
-												{mode.title}
-											</span>
-											<span className="text-[10px] text-muted-foreground/80 font-medium leading-tight line-clamp-2">
-												{mode.desc}
-											</span>
-										</div>
-									);
-								})}
-							</div>
-						</LockedSettingWrapper>
-					</div>
-				)}
-
 				<div>
 					<SectionHeader
 						icon={Settings}

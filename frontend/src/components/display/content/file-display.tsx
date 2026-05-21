@@ -26,7 +26,7 @@ export const FileDisplay = ({ paste, contentRef }: FileDisplayProps) => {
 			ref={contentRef}
 			className="w-full h-full overflow-y-auto py-12 px-6 flex flex-col items-center"
 		>
-			<div className="flex flex-row flex-wrap justify-center gap-8 max-w-7xl mx-auto">
+			<div className="w-full flex flex-row flex-wrap justify-center gap-8 max-w-7xl mx-auto">
 				{files.map((file, index) => (
 					<FileDisplayCard key={index} file={file} />
 				))}
