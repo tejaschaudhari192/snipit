@@ -11,17 +11,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Menu, Search, User } from "lucide-react";
 const ThemeToggle = lazy(() =>
-	import("./theme-toggle").then((m) => ({
+	import("@/components/header/theme-toggle").then((m) => ({
 		default: m.default,
 	})),
 );
 const BrandLogo = lazy(() =>
-	import("../common/brand-logo").then((m) => ({
+	import("@/components/common/brand-logo").then((m) => ({
 		default: m.BrandLogo,
 	})),
 );
 const ActionUrlBar = lazy(() =>
-	import("../common/action-url-bar").then((m) => ({
+	import("@/components/common/action-url-bar").then((m) => ({
 		default: m.ActionUrlBar,
 	})),
 );
@@ -29,17 +29,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/context/AuthContext";
 
 const LanguageSwitcher = lazy(() =>
-	import("./language-switcher").then((m) => ({
+	import("@/components/header/language-switcher").then((m) => ({
 		default: m.LanguageSwitcher,
 	})),
 );
 const JumpToDialog = lazy(() =>
-	import("./jump-to-dialog").then((m) => ({
+	import("@/components/header/jump-to-dialog").then((m) => ({
 		default: m.JumpToDialog,
 	})),
 );
 const LogoutDialog = lazy(() =>
-	import("./logout-dialog").then((m) => ({
+	import("@/components/header/logout-dialog").then((m) => ({
 		default: m.LogoutDialog,
 	})),
 );

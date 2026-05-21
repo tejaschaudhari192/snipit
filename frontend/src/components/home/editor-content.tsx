@@ -27,13 +27,13 @@ const EditorToolbar = lazy(() =>
 );
 
 const FileUploadView = lazy(() =>
-	import("../common/file-upload-view").then((m) => ({
+	import("@/components/common/file-upload-view").then((m) => ({
 		default: m.FileUploadView,
 	})),
 );
 
 const LinkResultView = lazy(() =>
-	import("./link-result-view").then((m) => ({
+	import("@/components/home/link-result-view").then((m) => ({
 		default: m.LinkResultView,
 	})),
 );

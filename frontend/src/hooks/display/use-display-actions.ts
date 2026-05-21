@@ -8,7 +8,7 @@ import { guestStorage } from "@/utils/guest-storage";
 import { clearDrafts, playRemoveSound } from "@/utils";
 import type { User, FileAttachment, UpdatePasteData } from "@/types";
 import { FileService, type FileUploadStatus } from "@/lib/file-service";
-import type { DisplayState } from "../use-display-state";
+import type { DisplayState } from "@/hooks/use-display-state";
 
 import { type editor } from "monaco-editor";
 

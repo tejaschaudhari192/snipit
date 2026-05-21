@@ -4,18 +4,18 @@ import { useRef, useEffect, memo, useState } from "react";
 import { cn } from "@/utils";
 import { EditorToolbar } from "@/components/common/editor-toolbar";
 import type { PasteData, ContentMode, EditorChange } from "@/types";
-import { MarkdownDisplay } from "./content/markdown-display";
-import { HtmlDisplay } from "./content/html-display";
+import { MarkdownDisplay } from "@/components/display/content/markdown-display";
+import { HtmlDisplay } from "@/components/display/content/html-display";
 import { ResizableSplitPane } from "@/components/common/resizable-split-pane";
-import { FileDisplay } from "./content/file-display";
-import { CodeEditorView } from "./content/code-editor-view";
-import { LinkView } from "./content/link-view";
+import { FileDisplay } from "@/components/display/content/file-display";
+import { CodeEditorView } from "@/components/display/content/code-editor-view";
+import { LinkView } from "@/components/display/content/link-view";
 import { useMarkdownLayout } from "@/hooks/use-markdown-layout";
 
 import type { Socket } from "socket.io-client";
 import type { ActiveUser } from "@/types";
-import { CollabDraw } from "./collab-draw";
-import { FileEditView } from "./content/file-edit-view";
+import { CollabDraw } from "@/components/display/collab-draw";
+import { FileEditView } from "@/components/display/content/file-edit-view";
 import type { FileUploadStatus } from "@/lib/file-service";
 
 interface DisplayContentProps {

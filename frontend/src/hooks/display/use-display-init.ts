@@ -4,7 +4,7 @@ import { useApiHelpers } from "@/lib/api";
 import { guestStorage } from "@/utils/guest-storage";
 import { detectContentMode } from "@/utils";
 import type { PasteData, User } from "@/types";
-import type { DisplayState } from "../use-display-state";
+import type { DisplayState } from "@/hooks/use-display-state";
 
 interface UseDisplayInitProps {
 	id: string | undefined;

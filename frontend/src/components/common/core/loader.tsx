@@ -1,4 +1,4 @@
-import { ShimmerSection } from "../shimmer-section";
+import { ShimmerSection } from "@/components/common/shimmer-section";
 import { cn } from "@/utils";
 
 interface LoaderProps {

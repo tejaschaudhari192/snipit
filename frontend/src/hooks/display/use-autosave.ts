@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { CONFIG } from "@/configurations";
 import { type PasteData } from "@/types";
-import type { ShareEntry } from "../use-display-state";
+import type { ShareEntry } from "@/hooks/use-display-state";
 import { useApiHelpers } from "@/lib/api";
 import { toast } from "sonner";
 

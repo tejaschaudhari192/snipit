@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/utils";
-import FilePreview from "../common/file-preview";
+import FilePreview from "@/components/common/file-preview";
 import { FileUploadItem } from "./file-upload-item";
 import type { FileUploadStatus } from "@/lib/file-service";
 import { CONFIG } from "@/configurations";

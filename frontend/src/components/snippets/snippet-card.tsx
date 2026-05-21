@@ -3,8 +3,8 @@ import type { PasteData } from "@/types";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { ExternalLink, Calendar, Tag } from "lucide-react";
-import { LanguageBadge } from "../common/language-badge";
-import { ExpirationBadge } from "../common/expiration-badge";
+import { LanguageBadge } from "@/components/common/language-badge";
+import { ExpirationBadge } from "@/components/common/expiration-badge";
 import { useAuth } from "@/context/AuthContext";
 
 interface SnippetCardProps {
