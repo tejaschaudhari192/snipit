@@ -128,6 +128,8 @@ const DisplayPage = () => {
 		isServerFileRemoved,
 		setIsServerFileRemoved,
 		_setLanguage,
+		removedServerFileUrls,
+		removeServerFile,
 	} = state;
 
 	const [remoteCursors, setRemoteCursors] = useState<
@@ -181,6 +183,7 @@ const DisplayPage = () => {
 		addFiles,
 		reset: resetFileUpload,
 		hasPending,
+		removeFile: removePendingFile,
 	} = useFileUpload();
 
 	const setLanguage = useCallback(
@@ -728,6 +731,19 @@ const DisplayPage = () => {
 								files={uploadedFiles}
 								isFileUploading={isFileUploading}
 								fileUploadError={fileUploadError}
+								onRemoveServerFile={(url) => {
+									removeServerFile(url);
+									setUpdatedContent(
+										paste?.content || "File Update",
+									);
+								}}
+								onRemovePendingFile={(fileId) => {
+									removePendingFile(fileId);
+									setUpdatedContent(
+										paste?.content || "File Update",
+									);
+								}}
+								removedServerFileUrls={removedServerFileUrls}
 							/>
 						</Suspense>
 					</div>
