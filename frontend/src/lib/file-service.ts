@@ -88,9 +88,8 @@ export const FileService = {
 		}
 
 		try {
-			const timestamp = Date.now();
 			const sanitizedName = sanitizeFileName(file.name);
-			const filePath = `${timestamp}_${sanitizedName}`;
+			const filePath = sanitizedName;
 
 			// Supabase JS SDK doesn't have a native onProgress for storage.upload yet
 			// so we rely on the interval simulation in the hook for now,
