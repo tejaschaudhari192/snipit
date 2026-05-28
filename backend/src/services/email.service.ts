@@ -6,12 +6,6 @@ class EmailService {
 	private isVerified = true;
 	private lastErrorMessage: string | null = null;
 
-	constructor() {
-		logger.info(
-			"✨ Brevo Transactional Email Service Active (HTTP-based Delivery)",
-		);
-	}
-
 	public getLastError(): string | null {
 		return this.lastErrorMessage;
 	}
