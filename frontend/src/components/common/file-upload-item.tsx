@@ -70,7 +70,7 @@ export const FileUploadItem = ({
 				</p>
 				<div className="flex flex-col gap-2">
 					<div className="flex items-center justify-between text-[10px]">
-						<div className="font-bold uppercase tracking-wider">
+						<div className="font-bold">
 							{file.isUploading ? (
 								<span className="text-primary flex items-center gap-1">
 									{t("home.file_uploading")}

@@ -78,7 +78,7 @@ export const FileUploadView = ({
 									<h2 className="text-sm font-bold tracking-tight">
 										{t("home.tab_file")}
 									</h2>
-									<p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">
+									<p className="text-[10px] text-muted-foreground font-bold">
 										{t("home.files_selected", {
 											count: files.length,
 										})}
@@ -138,7 +138,7 @@ export const FileUploadView = ({
 								<p className="text-muted-foreground text-sm font-medium">
 									{t("home.file_drop")}
 								</p>
-								<p className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60 pt-2">
+								<p className="text-[10px] font-bold text-muted-foreground/60 pt-2">
 									{t("home.file_max_size", {
 										size: `${CONFIG.defaults.maxFileSize / (1024 * 1024)}MB`,
 									})}
