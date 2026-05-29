@@ -52,6 +52,12 @@ export const useWebRtc = ({ socket, isHost, videoElement }: UseWebRtcProps) => {
 				);
 				return null;
 			}
+			if (stream.getTracks().length === 0) {
+				console.warn(
+					"WebRTC Host: Captured stream has 0 tracks, retrying later when loaded",
+				);
+				return null;
+			}
 			localStreamRef.current = stream;
 			return stream;
 		} catch (error) {
@@ -302,6 +308,19 @@ export const useWebRtc = ({ socket, isHost, videoElement }: UseWebRtcProps) => {
 					}
 				},
 			);
+
+			// Receive notification that host stream tracks are loaded and ready
+			socket.on(
+				"webrtc-stream-ready",
+				({ senderSocketId }: { senderSocketId: string }) => {
+					console.log(
+						"WebRTC Watcher: Host stream is ready! Requesting...",
+					);
+					socket.emit("webrtc-request-stream", {
+						targetSocketId: senderSocketId,
+					});
+				},
+			);
 		}
 
 		return () => {
@@ -310,6 +329,7 @@ export const useWebRtc = ({ socket, isHost, videoElement }: UseWebRtcProps) => {
 			socket.off("webrtc-answer");
 			socket.off("webrtc-ice-candidate");
 			socket.off("room-users");
+			socket.off("webrtc-stream-ready");
 		};
 	}, [socket, isHost, videoElement, getLocalStream]);
 

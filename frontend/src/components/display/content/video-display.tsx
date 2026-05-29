@@ -480,6 +480,19 @@ export const VideoDisplay = ({
 								onCanPlay={() => setIsBuffering(false)}
 								onWaiting={() => setIsBuffering(true)}
 								onPlaying={() => setIsBuffering(false)}
+								onLoadedMetadata={() => {
+									setDuration(
+										videoRef.current?.duration || 0,
+									);
+									if (isP2pMode && isHost && socket) {
+										console.log(
+											"WebRTC Host: Stream is loaded and ready, broadcasting webrtc-stream-ready",
+										);
+										socket.emit("webrtc-stream-ready", {
+											pasteId: paste.id,
+										});
+									}
+								}}
 								onDurationChange={() =>
 									setDuration(videoRef.current?.duration || 0)
 								}

@@ -526,6 +526,12 @@ export const setupSocket = (server: HTTPServer) => {
 			},
 		);
 
+		socket.on("webrtc-stream-ready", (data: { pasteId: string }) => {
+			socket.to(data.pasteId).emit("webrtc-stream-ready", {
+				senderSocketId: socket.id,
+			});
+		});
+
 		socket.on("cursor-move", async (data) => {
 			const { pasteId, ...cursorData } = data;
 			const user = activeUsers.get(socket.id);
