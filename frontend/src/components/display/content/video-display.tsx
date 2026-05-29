@@ -116,7 +116,7 @@ export const VideoDisplay = ({
 	const { remoteStream, isConnecting: isWebRtcConnecting } = useWebRtc({
 		socket: isP2pMode ? socket : null,
 		isHost: !!(isP2pMode && isHost),
-		videoElement: isHost ? videoRef.current : null,
+		videoRef: isHost ? videoRef : undefined,
 	});
 
 	// Bind remote video stream to watcher's video element (Only in P2P mode)

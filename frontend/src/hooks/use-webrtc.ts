@@ -5,7 +5,7 @@ import { type ActiveUser } from "@/types";
 interface UseWebRtcProps {
 	socket: Socket | null | undefined;
 	isHost: boolean;
-	videoElement: HTMLVideoElement | null;
+	videoRef?: React.RefObject<HTMLVideoElement | null>;
 }
 
 const ICE_SERVERS = {
@@ -16,7 +16,7 @@ const ICE_SERVERS = {
 	],
 };
 
-export const useWebRtc = ({ socket, isHost, videoElement }: UseWebRtcProps) => {
+export const useWebRtc = ({ socket, isHost, videoRef }: UseWebRtcProps) => {
 	const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
 	const [isConnecting, setIsConnecting] = useState(false);
 
@@ -29,20 +29,21 @@ export const useWebRtc = ({ socket, isHost, videoElement }: UseWebRtcProps) => {
 
 	// Get local stream from host video element
 	const getLocalStream = useCallback((): MediaStream | null => {
-		if (!videoElement) return null;
+		const video = videoRef?.current;
+		if (!video) return null;
 		if (localStreamRef.current) return localStreamRef.current;
 
 		try {
 			let stream: MediaStream;
-			if ("captureStream" in videoElement) {
+			if ("captureStream" in video) {
 				stream = (
-					videoElement as HTMLVideoElement & {
+					video as HTMLVideoElement & {
 						captureStream: () => MediaStream;
 					}
 				).captureStream();
-			} else if ("mozCaptureStream" in videoElement) {
+			} else if ("mozCaptureStream" in video) {
 				stream = (
-					videoElement as HTMLVideoElement & {
+					video as HTMLVideoElement & {
 						mozCaptureStream: () => MediaStream;
 					}
 				).mozCaptureStream();
@@ -64,7 +65,7 @@ export const useWebRtc = ({ socket, isHost, videoElement }: UseWebRtcProps) => {
 			console.error("Error capturing local video stream:", error);
 			return null;
 		}
-	}, [videoElement]);
+	}, [videoRef]);
 
 	// Clean up a single peer connection
 	const cleanupPeer = (socketId: string) => {
@@ -331,7 +332,7 @@ export const useWebRtc = ({ socket, isHost, videoElement }: UseWebRtcProps) => {
 			socket.off("room-users");
 			socket.off("webrtc-stream-ready");
 		};
-	}, [socket, isHost, videoElement, getLocalStream]);
+	}, [socket, isHost, videoRef, getLocalStream]);
 
 	// Cleanup all on unmount
 	useEffect(() => {
