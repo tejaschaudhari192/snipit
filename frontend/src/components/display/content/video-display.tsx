@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { type Socket } from "socket.io-client";
 import { type PasteData, type ActiveUser } from "@/types";
-import { Tv, Sparkles, VolumeX } from "lucide-react";
+import { Tv, Sparkles } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { formatDuration } from "@/utils";
 import { CinemaChat } from "./cinema-chat";
@@ -15,6 +15,7 @@ import {
 	CinemaErrorOverlay,
 	CinemaP2pConnectingOverlay,
 	CinemaHostBroadcastOverlay,
+	CinemaUnmuteOverlay,
 } from "./cinema-overlays";
 
 interface VideoDisplayProps {
@@ -45,6 +46,29 @@ export const VideoDisplay = ({
 }: VideoDisplayProps) => {
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const theaterRef = useRef<HTMLDivElement>(null);
+
+	// P2P and Host Detection state
+	const location = useLocation();
+	const { user } = useAuth();
+
+	const videoSrc =
+		content ||
+		paste?.fileUrl ||
+		(paste?.files && paste.files[0]?.url) ||
+		"";
+
+	const isP2pMode = videoSrc === "p2p://local-stream";
+
+	const [localFile, setLocalFile] = useState<File | null>(
+		(location.state as { localVideoFile?: File } | null)?.localVideoFile ||
+			null,
+	);
+
+	const isHost =
+		isEdit ||
+		(paste && user && paste.owner === user._id) ||
+		localFile !== null;
+
 	const [videoUrlInput, setVideoUrlInput] = useState(content || "");
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [currentTime, setCurrentTime] = useState(0);
@@ -72,29 +96,8 @@ export const VideoDisplay = ({
 	>([]);
 	const [chatInput, setChatInput] = useState("");
 	const [videoError, setVideoError] = useState<string | null>(null);
-	const [isAutoplayBlocked, setIsAutoplayBlocked] = useState(false);
-
-	// P2P and Host Detection state
-	const location = useLocation();
-	const { user } = useAuth();
-
-	const videoSrc =
-		content ||
-		paste?.fileUrl ||
-		(paste?.files && paste.files[0]?.url) ||
-		"";
-
-	const isP2pMode = videoSrc === "p2p://local-stream";
-
-	const [localFile, setLocalFile] = useState<File | null>(
-		(location.state as { localVideoFile?: File } | null)?.localVideoFile ||
-			null,
-	);
-
-	const isHost =
-		isEdit ||
-		(paste && user && paste.owner === user._id) ||
-		localFile !== null;
+	const [isMuted, setIsMuted] = useState(!isHost);
+	const [isAutoplayBlocked, setIsAutoplayBlocked] = useState(!isHost);
 
 	const [localUrl, setLocalUrl] = useState<string>("");
 
@@ -124,31 +127,31 @@ export const VideoDisplay = ({
 	// Bind remote video stream to watcher's video element (Only in P2P mode)
 	useEffect(() => {
 		if (isP2pMode && !isHost && remoteStream && videoRef.current) {
+			console.log(
+				"Cinema: Binding remote WebRTC stream to watcher video element",
+			);
 			videoRef.current.srcObject = remoteStream;
-			videoRef.current.play().catch((err) => {
-				if (err.name === "NotAllowedError") {
-					console.warn(
-						"Watcher video auto-play failed, waiting for interaction:",
-						err,
+			videoRef.current
+				.play()
+				.then(() => {
+					console.log(
+						"Cinema: Watcher stream autoplay succeeded in muted state.",
 					);
-					setIsAutoplayBlocked(true);
-					if (videoRef.current) {
-						videoRef.current.muted = true;
-						videoRef.current.play().catch((e) => {
-							if (e.name !== "AbortError") {
-								console.error("Muted fallback play failed:", e);
-							}
-						});
+				})
+				.catch((err) => {
+					if (err.name !== "AbortError") {
+						console.error(
+							"Cinema: Watcher stream play failed:",
+							err,
+						);
 					}
-				} else if (err.name !== "AbortError") {
-					console.warn("Watcher play failed:", err);
-				}
-			});
+				});
 		} else if (
 			!isP2pMode &&
 			videoRef.current &&
 			videoRef.current.srcObject
 		) {
+			console.log("Cinema: Resetting watcher video srcObject to null");
 			videoRef.current.srcObject = null;
 		}
 	}, [isHost, remoteStream, isP2pMode]);
@@ -239,33 +242,11 @@ export const VideoDisplay = ({
 							console.log("Cinema: Programmatic play succeeded");
 						})
 						.catch((err) => {
-							if (err.name === "NotAllowedError") {
-								console.warn(
-									"Cinema: Programmatic play failed (autoplay block?):",
-									err,
-								);
-								setIsPlaying(false);
-								setIsBuffering(false);
-								setIsAutoplayBlocked(true);
-								if (videoRef.current) {
-									videoRef.current.muted = true;
-									videoRef.current.play().catch((e) => {
-										if (e.name !== "AbortError") {
-											console.error(
-												"Muted playback fallback failed:",
-												e,
-											);
-										}
-									});
-								}
-							} else if (err.name !== "AbortError") {
-								console.warn(
-									"Cinema: Programmatic play failed:",
-									err,
-								);
-								setIsPlaying(false);
-								setIsBuffering(false);
+							if (err.name !== "AbortError") {
+								console.error("Cinema: Sync play failed:", err);
 							}
+							setIsPlaying(false);
+							setIsBuffering(false);
 						});
 					setIsPlaying(true);
 				} else if (data.action === "pause") {
@@ -456,31 +437,27 @@ export const VideoDisplay = ({
 					bufferPercent={bufferPercent}
 				/>
 
-				{isAutoplayBlocked && (
-					<div
-						onClick={() => {
-							if (videoRef.current) {
-								videoRef.current.muted = false;
-								videoRef.current.play().catch(() => {});
-							}
-							setIsAutoplayBlocked(false);
-						}}
-						className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center gap-3 z-30 cursor-pointer hover:bg-black/60 transition-all duration-300"
-					>
-						<div className="w-14 h-14 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center animate-bounce shadow-lg shadow-primary/20">
-							<VolumeX className="w-7 h-7 text-primary" />
-						</div>
-						<div className="text-center space-y-1 p-4">
-							<span className="text-sm font-bold text-white tracking-wide">
-								Stream muted by browser autoplay restrictions
-							</span>
-							<p className="text-xs text-white/60">
-								Click anywhere on screen to unmute audio and
-								sync playback
-							</p>
-						</div>
-					</div>
-				)}
+				<CinemaUnmuteOverlay
+					isVisible={isAutoplayBlocked}
+					onUnmute={() => {
+						console.log(
+							"Cinema: Unmute overlay clicked. Enabling audio stream.",
+						);
+						setIsMuted(false);
+						setIsAutoplayBlocked(false);
+						if (videoRef.current) {
+							videoRef.current.muted = false;
+							videoRef.current.play().catch((err) => {
+								if (err.name !== "AbortError") {
+									console.error(
+										"Cinema: Interactive play failed:",
+										err,
+									);
+								}
+							});
+						}
+					}}
+				/>
 
 				<CinemaErrorOverlay
 					videoError={videoError}
@@ -531,6 +508,7 @@ export const VideoDisplay = ({
 								ref={videoRef}
 								autoPlay
 								playsInline
+								muted={isMuted}
 								src={finalSrc || undefined}
 								{...({
 									referrerPolicy: "no-referrer",

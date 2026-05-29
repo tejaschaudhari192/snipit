@@ -1,5 +1,36 @@
-import { RefreshCw, Tv, Loader2, AlertCircle } from "lucide-react";
+import { RefreshCw, Tv, Loader2, AlertCircle, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+interface CinemaUnmuteOverlayProps {
+	isVisible: boolean;
+	onUnmute: () => void;
+}
+
+export const CinemaUnmuteOverlay = ({
+	isVisible,
+	onUnmute,
+}: CinemaUnmuteOverlayProps) => {
+	if (!isVisible) return null;
+
+	return (
+		<div
+			onClick={onUnmute}
+			className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center gap-3 z-30 cursor-pointer hover:bg-black/60 transition-all duration-300 animate-in fade-in duration-200"
+		>
+			<div className="w-14 h-14 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center animate-bounce shadow-lg shadow-primary/20">
+				<VolumeX className="w-7 h-7 text-primary" />
+			</div>
+			<div className="text-center space-y-1 p-4 font-sans">
+				<span className="text-sm font-bold text-white tracking-wide">
+					Stream muted by browser autoplay restrictions
+				</span>
+				<p className="text-xs text-white/60">
+					Click anywhere on screen to unmute audio and sync playback
+				</p>
+			</div>
+		</div>
+	);
+};
 
 interface CinemaBufferOverlayProps {
 	isBuffering: boolean;
