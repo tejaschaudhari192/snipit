@@ -414,7 +414,10 @@ export const VideoDisplay = ({
 					bufferPercent={bufferPercent}
 				/>
 
-				<CinemaErrorOverlay videoError={videoError} />
+				<CinemaErrorOverlay
+					videoError={videoError}
+					videoSrc={videoSrc}
+				/>
 
 				<CinemaP2pConnectingOverlay
 					isConnecting={
