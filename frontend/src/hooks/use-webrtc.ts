@@ -9,13 +9,15 @@ interface UseWebRtcProps {
 	pasteId?: string;
 }
 
-const ICE_SERVERS = {
+// Fallback STUN-only configuration used until dynamic config arrives
+const FALLBACK_ICE_CONFIG: RTCConfiguration = {
 	iceServers: [
 		{ urls: "stun:stun.l.google.com:19302" },
 		{ urls: "stun:stun1.l.google.com:19302" },
-		{ urls: "stun:stun2.l.google.com:19302" },
 	],
 };
+
+const MAX_P2P_WATCHERS = 4;
 
 export const useWebRtc = ({
 	socket,
@@ -26,12 +28,35 @@ export const useWebRtc = ({
 	const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
 	const [isConnecting, setIsConnecting] = useState(false);
 
+	// Dynamic ICE configuration (includes TURN when available)
+	const iceConfigRef = useRef<RTCConfiguration>(FALLBACK_ICE_CONFIG);
+
 	// Host peers collection: Map<watcherSocketId, RTCPeerConnection>
 	const peersRef = useRef<Map<string, RTCPeerConnection>>(new Map());
 
 	// Watcher peer connection
 	const watcherPeerRef = useRef<RTCPeerConnection | null>(null);
 	const localStreamRef = useRef<MediaStream | null>(null);
+
+	// Fetch dynamic ICE/TURN configuration from backend on socket connect
+	useEffect(() => {
+		if (!socket) return;
+
+		socket.emit("get-ice-servers", (config: RTCConfiguration) => {
+			if (config && config.iceServers && config.iceServers.length > 0) {
+				console.log(
+					"WebRTC Traversal: Received dynamic ICE config with",
+					config.iceServers.length,
+					"server(s)",
+				);
+				iceConfigRef.current = config;
+			} else {
+				console.warn(
+					"WebRTC Traversal: Backend returned empty config, using STUN fallback",
+				);
+			}
+		});
+	}, [socket]);
 
 	// Get local stream from host video element
 	const getLocalStream = useCallback((): MediaStream | null => {
@@ -73,14 +98,15 @@ export const useWebRtc = ({
 		}
 	}, [videoRef]);
 
-	// Clean up a single peer connection
-	const cleanupPeer = (socketId: string) => {
+	// Safe peer cleanup: close the connection only, never stop shared tracks
+	const cleanupPeer = useCallback((socketId: string) => {
 		const pc = peersRef.current.get(socketId);
 		if (pc) {
+			console.log(`WebRTC: Closing peer connection for ${socketId}`);
 			pc.close();
 			peersRef.current.delete(socketId);
 		}
-	};
+	}, []);
 
 	useEffect(() => {
 		if (!socket) return;
@@ -95,6 +121,15 @@ export const useWebRtc = ({
 						"WebRTC Host: Received request from",
 						senderSocketId,
 					);
+
+					// Enforce max watcher cap
+					if (peersRef.current.size >= MAX_P2P_WATCHERS) {
+						console.warn(
+							`WebRTC Host: Rejecting watcher ${senderSocketId} — room is at capacity (${MAX_P2P_WATCHERS} max)`,
+						);
+						return;
+					}
+
 					const stream = getLocalStream();
 					if (!stream) {
 						console.error(
@@ -106,7 +141,7 @@ export const useWebRtc = ({
 					// Cleanup existing connection to this peer if it exists
 					cleanupPeer(senderSocketId);
 
-					const pc = new RTCPeerConnection(ICE_SERVERS);
+					const pc = new RTCPeerConnection(iceConfigRef.current);
 					peersRef.current.set(senderSocketId, pc);
 
 					// Add local tracks to peer connection
@@ -196,6 +231,17 @@ export const useWebRtc = ({
 					}
 				},
 			);
+
+			// Clean up peer when a watcher disconnects
+			socket.on(
+				"user-disconnected",
+				({ socketId }: { socketId: string }) => {
+					console.log(
+						`WebRTC Host: Watcher ${socketId} disconnected, cleaning up`,
+					);
+					cleanupPeer(socketId);
+				},
+			);
 		}
 
 		// --- WATCHER LOGIC ---
@@ -204,7 +250,6 @@ export const useWebRtc = ({
 
 			// Request the stream from the host/peers in the room when room-users update
 			socket.on("room-users", (users: ActiveUser[]) => {
-				// Find host (we assume the initiator is the one whose ID or status fits)
 				// Or simply broadcast the request to everyone in the room (the host will respond)
 				console.log(
 					"WebRTC Watcher: Requesting stream from room peers",
@@ -236,7 +281,7 @@ export const useWebRtc = ({
 						watcherPeerRef.current.close();
 					}
 
-					const pc = new RTCPeerConnection(ICE_SERVERS);
+					const pc = new RTCPeerConnection(iceConfigRef.current);
 					watcherPeerRef.current = pc;
 
 					// Track event: host is sending us tracks!
@@ -251,11 +296,40 @@ export const useWebRtc = ({
 						}
 					};
 
+					// ICE restart on disconnection/failure
 					pc.oniceconnectionstatechange = () => {
-						if (
-							pc.iceConnectionState === "disconnected" ||
-							pc.iceConnectionState === "failed"
-						) {
+						const state = pc.iceConnectionState;
+						console.log(
+							`WebRTC Watcher: ICE connection state: ${state}`,
+						);
+
+						if (state === "disconnected") {
+							// Brief network hiccup — wait briefly for auto-recovery
+							console.warn(
+								"WebRTC Watcher: ICE disconnected, waiting for recovery...",
+							);
+						} else if (state === "failed") {
+							// Permanent failure — trigger ICE restart
+							console.error(
+								"WebRTC Watcher: ICE failed. Triggering ICE restart...",
+							);
+							pc.createOffer({ iceRestart: true })
+								.then((restartOffer) =>
+									pc.setLocalDescription(restartOffer),
+								)
+								.then(() => {
+									socket.emit("webrtc-offer", {
+										targetSocketId: senderSocketId,
+										offer: pc.localDescription,
+									});
+								})
+								.catch((err) =>
+									console.error(
+										"WebRTC Watcher: ICE restart failed:",
+										err,
+									),
+								);
+						} else if (state === "closed") {
 							setIsConnecting(true);
 							setRemoteStream(null);
 						}
@@ -328,6 +402,20 @@ export const useWebRtc = ({
 					});
 				},
 			);
+
+			// Host disconnected — show recovery state
+			socket.on(
+				"user-disconnected",
+				({ socketId }: { socketId: string }) => {
+					// If the disconnected user was our host peer, clean up
+					if (watcherPeerRef.current) {
+						console.warn(
+							`WebRTC Watcher: Peer ${socketId} disconnected`,
+						);
+						// The room-users event will re-trigger stream request if needed
+					}
+				},
+			);
 		}
 
 		return () => {
@@ -337,11 +425,11 @@ export const useWebRtc = ({
 			socket.off("webrtc-ice-candidate");
 			socket.off("room-users");
 			socket.off("webrtc-stream-ready");
-			socket.off("room-users");
+			socket.off("user-disconnected");
 		};
-	}, [socket, isHost, videoRef, pasteId, getLocalStream]);
+	}, [socket, isHost, videoRef, pasteId, getLocalStream, cleanupPeer]);
 
-	// Cleanup all on unmount
+	// Cleanup all on unmount — only stop underlying tracks here
 	useEffect(() => {
 		const currentPeers = peersRef.current;
 		const currentWatcher = watcherPeerRef.current;
@@ -353,6 +441,7 @@ export const useWebRtc = ({
 			}
 			currentPeers.forEach((pc) => pc.close());
 			currentPeers.clear();
+			// Only stop the underlying captured tracks on full unmount
 			if (currentLocalStream) {
 				currentLocalStream.getTracks().forEach((track) => track.stop());
 			}

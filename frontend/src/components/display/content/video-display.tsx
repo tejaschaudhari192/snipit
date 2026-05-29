@@ -235,7 +235,13 @@ export const VideoDisplay = ({
 
 				if (data.action === "play") {
 					console.log(`Cinema: Sync play to ${data.timestamp}`);
-					videoRef.current.currentTime = data.timestamp;
+					// Only seek if drift exceeds threshold to prevent micro-stutter
+					const drift = Math.abs(
+						videoRef.current.currentTime - data.timestamp,
+					);
+					if (drift > 1.5) {
+						videoRef.current.currentTime = data.timestamp;
+					}
 					videoRef.current
 						.play()
 						.then(() => {

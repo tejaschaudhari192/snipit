@@ -30,6 +30,39 @@ const sharedMusicState = new Map<string, SharedMusicState>();
 
 const sharedVideoState = new Map<string, SharedVideoState>();
 
+// WebRTC TURN Server Configuration
+const TURN_SECRET = process.env.COTURN_SHARED_SECRET || "";
+const TURN_URLS = process.env.TURN_URLS ? process.env.TURN_URLS.split(",") : [];
+const MAX_P2P_WATCHERS = 4;
+
+function generateIceConfig(socketId: string) {
+	const iceServers: Array<{
+		urls: string | string[];
+		username?: string;
+		credential?: string;
+	}> = [
+		{ urls: "stun:stun.l.google.com:19302" },
+		{ urls: "stun:stun1.l.google.com:19302" },
+	];
+
+	// Only add TURN servers if both secret and URLs are configured
+	if (TURN_SECRET && TURN_URLS.length > 0) {
+		const expiry = Math.floor(Date.now() / 1000) + 24 * 3600; // 24-hour TTL
+		const username = `${expiry}:${socketId}`;
+		const hmac = crypto.createHmac("sha1", TURN_SECRET);
+		hmac.update(username);
+		const credential = hmac.digest("base64");
+
+		iceServers.push({
+			urls: TURN_URLS,
+			username,
+			credential,
+		});
+	}
+
+	return { iceServers };
+}
+
 // Helpers
 const getSocketUserId = (socket: Socket): string | null => {
 	const req = socket.request;
@@ -543,6 +576,19 @@ export const setupSocket = (server: HTTPServer) => {
 			});
 		});
 
+		// Dynamic TURN credential provisioning
+		socket.on("get-ice-servers", (callback: (servers: any) => void) => {
+			try {
+				const config = generateIceConfig(socket.id);
+				callback(config);
+			} catch (error) {
+				console.error("WebRTC: Failed to generate ICE config", error);
+				callback({
+					iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+				});
+			}
+		});
+
 		socket.on("cursor-move", async (data) => {
 			const { pasteId, ...cursorData } = data;
 			const user = activeUsers.get(socket.id);
@@ -853,6 +899,12 @@ export const setupSocket = (server: HTTPServer) => {
 				const roomUsers = Array.from(activeUsers.values()).filter(
 					(u) => u.pasteId === pasteId,
 				);
+
+				// Notify remaining room peers for WebRTC cleanup
+				socket.to(pasteId).emit("user-disconnected", {
+					socketId: socket.id,
+				});
+
 				if (roomUsers.length === 0) {
 					sharedVideoState.delete(pasteId);
 				}
