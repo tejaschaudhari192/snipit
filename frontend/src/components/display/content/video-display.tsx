@@ -117,6 +117,7 @@ export const VideoDisplay = ({
 		socket: isP2pMode ? socket : null,
 		isHost: !!(isP2pMode && isHost),
 		videoRef: isHost ? videoRef : undefined,
+		pasteId: paste.id,
 	});
 
 	// Bind remote video stream to watcher's video element (Only in P2P mode)

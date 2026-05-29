@@ -6,6 +6,7 @@ interface UseWebRtcProps {
 	socket: Socket | null | undefined;
 	isHost: boolean;
 	videoRef?: React.RefObject<HTMLVideoElement | null>;
+	pasteId?: string;
 }
 
 const ICE_SERVERS = {
@@ -16,7 +17,12 @@ const ICE_SERVERS = {
 	],
 };
 
-export const useWebRtc = ({ socket, isHost, videoRef }: UseWebRtcProps) => {
+export const useWebRtc = ({
+	socket,
+	isHost,
+	videoRef,
+	pasteId,
+}: UseWebRtcProps) => {
 	const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
 	const [isConnecting, setIsConnecting] = useState(false);
 
@@ -331,8 +337,9 @@ export const useWebRtc = ({ socket, isHost, videoRef }: UseWebRtcProps) => {
 			socket.off("webrtc-ice-candidate");
 			socket.off("room-users");
 			socket.off("webrtc-stream-ready");
+			socket.off("room-users");
 		};
-	}, [socket, isHost, videoRef, getLocalStream]);
+	}, [socket, isHost, videoRef, pasteId, getLocalStream]);
 
 	// Cleanup all on unmount
 	useEffect(() => {
