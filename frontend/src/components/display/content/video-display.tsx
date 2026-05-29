@@ -464,7 +464,7 @@ export const VideoDisplay = ({
 								? localUrl
 								: ""
 							: videoSrc;
-						return finalSrc || (!isHost && remoteStream) ? (
+						return finalSrc || !isHost ? (
 							<video
 								ref={videoRef}
 								autoPlay
