@@ -5,15 +5,7 @@ import { useTranslation } from "react-i18next";
 import type { FileAttachment } from "@/types";
 import { FileTypeIcon } from "@/components/common/file-type-icon";
 import FilePreview from "@/components/common/file-preview";
-import { cn } from "@/utils";
-
-const formatFileSize = (bytes: number) => {
-	if (bytes === 0) return "0 Bytes";
-	const k = 1024;
-	const sizes = ["Bytes", "KB", "MB", "GB"];
-	const i = Math.floor(Math.log(bytes) / Math.log(k));
-	return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-};
+import { cn, formatFileSize } from "@/utils";
 
 export const FileDisplayCard = ({ file }: { file: FileAttachment }) => {
 	const { t } = useTranslation();
