@@ -126,18 +126,22 @@ export const VideoDisplay = ({
 		if (isP2pMode && !isHost && remoteStream && videoRef.current) {
 			videoRef.current.srcObject = remoteStream;
 			videoRef.current.play().catch((err) => {
-				console.warn(
-					"Watcher video auto-play failed, waiting for interaction:",
-					err,
-				);
-				setIsAutoplayBlocked(true);
-				if (videoRef.current) {
-					videoRef.current.muted = true;
-					videoRef.current
-						.play()
-						.catch((e) =>
-							console.error("Muted fallback play failed:", e),
-						);
+				if (err.name === "NotAllowedError") {
+					console.warn(
+						"Watcher video auto-play failed, waiting for interaction:",
+						err,
+					);
+					setIsAutoplayBlocked(true);
+					if (videoRef.current) {
+						videoRef.current.muted = true;
+						videoRef.current.play().catch((e) => {
+							if (e.name !== "AbortError") {
+								console.error("Muted fallback play failed:", e);
+							}
+						});
+					}
+				} else if (err.name !== "AbortError") {
+					console.warn("Watcher play failed:", err);
 				}
 			});
 		} else if (
@@ -235,23 +239,32 @@ export const VideoDisplay = ({
 							console.log("Cinema: Programmatic play succeeded");
 						})
 						.catch((err) => {
-							console.warn(
-								"Cinema: Programmatic play failed (autoplay block?):",
-								err,
-							);
-							setIsPlaying(false);
-							setIsBuffering(false);
-							setIsAutoplayBlocked(true);
-							if (videoRef.current) {
-								videoRef.current.muted = true;
-								videoRef.current
-									.play()
-									.catch((e) =>
-										console.error(
-											"Muted playback fallback failed:",
-											e,
-										),
-									);
+							if (err.name === "NotAllowedError") {
+								console.warn(
+									"Cinema: Programmatic play failed (autoplay block?):",
+									err,
+								);
+								setIsPlaying(false);
+								setIsBuffering(false);
+								setIsAutoplayBlocked(true);
+								if (videoRef.current) {
+									videoRef.current.muted = true;
+									videoRef.current.play().catch((e) => {
+										if (e.name !== "AbortError") {
+											console.error(
+												"Muted playback fallback failed:",
+												e,
+											);
+										}
+									});
+								}
+							} else if (err.name !== "AbortError") {
+								console.warn(
+									"Cinema: Programmatic play failed:",
+									err,
+								);
+								setIsPlaying(false);
+								setIsBuffering(false);
 							}
 						});
 					setIsPlaying(true);
