@@ -1,27 +1,4 @@
 import cryptoRandomString from "crypto-random-string";
-import os from "os";
-
-export const getLocalIpAddresses = (): string[] => {
-	const ips: string[] = [];
-	const interfaces = os.networkInterfaces();
-	for (const name of Object.keys(interfaces)) {
-		const ifaces = interfaces[name];
-		if (ifaces) {
-			for (const iface of ifaces) {
-				if (iface.family === "IPv4" && !iface.internal) {
-					ips.push(iface.address);
-				}
-			}
-		}
-	}
-	return ips;
-};
-
-export const getFirstNetworkIp = (): string | null => {
-	const ips = getLocalIpAddresses();
-	return ips[0] ?? null;
-};
-
 export function uniqueIdGenerator(): string {
 	return cryptoRandomString({ length: 5 });
 }

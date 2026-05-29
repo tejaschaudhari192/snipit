@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import { z } from "zod";
-import { getLocalIpAddresses } from "@/lib/utils.js";
 
 dotenv.config();
 
@@ -37,9 +36,6 @@ if (!parsedEnv.success) {
 }
 
 const env = parsedEnv.data;
-
-const localIps = getLocalIpAddresses();
-const networkOrigins = localIps.map((ip) => `http://${ip}:5173`);
 
 const configurations = {
 	port: parseInt(env.PORT, 10),
