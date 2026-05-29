@@ -143,6 +143,7 @@ export const setupSocket = (server: HTTPServer) => {
 					socket.emit("video-sync-state", {
 						action: vState.isPlaying ? "play" : "pause",
 						timestamp: currentPos,
+						duration: (vState as any).duration,
 					});
 				}
 
@@ -417,6 +418,7 @@ export const setupSocket = (server: HTTPServer) => {
 				pasteId: string;
 				action: "play" | "pause" | "seek";
 				timestamp: number;
+				duration?: number;
 			}) => {
 				const user = activeUsers.get(socket.id);
 				if (!user || user.pasteId !== data.pasteId) return;
@@ -426,11 +428,13 @@ export const setupSocket = (server: HTTPServer) => {
 					isPlaying,
 					currentTime: data.timestamp,
 					lastSyncedAt: Date.now(),
-				});
+					duration: data.duration,
+				} as any);
 
 				socket.to(data.pasteId).emit("video-sync-state", {
 					action: data.action,
 					timestamp: data.timestamp,
+					duration: data.duration,
 				});
 			},
 		);
@@ -464,7 +468,11 @@ export const setupSocket = (server: HTTPServer) => {
 
 		socket.on(
 			"video-timeline-ping",
-			async (data: { pasteId: string; timestamp: number }) => {
+			async (data: {
+				pasteId: string;
+				timestamp: number;
+				duration?: number;
+			}) => {
 				const user = activeUsers.get(socket.id);
 				if (!user || user.pasteId !== data.pasteId) return;
 
@@ -472,17 +480,20 @@ export const setupSocket = (server: HTTPServer) => {
 				if (vState) {
 					vState.currentTime = data.timestamp;
 					vState.lastSyncedAt = Date.now();
+					if (data.duration) (vState as any).duration = data.duration;
 				} else {
 					sharedVideoState.set(data.pasteId, {
 						isPlaying: true,
 						currentTime: data.timestamp,
 						lastSyncedAt: Date.now(),
-					});
+						duration: data.duration,
+					} as any);
 				}
 
 				socket.to(data.pasteId).emit("video-timeline-update", {
 					socketId: socket.id,
 					timestamp: data.timestamp,
+					duration: data.duration,
 				});
 			},
 		);

@@ -94,7 +94,7 @@ export const ContentTypeSelector = memo(
 					)}
 					<TabsTrigger
 						value="video"
-						className="flex-1 flex items-center justify-center gap-2 px-2 sm:px-3 text-sm font-semibold"
+						className="flex-1 flex items-center justify-center gap-2 px-2 sm:px-3 text-sm font-semibold relative overflow-visible"
 					>
 						<Film className="h-4 w-4 shrink-0" />
 						<span className="hidden min-[440px]:inline whitespace-nowrap">
@@ -102,6 +102,9 @@ export const ContentTypeSelector = memo(
 						</span>
 						<span className="inline min-[440px]:hidden whitespace-nowrap">
 							Cinema
+						</span>
+						<span className="absolute -top-1.5 -right-1 px-1 py-0.25 text-[8px] font-bold text-white bg-primary rounded-full uppercase scale-90 tracking-wider shadow-sm select-none">
+							Beta
 						</span>
 					</TabsTrigger>
 				</TabsList>
