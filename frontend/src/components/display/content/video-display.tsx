@@ -112,19 +112,25 @@ export const VideoDisplay = ({
 
 	const socket = socketRef?.current;
 
-	// WebRTC Setup
+	// WebRTC Setup (Only active in P2P mode to prevent overlaying CDN streams)
 	const { remoteStream, isConnecting: isWebRtcConnecting } = useWebRtc({
-		socket,
-		isHost: !!isHost,
+		socket: isP2pMode ? socket : null,
+		isHost: !!(isP2pMode && isHost),
 		videoElement: isHost ? videoRef.current : null,
 	});
 
-	// Bind remote video stream to watcher's video element
+	// Bind remote video stream to watcher's video element (Only in P2P mode)
 	useEffect(() => {
-		if (!isHost && remoteStream && videoRef.current) {
+		if (isP2pMode && !isHost && remoteStream && videoRef.current) {
 			videoRef.current.srcObject = remoteStream;
+		} else if (
+			!isP2pMode &&
+			videoRef.current &&
+			videoRef.current.srcObject
+		) {
+			videoRef.current.srcObject = null;
 		}
-	}, [isHost, remoteStream]);
+	}, [isHost, remoteStream, isP2pMode]);
 
 	const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
 		if (!theaterRef.current) return;

@@ -1,10 +1,12 @@
+import { CONFIG } from "@/configurations";
+
 /**
  * Video streamability validation and buffer percentage calculation utilities.
  */
 
 /**
  * Validates whether a given URL is a streamable media link.
- * Performs format validation and attempts a lightweight fetch when possible.
+ * Performs a robust backend check to completely bypass client-side CORS restrictions.
  */
 export const checkStreamableLink = async (
 	url: string,
@@ -24,50 +26,31 @@ export const checkStreamableLink = async (
 		return { ok: false, error: "Protocol must be HTTP or HTTPS" };
 	}
 
-	// Attempt a lightweight fetch check (handling CORS gracefully)
 	try {
-		const controller = new AbortController();
-		const timeoutId = setTimeout(() => controller.abort(), 3000);
-
-		const response = await fetch(url, {
-			method: "HEAD",
-			signal: controller.signal,
-		}).catch(() => {
-			return fetch(url, {
-				method: "GET",
-				headers: { Range: "bytes=0-0" },
-				signal: controller.signal,
-			});
-		});
-
-		clearTimeout(timeoutId);
+		const response = await fetch(
+			CONFIG.apiBaseUrl + "/pastes/validate-stream",
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ url }),
+			},
+		);
 
 		if (response.ok) {
-			const contentType = response.headers.get("content-type");
-			if (contentType) {
-				const isMedia =
-					contentType.startsWith("video/") ||
-					contentType.includes("application/x-mpegurl") ||
-					contentType.includes("application/dash+xml") ||
-					contentType.startsWith("audio/") ||
-					contentType.includes("octet-stream");
-
-				if (!isMedia && contentType.includes("text/html")) {
-					return {
-						ok: false,
-						error: "URL points to a web page (text/html) instead of a direct media stream",
-					};
-				}
-			}
+			const data = await response.json();
+			return { ok: data.ok, error: data.error };
 		}
+
+		return {
+			ok: false,
+			error: "Validation service returned an error status.",
+		};
 	} catch {
-		// Fetch failed (likely due to CORS or timeout).
-		// Browsers' native <video> elements can bypass CORS blocks when playing media.
-		// As such, we soft-pass valid HTTP/HTTPS URLs even if client-side JS fetches fail.
+		// Fallback to soft-pass if validation API fails
 		return { ok: true };
 	}
-
-	return { ok: true };
 };
 
 /**
