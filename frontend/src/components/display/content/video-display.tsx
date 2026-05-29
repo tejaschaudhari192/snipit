@@ -123,6 +123,12 @@ export const VideoDisplay = ({
 	useEffect(() => {
 		if (isP2pMode && !isHost && remoteStream && videoRef.current) {
 			videoRef.current.srcObject = remoteStream;
+			videoRef.current.play().catch((err) => {
+				console.warn(
+					"Watcher video auto-play failed, waiting for interaction:",
+					err,
+				);
+			});
 		} else if (
 			!isP2pMode &&
 			videoRef.current &&
@@ -461,6 +467,8 @@ export const VideoDisplay = ({
 						return finalSrc || (!isHost && remoteStream) ? (
 							<video
 								ref={videoRef}
+								autoPlay
+								playsInline
 								src={finalSrc || undefined}
 								{...({
 									referrerPolicy: "no-referrer",
