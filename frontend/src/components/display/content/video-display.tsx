@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { type Socket } from "socket.io-client";
 import { type PasteData, type ActiveUser } from "@/types";
-import { Tv, Sparkles } from "lucide-react";
+import { Tv, Sparkles, VolumeX } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { formatDuration } from "@/utils";
 import { CinemaChat } from "./cinema-chat";
@@ -72,6 +72,7 @@ export const VideoDisplay = ({
 	>([]);
 	const [chatInput, setChatInput] = useState("");
 	const [videoError, setVideoError] = useState<string | null>(null);
+	const [isAutoplayBlocked, setIsAutoplayBlocked] = useState(false);
 
 	// P2P and Host Detection state
 	const location = useLocation();
@@ -129,6 +130,15 @@ export const VideoDisplay = ({
 					"Watcher video auto-play failed, waiting for interaction:",
 					err,
 				);
+				setIsAutoplayBlocked(true);
+				if (videoRef.current) {
+					videoRef.current.muted = true;
+					videoRef.current
+						.play()
+						.catch((e) =>
+							console.error("Muted fallback play failed:", e),
+						);
+				}
 			});
 		} else if (
 			!isP2pMode &&
@@ -231,6 +241,18 @@ export const VideoDisplay = ({
 							);
 							setIsPlaying(false);
 							setIsBuffering(false);
+							setIsAutoplayBlocked(true);
+							if (videoRef.current) {
+								videoRef.current.muted = true;
+								videoRef.current
+									.play()
+									.catch((e) =>
+										console.error(
+											"Muted playback fallback failed:",
+											e,
+										),
+									);
+							}
 						});
 					setIsPlaying(true);
 				} else if (data.action === "pause") {
@@ -420,6 +442,32 @@ export const VideoDisplay = ({
 					isBuffering={isBuffering}
 					bufferPercent={bufferPercent}
 				/>
+
+				{isAutoplayBlocked && (
+					<div
+						onClick={() => {
+							if (videoRef.current) {
+								videoRef.current.muted = false;
+								videoRef.current.play().catch(() => {});
+							}
+							setIsAutoplayBlocked(false);
+						}}
+						className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center gap-3 z-30 cursor-pointer hover:bg-black/60 transition-all duration-300"
+					>
+						<div className="w-14 h-14 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center animate-bounce shadow-lg shadow-primary/20">
+							<VolumeX className="w-7 h-7 text-primary" />
+						</div>
+						<div className="text-center space-y-1 p-4">
+							<span className="text-sm font-bold text-white tracking-wide">
+								Stream muted by browser autoplay restrictions
+							</span>
+							<p className="text-xs text-white/60">
+								Click anywhere on screen to unmute audio and
+								sync playback
+							</p>
+						</div>
+					</div>
+				)}
 
 				<CinemaErrorOverlay
 					videoError={videoError}
