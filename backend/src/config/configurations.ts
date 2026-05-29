@@ -67,6 +67,7 @@ const configurations = {
 			"https://cpaste.vercel.app",
 			"https://snipit-nu.vercel.app",
 			"http://localhost:5173",
+			"https://snipit-git-55-watch-media-sy-8f336e-tejaschaudhari192s-projects.vercel.app",
 			...networkOrigins,
 		],
 	},
