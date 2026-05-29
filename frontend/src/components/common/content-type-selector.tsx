@@ -1,5 +1,5 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, Code2, Link, FileUp, Paintbrush } from "lucide-react";
+import { FileText, Code2, Link, FileUp, Paintbrush, Film } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/utils";
 import type { ContentMode } from "@/types";
@@ -92,6 +92,18 @@ export const ContentTypeSelector = memo(
 							</span>
 						</TabsTrigger>
 					)}
+					<TabsTrigger
+						value="video"
+						className="flex-1 flex items-center justify-center gap-2 px-2 sm:px-3 text-sm font-semibold"
+					>
+						<Film className="h-4 w-4 shrink-0" />
+						<span className="hidden min-[440px]:inline whitespace-nowrap">
+							Cinema
+						</span>
+						<span className="inline min-[440px]:hidden whitespace-nowrap">
+							Cinema
+						</span>
+					</TabsTrigger>
 				</TabsList>
 			</Tabs>
 		);

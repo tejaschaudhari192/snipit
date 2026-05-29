@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import { z } from "zod";
+import { getLocalIpAddresses } from "@/lib/utils.js";
 
 dotenv.config();
 
@@ -37,6 +38,9 @@ if (!parsedEnv.success) {
 
 const env = parsedEnv.data;
 
+const localIps = getLocalIpAddresses();
+const networkOrigins = localIps.map((ip) => `http://${ip}:5173`);
+
 const configurations = {
 	port: parseInt(env.PORT, 10),
 	domain: env.DOMAIN,
@@ -59,7 +63,12 @@ const configurations = {
 		maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
 	},
 	cors: {
-		origins: ["https://cpaste.vercel.app", "https://snipit-nu.vercel.app"],
+		origins: [
+			"https://cpaste.vercel.app",
+			"https://snipit-nu.vercel.app",
+			"http://localhost:5173",
+			...networkOrigins,
+		],
 	},
 	job_secret: env.JOB_SECRET,
 	supabase_url: env.SUPABASE_URL,

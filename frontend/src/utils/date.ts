@@ -178,3 +178,13 @@ export function dateConverter(expiresTime: string): Date | null {
 
 	return expiresAt;
 }
+
+/**
+ * Formats a duration in seconds into a string (h:mm:ss or m:ss)
+ */
+export function formatDuration(seconds: number): string {
+	const h = Math.floor(seconds / 3600);
+	const m = Math.floor((seconds % 3600) / 60);
+	const s = Math.floor(seconds % 60);
+	return `${h > 0 ? `${h}:` : ""}${h > 0 && m < 10 ? "0" : ""}${m}:${s < 10 ? "0" : ""}${s}`;
+}

@@ -6,7 +6,11 @@ import {
 	ANIMALS,
 	COLLABORATOR_COLORS,
 } from "@/config/constants.js";
-import type { ActiveUser, SharedMusicState } from "@/types/index.js";
+import type {
+	ActiveUser,
+	SharedMusicState,
+	SharedVideoState,
+} from "@/types/index.js";
 import PasteService from "@/services/paste.service.js";
 import PermissionService from "@/services/permission.service.js";
 import {
@@ -23,6 +27,8 @@ const permissionService = new PermissionService();
 const activeUsers = new Map<string, ActiveUser & { pasteId: string }>();
 const roomContent = new Map<string, string>();
 const sharedMusicState = new Map<string, SharedMusicState>();
+
+const sharedVideoState = new Map<string, SharedVideoState>();
 
 // Helpers
 const getSocketUserId = (socket: Socket): string | null => {
@@ -123,6 +129,21 @@ export const setupSocket = (server: HTTPServer) => {
 				const mState = sharedMusicState.get(pasteId);
 				if (mState) {
 					socket.emit("music:share-state", mState);
+				}
+
+				// Send shared video state to new joiner if active
+				const vState = sharedVideoState.get(pasteId);
+				if (vState) {
+					let currentPos = vState.currentTime;
+					if (vState.isPlaying) {
+						const elapsed =
+							(Date.now() - vState.lastSyncedAt) / 1000;
+						currentPos += elapsed;
+					}
+					socket.emit("video-sync-state", {
+						action: vState.isPlaying ? "play" : "pause",
+						timestamp: currentPos,
+					});
 				}
 
 				broadcastRoomUsers(pasteId);
@@ -349,6 +370,13 @@ export const setupSocket = (server: HTTPServer) => {
 						enabled: false,
 					});
 				}
+
+				const roomUsers = Array.from(activeUsers.values()).filter(
+					(u) => u.pasteId === pasteId,
+				);
+				if (roomUsers.length === 0) {
+					sharedVideoState.delete(pasteId);
+				}
 			}
 		});
 
@@ -382,6 +410,121 @@ export const setupSocket = (server: HTTPServer) => {
 					.emit("draw-update", { ...data, socketId: socket.id });
 			}
 		});
+
+		socket.on(
+			"video-sync-action",
+			async (data: {
+				pasteId: string;
+				action: "play" | "pause" | "seek";
+				timestamp: number;
+			}) => {
+				const user = activeUsers.get(socket.id);
+				if (!user || user.pasteId !== data.pasteId) return;
+
+				const isPlaying = data.action === "play";
+				sharedVideoState.set(data.pasteId, {
+					isPlaying,
+					currentTime: data.timestamp,
+					lastSyncedAt: Date.now(),
+				});
+
+				socket.to(data.pasteId).emit("video-sync-state", {
+					action: data.action,
+					timestamp: data.timestamp,
+				});
+			},
+		);
+
+		socket.on(
+			"video-reaction-send",
+			async (data: { pasteId: string; emoji: string }) => {
+				const user = activeUsers.get(socket.id);
+				if (!user || user.pasteId !== data.pasteId) return;
+
+				io.to(data.pasteId).emit("video-reaction-received", {
+					emoji: data.emoji,
+					name: user.name,
+				});
+			},
+		);
+
+		socket.on(
+			"video-chat-message",
+			async (data: { pasteId: string; text: string }) => {
+				const user = activeUsers.get(socket.id);
+				if (!user || user.pasteId !== data.pasteId) return;
+
+				io.to(data.pasteId).emit("video-chat-message-received", {
+					text: data.text,
+					sender: user.name,
+					color: user.color,
+				});
+			},
+		);
+
+		socket.on(
+			"video-timeline-ping",
+			async (data: { pasteId: string; timestamp: number }) => {
+				const user = activeUsers.get(socket.id);
+				if (!user || user.pasteId !== data.pasteId) return;
+
+				const vState = sharedVideoState.get(data.pasteId);
+				if (vState) {
+					vState.currentTime = data.timestamp;
+					vState.lastSyncedAt = Date.now();
+				} else {
+					sharedVideoState.set(data.pasteId, {
+						isPlaying: true,
+						currentTime: data.timestamp,
+						lastSyncedAt: Date.now(),
+					});
+				}
+
+				socket.to(data.pasteId).emit("video-timeline-update", {
+					socketId: socket.id,
+					timestamp: data.timestamp,
+				});
+			},
+		);
+
+		socket.on(
+			"webrtc-offer",
+			(data: { targetSocketId: string; offer: any }) => {
+				socket.to(data.targetSocketId).emit("webrtc-offer", {
+					senderSocketId: socket.id,
+					offer: data.offer,
+				});
+			},
+		);
+
+		socket.on(
+			"webrtc-answer",
+			(data: { targetSocketId: string; answer: any }) => {
+				socket.to(data.targetSocketId).emit("webrtc-answer", {
+					senderSocketId: socket.id,
+					answer: data.answer,
+				});
+			},
+		);
+
+		socket.on(
+			"webrtc-ice-candidate",
+			(data: { targetSocketId: string; candidate: any }) => {
+				socket.to(data.targetSocketId).emit("webrtc-ice-candidate", {
+					senderSocketId: socket.id,
+					candidate: data.candidate,
+				});
+			},
+		);
+
+		socket.on(
+			"webrtc-request-stream",
+			(data: { targetSocketId: string }) => {
+				socket.to(data.targetSocketId).emit("webrtc-request-stream", {
+					senderSocketId: socket.id,
+				});
+			},
+		);
 
 		socket.on("cursor-move", async (data) => {
 			const { pasteId, ...cursorData } = data;
@@ -688,6 +831,13 @@ export const setupSocket = (server: HTTPServer) => {
 					io.to(pasteId).emit("music:share-state", {
 						enabled: false,
 					});
+				}
+
+				const roomUsers = Array.from(activeUsers.values()).filter(
+					(u) => u.pasteId === pasteId,
+				);
+				if (roomUsers.length === 0) {
+					sharedVideoState.delete(pasteId);
 				}
 			} else {
 				activeUsers.delete(socket.id);

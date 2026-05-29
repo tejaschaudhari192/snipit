@@ -16,6 +16,7 @@ import type { Socket } from "socket.io-client";
 import type { ActiveUser } from "@/types";
 import { CollabDraw } from "@/components/display/collab-draw";
 import { FileEditView } from "@/components/display/content/file-edit-view";
+import { VideoDisplay } from "@/components/display/content/video-display";
 import type { FileUploadStatus } from "@/lib/file-service";
 
 interface DisplayContentProps {
@@ -139,6 +140,20 @@ export const DisplayContent = memo(
 		};
 
 		const renderContent = () => {
+			if (contentType === "video") {
+				return (
+					<VideoDisplay
+						paste={paste}
+						contentRef={contentRef}
+						socketRef={socketRef}
+						activeUsers={activeUsers}
+						isEdit={isEdit}
+						content={content}
+						onContentChange={onContentChange}
+					/>
+				);
+			}
+
 			if (contentType === "file") {
 				if (isEdit) {
 					return (

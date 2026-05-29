@@ -1,9 +1,13 @@
+import dns from "node:dns";
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
 import http from "http";
 import app from "./app.js";
 import { setupSocket } from "./socket.js";
 import { connectDB } from "@/config/db.js";
 import configurations from "@/config/configurations.js";
 import logger from "@/config/logger.js";
+import { getFirstNetworkIp } from "@/lib/utils.js";
 
 const port = configurations.port;
 const server = http.createServer(app);
@@ -13,7 +17,12 @@ setupSocket(server);
 
 // Start server immediately
 server.listen(port, () => {
-	logger.info(`🚀 Server listening on ${port}`);
+	const networkIp = getFirstNetworkIp();
+	logger.info(`🚀 Server is running!`);
+	logger.info(`   - Local:    http://localhost:${port}`);
+	if (networkIp) {
+		logger.info(`   - Network:  http://${networkIp}:${port}`);
+	}
 	logger.info(`🌍 Environment: ${process.env.NODE_ENV}`);
 });
 
