@@ -159,12 +159,11 @@ export const VideoDisplay = ({
 						);
 					}
 				});
-		} else if (
-			!isP2pMode &&
-			videoRef.current &&
-			videoRef.current.srcObject
-		) {
-			console.log("Cinema: Resetting watcher video srcObject to null");
+		} else if (videoRef.current && videoRef.current.srcObject) {
+			console.log(
+				"Cinema: Resetting watcher video srcObject and pausing player",
+			);
+			videoRef.current.pause();
 			videoRef.current.srcObject = null;
 		}
 	}, [isHost, remoteStream, isP2pMode]);

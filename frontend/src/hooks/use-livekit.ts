@@ -193,9 +193,15 @@ export const useLiveKit = ({
 						if (!currentStream) {
 							currentStream = new MediaStream();
 						} else {
-							currentStream = new MediaStream(
-								currentStream.getTracks(),
-							);
+							// Filter out any ended or dead tracks during the cloning process
+							const activeTracks = currentStream
+								.getTracks()
+								.filter(
+									(t) =>
+										t.readyState !== "ended" &&
+										t.id !== track.mediaStreamTrack.id,
+								);
+							currentStream = new MediaStream(activeTracks);
 						}
 						currentStream.addTrack(track.mediaStreamTrack);
 						return currentStream;
@@ -207,12 +213,31 @@ export const useLiveKit = ({
 				});
 
 				activeRoom.on(RoomEvent.TrackUnsubscribed, (track) => {
-					if (track.kind === Track.Kind.Video) {
-						console.log(
-							"LiveKit Viewer: Unsubscribed from video track",
-						);
-						setRemoteVideoStream(null);
-					}
+					console.log(
+						`LiveKit Viewer: Unsubscribed from track of kind ${track.kind}`,
+					);
+					setRemoteVideoStream((prevStream) => {
+						if (!prevStream) return null;
+
+						// Create a new stream omitting the specific unsubscribed track
+						const activeTracks = prevStream
+							.getTracks()
+							.filter(
+								(t) =>
+									t.id !== track.mediaStreamTrack.id &&
+									t.readyState !== "ended",
+							);
+
+						// If the video track is unsubscribed or no tracks remain, clear the stream
+						if (
+							track.kind === Track.Kind.Video ||
+							activeTracks.length === 0
+						) {
+							return null;
+						}
+
+						return new MediaStream(activeTracks);
+					});
 				});
 
 				activeRoom.on(
