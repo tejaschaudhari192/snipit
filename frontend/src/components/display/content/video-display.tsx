@@ -248,12 +248,15 @@ export const VideoDisplay = ({
 
 				if (data.action === "play") {
 					console.log(`Cinema: Sync play to ${data.timestamp}`);
-					// Only seek if drift exceeds threshold to prevent micro-stutter
-					const drift = Math.abs(
-						videoRef.current.currentTime - data.timestamp,
-					);
-					if (drift > 1.5) {
-						videoRef.current.currentTime = data.timestamp;
+					setCurrentTime(data.timestamp);
+					if (!isP2pMode || isHost) {
+						// Only seek local elements for host / CDN playback
+						const drift = Math.abs(
+							videoRef.current.currentTime - data.timestamp,
+						);
+						if (drift > 1.5) {
+							videoRef.current.currentTime = data.timestamp;
+						}
 					}
 					videoRef.current
 						.play()
@@ -270,14 +273,19 @@ export const VideoDisplay = ({
 					setIsPlaying(true);
 				} else if (data.action === "pause") {
 					console.log(`Cinema: Sync pause to ${data.timestamp}`);
+					setCurrentTime(data.timestamp);
 					videoRef.current.pause();
-					videoRef.current.currentTime = data.timestamp;
+					if (!isP2pMode || isHost) {
+						videoRef.current.currentTime = data.timestamp;
+					}
 					setIsPlaying(false);
 					setIsBuffering(false);
 				} else if (data.action === "seek") {
 					console.log(`Cinema: Sync seek to ${data.timestamp}`);
-					videoRef.current.currentTime = data.timestamp;
 					setCurrentTime(data.timestamp);
+					if (!isP2pMode || isHost) {
+						videoRef.current.currentTime = data.timestamp;
+					}
 					setIsBuffering(false);
 				}
 
@@ -313,9 +321,23 @@ export const VideoDisplay = ({
 			},
 		);
 
+		// Listen for periodic timeline pings from host
+		socket.on(
+			"video-timeline-update",
+			(data: { timestamp: number; duration?: number }) => {
+				if (isHost) return;
+				console.log("Cinema: Received video-timeline-update:", data);
+				setCurrentTime(data.timestamp);
+				if (data.duration) {
+					setDuration(data.duration);
+				}
+			},
+		);
+
 		return () => {
 			console.log("Cinema: Cleaning up socket listeners");
 			socket.off("video-sync-state");
+			socket.off("video-timeline-update");
 			socket.off("video-reaction-received");
 			socket.off("video-chat-message-received");
 		};
@@ -330,12 +352,27 @@ export const VideoDisplay = ({
 				socket.emit("video-timeline-ping", {
 					pasteId: paste.id,
 					timestamp: videoRef.current.currentTime,
+					duration: videoRef.current.duration || undefined,
 				});
 			}
 		}, 3000);
 
 		return () => clearInterval(interval);
 	}, [socket, isPlaying, paste.id]);
+
+	// Smooth playhead estimation for watchers in P2P mode
+	useEffect(() => {
+		if (!isP2pMode || isHost || !isPlaying) return;
+
+		const interval = setInterval(() => {
+			setCurrentTime((prev) => {
+				const next = prev + 0.1;
+				return duration > 0 && next > duration ? duration : next;
+			});
+		}, 100);
+
+		return () => clearInterval(interval);
+	}, [isP2pMode, isHost, isPlaying, duration]);
 
 	const emitVideoState = (
 		action: "play" | "pause" | "seek",
@@ -365,7 +402,9 @@ export const VideoDisplay = ({
 
 	const handleTimeUpdate = () => {
 		if (!videoRef.current) return;
-		setCurrentTime(videoRef.current.currentTime);
+		if (!isP2pMode || isHost) {
+			setCurrentTime(videoRef.current.currentTime);
+		}
 	};
 
 	const handleProgress = () => {
