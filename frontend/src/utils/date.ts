@@ -183,6 +183,7 @@ export function dateConverter(expiresTime: string): Date | null {
  * Formats a duration in seconds into a string (h:mm:ss or m:ss)
  */
 export function formatDuration(seconds: number): string {
+	if (!seconds || !isFinite(seconds) || isNaN(seconds)) return "0:00";
 	const h = Math.floor(seconds / 3600);
 	const m = Math.floor((seconds % 3600) / 60);
 	const s = Math.floor(seconds % 60);

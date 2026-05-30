@@ -63,7 +63,12 @@ export const CinemaControls = ({
 				</span>
 				<Slider
 					value={[currentTime]}
-					max={duration || 100}
+					max={
+						!isFinite(duration) || isNaN(duration)
+							? 100
+							: duration || 100
+					}
+					disabled={!isFinite(duration) || isNaN(duration)}
 					step={0.1}
 					onValueChange={(values) => {
 						const val = values[0];
@@ -75,9 +80,16 @@ export const CinemaControls = ({
 					}}
 					className="flex-1 cursor-pointer"
 				/>
-				<span className="text-xs font-semibold text-white/80 select-none min-w-[40px]">
-					{formatDuration(duration)}
-				</span>
+				{!isFinite(duration) || isNaN(duration) ? (
+					<span className="flex items-center gap-1.5 text-[10px] font-bold text-red-500 bg-red-500/10 border border-red-500/20 px-2.5 py-0.5 rounded-full select-none animate-pulse shrink-0 tracking-wider">
+						<span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+						LIVE
+					</span>
+				) : (
+					<span className="text-xs font-semibold text-white/80 select-none min-w-[40px]">
+						{formatDuration(duration)}
+					</span>
+				)}
 			</div>
 
 			{/* Playback Buttons, Volume, & Reaction Tray */}
