@@ -16,6 +16,7 @@ import {
 	CinemaP2pConnectingOverlay,
 	CinemaHostBroadcastOverlay,
 	CinemaUnmuteOverlay,
+	CinemaHostDisconnectedOverlay,
 } from "./cinema-overlays";
 
 interface VideoDisplayProps {
@@ -116,8 +117,11 @@ export const VideoDisplay = ({
 
 	const socket = socketRef?.current;
 
-	// WebRTC Setup (Only active in P2P mode to prevent overlaying CDN streams)
-	const { remoteStream, isConnecting: isWebRtcConnecting } = useWebRtc({
+	const {
+		remoteStream,
+		isConnecting: isWebRtcConnecting,
+		isHostDisconnected,
+	} = useWebRtc({
 		socket: isP2pMode ? socket : null,
 		isHost: !!(isP2pMode && isHost),
 		videoRef: isHost ? videoRef : undefined,
@@ -481,6 +485,10 @@ export const VideoDisplay = ({
 				<CinemaHostBroadcastOverlay
 					isActive={!!(isP2pMode && isHost && !localFile)}
 					onSelectFile={setLocalFile}
+				/>
+
+				<CinemaHostDisconnectedOverlay
+					isVisible={!!(isP2pMode && !isHost && isHostDisconnected)}
 				/>
 
 				{/* Floating reaction rendering */}

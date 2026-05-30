@@ -167,3 +167,30 @@ export const CinemaHostBroadcastOverlay = ({
 		</div>
 	);
 };
+
+interface CinemaHostDisconnectedOverlayProps {
+	isVisible: boolean;
+}
+
+export const CinemaHostDisconnectedOverlay = ({
+	isVisible,
+}: CinemaHostDisconnectedOverlayProps) => {
+	if (!isVisible) return null;
+
+	return (
+		<div className="absolute inset-0 z-30 flex flex-col gap-4 items-center justify-center bg-black/85 backdrop-blur-md p-6 text-center animate-in fade-in duration-200">
+			<div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20 shadow-lg shadow-amber-500/15">
+				<AlertCircle className="w-7 h-7 text-amber-500 animate-pulse" />
+			</div>
+			<div className="space-y-1.5 max-w-sm">
+				<h3 className="text-md font-bold text-white tracking-wider">
+					Host Disconnected
+				</h3>
+				<p className="text-xs text-muted-foreground leading-relaxed font-sans">
+					The watch party host has left or disconnected. Waiting for
+					host to reconnect and resume the stream...
+				</p>
+			</div>
+		</div>
+	);
+};

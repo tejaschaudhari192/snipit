@@ -27,6 +27,8 @@ export const useWebRtc = ({
 }: UseWebRtcProps) => {
 	const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
 	const [isConnecting, setIsConnecting] = useState(false);
+	const [isHostDisconnected, setIsHostDisconnected] = useState(false);
+	const hostSocketIdRef = useRef<string | null>(null);
 
 	// Dynamic ICE configuration (includes TURN when available)
 	const iceConfigRef = useRef<RTCConfiguration>(FALLBACK_ICE_CONFIG);
@@ -34,9 +36,9 @@ export const useWebRtc = ({
 	// Host peers collection: Map<watcherSocketId, RTCPeerConnection>
 	const peersRef = useRef<Map<string, RTCPeerConnection>>(new Map());
 
-	// Watcher peer connection
 	const watcherPeerRef = useRef<RTCPeerConnection | null>(null);
 	const localStreamRef = useRef<MediaStream | null>(null);
+	const iceRestartAttemptsRef = useRef(0);
 
 	// Fetch dynamic ICE/TURN configuration from backend on socket connect
 	useEffect(() => {
@@ -232,6 +234,87 @@ export const useWebRtc = ({
 				},
 			);
 
+			// Receive watcher-originated SDP offer (ICE restart renegotiation)
+			socket.on(
+				"webrtc-offer",
+				async ({
+					senderSocketId,
+					offer,
+				}: {
+					senderSocketId: string;
+					offer: RTCSessionDescriptionInit;
+				}) => {
+					console.log(
+						`WebRTC Host: Received SDP offer/ICE restart from watcher ${senderSocketId}`,
+					);
+					let pc = peersRef.current.get(senderSocketId);
+					if (!pc) {
+						console.warn(
+							`WebRTC Host: Peer connection for ${senderSocketId} not found. Re-initializing connection...`,
+						);
+						const stream = getLocalStream();
+						if (!stream) {
+							console.error(
+								"WebRTC Host: Cannot recover stream, no local stream available",
+							);
+							return;
+						}
+						pc = new RTCPeerConnection(iceConfigRef.current);
+						peersRef.current.set(senderSocketId, pc);
+						stream
+							.getTracks()
+							.forEach((track) => pc!.addTrack(track, stream));
+
+						pc.onicecandidate = (event) => {
+							if (event.candidate) {
+								socket.emit("webrtc-ice-candidate", {
+									targetSocketId: senderSocketId,
+									candidate: event.candidate,
+								});
+							}
+						};
+					}
+
+					if (pc.signalingState === "closed") {
+						console.error(
+							`WebRTC Host: Peer connection for ${senderSocketId} is already closed`,
+						);
+						return;
+					}
+
+					try {
+						console.log(
+							`WebRTC Host: Setting remote description for watcher ${senderSocketId}`,
+						);
+						await pc.setRemoteDescription(
+							new RTCSessionDescription(offer),
+						);
+
+						console.log(
+							`WebRTC Host: Creating SDP answer for watcher ${senderSocketId}`,
+						);
+						const answer = await pc.createAnswer();
+						await pc.setLocalDescription(answer);
+
+						console.log(
+							`WebRTC Host: Emitting SDP answer to watcher ${senderSocketId}`,
+						);
+						socket.emit("webrtc-answer", {
+							targetSocketId: senderSocketId,
+							answer,
+						});
+						console.log(
+							`WebRTC Host: Renegotiation answer sent successfully to ${senderSocketId}`,
+						);
+					} catch (error) {
+						console.error(
+							`WebRTC Host: Failed to handle watcher offer for ${senderSocketId}:`,
+							error,
+						);
+					}
+				},
+			);
+
 			// Clean up peer when a watcher disconnects
 			socket.on(
 				"user-disconnected",
@@ -277,6 +360,8 @@ export const useWebRtc = ({
 						"WebRTC Watcher: Received offer from host",
 						senderSocketId,
 					);
+					hostSocketIdRef.current = senderSocketId;
+					setIsHostDisconnected(false);
 					if (watcherPeerRef.current) {
 						watcherPeerRef.current.close();
 					}
@@ -303,21 +388,44 @@ export const useWebRtc = ({
 							`WebRTC Watcher: ICE connection state: ${state}`,
 						);
 
-						if (state === "disconnected") {
+						if (state === "connected") {
+							console.log(
+								"WebRTC Watcher: ICE connection successfully established/re-established",
+							);
+							iceRestartAttemptsRef.current = 0;
+						} else if (state === "disconnected") {
 							// Brief network hiccup — wait briefly for auto-recovery
 							console.warn(
 								"WebRTC Watcher: ICE disconnected, waiting for recovery...",
 							);
 						} else if (state === "failed") {
-							// Permanent failure — trigger ICE restart
+							if (iceRestartAttemptsRef.current >= 3) {
+								console.error(
+									"WebRTC Watcher: ICE restart failed repeatedly. Terminating connection.",
+								);
+								setIsConnecting(false);
+								setRemoteStream(null);
+								if (watcherPeerRef.current) {
+									watcherPeerRef.current.close();
+									watcherPeerRef.current = null;
+								}
+								return;
+							}
+							iceRestartAttemptsRef.current += 1;
 							console.error(
-								"WebRTC Watcher: ICE failed. Triggering ICE restart...",
+								`WebRTC Watcher: ICE failed. Triggering ICE restart (Attempt ${iceRestartAttemptsRef.current}/3)...`,
 							);
 							pc.createOffer({ iceRestart: true })
-								.then((restartOffer) =>
-									pc.setLocalDescription(restartOffer),
-								)
+								.then((restartOffer) => {
+									console.log(
+										"WebRTC Watcher: Created ICE restart offer description",
+									);
+									return pc.setLocalDescription(restartOffer);
+								})
 								.then(() => {
+									console.log(
+										"WebRTC Watcher: Set local description, emitting webrtc-offer",
+									);
 									socket.emit("webrtc-offer", {
 										targetSocketId: senderSocketId,
 										offer: pc.localDescription,
@@ -325,7 +433,7 @@ export const useWebRtc = ({
 								})
 								.catch((err) =>
 									console.error(
-										"WebRTC Watcher: ICE restart failed:",
+										"WebRTC Watcher: ICE restart offer creation failed:",
 										err,
 									),
 								);
@@ -361,6 +469,50 @@ export const useWebRtc = ({
 							error,
 						);
 						setIsConnecting(false);
+					}
+				},
+			);
+
+			// Receive renegotiation answer from host (ICE restart)
+			socket.on(
+				"webrtc-answer",
+				async ({
+					answer,
+				}: {
+					senderSocketId: string;
+					answer: RTCSessionDescriptionInit;
+				}) => {
+					console.log(
+						"WebRTC Watcher: Received SDP answer from host (ICE restart)",
+					);
+					const pc = watcherPeerRef.current;
+					if (!pc) {
+						console.error(
+							"WebRTC Watcher: Active peer connection not found for incoming answer",
+						);
+						return;
+					}
+					if (pc.signalingState === "closed") {
+						console.error(
+							"WebRTC Watcher: Active peer connection is already closed",
+						);
+						return;
+					}
+					try {
+						console.log(
+							"WebRTC Watcher: Setting remote description for ICE restart answer",
+						);
+						await pc.setRemoteDescription(
+							new RTCSessionDescription(answer),
+						);
+						console.log(
+							"WebRTC Watcher: ICE restart renegotiation completed successfully",
+						);
+					} catch (error) {
+						console.error(
+							"WebRTC Watcher: Error setting remote description for ICE restart answer:",
+							error,
+						);
 					}
 				},
 			);
@@ -407,12 +559,16 @@ export const useWebRtc = ({
 			socket.on(
 				"user-disconnected",
 				({ socketId }: { socketId: string }) => {
-					// If the disconnected user was our host peer, clean up
-					if (watcherPeerRef.current) {
+					if (socketId === hostSocketIdRef.current) {
 						console.warn(
-							`WebRTC Watcher: Peer ${socketId} disconnected`,
+							`WebRTC Watcher: Host ${socketId} disconnected`,
 						);
-						// The room-users event will re-trigger stream request if needed
+						setIsHostDisconnected(true);
+						setRemoteStream(null);
+						if (watcherPeerRef.current) {
+							watcherPeerRef.current.close();
+							watcherPeerRef.current = null;
+						}
 					}
 				},
 			);
@@ -448,5 +604,5 @@ export const useWebRtc = ({
 		};
 	}, []);
 
-	return { remoteStream, isConnecting };
+	return { remoteStream, isConnecting, isHostDisconnected };
 };
