@@ -18,6 +18,7 @@ interface UseDisplayActionsProps {
 	user: User | null;
 	hasPending: boolean;
 	uploadFiles: () => Promise<FileUploadStatus[]>;
+	resetFileUpload?: () => void;
 }
 
 export const useDisplayActions = ({
@@ -26,6 +27,7 @@ export const useDisplayActions = ({
 	user,
 	hasPending,
 	uploadFiles,
+	resetFileUpload,
 }: UseDisplayActionsProps) => {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
@@ -230,6 +232,7 @@ export const useDisplayActions = ({
 
 				if (data) {
 					updateAllFromData(data);
+					resetFileUpload?.();
 					setSaveStatus("saved");
 					setTimeout(() => setSaveStatus("idle"), 3000);
 					if (!user) {
@@ -287,6 +290,7 @@ export const useDisplayActions = ({
 			uploadFiles,
 			idTypeTab,
 			redirectionType,
+			resetFileUpload,
 		],
 	);
 

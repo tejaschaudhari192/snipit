@@ -23,6 +23,8 @@ const envSchema = z.object({
 	YOUTUBE_API_KEY: z.string(),
 	BREVO_SENDER: z.string(),
 	BREVO_API_KEY: z.string(),
+	LIVEKIT_API_KEY: z.string(),
+	LIVEKIT_API_SECRET: z.string(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
@@ -59,7 +61,11 @@ const configurations = {
 		maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
 	},
 	cors: {
-		origins: ["https://cpaste.vercel.app", "https://snipit-nu.vercel.app"],
+		origins: [
+			"https://cpaste.vercel.app",
+			"https://snipit-nu.vercel.app",
+			"https://snipit-git-55-watch-media-sy-8f336e-tejaschaudhari192s-projects.vercel.app",
+		],
 	},
 	job_secret: env.JOB_SECRET,
 	supabase_url: env.SUPABASE_URL,
@@ -69,6 +75,10 @@ const configurations = {
 	brevo: {
 		apiKey: env.BREVO_API_KEY,
 		sender: env.BREVO_SENDER,
+	},
+	livekit: {
+		apiKey: env.LIVEKIT_API_KEY,
+		apiSecret: env.LIVEKIT_API_SECRET,
 	},
 };
 

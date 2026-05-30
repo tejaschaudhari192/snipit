@@ -175,6 +175,10 @@ export const useFileUpload = () => {
 		.map(FileService.toAttachment)
 		.filter((a): a is FileAttachment => a !== null);
 
+	const getRawFile = useCallback((id: string): File | undefined => {
+		return pendingFilesRef.current.get(id);
+	}, []);
+
 	return {
 		files: state.files,
 		isUploading: state.isUploading,
@@ -188,5 +192,6 @@ export const useFileUpload = () => {
 		removeFile,
 		reset,
 		isConfigured: isSupabaseConfigured,
+		getRawFile,
 	};
 };

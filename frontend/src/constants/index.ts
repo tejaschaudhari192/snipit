@@ -2,7 +2,14 @@
  * Frontend Constants
  */
 
-export const CONTENT_MODES = ["text", "code", "draw", "link", "file"] as const;
+export const CONTENT_MODES = [
+	"text",
+	"code",
+	"draw",
+	"link",
+	"file",
+	"video",
+] as const;
 export const VISIBILITIES = ["public", "private", "shared"] as const;
 export const EDIT_PERMISSIONS = ["owner", "shared", "public"] as const;
 export const ROLES = ["viewer", "editor", "admin", "commenter"] as const;
