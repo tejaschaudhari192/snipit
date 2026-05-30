@@ -227,6 +227,7 @@ export const VideoDisplay = ({
 			(data: {
 				action: "play" | "pause" | "seek";
 				timestamp: number;
+				duration?: number;
 			}) => {
 				console.log("Cinema: Received video-sync-state event:", data);
 				if (!videoRef.current) {
@@ -236,6 +237,14 @@ export const VideoDisplay = ({
 					return;
 				}
 				isIncomingEvent.current = true;
+
+				if (data.duration && !isHost) {
+					console.log(
+						"Cinema: Syncing actual video duration from host:",
+						data.duration,
+					);
+					setDuration(data.duration);
+				}
 
 				if (data.action === "play") {
 					console.log(`Cinema: Sync play to ${data.timestamp}`);
@@ -337,6 +346,7 @@ export const VideoDisplay = ({
 			pasteId: paste.id,
 			action,
 			timestamp: time,
+			duration: videoRef.current?.duration || undefined,
 		});
 	};
 
@@ -543,9 +553,10 @@ export const VideoDisplay = ({
 								onWaiting={() => setIsBuffering(true)}
 								onPlaying={() => setIsBuffering(false)}
 								onLoadedMetadata={() => {
-									setDuration(
-										videoRef.current?.duration || 0,
-									);
+									const dur = videoRef.current?.duration || 0;
+									if (!isP2pMode || isHost) {
+										setDuration(dur);
+									}
 									if (isP2pMode && isHost && socket) {
 										console.log(
 											"WebRTC Host: Stream is loaded and ready, broadcasting webrtc-stream-ready",
@@ -553,11 +564,24 @@ export const VideoDisplay = ({
 										socket.emit("webrtc-stream-ready", {
 											pasteId: paste.id,
 										});
+										// Broadcast actual video duration to peers instantly
+										socket.emit("video-sync-action", {
+											pasteId: paste.id,
+											action: "seek",
+											timestamp:
+												videoRef.current?.currentTime ||
+												0,
+											duration: dur,
+										});
 									}
 								}}
-								onDurationChange={() =>
-									setDuration(videoRef.current?.duration || 0)
-								}
+								onDurationChange={() => {
+									if (!isP2pMode || isHost) {
+										setDuration(
+											videoRef.current?.duration || 0,
+										);
+									}
+								}}
 								onError={() => {
 									if (videoRef.current?.error) {
 										const errCode =
