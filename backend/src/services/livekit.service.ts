@@ -1,12 +1,13 @@
 import { AccessToken } from "livekit-server-sdk";
+import configurations from "@/config/configurations.js";
 
 export const generateLiveKitToken = async (
 	roomName: string,
 	identity: string,
 	isHost: boolean,
 ): Promise<string> => {
-	const apiKey = process.env.LIVEKIT_API_KEY || "devkey";
-	const apiSecret = process.env.LIVEKIT_API_SECRET || "secretkey123";
+	const apiKey = configurations.livekit.apiKey;
+	const apiSecret = configurations.livekit.apiSecret;
 
 	const token = new AccessToken(apiKey, apiSecret, {
 		identity,

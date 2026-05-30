@@ -6,6 +6,7 @@ import {
 	LocalAudioTrack,
 	Track,
 } from "livekit-client";
+import { CONFIG } from "@/configurations";
 
 interface UseLiveKitProps {
 	roomName: string;
@@ -30,7 +31,12 @@ export const useLiveKit = ({
 	const publishedAudioTrackRef = useRef<LocalAudioTrack | null>(null);
 
 	const fetchToken = useCallback(async () => {
-		const res = await fetch("/api/v1/livekit/token", {
+		const apiBaseUrl = CONFIG.apiBaseUrl || "/api/v1";
+		const tokenUrl = apiBaseUrl.endsWith("/api/v1")
+			? `${apiBaseUrl}/livekit/token`
+			: `${apiBaseUrl}/api/v1/livekit/token`;
+
+		const res = await fetch(tokenUrl, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ roomName, identity, isHost }),
@@ -223,9 +229,7 @@ export const useLiveKit = ({
 					},
 				);
 
-				const wsUrl =
-					import.meta.env.VITE_LIVEKIT_WS_URL ||
-					"ws://localhost:7880";
+				const wsUrl = CONFIG.livekit.wsUrl;
 				await activeRoom.connect(wsUrl, token);
 				console.log("LiveKit: Connected to room", roomName);
 

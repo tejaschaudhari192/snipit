@@ -23,6 +23,8 @@ const envSchema = z.object({
 	YOUTUBE_API_KEY: z.string(),
 	BREVO_SENDER: z.string(),
 	BREVO_API_KEY: z.string(),
+	LIVEKIT_API_KEY: z.string(),
+	LIVEKIT_API_SECRET: z.string(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
@@ -73,6 +75,10 @@ const configurations = {
 	brevo: {
 		apiKey: env.BREVO_API_KEY,
 		sender: env.BREVO_SENDER,
+	},
+	livekit: {
+		apiKey: env.LIVEKIT_API_KEY,
+		apiSecret: env.LIVEKIT_API_SECRET,
 	},
 };
 
