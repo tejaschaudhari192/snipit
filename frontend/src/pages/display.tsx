@@ -287,6 +287,7 @@ const DisplayPage = () => {
 		user,
 		hasPending,
 		uploadFiles: uploadAll,
+		resetFileUpload,
 	});
 	useDisplayInit({ id, state, user });
 

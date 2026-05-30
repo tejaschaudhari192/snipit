@@ -76,6 +76,7 @@ interface PasteContextType {
 	addFiles: (files: File[]) => void;
 	removeFile: (id: string) => void;
 	resetFileUpload: () => void;
+	getRawFile: (id: string) => File | undefined;
 
 	// Complex actions
 	onContentTypeChange: (newMode: ContentMode) => void;
@@ -136,6 +137,7 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 		uploadAll: uploadFiles,
 		removeFile,
 		reset: resetFileUpload,
+		getRawFile,
 	} = useFileUpload();
 
 	const valueRef = useRef("");
@@ -296,6 +298,7 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			resetFileUpload,
 			onContentTypeChange,
 			resetPaste,
+			getRawFile,
 		}),
 		[
 			visibility,
@@ -344,6 +347,7 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			resetPaste,
 			readyAttachments,
 			hasPending,
+			getRawFile,
 		],
 	);
 
