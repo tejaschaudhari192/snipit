@@ -117,6 +117,10 @@ export const VideoDisplay = ({
 
 	const socket = socketRef?.current;
 
+	const [viewerIdentity] = useState(() => {
+		return `viewer-${user?._id || Math.random().toString(36).substring(2, 11)}`;
+	});
+
 	const {
 		remoteVideoStream,
 		isConnecting: isLiveKitConnecting,
@@ -124,9 +128,7 @@ export const VideoDisplay = ({
 		replaceHostTracks,
 	} = useLiveKit({
 		roomName: paste.id || "",
-		identity: isHost
-			? "host"
-			: `viewer-${user?._id || Math.random().toString(36).substr(2, 9)}`,
+		identity: isHost ? "host" : viewerIdentity,
 		isHost: !!(isP2pMode && isHost),
 		videoRef: isHost ? videoRef : undefined,
 	});
