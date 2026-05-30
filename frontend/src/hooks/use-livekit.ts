@@ -120,24 +120,41 @@ export const useLiveKit = ({
 			const newVideoTrack = captureStream.getVideoTracks()[0];
 			const newAudioTrack = captureStream.getAudioTracks()[0];
 
-			// Stop old tracks to prevent leaks before replacement
-			if (publishedVideoTrackRef.current && newVideoTrack) {
-				const oldMediaTrack =
-					publishedVideoTrackRef.current.mediaStreamTrack;
-				await publishedVideoTrackRef.current.replaceTrack(
-					newVideoTrack,
+			const activeRoom = roomRef.current;
+			if (!activeRoom) return;
+
+			// Unpublish old tracks if they exist
+			if (publishedVideoTrackRef.current) {
+				await activeRoom.localParticipant.unpublishTrack(
+					publishedVideoTrackRef.current,
 				);
-				oldMediaTrack.stop();
-				console.log("LiveKit: Video track hot-swapped successfully");
+				publishedVideoTrackRef.current.mediaStreamTrack.stop();
+				publishedVideoTrackRef.current = null;
 			}
-			if (publishedAudioTrackRef.current && newAudioTrack) {
-				const oldMediaTrack =
-					publishedAudioTrackRef.current.mediaStreamTrack;
-				await publishedAudioTrackRef.current.replaceTrack(
-					newAudioTrack,
+			if (publishedAudioTrackRef.current) {
+				await activeRoom.localParticipant.unpublishTrack(
+					publishedAudioTrackRef.current,
 				);
-				oldMediaTrack.stop();
-				console.log("LiveKit: Audio track hot-swapped successfully");
+				publishedAudioTrackRef.current.mediaStreamTrack.stop();
+				publishedAudioTrackRef.current = null;
+			}
+
+			// Publish new tracks
+			if (newVideoTrack) {
+				const lkVideoTrack = new LocalVideoTrack(newVideoTrack);
+				await activeRoom.localParticipant.publishTrack(lkVideoTrack);
+				publishedVideoTrackRef.current = lkVideoTrack;
+				console.log(
+					"LiveKit Host: Hot-swapped and republished video track",
+				);
+			}
+			if (newAudioTrack) {
+				const lkAudioTrack = new LocalAudioTrack(newAudioTrack);
+				await activeRoom.localParticipant.publishTrack(lkAudioTrack);
+				publishedAudioTrackRef.current = lkAudioTrack;
+				console.log(
+					"LiveKit Host: Hot-swapped and republished audio track",
+				);
 			}
 		} catch (err) {
 			console.error("Failed to hot-swap host tracks:", err);

@@ -1,10 +1,10 @@
-version: '3.9'
+version: "3.9"
 services:
-  livekit:
-    image: livekit/livekit-server:v1.5.0
-    container_name: livekit-server
-    restart: always
-    network_mode: "host"
-    volumes:
-      - ./livekit.yaml:/etc/livekit.yaml
-    command: --config /etc/livekit.yaml
+    livekit:
+        image: livekit/livekit-server:v1.5.0
+        container_name: livekit-server
+        restart: always
+        network_mode: "host"
+        volumes:
+            - ./livekit.yaml:/etc/livekit.yaml
+        command: --config /etc/livekit.yaml
