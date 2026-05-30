@@ -1,6 +1,6 @@
 import { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { type editor } from "monaco-editor";
-import { useRef, useEffect, memo, useState } from "react";
+import { useRef, useEffect, memo, useState, lazy, Suspense } from "react";
 import { cn } from "@/utils";
 import { EditorToolbar } from "@/components/common/editor-toolbar";
 import type { PasteData, ContentMode, EditorChange } from "@/types";
@@ -16,7 +16,14 @@ import type { Socket } from "socket.io-client";
 import type { ActiveUser } from "@/types";
 import { CollabDraw } from "@/components/display/collab-draw";
 import { FileEditView } from "@/components/display/content/file-edit-view";
+import { CinemaSkeleton } from "@/components/display/content/cinema-skeleton";
 import type { FileUploadStatus } from "@/lib/file-service";
+
+const VideoDisplay = lazy(() =>
+	import("@/components/display/content/video-display").then((m) => ({
+		default: m.VideoDisplay,
+	})),
+);
 
 interface DisplayContentProps {
 	id: string;
@@ -139,6 +146,22 @@ export const DisplayContent = memo(
 		};
 
 		const renderContent = () => {
+			if (contentType === "video") {
+				return (
+					<Suspense fallback={<CinemaSkeleton />}>
+						<VideoDisplay
+							paste={paste}
+							contentRef={contentRef}
+							socketRef={socketRef}
+							activeUsers={activeUsers}
+							isEdit={isEdit}
+							content={content}
+							onContentChange={onContentChange}
+						/>
+					</Suspense>
+				);
+			}
+
 			if (contentType === "file") {
 				if (isEdit) {
 					return (

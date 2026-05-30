@@ -19,6 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEditorLayout } from "@/hooks/use-editor-layout";
 import { cn } from "@/utils";
+import { VideoSetupView } from "./video-setup-view";
 
 const EditorToolbar = lazy(() =>
 	import("@/components/common/editor-toolbar").then((m) => ({
@@ -377,6 +378,14 @@ export const EditorContent = memo(
 									onDeleteHistoryItem={onDeleteHistoryItem}
 								/>
 							</Suspense>
+						) : contentType === "video" ? (
+							<VideoSetupView
+								textValue={textValue}
+								setTextValue={setTextValue}
+								files={files}
+								removeFile={removeFile}
+								onFileSelect={onFileSelect}
+							/>
 						) : (
 							<Textarea
 								ref={userInputRef}

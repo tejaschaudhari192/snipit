@@ -3,3 +3,4 @@ node_modules
 .vercel
 tested.md
 backend/.env.prod
+.vscode/settings.json
