@@ -179,14 +179,22 @@ export const useLiveKit = ({
 				roomRef.current = activeRoom;
 
 				activeRoom.on(RoomEvent.TrackSubscribed, (track) => {
+					console.log(
+						`LiveKit Viewer: Subscribed to remote track of kind ${track.kind}`,
+					);
+					setRemoteVideoStream((prevStream) => {
+						let currentStream = prevStream;
+						if (!currentStream) {
+							currentStream = new MediaStream();
+						} else {
+							currentStream = new MediaStream(
+								currentStream.getTracks(),
+							);
+						}
+						currentStream.addTrack(track.mediaStreamTrack);
+						return currentStream;
+					});
 					if (track.kind === Track.Kind.Video) {
-						console.log(
-							"LiveKit Viewer: Subscribed to remote video track",
-						);
-						const stream = new MediaStream([
-							track.mediaStreamTrack,
-						]);
-						setRemoteVideoStream(stream);
 						setIsConnecting(false);
 						setIsHostDisconnected(false);
 					}
