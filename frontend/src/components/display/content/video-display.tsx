@@ -9,6 +9,7 @@ import { CinemaControls } from "./cinema-controls";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { useWebRtc } from "@/hooks/use-webrtc";
+import { useLiveKit } from "@/hooks/use-livekit";
 import { calculateBufferPercent } from "@/utils/video-utils";
 import {
 	CinemaBufferOverlay,
@@ -117,22 +118,49 @@ export const VideoDisplay = ({
 
 	const socket = socketRef?.current;
 
+	const mediaProvider = import.meta.env.VITE_MEDIA_PROVIDER || "webrtc";
+	const isLiveKitMode = mediaProvider === "livekit";
+
 	const {
-		remoteStream,
+		remoteStream: webRtcRemoteStream,
 		isConnecting: isWebRtcConnecting,
-		isHostDisconnected,
+		isHostDisconnected: isWebRtcHostDisconnected,
 	} = useWebRtc({
-		socket: isP2pMode ? socket : null,
-		isHost: !!(isP2pMode && isHost),
-		videoRef: isHost ? videoRef : undefined,
+		socket: isP2pMode && !isLiveKitMode ? socket : null,
+		isHost: !!(isP2pMode && isHost && !isLiveKitMode),
+		videoRef: isHost && !isLiveKitMode ? videoRef : undefined,
 		pasteId: paste.id,
 	});
+
+	const {
+		remoteVideoStream: liveKitRemoteStream,
+		isConnecting: isLiveKitConnecting,
+		isHostDisconnected: isLiveKitHostDisconnected,
+		replaceHostTracks,
+	} = useLiveKit({
+		roomName: paste.id || "",
+		identity: isHost
+			? "host"
+			: `viewer-${user?._id || Math.random().toString(36).substr(2, 9)}`,
+		isHost: !!(isP2pMode && isHost && isLiveKitMode),
+		videoRef: isHost && isLiveKitMode ? videoRef : undefined,
+	});
+
+	const remoteStream = isLiveKitMode
+		? liveKitRemoteStream
+		: webRtcRemoteStream;
+	const isConnectingActual = isLiveKitMode
+		? isLiveKitConnecting
+		: isWebRtcConnecting;
+	const isHostDisconnectedActual = isLiveKitMode
+		? isLiveKitHostDisconnected
+		: isWebRtcHostDisconnected;
 
 	// Bind remote video stream to watcher's video element (Only in P2P mode)
 	useEffect(() => {
 		if (isP2pMode && !isHost && remoteStream && videoRef.current) {
 			console.log(
-				"Cinema: Binding remote WebRTC stream to watcher video element",
+				`Cinema: Binding remote ${isLiveKitMode ? "LiveKit" : "WebRTC"} stream to watcher video element`,
 			);
 			videoRef.current.srcObject = remoteStream;
 			videoRef.current
@@ -158,7 +186,7 @@ export const VideoDisplay = ({
 			console.log("Cinema: Resetting watcher video srcObject to null");
 			videoRef.current.srcObject = null;
 		}
-	}, [isHost, remoteStream, isP2pMode]);
+	}, [isHost, remoteStream, isP2pMode, isLiveKitMode]);
 
 	const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
 		if (!theaterRef.current) return;
@@ -333,7 +361,6 @@ export const VideoDisplay = ({
 				}
 			},
 		);
-
 		return () => {
 			console.log("Cinema: Cleaning up socket listeners");
 			socket.off("video-sync-state");
@@ -341,7 +368,7 @@ export const VideoDisplay = ({
 			socket.off("video-reaction-received");
 			socket.off("video-chat-message-received");
 		};
-	}, [socket]);
+	}, [socket, isHost, isP2pMode]);
 
 	// Periodically send current playhead position to let friends see status
 	useEffect(() => {
@@ -527,7 +554,7 @@ export const VideoDisplay = ({
 					isConnecting={
 						!isHost &&
 						isP2pMode &&
-						(!remoteStream || isWebRtcConnecting)
+						(!remoteStream || isConnectingActual)
 					}
 				/>
 
@@ -537,7 +564,9 @@ export const VideoDisplay = ({
 				/>
 
 				<CinemaHostDisconnectedOverlay
-					isVisible={!!(isP2pMode && !isHost && isHostDisconnected)}
+					isVisible={
+						!!(isP2pMode && !isHost && isHostDisconnectedActual)
+					}
 				/>
 
 				{/* Floating reaction rendering */}
@@ -596,22 +625,28 @@ export const VideoDisplay = ({
 									if (!isP2pMode || isHost) {
 										setDuration(dur);
 									}
-									if (isP2pMode && isHost && socket) {
-										console.log(
-											"WebRTC Host: Stream is loaded and ready, broadcasting webrtc-stream-ready",
-										);
-										socket.emit("webrtc-stream-ready", {
-											pasteId: paste.id,
-										});
+									if (isP2pMode && isHost) {
+										if (isLiveKitMode) {
+											replaceHostTracks();
+										} else if (socket) {
+											console.log(
+												"WebRTC Host: Stream is loaded and ready, broadcasting webrtc-stream-ready",
+											);
+											socket.emit("webrtc-stream-ready", {
+												pasteId: paste.id,
+											});
+										}
 										// Broadcast actual video duration to peers instantly
-										socket.emit("video-sync-action", {
-											pasteId: paste.id,
-											action: "seek",
-											timestamp:
-												videoRef.current?.currentTime ||
-												0,
-											duration: dur,
-										});
+										if (socket) {
+											socket.emit("video-sync-action", {
+												pasteId: paste.id,
+												action: "seek",
+												timestamp:
+													videoRef.current
+														?.currentTime || 0,
+												duration: dur,
+											});
+										}
 									}
 								}}
 								onDurationChange={() => {
