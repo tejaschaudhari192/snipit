@@ -216,6 +216,9 @@ export const useLiveKit = ({
 					console.log(
 						`LiveKit Viewer: Unsubscribed from track of kind ${track.kind}`,
 					);
+					// Explicitly stop the unsubscribed track to release browser resources
+					track.mediaStreamTrack.stop();
+
 					setRemoteVideoStream((prevStream) => {
 						if (!prevStream) return null;
 
@@ -228,11 +231,12 @@ export const useLiveKit = ({
 									t.readyState !== "ended",
 							);
 
-						// If the video track is unsubscribed or no tracks remain, clear the stream
+						// If the video track is unsubscribed or no tracks remain, clear and stop the whole stream
 						if (
 							track.kind === Track.Kind.Video ||
 							activeTracks.length === 0
 						) {
+							prevStream.getTracks().forEach((t) => t.stop());
 							return null;
 						}
 
@@ -249,7 +253,14 @@ export const useLiveKit = ({
 								"LiveKit Viewer: Host disconnected from room",
 							);
 							setIsHostDisconnected(true);
-							setRemoteVideoStream(null);
+							setRemoteVideoStream((prevStream) => {
+								if (prevStream) {
+									prevStream
+										.getTracks()
+										.forEach((t) => t.stop());
+								}
+								return null;
+							});
 						}
 					},
 				);
@@ -281,6 +292,12 @@ export const useLiveKit = ({
 				activeRoom.disconnect();
 				roomRef.current = null;
 			}
+			setRemoteVideoStream((prevStream) => {
+				if (prevStream) {
+					prevStream.getTracks().forEach((t) => t.stop());
+				}
+				return null;
+			});
 		};
 	}, [roomName, identity, isHost, publishLocalStream, fetchToken]);
 

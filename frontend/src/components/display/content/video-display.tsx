@@ -139,12 +139,13 @@ export const VideoDisplay = ({
 
 	// Bind remote video stream to watcher's video element (Only in P2P mode)
 	useEffect(() => {
-		if (isP2pMode && !isHost && remoteStream && videoRef.current) {
+		const video = videoRef.current;
+		if (isP2pMode && !isHost && remoteStream && video) {
 			console.log(
 				"Cinema: Binding remote LiveKit stream to watcher video element",
 			);
-			videoRef.current.srcObject = remoteStream;
-			videoRef.current
+			video.srcObject = remoteStream;
+			video
 				.play()
 				.then(() => {
 					console.log(
@@ -159,13 +160,17 @@ export const VideoDisplay = ({
 						);
 					}
 				});
-		} else if (videoRef.current && videoRef.current.srcObject) {
-			console.log(
-				"Cinema: Resetting watcher video srcObject and pausing player",
-			);
-			videoRef.current.pause();
-			videoRef.current.srcObject = null;
 		}
+
+		return () => {
+			if (video) {
+				console.log(
+					"Cinema: Cleanup - Resetting watcher video srcObject and pausing player",
+				);
+				video.pause();
+				video.srcObject = null;
+			}
+		};
 	}, [isHost, remoteStream, isP2pMode]);
 
 	const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
