@@ -212,6 +212,19 @@
 		"tab_link_short": "リンク",
 		"tab_file": "ファイル",
 		"tab_file_short": "ファイル",
+		"tab_video": "シネマ",
+		"tab_video_short": "シネマ",
+		"video": {
+			"setup_party": "シネマウォッチパーティーを設定する",
+			"setup_desc": "動画URLを貼り付けるか、動画ファイルをアップロードして一緒に視聴します。",
+			"stream_link": "映画または動画ストリームのリンクを貼り付け",
+			"upload_local": "ローカル動画ファイルをアップロード",
+			"select_file": "動画ファイルを選択",
+			"supports": "mp4, webm, mkv に対応",
+			"or": "または",
+			"invalid_url": "無効なストリームURL",
+			"remove": "削除"
+		},
 		"link_placeholder": "短縮するURLを入力してください（例：https://example.xyz）",
 		"link_desc": "以下の長いURLを貼り付けて、短縮リダイレクトリンクを作成します。",
 		"link_features": {

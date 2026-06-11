@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/select";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
+import { UI_LANGUAGES } from "@/constants";
 
 interface LanguageSwitcherProps {
 	className?: string;
@@ -40,11 +41,11 @@ export const LanguageSwitcher = ({ className }: LanguageSwitcherProps) => {
 			</SelectTrigger>
 			<SelectContent>
 				<SelectGroup>
-					<SelectItem value="en">English</SelectItem>
-					<SelectItem value="mr">मराठी</SelectItem>
-					<SelectItem value="hi">हिन्दी</SelectItem>
-					<SelectItem value="ja">日本語</SelectItem>
-					<SelectItem value="de">Deutsch</SelectItem>
+					{UI_LANGUAGES.map((lang) => (
+						<SelectItem key={lang.value} value={lang.value}>
+							{lang.label}
+						</SelectItem>
+					))}
 				</SelectGroup>
 			</SelectContent>
 		</Select>

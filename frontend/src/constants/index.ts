@@ -34,6 +34,22 @@ export const LANGUAGES = [
 	{ name: "Other", value: "other" },
 ];
 
+export const UI_LANGUAGES = [
+	{ label: "English", value: "en" },
+	{ label: "हिन्दी", value: "hi" },
+	{ label: "বাংলা", value: "bn" },
+	{ label: "मराठी", value: "mr" },
+	{ label: "తెలుగు", value: "te" },
+	{ label: "தமிழ்", value: "ta" },
+	{ label: "ગુજરાતી", value: "gu" },
+	{ label: "اردو", value: "ur" },
+	{ label: "ಕನ್ನಡ", value: "kn" },
+	{ label: "മലയാളം", value: "ml" },
+	{ label: "ਪੰਜਾਬੀ", value: "pa" },
+	{ label: "日本語", value: "ja" },
+	{ label: "Deutsch", value: "de" },
+];
+
 export const LANGUAGE_EXTENSIONS: Record<string, string> = {
 	javascript: "js",
 	typescript: "ts",

@@ -404,23 +404,10 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 		[user, apiHelpers, t],
 	);
 
-	// Refresh items when user changes
+	// Clear states when user changes/logs out
 	useEffect(() => {
 		clearHistoryState();
-		loadHistory(true);
-		if (user) {
-			loadProfile(true);
-			loadSavedProfile(true);
-			loadStats();
-		}
-	}, [
-		user,
-		clearHistoryState,
-		loadHistory,
-		loadProfile,
-		loadSavedProfile,
-		loadStats,
-	]);
+	}, [user, clearHistoryState]);
 
 	return (
 		<SnippetContext.Provider

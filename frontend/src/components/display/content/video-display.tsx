@@ -596,15 +596,22 @@ export const VideoDisplay = ({
 								onPlay={() => {
 									setIsPlaying(true);
 									setIsBuffering(false);
+									setVideoError(null);
 								}}
 								onPause={() => {
 									setIsPlaying(false);
 									setIsBuffering(false);
 								}}
 								onSeeked={() => setIsBuffering(false)}
-								onCanPlay={() => setIsBuffering(false)}
+								onCanPlay={() => {
+									setIsBuffering(false);
+									setVideoError(null);
+								}}
 								onWaiting={() => setIsBuffering(true)}
-								onPlaying={() => setIsBuffering(false)}
+								onPlaying={() => {
+									setIsBuffering(false);
+									setVideoError(null);
+								}}
 								onLoadedMetadata={() => {
 									const dur = videoRef.current?.duration || 0;
 									if (!isP2pMode || isHost) {

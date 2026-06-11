@@ -211,6 +211,19 @@
 		"tab_link_short": "Link",
 		"tab_file": "Datei",
 		"tab_file_short": "Datei",
+		"tab_video": "Kino",
+		"tab_video_short": "Kino",
+		"video": {
+			"setup_party": "Kino-Watchparty einrichten",
+			"setup_desc": "Fügen Sie eine Video-URL ein oder laden Sie eine Videodatei hoch, um sie gemeinsam anzusehen.",
+			"stream_link": "Film- oder Videostream-Link einfügen",
+			"upload_local": "Lokale Videodatei hochladen",
+			"select_file": "Videodatei auswählen",
+			"supports": "unterstützt mp4, webm, mkv",
+			"or": "oder",
+			"invalid_url": "Ungültige Stream-URL",
+			"remove": "Entfernen"
+		},
 		"link_placeholder": "Geben Sie die zu kürzende URL ein (z. B. https://example.xyz)",
 		"link_desc": "Fügen Sie unten die lange URL ein, um einen kurzen, weiterleitenden Link zu erstellen.",
 		"link_features": {

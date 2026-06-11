@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useApiHelpers } from "@/lib/api";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 
 interface AiDrawDialogProps {
 	isOpen: boolean;
@@ -67,6 +68,12 @@ export const AiDrawDialog = ({
 								<Sparkles className="w-5 h-5 animate-pulse" />
 							</div>
 							{t("ai.draw_title")}
+							<Badge
+								variant="glass"
+								className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border-primary/20 text-primary bg-primary/10"
+							>
+								Beta
+							</Badge>
 						</DialogTitle>
 						<DialogDescription className="text-sm font-medium opacity-70">
 							{t("ai.draw_description")}

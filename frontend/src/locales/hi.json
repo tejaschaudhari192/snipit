@@ -214,6 +214,19 @@
 		"tab_link_short": "लिंक",
 		"tab_file": "फ़ाइल",
 		"tab_file_short": "फ़ाइल",
+		"tab_video": "सिनेमा",
+		"tab_video_short": "सिनेമാ",
+		"video": {
+			"setup_party": "सिनेमा वॉच पार्टी सेटअप करें",
+			"setup_desc": "एक साथ देखने के लिए वीडियो URL पेस्ट करें या वीडियो फ़ाइल अपलोड करें।",
+			"stream_link": "फिल्म या वीडियो स्ट्रीम लिंक पेस्ट करें",
+			"upload_local": "स्थानीय वीडियो फ़ाइल अपलोड करें",
+			"select_file": "वीडियो फ़ाइल चुनें",
+			"supports": "mp4, webm, mkv समर्थित",
+			"or": "या",
+			"invalid_url": "अमान्य स्ट्रीम URL",
+			"remove": "हटाएं"
+		},
 		"link_placeholder": "छोटा करने के लिए URL दर्ज करें (जैसे, https://example.xyz)",
 		"link_desc": "एक छोटा लिंक बनाने के लिए नीचे लंबा URL पेस्ट करें।",
 		"link_features": {

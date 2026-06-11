@@ -44,6 +44,7 @@ const ProfilePage = () => {
 		loadFilteredPastes,
 		clearFilter,
 		stats,
+		loadStats,
 	} = useSnippets();
 
 	const { allLabels } = useLabels();
@@ -70,6 +71,7 @@ const ProfilePage = () => {
 			setNewName(user.username);
 			if (pastes.length === 0) loadProfile(true);
 			if (savedPastes.length === 0) loadSavedProfile(true);
+			loadStats();
 		} else {
 			setNewName("Guest");
 			if (pastes.length === 0) loadProfile(true);
@@ -79,6 +81,7 @@ const ProfilePage = () => {
 		user,
 		loadProfile,
 		loadSavedProfile,
+		loadStats,
 		pastes.length,
 		savedPastes.length,
 	]);

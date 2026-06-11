@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import type { FileUploadStatus } from "@/lib/file-service";
 import { checkStreamableLink } from "@/utils/video-utils";
+import { useTranslation } from "react-i18next";
 
 interface VideoSetupViewProps {
 	textValue: string;
@@ -21,6 +22,7 @@ export const VideoSetupView = memo(
 		removeFile,
 		onFileSelect,
 	}: VideoSetupViewProps) => {
+		const { t } = useTranslation();
 		const [isValidating, setIsValidating] = useState(false);
 		const [validationError, setValidationError] = useState<string | null>(
 			null,
@@ -36,7 +38,9 @@ export const VideoSetupView = memo(
 				const res = await checkStreamableLink(textValue);
 				setIsValidating(false);
 				if (!res.ok) {
-					setValidationError(res.error || "Invalid stream URL");
+					setValidationError(
+						res.error || t("home.video.invalid_url"),
+					);
 				} else {
 					setValidationError(null);
 				}
@@ -52,18 +56,17 @@ export const VideoSetupView = memo(
 					</div>
 					<div className="text-center space-y-2">
 						<h2 className="text-2xl font-bold tracking-tight">
-							Setup cinema watch party
+							{t("home.video.setup_party")}
 						</h2>
 						<p className="text-sm text-muted-foreground">
-							Paste a video URL or upload a video file to watch
-							together.
+							{t("home.video.setup_desc")}
 						</p>
 					</div>
 
 					{/* Video URL Input */}
 					<div className="w-full space-y-2.5">
 						<label className="text-xs font-bold tracking-wider text-muted-foreground">
-							Paste movie or video stream link
+							{t("home.video.stream_link")}
 						</label>
 						<div className="relative flex items-center w-full">
 							<Input
@@ -103,7 +106,7 @@ export const VideoSetupView = memo(
 					<div className="flex items-center gap-4 w-full">
 						<div className="h-px bg-border/40 flex-1" />
 						<span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-							or
+							{t("home.video.or")}
 						</span>
 						<div className="h-px bg-border/40 flex-1" />
 					</div>
@@ -111,7 +114,7 @@ export const VideoSetupView = memo(
 					{/* Upload Video File */}
 					<div className="w-full space-y-2.5">
 						<label className="text-xs font-bold tracking-wider text-muted-foreground">
-							Upload local video file
+							{t("home.video.upload_local")}
 						</label>
 						{files.length > 0 ? (
 							<div className="border border-border/50 bg-muted/10 p-4 rounded-2xl flex items-center justify-between w-full">
@@ -138,7 +141,7 @@ export const VideoSetupView = memo(
 									onClick={() => removeFile(files[0].id)}
 									className="text-red-500 hover:text-red-600 font-semibold"
 								>
-									Remove
+									{t("home.video.remove")}
 								</Button>
 							</div>
 						) : (
@@ -166,10 +169,10 @@ export const VideoSetupView = memo(
 							>
 								<Film className="w-8 h-8 text-muted-foreground" />
 								<span className="text-sm font-bold">
-									Select video file
+									{t("home.video.select_file")}
 								</span>
 								<span className="text-xs text-muted-foreground">
-									supports mp4, webm, mkv
+									{t("home.video.supports")}
 								</span>
 							</div>
 						)}
