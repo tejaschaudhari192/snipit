@@ -50,6 +50,19 @@ export const UI_LANGUAGES = [
 	{ label: "Deutsch", value: "de" },
 ];
 
+export const TRANSLITERATION_LANGUAGES = [
+	{ label: "हिन्दी", value: "hi", script: "devanagari", name: "Hindi" },
+	{ label: "தமிழ்", value: "ta", script: "tamil", name: "Tamil" },
+	{ label: "తెలుగు", value: "te", script: "telugu", name: "Telugu" },
+	{ label: "മലയാളം", value: "ml", script: "malayalam", name: "Malayalam" },
+	{ label: "ಕನ್ನಡ", value: "kn", script: "kannada", name: "Kannada" },
+	{ label: "বাংলা", value: "bn", script: "bengali", name: "Bengali" },
+	{ label: "ગુજરાતી", value: "gu", script: "gujarati", name: "Gujarati" },
+	{ label: "मराठी", value: "mr", script: "devanagari", name: "Marathi" },
+	{ label: "ਪੰਜਾਬੀ", value: "pa", script: "gurmukhi", name: "Punjabi" },
+	{ label: "اردو", value: "ur", script: "urdu", name: "Urdu" },
+];
+
 export const LANGUAGE_EXTENSIONS: Record<string, string> = {
 	javascript: "js",
 	typescript: "ts",

@@ -20,6 +20,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useEditorLayout } from "@/hooks/use-editor-layout";
 import { cn } from "@/utils";
 import { VideoSetupView } from "./video-setup-view";
+import type { useTransliteration } from "@/hooks/use-transliteration";
 
 const EditorToolbar = lazy(() =>
 	import("@/components/common/editor-toolbar").then((m) => ({
@@ -87,6 +88,7 @@ interface EditorContentProps {
 	historyItems?: Array<PasteData>;
 	onDeleteHistoryItem?: (id: string) => void;
 	drawRevision?: number;
+	transliteration?: ReturnType<typeof useTransliteration>;
 }
 
 export const EditorContent = memo(
@@ -106,6 +108,7 @@ export const EditorContent = memo(
 		historyItems = [],
 		onDeleteHistoryItem,
 		drawRevision = 0,
+		transliteration,
 	}: EditorContentProps) => {
 		const {
 			contentType,
@@ -146,6 +149,10 @@ export const EditorContent = memo(
 		const onMount: OnMount = (ed, monaco) => {
 			setEditorInstance(ed);
 			handleEditorMount(ed, monaco);
+
+			if (transliteration) {
+				transliteration.setupEditor(ed, monaco);
+			}
 		};
 
 		useEffect(() => {

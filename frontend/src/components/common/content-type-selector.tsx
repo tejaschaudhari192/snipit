@@ -65,9 +65,6 @@ export const ContentTypeSelector = memo(
 						<span className="inline min-[440px]:hidden whitespace-nowrap">
 							{t("home.tab_draw_short")}
 						</span>
-						<span className="absolute -top-1.5 -right-1 px-1 py-0.25 text-[8px] font-bold text-white bg-primary rounded-full uppercase scale-90 tracking-wider shadow-sm select-none">
-							Beta
-						</span>
 					</TabsTrigger>
 					<TabsTrigger
 						value="link"

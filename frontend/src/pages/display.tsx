@@ -35,6 +35,7 @@ import { useEditorSync } from "@/hooks/use-editor-sync";
 import { useDisplayInit } from "@/hooks/display/use-display-init";
 import { useDisplayActions } from "@/hooks/display/use-display-actions";
 import { useAutosave } from "@/hooks/display/use-autosave";
+import { useTransliteration } from "@/hooks/use-transliteration";
 
 import type {
 	CommentData,
@@ -131,6 +132,8 @@ const DisplayPage = () => {
 		removedServerFileUrls,
 		removeServerFile,
 	} = state;
+
+	const transliteration = useTransliteration();
 
 	const [remoteCursors, setRemoteCursors] = useState<
 		Record<string, { position: CursorPosition; selection?: SelectionRange }>
@@ -381,6 +384,7 @@ const DisplayPage = () => {
 		monacoInstanceRef.current = monaco;
 		setupAiAction(ed, monaco);
 		setupAutocomplete(ed, monaco);
+		transliteration.setupEditor(ed, monaco);
 		setEditorInstance(ed);
 		editorRef.current = ed;
 		ed.onDidPaste(() => {
@@ -573,6 +577,14 @@ const DisplayPage = () => {
 								}
 								setIsAiWriterDialogOpen(true);
 							}}
+							transliterationEnabled={transliteration.enabled}
+							onTransliterationToggle={transliteration.toggle}
+							transliterationLanguage={
+								transliteration.targetLanguage
+							}
+							onTransliterationLanguageChange={
+								transliteration.setTargetLanguage
+							}
 						/>
 						{!isEdit && (
 							<DisplayMetadata paste={paste} loading={loading} />

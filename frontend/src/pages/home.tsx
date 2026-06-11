@@ -72,6 +72,12 @@ const AiAutocompleteToggle = lazy(() =>
 		default: m.AiAutocompleteToggle,
 	})),
 );
+const TransliterationToggle = lazy(() =>
+	import("@/components/editor/transliteration-toggle").then((m) => ({
+		default: m.TransliterationToggle,
+	})),
+);
+import { useTransliteration } from "@/hooks/use-transliteration";
 const AiEnhanceDialog = lazy(() =>
 	import("@/components/editor/ai-enhance-dialog").then((m) => ({
 		default: m.AiEnhanceDialog,
@@ -206,6 +212,8 @@ const HomePage = () => {
 		setTerminalPosition,
 		toggleTerminal,
 	} = useTerminalExecution({ textValue, language });
+
+	const transliteration = useTransliteration();
 
 	const {
 		handlePaste,
@@ -463,6 +471,19 @@ const HomePage = () => {
 
 								<div className="w-px h-6 bg-border/40 mx-1" />
 
+								{contentType === "text" && (
+									<TransliterationToggle
+										enabled={transliteration.enabled}
+										onToggle={transliteration.toggle}
+										language={
+											transliteration.targetLanguage
+										}
+										onLanguageChange={
+											transliteration.setTargetLanguage
+										}
+									/>
+								)}
+
 								<VoiceInputButton />
 
 								<FontSizeControls
@@ -517,6 +538,7 @@ const HomePage = () => {
 								historyItems={history.items}
 								onDeleteHistoryItem={deleteSnippet}
 								drawRevision={drawRevision}
+								transliteration={transliteration}
 							/>
 						</div>
 					);

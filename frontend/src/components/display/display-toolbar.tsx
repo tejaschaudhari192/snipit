@@ -45,6 +45,11 @@ const AiAutocompleteToggle = lazy(() =>
 		default: m.AiAutocompleteToggle,
 	})),
 );
+const TransliterationToggle = lazy(() =>
+	import("@/components/editor/transliteration-toggle").then((m) => ({
+		default: m.TransliterationToggle,
+	})),
+);
 const AiWriterButton = lazy(() =>
 	import("@/components/editor/ai-writer-button").then((m) => ({
 		default: m.AiWriterButton,
@@ -128,6 +133,10 @@ interface DisplayToolbarProps {
 	setContentType?: (v: ContentMode) => void;
 	isOptionsOpen?: boolean;
 	setIsOptionsOpen?: (v: boolean) => void;
+	transliterationEnabled?: boolean;
+	onTransliterationToggle?: () => void;
+	transliterationLanguage?: string;
+	onTransliterationLanguageChange?: (lang: string) => void;
 }
 
 export const DisplayToolbar = memo(
@@ -170,6 +179,10 @@ export const DisplayToolbar = memo(
 		setContentType,
 		isOptionsOpen = false,
 		setIsOptionsOpen,
+		transliterationEnabled,
+		onTransliterationToggle,
+		transliterationLanguage,
+		onTransliterationLanguageChange,
 	}: DisplayToolbarProps) => {
 		const { t } = useTranslation();
 		const { user } = useAuth();
@@ -352,6 +365,24 @@ export const DisplayToolbar = memo(
 						contentType !== "draw" && (
 							<Suspense fallback={<ButtonSkeleton />}>
 								<AiWriterButton onClick={onAiWriterClick} />
+							</Suspense>
+						)}
+
+					{isEdit &&
+						contentType === "text" &&
+						transliterationEnabled !== undefined &&
+						onTransliterationToggle &&
+						transliterationLanguage &&
+						onTransliterationLanguageChange && (
+							<Suspense fallback={<ButtonSkeleton />}>
+								<TransliterationToggle
+									enabled={transliterationEnabled}
+									onToggle={onTransliterationToggle}
+									language={transliterationLanguage}
+									onLanguageChange={
+										onTransliterationLanguageChange
+									}
+								/>
 							</Suspense>
 						)}
 

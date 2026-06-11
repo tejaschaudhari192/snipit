@@ -596,7 +596,15 @@
 		"drawing": "Drawing",
 		"shorten_link": "Shorten Link",
 		"file": "File",
-		"ai_writer": "AI Writer"
+		"ai_writer": "AI Writer",
+		"transliteration": {
+			"toggle_label": "Keyboard Input",
+			"enabled": "Typing in {{language}}",
+			"disabled": "English Keyboard",
+			"select_language": "Select input language",
+			"tooltip_enable": "Enable phonetic keyboard — type in English, get {{language}}",
+			"tooltip_disable": "Switch back to English keyboard"
+		}
 	},
 	"ai_dialog": {
 		"title": "AI Editor Assistant",
