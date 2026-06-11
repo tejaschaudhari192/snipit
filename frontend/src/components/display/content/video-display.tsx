@@ -10,6 +10,8 @@ import { useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { useLiveKit } from "@/hooks/use-livekit";
 import { calculateBufferPercent } from "@/utils/video-utils";
+import { useFloatingReactions } from "@/hooks/use-floating-reactions";
+import { useCinemaSync } from "@/hooks/use-cinema-sync";
 import {
 	CinemaBufferOverlay,
 	CinemaErrorOverlay,
@@ -27,13 +29,6 @@ interface VideoDisplayProps {
 	isEdit: boolean;
 	content: string;
 	onContentChange: (val: string) => void;
-}
-
-interface FloatingEmoji {
-	id: number;
-	emoji: string;
-	left: number;
-	name: string;
 }
 
 export const VideoDisplay = ({
@@ -70,7 +65,6 @@ export const VideoDisplay = ({
 		(paste && user && paste.owner === user._id) ||
 		localFile !== null;
 
-	const [videoUrlInput, setVideoUrlInput] = useState(content || "");
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [currentTime, setCurrentTime] = useState(0);
 	const [duration, setDuration] = useState(0);
@@ -197,6 +191,21 @@ export const VideoDisplay = ({
 		setIsControlsHovered(false);
 	};
 
+	const handleVideoPlay = () => {
+		setIsPlaying(true);
+		setIsBuffering(false);
+		setVideoError(null);
+	};
+
+	const handleVideoPause = () => {
+		setIsPlaying(false);
+		setIsBuffering(false);
+	};
+
+	const handleVideoSeeked = () => {
+		setIsBuffering(false);
+	};
+
 	const handleFullscreen = () => {
 		if (!theaterRef.current) return;
 		if (!document.fullscreenElement) {
@@ -216,188 +225,31 @@ export const VideoDisplay = ({
 			document.removeEventListener("fullscreenchange", handleFsChange);
 	}, []);
 
-	// Floating reactions state
-	const [reactions, setReactions] = useState<FloatingEmoji[]>([]);
-	const nextReactionId = useRef(0);
+	// Custom hook for flying emojis
+	const { reactions, handleSendReaction } = useFloatingReactions(
+		socket,
+		paste.id,
+		user?.username,
+	);
 
-	// To prevent infinite feedback loops during sync, we set this flag
-	const isIncomingEvent = useRef(false);
+	// Custom hook for all video sync events and timeline pings
+	const { emitVideoState } = useCinemaSync({
+		socket,
+		pasteId: paste.id,
+		isHost,
+		isP2pMode,
+		videoRef,
+		isPlaying,
+		duration,
+		setCurrentTime,
+		setDuration,
+		setIsPlaying,
+		setIsBuffering,
+		setCommentsList,
+	});
 
 	// Floating Emoji tray
 	const emojis = ["🎉", "😂", "😮", "❤️", "🍿", "🔥", "👏"];
-
-	useEffect(() => {
-		if (!socket) {
-			console.log("Cinema: Socket is not initialized");
-			return;
-		}
-
-		console.log("Cinema: Binding socket listeners");
-
-		// Listen for playback state changes
-		socket.on(
-			"video-sync-state",
-			(data: {
-				action: "play" | "pause" | "seek";
-				timestamp: number;
-				duration?: number;
-			}) => {
-				console.log("Cinema: Received video-sync-state event:", data);
-				if (!videoRef.current) {
-					console.warn(
-						"Cinema: Received sync event but videoRef is null",
-					);
-					return;
-				}
-				isIncomingEvent.current = true;
-
-				if (data.duration && !isHost) {
-					console.log(
-						"Cinema: Syncing actual video duration from host:",
-						data.duration,
-					);
-					setDuration(data.duration);
-				}
-
-				if (data.action === "play") {
-					console.log(`Cinema: Sync play to ${data.timestamp}`);
-					setCurrentTime(data.timestamp);
-					if (!isP2pMode || isHost) {
-						// Only seek local elements for host / CDN playback
-						const drift = Math.abs(
-							videoRef.current.currentTime - data.timestamp,
-						);
-						if (drift > 1.5) {
-							videoRef.current.currentTime = data.timestamp;
-						}
-					}
-					videoRef.current
-						.play()
-						.then(() => {
-							console.log("Cinema: Programmatic play succeeded");
-						})
-						.catch((err) => {
-							if (err.name !== "AbortError") {
-								console.error("Cinema: Sync play failed:", err);
-							}
-							setIsPlaying(false);
-							setIsBuffering(false);
-						});
-					setIsPlaying(true);
-				} else if (data.action === "pause") {
-					console.log(`Cinema: Sync pause to ${data.timestamp}`);
-					setCurrentTime(data.timestamp);
-					videoRef.current.pause();
-					if (!isP2pMode || isHost) {
-						videoRef.current.currentTime = data.timestamp;
-					}
-					setIsPlaying(false);
-					setIsBuffering(false);
-				} else if (data.action === "seek") {
-					console.log(`Cinema: Sync seek to ${data.timestamp}`);
-					setCurrentTime(data.timestamp);
-					if (!isP2pMode || isHost) {
-						videoRef.current.currentTime = data.timestamp;
-					}
-					setIsBuffering(false);
-				}
-
-				setTimeout(() => {
-					isIncomingEvent.current = false;
-				}, 150);
-			},
-		);
-
-		// Listen for flying emoji reactions
-		socket.on(
-			"video-reaction-received",
-			(data: { emoji: string; name: string }) => {
-				console.log("Cinema: Reaction received:", data);
-				setReactions((prev) => [
-					...prev,
-					{
-						id: nextReactionId.current++,
-						emoji: data.emoji,
-						left: Math.random() * 80 + 10, // random percentage offset
-						name: data.name,
-					},
-				]);
-			},
-		);
-
-		// Listen for live chat comments
-		socket.on(
-			"video-chat-message-received",
-			(data: { text: string; sender: string; color: string }) => {
-				console.log("Cinema: Chat message received:", data);
-				setCommentsList((prev) => [...prev, data]);
-			},
-		);
-
-		// Listen for periodic timeline pings from host
-		socket.on(
-			"video-timeline-update",
-			(data: { timestamp: number; duration?: number }) => {
-				if (isHost) return;
-				console.log("Cinema: Received video-timeline-update:", data);
-				setCurrentTime(data.timestamp);
-				if (data.duration) {
-					setDuration(data.duration);
-				}
-			},
-		);
-		return () => {
-			console.log("Cinema: Cleaning up socket listeners");
-			socket.off("video-sync-state");
-			socket.off("video-timeline-update");
-			socket.off("video-reaction-received");
-			socket.off("video-chat-message-received");
-		};
-	}, [socket, isHost, isP2pMode]);
-
-	// Periodically send current playhead position to let friends see status
-	useEffect(() => {
-		if (!socket || !isPlaying || !videoRef.current) return;
-
-		const interval = setInterval(() => {
-			if (videoRef.current) {
-				socket.emit("video-timeline-ping", {
-					pasteId: paste.id,
-					timestamp: videoRef.current.currentTime,
-					duration: videoRef.current.duration || undefined,
-				});
-			}
-		}, 3000);
-
-		return () => clearInterval(interval);
-	}, [socket, isPlaying, paste.id]);
-
-	// Smooth playhead estimation for watchers in P2P mode
-	useEffect(() => {
-		if (!isP2pMode || isHost || !isPlaying) return;
-
-		const interval = setInterval(() => {
-			setCurrentTime((prev) => {
-				const next = prev + 0.1;
-				return duration > 0 && next > duration ? duration : next;
-			});
-		}, 100);
-
-		return () => clearInterval(interval);
-	}, [isP2pMode, isHost, isPlaying, duration]);
-
-	const emitVideoState = (
-		action: "play" | "pause" | "seek",
-		time: number,
-	) => {
-		if (!socket || isIncomingEvent.current) return;
-		socket.emit("video-sync-action", {
-			pasteId: paste.id,
-			action,
-			timestamp: time,
-			duration: videoRef.current?.duration || undefined,
-		});
-	};
 
 	const handlePlayPause = () => {
 		if (!videoRef.current) return;
@@ -426,14 +278,6 @@ export const VideoDisplay = ({
 		}
 	};
 
-	const sendReaction = (emoji: string) => {
-		if (!socket) return;
-		socket.emit("video-reaction-send", {
-			pasteId: paste.id,
-			emoji,
-		});
-	};
-
 	const sendChatMessage = () => {
 		if (!socket || !chatInput.trim()) return;
 		socket.emit("video-chat-message", {
@@ -442,15 +286,6 @@ export const VideoDisplay = ({
 		});
 		setChatInput("");
 	};
-
-	// Clean reactions list as they float up
-	useEffect(() => {
-		if (reactions.length === 0) return;
-		const timer = setTimeout(() => {
-			setReactions((prev) => prev.slice(1));
-		}, 3500);
-		return () => clearTimeout(timer);
-	}, [reactions]);
 
 	if (isEdit) {
 		return (
@@ -471,9 +306,8 @@ export const VideoDisplay = ({
 					<div className="flex gap-2">
 						<Input
 							placeholder="Paste video stream link (e.g. mp4, webm, youtube)..."
-							value={videoUrlInput}
+							value={content}
 							onChange={(e) => {
-								setVideoUrlInput(e.target.value);
 								onContentChange(e.target.value);
 							}}
 							className="flex-1 shadow-inner h-11"
@@ -593,16 +427,9 @@ export const VideoDisplay = ({
 								className="max-w-full max-h-full aspect-video"
 								onTimeUpdate={handleTimeUpdate}
 								onProgress={handleProgress}
-								onPlay={() => {
-									setIsPlaying(true);
-									setIsBuffering(false);
-									setVideoError(null);
-								}}
-								onPause={() => {
-									setIsPlaying(false);
-									setIsBuffering(false);
-								}}
-								onSeeked={() => setIsBuffering(false)}
+								onPlay={handleVideoPlay}
+								onPause={handleVideoPause}
+								onSeeked={handleVideoSeeked}
 								onCanPlay={() => {
 									setIsBuffering(false);
 									setVideoError(null);
@@ -685,7 +512,7 @@ export const VideoDisplay = ({
 					handlePlayPause={handlePlayPause}
 					handleToggleMute={handleToggleMute}
 					handleFullscreen={handleFullscreen}
-					sendReaction={sendReaction}
+					sendReaction={handleSendReaction}
 					setVolume={setVolume}
 					setCurrentTime={setCurrentTime}
 					emitVideoState={emitVideoState}
