@@ -20,6 +20,7 @@ export interface AiWriterDialogProps {
 	onClose: () => void;
 	onApply: (newText: string) => void;
 	selectedText: string;
+	contentType?: string;
 }
 
 export const AiWriterDialog = ({
@@ -27,6 +28,7 @@ export const AiWriterDialog = ({
 	onClose,
 	onApply,
 	selectedText,
+	contentType,
 }: AiWriterDialogProps) => {
 	const { t } = useTranslation();
 	const apiHelpers = useApiHelpers();
@@ -49,10 +51,16 @@ export const AiWriterDialog = ({
 			// Using the same endpoint but with empty context if needed,
 			// or a specialized writing endpoint if available.
 			// For now, we reuse enhanceContent with the provided context (selectedText or empty).
+			let targetInstruction =
+				instruction ||
+				"Write something interesting and useful for a developer.";
+			if (contentType === "richtext") {
+				targetInstruction = `${targetInstruction} (IMPORTANT: Return the response as clean, nicely formatted HTML suitable for a rich text editor. Use proper semantic tags like <p>, <strong>, <em>, <ul>, <li>, <h3>, <h4>, <blockquote>, <code> etc. Do NOT wrap the code/response in markdown formatting like \`\`\`html or similar code blocks. Output ONLY the raw HTML content.)`;
+			}
+
 			const res = await apiHelpers.enhanceContent(
 				selectedText || "",
-				instruction ||
-					"Write something interesting and useful for a developer.",
+				targetInstruction,
 			);
 			if (res && res.result) {
 				setResult(res.result);

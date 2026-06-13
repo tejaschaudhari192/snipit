@@ -11,6 +11,8 @@ import type { PasteData, ContentMode, ActiveUser, EditorChange } from "@/types";
 import { Socket } from "socket.io-client";
 import { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import type { FileUploadStatus } from "@/lib/file-service";
+import type { useTransliteration } from "@/hooks/use-transliteration";
+import { Editor } from "@tiptap/core";
 
 interface DisplayWorkspaceProps {
 	id: string;
@@ -51,6 +53,8 @@ interface DisplayWorkspaceProps {
 	files: FileUploadStatus[];
 	isFileUploading: boolean;
 	fileUploadError: string | null;
+	transliteration?: ReturnType<typeof useTransliteration>;
+	onEditorInstance?: (editor: Editor | null) => void;
 }
 
 export const DisplayWorkspace = memo(
@@ -90,6 +94,8 @@ export const DisplayWorkspace = memo(
 		files,
 		isFileUploading,
 		fileUploadError,
+		transliteration,
+		onEditorInstance,
 	}: DisplayWorkspaceProps) => {
 		if (!paste) {
 			return <ShimmerSection type="editor" className="flex-1" />;
@@ -142,6 +148,8 @@ export const DisplayWorkspace = memo(
 						files={files}
 						isFileUploading={isFileUploading}
 						fileUploadError={fileUploadError}
+						transliteration={transliteration}
+						onEditorInstance={onEditorInstance}
 					/>
 				</Suspense>
 			</div>

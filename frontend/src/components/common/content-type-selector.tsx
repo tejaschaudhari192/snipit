@@ -43,6 +43,18 @@ export const ContentTypeSelector = memo(
 						</span>
 					</TabsTrigger>
 					<TabsTrigger
+						value="richtext"
+						className="flex-1 flex items-center justify-center gap-2 px-2 sm:px-3 text-sm font-semibold"
+					>
+						<FileText className="h-4 w-4 shrink-0" />
+						<span className="hidden min-[440px]:inline whitespace-nowrap">
+							{t("home.tab_richtext")}
+						</span>
+						<span className="inline min-[440px]:hidden whitespace-nowrap">
+							{t("home.tab_richtext_short")}
+						</span>
+					</TabsTrigger>
+					<TabsTrigger
 						value="code"
 						className="flex-1 flex items-center justify-center gap-2 px-2 sm:px-3 text-sm font-semibold"
 					>

@@ -21,6 +21,7 @@ import { useEditorLayout } from "@/hooks/use-editor-layout";
 import { cn } from "@/utils";
 import { VideoSetupView } from "./video-setup-view";
 import type { useTransliteration } from "@/hooks/use-transliteration";
+import { Editor as TiptapEditorInstance } from "@tiptap/core";
 
 const EditorToolbar = lazy(() =>
 	import("@/components/common/editor-toolbar").then((m) => ({
@@ -56,6 +57,11 @@ const MarkdownDisplay = lazy(() =>
 		default: m.MarkdownDisplay,
 	})),
 );
+const TiptapEditor = lazy(() =>
+	import("@/components/editor/tiptap-editor").then((m) => ({
+		default: m.TiptapEditor,
+	})),
+);
 
 const EditorInnerSkeleton = () => (
 	<div className="flex-1 p-6 space-y-4 w-full h-full bg-background/50">
@@ -89,6 +95,7 @@ interface EditorContentProps {
 	onDeleteHistoryItem?: (id: string) => void;
 	drawRevision?: number;
 	transliteration?: ReturnType<typeof useTransliteration>;
+	onEditorInstance?: (editor: TiptapEditorInstance | null) => void;
 }
 
 export const EditorContent = memo(
@@ -109,6 +116,7 @@ export const EditorContent = memo(
 		onDeleteHistoryItem,
 		drawRevision = 0,
 		transliteration,
+		onEditorInstance,
 	}: EditorContentProps) => {
 		const {
 			contentType,
@@ -183,7 +191,8 @@ export const EditorContent = memo(
 				<div
 					ref={stableRefCallback}
 					className={cn(
-						"mx-2 mt-0.5 sm:mx-4 sm:mt-1 mb-4 glass-card overflow-hidden relative z-20 flex flex-col rounded-2xl",
+						"mx-2 mt-0.5 sm:mx-4 sm:mt-1 mb-4 glass-card relative z-20 flex flex-col rounded-2xl",
+						contentType !== "richtext" && "overflow-hidden",
 						contentType === "draw" && "touch-none",
 						isFullscreen
 							? "fixed inset-0 m-0 z-50 rounded-none h-screen border-none"
@@ -393,6 +402,19 @@ export const EditorContent = memo(
 								removeFile={removeFile}
 								onFileSelect={onFileSelect}
 							/>
+						) : contentType === "richtext" ? (
+							<Suspense
+								fallback={
+									<Skeleton className="flex-1 w-full h-full" />
+								}
+							>
+								<TiptapEditor
+									value={textValue}
+									onChange={setTextValue}
+									transliteration={transliteration}
+									onEditorInstance={onEditorInstance}
+								/>
+							</Suspense>
 						) : (
 							<Textarea
 								ref={userInputRef}

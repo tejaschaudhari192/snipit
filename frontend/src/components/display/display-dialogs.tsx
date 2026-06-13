@@ -19,6 +19,7 @@ interface DisplayDialogsProps {
 	selectedText: string;
 	prefillInstruction: string;
 	applyEnhancedText: (text: string) => void;
+	contentType?: string;
 }
 
 export const DisplayDialogs: React.FC<DisplayDialogsProps> = ({
@@ -36,6 +37,7 @@ export const DisplayDialogs: React.FC<DisplayDialogsProps> = ({
 	selectedText,
 	prefillInstruction,
 	applyEnhancedText,
+	contentType,
 }) => {
 	return (
 		<Suspense fallback={null}>
@@ -58,6 +60,7 @@ export const DisplayDialogs: React.FC<DisplayDialogsProps> = ({
 				selectedText={selectedText}
 				onApply={applyEnhancedText}
 				initialInstruction={prefillInstruction}
+				contentType={contentType}
 			/>
 		</Suspense>
 	);

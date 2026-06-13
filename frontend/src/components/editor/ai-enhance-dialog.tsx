@@ -21,6 +21,7 @@ export interface AiEnhanceDialogProps {
 	selectedText: string;
 	onApply: (newText: string) => void;
 	initialInstruction?: string;
+	contentType?: string;
 }
 
 export const AiEnhanceDialog = ({
@@ -29,6 +30,7 @@ export const AiEnhanceDialog = ({
 	selectedText,
 	onApply,
 	initialInstruction = "",
+	contentType,
 }: AiEnhanceDialogProps) => {
 	const { t } = useTranslation();
 	const apiHelpers = useApiHelpers();
@@ -49,10 +51,14 @@ export const AiEnhanceDialog = ({
 	}, [isOpen, initialInstruction]);
 
 	const handleEnhance = async (overrideInstruction?: string) => {
-		const targetInstruction = overrideInstruction ?? instruction;
+		let targetInstruction = overrideInstruction ?? instruction;
 		if (!targetInstruction.trim()) {
 			toast.error(t("ai_dialog.error_instruction"));
 			return;
+		}
+
+		if (contentType === "richtext") {
+			targetInstruction = `${targetInstruction} (IMPORTANT: Return the response as clean, nicely formatted HTML suitable for a rich text editor. Use proper semantic tags like <p>, <strong>, <em>, <ul>, <li>, <h3>, <h4>, <blockquote>, <code> etc. Do NOT wrap the code/response in markdown formatting like \`\`\`html or similar code blocks. Output ONLY the raw HTML content.)`;
 		}
 
 		setIsLoading(true);

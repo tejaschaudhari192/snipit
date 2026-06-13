@@ -123,6 +123,13 @@
 	--sidebar-ring: oklch(0.7 0.2 280);
 }
 
+/* Force popups and tooltips to be above everything */
+[data-radix-popper-content-wrapper],
+[data-tippy-root],
+.tippy-box {
+	z-index: 99999 !important;
+}
+
 @layer base {
 	* {
 		@apply border-border outline-ring/50;

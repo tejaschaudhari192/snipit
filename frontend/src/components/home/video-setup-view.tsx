@@ -46,7 +46,7 @@ export const VideoSetupView = memo(
 				}
 			}, 600);
 			return () => clearTimeout(timer);
-		}, [textValue]);
+		}, [textValue, t]);
 
 		return (
 			<div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-12 w-full h-full bg-background/20 backdrop-blur-3xl overflow-y-auto">

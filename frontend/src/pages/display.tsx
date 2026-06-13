@@ -36,6 +36,7 @@ import { useDisplayInit } from "@/hooks/display/use-display-init";
 import { useDisplayActions } from "@/hooks/display/use-display-actions";
 import { useAutosave } from "@/hooks/display/use-autosave";
 import { useTransliteration } from "@/hooks/use-transliteration";
+import { Editor as TiptapEditorInstance } from "@tiptap/core";
 
 import type {
 	CommentData,
@@ -351,6 +352,44 @@ const DisplayPage = () => {
 		applyWriterText,
 	} = useAiEnhance();
 
+	const tiptapEditorRef = useRef<TiptapEditorInstance | null>(null);
+	const handleTiptapMount = useCallback(
+		(editor: TiptapEditorInstance | null) => {
+			tiptapEditorRef.current = editor;
+		},
+		[],
+	);
+
+	const handleApplyEnhancedText = useCallback(
+		(newText: string) => {
+			if (contentType === "richtext" && tiptapEditorRef.current) {
+				tiptapEditorRef.current
+					.chain()
+					.focus()
+					.insertContent(newText)
+					.run();
+				return;
+			}
+			applyEnhancedText(newText);
+		},
+		[applyEnhancedText, contentType],
+	);
+
+	const handleApplyWriterText = useCallback(
+		(newText: string) => {
+			if (contentType === "richtext" && tiptapEditorRef.current) {
+				tiptapEditorRef.current
+					.chain()
+					.focus()
+					.insertContent(newText)
+					.run();
+				return;
+			}
+			applyWriterText(newText);
+		},
+		[applyWriterText, contentType],
+	);
+
 	useAutosave({
 		isAutosave: state.isAutosave,
 		isEdit,
@@ -592,7 +631,12 @@ const DisplayPage = () => {
 					</div>
 				)}
 
-				<div className="flex-1 flex flex-col w-full min-h-0 h-full overflow-hidden">
+				<div
+					className={cn(
+						"flex-1 flex flex-col w-full min-h-0 h-full",
+						contentType !== "richtext" && "overflow-hidden",
+					)}
+				>
 					<div
 						className={cn(
 							"w-full flex-1 flex flex-col transition-all duration-300 min-h-0 h-full",
@@ -757,6 +801,8 @@ const DisplayPage = () => {
 									);
 								}}
 								removedServerFileUrls={removedServerFileUrls}
+								transliteration={transliteration}
+								onEditorInstance={handleTiptapMount}
 							/>
 						</Suspense>
 					</div>
@@ -781,13 +827,15 @@ const DisplayPage = () => {
 				setIsAiDialogOpen={setIsAiDialogOpen}
 				selectedText={selectedText}
 				prefillInstruction={prefillInstruction}
-				applyEnhancedText={applyEnhancedText}
+				applyEnhancedText={handleApplyEnhancedText}
+				contentType={contentType}
 			/>
 			<AiWriterDialog
 				isOpen={isAiWriterDialogOpen}
 				onClose={() => setIsAiWriterDialogOpen(false)}
-				onApply={applyWriterText}
+				onApply={handleApplyWriterText}
 				selectedText={selectedText}
+				contentType={contentType}
 			/>
 		</>
 	);

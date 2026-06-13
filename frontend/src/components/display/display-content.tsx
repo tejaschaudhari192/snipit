@@ -25,6 +25,15 @@ const VideoDisplay = lazy(() =>
 	})),
 );
 
+const TiptapEditor = lazy(() =>
+	import("@/components/editor/tiptap-editor").then((m) => ({
+		default: m.TiptapEditor,
+	})),
+);
+
+import { Editor } from "@tiptap/core";
+import { Skeleton } from "@/components/ui/skeleton";
+
 interface DisplayContentProps {
 	id: string;
 	isEdit: boolean;
@@ -60,6 +69,9 @@ interface DisplayContentProps {
 	files?: FileUploadStatus[];
 	isFileUploading?: boolean;
 	fileUploadError?: string | null;
+	transliteration?: ReturnType<typeof useTransliteration>;
+	onEditorInstance?: (editor: Editor | null) => void;
+	onMarkdownLayoutModeChange?: (mode: "split" | "editor" | "preview") => void;
 }
 
 export const DisplayContent = memo(
@@ -95,6 +107,8 @@ export const DisplayContent = memo(
 		files = [],
 		isFileUploading = false,
 		fileUploadError = null,
+		transliteration,
+		onEditorInstance,
 	}: DisplayContentProps) => {
 		const containerRef = useRef<HTMLDivElement>(null);
 		const [mdLayoutMode, setMdLayoutMode] = useMarkdownLayout();
@@ -157,6 +171,22 @@ export const DisplayContent = memo(
 							isEdit={isEdit}
 							content={content}
 							onContentChange={onContentChange}
+						/>
+					</Suspense>
+				);
+			}
+
+			if (contentType === "richtext") {
+				return (
+					<Suspense
+						fallback={<Skeleton className="flex-1 w-full h-full" />}
+					>
+						<TiptapEditor
+							value={content}
+							onChange={onContentChange}
+							readOnly={!isEdit}
+							transliteration={transliteration}
+							onEditorInstance={onEditorInstance}
 						/>
 					</Suspense>
 				);
@@ -319,7 +349,12 @@ export const DisplayContent = memo(
 					editor={editorInstance}
 				/>
 
-				<div className="flex-1 w-full relative overflow-hidden min-h-0 flex flex-col">
+				<div
+					className={cn(
+						"flex-1 w-full relative min-h-0 flex flex-col",
+						contentType !== "richtext" && "overflow-hidden",
+					)}
+				>
 					{renderContent()}
 				</div>
 			</div>

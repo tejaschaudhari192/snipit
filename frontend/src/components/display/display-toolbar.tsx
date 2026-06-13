@@ -369,7 +369,7 @@ export const DisplayToolbar = memo(
 						)}
 
 					{isEdit &&
-						contentType === "text" &&
+						["text", "richtext"].includes(contentType) &&
 						transliterationEnabled !== undefined &&
 						onTransliterationToggle &&
 						transliterationLanguage &&

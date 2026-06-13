@@ -4,6 +4,7 @@
 
 export const CONTENT_MODES = [
 	"text",
+	"richtext",
 	"code",
 	"draw",
 	"link",

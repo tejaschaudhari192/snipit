@@ -217,6 +217,8 @@
 		"tab_text_short": "Text",
 		"tab_code": "Code",
 		"tab_code_short": "Code",
+		"tab_richtext": "Rich Text",
+		"tab_richtext_short": "Rich",
 		"tab_draw": "Drawing",
 		"tab_draw_short": "Draw",
 		"tab_link": "Shorten Link",

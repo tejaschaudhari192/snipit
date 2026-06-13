@@ -14,10 +14,11 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { playErrorSound } from "@/utils";
+import { cn, playErrorSound } from "@/utils";
 import { defineMonacoThemes } from "@/lib/monaco";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { CONFIG } from "@/configurations";
+import { Editor } from "@tiptap/core";
 import { usePaste } from "@/context/PasteContext";
 import { useAiEnhance } from "@/hooks/use-ai-enhance";
 import { useHomeUrlSync } from "@/hooks/use-home-url-sync";
@@ -187,6 +188,41 @@ const HomePage = () => {
 		applyEnhancedText,
 		applyWriterText,
 	} = useAiEnhance();
+
+	const tiptapEditorRef = useRef<Editor | null>(null);
+	const handleTiptapMount = useCallback((editor: Editor | null) => {
+		tiptapEditorRef.current = editor;
+	}, []);
+
+	const handleApplyEnhancedText = useCallback(
+		(newText: string) => {
+			if (contentType === "richtext" && tiptapEditorRef.current) {
+				tiptapEditorRef.current
+					.chain()
+					.focus()
+					.insertContent(newText)
+					.run();
+				return;
+			}
+			applyEnhancedText(newText);
+		},
+		[applyEnhancedText, contentType],
+	);
+
+	const handleApplyWriterText = useCallback(
+		(newText: string) => {
+			if (contentType === "richtext" && tiptapEditorRef.current) {
+				tiptapEditorRef.current
+					.chain()
+					.focus()
+					.insertContent(newText)
+					.run();
+				return;
+			}
+			applyWriterText(newText);
+		},
+		[applyWriterText, contentType],
+	);
 
 	const [isAiAutocompleteEnabled, setIsAiAutocompleteEnabled] = useState(() =>
 		storage.get(CONFIG.storageKeys.aiAutocomplete, false),
@@ -427,7 +463,7 @@ const HomePage = () => {
 						</Suspense>
 					)}
 
-					{["text", "code"].includes(contentType) && (
+					{["text", "code", "richtext"].includes(contentType) && (
 						<Suspense
 							fallback={
 								<div className="flex items-center gap-2">
@@ -442,7 +478,21 @@ const HomePage = () => {
 							<div className="flex items-center gap-2">
 								<AiWriterButton
 									onClick={() => {
-										if (editorInstanceRef.current) {
+										if (
+											contentType === "richtext" &&
+											tiptapEditorRef.current
+										) {
+											const { from, to } =
+												tiptapEditorRef.current.state
+													.selection;
+											const text =
+												tiptapEditorRef.current.state.doc.textBetween(
+													from,
+													to,
+													" ",
+												);
+											setSelectedText(text);
+										} else if (editorInstanceRef.current) {
 											const selection =
 												editorInstanceRef.current.getSelection();
 											if (
@@ -471,7 +521,7 @@ const HomePage = () => {
 
 								<div className="w-px h-6 bg-border/40 mx-1" />
 
-								{contentType === "text" && (
+								{["text", "richtext"].includes(contentType) && (
 									<TransliterationToggle
 										enabled={transliteration.enabled}
 										onToggle={transliteration.toggle}
@@ -514,7 +564,12 @@ const HomePage = () => {
 					const isTerminalVisible =
 						isTerminalOpen && contentType === "code";
 					const editorPanel = (
-						<div className="flex-1 flex flex-col min-h-0 min-w-0 overflow-clip h-full w-full">
+						<div
+							className={cn(
+								"flex-1 flex flex-col min-h-0 min-w-0 h-full w-full",
+								contentType !== "richtext" && "overflow-clip",
+							)}
+						>
 							<EditorContent
 								fontSize={fontSize}
 								editorContainerRef={(node) => {
@@ -539,6 +594,7 @@ const HomePage = () => {
 								onDeleteHistoryItem={deleteSnippet}
 								drawRevision={drawRevision}
 								transliteration={transliteration}
+								onEditorInstance={handleTiptapMount}
 							/>
 						</div>
 					);
@@ -591,14 +647,16 @@ const HomePage = () => {
 					isOpen={isAiDialogOpen}
 					onClose={() => setIsAiDialogOpen(false)}
 					selectedText={selectedText}
-					onApply={applyEnhancedText}
+					onApply={handleApplyEnhancedText}
 					initialInstruction={prefillInstruction}
+					contentType={contentType}
 				/>
 				<AiWriterDialog
 					isOpen={isAiWriterDialogOpen}
 					onClose={() => setIsAiWriterDialogOpen(false)}
-					onApply={applyWriterText}
+					onApply={handleApplyWriterText}
 					selectedText={selectedText}
+					contentType={contentType}
 				/>
 				<Suspense fallback={null}>
 					<AiDrawDialog

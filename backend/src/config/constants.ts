@@ -1,9 +1,10 @@
 export const CONTENT_MODES = [
 	"text",
 	"code",
+	"richtext",
+	"draw",
 	"link",
 	"file",
-	"draw",
 	"video",
 ] as const;
 export const VISIBILITIES = ["public", "private", "shared"] as const;

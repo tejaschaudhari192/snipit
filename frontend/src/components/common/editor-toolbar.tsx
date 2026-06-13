@@ -44,7 +44,8 @@ export const EditorToolbar = ({
 	if (
 		contentType !== "code" &&
 		contentType !== "text" &&
-		contentType !== "draw"
+		contentType !== "draw" &&
+		contentType !== "richtext"
 	) {
 		return null;
 	}
