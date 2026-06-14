@@ -46,7 +46,7 @@ export const CONFIG = {
 		minFontSize: 8,
 		maxFontSize: 48,
 		language: "text",
-		expiry: "1d",
+		expiry: "1w",
 		visibility: "public" as const,
 		editPermission: "owner" as const,
 		publicRole: "viewer" as const,
