@@ -405,6 +405,7 @@ export function TiptapEditor({
 					extensions={extensions as AnyExtension[]}
 					editorProps={{
 						attributes: {
+							id: "tiptap-editor-container",
 							class: cn(
 								"prose prose-sm sm:prose-base dark:prose-invert focus:outline-none max-w-4xl mx-auto w-full min-h-screen outline-none px-6 sm:px-10 py-8 bg-background border border-border/40 shadow-sm rounded-lg transition-all",
 								readOnly && "pointer-events-none",
