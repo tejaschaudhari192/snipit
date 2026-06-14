@@ -33,6 +33,7 @@ const TiptapEditor = lazy(() =>
 
 import { Editor } from "@tiptap/core";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { useTransliteration } from "@/hooks/use-transliteration";
 
 interface DisplayContentProps {
 	id: string;
