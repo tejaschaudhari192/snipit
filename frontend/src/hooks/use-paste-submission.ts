@@ -142,7 +142,9 @@ export const usePasteSubmission = (
 				language:
 					contentType === "code" || contentType === "text"
 						? language
-						: "text",
+						: contentType === "richtext"
+							? "richtext"
+							: "text",
 				burnAfterRead: expiresTime === "one-time",
 				visibility: finalVisibility,
 				allowedUsers:

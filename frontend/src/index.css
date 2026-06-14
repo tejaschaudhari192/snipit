@@ -407,3 +407,184 @@ body.is-404 .action-url-bar {
 		opacity: 0;
 	}
 }
+
+/* Tiptap Editor Placeholder Styles */
+.prose .is-editor-empty::before {
+	content: attr(data-placeholder);
+	float: left;
+	color: var(--color-muted-foreground);
+	opacity: 0.5;
+	pointer-events: none;
+	height: 0;
+}
+
+/* TipTap Table Styles */
+.prose table {
+	border-collapse: collapse;
+	table-layout: fixed;
+	width: 100%;
+	margin: 1.5rem 0;
+	overflow: hidden;
+}
+
+.prose td,
+.prose th {
+	border: 1px solid var(--border);
+	box-sizing: border-box;
+	min-width: 2em;
+	padding: 8px 12px;
+	position: relative;
+	vertical-align: top;
+	text-align: left;
+}
+
+.prose th {
+	background-color: var(--muted);
+	font-weight: bold;
+}
+
+.prose .selectedCell:after {
+	background: rgba(15, 23, 42, 0.08);
+	content: "";
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	pointer-events: none;
+	position: absolute;
+	z-index: 2;
+}
+
+.prose .column-resize-handle {
+	background-color: var(--primary);
+	bottom: -2px;
+	position: absolute;
+	right: -2px;
+	top: 0;
+	width: 4px;
+	z-index: 20;
+	pointer-events: none;
+}
+
+/* TipTap Code Block Styles */
+.prose pre {
+	background: var(--muted) !important;
+	color: var(--foreground) !important;
+	font-family: monospace;
+	padding: 0.75rem 1rem !important;
+	border-radius: 0.5rem !important;
+	border: 1px solid var(--border) !important;
+	margin: 1rem 0 !important;
+	overflow-x: auto !important;
+}
+
+.prose code {
+	color: inherit !important;
+	padding: 0.2rem 0.4rem !important;
+	background: var(--muted) !important;
+	border-radius: 0.25rem !important;
+	font-size: 0.85em !important;
+}
+
+.prose pre code {
+	padding: 0 !important;
+	background: none !important;
+	border-radius: 0 !important;
+	font-size: inherit !important;
+}
+
+/* TipTap Task List Styles */
+.prose ul[data-type="taskList"] {
+	list-style: none !important;
+	padding: 0 !important;
+	margin: 1rem 0 !important;
+}
+
+.prose ul[data-type="taskList"] li {
+	display: flex !important;
+	align-items: flex-start !important;
+	gap: 0.4rem !important;
+	margin: 0.25rem 0 !important;
+}
+
+.prose ul[data-type="taskList"] li::before {
+	display: none !important;
+}
+
+.prose ul[data-type="taskList"] li > label {
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	user-select: none !important;
+	margin-top: 0.3rem !important;
+	cursor: pointer !important;
+}
+
+.prose ul[data-type="taskList"] li > label input[type="checkbox"] {
+	appearance: none !important;
+	-webkit-appearance: none !important;
+	width: 0.95rem !important;
+	height: 0.95rem !important;
+	border-radius: 0.25rem !important;
+	border: 1.5px solid var(--border) !important;
+	background-color: var(--background) !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	position: relative !important;
+	cursor: pointer !important;
+	margin: 0 !important;
+	transition: all 0.2s ease !important;
+}
+
+.prose ul[data-type="taskList"] li > label input[type="checkbox"]:checked {
+	background-color: var(--primary) !important;
+	border-color: var(--primary) !important;
+}
+
+.prose
+	ul[data-type="taskList"]
+	li
+	> label
+	input[type="checkbox"]:checked::after {
+	content: "" !important;
+	position: absolute !important;
+	left: 35% !important;
+	top: 15% !important;
+	width: 25% !important;
+	height: 50% !important;
+	border: solid var(--primary-foreground) !important;
+	border-width: 0 1.5px 1.5px 0 !important;
+	transform: rotate(45deg) !important;
+}
+
+.prose ul[data-type="taskList"] li > div {
+	flex: 1 !important;
+}
+
+.prose ul[data-type="taskList"] li > div > p {
+	margin: 0 !important;
+}
+
+.prose ul[data-type="taskList"] li[data-checked="true"] > div,
+.prose ul[data-type="taskList"] li[data-checked] > div {
+	text-decoration: line-through !important;
+	opacity: 0.6 !important;
+}
+
+/* TipTap List Styles */
+.prose ul:not([data-type="taskList"]) {
+	list-style-type: disc !important;
+	padding-left: 1.5rem !important;
+	margin: 1rem 0 !important;
+}
+
+.prose ol {
+	list-style-type: decimal !important;
+	padding-left: 1.5rem !important;
+	margin: 1rem 0 !important;
+}
+
+.prose li {
+	margin: 0.25rem 0 !important;
+}

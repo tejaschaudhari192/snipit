@@ -105,6 +105,11 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 								className="h-3 w-3"
 							/>
 							{(() => {
+								if (
+									paste.contentMode === "richtext" ||
+									paste.language === "richtext"
+								)
+									return t("home.tab_richtext");
 								if (paste.language === "text")
 									return t("home.tab_text");
 								const lang = LANGUAGES.find(
