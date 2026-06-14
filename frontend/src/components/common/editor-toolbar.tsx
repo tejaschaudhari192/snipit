@@ -103,8 +103,8 @@ export const EditorToolbar = ({
 					<TooltipContent side="left">
 						<p>
 							{isFullscreen
-								? t("common.exit_zen")
-								: t("common.enter_zen")}
+								? t("common.shrink_editor")
+								: t("common.expand_editor")}
 						</p>
 					</TooltipContent>
 				</Tooltip>
