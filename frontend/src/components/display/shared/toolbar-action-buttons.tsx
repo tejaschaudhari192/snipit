@@ -22,6 +22,7 @@ interface ToolbarActionButtonsProps {
 	isCode?: boolean;
 	language?: string;
 	pasteId?: string;
+	contentType?: string;
 }
 
 export const ToolbarActionButtons = ({
@@ -41,6 +42,7 @@ export const ToolbarActionButtons = ({
 	isCode = false,
 	language = "text",
 	pasteId,
+	contentType,
 }: ToolbarActionButtonsProps) => {
 	const { t } = useTranslation();
 
@@ -56,12 +58,15 @@ export const ToolbarActionButtons = ({
 						<span>{t("display.copy_button")}</span>
 					</CopyButton>
 
-					{(isCode || language.toLowerCase() === "text") && (
+					{(isCode ||
+						language.toLowerCase() === "text" ||
+						contentType === "richtext") && (
 						<SaveAsButton
 							content={content}
 							language={language}
 							pasteId={pasteId}
 							isCode={isCode}
+							contentType={contentType}
 							className="gap-2 h-9 shrink-0"
 						/>
 					)}

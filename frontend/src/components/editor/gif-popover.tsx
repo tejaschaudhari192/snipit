@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
 	Popover,
 	PopoverTrigger,
@@ -7,6 +7,11 @@ import {
 import { Loader2 } from "lucide-react";
 import { CONFIG } from "@/configurations";
 import { cn } from "@/utils";
+import {
+	Tooltip,
+	TooltipTrigger,
+	TooltipContent,
+} from "@/components/ui/tooltip";
 
 interface GifPopoverProps {
 	onSelect: (url: string) => void;
@@ -117,64 +122,69 @@ export function GifPopover({ onSelect }: GifPopoverProps) {
 	const [hasMore, setHasMore] = useState(true);
 	const searchTimeoutRef = useRef<number | null>(null);
 
-	const fetchGifs = async (query: string, isLoadMore = false) => {
-		if (isLoadMore) {
-			setLoadingMore(true);
-		} else {
-			setLoading(true);
-			setOffset(0);
-			setHasMore(true);
-		}
-
-		const currentOffset = isLoadMore ? offset : 0;
-		const limit = 16;
-
-		try {
-			const url = query
-				? `https://api.giphy.com/v1/gifs/search?api_key=${CONFIG.giphyApiKey}&q=${encodeURIComponent(query)}&limit=${limit}&offset=${currentOffset}`
-				: `https://api.giphy.com/v1/gifs/trending?api_key=${CONFIG.giphyApiKey}&limit=${limit}&offset=${currentOffset}`;
-			const res = await fetch(url);
-			if (!res.ok) throw new Error("API failed");
-			const json = await res.json();
-			if (json.meta && json.meta.status === 403) {
-				throw new Error("Giphy API Key Banned");
-			}
-			if (json.data && json.data.length > 0) {
-				const formatted = json.data.map((item: GiphyGifItem) => ({
-					id: item.id,
-					url: item.images.fixed_width.url,
-					title: item.title,
-				}));
-				setGifs((prev) =>
-					isLoadMore ? [...prev, ...formatted] : formatted,
-				);
-				setOffset(currentOffset + limit);
-				setHasMore(json.data.length === limit);
+	const fetchGifs = useCallback(
+		async (query: string, isLoadMore = false) => {
+			if (isLoadMore) {
+				setLoadingMore(true);
 			} else {
-				if (!isLoadMore) setGifs([]);
-				setHasMore(false);
+				setLoading(true);
+				setOffset(0);
+				setHasMore(true);
 			}
-		} catch (error) {
-			console.error(
-				"Failed to load GIFs, using fallback curated GIFs:",
-				error,
-			);
-			if (!isLoadMore) {
-				if (query) {
-					const filtered = FALLBACK_GIFS.filter((gif) =>
-						gif.title.toLowerCase().includes(query.toLowerCase()),
-					);
-					setGifs(filtered);
-				} else {
-					setGifs(FALLBACK_GIFS);
+
+			const currentOffset = isLoadMore ? offset : 0;
+			const limit = 16;
+
+			try {
+				const url = query
+					? `https://api.giphy.com/v1/gifs/search?api_key=${CONFIG.giphyApiKey}&q=${encodeURIComponent(query)}&limit=${limit}&offset=${currentOffset}`
+					: `https://api.giphy.com/v1/gifs/trending?api_key=${CONFIG.giphyApiKey}&limit=${limit}&offset=${currentOffset}`;
+				const res = await fetch(url);
+				if (!res.ok) throw new Error("API failed");
+				const json = await res.json();
+				if (json.meta && json.meta.status === 403) {
+					throw new Error("Giphy API Key Banned");
 				}
-				setHasMore(false);
+				if (json.data && json.data.length > 0) {
+					const formatted = json.data.map((item: GiphyGifItem) => ({
+						id: item.id,
+						url: item.images.fixed_width.url,
+						title: item.title,
+					}));
+					setGifs((prev) =>
+						isLoadMore ? [...prev, ...formatted] : formatted,
+					);
+					setOffset(currentOffset + limit);
+					setHasMore(json.data.length === limit);
+				} else {
+					if (!isLoadMore) setGifs([]);
+					setHasMore(false);
+				}
+			} catch (error) {
+				console.error(
+					"Failed to load GIFs, using fallback curated GIFs:",
+					error,
+				);
+				if (!isLoadMore) {
+					if (query) {
+						const filtered = FALLBACK_GIFS.filter((gif) =>
+							gif.title
+								.toLowerCase()
+								.includes(query.toLowerCase()),
+						);
+						setGifs(filtered);
+					} else {
+						setGifs(FALLBACK_GIFS);
+					}
+					setHasMore(false);
+				}
+			} finally {
+				setLoading(false);
+				setLoadingMore(false);
 			}
-		} finally {
-			setLoading(false);
-			setLoadingMore(false);
-		}
-	};
+		},
+		[offset],
+	);
 
 	const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
 		const target = e.currentTarget;
@@ -206,18 +216,24 @@ export function GifPopover({ onSelect }: GifPopoverProps) {
 				window.clearTimeout(searchTimeoutRef.current);
 			}
 		};
-	}, [searchQuery, isOpen]);
+	}, [searchQuery, isOpen, fetchGifs]);
 
 	return (
 		<Popover open={isOpen} onOpenChange={setIsOpen}>
-			<PopoverTrigger asChild>
-				<button
-					className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer"
-					title="Search & Insert GIF"
-				>
-					<GifIcon className="h-4.5 w-4.5" />
-				</button>
-			</PopoverTrigger>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<PopoverTrigger asChild>
+						<button className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer">
+							<GifIcon className="h-4.5 w-4.5" />
+						</button>
+					</PopoverTrigger>
+				</TooltipTrigger>
+				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
+					<span className="font-semibold text-white">
+						Search & Insert GIF
+					</span>
+				</TooltipContent>
+			</Tooltip>
 			<PopoverContent
 				align="start"
 				className="w-72 p-3 border border-border/50 bg-background shadow-2xl rounded-2xl flex flex-col gap-3 overflow-hidden"

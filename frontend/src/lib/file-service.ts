@@ -89,7 +89,7 @@ export const FileService = {
 
 		try {
 			const sanitizedName = sanitizeFileName(file.name);
-			const filePath = sanitizedName;
+			const filePath = `${Date.now()}-${sanitizedName}`;
 
 			// Supabase JS SDK doesn't have a native onProgress for storage.upload yet
 			// so we rely on the interval simulation in the hook for now,
@@ -99,7 +99,7 @@ export const FileService = {
 				.from(CONFIG.supabaseStorageBucket)
 				.upload(filePath, file, {
 					cacheControl: "3600",
-					upsert: false,
+					upsert: true,
 					contentType: file.type || "application/octet-stream",
 				});
 

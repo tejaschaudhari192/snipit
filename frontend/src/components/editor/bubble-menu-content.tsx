@@ -15,6 +15,9 @@ import {
 	Underline,
 	Strikethrough,
 	Code,
+	Highlighter,
+	Superscript,
+	Subscript,
 } from "lucide-react";
 import {
 	DropdownMenu,
@@ -22,7 +25,14 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import { cn } from "@/utils";
+import { FONTS } from "./utils/fonts";
 
 export function BubbleMenuContent() {
 	const { editor } = useEditor();
@@ -31,7 +41,30 @@ export function BubbleMenuContent() {
 	const [isLoading, setIsLoading] = useState(false);
 	const apiHelpers = useApiHelpers();
 
+	const [linkDialogOpen, setLinkDialogOpen] = useState(false);
+	const [linkInputUrl, setLinkInputUrl] = useState("");
+
 	if (!editor) return null;
+
+	const handleOpenLinkDialog = () => {
+		const previousUrl = editor.getAttributes("link").href || "";
+		setLinkInputUrl(previousUrl);
+		setLinkDialogOpen(true);
+	};
+
+	const handleSaveLink = () => {
+		if (linkInputUrl === "") {
+			editor.chain().focus().extendMarkRange("link").unsetLink().run();
+		} else {
+			editor
+				.chain()
+				.focus()
+				.extendMarkRange("link")
+				.setLink({ href: linkInputUrl })
+				.run();
+		}
+		setLinkDialogOpen(false);
+	};
 
 	const handleAiAction = async (prompt: string) => {
 		const { from, to } = editor.state.selection;
@@ -175,11 +208,20 @@ export function BubbleMenuContent() {
 	const currentColor =
 		editor.getAttributes("textStyle").color || "currentColor";
 
+	const currentFont =
+		editor.getAttributes("textStyle").fontFamily || "Default";
+	const currentFontName =
+		FONTS.find(
+			(f) =>
+				f.value === currentFont ||
+				(f.value === "" && currentFont === "Default"),
+		)?.name || "Default";
+
 	return (
 		<>
 			<EditorBubbleItem
 				onSelect={() => setIsAiOpen(true)}
-				className="flex h-7 items-center gap-1.5 px-2.5 rounded-sm text-purple-500 hover:bg-purple-500/10 cursor-pointer transition-colors text-xs font-semibold"
+				className="flex h-7 items-center gap-1.5 px-2.5 rounded-sm text-purple-500 hover:bg-purple-500/10 cursor-pointer transition-colors text-xs font-semibold whitespace-nowrap"
 			>
 				<Sparkles className="h-3.5 w-3.5 fill-purple-500/20" />
 				<span>Ask AI</span>
@@ -192,7 +234,7 @@ export function BubbleMenuContent() {
 			>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<button className="flex h-7 items-center gap-1 px-2 rounded-sm text-foreground hover:bg-accent text-xs font-medium cursor-pointer transition-colors border-0 outline-none">
+						<button className="flex h-7 items-center gap-1 px-2 rounded-sm text-foreground hover:bg-accent text-xs font-medium cursor-pointer transition-colors border-0 outline-none whitespace-nowrap">
 							<span>{currentHeading}</span>
 							<ChevronDown className="h-3 w-3 text-muted-foreground" />
 						</button>
@@ -245,26 +287,61 @@ export function BubbleMenuContent() {
 			<div className="w-[1px] h-4 bg-border/80 self-center mx-0.5" />
 
 			<EditorBubbleItem
-				onSelect={(editor) => {
-					const previousUrl = editor.getAttributes("link").href;
-					const url = window.prompt("Enter link URL:", previousUrl);
-					if (url === null) return;
-					if (url === "") {
-						editor
-							.chain()
-							.focus()
-							.extendMarkRange("link")
-							.unsetLink()
-							.run();
-						return;
-					}
-					editor
-						.chain()
-						.focus()
-						.extendMarkRange("link")
-						.setLink({ href: url })
-						.run();
-				}}
+				onSelect={() => {}}
+				className="flex items-center gap-0.5"
+			>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<button className="flex h-7 items-center gap-1 px-2 rounded-sm text-foreground hover:bg-accent text-xs font-medium cursor-pointer transition-colors border-0 outline-none whitespace-nowrap">
+							<span
+								style={{
+									fontFamily:
+										currentFont === "Default"
+											? "inherit"
+											: currentFont,
+								}}
+							>
+								{currentFontName}
+							</span>
+							<ChevronDown className="h-3 w-3 text-muted-foreground" />
+						</button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent
+						align="start"
+						className="w-52 max-h-60 overflow-y-auto custom-scrollbar"
+					>
+						{FONTS.map((font) => (
+							<DropdownMenuItem
+								key={font.name}
+								style={{ fontFamily: font.value || "inherit" }}
+								onSelect={() => {
+									if (font.value) {
+										editor
+											.chain()
+											.focus()
+											.setFontFamily(font.value)
+											.run();
+									} else {
+										editor
+											.chain()
+											.focus()
+											.unsetFontFamily()
+											.run();
+									}
+								}}
+								className="text-xs"
+							>
+								{font.name}
+							</DropdownMenuItem>
+						))}
+					</DropdownMenuContent>
+				</DropdownMenu>
+			</EditorBubbleItem>
+
+			<div className="w-[1px] h-4 bg-border/80 self-center mx-0.5" />
+
+			<EditorBubbleItem
+				onSelect={handleOpenLinkDialog}
 				className="flex h-7 w-7 items-center justify-center rounded-sm text-foreground hover:bg-accent cursor-pointer transition-colors"
 			>
 				<ExternalLink className="h-3.5 w-3.5 text-blue-500" />
@@ -337,6 +414,30 @@ export function BubbleMenuContent() {
 			>
 				<Code className="h-3.5 w-3.5" />
 			</EditorBubbleItem>
+			<EditorBubbleItem
+				onSelect={(editor) =>
+					editor.chain().focus().toggleSuperscript().run()
+				}
+				className={cn(
+					"flex h-7 w-7 items-center justify-center rounded-sm text-foreground hover:bg-accent cursor-pointer transition-colors",
+					editor.isActive("superscript") &&
+						"bg-accent text-accent-foreground",
+				)}
+			>
+				<Superscript className="h-3.5 w-3.5" />
+			</EditorBubbleItem>
+			<EditorBubbleItem
+				onSelect={(editor) =>
+					editor.chain().focus().toggleSubscript().run()
+				}
+				className={cn(
+					"flex h-7 w-7 items-center justify-center rounded-sm text-foreground hover:bg-accent cursor-pointer transition-colors",
+					editor.isActive("subscript") &&
+						"bg-accent text-accent-foreground",
+				)}
+			>
+				<Subscript className="h-3.5 w-3.5" />
+			</EditorBubbleItem>
 
 			<div className="w-[1px] h-4 bg-border/80 self-center mx-0.5" />
 
@@ -404,6 +505,128 @@ export function BubbleMenuContent() {
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</EditorBubbleItem>
+
+			{/* Highlight Color dropdown inside Bubble Menu */}
+			<EditorBubbleItem onSelect={() => {}} className="flex items-center">
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<button className="flex h-7 w-8 items-center justify-center rounded-sm text-foreground hover:bg-accent cursor-pointer transition-colors border-0 outline-none">
+							<Highlighter className="h-3.5 w-3.5" />
+							<ChevronDown className="h-2.5 w-2.5 text-muted-foreground ml-0.5" />
+						</button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="end" className="w-36">
+						<DropdownMenuItem
+							onSelect={() =>
+								editor.chain().focus().unsetHighlight().run()
+							}
+						>
+							Reset Highlight
+						</DropdownMenuItem>
+						<DropdownMenuItem
+							onSelect={() =>
+								editor
+									.chain()
+									.focus()
+									.toggleHighlight({ color: "#fef08a" })
+									.run()
+							}
+						>
+							<span className="w-3.5 h-3.5 rounded bg-yellow-200 mr-2 border border-border" />{" "}
+							Yellow
+						</DropdownMenuItem>
+						<DropdownMenuItem
+							onSelect={() =>
+								editor
+									.chain()
+									.focus()
+									.toggleHighlight({ color: "#bbf7d0" })
+									.run()
+							}
+						>
+							<span className="w-3.5 h-3.5 rounded bg-green-200 mr-2 border border-border" />{" "}
+							Green
+						</DropdownMenuItem>
+						<DropdownMenuItem
+							onSelect={() =>
+								editor
+									.chain()
+									.focus()
+									.toggleHighlight({ color: "#bfdbfe" })
+									.run()
+							}
+						>
+							<span className="w-3.5 h-3.5 rounded bg-blue-200 mr-2 border border-border" />{" "}
+							Blue
+						</DropdownMenuItem>
+						<DropdownMenuItem
+							onSelect={() =>
+								editor
+									.chain()
+									.focus()
+									.toggleHighlight({ color: "#fbcfe8" })
+									.run()
+							}
+						>
+							<span className="w-3.5 h-3.5 rounded bg-pink-200 mr-2 border border-border" />{" "}
+							Pink
+						</DropdownMenuItem>
+						<DropdownMenuItem
+							onSelect={() =>
+								editor
+									.chain()
+									.focus()
+									.toggleHighlight({ color: "#ddd6fe" })
+									.run()
+							}
+						>
+							<span className="w-3.5 h-3.5 rounded bg-purple-200 mr-2 border border-border" />{" "}
+							Purple
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			</EditorBubbleItem>
+
+			{/* Link Modal */}
+			<Dialog open={linkDialogOpen} onOpenChange={setLinkDialogOpen}>
+				<DialogContent className="sm:max-w-md border border-border/50 bg-background shadow-2xl rounded-2xl p-6 flex flex-col gap-4 z-[999999]">
+					<DialogHeader>
+						<DialogTitle className="text-base font-semibold text-foreground">
+							Insert Link
+						</DialogTitle>
+					</DialogHeader>
+					<div className="flex flex-col gap-2">
+						<label className="text-xs text-muted-foreground font-medium">
+							Link URL
+						</label>
+						<input
+							type="text"
+							placeholder="https://example.com"
+							value={linkInputUrl}
+							onChange={(e) => setLinkInputUrl(e.target.value)}
+							className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-1 focus:ring-primary text-foreground"
+							onKeyDown={(e) => {
+								if (e.key === "Enter") handleSaveLink();
+							}}
+							autoFocus
+						/>
+					</div>
+					<div className="flex justify-end gap-2 mt-2">
+						<button
+							onClick={() => setLinkDialogOpen(false)}
+							className="px-4 py-2 rounded-lg text-xs font-semibold text-muted-foreground hover:bg-muted transition-colors cursor-pointer"
+						>
+							Cancel
+						</button>
+						<button
+							onClick={handleSaveLink}
+							className="px-4 py-2 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer"
+						>
+							Save Link
+						</button>
+					</div>
+				</DialogContent>
+			</Dialog>
 		</>
 	);
 }

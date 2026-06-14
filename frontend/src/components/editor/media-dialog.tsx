@@ -13,8 +13,8 @@ import { cn } from "@/utils";
 interface MediaDialogProps {
 	isOpen: boolean;
 	onClose: () => void;
-	type: "image" | "video";
-	onInsert: (url: string) => void;
+	type: "image" | "video" | "attachment";
+	onInsert: (url: string, filename?: string, filesize?: string) => void;
 }
 
 export function MediaDialog({
@@ -46,7 +46,11 @@ export function MediaDialog({
 				return;
 			}
 			if (url) {
-				onInsert(url);
+				const sizeStr =
+					selectedFile.size > 1024 * 1024
+						? `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB`
+						: `${(selectedFile.size / 1024).toFixed(1)} KB`;
+				onInsert(url, selectedFile.name, sizeStr);
 				toast.success("Uploaded and embedded successfully!");
 				handleClose();
 			}
@@ -60,7 +64,8 @@ export function MediaDialog({
 
 	const handleEmbedLink = () => {
 		if (!linkUrl.trim()) return;
-		onInsert(linkUrl.trim());
+		const name = linkUrl.split("/").pop() || "Link Attachment";
+		onInsert(linkUrl.trim(), name, "");
 		handleClose();
 	};
 
@@ -71,7 +76,9 @@ export function MediaDialog({
 					<DialogTitle className="text-base font-semibold text-foreground text-center sm:text-left">
 						{type === "image"
 							? "Embed or upload an image"
-							: "Embed or upload a video"}
+							: type === "video"
+								? "Embed or upload a video"
+								: "Embed or upload an attachment"}
 					</DialogTitle>
 				</DialogHeader>
 
@@ -122,7 +129,11 @@ export function MediaDialog({
 								ref={fileInputRef}
 								className="hidden"
 								accept={
-									type === "image" ? "image/*" : "video/*"
+									type === "image"
+										? "image/*"
+										: type === "video"
+											? "video/*"
+											: undefined
 								}
 								onChange={(e) => {
 									const file = e.target.files?.[0];
@@ -149,7 +160,9 @@ export function MediaDialog({
 							placeholder={
 								type === "image"
 									? "https://example.com/image.jpg"
-									: "https://youtube.com/watch?v=..."
+									: type === "video"
+										? "https://youtube.com/watch?v=..."
+										: "https://example.com/document.pdf"
 							}
 							value={linkUrl}
 							onChange={(e) => setLinkUrl(e.target.value)}

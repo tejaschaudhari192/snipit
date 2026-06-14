@@ -20,6 +20,7 @@ import {
 	exportToCodePdf,
 	exportToPreviewPdf,
 	downloadFile,
+	exportToDocx,
 } from "@/lib/export";
 
 interface SaveAsButtonProps {
@@ -27,6 +28,7 @@ interface SaveAsButtonProps {
 	language: string;
 	pasteId?: string;
 	isCode?: boolean;
+	contentType?: string;
 	className?: string;
 }
 
@@ -35,13 +37,14 @@ export const SaveAsButton = ({
 	language,
 	pasteId,
 	isCode,
+	contentType,
 	className,
 }: SaveAsButtonProps) => {
 	const { t } = useTranslation();
 	const [isGenerating, setIsGenerating] = useState(false);
 
 	const handleDownload = async (
-		format: "lang" | "txt" | "pdf" | "pdf-md",
+		format: "lang" | "txt" | "pdf" | "pdf-md" | "docx" | "pdf-rt",
 	) => {
 		const fileName = pasteId || "snipit";
 
@@ -51,6 +54,10 @@ export const SaveAsButton = ({
 				await exportToCodePdf(content, fileName);
 			} else if (format === "pdf-md") {
 				exportToPreviewPdf("markdown-preview-container", fileName);
+			} else if (format === "pdf-rt") {
+				exportToPreviewPdf("tiptap-editor-container", fileName);
+			} else if (format === "docx") {
+				exportToDocx(content, fileName);
 			} else if (format === "lang") {
 				const ext =
 					LANGUAGE_EXTENSIONS[language.toLowerCase()] || "txt";
@@ -85,52 +92,74 @@ export const SaveAsButton = ({
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="start" className="w-48">
-				{isCode && (
-					<DropdownMenuItem
-						onClick={() => handleDownload("lang")}
-						className="gap-2 cursor-pointer"
-					>
-						<CodeIcon className="h-4 w-4" />
-						<span>
-							.
-							{LANGUAGE_EXTENSIONS[language.toLowerCase()] ||
-								"code"}
-						</span>
-					</DropdownMenuItem>
-				)}
-				<DropdownMenuItem
-					onClick={() => handleDownload("txt")}
-					className="gap-2 cursor-pointer"
-				>
-					<FileText className="h-4 w-4" />
-					<span>.txt</span>
-				</DropdownMenuItem>
-				<DropdownMenuSeparator />
-				{language.toLowerCase() === "markdown" ? (
+				{contentType === "richtext" ? (
 					<>
 						<DropdownMenuItem
-							onClick={() => handleDownload("pdf")}
+							onClick={() => handleDownload("docx")}
 							className="gap-2 cursor-pointer"
 						>
-							<FileDown className="h-4 w-4" />
-							<span>.pdf (Code)</span>
+							<FileText className="h-4 w-4" />
+							<span>.docx</span>
 						</DropdownMenuItem>
 						<DropdownMenuItem
-							onClick={() => handleDownload("pdf-md")}
+							onClick={() => handleDownload("pdf-rt")}
 							className="gap-2 cursor-pointer"
 						>
 							<FileDown className="h-4 w-4 text-primary" />
-							<span>.pdf (Preview)</span>
+							<span>.pdf (Formatted)</span>
 						</DropdownMenuItem>
 					</>
 				) : (
-					<DropdownMenuItem
-						onClick={() => handleDownload("pdf")}
-						className="gap-2 cursor-pointer"
-					>
-						<FileDown className="h-4 w-4" />
-						<span>.pdf</span>
-					</DropdownMenuItem>
+					<>
+						{isCode && (
+							<DropdownMenuItem
+								onClick={() => handleDownload("lang")}
+								className="gap-2 cursor-pointer"
+							>
+								<CodeIcon className="h-4 w-4" />
+								<span>
+									.
+									{LANGUAGE_EXTENSIONS[
+										language.toLowerCase()
+									] || "code"}
+								</span>
+							</DropdownMenuItem>
+						)}
+						<DropdownMenuItem
+							onClick={() => handleDownload("txt")}
+							className="gap-2 cursor-pointer"
+						>
+							<FileText className="h-4 w-4" />
+							<span>.txt</span>
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						{language.toLowerCase() === "markdown" ? (
+							<>
+								<DropdownMenuItem
+									onClick={() => handleDownload("pdf")}
+									className="gap-2 cursor-pointer"
+								>
+									<FileDown className="h-4 w-4" />
+									<span>.pdf (Code)</span>
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									onClick={() => handleDownload("pdf-md")}
+									className="gap-2 cursor-pointer"
+								>
+									<FileDown className="h-4 w-4 text-primary" />
+									<span>.pdf (Preview)</span>
+								</DropdownMenuItem>
+							</>
+						) : (
+							<DropdownMenuItem
+								onClick={() => handleDownload("pdf")}
+								className="gap-2 cursor-pointer"
+							>
+								<FileDown className="h-4 w-4" />
+								<span>.pdf</span>
+							</DropdownMenuItem>
+						)}
+					</>
 				)}
 			</DropdownMenuContent>
 		</DropdownMenu>

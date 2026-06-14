@@ -6,6 +6,11 @@ import {
 } from "@/components/ui/popover";
 import { Table as TableIcon } from "lucide-react";
 import { cn } from "@/utils";
+import {
+	Tooltip,
+	TooltipTrigger,
+	TooltipContent,
+} from "@/components/ui/tooltip";
 
 interface TableSelectorProps {
 	onSelect: (rows: number, cols: number) => void;
@@ -31,14 +36,20 @@ export function TableSelector({ onSelect }: TableSelectorProps) {
 
 	return (
 		<Popover open={isOpen} onOpenChange={setIsOpen}>
-			<PopoverTrigger asChild>
-				<button
-					className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer"
-					title="Insert Table"
-				>
-					<TableIcon className="h-4 w-4" />
-				</button>
-			</PopoverTrigger>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<PopoverTrigger asChild>
+						<button className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer">
+							<TableIcon className="h-4 w-4" />
+						</button>
+					</PopoverTrigger>
+				</TooltipTrigger>
+				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
+					<span className="font-semibold text-white">
+						Insert Table
+					</span>
+				</TooltipContent>
+			</Tooltip>
 			<PopoverContent
 				align="start"
 				className="w-auto p-4 border border-border/50 bg-background shadow-2xl rounded-2xl flex flex-col items-center gap-3 select-none"

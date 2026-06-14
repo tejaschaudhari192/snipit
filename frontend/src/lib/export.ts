@@ -119,3 +119,35 @@ export const downloadFile = (
 	a.click();
 	URL.revokeObjectURL(url);
 };
+
+/**
+ * Generates a formatted MS Word (DOCX/DOC) file using HTML-to-Word trick.
+ */
+export const exportToDocx = (htmlContent: string, fileName: string) => {
+	const header =
+		"<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
+		"xmlns:w='urn:schemas-microsoft-com:office:word' " +
+		"xmlns='http://www.w3.org/TR/REC-html40'>" +
+		"<head><title>Document</title><style>" +
+		"body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; }" +
+		"h1, h2, h3 { color: #111827; margin-top: 1.5em; margin-bottom: 0.5em; }" +
+		"p { margin-bottom: 1em; }" +
+		"code { background: #f3f4f6; padding: 2px 4px; font-family: monospace; font-size: 0.9em; }" +
+		"blockquote { border-left: 4px solid #d1d5db; padding-left: 1rem; color: #4b5563; font-style: italic; }" +
+		"</style></head><body>";
+	const footer = "</body></html>";
+	const sourceHTML = header + htmlContent + footer;
+
+	const blob = new Blob(["\ufeff" + sourceHTML], {
+		type: "application/msword",
+	});
+
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement("a");
+	a.href = url;
+	a.download = `${fileName}.doc`;
+	document.body.appendChild(a);
+	a.click();
+	document.body.removeChild(a);
+	URL.revokeObjectURL(url);
+};
