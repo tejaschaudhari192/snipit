@@ -4,6 +4,7 @@
 		"history": "Verlauf",
 		"new_snippet": "Neuer Snippet",
 		"copied": "Kopiert!",
+		"copied_link": "Copied {{id}}!",
 		"qr_button": "QR Code",
 		"profile": "Profil",
 		"logout": "Abmelden",
@@ -16,7 +17,6 @@
 		"jump_to_title": "Zum Snippet springen",
 		"jump_to_desc": "Geben Sie die Snippet-ID ein, um direkt dorthin zu gelangen.",
 		"jump_to_placeholder": "Snippet-ID eingeben...",
-		"copied_link": "Copied {{id}}!",
 		"account": "Konto",
 		"user_greeting": "Willkommen zurück",
 		"guest": "Gast"
@@ -39,6 +39,10 @@
 		"enter_password_desc": "Dieses Snippet ist passwortgeschützt. Bitte geben Sie das Passwort ein, um es anzuzeigen.",
 		"unlock": "Snippet entsperren",
 		"unlocking": "Wird entsperrt...",
+		"edit_permission": "Wer kann bearbeiten?",
+		"only_me": "Nur ich",
+		"specific_people": "Bestimmte Personen",
+		"everyone": "Jeder",
 		"access_control": "Zugriffsebene",
 		"share_with_people": "Mitarbeiter hinzufügen",
 		"people_with_access": "Wer hat Zugriff",
@@ -55,6 +59,8 @@
 		"manage_access": "Zugriff verwalten",
 		"commenter": "Kann kommentieren",
 		"open_discussion": "Diskussion öffnen",
+		"share_code_text": "Code & Text teilen",
+		"snipit": "Snipit",
 		"snippet": "Schnipsel",
 		"discussion": "Diskussion",
 		"discussion_title": "Schnipsel-Diskussion",
@@ -111,11 +117,19 @@
 		"expand": "Auf Tab erweitern",
 		"exit_fullscreen": "Vollbild beenden",
 		"window_fullscreen": "Fenster-Vollbild",
+		"editor_only": "Nur Editor",
+		"split_view": "Geteilte Ansicht",
+		"preview_only": "Nur Vorschau",
+		"drag_to_resize": "Zum Ändern der Größe ziehen",
+		"settings": "General Settings",
+		"privacy": "Datenschutz",
+		"collaborators": "Im Raum",
+		"me": "Du",
 		"identification": "Identifikation",
 		"close": "Schließen",
 		"refresh": "Aktualisieren",
-		"enter_zen": "Zen-Modus aktivieren",
-		"exit_zen": "Zen-Modus beenden",
+		"enter_zen": "Erweitern",
+		"exit_zen": "Verkleinern",
 		"markdown_layout": "Markdown-Layout",
 		"download_qr": "QR-Code herunterladen",
 		"save_as": "Speichern unter...",
@@ -125,26 +139,18 @@
 		"login_to_label": "Anmelden, um mit Labels zu organisieren",
 		"secure": "Sicher",
 		"security": "Sicherheit",
-		"edit_permission": "Wer kann bearbeiten?",
-		"only_me": "Nur ich",
-		"specific_people": "Bestimmte Personen",
-		"everyone": "Jeder",
-		"editor_only": "Nur Editor",
-		"split_view": "Geteilte Ansicht",
-		"preview_only": "Nur Vorschau",
-		"settings": "General Settings",
-		"privacy": "Datenschutz",
-		"collaborators": "Im Raum",
-		"drag_to_resize": "Zum Ändern der Größe ziehen",
-		"me": "Du",
+		"cancel": "Abbrechen",
 		"more_users": "weitere Benutzer",
+		"clear_all": "Alles löschen",
 		"autosave": "Autospeichern",
 		"saved": "Gespeichert",
 		"save_failed": "Speichern fehlgeschlagen",
-		"clear_all": "Alles löschen",
+		"ai_autocomplete": "AI-Autovervollständigung",
+		"workspace_preferences": "Arbeitsbereich-Einstellungen",
 		"no_edit_permitted": "Bearbeiten nicht erlaubt"
 	},
 	"profile": {
+		"loading": "Laden...",
 		"overview": "Profilübersicht",
 		"title": "Ihr Profil",
 		"account_info": "Kontoinformationen",
@@ -182,15 +188,21 @@
 		"avg_views": "Effizienz"
 	},
 	"home": {
+		"loading": "Laden...",
+		"overview": "Übersicht",
 		"select_expire_time": "Ablauf",
 		"enter_snippet_placeholder": "Geben Sie Ihren Snippet hier ein...",
 		"paste_button": "Einfügen",
+		"shorten_button": "Kürzen",
+		"upload_button": "Hochladen",
 		"paste_dynamic_id": "Eigene ID",
 		"paste_system_id": "Automatische ID",
 		"paste_dynamic_id_desc": "Wählen Sie Ihre eigene URL",
 		"paste_system_id_desc": "ID wird automatisch generiert",
 		"paste_advanced": "Erweiterte Erstellung",
 		"paste_advanced_desc": "Konfigurieren Sie Datenschutz, Passwort und mehr",
+		"advanced_config": "Erweiterte Konfiguration",
+		"identification_type": "Identifikationsart",
 		"expire_options": {
 			"one_time_snippet": "Einmalig",
 			"never": "Niemals",
@@ -205,6 +217,8 @@
 		"tab_text_short": "Text",
 		"tab_code": "Code",
 		"tab_code_short": "Code",
+		"tab_richtext": "Formatierten Text",
+		"tab_richtext_short": "Formatieren",
 		"tab_draw": "Zeichnen",
 		"tab_draw_short": "Zeichn.",
 		"tab_link": "Link kürzen",
@@ -226,6 +240,10 @@
 		},
 		"link_placeholder": "Geben Sie die zu kürzende URL ein (z. B. https://example.xyz)",
 		"link_desc": "Fügen Sie unten die lange URL ein, um einen kurzen, weiterleitenden Link zu erstellen.",
+		"link_shortened": "Link gekürzt!",
+		"link_ready_desc": "Ihre Kurz-URL ist bereit zum Teilen",
+		"alias": "Alias",
+		"create_another": "Weitere erstellen",
 		"link_features": {
 			"fast": "Schnelle Weiterleitung",
 			"custom": "Benutzerdefinierte Slugs"
@@ -254,14 +272,6 @@
 			"cancel": "Abbrechen",
 			"submit": "Snippet erstellen"
 		},
-		"shorten_button": "Kürzen",
-		"upload_button": "Hochladen",
-		"advanced_config": "Erweiterte Konfiguration",
-		"identification_type": "Identifikationsart",
-		"link_shortened": "Link gekürzt!",
-		"link_ready_desc": "Ihre Kurz-URL ist bereit zum Teilen",
-		"alias": "Alias",
-		"create_another": "Weitere erstellen",
 		"suggest_id_ai": "ID mit KI vorschlagen",
 		"ai_id_suggested": "KI hat eine ID basierend auf dem Inhalt vorgeschlagen!",
 		"semantic_id_tab": "Wörter",
@@ -273,6 +283,8 @@
 		"add_files": "Dateien hinzufügen"
 	},
 	"display": {
+		"loading": "Laden...",
+		"overview": "Übersicht",
 		"expires_in": "Läuft ab in:",
 		"edit_button": "Bearbeiten",
 		"copy_button": "Kopieren",
@@ -292,6 +304,8 @@
 		"status_recording": "Aufnahme"
 	},
 	"history": {
+		"loading": "Laden...",
+		"overview": "Übersicht",
 		"title": "Verlauf",
 		"recent_links": "Aktuelle Links",
 		"plain_text_snippet": "Klartext-Snippet",
@@ -315,6 +329,8 @@
 		"sync_failed": "Synchronisierung Ihrer Konto-Snippets fehlgeschlagen"
 	},
 	"messages": {
+		"loading": "Laden...",
+		"overview": "Übersicht",
 		"snippet_created": "Snippet erfolgreich erstellt!",
 		"snippet_failed": "Snippet konnte nicht erstellt werden",
 		"id_conflict": "Diese ID ist bereits vergeben. Bitte versuchen Sie eine andere.",
@@ -326,6 +342,7 @@
 		"action_cancelled": "Aktion abgebrochen",
 		"snippet_updated": "Snippet erfolgreich aktualisiert",
 		"update_failed": "Snippet konnte nicht aktualisiert werden",
+		"password_required": "Passwort erforderlich",
 		"password_incorrect": "Falsches Passwort",
 		"comment_added": "Kommentar erfolgreich hinzugefügt",
 		"comment_failed": "Kommentar konnte nicht hinzugefügt werden",
@@ -341,6 +358,8 @@
 		"collaborator_update_failed": "Aktualisierung der Mitarbeiterberechtigung fehlgeschlagen"
 	},
 	"about_page": {
+		"loading": "Laden...",
+		"overview": "Übersicht",
 		"title": "Über",
 		"subtitle": "Ein Projekt zweier Entwickler, die Code-Sharing einfach und schön machen wollen.",
 		"features_title": "Leistungsstarke Funktionen",
@@ -350,45 +369,53 @@
 				"title": "Syntax-Hervorhebung",
 				"desc": "Schöne Code-Anzeige mit Unterstützung für 15+ Programmiersprachen."
 			},
-			"ai_detection": {
-				"title": "KI-Spracherkennung",
-				"desc": "Erkennt Programmiersprachen automatisch mit KI-Technologie."
-			},
-			"custom_ids": {
-				"title": "Benutzerdefinierte URLs",
-				"desc": "Erstellen Sie einprägsame URLs für einfaches Snippet-Teilen."
-			},
-			"expiration": {
-				"title": "Ablaufkontrolle",
-				"desc": "Snippets laufen nach 1 Stunde bis 1 Jahr ab, wählen Sie ein benutzerdefiniertes Datum, oder behalten Sie sie für immer."
-			},
-			"multi_language": {
-				"title": "Mehrsprachige Oberfläche",
-				"desc": "Benutzeroबरfläche in Englisch, Deutsch, Hindi, Japanisch und Marathi."
-			},
-			"dark_mode": {
-				"title": "Dunkelmodus",
-				"desc": "Augenschonend mit einer schönen dunklen Theme-Option."
-			},
-			"redirect_urls": {
-				"title": "Links kürzen",
-				"desc": "Erstellen Sie kurze, handliche Links, die sofort zu jedem beliebigen Ziel weiterleiten."
-			},
 			"sharing": {
 				"title": "Einfaches Teilen",
 				"desc": "Teilen Sie Ihre Snippets mühelos mit einem einfachen Link oder QR-Code."
 			},
-			"real_time_collaboration": {
-				"title": "Echtzeit-Zusammenarbeit",
-				"desc": "Bearbeiten Sie Code und Zeichnungen gemeinsam in Echtzeit mit Live-Cursors und Präsenzanzeige."
+			"drawing": {
+				"title": "Interaktives Zeichnen",
+				"desc": "Kollaboratives Whiteboard zum Skizzieren von Ideen und Diagrammen neben Ihrem Code."
+			},
+			"terminal_execution": {
+				"title": "Interaktives Terminal",
+				"desc": "Führen Sie Ihre Code-Snippets (Bash, Python, Java usw.) direkt im integrierten Hochleistungsterminal aus."
 			},
 			"ai_edit_assistant": {
 				"title": "KI-Bearbeitungsassistent",
 				"desc": "Verbessern Sie Ihren Code, beheben Sie Fehler oder erklären Sie Logik mit dem integrierten KI-Assistenten."
 			},
+			"real_time_collaboration": {
+				"title": "Echtzeit-Zusammenarbeit",
+				"desc": "Bearbeiten Sie Code und Zeichnungen gemeinsam in Echtzeit mit Live-Cursors und Präsenzanzeige."
+			},
 			"file_share": {
 				"title": "Dateifreigabe",
 				"desc": "Laden Sie Dateien sicher hoch und teilen Sie sie über einen eindeutigen Link."
+			},
+			"redirect_urls": {
+				"title": "Links kürzen",
+				"desc": "Erstellen Sie kurze, handliche Links, die sofort zu jedem beliebigen Ziel weiterleiten."
+			},
+			"ai_detection": {
+				"title": "KI-Spracherkennung",
+				"desc": "Erkennt Programmiersprachen automatisch mit KI-Technologie."
+			},
+			"save_as_export": {
+				"title": "Flexibler Export",
+				"desc": "Laden Sie Ihre Snippets in verschiedenen Formaten herunter, darunter PDF, Klartext oder sprachspezifische Erweiterungen."
+			},
+			"expiration": {
+				"title": "Ablaufkontrolle",
+				"desc": "Snippets laufen nach 1 Stunde bis 1 Jahr ab, wählen Sie ein benutzerdefiniertes Datum, oder behalten Sie sie für immer."
+			},
+			"custom_ids": {
+				"title": "Benutzerdefinierte URLs",
+				"desc": "Erstellen Sie einprägsame URLs für einfaches Snippet-Teilen."
+			},
+			"password": {
+				"title": "Erhöhte Sicherheit",
+				"desc": "Schützen Sie vertraulichen Code mit Passwörtern und verwalten Sie granulare Zugriffsberechtigungen."
 			},
 			"access_control": {
 				"title": "Rollenbasierte Zugriffskontrolle",
@@ -398,21 +425,13 @@
 				"title": "Benutzerprofile",
 				"desc": "Erstellen Sie ein Konto, um Ihre Snippets zu verwalten, zu bearbeiten und den Überblick zu behalten."
 			},
-			"password": {
-				"title": "Erhöhte Sicherheit",
-				"desc": "Schützen Sie vertraulichen Code mit Passwörtern und verwalten Sie granulare Zugriffsberechtigungen."
+			"dark_mode": {
+				"title": "Dunkelmodus",
+				"desc": "Augenschonend mit einer schönen dunklen Theme-Option."
 			},
-			"terminal_execution": {
-				"title": "Interaktives Terminal",
-				"desc": "Führen Sie Ihre Code-Snippets (Bash, Python, Java usw.) direkt im integrierten Hochleistungsterminal aus."
-			},
-			"save_as_export": {
-				"title": "Flexibler Export",
-				"desc": "Laden Sie Ihre Snippets in verschiedenen Formaten herunter, darunter PDF, Klartext oder sprachspezifische Erweiterungen."
-			},
-			"drawing": {
-				"title": "Interaktives Zeichnen",
-				"desc": "Kollaboratives Whiteboard zum Skizzieren von Ideen und Diagrammen neben Ihrem Code."
+			"multi_language": {
+				"title": "Mehrsprachige Oberfläche",
+				"desc": "Benutzeroबरfläche in Englisch, Deutsch, Hindi, Japanisch und Marathi."
 			},
 			"labels": {
 				"title": "Smarte Labels",
@@ -480,13 +499,13 @@
 		"initializing_probe": "Gesundheitsprüfung wird initialisiert...",
 		"connected": "Verbunden",
 		"error": "Fehler",
-		"loading_phrases": {
-			"0": "Initialisiere Core...",
-			"1": "Engine wird aufgewärmt...",
-			"2": "Lade Syntaxbäume...",
-			"3": "Kompiliere Arbeitsbereich...",
-			"4": "Bereite Snippets vor..."
-		}
+		"loading_phrases": [
+			"Initialisiere Core...",
+			"Engine wird aufgewärmt...",
+			"Lade Syntaxbäume...",
+			"Kompiliere Arbeitsbereich...",
+			"Bereite Snippets vor..."
+		]
 	},
 	"server_error": {
 		"title": "System Offline",
@@ -529,6 +548,7 @@
 		"login_here": "Hier anmelden",
 		"signup_success": "Konto erfolgreich erstellt. Bitte anmelden.",
 		"signup_failed": "Registrierung fehlgeschlagen",
+		"google_login_failed": "Google Login fehlgeschlagen",
 		"show_password": "Passwort anzeigen",
 		"hide_password": "Passwort verbergen",
 		"logout_confirm": "Erfolgreich abgemeldet",
@@ -557,8 +577,7 @@
 		"reset_password_failed_toast": "Passwort zurücksetzen fehlgeschlagen",
 		"reset_password_mismatch_toast": "Passwörter stimmen nicht überein",
 		"reset_password_min_length_toast": "Passwort muss mindestens 6 Zeichen lang sein",
-		"reset_password_invalid_token_toast": "Ungültiger Token",
-		"google_login_failed": "Google Login fehlgeschlagen"
+		"reset_password_invalid_token_toast": "Ungültiger Token"
 	},
 	"editor": {
 		"ai_enhance": "✨ KI-Auswahl verbessern...",
@@ -579,7 +598,15 @@
 		"drawing": "Zeichnung",
 		"shorten_link": "Link kürzen",
 		"file": "Datei",
-		"ai_writer": "AI Autor"
+		"ai_writer": "AI Autor",
+		"transliteration": {
+			"toggle_label": "Tastatureingabe",
+			"enabled": "Tippen auf {{language}}",
+			"disabled": "Englische Tastatur",
+			"select_language": "Eingabesprache auswählen",
+			"tooltip_enable": "Phonetische Tastatur aktivieren — auf Englisch tippen, {{language}} erhalten",
+			"tooltip_disable": "Zurück zur englischen Tastatur wechseln"
+		}
 	},
 	"ai_dialog": {
 		"title": "KI-Editor-Assistent",

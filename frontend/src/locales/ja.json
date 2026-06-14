@@ -4,6 +4,7 @@
 		"history": "履歴",
 		"new_snippet": "新しいスニペット",
 		"copied": "コピーしました！",
+		"copied_link": "Copied {{id}}!",
 		"qr_button": "QRコード",
 		"profile": "プロフィール",
 		"logout": "ログアウト",
@@ -16,7 +17,6 @@
 		"jump_to_title": "スニペットへ移動",
 		"jump_to_desc": "スニペットIDを入力して直接移動します。",
 		"jump_to_placeholder": "スニペットIDを入力...",
-		"copied_link": "Copied {{id}}!",
 		"account": "アカウント",
 		"user_greeting": "おかえりなさい",
 		"guest": "ゲスト"
@@ -39,14 +39,11 @@
 		"enter_password_desc": "このスニペットはパスワードで保護されています。閲覧するにはパスワードを入力してください。",
 		"unlock": "スニペットのロック解除",
 		"unlocking": "ロック解除中...",
+		"edit_permission": "編集できる人",
+		"only_me": "自分のみ",
+		"specific_people": "特定のユーザー",
+		"everyone": "全員",
 		"access_control": "アクセスレベル",
-		"commenter": "コメント可能",
-		"open_discussion": "ディスカッションを開く",
-		"snippet": "スニペット",
-		"discussion": "ディスカッション",
-		"discussion_title": "スニペットのディスカッション",
-		"discussion_desc": "このスニペットについて意見を共有したり、他の人と協力したりしましょう。",
-		"no_comments": "コメントはまだありません",
 		"share_with_people": "共同作業者を追加",
 		"people_with_access": "アクセス可能なユーザー",
 		"add_people_placeholder": "メールで追加...",
@@ -60,6 +57,15 @@
 		"anyone_with_link": "リンクを知っている全員",
 		"restricted": "制限付き（非公開）",
 		"manage_access": "アクセス権の管理",
+		"commenter": "コメント可能",
+		"open_discussion": "ディスカッションを開く",
+		"share_code_text": "コードとテキストを共有",
+		"snipit": "Snipit",
+		"snippet": "スニペット",
+		"discussion": "ディスカッション",
+		"discussion_title": "スニペットのディスカッション",
+		"discussion_desc": "このスニペットについて意見を共有したり、他の人と協力したりしましょう。",
+		"no_comments": "コメントはまだありません",
 		"your_name": "お名前（任意）",
 		"anonymus": "匿名",
 		"write_comment": "コメントを書く...",
@@ -111,11 +117,19 @@
 		"expand": "タブまで拡大",
 		"exit_fullscreen": "フルスクリーンを終了",
 		"window_fullscreen": "ウィンドウ・フルスクリーン",
+		"editor_only": "エディタのみ",
+		"split_view": "分割ビュー",
+		"preview_only": "プレビューのみ",
+		"drag_to_resize": "ドラッグしてサイズ変更",
+		"settings": "全般設定",
+		"privacy": "プライバシーとセキュリティ",
+		"collaborators": "入室中",
+		"me": "自分",
 		"identification": "識別",
 		"close": "閉じる",
 		"refresh": "更新",
-		"enter_zen": "ゼンモードに入る",
-		"exit_zen": "ゼンモードを終了する",
+		"enter_zen": "拡大",
+		"exit_zen": "縮小",
 		"markdown_layout": "Markdownレイアウト",
 		"download_qr": "QRコードをダウンロード",
 		"save_as": "名前を付けて保存...",
@@ -125,27 +139,18 @@
 		"login_to_label": "ラベルで整理するにはログインしてください",
 		"secure": "セキュア",
 		"security": "セキュリティ",
-		"edit_permission": "編集できる人",
-		"only_me": "自分のみ",
-		"specific_people": "特定のユーザー",
-		"everyone": "全員",
-		"editor_only": "エディタのみ",
-		"split_view": "分割ビュー",
-		"preview_only": "プレビューのみ",
-		"settings": "全般設定",
-		"privacy": "プライバシーとセキュリティ",
-		"collaborators": "入室中",
-		"drag_to_resize": "ドラッグしてサイズ変更",
-		"me": "自分",
 		"cancel": "キャンセル",
 		"more_users": "人のユーザー",
+		"clear_all": "すべてクリア",
 		"autosave": "自動保存",
 		"saved": "保存済み",
 		"save_failed": "保存失敗",
-		"clear_all": "すべてクリア",
+		"ai_autocomplete": "AI自動補完",
+		"workspace_preferences": "ワークスペース設定",
 		"no_edit_permitted": "編集は許可されていません"
 	},
 	"profile": {
+		"loading": "読み込み中...",
 		"overview": "プロフィール概要",
 		"title": "ユーザープロフィール",
 		"account_info": "アカウント情報",
@@ -183,15 +188,21 @@
 		"avg_views": "効率"
 	},
 	"home": {
+		"loading": "読み込み中...",
+		"overview": "概要",
 		"select_expire_time": "有効期限",
 		"enter_snippet_placeholder": "ここにスニペットを入力...",
 		"paste_button": "貼り付け",
+		"shorten_button": "短縮する",
+		"upload_button": "アップロード",
 		"paste_dynamic_id": "ダイナミックIDで貼り付け",
 		"paste_system_id": "自動",
 		"paste_dynamic_id_desc": "独自のIDを選択",
 		"paste_system_id_desc": "安全な5文字の英数字IDを生成します (例: a1b2c)",
 		"paste_advanced": "高度な作成",
 		"paste_advanced_desc": "プライバシー、パスワードなどを設定",
+		"advanced_config": "高度な設定",
+		"identification_type": "識別とタイプ",
 		"expire_options": {
 			"one_time_snippet": "使い捨て",
 			"never": "無期限",
@@ -206,6 +217,8 @@
 		"tab_text_short": "テキスト",
 		"tab_code": "コード",
 		"tab_code_short": "コード",
+		"tab_richtext": "リッチテキスト",
+		"tab_richtext_short": "リッチ",
 		"tab_draw": "ドローイング",
 		"tab_draw_short": "ドロー",
 		"tab_link": "リンクを短縮",
@@ -227,6 +240,10 @@
 		},
 		"link_placeholder": "短縮するURLを入力してください（例：https://example.xyz）",
 		"link_desc": "以下の長いURLを貼り付けて、短縮リダイレクトリンクを作成します。",
+		"link_shortened": "リンクを短縮しました！",
+		"link_ready_desc": "短縮リンクの共有準備が整いました",
+		"alias": "エイリアス",
+		"create_another": "新しく作成",
 		"link_features": {
 			"fast": "高速リダイレクト",
 			"custom": "カスタムスラッグ"
@@ -255,24 +272,19 @@
 			"cancel": "キャンセル",
 			"submit": "スニペットを作成"
 		},
-		"shorten_button": "短縮する",
-		"upload_button": "アップロード",
-		"advanced_config": "高度な設定",
-		"identification_type": "識別とタイプ",
-		"link_shortened": "リンクを短縮しました！",
-		"link_ready_desc": "短縮リンクの共有準備が整いました",
-		"alias": "エイリアス",
-		"create_another": "新しく作成",
 		"suggest_id_ai": "AIを使用してIDを提案",
 		"ai_id_suggested": "コンテンツに基づいてAIがIDを提案しました！",
 		"semantic_id_tab": "単語",
 		"semantic_id_placeholder": "セマンティックIDを入力...",
 		"semantic_id_generate": "単語を生成",
 		"semantic_id_words": "単語",
-		"files_selected": "{{count}} 個のファイルを選択中",
+		"files_selected_one": "1つのファイルが選択されました",
+		"files_selected_other": "{{count}}個のファイルが選択されました",
 		"add_files": "ファイルを追加"
 	},
 	"display": {
+		"loading": "読み込み中...",
+		"overview": "概要",
 		"expires_in": "有効期限:",
 		"edit_button": "編集",
 		"copy_button": "コピー",
@@ -292,6 +304,8 @@
 		"status_recording": "録音中"
 	},
 	"history": {
+		"loading": "読み込み中...",
+		"overview": "概要",
 		"title": "履歴",
 		"recent_links": "最近のリンク",
 		"plain_text_snippet": "プレーンテキストのスニペット",
@@ -315,23 +329,26 @@
 		"sync_failed": "アカウントのスニペットの同期に失敗しました"
 	},
 	"messages": {
+		"loading": "読み込み中...",
+		"overview": "概要",
 		"snippet_created": "スニペットが正常に作成されました！",
 		"snippet_failed": "スニペットの作成に失敗しました",
 		"id_conflict": "このIDは既に使用されています。別のIDを試してください。",
 		"detected_language": "検出された言語: {{language}}",
 		"delete_confirm": "このスニペットを削除してもよろしいですか？",
 		"snippet_deleted": "スニペットが削除されました",
+		"snippet_deleted_id": "スニペット {{id}} が削除されました",
 		"delete_failed": "スニペットの削除に失敗しました",
 		"action_cancelled": "アクションがキャンセルされました",
 		"snippet_updated": "スニペットが正常に更新されました",
 		"update_failed": "スニペットの更新に失敗しました",
+		"password_required": "パスワードが必要です",
 		"password_incorrect": "パスワードが間違っています",
 		"comment_added": "コメントが正常に追加されました",
 		"comment_failed": "コメントの追加に失敗しました",
 		"empty_content": "内容を入力してください。",
 		"empty_file": "ファイルを選択してください。",
 		"qr_downloaded": "QRコードがダウンロードされました！",
-		"snippet_deleted_id": "スニペット {{id}} が削除されました",
 		"autosaved": "自動保存されました: {{fields}}",
 		"collaborators_added": "コラボレーターが正常に追加されました",
 		"collaborators_failed": "コラボレーターの追加に失敗しました",
@@ -341,6 +358,8 @@
 		"collaborator_update_failed": "コラボレーターの権限の更新に失敗しました"
 	},
 	"about_page": {
+		"loading": "読み込み中...",
+		"overview": "概要",
 		"title": "について",
 		"subtitle": "コード共有をシンプルかつ美しくすることを信じる2人の開発者による情熱的なプロジェクト。",
 		"features_title": "強力な機能",
@@ -350,45 +369,53 @@
 				"title": "シンタックスハイライト",
 				"desc": "15以上のプログラミング言語をサポートした美しいコード表示。"
 			},
-			"ai_detection": {
-				"title": "AI言語検出",
-				"desc": "AI技術を使用してプログラミング言語を自動的に検出。"
-			},
-			"custom_ids": {
-				"title": "カスタムURL",
-				"desc": "簡単なスニペット共有のための記憶に残るカスタムURLを作成。"
-			},
-			"expiration": {
-				"title": "有効期限制御",
-				"desc": "スニペットを1時間から1年後に期限切れに設定、または永久に保持、またはカスタム日付を選択。"
-			},
-			"multi_language": {
-				"title": "多言語UI",
-				"desc": "英語、ドイツ語、ヒンディー語、日本語、マラーティー語で利用可能。"
-			},
-			"dark_mode": {
-				"title": "ダークモード",
-				"desc": "美しいダークテーマオプションで目に優しい。"
-			},
-			"redirect_urls": {
-				"title": "リンクを短縮",
-				"desc": "任意の宛先に即座にリダイレクトする、短くて管理しやすいリンクを作成します。"
-			},
 			"sharing": {
 				"title": "簡単な共有",
 				"desc": "シンプルなリンクやQRコードでスニペットを簡単に共有できます。"
 			},
-			"real_time_collaboration": {
-				"title": "リアルタイム共同編集",
-				"desc": "ライブカーソルとプレゼンス機能により、リアルタイムでコードの編集や描画を共同で行えます。"
+			"drawing": {
+				"title": "インタラクティブ描画",
+				"desc": "コードと一緒にアイデアや図をスケッチできるコラボレーション・ホワイトボード。"
+			},
+			"terminal_execution": {
+				"title": "インタラクティブターミナル",
+				"desc": "Bash、Python、Javaなどのコードスニペットを、統合された高性能ターミナルで直接実行します。"
 			},
 			"ai_edit_assistant": {
 				"title": "AI編集アシスタント",
 				"desc": "統合されたAIアシスタントを使用して、コードの強化、バグ修正、ロジックの説明を行えます。"
 			},
+			"real_time_collaboration": {
+				"title": "リアルタイム共同編集",
+				"desc": "ライブカーソルとプレゼンス機能により、リアルタイムでコードの編集や描画を共同で行えます。"
+			},
 			"file_share": {
 				"title": "ファイル共有",
 				"desc": "固有のリンクを使用してファイルを安全にアップロードして共有できます。"
+			},
+			"redirect_urls": {
+				"title": "リンクを短縮",
+				"desc": "任意の宛先に即座にリダイレクトする、短くて管理しやすいリンクを作成します。"
+			},
+			"ai_detection": {
+				"title": "AI言語検出",
+				"desc": "AI技術を使用してプログラミング言語を自動的に検出。"
+			},
+			"save_as_export": {
+				"title": "柔軟なエクスポート",
+				"desc": "PDF、プレーンテキスト、または言語固有の拡張子など、複数の形式でスニペットをダウンロードできます。"
+			},
+			"expiration": {
+				"title": "有効期限制御",
+				"desc": "スニペットを1時間から1年後に期限切れに設定、または永久に保持、またはカスタム日付を選択。"
+			},
+			"custom_ids": {
+				"title": "カスタムURL",
+				"desc": "簡単なスニペット共有のための記憶に残るカスタムURLを作成。"
+			},
+			"password": {
+				"title": "強化されたセキュリティ",
+				"desc": "機密コードをパスワードで保護し、きめ細かなアクセス権限を管理します。"
 			},
 			"access_control": {
 				"title": "ロールベースのアクセス制御 (RBAC)",
@@ -398,21 +425,13 @@
 				"title": "ユーザープロフィール",
 				"desc": "アカウントを作成して、スニペットの管理、編集、追跡を行うことができます。"
 			},
-			"password": {
-				"title": "強化されたセキュリティ",
-				"desc": "機密コードをパスワードで保護し、きめ細かなアクセス権限を管理します。"
+			"dark_mode": {
+				"title": "ダークモード",
+				"desc": "美しいダークテーマオプションで目に優しい。"
 			},
-			"terminal_execution": {
-				"title": "インタラクティブターミナル",
-				"desc": "Bash、Python、Javaなどのコードスニペットを、統合された高性能ターミナルで直接実行します。"
-			},
-			"save_as_export": {
-				"title": "柔軟なエクスポート",
-				"desc": "PDF、プレーンテキスト、または言語固有の拡張子など、複数の形式でスニペットをダウンロードできます。"
-			},
-			"drawing": {
-				"title": "インタラクティブ描画",
-				"desc": "コードと一緒にアイデアや図をスケッチできるコラボレーション・ホワイトボード。"
+			"multi_language": {
+				"title": "多言語UI",
+				"desc": "英語、ドイツ語、ヒンディー語、日本語、マラーティー語で利用可能。"
 			},
 			"labels": {
 				"title": "スマートラベル",
@@ -480,13 +499,13 @@
 		"initializing_probe": "ヘルスプローブを初期化しています...",
 		"connected": "接続済み",
 		"error": "エラー",
-		"loading_phrases": {
-			"0": "コアを初期化中...",
-			"1": "エンジンをウォームアップ中...",
-			"2": "構文木を読み込み中...",
-			"3": "ワークスペースをコンパイル中...",
-			"4": "スニペットを準備中..."
-		}
+		"loading_phrases": [
+			"コアを初期化中...",
+			"エンジンをウォームアップ中...",
+			"構文木を読み込み中...",
+			"ワークスペースをコンパイル中...",
+			"スニペットを準備中..."
+		]
 	},
 	"server_error": {
 		"title": "システムオフライン",
@@ -529,6 +548,7 @@
 		"login_here": "こちらからログイン",
 		"signup_success": "アカウントが作成されました。ログインしてください。",
 		"signup_failed": "サインアップに失敗しました",
+		"google_login_failed": "Googleログインに失敗しました",
 		"show_password": "パスワードを表示",
 		"hide_password": "パスワードを非表示",
 		"logout_confirm": "ログアウトしました",
@@ -557,8 +577,7 @@
 		"reset_password_failed_toast": "パスワードのリセットに失敗しました",
 		"reset_password_mismatch_toast": "パスワードが一致しません",
 		"reset_password_min_length_toast": "パスワードは6文字以上である必要があります",
-		"reset_password_invalid_token_toast": "無効なトークン",
-		"google_login_failed": "Googleログインに失敗しました"
+		"reset_password_invalid_token_toast": "無効なトークン"
 	},
 	"editor": {
 		"ai_enhance": "✨ AIで選択範囲を強化...",
@@ -579,7 +598,15 @@
 		"drawing": "描画",
 		"shorten_link": "リンクを短縮",
 		"file": "ファイル",
-		"ai_writer": "AI ライター"
+		"ai_writer": "AI ライター",
+		"transliteration": {
+			"toggle_label": "キーボード入力",
+			"enabled": "{{language}}で入力中",
+			"disabled": "英語キーボード",
+			"select_language": "入力言語を選択",
+			"tooltip_enable": "音標キーボードを有効化 — 英語で入力して{{language}}に変換",
+			"tooltip_disable": "英語キーボードに戻す"
+		}
 	},
 	"ai_dialog": {
 		"title": "AIエディタアシスタント",
