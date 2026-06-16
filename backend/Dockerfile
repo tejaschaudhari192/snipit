@@ -1,5 +1,5 @@
 # Stage 1: Build Backend
-FROM node:22-slim AS builder
+FROM node:20-slim AS builder
 WORKDIR /app
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -13,7 +13,7 @@ COPY . .
 RUN pnpm build
 
 # Stage 2: Final Runtime with all SDKs
-FROM node:22-bookworm
+FROM node:20-bookworm
 WORKDIR /app
 
 # Install all required SDKs and dependencies
@@ -30,6 +30,7 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     rustc \
     git \
+    espeak-ng \
     && rm -rf /var/lib/apt/lists/*
 
 # Install .NET SDK
