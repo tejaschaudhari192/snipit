@@ -1,55 +1,82 @@
-# -------------------------------------------------
-# Stage 1 – Build the Node application
-# -------------------------------------------------
+# =================================================
+# Stage 1 – Build
+# =================================================
 FROM node:20-bookworm AS builder
 WORKDIR /app
 
-# Install pnpm and build the project
 RUN npm i -g pnpm
+
 COPY package.json pnpm-lock.yaml ./
+# Install ALL deps (including devDeps) so tsc and tsc-alias are available
 RUN pnpm install --frozen-lockfile
+
 COPY . .
 RUN pnpm build
 
-# -------------------------------------------------
-# Stage 2 – Runtime (the container Render actually executes)
-# -------------------------------------------------
+# =================================================
+# Stage 2 – Runtime
+# =================================================
 FROM node:20-bookworm AS runner
 WORKDIR /app
 
-# ----- Install native binaries and language SDKs (including dotnet) -----
+# ── Language SDKs for the code runner ─────────────────────────────────────────
+# Register Microsoft's repo first (required for dotnet-sdk-8.0)
 RUN apt-get update && apt-get install -y wget gpg && \
-    wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
+    wget -q https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb \
+        -O packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
     rm packages-microsoft-prod.deb && \
     apt-get update && \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
+        # Code-runner languages
         openjdk-17-jdk-headless \
         dotnet-sdk-8.0 \
-        python3 python-is-python3 \
+        python3 \
+        python-is-python3 \
         php-cli \
         golang-go \
         rustc \
         git \
+        # TTS / phonemizer – install espeak-ng + its data
         espeak-ng \
         espeak-ng-data \
+        # General utilities
+        curl \
+        ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# ----- Copy espeak-ng data to writable path for phonemizer -----
+# ── espeak-ng data – copy to a writable app-owned path ────────────────────────
+# Debian bookworm puts the data under /usr/lib/<arch>/espeak-ng-data/
+# Use `find` so this works on amd64, arm64, etc.
 RUN mkdir -p /app/espeak-ng-data && \
-    cp -r /usr/share/espeak-ng-data/* /app/espeak-ng-data/ && \
+    DATA_SRC=$(find /usr/lib -maxdepth 2 -name "espeak-ng-data" -type d 2>/dev/null | head -1) && \
+    if   [ -n "$DATA_SRC" ]; then \
+        cp -r "$DATA_SRC/." /app/espeak-ng-data/; \
+    elif [ -d /usr/share/espeak-ng-data ]; then \
+        cp -r /usr/share/espeak-ng-data/. /app/espeak-ng-data/; \
+    else \
+        echo "WARNING: espeak-ng-data directory not found – phonemizer may fail"; \
+    fi && \
     chmod -R 777 /app/espeak-ng-data
 
-# ----- Copy the built assets and production node_modules -----
+# ── Set espeak-ng data path env var so phonemizer WASM can find the files ─────
+ENV ESPEAK_DATA_PATH=/app/espeak-ng-data
+
+# ── Copy built artefacts from builder ─────────────────────────────────────────
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/dist         ./dist
 
-# ----- Temp execution directory (required by your code runner) -----
+# ── Temp directory for the code runner ────────────────────────────────────────
 RUN mkdir -p /app/temp_codes && chmod 777 /app/temp_codes
 
-# ----- Expose the service port -----
+# ── HuggingFace / Kokoro model cache (persistent across restarts if mounted) ──
+RUN mkdir -p /app/.cache/huggingface && chmod -R 777 /app/.cache
+
+# ── Application settings ───────────────────────────────────────────────────────
+ENV NODE_ENV=production
+ENV PORT=10000
+
 EXPOSE 10000
 
-# ----- Start the application -----
 CMD ["node", "./dist/index.js"]
