@@ -435,8 +435,6 @@ export const CollabDraw = ({
 						UIOptions={{
 							canvasActions: {
 								loadScene: false,
-								export: false,
-								saveAsImage: true,
 							},
 						}}
 					/>

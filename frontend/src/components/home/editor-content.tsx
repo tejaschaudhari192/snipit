@@ -1,5 +1,4 @@
 import { type BeforeMount, type OnMount, Editor } from "@monaco-editor/react";
-import { type editor } from "monaco-editor";
 import {
 	lazy,
 	Suspense,
@@ -156,13 +155,8 @@ export const EditorContent = memo(
 			return true;
 		});
 
-		const [editorInstance, setEditorInstance] =
-			useState<editor.IStandaloneCodeEditor | null>(null);
-
 		const onMount: OnMount = (ed, monaco) => {
-			setEditorInstance(ed);
 			handleEditorMount(ed, monaco);
-
 			if (transliteration) {
 				transliteration.setupEditor(ed, monaco);
 			}
@@ -223,7 +217,6 @@ export const EditorContent = memo(
 							onToggleWindowFullscreen={toggleWindowFullscreen}
 							mdLayoutMode={mdLayoutMode}
 							onMdLayoutModeChange={setMdLayoutMode}
-							editor={editorInstance}
 						/>
 					</Suspense>
 

@@ -1,6 +1,5 @@
 import { type BeforeMount, type OnMount } from "@monaco-editor/react";
-import { type editor } from "monaco-editor";
-import { useRef, useEffect, memo, useState, lazy, Suspense } from "react";
+import { useRef, useEffect, memo, lazy, Suspense } from "react";
 import { cn } from "@/utils";
 import { EditorToolbar } from "@/components/common/editor-toolbar";
 import type { PasteData, ContentMode, EditorChange } from "@/types";
@@ -113,20 +112,9 @@ export const DisplayContent = memo(
 	}: DisplayContentProps) => {
 		const containerRef = useRef<HTMLDivElement>(null);
 		const [mdLayoutMode, setMdLayoutMode] = useMarkdownLayout();
-		const [editorInstance, setEditorInstance] =
-			useState<editor.IStandaloneCodeEditor | null>(null);
-
 		const handleMount: OnMount = (ed, monaco) => {
-			setEditorInstance(ed);
 			if (onMount) onMount(ed, monaco);
 		};
-
-		// Cleanup editor instance on unmount to prevent using disposed instances
-		useEffect(() => {
-			return () => {
-				setEditorInstance(null);
-			};
-		}, []);
 
 		useEffect(() => {
 			const handleFullscreenChange = () => {
@@ -347,7 +335,6 @@ export const DisplayContent = memo(
 					mdLayoutMode={mdLayoutMode}
 					onMdLayoutModeChange={setMdLayoutMode}
 					showMarkdownToggles={isEdit}
-					editor={editorInstance}
 				/>
 
 				<div
