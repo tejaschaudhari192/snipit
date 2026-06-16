@@ -15,10 +15,12 @@ interface UserAvatarListProps {
 export const UserAvatarList = ({ users }: UserAvatarListProps) => {
 	const { t } = useTranslation();
 
-	if (users.length === 0) return null;
+	const filteredUsers = users.filter((u) => !u.isMe);
 
-	const displayUsers = users.slice(0, 3);
-	const remainingCount = users.length - 3;
+	if (filteredUsers.length === 0) return null;
+
+	const displayUsers = filteredUsers.slice(0, 3);
+	const remainingCount = filteredUsers.length - 3;
 
 	return (
 		<TooltipProvider>
