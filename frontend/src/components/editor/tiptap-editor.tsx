@@ -266,7 +266,12 @@ export function TiptapEditor({
 				horizontalRule: false,
 			}),
 			Placeholder.configure({
-				placeholder: "Press '/' for commands...",
+				placeholder: ({ node }) => {
+					if (node.type.name === "paragraph") {
+						return "Press '/' for commands...";
+					}
+					return "";
+				},
 			}),
 			TextStyle,
 			Color,
