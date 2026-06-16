@@ -1,3 +1,9 @@
+// Set writable espeak-ng data path before any module that uses phonemizer is loaded
+process.env.ESPEAK_DATA_PATH = "/app/espeak-ng-data";
+
+import dns from "node:dns";
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
 import http from "http";
 import app from "./app.js";
 import { setupSocket } from "./socket.js";

@@ -35,6 +35,11 @@ RUN apt-get update && apt-get install -y wget gpg && \
         espeak-ng-data \
     && rm -rf /var/lib/apt/lists/*
 
+# ----- Copy espeak-ng data to writable path for phonemizer -----
+RUN mkdir -p /app/espeak-ng-data && \
+    cp -r /usr/share/espeak-ng-data/* /app/espeak-ng-data/ && \
+    chmod -R 777 /app/espeak-ng-data
+
 # ----- Copy the built assets and production node_modules -----
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/node_modules ./node_modules
