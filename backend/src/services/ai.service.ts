@@ -125,6 +125,33 @@ class AiService {
 		}
 	}
 
+	async detectSpeechLanguage(content: string): Promise<string> {
+		const systemPrompt = PROMPTS.DETECT_SPEECH_LANGUAGE.SYSTEM;
+		const userPrompt = PROMPTS.DETECT_SPEECH_LANGUAGE.USER(content);
+
+		try {
+			const chatCompletion = await this.requestWithFallback(
+				{
+					messages: [
+						{ role: "system", content: systemPrompt },
+						{ role: "user", content: userPrompt },
+					],
+					temperature: 0.1,
+					max_tokens: 10,
+				},
+				{ preferredModel: configurations.groq_dumb_model },
+			);
+
+			const language =
+				chatCompletion.choices[0]?.message?.content?.trim() ||
+				"english";
+			return language.toLowerCase().replace(/[^a-z]/g, "");
+		} catch (error) {
+			logger.error("Error detecting speech language:", error);
+			return "english";
+		}
+	}
+
 	async enhanceContent(
 		content: string,
 		instruction: string,

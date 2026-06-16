@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import type AiService from "@/services/ai.service.js";
+import { kokoroService } from "@/services/kokoro.service.js";
 
 class AiController {
 	constructor(private readonly aiService: AiService) {}
@@ -12,6 +13,17 @@ class AiController {
 		}
 
 		const language = await this.aiService.detectLanguage(content);
+		res.json({ language });
+	}
+
+	async detectSpeechLanguage(req: Request, res: Response) {
+		const { content } = req.body;
+
+		if (!content) {
+			return res.status(400).json({ error: "Content is required" });
+		}
+
+		const language = await this.aiService.detectSpeechLanguage(content);
 		res.json({ language });
 	}
 
@@ -94,6 +106,44 @@ class AiController {
 
 		const id = await this.aiService.suggestId(content || "", files);
 		res.json({ id });
+	}
+
+	async tts(req: Request, res: Response) {
+		const { text } = req.body;
+
+		if (!text) {
+			return res.status(400).json({ error: "Text is required" });
+		}
+
+		res.setHeader("Content-Type", "application/x-ndjson");
+		res.setHeader("Transfer-Encoding", "chunked");
+		res.setHeader("Connection", "keep-alive");
+
+		try {
+			await kokoroService.generateSpeechStream(
+				text,
+				(audioBuffer, voice, index, total) => {
+					const base64Audio = audioBuffer.toString("base64");
+					res.write(
+						JSON.stringify({
+							index,
+							total,
+							voice,
+							audio: base64Audio,
+						}) + "\n",
+					);
+				},
+			);
+			res.end();
+		} catch (error) {
+			if (!res.headersSent) {
+				res.status(500).json({
+					error: "Failed to generate speech stream locally",
+				});
+			} else {
+				res.end();
+			}
+		}
 	}
 }
 

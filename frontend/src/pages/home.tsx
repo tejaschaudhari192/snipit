@@ -290,7 +290,6 @@ const HomePage = () => {
 	});
 
 	useEffect(() => {
-		if (contentType === "file") setExpiresTime("1d");
 		setShortenedResult(null);
 	}, [contentType, setExpiresTime]);
 

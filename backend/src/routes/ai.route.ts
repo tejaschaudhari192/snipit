@@ -19,6 +19,10 @@ router.post(
 	catchAsync(aiController.detectLanguage.bind(aiController)),
 );
 router.post(
+	"/detect-speech-language",
+	catchAsync(aiController.detectSpeechLanguage.bind(aiController)),
+);
+router.post(
 	"/enhance",
 	catchAsync(aiController.enhanceContent.bind(aiController)),
 );
@@ -39,6 +43,7 @@ router.post(
 	"/prepare-speech",
 	catchAsync(aiController.prepareSpeech.bind(aiController)),
 );
+router.post("/tts", catchAsync(aiController.tts.bind(aiController)));
 router.post(
 	"/suggest-id",
 	catchAsync(aiController.suggestId.bind(aiController)),

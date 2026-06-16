@@ -76,6 +76,15 @@ export const useApiHelpers = () => {
 			return response.data;
 		};
 
+		const detectSpeechLanguage = async (
+			content: string,
+		): Promise<{ language: string }> => {
+			const response = await api.post("/ai/detect-speech-language", {
+				content,
+			});
+			return response.data;
+		};
+
 		const enhanceContent = async (
 			content: string,
 			instruction: string,
@@ -129,6 +138,18 @@ export const useApiHelpers = () => {
 				contentType,
 			});
 			return response.data;
+		};
+
+		const getSpeechAudio = async (
+			text: string,
+		): Promise<{ blob: Blob; voice: string }> => {
+			const response = await api.post(
+				"/ai/tts",
+				{ text },
+				{ responseType: "blob" },
+			);
+			const voice = response.headers["x-selected-voice"] || "af_heart";
+			return { blob: response.data, voice };
 		};
 
 		const suggestId = async (content: string): Promise<{ id: string }> => {
@@ -215,11 +236,13 @@ export const useApiHelpers = () => {
 			deletePaste,
 			updatePaste,
 			detectLanguage,
+			detectSpeechLanguage,
 			enhanceContent,
 			getAutocomplete,
 			generateDrawContent,
 			transcribeAudio,
 			prepareSpeech,
+			getSpeechAudio,
 			suggestId,
 			getUserPastes,
 			checkIdAvailability,

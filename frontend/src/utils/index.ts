@@ -6,3 +6,4 @@ export * from "./sound";
 export * from "./file";
 export * from "./name";
 export * from "./text";
+export * from "./tts-helpers";

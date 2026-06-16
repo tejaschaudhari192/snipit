@@ -22,6 +22,30 @@ Rules:
 			return `Detect the language for this snippet:\n\n${snippet}`;
 		},
 	},
+	DETECT_SPEECH_LANGUAGE: {
+		SYSTEM: `
+You are a linguistics expert AI.
+Identify the primary human/natural spoken language of the provided text.
+Identify the language as one of the following lowercase strings:
+- "english"
+- "hindi"
+- "japanese"
+- "spanish"
+- "french"
+- "german"
+- "italian"
+- "korean"
+- "portuguese"
+- "chinese"
+- "russian"
+
+If it is some other language, identify it by its English name in lowercase (e.g. "arabic").
+If the text is in English, or if you are not sure, respond with "english".
+Respond ONLY with the name of the language (a single word). No markdown formatting, no punctuation, and no filler words.
+`.trim(),
+		USER: (content: string) =>
+			`Identify the spoken language of the following text:\n\n${content}`,
+	},
 
 	ENHANCE_CONTENT: {
 		SYSTEM: `

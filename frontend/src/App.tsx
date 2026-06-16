@@ -12,6 +12,8 @@ import { DisplayLoading } from "@/components/display/display-loading";
 import { loader } from "@monaco-editor/react";
 import { useTranslation } from "react-i18next";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { TtsProvider } from "@/context";
+import { TtsMiniPlayer } from "@/components/common/tts-mini-player";
 
 const HomePage = lazy(() => import("@/pages/home"));
 const DisplayPage = lazy(() => import("@/pages/display"));
@@ -86,87 +88,96 @@ const App = () => {
 					<SnippetProvider>
 						<PasteProvider>
 							<MusicProvider>
-								<Router>
-									<div className="h-screen w-full m-0 p-0 box-border flex flex-col overflow-hidden bg-background text-foreground font-sans">
-										<Header />
-										<main className="flex-1 flex flex-col min-h-0 overflow-y-auto overflow-x-hidden relative custom-scrollbar">
-											<Suspense fallback={<Loader />}>
-												<Routes>
-													<Route
-														path="/"
-														element={
-															<Suspense
-																fallback={
-																	<HomeLoading />
-																}
-															>
-																<HomePage />
-															</Suspense>
-														}
-													/>
-													<Route
-														path="/login"
-														element={<LoginPage />}
-													/>
-													<Route
-														path="/signup"
-														element={<SignupPage />}
-													/>
-													<Route
-														path="/forgot-password"
-														element={
-															<ForgotPasswordPage />
-														}
-													/>
-													<Route
-														path="/reset-password"
-														element={
-															<ResetPasswordPage />
-														}
-													/>
-													<Route
-														path="/profile"
-														element={
-															<ProfilePage />
-														}
-													/>
-													<Route
-														path="/server-error"
-														element={
-															<ServerErrorPage />
-														}
-													/>
-													<Route
-														path="/:id"
-														element={
-															<Suspense
-																fallback={
-																	<DisplayLoading />
-																}
-															>
-																<DisplayPage />
-															</Suspense>
-														}
-													/>
-													<Route
-														path="/about"
-														element={<AboutPage />}
-													/>
-													<Route
-														path="/history"
-														element={
-															<HistoryPage />
-														}
-													/>
-												</Routes>
-											</Suspense>
-										</main>
-									</div>
-									<Suspense fallback={null}>
-										<MusicBubble />
-									</Suspense>
-									<MusicPlayerWrapper />
-								</Router>
+								<TtsProvider>
+									<Router>
+										<div className="h-screen w-full m-0 p-0 box-border flex flex-col overflow-hidden bg-background text-foreground font-sans">
+											<Header />
+											<main className="flex-1 flex flex-col min-h-0 overflow-y-auto overflow-x-hidden relative custom-scrollbar">
+												<Suspense fallback={<Loader />}>
+													<Routes>
+														<Route
+															path="/"
+															element={
+																<Suspense
+																	fallback={
+																		<HomeLoading />
+																	}
+																>
+																	<HomePage />
+																</Suspense>
+															}
+														/>
+														<Route
+															path="/login"
+															element={
+																<LoginPage />
+															}
+														/>
+														<Route
+															path="/signup"
+															element={
+																<SignupPage />
+															}
+														/>
+														<Route
+															path="/forgot-password"
+															element={
+																<ForgotPasswordPage />
+															}
+														/>
+														<Route
+															path="/reset-password"
+															element={
+																<ResetPasswordPage />
+															}
+														/>
+														<Route
+															path="/profile"
+															element={
+																<ProfilePage />
+															}
+														/>
+														<Route
+															path="/server-error"
+															element={
+																<ServerErrorPage />
+															}
+														/>
+														<Route
+															path="/:id"
+															element={
+																<Suspense
+																	fallback={
+																		<DisplayLoading />
+																	}
+																>
+																	<DisplayPage />
+																</Suspense>
+															}
+														/>
+														<Route
+															path="/about"
+															element={
+																<AboutPage />
+															}
+														/>
+														<Route
+															path="/history"
+															element={
+																<HistoryPage />
+															}
+														/>
+													</Routes>
+												</Suspense>
+											</main>
+										</div>
+										<Suspense fallback={null}>
+											<MusicBubble />
+										</Suspense>
+										<MusicPlayerWrapper />
+									</Router>
+									<TtsMiniPlayer />
+								</TtsProvider>
 							</MusicProvider>
 						</PasteProvider>
 					</SnippetProvider>

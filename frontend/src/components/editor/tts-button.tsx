@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { useTts } from "@/hooks/use-tts";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/utils";
-import { type editor } from "monaco-editor";
 import {
 	Tooltip,
 	TooltipContent,
@@ -15,14 +14,12 @@ import {
 interface TtsButtonProps {
 	content: string;
 	contentType: string;
-	editor: editor.IStandaloneCodeEditor | null;
 	className?: string;
 }
 
 export const TtsButton: React.FC<TtsButtonProps> = ({
 	content,
 	contentType,
-	editor,
 	className,
 }) => {
 	const { t } = useTranslation();
@@ -31,8 +28,8 @@ export const TtsButton: React.FC<TtsButtonProps> = ({
 	const handleToggle = () => {
 		if (isPlaying || isPreparing) {
 			stop();
-		} else if (editor) {
-			speak(content, contentType, editor);
+		} else {
+			speak(content, contentType);
 		}
 	};
 
