@@ -17,21 +17,22 @@ RUN pnpm build
 FROM node:20-bookworm AS runner
 WORKDIR /app
 
-# ----- Critical native binaries for phonemizer -----
-RUN apt-get update && apt-get install -y \
-    espeak-ng \
-    espeak-ng-data \
-    && rm -rf /var/lib/apt/lists/*
-
-# ----- Additional language SDKs (optional but kept for code‑runner) -----
-RUN apt-get update && apt-get install -y \
-    openjdk-17-jdk-headless \
-    dotnet-sdk-8.0 \
-    python3 python-is-python3 \
-    php-cli \
-    golang-go \
-    rustc \
-    git \
+# ----- Install native binaries and language SDKs (including dotnet) -----
+RUN apt-get update && apt-get install -y wget gpg && \
+    wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
+    dpkg -i packages-microsoft-prod.deb && \
+    rm packages-microsoft-prod.deb && \
+    apt-get update && \
+    apt-get install -y \
+        openjdk-17-jdk-headless \
+        dotnet-sdk-8.0 \
+        python3 python-is-python3 \
+        php-cli \
+        golang-go \
+        rustc \
+        git \
+        espeak-ng \
+        espeak-ng-data \
     && rm -rf /var/lib/apt/lists/*
 
 # ----- Copy the built assets and production node_modules -----
