@@ -9,7 +9,9 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, Search, User } from "lucide-react";
+import { Menu, Search, User, Music } from "lucide-react";
+import { useMusic } from "@/context/use-music";
+
 const ThemeToggle = lazy(() =>
 	import("@/components/header/theme-toggle").then((m) => ({
 		default: m.default,
@@ -104,6 +106,7 @@ const UserMenu = () => {
 const Header = ({ className }: HeaderProps) => {
 	const location = useLocation();
 	const path = location.pathname;
+	const { openPlayer } = useMusic();
 	const nonShareablePaths = [
 		"history",
 		"about",
@@ -201,6 +204,16 @@ const Header = ({ className }: HeaderProps) => {
 				)}
 
 				<div className="w-px h-4 bg-border mx-1" />
+				<Button
+					variant="ghost"
+					size="icon"
+					className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted"
+					onClick={openPlayer}
+					title={t("music.open_player") || "Open Music Player"}
+				>
+					<Music className="h-4 w-4" />
+				</Button>
+				<div className="w-px h-4 bg-border mx-1" />
 				<Suspense
 					fallback={<Skeleton className="h-8 w-8 rounded-full" />}
 				>
@@ -280,6 +293,17 @@ const Header = ({ className }: HeaderProps) => {
 							>
 								<span>{t("header.history")}</span>
 							</Link>
+						</DropdownMenuItem>
+						<DropdownMenuItem
+							className="rounded-lg"
+							onClick={openPlayer}
+						>
+							<div className="flex items-center gap-2 py-2">
+								<span>
+									{t("music.open_player") ||
+										"Open Music Player"}
+								</span>
+							</div>
 						</DropdownMenuItem>
 						<DropdownMenuItem
 							className="rounded-lg"

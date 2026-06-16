@@ -18,6 +18,7 @@ const MusicBubble: React.FC = () => {
 		regionDisplayName,
 		isLoading,
 		isShared,
+		isPlayerOpen,
 	} = useMusic();
 	const { t } = useTranslation();
 	const [mounted, setMounted] = useState(false);
@@ -31,6 +32,13 @@ const MusicBubble: React.FC = () => {
 	useEffect(() => {
 		setMounted(true);
 	}, []);
+
+	useEffect(() => {
+		if ((isPlaying && currentTrack) || isPlayerOpen) {
+			setIsVisible(true);
+			localStorage.setItem("music-bubble-visible", "true");
+		}
+	}, [isPlaying, currentTrack, isPlayerOpen]);
 
 	if (!mounted || !isVisible) return null;
 
