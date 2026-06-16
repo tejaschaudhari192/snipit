@@ -56,7 +56,7 @@ export const useDisplayState = () => {
 	const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
 	const [isAutosave, setIsAutosave] = useState<boolean>(() => {
 		const saved = localStorage.getItem(CONFIG.storageKeys.autosave);
-		return saved !== null ? saved === "true" : true;
+		return saved !== null ? saved === "true" : false;
 	});
 	const [isFullscreen, setIsFullscreen] = useState(false);
 	const [isWindowFullscreen, setIsWindowFullscreen] = useState(false);

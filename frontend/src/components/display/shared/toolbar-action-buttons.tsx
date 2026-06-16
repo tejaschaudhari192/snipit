@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
-import { Edit, Trash2, Save, X, Play } from "lucide-react";
+import { Edit, Trash2, Save, X, Play, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { SUPPORTED_RUN_LANGUAGES } from "@/constants";
 import { SaveAsButton } from "./save-as-button";
@@ -132,7 +132,7 @@ export const ToolbarActionButtons = ({
 						>
 							{isSaving ? (
 								<>
-									<Save className="h-4 w-4 animate-spin-slow opacity-50" />
+									<Loader2 className="h-4 w-4 animate-spin" />
 									<span>{t("common.saving")}</span>
 								</>
 							) : (
