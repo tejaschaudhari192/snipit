@@ -57,6 +57,11 @@ const MarkdownDisplay = lazy(() =>
 		default: m.MarkdownDisplay,
 	})),
 );
+const HtmlDisplay = lazy(() =>
+	import("@/components/display/content/html-display").then((m) => ({
+		default: m.HtmlDisplay,
+	})),
+);
 const TiptapEditor = lazy(() =>
 	import("@/components/editor/tiptap-editor").then((m) => ({
 		default: m.TiptapEditor,
@@ -238,7 +243,7 @@ export const EditorContent = memo(
 								/>
 							</Suspense>
 						) : contentType === "code" || contentType === "text" ? (
-							language === "markdown" ? (
+							language === "markdown" || language === "html" ? (
 								<Suspense
 									fallback={
 										<Skeleton className="flex-1 w-full h-full" />
@@ -249,7 +254,7 @@ export const EditorContent = memo(
 										showHint={true}
 										initialWidth={50}
 										mode={mdLayoutMode}
-										storageKey="markdown-editor-preview-split"
+										storageKey={`${language}-editor-preview-split`}
 										left={
 											<Suspense
 												fallback={
@@ -297,11 +302,17 @@ export const EditorContent = memo(
 														<Skeleton className="p-10 rounded-2xl h-64 w-full" />
 													}
 												>
-													<MarkdownDisplay
-														content={textValue}
-														fontSize={fontSize}
-														contentRef={() => {}}
-													/>
+													{language === "markdown" ? (
+														<MarkdownDisplay
+															content={textValue}
+															fontSize={fontSize}
+															contentRef={() => {}}
+														/>
+													) : (
+														<HtmlDisplay
+															content={textValue}
+														/>
+													)}
 												</Suspense>
 											</div>
 										}

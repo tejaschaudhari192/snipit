@@ -52,6 +52,7 @@ export const CONFIG = {
 		publicRole: "viewer" as const,
 		contentMode: "text" as const,
 		maxFileSize: 50 * 1024 * 1024, // 50MB
+		musicSaveInterval: 5,
 	},
 
 	// UI Constants

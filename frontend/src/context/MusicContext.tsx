@@ -29,6 +29,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const isRemoteActionRef = useRef(false);
 	const currentTrackRef = useRef<MusicTrack | null>(null);
+	const lastTrackIdRef = useRef<string | null>(null);
 	const isPlayingRef = useRef(false);
 	const lastRemoteStateRef = useRef<{
 		timestamp: number;
@@ -186,12 +187,19 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 					CONFIG.storageKeys.musicCurrentTrackId,
 					currentTrack.videoId,
 				);
-				// Reset playtime in storage when music changes
-				localStorage.setItem(CONFIG.storageKeys.musicPlaytime, "0");
-				lastSavedTimeRef.current = 0;
+				// Only reset playtime if it is a completely different track from the last one (and not the initial restoration on mount)
+				if (
+					lastTrackIdRef.current !== null &&
+					lastTrackIdRef.current !== currentTrack.videoId
+				) {
+					localStorage.setItem(CONFIG.storageKeys.musicPlaytime, "0");
+					lastSavedTimeRef.current = 0;
+				}
+				lastTrackIdRef.current = currentTrack.videoId;
 			} else {
 				localStorage.removeItem(CONFIG.storageKeys.musicCurrentTrackId);
 				localStorage.removeItem(CONFIG.storageKeys.musicPlaytime);
+				lastTrackIdRef.current = null;
 			}
 		}
 	}, [currentTrack, isMounted]);
@@ -785,7 +793,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const currentTimeRef = useRef(0);
 	const durationRef = useRef(240);
-	const lastSavedTimeRef = useRef(-10);
+	const lastSavedTimeRef = useRef(-CONFIG.defaults.musicSaveInterval);
 
 	useEffect(() => {
 		currentTimeRef.current = currentTime;
@@ -839,8 +847,11 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				setProgress((nextTime / nextDur) * 100);
 
 				if (
-					Math.floor(nextTime) % 10 === 0 &&
-					Math.floor(nextTime) >= lastSavedTimeRef.current + 10
+					Math.floor(nextTime) % CONFIG.defaults.musicSaveInterval ===
+						0 &&
+					Math.floor(nextTime) >=
+						lastSavedTimeRef.current +
+							CONFIG.defaults.musicSaveInterval
 				) {
 					lastSavedTimeRef.current = Math.floor(nextTime);
 					localStorage.setItem(
