@@ -31,6 +31,7 @@ RUN apt-get update && apt-get install -y \
     rustc \
     git \
     espeak-ng \
+    espeak-ng-data \
     && rm -rf /var/lib/apt/lists/*
 
 # Install .NET SDK
