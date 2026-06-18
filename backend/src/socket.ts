@@ -567,7 +567,7 @@ export const setupSocket = (server: HTTPServer) => {
 					break;
 				case "csharp":
 					fileExt = ".cs";
-					cmd = "dotnet"; // Assumes dotnet-script or similar, but let's try 'dotnet run' in a temp project
+					cmd = "dotnet-script";
 					break;
 				case "shell":
 				case "bash":

@@ -27,7 +27,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget gpg ca-cer
     rm packages-microsoft-prod.deb && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-        # Code-runner languages
         build-essential \
         openjdk-17-jdk-headless \
         dotnet-sdk-8.0 \
@@ -37,13 +36,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget gpg ca-cer
         golang-go \
         rustc \
         git \
-        # TTS / phonemizer – install espeak-ng + its data
         espeak-ng \
         espeak-ng-data \
-        # General utilities
         curl \
     && rm -rf /var/lib/apt/lists/* && \
-    npm install -g tsx
+    npm install -g tsx && \
+    dotnet tool install -g dotnet-script
+
+ENV PATH="$PATH:/root/.dotnet/tools"
 
 # ── espeak-ng data – copy to a writable app-owned path ────────────────────────
 # Debian bookworm puts the data under /usr/lib/<arch>/espeak-ng-data/
