@@ -203,12 +203,7 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 			{(paste.burnAfterRead || paste.expiresTime === "one-time") && (
 				<div className="mx-4 mt-4 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-yellow-600 dark:text-yellow-500 text-sm flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
 					<span className="text-lg">⚠️</span>
-					{t("display.burn_after_read_warning")}{" "}
-					{paste.views === 0
-						? t("display.views_remaining_plural", { count: 2 })
-						: paste.views === 1
-							? t("display.views_remaining_singular")
-							: t("display.final_view")}
+					{t("display.burn_after_read_warning")}
 				</div>
 			)}
 		</>

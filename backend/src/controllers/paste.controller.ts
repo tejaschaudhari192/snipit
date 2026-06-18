@@ -60,9 +60,9 @@ class PasteController {
 				return res.status(404).json({ error: "Paste expired" });
 			}
 
-			if (result.burnAfterRead && result.views > 3) {
+			if (result.burnAfterRead && result.views >= 1) {
 				await this.pasteService.deletePaste(id);
-				this.logger.info(`Paste burned after 3rd public read: ${id}`);
+				this.logger.info(`Paste burned after 1st public read: ${id}`);
 			}
 
 			const userId = this.getUserId(req);
