@@ -601,3 +601,88 @@ body.is-404 .action-url-bar {
 .prose li {
 	margin: 0.25rem 0 !important;
 }
+
+/* Dialog Transitions */
+
+/* Overlay: simple fade */
+@keyframes dialog-overlay-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+@keyframes dialog-overlay-out {
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
+}
+
+/*
+ * Content: starts at the button position (translate from click offset to center)
+ * and scales up from near-zero so it "flies in" from the button.
+ * --click-cx / --click-cy = offset of click from viewport center.
+ */
+@keyframes dialog-content-in {
+	from {
+		opacity: 0;
+		transform: translate(
+				calc(-50% + var(--click-cx, 0px)),
+				calc(-50% + var(--click-cy, 0px))
+			)
+			scale(0.08);
+	}
+	to {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(1);
+	}
+}
+
+@keyframes dialog-content-out {
+	from {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(1);
+	}
+	to {
+		opacity: 0;
+		transform: translate(
+				calc(-50% + var(--click-cx, 0px)),
+				calc(-50% + var(--click-cy, 0px))
+			)
+			scale(0.08);
+	}
+}
+
+[data-slot="dialog-overlay"][data-state="open"] {
+	animation: dialog-overlay-in 200ms ease forwards;
+}
+[data-slot="dialog-overlay"][data-state="closed"] {
+	animation: dialog-overlay-out 150ms ease forwards;
+}
+
+[data-slot="dialog-content"][data-state="open"] {
+	animation: dialog-content-in 220ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+[data-slot="dialog-content"][data-state="closed"] {
+	animation: dialog-content-out 180ms cubic-bezier(0.55, 0, 1, 0.45) forwards;
+}
+
+/* QR Code Entrance Animation */
+@keyframes qr-entrance {
+	from {
+		transform: scale(0.9) rotate(-3deg);
+		opacity: 0;
+	}
+	to {
+		transform: scale(1) rotate(0deg);
+		opacity: 1;
+	}
+}
+
+.qr-animate-entrance {
+	animation: qr-entrance 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}

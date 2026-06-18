@@ -53,7 +53,7 @@ export const QRDialog = ({ url, isOpen, onOpenChange }: QRDialogProps) => {
 						{t("header.qr_scan_desc")}
 					</p>
 				</DialogHeader>
-				<div className="flex flex-col items-center justify-center p-6 bg-white rounded-xl shadow-inner my-4 relative group">
+				<div className="flex flex-col items-center justify-center p-6 bg-white rounded-xl shadow-inner my-4 relative group qr-animate-entrance">
 					<QRCodeCanvas
 						id="dialog-qr"
 						value={url}
