@@ -535,8 +535,8 @@ export const setupSocket = (server: HTTPServer) => {
 					fileExt = ".py";
 					break;
 				case "typescript":
-					cmd = "npx";
-					args = ["tsx"];
+					cmd = "tsx";
+					args = [];
 					fileExt = ".ts";
 					break;
 				case "php":

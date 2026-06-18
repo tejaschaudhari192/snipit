@@ -21,14 +21,14 @@ WORKDIR /app
 
 # ── Language SDKs for the code runner ─────────────────────────────────────────
 # Register Microsoft's repo first (required for dotnet-sdk-8.0)
-RUN apt-get update && apt-get install -y wget gpg && \
-    wget -q https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb \
-        -O packages-microsoft-prod.deb && \
+RUN apt-get update && apt-get install -y --no-install-recommends wget gpg ca-certificates && \
+    wget -q https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
     rm packages-microsoft-prod.deb && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         # Code-runner languages
+        build-essential \
         openjdk-17-jdk-headless \
         dotnet-sdk-8.0 \
         python3 \
@@ -42,8 +42,8 @@ RUN apt-get update && apt-get install -y wget gpg && \
         espeak-ng-data \
         # General utilities
         curl \
-        ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* && \
+    npm install -g tsx
 
 # ── espeak-ng data – copy to a writable app-owned path ────────────────────────
 # Debian bookworm puts the data under /usr/lib/<arch>/espeak-ng-data/
