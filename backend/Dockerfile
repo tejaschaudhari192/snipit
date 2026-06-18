@@ -21,7 +21,7 @@ WORKDIR /app
 
 # ── Language SDKs for the code runner ─────────────────────────────────────────
 # Register Microsoft's repo first (required for dotnet-sdk-8.0)
-RUN apt-get update && apt-get install -y --no-install-recommends wget gpg ca-certificates && \
+RUN apt-get update && apt-get install -y --no-install-recommends wget gpg ca-certificates apt-transport-https && \
     wget -q https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
     rm packages-microsoft-prod.deb && \
@@ -38,8 +38,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget gpg ca-cer
         git \
         espeak-ng \
         espeak-ng-data \
-        curl \
-    && rm -rf /var/lib/apt/lists/* && \
+        curl && \
+    rm -rf /var/lib/apt/lists/* && \
     npm install -g tsx && \
     dotnet tool install -g dotnet-script
 
