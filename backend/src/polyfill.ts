@@ -55,5 +55,19 @@ if (typeof globalThis !== "undefined") {
 	(globalThis as any).DecompressionStream = NativeDecompressionStream;
 }
 
+// Add early logging listeners to capture the exact error message before Emscripten hides/rethrows it
+if (typeof process !== "undefined") {
+	process.on("uncaughtException", (err) => {
+		console.error("=== STARTUP CRASH DETECTED ===");
+		console.error(err instanceof Error ? err.stack : err);
+		console.error("==============================");
+	});
+	process.on("unhandledRejection", (reason) => {
+		console.error("=== STARTUP PROMISE REJECTION DETECTED ===");
+		console.error(reason instanceof Error ? reason.stack : reason);
+		console.error("==========================================");
+	});
+}
+
 // Set writable espeak-ng data path before any module that uses phonemizer is loaded
 process.env.ESPEAK_DATA_PATH = "/app/espeak-ng-data";
