@@ -19,6 +19,14 @@ class KokoroService {
 			// Configure Hugging Face Transformers.js cache directory
 			env.cacheDir = cachePath;
 
+			// Optimize ONNX Runtime session to run within Render's 512MB RAM threshold
+			env.backends.onnx.session_options = {
+				intra_op_num_threads: 1,
+				inter_op_num_threads: 1,
+				execution_mode: "sequential",
+				enable_cpu_mem_arena: false,
+			};
+
 			// Use 8-bit quantized weights for fast local CPU inference
 			ttsInstance = await KokoroTTS.from_pretrained(
 				"onnx-community/Kokoro-82M-v1.0-ONNX",
