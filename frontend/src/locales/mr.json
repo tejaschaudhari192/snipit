@@ -600,12 +600,12 @@
 		"file": "फाईल",
 		"ai_writer": "AI लेखक",
 		"transliteration": {
-			"toggle_label": "कीबोर्ड इनपुट",
+			"toggle_label": "फोनेटिक कीबोर्ड",
 			"enabled": "{{language}} मध्ये टाईप करत आहे",
-			"disabled": "इंग्रजी कीबोर्ड",
-			"select_language": "इनपुट भाषा निवडा",
-			"tooltip_enable": "फोनेटिक कीबोर्ड सक्षम करा — इंग्रजीत टाईप करा, {{language}} मिळवा",
-			"tooltip_disable": "इंग्रजी कीबोर्डवर परत जा"
+			"disabled": "इंग्रजी इनपुट",
+			"select_language": "कीबोर्ड भाषा निवडा",
+			"tooltip_enable": "फोनेटिक टायपिंग सक्षम करा — इंग्रजीत टाईप करा, {{language}} मिळवा",
+			"tooltip_disable": "इंग्रजी इनपुटवर परत जा"
 		}
 	},
 	"ai_dialog": {

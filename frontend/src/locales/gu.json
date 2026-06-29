@@ -600,12 +600,12 @@
 		"file": "ફાઇલ",
 		"ai_writer": "AI લેખક",
 		"transliteration": {
-			"toggle_label": "કીબોર્ડ ઇનપુટ",
+			"toggle_label": "ફોનેટિક કીબોર્ડ",
 			"enabled": "{{language}} માં ટાઇપ કરી રહ્યા છો",
-			"disabled": "અંગ્રેજી કીબોર્ડ",
-			"select_language": "ઇનપુટ ભાષા પસંદ કરો",
-			"tooltip_enable": "ફોનેટિક કીબોર્ડ સક્ષમ કરો — અંગ્રેજીમાં ટાઇપ કરો, {{language}} મેળવો",
-			"tooltip_disable": "અંગ્રેજી કીબોર્ડ પર પાછા ફરો"
+			"disabled": "અંગ્રેજી ઇનપુટ",
+			"select_language": "કીબોર્ડ ભાષા પસંદ કરો",
+			"tooltip_enable": "ફોનેટિક ટાઈપિંગ સક્ષમ કરો — અંગ્રેજીમાં ટાઇપ કરો, {{language}} મેળવો",
+			"tooltip_disable": "અંગ્રેજી ઇનપુટ પર પાછા જાઓ"
 		}
 	},
 	"ai_dialog": {

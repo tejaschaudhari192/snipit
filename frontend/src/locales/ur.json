@@ -600,12 +600,12 @@
 		"file": "فائل",
 		"ai_writer": "AI مصنف",
 		"transliteration": {
-			"toggle_label": "کیبورڈ ان پٹ",
+			"toggle_label": "فونیٹک کیبورڈ",
 			"enabled": "{{language}} میں ٹائپ کر رہے ہیں",
-			"disabled": "انگریزی کیبورڈ",
-			"select_language": "ان پٹ زبان منتخب کریں",
-			"tooltip_enable": "صوتی کیبورڈ فعال کریں — انگریزی میں ٹائپ کریں، {{language}} حاصل کریں",
-			"tooltip_disable": "انگریزی کیبورڈ پر واپس جائیں"
+			"disabled": "انگریزی ان پٹ",
+			"select_language": "کیبورڈ زبان منتخب کریں",
+			"tooltip_enable": "فونیٹک ٹائپنگ فعال کریں — انگریزی میں ٹائپ کریں، {{language}} حاصل کریں",
+			"tooltip_disable": "انگریزی ان پٹ پر واپس جائیں"
 		}
 	},
 	"ai_dialog": {

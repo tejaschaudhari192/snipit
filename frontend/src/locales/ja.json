@@ -600,12 +600,12 @@
 		"file": "ファイル",
 		"ai_writer": "AI ライター",
 		"transliteration": {
-			"toggle_label": "キーボード入力",
+			"toggle_label": "フォニックキーボード",
 			"enabled": "{{language}}で入力中",
-			"disabled": "英語キーボード",
-			"select_language": "入力言語を選択",
-			"tooltip_enable": "音標キーボードを有効化 — 英語で入力して{{language}}に変換",
-			"tooltip_disable": "英語キーボードに戻す"
+			"disabled": "英語入力",
+			"select_language": "キーボード言語を選択",
+			"tooltip_enable": "フォニック入力を有効にする — 英語で入力して{{language}}に変換",
+			"tooltip_disable": "英語入力に戻す"
 		}
 	},
 	"ai_dialog": {

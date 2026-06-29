@@ -600,12 +600,12 @@
 		"file": "File",
 		"ai_writer": "AI Writer",
 		"transliteration": {
-			"toggle_label": "Keyboard Input",
+			"toggle_label": "Phonetic Keyboard",
 			"enabled": "Typing in {{language}}",
-			"disabled": "English Keyboard",
-			"select_language": "Select input language",
-			"tooltip_enable": "Enable phonetic keyboard — type in English, get {{language}}",
-			"tooltip_disable": "Switch back to English keyboard"
+			"disabled": "English Input",
+			"select_language": "Choose keyboard language",
+			"tooltip_enable": "Enable phonetic typing — type in English, get {{language}}",
+			"tooltip_disable": "Switch back to English input"
 		}
 	},
 	"ai_dialog": {

@@ -600,12 +600,12 @@
 		"file": "Datei",
 		"ai_writer": "AI Autor",
 		"transliteration": {
-			"toggle_label": "Tastatureingabe",
+			"toggle_label": "Phonetische Tastatur",
 			"enabled": "Tippen auf {{language}}",
-			"disabled": "Englische Tastatur",
-			"select_language": "Eingabesprache auswählen",
-			"tooltip_enable": "Phonetische Tastatur aktivieren — auf Englisch tippen, {{language}} erhalten",
-			"tooltip_disable": "Zurück zur englischen Tastatur wechseln"
+			"disabled": "Englische Eingabe",
+			"select_language": "Tastatursprache wählen",
+			"tooltip_enable": "Phonetisches Tippen aktivieren — auf Englisch tippen, {{language}} erhalten",
+			"tooltip_disable": "Zurück zur englischen Eingabe wechseln"
 		}
 	},
 	"ai_dialog": {

@@ -600,12 +600,12 @@
 		"file": "ਫਾਈਲ",
 		"ai_writer": "AI ਲੇਖਕ",
 		"transliteration": {
-			"toggle_label": "ਕੀਬੋਰਡ ਇਨਪੁਟ",
+			"toggle_label": "ਫੋਨੇਟਿਕ ਕੀਬੋਰਡ",
 			"enabled": "{{language}} ਵਿੱਚ ਟਾਈਪ ਕਰ ਰਹੇ ਹੋ",
-			"disabled": "ਅੰਗਰੇਜ਼ੀ ਕੀਬੋਰਡ",
-			"select_language": "ਇਨਪੁਟ ਭਾਸ਼ਾ ਚੁਣੋ",
-			"tooltip_enable": "ਫੋਨੇਟਿਕ ਕੀਬੋਰਡ ਚਾਲੂ ਕਰੋ — ਅੰਗਰੇਜ਼ੀ ਵਿੱਚ ਟਾਈਪ ਕਰੋ, {{language}} ਪ੍ਰਾਪਤ ਕਰੋ",
-			"tooltip_disable": "ਅੰਗਰੇਜ਼ੀ ਕੀਬੋਰਡ 'ਤੇ ਵਾਪਸ ਜਾਓ"
+			"disabled": "ਅੰਗਰੇਜ਼ੀ ਇਨਪੁਟ",
+			"select_language": "ਕੀਬੋਰਡ ਭਾਸ਼ਾ ਚੁਣੋ",
+			"tooltip_enable": "ਫੋਨੇਟਿਕ ਟਾਈਪਿੰਗ ਚਾਲੂ ਕਰੋ — ਅੰਗਰੇਜ਼ੀ ਵਿੱਚ ਟਾਈਪ ਕਰੋ, {{language}} ਪ੍ਰਾਪਤ ਕਰੋ",
+			"tooltip_disable": "ਅੰਗਰੇਜ਼ੀ ਇਨਪੁਟ 'ਤੇ ਵਾਪਸ ਜਾਓ"
 		}
 	},
 	"ai_dialog": {

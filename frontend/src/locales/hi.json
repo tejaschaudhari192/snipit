@@ -600,12 +600,12 @@
 		"file": "फ़ाइल",
 		"ai_writer": "AI लेखक",
 		"transliteration": {
-			"toggle_label": "कीबोर्ड इनपुट",
+			"toggle_label": "ध्वन्यात्मक कीबोर्ड",
 			"enabled": "{{language}} में टाइप कर रहे हैं",
-			"disabled": "अंग्रेजी कीबोर्ड",
-			"select_language": "इनपुट भाषा चुनें",
-			"tooltip_enable": "ध्वन्यात्मक कीबोर्ड सक्षम करें — अंग्रेजी में टाइप करें, {{language}} प्राप्त करें",
-			"tooltip_disable": "अंग्रेजी कीबोर्ड पर वापस जाएं"
+			"disabled": "अंग्रेजी इनपुट",
+			"select_language": "कीबोर्ड भाषा चुनें",
+			"tooltip_enable": "ध्वन्यात्मक टाइपिंग सक्षम करें — अंग्रेजी में टाइप करें, {{language}} प्राप्त करें",
+			"tooltip_disable": "अंग्रेजी इनपुट पर वापस जाएँ"
 		}
 	},
 	"ai_dialog": {
