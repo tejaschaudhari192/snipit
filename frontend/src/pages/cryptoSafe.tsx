@@ -136,7 +136,7 @@ const CryptoSafePage = () => {
 					}
 					className="w-full"
 				>
-					<TabsList className="grid grid-cols-2 w-full mb-8 bg-muted/50 p-1 rounded-xl">
+					<TabsList className="grid grid-cols-2 w-full mb-8 bg-muted/50 p-1 rounded-xl h-auto">
 						<TabsTrigger
 							value="encrypt"
 							className="flex items-center justify-center gap-2 py-2.5 rounded-lg transition-all"
@@ -180,6 +180,7 @@ const EncryptPanel = () => {
 	const [progress, setProgress] = useState(0);
 	const [currentFile, setCurrentFile] = useState("");
 	const [currentSizeBytes, setCurrentSizeBytes] = useState(0);
+	const [zipProgress, setZipProgress] = useState(-1);
 	const [result, setResult] = useState<EncryptedFile[] | null>(null);
 	const [error, setError] = useState("");
 	const [isDragging, setIsDragging] = useState(false);
@@ -271,29 +272,58 @@ const EncryptPanel = () => {
 		setCurrentSizeBytes(0);
 
 		try {
+			// Phase 1: Encryption (0% - 80% progress)
 			const allResults = await encryptFiles(
 				files,
 				password,
 				(filename, bytes, index) => {
-					setCurrentFile(filename);
+					setCurrentFile(`[Encrypting] ${filename}`);
 					setCurrentSizeBytes(bytes);
-					setProgress(Math.round(((index + 1) / files.length) * 100));
+					setProgress(Math.round(((index + 1) / files.length) * 80));
 				},
 			);
 
 			if (dirHandle) {
+				// Phase 2: Writing back to directory (80% - 95% progress)
 				const outputFiles = allResults.map((f) => ({
 					blob: f.blob,
 					path: f.outputName,
 				}));
-				await writeToDirectory(dirHandle, outputFiles);
+				await writeToDirectory(
+					dirHandle,
+					outputFiles,
+					(path, bytes, index) => {
+						setCurrentFile(`[Writing output] ${path}`);
+						setCurrentSizeBytes(bytes);
+						setProgress(
+							80 +
+								Math.round(
+									((index + 1) / outputFiles.length) * 15,
+								),
+						);
+					},
+				);
 
+				// Phase 3: Deleting source files (95% - 100% progress)
 				const sourcePaths = files.map(
 					(f) =>
 						(f as File & { webkitRelativePath?: string })
 							.webkitRelativePath || f.name,
 				);
-				await deleteFilesFromDirectory(dirHandle, sourcePaths);
+				await deleteFilesFromDirectory(
+					dirHandle,
+					sourcePaths,
+					(path, index) => {
+						setCurrentFile(`[Deleting source] ${path}`);
+						setCurrentSizeBytes(0);
+						setProgress(
+							95 +
+								Math.round(
+									((index + 1) / sourcePaths.length) * 5,
+								),
+						);
+					},
+				);
 			}
 
 			setResult(allResults);
@@ -315,7 +345,11 @@ const EncryptPanel = () => {
 			blob: f.blob,
 			path: f.outputName,
 		}));
-		await downloadAsZip(fileList, zipName);
+		setZipProgress(0);
+		await downloadAsZip(fileList, zipName, (_path, _bytes, index) => {
+			setZipProgress(Math.round(((index + 1) / fileList.length) * 100));
+		});
+		setZipProgress(-1);
 	};
 
 	const handleReset = () => {
@@ -545,9 +579,16 @@ const EncryptPanel = () => {
 								onClick={handleDownloadAll}
 								className="w-full gap-2"
 								variant="default"
+								disabled={zipProgress >= 0}
 							>
-								<FileDown className="h-4 w-4" />
-								{t("tools.download_all")}
+								{zipProgress >= 0 ? (
+									<Loader2 className="h-4 w-4 animate-spin" />
+								) : (
+									<FileDown className="h-4 w-4" />
+								)}
+								{zipProgress >= 0
+									? `Packing ZIP (${zipProgress}%)`
+									: t("tools.download_all")}
 							</Button>
 						)}
 
@@ -556,18 +597,21 @@ const EncryptPanel = () => {
 								{result.map((f, i) => (
 									<div
 										key={i}
-										className="flex items-center gap-2 text-xs px-2 py-1.5 rounded hover:bg-muted/50"
+										className="flex items-center justify-between gap-4 text-xs px-2 py-1.5 rounded hover:bg-muted/50"
 									>
-										<FileText className="h-3 w-3 shrink-0 text-muted-foreground" />
-										<span className="truncate">
-											{f.originalPath}
-										</span>
-										<span className="text-muted-foreground/50">
-											→
-										</span>
-										<span className="truncate font-mono text-[10px]">
-											{f.outputName}
-										</span>
+										<div className="flex items-center gap-2 min-w-0 flex-1">
+											<FileText className="h-3 w-3 shrink-0 text-muted-foreground" />
+											<span
+												className="truncate"
+												title={f.originalPath}
+											>
+												{f.originalPath}
+											</span>
+										</div>
+										<div className="flex items-center gap-2 shrink-0 font-mono text-[10px] text-muted-foreground/80">
+											<span>→</span>
+											<span>{f.outputName}</span>
+										</div>
 									</div>
 								))}
 							</div>
@@ -622,6 +666,7 @@ const DecryptPanel = () => {
 	const [progress, setProgress] = useState(0);
 	const [currentFile, setCurrentFile] = useState("");
 	const [currentSizeBytes, setCurrentSizeBytes] = useState(0);
+	const [zipProgress, setZipProgress] = useState(-1);
 	const [result, setResult] = useState<DecryptedFile[] | null>(null);
 	const [error, setError] = useState("");
 	const [isDragging, setIsDragging] = useState(false);
@@ -706,17 +751,19 @@ const DecryptPanel = () => {
 		setCurrentSizeBytes(0);
 
 		try {
+			// Phase 1: Decryption (0% - 80% progress)
 			const allResults = await decryptFiles(
 				files,
 				password,
 				(filename, bytes, index) => {
-					setCurrentFile(filename);
+					setCurrentFile(`[Decrypting] ${filename}`);
 					setCurrentSizeBytes(bytes);
-					setProgress(Math.round(((index + 1) / files.length) * 100));
+					setProgress(Math.round(((index + 1) / files.length) * 80));
 				},
 			);
 
 			if (dirHandle) {
+				// Phase 2: Writing back decrypted files (80% - 95% progress)
 				const outputFiles = await Promise.all(
 					allResults.map(async (f) => ({
 						blob: new Blob([await f.file.arrayBuffer()], {
@@ -725,14 +772,41 @@ const DecryptPanel = () => {
 						path: f.originalPath,
 					})),
 				);
-				await writeToDirectory(dirHandle, outputFiles);
+				await writeToDirectory(
+					dirHandle,
+					outputFiles,
+					(path, bytes, index) => {
+						setCurrentFile(`[Writing output] ${path}`);
+						setCurrentSizeBytes(bytes);
+						setProgress(
+							80 +
+								Math.round(
+									((index + 1) / outputFiles.length) * 15,
+								),
+						);
+					},
+				);
 
+				// Phase 3: Deleting encrypted source files (95% - 100% progress)
 				const sourcePaths = files.map(
 					(f) =>
 						(f as File & { webkitRelativePath?: string })
 							.webkitRelativePath || f.name,
 				);
-				await deleteFilesFromDirectory(dirHandle, sourcePaths);
+				await deleteFilesFromDirectory(
+					dirHandle,
+					sourcePaths,
+					(path, index) => {
+						setCurrentFile(`[Deleting source] ${path}`);
+						setCurrentSizeBytes(0);
+						setProgress(
+							95 +
+								Math.round(
+									((index + 1) / sourcePaths.length) * 5,
+								),
+						);
+					},
+				);
 			}
 
 			setResult(allResults);
@@ -758,7 +832,11 @@ const DecryptPanel = () => {
 				path: f.originalPath,
 			})),
 		);
-		await downloadAsZip(fileList, zipName);
+		setZipProgress(0);
+		await downloadAsZip(fileList, zipName, (_path, _bytes, index) => {
+			setZipProgress(Math.round(((index + 1) / fileList.length) * 100));
+		});
+		setZipProgress(-1);
 	};
 
 	const handleReset = () => {
@@ -770,6 +848,7 @@ const DecryptPanel = () => {
 		setProgress(0);
 		setCurrentFile("");
 		setCurrentSizeBytes(0);
+		setZipProgress(-1);
 		setError("");
 	};
 
@@ -950,9 +1029,16 @@ const DecryptPanel = () => {
 								onClick={handleDownloadAll}
 								className="w-full gap-2"
 								variant="default"
+								disabled={zipProgress >= 0}
 							>
-								<FileDown className="h-4 w-4" />
-								{t("tools.download_all")}
+								{zipProgress >= 0 ? (
+									<Loader2 className="h-4 w-4 animate-spin" />
+								) : (
+									<FileDown className="h-4 w-4" />
+								)}
+								{zipProgress >= 0
+									? `Packing ZIP (${zipProgress}%)`
+									: t("tools.download_all")}
 							</Button>
 						)}
 
