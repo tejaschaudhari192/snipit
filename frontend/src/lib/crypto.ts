@@ -132,9 +132,16 @@ export async function encryptFile(
 	payload.set(dataLenBytes, 2 + pathBytes.length);
 	payload.set(new Uint8Array(fileBuffer), headerSize);
 
-	// Fill padding with random bytes
+	// Fill padding with random bytes in chunks of max 65536
 	if (paddingSize > 0) {
-		const padding = crypto.getRandomValues(new Uint8Array(paddingSize));
+		const padding = new Uint8Array(paddingSize);
+		let offset = 0;
+		while (offset < paddingSize) {
+			const chunkSize = Math.min(65536, paddingSize - offset);
+			const chunk = crypto.getRandomValues(new Uint8Array(chunkSize));
+			padding.set(chunk, offset);
+			offset += chunkSize;
+		}
 		payload.set(padding, headerSize + dataLen);
 	}
 
