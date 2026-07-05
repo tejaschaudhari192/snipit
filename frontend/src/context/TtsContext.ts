@@ -4,6 +4,8 @@ export interface TtsContextProps {
 	isPlaying: boolean;
 	isPaused: boolean;
 	isPreparing: boolean;
+	isModelLoading: boolean;
+	modelProgress: number;
 	spokenText: string;
 	currentVoice: string;
 	currentLanguage: string;

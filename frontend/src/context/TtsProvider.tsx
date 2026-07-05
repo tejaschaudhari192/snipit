@@ -1,8 +1,62 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { useApiHelpers } from "@/lib/api";
 import { toast } from "sonner";
-import { CONFIG } from "@/configurations";
 import { TtsContext } from "./TtsContext";
+import { initKokoro, generateSpeechClient } from "@/services/kokoro-client";
+
+// Helper functions for WAV encoding in browser
+const writeString = (view: DataView, offset: number, str: string) => {
+	for (let i = 0; i < str.length; i++) {
+		view.setUint8(offset + i, str.charCodeAt(i));
+	}
+};
+
+const floatTo16BitPCM = (
+	output: DataView,
+	offset: number,
+	input: Float32Array,
+) => {
+	for (let i = 0; i < input.length; i++, offset += 2) {
+		const s = Math.max(-1, Math.min(1, input[i]));
+		output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+	}
+};
+
+const encodeWAV = (samples: Float32Array, sampleRate = 24000) => {
+	const buffer = new ArrayBuffer(44 + samples.length * 2);
+	const view = new DataView(buffer);
+
+	/* RIFF identifier */
+	writeString(view, 0, "RIFF");
+	/* file length */
+	view.setUint32(4, 36 + samples.length * 2, true);
+	/* RIFF type */
+	writeString(view, 8, "WAVE");
+	/* format chunk identifier */
+	writeString(view, 12, "fmt ");
+	/* format chunk length */
+	view.setUint32(16, 16, true);
+	/* sample format (raw) */
+	view.setUint16(20, 1, true);
+	/* channel count */
+	view.setUint16(22, 1, true);
+	/* sample rate */
+	view.setUint32(24, sampleRate, true);
+	/* byte rate (sample rate * block align) */
+	view.setUint32(28, sampleRate * 2, true);
+	/* block align (channel count * bytes per sample) */
+	view.setUint16(32, 2, true);
+	/* bits per sample */
+	view.setUint16(34, 16, true);
+	/* data chunk identifier */
+	writeString(view, 36, "data");
+	/* data chunk length */
+	view.setUint32(40, samples.length * 2, true);
+
+	floatTo16BitPCM(view, 44, samples);
+
+	return new Blob([view], { type: "audio/wav" });
+};
 
 export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
@@ -11,6 +65,8 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [isPaused, setIsPaused] = useState(false);
 	const [isPreparing, setIsPreparing] = useState(false);
+	const [isModelLoading, setIsModelLoading] = useState(false);
+	const [modelProgress, setModelProgress] = useState(0);
 	const [spokenText, setSpokenText] = useState("");
 	const [currentVoice, setCurrentVoice] = useState("");
 	const [currentLanguage, setCurrentLanguage] = useState("");
@@ -21,9 +77,11 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 	const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 	const audioRef = useRef<HTMLAudioElement | null>(null);
 	const objectUrlRef = useRef<string | null>(null);
+	const isStoppedRef = useRef(false);
 
 	const stop = useCallback(() => {
 		window.speechSynthesis.cancel();
+		isStoppedRef.current = true;
 
 		if (audioRef.current) {
 			audioRef.current.pause();
@@ -38,6 +96,8 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 		setIsPlaying(false);
 		setIsPaused(false);
 		setIsPreparing(false);
+		setIsModelLoading(false);
+		setModelProgress(0);
 		setCurrentTime(0);
 		setDuration(0);
 	}, []);
@@ -80,9 +140,12 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 				const preferredVoice =
 					voices.find(
 						(v) =>
-							v.name.includes("Google") ||
-							v.name.includes("Natural"),
-					) || voices[0];
+							v.lang.toLowerCase().startsWith("en") &&
+							(v.name.includes("Google") ||
+								v.name.includes("Natural")),
+					) ||
+					voices.find((v) => v.lang.toLowerCase().startsWith("en")) ||
+					voices[0];
 				if (preferredVoice) utterance.voice = preferredVoice;
 
 				const voiceName = preferredVoice?.name || "Default";
@@ -207,6 +270,7 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 			}
 
 			stop();
+			isStoppedRef.current = false;
 			setIsPreparing(true);
 
 			try {
@@ -236,12 +300,34 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 				// Keep a preview of the text being spoken
 				setSpokenText(textToSpeak);
 
+				const nonEnglishLangs = [
+					"hindi",
+					"hi",
+					"japanese",
+					"ja",
+					"spanish",
+					"es",
+					"french",
+					"fr",
+					"german",
+					"de",
+					"italian",
+					"it",
+					"korean",
+					"ko",
+					"portuguese",
+					"pt",
+					"chinese",
+					"zh",
+					"russian",
+					"ru",
+				];
 				let isEnglish = true;
 				let detectedLang = "english";
 				try {
 					const detectRes = await detectSpeechLanguage(textToSpeak);
-					detectedLang = detectRes.language.toLowerCase();
-					if (detectedLang !== "english") {
+					detectedLang = detectRes.language.toLowerCase().trim();
+					if (nonEnglishLangs.includes(detectedLang)) {
 						isEnglish = false;
 					}
 				} catch (e) {
@@ -256,26 +342,48 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 					return;
 				}
 
-				// Send the entire text at once and stream base64-encoded WAV chunks dynamically
-				const response = await fetch(`${CONFIG.apiBaseUrl}/ai/tts`, {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ text: textToSpeak }),
-				});
-
-				if (!response.ok) {
-					speakWithBrowserFallback(textToSpeak);
-					return;
+				// Determine client-side voice selection dynamically based on keywords
+				let selectedVoice = "af_heart"; // Default soft, warm, high-pitched female
+				const lower = textToSpeak.toLowerCase();
+				if (
+					lower.includes("colour") ||
+					lower.includes("neighbour") ||
+					lower.includes("cheerio") ||
+					lower.includes("london") ||
+					lower.includes("mate")
+				) {
+					selectedVoice = "bf_emma"; // Soft British Female
+				} else if (
+					textToSpeak.includes("!") ||
+					lower.includes("wow") ||
+					lower.includes("love") ||
+					lower.includes("great")
+				) {
+					selectedVoice = "af_bella"; // Highly expressive, soft American Female
 				}
 
-				const reader = response.body?.getReader();
-				const decoder = new TextDecoder();
-				let buffer = "";
+				// Load model and report progress if not already loaded
+				setIsModelLoading(true);
+				setModelProgress(0);
 
-				if (!reader) {
-					speakWithBrowserFallback(textToSpeak);
+				await initKokoro((progress) => {
+					setModelProgress(progress);
+				});
+
+				setIsModelLoading(false);
+
+				if (isStoppedRef.current) return;
+
+				// Split text into sentence chunks to generate them one by one for low-latency playback
+				const sentences = textToSpeak.match(
+					/[^.!?。！？\n]+(?:[.!?。！？\n]|\s*|$)/g,
+				) || [textToSpeak];
+				const cleanSentences = sentences
+					.map((s) => s.trim())
+					.filter((s) => s.length > 0);
+
+				if (cleanSentences.length === 0) {
+					setIsPreparing(false);
 					return;
 				}
 
@@ -289,14 +397,12 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 				let isPlayingQueue = false;
 
 				const playQueue = async () => {
-					if (isPlayingQueue) return;
+					if (isPlayingQueue || isStoppedRef.current) return;
 
-					// Find the chunk corresponding to currentPlayingIndex
 					const chunkIndex = audioQueue.findIndex(
 						(c) => c.index === currentPlayingIndex,
 					);
 					if (chunkIndex === -1) {
-						// If the next chunk is not ready yet, set isPreparing and wait
 						setIsPreparing(true);
 						return;
 					}
@@ -325,7 +431,7 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 					setCurrentVoice(chunk.voice);
 					setCurrentLanguage("English");
 					setCurrentEngine(
-						`Local Kokoro TTS (q8 CPU) - Sentence ${chunk.index + 1}/${chunk.total}`,
+						`Client Kokoro TTS (WebGPU/WASM) - Sentence ${chunk.index + 1}/${chunk.total}`,
 					);
 
 					audio.onplay = () => {
@@ -337,7 +443,6 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 						isPlayingQueue = false;
 						currentPlayingIndex++;
 
-						// Check if we finished all chunks
 						if (currentPlayingIndex >= chunk.total) {
 							stop();
 						} else {
@@ -363,59 +468,45 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 					});
 				};
 
-				// Read stream loop
-				const readStream = async () => {
+				// Generate sentences in the background and feed the queue
+				const totalSentences = cleanSentences.length;
+
+				// Run generation sequentially to avoid memory spikes and keep cpu usage stable
+				(async () => {
 					try {
-						while (true) {
-							const { done, value } = await reader.read();
-							if (done) break;
+						for (let i = 0; i < totalSentences; i++) {
+							if (isStoppedRef.current) break;
 
-							buffer += decoder.decode(value, { stream: true });
-							const lines = buffer.split("\n");
-							buffer = lines.pop() || ""; // keep unfinished line in buffer
+							const sentence = cleanSentences[i];
+							const { audio } = await generateSpeechClient(
+								sentence,
+								selectedVoice,
+							);
 
-							for (const line of lines) {
-								if (!line.trim()) continue;
-								try {
-									const parsed = JSON.parse(line);
+							if (isStoppedRef.current) break;
 
-									// Convert base64 audio to Blob
-									const binaryString = window.atob(
-										parsed.audio,
-									);
-									const len = binaryString.length;
-									const bytes = new Uint8Array(len);
-									for (let i = 0; i < len; i++) {
-										bytes[i] = binaryString.charCodeAt(i);
-									}
-									const audioBlob = new Blob([bytes], {
-										type: "audio/wav",
-									});
+							// Encode Float32Array to standard WAV Blob on-the-fly
+							const audioBlob = encodeWAV(audio);
 
-									audioQueue.push({
-										index: parsed.index,
-										total: parsed.total,
-										voice: parsed.voice,
-										blob: audioBlob,
-									});
+							audioQueue.push({
+								index: i,
+								total: totalSentences,
+								voice: selectedVoice,
+								blob: audioBlob,
+							});
 
-									// Trigger play queue (which will start playing if we are waiting for this index)
-									playQueue();
-								} catch (err) {
-									console.error(
-										"Failed to parse chunk JSON:",
-										err,
-									);
-								}
-							}
+							// Notify/trigger queue playback
+							playQueue();
 						}
-					} catch (streamError) {
-						console.error("Error reading TTS stream:", streamError);
+					} catch (genError) {
+						console.error(
+							"Client-side voice generation error:",
+							genError,
+						);
+						// Fallback to browser TTS if the client generation crashes
+						speakWithBrowserFallback(textToSpeak);
 					}
-				};
-
-				// Trigger background stream reading
-				readStream();
+				})();
 			} catch (error) {
 				console.error("TTS failed:", error);
 				stop();
@@ -443,6 +534,8 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 				isPlaying,
 				isPaused,
 				isPreparing,
+				isModelLoading,
+				modelProgress,
 				spokenText,
 				currentVoice,
 				currentLanguage,

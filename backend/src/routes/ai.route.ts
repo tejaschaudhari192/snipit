@@ -43,7 +43,6 @@ router.post(
 	"/prepare-speech",
 	catchAsync(aiController.prepareSpeech.bind(aiController)),
 );
-router.post("/tts", catchAsync(aiController.tts.bind(aiController)));
 router.post(
 	"/suggest-id",
 	catchAsync(aiController.suggestId.bind(aiController)),

@@ -8,6 +8,8 @@ export const TtsMiniPlayer: React.FC = () => {
 		isPlaying,
 		isPaused,
 		isPreparing,
+		isModelLoading,
+		modelProgress,
 		spokenText,
 		currentVoice,
 		currentLanguage,
@@ -16,7 +18,7 @@ export const TtsMiniPlayer: React.FC = () => {
 		stop,
 	} = useTts();
 
-	if (!isPlaying && !isPaused && !isPreparing) return null;
+	if (!isPlaying && !isPaused && !isPreparing && !isModelLoading) return null;
 
 	const handlePlayPause = () => {
 		if (isPlaying) {
@@ -26,11 +28,13 @@ export const TtsMiniPlayer: React.FC = () => {
 		}
 	};
 
-	const truncatedText = spokenText
-		? spokenText.length > 50
-			? `${spokenText.substring(0, 50)}...`
-			: spokenText
-		: "Text-to-Speech playback";
+	const truncatedText = isModelLoading
+		? `Loading Speech Model: ${modelProgress}%`
+		: spokenText
+			? spokenText.length > 50
+				? `${spokenText.substring(0, 50)}...`
+				: spokenText
+			: "Text-to-Speech playback";
 
 	return (
 		<div className="fixed bottom-6 right-6 z-150 animate-in fade-in slide-in-from-bottom-6 duration-300">
@@ -38,7 +42,30 @@ export const TtsMiniPlayer: React.FC = () => {
 				{/* Top section: Info and controls */}
 				<div className="flex items-center gap-3">
 					<div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-						{isPlaying && !isPaused ? (
+						{isModelLoading || isPreparing ? (
+							<div className="flex items-center justify-center">
+								<svg
+									className="animate-spin h-5 w-5 text-primary"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+								>
+									<circle
+										className="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										strokeWidth="4"
+									></circle>
+									<path
+										className="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+									></path>
+								</svg>
+							</div>
+						) : isPlaying && !isPaused ? (
 							<div className="flex items-end gap-[2px] h-4">
 								<div
 									className="w-[3px] bg-primary animate-bounce rounded-full h-3"
@@ -60,16 +87,20 @@ export const TtsMiniPlayer: React.FC = () => {
 
 					<div className="flex-1 min-w-0">
 						<p className="text-xs font-semibold text-primary truncate">
-							{isPreparing ? "Preparing voice..." : truncatedText}
+							{isPreparing && !isModelLoading
+								? "Preparing voice..."
+								: truncatedText}
 						</p>
 						<p className="text-[10px] text-muted-foreground truncate">
-							{currentLanguage} | {currentVoice}
+							{isModelLoading
+								? "Downloading local engine (~82MB, cached once)"
+								: `${currentLanguage} | ${currentVoice}`}
 						</p>
 					</div>
 
 					{/* Play/Pause & Stop buttons */}
 					<div className="flex items-center gap-2">
-						{!isPreparing && (
+						{!isPreparing && !isModelLoading && (
 							<Button
 								variant="ghost"
 								size="icon-sm"
@@ -93,6 +124,16 @@ export const TtsMiniPlayer: React.FC = () => {
 						</Button>
 					</div>
 				</div>
+
+				{/* Progress bar for model load progress */}
+				{isModelLoading && (
+					<div className="w-full bg-muted-foreground/10 rounded-full h-1.5 overflow-hidden">
+						<div
+							className="bg-primary h-full transition-all duration-300"
+							style={{ width: `${modelProgress}%` }}
+						></div>
+					</div>
+				)}
 			</div>
 		</div>
 	);
