@@ -114,6 +114,7 @@ const Header = ({ className }: HeaderProps) => {
 		"login",
 		"signup",
 		"password",
+		"tools",
 	];
 	const id = nonShareablePaths.some((p) => path.includes(p)) ? null : path;
 	const { t } = useTranslation();

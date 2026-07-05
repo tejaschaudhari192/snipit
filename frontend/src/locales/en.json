@@ -747,6 +747,7 @@
 		"choose_files": "Choose Files",
 		"choose_folder": "Choose Folder",
 		"drag_drop_decrypt_prompt": "Drag & drop encrypted files here",
-		"write_back_success": "Files written back and original structures replaced inside the folder."
+		"write_back_success": "Files written back and original structures replaced inside the folder.",
+		"pick_folder": "Choose Folder"
 	}
 }

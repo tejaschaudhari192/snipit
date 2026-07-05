@@ -711,6 +711,7 @@
 		"choose_files": "Dateien auswählen",
 		"choose_folder": "Ordner auswählen",
 		"drag_drop_decrypt_prompt": "Verschlüsselte Dateien hierher ziehen",
-		"write_back_success": "Dateien wurden zurückgeschrieben und die Originalstruktur im Ordner ersetzt."
+		"write_back_success": "Dateien wurden zurückgeschrieben und die Originalstruktur im Ordner ersetzt.",
+		"pick_folder": "Ordner auswählen"
 	}
 }

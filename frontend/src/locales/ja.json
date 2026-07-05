@@ -711,6 +711,7 @@
 		"choose_files": "ファイルを選択",
 		"choose_folder": "フォルダーを選択",
 		"drag_drop_decrypt_prompt": "暗号化されたファイルをここにドラッグ＆ドロップ",
-		"write_back_success": "ファイルが書き戻され、フォルダー内の元の構造が置き換えられました。"
+		"write_back_success": "ファイルが書き戻され、フォルダー内の元の構造が置き換えられました。",
+		"pick_folder": "フォルダーを選択"
 	}
 }
