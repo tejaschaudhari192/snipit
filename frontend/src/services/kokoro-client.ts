@@ -89,7 +89,7 @@ export const generateSpeechClient = async (
 
 	// Generate speech audio inside browser sandbox
 	const result = await tts.generate(text, {
-		voice,
+		voice: voice as unknown as "af_heart",
 	});
 
 	if (!result || !result.audio) {
