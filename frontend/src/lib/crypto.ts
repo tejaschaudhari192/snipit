@@ -388,13 +388,18 @@ export function downloadBlob(blob: Blob, filename: string): void {
  */
 export async function createZipBlob(
 	files: { blob: Blob; path: string }[],
+	onProgress?: (path: string, bytes: number, index: number) => void,
 ): Promise<Blob> {
 	const localHeaders: Uint8Array[] = [];
 	const fileData: Uint8Array[] = [];
 	const centralEntries: Uint8Array[] = [];
 	let offset = 0;
 
-	for (const { blob, path } of files) {
+	for (let i = 0; i < files.length; i++) {
+		const { blob, path } = files[i]!;
+		if (onProgress) {
+			onProgress(path, blob.size, i);
+		}
 		const data = new Uint8Array(await blob.arrayBuffer());
 		const crc = crc32(data);
 		const size = data.byteLength;
@@ -477,6 +482,7 @@ export async function createZipBlob(
 export async function downloadAsZip(
 	files: { blob: Blob; path: string }[],
 	zipName: string,
+	onProgress?: (path: string, bytes: number, index: number) => void,
 ): Promise<void> {
 	if (files.length === 0) return;
 
@@ -486,7 +492,7 @@ export async function downloadAsZip(
 		return;
 	}
 
-	const zipBlob = await createZipBlob(files);
+	const zipBlob = await createZipBlob(files, onProgress);
 	downloadBlob(zipBlob, zipName);
 }
 
@@ -556,8 +562,13 @@ export async function writeToFolder(
 export async function writeToDirectory(
 	dirHandle: FileSystemDirectoryHandle,
 	files: { blob: Blob; path: string }[],
+	onProgress?: (path: string, bytes: number, index: number) => void,
 ): Promise<void> {
-	for (const { blob, path } of files) {
+	for (let i = 0; i < files.length; i++) {
+		const { blob, path } = files[i]!;
+		if (onProgress) {
+			onProgress(path, blob.size, i);
+		}
 		await writeFileToDirectory(dirHandle, path, blob);
 	}
 }
@@ -607,9 +618,15 @@ export async function readFilesFromDirectory(
 export async function deleteFilesFromDirectory(
 	dirHandle: FileSystemDirectoryHandle,
 	relativePaths: string[],
+	onProgress?: (path: string, index: number) => void,
 ): Promise<void> {
 	// Group files by their parent directory
 	const dirMap = new Map<string, string[]>();
+	const allFilesList: {
+		dirPath: string;
+		fileName: string;
+		fullPath: string;
+	}[] = [];
 	for (const path of relativePaths) {
 		const parts = path.split("/").filter(Boolean);
 		const fileName = parts.pop()!;
@@ -618,10 +635,15 @@ export async function deleteFilesFromDirectory(
 			dirMap.set(parentDir, []);
 		}
 		dirMap.get(parentDir)!.push(fileName);
+		allFilesList.push({ dirPath: parentDir, fileName, fullPath: path });
 	}
 
-	// Delete files from each directory
-	for (const [dirPath, fileNames] of dirMap) {
+	// Delete files from each directory with progress reporting
+	for (let i = 0; i < allFilesList.length; i++) {
+		const { dirPath, fileName, fullPath } = allFilesList[i]!;
+		if (onProgress) {
+			onProgress(fullPath, i);
+		}
 		let currentHandle = dirHandle;
 		if (dirPath) {
 			const parts = dirPath.split("/");
@@ -629,12 +651,10 @@ export async function deleteFilesFromDirectory(
 				currentHandle = await currentHandle.getDirectoryHandle(part);
 			}
 		}
-		for (const fileName of fileNames) {
-			try {
-				await currentHandle.removeEntry(fileName);
-			} catch {
-				// File may already be deleted — ignore
-			}
+		try {
+			await currentHandle.removeEntry(fileName);
+		} catch {
+			// File may already be deleted — ignore
 		}
 	}
 
