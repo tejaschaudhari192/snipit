@@ -1,7 +1,7 @@
 # =================================================
 # Stage 1 – Build
 # =================================================
-FROM node:20-bookworm AS builder
+FROM node:22-bookworm AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
@@ -14,7 +14,7 @@ RUN npm run build
 # =================================================
 # Stage 2 – Runtime
 # =================================================
-FROM node:20-bookworm AS runner
+FROM node:22-bookworm AS runner
 WORKDIR /app
 
 # ── Language SDKs for the code runner ─────────────────────────────────────────
