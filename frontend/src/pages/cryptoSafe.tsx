@@ -94,6 +94,15 @@ async function readEntry(entry: FileSystemEntry, path = ""): Promise<File[]> {
 	return [];
 }
 
+function formatBytes(bytes: number, decimals = 2): string {
+	if (bytes === 0) return "0 Bytes";
+	const k = 1024;
+	const dm = decimals < 0 ? 0 : decimals;
+	const sizes = ["Bytes", "KB", "MB", "GB"];
+	const i = Math.floor(Math.log(bytes) / Math.log(k));
+	return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+}
+
 const CryptoSafePage = () => {
 	const { t } = useTranslation();
 	const [activeTab, setActiveTab] = useState<"encrypt" | "decrypt">(
@@ -169,6 +178,8 @@ const EncryptPanel = () => {
 	const [dirName, setDirName] = useState("");
 	const [state, setState] = useState<ProcessState>("idle");
 	const [progress, setProgress] = useState(0);
+	const [currentFile, setCurrentFile] = useState("");
+	const [currentSizeBytes, setCurrentSizeBytes] = useState(0);
 	const [result, setResult] = useState<EncryptedFile[] | null>(null);
 	const [error, setError] = useState("");
 	const [isDragging, setIsDragging] = useState(false);
@@ -256,22 +267,19 @@ const EncryptPanel = () => {
 		setState("processing");
 		setError("");
 		setProgress(0);
+		setCurrentFile("");
+		setCurrentSizeBytes(0);
 
 		try {
-			const batchSize = Math.max(1, Math.floor(files.length / 10));
-			const allResults: EncryptedFile[] = [];
-
-			for (let i = 0; i < files.length; i += batchSize) {
-				const batch = files.slice(i, i + batchSize);
-				const batchResults = await encryptFiles(batch, password);
-				allResults.push(...batchResults);
-				setProgress(
-					Math.min(
-						100,
-						Math.round(((i + batch.length) / files.length) * 100),
-					),
-				);
-			}
+			const allResults = await encryptFiles(
+				files,
+				password,
+				(filename, bytes, index) => {
+					setCurrentFile(filename);
+					setCurrentSizeBytes(bytes);
+					setProgress(Math.round(((index + 1) / files.length) * 100));
+				},
+			);
 
 			if (dirHandle) {
 				const outputFiles = allResults.map((f) => ({
@@ -317,6 +325,8 @@ const EncryptPanel = () => {
 		setState("idle");
 		setResult(null);
 		setProgress(0);
+		setCurrentFile("");
+		setCurrentSizeBytes(0);
 		setError("");
 	};
 
@@ -487,6 +497,19 @@ const EncryptPanel = () => {
 							<span className="font-medium">{progress}%</span>
 						</div>
 						<Progress value={progress} />
+						{currentFile && (
+							<div className="text-xs text-muted-foreground/80 flex items-center justify-between mt-1 px-2 py-1 rounded bg-muted/20 border border-border/20">
+								<span
+									className="truncate max-w-[70%]"
+									title={currentFile}
+								>
+									{currentFile}
+								</span>
+								<span className="shrink-0 font-mono text-[10px]">
+									{formatBytes(currentSizeBytes)}
+								</span>
+							</div>
+						)}
 					</div>
 				)}
 
@@ -597,6 +620,8 @@ const DecryptPanel = () => {
 	const [dirName, setDirName] = useState("");
 	const [state, setState] = useState<ProcessState>("idle");
 	const [progress, setProgress] = useState(0);
+	const [currentFile, setCurrentFile] = useState("");
+	const [currentSizeBytes, setCurrentSizeBytes] = useState(0);
 	const [result, setResult] = useState<DecryptedFile[] | null>(null);
 	const [error, setError] = useState("");
 	const [isDragging, setIsDragging] = useState(false);
@@ -677,22 +702,19 @@ const DecryptPanel = () => {
 		setState("processing");
 		setError("");
 		setProgress(0);
+		setCurrentFile("");
+		setCurrentSizeBytes(0);
 
 		try {
-			const batchSize = Math.max(1, Math.floor(files.length / 10));
-			const allResults: DecryptedFile[] = [];
-
-			for (let i = 0; i < files.length; i += batchSize) {
-				const batch = files.slice(i, i + batchSize);
-				const batchResults = await decryptFiles(batch, password);
-				allResults.push(...batchResults);
-				setProgress(
-					Math.min(
-						100,
-						Math.round(((i + batch.length) / files.length) * 100),
-					),
-				);
-			}
+			const allResults = await decryptFiles(
+				files,
+				password,
+				(filename, bytes, index) => {
+					setCurrentFile(filename);
+					setCurrentSizeBytes(bytes);
+					setProgress(Math.round(((index + 1) / files.length) * 100));
+				},
+			);
 
 			if (dirHandle) {
 				const outputFiles = await Promise.all(
@@ -746,6 +768,8 @@ const DecryptPanel = () => {
 		setState("idle");
 		setResult(null);
 		setProgress(0);
+		setCurrentFile("");
+		setCurrentSizeBytes(0);
 		setError("");
 	};
 
@@ -878,6 +902,19 @@ const DecryptPanel = () => {
 							<span className="font-medium">{progress}%</span>
 						</div>
 						<Progress value={progress} />
+						{currentFile && (
+							<div className="text-xs text-muted-foreground/80 flex items-center justify-between mt-1 px-2 py-1 rounded bg-muted/20 border border-border/20">
+								<span
+									className="truncate max-w-[70%]"
+									title={currentFile}
+								>
+									{currentFile}
+								</span>
+								<span className="shrink-0 font-mono text-[10px]">
+									{formatBytes(currentSizeBytes)}
+								</span>
+							</div>
+						)}
 					</div>
 				)}
 

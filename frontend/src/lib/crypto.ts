@@ -180,24 +180,27 @@ export async function encryptFile(
 	};
 }
 
-/**
- * Encrypt multiple files, deriving the key once and reusing it for performance.
- */
 export async function encryptFiles(
 	files: File[],
 	password: string,
+	onProgress?: (filename: string, bytes: number, index: number) => void,
 ): Promise<EncryptedFile[]> {
 	const salt = crypto.getRandomValues(new Uint8Array(16));
 	const key = await deriveKey(password, salt);
+	const results: EncryptedFile[] = [];
 
-	return Promise.all(
-		files.map((f) => {
-			const relPath =
-				(f as File & { webkitRelativePath?: string })
-					.webkitRelativePath || f.name;
-			return encryptFile(f, key, salt, relPath);
-		}),
-	);
+	for (let i = 0; i < files.length; i++) {
+		const f = files[i]!;
+		const relPath =
+			(f as File & { webkitRelativePath?: string }).webkitRelativePath ||
+			f.name;
+		if (onProgress) {
+			onProgress(relPath, f.size, i);
+		}
+		const res = await encryptFile(f, key, salt, relPath);
+		results.push(res);
+	}
+	return results;
 }
 
 // ---- Decryption ----
@@ -315,18 +318,22 @@ export async function decryptFile(
 	return { file, originalPath };
 }
 
-/**
- * Decrypt multiple encrypted files.
- */
 export async function decryptFiles(
 	encryptedBlobs: Blob[],
 	password: string,
+	onProgress?: (filename: string, bytes: number, index: number) => void,
 ): Promise<DecryptedFile[]> {
-	return Promise.all(
-		encryptedBlobs.map((blob, i) =>
-			decryptFile(blob, password, `file-${i}`),
-		),
-	);
+	const results: DecryptedFile[] = [];
+	for (let i = 0; i < encryptedBlobs.length; i++) {
+		const blob = encryptedBlobs[i]!;
+		const displayName = blob instanceof File ? blob.name : fallbackName;
+		if (onProgress) {
+			onProgress(displayName, blob.size, i);
+		}
+		const res = await decryptFile(blob, password, fallbackName);
+		results.push(res);
+	}
+	return results;
 }
 
 // ---- Helpers ----
