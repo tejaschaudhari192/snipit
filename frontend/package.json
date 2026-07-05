@@ -3,20 +3,17 @@
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
-    "homepage": "https://tejaschaudhari192.github.io/snipit",
 	"scripts": {
 		"dev": "vite --host",
 		"build": "tsc -b && vite build",
-        "predeploy": "pnpm run build",
-        "deploy": "gh-pages -d dist",
 		"lint": "eslint .",
 		"format": "prettier --write .",
 		"preview": "vite preview"
 	},
 	"lint-staged": {
 		"src/**/*{js,html,css,ts,tsx}": [
-			"pnpm run lint",
-			"pnpm run format"
+			"npm run lint",
+			"npm run format"
 		]
 	},
 	"dependencies": {
@@ -109,10 +106,5 @@
 		"typescript": "~5.8.3",
 		"typescript-eslint": "^8.59.1",
 		"vite": "^7.3.2"
-	},
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"esbuild"
-		]
 	}
 }
