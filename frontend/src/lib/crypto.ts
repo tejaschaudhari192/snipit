@@ -326,6 +326,7 @@ export async function decryptFiles(
 	const results: DecryptedFile[] = [];
 	for (let i = 0; i < encryptedBlobs.length; i++) {
 		const blob = encryptedBlobs[i]!;
+		const fallbackName = `file-${i}`;
 		const displayName = blob instanceof File ? blob.name : fallbackName;
 		if (onProgress) {
 			onProgress(displayName, blob.size, i);
