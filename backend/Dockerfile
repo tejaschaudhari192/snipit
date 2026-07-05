@@ -4,14 +4,12 @@
 FROM node:20-bookworm AS builder
 WORKDIR /app
 
-RUN npm i -g pnpm
-
-COPY package.json pnpm-lock.yaml ./
+COPY package.json package-lock.json* ./
 # Install ALL deps (including devDeps) so tsc and tsc-alias are available
-RUN pnpm install --frozen-lockfile
+RUN npm install
 
 COPY . .
-RUN pnpm build
+RUN npm run build
 
 # =================================================
 # Stage 2 – Runtime
