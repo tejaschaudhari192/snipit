@@ -19,6 +19,8 @@ const HomePage = lazy(() => import("@/pages/home"));
 const DisplayPage = lazy(() => import("@/pages/display"));
 const HistoryPage = lazy(() => import("@/pages/history"));
 const AboutPage = lazy(() => import("@/pages/about"));
+const ToolsPage = lazy(() => import("@/pages/tools"));
+const CryptoSafePage = lazy(() => import("@/pages/cryptoSafe"));
 const ProfilePage = lazy(() => import("@/pages/profile"));
 const LoginPage = lazy(() => import("@/pages/login"));
 const SignupPage = lazy(() => import("@/pages/signup"));
@@ -159,6 +161,18 @@ const App = () => {
 															path="/about"
 															element={
 																<AboutPage />
+															}
+														/>
+														<Route
+															path="/tools"
+															element={
+																<ToolsPage />
+															}
+														/>
+														<Route
+															path="/tools/cryptoSafe"
+															element={
+																<CryptoSafePage />
 															}
 														/>
 														<Route

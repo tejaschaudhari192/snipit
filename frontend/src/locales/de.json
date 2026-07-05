@@ -704,5 +704,13 @@
 			"english": "Englisch / International",
 			"default": "Hindi"
 		}
+	},
+	"tools": {
+		"drag_drop_prompt": "Dateien oder Ordner hierher ziehen oder klicken",
+		"or": "oder",
+		"choose_files": "Dateien auswählen",
+		"choose_folder": "Ordner auswählen",
+		"drag_drop_decrypt_prompt": "Verschlüsselte Dateien hierher ziehen",
+		"write_back_success": "Dateien wurden zurückgeschrieben und die Originalstruktur im Ordner ersetzt."
 	}
 }
