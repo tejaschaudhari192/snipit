@@ -16,6 +16,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
 	encryptFiles,
 	decryptFiles,
+	writeToDirectory,
+	readFilesFromDirectory,
+	deleteFilesFromDirectory,
 	downloadAsZip,
 	type EncryptedFile,
 	type DecryptedFile,
@@ -23,6 +26,7 @@ import {
 import {
 	Lock,
 	Unlock,
+	FolderOpen,
 	Shield,
 	FileText,
 	KeyRound,
@@ -31,7 +35,6 @@ import {
 	Loader2,
 	UploadCloud,
 	FileDown,
-	FolderOpen,
 } from "lucide-react";
 
 type ProcessState = "idle" | "processing" | "done" | "error";
@@ -161,6 +164,9 @@ const EncryptPanel = () => {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [files, setFiles] = useState<File[]>([]);
+	const [dirHandle, setDirHandle] =
+		useState<FileSystemDirectoryHandle | null>(null);
+	const [dirName, setDirName] = useState("");
 	const [state, setState] = useState<ProcessState>("idle");
 	const [progress, setProgress] = useState(0);
 	const [result, setResult] = useState<EncryptedFile[] | null>(null);
@@ -170,9 +176,36 @@ const EncryptPanel = () => {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const folderInputRef = useRef<HTMLInputElement>(null);
 
+	const showDirectoryPickerSupported = "showDirectoryPicker" in window;
+
+	const handlePickFolder = async () => {
+		try {
+			const handle = await (
+				window as unknown as {
+					showDirectoryPicker(options?: {
+						mode?: string;
+						startIn?: string;
+					}): Promise<FileSystemDirectoryHandle>;
+				}
+			).showDirectoryPicker({ mode: "readwrite" });
+			setDirHandle(handle);
+			setDirName(handle.name);
+			setState("idle");
+			setResult(null);
+			setError("");
+
+			const allFiles = await readFilesFromDirectory(handle);
+			setFiles(allFiles);
+		} catch {
+			// User cancelled
+		}
+	};
+
 	const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files) {
 			setFiles(Array.from(e.target.files));
+			setDirHandle(null);
+			setDirName("");
 			setState("idle");
 			setResult(null);
 			setError("");
@@ -198,6 +231,8 @@ const EncryptPanel = () => {
 			const droppedFiles = await getFilesFromDragEvent(e);
 			if (droppedFiles.length > 0) {
 				setFiles(droppedFiles);
+				setDirHandle(null);
+				setDirName("");
 			}
 		} catch {
 			setError(t("tools.encrypt_error"));
@@ -238,6 +273,21 @@ const EncryptPanel = () => {
 				);
 			}
 
+			if (dirHandle) {
+				const outputFiles = allResults.map((f) => ({
+					blob: f.blob,
+					path: f.outputName,
+				}));
+				await writeToDirectory(dirHandle, outputFiles);
+
+				const sourcePaths = files.map(
+					(f) =>
+						(f as File & { webkitRelativePath?: string })
+							.webkitRelativePath || f.name,
+				);
+				await deleteFilesFromDirectory(dirHandle, sourcePaths);
+			}
+
 			setResult(allResults);
 			setState("done");
 		} catch (err) {
@@ -250,7 +300,9 @@ const EncryptPanel = () => {
 
 	const handleDownloadAll = async () => {
 		if (!result) return;
-		const zipName = "encrypted_files.zip";
+		const zipName = dirName
+			? `${dirName}_encrypted.zip`
+			: "encrypted_files.zip";
 		const fileList = result.map((f) => ({
 			blob: f.blob,
 			path: f.outputName,
@@ -260,6 +312,8 @@ const EncryptPanel = () => {
 
 	const handleReset = () => {
 		setFiles([]);
+		setDirHandle(null);
+		setDirName("");
 		setState("idle");
 		setResult(null);
 		setProgress(0);
@@ -296,6 +350,29 @@ const EncryptPanel = () => {
 							{t("tools.or")}
 						</p>
 						<div className="flex flex-wrap gap-2 justify-center">
+							{showDirectoryPickerSupported ? (
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={handlePickFolder}
+									className="gap-2"
+								>
+									<FolderOpen className="h-4 w-4" />
+									{t("tools.pick_folder")}
+								</Button>
+							) : (
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={() =>
+										folderInputRef.current?.click()
+									}
+									className="gap-2"
+								>
+									<FolderOpen className="h-4 w-4" />
+									{t("tools.choose_folder")}
+								</Button>
+							)}
 							<Button
 								variant="outline"
 								size="sm"
@@ -304,15 +381,6 @@ const EncryptPanel = () => {
 							>
 								<FileText className="h-4 w-4" />
 								{t("tools.choose_files")}
-							</Button>
-							<Button
-								variant="outline"
-								size="sm"
-								onClick={() => folderInputRef.current?.click()}
-								className="gap-2"
-							>
-								<FolderOpen className="h-4 w-4" />
-								{t("tools.choose_folder")}
 							</Button>
 						</div>
 
@@ -343,7 +411,11 @@ const EncryptPanel = () => {
 							<span className="text-muted-foreground">
 								{t("tools.select_files")}
 							</span>
-							<span className="text-primary">{`${files.length} files`}</span>
+							<span className="text-primary">
+								{dirName
+									? `Folder: ${dirName}`
+									: `${files.length} files`}
+							</span>
 						</div>
 						<ScrollArea className="h-32 rounded-lg border border-border/50 p-2 bg-muted/20">
 							<div className="space-y-1">
@@ -438,14 +510,23 @@ const EncryptPanel = () => {
 							</span>
 						</div>
 
-						<Button
-							onClick={handleDownloadAll}
-							className="w-full gap-2"
-							variant="default"
-						>
-							<FileDown className="h-4 w-4" />
-							{t("tools.download_all")}
-						</Button>
+						{dirHandle ? (
+							<p className="text-xs text-muted-foreground">
+								{t(
+									"tools.write_back_success",
+									"Files written back and original structures replaced inside the folder.",
+								)}
+							</p>
+						) : (
+							<Button
+								onClick={handleDownloadAll}
+								className="w-full gap-2"
+								variant="default"
+							>
+								<FileDown className="h-4 w-4" />
+								{t("tools.download_all")}
+							</Button>
+						)}
 
 						<ScrollArea className="h-40 rounded-lg border border-border/50 p-2 bg-muted/10">
 							<div className="space-y-1">
@@ -511,6 +592,9 @@ const DecryptPanel = () => {
 	const { t } = useTranslation();
 	const [password, setPassword] = useState("");
 	const [files, setFiles] = useState<File[]>([]);
+	const [dirHandle, setDirHandle] =
+		useState<FileSystemDirectoryHandle | null>(null);
+	const [dirName, setDirName] = useState("");
 	const [state, setState] = useState<ProcessState>("idle");
 	const [progress, setProgress] = useState(0);
 	const [result, setResult] = useState<DecryptedFile[] | null>(null);
@@ -519,9 +603,34 @@ const DecryptPanel = () => {
 
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
+	const handlePickFolder = async () => {
+		try {
+			const handle = await (
+				window as unknown as {
+					showDirectoryPicker(options?: {
+						mode?: string;
+						startIn?: string;
+					}): Promise<FileSystemDirectoryHandle>;
+				}
+			).showDirectoryPicker({ mode: "readwrite" });
+			setDirHandle(handle);
+			setDirName(handle.name);
+			setState("idle");
+			setResult(null);
+			setError("");
+
+			const allFiles = await readFilesFromDirectory(handle);
+			setFiles(allFiles);
+		} catch {
+			// User cancelled
+		}
+	};
+
 	const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files) {
 			setFiles(Array.from(e.target.files));
+			setDirHandle(null);
+			setDirName("");
 			setState("idle");
 			setResult(null);
 			setError("");
@@ -547,6 +656,8 @@ const DecryptPanel = () => {
 			const droppedFiles = await getFilesFromDragEvent(e);
 			if (droppedFiles.length > 0) {
 				setFiles(droppedFiles);
+				setDirHandle(null);
+				setDirName("");
 			}
 		} catch {
 			setError(t("tools.decrypt_error"));
@@ -583,6 +694,25 @@ const DecryptPanel = () => {
 				);
 			}
 
+			if (dirHandle) {
+				const outputFiles = await Promise.all(
+					allResults.map(async (f) => ({
+						blob: new Blob([await f.file.arrayBuffer()], {
+							type: f.file.type,
+						}),
+						path: f.originalPath,
+					})),
+				);
+				await writeToDirectory(dirHandle, outputFiles);
+
+				const sourcePaths = files.map(
+					(f) =>
+						(f as File & { webkitRelativePath?: string })
+							.webkitRelativePath || f.name,
+				);
+				await deleteFilesFromDirectory(dirHandle, sourcePaths);
+			}
+
 			setResult(allResults);
 			setState("done");
 		} catch (err) {
@@ -595,7 +725,9 @@ const DecryptPanel = () => {
 
 	const handleDownloadAll = async () => {
 		if (!result) return;
-		const zipName = "decrypted_files.zip";
+		const zipName = dirName
+			? `${dirName}_decrypted.zip`
+			: "decrypted_files.zip";
 		const fileList = await Promise.all(
 			result.map(async (f) => ({
 				blob: new Blob([await f.file.arrayBuffer()], {
@@ -609,6 +741,8 @@ const DecryptPanel = () => {
 
 	const handleReset = () => {
 		setFiles([]);
+		setDirHandle(null);
+		setDirName("");
 		setState("idle");
 		setResult(null);
 		setProgress(0);
@@ -639,12 +773,26 @@ const DecryptPanel = () => {
 					>
 						<UploadCloud className="h-10 w-10 text-muted-foreground mb-3" />
 						<p className="text-sm font-medium text-center mb-1 text-foreground/80">
-							{t("tools.drag_drop_decrypt_prompt")}
+							{t(
+								"tools.drag_drop_decrypt_prompt",
+								"Drag & drop encrypted files here",
+							)}
 						</p>
 						<p className="text-xs text-muted-foreground text-center mb-4">
 							{t("tools.or")}
 						</p>
 						<div className="flex gap-2 justify-center">
+							{"showDirectoryPicker" in window && (
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={handlePickFolder}
+									className="gap-2"
+								>
+									<FolderOpen className="h-4 w-4" />
+									{t("tools.pick_folder")}
+								</Button>
+							)}
 							<Button
 								variant="outline"
 								size="sm"
@@ -673,7 +821,11 @@ const DecryptPanel = () => {
 							<span className="text-muted-foreground">
 								{t("tools.select_encrypted")}
 							</span>
-							<span className="text-primary">{`${files.length} files`}</span>
+							<span className="text-primary">
+								{dirName
+									? `Folder: ${dirName}`
+									: `${files.length} files`}
+							</span>
 						</div>
 						<ScrollArea className="h-32 rounded-lg border border-border/50 p-2 bg-muted/20">
 							<div className="space-y-1">
@@ -749,14 +901,23 @@ const DecryptPanel = () => {
 							</span>
 						</div>
 
-						<Button
-							onClick={handleDownloadAll}
-							className="w-full gap-2"
-							variant="default"
-						>
-							<FileDown className="h-4 w-4" />
-							{t("tools.download_all")}
-						</Button>
+						{dirHandle ? (
+							<p className="text-xs text-muted-foreground">
+								{t(
+									"tools.write_back_success",
+									"Files written back and original structures replaced inside the folder.",
+								)}
+							</p>
+						) : (
+							<Button
+								onClick={handleDownloadAll}
+								className="w-full gap-2"
+								variant="default"
+							>
+								<FileDown className="h-4 w-4" />
+								{t("tools.download_all")}
+							</Button>
+						)}
 
 						<ScrollArea className="h-40 rounded-lg border border-border/50 p-2 bg-muted/10">
 							<div className="space-y-1">

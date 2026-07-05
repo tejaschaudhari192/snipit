@@ -709,7 +709,9 @@
 		"drag_drop_prompt": "Dateien oder Ordner hierher ziehen oder klicken",
 		"or": "oder",
 		"choose_files": "Dateien auswählen",
-		"choose_folder": "Ordner hochladen",
-		"drag_drop_decrypt_prompt": "Verschlüsselte Dateien hierher ziehen"
+		"choose_folder": "Ordner auswählen",
+		"drag_drop_decrypt_prompt": "Verschlüsselte Dateien hierher ziehen",
+		"pick_folder": "Ordner auswählen",
+		"write_back_success": "Dateien wurden zurückgeschrieben und die Originalstrukturen im Ordner ersetzt."
 	}
 }

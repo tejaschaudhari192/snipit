@@ -745,7 +745,9 @@
 		"drag_drop_prompt": "Drag & drop files or folders here",
 		"or": "or",
 		"choose_files": "Choose Files",
-		"choose_folder": "Upload Folder",
-		"drag_drop_decrypt_prompt": "Drag & drop encrypted files here"
+		"choose_folder": "Choose Folder",
+		"drag_drop_decrypt_prompt": "Drag & drop encrypted files here",
+		"pick_folder": "Choose Folder",
+		"write_back_success": "Files written back and original structures replaced inside the folder."
 	}
 }

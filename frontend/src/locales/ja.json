@@ -709,7 +709,9 @@
 		"drag_drop_prompt": "ここにファイルまたはフォルダーをドラッグ＆ドロップするか、クリックして選択します",
 		"or": "または",
 		"choose_files": "ファイルを選択",
-		"choose_folder": "フォルダーのアップロード",
-		"drag_drop_decrypt_prompt": "暗号化されたファイルをここにドラッグ＆ドロップ"
+		"choose_folder": "フォルダーを選択",
+		"drag_drop_decrypt_prompt": "暗号化されたファイルをここにドラッグ＆ドロップ",
+		"pick_folder": "フォルダーを選択",
+		"write_back_success": "ファイルが書き戻され、フォルダー内の元の構造が置き換えられました。"
 	}
 }
