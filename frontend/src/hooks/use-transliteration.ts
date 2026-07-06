@@ -176,14 +176,11 @@ export function useTransliteration() {
 		setEnabled((prev) => !prev);
 	}, []);
 
-	const resetBuffer = useCallback(() => {}, []);
-
 	return {
 		enabled,
 		targetLanguage,
 		toggle,
 		setTargetLanguage: handleLanguageChange,
 		setupEditor,
-		resetBuffer,
 	};
 }

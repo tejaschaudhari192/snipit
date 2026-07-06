@@ -15,7 +15,6 @@ const MusicBubble: React.FC = () => {
 		isPlaying,
 		currentTrack,
 		openPlayer,
-		regionDisplayName,
 		isLoading,
 		isShared,
 		isPlayerOpen,
@@ -89,8 +88,7 @@ const MusicBubble: React.FC = () => {
 
 					<div className="flex flex-col items-end gap-1.5 shrink-0 pl-0.5">
 						<span className="text-[7.5px] font-black bg-muted text-muted-foreground px-1 py-0.5 rounded leading-none uppercase tracking-wider scale-90 origin-right border border-border">
-							{regionDisplayName?.substring(0, 2).toUpperCase() ||
-								"IN"}
+							IN
 						</span>
 
 						<div className="flex gap-0.5 h-2.5 items-end">
@@ -150,9 +148,7 @@ const MusicBubble: React.FC = () => {
 							</div>
 
 							<div className="absolute -top-1 -right-1 bg-popover text-foreground text-[9px] font-black px-1.5 py-0.5 rounded-full border border-border shadow-lg truncate max-w-[40px]">
-								{regionDisplayName
-									?.substring(0, 2)
-									.toUpperCase() || "IN"}
+								IN
 							</div>
 						</button>
 					</TooltipTrigger>

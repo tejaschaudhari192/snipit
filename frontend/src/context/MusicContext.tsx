@@ -36,6 +36,28 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		currentTime: number;
 		isPlaying: boolean;
 	} | null>(null);
+	const globalClockRef = useRef<GlobalClock | null>(null);
+	const currentTimeRef = useRef(0);
+	const durationRef = useRef(240);
+	const lastSavedTimeRef = useRef(-CONFIG.defaults.musicSaveInterval);
+
+	useEffect(() => {
+		if (socket) {
+			if (!globalClockRef.current) {
+				globalClockRef.current = new GlobalClock(socket);
+			} else {
+				globalClockRef.current.initialize(socket);
+			}
+		}
+		return () => {
+			if (globalClockRef.current) {
+				globalClockRef.current.destroy();
+				globalClockRef.current = null;
+			}
+		};
+	}, [socket]);
+
+	const region = "default";
 
 	useEffect(() => {
 		currentTrackRef.current = currentTrack;
@@ -47,10 +69,6 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [playlist, setPlaylist] = useState<MusicTrack[]>([]);
 	const [searchResults, setSearchResults] = useState<MusicTrack[]>([]);
-
-	// Dummy state variables for backward compatibility
-	const [region] = useState("default");
-	const [regionDisplayName] = useState("Hindi");
 
 	const [isPlayerOpen, setIsPlayerOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
@@ -510,8 +528,6 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		});
 	}, []);
 
-	const handleChangeRegion = useCallback(async () => {}, []);
-
 	const handlePlayAtIndex = useCallback(
 		(index: number) => {
 			if (playlist[index]) {
@@ -626,14 +642,13 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				isPlaying: false,
 				currentTime: 0,
 				playlist: [],
-				region,
 				shuffle,
 				repeat,
 			});
 		}
 
 		toast.success("Music queue and progress cleared");
-	}, [isShared, socket, pasteId, region, shuffle, repeat]);
+	}, [isShared, socket, pasteId, shuffle, repeat]);
 
 	const handleRemoveFromQueue = useCallback(
 		(videoId: string) => {
@@ -668,7 +683,6 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 						isPlaying: isPlayingRef.current,
 						currentTime: currentTimeRef.current,
 						playlist: nextPlaylist,
-						region,
 						shuffle,
 						repeat,
 					});
@@ -714,7 +728,6 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 						isPlaying: isPlayingRef.current,
 						currentTime: currentTimeRef.current,
 						playlist: nextPlaylist,
-						region,
 						shuffle,
 						repeat,
 					});
@@ -761,7 +774,6 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 						isPlaying: isPlayingRef.current,
 						currentTime: currentTimeRef.current,
 						playlist: nextPlaylist,
-						region,
 						shuffle,
 						repeat,
 					});
@@ -770,30 +782,8 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				return nextPlaylist;
 			});
 		},
-		[isShared, socket, pasteId, region, shuffle, repeat],
+		[isShared, socket, pasteId, shuffle, repeat],
 	);
-
-	const globalClockRef = useRef<GlobalClock | null>(null);
-
-	useEffect(() => {
-		if (socket) {
-			if (!globalClockRef.current) {
-				globalClockRef.current = new GlobalClock(socket);
-			} else {
-				globalClockRef.current.initialize(socket);
-			}
-		}
-		return () => {
-			if (globalClockRef.current) {
-				globalClockRef.current.destroy();
-				globalClockRef.current = null;
-			}
-		};
-	}, [socket]);
-
-	const currentTimeRef = useRef(0);
-	const durationRef = useRef(240);
-	const lastSavedTimeRef = useRef(-CONFIG.defaults.musicSaveInterval);
 
 	useEffect(() => {
 		currentTimeRef.current = currentTime;
@@ -1276,8 +1266,6 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				currentIndex,
 				playlist,
 				searchResults,
-				region,
-				regionDisplayName,
 				isPlayerOpen,
 				isLoading,
 				isReady,
@@ -1300,7 +1288,6 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				toggleRepeat: handleToggleRepeat,
 				openPlayer: () => setIsPlayerOpen(true),
 				closePlayer: () => setIsPlayerOpen(false),
-				changeRegion: handleChangeRegion,
 				refreshPlaylist: () => {},
 				playAtIndex: handlePlayAtIndex,
 				searchTracks: handleSearchTracks,

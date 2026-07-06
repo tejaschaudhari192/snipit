@@ -4,7 +4,13 @@ import type { Socket } from "socket.io-client";
 
 export interface YTPlayer {
 	loadVideoById: (
-		options: string | { videoId: string; suggestedQuality: string },
+		options:
+			| string
+			| {
+					videoId: string;
+					startSeconds?: number;
+					suggestedQuality?: string;
+			  },
 	) => void;
 	cueVideoById: (
 		options:
@@ -24,9 +30,11 @@ export interface YTPlayer {
 	getDuration: () => number;
 	setPlaybackQuality: (suggestedQuality: string) => void;
 	setPlaybackRate: (suggestedRate: number) => void;
+	destroy: () => void;
 }
 
 export interface YTPlayerOptions {
+	videoId?: string;
 	height: string;
 	width: string;
 	playerVars: Record<string, unknown>;
@@ -58,8 +66,6 @@ export interface MusicContextType {
 	currentIndex: number;
 	playlist: MusicTrack[];
 	searchResults: MusicTrack[];
-	region: string;
-	regionDisplayName: string;
 	isPlayerOpen: boolean;
 	isLoading: boolean;
 	isReady: boolean;
@@ -86,7 +92,6 @@ export interface MusicContextType {
 	toggleRepeat: () => void;
 	openPlayer: () => void;
 	closePlayer: () => void;
-	changeRegion: (region: string) => void;
 	refreshPlaylist: () => void;
 	playAtIndex: (index: number) => void;
 	searchTracks: (query: string) => Promise<void>;
