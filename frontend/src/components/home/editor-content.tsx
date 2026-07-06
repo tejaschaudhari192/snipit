@@ -18,7 +18,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEditorLayout } from "@/hooks/use-editor-layout";
 import { cn } from "@/utils";
-import { VideoSetupView } from "./video-setup-view";
 import type { useTransliteration } from "@/hooks/use-transliteration";
 import type { Editor as TiptapEditorInstance } from "@tiptap/core";
 import { PlainTextEditor } from "@/components/common/plain-text-editor";
@@ -63,6 +62,13 @@ const HtmlDisplay = lazy(() =>
 		default: m.HtmlDisplay,
 	})),
 );
+
+const VideoSetupView = lazy(() =>
+	import("./video-setup-view").then((m) => ({
+		default: m.VideoSetupView,
+	})),
+);
+
 const TiptapEditor = lazy(() =>
 	import("@/components/editor/tiptap-editor").then((m) => ({
 		default: m.TiptapEditor,
@@ -458,13 +464,28 @@ export const EditorContent = memo(
 								/>
 							</Suspense>
 						) : contentType === "video" ? (
-							<VideoSetupView
-								textValue={textValue}
-								setTextValue={setTextValue}
-								files={files}
-								removeFile={removeFile}
-								onFileSelect={onFileSelect}
-							/>
+							<Suspense
+								fallback={
+									<div className="h-full w-full flex items-center justify-center p-6">
+										<div className="w-full max-w-xl space-y-8">
+											<div className="flex flex-col items-center gap-4">
+												<Skeleton className="h-14 w-14 rounded-xl" />
+												<Skeleton className="h-8 w-40" />
+												<Skeleton className="h-4 w-60" />
+											</div>
+											<Skeleton className="h-12 w-full rounded-xl" />
+										</div>
+									</div>
+								}
+							>
+								<VideoSetupView
+									textValue={textValue}
+									setTextValue={setTextValue}
+									files={files}
+									removeFile={removeFile}
+									onFileSelect={onFileSelect}
+								/>
+							</Suspense>
 						) : contentType === "richtext" ? (
 							<Suspense
 								fallback={
