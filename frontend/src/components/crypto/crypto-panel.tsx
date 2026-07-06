@@ -113,7 +113,9 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 	const [currentFile, setCurrentFile] = useState("");
 	const [currentSizeBytes, setCurrentSizeBytes] = useState(0);
 	const [zipProgress, setZipProgress] = useState(-1);
-	const [result, setResult] = useState<(EncryptedFile | DecryptedFile)[] | null>(null);
+	const [result, setResult] = useState<
+		(EncryptedFile | DecryptedFile)[] | null
+	>(null);
 	const [error, setError] = useState("");
 	const [isDragging, setIsDragging] = useState(false);
 
@@ -180,7 +182,9 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 				setDirName("");
 			}
 		} catch {
-			setError(t(isEncrypt ? "tools.encrypt_error" : "tools.decrypt_error"));
+			setError(
+				t(isEncrypt ? "tools.encrypt_error" : "tools.decrypt_error"),
+			);
 		}
 	};
 
@@ -213,7 +217,9 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 					(filename, bytes, index) => {
 						setCurrentFile(`[Encrypting] ${filename}`);
 						setCurrentSizeBytes(bytes);
-						setProgress(Math.round(((index + 1) / files.length) * 80));
+						setProgress(
+							Math.round(((index + 1) / files.length) * 80),
+						);
 					},
 				);
 			} else {
@@ -223,7 +229,9 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 					(filename, bytes, index) => {
 						setCurrentFile(`[Decrypting] ${filename}`);
 						setCurrentSizeBytes(bytes);
-						setProgress(Math.round(((index + 1) / files.length) * 80));
+						setProgress(
+							Math.round(((index + 1) / files.length) * 80),
+						);
 					},
 				);
 			}
@@ -231,13 +239,22 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 			if (dirHandle) {
 				const outputFiles = await Promise.all(
 					allResults.map(async (f) => ({
-						blob: isEncrypt 
-							? (f as EncryptedFile).blob 
-							: new Blob([await (f as DecryptedFile).file.arrayBuffer()], { type: (f as DecryptedFile).file.type }),
-						path: isEncrypt ? (f as EncryptedFile).outputName : (f as DecryptedFile).originalPath,
+						blob: isEncrypt
+							? (f as EncryptedFile).blob
+							: new Blob(
+									[
+										await (
+											f as DecryptedFile
+										).file.arrayBuffer(),
+									],
+									{ type: (f as DecryptedFile).file.type },
+								),
+						path: isEncrypt
+							? (f as EncryptedFile).outputName
+							: (f as DecryptedFile).originalPath,
 					})),
 				);
-				
+
 				await writeToDirectory(
 					dirHandle,
 					outputFiles,
@@ -245,7 +262,10 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 						setCurrentFile(`[Writing output] ${path}`);
 						setCurrentSizeBytes(bytes);
 						setProgress(
-							80 + Math.round(((index + 1) / outputFiles.length) * 15),
+							80 +
+								Math.round(
+									((index + 1) / outputFiles.length) * 15,
+								),
 						);
 					},
 				);
@@ -262,7 +282,10 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 						setCurrentFile(`[Deleting source] ${path}`);
 						setCurrentSizeBytes(0);
 						setProgress(
-							95 + Math.round(((index + 1) / sourcePaths.length) * 5),
+							95 +
+								Math.round(
+									((index + 1) / sourcePaths.length) * 5,
+								),
 						);
 					},
 				);
@@ -271,7 +294,15 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 			setResult(allResults);
 			setState("done");
 		} catch (err) {
-			setError(err instanceof Error ? err.message : t(isEncrypt ? "tools.encrypt_error" : "tools.decrypt_error"));
+			setError(
+				err instanceof Error
+					? err.message
+					: t(
+							isEncrypt
+								? "tools.encrypt_error"
+								: "tools.decrypt_error",
+						),
+			);
 			setState("error");
 		}
 	};
@@ -281,14 +312,19 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 		const zipName = dirName
 			? `${dirName}_${isEncrypt ? "encrypted" : "decrypted"}.zip`
 			: `${isEncrypt ? "encrypted" : "decrypted"}_files.zip`;
-		
+
 		const fileList = await Promise.all(
 			result.map(async (f) => ({
-				blob: isEncrypt 
-					? (f as EncryptedFile).blob 
-					: new Blob([await (f as DecryptedFile).file.arrayBuffer()], { type: (f as DecryptedFile).file.type }),
-				path: isEncrypt ? (f as EncryptedFile).outputName : (f as DecryptedFile).originalPath,
-			}))
+				blob: isEncrypt
+					? (f as EncryptedFile).blob
+					: new Blob(
+							[await (f as DecryptedFile).file.arrayBuffer()],
+							{ type: (f as DecryptedFile).file.type },
+						),
+				path: isEncrypt
+					? (f as EncryptedFile).outputName
+					: (f as DecryptedFile).originalPath,
+			})),
 		);
 
 		setZipProgress(0);
@@ -316,10 +352,20 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 		<Card className="border-border/50 bg-background/60 backdrop-blur-xl shadow-xl">
 			<CardHeader>
 				<CardTitle className="flex items-center gap-2 text-lg">
-					{isEncrypt ? <Lock className="h-5 w-5 text-primary" /> : <Unlock className="h-5 w-5 text-primary" />}
-					{t(isEncrypt ? "tools.encrypt_title" : "tools.decrypt_title")}
+					{isEncrypt ? (
+						<Lock className="h-5 w-5 text-primary" />
+					) : (
+						<Unlock className="h-5 w-5 text-primary" />
+					)}
+					{t(
+						isEncrypt
+							? "tools.encrypt_title"
+							: "tools.decrypt_title",
+					)}
 				</CardTitle>
-				<CardDescription>{t(isEncrypt ? "tools.encrypt_desc" : "tools.decrypt_desc")}</CardDescription>
+				<CardDescription>
+					{t(isEncrypt ? "tools.encrypt_desc" : "tools.decrypt_desc")}
+				</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-6">
 				{state === "idle" && (
@@ -335,29 +381,50 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 					>
 						<UploadCloud className="h-10 w-10 text-muted-foreground mb-3" />
 						<p className="text-sm font-medium text-center mb-1 text-foreground/80">
-							{t(isEncrypt ? "tools.drag_drop_prompt" : "tools.drag_drop_decrypt_prompt", isEncrypt ? "Drag & drop files here" : "Drag & drop encrypted files here")}
+							{t(
+								isEncrypt
+									? "tools.drag_drop_prompt"
+									: "tools.drag_drop_decrypt_prompt",
+								isEncrypt
+									? "Drag & drop files here"
+									: "Drag & drop encrypted files here",
+							)}
 						</p>
 						<p className="text-xs text-muted-foreground text-center mb-4">
 							{t("tools.or")}
 						</p>
 						<div className="flex flex-wrap gap-2 justify-center">
 							{showDirectoryPickerSupported ? (
-								<Button variant="outline" size="sm" onClick={handlePickFolder} className="gap-2">
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={handlePickFolder}
+									className="gap-2"
+								>
 									<FolderOpen className="h-4 w-4" />
 									{t("tools.pick_folder")}
 								</Button>
 							) : (
-								isEncrypt && <Button
-									variant="outline"
-									size="sm"
-									onClick={() => folderInputRef.current?.click()}
-									className="gap-2"
-								>
-									<FolderOpen className="h-4 w-4" />
-									{t("tools.choose_folder")}
-								</Button>
+								isEncrypt && (
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() =>
+											folderInputRef.current?.click()
+										}
+										className="gap-2"
+									>
+										<FolderOpen className="h-4 w-4" />
+										{t("tools.choose_folder")}
+									</Button>
+								)
 							)}
-							<Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} className="gap-2">
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={() => fileInputRef.current?.click()}
+								className="gap-2"
+							>
 								<FileText className="h-4 w-4" />
 								{t("tools.choose_files")}
 							</Button>
@@ -370,16 +437,18 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 							className="hidden"
 							onChange={handleFileInputChange}
 						/>
-						{isEncrypt && <input
-							ref={folderInputRef}
-							type="file"
-							multiple
-							// @ts-expect-error: webkitdirectory is non-standard but required for folder upload
-							webkitdirectory=""
-							directory=""
-							className="hidden"
-							onChange={handleFileInputChange}
-						/>}
+						{isEncrypt && (
+							<input
+								ref={folderInputRef}
+								type="file"
+								multiple
+								// @ts-expect-error: webkitdirectory is non-standard but required for folder upload
+								webkitdirectory=""
+								directory=""
+								className="hidden"
+								onChange={handleFileInputChange}
+							/>
+						)}
 					</div>
 				)}
 
@@ -387,20 +456,36 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 					<div className="space-y-2">
 						<div className="flex items-center justify-between text-sm font-medium">
 							<span className="text-muted-foreground">
-								{t(isEncrypt ? "tools.select_files" : "tools.select_encrypted")}
+								{t(
+									isEncrypt
+										? "tools.select_files"
+										: "tools.select_encrypted",
+								)}
 							</span>
 							<span className="text-primary">
-								{dirName ? `Folder: ${dirName}` : `${files.length} files`}
+								{dirName
+									? `Folder: ${dirName}`
+									: `${files.length} files`}
 							</span>
 						</div>
 						<ScrollArea className="h-32 rounded-lg border border-border/50 p-2 bg-muted/20">
 							<div className="space-y-1">
 								{files.map((f, i) => {
-									const relPath = (f as File & { webkitRelativePath?: string }).webkitRelativePath || f.name;
+									const relPath =
+										(
+											f as File & {
+												webkitRelativePath?: string;
+											}
+										).webkitRelativePath || f.name;
 									return (
-										<div key={i} className="flex items-center gap-2 text-xs text-muted-foreground px-2 py-1 rounded hover:bg-muted/50">
+										<div
+											key={i}
+											className="flex items-center gap-2 text-xs text-muted-foreground px-2 py-1 rounded hover:bg-muted/50"
+										>
 											<FileText className="h-3 w-3 shrink-0" />
-											<span className="truncate">{relPath}</span>
+											<span className="truncate">
+												{relPath}
+											</span>
 										</div>
 									);
 								})}
@@ -432,8 +517,12 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 								<PasswordInput
 									autoComplete="new-password"
 									value={confirmPassword}
-									onChange={(e) => setConfirmPassword(e.target.value)}
-									placeholder={t("tools.confirm_password_placeholder")}
+									onChange={(e) =>
+										setConfirmPassword(e.target.value)
+									}
+									placeholder={t(
+										"tools.confirm_password_placeholder",
+									)}
 								/>
 							</div>
 						)}
@@ -444,14 +533,21 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 					<div className="space-y-2">
 						<div className="flex items-center justify-between text-sm">
 							<span className="text-muted-foreground">
-								{t(isEncrypt ? "common.encrypting" : "common.decrypting")}
+								{t(
+									isEncrypt
+										? "common.encrypting"
+										: "common.decrypting",
+								)}
 							</span>
 							<span className="font-medium">{progress}%</span>
 						</div>
 						<Progress value={progress} />
 						{currentFile && (
 							<div className="text-xs text-muted-foreground/80 flex items-center justify-between mt-1 px-2 py-1 rounded bg-muted/20 border border-border/20">
-								<span className="truncate max-w-[70%]" title={currentFile}>
+								<span
+									className="truncate max-w-[70%]"
+									title={currentFile}
+								>
 									{currentFile}
 								</span>
 								<span className="shrink-0 font-mono text-[10px]">
@@ -474,42 +570,91 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 						<div className="flex items-center gap-2 p-3 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm">
 							<CheckCircle2 className="h-4 w-4 shrink-0" />
 							<span>
-								{t(isEncrypt ? "tools.encrypt_success" : "tools.decrypt_success", { count: result.length })}
+								{t(
+									isEncrypt
+										? "tools.encrypt_success"
+										: "tools.decrypt_success",
+									{ count: result.length },
+								)}
 							</span>
 						</div>
 
 						{dirHandle ? (
 							<p className="text-xs text-muted-foreground">
-								{t("tools.write_back_success", "Files written back and original structures replaced inside the folder.")}
+								{t(
+									"tools.write_back_success",
+									"Files written back and original structures replaced inside the folder.",
+								)}
 							</p>
 						) : (
-							<Button onClick={handleDownloadAll} className="w-full gap-2" variant="default" disabled={zipProgress >= 0}>
-								{zipProgress >= 0 ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
-								{zipProgress >= 0 ? `Packing ZIP (${zipProgress}%)` : t("tools.download_all")}
+							<Button
+								onClick={handleDownloadAll}
+								className="w-full gap-2"
+								variant="default"
+								disabled={zipProgress >= 0}
+							>
+								{zipProgress >= 0 ? (
+									<Loader2 className="h-4 w-4 animate-spin" />
+								) : (
+									<FileDown className="h-4 w-4" />
+								)}
+								{zipProgress >= 0
+									? `Packing ZIP (${zipProgress}%)`
+									: t("tools.download_all")}
 							</Button>
 						)}
 
 						<ScrollArea className="h-40 rounded-lg border border-border/50 p-2 bg-muted/10">
 							<div className="space-y-1">
 								{result.map((f, i) => (
-									<div key={i} className="flex items-center justify-between gap-4 text-xs px-2 py-1.5 rounded hover:bg-muted/50">
+									<div
+										key={i}
+										className="flex items-center justify-between gap-4 text-xs px-2 py-1.5 rounded hover:bg-muted/50"
+									>
 										<div className="flex items-center gap-2 min-w-0 flex-1">
 											<FileText className="h-3 w-3 shrink-0 text-muted-foreground" />
-											<span className="truncate" title={isEncrypt ? (f as EncryptedFile).originalPath : (f as DecryptedFile).originalPath}>
-												{isEncrypt ? (f as EncryptedFile).originalPath : (f as DecryptedFile).originalPath}
+											<span
+												className="truncate"
+												title={
+													isEncrypt
+														? (f as EncryptedFile)
+																.originalPath
+														: (f as DecryptedFile)
+																.originalPath
+												}
+											>
+												{isEncrypt
+													? (f as EncryptedFile)
+															.originalPath
+													: (f as DecryptedFile)
+															.originalPath}
 											</span>
 										</div>
 										<div className="flex items-center gap-2 shrink-0 font-mono text-[10px] text-muted-foreground/80">
 											<span>→</span>
-											<span>{isEncrypt ? (f as EncryptedFile).outputName : (f as DecryptedFile).originalPath}</span>
+											<span>
+												{isEncrypt
+													? (f as EncryptedFile)
+															.outputName
+													: (f as DecryptedFile)
+															.originalPath}
+											</span>
 										</div>
 									</div>
 								))}
 							</div>
 						</ScrollArea>
 
-						<Button variant="outline" onClick={handleReset} className="w-full gap-2">
-							{t(isEncrypt ? "tools.encrypt_more" : "tools.decrypt_more")}
+						<Button
+							variant="outline"
+							onClick={handleReset}
+							className="w-full gap-2"
+						>
+							{t(
+								isEncrypt
+									? "tools.encrypt_more"
+									: "tools.decrypt_more",
+							)}
 						</Button>
 					</div>
 				)}
@@ -517,7 +662,11 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 				{state !== "done" && files.length > 0 && (
 					<Button
 						onClick={handleProcess}
-						disabled={state === "processing" || files.length === 0 || !password}
+						disabled={
+							state === "processing" ||
+							files.length === 0 ||
+							!password
+						}
 						className="w-full gap-2"
 					>
 						{state === "processing" ? (
@@ -528,8 +677,16 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 							<Unlock className="h-4 w-4" />
 						)}
 						{state === "processing"
-							? t(isEncrypt ? "common.encrypting" : "common.decrypting")
-							: t(isEncrypt ? "tools.encrypt_button" : "tools.decrypt_button")}
+							? t(
+									isEncrypt
+										? "common.encrypting"
+										: "common.decrypting",
+								)
+							: t(
+									isEncrypt
+										? "tools.encrypt_button"
+										: "tools.decrypt_button",
+								)}
 					</Button>
 				)}
 			</CardContent>

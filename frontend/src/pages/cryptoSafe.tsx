@@ -6,7 +6,9 @@ import { CryptoPanel } from "@/components/crypto/crypto-panel";
 
 const CryptoSafePage = () => {
 	const { t } = useTranslation();
-	const [activeTab, setActiveTab] = useState<"encrypt" | "decrypt">("encrypt");
+	const [activeTab, setActiveTab] = useState<"encrypt" | "decrypt">(
+		"encrypt",
+	);
 
 	return (
 		<div className="min-h-full bg-background text-foreground transition-colors duration-300">
@@ -30,7 +32,9 @@ const CryptoSafePage = () => {
 			<section className="pb-16 px-4 md:px-8 max-w-2xl mx-auto">
 				<Tabs
 					value={activeTab}
-					onValueChange={(v) => setActiveTab(v as "encrypt" | "decrypt")}
+					onValueChange={(v) =>
+						setActiveTab(v as "encrypt" | "decrypt")
+					}
 					className="w-full"
 				>
 					<TabsList className="grid grid-cols-2 w-full mb-8 bg-muted/50 p-1 rounded-xl h-auto">
