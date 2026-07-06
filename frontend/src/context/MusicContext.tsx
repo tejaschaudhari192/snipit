@@ -12,14 +12,15 @@ import { CONFIG } from "@/configurations";
 import { toast } from "sonner";
 import { decodeHtml } from "@/utils";
 import { downloadTrack } from "@/utils/music";
-import { MusicContext, type YTPlayer } from "./use-music";
+import { MusicContext } from "./use-music";
 import { GlobalClock, calculateTargetSeek } from "@/utils/latency-sync";
+import { useYouTubePlayer } from "@/hooks/use-youtube-player";
+import { usePlaylistManager } from "@/hooks/use-playlist-manager";
 
 export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
 }) => {
 	const [isPlaying, setIsPlaying] = useState(false);
-	const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
 
 	const [socket, setSocket] = useState<Socket | null>(null);
 	const [pasteId, setPasteId] = useState<string | null>(null);
@@ -41,38 +42,10 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 	const durationRef = useRef(240);
 	const lastSavedTimeRef = useRef(-CONFIG.defaults.musicSaveInterval);
 
-	useEffect(() => {
-		if (socket) {
-			if (!globalClockRef.current) {
-				globalClockRef.current = new GlobalClock(socket);
-			} else {
-				globalClockRef.current.initialize(socket);
-			}
-		}
-		return () => {
-			if (globalClockRef.current) {
-				globalClockRef.current.destroy();
-				globalClockRef.current = null;
-			}
-		};
-	}, [socket]);
-
-	const region = "default";
-
-	useEffect(() => {
-		currentTrackRef.current = currentTrack;
-	}, [currentTrack]);
-
-	useEffect(() => {
-		isPlayingRef.current = isPlaying;
-	}, [isPlaying]);
-	const [currentIndex, setCurrentIndex] = useState(0);
-	const [playlist, setPlaylist] = useState<MusicTrack[]>([]);
 	const [searchResults, setSearchResults] = useState<MusicTrack[]>([]);
 
 	const [isPlayerOpen, setIsPlayerOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const [isReady, setIsReady] = useState(false);
 	const [volume, setVolumeState] = useState<number>(() => {
 		if (typeof window !== "undefined") {
 			const saved = localStorage.getItem(CONFIG.storageKeys.musicVolume);
@@ -90,11 +63,8 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 	const [progress, setProgress] = useState(0);
 	const [duration, setDuration] = useState(0);
 	const [currentTime, setCurrentTime] = useState(0);
-	const [shuffle, setShuffle] = useState(false);
-	const [repeat, setRepeat] = useState<"off" | "one" | "all">("all");
 	const [isMounted, setIsMounted] = useState(false);
 
-	const playerRef = useRef<YTPlayer | null>(null);
 	const progressInterval = useRef<ReturnType<typeof setInterval> | null>(
 		null,
 	);
@@ -105,6 +75,131 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 	useEffect(() => {
 		setIsMounted(true);
 	}, []);
+
+	const {
+		playerRef,
+		isReady,
+		play: playYt,
+		pause: pauseYt,
+		seekTo: ytSeekTo,
+		loadVideoById,
+		cueVideoById,
+	} = useYouTubePlayer({
+		volume,
+		quality,
+		onReady: () => {
+			if (currentTrackRef.current) {
+				const savedTime = parseFloat(
+					localStorage.getItem(CONFIG.storageKeys.musicPlaytime) ||
+						"0",
+				);
+				cueVideoById(currentTrackRef.current.videoId, savedTime);
+				setCurrentTime(savedTime);
+			}
+		},
+		onStateChange: (state) => {
+			const YT = window.YT;
+			if (state === YT.PlayerState.PLAYING) {
+				setIsPlaying(true);
+				if (playerRef.current) {
+					setDuration(playerRef.current.getDuration());
+					if (
+						isShared &&
+						!isInitiator &&
+						lastRemoteStateRef.current
+					) {
+						const globalTime = globalClockRef.current
+							? globalClockRef.current.getGlobalTime()
+							: Date.now();
+						const targetTime = calculateTargetSeek(
+							lastRemoteStateRef.current.timestamp,
+							lastRemoteStateRef.current.currentTime,
+							lastRemoteStateRef.current.isPlaying,
+							globalTime,
+						);
+						const currentPos = playerRef.current.getCurrentTime();
+						if (Math.abs(currentPos - targetTime) > 0.15) {
+							ytSeekTo(targetTime);
+						}
+					}
+				}
+			} else if (state === YT.PlayerState.PAUSED) {
+				setIsPlaying(false);
+			} else if (state === YT.PlayerState.ENDED) {
+				setIsPlaying(false);
+				handleTrackEndRef.current();
+			}
+		},
+		onError: () => {
+			console.error("YouTube Player Error");
+			handleNextRef.current();
+		},
+	});
+
+	const {
+		playlist,
+		setPlaylist,
+		currentIndex,
+		setCurrentIndex,
+		currentTrack,
+		setCurrentTrack,
+		shuffle,
+		setShuffle,
+		repeat,
+		setRepeat,
+		playTrack,
+		handleNext,
+		handlePrevious,
+		clearQueue,
+	} = usePlaylistManager({
+		onTrackChange: (track) => {
+			if (playerRef.current && isReady) {
+				try {
+					loadVideoById(track.videoId);
+					playYt();
+					setIsPlaying(true);
+
+					if (
+						isShared &&
+						!isRemoteActionRef.current &&
+						socket &&
+						pasteId
+					) {
+						socket.emit("music:track-change", { pasteId, track });
+					}
+				} catch (error) {
+					console.error("Playback error:", error);
+					handleNextRef.current();
+				}
+			}
+		},
+	});
+
+	const region = "default";
+
+	useEffect(() => {
+		if (socket) {
+			if (!globalClockRef.current) {
+				globalClockRef.current = new GlobalClock(socket);
+			} else {
+				globalClockRef.current.initialize(socket);
+			}
+		}
+		return () => {
+			if (globalClockRef.current) {
+				globalClockRef.current.destroy();
+				globalClockRef.current = null;
+			}
+		};
+	}, [socket]);
+
+	useEffect(() => {
+		currentTrackRef.current = currentTrack;
+	}, [currentTrack]);
+
+	useEffect(() => {
+		isPlayingRef.current = isPlaying;
+	}, [isPlaying]);
 
 	const fetchTrackDetails = useCallback(
 		async (videoIds: string[]): Promise<MusicTrack[]> => {
@@ -190,21 +285,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	useEffect(() => {
 		if (isMounted) {
-			const ids = playlist.map((t) => t.videoId);
-			localStorage.setItem(
-				CONFIG.storageKeys.musicPlaylistIds,
-				JSON.stringify(ids),
-			);
-		}
-	}, [playlist, isMounted]);
-
-	useEffect(() => {
-		if (isMounted) {
 			if (currentTrack) {
-				localStorage.setItem(
-					CONFIG.storageKeys.musicCurrentTrackId,
-					currentTrack.videoId,
-				);
 				// Only reset playtime if it is a completely different track from the last one (and not the initial restoration on mount)
 				if (
 					lastTrackIdRef.current !== null &&
@@ -215,54 +296,17 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				}
 				lastTrackIdRef.current = currentTrack.videoId;
 			} else {
-				localStorage.removeItem(CONFIG.storageKeys.musicCurrentTrackId);
 				localStorage.removeItem(CONFIG.storageKeys.musicPlaytime);
 				lastTrackIdRef.current = null;
 			}
 		}
 	}, [currentTrack, isMounted]);
 
-	useEffect(() => {
-		if (isMounted) {
-			localStorage.setItem(
-				CONFIG.storageKeys.musicCurrentIndex,
-				currentIndex.toString(),
-			);
-		}
-	}, [currentIndex, isMounted]);
-
-	const playTrack = useCallback(
-		(track: MusicTrack) => {
-			if (playerRef.current && isReady) {
-				try {
-					playerRef.current.loadVideoById({
-						videoId: track.videoId,
-						suggestedQuality: quality,
-					});
-					playerRef.current.playVideo();
-					setCurrentTrack(track);
-					setIsPlaying(true);
-
-					if (
-						isShared &&
-						!isRemoteActionRef.current &&
-						socket &&
-						pasteId
-					) {
-						socket.emit("music:track-change", { pasteId, track });
-					}
-				} catch (error) {
-					console.error("Playback error:", error);
-					handleNextRef.current();
-				}
-			}
-		},
-		[isReady, isShared, socket, pasteId, quality],
-	);
-
 	const handleTrackEnd = useCallback(() => {
 		if (repeat === "one") {
-			playTrack(currentTrack!);
+			if (currentTrack) {
+				playTrack(currentTrack);
+			}
 		} else {
 			handleNextRef.current();
 		}
@@ -272,130 +316,12 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		handleTrackEndRef.current = handleTrackEnd;
 	}, [handleTrackEnd]);
 
-	const handleNext = useCallback(() => {
-		if (playlist.length === 0) return;
-		let nextIndex;
-		if (shuffle) {
-			nextIndex = Math.floor(Math.random() * playlist.length);
-		} else {
-			nextIndex = (currentIndex + 1) % playlist.length;
-		}
-		setCurrentIndex(nextIndex);
-		playTrack(playlist[nextIndex]);
-	}, [playlist, shuffle, currentIndex, playTrack]);
-
 	useEffect(() => {
 		handleNextRef.current = handleNext;
 	}, [handleNext]);
 
-	const handlePrevious = useCallback(() => {
-		if (playlist.length === 0) return;
-		const prevIndex =
-			(currentIndex - 1 + playlist.length) % playlist.length;
-		setCurrentIndex(prevIndex);
-		playTrack(playlist[prevIndex]);
-	}, [playlist, currentIndex, playTrack]);
-
-	const initPlayer = useCallback(() => {
-		if (playerRef.current) return;
-		if (!document.getElementById("yt-music-player")) {
-			console.warn(
-				"YouTube player container not found, delaying init...",
-			);
-			return;
-		}
-
-		playerRef.current = new window.YT.Player("yt-music-player", {
-			height: "0",
-			width: "0",
-			playerVars: {
-				autoplay: 0,
-				controls: 0,
-				disablekb: 1,
-				fs: 0,
-				rel: 0,
-				showinfo: 0,
-				iv_load_policy: 3,
-				origin: window.location.origin,
-				enablejsapi: 1,
-				widget_referrer: window.location.origin,
-				host: "https://www.youtube.com",
-			},
-			events: {
-				onReady: (event: { target: YTPlayer }) => {
-					setIsReady(true);
-					event.target.setVolume(volume);
-					if (typeof event.target.setPlaybackQuality === "function") {
-						event.target.setPlaybackQuality(quality);
-					}
-
-					// Restore cued video details if there is a saved track
-					if (currentTrackRef.current) {
-						const savedTime = parseFloat(
-							localStorage.getItem(
-								CONFIG.storageKeys.musicPlaytime,
-							) || "0",
-						);
-						event.target.cueVideoById({
-							videoId: currentTrackRef.current.videoId,
-							startSeconds: savedTime,
-							suggestedQuality: quality,
-						});
-						setCurrentTime(savedTime);
-					}
-				},
-				onStateChange: (event: { data: number }) => {
-					const YT = window.YT;
-					if (event.data === YT.PlayerState.PLAYING) {
-						setIsPlaying(true);
-						if (playerRef.current) {
-							setDuration(playerRef.current.getDuration());
-							if (
-								typeof playerRef.current.setPlaybackQuality ===
-								"function"
-							) {
-								playerRef.current.setPlaybackQuality(quality);
-							}
-
-							// Real-time synchronization check on post-load start!
-							if (
-								isShared &&
-								!isInitiator &&
-								lastRemoteStateRef.current
-							) {
-								const globalTime = globalClockRef.current
-									? globalClockRef.current.getGlobalTime()
-									: Date.now();
-								const targetTime = calculateTargetSeek(
-									lastRemoteStateRef.current.timestamp,
-									lastRemoteStateRef.current.currentTime,
-									lastRemoteStateRef.current.isPlaying,
-									globalTime,
-								);
-								const currentPos =
-									playerRef.current.getCurrentTime();
-								if (Math.abs(currentPos - targetTime) > 0.15) {
-									playerRef.current.seekTo(targetTime, true);
-								}
-							}
-						}
-					} else if (event.data === YT.PlayerState.PAUSED) {
-						setIsPlaying(false);
-					} else if (event.data === YT.PlayerState.ENDED) {
-						setIsPlaying(false);
-						handleTrackEndRef.current();
-					}
-				},
-				onError: () => {
-					console.error("YouTube Player Error");
-					handleNextRef.current();
-				},
-			},
-		});
-	}, [volume, quality, isShared, isInitiator]);
-
 	const handlePlay = useCallback(async () => {
-		if (playerRef.current) {
+		if (isReady && playerRef.current) {
 			if (currentTrack && !isPlaying) {
 				const state =
 					typeof playerRef.current.getPlayerState === "function"
@@ -406,7 +332,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 					playTrack(currentTrack);
 				} else {
 					try {
-						playerRef.current.playVideo();
+						playYt();
 						setIsPlaying(true);
 						if (
 							isShared &&
@@ -423,15 +349,15 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			} else if (!currentTrack && playlist.length > 0) {
 				playTrack(playlist[0]);
 			}
-		} else {
-			initPlayer();
 		}
 	}, [
+		isReady,
+		playerRef,
+		playYt,
 		currentTrack,
 		isPlaying,
 		playlist,
 		playTrack,
-		initPlayer,
 		isShared,
 		socket,
 		pasteId,
@@ -439,19 +365,19 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 	]);
 
 	const handlePause = useCallback(() => {
-		if (playerRef.current && playerRef.current.pauseVideo) {
-			playerRef.current.pauseVideo();
+		if (isReady && playerRef.current) {
+			pauseYt();
 			setIsPlaying(false);
 			if (isShared && !isRemoteActionRef.current && socket && pasteId) {
 				socket.emit("music:pause", { pasteId, currentTime });
 			}
 		}
-	}, [isShared, socket, pasteId, currentTime]);
+	}, [isReady, playerRef, pauseYt, isShared, socket, pasteId, currentTime]);
 
 	const handleSeek = useCallback(
 		(seconds: number) => {
-			if (playerRef.current && playerRef.current.seekTo) {
-				playerRef.current.seekTo(seconds, true);
+			if (isReady && playerRef.current) {
+				ytSeekTo(seconds);
 				setCurrentTime(seconds);
 				localStorage.setItem(
 					CONFIG.storageKeys.musicPlaytime,
@@ -473,7 +399,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				}
 			}
 		},
-		[duration, isShared, socket, pasteId],
+		[isReady, playerRef, ytSeekTo, duration, isShared, socket, pasteId],
 	);
 
 	const handleSetVolume = useCallback(
@@ -614,17 +540,15 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 	const handleClearSearch = useCallback(() => setSearchResults([]), []);
 
 	const handleClearMusic = useCallback(() => {
-		if (playerRef.current && playerRef.current.pauseVideo) {
+		if (isReady && playerRef.current) {
 			try {
-				playerRef.current.pauseVideo();
+				pauseYt();
 			} catch (e) {
 				console.warn("Failed to pause video during clear:", e);
 			}
 		}
 		setIsPlaying(false);
-		setCurrentTrack(null);
-		setCurrentIndex(0);
-		setPlaylist([]);
+		clearQueue();
 		setSearchResults([]);
 		setCurrentTime(0);
 		setProgress(0);
@@ -648,7 +572,17 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		}
 
 		toast.success("Music queue and progress cleared");
-	}, [isShared, socket, pasteId, shuffle, repeat]);
+	}, [
+		isReady,
+		playerRef,
+		pauseYt,
+		clearQueue,
+		isShared,
+		socket,
+		pasteId,
+		shuffle,
+		repeat,
+	]);
 
 	const handleRemoveFromQueue = useCallback(
 		(videoId: string) => {
@@ -860,32 +794,6 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		};
 	}, [isPlaying]);
 
-	useEffect(() => {
-		if (!isMounted) return;
-
-		const checkAndInit = () => {
-			if (window.YT && window.YT.Player) {
-				initPlayer();
-			}
-		};
-
-		if (!window.YT || !window.YT.Player) {
-			const tag = document.createElement("script");
-			tag.src = "https://www.youtube.com/iframe_api";
-			const firstScriptTag = document.getElementsByTagName("script")[0];
-			firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
-
-			window.onYouTubeIframeAPIReady = checkAndInit;
-		} else {
-			checkAndInit();
-		}
-
-		return () => {
-			if (progressInterval.current)
-				clearInterval(progressInterval.current);
-		};
-	}, [isMounted, initPlayer]);
-
 	const toggleShare = useCallback(() => {
 		if (!socket || !pasteId) return;
 		const nextShared = !isShared;
@@ -1000,10 +908,10 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 						);
 
 						if (data.isPlaying) {
-							playerRef.current?.playVideo();
+							playYt();
 							setIsPlaying(true);
 						} else {
-							playerRef.current?.pauseVideo();
+							pauseYt();
 							setIsPlaying(false);
 						}
 
@@ -1052,10 +960,10 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			}
 
 			if (data.isPlaying && !isPlayingRef.current) {
-				playerRef.current?.playVideo();
+				playYt();
 				setIsPlaying(true);
 			} else if (!data.isPlaying && isPlayingRef.current) {
-				playerRef.current?.pauseVideo();
+				pauseYt();
 				setIsPlaying(false);
 			}
 
@@ -1082,7 +990,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 
 		const handlePlayUpdate = (data: MusicPlayPauseUpdate) => {
 			isRemoteActionRef.current = true;
-			playerRef.current?.playVideo();
+			playYt();
 			setIsPlaying(true);
 			if (data.currentTime !== undefined) {
 				lastRemoteStateRef.current = {

@@ -19,6 +19,16 @@ export function useYouTubePlayer({
 	const playerRef = useRef<YTPlayer | null>(null);
 	const [isReady, setIsReady] = useState(false);
 
+	const onReadyRef = useRef(onReady);
+	const onStateChangeRef = useRef(onStateChange);
+	const onErrorRef = useRef(onError);
+
+	useEffect(() => {
+		onReadyRef.current = onReady;
+		onStateChangeRef.current = onStateChange;
+		onErrorRef.current = onError;
+	}, [onReady, onStateChange, onError]);
+
 	useEffect(() => {
 		const initYTPlayer = () => {
 			if (window.YT && window.YT.Player) {
@@ -47,15 +57,15 @@ export function useYouTubePlayer({
 							) {
 								event.target.setPlaybackQuality(quality);
 							}
-							onReady?.();
+							onReadyRef.current?.();
 						},
 						onStateChange: (event: { data: number }) => {
-							onStateChange?.(event.data);
+							onStateChangeRef.current?.(event.data);
 						},
 						onError: (event: unknown) => {
 							const e = event as { data: number };
 							console.error("YouTube Player Error:", e?.data);
-							onError?.(e?.data);
+							onErrorRef.current?.(e?.data);
 						},
 					},
 				});
