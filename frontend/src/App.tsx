@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SplashPage from "@/pages/splash";
 import Header from "@/components/header/header";
@@ -9,8 +9,6 @@ import { SnippetProvider } from "@/context/SnippetContext";
 import Loader from "@/components/common/core/loader";
 import { HomeLoading } from "@/components/home/home-loading";
 import { DisplayLoading } from "@/components/display/display-loading";
-import { loader } from "@monaco-editor/react";
-import { useTranslation } from "react-i18next";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { TtsProvider } from "@/context";
 import { TtsMiniPlayer } from "@/components/common/tts-mini-player";
@@ -52,28 +50,7 @@ const MusicPlayerWrapper = () => {
 };
 
 const App = () => {
-	const { i18n } = useTranslation();
 	const { loading, healthData, error } = useHealthCheck();
-
-	useEffect(() => {
-		const localeMap: Record<string, string> = {
-			ja: "ja",
-			de: "de",
-		};
-
-		const monacoLocale = localeMap[i18n.language] || "en";
-
-		loader.config({
-			paths: {
-				vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs",
-			},
-			"vs/nls": {
-				availableLanguages: {
-					"*": monacoLocale,
-				},
-			},
-		});
-	}, [i18n.language]);
 
 	if (loading) {
 		return <SplashPage healthData={healthData} />;

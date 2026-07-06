@@ -10,7 +10,7 @@ import type { User, FileAttachment, UpdatePasteData } from "@/types";
 import { FileService, type FileUploadStatus } from "@/lib/file-service";
 import type { DisplayState } from "@/hooks/use-display-state";
 
-import { type editor } from "monaco-editor";
+import type { editor } from "monaco-editor";
 
 interface UseDisplayActionsProps {
 	id: string | undefined;

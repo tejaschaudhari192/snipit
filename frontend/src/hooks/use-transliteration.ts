@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { type editor } from "monaco-editor";
+import type { editor } from "monaco-editor";
 import { getTransliteratedSuggestions } from "@/utils/transliteration-utils";
 
 export function useTransliteration() {

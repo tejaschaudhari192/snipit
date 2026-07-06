@@ -6,8 +6,8 @@ import {
 	Suspense,
 	useCallback,
 } from "react";
-import { type Monaco } from "@monaco-editor/react";
-import { type editor } from "monaco-editor";
+import type { Monaco } from "@monaco-editor/react";
+import type { editor } from "monaco-editor";
 import { useTranslation } from "react-i18next";
 import { Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";

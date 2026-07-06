@@ -9,7 +9,7 @@ import {
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import type { OnMount, BeforeMount, Monaco } from "@monaco-editor/react";
-import { type editor } from "monaco-editor";
+import type { editor } from "monaco-editor";
 import { type Socket } from "socket.io-client";
 
 import { useApiHelpers } from "@/lib/api";

@@ -1,14 +1,13 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, lazy, Suspense } from "react";
 import { ErrorBoundary } from "@/components/common/error-boundary";
-import { Excalidraw } from "@excalidraw/excalidraw";
-import "@excalidraw/excalidraw/index.css";
+import type { Excalidraw as ExcalidrawType } from "@excalidraw/excalidraw";
 import type { Socket } from "socket.io-client";
 import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "react-i18next";
 import type { ActiveUser } from "@/types";
 
 // Infer types from Excalidraw component props for robustness
-type ExcalidrawProps = React.ComponentProps<typeof Excalidraw>;
+type ExcalidrawProps = React.ComponentProps<typeof ExcalidrawType>;
 type ExcalidrawAPI = Parameters<
 	NonNullable<ExcalidrawProps["excalidrawAPI"]>
 >[0];
@@ -51,6 +50,19 @@ interface DrawUpdateData {
 	selectedElementIds?: AppState["selectedElementIds"];
 	files?: BinaryFiles;
 }
+
+const ExcalidrawComp = lazy(async () => {
+	try {
+		// Attempt to load CSS
+		await import("@excalidraw/excalidraw/index.css").catch(() => {});
+
+		const m = await import("@excalidraw/excalidraw");
+		return { default: m.Excalidraw };
+	} catch (e) {
+		console.error("Excalidraw failed to load dynamically:", e);
+		throw e;
+	}
+});
 
 export const CollabDraw = ({
 	id,
@@ -414,30 +426,38 @@ export const CollabDraw = ({
 		<div className="w-full h-full relative touch-none">
 			<div className="absolute inset-0 rounded-2xl overflow-hidden shadow-sm touch-none">
 				<ErrorBoundary>
-					<Excalidraw
-						excalidrawAPI={(api) => setExcalidrawAPI(api)}
-						initialData={initialData}
-						onChange={handleChange}
-						onPointerUpdate={handlePointerUpdate}
-						viewModeEnabled={!isEdit}
-						theme={theme === "dark" ? "dark" : "light"}
-						langCode={
-							i18n.language.startsWith("hi")
-								? "hi-IN"
-								: i18n.language.startsWith("mr")
-									? "mr-IN"
-									: i18n.language.startsWith("ja")
-										? "ja-JP"
-										: i18n.language.startsWith("de")
-											? "de-DE"
-											: i18n.language
+					<Suspense
+						fallback={
+							<div className="w-full h-full animate-pulse bg-muted/20" />
 						}
-						UIOptions={{
-							canvasActions: {
-								loadScene: false,
-							},
-						}}
-					/>
+					>
+						<ExcalidrawComp
+							excalidrawAPI={(api: ExcalidrawAPI) =>
+								setExcalidrawAPI(api)
+							}
+							initialData={initialData}
+							onChange={handleChange}
+							onPointerUpdate={handlePointerUpdate}
+							viewModeEnabled={!isEdit}
+							theme={theme === "dark" ? "dark" : "light"}
+							langCode={
+								i18n.language.startsWith("hi")
+									? "hi-IN"
+									: i18n.language.startsWith("mr")
+										? "mr-IN"
+										: i18n.language.startsWith("ja")
+											? "ja-JP"
+											: i18n.language.startsWith("de")
+												? "de-DE"
+												: i18n.language
+							}
+							UIOptions={{
+								canvasActions: {
+									loadScene: false,
+								},
+							}}
+						/>
+					</Suspense>
 				</ErrorBoundary>
 			</div>
 		</div>

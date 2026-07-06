@@ -1,4 +1,4 @@
-import { type BeforeMount, type OnMount, Editor } from "@monaco-editor/react";
+import type { BeforeMount, OnMount } from "@monaco-editor/react";
 import {
 	lazy,
 	Suspense,
@@ -20,7 +20,9 @@ import { useEditorLayout } from "@/hooks/use-editor-layout";
 import { cn } from "@/utils";
 import { VideoSetupView } from "./video-setup-view";
 import type { useTransliteration } from "@/hooks/use-transliteration";
-import { Editor as TiptapEditorInstance } from "@tiptap/core";
+import type { Editor as TiptapEditorInstance } from "@tiptap/core";
+import { PlainTextEditor } from "@/components/common/plain-text-editor";
+import { MonacoConfig } from "@/hooks/use-monaco-config";
 
 const EditorToolbar = lazy(() =>
 	import("@/components/common/editor-toolbar").then((m) => ({
@@ -64,6 +66,11 @@ const HtmlDisplay = lazy(() =>
 const TiptapEditor = lazy(() =>
 	import("@/components/editor/tiptap-editor").then((m) => ({
 		default: m.TiptapEditor,
+	})),
+);
+const MonacoEditor = lazy(() =>
+	import("@monaco-editor/react").then((m) => ({
+		default: m.Editor,
 	})),
 );
 
@@ -235,13 +242,64 @@ export const EditorContent = memo(
 									theme={theme as "light" | "dark" | "system"}
 								/>
 							</Suspense>
-						) : contentType === "code" || contentType === "text" ? (
+						) : contentType === "text" ? (
+							transliteration?.enabled ? (
+								<Suspense
+									fallback={
+										<Skeleton className="h-full w-full" />
+									}
+								>
+									<MonacoConfig />
+									<MonacoEditor
+										height="100%"
+										language="plaintext"
+										value={textValue}
+										onChange={(value) =>
+											setTextValue(value || "")
+										}
+										theme={
+											theme === "dark"
+												? "snipit-dark"
+												: "snipit-light"
+										}
+										className="flex-1"
+										beforeMount={handleEditorWillMount}
+										onMount={onMount}
+										loading={<EditorInnerSkeleton />}
+										options={{
+											minimap: { enabled: false },
+											fontSize: fontSize,
+											padding: { top: 16 },
+											mouseWheelZoom: true,
+											wordWrap: "on",
+											automaticLayout: true,
+										}}
+									/>
+								</Suspense>
+							) : (
+								<PlainTextEditor
+									content={textValue}
+									onContentChange={setTextValue}
+									fontSize={fontSize}
+									textareaRef={
+										userInputRef as React.RefObject<HTMLTextAreaElement | null>
+									}
+									onPaste={
+										handlePaste as unknown as React.ClipboardEventHandler<HTMLTextAreaElement>
+									}
+									placeholder={t(
+										"home.enter_snippet_placeholder",
+									)}
+								/>
+							)
+						) : contentType === "code" ? (
 							language === "markdown" || language === "html" ? (
 								<Suspense
 									fallback={
 										<Skeleton className="flex-1 w-full h-full" />
 									}
 								>
+									<MonacoConfig />
 									<ResizableSplitPane
 										className="flex-1"
 										showHint={true}
@@ -254,7 +312,7 @@ export const EditorContent = memo(
 													<Skeleton className="h-full w-full" />
 												}
 											>
-												<Editor
+												<MonacoEditor
 													height="100%"
 													language={language}
 													value={textValue}
@@ -317,7 +375,8 @@ export const EditorContent = memo(
 										<Skeleton className="h-full w-full" />
 									}
 								>
-									<Editor
+									<MonacoConfig />
+									<MonacoEditor
 										height="100%"
 										language={language}
 										value={textValue}

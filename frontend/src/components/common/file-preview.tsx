@@ -1,9 +1,14 @@
 import { cn } from "@/utils";
 import { FileAudio, Loader2 } from "lucide-react";
-import { useState, useEffect } from "react";
-import { Editor } from "@monaco-editor/react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { useTheme } from "@/hooks/use-theme";
+import { MonacoConfig } from "@/hooks/use-monaco-config";
 
+const MonacoEditor = lazy(() =>
+	import("@monaco-editor/react").then((m) => ({
+		default: m.Editor,
+	})),
+);
 interface FilePreviewProps {
 	url: string;
 	fileName?: string | null;
@@ -158,28 +163,37 @@ export const FilePreview = ({
 					</div>
 				) : textContent !== null ? (
 					<div className="w-full h-full">
-						<Editor
-							height="100%"
-							width="100%"
-							value={textContent}
-							language={
-								ext === "js"
-									? "javascript"
-									: ext === "ts"
-										? "typescript"
-										: ext
+						<Suspense
+							fallback={
+								<div className="flex items-center justify-center h-full">
+									<Loader2 className="h-6 w-6 text-primary animate-spin" />
+								</div>
 							}
-							theme={theme === "dark" ? "vs-dark" : "light"}
-							options={{
-								readOnly: true,
-								minimap: { enabled: false },
-								fontSize: 12,
-								scrollBeyondLastLine: false,
-								padding: { top: 12, bottom: 12 },
-								domReadOnly: true,
-								automaticLayout: true,
-							}}
-						/>
+						>
+							<MonacoConfig />
+							<MonacoEditor
+								height="100%"
+								width="100%"
+								value={textContent}
+								language={
+									ext === "js"
+										? "javascript"
+										: ext === "ts"
+											? "typescript"
+											: ext
+								}
+								theme={theme === "dark" ? "vs-dark" : "light"}
+								options={{
+									readOnly: true,
+									minimap: { enabled: false },
+									fontSize: 12,
+									scrollBeyondLastLine: false,
+									padding: { top: 12, bottom: 12 },
+									domReadOnly: true,
+									automaticLayout: true,
+								}}
+							/>
+						</Suspense>
 					</div>
 				) : (
 					<div className="text-muted-foreground text-xs font-medium">

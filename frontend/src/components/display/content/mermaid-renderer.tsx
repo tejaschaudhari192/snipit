@@ -1,11 +1,25 @@
 import { useEffect, useState, useCallback } from "react";
-import mermaid, { type MermaidConfig } from "mermaid";
+import type { MermaidConfig } from "mermaid";
 import { useTheme } from "next-themes";
 import { Loader2, AlertCircle } from "lucide-react";
 
 interface MermaidRendererProps {
 	content: string;
 }
+
+type MermaidType = {
+	initialize: (config: MermaidConfig) => void;
+	render: (id: string, text: string) => Promise<{ svg: string }>;
+};
+
+let cachedMermaid: MermaidType | null = null;
+
+const loadMermaid = async () => {
+	if (cachedMermaid) return cachedMermaid;
+	const m = await import("mermaid");
+	cachedMermaid = m.default;
+	return cachedMermaid;
+};
 
 export const MermaidRenderer = ({ content }: MermaidRendererProps) => {
 	const { resolvedTheme } = useTheme();
@@ -26,10 +40,6 @@ export const MermaidRenderer = ({ content }: MermaidRendererProps) => {
 	);
 
 	useEffect(() => {
-		mermaid.initialize(getMermaidConfig());
-	}, [theme, getMermaidConfig]);
-
-	useEffect(() => {
 		const renderDiagram = async () => {
 			if (!content.trim()) return;
 
@@ -37,8 +47,9 @@ export const MermaidRenderer = ({ content }: MermaidRendererProps) => {
 			setError(null);
 
 			try {
+				const mermaid = await loadMermaid();
 				mermaid.initialize(getMermaidConfig());
-				const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
+				const id = `mermaid-${Math.random().toString(36).substring(2, 11)}`;
 				const { svg } = await mermaid.render(id, content);
 				setSvg(svg);
 			} catch (err) {

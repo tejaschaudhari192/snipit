@@ -9,7 +9,7 @@ const TerminalContainer = React.lazy(() =>
 import { DisplayContent } from "@/components/display/display-content";
 import type { PasteData, ContentMode, ActiveUser, EditorChange } from "@/types";
 import { Socket } from "socket.io-client";
-import { type BeforeMount, type OnMount } from "@monaco-editor/react";
+import type { BeforeMount, OnMount } from "@monaco-editor/react";
 import type { FileUploadStatus } from "@/lib/file-service";
 import type { useTransliteration } from "@/hooks/use-transliteration";
 import { Editor } from "@tiptap/core";
