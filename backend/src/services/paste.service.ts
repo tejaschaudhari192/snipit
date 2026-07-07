@@ -53,7 +53,7 @@ class PasteService {
 		const pasteData: PasteData = {
 			...rest,
 			id: pasteId,
-			expiresAt: expiresAt || dateConverter("1d"),
+			expiresAt: expiresAt,
 			burnAfterRead: finalBurnAfterRead,
 			expiresTime: expiresTime || "1d",
 			owner: ownerId || undefined,
@@ -150,6 +150,7 @@ class PasteService {
 			if (expiresTime === "one-time") expiresAt = dateConverter("1d");
 			else if (expiresTime === "never") expiresAt = null;
 			paste.expiresAt = expiresAt;
+			paste.expiresTime = expiresTime;
 		}
 
 		if (password === null) {
