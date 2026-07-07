@@ -343,6 +343,7 @@ export default function PasswordForm({
 										</Label>
 										{field.type === "password" && (
 											<Drawer
+												direction="right"
 												open={
 													showGeneratorFor ===
 													field.key
@@ -363,8 +364,8 @@ export default function PasswordForm({
 														Generate
 													</Button>
 												</DrawerTrigger>
-												<DrawerContent className="p-4 bg-background max-h-[85vh]">
-													<div className="mx-auto w-full max-w-sm">
+												<DrawerContent className="p-4 bg-background h-full">
+													<div className="mx-auto w-full max-w-sm h-full overflow-y-auto no-scrollbar">
 														<DrawerHeader className="px-0">
 															<DrawerTitle>
 																{t(
