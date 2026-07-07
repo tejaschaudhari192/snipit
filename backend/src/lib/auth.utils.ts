@@ -37,10 +37,7 @@ export const extractTokenFromRequest = (req: {
 export const generateToken = (id: string) => {
 	return jwt.sign({ id }, configurations.jwt.secret, {
 		expiresIn: configurations.jwt.expiry as
-			| `${number}d`
-			| `${number}h`
-			| `${number}m`
-			| `${number}s`,
+			`${number}d` | `${number}h` | `${number}m` | `${number}s`,
 	});
 };
 

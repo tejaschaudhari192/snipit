@@ -11,9 +11,25 @@ import { Button } from "@/components/ui/button";
 import { Shield, Lock } from "lucide-react";
 
 // Landing page for the Tools section. Shows a grid of available tools.
-// Currently includes the CryptoSafe folder encryptor/decryptor.
 const ToolsPage = () => {
 	const { t } = useTranslation();
+
+	const toolsConfig = [
+		{
+			id: "cryptoSafe",
+			titleKey: "tools.cryptoSafe_title",
+			descriptionKey: "tools.cryptoSafe_description",
+			icon: Shield,
+			link: "/tools/cryptoSafe",
+		},
+		{
+			id: "passwordManager",
+			titleKey: "tools.password_manager_title",
+			descriptionKey: "tools.password_manager_description",
+			icon: Lock,
+			link: "/tools/passwords",
+		},
+	];
 
 	return (
 		<div className="min-h-full bg-background text-foreground transition-colors duration-300">
@@ -36,24 +52,27 @@ const ToolsPage = () => {
 
 			<section className="pb-16 px-4 md:px-8 max-w-4xl mx-auto">
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-					{/* CryptoSafe Tool Card */}
-					<Card className="border-border/50 bg-background/60 backdrop-blur-xl shadow-xl">
-						<CardHeader>
-							<CardTitle className="flex items-center gap-2 text-lg">
-								<Lock className="h-5 w-5 text-primary" />
-								{t("tools.cryptoSafe_title")}
-							</CardTitle>
-							<CardDescription>
-								{t("tools.cryptoSafe_description")}
-							</CardDescription>
-						</CardHeader>
-						<CardContent className="flex justify-end">
-							<Button asChild>
-								<Link to="/tools/cryptoSafe">Open</Link>
-							</Button>
-						</CardContent>
-					</Card>
-					{/* Additional tool cards can be added here */}
+					{toolsConfig.map((tool) => (
+						<Card
+							key={tool.id}
+							className="border-border/50 bg-background/60 backdrop-blur-xl shadow-xl flex flex-col"
+						>
+							<CardHeader>
+								<CardTitle className="flex items-center gap-2 text-lg">
+									<tool.icon className="h-5 w-5 text-primary" />
+									{t(tool.titleKey)}
+								</CardTitle>
+								<CardDescription>
+									{t(tool.descriptionKey)}
+								</CardDescription>
+							</CardHeader>
+							<CardContent className="flex justify-end mt-auto">
+								<Button asChild>
+									<Link to={tool.link}>Open</Link>
+								</Button>
+							</CardContent>
+						</Card>
+					))}
 				</div>
 			</section>
 		</div>

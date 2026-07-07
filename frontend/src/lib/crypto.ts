@@ -35,7 +35,7 @@ function getCacheKey(password: string, salt: Uint8Array): string {
 	return `${password}:${saltHex}`;
 }
 
-async function deriveKey(
+export async function deriveKey(
 	password: string,
 	salt: Uint8Array,
 ): Promise<CryptoKey> {
@@ -66,6 +66,32 @@ async function deriveKey(
 
 	keyCache.set(cacheKey, key);
 	return key;
+}
+
+// ---- Encryption Helpers ----
+
+/**
+ * Derive a CryptoKey from a password and generate a random salt.
+ * Used for encrypting the vault with a master password.
+ */
+export async function encrypt(password: string): Promise<CryptoKey> {
+	const salt = crypto.getRandomValues(new Uint8Array(16));
+	return await deriveKey(password, salt);
+}
+
+/**
+ * Derive a CryptoKey from a password and a provided salt.
+ * Used for decrypting the vault; returns null if derivation fails.
+ */
+export async function decrypt(
+	password: string,
+	salt: Uint8Array,
+): Promise<CryptoKey | null> {
+	try {
+		return await deriveKey(password, salt);
+	} catch {
+		return null;
+	}
 }
 
 // ---- Encryption ----

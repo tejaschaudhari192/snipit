@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Shield, Lock, Unlock } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CryptoPanel } from "@/components/crypto/crypto-panel";
+import { CryptoPanel } from "@/tools/cryptsafe/components/crypto-panel";
 
-const CryptoSafePage = () => {
+const EncryptSafePage = () => {
 	const { t } = useTranslation();
 	const [activeTab, setActiveTab] = useState<"encrypt" | "decrypt">(
 		"encrypt",
@@ -19,7 +19,7 @@ const CryptoSafePage = () => {
 							<Shield className="w-4 h-4 fill-current" />
 							{t("tools.badge")}
 						</div>
-						<h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 tracking-tighter leading-[1.1] text-foreground bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/95 to-foreground/80">
+						<h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 tracking-tighter leading-[1.1] bg-clip-text text-transparent bg-linear-to-r from-foreground via-foreground/95 to-foreground/80">
 							{t("tools.cryptoSafe_title")}
 						</h1>
 						<p className="text-base md:text-lg text-muted-foreground font-medium max-w-xl mx-auto leading-relaxed">
@@ -67,4 +67,4 @@ const CryptoSafePage = () => {
 	);
 };
 
-export default CryptoSafePage;
+export default EncryptSafePage;
