@@ -8,6 +8,9 @@
         "prepare": "husky",
         "dev:frontend": "npm run dev --prefix frontend",
         "dev:backend": "npm run dev --prefix backend",
+        "format:frontend": "npm run format --prefix frontend",
+        "format:backend": "npm run format --prefix backend",
+        "format": "npm run format:frontend && npm run format:backend",
         "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\""
     },
     "keywords": [],
