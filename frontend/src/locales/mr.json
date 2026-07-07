@@ -21,6 +21,38 @@
 		"user_greeting": "पुन्हा स्वागत आहे",
 		"guest": "पाहुणा"
 	},
+	"tools": {
+		"drag_drop_prompt": "फायली किंवा फोल्डर येथे ड्रॅग आणि ड्रॉप करा किंवा निवडण्यासाठी क्लिक करा",
+		"or": "किंवा",
+		"choose_files": "फायली निवडा",
+		"choose_folder": "फोल्डर निवडा",
+		"drag_drop_decrypt_prompt": "एनक्रिप्टेड फायली येथे ड्रॅग करा",
+		"pick_folder": "फोल्डर निवडा",
+		"write_back_success": "फायली परत लिहिल्या गेल्या आहेत आणि फोल्डरमधील मूळ रचना बदलली आहे.",
+		"password_manager_title": "Password Manager",
+		"password_manager_master_placeholder": "Enter master password",
+		"password_manager_enter": "Unlock",
+		"password_manager_loading": "Loading vault...",
+		"password_manager_folders": "Folders",
+		"password_manager_type_logins": "Logins",
+		"password_manager_type_login": "Login",
+		"password_manager_type_cards": "Credit cards",
+		"password_manager_type_card": "Credit card",
+		"password_manager_type_apikeys": "API keys",
+		"password_manager_type_apikey": "API key",
+		"password_manager_type_api_keys": "API keys",
+		"password_manager_type_passkeys": "Passkeys",
+		"password_manager_type_passkey": "Passkey",
+		"password_manager_type_credfiles": "Cred files",
+		"password_manager_type_credfile": "Cred file",
+		"password_manager_type_cred_files": "Cred files",
+		"password_manager_type_notes": "Notes",
+		"password_manager_type_note": "Note",
+		"password_manager_all_items": "All Items",
+		"password_manager_favorites": "Favorites",
+		"password_manager_recent": "Recent",
+		"password_manager_new": "New Item"
+	},
 	"common": {
 		"loading": "लोड होत आहे...",
 		"visibility": "दृश्यमानता",
@@ -704,14 +736,5 @@
 			"english": "इंग्रजी / आंतरराष्ट्रीय",
 			"default": "हिंदी"
 		}
-	},
-	"tools": {
-		"drag_drop_prompt": "फायली किंवा फोल्डर येथे ड्रॅग आणि ड्रॉप करा किंवा निवडण्यासाठी क्लिक करा",
-		"or": "किंवा",
-		"choose_files": "फायली निवडा",
-		"choose_folder": "फोल्डर निवडा",
-		"drag_drop_decrypt_prompt": "एनक्रिप्टेड फायली येथे ड्रॅग करा",
-		"pick_folder": "फोल्डर निवडा",
-		"write_back_success": "फायली परत लिहिल्या गेल्या आहेत आणि फोल्डरमधील मूळ रचना बदलली आहे."
 	}
 }

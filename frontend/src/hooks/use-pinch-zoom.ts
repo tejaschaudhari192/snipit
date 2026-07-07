@@ -1,10 +1,11 @@
+import { localStore } from "@/utils/storage";
 import { useRef, useState, useEffect, useCallback } from "react";
 import { CONFIG } from "@/configurations";
 
 export function usePinchZoom(initialFontSize = CONFIG.defaults.fontSize) {
 	const [fontSize, setFontSizeState] = useState(() => {
 		if (typeof window !== "undefined") {
-			const saved = localStorage.getItem(CONFIG.storageKeys.fontSize);
+			const saved = localStore.getItem(CONFIG.storageKeys.fontSize);
 			const parsed = saved ? parseInt(saved, 10) : initialFontSize;
 			return isNaN(parsed) ? initialFontSize : parsed;
 		}
@@ -20,7 +21,7 @@ export function usePinchZoom(initialFontSize = CONFIG.defaults.fontSize) {
 					Math.max(newValue, CONFIG.defaults.minFontSize),
 					CONFIG.defaults.maxFontSize,
 				);
-				localStorage.setItem(
+				localStore.setItem(
 					CONFIG.storageKeys.fontSize,
 					validValue.toString(),
 				);

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { type Theme, ThemeProviderContext } from "@/lib/theme-context";
+import { localStore } from "@/utils/storage";
 
 type ThemeProviderProps = {
 	children: React.ReactNode;
@@ -11,7 +12,7 @@ function ThemeProvider({
 	defaultTheme = "system",
 }: ThemeProviderProps) {
 	const [theme, setTheme] = useState<Theme>(
-		() => (localStorage.getItem("theme") as Theme) || defaultTheme,
+		() => (localStore.getItem("theme") as Theme) || defaultTheme,
 	);
 
 	useEffect(() => {
@@ -19,7 +20,7 @@ function ThemeProvider({
 
 		root.classList.remove("light", "dark");
 		root.classList.add(theme);
-		localStorage.setItem("theme", theme);
+		localStore.setItem("theme", theme);
 	}, [theme]);
 
 	const value = {

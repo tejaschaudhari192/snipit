@@ -1,3 +1,4 @@
+import { localStore } from "@/utils/storage";
 import type { BeforeMount, OnMount } from "@monaco-editor/react";
 import {
 	lazy,
@@ -162,7 +163,7 @@ export const EditorContent = memo(
 
 		const [isHistoryVisible, setIsHistoryVisible] = useState(() => {
 			if (typeof window !== "undefined") {
-				const saved = localStorage.getItem("link-history-visible");
+				const saved = localStore.getItem("link-history-visible");
 				return saved !== "false";
 			}
 			return true;
@@ -176,7 +177,7 @@ export const EditorContent = memo(
 		};
 
 		useEffect(() => {
-			localStorage.setItem(
+			localStore.setItem(
 				"link-history-visible",
 				isHistoryVisible.toString(),
 			);

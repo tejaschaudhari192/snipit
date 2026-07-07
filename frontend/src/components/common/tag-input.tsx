@@ -111,31 +111,28 @@ export const TagInput = ({
 			</div>
 
 			{/* Suggestions Dropdown */}
-			{isFocused &&
-				inputValue &&
-				filteredSuggestions.length > 0 &&
-				!disabled && (
-					<div className="absolute top-full left-0 right-0 mt-1 z-50 rounded-lg border bg-popover text-popover-foreground shadow-md animate-in fade-in slide-in-from-top-2">
-						<div className="p-1 max-h-[150px] overflow-auto no-scrollbar">
-							{filteredSuggestions.map((suggestion, index) => (
-								<div
-									key={index}
-									onMouseDown={(e) => {
-										// Use onMouseDown instead of onClick so it fires before input blur
-										e.preventDefault();
-										if (!tags.includes(suggestion)) {
-											onTagsChange([...tags, suggestion]);
-											setInputValue("");
-										}
-									}}
-									className="px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors"
-								>
-									{suggestion}
-								</div>
-							))}
-						</div>
+			{isFocused && filteredSuggestions.length > 0 && !disabled && (
+				<div className="absolute top-full left-0 right-0 mt-1 z-50 rounded-lg border bg-popover text-popover-foreground shadow-md animate-in fade-in slide-in-from-top-2">
+					<div className="p-1 max-h-[150px] overflow-auto no-scrollbar">
+						{filteredSuggestions.map((suggestion, index) => (
+							<div
+								key={index}
+								onMouseDown={(e) => {
+									// Use onMouseDown instead of onClick so it fires before input blur
+									e.preventDefault();
+									if (!tags.includes(suggestion)) {
+										onTagsChange([...tags, suggestion]);
+										setInputValue("");
+									}
+								}}
+								className="px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors"
+							>
+								{suggestion}
+							</div>
+						))}
 					</div>
-				)}
+				</div>
+			)}
 		</div>
 	);
 };

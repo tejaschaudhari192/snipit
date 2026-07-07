@@ -59,7 +59,7 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 				setIsSaving(false);
 			}
 		} else {
-			// Handle guest save to localStorage
+			// Handle guest save to localStore
 			try {
 				setIsSaving(true);
 				const saved = guestStorage.toggleSaved(paste);

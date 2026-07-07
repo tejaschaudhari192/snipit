@@ -1,3 +1,4 @@
+import { localStore } from "@/utils/storage";
 import { useState, useCallback } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -53,7 +54,7 @@ export const useAiDraw = ({
 				} else {
 					// Merge with existing if it's a drawing
 					const currentText =
-						localStorage.getItem("snipit_text_value") || "";
+						localStore.getItem("snipit_text_value") || "";
 					if (isSnipitDrawing(currentText)) {
 						try {
 							const currentDrawing = JSON.parse(currentText);

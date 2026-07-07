@@ -269,6 +269,32 @@
 		scrollbar-width: none;
 	}
 
+	.scroll-fade-bottom {
+		mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+		-webkit-mask-image: linear-gradient(
+			to bottom,
+			black 85%,
+			transparent 100%
+		);
+	}
+
+	.scroll-fade-y {
+		mask-image: linear-gradient(
+			to bottom,
+			transparent 0%,
+			black 10%,
+			black 90%,
+			transparent 100%
+		);
+		-webkit-mask-image: linear-gradient(
+			to bottom,
+			transparent 0%,
+			black 10%,
+			black 90%,
+			transparent 100%
+		);
+	}
+
 	@keyframes vinyl-spin {
 		from {
 			transform: rotate(0deg);

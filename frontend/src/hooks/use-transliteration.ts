@@ -1,3 +1,4 @@
+import { localStore } from "@/utils/storage";
 import { useState, useRef, useEffect, useCallback } from "react";
 import type { editor } from "monaco-editor";
 import { getTransliteratedSuggestions } from "@/utils/transliteration-utils";
@@ -5,13 +6,13 @@ import { getTransliteratedSuggestions } from "@/utils/transliteration-utils";
 export function useTransliteration() {
 	const [enabled, setEnabled] = useState(() => {
 		if (typeof window !== "undefined") {
-			return localStorage.getItem("transliteration-enabled") === "true";
+			return localStore.getItem("transliteration-enabled") === "true";
 		}
 		return false;
 	});
 	const [targetLanguage, setTargetLanguage] = useState(() => {
 		if (typeof window !== "undefined") {
-			return localStorage.getItem("transliteration-lang") || "hi";
+			return localStore.getItem("transliteration-lang") || "hi";
 		}
 		return "hi";
 	});
@@ -22,8 +23,8 @@ export function useTransliteration() {
 	const monacoRef = useRef<typeof import("monaco-editor") | null>(null);
 
 	useEffect(() => {
-		localStorage.setItem("transliteration-enabled", enabled.toString());
-		localStorage.setItem("transliteration-lang", targetLanguage);
+		localStore.setItem("transliteration-enabled", enabled.toString());
+		localStore.setItem("transliteration-lang", targetLanguage);
 	}, [enabled, targetLanguage]);
 
 	const setupEditor = useCallback(

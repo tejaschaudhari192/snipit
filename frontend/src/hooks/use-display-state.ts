@@ -1,3 +1,4 @@
+import { localStore } from "@/utils/storage";
 import { useState, useCallback, useEffect } from "react";
 import { CONFIG } from "@/configurations";
 import type {
@@ -55,7 +56,7 @@ export const useDisplayState = () => {
 	const [isVerifyingPassword, setIsVerifyingPassword] = useState(false);
 	const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
 	const [isAutosave, setIsAutosave] = useState<boolean>(() => {
-		const saved = localStorage.getItem(CONFIG.storageKeys.autosave);
+		const saved = localStore.getItem(CONFIG.storageKeys.autosave);
 		return saved !== null ? saved === "true" : false;
 	});
 	const [isFullscreen, setIsFullscreen] = useState(false);
@@ -65,10 +66,7 @@ export const useDisplayState = () => {
 	>(new Set());
 
 	useEffect(() => {
-		localStorage.setItem(
-			CONFIG.storageKeys.autosave,
-			isAutosave.toString(),
-		);
+		localStore.setItem(CONFIG.storageKeys.autosave, isAutosave.toString());
 	}, [isAutosave]);
 	const [isTerminalOpen, setIsTerminalOpen] = useState(false);
 	const [language, _setLanguage] = useState(CONFIG.defaults.language);

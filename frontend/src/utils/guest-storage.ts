@@ -1,4 +1,5 @@
 import type { PasteData } from "@/types";
+import { localStore } from "@/utils/storage";
 
 const KEYS = {
 	HISTORY: "items",
@@ -11,7 +12,7 @@ const KEYS = {
  */
 const getItems = (key: string): PasteData[] => {
 	try {
-		const stored = localStorage.getItem(key);
+		const stored = localStore.getItem(key);
 		return stored ? JSON.parse(stored) : [];
 	} catch (error) {
 		console.error(`Failed to parse ${key} from localStorage`, error);
@@ -24,7 +25,7 @@ const getItems = (key: string): PasteData[] => {
  */
 const setItems = (key: string, items: PasteData[]): void => {
 	try {
-		localStorage.setItem(key, JSON.stringify(items));
+		localStore.setItem(key, JSON.stringify(items));
 	} catch (error) {
 		console.error(`Failed to save ${key} to localStorage`, error);
 	}

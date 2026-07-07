@@ -1,3 +1,4 @@
+import { localStore } from "@/utils/storage";
 import {
 	Select,
 	SelectContent,
@@ -16,9 +17,9 @@ interface LanguageSwitcherProps {
 
 export const LanguageSwitcher = ({ className }: LanguageSwitcherProps) => {
 	const { i18n } = useTranslation();
-	// Initialize from i18n or localStorage to ensure sync
+	// Initialize from i18n or localStore to ensure sync
 	const [language, setLanguage] = useState(
-		localStorage.getItem("lang") || i18n.language || "en",
+		localStore.getItem("lang") || i18n.language || "en",
 	);
 
 	useEffect(() => {
@@ -31,7 +32,7 @@ export const LanguageSwitcher = ({ className }: LanguageSwitcherProps) => {
 	const handleLanguageChange = (value: string) => {
 		setLanguage(value);
 		i18n.changeLanguage(value);
-		localStorage.setItem("lang", value);
+		localStore.setItem("lang", value);
 	};
 
 	return (

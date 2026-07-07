@@ -1,3 +1,4 @@
+import { localStore } from "@/utils/storage";
 import { useState, useCallback, useEffect } from "react";
 import { type MusicTrack } from "@/types";
 import { CONFIG } from "@/configurations";
@@ -24,7 +25,7 @@ export function usePlaylistManager({
 	useEffect(() => {
 		if (isMounted) {
 			const ids = playlist.map((t) => t.videoId);
-			localStorage.setItem(
+			localStore.setItem(
 				CONFIG.storageKeys.musicPlaylistIds,
 				JSON.stringify(ids),
 			);
@@ -33,7 +34,7 @@ export function usePlaylistManager({
 
 	useEffect(() => {
 		if (isMounted) {
-			localStorage.setItem(
+			localStore.setItem(
 				CONFIG.storageKeys.musicCurrentIndex,
 				currentIndex.toString(),
 			);
@@ -43,12 +44,12 @@ export function usePlaylistManager({
 	useEffect(() => {
 		if (isMounted) {
 			if (currentTrack) {
-				localStorage.setItem(
+				localStore.setItem(
 					CONFIG.storageKeys.musicCurrentTrackId,
 					currentTrack.videoId,
 				);
 			} else {
-				localStorage.removeItem(CONFIG.storageKeys.musicCurrentTrackId);
+				localStore.removeItem(CONFIG.storageKeys.musicCurrentTrackId);
 			}
 		}
 	}, [currentTrack, isMounted]);

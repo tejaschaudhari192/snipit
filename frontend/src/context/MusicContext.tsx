@@ -1,3 +1,4 @@
+import { localStore } from "@/utils/storage";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import type {
 	MusicTrack,
@@ -48,14 +49,14 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 	const [isLoading, setIsLoading] = useState(false);
 	const [volume, setVolumeState] = useState<number>(() => {
 		if (typeof window !== "undefined") {
-			const saved = localStorage.getItem(CONFIG.storageKeys.musicVolume);
+			const saved = localStore.getItem(CONFIG.storageKeys.musicVolume);
 			return saved ? parseInt(saved, 10) : 50;
 		}
 		return 50;
 	});
 	const [quality, setQualityState] = useState<string>(() => {
 		if (typeof window !== "undefined") {
-			const saved = localStorage.getItem(CONFIG.storageKeys.musicQuality);
+			const saved = localStore.getItem(CONFIG.storageKeys.musicQuality);
 			return saved ?? "tiny";
 		}
 		return "tiny";
@@ -90,8 +91,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		onReady: () => {
 			if (currentTrackRef.current) {
 				const savedTime = parseFloat(
-					localStorage.getItem(CONFIG.storageKeys.musicPlaytime) ||
-						"0",
+					localStore.getItem(CONFIG.storageKeys.musicPlaytime) || "0",
 				);
 				cueVideoById(currentTrackRef.current.videoId, savedTime);
 				setCurrentTime(savedTime);
@@ -234,7 +234,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	useEffect(() => {
 		if (isMounted) {
-			const savedIdsStr = localStorage.getItem(
+			const savedIdsStr = localStore.getItem(
 				CONFIG.storageKeys.musicPlaylistIds,
 			);
 			let savedIds: string[] = [];
@@ -249,11 +249,11 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 					if (tracks && tracks.length > 0) {
 						setPlaylist(tracks);
 
-						const savedTrackId = localStorage.getItem(
+						const savedTrackId = localStore.getItem(
 							CONFIG.storageKeys.musicCurrentTrackId,
 						);
 						const savedIndex = parseInt(
-							localStorage.getItem(
+							localStore.getItem(
 								CONFIG.storageKeys.musicCurrentIndex,
 							) || "0",
 							10,
@@ -291,12 +291,12 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 					lastTrackIdRef.current !== null &&
 					lastTrackIdRef.current !== currentTrack.videoId
 				) {
-					localStorage.setItem(CONFIG.storageKeys.musicPlaytime, "0");
+					localStore.setItem(CONFIG.storageKeys.musicPlaytime, "0");
 					lastSavedTimeRef.current = 0;
 				}
 				lastTrackIdRef.current = currentTrack.videoId;
 			} else {
-				localStorage.removeItem(CONFIG.storageKeys.musicPlaytime);
+				localStore.removeItem(CONFIG.storageKeys.musicPlaytime);
 				lastTrackIdRef.current = null;
 			}
 		}
@@ -379,7 +379,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			if (isReady && playerRef.current) {
 				ytSeekTo(seconds);
 				setCurrentTime(seconds);
-				localStorage.setItem(
+				localStore.setItem(
 					CONFIG.storageKeys.musicPlaytime,
 					seconds.toFixed(1),
 				);
@@ -408,10 +408,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			if (playerRef.current && playerRef.current.setVolume) {
 				playerRef.current.setVolume(vol);
 			}
-			localStorage.setItem(
-				CONFIG.storageKeys.musicVolume,
-				vol.toString(),
-			);
+			localStore.setItem(CONFIG.storageKeys.musicVolume, vol.toString());
 
 			if (isShared && !isRemoteActionRef.current && socket && pasteId) {
 				socket.emit("music:volume", { pasteId, volume: vol });
@@ -422,7 +419,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const handleChangeQuality = useCallback((newQuality: string) => {
 		setQualityState(newQuality);
-		localStorage.setItem(CONFIG.storageKeys.musicQuality, newQuality);
+		localStore.setItem(CONFIG.storageKeys.musicQuality, newQuality);
 		if (
 			playerRef.current &&
 			typeof playerRef.current.setPlaybackQuality === "function"
@@ -554,10 +551,10 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		setProgress(0);
 		setDuration(0);
 
-		localStorage.removeItem(CONFIG.storageKeys.musicPlaylistIds);
-		localStorage.removeItem(CONFIG.storageKeys.musicCurrentTrackId);
-		localStorage.removeItem(CONFIG.storageKeys.musicCurrentIndex);
-		localStorage.removeItem(CONFIG.storageKeys.musicPlaytime);
+		localStore.removeItem(CONFIG.storageKeys.musicPlaylistIds);
+		localStore.removeItem(CONFIG.storageKeys.musicCurrentTrackId);
+		localStore.removeItem(CONFIG.storageKeys.musicCurrentIndex);
+		localStore.removeItem(CONFIG.storageKeys.musicPlaytime);
 
 		if (isShared && socket && pasteId) {
 			socket.emit("music:sync", {
@@ -778,7 +775,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 							CONFIG.defaults.musicSaveInterval
 				) {
 					lastSavedTimeRef.current = Math.floor(nextTime);
-					localStorage.setItem(
+					localStore.setItem(
 						CONFIG.storageKeys.musicPlaytime,
 						nextTime.toFixed(1),
 					);

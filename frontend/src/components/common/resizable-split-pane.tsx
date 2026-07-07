@@ -1,3 +1,4 @@
+import { localStore } from "@/utils/storage";
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { cn } from "@/utils";
 import { GripHorizontal, GripVertical } from "lucide-react";
@@ -31,7 +32,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
 	const { t } = useTranslation();
 	const [leftWidth, setLeftWidth] = useState(() => {
 		if (storageKey) {
-			const saved = localStorage.getItem(storageKey);
+			const saved = localStore.getItem(storageKey);
 			if (saved) return parseFloat(saved);
 		}
 		return initialWidth;
@@ -86,7 +87,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
 		document.body.style.cursor = "";
 		document.body.style.userSelect = "";
 		if (storageKey) {
-			localStorage.setItem(storageKey, leftWidth.toString());
+			localStore.setItem(storageKey, leftWidth.toString());
 		}
 	}, [storageKey, leftWidth]);
 

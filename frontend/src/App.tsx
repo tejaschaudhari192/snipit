@@ -18,7 +18,12 @@ const DisplayPage = lazy(() => import("@/pages/display"));
 const HistoryPage = lazy(() => import("@/pages/history"));
 const AboutPage = lazy(() => import("@/pages/about"));
 const ToolsPage = lazy(() => import("@/pages/tools"));
-const CryptoSafePage = lazy(() => import("@/pages/cryptoSafe"));
+const PasswordManagerPage = lazy(
+	() => import("@/tools/password-manager/password-manager-page"),
+);
+const CryptoSafePage = lazy(
+	() => import("@/tools/cryptsafe/encrypt-safe-page"),
+);
 const ProfilePage = lazy(() => import("@/pages/profile"));
 const LoginPage = lazy(() => import("@/pages/login"));
 const SignupPage = lazy(() => import("@/pages/signup"));
@@ -31,6 +36,9 @@ import { CONFIG } from "./configurations";
 import { MusicProvider } from "@/context/MusicContext";
 import { useMusic } from "@/context/use-music";
 import MusicPlayerSkeleton from "@/components/common/music/music-player-skeleton";
+import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 
 const MusicBubble = lazy(
 	() => import("@/components/common/music/music-bubble"),
@@ -51,13 +59,42 @@ const MusicPlayerWrapper = () => {
 
 const App = () => {
 	const { loading, healthData, error } = useHealthCheck();
+	const { t } = useTranslation();
+
+	useEffect(() => {
+		const handleStorageError = (e: Event) => {
+			const customEvent = e as CustomEvent;
+			const code = customEvent.detail?.code;
+			if (code === "access_denied") {
+				toast.error(t("errors.storage_access_denied"), {
+					id: "storage-error",
+				});
+			} else if (code === "save_failed") {
+				toast.error(t("errors.storage_save_failed"), {
+					id: "storage-error",
+				});
+			}
+		};
+		window.addEventListener("snipit-storage-error", handleStorageError);
+		return () =>
+			window.removeEventListener(
+				"snipit-storage-error",
+				handleStorageError,
+			);
+	}, [t]);
 
 	if (loading) {
 		return <SplashPage healthData={healthData} />;
 	}
 
 	if (error) {
-		return <ServerErrorPage />;
+		return (
+			<ThemeProvider>
+				<Router>
+					<ServerErrorPage />
+				</Router>
+			</ThemeProvider>
+		);
 	}
 
 	return (
@@ -144,6 +181,12 @@ const App = () => {
 															path="/tools"
 															element={
 																<ToolsPage />
+															}
+														/>
+														<Route
+															path="/tools/passwords"
+															element={
+																<PasswordManagerPage />
 															}
 														/>
 														<Route

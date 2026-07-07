@@ -1,3 +1,4 @@
+import { localStore } from "@/utils/storage";
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { cn } from "@/utils";
 import { GripHorizontal, GripVertical } from "lucide-react";
@@ -22,7 +23,7 @@ interface ResizablePanelsProps {
 	/** Maximum first-panel size in percent. Defaults to 85. */
 	maxSize?: number;
 	className?: string;
-	/** Optional key to persist size in localStorage */
+	/** Optional key to persist size in localStore */
 	storageKey?: string;
 }
 
@@ -42,7 +43,7 @@ export const ResizablePanels: React.FC<ResizablePanelsProps> = ({
 }) => {
 	const [firstSize, setFirstSize] = useState(() => {
 		if (storageKey) {
-			const saved = localStorage.getItem(storageKey);
+			const saved = localStore.getItem(storageKey);
 			if (saved) return parseFloat(saved);
 		}
 		return initialSize;
@@ -85,7 +86,7 @@ export const ResizablePanels: React.FC<ResizablePanelsProps> = ({
 		document.body.style.cursor = "";
 		document.body.style.userSelect = "";
 		if (storageKey) {
-			localStorage.setItem(storageKey, firstSize.toString());
+			localStore.setItem(storageKey, firstSize.toString());
 		}
 	}, [storageKey, firstSize]);
 

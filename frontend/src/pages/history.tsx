@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { FileText, Trash2, Inbox, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { localStore } from "@/utils/storage";
 import { lazy, Suspense, useState, useEffect } from "react";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { usePageTitle } from "@/hooks/use-page-title";
@@ -83,7 +84,7 @@ const HistoryPage = () => {
 
 	const confirmClearHistory = () => {
 		playRemoveSound();
-		localStorage.removeItem("items");
+		localStore.removeItem("items");
 		// Refresh both history and profile if needed, or just clear local
 		window.location.reload(); // Simplest way to clear everything and re-sync
 	};

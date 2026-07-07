@@ -1,3 +1,4 @@
+import { localStore } from "@/utils/storage";
 import React, { useEffect, useState } from "react";
 import { Music, Music2, Share2, X } from "lucide-react";
 import { useMusic } from "@/context/use-music";
@@ -23,7 +24,7 @@ const MusicBubble: React.FC = () => {
 	const [mounted, setMounted] = useState(false);
 	const [isVisible, setIsVisible] = useState(() => {
 		if (typeof window !== "undefined") {
-			return localStorage.getItem("music-bubble-visible") !== "false";
+			return localStore.getItem("music-bubble-visible") !== "false";
 		}
 		return true;
 	});
@@ -35,7 +36,7 @@ const MusicBubble: React.FC = () => {
 	useEffect(() => {
 		if ((isPlaying && currentTrack) || isPlayerOpen) {
 			setIsVisible(true);
-			localStorage.setItem("music-bubble-visible", "true");
+			localStore.setItem("music-bubble-visible", "true");
 		}
 	}, [isPlaying, currentTrack, isPlayerOpen]);
 
@@ -117,7 +118,7 @@ const MusicBubble: React.FC = () => {
 					onClick={(e) => {
 						e.stopPropagation();
 						setIsVisible(false);
-						localStorage.setItem("music-bubble-visible", "false");
+						localStore.setItem("music-bubble-visible", "false");
 					}}
 					className="h-5 w-5 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer shrink-0"
 					aria-label="Hide Music Player"
@@ -165,7 +166,7 @@ const MusicBubble: React.FC = () => {
 				onClick={(e) => {
 					e.stopPropagation();
 					setIsVisible(false);
-					localStorage.setItem("music-bubble-visible", "false");
+					localStore.setItem("music-bubble-visible", "false");
 				}}
 				className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-popover border border-border flex items-center justify-center text-muted-foreground hover:text-foreground shadow cursor-pointer z-[60]"
 				aria-label="Hide Music Player"
