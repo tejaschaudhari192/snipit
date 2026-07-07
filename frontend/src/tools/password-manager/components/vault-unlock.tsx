@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Shield, LockOpen, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import ReadMoreDialog from "./ReadMoreDialog";
 
 interface VaultUnlockProps {
 	onUnlock: (password: string) => void;
@@ -66,7 +67,6 @@ export default function VaultUnlock({
 								type="password"
 								placeholder={t(
 									"tools.password_manager_master_placeholder",
-									"Master Password",
 								)}
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
@@ -102,17 +102,7 @@ export default function VaultUnlock({
 
 					<div className="mt-6 text-center">
 						<p className="text-xs text-muted-foreground">
-							Forgot your password?{" "}
-							<button
-								className="text-primary hover:underline font-medium"
-								onClick={() =>
-									alert(
-										"Since this is zero-knowledge encryption, your password cannot be recovered. If you have forgotten it, you must clear your browser data for this site to start over, which will permanently delete your local vault.",
-									)
-								}
-							>
-								Read more
-							</button>
+							Forgot your password? <ReadMoreDialog />
 						</p>
 					</div>
 				</CardContent>

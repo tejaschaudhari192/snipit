@@ -54,10 +54,7 @@ export const RedirectionSelector = memo(
 									disabled={!(isOwner || isAdmin) || disabled}
 								>
 									<MousePointerClick className="h-3.5 w-3.5 mr-1.5" />
-									{t(
-										"common.redirection_click",
-										"Click to Visit",
-									)}
+									{t("common.redirection_click")}
 								</TabsTrigger>
 								<TabsTrigger
 									value="timer"
@@ -65,10 +62,7 @@ export const RedirectionSelector = memo(
 									disabled={!(isOwner || isAdmin) || disabled}
 								>
 									<Timer className="h-3.5 w-3.5 mr-1.5" />
-									{t(
-										"common.redirection_timer",
-										"5s Countdown",
-									)}
+									{t("common.redirection_timer")}
 								</TabsTrigger>
 								<TabsTrigger
 									value="direct"
@@ -76,10 +70,7 @@ export const RedirectionSelector = memo(
 									disabled={!(isOwner || isAdmin) || disabled}
 								>
 									<Zap className="h-3.5 w-3.5 mr-1.5" />
-									{t(
-										"common.redirection_direct",
-										"Direct Redirect",
-									)}
+									{t("common.redirection_direct")}
 								</TabsTrigger>
 							</TabsList>
 						</Tabs>
@@ -88,10 +79,7 @@ export const RedirectionSelector = memo(
 								<>
 									<span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
 									<span>
-										{t(
-											"common.redirection_click_desc",
-											"Requires manual button click",
-										)}
+										{t("common.redirection_click_desc")}
 									</span>
 								</>
 							)}
@@ -99,10 +87,7 @@ export const RedirectionSelector = memo(
 								<>
 									<span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
 									<span>
-										{t(
-											"common.redirection_timer_desc",
-											"Redirects after a 5-second countdown",
-										)}
+										{t("common.redirection_timer_desc")}
 									</span>
 								</>
 							)}
@@ -110,10 +95,7 @@ export const RedirectionSelector = memo(
 								<>
 									<span className="inline-block w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
 									<span>
-										{t(
-											"common.redirection_direct_desc",
-											"Instant, seamless redirection",
-										)}
+										{t("common.redirection_direct_desc")}
 									</span>
 								</>
 							)}

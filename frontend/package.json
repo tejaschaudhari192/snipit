@@ -64,6 +64,7 @@
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"diceware-generator": "^3.0.1",
+		"diceware-wordlist-en": "^1.0.0",
 		"generate-password": "^1.7.1",
 		"generate-password-ts": "^1.6.5",
 		"i18next": "^25.10.10",

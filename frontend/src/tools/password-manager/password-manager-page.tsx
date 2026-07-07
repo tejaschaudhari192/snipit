@@ -94,7 +94,7 @@ function PasswordManagerInner() {
 					</div>
 
 					{/* Middle - List */}
-					<div className="w-[320px] flex-shrink-0 bg-background/50 overflow-hidden flex flex-col border-r border-border h-full">
+					<div className="w-[360px] flex-shrink-0 bg-background/50 overflow-hidden flex flex-col border-r border-border h-full">
 						<Suspense fallback={<ListSkeleton />}>
 							<PasswordList
 								activeId={activeItem?.id ?? null}

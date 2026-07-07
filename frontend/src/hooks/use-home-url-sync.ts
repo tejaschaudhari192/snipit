@@ -53,7 +53,7 @@ export const useHomeUrlSync = ({
 		}
 
 		if (isFullscreen.toString() !== (params.get("fullscreen") || "false")) {
-			if (isFullscreen) params.set("fullscreen", "true");
+			if (isFullscreen) params.set("fullscreen");
 			else params.delete("fullscreen");
 			changed = true;
 		}

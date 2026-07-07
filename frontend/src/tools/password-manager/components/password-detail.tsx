@@ -74,6 +74,7 @@ export default function PasswordDetail({
 				</div>
 				<div className="flex-1 overflow-y-auto no-scrollbar scroll-fade-bottom">
 					<PasswordForm
+						key={item?.id ?? `new_${item?.itemType || "login"}`}
 						onAdd={onSave}
 						editItem={item || undefined}
 						onCancelEdit={onCancel}
@@ -237,10 +238,7 @@ export default function PasswordDetail({
 					<div className="border border-border rounded-xl p-4 bg-background shadow-sm">
 						<div className="flex items-center justify-between mb-4">
 							<h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-								{t(
-									"tools.password_manager_details_title",
-									"Details",
-								)}
+								{t("tools.password_manager_details_title")}
 							</h3>
 						</div>
 						<div className="space-y-4">

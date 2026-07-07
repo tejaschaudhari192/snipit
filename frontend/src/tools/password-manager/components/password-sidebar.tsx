@@ -532,13 +532,13 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 			</SidebarFooter>
 
 			<Dialog open={isTypeDialogOpen} onOpenChange={setIsTypeDialogOpen}>
-				<DialogContent className="sm:max-w-md bg-background">
+				<DialogContent
+					className="sm:max-w-md bg-background"
+					aria-describedby={undefined}
+				>
 					<DialogHeader>
 						<DialogTitle>
-							{t(
-								"tools.password_manager_select_type",
-								"Select Item Type",
-							)}
+							{t("tools.password_manager_select_type")}
 						</DialogTitle>
 					</DialogHeader>
 					<div className="grid grid-cols-2 gap-3 py-4">

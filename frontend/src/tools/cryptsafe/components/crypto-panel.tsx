@@ -581,10 +581,7 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 
 						{dirHandle ? (
 							<p className="text-xs text-muted-foreground">
-								{t(
-									"tools.write_back_success",
-									"Files written back and original structures replaced inside the folder.",
-								)}
+								{t("tools.write_back_success")}
 							</p>
 						) : (
 							<Button

@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { generate } from "generate-password-ts";
 import zxcvbn from "zxcvbn";
 import diceware from "diceware-generator";
+import enWordlist from "diceware-wordlist-en";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Copy, RefreshCw, X, MoreVertical } from "lucide-react";
@@ -73,11 +74,14 @@ export default function PasswordGenerator({
 		if (pronounceable) {
 			// Advanced, secure Passphrase Generation using diceware
 			const options = {
-				language: "en",
+				language: enWordlist,
 				wordcount: wordCount,
-				format: separator === "none" ? "" : getSeparatorChar(separator),
+				format: separator === "none" ? "array" : "array",
 			};
-			const phrase = diceware(options);
+			const phraseArray = diceware(options);
+			const phrase = Array.isArray(phraseArray)
+				? phraseArray.join(" ")
+				: phraseArray;
 
 			if (useUpper || useNumbers) {
 				const words = phrase.split(getSeparatorChar(separator) || " ");

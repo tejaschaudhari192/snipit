@@ -66,6 +66,8 @@
 		"password_manager_master_placeholder": "Enter master password",
 		"password_manager_enter": "Unlock",
 		"password_manager_loading": "Loading vault...",
+		"password_manager_read_more": "Read more",
+		"password_manager_read_more_description": "Since this is zero‑knowledge encryption, your password cannot be recovered. If you have forgotten it, you must clear your browser data for this site to start over, which will permanently delete your local vault.",
 		"password_manager_new_item": "New item",
 		"password_manager_title_placeholder": "Enter title...",
 		"password_manager_username_placeholder": "Username",

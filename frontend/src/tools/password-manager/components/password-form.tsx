@@ -67,10 +67,18 @@ export default function PasswordForm({
 	const { t } = useTranslation();
 	const [title, setTitle] = useState("");
 	const [notes, setNotes] = useState("");
-	const [itemType, setItemType] = useState<PasswordItem["itemType"]>("login");
-	const [folderId, setFolderId] = useState<string>("none");
-	const [customFields, setCustomFields] = useState<CustomField[]>([]);
-	const [metadata, setMetadata] = useState<Record<string, string>>({});
+	const [itemType, setItemType] = useState<PasswordItem["itemType"]>(
+		editItem?.itemType ?? "login",
+	);
+	const [folderId, setFolderId] = useState<string>(
+		editItem?.folderId ?? "none",
+	);
+	const [customFields, setCustomFields] = useState<CustomField[]>(
+		editItem?.customFields ?? [],
+	);
+	const [metadata, setMetadata] = useState<Record<string, string>>(
+		editItem?.metadata ?? {},
+	);
 
 	const [showGeneratorFor, setShowGeneratorFor] = useState<string | null>(
 		null,
@@ -83,7 +91,7 @@ export default function PasswordForm({
 	// Populate form when editing
 	useEffect(() => {
 		if (editItem) {
-			setTitle(editItem.title);
+			setTitle(editItem.title ?? "");
 			setNotes(editItem.notes ?? "");
 			setItemType(editItem.itemType ?? "login");
 			setFolderId(editItem.folderId ?? "none");
@@ -284,10 +292,7 @@ export default function PasswordForm({
 				<Card className="shadow-sm border-border">
 					<CardHeader className="px-4 pt-4 pb-2">
 						<CardTitle className="text-sm font-semibold flex items-center gap-2">
-							{t(
-								"tools.password_manager_details_title",
-								"Details",
-							)}
+							{t("tools.password_manager_details_title")}
 						</CardTitle>
 					</CardHeader>
 					<CardContent className="px-4 pb-4 space-y-4">
