@@ -183,7 +183,11 @@ const App = () => {
 														<Route
 															path="/tools"
 															element={
-																<Suspense fallback={<ToolsPageSkeleton />}>
+																<Suspense
+																	fallback={
+																		<ToolsPageSkeleton />
+																	}
+																>
 																	<ToolsPage />
 																</Suspense>
 															}
@@ -191,7 +195,11 @@ const App = () => {
 														<Route
 															path="/tools/passwords"
 															element={
-																<Suspense fallback={<PasswordAppSkeleton />}>
+																<Suspense
+																	fallback={
+																		<PasswordAppSkeleton />
+																	}
+																>
 																	<PasswordManagerPage />
 																</Suspense>
 															}
@@ -199,7 +207,11 @@ const App = () => {
 														<Route
 															path="/tools/cryptoSafe"
 															element={
-																<Suspense fallback={<CryptoSafeSkeleton />}>
+																<Suspense
+																	fallback={
+																		<CryptoSafeSkeleton />
+																	}
+																>
 																	<CryptoSafePage />
 																</Suspense>
 															}

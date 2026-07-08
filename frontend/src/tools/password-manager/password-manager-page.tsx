@@ -4,9 +4,13 @@ const PasswordSidebar = React.lazy(
 );
 const PasswordList = React.lazy(() => import("./components/password-list"));
 const PasswordDetail = React.lazy(() => import("./components/password-detail"));
-const VaultOnboarding = React.lazy(() => import("./components/vault-onboarding"));
+const VaultOnboarding = React.lazy(
+	() => import("./components/vault-onboarding"),
+);
 const VaultUnlock = React.lazy(() => import("./components/vault-unlock"));
-const MobileSidebarDrawer = React.lazy(() => import("./components/mobile-sidebar-drawer"));
+const MobileSidebarDrawer = React.lazy(
+	() => import("./components/mobile-sidebar-drawer"),
+);
 import {
 	AppSkeleton,
 	SidebarSkeleton,

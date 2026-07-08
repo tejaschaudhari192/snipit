@@ -76,16 +76,25 @@ export function FolderModal({
 			>
 				<DialogHeader className="text-left">
 					<div className="flex items-center gap-3">
-						<div className={cn(
-							"flex items-center justify-center w-10 h-10 rounded-full",
-							mode === "delete" ? "bg-destructive/10 text-destructive" : "bg-primary/10 text-primary"
-						)}>
-							{mode === "create" && <FolderPlus className="h-5 w-5" />}
+						<div
+							className={cn(
+								"flex items-center justify-center w-10 h-10 rounded-full",
+								mode === "delete"
+									? "bg-destructive/10 text-destructive"
+									: "bg-primary/10 text-primary",
+							)}
+						>
+							{mode === "create" && (
+								<FolderPlus className="h-5 w-5" />
+							)}
 							{mode === "edit" && <Pencil className="h-5 w-5" />}
-							{mode === "delete" && <Trash2 className="h-5 w-5" />}
+							{mode === "delete" && (
+								<Trash2 className="h-5 w-5" />
+							)}
 						</div>
 						<DialogTitle className="text-xl">
-							{mode === "create" && t("tools.password_manager_add_folder")}
+							{mode === "create" &&
+								t("tools.password_manager_add_folder")}
 							{mode === "edit" && "Edit Folder"}
 							{mode === "delete" && "Delete Folder"}
 						</DialogTitle>
@@ -93,18 +102,27 @@ export function FolderModal({
 					{mode === "delete" && (
 						<div className="space-y-4">
 							<DialogDescription>
-								Are you sure you want to delete the folder <span className="font-medium text-foreground">"{folderName}"</span>?
+								Are you sure you want to delete the folder{" "}
+								<span className="font-medium text-foreground">
+									"{folderName}"
+								</span>
+								?
 							</DialogDescription>
-							
+
 							<div className="flex items-start space-x-3 p-4 bg-muted/50 border rounded-md">
-								<Checkbox 
-									id="delete-passwords" 
-									checked={deletePasswords} 
-									onCheckedChange={(c) => setDeletePasswords(c as boolean)} 
+								<Checkbox
+									id="delete-passwords"
+									checked={deletePasswords}
+									onCheckedChange={(c) =>
+										setDeletePasswords(c as boolean)
+									}
 									className="mt-0.5"
 								/>
 								<div className="space-y-1 leading-none">
-									<label htmlFor="delete-passwords" className="text-sm font-medium cursor-pointer">
+									<label
+										htmlFor="delete-passwords"
+										className="text-sm font-medium cursor-pointer"
+									>
 										Delete all passwords inside this folder
 									</label>
 									<p className="text-xs text-muted-foreground">
@@ -126,55 +144,65 @@ export function FolderModal({
 								autoFocus
 								value={folderName}
 								onChange={(e) => setFolderName(e.target.value)}
-								placeholder={t("tools.password_manager_new_folder_placeholder")}
+								placeholder={t(
+									"tools.password_manager_new_folder_placeholder",
+								)}
 								className="h-10"
 								onKeyDown={(e) => {
 									if (e.key === "Enter") handleSave();
 								}}
 							/>
 						</div>
-						
+
 						<div className="space-y-3">
 							<label className="text-sm font-medium leading-none">
 								Folder Color
 							</label>
 							<div className="flex flex-wrap gap-3">
-								{PRESET_COLORS.map(color => (
+								{PRESET_COLORS.map((color) => (
 									<button
 										key={color}
 										type="button"
 										onClick={() => setFolderColor(color)}
 										className={cn(
 											"w-8 h-8 rounded-full border-2 ring-offset-background transition-all hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-											folderColor === color 
-												? "border-foreground scale-110 shadow-sm" 
-												: "border-transparent shadow-sm"
+											folderColor === color
+												? "border-foreground scale-110 shadow-sm"
+												: "border-transparent shadow-sm",
 										)}
 										style={{ backgroundColor: color }}
 										aria-label={`Select color ${color}`}
 									/>
 								))}
-								
+
 								<div className="relative">
 									<button
 										type="button"
 										className={cn(
 											"w-8 h-8 rounded-full border-2 flex items-center justify-center ring-offset-background transition-all hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-											!PRESET_COLORS.includes(folderColor) 
-												? "border-foreground scale-110 shadow-sm" 
-												: "border-transparent shadow-sm"
+											!PRESET_COLORS.includes(folderColor)
+												? "border-foreground scale-110 shadow-sm"
+												: "border-transparent shadow-sm",
 										)}
 										style={
-											!PRESET_COLORS.includes(folderColor) 
-												? { backgroundColor: folderColor } 
-												: { background: "conic-gradient(from 0deg, #ef4444, #eab308, #22c55e, #06b6d4, #3b82f6, #d946ef, #ef4444)" }
+											!PRESET_COLORS.includes(folderColor)
+												? {
+														backgroundColor:
+															folderColor,
+													}
+												: {
+														background:
+															"conic-gradient(from 0deg, #ef4444, #eab308, #22c55e, #06b6d4, #3b82f6, #d946ef, #ef4444)",
+													}
 										}
 										title="Custom color"
 									/>
 									<input
 										type="color"
 										value={folderColor}
-										onChange={(e) => setFolderColor(e.target.value)}
+										onChange={(e) =>
+											setFolderColor(e.target.value)
+										}
 										className="absolute inset-0 w-8 h-8 opacity-0 cursor-pointer"
 										title="Custom color"
 									/>
@@ -185,7 +213,10 @@ export function FolderModal({
 				)}
 
 				<DialogFooter>
-					<Button variant="outline" onClick={() => onOpenChange(false)}>
+					<Button
+						variant="outline"
+						onClick={() => onOpenChange(false)}
+					>
 						{t("cancel")}
 					</Button>
 					<Button

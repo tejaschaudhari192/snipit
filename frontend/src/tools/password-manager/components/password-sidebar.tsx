@@ -60,35 +60,47 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 
 	const [isTypeDialogOpen, setIsTypeDialogOpen] = useState(false);
 	const [folderModalOpen, setFolderModalOpen] = useState(false);
-	const [folderModalMode, setFolderModalMode] = useState<"create" | "edit" | "delete">("create");
+	const [folderModalMode, setFolderModalMode] = useState<
+		"create" | "edit" | "delete"
+	>("create");
 	const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
 	const [folderName, setFolderName] = useState("");
 	const [folderColor, setFolderColor] = useState(UI_DEFAULTS.FOLDER_COLOR);
 
 	const folders = vault?.folders || [];
 
-	const handleSaveFolder = (name: string, color: string, deletePasswordsInside = false) => {
+	const handleSaveFolder = (
+		name: string,
+		color: string,
+		deletePasswordsInside = false,
+	) => {
 		if (folderModalMode === "delete") {
 			if (!activeFolderId || !vault) return;
 			const newFolders = folders.filter((f) => f.id !== activeFolderId);
-			
+
 			let newItems = vault.items || [];
 			if (deletePasswordsInside) {
-				newItems = newItems.filter((item) => item.folderId !== activeFolderId);
+				newItems = newItems.filter(
+					(item) => item.folderId !== activeFolderId,
+				);
 			} else {
 				// Unlink passwords from the deleted folder so they aren't orphaned
-				newItems = newItems.map((item) => 
-					item.folderId === activeFolderId 
-						? { ...item, folderId: undefined, updatedAt: new Date().toISOString() }
-						: item
+				newItems = newItems.map((item) =>
+					item.folderId === activeFolderId
+						? {
+								...item,
+								folderId: undefined,
+								updatedAt: new Date().toISOString(),
+							}
+						: item,
 				);
 			}
 
-			setVault({ 
-				...vault, 
-				folders: newFolders, 
-				items: newItems, 
-				updatedAt: new Date().toISOString() 
+			setVault({
+				...vault,
+				folders: newFolders,
+				items: newItems,
+				updatedAt: new Date().toISOString(),
 			});
 			if (activeFilter === activeFolderId) setActiveFilter("all");
 			setFolderModalOpen(false);
@@ -222,79 +234,89 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 							<SidebarMenu>
 								{folders.map((folder) => (
 									<SidebarMenuItem key={folder.id}>
-											<>
-												<SidebarMenuButton
-													isActive={
-														activeFilter ===
-														folder.id
-													}
-													onClick={() =>
-														setActiveFilter(
-															folder.id,
-														)
-													}
-													className="group flex justify-between w-full"
-												>
-													<div className="flex items-center gap-2">
-														<div
-															className="w-2 h-2 rounded-full"
-															style={{
-																backgroundColor:
-																	folder.color,
-															}}
-														/>
-														<span>
-															{folder.name}
-														</span>
-													</div>
-												</SidebarMenuButton>
+										<>
+											<SidebarMenuButton
+												isActive={
+													activeFilter === folder.id
+												}
+												onClick={() =>
+													setActiveFilter(folder.id)
+												}
+												className="group flex justify-between w-full"
+											>
+												<div className="flex items-center gap-2">
+													<div
+														className="w-2 h-2 rounded-full"
+														style={{
+															backgroundColor:
+																folder.color,
+														}}
+													/>
+													<span>{folder.name}</span>
+												</div>
+											</SidebarMenuButton>
 
-												<DropdownMenu>
-													<DropdownMenuTrigger
-														asChild
+											<DropdownMenu>
+												<DropdownMenuTrigger asChild>
+													<SidebarMenuAction
+														showOnHover
+														className="hover:bg-accent hover:text-accent-foreground"
 													>
-														<SidebarMenuAction
-															showOnHover
-															className="hover:bg-accent hover:text-accent-foreground"
-														>
-															<MoreHorizontal className="h-4 w-4" />
-														</SidebarMenuAction>
-													</DropdownMenuTrigger>
-													<DropdownMenuContent
-														side="right"
-														align="start"
+														<MoreHorizontal className="h-4 w-4" />
+													</SidebarMenuAction>
+												</DropdownMenuTrigger>
+												<DropdownMenuContent
+													side="right"
+													align="start"
+												>
+													<DropdownMenuItem
+														onClick={(e) => {
+															e.stopPropagation();
+															setFolderModalMode(
+																"edit",
+															);
+															setActiveFolderId(
+																folder.id,
+															);
+															setFolderName(
+																folder.name,
+															);
+															setFolderColor(
+																folder.color ||
+																	UI_DEFAULTS.FOLDER_COLOR,
+															);
+															setFolderModalOpen(
+																true,
+															);
+														}}
 													>
-														<DropdownMenuItem
-															onClick={(e) => {
-																e.stopPropagation();
-																setFolderModalMode("edit");
-																setActiveFolderId(folder.id);
-																setFolderName(folder.name);
-																setFolderColor(folder.color || UI_DEFAULTS.FOLDER_COLOR);
-																setFolderModalOpen(true);
-															}}
-														>
-															<Pencil className="mr-2 h-4 w-4" />
-															<span>
-																{t("edit")}
-															</span>
-														</DropdownMenuItem>
-														<DropdownMenuItem
-															className="text-destructive focus:text-destructive"
-															onClick={(e) => {
-																e.stopPropagation();
-																setFolderModalMode("delete");
-																setActiveFolderId(folder.id);
-																setFolderName(folder.name);
-																setFolderModalOpen(true);
-															}}
-														>
-															<Trash2 className="mr-2 h-4 w-4" />
-															{t("remove")}
-														</DropdownMenuItem>
-													</DropdownMenuContent>
-												</DropdownMenu>
-											</>
+														<Pencil className="mr-2 h-4 w-4" />
+														<span>{t("edit")}</span>
+													</DropdownMenuItem>
+													<DropdownMenuItem
+														className="text-destructive focus:text-destructive"
+														onClick={(e) => {
+															e.stopPropagation();
+															setFolderModalMode(
+																"delete",
+															);
+															setActiveFolderId(
+																folder.id,
+															);
+															setFolderName(
+																folder.name,
+															);
+															setFolderModalOpen(
+																true,
+															);
+														}}
+													>
+														<Trash2 className="mr-2 h-4 w-4" />
+														{t("remove")}
+													</DropdownMenuItem>
+												</DropdownMenuContent>
+											</DropdownMenu>
+										</>
 									</SidebarMenuItem>
 								))}
 							</SidebarMenu>
@@ -467,7 +489,9 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 				initialFolderName={folderName}
 				initialFolderColor={folderColor}
 				onSave={handleSaveFolder}
-				onDelete={(deletePasswords) => handleSaveFolder("", "", deletePasswords)}
+				onDelete={(deletePasswords) =>
+					handleSaveFolder("", "", deletePasswords)
+				}
 			/>
 		</div>
 	);
