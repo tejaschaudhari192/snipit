@@ -6,7 +6,11 @@ const TerminalContainer = React.lazy(() =>
 		default: m.TerminalContainer,
 	})),
 );
-import { DisplayContent } from "@/components/display/display-content";
+const DisplayContent = React.lazy(() =>
+	import("@/components/display/display-content").then((m) => ({
+		default: m.DisplayContent,
+	})),
+);
 import type { PasteData, ContentMode, ActiveUser, EditorChange } from "@/types";
 import { Socket } from "socket.io-client";
 import type { BeforeMount, OnMount } from "@monaco-editor/react";

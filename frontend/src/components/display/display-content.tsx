@@ -1,9 +1,18 @@
 import type { BeforeMount, OnMount } from "@monaco-editor/react";
 import { useRef, useEffect, memo, lazy, Suspense } from "react";
 import { cn } from "@/utils";
-import { EditorToolbar } from "@/components/common/editor-toolbar";
+const EditorToolbar = lazy(() =>
+	import("@/components/common/editor-toolbar").then((m) => ({
+		default: m.EditorToolbar,
+	})),
+);
+import { EditorToolbarSkeleton } from "@/components/common/editor-toolbar-skeleton";
 import type { PasteData, ContentMode, EditorChange } from "@/types";
-import { ResizableSplitPane } from "@/components/common/resizable-split-pane";
+const ResizableSplitPane = lazy(() =>
+	import("@/components/common/resizable-split-pane").then((m) => ({
+		default: m.ResizableSplitPane,
+	})),
+);
 import { useMarkdownLayout } from "@/hooks/use-markdown-layout";
 
 import type { Socket } from "socket.io-client";
@@ -327,63 +336,71 @@ export const DisplayContent = memo(
 			if (language === "markdown" || language === "html") {
 				if (isEdit) {
 					return (
-						<ResizableSplitPane
-							className="flex-1"
-							showHint={true}
-							initialWidth={50}
-							mode={mdLayoutMode}
-							storageKey={`display-preview-split-${language}`}
-							left={
-								<Suspense
-									fallback={
-										<div className="h-full w-full animate-pulse bg-muted/50 rounded-2xl" />
-									}
-								>
-									<CodeEditorView
-										isEdit={isEdit}
-										contentType={contentType}
-										language={language}
-										content={content}
-										onContentChange={onContentChange}
-										onEditorChange={onEditorChange}
-										theme={theme}
-										fontSize={fontSize}
-										handleEditorWillMount={
-											handleEditorWillMount
-										}
-										contentRef={contentRef}
-										onMount={handleMount}
-										hideFullscreen={true}
-										transliteration={transliteration}
-									/>
-								</Suspense>
+						<Suspense
+							fallback={
+								<div className="h-full w-full animate-pulse bg-muted/50 rounded-2xl" />
 							}
-							right={
-								<div className="h-full overflow-y-auto bg-background/30 p-1 sm:p-4">
+						>
+							<ResizableSplitPane
+								className="flex-1"
+								showHint={true}
+								initialWidth={50}
+								mode={mdLayoutMode}
+								storageKey={`display-preview-split-${language}`}
+								left={
 									<Suspense
 										fallback={
-											<div className="flex-1 p-6 space-y-4 w-full h-full bg-background/30">
-												<div className="animate-pulse space-y-4">
-													<Skeleton className="w-3/4 h-4 rounded opacity-40 bg-muted-foreground/30" />
-													<Skeleton className="w-1/2 h-4 rounded opacity-40 bg-muted-foreground/30" />
-													<Skeleton className="w-5/6 h-4 rounded opacity-40 bg-muted-foreground/30" />
-												</div>
-											</div>
+											<div className="h-full w-full animate-pulse bg-muted/50 rounded-2xl" />
 										}
 									>
-										{language === "markdown" ? (
-											<MarkdownDisplay
-												content={content}
-												fontSize={fontSize}
-												contentRef={contentRef}
-											/>
-										) : (
-											<HtmlDisplay content={content} />
-										)}
+										<CodeEditorView
+											isEdit={isEdit}
+											contentType={contentType}
+											language={language}
+											content={content}
+											onContentChange={onContentChange}
+											onEditorChange={onEditorChange}
+											theme={theme}
+											fontSize={fontSize}
+											handleEditorWillMount={
+												handleEditorWillMount
+											}
+											contentRef={contentRef}
+											onMount={handleMount}
+											hideFullscreen={true}
+											transliteration={transliteration}
+										/>
 									</Suspense>
-								</div>
-							}
-						/>
+								}
+								right={
+									<div className="h-full overflow-y-auto bg-background/30 p-1 sm:p-4">
+										<Suspense
+											fallback={
+												<div className="flex-1 p-6 space-y-4 w-full h-full bg-background/30">
+													<div className="animate-pulse space-y-4">
+														<Skeleton className="w-3/4 h-4 rounded opacity-40 bg-muted-foreground/30" />
+														<Skeleton className="w-1/2 h-4 rounded opacity-40 bg-muted-foreground/30" />
+														<Skeleton className="w-5/6 h-4 rounded opacity-40 bg-muted-foreground/30" />
+													</div>
+												</div>
+											}
+										>
+											{language === "markdown" ? (
+												<MarkdownDisplay
+													content={content}
+													fontSize={fontSize}
+													contentRef={contentRef}
+												/>
+											) : (
+												<HtmlDisplay
+													content={content}
+												/>
+											)}
+										</Suspense>
+									</div>
+								}
+							/>
+						</Suspense>
 					);
 				}
 				return (
@@ -448,18 +465,20 @@ export const DisplayContent = memo(
 					isFullscreen || isWindowFullscreen ? "bg-background" : "",
 				)}
 			>
-				<EditorToolbar
-					contentType={contentType}
-					content={content}
-					language={language}
-					isFullscreen={isFullscreen}
-					isWindowFullscreen={isWindowFullscreen}
-					onToggleFullscreen={toggleFullscreen}
-					onToggleWindowFullscreen={toggleWindowFullscreen}
-					mdLayoutMode={mdLayoutMode}
-					onMdLayoutModeChange={setMdLayoutMode}
-					showMarkdownToggles={isEdit}
-				/>
+				<Suspense fallback={<EditorToolbarSkeleton />}>
+					<EditorToolbar
+						contentType={contentType}
+						content={content}
+						language={language}
+						isFullscreen={isFullscreen}
+						isWindowFullscreen={isWindowFullscreen}
+						onToggleFullscreen={toggleFullscreen}
+						onToggleWindowFullscreen={toggleWindowFullscreen}
+						mdLayoutMode={mdLayoutMode}
+						onMdLayoutModeChange={setMdLayoutMode}
+						showMarkdownToggles={isEdit}
+					/>
+				</Suspense>
 
 				<div
 					className={cn(

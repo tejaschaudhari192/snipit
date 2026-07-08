@@ -38,7 +38,11 @@ const ResizablePanels = lazy(() =>
 );
 import { useAiAutocomplete } from "@/hooks/use-ai-autocomplete";
 import { storage } from "@/utils/storage";
-import { MainToolbar } from "@/components/home/main-toolbar";
+const MainToolbar = lazy(() =>
+	import("@/components/home/main-toolbar").then((m) => ({
+		default: m.MainToolbar,
+	})),
+);
 const AiDrawDialog = lazy(() =>
 	import("@/components/editor/ai-draw-dialog").then((m) => ({
 		default: m.AiDrawDialog,
@@ -62,7 +66,11 @@ const CustomExpiryDialog = lazy(() =>
 		default: m.CustomExpiryDialog,
 	})),
 );
-import { EditorContent } from "@/components/home/editor-content";
+const EditorContent = lazy(() =>
+	import("@/components/home/editor-content").then((m) => ({
+		default: m.EditorContent,
+	})),
+);
 const VoiceInputButton = lazy(() =>
 	import("@/components/editor/voice-input-button").then((m) => ({
 		default: m.VoiceInputButton,
@@ -398,151 +406,166 @@ const HomePage = () => {
 	return (
 		<div className="relative flex-1 flex flex-col bg-background overflow-hidden">
 			<div className="relative z-10 flex flex-col gap-1.5 my-1 mx-2 md:my-1.5 md:mx-4 shrink-0">
-				<MainToolbar
-					contentType={contentType}
-					setContentType={onContentTypeChange}
-					expiresTime={expiresTime}
-					setExpiresTime={setExpiresTime}
-					setIsCustomExpiryDialogOpen={setIsCustomExpiryDialogOpen}
-					handleQuickPaste={handleQuickPaste}
-					handleCollaborative={handleCollaborative}
-					isSubmitting={isSubmitting}
-					isUploading={isUploading}
-					uploadProgress={uploadProgress}
-					handleDialogSubmit={handleDialogSubmit}
-					dialogError={dialogError}
-					shortenedResult={shortenedResult}
-					isCode={contentType === "code"}
-					language={language}
-					isTerminalOpen={isTerminalOpen}
-					onToggleTerminal={toggleTerminal}
+				<Suspense
+					fallback={
+						<div className="h-16 w-full animate-pulse bg-muted/20 border-b border-border/50 rounded-xl" />
+					}
 				>
-					{(isDetecting || contentType === "code") && (
-						<Suspense
-							fallback={
+					<MainToolbar
+						contentType={contentType}
+						setContentType={onContentTypeChange}
+						expiresTime={expiresTime}
+						setExpiresTime={setExpiresTime}
+						setIsCustomExpiryDialogOpen={
+							setIsCustomExpiryDialogOpen
+						}
+						handleQuickPaste={handleQuickPaste}
+						handleCollaborative={handleCollaborative}
+						isSubmitting={isSubmitting}
+						isUploading={isUploading}
+						uploadProgress={uploadProgress}
+						handleDialogSubmit={handleDialogSubmit}
+						dialogError={dialogError}
+						shortenedResult={shortenedResult}
+						isCode={contentType === "code"}
+						language={language}
+						isTerminalOpen={isTerminalOpen}
+						onToggleTerminal={toggleTerminal}
+					>
+						{(isDetecting || contentType === "code") && (
+							<Suspense
+								fallback={
+									<div className="flex items-center gap-2">
+										<Skeleton className="w-24 h-9 rounded-lg" />
+										<Skeleton className="w-9 h-9 rounded-lg" />
+									</div>
+								}
+							>
 								<div className="flex items-center gap-2">
-									<Skeleton className="w-24 h-9 rounded-lg" />
-									<Skeleton className="w-9 h-9 rounded-lg" />
-								</div>
-							}
-						>
-							<div className="flex items-center gap-2">
-								<LanguageSelector
-									value={language}
-									onValueChange={setLanguage}
-									isDetecting={isDetecting}
-								/>
-								{!isDetecting && (
-									<Button
-										variant="outline"
-										size="icon"
-										className="h-9 w-9 shrink-0 bg-background/50 hover:bg-background/80 border-border/40 shadow-sm"
-										onClick={() => {
-											hasDetectedRef.current = false;
-											handleLanguageDetection(textValue);
-										}}
-										title={t("home.auto_detecting")}
-									>
-										<Code2 className="h-4 w-4 text-muted-foreground" />
-									</Button>
-								)}
-							</div>
-						</Suspense>
-					)}
-
-					{contentType === "draw" && (
-						<Suspense
-							fallback={
-								<Skeleton className="h-9 w-24 rounded-lg shrink-0" />
-							}
-						>
-							<AiDrawButton
-								onClick={() => setIsAiDrawDialogOpen(true)}
-							/>
-						</Suspense>
-					)}
-
-					{["text", "code", "richtext"].includes(contentType) && (
-						<Suspense
-							fallback={
-								<div className="flex items-center gap-2">
-									<Skeleton className="h-9 w-9 rounded-lg" />
-									<Skeleton className="h-9 w-32 rounded-lg" />
-									<div className="w-px h-6 bg-border/20 mx-1" />
-									<Skeleton className="h-9 w-9 rounded-lg" />
-									<Skeleton className="h-9 w-20 rounded-lg" />
-								</div>
-							}
-						>
-							<div className="flex items-center gap-2">
-								<AiWriterButton
-									onClick={() => {
-										if (
-											contentType === "richtext" &&
-											tiptapEditorRef.current
-										) {
-											const { from, to } =
-												tiptapEditorRef.current.state
-													.selection;
-											const text =
-												tiptapEditorRef.current.state.doc.textBetween(
-													from,
-													to,
-													" ",
-												);
-											setSelectedText(text);
-										} else if (editorInstanceRef.current) {
-											const selection =
-												editorInstanceRef.current.getSelection();
-											if (
-												selection &&
-												!selection.isEmpty()
-											) {
-												const text =
-													editorInstanceRef.current
-														.getModel()
-														?.getValueInRange(
-															selection,
-														);
-												if (text) setSelectedText(text);
-											} else {
-												setSelectedText("");
-											}
-										}
-										setIsAiWriterDialogOpen(true);
-									}}
-								/>
-
-								<AiAutocompleteToggle
-									enabled={isAiAutocompleteEnabled}
-									onToggle={setIsAiAutocompleteEnabled}
-								/>
-
-								<div className="w-px h-6 bg-border/40 mx-1" />
-
-								{["text", "richtext"].includes(contentType) && (
-									<TransliterationToggle
-										enabled={transliteration.enabled}
-										onToggle={transliteration.toggle}
-										language={
-											transliteration.targetLanguage
-										}
-										onLanguageChange={
-											transliteration.setTargetLanguage
-										}
+									<LanguageSelector
+										value={language}
+										onValueChange={setLanguage}
+										isDetecting={isDetecting}
 									/>
-								)}
+									{!isDetecting && (
+										<Button
+											variant="outline"
+											size="icon"
+											className="h-9 w-9 shrink-0 bg-background/50 hover:bg-background/80 border-border/40 shadow-sm"
+											onClick={() => {
+												hasDetectedRef.current = false;
+												handleLanguageDetection(
+													textValue,
+												);
+											}}
+											title={t("home.auto_detecting")}
+										>
+											<Code2 className="h-4 w-4 text-muted-foreground" />
+										</Button>
+									)}
+								</div>
+							</Suspense>
+						)}
 
-								<VoiceInputButton />
-
-								<FontSizeControls
-									fontSize={fontSize}
-									setFontSize={setFontSize}
+						{contentType === "draw" && (
+							<Suspense
+								fallback={
+									<Skeleton className="h-9 w-24 rounded-lg shrink-0" />
+								}
+							>
+								<AiDrawButton
+									onClick={() => setIsAiDrawDialogOpen(true)}
 								/>
-							</div>
-						</Suspense>
-					)}
-				</MainToolbar>
+							</Suspense>
+						)}
+
+						{["text", "code", "richtext"].includes(contentType) && (
+							<Suspense
+								fallback={
+									<div className="flex items-center gap-2">
+										<Skeleton className="h-9 w-9 rounded-lg" />
+										<Skeleton className="h-9 w-32 rounded-lg" />
+										<div className="w-px h-6 bg-border/20 mx-1" />
+										<Skeleton className="h-9 w-9 rounded-lg" />
+										<Skeleton className="h-9 w-20 rounded-lg" />
+									</div>
+								}
+							>
+								<div className="flex items-center gap-2">
+									<AiWriterButton
+										onClick={() => {
+											if (
+												contentType === "richtext" &&
+												tiptapEditorRef.current
+											) {
+												const { from, to } =
+													tiptapEditorRef.current
+														.state.selection;
+												const text =
+													tiptapEditorRef.current.state.doc.textBetween(
+														from,
+														to,
+														" ",
+													);
+												setSelectedText(text);
+											} else if (
+												editorInstanceRef.current
+											) {
+												const selection =
+													editorInstanceRef.current.getSelection();
+												if (
+													selection &&
+													!selection.isEmpty()
+												) {
+													const text =
+														editorInstanceRef.current
+															.getModel()
+															?.getValueInRange(
+																selection,
+															);
+													if (text)
+														setSelectedText(text);
+												} else {
+													setSelectedText("");
+												}
+											}
+											setIsAiWriterDialogOpen(true);
+										}}
+									/>
+
+									<AiAutocompleteToggle
+										enabled={isAiAutocompleteEnabled}
+										onToggle={setIsAiAutocompleteEnabled}
+									/>
+
+									<div className="w-px h-6 bg-border/40 mx-1" />
+
+									{["text", "richtext"].includes(
+										contentType,
+									) && (
+										<TransliterationToggle
+											enabled={transliteration.enabled}
+											onToggle={transliteration.toggle}
+											language={
+												transliteration.targetLanguage
+											}
+											onLanguageChange={
+												transliteration.setTargetLanguage
+											}
+										/>
+									)}
+
+									<VoiceInputButton />
+
+									<FontSizeControls
+										fontSize={fontSize}
+										setFontSize={setFontSize}
+									/>
+								</div>
+							</Suspense>
+						)}
+					</MainToolbar>
+				</Suspense>
 			</div>
 
 			<Suspense fallback={null}>
@@ -569,32 +592,38 @@ const HomePage = () => {
 								contentType !== "richtext" && "overflow-clip",
 							)}
 						>
-							<EditorContent
-								fontSize={fontSize}
-								editorContainerRef={(node) => {
-									editorContainerRef.current = node;
-									editorContainerRefSetter(node);
-								}}
-								userInputRef={userInputRef}
-								handleEditorWillMount={defineMonacoThemes}
-								handleEditorMount={onEditorMount}
-								handlePaste={handlePaste}
-								isFullscreen={isFullscreen}
-								setIsFullscreen={setIsFullscreen}
-								onFileSelect={(selectedFiles) => {
-									addFiles(selectedFiles);
-								}}
-								onClearFile={() => {
-									resetFileUpload();
-								}}
-								previewUrl={previewUrl}
-								shortenedResult={shortenedResult}
-								historyItems={history.items}
-								onDeleteHistoryItem={deleteSnippet}
-								drawRevision={drawRevision}
-								transliteration={transliteration}
-								onEditorInstance={handleTiptapMount}
-							/>
+							<Suspense
+								fallback={
+									<div className="h-full w-full animate-pulse bg-muted/10 rounded-xl m-2" />
+								}
+							>
+								<EditorContent
+									fontSize={fontSize}
+									editorContainerRef={(node) => {
+										editorContainerRef.current = node;
+										editorContainerRefSetter(node);
+									}}
+									userInputRef={userInputRef}
+									handleEditorWillMount={defineMonacoThemes}
+									handleEditorMount={onEditorMount}
+									handlePaste={handlePaste}
+									isFullscreen={isFullscreen}
+									setIsFullscreen={setIsFullscreen}
+									onFileSelect={(selectedFiles) => {
+										addFiles(selectedFiles);
+									}}
+									onClearFile={() => {
+										resetFileUpload();
+									}}
+									previewUrl={previewUrl}
+									shortenedResult={shortenedResult}
+									historyItems={history.items}
+									onDeleteHistoryItem={deleteSnippet}
+									drawRevision={drawRevision}
+									transliteration={transliteration}
+									onEditorInstance={handleTiptapMount}
+								/>
+							</Suspense>
 						</div>
 					);
 
