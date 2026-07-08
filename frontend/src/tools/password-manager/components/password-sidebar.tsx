@@ -26,6 +26,7 @@ import {
 	SidebarGroupAction,
 } from "@/components/ui/sidebar";
 import { Cloud, HardDrive, MoreHorizontal, User } from "lucide-react";
+import TextGradient from "@/components/text-gradient";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -442,11 +443,13 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 											{isCloudSyncEnabled ? (
 												<>
 													<Cloud className="size-3 text-primary" />{" "}
-													{t(
-														"tools.password_manager_cloud_sync_on",
-													)}{" "}
-													{isSyncing &&
-														` (${t("tools.password_manager_syncing")})`}
+													{isSyncing ? (
+														<TextGradient highlightColor="var(--foreground)" baseColor="var(--muted-foreground)" spread={20} duration={2} className="font-medium">
+															{t("tools.password_manager_syncing")}
+														</TextGradient>
+													) : (
+														t("tools.password_manager_cloud_sync_on")
+													)}
 												</>
 											) : (
 												<>
