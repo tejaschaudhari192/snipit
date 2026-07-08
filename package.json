@@ -6,10 +6,10 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "prepare": "husky",
-        "dev:frontend": "pnpm dev --prefix frontend",
-        "dev:backend": "pnpm dev --prefix backend",
-        "format:frontend": "pnpm format --prefix frontend",
-        "format:backend": "pnpm format --prefix backend",
+        "dev:frontend": "cd frontend && pnpm dev",
+        "dev:backend": "cd backend && pnpm dev",
+        "format:frontend": "cd frontend && pnpm format",
+        "format:backend": "cd backend && pnpm format",
         "format": "pnpm format:frontend && pnpm format:backend",
         "dev": "concurrently \"pnpm dev:frontend\" \"pnpm dev:backend\""
     },

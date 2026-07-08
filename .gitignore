@@ -5,3 +5,4 @@ tested.md
 backend/.env.prod
 .vscode/settings.json
 .aider*
+.agent
