@@ -45,15 +45,19 @@ function getPasswordStrength(password: string) {
 	if (/[^A-Za-z0-9]/.test(password)) score += 1;
 
 	if (score <= PASSWORD_STRENGTH_CONFIG.SCORE_WEAK)
-		return { label: "Weak", color: "bg-red-500", text: "text-red-500" };
+		return {
+			label: "tools.password_generator_strength_weak",
+			color: "bg-red-500",
+			text: "text-red-500",
+		};
 	if (score <= PASSWORD_STRENGTH_CONFIG.SCORE_GOOD)
 		return {
-			label: "Good",
+			label: "tools.password_generator_strength_fair",
 			color: "bg-yellow-500",
 			text: "text-yellow-500",
 		};
 	return {
-		label: "Ultimate!",
+		label: "tools.password_generator_strength_secure",
 		color: "bg-green-500",
 		text: "text-green-500",
 	};
@@ -300,11 +304,14 @@ export default function PasswordForm({
 							<div className="flex items-center justify-between p-3 border border-border rounded-xl bg-muted/30 border-dashed">
 								<div className="space-y-1">
 									<Label className="text-sm font-medium">
-										Upload File
+										{t(
+											"tools.password_manager_upload_file",
+										)}
 									</Label>
 									<p className="text-xs text-muted-foreground">
-										Select a file to automatically fill
-										details
+										{t(
+											"tools.password_manager_upload_file_desc",
+										)}
 									</p>
 								</div>
 								<div>
@@ -319,7 +326,9 @@ export default function PasswordForm({
 										className="cursor-pointer inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3"
 									>
 										<Upload className="mr-2 h-4 w-4" />
-										Choose File
+										{t(
+											"tools.password_manager_choose_file",
+										)}
 									</Label>
 								</div>
 							</div>
@@ -361,7 +370,9 @@ export default function PasswordForm({
 														className="h-auto p-0 text-xs text-primary hover:text-primary/80 transition-colors flex items-center gap-1 font-medium"
 													>
 														<RefreshCw className="h-3 w-3" />
-														Generate
+														{t(
+															"tools.password_manager_generate",
+														)}
 													</Button>
 												</DrawerTrigger>
 												<DrawerContent className="p-4 bg-background h-full">
@@ -464,15 +475,17 @@ export default function PasswordForm({
 														<div
 															className={`h-full ${strength.color} transition-all duration-300`}
 															style={{
-																width: `${strength.label === "Weak" ? 33 : strength.label === "Good" ? 66 : 100}%`,
+																width: `${strength.label === "tools.password_generator_strength_weak" ? 33 : strength.label === "tools.password_generator_strength_fair" ? 66 : 100}%`,
 															}}
 														/>
 													</div>
 													<span
 														className={`text-[10px] font-medium ml-2 ${strength.text}`}
 													>
-														Password strength:{" "}
-														{strength.label}
+														{t(
+															"tools.password_manager_strength_label",
+														)}{" "}
+														{t(strength.label)}
 													</span>
 												</div>
 											)}

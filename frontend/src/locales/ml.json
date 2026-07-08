@@ -180,7 +180,12 @@
 		"password_generator_strength_secure": "വളരെ സുരക്ഷിതം",
 		"password_generator_strength_unknown": "അജ്ഞാതം",
 		"password_generator_fill": "പൂരിപ്പിക്കുക",
-		"password_generator_copied": "പകർത്തി"
+		"password_generator_copied": "പകർത്തി",
+		"password_manager_upload_file": "ഫയൽ അപ്‌ലോഡ് ചെയ്യുക",
+		"password_manager_upload_file_desc": "വിശദാംശങ്ങൾ സ്വയമേവ പൂരിപ്പിക്കുന്നതിന് ഒരു ഫയൽ തിരഞ്ഞെടുക്കുക",
+		"password_manager_choose_file": "ഫയൽ തിരഞ്ഞെടുക്കുക",
+		"password_manager_generate": "സൃഷ്ടിക്കുക",
+		"password_manager_strength_label": "പാസ്‌വേഡ് ശക്തി:"
 	},
 	"errors": {
 		"storage_access_denied": "സംഭരണ ആക്സസ് നിഷേധിച്ചു. കുക്കികൾ പ്രവർത്തനക്ഷമമാക്കുക.",

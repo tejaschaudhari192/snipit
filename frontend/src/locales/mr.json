@@ -180,7 +180,12 @@
 		"password_generator_strength_secure": "अतिशय सुरक्षित",
 		"password_generator_strength_unknown": "अज्ञात",
 		"password_generator_fill": "भरा",
-		"password_generator_copied": "कॉपी केले"
+		"password_generator_copied": "कॉपी केले",
+		"password_manager_upload_file": "फाईल अपलोड करा",
+		"password_manager_upload_file_desc": "तपशील स्वयंचलितपणे भरण्यासाठी फाईल निवडा",
+		"password_manager_choose_file": "फाईल निवडा",
+		"password_manager_generate": "तयार करा",
+		"password_manager_strength_label": "पासवर्डची ताकद:"
 	},
 	"errors": {
 		"storage_access_denied": "स्टोरेज प्रवेश नाकारला. कृपया कुकीज/स्टोरेज सक्षम करा.",

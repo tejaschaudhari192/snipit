@@ -180,7 +180,12 @@
 		"password_generator_strength_secure": "மிகவும் பாதுகாப்பானது",
 		"password_generator_strength_unknown": "தெரியவில்லை",
 		"password_generator_fill": "நிரப்பு",
-		"password_generator_copied": "நகலெடுக்கப்பட்டது"
+		"password_generator_copied": "நகலெடுக்கப்பட்டது",
+		"password_manager_upload_file": "கோப்பைப் பதிவேற்று",
+		"password_manager_upload_file_desc": "விவரங்களை தானாக நிரப்ப கோப்பைத் தேர்ந்தெடுக்கவும்",
+		"password_manager_choose_file": "கோப்பைத் தேர்ந்தெடு",
+		"password_manager_generate": "உருவாக்கு",
+		"password_manager_strength_label": "கடவுச்சொல் வலிமை:"
 	},
 	"errors": {
 		"storage_access_denied": "சேமிப்பக அணுகல் மறுக்கப்பட்டது. தயவுசெய்து குக்கீகள்/சேமிப்பகத்தை இயக்கவும்.",

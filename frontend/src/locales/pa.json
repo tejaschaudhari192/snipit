@@ -180,7 +180,12 @@
 		"password_generator_strength_secure": "ਬਹੁਤ ਸੁਰੱਖਿਅਤ",
 		"password_generator_strength_unknown": "ਅਗਿਆਤ",
 		"password_generator_fill": "ਭਰੋ",
-		"password_generator_copied": "ਕਾਪੀ ਕੀਤਾ ਗਿਆ"
+		"password_generator_copied": "ਕਾਪੀ ਕੀਤਾ ਗਿਆ",
+		"password_manager_upload_file": "ਫਾਈਲ ਅੱਪਲੋਡ ਕਰੋ",
+		"password_manager_upload_file_desc": "ਵੇਰਵੇ ਆਪਣੇ ਆਪ ਭਰਨ ਲਈ ਇੱਕ ਫਾਈਲ ਚੁਣੋ",
+		"password_manager_choose_file": "ਫਾਈਲ ਚੁਣੋ",
+		"password_manager_generate": "ਬਣਾਓ",
+		"password_manager_strength_label": "ਪਾਸਵਰਡ ਦੀ ਤਾਕਤ:"
 	},
 	"errors": {
 		"storage_access_denied": "ਸਟੋਰੇਜ ਪਹੁੰਚ ਤੋਂ ਇਨਕਾਰ ਕੀਤਾ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਕੁਕੀਜ਼ ਚਾਲੂ ਕਰੋ।",
