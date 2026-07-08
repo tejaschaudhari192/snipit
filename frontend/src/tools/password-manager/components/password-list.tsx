@@ -6,13 +6,14 @@ import { usePassword } from "@/tools/password-manager/context/password-context";
 import { usePasswordUI } from "@/tools/password-manager/context/password-ui-context";
 import { encryptVault } from "@/tools/password-manager/utils/vault";
 import { getFieldsForType } from "@/tools/password-manager/utils/item-types";
-import { Copy, Pencil, Trash2, Star } from "lucide-react";
+import { Copy, Pencil, Trash2, Star, Menu } from "lucide-react";
 import {
 	getDomain,
 	getInitials,
 	getBrandColor,
 } from "@/tools/password-manager/utils/formatters";
 import type { PasswordItem } from "@/tools/password-manager/types";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface PasswordListProps {
 	activeId: string | null;
@@ -26,8 +27,9 @@ export default function PasswordList({
 	onEdit,
 }: PasswordListProps) {
 	const { t } = useTranslation();
+	const isMobile = useIsMobile();
 	const { vault, setVault, masterPassword } = usePassword();
-	const { activeFilter } = usePasswordUI();
+	const { activeFilter, setIsSidebarDrawerOpen } = usePasswordUI();
 	const [search, setSearch] = useState("");
 
 	const items = vault?.items ?? [];
@@ -75,13 +77,23 @@ export default function PasswordList({
 
 	return (
 		<div className="flex flex-col h-full bg-card overflow-hidden w-full min-w-0">
-			{/* Search bar */}
-			<div className="p-4 border-b border-border">
+			{/* Search bar & Mobile Menu */}
+			<div className="p-4 border-b border-border flex items-center gap-2">
+				{isMobile && (
+					<Button
+						variant="ghost"
+						size="icon"
+						onClick={() => setIsSidebarDrawerOpen(true)}
+						className="shrink-0 h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted"
+					>
+						<Menu className="h-5 w-5" />
+					</Button>
+				)}
 				<Input
 					placeholder={t("tools.password_manager_search")}
 					value={search}
 					onChange={(e) => setSearch(e.target.value)}
-					className="bg-background border-border"
+					className="bg-background border-border flex-1"
 				/>
 			</div>
 

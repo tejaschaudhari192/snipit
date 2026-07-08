@@ -148,6 +148,9 @@ importers:
             diceware-generator:
                 specifier: ^3.0.1
                 version: 3.0.1
+            diceware-wordlist-en:
+                specifier: ^1.0.0
+                version: 1.0.0
             generate-password:
                 specifier: ^1.7.1
                 version: 1.7.1
@@ -4758,6 +4761,12 @@ packages:
                 integrity: sha512-Nhyi2DCxqOUf3tS4inszAZhAYpeF6eHFD1NH0Tife5hPdCsLtoZn7UXO5ncO01U4hBwx1EzXVij5mmyY8aUUWw==,
             }
         engines: { node: ">=4" }
+
+    diceware-wordlist-en@1.0.0:
+        resolution:
+            {
+                integrity: sha512-LdM4vCEvZ7YshzldCAS7VLRUpqQIi11/2L5ywnAtLU5PrSVoQTzX41hSPmV8bhtYTayyIHulZHvs2TbNnazF/g==,
+            }
 
     dir-glob@3.0.1:
         resolution:
@@ -11532,6 +11541,8 @@ snapshots:
     diceware-generator@3.0.1:
         dependencies:
             secure-random: 1.1.2
+
+    diceware-wordlist-en@1.0.0: {}
 
     dir-glob@3.0.1:
         dependencies:

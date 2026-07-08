@@ -13,6 +13,8 @@ interface PasswordUIContextValue {
 	handleSelect: (item: PasswordItem) => void;
 	handleEdit: (item: PasswordItem) => void;
 	handleCancelDetail: () => void;
+	isSidebarDrawerOpen: boolean;
+	setIsSidebarDrawerOpen: (value: boolean) => void;
 }
 
 const PasswordUIContext = createContext<PasswordUIContextValue | undefined>(
@@ -32,6 +34,7 @@ export const PasswordUIProvider = ({ children }: { children: ReactNode }) => {
 	const [activeItem, setActiveItem] = useState<PasswordItem | null>(null);
 	const [isNewItem, setIsNewItem] = useState(false);
 	const [activeFilter, setActiveFilter] = useState("all");
+	const [isSidebarDrawerOpen, setIsSidebarDrawerOpen] = useState(false);
 
 	const handleNewItem = (itemType: string = "login") => {
 		setActiveItem({ itemType } as PasswordItem);
@@ -66,6 +69,8 @@ export const PasswordUIProvider = ({ children }: { children: ReactNode }) => {
 				handleSelect,
 				handleEdit,
 				handleCancelDetail,
+				isSidebarDrawerOpen,
+				setIsSidebarDrawerOpen,
 			}}
 		>
 			{children}

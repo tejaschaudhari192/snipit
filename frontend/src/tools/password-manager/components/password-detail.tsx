@@ -65,28 +65,41 @@ export default function PasswordDetail({
 	}
 
 	if (isNew) {
+		const isEditing = !!(item && item.id);
 		return (
 			<div className="flex flex-col h-full bg-card">
 				<div className="flex items-center gap-3 p-4 border-b border-border">
+					<Button
+						variant="ghost"
+						size="icon"
+						onClick={onCancel}
+						className="h-8 w-8 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+					>
+						<ArrowLeft className="h-4 w-4" />
+					</Button>
 					<h2 className="text-sm font-semibold flex-1">
-						{t("tools.password_manager_new_title")}
+						{isEditing
+							? t("tools.password_manager_edit_title")
+							: t("tools.password_manager_new_title")}
 					</h2>
+					<Button
+						type="submit"
+						form="password-form"
+						size="sm"
+						className="h-8 px-4"
+					>
+						{isEditing
+							? t("tools.password_manager_save")
+							: t("tools.password_manager_add")}
+					</Button>
 				</div>
 				<div className="flex-1 overflow-y-auto no-scrollbar scroll-fade-bottom">
 					<PasswordForm
 						key={item?.id ?? `new_${item?.itemType || "login"}`}
 						onAdd={onSave}
-						editItem={item || undefined}
+						editItem={isEditing ? item : undefined}
 						onCancelEdit={onCancel}
 					/>
-				</div>
-				<div className="p-4 border-t border-border flex items-center justify-end gap-2 bg-card">
-					<Button variant="outline" onClick={onCancel}>
-						{t("cancel")}
-					</Button>
-					<Button type="submit" form="password-form">
-						{t("tools.password_manager_add")}
-					</Button>
 				</div>
 			</div>
 		);

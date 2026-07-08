@@ -69,7 +69,7 @@ export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
 				</p>
 			</div>
 
-			<div className="grid gap-4 sm:grid-cols-3 max-w-2xl mx-auto">
+			<div className="grid gap-4 sm:grid-cols-3 max-w-4xl mx-auto">
 				<Card className="bg-background/60 backdrop-blur-sm border-border/50">
 					<CardContent className="p-4 flex flex-col items-center text-center space-y-2">
 						<Lock className="h-6 w-6 text-primary mb-1" />

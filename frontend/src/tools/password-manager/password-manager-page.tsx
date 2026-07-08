@@ -6,6 +6,7 @@ const PasswordList = React.lazy(() => import("./components/password-list"));
 const PasswordDetail = React.lazy(() => import("./components/password-detail"));
 import VaultOnboarding from "./components/vault-onboarding";
 import VaultUnlock from "./components/vault-unlock";
+import MobileSidebarDrawer from "./components/mobile-sidebar-drawer";
 import {
 	AppSkeleton,
 	SidebarSkeleton,
@@ -14,17 +15,24 @@ import {
 } from "./components/skeletons";
 import { useTranslation } from "react-i18next";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import {
+	ResizablePanelGroup,
+	ResizablePanel,
+	ResizableHandle,
+} from "@/components/ui/resizable";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { encryptVault } from "./utils/vault";
 import { PasswordProvider, usePassword } from "./context/password-context";
-import type { PasswordItem } from "./types";
+import type { PasswordItem } from "./types/index";
 import {
 	PasswordUIProvider,
 	usePasswordUI,
 } from "./context/password-ui-context";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 function PasswordManagerInner() {
 	const { t } = useTranslation();
+	const isMobile = useIsMobile();
 	const {
 		masterPassword,
 		setMasterPassword,
@@ -83,39 +91,100 @@ function PasswordManagerInner() {
 						{t("tools.password_manager_loading")}
 					</p>
 				)}
-				<div className="flex-1 flex overflow-hidden rounded-2xl border border-border bg-card/50 shadow-sm backdrop-blur-sm m-4 relative">
-					{/* Left - Sidebar */}
-					<div className="w-[260px] flex-shrink-0 bg-sidebar overflow-hidden border-r border-border h-full">
-						<SidebarProvider className="min-h-0 h-full">
-							<Suspense fallback={<SidebarSkeleton />}>
-								<PasswordSidebar onNewItem={handleNewItem} />
-							</Suspense>
-						</SidebarProvider>
+				{isMobile ? (
+					<div className="flex-1 flex overflow-hidden relative">
+						<MobileSidebarDrawer />
+						{activeItem || isNewItem ? (
+							<div className="h-full w-full overflow-hidden flex flex-col bg-background absolute inset-0 z-10">
+								<Suspense fallback={<DetailSkeleton />}>
+									<PasswordDetail
+										item={activeItem}
+										isNew={isNewItem}
+										onSave={saveItem}
+										onCancel={handleCancelDetail}
+									/>
+								</Suspense>
+							</div>
+						) : (
+							<div className="h-full w-full overflow-hidden flex flex-col bg-background relative z-0">
+								<Suspense fallback={<ListSkeleton />}>
+									<PasswordList
+										activeId={activeItem?.id ?? null}
+										onSelect={handleSelect}
+										onEdit={handleEdit}
+									/>
+								</Suspense>
+							</div>
+						)}
 					</div>
+				) : (
+					<div className="flex-1 flex overflow-hidden rounded-2xl border border-border bg-card/50 shadow-sm backdrop-blur-sm m-4 relative">
+						<ResizablePanelGroup
+							orientation="horizontal"
+							autoSaveId="password-manager-layout"
+						>
+							{/* Left - Sidebar */}
+							<ResizablePanel
+								defaultSize={20}
+								minSize={15}
+								maxSize={35}
+								className="bg-sidebar"
+							>
+								<div className="h-full w-full overflow-hidden border-r border-border flex flex-col">
+									<SidebarProvider className="min-h-0 h-full w-full">
+										<Suspense
+											fallback={<SidebarSkeleton />}
+										>
+											<PasswordSidebar
+												onNewItem={handleNewItem}
+											/>
+										</Suspense>
+									</SidebarProvider>
+								</div>
+							</ResizablePanel>
 
-					{/* Middle - List */}
-					<div className="w-[360px] flex-shrink-0 bg-background/50 overflow-hidden flex flex-col border-r border-border h-full">
-						<Suspense fallback={<ListSkeleton />}>
-							<PasswordList
-								activeId={activeItem?.id ?? null}
-								onSelect={handleSelect}
-								onEdit={handleEdit}
-							/>
-						</Suspense>
-					</div>
+							<ResizableHandle className="w-1 bg-border/50 hover:bg-primary/50 transition-colors cursor-col-resize z-10" />
 
-					{/* Right - Detail */}
-					<div className="flex-1 min-w-0 overflow-hidden bg-background h-full">
-						<Suspense fallback={<DetailSkeleton />}>
-							<PasswordDetail
-								item={activeItem}
-								isNew={isNewItem}
-								onSave={saveItem}
-								onCancel={handleCancelDetail}
-							/>
-						</Suspense>
+							{/* Middle - List */}
+							<ResizablePanel
+								defaultSize={25}
+								minSize={20}
+								maxSize={40}
+								className="bg-background/50"
+							>
+								<div className="h-full w-full overflow-hidden flex flex-col border-r border-border">
+									<Suspense fallback={<ListSkeleton />}>
+										<PasswordList
+											activeId={activeItem?.id ?? null}
+											onSelect={handleSelect}
+											onEdit={handleEdit}
+										/>
+									</Suspense>
+								</div>
+							</ResizablePanel>
+
+							<ResizableHandle className="w-1 bg-border/50 hover:bg-primary/50 transition-colors cursor-col-resize z-10" />
+
+							{/* Right - Detail */}
+							<ResizablePanel
+								defaultSize={55}
+								minSize={30}
+								className="bg-background"
+							>
+								<div className="h-full w-full overflow-hidden flex flex-col">
+									<Suspense fallback={<DetailSkeleton />}>
+										<PasswordDetail
+											item={activeItem}
+											isNew={isNewItem}
+											onSave={saveItem}
+											onCancel={handleCancelDetail}
+										/>
+									</Suspense>
+								</div>
+							</ResizablePanel>
+						</ResizablePanelGroup>
 					</div>
-				</div>
+				)}
 			</div>
 		</TooltipProvider>
 	);

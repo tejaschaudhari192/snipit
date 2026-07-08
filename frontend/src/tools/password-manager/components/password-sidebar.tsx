@@ -444,11 +444,21 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 												<>
 													<Cloud className="size-3 text-primary" />{" "}
 													{isSyncing ? (
-														<TextGradient highlightColor="var(--foreground)" baseColor="var(--muted-foreground)" spread={20} duration={2} className="font-medium">
-															{t("tools.password_manager_syncing")}
+														<TextGradient
+															highlightColor="var(--foreground)"
+															baseColor="var(--muted-foreground)"
+															spread={20}
+															duration={2}
+															className="font-medium"
+														>
+															{t(
+																"tools.password_manager_syncing",
+															)}
 														</TextGradient>
 													) : (
-														t("tools.password_manager_cloud_sync_on")
+														t(
+															"tools.password_manager_cloud_sync_on",
+														)
 													)}
 												</>
 											) : (
