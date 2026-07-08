@@ -45,7 +45,7 @@ export default function VaultUnlock({
 	return (
 		<div className="min-h-[80vh] flex flex-col items-center justify-center p-4">
 			<Card
-				className={`w-full max-w-md bg-background/60 backdrop-blur-xl border-border shadow-2xl transition-all duration-300 ${shake ? "animate-shake border-red-500/50" : ""}`}
+				className={`w-full max-w-lg bg-background/60 backdrop-blur-xl border-border shadow-2xl transition-all duration-300 ${shake ? "animate-shake border-red-500/50" : ""}`}
 			>
 				<CardHeader className="space-y-4 pb-6 text-center">
 					<div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center ring-8 ring-primary/5">
