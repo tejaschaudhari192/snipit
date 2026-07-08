@@ -39,11 +39,14 @@ export default function ReadMoreDialog() {
 							<AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
 							<div className="space-y-1">
 								<p className="text-sm font-semibold text-foreground">
-									Cannot be recovered
+									{t(
+										"tools.password_manager_cannot_recover_title",
+									)}
 								</p>
 								<p className="text-xs text-muted-foreground">
-									If you lose your master password, your vault
-									data is permanently inaccessible.
+									{t(
+										"tools.password_manager_cannot_recover_desc",
+									)}
 								</p>
 							</div>
 						</div>
@@ -51,12 +54,14 @@ export default function ReadMoreDialog() {
 							<KeyRound className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
 							<div className="space-y-1">
 								<p className="text-sm font-semibold text-foreground">
-									Resetting your vault
+									{t(
+										"tools.password_manager_reset_vault_title",
+									)}
 								</p>
 								<p className="text-xs text-muted-foreground">
-									To start over, you must clear your local
-									browser data. This permanently deletes your
-									current encrypted vault.
+									{t(
+										"tools.password_manager_reset_vault_desc",
+									)}
 								</p>
 							</div>
 						</div>
@@ -65,7 +70,7 @@ export default function ReadMoreDialog() {
 				<DialogFooter className="p-4 bg-muted/20 border-t border-border">
 					<DialogClose asChild>
 						<Button className="w-full font-semibold rounded-xl">
-							{t("close")}
+							{t("common.close", "Close")}
 						</Button>
 					</DialogClose>
 				</DialogFooter>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,6 +21,7 @@ interface VaultOnboardingProps {
 }
 
 export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
+	const { t } = useTranslation();
 	const [step, setStep] = useState(1);
 
 	// Step 2 State
@@ -61,11 +63,10 @@ export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
 					<Shield className="h-8 w-8 md:h-10 md:w-10 text-primary" />
 				</div>
 				<h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-					Welcome to Snipit Vault
+					{t("tools.password_manager_onboarding_title")}
 				</h1>
 				<p className="text-sm md:text-base text-muted-foreground max-w-sm mx-auto">
-					Your passwords and secrets, encrypted locally. Only you hold
-					the key.
+					{t("tools.password_manager_onboarding_subtitle")}
 				</p>
 			</div>
 
@@ -75,10 +76,14 @@ export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
 						<Lock className="h-6 w-6 sm:h-8 sm:w-8 text-primary shrink-0" />
 						<div>
 							<h3 className="font-semibold text-sm">
-								AES-256 Encryption
+								{t(
+									"tools.password_manager_onboarding_feature_aes_title",
+								)}
 							</h3>
 							<p className="text-xs text-muted-foreground mt-0.5 sm:mt-0">
-								Military-grade protection for your data.
+								{t(
+									"tools.password_manager_onboarding_feature_aes_desc",
+								)}
 							</p>
 						</div>
 					</CardContent>
@@ -88,10 +93,14 @@ export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
 						<KeyRound className="h-6 w-6 sm:h-8 sm:w-8 text-primary shrink-0" />
 						<div>
 							<h3 className="font-semibold text-sm">
-								Zero Knowledge
+								{t(
+									"tools.password_manager_onboarding_feature_zero_title",
+								)}
 							</h3>
 							<p className="text-xs text-muted-foreground mt-0.5 sm:mt-0">
-								We cannot see or access your passwords.
+								{t(
+									"tools.password_manager_onboarding_feature_zero_desc",
+								)}
 							</p>
 						</div>
 					</CardContent>
@@ -100,9 +109,15 @@ export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
 					<CardContent className="p-4 flex sm:flex-col items-center sm:text-center text-left gap-4 sm:gap-2">
 						<Cloud className="h-6 w-6 sm:h-8 sm:w-8 text-primary shrink-0" />
 						<div>
-							<h3 className="font-semibold text-sm">Optional Sync</h3>
+							<h3 className="font-semibold text-sm">
+								{t(
+									"tools.password_manager_onboarding_feature_sync_title",
+								)}
+							</h3>
 							<p className="text-xs text-muted-foreground mt-0.5 sm:mt-0">
-								Sync encrypted vaults across devices.
+								{t(
+									"tools.password_manager_onboarding_feature_sync_desc",
+								)}
 							</p>
 						</div>
 					</CardContent>
@@ -115,7 +130,8 @@ export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
 					size="lg"
 					className="rounded-full px-8"
 				>
-					Create Master Password <span className="ml-2">→</span>
+					{t("tools.password_manager_onboarding_cta")}{" "}
+					<span className="ml-2">→</span>
 				</Button>
 			</div>
 		</div>
@@ -124,10 +140,11 @@ export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
 	const renderStep2 = () => (
 		<div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-500 max-w-md mx-auto w-full">
 			<div className="text-center space-y-2">
-				<h2 className="text-2xl font-bold">Create Master Password</h2>
+				<h2 className="text-2xl font-bold">
+					{t("tools.password_manager_create_title")}
+				</h2>
 				<p className="text-sm text-muted-foreground">
-					Make it strong and memorable. This is the only key to your
-					vault.
+					{t("tools.password_manager_create_subtitle")}
 				</p>
 			</div>
 
@@ -136,7 +153,9 @@ export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
 					<div className="relative">
 						<Input
 							type={showPassword ? "text" : "password"}
-							placeholder="Master Password"
+							placeholder={t(
+								"tools.password_manager_master_password_placeholder",
+							)}
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
 							className="pr-10 h-12"
@@ -180,7 +199,9 @@ export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
 				<div className="relative">
 					<Input
 						type={showPassword ? "text" : "password"}
-						placeholder="Confirm Password"
+						placeholder={t(
+							"tools.password_manager_confirm_password_placeholder",
+						)}
 						value={confirmPassword}
 						onChange={(e) => setConfirmPassword(e.target.value)}
 						className="h-12"
@@ -189,100 +210,68 @@ export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
 
 				<Card className="bg-muted/30 border-dashed">
 					<CardContent className="p-4 space-y-2 text-sm">
-						<div className="flex items-center gap-2">
-							<span
-								className={
-									reqs.length
-										? "text-green-500"
-										: "text-muted-foreground"
-								}
-							>
-								{reqs.length ? "✓" : "○"}
-							</span>
-							<span
-								className={
-									reqs.length
-										? "text-foreground"
-										: "text-muted-foreground"
-								}
-							>
-								At least 8 characters
-							</span>
-						</div>
-						<div className="flex items-center gap-2">
-							<span
-								className={
-									reqs.upper
-										? "text-green-500"
-										: "text-muted-foreground"
-								}
-							>
-								{reqs.upper ? "✓" : "○"}
-							</span>
-							<span
-								className={
-									reqs.upper
-										? "text-foreground"
-										: "text-muted-foreground"
-								}
-							>
-								Contains uppercase letter
-							</span>
-						</div>
-						<div className="flex items-center gap-2">
-							<span
-								className={
-									reqs.number
-										? "text-green-500"
-										: "text-muted-foreground"
-								}
-							>
-								{reqs.number ? "✓" : "○"}
-							</span>
-							<span
-								className={
-									reqs.number
-										? "text-foreground"
-										: "text-muted-foreground"
-								}
-							>
-								Contains number
-							</span>
-						</div>
-						<div className="flex items-center gap-2">
-							<span
-								className={
-									reqs.special
-										? "text-green-500"
-										: "text-muted-foreground"
-								}
-							>
-								{reqs.special ? "✓" : "○"}
-							</span>
-							<span
-								className={
-									reqs.special
-										? "text-foreground"
-										: "text-muted-foreground"
-								}
-							>
-								Contains special character
-							</span>
-						</div>
+						{[
+							{
+								key: "length",
+								label: t("tools.password_manager_req_length"),
+							},
+							{
+								key: "upper",
+								label: t(
+									"tools.password_manager_req_uppercase",
+								),
+							},
+							{
+								key: "number",
+								label: t("tools.password_manager_req_number"),
+							},
+							{
+								key: "special",
+								label: t("tools.password_manager_req_special"),
+							},
+						].map(({ key, label }) => {
+							const met = reqs[key as keyof typeof reqs];
+							return (
+								<div
+									key={key}
+									className="flex items-center gap-2"
+								>
+									<span
+										className={
+											met
+												? "text-green-500"
+												: "text-muted-foreground"
+										}
+									>
+										{met ? "✓" : "○"}
+									</span>
+									<span
+										className={
+											met
+												? "text-foreground"
+												: "text-muted-foreground"
+										}
+									>
+										{label}
+									</span>
+								</div>
+							);
+						})}
 					</CardContent>
 				</Card>
 			</div>
 
 			<div className="flex justify-between items-center pt-4">
 				<Button variant="ghost" onClick={() => setStep(1)}>
-					Back
+					{t("tools.password_manager_back")}
 				</Button>
 				<Button
 					onClick={() => setStep(3)}
 					disabled={!isStrongEnough || !passwordsMatch}
 					className="rounded-full px-6"
 				>
-					Continue <span className="ml-2">→</span>
+					{t("tools.password_manager_continue")}{" "}
+					<span className="ml-2">→</span>
 				</Button>
 			</div>
 		</div>
@@ -294,14 +283,14 @@ export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
 				<div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 mb-2">
 					<AlertTriangle className="h-8 w-8 text-red-500" />
 				</div>
-				<h2 className="text-2xl font-bold">Important Warning</h2>
+				<h2 className="text-2xl font-bold">
+					{t("tools.password_manager_warning_title")}
+				</h2>
 				<p className="text-muted-foreground">
-					Snipit uses Zero-Knowledge encryption. This means we do not
-					store your master password anywhere.
+					{t("tools.password_manager_warning_desc")}
 				</p>
 				<p className="font-semibold text-foreground bg-muted/50 p-4 rounded-xl border border-border">
-					If you forget your master password, your vault data is
-					permanently lost and cannot be recovered by anyone.
+					{t("tools.password_manager_warning_irrecoverable")}
 				</p>
 			</div>
 
@@ -317,22 +306,21 @@ export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
 						htmlFor="understand"
 						className="text-sm font-medium leading-none cursor-pointer"
 					>
-						I understand that my master password cannot be
-						recovered.
+						{t("tools.password_manager_warning_checkbox")}
 					</label>
 				</div>
 			</div>
 
 			<div className="flex justify-between items-center pt-4">
 				<Button variant="ghost" onClick={() => setStep(2)}>
-					Back
+					{t("tools.password_manager_back")}
 				</Button>
 				<Button
 					onClick={() => onComplete(password)}
 					disabled={!understandWarning}
 					className="rounded-full px-6"
 				>
-					Create Vault
+					{t("tools.password_manager_create_vault")}
 				</Button>
 			</div>
 		</div>

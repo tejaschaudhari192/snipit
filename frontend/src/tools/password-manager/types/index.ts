@@ -57,4 +57,4 @@ export interface VaultStorage {
 	salt: string;
 }
 
-export type CloudVaultStatus = 'idle' | 'checking' | 'found' | 'not_found';
+export type CloudVaultStatus = "idle" | "checking" | "found" | "not_found";

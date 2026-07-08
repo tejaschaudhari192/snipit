@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Cloud, ServerOff } from "lucide-react";
 
@@ -10,6 +11,8 @@ export default function CloudVaultDetected({
 	onEnableSync,
 	onStartFresh,
 }: CloudVaultDetectedProps) {
+	const { t } = useTranslation();
+
 	return (
 		<div className="h-full w-full flex flex-col items-center justify-center p-4 md:p-8">
 			<div className="max-w-md w-full space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -18,11 +21,10 @@ export default function CloudVaultDetected({
 						<Cloud className="h-10 w-10 text-primary" />
 					</div>
 					<h1 className="text-3xl font-bold tracking-tight">
-						Cloud Vault Detected
+						{t("tools.password_manager_cloud_vault_title")}
 					</h1>
 					<p className="text-muted-foreground">
-						We found an encrypted vault associated with your account
-						in the cloud. Would you like to sync it to this device?
+						{t("tools.password_manager_cloud_vault_desc")}
 					</p>
 				</div>
 
@@ -32,7 +34,7 @@ export default function CloudVaultDetected({
 						size="lg"
 						className="w-full rounded-full"
 					>
-						Enable Sync & Unlock
+						{t("tools.password_manager_cloud_enable_sync")}
 					</Button>
 					<Button
 						variant="outline"
@@ -41,7 +43,7 @@ export default function CloudVaultDetected({
 						className="w-full rounded-full"
 					>
 						<ServerOff className="mr-2 h-4 w-4" />
-						Start Fresh (Local Only)
+						{t("tools.password_manager_cloud_start_fresh")}
 					</Button>
 				</div>
 			</div>

@@ -53,10 +53,10 @@ export default function VaultUnlock({
 					</div>
 					<div className="space-y-1">
 						<CardTitle className="text-2xl font-bold tracking-tight">
-							Welcome Back
+							{t("tools.password_manager_unlock_title")}
 						</CardTitle>
 						<CardDescription className="text-base">
-							Enter your master password to unlock your vault
+							{t("tools.password_manager_unlock_subtitle")}
 						</CardDescription>
 					</div>
 				</CardHeader>
@@ -89,12 +89,12 @@ export default function VaultUnlock({
 							{loading ? (
 								<>
 									<Loader2 className="mr-2 h-5 w-5 animate-spin" />
-									Decrypting...
+									{t("tools.password_manager_decrypting")}
 								</>
 							) : (
 								<>
 									<LockOpen className="mr-2 h-5 w-5" />
-									Unlock Vault
+									{t("tools.password_manager_unlock_vault")}
 								</>
 							)}
 						</Button>
@@ -102,7 +102,8 @@ export default function VaultUnlock({
 
 					<div className="mt-6 text-center">
 						<p className="text-xs text-muted-foreground">
-							Forgot your password? <ReadMoreDialog />
+							{t("tools.password_manager_forgot_password")}{" "}
+							<ReadMoreDialog />
 						</p>
 					</div>
 				</CardContent>
