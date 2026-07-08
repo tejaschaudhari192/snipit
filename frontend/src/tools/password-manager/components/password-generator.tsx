@@ -82,7 +82,7 @@ export default function PasswordGenerator({
 			};
 			const phraseArray = diceware(options);
 			const phrase = Array.isArray(phraseArray)
-				? phraseArray.join(" ")
+				? phraseArray.join(getSeparatorChar(separator) || " ")
 				: phraseArray;
 
 			if (useUpper || useNumbers) {
@@ -143,7 +143,17 @@ export default function PasswordGenerator({
 	return (
 		<div className="w-full bg-background rounded-t-xl overflow-hidden flex flex-col">
 			{/* Header section inspired by the red theme */}
-			<div className="bg-[#da1111] text-white p-4">
+			<div
+				className={`text-white p-4 ${
+					strengthScore < 2
+						? "bg-[#da1111]"
+						: strengthScore === 2
+							? "bg-amber-600"
+							: strengthScore === 3
+								? "bg-emerald-500"
+								: "bg-emerald-600"
+				}`}
+			>
 				<div className="flex items-center justify-between mb-8">
 					<Button
 						variant="ghost"
@@ -194,7 +204,17 @@ export default function PasswordGenerator({
 			</div>
 
 			{/* Strength & Fill Bar */}
-			<div className="bg-[#b30e0e] text-white px-4 py-3 flex flex-col gap-1 border-t border-white/10">
+			<div
+				className={`text-white px-4 py-3 flex flex-col gap-1 border-t border-white/10 ${
+					strengthScore < 2
+						? "bg-[#b30e0e]"
+						: strengthScore === 2
+							? "bg-amber-700"
+							: strengthScore === 3
+								? "bg-emerald-600"
+								: "bg-emerald-700"
+				}`}
+			>
 				<div className="flex items-center justify-between">
 					<span className="font-bold text-sm tracking-wide">
 						{t(getStrengthLabel(strengthScore))}
@@ -204,7 +224,7 @@ export default function PasswordGenerator({
 						className="bg-transparent text-white border-white hover:bg-white hover:text-[#b30e0e] h-8 px-6 rounded-full font-medium"
 						onClick={handleFill}
 					>
-						{t("tools.password_generator_fill", "Fill")}
+						{t("tools.password_generator_fill")}
 					</Button>
 				</div>
 				{feedback && (
