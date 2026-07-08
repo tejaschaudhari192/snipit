@@ -16,7 +16,9 @@
 	"type": "module",
 	"lint-staged": {
 		"src/**/*{js,ts}": [
-			"npm run format"
+			"pnpm format",
+			"pnpm lint",
+			"npm run build"
 		]
 	},
 	"dependencies": {
