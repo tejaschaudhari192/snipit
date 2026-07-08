@@ -24,7 +24,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import PasswordForm from "@/tools/password-manager/components/password-form";
-import { usePassword } from "@/tools/password-manager/context/password-context";
+import { usePassword } from "@/tools/password-manager/context/use-password";
 import { usePasswordUI } from "@/tools/password-manager/context/password-ui-context";
 import { isOlderThan3Months } from "@/tools/password-manager/utils/formatters";
 import { getFieldsForType } from "@/tools/password-manager/utils/item-types";

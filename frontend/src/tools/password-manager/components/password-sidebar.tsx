@@ -6,7 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import { usePasswordUI } from "@/tools/password-manager/context/password-ui-context";
-import { usePassword } from "@/tools/password-manager/context/password-context";
+import { usePassword } from "@/tools/password-manager/context/use-password";
 import {
 	SIDEBAR_NAV_ITEMS,
 	ITEM_TYPE_OPTIONS,

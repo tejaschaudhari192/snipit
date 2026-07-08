@@ -71,8 +71,7 @@ export const TerminalPanel = ({
 		return () => {
 			term.dispose();
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []); // Re-initializing on fontSize change is expensive, better use useEffect below
+	}, [fontSize]); // Re-initializing on fontSize change is expensive, better use useEffect below
 
 	// ── Sync font size ────────────────────────────────────────────────────
 	useEffect(() => {

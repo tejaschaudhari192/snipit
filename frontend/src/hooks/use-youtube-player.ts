@@ -23,6 +23,14 @@ export function useYouTubePlayer({
 	const onStateChangeRef = useRef(onStateChange);
 	const onErrorRef = useRef(onError);
 
+	const volumeRef = useRef(volume);
+	const qualityRef = useRef(quality);
+
+	useEffect(() => {
+		volumeRef.current = volume;
+		qualityRef.current = quality;
+	}, [volume, quality]);
+
 	useEffect(() => {
 		onReadyRef.current = onReady;
 		onStateChangeRef.current = onStateChange;
@@ -50,12 +58,14 @@ export function useYouTubePlayer({
 					events: {
 						onReady: (event: { target: YTPlayer }) => {
 							setIsReady(true);
-							event.target.setVolume(volume);
+							event.target.setVolume(volumeRef.current);
 							if (
 								typeof event.target.setPlaybackQuality ===
 								"function"
 							) {
-								event.target.setPlaybackQuality(quality);
+								event.target.setPlaybackQuality(
+									qualityRef.current,
+								);
 							}
 							onReadyRef.current?.();
 						},

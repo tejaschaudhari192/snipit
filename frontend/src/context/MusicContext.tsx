@@ -191,7 +191,20 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				globalClockRef.current = null;
 			}
 		};
-	}, [socket]);
+	}, [isPlayerOpen, socket]);
+
+	useEffect(() => {
+		const player = playerRef.current;
+		return () => {
+			if (player) {
+				try {
+					player.destroy();
+				} catch (e) {
+					console.error("Error destroying YouTube player:", e);
+				}
+			}
+		};
+	}, [playerRef]);
 
 	useEffect(() => {
 		currentTrackRef.current = currentTrack;
@@ -281,12 +294,17 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				});
 			}
 		}
-	}, [isMounted, fetchTrackDetails]);
+	}, [
+		isMounted,
+		fetchTrackDetails,
+		setCurrentIndex,
+		setCurrentTrack,
+		setPlaylist,
+	]);
 
 	useEffect(() => {
 		if (isMounted) {
 			if (currentTrack) {
-				// Only reset playtime if it is a completely different track from the last one (and not the initial restoration on mount)
 				if (
 					lastTrackIdRef.current !== null &&
 					lastTrackIdRef.current !== currentTrack.videoId
@@ -414,22 +432,25 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				socket.emit("music:volume", { pasteId, volume: vol });
 			}
 		},
-		[isShared, socket, pasteId],
+		[isShared, socket, pasteId, playerRef],
 	);
 
-	const handleChangeQuality = useCallback((newQuality: string) => {
-		setQualityState(newQuality);
-		localStore.setItem(CONFIG.storageKeys.musicQuality, newQuality);
-		if (
-			playerRef.current &&
-			typeof playerRef.current.setPlaybackQuality === "function"
-		) {
-			playerRef.current.setPlaybackQuality(newQuality);
-		}
-		toast.success(
-			`Audio quality set to ${newQuality === "tiny" ? "Low" : newQuality === "small" ? "Medium" : newQuality === "medium" ? "High" : "Auto"}`,
-		);
-	}, []);
+	const handleChangeQuality = useCallback(
+		(newQuality: string) => {
+			setQualityState(newQuality);
+			localStore.setItem(CONFIG.storageKeys.musicQuality, newQuality);
+			if (
+				playerRef.current &&
+				typeof playerRef.current.setPlaybackQuality === "function"
+			) {
+				playerRef.current.setPlaybackQuality(newQuality);
+			}
+			toast.success(
+				`Audio quality set to ${newQuality === "tiny" ? "Low" : newQuality === "small" ? "Medium" : newQuality === "medium" ? "High" : "Auto"}`,
+			);
+		},
+		[playerRef],
+	);
 
 	const handleDownloadTrack = useCallback(
 		async (
@@ -442,14 +463,17 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		[],
 	);
 
-	const handleToggleShuffle = useCallback(() => setShuffle((s) => !s), []);
+	const handleToggleShuffle = useCallback(
+		() => setShuffle((s) => !s),
+		[setShuffle],
+	);
 
 	const handleToggleRepeat = useCallback(() => {
 		setRepeat((r) => {
 			const modes: ("off" | "one" | "all")[] = ["off", "one", "all"];
 			return modes[(modes.indexOf(r) + 1) % modes.length];
 		});
-	}, []);
+	}, [setRepeat]);
 
 	const handlePlayAtIndex = useCallback(
 		(index: number) => {
@@ -458,7 +482,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				playTrack(playlist[index]);
 			}
 		},
-		[playlist, playTrack],
+		[playlist, playTrack, setCurrentIndex],
 	);
 
 	const handleSearchTracks = useCallback(async (query: string) => {
@@ -531,7 +555,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				setIsLoading(false);
 			}
 		},
-		[playTrack],
+		[playTrack, setCurrentIndex, setCurrentTrack, setPlaylist],
 	);
 
 	const handleClearSearch = useCallback(() => setSearchResults([]), []);
@@ -628,10 +652,12 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			isShared,
 			socket,
 			pasteId,
-			region,
 			shuffle,
 			repeat,
 			playTrack,
+			setCurrentIndex,
+			setCurrentTrack,
+			setPlaylist,
 		],
 	);
 
@@ -673,10 +699,11 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			isShared,
 			socket,
 			pasteId,
-			region,
 			shuffle,
 			repeat,
 			playTrack,
+			setCurrentIndex,
+			setPlaylist,
 		],
 	);
 
@@ -713,7 +740,15 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				return nextPlaylist;
 			});
 		},
-		[isShared, socket, pasteId, shuffle, repeat],
+		[
+			isShared,
+			socket,
+			pasteId,
+			shuffle,
+			repeat,
+			setCurrentIndex,
+			setPlaylist,
+		],
 	);
 
 	useEffect(() => {
@@ -789,7 +824,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			if (progressInterval.current)
 				clearInterval(progressInterval.current);
 		};
-	}, [isPlaying]);
+	}, [isPlaying, playerRef]);
 
 	const toggleShare = useCallback(() => {
 		if (!socket || !pasteId) return;
@@ -828,7 +863,6 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		[],
 	);
 
-	// Periodic sync from initiator/DJ to listeners
 	useEffect(() => {
 		if (isShared && isInitiator && socket && pasteId && isPlaying) {
 			const syncInterval = setInterval(() => {
@@ -860,7 +894,6 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		repeat,
 	]);
 
-	// Socket listener subscriptions
 	useEffect(() => {
 		if (!socket || !pasteId) {
 			setIsShared(false);
@@ -1081,7 +1114,19 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			socket.off("music:track-update", handleTrackUpdate);
 			socket.off("music:volume-update", handleVolumeUpdate);
 		};
-	}, [socket, pasteId, playTrack, handleSeek, handleSetVolume]);
+	}, [
+		socket,
+		pasteId,
+		playTrack,
+		handleSeek,
+		handleSetVolume,
+		pauseYt,
+		playYt,
+		setPlaylist,
+		setRepeat,
+		setShuffle,
+		playerRef,
+	]);
 
 	useEffect(() => {
 		if (!isMounted || !isShared || isInitiator) return;
@@ -1152,16 +1197,17 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			}
 		}, 1000);
 
+		const playerSnapshot = playerRef.current;
 		return () => {
 			clearInterval(syncCheckInterval);
 			if (
-				playerRef.current &&
-				typeof playerRef.current.setPlaybackRate === "function"
+				playerSnapshot &&
+				typeof playerSnapshot.setPlaybackRate === "function"
 			) {
-				playerRef.current.setPlaybackRate(1.0);
+				playerSnapshot.setPlaybackRate(1.0);
 			}
 		};
-	}, [isMounted, isShared, isInitiator]);
+	}, [isMounted, isShared, isInitiator, playerRef]);
 
 	return (
 		<MusicContext.Provider

@@ -1,15 +1,9 @@
-import React, {
-	createContext,
-	useContext,
-	useEffect,
-	useState,
-	useCallback,
-	type ReactNode,
-} from "react";
+import React, { useEffect, useState, useCallback, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { localStore } from "@/utils/storage";
 import { useAuth } from "@/context/AuthContext";
 import type { CloudVaultStatus, Vault } from "@/tools/password-manager/types";
+import { PasswordContext } from "./password-context-instance";
 import {
 	decryptVault,
 	encryptVault,
@@ -18,35 +12,6 @@ import {
 	STORAGE_KEY,
 } from "@/tools/password-manager/utils/vault";
 import { getItem, setItem } from "@/tools/password-manager/utils/indexed-db";
-
-interface PasswordContextProps {
-	masterPassword: string;
-	setMasterPassword: (pwd: string) => void;
-	vault: Vault | null;
-	setVault: (v: Vault | null) => void;
-	deleteItem: (id: string) => void;
-	loading: boolean;
-	error: string | null;
-	isCloudSyncEnabled: boolean;
-	setIsCloudSyncEnabled: (val: boolean) => void;
-	isSyncing: boolean;
-	hasExistingVault: boolean | null;
-	setHasExistingVault: (val: boolean | null) => void;
-	cloudVaultStatus: CloudVaultStatus;
-	setCloudVaultStatus: (status: CloudVaultStatus) => void;
-}
-
-const PasswordContext = createContext<PasswordContextProps | undefined>(
-	undefined,
-);
-
-export const usePassword = () => {
-	const ctx = useContext(PasswordContext);
-	if (!ctx) {
-		throw new Error("usePassword must be used within a PasswordProvider");
-	}
-	return ctx;
-};
 
 interface ProviderProps {
 	children: ReactNode;
@@ -67,7 +32,8 @@ export const PasswordProvider: React.FC<ProviderProps> = ({ children }) => {
 	const [hasExistingVault, setHasExistingVault] = useState<boolean | null>(
 		null,
 	);
-	const [cloudVaultStatus, setCloudVaultStatus] = useState<CloudVaultStatus>('idle');
+	const [cloudVaultStatus, setCloudVaultStatus] =
+		useState<CloudVaultStatus>("idle");
 	const { user } = useAuth();
 
 	// Persist cloud sync preference
@@ -86,19 +52,19 @@ export const PasswordProvider: React.FC<ProviderProps> = ({ children }) => {
 
 	// Check for cloud vault on init if logged in and sync is not enabled locally
 	useEffect(() => {
-		if (user && !isCloudSyncEnabled && cloudVaultStatus === 'idle') {
+		if (user && !isCloudSyncEnabled && cloudVaultStatus === "idle") {
 			const checkCloud = async () => {
-				setCloudVaultStatus('checking');
+				setCloudVaultStatus("checking");
 				const cloudData = await fetchVaultFromCloud();
 				if (cloudData && cloudData.encryptedBlob) {
-					setCloudVaultStatus('found');
+					setCloudVaultStatus("found");
 				} else {
-					setCloudVaultStatus('not_found');
+					setCloudVaultStatus("not_found");
 				}
 			};
 			checkCloud();
-		} else if (!user && cloudVaultStatus === 'idle') {
-			setCloudVaultStatus('not_found');
+		} else if (!user && cloudVaultStatus === "idle") {
+			setCloudVaultStatus("not_found");
 		}
 	}, [user, isCloudSyncEnabled, cloudVaultStatus]);
 

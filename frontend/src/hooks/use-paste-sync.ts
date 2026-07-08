@@ -46,10 +46,15 @@ export const usePasteSync = (
 	const isRemoteUpdate = useRef(false);
 
 	const onRemoteUpdateRef = useRef(onRemoteUpdate);
-	onRemoteUpdateRef.current = onRemoteUpdate;
-
 	const isEditRef = useRef(isEdit);
-	isEditRef.current = isEdit;
+
+	useEffect(() => {
+		onRemoteUpdateRef.current = onRemoteUpdate;
+		isEditRef.current = isEdit;
+	}, [onRemoteUpdate, isEdit]);
+
+	const username = user?.username;
+	const hasPaste = !!paste;
 
 	useEffect(() => {
 		if (loading || !id || !paste) return;
@@ -78,8 +83,7 @@ export const usePasteSync = (
 			cleanup();
 			socketRef.current = null;
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [id, loading, user?.username, !!paste]);
+	}, [id, loading, username, hasPaste, socketRef, paste, user]);
 
 	useEffect(() => {
 		if (socket && id) {

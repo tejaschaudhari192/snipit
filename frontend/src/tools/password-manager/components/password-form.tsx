@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/drawer";
 import PasswordGenerator from "@/tools/password-manager/components/password-generator";
 import { useTranslation } from "react-i18next";
-import { usePassword } from "@/tools/password-manager/context/password-context";
+import { usePassword } from "@/tools/password-manager/context/use-password";
 import { Plus, Trash2, RefreshCw, Eye, EyeOff, Upload } from "lucide-react";
 import type { PasswordItem, CustomField } from "../types";
 import { getFieldsForType } from "../utils/item-types";

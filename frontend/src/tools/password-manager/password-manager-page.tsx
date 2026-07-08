@@ -29,7 +29,8 @@ import {
 } from "@/components/ui/resizable";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { encryptVault } from "./utils/vault";
-import { PasswordProvider, usePassword } from "./context/password-context";
+import { PasswordProvider } from "./context/password-context";
+import { usePassword } from "./context/use-password";
 import type { PasswordItem } from "./types/index";
 import {
 	PasswordUIProvider,
@@ -92,7 +93,9 @@ function PasswordManagerInner() {
 								setCloudVaultStatus("idle");
 								setHasExistingVault(true); // Tell the UI we have a vault so it shows VaultUnlock
 							}}
-							onStartFresh={() => setCloudVaultStatus("not_found")}
+							onStartFresh={() =>
+								setCloudVaultStatus("not_found")
+							}
 						/>
 					</Suspense>
 				);
