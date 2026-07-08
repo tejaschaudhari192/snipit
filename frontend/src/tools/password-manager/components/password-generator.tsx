@@ -3,6 +3,7 @@ import { generate } from "generate-password-ts";
 import zxcvbn from "zxcvbn";
 import diceware from "diceware-generator";
 import enWordlist from "diceware-wordlist-en";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Copy, RefreshCw, X, MoreVertical } from "lucide-react";
@@ -22,17 +23,17 @@ interface PasswordGeneratorProps {
 const getStrengthLabel = (score: number) => {
 	switch (score) {
 		case 0:
-			return "Risky / Very Weak";
+			return "tools.password_generator_strength_risky";
 		case 1:
-			return "Weak";
+			return "tools.password_generator_strength_weak";
 		case 2:
-			return "Fair";
+			return "tools.password_generator_strength_fair";
 		case 3:
-			return "Strong";
+			return "tools.password_generator_strength_strong";
 		case 4:
-			return "Very Secure";
+			return "tools.password_generator_strength_secure";
 		default:
-			return "Unknown";
+			return "tools.password_generator_strength_unknown";
 	}
 };
 
@@ -40,6 +41,7 @@ export default function PasswordGenerator({
 	onGenerate,
 	onClose,
 }: PasswordGeneratorProps) {
+	const { t } = useTranslation();
 	const [length, setLength] = useState(15);
 	const [wordCount, setWordCount] = useState(2);
 	const [pronounceable, setPronounceable] = useState(true);
@@ -169,7 +171,10 @@ export default function PasswordGenerator({
 							<Copy className="h-5 w-5" />
 							{copied && (
 								<span className="absolute -top-8 -left-4 bg-black/80 text-xs px-2 py-1 rounded text-white whitespace-nowrap">
-									Copied!
+									{t(
+										"tools.password_generator_copied",
+										"Copied!",
+									)}
 								</span>
 							)}
 						</Button>
@@ -192,14 +197,14 @@ export default function PasswordGenerator({
 			<div className="bg-[#b30e0e] text-white px-4 py-3 flex flex-col gap-1 border-t border-white/10">
 				<div className="flex items-center justify-between">
 					<span className="font-bold text-sm tracking-wide">
-						{getStrengthLabel(strengthScore)}
+						{t(getStrengthLabel(strengthScore))}
 					</span>
 					<Button
 						variant="outline"
 						className="bg-transparent text-white border-white hover:bg-white hover:text-[#b30e0e] h-8 px-6 rounded-full font-medium"
 						onClick={handleFill}
 					>
-						Fill
+						{t("tools.password_generator_fill", "Fill")}
 					</Button>
 				</div>
 				{feedback && (
@@ -217,10 +222,18 @@ export default function PasswordGenerator({
 						<div className="flex items-center justify-between">
 							<div className="flex flex-col">
 								<span className="text-sm font-medium">
-									Words
+									{t(
+										"tools.password_generator_words",
+										"Words",
+									)}
 								</span>
 								<span className="text-xs text-muted-foreground">
-									(Length - {password.length})
+									(
+									{t(
+										"tools.password_generator_length",
+										"Length",
+									)}{" "}
+									- {password.length})
 								</span>
 							</div>
 							<div className="flex items-center gap-4">
@@ -243,7 +256,9 @@ export default function PasswordGenerator({
 				) : (
 					<div className="space-y-4">
 						<div className="flex items-center justify-between">
-							<span className="text-sm font-medium">Length</span>
+							<span className="text-sm font-medium">
+								{t("tools.password_generator_length", "Length")}
+							</span>
 							<div className="flex items-center gap-4">
 								<input
 									type="range"
@@ -266,7 +281,12 @@ export default function PasswordGenerator({
 				<div className="h-px bg-border" />
 
 				<div className="flex items-center justify-between">
-					<span className="text-sm font-medium">Pronounceable</span>
+					<span className="text-sm font-medium">
+						{t(
+							"tools.password_generator_pronounceable",
+							"Pronounceable",
+						)}
+					</span>
 					<Switch
 						checked={pronounceable}
 						onCheckedChange={setPronounceable}
@@ -277,10 +297,17 @@ export default function PasswordGenerator({
 				<div className="h-px bg-border" />
 
 				<div className="space-y-4">
-					<h4 className="text-sm font-bold">Include</h4>
+					<h4 className="text-sm font-bold">
+						{t("tools.password_generator_include", "Include")}
+					</h4>
 
 					<div className="flex items-center justify-between">
-						<span className="text-sm">Uppercase</span>
+						<span className="text-sm">
+							{t(
+								"tools.password_generator_uppercase",
+								"Uppercase",
+							)}
+						</span>
 						<Switch
 							checked={useUpper}
 							onCheckedChange={setUseUpper}
@@ -288,7 +315,9 @@ export default function PasswordGenerator({
 					</div>
 
 					<div className="flex items-center justify-between">
-						<span className="text-sm">Digits</span>
+						<span className="text-sm">
+							{t("tools.password_generator_digits", "Digits")}
+						</span>
 						<Switch
 							checked={useNumbers}
 							onCheckedChange={setUseNumbers}
@@ -301,7 +330,10 @@ export default function PasswordGenerator({
 						<div className="h-px bg-border" />
 						<div className="flex items-center justify-between">
 							<span className="text-sm font-medium">
-								Separated By
+								{t(
+									"tools.password_generator_separated_by",
+									"Separated By",
+								)}
 							</span>
 							<Select
 								value={separator}
@@ -311,16 +343,35 @@ export default function PasswordGenerator({
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value="none">None</SelectItem>
+									<SelectItem value="none">
+										{t(
+											"tools.password_generator_sep_none",
+											"None",
+										)}
+									</SelectItem>
 									<SelectItem value="hash">
-										Hash (#)
+										{t(
+											"tools.password_generator_sep_hash",
+											"Hash (#)",
+										)}
 									</SelectItem>
 									<SelectItem value="hyphen">
-										Hyphen (-)
+										{t(
+											"tools.password_generator_sep_hyphen",
+											"Hyphen (-)",
+										)}
 									</SelectItem>
-									<SelectItem value="space">Space</SelectItem>
+									<SelectItem value="space">
+										{t(
+											"tools.password_generator_sep_space",
+											"Space",
+										)}
+									</SelectItem>
 									<SelectItem value="comma">
-										Comma (,)
+										{t(
+											"tools.password_generator_sep_comma",
+											"Comma (,)",
+										)}
 									</SelectItem>
 								</SelectContent>
 							</Select>
