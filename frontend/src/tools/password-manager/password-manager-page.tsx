@@ -125,9 +125,9 @@ function PasswordManagerInner() {
 						>
 							{/* Left - Sidebar */}
 							<ResizablePanel
-								defaultSize={20}
-								minSize={15}
-								maxSize={35}
+								defaultSize="20%"
+								minSize="15%"
+								maxSize="35%"
 								className="bg-sidebar"
 							>
 								<div className="h-full w-full overflow-hidden border-r border-border flex flex-col">
@@ -147,9 +147,9 @@ function PasswordManagerInner() {
 
 							{/* Middle - List */}
 							<ResizablePanel
-								defaultSize={25}
-								minSize={20}
-								maxSize={40}
+								defaultSize="25%"
+								minSize="20%"
+								maxSize="40%"
 								className="bg-background/50"
 							>
 								<div className="h-full w-full overflow-hidden flex flex-col border-r border-border">
@@ -167,8 +167,8 @@ function PasswordManagerInner() {
 
 							{/* Right - Detail */}
 							<ResizablePanel
-								defaultSize={55}
-								minSize={30}
+								defaultSize="55%"
+								minSize="30%"
 								className="bg-background"
 							>
 								<div className="h-full w-full overflow-hidden flex flex-col">
