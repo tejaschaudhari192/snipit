@@ -212,18 +212,20 @@ export function FolderModal({
 					</div>
 				)}
 
-				<DialogFooter>
+				<DialogFooter className="pt-4 sm:gap-3">
 					<Button
 						variant="outline"
 						onClick={() => onOpenChange(false)}
 					>
-						{t("cancel")}
+						{t("tools.cancel")}
 					</Button>
 					<Button
 						variant={mode === "delete" ? "destructive" : "default"}
 						onClick={handleSave}
 					>
-						{mode === "delete" ? t("delete") : "Save"}
+						{mode === "delete"
+							? t("display.delete_button")
+							: t("common.save")}
 					</Button>
 				</DialogFooter>
 			</DialogContent>
