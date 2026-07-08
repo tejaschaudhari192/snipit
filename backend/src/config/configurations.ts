@@ -64,6 +64,7 @@ const configurations = {
 		origins: [
 			"https://cpaste.vercel.app",
 			"https://snipit-nu.vercel.app",
+			"https://cpaste.onrender.com",
 			"https://snipit-git-55-watch-media-sy-8f336e-tejaschaudhari192s-projects.vercel.app",
 		],
 	},

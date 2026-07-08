@@ -29,6 +29,7 @@ import { usePasswordUI } from "@/tools/password-manager/context/password-ui-cont
 import { isOlderThan3Months } from "@/tools/password-manager/utils/formatters";
 import { getFieldsForType } from "@/tools/password-manager/utils/item-types";
 import type { PasswordItem } from "@/tools/password-manager/types";
+import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
 
 interface PasswordDetailProps {
 	item: PasswordItem | null | undefined;

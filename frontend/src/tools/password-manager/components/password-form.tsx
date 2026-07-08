@@ -206,6 +206,7 @@ export default function PasswordForm({
 					</div>
 					<div className="min-w-0 flex-1 space-y-3 pt-1">
 						<Input
+							required
 							placeholder={t(
 								"tools.password_manager_title_placeholder",
 							)}
