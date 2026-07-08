@@ -143,7 +143,7 @@ export const setupSocket = (server: HTTPServer) => {
 					socket.emit("video-sync-state", {
 						action: vState.isPlaying ? "play" : "pause",
 						timestamp: currentPos,
-						duration: (vState as any).duration,
+						duration: vState.duration,
 					});
 				}
 
@@ -429,7 +429,7 @@ export const setupSocket = (server: HTTPServer) => {
 					currentTime: data.timestamp,
 					lastSyncedAt: Date.now(),
 					duration: data.duration,
-				} as any);
+				});
 
 				socket.to(data.pasteId).emit("video-sync-state", {
 					action: data.action,
@@ -480,14 +480,14 @@ export const setupSocket = (server: HTTPServer) => {
 				if (vState) {
 					vState.currentTime = data.timestamp;
 					vState.lastSyncedAt = Date.now();
-					if (data.duration) (vState as any).duration = data.duration;
+					if (data.duration) vState.duration = data.duration;
 				} else {
 					sharedVideoState.set(data.pasteId, {
 						isPlaying: true,
 						currentTime: data.timestamp,
 						lastSyncedAt: Date.now(),
 						duration: data.duration,
-					} as any);
+					});
 				}
 
 				socket.to(data.pasteId).emit("video-timeline-update", {

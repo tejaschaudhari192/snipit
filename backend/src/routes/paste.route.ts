@@ -94,7 +94,7 @@ router.post(
 			const controller = new AbortController();
 			const timeoutId = setTimeout(() => controller.abort(), 6000);
 
-			let response = await fetch(url, {
+			const response = await fetch(url, {
 				method: "HEAD",
 				headers: {
 					"User-Agent":
@@ -149,10 +149,10 @@ router.post(
 				ok: false,
 				error: `Server responded with status ${response.status}. Make sure the link is live.`,
 			});
-		} catch (error: any) {
+		} catch (error: unknown) {
 			return res.json({
 				ok: false,
-				error: `Unable to connect to stream server: ${error.message || "Connection refused"}. Make sure the link is live.`,
+				error: `Unable to connect to stream server: ${(error as Error).message || "Connection refused"}. Make sure the link is live.`,
 			});
 		}
 	}),

@@ -1,7 +1,13 @@
 import type { Document } from "mongoose";
 
 export type ContentMode =
-	"text" | "code" | "richtext" | "draw" | "link" | "file" | "video";
+	| "text"
+	| "code"
+	| "richtext"
+	| "draw"
+	| "link"
+	| "file"
+	| "video";
 export type Visibility = "public" | "private" | "shared";
 export type EditPermission = "owner" | "shared" | "public";
 export type PublicRole = "viewer" | "editor" | "commenter";
@@ -55,6 +61,7 @@ export interface SharedVideoState {
 	isPlaying: boolean;
 	currentTime: number;
 	lastSyncedAt: number;
+	duration?: number | undefined;
 }
 
 export type UserData = {

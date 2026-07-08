@@ -1,4 +1,3 @@
-import logger from "@/config/logger.js";
 import { Router } from "express";
 import { catchAsync } from "@/lib/errors.js";
 import healthService, {

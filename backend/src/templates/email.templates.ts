@@ -302,7 +302,7 @@ export const EMAIL_TEMPLATES = {
 		const isMobile = deviceType === "mobile";
 		const isDesktop = deviceType === "desktop";
 
-		let deviceSvg = "";
+		let deviceSvg: string;
 		if (isDesktop) {
 			deviceSvg = `
 <svg width="80" height="60" viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto; display: block;">

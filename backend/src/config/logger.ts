@@ -75,10 +75,10 @@ const logger = createLogger({
 		}),
 	],
 }) as unknown as Logger & {
-	crit: (message: string, ...meta: any[]) => Logger;
-	notice: (message: string, ...meta: any[]) => Logger;
-	success: (message: string, ...meta: any[]) => Logger;
-	trace: (message: string, ...meta: any[]) => Logger;
+	crit: (message: string, ...meta: unknown[]) => Logger;
+	notice: (message: string, ...meta: unknown[]) => Logger;
+	success: (message: string, ...meta: unknown[]) => Logger;
+	trace: (message: string, ...meta: unknown[]) => Logger;
 };
 
 export default logger;

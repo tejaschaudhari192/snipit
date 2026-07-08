@@ -1,6 +1,6 @@
 import Groq from "groq-sdk";
 import fs from "fs";
-import { Readable } from "stream";
+
 import configurations from "@/config/configurations.js";
 import pasteModel from "@/models/Paste.js";
 import { VALID_LANGUAGES } from "@/config/constants.js";
@@ -34,8 +34,41 @@ interface CompactDrawing {
 	elements: CompactElement[];
 }
 
-// Robust dagre access
-const dagre = (dagreModule as any).default || dagreModule;
+// Define interfaces for dagre to avoid 'any'
+interface DagreGraph {
+	setGraph(opts: Record<string, unknown>): void;
+	setDefaultEdgeLabel(callback: () => Record<string, unknown>): void;
+	setNode(v: string, value: Record<string, unknown>): void;
+	setEdge(v: string, w: string, value: Record<string, unknown>): void;
+	nodes(): string[];
+	edges(): { v: string; w: string }[];
+	node(
+		v: string,
+	):
+		| {
+				x: number;
+				y: number;
+				width: number;
+				height: number;
+				data?: CompactElement;
+		  }
+		| undefined;
+	edge(e: {
+		v: string;
+		w: string;
+	}): { label?: string; id?: string } | undefined;
+	graph(): { width: number; height: number };
+}
+
+interface DagreModuleType {
+	graphlib: {
+		Graph: new () => DagreGraph;
+	};
+	layout(graph: DagreGraph): void;
+}
+
+const dagre = ((dagreModule as { default?: DagreModuleType }).default ||
+	dagreModule) as DagreModuleType;
 
 const CompactElementSchema = z.object({
 	id: z.string().optional(),
@@ -77,7 +110,7 @@ class AiService {
 			return models.data.some(
 				(m) => m.id === configurations.groq_smart_model,
 			);
-		} catch (error) {
+		} catch {
 			return false;
 		}
 	}
@@ -220,8 +253,12 @@ class AiService {
 				const existing = await pasteModel.findOne({ id }).lean();
 				const isExpired =
 					existing &&
-					(existing as any).expiresAt &&
-					new Date() > new Date((existing as any).expiresAt);
+					(existing as { expiresAt?: Date | string }).expiresAt &&
+					new Date() >
+						new Date(
+							(existing as { expiresAt: Date | string })
+								.expiresAt,
+						);
 
 				if (!existing || isExpired) {
 					finalId = id;
@@ -508,7 +545,9 @@ class AiService {
 	 * 6. LABEL INJECTION: Calculate arrow midpoints and inject floating Excalidraw text for edge labels.
 	 * 7. ANNOTATION PASS: Place free-floating sticky notes (annotations) near their target nodes.
 	 */
-	private layoutWithDagre(drawing: CompactDrawing): any[] {
+	private layoutWithDagre(
+		drawing: CompactDrawing,
+	): Record<string, unknown>[] {
 		const g = new dagre.graphlib.Graph();
 		g.setGraph({
 			rankdir: drawing.direction || "TB",
@@ -548,7 +587,7 @@ class AiService {
 		dagre.layout(g);
 
 		// 3. Map to Excalidraw
-		const excalidrawElements: any[] = [];
+		const excalidrawElements: Record<string, unknown>[] = [];
 		let processColorIndex = 0;
 
 		// Optional: Add Title
@@ -573,7 +612,7 @@ class AiService {
 			const node = g.node(id);
 			if (!node?.data) return;
 
-			const el: CompactElement = node.data;
+			const el: CompactElement = node.data as CompactElement;
 			const x = node.x - node.width / 2;
 			const y = node.y - node.height / 2;
 
@@ -624,7 +663,7 @@ class AiService {
 			}
 		});
 
-		g.edges().forEach((e: any) => {
+		g.edges().forEach((e: { v: string; w: string }) => {
 			const edge = g.edge(e);
 			const fromNode = g.node(e.v);
 			const toNode = g.node(e.w);
@@ -648,7 +687,7 @@ class AiService {
 		// Add annotations
 		drawing.elements.forEach((el: CompactElement) => {
 			if (el.type === "annotation" && el.from && g.node(el.from)) {
-				const targetNode = g.node(el.from);
+				const targetNode = g.node(el.from)!;
 				excalidrawElements.push(
 					this.createAnnotationElement(el, targetNode, now),
 				);
@@ -704,34 +743,38 @@ class AiService {
 		fillStyle: string;
 		strokeStyle: string;
 	} {
-		const WHITEBOARD_PALETTE: Record<string, any> = {
+		type PaletteColor = { bg: string; stroke: string };
+
+		const ELEMENT_PALETTE: Record<string, PaletteColor> = {
 			start: { bg: "#b2f2bb", stroke: "#2b8a3e" },
 			end: { bg: "#ffc9c9", stroke: "#c92a2a" },
 			decision: { bg: "#ffec99", stroke: "#e67700" },
 			io: { bg: "#99e9f2", stroke: "#0c8599" },
 			data: { bg: "#b2f2bb", stroke: "#2b8a3e" },
-			process: [
-				{ bg: "#a5d8ff", stroke: "#1971c2" },
-				{ bg: "#d0bfff", stroke: "#7048e8" },
-				{ bg: "#ffc9c9", stroke: "#e03131" },
-				{ bg: "#ffd8a8", stroke: "#e8590c" },
-				{ bg: "#99e9f2", stroke: "#0c8599" },
-				{ bg: "#eebefa", stroke: "#9c36b5" },
-				{ bg: "#b2f2bb", stroke: "#2b8a3e" },
-				{ bg: "#ffec99", stroke: "#e67700" },
-			],
-			categories: {
-				auth: { bg: "#a5d8ff", stroke: "#1971c2" },
-				database: { bg: "#b2f2bb", stroke: "#2b8a3e" },
-				error: { bg: "#ffc9c9", stroke: "#c92a2a" },
-				success: { bg: "#b2f2bb", stroke: "#2b8a3e" },
-				network: { bg: "#d0bfff", stroke: "#7048e8" },
-				security: { bg: "#ffec99", stroke: "#e67700" },
-				ui: { bg: "#eebefa", stroke: "#9c36b5" },
-			},
 		};
 
-		let style = { bg: "transparent", stroke: "#1e1e1e" };
+		const PROCESS_PALETTE: PaletteColor[] = [
+			{ bg: "#a5d8ff", stroke: "#1971c2" },
+			{ bg: "#d0bfff", stroke: "#7048e8" },
+			{ bg: "#ffc9c9", stroke: "#e03131" },
+			{ bg: "#ffd8a8", stroke: "#e8590c" },
+			{ bg: "#99e9f2", stroke: "#0c8599" },
+			{ bg: "#eebefa", stroke: "#9c36b5" },
+			{ bg: "#b2f2bb", stroke: "#2b8a3e" },
+			{ bg: "#ffec99", stroke: "#e67700" },
+		];
+
+		const CATEGORY_PALETTE: Record<string, PaletteColor> = {
+			auth: { bg: "#a5d8ff", stroke: "#1971c2" },
+			database: { bg: "#b2f2bb", stroke: "#2b8a3e" },
+			error: { bg: "#ffc9c9", stroke: "#c92a2a" },
+			success: { bg: "#b2f2bb", stroke: "#2b8a3e" },
+			network: { bg: "#d0bfff", stroke: "#7048e8" },
+			security: { bg: "#ffec99", stroke: "#e67700" },
+			ui: { bg: "#eebefa", stroke: "#9c36b5" },
+		};
+
+		let style: PaletteColor = { bg: "transparent", stroke: "#1e1e1e" };
 		let fillStyle = "hachure";
 		let strokeStyle = "solid";
 
@@ -740,13 +783,14 @@ class AiService {
 			strokeStyle = "dashed";
 		}
 
-		if (el.category && WHITEBOARD_PALETTE.categories[el.category]) {
-			style = WHITEBOARD_PALETTE.categories[el.category];
+		if (el.category && CATEGORY_PALETTE[el.category]) {
+			style = CATEGORY_PALETTE[el.category] || style;
 		} else if (el.type === "process") {
-			const processPalette = WHITEBOARD_PALETTE.process;
-			style = processPalette[processColorIndex % processPalette.length];
-		} else if (WHITEBOARD_PALETTE[el.type]) {
-			style = WHITEBOARD_PALETTE[el.type];
+			style =
+				PROCESS_PALETTE[processColorIndex % PROCESS_PALETTE.length] ||
+				style;
+		} else if (ELEMENT_PALETTE[el.type]) {
+			style = ELEMENT_PALETTE[el.type] || style;
 		}
 
 		return {
@@ -799,10 +843,10 @@ class AiService {
 	}
 
 	private createArrowElement(
-		edge: any,
-		e: any,
-		fromNode: any,
-		toNode: any,
+		edge: { id?: string; label?: string },
+		e: { v: string; w: string },
+		fromNode: { x: number; y: number; height: number; width: number },
+		toNode: { x: number; y: number; height: number; width: number },
 		now: number,
 	) {
 		const startX = fromNode.x;
@@ -843,9 +887,9 @@ class AiService {
 	}
 
 	private createEdgeLabelElement(
-		edge: any,
-		fromNode: any,
-		toNode: any,
+		edge: { id?: string; label?: string },
+		fromNode: { x: number; y: number; height: number; width: number },
+		toNode: { x: number; y: number; height: number; width: number },
 		now: number,
 	) {
 		const startX = fromNode.x;
@@ -885,7 +929,7 @@ class AiService {
 
 	private createAnnotationElement(
 		el: CompactElement,
-		targetNode: any,
+		targetNode: { x: number; y: number; width: number; height: number },
 		now: number,
 	) {
 		const x = targetNode.x + targetNode.width / 2 + 20;
