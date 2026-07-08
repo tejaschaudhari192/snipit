@@ -38,8 +38,7 @@ export default function PasswordList({
 	const categoryFiltered = items.filter((item) => {
 		if (activeFilter === "all") return true;
 		if (activeFilter === "favorites") {
-			// we don't have a favorites flag yet, maybe we just return false for now or if we add it later
-			return false;
+			return item.isFavorite === true;
 		}
 		if (activeFilter === "recent") {
 			// just a placeholder for recent logic

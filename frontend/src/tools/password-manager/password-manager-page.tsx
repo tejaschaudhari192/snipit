@@ -4,9 +4,9 @@ const PasswordSidebar = React.lazy(
 );
 const PasswordList = React.lazy(() => import("./components/password-list"));
 const PasswordDetail = React.lazy(() => import("./components/password-detail"));
-import VaultOnboarding from "./components/vault-onboarding";
-import VaultUnlock from "./components/vault-unlock";
-import MobileSidebarDrawer from "./components/mobile-sidebar-drawer";
+const VaultOnboarding = React.lazy(() => import("./components/vault-onboarding"));
+const VaultUnlock = React.lazy(() => import("./components/vault-unlock"));
+const MobileSidebarDrawer = React.lazy(() => import("./components/mobile-sidebar-drawer"));
 import {
 	AppSkeleton,
 	SidebarSkeleton,
@@ -72,14 +72,20 @@ function PasswordManagerInner() {
 
 	if (!vault) {
 		if (!hasExistingVault) {
-			return <VaultOnboarding onComplete={setMasterPassword} />;
+			return (
+				<Suspense fallback={<AppSkeleton />}>
+					<VaultOnboarding onComplete={setMasterPassword} />
+				</Suspense>
+			);
 		}
 		return (
-			<VaultUnlock
-				onUnlock={setMasterPassword}
-				error={error}
-				loading={loading}
-			/>
+			<Suspense fallback={<AppSkeleton />}>
+				<VaultUnlock
+					onUnlock={setMasterPassword}
+					error={error}
+					loading={loading}
+				/>
+			</Suspense>
 		);
 	}
 
@@ -93,7 +99,9 @@ function PasswordManagerInner() {
 				)}
 				{isMobile ? (
 					<div className="flex-1 flex overflow-hidden relative">
-						<MobileSidebarDrawer />
+						<Suspense fallback={<SidebarSkeleton />}>
+							<MobileSidebarDrawer />
+						</Suspense>
 						{activeItem || isNewItem ? (
 							<div className="h-full w-full overflow-hidden flex flex-col bg-background absolute inset-0 z-10">
 								<Suspense fallback={<DetailSkeleton />}>

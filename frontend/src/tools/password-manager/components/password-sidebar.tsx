@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Check, X, Pencil, Trash2, Shield, Plus } from "lucide-react";
+import { Check, Pencil, Trash2, Shield, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
@@ -40,6 +40,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import { FolderModal } from "./folder-modal";
 
 interface PasswordSidebarProps {
 	onNewItem: (itemType: string) => void;
@@ -58,79 +59,76 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 	const { user } = useAuth();
 
 	const [isTypeDialogOpen, setIsTypeDialogOpen] = useState(false);
-	const [isAddingFolder, setIsAddingFolder] = useState(false);
-	const [newFolderName, setNewFolderName] = useState("");
-	const [newFolderColor, setNewFolderColor] = useState(
-		UI_DEFAULTS.FOLDER_COLOR,
-	);
-	const [editingFolderId, setEditingFolderId] = useState<string | null>(null);
-	const [editingFolderName, setEditingFolderName] = useState("");
-	const [editingFolderColor, setEditingFolderColor] = useState("");
+	const [folderModalOpen, setFolderModalOpen] = useState(false);
+	const [folderModalMode, setFolderModalMode] = useState<"create" | "edit" | "delete">("create");
+	const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
+	const [folderName, setFolderName] = useState("");
+	const [folderColor, setFolderColor] = useState(UI_DEFAULTS.FOLDER_COLOR);
 
 	const folders = vault?.folders || [];
 
-	const handleAddFolder = () => {
-		if (!newFolderName.trim() || !vault) return;
+	const handleSaveFolder = (name: string, color: string, deletePasswordsInside = false) => {
+		if (folderModalMode === "delete") {
+			if (!activeFolderId || !vault) return;
+			const newFolders = folders.filter((f) => f.id !== activeFolderId);
+			
+			let newItems = vault.items || [];
+			if (deletePasswordsInside) {
+				newItems = newItems.filter((item) => item.folderId !== activeFolderId);
+			} else {
+				// Unlink passwords from the deleted folder so they aren't orphaned
+				newItems = newItems.map((item) => 
+					item.folderId === activeFolderId 
+						? { ...item, folderId: undefined, updatedAt: new Date().toISOString() }
+						: item
+				);
+			}
 
-		const newFolder = {
-			id: crypto.randomUUID(),
-			name: newFolderName.trim(),
-			color: newFolderColor,
-			createdAt: new Date().toISOString(),
-			updatedAt: new Date().toISOString(),
-		};
-
-		setVault({
-			...vault,
-			folders: [...folders, newFolder],
-			updatedAt: new Date().toISOString(),
-		});
-
-		setNewFolderName("");
-		setIsAddingFolder(false);
-	};
-
-	const handleEditFolder = (folderId: string) => {
-		if (!editingFolderName.trim() || !vault) {
-			setEditingFolderId(null);
+			setVault({ 
+				...vault, 
+				folders: newFolders, 
+				items: newItems, 
+				updatedAt: new Date().toISOString() 
+			});
+			if (activeFilter === activeFolderId) setActiveFilter("all");
+			setFolderModalOpen(false);
 			return;
 		}
 
-		const newFolders = folders.map((f) =>
-			f.id === folderId
-				? {
-						...f,
-						name: editingFolderName.trim(),
-						color: editingFolderColor,
-						updatedAt: new Date().toISOString(),
-					}
-				: f,
-		);
+		if (!name.trim() || !vault) return;
 
-		setVault({
-			...vault,
-			folders: newFolders,
-			updatedAt: new Date().toISOString(),
-		});
-
-		setEditingFolderId(null);
-	};
-
-	const handleDeleteFolder = (folderId: string, e: React.MouseEvent) => {
-		e.stopPropagation();
-		if (!vault) return;
-
-		const newFolders = folders.filter((f) => f.id !== folderId);
-
-		setVault({
-			...vault,
-			folders: newFolders,
-			updatedAt: new Date().toISOString(),
-		});
-
-		if (activeFilter === folderId) {
-			setActiveFilter("all");
+		if (folderModalMode === "create") {
+			const newFolder = {
+				id: crypto.randomUUID(),
+				name: name.trim(),
+				color: color,
+				createdAt: new Date().toISOString(),
+				updatedAt: new Date().toISOString(),
+			};
+			setVault({
+				...vault,
+				folders: [...folders, newFolder],
+				updatedAt: new Date().toISOString(),
+			});
+		} else if (folderModalMode === "edit" && activeFolderId) {
+			const newFolders = folders.map((f) =>
+				f.id === activeFolderId
+					? {
+							...f,
+							name: name.trim(),
+							color: color,
+							updatedAt: new Date().toISOString(),
+						}
+					: f,
+			);
+			setVault({
+				...vault,
+				folders: newFolders,
+				updatedAt: new Date().toISOString(),
+			});
 		}
+
+		setFolderModalOpen(false);
 	};
 
 	return (
@@ -207,7 +205,12 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 					</SidebarGroupLabel>
 					<SidebarGroupAction
 						title={t("tools.password_manager_add_folder")}
-						onClick={() => setIsAddingFolder(true)}
+						onClick={() => {
+							setFolderModalMode("create");
+							setFolderName("");
+							setFolderColor(UI_DEFAULTS.FOLDER_COLOR);
+							setFolderModalOpen(true);
+						}}
 					>
 						<Plus />{" "}
 						<span className="sr-only">
@@ -217,122 +220,8 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 					<SidebarGroupContent>
 						<ScrollArea className="h-[160px] pr-3">
 							<SidebarMenu>
-								{isAddingFolder && (
-									<SidebarMenuItem>
-										<div className="flex items-center gap-2 px-2 py-1 mb-2">
-											<input
-												type="color"
-												value={newFolderColor}
-												onChange={(e) =>
-													setNewFolderColor(
-														e.target.value,
-													)
-												}
-												className="w-6 h-6 border-0 p-0 rounded cursor-pointer shrink-0"
-											/>
-											<Input
-												autoFocus
-												value={newFolderName}
-												onChange={(e) =>
-													setNewFolderName(
-														e.target.value,
-													)
-												}
-												placeholder={t(
-													"tools.password_manager_new_folder_placeholder",
-												)}
-												className="h-7 text-xs bg-background border-border px-2"
-												onKeyDown={(e) => {
-													if (e.key === "Enter")
-														handleAddFolder();
-													if (e.key === "Escape") {
-														setIsAddingFolder(
-															false,
-														);
-														setNewFolderName("");
-													}
-												}}
-											/>
-											<Button
-												size="icon"
-												variant="ghost"
-												className="h-7 w-7"
-												onClick={handleAddFolder}
-											>
-												<Check className="h-3 w-3 text-green-500" />
-											</Button>
-											<Button
-												size="icon"
-												variant="ghost"
-												className="h-7 w-7"
-												onClick={() =>
-													setIsAddingFolder(false)
-												}
-											>
-												<X className="h-3 w-3 text-destructive" />
-											</Button>
-										</div>
-									</SidebarMenuItem>
-								)}
-
 								{folders.map((folder) => (
 									<SidebarMenuItem key={folder.id}>
-										{editingFolderId === folder.id ? (
-											<div className="flex items-center gap-2 px-2 py-1 w-full">
-												<input
-													type="color"
-													value={editingFolderColor}
-													onChange={(e) =>
-														setEditingFolderColor(
-															e.target.value,
-														)
-													}
-													className="w-6 h-6 border-0 p-0 rounded cursor-pointer shrink-0"
-												/>
-												<Input
-													autoFocus
-													value={editingFolderName}
-													onChange={(e) =>
-														setEditingFolderName(
-															e.target.value,
-														)
-													}
-													className="h-7 text-xs bg-background border-border px-2"
-													onKeyDown={(e) => {
-														if (e.key === "Enter")
-															handleEditFolder(
-																folder.id,
-															);
-														if (e.key === "Escape")
-															setEditingFolderId(
-																null,
-															);
-													}}
-												/>
-												<Button
-													size="icon"
-													variant="ghost"
-													className="h-7 w-7"
-													onClick={() =>
-														handleEditFolder(
-															folder.id,
-														)
-													}
-												>
-													<Check className="h-3 w-3 text-green-500" />
-												</Button>
-												<Button
-													size="icon"
-													variant="ghost"
-													className="h-7 w-7"
-													onClick={() =>
-														setEditingFolderId(null)
-													}
-												>
-													<X className="h-3 w-3 text-destructive" />
-												</Button>
-											</div>
-										) : (
 											<>
 												<SidebarMenuButton
 													isActive={
@@ -378,31 +267,27 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 														<DropdownMenuItem
 															onClick={(e) => {
 																e.stopPropagation();
-																setEditingFolderId(
-																	folder.id,
-																);
-																setEditingFolderName(
-																	folder.name,
-																);
-																setEditingFolderColor(
-																	folder.color ||
-																		"#8b5cf6",
-																);
+																setFolderModalMode("edit");
+																setActiveFolderId(folder.id);
+																setFolderName(folder.name);
+																setFolderColor(folder.color || UI_DEFAULTS.FOLDER_COLOR);
+																setFolderModalOpen(true);
 															}}
 														>
 															<Pencil className="mr-2 h-4 w-4" />
-															{t(
-																"tools.password_manager_edit",
-															)}
+															<span>
+																{t("edit")}
+															</span>
 														</DropdownMenuItem>
 														<DropdownMenuItem
-															className="text-destructive focus:bg-destructive/10 focus:text-destructive"
-															onClick={(e) =>
-																handleDeleteFolder(
-																	folder.id,
-																	e as unknown as React.MouseEvent,
-																)
-															}
+															className="text-destructive focus:text-destructive"
+															onClick={(e) => {
+																e.stopPropagation();
+																setFolderModalMode("delete");
+																setActiveFolderId(folder.id);
+																setFolderName(folder.name);
+																setFolderModalOpen(true);
+															}}
 														>
 															<Trash2 className="mr-2 h-4 w-4" />
 															{t("remove")}
@@ -410,7 +295,6 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 													</DropdownMenuContent>
 												</DropdownMenu>
 											</>
-										)}
 									</SidebarMenuItem>
 								))}
 							</SidebarMenu>
@@ -576,6 +460,15 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 					</div>
 				</DialogContent>
 			</Dialog>
+			<FolderModal
+				open={folderModalOpen}
+				onOpenChange={setFolderModalOpen}
+				mode={folderModalMode}
+				initialFolderName={folderName}
+				initialFolderColor={folderColor}
+				onSave={handleSaveFolder}
+				onDelete={(deletePasswords) => handleSaveFolder("", "", deletePasswords)}
+			/>
 		</div>
 	);
 }

@@ -12,6 +12,9 @@ import { DisplayLoading } from "@/components/display/display-loading";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { TtsProvider } from "@/context";
 import { TtsMiniPlayer } from "@/components/common/tts-mini-player";
+import { AppSkeleton as PasswordAppSkeleton } from "@/tools/password-manager/components/skeletons";
+import { CryptoSafeSkeleton } from "@/tools/cryptsafe/components/skeletons";
+import { ToolsPageSkeleton } from "@/pages/skeletons";
 
 const HomePage = lazy(() => import("@/pages/home"));
 const DisplayPage = lazy(() => import("@/pages/display"));
@@ -180,19 +183,25 @@ const App = () => {
 														<Route
 															path="/tools"
 															element={
-																<ToolsPage />
+																<Suspense fallback={<ToolsPageSkeleton />}>
+																	<ToolsPage />
+																</Suspense>
 															}
 														/>
 														<Route
 															path="/tools/passwords"
 															element={
-																<PasswordManagerPage />
+																<Suspense fallback={<PasswordAppSkeleton />}>
+																	<PasswordManagerPage />
+																</Suspense>
 															}
 														/>
 														<Route
 															path="/tools/cryptoSafe"
 															element={
-																<CryptoSafePage />
+																<Suspense fallback={<CryptoSafeSkeleton />}>
+																	<CryptoSafePage />
+																</Suspense>
 															}
 														/>
 														<Route
