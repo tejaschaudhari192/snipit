@@ -109,7 +109,7 @@ function PasswordManagerInner() {
 							<div className="h-full w-full overflow-hidden flex flex-col bg-background relative z-0">
 								<Suspense fallback={<ListSkeleton />}>
 									<PasswordList
-										activeId={activeItem?.id ?? null}
+										activeId={null}
 										onSelect={handleSelect}
 										onEdit={handleEdit}
 									/>
@@ -121,7 +121,7 @@ function PasswordManagerInner() {
 					<div className="flex-1 flex overflow-hidden rounded-2xl border border-border bg-card/50 shadow-sm backdrop-blur-sm m-4 relative">
 						<ResizablePanelGroup
 							orientation="horizontal"
-							autoSaveId="password-manager-layout"
+							id="password-manager-layout"
 						>
 							{/* Left - Sidebar */}
 							<ResizablePanel
