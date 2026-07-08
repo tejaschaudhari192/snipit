@@ -7,6 +7,9 @@ const PasswordDetail = React.lazy(() => import("./components/password-detail"));
 const VaultOnboarding = React.lazy(
 	() => import("./components/vault-onboarding"),
 );
+const CloudVaultDetected = React.lazy(
+	() => import("./components/cloud-vault-detected"),
+);
 const VaultUnlock = React.lazy(() => import("./components/vault-unlock"));
 const MobileSidebarDrawer = React.lazy(
 	() => import("./components/mobile-sidebar-drawer"),
@@ -45,6 +48,10 @@ function PasswordManagerInner() {
 		loading,
 		error,
 		hasExistingVault,
+		setHasExistingVault,
+		cloudVaultStatus,
+		setIsCloudSyncEnabled,
+		setCloudVaultStatus,
 	} = usePassword();
 	const {
 		activeItem,
@@ -70,12 +77,27 @@ function PasswordManagerInner() {
 		handleSelect(item);
 	};
 
-	if (hasExistingVault === null) {
+	if (hasExistingVault === null || cloudVaultStatus === "checking") {
 		return <AppSkeleton />;
 	}
 
 	if (!vault) {
 		if (!hasExistingVault) {
+			if (cloudVaultStatus === "found") {
+				return (
+					<Suspense fallback={<AppSkeleton />}>
+						<CloudVaultDetected
+							onEnableSync={() => {
+								setIsCloudSyncEnabled(true);
+								setCloudVaultStatus("idle");
+								setHasExistingVault(true); // Tell the UI we have a vault so it shows VaultUnlock
+							}}
+							onStartFresh={() => setCloudVaultStatus("not_found")}
+						/>
+					</Suspense>
+				);
+			}
+
 			return (
 				<Suspense fallback={<AppSkeleton />}>
 					<VaultOnboarding onComplete={setMasterPassword} />

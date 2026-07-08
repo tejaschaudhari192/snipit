@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import React, {
 	createContext,
 	useContext,
@@ -7,7 +6,10 @@ import React, {
 	useCallback,
 	type ReactNode,
 } from "react";
-import type { Vault } from "@/tools/password-manager/types";
+import { useTranslation } from "react-i18next";
+import { localStore } from "@/utils/storage";
+import { useAuth } from "@/context/AuthContext";
+import type { CloudVaultStatus, Vault } from "@/tools/password-manager/types";
 import {
 	decryptVault,
 	encryptVault,
@@ -16,8 +18,6 @@ import {
 	STORAGE_KEY,
 } from "@/tools/password-manager/utils/vault";
 import { getItem, setItem } from "@/tools/password-manager/utils/indexed-db";
-import { useTranslation } from "react-i18next";
-import { localStore } from "@/utils/storage";
 
 interface PasswordContextProps {
 	masterPassword: string;
@@ -31,6 +31,9 @@ interface PasswordContextProps {
 	setIsCloudSyncEnabled: (val: boolean) => void;
 	isSyncing: boolean;
 	hasExistingVault: boolean | null;
+	setHasExistingVault: (val: boolean | null) => void;
+	cloudVaultStatus: CloudVaultStatus;
+	setCloudVaultStatus: (status: CloudVaultStatus) => void;
 }
 
 const PasswordContext = createContext<PasswordContextProps | undefined>(
@@ -64,6 +67,8 @@ export const PasswordProvider: React.FC<ProviderProps> = ({ children }) => {
 	const [hasExistingVault, setHasExistingVault] = useState<boolean | null>(
 		null,
 	);
+	const [cloudVaultStatus, setCloudVaultStatus] = useState<CloudVaultStatus>('idle');
+	const { user } = useAuth();
 
 	// Persist cloud sync preference
 	useEffect(() => {
@@ -78,6 +83,24 @@ export const PasswordProvider: React.FC<ProviderProps> = ({ children }) => {
 			setHasExistingVault(!!stored);
 		});
 	}, []);
+
+	// Check for cloud vault on init if logged in and sync is not enabled locally
+	useEffect(() => {
+		if (user && !isCloudSyncEnabled && cloudVaultStatus === 'idle') {
+			const checkCloud = async () => {
+				setCloudVaultStatus('checking');
+				const cloudData = await fetchVaultFromCloud();
+				if (cloudData && cloudData.encryptedBlob) {
+					setCloudVaultStatus('found');
+				} else {
+					setCloudVaultStatus('not_found');
+				}
+			};
+			checkCloud();
+		} else if (!user && cloudVaultStatus === 'idle') {
+			setCloudVaultStatus('not_found');
+		}
+	}, [user, isCloudSyncEnabled, cloudVaultStatus]);
 
 	// Load vault when masterPassword changes
 	useEffect(() => {
@@ -182,6 +205,9 @@ export const PasswordProvider: React.FC<ProviderProps> = ({ children }) => {
 				setIsCloudSyncEnabled,
 				isSyncing,
 				hasExistingVault,
+				setHasExistingVault,
+				cloudVaultStatus,
+				setCloudVaultStatus,
 			}}
 		>
 			{children}

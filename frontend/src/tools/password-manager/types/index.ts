@@ -56,3 +56,5 @@ export interface VaultStorage {
 	iv: string;
 	salt: string;
 }
+
+export type CloudVaultStatus = 'idle' | 'checking' | 'found' | 'not_found';

@@ -55,50 +55,56 @@ export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
 	const passwordsMatch = password === confirmPassword && password.length > 0;
 
 	const renderStep1 = () => (
-		<div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-			<div className="text-center space-y-4">
-				<div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 mb-2 ring-8 ring-primary/5">
-					<Shield className="h-10 w-10 text-primary" />
+		<div className="space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+			<div className="text-center space-y-3 md:space-y-4">
+				<div className="inline-flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-primary/10 mb-2 ring-8 ring-primary/5">
+					<Shield className="h-8 w-8 md:h-10 md:w-10 text-primary" />
 				</div>
-				<h1 className="text-3xl font-bold tracking-tight">
+				<h1 className="text-2xl md:text-3xl font-bold tracking-tight">
 					Welcome to Snipit Vault
 				</h1>
-				<p className="text-muted-foreground max-w-sm mx-auto">
+				<p className="text-sm md:text-base text-muted-foreground max-w-sm mx-auto">
 					Your passwords and secrets, encrypted locally. Only you hold
 					the key.
 				</p>
 			</div>
 
-			<div className="grid gap-4 sm:grid-cols-3 max-w-4xl mx-auto">
+			<div className="grid gap-3 sm:grid-cols-3 max-w-4xl mx-auto">
 				<Card className="bg-background/60 backdrop-blur-sm border-border/50">
-					<CardContent className="p-4 flex flex-col items-center text-center space-y-2">
-						<Lock className="h-6 w-6 text-primary mb-1" />
-						<h3 className="font-semibold text-sm">
-							AES-256 Encryption
-						</h3>
-						<p className="text-xs text-muted-foreground">
-							Military-grade protection for your data.
-						</p>
+					<CardContent className="p-4 flex sm:flex-col items-center sm:text-center text-left gap-4 sm:gap-2">
+						<Lock className="h-6 w-6 sm:h-8 sm:w-8 text-primary shrink-0" />
+						<div>
+							<h3 className="font-semibold text-sm">
+								AES-256 Encryption
+							</h3>
+							<p className="text-xs text-muted-foreground mt-0.5 sm:mt-0">
+								Military-grade protection for your data.
+							</p>
+						</div>
 					</CardContent>
 				</Card>
 				<Card className="bg-background/60 backdrop-blur-sm border-border/50">
-					<CardContent className="p-4 flex flex-col items-center text-center space-y-2">
-						<KeyRound className="h-6 w-6 text-primary mb-1" />
-						<h3 className="font-semibold text-sm">
-							Zero Knowledge
-						</h3>
-						<p className="text-xs text-muted-foreground">
-							We cannot see or access your passwords.
-						</p>
+					<CardContent className="p-4 flex sm:flex-col items-center sm:text-center text-left gap-4 sm:gap-2">
+						<KeyRound className="h-6 w-6 sm:h-8 sm:w-8 text-primary shrink-0" />
+						<div>
+							<h3 className="font-semibold text-sm">
+								Zero Knowledge
+							</h3>
+							<p className="text-xs text-muted-foreground mt-0.5 sm:mt-0">
+								We cannot see or access your passwords.
+							</p>
+						</div>
 					</CardContent>
 				</Card>
 				<Card className="bg-background/60 backdrop-blur-sm border-border/50">
-					<CardContent className="p-4 flex flex-col items-center text-center space-y-2">
-						<Cloud className="h-6 w-6 text-primary mb-1" />
-						<h3 className="font-semibold text-sm">Optional Sync</h3>
-						<p className="text-xs text-muted-foreground">
-							Sync encrypted vaults across devices.
-						</p>
+					<CardContent className="p-4 flex sm:flex-col items-center sm:text-center text-left gap-4 sm:gap-2">
+						<Cloud className="h-6 w-6 sm:h-8 sm:w-8 text-primary shrink-0" />
+						<div>
+							<h3 className="font-semibold text-sm">Optional Sync</h3>
+							<p className="text-xs text-muted-foreground mt-0.5 sm:mt-0">
+								Sync encrypted vaults across devices.
+							</p>
+						</div>
 					</CardContent>
 				</Card>
 			</div>
@@ -333,8 +339,8 @@ export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
 	);
 
 	return (
-		<div className="min-h-[80vh] flex flex-col items-center justify-center p-4 md:p-8">
-			<div className="w-full">
+		<div className="h-full w-full overflow-y-auto flex flex-col items-center justify-center p-4 md:p-8">
+			<div className="w-full my-auto py-8">
 				{step === 1 && renderStep1()}
 				{step === 2 && renderStep2()}
 				{step === 3 && renderStep3()}
