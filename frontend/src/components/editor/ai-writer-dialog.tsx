@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { Loader2, Wand2 } from "lucide-react";
 import { AxiosError } from "axios";
 import { useTranslation } from "react-i18next";
+import TextGradient from "@/components/text-gradient";
 
 export interface AiWriterDialogProps {
 	isOpen: boolean;
@@ -186,8 +187,16 @@ export const AiWriterDialog = ({
 							{isLoading ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-									{t("ai_writer.generating") ||
-										"Generating..."}
+									<TextGradient
+										highlightColor="var(--foreground)"
+										baseColor="var(--muted-foreground)"
+										spread={20}
+										duration={2}
+										className="font-medium"
+									>
+										{t("ai_writer.generating") ||
+											"Generating..."}
+									</TextGradient>
 								</>
 							) : (
 								<>

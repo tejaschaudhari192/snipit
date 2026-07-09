@@ -3,7 +3,7 @@ import { cn } from "@/utils";
 
 interface StatusBadgeProps {
 	icon: React.ReactNode;
-	label: string;
+	label: React.ReactNode;
 	className?: string;
 	labelClassName?: string;
 }

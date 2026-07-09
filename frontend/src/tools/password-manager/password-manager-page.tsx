@@ -21,6 +21,7 @@ import {
 	DetailSkeleton,
 } from "./components/skeletons";
 import { useTranslation } from "react-i18next";
+import TextGradient from "@/components/text-gradient";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import {
 	ResizablePanelGroup,
@@ -123,7 +124,15 @@ function PasswordManagerInner() {
 			<div className="h-full flex flex-col bg-background">
 				{loading && (
 					<p className="text-sm text-muted-foreground px-4 pt-2">
-						{t("tools.password_manager_loading")}
+						<TextGradient
+							highlightColor="var(--foreground)"
+							baseColor="var(--muted-foreground)"
+							spread={20}
+							duration={2}
+							className="font-medium"
+						>
+							{t("tools.password_manager_loading")}
+						</TextGradient>
 					</p>
 				)}
 				{isMobile ? (

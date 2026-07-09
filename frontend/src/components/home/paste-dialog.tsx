@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { LogIn } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import TextGradient from "@/components/text-gradient";
 import { useNavigate } from "react-router-dom";
 import type { User } from "@/types";
 import { IdTypeTabs } from "./paste-dialog/id-type-tabs";
@@ -157,13 +158,33 @@ export const PasteDialog = ({
 						}
 						className="px-8 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all font-bold"
 					>
-						{isSubmitting
-							? contentType === "file" &&
-								isUploading &&
-								uploadProgress < 100
-								? t("home.file_uploading")
-								: t("common.submitting")
-							: t("home.dynamic_id_dialog.submit")}
+						{isSubmitting ? (
+							contentType === "file" &&
+							isUploading &&
+							uploadProgress < 100 ? (
+								<TextGradient
+									highlightColor="var(--foreground)"
+									baseColor="var(--muted-foreground)"
+									spread={20}
+									duration={2}
+									className="font-medium"
+								>
+									{t("home.file_uploading")}
+								</TextGradient>
+							) : (
+								<TextGradient
+									highlightColor="var(--foreground)"
+									baseColor="var(--muted-foreground)"
+									spread={20}
+									duration={2}
+									className="font-medium"
+								>
+									{t("common.submitting")}
+								</TextGradient>
+							)
+						) : (
+							t("home.dynamic_id_dialog.submit")
+						)}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

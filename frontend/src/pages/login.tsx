@@ -17,6 +17,7 @@ import {
 import { toast } from "sonner";
 import { LogIn, Mail, Lock, ArrowRight } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
+import TextGradient from "@/components/text-gradient";
 import { useTranslation } from "react-i18next";
 import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 import { PasswordInput } from "@/components/ui/password-input";
@@ -181,7 +182,15 @@ const LoginPage = () => {
 									{isLoading ? (
 										<>
 											<ShimmerSection type="mini-loader" />
-											{t("auth.logging_in")}
+											<TextGradient
+												highlightColor="var(--foreground)"
+												baseColor="var(--muted-foreground)"
+												spread={20}
+												duration={2}
+												className="font-medium"
+											>
+												{t("auth.logging_in")}
+											</TextGradient>
 										</>
 									) : (
 										<>

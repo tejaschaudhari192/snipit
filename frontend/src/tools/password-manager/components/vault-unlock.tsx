@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Shield, LockOpen, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import TextGradient from "@/components/text-gradient";
 import ReadMoreDialog from "./ReadMoreDialog";
 
 interface VaultUnlockProps {
@@ -89,7 +90,15 @@ export default function VaultUnlock({
 							{loading ? (
 								<>
 									<Loader2 className="mr-2 h-5 w-5 animate-spin" />
-									{t("tools.password_manager_decrypting")}
+									<TextGradient
+										highlightColor="var(--foreground)"
+										baseColor="var(--muted-foreground)"
+										spread={20}
+										duration={2}
+										className="font-medium"
+									>
+										{t("tools.password_manager_decrypting")}
+									</TextGradient>
 								</>
 							) : (
 								<>

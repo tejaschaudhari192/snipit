@@ -5,6 +5,7 @@ import { ContentTypeSelector } from "@/components/common/content-type-selector";
 
 import { ExpirySelector } from "@/components/common/expiry-selector";
 import { useTranslation } from "react-i18next";
+import TextGradient from "@/components/text-gradient";
 
 import { ButtonGroup } from "@/components/ui/button-group";
 import { ChevronDown, Users } from "lucide-react";
@@ -76,9 +77,29 @@ export const MainToolbar = memo(
 					isUploading &&
 					uploadProgress < 100
 				) {
-					return t("home.file_uploading");
+					return (
+						<TextGradient
+							highlightColor="var(--foreground)"
+							baseColor="var(--muted-foreground)"
+							spread={20}
+							duration={2}
+							className="font-medium"
+						>
+							{t("home.file_uploading")}
+						</TextGradient>
+					);
 				}
-				return t("common.submitting");
+				return (
+					<TextGradient
+						highlightColor="var(--foreground)"
+						baseColor="var(--muted-foreground)"
+						spread={20}
+						duration={2}
+						className="font-medium"
+					>
+						{t("common.submitting")}
+					</TextGradient>
+				);
 			}
 
 			if (contentType === "link") {

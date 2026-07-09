@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import type { DragEvent, ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
+import TextGradient from "@/components/text-gradient";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
 import {
@@ -533,11 +534,19 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 					<div className="space-y-2">
 						<div className="flex items-center justify-between text-sm">
 							<span className="text-muted-foreground">
-								{t(
-									isEncrypt
-										? "common.encrypting"
-										: "common.decrypting",
-								)}
+								<TextGradient
+									highlightColor="var(--foreground)"
+									baseColor="var(--muted-foreground)"
+									spread={20}
+									duration={2}
+									className="font-medium"
+								>
+									{t(
+										isEncrypt
+											? "common.encrypting"
+											: "common.decrypting",
+									)}
+								</TextGradient>
 							</span>
 							<span className="font-medium">{progress}%</span>
 						</div>
@@ -673,17 +682,27 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 						) : (
 							<Unlock className="h-4 w-4" />
 						)}
-						{state === "processing"
-							? t(
+						{state === "processing" ? (
+							<TextGradient
+								highlightColor="var(--foreground)"
+								baseColor="var(--muted-foreground)"
+								spread={20}
+								duration={2}
+								className="font-medium"
+							>
+								{t(
 									isEncrypt
 										? "common.encrypting"
 										: "common.decrypting",
-								)
-							: t(
-									isEncrypt
-										? "tools.encrypt_button"
-										: "tools.decrypt_button",
 								)}
+							</TextGradient>
+						) : (
+							t(
+								isEncrypt
+									? "tools.encrypt_button"
+									: "tools.decrypt_button",
+							)
+						)}
 					</Button>
 				)}
 			</CardContent>

@@ -1,4 +1,5 @@
 import icon from "@/assets/brand/icon.png";
+import TextGradient from "@/components/text-gradient";
 import { useTranslation } from "react-i18next";
 import type { HealthData } from "@/types";
 import {
@@ -100,20 +101,19 @@ const SplashPage = ({ healthData }: SplashPageProps) => {
 							<div className="flex items-center justify-center w-6 h-6 rounded-lg bg-muted/40 border border-border/10">
 								{getStepIcon()}
 							</div>
-							<span
-								className={
-									isError
-										? "text-destructive"
-										: "relative overflow-hidden"
-								}
-							>
-								<span className={!isError ? "opacity-90" : ""}>
-									{isError
-										? t("splash.system_failure")
-										: currentLabel}
-								</span>
-								{!isError && (
-									<div className="absolute inset-0 bg-linear-to-r from-transparent via-foreground/20 to-transparent -translate-x-full animate-[shimmer_2s_infinite] pointer-events-none" />
+							<span className={isError ? "text-destructive" : ""}>
+								{isError ? (
+									t("splash.system_failure")
+								) : (
+									<TextGradient
+										highlightColor="var(--foreground)"
+										baseColor="var(--muted-foreground)"
+										spread={20}
+										duration={2}
+										className="font-medium opacity-90"
+									>
+										{currentLabel}
+									</TextGradient>
 								)}
 							</span>
 						</span>

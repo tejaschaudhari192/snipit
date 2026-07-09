@@ -17,6 +17,7 @@ import {
 import { toast } from "sonner";
 import { Mail, ArrowLeft, ArrowRight, KeyRound } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
+import TextGradient from "@/components/text-gradient";
 
 const ForgotPasswordPage = () => {
 	const [email, setEmail] = useState("");
@@ -116,9 +117,17 @@ const ForgotPasswordPage = () => {
 										{isLoading ? (
 											<>
 												<ShimmerSection type="mini-loader" />
-												{t(
-													"auth.forgot_password_sending",
-												)}
+												<TextGradient
+													highlightColor="var(--foreground)"
+													baseColor="var(--muted-foreground)"
+													spread={20}
+													duration={2}
+													className="font-medium"
+												>
+													{t(
+														"auth.forgot_password_sending",
+													)}
+												</TextGradient>
 											</>
 										) : (
 											<>

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import TextGradient from "@/components/text-gradient";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface DeleteConfirmDialogProps {
@@ -68,7 +69,15 @@ export const DeleteConfirmDialog = ({
 						{isDeleting ? (
 							<>
 								<Skeleton className="h-3 w-3 rounded-full bg-white/40 shrink-0" />
-								<span>{t("common.submitting")}</span>
+								<TextGradient
+									highlightColor="var(--foreground)"
+									baseColor="var(--muted-foreground)"
+									spread={20}
+									duration={2}
+									className="font-medium"
+								>
+									{t("common.submitting")}
+								</TextGradient>
 							</>
 						) : (
 							t("display.delete_button")

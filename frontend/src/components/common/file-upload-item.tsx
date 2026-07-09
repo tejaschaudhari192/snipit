@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import TextGradient from "@/components/text-gradient";
 import { CheckCircle2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -73,7 +74,15 @@ export const FileUploadItem = ({
 						<div className="font-bold">
 							{file.isUploading ? (
 								<span className="text-primary flex items-center gap-1">
-									{t("home.file_uploading")}
+									<TextGradient
+										highlightColor="var(--foreground)"
+										baseColor="var(--muted-foreground)"
+										spread={20}
+										duration={2}
+										className="font-medium"
+									>
+										{t("home.file_uploading")}
+									</TextGradient>
 								</span>
 							) : file.progress === 100 ? (
 								<span className="text-emerald-500">
