@@ -125,7 +125,7 @@ export const FilePreview = ({
 			<div
 				className={cn(
 					containerClass,
-					"py-8 px-4 flex flex-col gap-4 bg-gradient-to-br from-primary/5 via-primary/10 to-transparent",
+					"py-8 px-4 flex flex-col gap-4 bg-linear-to-br from-primary/5 via-primary/10 to-transparent",
 				)}
 			>
 				<FileAudio className="w-12 h-12 text-primary animate-pulse drop-shadow-md" />

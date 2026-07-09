@@ -25,7 +25,7 @@ const Error = () => {
 			<div className="max-w-2xl w-full text-center relative z-10 animate-in fade-in zoom-in duration-700">
 				<div className="relative mb-8">
 					<div className="relative">
-						<h1 className="text-[150px] md:text-[200px] font-black text-transparent bg-clip-text bg-gradient-to-b from-primary via-primary/70 to-primary/20 leading-none select-none">
+						<h1 className="text-[150px] md:text-[200px] font-black text-transparent bg-clip-text bg-linear-to-b from-primary via-primary/70 to-primary/20 leading-none select-none">
 							404
 						</h1>
 					</div>

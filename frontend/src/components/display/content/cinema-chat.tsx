@@ -83,7 +83,7 @@ export const CinemaChat = ({
 									>
 										{msg.sender}
 									</span>
-									<span className="text-white/95 break-words bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5 inline-block w-fit max-w-[95%]">
+									<span className="text-white/95 wrap-break-word bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5 inline-block w-fit max-w-[95%]">
 										{msg.text}
 									</span>
 								</div>

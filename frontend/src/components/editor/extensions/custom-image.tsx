@@ -148,7 +148,7 @@ const ImageNodeView = (props: NodeViewProps) => {
 								<FileText className="w-4 h-4" />
 							</button>
 
-							<div className="w-[1px] h-4 bg-border mx-1" />
+							<div className="w-px h-4 bg-border mx-1" />
 
 							<button
 								onClick={() =>
@@ -185,7 +185,7 @@ const ImageNodeView = (props: NodeViewProps) => {
 								L
 							</button>
 
-							<div className="w-[1px] h-4 bg-border mx-1" />
+							<div className="w-px h-4 bg-border mx-1" />
 
 							<button
 								onClick={() =>
@@ -227,7 +227,7 @@ const ImageNodeView = (props: NodeViewProps) => {
 								<AlignRight className="w-4 h-4" />
 							</button>
 
-							<div className="w-[1px] h-4 bg-border mx-1" />
+							<div className="w-px h-4 bg-border mx-1" />
 
 							<button
 								onClick={() => deleteNode()}

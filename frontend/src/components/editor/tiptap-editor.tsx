@@ -344,7 +344,7 @@ export function TiptapEditor({
 			className={cn(
 				"relative flex flex-col overflow-hidden transition-all",
 				isZenMode
-					? "fixed inset-0 z-[9999] bg-background text-foreground w-screen h-screen border-none"
+					? "fixed inset-0 z-9999 bg-background text-foreground w-screen h-screen border-none"
 					: "w-full h-full rounded-xl bg-background border border-border/40",
 			)}
 			onDragEnter={handleDragEnter}
@@ -366,7 +366,7 @@ export function TiptapEditor({
 
 				{/* Drag and Drop visual indicator */}
 				{isDragging && !readOnly && (
-					<div className="absolute inset-0 z-[9999] bg-background/85 backdrop-blur-md flex flex-col items-center justify-center border-2 border-dashed border-primary/50 m-3 rounded-lg pointer-events-none animate-in fade-in duration-200">
+					<div className="absolute inset-0 z-9999 bg-background/85 backdrop-blur-md flex flex-col items-center justify-center border-2 border-dashed border-primary/50 m-3 rounded-lg pointer-events-none animate-in fade-in duration-200">
 						<div className="p-4 bg-muted rounded-full border border-border mb-3 shadow-md">
 							<ImageIcon className="h-7 w-7 text-primary animate-bounce" />
 						</div>
@@ -490,7 +490,7 @@ export function TiptapEditor({
 							tippyOptions={{
 								placement: "top",
 							}}
-							className="flex w-fit max-w-[90vw] items-center overflow-hidden rounded-md border border-border bg-popover p-1 shadow-md gap-0.5 z-[99999]"
+							className="flex w-fit max-w-[90vw] items-center overflow-hidden rounded-md border border-border bg-popover p-1 shadow-md gap-0.5 z-99999"
 						>
 							<BubbleMenuContent />
 						</EditorBubble>

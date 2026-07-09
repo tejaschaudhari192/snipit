@@ -159,18 +159,18 @@ export function TiptapToolbar({
 		<TooltipProvider delayDuration={400}>
 			<div className="flex flex-wrap items-center gap-1 p-1.5 border-b border-border/40 bg-muted/20 select-none w-full">
 				<HistoryControls editor={editor} />
-				<div className="w-[1px] h-5 bg-border/40 mx-1 self-center" />
+				<div className="w-px h-5 bg-border/40 mx-1 self-center" />
 
 				<HeadingDropdown editor={editor} />
 				<FontDropdown editor={editor} />
-				<div className="w-[1px] h-5 bg-border/40 mx-1 self-center" />
+				<div className="w-px h-5 bg-border/40 mx-1 self-center" />
 
 				<FormattingControls editor={editor} />
-				<div className="w-[1px] h-5 bg-border/40 mx-1 self-center" />
+				<div className="w-px h-5 bg-border/40 mx-1 self-center" />
 
 				<ListControls editor={editor} />
 				<BlockControls editor={editor} />
-				<div className="w-[1px] h-5 bg-border/40 mx-1 self-center" />
+				<div className="w-px h-5 bg-border/40 mx-1 self-center" />
 
 				<AlignmentDropdown editor={editor} />
 				<LineHeightDropdown editor={editor} />
@@ -189,7 +189,7 @@ export function TiptapToolbar({
 							.run()
 					}
 				/>
-				<div className="w-[1px] h-5 bg-border/40 mx-1 self-center" />
+				<div className="w-px h-5 bg-border/40 mx-1 self-center" />
 
 				<MediaControls
 					editor={editor}
@@ -207,14 +207,14 @@ export function TiptapToolbar({
 						editor.chain().focus().setImage({ src: url }).run()
 					}
 				/>
-				<div className="w-[1px] h-5 bg-border/40 mx-1 self-center" />
+				<div className="w-px h-5 bg-border/40 mx-1 self-center" />
 
 				<ColorControls editor={editor} />
 
 				{/* Emoji Picker Popover */}
 				<EmojiPicker editor={editor} />
 
-				<div className="w-[1px] h-5 bg-border/40 mx-1 self-center" />
+				<div className="w-px h-5 bg-border/40 mx-1 self-center" />
 
 				{/* Find & Replace */}
 				<TooltipButton

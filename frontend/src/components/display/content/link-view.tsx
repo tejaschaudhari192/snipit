@@ -141,7 +141,7 @@ export const LinkView = ({
 			>
 				{/* Admin Warning Banner */}
 				<div className="w-full flex items-start gap-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 backdrop-blur-md shadow-lg shadow-amber-500/5">
-					<div className="p-2 rounded-xl bg-amber-500/20 text-amber-500 mt-0.5 flex-shrink-0">
+					<div className="p-2 rounded-xl bg-amber-500/20 text-amber-500 mt-0.5 shrink-0">
 						<AlertCircle className="w-5 h-5 animate-pulse" />
 					</div>
 					<div className="flex-1 flex flex-col gap-1">
@@ -210,7 +210,7 @@ export const LinkView = ({
 					</div>
 				</div>
 
-				<h3 className="text-2xl font-black mb-3 text-center bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent animate-pulse">
+				<h3 className="text-2xl font-black mb-3 text-center bg-linear-to-r from-primary to-purple-500 bg-clip-text text-transparent animate-pulse">
 					{t("common.redirecting_now")}
 				</h3>
 

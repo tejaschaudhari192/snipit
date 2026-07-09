@@ -50,7 +50,7 @@ export const CinemaControls = ({
 }: CinemaControlsProps) => {
 	return (
 		<div
-			className={`absolute bottom-0 left-0 right-0 px-6 py-4 bg-gradient-to-t from-black/95 via-black/75 to-transparent z-30 flex flex-col gap-3 transition-opacity duration-300 ${
+			className={`absolute bottom-0 left-0 right-0 px-6 py-4 bg-linear-to-t from-black/95 via-black/75 to-transparent z-30 flex flex-col gap-3 transition-opacity duration-300 ${
 				!isPlaying || isControlsHovered
 					? "opacity-100 pointer-events-auto"
 					: "opacity-0 pointer-events-none"

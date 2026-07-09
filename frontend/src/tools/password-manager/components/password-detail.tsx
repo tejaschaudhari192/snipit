@@ -420,7 +420,7 @@ export default function PasswordDetail({
 													</Button>
 												)}
 											</div>
-											<p className="text-sm font-mono text-foreground whitespace-pre-wrap break-words bg-background rounded-xl px-3 py-2.5 border border-border">
+											<p className="text-sm font-mono text-foreground whitespace-pre-wrap wrap-break-word bg-background rounded-xl px-3 py-2.5 border border-border">
 												{value}
 											</p>
 										</div>
@@ -462,7 +462,7 @@ export default function PasswordDetail({
 									<Label className="text-xs text-muted-foreground mb-1.5 block">
 										{t("tools.password_detail_notes_label")}
 									</Label>
-									<p className="text-sm text-foreground whitespace-pre-wrap break-words">
+									<p className="text-sm text-foreground whitespace-pre-wrap wrap-break-word">
 										{item.notes}
 									</p>
 								</div>
@@ -514,7 +514,7 @@ export default function PasswordDetail({
 													{field.value}
 												</a>
 											) : (
-												<span className="text-sm text-foreground break-words block">
+												<span className="text-sm text-foreground wrap-break-word block">
 													{field.value}
 												</span>
 											)}

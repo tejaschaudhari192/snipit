@@ -21,7 +21,7 @@ const ServerErrorPage = ({ error, services }: ServerErrorPageProps) => {
 					<ServerOff className="w-16 h-16 text-destructive animate-pulse" />
 				</div>
 
-				<h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter text-center mb-4 bg-clip-text text-transparent bg-gradient-to-b from-foreground to-muted-foreground">
+				<h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter text-center mb-4 bg-clip-text text-transparent bg-linear-to-b from-foreground to-muted-foreground">
 					{t("server_error.title")}
 				</h1>
 
@@ -102,7 +102,7 @@ const ServerErrorPage = ({ error, services }: ServerErrorPageProps) => {
 			</div>
 
 			{/* Decorative elements */}
-			<div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-destructive/20 to-transparent" />
+			<div className="absolute bottom-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-destructive/20 to-transparent" />
 		</div>
 	);
 };

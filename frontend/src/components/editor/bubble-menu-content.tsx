@@ -226,7 +226,7 @@ export function BubbleMenuContent() {
 				<Sparkles className="h-3.5 w-3.5 fill-purple-500/20" />
 				<span>Ask AI</span>
 			</EditorBubbleItem>
-			<div className="w-[1px] h-4 bg-border/80 self-center mx-0.5" />
+			<div className="w-px h-4 bg-border/80 self-center mx-0.5" />
 
 			<EditorBubbleItem
 				onSelect={() => {}}
@@ -284,7 +284,7 @@ export function BubbleMenuContent() {
 				</DropdownMenu>
 			</EditorBubbleItem>
 
-			<div className="w-[1px] h-4 bg-border/80 self-center mx-0.5" />
+			<div className="w-px h-4 bg-border/80 self-center mx-0.5" />
 
 			<EditorBubbleItem
 				onSelect={() => {}}
@@ -338,7 +338,7 @@ export function BubbleMenuContent() {
 				</DropdownMenu>
 			</EditorBubbleItem>
 
-			<div className="w-[1px] h-4 bg-border/80 self-center mx-0.5" />
+			<div className="w-px h-4 bg-border/80 self-center mx-0.5" />
 
 			<EditorBubbleItem
 				onSelect={handleOpenLinkDialog}
@@ -356,7 +356,7 @@ export function BubbleMenuContent() {
 				<Sigma className="h-3.5 w-3.5" />
 			</EditorBubbleItem>
 
-			<div className="w-[1px] h-4 bg-border/80 self-center mx-0.5" />
+			<div className="w-px h-4 bg-border/80 self-center mx-0.5" />
 
 			<EditorBubbleItem
 				onSelect={(editor) => editor.chain().focus().toggleBold().run()}
@@ -439,7 +439,7 @@ export function BubbleMenuContent() {
 				<Subscript className="h-3.5 w-3.5" />
 			</EditorBubbleItem>
 
-			<div className="w-[1px] h-4 bg-border/80 self-center mx-0.5" />
+			<div className="w-px h-4 bg-border/80 self-center mx-0.5" />
 
 			<EditorBubbleItem onSelect={() => {}} className="flex items-center">
 				<DropdownMenu>
@@ -589,7 +589,7 @@ export function BubbleMenuContent() {
 
 			{/* Link Modal */}
 			<Dialog open={linkDialogOpen} onOpenChange={setLinkDialogOpen}>
-				<DialogContent className="sm:max-w-md border border-border/50 bg-background shadow-2xl rounded-2xl p-6 flex flex-col gap-4 z-[999999]">
+				<DialogContent className="sm:max-w-md border border-border/50 bg-background shadow-2xl rounded-2xl p-6 flex flex-col gap-4 z-999999">
 					<DialogHeader>
 						<DialogTitle className="text-base font-semibold text-foreground">
 							Insert Link

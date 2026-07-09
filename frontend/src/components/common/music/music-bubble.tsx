@@ -168,7 +168,7 @@ const MusicBubble: React.FC = () => {
 					setIsVisible(false);
 					localStore.setItem("music-bubble-visible", "false");
 				}}
-				className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-popover border border-border flex items-center justify-center text-muted-foreground hover:text-foreground shadow cursor-pointer z-[60]"
+				className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-popover border border-border flex items-center justify-center text-muted-foreground hover:text-foreground shadow cursor-pointer z-60"
 				aria-label="Hide Music Player"
 			>
 				<X className="h-3 w-3" />

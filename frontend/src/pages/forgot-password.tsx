@@ -57,7 +57,7 @@ const ForgotPasswordPage = () => {
 
 			<div className="w-full max-w-[400px] relative z-10 animate-in fade-in slide-in-from-bottom-6 duration-700">
 				<Card className="glass-card border-border/40 overflow-hidden shadow-2xl rounded-3xl gap-0 py-0">
-					<div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+					<div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-primary/40 to-transparent" />
 
 					<CardHeader className="space-y-1.5 pb-5 pt-7">
 						<div className="flex items-center justify-center mb-4">
