@@ -185,7 +185,8 @@
 		"password_manager_upload_file_desc": "விவரங்களை தானாக நிரப்ப கோப்பைத் தேர்ந்தெடுக்கவும்",
 		"password_manager_choose_file": "கோப்பைத் தேர்ந்தெடு",
 		"password_manager_generate": "உருவாக்கு",
-		"password_manager_strength_label": "கடவுச்சொல் வலிமை:"
+		"password_manager_strength_label": "கடவுச்சொல் வலிமை:",
+		"password_manager_delete_confirm": "இந்த உருப்படியை நிச்சயமாக நீக்க வேண்டுமா?"
 	},
 	"errors": {
 		"storage_access_denied": "சேமிப்பக அணுகல் மறுக்கப்பட்டது. தயவுசெய்து குக்கீகள்/சேமிப்பகத்தை இயக்கவும்.",

@@ -185,7 +185,8 @@
 		"password_manager_upload_file_desc": "तपशील स्वयंचलितपणे भरण्यासाठी फाईल निवडा",
 		"password_manager_choose_file": "फाईल निवडा",
 		"password_manager_generate": "तयार करा",
-		"password_manager_strength_label": "पासवर्डची ताकद:"
+		"password_manager_strength_label": "पासवर्डची ताकद:",
+		"password_manager_delete_confirm": "तुम्हाला खात्री आहे का की तुम्ही हा आयटम हटवू इच्छिता?"
 	},
 	"errors": {
 		"storage_access_denied": "स्टोरेज प्रवेश नाकारला. कृपया कुकीज/स्टोरेज सक्षम करा.",

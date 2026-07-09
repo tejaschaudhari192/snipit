@@ -9,55 +9,10 @@ import { usePageTitle } from "@/hooks/use-page-title";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { playRemoveSound } from "@/utils";
 import { useSnippets } from "@/context/SnippetContext";
-
+import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
 const SnippetCard = lazy(() =>
 	import("@/components/snippets/snippet-card").then((m) => ({
 		default: m.SnippetCard,
-	})),
-);
-const AlertDialog = lazy(() =>
-	import("@/components/ui/alert-dialog").then((m) => ({
-		default: m.AlertDialog,
-	})),
-);
-const AlertDialogAction = lazy(() =>
-	import("@/components/ui/alert-dialog").then((m) => ({
-		default: m.AlertDialogAction,
-	})),
-);
-const AlertDialogCancel = lazy(() =>
-	import("@/components/ui/alert-dialog").then((m) => ({
-		default: m.AlertDialogCancel,
-	})),
-);
-const AlertDialogContent = lazy(() =>
-	import("@/components/ui/alert-dialog").then((m) => ({
-		default: m.AlertDialogContent,
-	})),
-);
-const AlertDialogDescription = lazy(() =>
-	import("@/components/ui/alert-dialog").then((m) => ({
-		default: m.AlertDialogDescription,
-	})),
-);
-const AlertDialogFooter = lazy(() =>
-	import("@/components/ui/alert-dialog").then((m) => ({
-		default: m.AlertDialogFooter,
-	})),
-);
-const AlertDialogHeader = lazy(() =>
-	import("@/components/ui/alert-dialog").then((m) => ({
-		default: m.AlertDialogHeader,
-	})),
-);
-const AlertDialogTitle = lazy(() =>
-	import("@/components/ui/alert-dialog").then((m) => ({
-		default: m.AlertDialogTitle,
-	})),
-);
-const AlertDialogMedia = lazy(() =>
-	import("@/components/ui/alert-dialog").then((m) => ({
-		default: m.AlertDialogMedia,
 	})),
 );
 
@@ -179,41 +134,13 @@ const HistoryPage = () => {
 				)}
 			</div>
 
-			<Suspense fallback={null}>
-				<AlertDialog
-					open={isClearDialogOpen}
-					onOpenChange={setIsClearDialogOpen}
-				>
-					<AlertDialogContent
-						size="sm"
-						className="border border-border/50 bg-background/60 backdrop-blur-2xl shadow-2xl rounded-2xl ring-1 ring-white/5 overflow-hidden"
-					>
-						<AlertDialogHeader>
-							<AlertDialogMedia className="bg-destructive/10 text-destructive">
-								<Trash2 className="size-8" />
-							</AlertDialogMedia>
-							<AlertDialogTitle>
-								{t("history.clear_history")}
-							</AlertDialogTitle>
-							<AlertDialogDescription>
-								{t("history.clear_confirm")}
-							</AlertDialogDescription>
-						</AlertDialogHeader>
-						<AlertDialogFooter>
-							<AlertDialogCancel variant="ghost">
-								{t("history.cancel")}
-							</AlertDialogCancel>
-							<AlertDialogAction
-								variant="destructive"
-								onClick={confirmClearHistory}
-								className="font-bold"
-							>
-								{t("history.clear_action")}
-							</AlertDialogAction>
-						</AlertDialogFooter>
-					</AlertDialogContent>
-				</AlertDialog>
-			</Suspense>
+			<DeleteConfirmDialog
+				isOpen={isClearDialogOpen}
+				onOpenChange={setIsClearDialogOpen}
+				onConfirm={confirmClearHistory}
+				title={t("history.clear_history")}
+				description={t("history.clear_confirm")}
+			/>
 		</div>
 	);
 };

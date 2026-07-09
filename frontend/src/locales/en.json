@@ -185,7 +185,8 @@
 		"password_manager_upload_file_desc": "Select a file to automatically fill details",
 		"password_manager_choose_file": "Choose File",
 		"password_manager_generate": "Generate",
-		"password_manager_strength_label": "Password strength:"
+		"password_manager_strength_label": "Password strength:",
+		"password_manager_delete_confirm": "Are you sure you want to delete this item?"
 	},
 	"errors": {
 		"storage_access_denied": "Storage access denied. Please enable cookies/storage for full functionality.",

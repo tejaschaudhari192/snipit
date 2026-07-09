@@ -185,7 +185,8 @@
 		"password_manager_upload_file_desc": "تفصیلات خود بخود پُر کرنے کے لیے ایک فائل منتخب کریں",
 		"password_manager_choose_file": "فائل منتخب کریں",
 		"password_manager_generate": "بنائیں",
-		"password_manager_strength_label": "پاس ورڈ کی طاقت:"
+		"password_manager_strength_label": "پاس ورڈ کی طاقت:",
+		"password_manager_delete_confirm": "کیا آپ واقعی اس آئٹم کو حذف کرنا چاہتے ہیں؟"
 	},
 	"errors": {
 		"storage_access_denied": "اسٹوریج تک رسائی مسترد کر دی گئی۔ براہ کرم کوکیز کو فعال کریں۔",

@@ -185,7 +185,8 @@
 		"password_manager_upload_file_desc": "ವಿವರಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಭರ್ತಿ ಮಾಡಲು ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ",
 		"password_manager_choose_file": "ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ",
 		"password_manager_generate": "ರಚಿಸಿ",
-		"password_manager_strength_label": "ಪಾಸ್‌ವರ್ಡ್ ಸಾಮರ್ಥ್ಯ:"
+		"password_manager_strength_label": "ಪಾಸ್‌ವರ್ಡ್ ಸಾಮರ್ಥ್ಯ:",
+		"password_manager_delete_confirm": "ಈ ಐಟಂ ಅನ್ನು ಅಳಿಸಲು ನೀವು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?"
 	},
 	"errors": {
 		"storage_access_denied": "ಶೇಖರಣಾ ಪ್ರವೇಶವನ್ನು ನಿರಾಕರಿಸಲಾಗಿದೆ. ಕುಕೀಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ.",

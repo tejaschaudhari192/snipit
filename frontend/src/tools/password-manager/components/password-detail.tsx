@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import {
 	Eye,
@@ -23,13 +23,20 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import PasswordForm from "@/tools/password-manager/components/password-form";
 import { usePassword } from "@/tools/password-manager/context/use-password";
 import { usePasswordUI } from "@/tools/password-manager/context/password-ui-context";
 import { isOlderThan3Months } from "@/tools/password-manager/utils/formatters";
 import { getFieldsForType } from "@/tools/password-manager/utils/item-types";
 import type { PasswordItem } from "@/tools/password-manager/types";
-import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
+import { Skeleton } from "@/components/ui/skeleton";
+const PasswordForm = lazy(
+	() => import("@/tools/password-manager/components/password-form"),
+);
+const DeleteConfirmDialog = lazy(() =>
+	import("@/components/common/delete-confirm-dialog").then((m) => ({
+		default: m.DeleteConfirmDialog,
+	})),
+);
 
 interface PasswordDetailProps {
 	item: PasswordItem | null | undefined;
@@ -48,6 +55,7 @@ export default function PasswordDetail({
 	const { vault, deleteItem } = usePassword();
 	const { handleEdit } = usePasswordUI();
 	const [showField, setShowField] = useState<Record<string, boolean>>({});
+	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
 	if (!item && !isNew) {
 		return (
@@ -95,12 +103,29 @@ export default function PasswordDetail({
 					</Button>
 				</div>
 				<div className="flex-1 overflow-y-auto no-scrollbar scroll-fade-bottom">
-					<PasswordForm
-						key={item?.id ?? `new_${item?.itemType || "login"}`}
-						onAdd={onSave}
-						editItem={isEditing ? item : undefined}
-						onCancelEdit={onCancel}
-					/>
+					<Suspense
+						fallback={
+							<div className="p-5 space-y-5 animate-pulse">
+								<div className="flex items-center gap-4 pt-6 px-0">
+									<Skeleton className="w-16 h-16 rounded-2xl shrink-0" />
+									<Skeleton className="h-8 flex-1 rounded-xl" />
+								</div>
+								<div className="space-y-3">
+									<Skeleton className="h-10 w-full rounded-xl" />
+									<Skeleton className="h-10 w-full rounded-xl" />
+									<Skeleton className="h-10 w-full rounded-xl" />
+									<Skeleton className="h-24 w-full rounded-xl" />
+								</div>
+							</div>
+						}
+					>
+						<PasswordForm
+							key={item?.id ?? `new_${item?.itemType || "login"}`}
+							onAdd={onSave}
+							editItem={isEditing ? item : undefined}
+							onCancelEdit={onCancel}
+						/>
+					</Suspense>
 				</div>
 			</div>
 		);
@@ -193,15 +218,7 @@ export default function PasswordDetail({
 					<Button
 						variant="ghost"
 						size="icon"
-						onClick={() => {
-							if (
-								window.confirm(
-									"Are you sure you want to delete this item?",
-								)
-							) {
-								deleteItem(item.id);
-							}
-						}}
+						onClick={() => setIsDeleteDialogOpen(true)}
 						className="h-8 w-8 rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10 transition-colors ml-1"
 						title={t("remove") || "Delete"}
 					>
@@ -509,6 +526,20 @@ export default function PasswordDetail({
 					)}
 				</div>
 			</div>
+			{item && (
+				<Suspense fallback={null}>
+					<DeleteConfirmDialog
+						isOpen={isDeleteDialogOpen}
+						onOpenChange={setIsDeleteDialogOpen}
+						onConfirm={() => {
+							deleteItem(item.id);
+							setIsDeleteDialogOpen(false);
+						}}
+						title={t("display.delete_button")}
+						description={t("tools.password_manager_delete_confirm")}
+					/>
+				</Suspense>
+			)}
 		</div>
 	);
 }
