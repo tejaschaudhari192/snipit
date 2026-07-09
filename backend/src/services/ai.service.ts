@@ -42,9 +42,7 @@ interface DagreGraph {
 	setEdge(v: string, w: string, value: Record<string, unknown>): void;
 	nodes(): string[];
 	edges(): { v: string; w: string }[];
-	node(
-		v: string,
-	):
+	node(v: string):
 		| {
 				x: number;
 				y: number;
