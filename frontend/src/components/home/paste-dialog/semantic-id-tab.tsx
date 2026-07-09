@@ -42,8 +42,8 @@ export const SemanticIdTab = ({
 	);
 
 	return (
-		<div className="flex flex-col space-y-3 min-h-[80px]">
-			<div className="flex flex-wrap gap-1.5 pt-1 min-h-[24px]">
+		<div className="flex flex-col space-y-3 min-h-20">
+			<div className="flex flex-wrap gap-1.5 pt-1 min-h-6">
 				{categories.map((cat) => (
 					<Badge
 						key={cat}

@@ -58,7 +58,7 @@ export const CinemaControls = ({
 		>
 			{/* Shadcn progress Slider */}
 			<div className="flex items-center gap-4">
-				<span className="text-xs font-semibold text-white/80 select-none min-w-[40px] text-right">
+				<span className="text-xs font-semibold text-white/80 select-none min-w-10 text-right">
 					{formatDuration(currentTime)}
 				</span>
 				<Slider
@@ -86,7 +86,7 @@ export const CinemaControls = ({
 						LIVE
 					</span>
 				) : (
-					<span className="text-xs font-semibold text-white/80 select-none min-w-[40px]">
+					<span className="text-xs font-semibold text-white/80 select-none min-w-10">
 						{formatDuration(duration)}
 					</span>
 				)}

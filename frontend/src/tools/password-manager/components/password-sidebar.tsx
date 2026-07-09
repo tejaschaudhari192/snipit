@@ -145,7 +145,7 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 
 	return (
 		<div className="flex flex-col h-full w-full bg-sidebar overflow-hidden">
-			<SidebarHeader className="p-4 border-b border-sidebar-border bg-sidebar h-[65px] flex items-center justify-center shrink-0">
+			<SidebarHeader className="p-4 border-b border-sidebar-border bg-sidebar h-16.25 flex items-center justify-center shrink-0">
 				<div className="flex items-center gap-2 w-full pl-2">
 					<div className="bg-primary/20 p-1.5 rounded-lg flex items-center justify-center text-primary">
 						<Shield className="h-5 w-5" />
@@ -188,7 +188,7 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 
 				<SidebarGroup>
 					<SidebarGroupContent>
-						<ScrollArea className="h-[140px] pr-3">
+						<ScrollArea className="h-35 pr-3">
 							<SidebarMenu>
 								{ITEM_TYPE_OPTIONS.map((item) => (
 									<SidebarMenuItem key={item.id}>
@@ -230,7 +230,7 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 						</span>
 					</SidebarGroupAction>
 					<SidebarGroupContent>
-						<ScrollArea className="h-[160px] pr-3">
+						<ScrollArea className="h-40 pr-3">
 							<SidebarMenu>
 								{folders.map((folder) => (
 									<SidebarMenuItem key={folder.id}>

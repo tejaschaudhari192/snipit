@@ -5,7 +5,7 @@ export function AppSkeleton() {
 		<div className="h-full flex flex-col bg-background p-4 animate-in fade-in duration-1000">
 			<div className="flex-1 flex overflow-hidden rounded-2xl border border-border bg-card/50 shadow-sm backdrop-blur-sm relative">
 				{/* Left - Sidebar Skeleton */}
-				<div className="w-[260px] shrink-0 bg-sidebar overflow-hidden border-r border-border h-full p-4 space-y-4">
+				<div className="w-65 shrink-0 bg-sidebar overflow-hidden border-r border-border h-full p-4 space-y-4">
 					<Skeleton className="h-8 w-3/4 mb-6" />
 					<Skeleton className="h-10 w-full rounded-md" />
 					<div className="space-y-2 mt-8">

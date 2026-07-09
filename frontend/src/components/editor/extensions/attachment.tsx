@@ -24,7 +24,7 @@ const AttachmentNodeView = (props: NodeViewProps) => {
 					</div>
 					<div className="min-w-0 flex flex-col">
 						<span
-							className="text-xs font-semibold text-foreground truncate max-w-[200px]"
+							className="text-xs font-semibold text-foreground truncate max-w-50"
 							title={filename}
 						>
 							{filename || "Attachment"}

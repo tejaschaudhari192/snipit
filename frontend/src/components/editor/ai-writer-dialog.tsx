@@ -110,7 +110,7 @@ export const AiWriterDialog = ({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-			<DialogContent className="sm:max-w-[600px] border-border/50 bg-background/95 backdrop-blur-xl">
+			<DialogContent className="sm:max-w-150 border-border/50 bg-background/95 backdrop-blur-xl">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<Wand2 className="w-5 h-5 text-primary" />
@@ -146,7 +146,7 @@ export const AiWriterDialog = ({
 								t("ai_writer.placeholder") ||
 								"e.g. Write a React component for a login form..."
 							}
-							className="min-h-[100px] resize-none focus-visible:ring-1 focus-visible:ring-primary/50"
+							className="min-h-25 resize-none focus-visible:ring-1 focus-visible:ring-primary/50"
 							value={instruction}
 							onChange={(e) => setInstruction(e.target.value)}
 							onKeyDown={(e) => {
@@ -163,7 +163,7 @@ export const AiWriterDialog = ({
 							<span className="text-xs font-semibold text-muted-foreground tracking-wider">
 								{t("ai_dialog.preview")}
 							</span>
-							<div className="p-3 bg-muted/50 rounded-md border border-border/50 text-sm max-h-[250px] overflow-y-auto whitespace-pre-wrap font-mono">
+							<div className="p-3 bg-muted/50 rounded-md border border-border/50 text-sm max-h-62.5 overflow-y-auto whitespace-pre-wrap font-mono">
 								{result}
 							</div>
 						</div>

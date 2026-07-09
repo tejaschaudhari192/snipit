@@ -137,7 +137,7 @@ export const CommentsSection = ({
 								placeholder={t("common.write_comment")}
 								value={newComment}
 								onChange={(e) => setNewComment(e.target.value)}
-								className="min-h-[80px] max-h-[150px] resize-y bg-muted/20 focus-visible:ring-primary/30 text-sm"
+								className="min-h-20 max-h-37.5 resize-y bg-muted/20 focus-visible:ring-primary/30 text-sm"
 							/>
 							<div className="flex justify-end">
 								<Button

@@ -177,7 +177,7 @@ export const MainToolbar = memo(
 									<Button
 										disabled={isSubmitting}
 										size="lg"
-										className="px-4 h-9 font-bold rounded-r-none border-r-0 hover:bg-primary/90 transition-colors min-w-[100px]"
+										className="px-4 h-9 font-bold rounded-r-none border-r-0 hover:bg-primary/90 transition-colors min-w-25"
 										onClick={() => {
 											setIsOptionsOpen(false);
 											handleQuickPaste();
@@ -234,7 +234,7 @@ export const MainToolbar = memo(
 								</Button>
 							</div>
 
-							<div className="max-h-[450px] overflow-y-auto pr-2 custom-scrollbar">
+							<div className="max-h-112.5 overflow-y-auto pr-2 custom-scrollbar">
 								<AdvancedOptions
 									onSubmit={handleDialogSubmit}
 								/>

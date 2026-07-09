@@ -172,7 +172,7 @@ export const CollaboratorsManager = ({
 						inputValue={inputValue}
 						onInputChange={setInputValue}
 						placeholder={t("common.add_people_placeholder")}
-						className="min-h-[36px] border-none bg-transparent shadow-none focus-within:ring-0 focus-within:ring-offset-0 text-[13px] px-2 py-0"
+						className="min-h-9 border-none bg-transparent shadow-none focus-within:ring-0 focus-within:ring-offset-0 text-[13px] px-2 py-0"
 						isReadOnly={disabled || isUpdating}
 					/>
 				</div>
@@ -182,7 +182,7 @@ export const CollaboratorsManager = ({
 						onValueChange={(r: ShareRole) => setPendingRole(r)}
 						disabled={disabled || isUpdating}
 					>
-						<SelectTrigger className="w-[100px] h-10 text-sm font-medium border-none bg-transparent hover:bg-muted/50 focus:ring-0 shadow-none">
+						<SelectTrigger className="w-25 h-10 text-sm font-medium border-none bg-transparent hover:bg-muted/50 focus:ring-0 shadow-none">
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>
@@ -227,7 +227,7 @@ export const CollaboratorsManager = ({
 				<div
 					className={cn(
 						"flex flex-col gap-2 mt-2 overflow-y-auto pr-1",
-						compact ? "max-h-[120px]" : "max-h-[150px]",
+						compact ? "max-h-30" : "max-h-37.5",
 					)}
 				>
 					{!compact && (
@@ -266,7 +266,7 @@ export const CollaboratorsManager = ({
 								{updatingEmails.includes(item.email) ? (
 									<div className="flex items-center gap-2 h-8">
 										{/* Shimmer Select trigger skeleton */}
-										<Skeleton className="flex-1 min-[440px]:w-[100px] h-8 rounded-lg bg-muted/60 border border-input/20 flex items-center justify-between px-3">
+										<Skeleton className="flex-1 min-[440px]:w-25 h-8 rounded-lg bg-muted/60 border border-input/20 flex items-center justify-between px-3">
 											<Skeleton className="h-2 w-10 bg-muted-foreground/20 rounded" />
 											<Skeleton className="h-3 w-3 bg-muted-foreground/20 rounded-sm" />
 										</Skeleton>
@@ -287,7 +287,7 @@ export const CollaboratorsManager = ({
 												updatingEmails.length > 0
 											}
 										>
-											<SelectTrigger className="flex-1 min-[440px]:w-[100px] h-10 bg-background border-input/50">
+											<SelectTrigger className="flex-1 min-[440px]:w-25 h-10 bg-background border-input/50">
 												<SelectValue />
 											</SelectTrigger>
 											<SelectContent>

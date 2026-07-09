@@ -116,7 +116,7 @@ export const AiEnhanceDialog = ({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-			<DialogContent className="sm:max-w-[600px] border-border/50 bg-background/95 backdrop-blur-xl">
+			<DialogContent className="sm:max-w-150 border-border/50 bg-background/95 backdrop-blur-xl">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<Sparkles className="w-5 h-5 text-primary" />
@@ -148,7 +148,7 @@ export const AiEnhanceDialog = ({
 						<Textarea
 							ref={textareaRef}
 							placeholder={t("ai_dialog.placeholder")}
-							className="min-h-[100px] resize-none focus-visible:ring-1 focus-visible:ring-primary/50 bg-background/50 border-border/40"
+							className="min-h-25 resize-none focus-visible:ring-1 focus-visible:ring-primary/50 bg-background/50 border-border/40"
 							value={instruction}
 							onChange={(e) => setInstruction(e.target.value)}
 							onKeyDown={(e) => {
@@ -176,7 +176,7 @@ export const AiEnhanceDialog = ({
 									{t("common.clear_all")}
 								</Button>
 							</div>
-							<div className="p-4 bg-muted/30 rounded-xl border border-border/30 text-sm max-h-[250px] overflow-y-auto whitespace-pre-wrap font-mono shadow-inner custom-scrollbar selection:bg-primary/20">
+							<div className="p-4 bg-muted/30 rounded-xl border border-border/30 text-sm max-h-62.5 overflow-y-auto whitespace-pre-wrap font-mono shadow-inner custom-scrollbar selection:bg-primary/20">
 								{result}
 							</div>
 						</div>

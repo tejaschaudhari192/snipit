@@ -420,7 +420,7 @@ export default function PasswordForm({
 													e.target.value,
 												)
 											}
-											className="bg-background rounded-xl border border-border min-h-[100px] font-mono text-sm"
+											className="bg-background rounded-xl border border-border min-h-25 font-mono text-sm"
 										/>
 									) : field.type === "password" ? (
 										<div className="space-y-1">
@@ -517,7 +517,7 @@ export default function PasswordForm({
 							<Textarea
 								value={notes}
 								onChange={(e) => setNotes(e.target.value)}
-								className="bg-background rounded-xl border border-border min-h-[100px]"
+								className="bg-background rounded-xl border border-border min-h-25"
 							/>
 						</div>
 					</CardContent>

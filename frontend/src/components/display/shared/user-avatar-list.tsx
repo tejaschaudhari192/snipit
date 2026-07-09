@@ -78,7 +78,7 @@ export const UserAvatarList = ({ users }: UserAvatarListProps) => {
 							<TooltipContent
 								side="top"
 								align="center"
-								className="flex flex-col items-center min-w-[120px] px-3 py-2 bg-background/95 backdrop-blur-md border border-border text-foreground rounded-xl shadow-2xl"
+								className="flex flex-col items-center min-w-30 px-3 py-2 bg-background/95 backdrop-blur-md border border-border text-foreground rounded-xl shadow-2xl"
 							>
 								<span className="font-bold whitespace-nowrap text-[10px] sm:text-xs">
 									{u.name} {u.isMe && `(${t("common.me")})`}
@@ -115,7 +115,7 @@ export const UserAvatarList = ({ users }: UserAvatarListProps) => {
 							<TooltipContent
 								side="top"
 								align="center"
-								className="flex flex-col items-center min-w-[80px] px-3 py-2 bg-background/95 backdrop-blur-md border border-border text-foreground rounded-xl shadow-2xl"
+								className="flex flex-col items-center min-w-20 px-3 py-2 bg-background/95 backdrop-blur-md border border-border text-foreground rounded-xl shadow-2xl"
 							>
 								<span className="font-bold whitespace-nowrap text-[10px] sm:text-xs">
 									{remainingCount} {t("common.more_users")}

@@ -89,7 +89,7 @@ const LoginPage = () => {
 				/>
 			</div>
 
-			<div className="w-full max-w-[400px] relative z-10 animate-in fade-in slide-in-from-bottom-6 duration-700">
+			<div className="w-full max-w-100 relative z-10 animate-in fade-in slide-in-from-bottom-6 duration-700">
 				<Card className="glass-card border-border/40 overflow-hidden shadow-2xl rounded-3xl">
 					<div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-primary/40 to-transparent" />
 

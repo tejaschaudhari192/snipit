@@ -328,7 +328,7 @@ export const VideoDisplay = ({
 	return (
 		<div
 			ref={contentRef}
-			className="w-full h-full flex flex-col md:flex-row relative bg-black/95 rounded-2xl overflow-hidden shadow-2xl min-h-[500px] md:min-h-0 select-none"
+			className="w-full h-full flex flex-col md:flex-row relative bg-black/95 rounded-2xl overflow-hidden shadow-2xl min-h-125 md:min-h-0 select-none"
 		>
 			{/* Main Theater Screen Area */}
 			<div

@@ -28,7 +28,7 @@ export const FontSizeControls = memo(
 					>
 						<Minus className="h-4 w-4" />
 					</Button>
-					<div className="flex items-center justify-center px-4 bg-muted/30 text-xs font-bold min-w-[44px]">
+					<div className="flex items-center justify-center px-4 bg-muted/30 text-xs font-bold min-w-11">
 						{new Intl.NumberFormat(i18n.language).format(fontSize)}
 					</div>
 					<Button

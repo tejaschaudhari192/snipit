@@ -32,7 +32,7 @@ export const MusicSearchResults: React.FC = () => {
 				</Button>
 			</div>
 
-			<div className="flex flex-col gap-1 w-full min-w-0 max-h-[120px] overflow-y-auto custom-scrollbar pr-1">
+			<div className="flex flex-col gap-1 w-full min-w-0 max-h-30 overflow-y-auto custom-scrollbar pr-1">
 				{searchResults.map((track) => (
 					<TrackItem
 						key={track.videoId}

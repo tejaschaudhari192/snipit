@@ -63,7 +63,7 @@ export const SnippetCard = ({
 							fileName={item.fileName}
 							mimeType={item.fileMimeType}
 						/>
-						<span className="text-[10px] sm:text-xs text-muted-foreground font-mono bg-muted/30 px-2 py-0.5 rounded italic truncate max-w-[80px] sm:max-w-none">
+						<span className="text-[10px] sm:text-xs text-muted-foreground font-mono bg-muted/30 px-2 py-0.5 rounded italic truncate max-w-20 sm:max-w-none">
 							/{item.id}
 						</span>
 						{isShared && (

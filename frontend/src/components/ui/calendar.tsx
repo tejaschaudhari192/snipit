@@ -65,7 +65,7 @@ function Calendar({
 					value={displayMonth.getMonth().toString()}
 					onValueChange={handleMonthChange}
 				>
-					<SelectTrigger className="w-[120px] h-8 text-sm font-medium">
+					<SelectTrigger className="w-30 h-8 text-sm font-medium">
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
@@ -91,7 +91,7 @@ function Calendar({
 					value={displayMonth.getFullYear().toString()}
 					onValueChange={handleYearSelect}
 				>
-					<SelectTrigger className="w-[80px] h-8 text-sm font-medium">
+					<SelectTrigger className="w-20 h-8 text-sm font-medium">
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>

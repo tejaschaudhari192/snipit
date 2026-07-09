@@ -28,15 +28,15 @@ export const EqualizerIcon: React.FC<EqualizerIconProps> = ({ isPlaying }) => (
 			}}
 		/>
 		<div
-			className="w-[2px] bg-primary rounded-full eq-bar-1"
+			className="w-0.5 bg-primary rounded-full eq-bar-1"
 			style={{ animationPlayState: isPlaying ? "running" : "paused" }}
 		/>
 		<div
-			className="w-[2px] bg-primary rounded-full eq-bar-2"
+			className="w-0.5 bg-primary rounded-full eq-bar-2"
 			style={{ animationPlayState: isPlaying ? "running" : "paused" }}
 		/>
 		<div
-			className="w-[2px] bg-primary rounded-full eq-bar-3"
+			className="w-0.5 bg-primary rounded-full eq-bar-3"
 			style={{ animationPlayState: isPlaying ? "running" : "paused" }}
 		/>
 	</div>

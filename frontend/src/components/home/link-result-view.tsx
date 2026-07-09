@@ -92,7 +92,7 @@ export const LinkResultView = ({
 								}
 								className="w-full"
 							>
-								<TabsList className="grid w-full grid-cols-3 h-9 bg-muted border border-border/50 p-[3px] rounded-lg">
+								<TabsList className="grid w-full grid-cols-3 h-9 bg-muted border border-border/50 p-0.75 rounded-lg">
 									<TabsTrigger
 										value="click"
 										className="text-xs font-bold gap-1.5"

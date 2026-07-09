@@ -24,7 +24,7 @@ export const FileUploadItem = ({
 	return (
 		<div
 			className={cn(
-				"relative p-4 rounded-2xl border transition-all duration-300 w-full sm:w-[240px] flex flex-col gap-3",
+				"relative p-4 rounded-2xl border transition-all duration-300 w-full sm:w-60 flex flex-col gap-3",
 				file.isUploading
 					? "border-primary/40 bg-primary/5 shadow-sm"
 					: "border-border/50 bg-background/50 hover:bg-background hover:border-border shadow-sm",

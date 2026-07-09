@@ -34,11 +34,11 @@ export const LanguageSelector = memo(
 				<button
 					type="button"
 					className={cn(
-						"group relative w-[160px] h-9 shrink-0 rounded-md p-px overflow-hidden focus:outline-none",
+						"group relative w-40 h-9 shrink-0 rounded-md p-px overflow-hidden focus:outline-none",
 						className,
 					)}
 				>
-					<div className="absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2">
+					<div className="absolute left-1/2 top-1/2 h-100 w-100 -translate-x-1/2 -translate-y-1/2">
 						<div className="h-full w-full opacity-70 moving-border-gradient animate-moving-border" />
 					</div>
 					<div className="relative z-10 flex h-full w-full items-center justify-center gap-2 rounded-md bg-background dark:bg-slate-900 text-sm font-bold">
@@ -59,7 +59,7 @@ export const LanguageSelector = memo(
 			<Select value={value} onValueChange={onValueChange}>
 				<SelectTrigger
 					className={cn(
-						"w-[160px] h-9 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm transition-all focus:ring-primary/20 shrink-0",
+						"w-40 h-9 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm transition-all focus:ring-primary/20 shrink-0",
 						className,
 					)}
 				>

@@ -148,7 +148,7 @@ const MusicBubble: React.FC = () => {
 								<Music className="w-6 h-6 transition-transform group-hover:rotate-12" />
 							</div>
 
-							<div className="absolute -top-1 -right-1 bg-popover text-foreground text-[9px] font-black px-1.5 py-0.5 rounded-full border border-border shadow-lg truncate max-w-[40px]">
+							<div className="absolute -top-1 -right-1 bg-popover text-foreground text-[9px] font-black px-1.5 py-0.5 rounded-full border border-border shadow-lg truncate max-w-10">
 								IN
 							</div>
 						</button>

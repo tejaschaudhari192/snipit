@@ -35,7 +35,7 @@ export const LabelInputSection = ({
 	if (showInput) {
 		return (
 			<div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2 duration-300">
-				<div className="min-w-[200px]">
+				<div className="min-w-50">
 					<TagInput
 						tags={currentLabels}
 						onTagsChange={onTagsChange}

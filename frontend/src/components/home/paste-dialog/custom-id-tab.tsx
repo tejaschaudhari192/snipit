@@ -45,7 +45,7 @@ export const CustomIdTab = ({
 	);
 
 	return (
-		<div className="flex flex-col space-y-2 min-h-[80px]">
+		<div className="flex flex-col space-y-2 min-h-20">
 			<div className="flex gap-2">
 				<Input
 					placeholder={t("home.dynamic_id_dialog.placeholder")}

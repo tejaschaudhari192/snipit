@@ -91,7 +91,7 @@ export function BubbleMenuContent() {
 
 	if (isAiOpen) {
 		return (
-			<div className="flex flex-col w-72 max-h-[350px] overflow-hidden bg-popover text-popover-foreground rounded-md p-1.5 shadow-lg border border-border/80">
+			<div className="flex flex-col w-72 max-h-87.5 overflow-hidden bg-popover text-popover-foreground rounded-md p-1.5 shadow-lg border border-border/80">
 				{/* AI Input Header */}
 				<div className="flex items-center gap-2 px-2.5 py-1.5 border-b border-border/50">
 					<Sparkles className="h-4 w-4 text-purple-500 animate-pulse shrink-0" />
@@ -126,7 +126,7 @@ export function BubbleMenuContent() {
 
 				{/* Options List */}
 				{!isLoading && (
-					<div className="flex flex-col mt-1 overflow-y-auto max-h-[220px] text-xs">
+					<div className="flex flex-col mt-1 overflow-y-auto max-h-55 text-xs">
 						<div className="px-2.5 py-1 text-[10px] font-semibold text-muted-foreground/80 uppercase tracking-wider">
 							Edit or review selection
 						</div>

@@ -108,7 +108,7 @@ export const FileUploadView = ({
 							)}
 						</div>
 
-						<div className="flex flex-wrap justify-center gap-4 max-h-[500px] overflow-y-auto pr-1 no-scrollbar py-2">
+						<div className="flex flex-wrap justify-center gap-4 max-h-125 overflow-y-auto pr-1 no-scrollbar py-2">
 							{files.map((file) => (
 								<FileUploadItem
 									key={file.id}
@@ -124,7 +124,7 @@ export const FileUploadView = ({
 						<label
 							onClick={handleAddClick}
 							className={cn(
-								"relative flex flex-col items-center justify-center gap-6 p-10 min-h-[300px] rounded-2xl border-2 border-dashed cursor-pointer transition-all duration-200",
+								"relative flex flex-col items-center justify-center gap-6 p-10 min-h-75 rounded-2xl border-2 border-dashed cursor-pointer transition-all duration-200",
 								"hover:bg-primary/5 hover:border-primary/30 group/upload",
 							)}
 						>

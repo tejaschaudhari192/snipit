@@ -74,7 +74,7 @@ export const IdTypeTabs = ({
 			<div
 				className={cn(
 					"transition-all duration-300",
-					compact ? "min-h-0" : "min-h-[140px]",
+					compact ? "min-h-0" : "min-h-35",
 				)}
 			>
 				<Suspense fallback={<IdTabSkeleton rows={2} />}>

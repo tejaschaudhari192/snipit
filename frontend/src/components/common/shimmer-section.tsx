@@ -35,7 +35,7 @@ const CardShimmer = ({ className }: { className?: string }) => (
 const EditorShimmer = ({ className }: { className?: string }) => (
 	<div
 		className={cn(
-			"flex-1 p-6 space-y-6 rounded-2xl bg-muted/40 dark:bg-muted/20 border border-border/20 shadow-sm ring-1 ring-border/5 min-h-[500px]",
+			"flex-1 p-6 space-y-6 rounded-2xl bg-muted/40 dark:bg-muted/20 border border-border/20 shadow-sm ring-1 ring-border/5 min-h-125",
 			className,
 		)}
 	>

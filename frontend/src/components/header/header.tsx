@@ -126,7 +126,7 @@ const Header = ({ className }: HeaderProps) => {
 	return (
 		<header
 			className={cn(
-				"flex justify-between items-center h-[52px] p-2 px-4 md:px-8 border-b border-border/50 bg-background/60 backdrop-blur-xl sticky top-0 z-50",
+				"flex justify-between items-center h-13 p-2 px-4 md:px-8 border-b border-border/50 bg-background/60 backdrop-blur-xl sticky top-0 z-50",
 				className,
 			)}
 		>
@@ -195,10 +195,10 @@ const Header = ({ className }: HeaderProps) => {
 
 				<Suspense
 					fallback={
-						<div className="w-[140px] h-9 skeleton rounded-lg" />
+						<div className="w-35 h-9 skeleton rounded-lg" />
 					}
 				>
-					<LanguageSwitcher className="w-[140px] h-9" />
+					<LanguageSwitcher className="w-35 h-9" />
 				</Suspense>
 
 				{path.length > 1 && (
@@ -246,7 +246,7 @@ const Header = ({ className }: HeaderProps) => {
 					</DropdownMenuTrigger>
 					<DropdownMenuContent
 						align="end"
-						className="w-[220px] p-1 rounded-xl"
+						className="w-55 p-1 rounded-xl"
 					>
 						{!user ? (
 							<>

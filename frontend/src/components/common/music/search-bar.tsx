@@ -97,7 +97,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, isLoading }) => {
 						className="fixed inset-0 z-40"
 						onClick={() => setShowSuggestions(false)}
 					/>
-					<div className="absolute left-0 right-[72px] top-9 z-50 bg-background/95 border border-border/80 rounded-md shadow-xl backdrop-blur-md max-h-[180px] overflow-y-auto py-1.5 animate-in fade-in slide-in-from-top-1 duration-150">
+					<div className="absolute left-0 right-18 top-9 z-50 bg-background/95 border border-border/80 rounded-md shadow-xl backdrop-blur-md max-h-45 overflow-y-auto py-1.5 animate-in fade-in slide-in-from-top-1 duration-150">
 						{suggestions.map((suggestion, index) => (
 							<button
 								key={index}

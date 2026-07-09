@@ -27,7 +27,7 @@ export const CinemaChat = ({
 	sendChatMessage,
 }: CinemaChatProps) => {
 	return (
-		<div className="w-full md:w-64 border-t md:border-t-0 md:border-l border-white/10 bg-black/80 flex flex-col shrink-0 p-4 min-h-[350px] md:min-h-0">
+		<div className="w-full md:w-64 border-t md:border-t-0 md:border-l border-white/10 bg-black/80 flex flex-col shrink-0 p-4 min-h-87.5 md:min-h-0">
 			{/* Top Section: Active Watchers */}
 			<div className="flex flex-col gap-2 min-h-0 border-b border-white/5 pb-3">
 				<div className="flex items-center gap-2">

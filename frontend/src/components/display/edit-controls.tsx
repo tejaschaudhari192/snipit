@@ -77,7 +77,7 @@ export const EditControls = (props: EditControlsProps) => {
 			>
 				<CollapsibleContent>
 					<div className="p-5 rounded-2xl bg-muted/20 border border-border/50 shadow-inner mb-4 animate-in slide-in-from-top-2 duration-300">
-						<div className="max-h-[400px] sm:max-h-[450px] overflow-y-auto pr-1 sm:pr-2 custom-scrollbar">
+						<div className="max-h-100 sm:max-h-112.5 overflow-y-auto pr-1 sm:pr-2 custom-scrollbar">
 							<Suspense fallback={<AdvancedConfigSkeleton />}>
 								<AdvancedConfigGrid {...props} />
 							</Suspense>

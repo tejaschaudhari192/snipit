@@ -82,7 +82,7 @@ export const LinkView = ({
 		return (
 			<div
 				ref={contentRef}
-				className="flex flex-col items-center py-16 px-4 bg-background/60 backdrop-blur-xl rounded-3xl border border-border/50 shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-700 max-w-[600px] mx-auto mt-4 w-full"
+				className="flex flex-col items-center py-16 px-4 bg-background/60 backdrop-blur-xl rounded-3xl border border-border/50 shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-700 max-w-150 mx-auto mt-4 w-full"
 			>
 				<div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6 shadow-xl shadow-primary/5">
 					<LinkIcon className="w-10 h-10 text-primary" />
@@ -137,7 +137,7 @@ export const LinkView = ({
 		return (
 			<div
 				ref={contentRef}
-				className="flex flex-col items-center justify-center p-6 sm:p-10 bg-background/60 backdrop-blur-xl rounded-3xl border border-border/50 shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-700 max-w-[640px] mx-auto mt-6 w-full gap-6"
+				className="flex flex-col items-center justify-center p-6 sm:p-10 bg-background/60 backdrop-blur-xl rounded-3xl border border-border/50 shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-700 max-w-160 mx-auto mt-6 w-full gap-6"
 			>
 				{/* Admin Warning Banner */}
 				<div className="w-full flex items-start gap-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 backdrop-blur-md shadow-lg shadow-amber-500/5">
@@ -201,7 +201,7 @@ export const LinkView = ({
 		return (
 			<div
 				ref={contentRef}
-				className="flex flex-col items-center justify-center py-20 px-8 bg-background/60 backdrop-blur-xl rounded-3xl border border-border/50 shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-700 max-w-[500px] mx-auto mt-16 w-full"
+				className="flex flex-col items-center justify-center py-20 px-8 bg-background/60 backdrop-blur-xl rounded-3xl border border-border/50 shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-700 max-w-125 mx-auto mt-16 w-full"
 			>
 				<div className="relative w-20 h-20 mb-8 flex items-center justify-center">
 					<div className="absolute inset-0 bg-primary/25 blur-xl rounded-full animate-pulse" />
@@ -219,7 +219,7 @@ export const LinkView = ({
 					instantly.
 				</p>
 
-				<div className="flex flex-col items-center gap-1 bg-muted/30 px-4 py-2.5 rounded-xl border border-border/20 w-full max-w-[340px]">
+				<div className="flex flex-col items-center gap-1 bg-muted/30 px-4 py-2.5 rounded-xl border border-border/20 w-full max-w-85">
 					<span className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">
 						Destination Domain
 					</span>
@@ -242,7 +242,7 @@ export const LinkView = ({
 		return (
 			<div
 				ref={contentRef}
-				className="flex flex-col items-center justify-center py-16 px-6 sm:px-8 bg-background/60 backdrop-blur-xl rounded-3xl border border-border/50 shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-700 max-w-[500px] mx-auto mt-12 w-full"
+				className="flex flex-col items-center justify-center py-16 px-6 sm:px-8 bg-background/60 backdrop-blur-xl rounded-3xl border border-border/50 shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-700 max-w-125 mx-auto mt-12 w-full"
 			>
 				<div className="relative w-28 h-28 mb-6 flex items-center justify-center">
 					<div className="absolute inset-0 bg-primary/15 blur-lg rounded-full animate-pulse" />
@@ -285,7 +285,7 @@ export const LinkView = ({
 					{t("common.redirecting_in", { count: timeLeft })}
 				</p>
 
-				<div className="flex flex-col items-center gap-1 bg-muted/20 px-4 py-2.5 rounded-xl border border-border/20 w-full max-w-[340px] mb-8">
+				<div className="flex flex-col items-center gap-1 bg-muted/20 px-4 py-2.5 rounded-xl border border-border/20 w-full max-w-85 mb-8">
 					<span className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">
 						Destination Domain
 					</span>
@@ -311,7 +311,7 @@ export const LinkView = ({
 	return (
 		<div
 			ref={contentRef}
-			className="flex flex-col items-center justify-center py-24 px-4 bg-background/60 backdrop-blur-xl rounded-3xl border border-border/50 shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-700 max-w-[600px] mx-auto mt-10"
+			className="flex flex-col items-center justify-center py-24 px-4 bg-background/60 backdrop-blur-xl rounded-3xl border border-border/50 shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-700 max-w-150 mx-auto mt-10"
 		>
 			<div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6 shadow-xl shadow-primary/5">
 				<LinkIcon className="w-10 h-10 text-primary" />

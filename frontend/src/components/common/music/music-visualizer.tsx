@@ -149,7 +149,7 @@ const MusicVisualizer: React.FC<MusicVisualizerProps> = ({
 	}, [isPlaying, volume]);
 
 	return (
-		<div className="relative w-full aspect-square max-w-[280px] mx-auto group">
+		<div className="relative w-full aspect-square max-w-70 mx-auto group">
 			{/* Dynamic Glow Background */}
 			<div
 				className={cn(

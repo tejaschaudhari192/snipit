@@ -15,7 +15,7 @@ export default function MobileSidebarDrawer() {
 		<Sheet open={isSidebarDrawerOpen} onOpenChange={setIsSidebarDrawerOpen}>
 			<SheetContent
 				side="left"
-				className="p-0 w-[280px] bg-sidebar border-r border-border"
+				className="p-0 w-70 bg-sidebar border-r border-border"
 			>
 				<div className="h-full w-full">
 					<SidebarProvider className="min-h-0 h-full w-full">

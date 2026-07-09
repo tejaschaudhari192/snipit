@@ -59,7 +59,7 @@ export const AiDrawDialog = ({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-			<DialogContent className="sm:max-w-[550px] p-0 border-border/20 bg-background/80 backdrop-blur-2xl overflow-hidden rounded-3xl shadow-2xl ring-1 ring-white/10">
+			<DialogContent className="sm:max-w-137.5 p-0 border-border/20 bg-background/80 backdrop-blur-2xl overflow-hidden rounded-3xl shadow-2xl ring-1 ring-white/10">
 				<div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-primary/5 pointer-events-none" />
 
 				<DialogHeader className="p-6 pb-2 relative z-10">
@@ -88,8 +88,7 @@ export const AiDrawDialog = ({
 							placeholder={t("ai.draw_placeholder")}
 							value={description}
 							onChange={(e) => setDescription(e.target.value)}
-							className="min-h-[140px] bg-muted/20 border-border/40 focus:border-primary/50 focus:ring-primary/20 
-								rounded-2xl resize-none transition-all duration-300 text-sm leading-relaxed custom-scrollbar p-4"
+							className="min-h-35 bg-muted/20 border-border/40 focus:border-primary/50 focus:ring-primary/20 rounded-2xl resize-none transition-all duration-300 text-sm leading-relaxed custom-scrollbar p-4"
 							disabled={isGenerating}
 						/>
 						<div className="absolute bottom-3 right-3 flex items-center gap-2 pointer-events-none opacity-40 group-focus-within:opacity-100 transition-opacity">

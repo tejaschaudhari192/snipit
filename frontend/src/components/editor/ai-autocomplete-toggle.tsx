@@ -38,7 +38,7 @@ export const AiAutocompleteToggle = ({
 					>
 						<AiCursorIcon
 							className={cn(
-								"h-[18px] w-[18px] transition-all duration-300",
+								"h-4.5 w-4.5 transition-all duration-300",
 								enabled
 									? "scale-110 text-violet-600 dark:text-violet-400"
 									: "text-foreground opacity-70 group-hover:opacity-100",

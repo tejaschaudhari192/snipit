@@ -273,7 +273,7 @@ export const DisplayToolbar = memo(
 											}
 										}}
 										isDetecting={isDetecting}
-										className="w-[160px] h-9 text-xs"
+										className="w-40 h-9 text-xs"
 									/>
 								</Suspense>
 								{!isDetecting && onAutoDetect && (
@@ -355,7 +355,7 @@ export const DisplayToolbar = memo(
 									setIsCustomExpiryDialogOpen={
 										setIsCustomExpiryDialogOpen
 									}
-									className="h-9 min-w-[120px] text-xs shrink-0"
+									className="h-9 min-w-30 text-xs shrink-0"
 								/>
 							</Suspense>
 						)}

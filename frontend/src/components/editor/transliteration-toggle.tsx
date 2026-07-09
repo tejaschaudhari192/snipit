@@ -87,7 +87,7 @@ export const TransliterationToggle = memo(
 
 				{enabled && (
 					<Select value={language} onValueChange={onLanguageChange}>
-						<SelectTrigger className="w-[120px] h-9 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm transition-all focus:ring-primary/20 shrink-0">
+						<SelectTrigger className="w-30 h-9 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm transition-all focus:ring-primary/20 shrink-0">
 							<SelectValue
 								placeholder={t(
 									"editor.transliteration.select_language",

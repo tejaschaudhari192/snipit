@@ -123,7 +123,7 @@ export const VideoSetupView = memo(
 										<Film className="w-5 h-5 text-primary" />
 									</div>
 									<div className="flex flex-col">
-										<span className="text-sm font-bold truncate max-w-[200px]">
+										<span className="text-sm font-bold truncate max-w-50">
 											{files[0].fileName}
 										</span>
 										<span className="text-xs text-muted-foreground">

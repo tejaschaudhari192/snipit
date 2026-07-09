@@ -99,7 +99,7 @@ export const FlowchartRenderer = ({ content }: FlowchartRendererProps) => {
 			>
 				<div
 					className={cn(
-						"relative flex flex-col items-center p-3 min-w-[140px] rounded-lg border border-border bg-card shadow-sm transition-all",
+						"relative flex flex-col items-center p-3 min-w-35 rounded-lg border border-border bg-card shadow-sm transition-all",
 						isStart &&
 							"border-emerald-500/50 text-emerald-600 dark:text-emerald-400",
 						isEnd &&

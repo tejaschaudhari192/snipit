@@ -53,7 +53,7 @@ export const TtsButton: React.FC<TtsButtonProps> = ({
 						) : isPlaying ? (
 							<Square className="h-4 w-4 fill-current" />
 						) : (
-							<Volume2 className="h-[18px] w-[18px]" />
+							<Volume2 className="h-4.5 w-4.5" />
 						)}
 					</Button>
 				</TooltipTrigger>

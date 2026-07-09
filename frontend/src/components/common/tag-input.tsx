@@ -61,7 +61,7 @@ export const TagInput = ({
 		<div className={cn("relative w-full", className)}>
 			<div
 				className={cn(
-					"flex flex-wrap items-center gap-1.5 p-2 min-h-[42px] rounded-lg border bg-card/40 transition-all",
+					"flex flex-wrap items-center gap-1.5 p-2 min-h-10.5 rounded-lg border bg-card/40 transition-all",
 					isFocused && "border-primary ring-1 ring-primary/20",
 					disabled && "opacity-50 cursor-not-allowed",
 				)}
@@ -103,7 +103,7 @@ export const TagInput = ({
 								? placeholder || t("common.add_label")
 								: ""
 						}
-						className="flex-1 min-w-[120px] bg-transparent border-none outline-none text-[13px] placeholder:text-muted-foreground focus:ring-0 p-0"
+						className="flex-1 min-w-30 bg-transparent border-none outline-none text-[13px] placeholder:text-muted-foreground focus:ring-0 p-0"
 						disabled={disabled}
 						autoFocus={autoFocus}
 					/>
@@ -113,7 +113,7 @@ export const TagInput = ({
 			{/* Suggestions Dropdown */}
 			{isFocused && filteredSuggestions.length > 0 && !disabled && (
 				<div className="absolute top-full left-0 right-0 mt-1 z-50 rounded-lg border bg-popover text-popover-foreground shadow-md animate-in fade-in slide-in-from-top-2">
-					<div className="p-1 max-h-[150px] overflow-auto no-scrollbar">
+					<div className="p-1 max-h-37.5 overflow-auto no-scrollbar">
 						{filteredSuggestions.map((suggestion, index) => (
 							<div
 								key={index}

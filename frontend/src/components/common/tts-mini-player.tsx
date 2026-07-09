@@ -66,17 +66,17 @@ export const TtsMiniPlayer: React.FC = () => {
 								</svg>
 							</div>
 						) : isPlaying && !isPaused ? (
-							<div className="flex items-end gap-[2px] h-4">
+							<div className="flex items-end gap-0.5 h-4">
 								<div
-									className="w-[3px] bg-primary animate-bounce rounded-full h-3"
+									className="w-0.75 bg-primary animate-bounce rounded-full h-3"
 									style={{ animationDelay: "0ms" }}
 								></div>
 								<div
-									className="w-[3px] bg-primary animate-bounce rounded-full h-2"
+									className="w-0.75 bg-primary animate-bounce rounded-full h-2"
 									style={{ animationDelay: "150ms" }}
 								></div>
 								<div
-									className="w-[3px] bg-primary animate-bounce rounded-full h-4"
+									className="w-0.75 bg-primary animate-bounce rounded-full h-4"
 									style={{ animationDelay: "300ms" }}
 								></div>
 							</div>

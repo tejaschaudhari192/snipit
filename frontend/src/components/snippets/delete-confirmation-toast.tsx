@@ -16,7 +16,7 @@ export const DeleteConfirmationToast = ({
 	const { t } = useTranslation();
 
 	return (
-		<div className="bg-background/90 backdrop-blur-2xl text-foreground border border-border/50 rounded-2xl w-[350px] relative overflow-hidden pointer-events-auto shadow-2xl ring-1 ring-white/5 animate-in fade-in slide-in-from-right-4 duration-300">
+		<div className="bg-background/90 backdrop-blur-2xl text-foreground border border-border/50 rounded-2xl w-87.5 relative overflow-hidden pointer-events-auto shadow-2xl ring-1 ring-white/5 animate-in fade-in slide-in-from-right-4 duration-300">
 			<div className="flex items-center justify-between gap-4 p-4 pb-3 relative z-10">
 				<div className="flex items-center gap-3">
 					<span className="text-sm font-semibold tracking-tight text-foreground">

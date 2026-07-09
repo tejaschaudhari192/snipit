@@ -429,7 +429,7 @@ export function TiptapEditor({
 
 					{/* Slash Command Suggestion Menu */}
 					{!readOnly && (
-						<EditorCommand className="z-50 h-auto max-h-[330px] w-72 overflow-y-auto rounded-md border border-border bg-popover px-1 py-2 shadow-md transition-all custom-scrollbar">
+						<EditorCommand className="z-50 h-auto max-h-82.5 w-72 overflow-y-auto rounded-md border border-border bg-popover px-1 py-2 shadow-md transition-all custom-scrollbar">
 							<EditorCommandEmpty className="px-2 text-muted-foreground text-xs">
 								No results found
 							</EditorCommandEmpty>
@@ -468,7 +468,7 @@ export function TiptapEditor({
 															<p className="font-medium text-xs text-foreground/90">
 																{item.title}
 															</p>
-															<p className="text-[10px] text-muted-foreground/75 truncate max-w-[200px]">
+															<p className="text-[10px] text-muted-foreground/75 truncate max-w-50">
 																{
 																	item.description
 																}

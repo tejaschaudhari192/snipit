@@ -14,7 +14,7 @@ const ServerErrorPage = ({ error, services }: ServerErrorPageProps) => {
 	return (
 		<div className="relative h-screen w-screen overflow-hidden bg-background text-foreground flex flex-col items-center justify-center p-6">
 			{/* Background Glow */}
-			<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-destructive/10 blur-[120px] rounded-full pointer-events-none" />
+			<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-125 h-125 bg-destructive/10 blur-[120px] rounded-full pointer-events-none" />
 
 			<div className="relative z-10 flex flex-col items-center max-w-2xl w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
 				<div className="mb-8 p-6 rounded-3xl bg-destructive/5 border border-destructive/20 shadow-2xl shadow-destructive/10">

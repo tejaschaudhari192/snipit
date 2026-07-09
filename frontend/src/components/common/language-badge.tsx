@@ -90,7 +90,7 @@ export const LanguageBadge = ({
 
 	return (
 		<GlassBadge icon={icon} className={cn(color, className)} rounded="lg">
-			<span className="truncate max-w-[120px]">{text}</span>
+			<span className="truncate max-w-30">{text}</span>
 		</GlassBadge>
 	);
 };

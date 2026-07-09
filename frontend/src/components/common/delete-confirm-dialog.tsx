@@ -64,7 +64,7 @@ export const DeleteConfirmDialog = ({
 							onConfirm();
 						}}
 						disabled={isDeleting}
-						className="font-bold min-w-[100px] gap-2 flex items-center justify-center"
+						className="font-bold min-w-25 gap-2 flex items-center justify-center"
 					>
 						{isDeleting ? (
 							<>

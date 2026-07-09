@@ -76,25 +76,25 @@ export const AdvancedConfigSkeleton = () => (
 	<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 		<div className="space-y-1">
 			<div className="h-4 w-24 bg-muted animate-pulse rounded" />
-			<Skeleton className="h-[140px] w-full rounded-xl" />
+			<Skeleton className="h-35 w-full rounded-xl" />
 			<div>
-				<Skeleton className="h-[46px] w-full rounded-xl" />
+				<Skeleton className="h-11.5 w-full rounded-xl" />
 			</div>
 		</div>
 		<div className="space-y-6">
 			<div className="h-4 w-24 bg-muted animate-pulse rounded" />
 			<div className="space-y-4">
-				<Skeleton className="h-[62px] w-full rounded-xl" />
+				<Skeleton className="h-15.5 w-full rounded-xl" />
 			</div>
 			<div className="h-4 w-24 bg-muted animate-pulse rounded mt-6" />
-			<Skeleton className="h-[62px] w-full rounded-xl" />
+			<Skeleton className="h-15.5 w-full rounded-xl" />
 		</div>
 		<div className="space-y-6">
 			<div className="h-4 w-24 bg-muted animate-pulse rounded" />
 			<div className="space-y-4">
-				<Skeleton className="h-[62px] w-full rounded-xl" />
+				<Skeleton className="h-15.5 w-full rounded-xl" />
 				<div className="pt-4 border-t border-border/10">
-					<Skeleton className="h-[46px] w-full rounded-xl" />
+					<Skeleton className="h-11.5 w-full rounded-xl" />
 				</div>
 			</div>
 		</div>
@@ -360,7 +360,7 @@ export const AdvancedConfigGrid = ({
 			<div className="flex flex-col">
 				<SectionHeader icon={Shield} label={t("common.privacy")} />
 				{!user ? (
-					<div className="flex flex-col justify-center items-center text-center p-4 rounded-xl border border-dashed border-primary/20 bg-primary/5 min-h-[140px] animate-in fade-in duration-300">
+					<div className="flex flex-col justify-center items-center text-center p-4 rounded-xl border border-dashed border-primary/20 bg-primary/5 min-h-35 animate-in fade-in duration-300">
 						<LogIn className="h-5 w-5 text-primary/50 mb-2 animate-bounce" />
 						<p className="text-primary font-bold text-sm mb-1">
 							{t("common.auth_required")}
@@ -390,7 +390,7 @@ export const AdvancedConfigGrid = ({
 					<div className="space-y-4">
 						<Suspense
 							fallback={
-								<Skeleton className="h-[62px] w-full rounded-xl" />
+								<Skeleton className="h-15.5 w-full rounded-xl" />
 							}
 						>
 							<VisibilitySelector
@@ -407,7 +407,7 @@ export const AdvancedConfigGrid = ({
 						<div className="pt-4 border-t border-border/10">
 							<Suspense
 								fallback={
-									<Skeleton className="h-[46px] w-full rounded-xl" />
+									<Skeleton className="h-11.5 w-full rounded-xl" />
 								}
 							>
 								<CollaboratorsManager

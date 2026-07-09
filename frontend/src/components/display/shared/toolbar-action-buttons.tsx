@@ -129,7 +129,7 @@ export const ToolbarActionButtons = ({
 							size="sm"
 							onClick={onSave}
 							disabled={isSaving}
-							className="gap-2 h-9 font-bold min-w-[120px]"
+							className="gap-2 h-9 font-bold min-w-30"
 						>
 							{isSaving ? (
 								<>

@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 const MusicPlayerSkeleton: React.FC = () => {
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-			<div className="w-[90vw] max-w-[450px] p-5 gap-4 border border-border bg-background shadow-lg rounded-lg text-foreground flex flex-col">
+			<div className="w-[90vw] max-w-112.5 p-5 gap-4 border border-border bg-background shadow-lg rounded-lg text-foreground flex flex-col">
 				{/* Header Skeleton */}
 				<div className="flex flex-row items-center justify-between w-full">
 					<div className="flex flex-col gap-1.5 flex-1 pr-4">

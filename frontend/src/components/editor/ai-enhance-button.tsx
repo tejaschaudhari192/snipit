@@ -25,7 +25,7 @@ export const AiEnhanceButton = ({ onClick }: Props) => {
 						onClick={onClick}
 						className="h-9 w-9 shrink-0 bg-primary/5 border-primary/20 hover:bg-primary/10 text-primary shadow-lg shadow-primary/5 transition-all active:scale-95 group rounded-md"
 					>
-						<Wand2 className="h-[18px] w-[18px] group-hover:scale-110 transition-transform duration-300" />
+						<Wand2 className="h-4.5 w-4.5 group-hover:scale-110 transition-transform duration-300" />
 					</Button>
 				</TooltipTrigger>
 				<TooltipContent

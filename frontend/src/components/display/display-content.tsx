@@ -234,7 +234,7 @@ export const DisplayContent = memo(
 											<Skeleton className="h-8 w-48" />
 											<Skeleton className="h-4 w-64" />
 										</div>
-										<Skeleton className="h-[300px] w-full rounded-2xl border-2 border-dashed" />
+										<Skeleton className="h-75 w-full rounded-2xl border-2 border-dashed" />
 									</div>
 								</div>
 							}

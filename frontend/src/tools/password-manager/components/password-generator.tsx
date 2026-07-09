@@ -198,7 +198,7 @@ export default function PasswordGenerator({
 					</div>
 				</div>
 
-				<div className="text-center font-mono text-2xl tracking-wider min-h-[40px] flex items-center justify-center break-all px-4">
+				<div className="text-center font-mono text-2xl tracking-wider min-h-10 flex items-center justify-center break-all px-4">
 					{password}
 				</div>
 			</div>

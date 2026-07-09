@@ -127,7 +127,7 @@ const ProfilePage = () => {
 			<div className="container mx-auto px-4 py-12 max-w-7xl animate-in fade-in duration-500">
 				<div className="flex flex-col lg:grid lg:grid-cols-12 gap-8">
 					<div className="lg:col-span-4">
-						<ShimmerSection type="card" className="h-[400px]" />
+						<ShimmerSection type="card" className="h-100" />
 					</div>
 					<div className="lg:col-span-8 flex flex-col gap-4">
 						<ShimmerSection type="card" />
@@ -197,7 +197,7 @@ const ProfilePage = () => {
 							fallback={
 								<ShimmerSection
 									type="card"
-									className="h-[400px]"
+									className="h-100"
 								/>
 							}
 						>

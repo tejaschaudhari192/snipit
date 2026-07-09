@@ -82,7 +82,7 @@ export const ProfileInfo = ({
 							</div>
 
 							<div className="mt-6 w-full text-center space-y-4">
-								<div className="min-h-[48px] flex items-center justify-center">
+								<div className="min-h-12 flex items-center justify-center">
 									{isEditingName && !isGuest ? (
 										<div className="flex items-center gap-2 max-w-sm mx-auto animate-in fade-in slide-in-from-top-2 duration-300">
 											<Input

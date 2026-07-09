@@ -56,7 +56,7 @@ export const ExpirationBadge = ({
 			className={cn(statusColor, className)}
 			rounded="lg"
 		>
-			<span className="uppercase tracking-tight inline-block min-w-[60px] text-center">
+			<span className="uppercase tracking-tight inline-block min-w-15 text-center">
 				{text}
 			</span>
 		</GlassBadge>

@@ -64,7 +64,7 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
 		}
 
 		return (
-			<div className="z-50 h-auto max-h-[330px] w-48 overflow-y-auto rounded-md border border-border bg-popover p-1 shadow-md text-foreground flex flex-col custom-scrollbar">
+			<div className="z-50 h-auto max-h-82.5 w-48 overflow-y-auto rounded-md border border-border bg-popover p-1 shadow-md text-foreground flex flex-col custom-scrollbar">
 				{props.items.map((item: MentionItem, index: number) => (
 					<button
 						key={item.id}
