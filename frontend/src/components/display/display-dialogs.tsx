@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { CustomExpiryDialog } from "@/components/home/custom-expiry-dialog";
-import { DeletePasteDialog } from "@/components/display/delete-paste-dialog";
+import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
 import { AiEnhanceDialog } from "@/components/editor/ai-enhance-dialog";
 
 interface DisplayDialogsProps {
@@ -48,7 +48,7 @@ export const DisplayDialogs: React.FC<DisplayDialogsProps> = ({
 				setCustomExpiryDate={setCustomExpiryDate}
 				onConfirm={onCustomExpiryConfirm}
 			/>
-			<DeletePasteDialog
+			<DeleteConfirmDialog
 				isOpen={isDeleteDialogOpen}
 				onOpenChange={setIsDeleteDialogOpen}
 				onConfirm={onDeleteConfirm}
