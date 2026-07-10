@@ -128,7 +128,6 @@ export default function PasswordDetail({
 							key={item?.id ?? `new_${item?.itemType || "login"}`}
 							onAdd={onSave}
 							editItem={isEditing ? item : undefined}
-							onCancelEdit={onCancel}
 						/>
 					</Suspense>
 				</div>

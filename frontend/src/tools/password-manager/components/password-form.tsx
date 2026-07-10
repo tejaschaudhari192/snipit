@@ -33,7 +33,6 @@ import {
 export interface PasswordFormProps {
 	onAdd: (item: PasswordItem) => void;
 	editItem?: PasswordItem | null;
-	onCancelEdit?: () => void;
 }
 
 function getPasswordStrength(password: string) {
@@ -64,11 +63,7 @@ function getPasswordStrength(password: string) {
 	};
 }
 
-export default function PasswordForm({
-	onAdd,
-	editItem,
-	onCancelEdit,
-}: PasswordFormProps) {
+export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 	const { t } = useTranslation();
 	const [title, setTitle] = useState("");
 	const [notes, setNotes] = useState("");
@@ -133,7 +128,6 @@ export default function PasswordForm({
 			updatedAt: now,
 		} as PasswordItem);
 		resetForm();
-		onCancelEdit?.();
 	};
 
 	const addField = () => {
