@@ -12,7 +12,6 @@ import {
 import { Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import TextGradient from "@/components/text-gradient";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface DeleteConfirmDialogProps {
 	isOpen: boolean;
@@ -68,7 +67,6 @@ export const DeleteConfirmDialog = ({
 					>
 						{isDeleting ? (
 							<>
-								<Skeleton className="h-3 w-3 rounded-full bg-white/40 shrink-0" />
 								<TextGradient
 									highlightColor="var(--foreground)"
 									baseColor="var(--muted-foreground)"

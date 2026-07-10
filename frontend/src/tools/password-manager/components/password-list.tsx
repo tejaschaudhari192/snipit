@@ -60,6 +60,8 @@ export default function PasswordList({
 			// just a placeholder for recent logic
 			return true;
 		}
+		// Filter by folder
+		if (item.folderId === activeFilter) return true;
 		// Filter by item type (login, card, etc.)
 		return (
 			item.itemType === activeFilter ||
