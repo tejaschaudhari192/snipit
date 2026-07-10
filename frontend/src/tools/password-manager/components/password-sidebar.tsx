@@ -5,8 +5,16 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
-import { usePasswordUI } from "@/tools/password-manager/context/password-ui-context";
-import { usePassword } from "@/tools/password-manager/context/use-password";
+import { useAppDispatch, useAppSelector } from "../store";
+import {
+	selectVault,
+	selectActiveFilter,
+	selectIsCloudSyncEnabled,
+	selectIsSyncing,
+	setVault,
+	setActiveFilter,
+	setCloudSyncEnabled,
+} from "../store/password-slice";
 import {
 	SIDEBAR_NAV_ITEMS,
 	ITEM_TYPE_OPTIONS,
@@ -48,14 +56,11 @@ interface PasswordSidebarProps {
 
 export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 	const { t } = useTranslation();
-	const { activeFilter, setActiveFilter } = usePasswordUI();
-	const {
-		vault,
-		setVault,
-		isCloudSyncEnabled,
-		setIsCloudSyncEnabled,
-		isSyncing,
-	} = usePassword();
+	const dispatch = useAppDispatch();
+	const activeFilter = useAppSelector(selectActiveFilter);
+	const vault = useAppSelector(selectVault);
+	const isCloudSyncEnabled = useAppSelector(selectIsCloudSyncEnabled);
+	const isSyncing = useAppSelector(selectIsSyncing);
 	const { user } = useAuth();
 
 	const [isTypeDialogOpen, setIsTypeDialogOpen] = useState(false);
@@ -96,13 +101,16 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 				);
 			}
 
-			setVault({
-				...vault,
-				folders: newFolders,
-				items: newItems,
-				updatedAt: new Date().toISOString(),
-			});
-			if (activeFilter === activeFolderId) setActiveFilter("all");
+			dispatch(
+				setVault({
+					...vault,
+					folders: newFolders,
+					items: newItems,
+					updatedAt: new Date().toISOString(),
+				}),
+			);
+			if (activeFilter === activeFolderId)
+				dispatch(setActiveFilter("all"));
 			setFolderModalOpen(false);
 			return;
 		}
@@ -117,11 +125,13 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 				createdAt: new Date().toISOString(),
 				updatedAt: new Date().toISOString(),
 			};
-			setVault({
-				...vault,
-				folders: [...folders, newFolder],
-				updatedAt: new Date().toISOString(),
-			});
+			dispatch(
+				setVault({
+					...vault,
+					folders: [...folders, newFolder],
+					updatedAt: new Date().toISOString(),
+				}),
+			);
 		} else if (folderModalMode === "edit" && activeFolderId) {
 			const newFolders = folders.map((f) =>
 				f.id === activeFolderId
@@ -133,11 +143,13 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 						}
 					: f,
 			);
-			setVault({
-				...vault,
-				folders: newFolders,
-				updatedAt: new Date().toISOString(),
-			});
+			dispatch(
+				setVault({
+					...vault,
+					folders: newFolders,
+					updatedAt: new Date().toISOString(),
+				}),
+			);
 		}
 
 		setFolderModalOpen(false);
@@ -174,7 +186,9 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 								<SidebarMenuItem key={item.id}>
 									<SidebarMenuButton
 										isActive={activeFilter === item.id}
-										onClick={() => setActiveFilter(item.id)}
+										onClick={() =>
+											dispatch(setActiveFilter(item.id))
+										}
 										tooltip={t(item.label)}
 									>
 										<item.icon />
@@ -195,7 +209,9 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 										<SidebarMenuButton
 											isActive={activeFilter === item.id}
 											onClick={() =>
-												setActiveFilter(item.id)
+												dispatch(
+													setActiveFilter(item.id),
+												)
 											}
 											tooltip={t(item.label)}
 										>
@@ -240,7 +256,11 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 													activeFilter === folder.id
 												}
 												onClick={() =>
-													setActiveFilter(folder.id)
+													dispatch(
+														setActiveFilter(
+															folder.id,
+														),
+													)
 												}
 												className="group flex justify-between w-full"
 											>
@@ -394,7 +414,9 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 								<DropdownMenuSeparator />
 								<DropdownMenuItem
 									className="gap-2 cursor-pointer"
-									onClick={() => setIsCloudSyncEnabled(false)}
+									onClick={() =>
+										dispatch(setCloudSyncEnabled(false))
+									}
 								>
 									<HardDrive className="size-4 text-muted-foreground" />
 									<div className="flex flex-col">
@@ -416,7 +438,8 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 								<DropdownMenuItem
 									className={`gap-2 cursor-pointer ${!user ? "opacity-50" : ""}`}
 									onClick={() => {
-										if (user) setIsCloudSyncEnabled(true);
+										if (user)
+											dispatch(setCloudSyncEnabled(true));
 										else
 											alert(
 												"Please log in to enable Cloud Sync",

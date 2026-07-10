@@ -2,8 +2,16 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { usePassword } from "@/tools/password-manager/context/use-password";
-import { usePasswordUI } from "@/tools/password-manager/context/password-ui-context";
+import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
+import {
+	selectVault,
+	selectMasterPassword,
+	selectActiveFilter,
+} from "@/tools/password-manager/store/password-slice";
+import {
+	setVault,
+	setSidebarDrawerOpen,
+} from "@/tools/password-manager/store/password-slice";
 import { encryptVault } from "@/tools/password-manager/utils/vault";
 import { getFieldsForType } from "@/tools/password-manager/utils/item-types";
 import { Copy, Pencil, Trash2, Star, Menu } from "lucide-react";
@@ -28,8 +36,10 @@ export default function PasswordList({
 }: PasswordListProps) {
 	const { t } = useTranslation();
 	const isMobile = useIsMobile();
-	const { vault, setVault, masterPassword } = usePassword();
-	const { activeFilter, setIsSidebarDrawerOpen } = usePasswordUI();
+	const dispatch = useAppDispatch();
+	const vault = useAppSelector(selectVault);
+	const masterPassword = useAppSelector(selectMasterPassword);
+	const activeFilter = useAppSelector(selectActiveFilter);
 	const [search, setSearch] = useState("");
 
 	const items = vault?.items ?? [];
@@ -70,7 +80,7 @@ export default function PasswordList({
 			...vault,
 			items: vault.items.filter((i) => i.id !== id),
 		};
-		setVault(updated);
+		dispatch(setVault(updated));
 		await encryptVault(updated, masterPassword);
 	};
 
@@ -82,7 +92,7 @@ export default function PasswordList({
 					<Button
 						variant="ghost"
 						size="icon"
-						onClick={() => setIsSidebarDrawerOpen(true)}
+						onClick={() => dispatch(setSidebarDrawerOpen(true))}
 						className="shrink-0 h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted"
 					>
 						<Menu className="h-5 w-5" />

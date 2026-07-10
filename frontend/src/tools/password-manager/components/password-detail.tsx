@@ -23,8 +23,12 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { usePassword } from "@/tools/password-manager/context/use-password";
-import { usePasswordUI } from "@/tools/password-manager/context/password-ui-context";
+import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
+import {
+	selectVault,
+	deleteItem,
+	handleEdit,
+} from "@/tools/password-manager/store/password-slice";
 import { isOlderThan3Months } from "@/tools/password-manager/utils/formatters";
 import { getFieldsForType } from "@/tools/password-manager/utils/item-types";
 import type { PasswordItem } from "@/tools/password-manager/types";
@@ -52,8 +56,8 @@ export default function PasswordDetail({
 	onCancel,
 }: PasswordDetailProps) {
 	const { t } = useTranslation();
-	const { vault, deleteItem } = usePassword();
-	const { handleEdit } = usePasswordUI();
+	const dispatch = useAppDispatch();
+	const vault = useAppSelector(selectVault);
 	const [showField, setShowField] = useState<Record<string, boolean>>({});
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -209,7 +213,7 @@ export default function PasswordDetail({
 					<Button
 						variant="ghost"
 						size="icon"
-						onClick={() => handleEdit(item)}
+						onClick={() => dispatch(handleEdit(item))}
 						className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
 						title={t("common.edit")}
 					>
@@ -532,7 +536,7 @@ export default function PasswordDetail({
 						isOpen={isDeleteDialogOpen}
 						onOpenChange={setIsDeleteDialogOpen}
 						onConfirm={() => {
-							deleteItem(item.id);
+							dispatch(deleteItem(item.id));
 							setIsDeleteDialogOpen(false);
 						}}
 						title={t("display.delete_button")}

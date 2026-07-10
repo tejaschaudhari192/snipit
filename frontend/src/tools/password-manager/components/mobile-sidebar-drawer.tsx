@@ -1,6 +1,11 @@
 import React, { Suspense } from "react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { usePasswordUI } from "../context/password-ui-context";
+import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
+import {
+	selectIsSidebarDrawerOpen,
+	setSidebarDrawerOpen,
+	handleNewItem,
+} from "@/tools/password-manager/store/password-slice";
 import { SidebarSkeleton } from "./skeletons";
 
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -8,11 +13,14 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 const PasswordSidebar = React.lazy(() => import("./password-sidebar"));
 
 export default function MobileSidebarDrawer() {
-	const { isSidebarDrawerOpen, setIsSidebarDrawerOpen, handleNewItem } =
-		usePasswordUI();
+	const dispatch = useAppDispatch();
+	const isSidebarDrawerOpen = useAppSelector(selectIsSidebarDrawerOpen);
 
 	return (
-		<Sheet open={isSidebarDrawerOpen} onOpenChange={setIsSidebarDrawerOpen}>
+		<Sheet
+			open={isSidebarDrawerOpen}
+			onOpenChange={(open) => dispatch(setSidebarDrawerOpen(open))}
+		>
 			<SheetContent
 				side="left"
 				className="p-0 w-70 bg-sidebar border-r border-border"
@@ -22,8 +30,8 @@ export default function MobileSidebarDrawer() {
 						<Suspense fallback={<SidebarSkeleton />}>
 							<PasswordSidebar
 								onNewItem={(type) => {
-									setIsSidebarDrawerOpen(false);
-									handleNewItem(type);
+									dispatch(setSidebarDrawerOpen(false));
+									dispatch(handleNewItem(type));
 								}}
 							/>
 						</Suspense>

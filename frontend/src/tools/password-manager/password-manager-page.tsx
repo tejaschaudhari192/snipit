@@ -1,4 +1,5 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
+import { Provider } from "react-redux";
 const PasswordSidebar = React.lazy(
 	() => import("./components/password-sidebar"),
 );
@@ -29,40 +30,43 @@ import {
 	ResizableHandle,
 } from "@/components/ui/resizable";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { encryptVault } from "./utils/vault";
-import { PasswordProvider } from "./context/password-context";
-import { usePassword } from "./context/use-password";
-import type { PasswordItem } from "./types/index";
+import { store, useAppDispatch, useAppSelector } from "./store";
 import {
-	PasswordUIProvider,
-	usePasswordUI,
-} from "./context/password-ui-context";
+	selectVault,
+	selectVaultLoading,
+	selectVaultError,
+	selectHasExistingVault,
+	selectCloudVaultStatus,
+	selectActiveItem,
+	selectIsNewItem,
+} from "./store/password-slice";
+import {
+	setVault,
+	setCloudVaultStatus,
+	handleNewItem,
+	handleSelect,
+	handleEdit,
+	handleCancelDetail,
+	initializeVault,
+	unlockVault,
+	createVault,
+	enableCloudSync,
+	persistVault,
+} from "./store/password-slice";
+import type { PasswordItem } from "./types/index";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 function PasswordManagerInner() {
 	const { t } = useTranslation();
 	const isMobile = useIsMobile();
-	const {
-		masterPassword,
-		setMasterPassword,
-		vault,
-		setVault,
-		loading,
-		error,
-		hasExistingVault,
-		setHasExistingVault,
-		cloudVaultStatus,
-		setIsCloudSyncEnabled,
-		setCloudVaultStatus,
-	} = usePassword();
-	const {
-		activeItem,
-		isNewItem,
-		handleNewItem,
-		handleSelect,
-		handleEdit,
-		handleCancelDetail,
-	} = usePasswordUI();
+	const dispatch = useAppDispatch();
+	const vault = useAppSelector(selectVault);
+	const loading = useAppSelector(selectVaultLoading);
+	const error = useAppSelector(selectVaultError);
+	const hasExistingVault = useAppSelector(selectHasExistingVault);
+	const cloudVaultStatus = useAppSelector(selectCloudVaultStatus);
+	const activeItem = useAppSelector(selectActiveItem);
+	const isNewItem = useAppSelector(selectIsNewItem);
 
 	const saveItem = async (item: PasswordItem) => {
 		if (!vault) return;
@@ -73,11 +77,14 @@ function PasswordManagerInner() {
 				? vault.items.map((i) => (i.id === item.id ? item : i))
 				: [...vault.items, item],
 		};
-		setVault(updated);
-		await encryptVault(updated, masterPassword);
-		// After saving, show the item in detail view
-		handleSelect(item);
+		dispatch(setVault(updated));
+		dispatch(persistVault());
+		dispatch(handleSelect(item));
 	};
+
+	useEffect(() => {
+		dispatch(initializeVault());
+	}, [dispatch]);
 
 	if (hasExistingVault === null || cloudVaultStatus === "checking") {
 		return <AppSkeleton />;
@@ -90,12 +97,10 @@ function PasswordManagerInner() {
 					<Suspense fallback={<AppSkeleton />}>
 						<CloudVaultDetected
 							onEnableSync={() => {
-								setIsCloudSyncEnabled(true);
-								setCloudVaultStatus("idle");
-								setHasExistingVault(true); // Tell the UI we have a vault so it shows VaultUnlock
+								dispatch(enableCloudSync());
 							}}
 							onStartFresh={() =>
-								setCloudVaultStatus("not_found")
+								dispatch(setCloudVaultStatus("not_found"))
 							}
 						/>
 					</Suspense>
@@ -104,14 +109,20 @@ function PasswordManagerInner() {
 
 			return (
 				<Suspense fallback={<AppSkeleton />}>
-					<VaultOnboarding onComplete={setMasterPassword} />
+					<VaultOnboarding
+						onComplete={(password: string) =>
+							dispatch(createVault(password))
+						}
+					/>
 				</Suspense>
 			);
 		}
 		return (
 			<Suspense fallback={<AppSkeleton />}>
 				<VaultUnlock
-					onUnlock={setMasterPassword}
+					onUnlock={(password: string) =>
+						dispatch(unlockVault(password))
+					}
 					error={error}
 					loading={loading}
 				/>
@@ -147,7 +158,9 @@ function PasswordManagerInner() {
 										item={activeItem}
 										isNew={isNewItem}
 										onSave={saveItem}
-										onCancel={handleCancelDetail}
+										onCancel={() =>
+											dispatch(handleCancelDetail())
+										}
 									/>
 								</Suspense>
 							</div>
@@ -156,8 +169,12 @@ function PasswordManagerInner() {
 								<Suspense fallback={<ListSkeleton />}>
 									<PasswordList
 										activeId={null}
-										onSelect={handleSelect}
-										onEdit={handleEdit}
+										onSelect={(item: PasswordItem) =>
+											dispatch(handleSelect(item))
+										}
+										onEdit={(item: PasswordItem) =>
+											dispatch(handleEdit(item))
+										}
 									/>
 								</Suspense>
 							</div>
@@ -182,7 +199,13 @@ function PasswordManagerInner() {
 											fallback={<SidebarSkeleton />}
 										>
 											<PasswordSidebar
-												onNewItem={handleNewItem}
+												onNewItem={(
+													itemType?: string,
+												) =>
+													dispatch(
+														handleNewItem(itemType),
+													)
+												}
 											/>
 										</Suspense>
 									</SidebarProvider>
@@ -202,8 +225,12 @@ function PasswordManagerInner() {
 									<Suspense fallback={<ListSkeleton />}>
 										<PasswordList
 											activeId={activeItem?.id ?? null}
-											onSelect={handleSelect}
-											onEdit={handleEdit}
+											onSelect={(item: PasswordItem) =>
+												dispatch(handleSelect(item))
+											}
+											onEdit={(item: PasswordItem) =>
+												dispatch(handleEdit(item))
+											}
 										/>
 									</Suspense>
 								</div>
@@ -223,7 +250,9 @@ function PasswordManagerInner() {
 											item={activeItem}
 											isNew={isNewItem}
 											onSave={saveItem}
-											onCancel={handleCancelDetail}
+											onCancel={() =>
+												dispatch(handleCancelDetail())
+											}
 										/>
 									</Suspense>
 								</div>
@@ -238,10 +267,8 @@ function PasswordManagerInner() {
 
 export default function PasswordManagerPage() {
 	return (
-		<PasswordProvider>
-			<PasswordUIProvider>
-				<PasswordManagerInner />
-			</PasswordUIProvider>
-		</PasswordProvider>
+		<Provider store={store}>
+			<PasswordManagerInner />
+		</Provider>
 	);
 }

@@ -110,7 +110,7 @@ const ForgotPasswordPage = () => {
 
 								<div className="pt-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
 									<Button
-										className="w-full h-11 text-sm font-bold transition-all gap-2 rounded-xl bg-primary hover:shadow-lg hover:shadow-primary/20 active:scale-[0.98] duration-200 duration-200"
+										className="w-full h-11 text-sm font-bold transition-all gap-2 rounded-xl bg-primary hover:shadow-lg hover:shadow-primary/20 active:scale-[0.98] duration-200"
 										type="submit"
 										disabled={isLoading}
 									>
