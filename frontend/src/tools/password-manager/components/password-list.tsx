@@ -1,18 +1,13 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
 import {
 	selectVault,
-	selectMasterPassword,
 	selectActiveFilter,
 } from "@/tools/password-manager/store/password-slice";
-import {
-	setVault,
-	setSidebarDrawerOpen,
-} from "@/tools/password-manager/store/password-slice";
-import { encryptVault } from "@/tools/password-manager/utils/vault";
+import { setSidebarDrawerOpen } from "@/tools/password-manager/store/password-slice";
 import { getFieldsForType } from "@/tools/password-manager/utils/item-types";
 import { Copy, Pencil, Trash2, Star, Menu } from "lucide-react";
 import {
@@ -22,6 +17,12 @@ import {
 } from "@/tools/password-manager/utils/formatters";
 import type { PasswordItem } from "@/tools/password-manager/types";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useDeleteItem } from "@/tools/password-manager/hooks/use-delete-item";
+const DeleteConfirmDialog = lazy(() =>
+	import("@/components/common/delete-confirm-dialog").then((m) => ({
+		default: m.DeleteConfirmDialog,
+	})),
+);
 
 interface PasswordListProps {
 	activeId: string | null;
@@ -38,10 +39,15 @@ export default function PasswordList({
 	const isMobile = useIsMobile();
 	const dispatch = useAppDispatch();
 	const vault = useAppSelector(selectVault);
-	const masterPassword = useAppSelector(selectMasterPassword);
 	const activeFilter = useAppSelector(selectActiveFilter);
 	const [search, setSearch] = useState("");
-
+	const {
+		isDeleteDialogOpen,
+		deleteTargetId,
+		confirmDelete,
+		handleConfirm,
+		cancelDelete,
+	} = useDeleteItem();
 	const items = vault?.items ?? [];
 
 	// First apply sidebar filter
@@ -74,18 +80,12 @@ export default function PasswordList({
 		await navigator.clipboard.writeText(text);
 	};
 
-	const deleteItem = async (id: string) => {
-		if (!vault) return;
-		const updated = {
-			...vault,
-			items: vault.items.filter((i) => i.id !== id),
-		};
-		dispatch(setVault(updated));
-		await encryptVault(updated, masterPassword);
+	const handleDeleteConfirm = () => {
+		handleConfirm();
 	};
 
 	return (
-		<div className="flex flex-col h-full bg-card overflow-hidden w-full min-w-0">
+		<div className="h-full flex flex-col">
 			{/* Search bar & Mobile Menu */}
 			<div className="p-4 border-b border-border flex items-center gap-2">
 				{isMobile && (
@@ -215,7 +215,7 @@ export default function PasswordList({
 									size="icon"
 									onClick={(e) => {
 										e.stopPropagation();
-										deleteItem(item.id);
+										confirmDelete(item.id);
 									}}
 									className={`h-7 w-7 rounded-lg transition-colors ${
 										isActive
@@ -230,6 +230,19 @@ export default function PasswordList({
 					);
 				})}
 			</div>
+			{deleteTargetId && (
+				<Suspense fallback={null}>
+					<DeleteConfirmDialog
+						isOpen={isDeleteDialogOpen}
+						onOpenChange={(open) => {
+							if (!open) cancelDelete();
+						}}
+						onConfirm={handleDeleteConfirm}
+						title={t("display.delete_button")}
+						description={t("tools.password_manager_delete_confirm")}
+					/>
+				</Suspense>
+			)}
 		</div>
 	);
 }

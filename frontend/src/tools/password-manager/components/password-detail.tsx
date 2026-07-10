@@ -26,13 +26,13 @@ import {
 import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
 import {
 	selectVault,
-	deleteItem,
 	handleEdit,
 } from "@/tools/password-manager/store/password-slice";
 import { isOlderThan3Months } from "@/tools/password-manager/utils/formatters";
 import { getFieldsForType } from "@/tools/password-manager/utils/item-types";
 import type { PasswordItem } from "@/tools/password-manager/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDeleteItem } from "@/tools/password-manager/hooks/use-delete-item";
 const PasswordForm = lazy(
 	() => import("@/tools/password-manager/components/password-form"),
 );
@@ -59,7 +59,8 @@ export default function PasswordDetail({
 	const dispatch = useAppDispatch();
 	const vault = useAppSelector(selectVault);
 	const [showField, setShowField] = useState<Record<string, boolean>>({});
-	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+	const { isDeleteDialogOpen, confirmDelete, handleConfirm, cancelDelete } =
+		useDeleteItem();
 
 	if (!item && !isNew) {
 		return (
@@ -222,7 +223,7 @@ export default function PasswordDetail({
 					<Button
 						variant="ghost"
 						size="icon"
-						onClick={() => setIsDeleteDialogOpen(true)}
+						onClick={() => confirmDelete(item.id)}
 						className="h-8 w-8 rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10 transition-colors ml-1"
 						title={t("remove") || "Delete"}
 					>
@@ -534,10 +535,11 @@ export default function PasswordDetail({
 				<Suspense fallback={null}>
 					<DeleteConfirmDialog
 						isOpen={isDeleteDialogOpen}
-						onOpenChange={setIsDeleteDialogOpen}
+						onOpenChange={(open) => {
+							if (!open) cancelDelete();
+						}}
 						onConfirm={() => {
-							dispatch(deleteItem(item.id));
-							setIsDeleteDialogOpen(false);
+							handleConfirm();
 						}}
 						title={t("display.delete_button")}
 						description={t("tools.password_manager_delete_confirm")}
