@@ -23,7 +23,7 @@ export default tseslint.config([
 			"tailwind-canonical/tailwind-canonical-classes": [
 				"warn",
 				{
-					cssPath: "./src/index.css", 
+					cssPath: "./src/index.css",
 				},
 			],
 		},
