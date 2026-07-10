@@ -119,6 +119,8 @@
 		"password_detail_update_desc": "It's time to update your password. Update now",
 		"password_detail_notes_label": "Notes",
 		"password_detail_custom_fields_label": "Custom Fields",
+		"password_detail_created_label": "Created",
+		"password_detail_modified_label": "Last modified",
 		"password_manager_add_folder": "Add Folder",
 		"password_manager_new_folder_placeholder": "New folder...",
 		"password_manager_all_items": "All items",

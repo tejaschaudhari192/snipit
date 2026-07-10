@@ -41,3 +41,18 @@ export function isOlderThan3Months(dateStr?: string): boolean {
 		PASSWORD_MANAGER_CONFIG.MS_PER_DAY;
 	return Date.now() - new Date(dateStr).getTime() > expiryTime;
 }
+
+export function formatDate(dateStr?: string): string {
+	if (!dateStr) return "";
+	try {
+		return new Intl.DateTimeFormat(undefined, {
+			year: "numeric",
+			month: "short",
+			day: "numeric",
+			hour: "2-digit",
+			minute: "2-digit",
+		}).format(new Date(dateStr));
+	} catch {
+		return "";
+	}
+}

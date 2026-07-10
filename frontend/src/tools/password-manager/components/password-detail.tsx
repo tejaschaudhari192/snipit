@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import {
 	Eye,
 	EyeOff,
-	Copy,
 	ArrowLeft,
 	Edit2,
 	Trash2,
@@ -13,6 +12,7 @@ import {
 	AlertTriangle,
 	Download,
 } from "lucide-react";
+import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -28,7 +28,10 @@ import {
 	selectVault,
 	handleEdit,
 } from "@/tools/password-manager/store/password-slice";
-import { isOlderThan3Months } from "@/tools/password-manager/utils/formatters";
+import {
+	isOlderThan3Months,
+	formatDate,
+} from "@/tools/password-manager/utils/formatters";
 import { getFieldsForType } from "@/tools/password-manager/utils/item-types";
 import type { PasswordItem } from "@/tools/password-manager/types";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -351,18 +354,12 @@ export default function PasswordDetail({
 															<Eye className="h-4 w-4" />
 														)}
 													</Button>
-													<Button
+													<CopyButton
+														content={value}
 														variant="ghost"
-														size="icon"
-														onClick={() =>
-															navigator.clipboard.writeText(
-																value,
-															)
-														}
+														size="default"
 														className="h-8 w-8 text-muted-foreground hover:text-foreground transition-colors"
-													>
-														<Copy className="h-4 w-4" />
-													</Button>
+													/>
 												</div>
 											</div>
 										</div>
@@ -442,18 +439,12 @@ export default function PasswordDetail({
 												<span className="text-sm text-foreground flex-1 truncate">
 													{value}
 												</span>
-												<Button
+												<CopyButton
+													content={value}
 													variant="ghost"
-													size="icon"
-													onClick={() =>
-														navigator.clipboard.writeText(
-															value,
-														)
-													}
+													size="default"
 													className="h-8 w-8 text-muted-foreground hover:text-foreground transition-colors"
-												>
-													<Copy className="h-4 w-4" />
-												</Button>
+												/>
 											</div>
 										</div>
 									</div>
@@ -470,6 +461,39 @@ export default function PasswordDetail({
 										{item.notes}
 									</p>
 								</div>
+							)}
+
+							{/* Created & Last Modified */}
+							{(item.createdAt || item.updatedAt) && (
+								<>
+									<Separator className="bg-border" />
+									<div className="space-y-1.5">
+										{item.createdAt && (
+											<div className="flex items-center justify-between">
+												<span className="text-xs text-muted-foreground">
+													{t(
+														"tools.password_detail_created_label",
+													)}
+												</span>
+												<span className="text-xs text-muted-foreground/80 font-mono">
+													{formatDate(item.createdAt)}
+												</span>
+											</div>
+										)}
+										{item.updatedAt && (
+											<div className="flex items-center justify-between">
+												<span className="text-xs text-muted-foreground">
+													{t(
+														"tools.password_detail_modified_label",
+													)}
+												</span>
+												<span className="text-xs text-muted-foreground/80 font-mono">
+													{formatDate(item.updatedAt)}
+												</span>
+											</div>
+										)}
+									</div>
+								</>
 							)}
 						</div>
 					</div>

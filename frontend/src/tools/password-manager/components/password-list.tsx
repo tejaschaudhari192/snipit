@@ -9,7 +9,8 @@ import {
 } from "@/tools/password-manager/store/password-slice";
 import { setSidebarDrawerOpen } from "@/tools/password-manager/store/password-slice";
 import { getFieldsForType } from "@/tools/password-manager/utils/item-types";
-import { Copy, Pencil, Trash2, Star, Menu } from "lucide-react";
+import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
+import { Pencil, Trash2, Star, Menu } from "lucide-react";
 import {
 	getDomain,
 	getInitials,
@@ -77,10 +78,6 @@ export default function PasswordList({
 					i.url?.toLowerCase().includes(search.toLowerCase()),
 			)
 		: categoryFiltered;
-
-	const copyToClipboard = async (text: string) => {
-		await navigator.clipboard.writeText(text);
-	};
 
 	const handleDeleteConfirm = () => {
 		handleConfirm();
@@ -181,22 +178,18 @@ export default function PasswordList({
 
 							{/* Actions (visible on hover) */}
 							<div className="hidden group-hover:flex items-center gap-0.5 justify-end mt-2">
-								<Button
+								<CopyButton
+									content={item.password || ""}
 									variant="ghost"
-									size="icon"
-									onClick={(e) => {
-										e.stopPropagation();
-										copyToClipboard(item.password || "");
-									}}
+									size="sm"
+									onClick={(e) => e.stopPropagation()}
 									className={`h-7 w-7 rounded-lg transition-colors ${
 										isActive
 											? "hover:bg-primary-foreground/20 text-primary-foreground/70 hover:text-primary-foreground"
 											: "hover:bg-muted text-muted-foreground hover:text-foreground"
 									}`}
 									disabled={!item.password}
-								>
-									<Copy className="h-3.5 w-3.5" />
-								</Button>
+								/>
 								<Button
 									variant="ghost"
 									size="icon"

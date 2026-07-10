@@ -11,10 +11,10 @@ import {
 	selectActiveFilter,
 	selectIsCloudSyncEnabled,
 	selectIsSyncing,
-	setVault,
 	setActiveFilter,
 	setCloudSyncEnabled,
 } from "../store/password-slice";
+import { useFolderMutations } from "@/tools/password-manager/hooks/use-folder-mutations";
 import {
 	SIDEBAR_NAV_ITEMS,
 	ITEM_TYPE_OPTIONS,
@@ -74,82 +74,24 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 
 	const folders = vault?.folders || [];
 
+	const { createFolder, editFolder, deleteFolder } = useFolderMutations();
+
 	const handleSaveFolder = (
 		name: string,
 		color: string,
 		deletePasswordsInside = false,
 	) => {
 		if (folderModalMode === "delete") {
-			if (!activeFolderId || !vault) return;
-			const newFolders = folders.filter((f) => f.id !== activeFolderId);
-
-			let newItems = vault.items || [];
-			if (deletePasswordsInside) {
-				newItems = newItems.filter(
-					(item) => item.folderId !== activeFolderId,
-				);
-			} else {
-				// Unlink passwords from the deleted folder so they aren't orphaned
-				newItems = newItems.map((item) =>
-					item.folderId === activeFolderId
-						? {
-								...item,
-								folderId: undefined,
-								updatedAt: new Date().toISOString(),
-							}
-						: item,
-				);
-			}
-
-			dispatch(
-				setVault({
-					...vault,
-					folders: newFolders,
-					items: newItems,
-					updatedAt: new Date().toISOString(),
-				}),
-			);
-			if (activeFilter === activeFolderId)
-				dispatch(setActiveFilter("all"));
+			if (!activeFolderId) return;
+			deleteFolder(activeFolderId, deletePasswordsInside);
 			setFolderModalOpen(false);
 			return;
 		}
 
-		if (!name.trim() || !vault) return;
-
 		if (folderModalMode === "create") {
-			const newFolder = {
-				id: crypto.randomUUID(),
-				name: name.trim(),
-				color: color,
-				createdAt: new Date().toISOString(),
-				updatedAt: new Date().toISOString(),
-			};
-			dispatch(
-				setVault({
-					...vault,
-					folders: [...folders, newFolder],
-					updatedAt: new Date().toISOString(),
-				}),
-			);
+			createFolder(name, color);
 		} else if (folderModalMode === "edit" && activeFolderId) {
-			const newFolders = folders.map((f) =>
-				f.id === activeFolderId
-					? {
-							...f,
-							name: name.trim(),
-							color: color,
-							updatedAt: new Date().toISOString(),
-						}
-					: f,
-			);
-			dispatch(
-				setVault({
-					...vault,
-					folders: newFolders,
-					updatedAt: new Date().toISOString(),
-				}),
-			);
+			editFolder(activeFolderId, name, color);
 		}
 
 		setFolderModalOpen(false);

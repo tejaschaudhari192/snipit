@@ -41,7 +41,6 @@ import {
 	selectIsNewItem,
 } from "./store/password-slice";
 import {
-	setVault,
 	setCloudVaultStatus,
 	handleNewItem,
 	handleSelect,
@@ -51,10 +50,10 @@ import {
 	unlockVault,
 	createVault,
 	enableCloudSync,
-	persistVault,
 } from "./store/password-slice";
 import type { PasswordItem } from "./types/index";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useItemMutations } from "@/tools/password-manager/hooks/use-item-mutations";
 
 function PasswordManagerInner() {
 	const { t } = useTranslation();
@@ -68,19 +67,7 @@ function PasswordManagerInner() {
 	const activeItem = useAppSelector(selectActiveItem);
 	const isNewItem = useAppSelector(selectIsNewItem);
 
-	const saveItem = async (item: PasswordItem) => {
-		if (!vault) return;
-		const exists = vault.items.find((i) => i.id === item.id);
-		const updated = {
-			...vault,
-			items: exists
-				? vault.items.map((i) => (i.id === item.id ? item : i))
-				: [...vault.items, item],
-		};
-		dispatch(setVault(updated));
-		dispatch(persistVault());
-		dispatch(handleSelect(item));
-	};
+	const { saveItem } = useItemMutations();
 
 	useEffect(() => {
 		dispatch(initializeVault());
