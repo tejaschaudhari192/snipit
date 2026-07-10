@@ -194,9 +194,7 @@ const Header = ({ className }: HeaderProps) => {
 				</nav>
 
 				<Suspense
-					fallback={
-						<div className="w-35 h-9 skeleton rounded-lg" />
-					}
+					fallback={<div className="w-35 h-9 skeleton rounded-lg" />}
 				>
 					<LanguageSwitcher className="w-35 h-9" />
 				</Suspense>

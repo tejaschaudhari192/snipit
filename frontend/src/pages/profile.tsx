@@ -195,10 +195,7 @@ const ProfilePage = () => {
 
 						<Suspense
 							fallback={
-								<ShimmerSection
-									type="card"
-									className="h-100"
-								/>
+								<ShimmerSection type="card" className="h-100" />
 							}
 						>
 							<ProfileInfo
