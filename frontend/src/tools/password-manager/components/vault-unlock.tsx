@@ -8,11 +8,11 @@ import {
 	CardTitle,
 	CardDescription,
 } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Shield, LockOpen, Loader2, KeyRound, Eye, EyeOff } from "lucide-react";
+import { Shield, LockOpen, Loader2, KeyRound } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import TextGradient from "@/components/text-gradient";
 import ReadMoreDialog from "./ReadMoreDialog";
+import PasswordSetupForm from "./password-setup-form";
 import zxcvbn from "zxcvbn";
 
 interface VaultUnlockProps {
@@ -51,7 +51,6 @@ export default function VaultUnlock({
 	// New password mode (after successful recovery)
 	const [newPassword, setNewPassword] = useState("");
 	const [confirmNewPassword, setConfirmNewPassword] = useState("");
-	const [showNewPw, setShowNewPw] = useState(false);
 	const [newStrengthScore, setNewStrengthScore] = useState(0);
 
 	useEffect(() => {
@@ -135,57 +134,12 @@ export default function VaultUnlock({
 							onSubmit={handleSetNewPassword}
 							className="space-y-4"
 						>
-							<div className="space-y-2">
-								<div className="relative">
-									<Input
-										type={showNewPw ? "text" : "password"}
-										placeholder={t(
-											"tools.password_manager_master_password_placeholder",
-										)}
-										value={newPassword}
-										onChange={(e) =>
-											setNewPassword(e.target.value)
-										}
-										className="pr-10 h-12"
-										autoFocus
-									/>
-									<Button
-										variant="ghost"
-										size="icon"
-										type="button"
-										onClick={() => setShowNewPw(!showNewPw)}
-										className="absolute right-1 top-1/2 -translate-y-1/2 h-10 w-10 text-muted-foreground"
-									>
-										{showNewPw ? (
-											<EyeOff className="h-4 w-4" />
-										) : (
-											<Eye className="h-4 w-4" />
-										)}
-									</Button>
-								</div>
-								{newPassword && (
-									<Progress
-										value={(newStrengthScore + 1) * 20}
-										indicatorClassName={
-											newStrengthScore < 2
-												? "bg-red-500"
-												: newStrengthScore === 2
-													? "bg-yellow-500"
-													: "bg-green-500"
-										}
-									/>
-								)}
-							</div>
-							<Input
-								type={showNewPw ? "text" : "password"}
-								placeholder={t(
-									"tools.password_manager_confirm_password_placeholder",
-								)}
-								value={confirmNewPassword}
-								onChange={(e) =>
-									setConfirmNewPassword(e.target.value)
-								}
-								className="h-12"
+							<PasswordSetupForm
+								password={newPassword}
+								onPasswordChange={setNewPassword}
+								confirmPassword={confirmNewPassword}
+								onConfirmPasswordChange={setConfirmNewPassword}
+								strengthScore={newStrengthScore}
 							/>
 							<Button
 								type="submit"

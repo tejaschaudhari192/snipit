@@ -1,23 +1,19 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Progress } from "@/components/ui/progress";
 import {
-    Shield,
-    Eye,
-    EyeOff,
-    Lock,
-    Cloud,
-    KeyRound,
-    AlertTriangle,
-    Copy,
-    Loader2,
+	Shield,
+	Lock,
+	Cloud,
+	KeyRound,
+	AlertTriangle,
+	Copy,
+	Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
-
+import PasswordSetupForm from "./password-setup-form";
 import zxcvbn from "zxcvbn";
 
 interface VaultOnboardingProps {
@@ -41,7 +37,6 @@ export default function VaultOnboarding({
     // Step 2 State
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
     const [strengthScore, setStrengthScore] = useState(0);
 
     // Step 3 State
@@ -193,110 +188,13 @@ export default function VaultOnboarding({
             </div>
 
             <div className="space-y-4">
-                <div className="space-y-2">
-                    <div className="relative">
-                        <Input
-                            type={showPassword ? "text" : "password"}
-                            placeholder={t(
-                                "tools.password_manager_master_password_placeholder",
-                            )}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="pr-10 h-12"
-                            autoFocus
-                        />
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-1 top-1/2 -translate-y-1/2 h-10 w-10 text-muted-foreground"
-                        >
-                            {showPassword ? (
-                                <EyeOff className="h-4 w-4" />
-                            ) : (
-                                <Eye className="h-4 w-4" />
-                            )}
-                        </Button>
-                    </div>
-
-                    {password && (
-                        <Progress
-                            value={(strengthScore + 1) * 20}
-                            indicatorClassName={
-                                strengthScore < 2
-                                    ? "bg-red-500"
-                                    : strengthScore === 2
-                                        ? "bg-yellow-500"
-                                        : "bg-green-500"
-                            }
-                        />
-                    )}
-                </div>
-
-                <div className="relative">
-                    <Input
-                        type={showPassword ? "text" : "password"}
-                        placeholder={t(
-                            "tools.password_manager_confirm_password_placeholder",
-                        )}
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="h-12"
-                    />
-                </div>
-
-                <Card className="bg-muted/30 border-dashed">
-                    <CardContent className="p-4 space-y-2 text-sm">
-                        {[
-                            {
-                                key: "length",
-                                label: t("tools.password_manager_req_length"),
-                            },
-                            {
-                                key: "upper",
-                                label: t(
-                                    "tools.password_manager_req_uppercase",
-                                ),
-                            },
-                            {
-                                key: "number",
-                                label: t("tools.password_manager_req_number"),
-                            },
-                            {
-                                key: "special",
-                                label: t("tools.password_manager_req_special"),
-                            },
-                        ].map(({ key, label }) => {
-                            const met = reqs[key as keyof typeof reqs];
-                            return (
-                                <div
-                                    key={key}
-                                    className="flex items-center gap-2"
-                                >
-                                    <span
-                                        className={
-                                            met
-                                                ? "text-green-500"
-                                                : "text-muted-foreground"
-                                        }
-                                    >
-                                        {met ? "✓" : "○"}
-                                    </span>
-                                    <span
-                                        className={
-                                            met
-                                                ? "text-foreground"
-                                                : "text-muted-foreground"
-                                        }
-                                    >
-                                        {label}
-                                    </span>
-                                </div>
-                            );
-                        })}
-                    </CardContent>
-                </Card>
+                <PasswordSetupForm
+                    password={password}
+                    onPasswordChange={setPassword}
+                    confirmPassword={confirmPassword}
+                    onConfirmPasswordChange={setConfirmPassword}
+                    strengthScore={strengthScore}
+                />
             </div>
 
             <div className="flex justify-between items-center pt-4">
