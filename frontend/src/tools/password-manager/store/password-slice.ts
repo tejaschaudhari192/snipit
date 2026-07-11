@@ -276,11 +276,19 @@ export const recoverWithMnemonic = createAsyncThunk(
             throw new Error("No recovery key found for this account");
         }
 
-        const masterPassword = await decryptMasterPassword(mnemonic, {
-            encrypted: record.encryptedMasterPassword,
-            salt: record.salt,
-            iv: record.iv,
-        });
+        let masterPassword: string;
+        try {
+            masterPassword = await decryptMasterPassword(mnemonic, {
+                encrypted: record.encryptedMasterPassword,
+                salt: record.salt,
+                iv: record.iv,
+            });
+        } catch {
+            throw new Error(
+                "Invalid recovery phrase — it does not match the stored recovery key. " +
+                "If you reset your master password, use the recovery key shown after that reset.",
+            );
+        }
 
         // Now unlock the vault with the recovered master password
         const vaultRecord = await getVaultRecord(userId);
@@ -296,13 +304,13 @@ export const recoverWithMnemonic = createAsyncThunk(
             throw new Error("Failed to decrypt vault with recovered password");
         }
 
-        return { vault, masterPassword };
+        return { vault, masterPassword, mnemonic };
     },
 );
 
 /**
  * Reset the master password after recovery.
- * Re-encrypts the vault with the new password and generates a new recovery key.
+ * Re-encrypts the vault with the new password using the SAME recovery key.
  */
 export const resetMasterPassword = createAsyncThunk(
     "passwordManager/resetMasterPassword",
@@ -323,9 +331,25 @@ export const resetMasterPassword = createAsyncThunk(
             updatedAt: new Date().toISOString(),
         });
 
-        // Generate new recovery key for the new password
-        const mnemonic = generateRecoveryMnemonic();
-        const encrypted = await encryptMasterPassword(mnemonic, newPassword);
+        // Re-encrypt the SAME recovery key with the new master password.
+        // The recovery key is permanent — it should always recover the
+        // current master password, so we must NOT generate a new mnemonic.
+        const record = await getRecoveryRecord(userId);
+        if (!record) {
+            throw new Error("No recovery record found");
+        }
+
+        // We need the existing mnemonic.  It was stored in state during
+        // recoverWithMnemonic, so read it from there.
+        const { recoveryMnemonic } = state.passwordManager;
+        if (!recoveryMnemonic) {
+            throw new Error("No recovery mnemonic in state");
+        }
+
+        const encrypted = await encryptMasterPassword(
+            recoveryMnemonic,
+            newPassword,
+        );
         await setRecoveryRecord({
             userId,
             encryptedMasterPassword: encrypted.encrypted,
@@ -334,7 +358,7 @@ export const resetMasterPassword = createAsyncThunk(
             updatedAt: new Date().toISOString(),
         });
 
-        return { vault, masterPassword: newPassword, mnemonic };
+        return { vault, masterPassword: newPassword, mnemonic: recoveryMnemonic };
     },
 );
 
@@ -547,6 +571,7 @@ const passwordSlice = createSlice({
                 state.recoveryLoading = false;
                 state.vault = action.payload.vault;
                 state.masterPassword = action.payload.masterPassword;
+                state.recoveryMnemonic = action.payload.mnemonic;
                 state.recoveryMode = true;
                 state.error = null;
             })

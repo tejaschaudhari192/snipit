@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Eye, EyeOff } from "lucide-react";
+import { CheckCircle2, Circle, Eye, EyeOff, ShieldCheck } from "lucide-react";
 
 interface PasswordSetupFormProps {
 	password: string;
@@ -91,60 +91,71 @@ export default function PasswordSetupForm({
 			</div>
 
 			{showRequirements && (
-				<Card className="bg-muted/30 border-dashed">
-					<CardContent className="p-4 space-y-2 text-sm">
-						{[
-							{
-								key: "length",
-								label: t("tools.password_manager_req_length"),
-							},
-							{
-								key: "upper",
-								label: t(
-									"tools.password_manager_req_uppercase",
-								),
-							},
-							{
-								key: "number",
-								label: t("tools.password_manager_req_number"),
-							},
-							{
-								key: "special",
-								label: t(
-									"tools.password_manager_req_special",
-								),
-							},
-						].map(({ key, label }) => {
-							const met = reqs[key as keyof typeof reqs];
-							return (
-								<div
-									key={key}
-									className="flex items-center gap-2"
-								>
-									<span
-										className={
-											met
-												? "text-green-500"
-												: "text-muted-foreground"
-										}
-									>
-										{met ? "✓" : "○"}
-									</span>
-									<span
-										className={
-											met
-												? "text-foreground"
-												: "text-muted-foreground"
-										}
-									>
-										{label}
-									</span>
-								</div>
-							);
-						})}
-					</CardContent>
-				</Card>
-			)}
+    <Card className="border-border/50 bg-card/50 backdrop-blur-sm shadow-sm">
+        <CardContent className="p-4">
+            <div className="flex items-center gap-2 mb-4">
+                <ShieldCheck className="h-4 w-4 text-primary" />
+                <h4 className="text-sm font-medium">
+                    {t("tools.password_manager_requirements")}
+                </h4>
+            </div>
+
+            <div className="space-y-2">
+                {[
+                    {
+                        key: "length",
+                        label: t("tools.password_manager_req_length"),
+                    },
+                    {
+                        key: "upper",
+                        label: t("tools.password_manager_req_uppercase"),
+                    },
+                    {
+                        key: "number",
+                        label: t("tools.password_manager_req_number"),
+                    },
+                    {
+                        key: "special",
+                        label: t("tools.password_manager_req_special"),
+                    },
+                ].map(({ key, label }) => {
+                    const met = reqs[key as keyof typeof reqs];
+
+                    return (
+                        <div
+                            key={key}
+                            className={`
+                                flex items-center gap-3 rounded-lg p-2
+                                transition-all duration-300
+                                ${
+                                    met
+                                        ? "bg-green-500/10 border border-green-500/20"
+                                        : "bg-muted/50 border border-transparent"
+                                }
+                            `}
+                        >
+                            {met ? (
+                                <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
+                            ) : (
+                                <Circle className="h-4 w-4 text-muted-foreground shrink-0" />
+                            )}
+
+                            <span
+                                className={`text-sm transition-colors ${
+                                    met
+                                        ? "text-foreground font-medium"
+                                        : "text-muted-foreground"
+                                }`}
+                            >
+                                {label}
+                            </span>
+                        </div>
+                    );
+                })}
+            </div>
+        </CardContent>
+    </Card>
+)}
 		</div>
 	);
 }
