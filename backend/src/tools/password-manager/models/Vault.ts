@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IVault extends Document {
 	userId: mongoose.Types.ObjectId;
 	encryptedBlob: string;
+	version: number;
 	updatedAt: Date;
 }
 
@@ -17,6 +18,10 @@ const vaultSchema = new Schema<IVault>(
 		encryptedBlob: {
 			type: String,
 			required: true,
+		},
+		version: {
+			type: Number,
+			default: 0,
 		},
 		updatedAt: {
 			type: Date,

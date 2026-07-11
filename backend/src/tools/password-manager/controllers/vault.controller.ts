@@ -33,6 +33,7 @@ export const getVault = async (
 			data: {
 				encryptedBlob: vault.encryptedBlob,
 				updatedAt: vault.updatedAt,
+				version: vault.version,
 			},
 		});
 	} catch (error) {

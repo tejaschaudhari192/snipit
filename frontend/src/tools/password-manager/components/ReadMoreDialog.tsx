@@ -9,7 +9,7 @@ import {
 	DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, ShieldAlert, KeyRound } from "lucide-react";
+import { AlertTriangle, ShieldAlert, KeyRound, Shield } from "lucide-react";
 
 export default function ReadMoreDialog() {
 	const { t } = useTranslation();
@@ -61,6 +61,21 @@ export default function ReadMoreDialog() {
 								<p className="text-xs text-muted-foreground">
 									{t(
 										"tools.password_manager_reset_vault_desc",
+									)}
+								</p>
+							</div>
+						</div>
+						<div className="flex items-start gap-3">
+							<Shield className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+							<div className="space-y-1">
+								<p className="text-sm font-semibold text-foreground">
+									{t(
+										"tools.password_manager_recovery_title",
+									)}
+								</p>
+								<p className="text-xs text-muted-foreground">
+									{t(
+										"tools.password_manager_recovery_desc",
 									)}
 								</p>
 							</div>

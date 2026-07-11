@@ -57,4 +57,26 @@ export interface VaultStorage {
 	salt: string;
 }
 
+/**
+ * A stored vault record in IndexedDB, keyed by userId.
+ */
+export interface VaultRecord {
+	userId: string;
+	version: number;
+	encryptedBlob: string;
+	updatedAt: string;
+}
+
 export type CloudVaultStatus = "idle" | "checking" | "found" | "not_found";
+
+/**
+ * A stored recovery record in IndexedDB, keyed by userId.
+ * Stores the master password encrypted with the recovery key.
+ */
+export interface RecoveryRecord {
+	userId: string;
+	encryptedMasterPassword: string; // AES-GCM encrypted with recovery key
+	salt: string; // hex-encoded salt used for recovery key derivation
+	iv: string; // hex-encoded IV for AES-GCM
+	updatedAt: string;
+}

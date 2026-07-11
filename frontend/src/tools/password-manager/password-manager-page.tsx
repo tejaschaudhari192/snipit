@@ -39,6 +39,11 @@ import {
 	selectCloudVaultStatus,
 	selectActiveItem,
 	selectIsNewItem,
+	selectRecoveryMnemonic,
+	selectRecoveryLoading,
+	selectRecoveryError,
+	selectHasRecoveryKey,
+	selectRecoveryMode,
 } from "./store/password-slice";
 import {
 	setCloudVaultStatus,
@@ -50,15 +55,24 @@ import {
 	unlockVault,
 	createVault,
 	enableCloudSync,
+	setUserId,
+	generateRecoveryKey,
+	checkRecoveryKey,
+	recoverWithMnemonic,
+	resetMasterPassword,
+	clearRecoveryMnemonic,
+	setRecoveryMode,
 } from "./store/password-slice";
 import type { PasswordItem } from "./types/index";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useItemMutations } from "@/tools/password-manager/hooks/use-item-mutations";
+import { useAuth } from "@/context/AuthContext";
 
 function PasswordManagerInner() {
 	const { t } = useTranslation();
 	const isMobile = useIsMobile();
 	const dispatch = useAppDispatch();
+	const { user } = useAuth();
 	const vault = useAppSelector(selectVault);
 	const loading = useAppSelector(selectVaultLoading);
 	const error = useAppSelector(selectVaultError);
@@ -66,19 +80,36 @@ function PasswordManagerInner() {
 	const cloudVaultStatus = useAppSelector(selectCloudVaultStatus);
 	const activeItem = useAppSelector(selectActiveItem);
 	const isNewItem = useAppSelector(selectIsNewItem);
+	const recoveryMnemonic = useAppSelector(selectRecoveryMnemonic);
+	const recoveryLoading = useAppSelector(selectRecoveryLoading);
+	const recoveryError = useAppSelector(selectRecoveryError);
+	const hasRecoveryKey = useAppSelector(selectHasRecoveryKey);
+	const recoveryMode = useAppSelector(selectRecoveryMode);
 
 	const { saveItem } = useItemMutations();
+
+	useEffect(() => {
+		if (user?._id) {
+			dispatch(setUserId(user._id));
+		}
+	}, [user, dispatch]);
 
 	useEffect(() => {
 		dispatch(initializeVault());
 	}, [dispatch]);
 
+	useEffect(() => {
+		if (user?._id) {
+			dispatch(checkRecoveryKey());
+		}
+	}, [user, dispatch]);
+
 	if (hasExistingVault === null || cloudVaultStatus === "checking") {
 		return <AppSkeleton />;
 	}
 
-	if (!vault) {
-		if (!hasExistingVault) {
+	if (!vault || recoveryMode) {
+		if (!hasExistingVault && !recoveryMode) {
 			if (cloudVaultStatus === "found") {
 				return (
 					<Suspense fallback={<AppSkeleton />}>
@@ -100,6 +131,14 @@ function PasswordManagerInner() {
 						onComplete={(password: string) =>
 							dispatch(createVault(password))
 						}
+						onGenerateRecoveryKey={() =>
+							dispatch(generateRecoveryKey())
+						}
+						recoveryMnemonic={recoveryMnemonic}
+						recoveryLoading={recoveryLoading}
+						onClearRecoveryMnemonic={() =>
+							dispatch(clearRecoveryMnemonic())
+						}
 					/>
 				</Suspense>
 			);
@@ -112,6 +151,19 @@ function PasswordManagerInner() {
 					}
 					error={error}
 					loading={loading}
+					hasRecoveryKey={hasRecoveryKey}
+					recoveryLoading={recoveryLoading}
+					recoveryError={recoveryError}
+					recoveryMode={recoveryMode}
+					onRecoverWithMnemonic={(mnemonic: string) =>
+						dispatch(recoverWithMnemonic(mnemonic))
+					}
+					onResetMasterPassword={(newPassword: string) =>
+						dispatch(resetMasterPassword(newPassword))
+					}
+					onSetRecoveryMode={(mode: boolean) =>
+						dispatch(setRecoveryMode(mode))
+					}
 				/>
 			</Suspense>
 		);

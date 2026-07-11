@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,17 +12,31 @@ import {
 	Cloud,
 	KeyRound,
 	AlertTriangle,
+	Copy,
+	Check,
+	Loader2,
 } from "lucide-react";
 
 import zxcvbn from "zxcvbn";
 
 interface VaultOnboardingProps {
 	onComplete: (password: string) => void;
+	onGenerateRecoveryKey: () => void;
+	recoveryMnemonic: string | null;
+	recoveryLoading: boolean;
+	onClearRecoveryMnemonic: () => void;
 }
 
-export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
+export default function VaultOnboarding({
+	onComplete,
+	onGenerateRecoveryKey,
+	recoveryMnemonic,
+	recoveryLoading,
+	onClearRecoveryMnemonic,
+}: VaultOnboardingProps) {
 	const { t } = useTranslation();
 	const [step, setStep] = useState(1);
+	const [copied, setCopied] = useState(false);
 
 	// Step 2 State
 	const [password, setPassword] = useState("");
@@ -33,6 +47,9 @@ export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
 	// Step 3 State
 	const [understandWarning, setUnderstandWarning] = useState(false);
 
+	// Step 4 State
+	const [recoverySaved, setRecoverySaved] = useState(false);
+
 	useEffect(() => {
 		if (password) {
 			setStrengthScore(zxcvbn(password).score);
@@ -40,6 +57,34 @@ export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
 			setStrengthScore(0);
 		}
 	}, [password]);
+
+	// When recoveryMnemonic is set, advance to step 4
+	useEffect(() => {
+		if (recoveryMnemonic) {
+			setStep(4);
+		}
+	}, [recoveryMnemonic]);
+
+	const handleCopy = useCallback(async () => {
+		if (!recoveryMnemonic) return;
+		await navigator.clipboard.writeText(recoveryMnemonic);
+		setCopied(true);
+		setTimeout(() => setCopied(false), 2000);
+	}, [recoveryMnemonic]);
+
+	const handleCreateVault = useCallback(() => {
+		onGenerateRecoveryKey();
+	}, [onGenerateRecoveryKey]);
+
+	const handleFinish = useCallback(() => {
+		onComplete(password);
+		onClearRecoveryMnemonic();
+	}, [onComplete, onClearRecoveryMnemonic, password]);
+
+	const handleSkip = useCallback(() => {
+		onComplete(password);
+		onClearRecoveryMnemonic();
+	}, [onComplete, onClearRecoveryMnemonic, password]);
 
 	const reqs = {
 		length: password.length >= 8,
@@ -316,11 +361,111 @@ export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
 					{t("tools.password_manager_back")}
 				</Button>
 				<Button
-					onClick={() => onComplete(password)}
-					disabled={!understandWarning}
+					onClick={handleCreateVault}
+					disabled={!understandWarning || recoveryLoading}
+					className="rounded-full px-6"
+				>
+					{recoveryLoading ? (
+						<>
+							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							{t("tools.password_manager_recovery_generate")}
+						</>
+					) : (
+						<>
+							{t("tools.password_manager_create_vault")}
+							<span className="ml-2">→</span>
+						</>
+					)}
+				</Button>
+			</div>
+		</div>
+	);
+
+	const renderStep4 = () => (
+		<div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-500 max-w-md mx-auto w-full">
+			<div className="flex flex-col items-center text-center space-y-4">
+				<div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 mb-2 ring-8 ring-primary/5">
+					<KeyRound className="h-8 w-8 text-primary" />
+				</div>
+				<h2 className="text-2xl font-bold">
+					{t("tools.password_manager_recovery_title")}
+				</h2>
+				<p className="text-muted-foreground">
+					{t("tools.password_manager_recovery_desc")}
+				</p>
+			</div>
+
+			{recoveryMnemonic && (
+				<Card className="bg-muted/30 border-border">
+					<CardContent className="p-6 space-y-4">
+						<div className="bg-background rounded-xl p-4 border border-border">
+							<p className="text-lg font-mono leading-relaxed text-center select-all">
+								{recoveryMnemonic}
+							</p>
+						</div>
+						<Button
+							variant="outline"
+							className="w-full"
+							onClick={handleCopy}
+						>
+							{copied ? (
+								<>
+									<Check className="mr-2 h-4 w-4 text-green-500" />
+									{t(
+										"tools.password_manager_recovery_copied",
+									)}
+								</>
+							) : (
+								<>
+									<Copy className="mr-2 h-4 w-4" />
+									{t("tools.password_manager_recovery_copy")}
+								</>
+							)}
+						</Button>
+					</CardContent>
+				</Card>
+			)}
+
+			<Card className="bg-amber-500/10 border-amber-500/30">
+				<CardContent className="p-4 flex items-start gap-3">
+					<AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
+					<p className="text-sm text-amber-700 dark:text-amber-300">
+						{t("tools.password_manager_recovery_warning")}
+					</p>
+				</CardContent>
+			</Card>
+
+			<div className="flex items-start space-x-3 p-4 border border-border rounded-xl bg-background/50">
+				<Checkbox
+					id="recovery-saved"
+					checked={recoverySaved}
+					onCheckedChange={(c) => setRecoverySaved(!!c)}
+					className="mt-1"
+				/>
+				<div className="space-y-1 leading-none">
+					<label
+						htmlFor="recovery-saved"
+						className="text-sm font-medium leading-none cursor-pointer"
+					>
+						{t("tools.password_manager_recovery_saved")}
+					</label>
+				</div>
+			</div>
+
+			<div className="flex flex-col gap-3 pt-4">
+				<Button
+					onClick={handleFinish}
+					disabled={!recoverySaved}
 					className="rounded-full px-6"
 				>
 					{t("tools.password_manager_create_vault")}
+				</Button>
+				<Button
+					variant="ghost"
+					onClick={handleSkip}
+					className="text-muted-foreground"
+				>
+					{t("tools.password_manager_recovery_skip")}
 				</Button>
 			</div>
 		</div>
@@ -332,6 +477,7 @@ export default function VaultOnboarding({ onComplete }: VaultOnboardingProps) {
 				{step === 1 && renderStep1()}
 				{step === 2 && renderStep2()}
 				{step === 3 && renderStep3()}
+				{step === 4 && renderStep4()}
 			</div>
 		</div>
 	);

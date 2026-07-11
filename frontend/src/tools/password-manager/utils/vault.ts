@@ -1,9 +1,6 @@
 import { deriveKey } from "@/lib/crypto";
 import api from "@/lib/api";
 import type { Vault } from "@/tools/password-manager/types";
-import { removeItem } from "./indexed-db";
-
-export const STORAGE_KEY = "snipit-password-vault";
 
 /**
  * Encrypt the vault and return the base64 encoded string.
@@ -69,18 +66,13 @@ export async function decryptVault(
 }
 
 /**
- * Remove the vault from storage.
- */
-export async function removeVault() {
-	await removeItem(STORAGE_KEY);
-}
-
-/**
  * Fetch the encrypted vault blob from the cloud.
+ * Returns version alongside the blob for head-tracking.
  */
 export async function fetchVaultFromCloud(): Promise<{
 	encryptedBlob: string;
 	updatedAt: string;
+	version: number;
 } | null> {
 	try {
 		const response = await api.get("/tools/password-manager/vault");
@@ -96,13 +88,16 @@ export async function fetchVaultFromCloud(): Promise<{
 
 /**
  * Sync the encrypted vault blob to the cloud.
+ * Sends version so the server can track head.
  */
 export async function syncVaultToCloud(
 	encryptedBlob: string,
+	version: number,
 ): Promise<boolean> {
 	try {
 		const response = await api.put("/tools/password-manager/vault", {
 			encryptedBlob,
+			version,
 		});
 		return !!response.data?.success;
 	} catch (error) {
