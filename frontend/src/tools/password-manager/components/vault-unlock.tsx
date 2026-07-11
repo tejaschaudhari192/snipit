@@ -8,14 +8,8 @@ import {
 	CardTitle,
 	CardDescription,
 } from "@/components/ui/card";
-import {
-	Shield,
-	LockOpen,
-	Loader2,
-	KeyRound,
-	Eye,
-	EyeOff,
-} from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Shield, LockOpen, Loader2, KeyRound, Eye, EyeOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import TextGradient from "@/components/text-gradient";
 import ReadMoreDialog from "./ReadMoreDialog";
@@ -159,9 +153,7 @@ export default function VaultUnlock({
 										variant="ghost"
 										size="icon"
 										type="button"
-										onClick={() =>
-											setShowNewPw(!showNewPw)
-										}
+										onClick={() => setShowNewPw(!showNewPw)}
 										className="absolute right-1 top-1/2 -translate-y-1/2 h-10 w-10 text-muted-foreground"
 									>
 										{showNewPw ? (
@@ -172,22 +164,16 @@ export default function VaultUnlock({
 									</Button>
 								</div>
 								{newPassword && (
-									<div className="flex gap-1 h-1.5 w-full">
-										{[0, 1, 2, 3, 4].map((i) => (
-											<div
-												key={i}
-												className={`h-full flex-1 rounded-full transition-colors ${
-													i <= newStrengthScore
-														? newStrengthScore < 2
-															? "bg-red-500"
-															: newStrengthScore === 2
-																? "bg-yellow-500"
-																: "bg-green-500"
-														: "bg-muted"
-												}`}
-											/>
-										))}
-									</div>
+									<Progress
+										value={(newStrengthScore + 1) * 20}
+										indicatorClassName={
+											newStrengthScore < 2
+												? "bg-red-500"
+												: newStrengthScore === 2
+													? "bg-yellow-500"
+													: "bg-green-500"
+										}
+									/>
 								)}
 							</div>
 							<Input
@@ -204,7 +190,11 @@ export default function VaultUnlock({
 							<Button
 								type="submit"
 								className="w-full h-12 rounded-xl text-base font-semibold"
-								disabled={!isNewPwStrong || !newPwMatch || recoveryLoading}
+								disabled={
+									!isNewPwStrong ||
+									!newPwMatch ||
+									recoveryLoading
+								}
 							>
 								{recoveryLoading ? (
 									<>
@@ -254,22 +244,15 @@ export default function VaultUnlock({
 						</div>
 						<div className="space-y-1">
 							<CardTitle className="text-2xl font-bold tracking-tight">
-								{t(
-									"tools.password_manager_recovery_use_title",
-								)}
+								{t("tools.password_manager_recovery_use_title")}
 							</CardTitle>
 							<CardDescription className="text-base">
-								{t(
-									"tools.password_manager_recovery_use_desc",
-								)}
+								{t("tools.password_manager_recovery_use_desc")}
 							</CardDescription>
 						</div>
 					</CardHeader>
 					<CardContent>
-						<form
-							onSubmit={handleRecover}
-							className="space-y-4"
-						>
+						<form onSubmit={handleRecover} className="space-y-4">
 							<div className="space-y-2">
 								<Input
 									placeholder={t(
@@ -293,7 +276,9 @@ export default function VaultUnlock({
 							<Button
 								type="submit"
 								className="w-full h-12 rounded-xl text-base font-semibold"
-								disabled={!recoveryPhrase.trim() || recoveryLoading}
+								disabled={
+									!recoveryPhrase.trim() || recoveryLoading
+								}
 							>
 								{recoveryLoading ? (
 									<>

@@ -6,6 +6,7 @@ import enWordlist from "diceware-wordlist-en";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
 import { Copy, RefreshCw, X, MoreVertical } from "lucide-react";
 import {
 	Select,
@@ -14,6 +15,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { toast } from "sonner";
 
 interface PasswordGeneratorProps {
 	onGenerate?: (password: string) => void;
@@ -53,7 +55,6 @@ export default function PasswordGenerator({
 	const [password, setPassword] = useState("");
 	const [strengthScore, setStrengthScore] = useState(0);
 	const [feedback, setFeedback] = useState("");
-	const [copied, setCopied] = useState(false);
 
 	const getSeparatorChar = (sep: string) => {
 		switch (sep) {
@@ -119,7 +120,6 @@ export default function PasswordGenerator({
 		setPassword(newPassword);
 		setStrengthScore(evaluation.score);
 		setFeedback(evaluation.feedback.warning || "");
-		setCopied(false);
 	}, [length, wordCount, pronounceable, useUpper, useNumbers, separator]);
 
 	// Generate on initial load or settings change
@@ -130,8 +130,7 @@ export default function PasswordGenerator({
 	const handleCopy = async () => {
 		if (!password) return;
 		await navigator.clipboard.writeText(password);
-		setCopied(true);
-		setTimeout(() => setCopied(false), 2000);
+		toast.success(t("tools.password_generator_copied", "Copied!"));
 	};
 
 	const handleFill = () => {
@@ -176,17 +175,9 @@ export default function PasswordGenerator({
 							variant="ghost"
 							size="icon"
 							onClick={handleCopy}
-							className="h-8 w-8 hover:bg-black/10 hover:text-white rounded-full transition-colors relative"
+							className="h-8 w-8 hover:bg-black/10 hover:text-white rounded-full transition-colors"
 						>
 							<Copy className="h-5 w-5" />
-							{copied && (
-								<span className="absolute -top-8 -left-4 bg-black/80 text-xs px-2 py-1 rounded text-white whitespace-nowrap">
-									{t(
-										"tools.password_generator_copied",
-										"Copied!",
-									)}
-								</span>
-							)}
 						</Button>
 						<Button
 							variant="ghost"
@@ -257,15 +248,13 @@ export default function PasswordGenerator({
 								</span>
 							</div>
 							<div className="flex items-center gap-4">
-								<input
-									type="range"
+								<Slider
+									value={[wordCount]}
+									onValueChange={([v]) => setWordCount(v)}
 									min={2}
 									max={10}
-									value={wordCount}
-									onChange={(e) =>
-										setWordCount(Number(e.target.value))
-									}
-									className="w-32 accent-primary"
+									step={1}
+									className="w-32"
 								/>
 								<span className="w-4 text-right text-sm">
 									{wordCount}
@@ -280,15 +269,13 @@ export default function PasswordGenerator({
 								{t("tools.password_generator_length", "Length")}
 							</span>
 							<div className="flex items-center gap-4">
-								<input
-									type="range"
+								<Slider
+									value={[length]}
+									onValueChange={([v]) => setLength(v)}
 									min={8}
 									max={64}
-									value={length}
-									onChange={(e) =>
-										setLength(Number(e.target.value))
-									}
-									className="w-32 accent-primary"
+									step={1}
+									className="w-32"
 								/>
 								<span className="w-4 text-right text-sm">
 									{length}

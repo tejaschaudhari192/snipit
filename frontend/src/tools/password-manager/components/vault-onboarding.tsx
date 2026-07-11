@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Progress } from "@/components/ui/progress";
 import {
 	Shield,
 	Eye,
@@ -13,9 +14,9 @@ import {
 	KeyRound,
 	AlertTriangle,
 	Copy,
-	Check,
 	Loader2,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import zxcvbn from "zxcvbn";
 
@@ -36,7 +37,6 @@ export default function VaultOnboarding({
 }: VaultOnboardingProps) {
 	const { t } = useTranslation();
 	const [step, setStep] = useState(1);
-	const [copied, setCopied] = useState(false);
 
 	// Step 2 State
 	const [password, setPassword] = useState("");
@@ -68,9 +68,8 @@ export default function VaultOnboarding({
 	const handleCopy = useCallback(async () => {
 		if (!recoveryMnemonic) return;
 		await navigator.clipboard.writeText(recoveryMnemonic);
-		setCopied(true);
-		setTimeout(() => setCopied(false), 2000);
-	}, [recoveryMnemonic]);
+		toast.success(t("tools.password_manager_recovery_copied"));
+	}, [recoveryMnemonic, t]);
 
 	const handleCreateVault = useCallback(() => {
 		onGenerateRecoveryKey();
@@ -222,22 +221,16 @@ export default function VaultOnboarding({
 					</div>
 
 					{password && (
-						<div className="flex gap-1 h-1.5 w-full">
-							{[0, 1, 2, 3, 4].map((i) => (
-								<div
-									key={i}
-									className={`h-full flex-1 rounded-full transition-colors ${
-										i <= strengthScore
-											? strengthScore < 2
-												? "bg-red-500"
-												: strengthScore === 2
-													? "bg-yellow-500"
-													: "bg-green-500"
-											: "bg-muted"
-									}`}
-								/>
-							))}
-						</div>
+						<Progress
+							value={(strengthScore + 1) * 20}
+							indicatorClassName={
+								strengthScore < 2
+									? "bg-red-500"
+									: strengthScore === 2
+										? "bg-yellow-500"
+										: "bg-green-500"
+							}
+						/>
 					)}
 				</div>
 
@@ -408,19 +401,8 @@ export default function VaultOnboarding({
 							className="w-full"
 							onClick={handleCopy}
 						>
-							{copied ? (
-								<>
-									<Check className="mr-2 h-4 w-4 text-green-500" />
-									{t(
-										"tools.password_manager_recovery_copied",
-									)}
-								</>
-							) : (
-								<>
-									<Copy className="mr-2 h-4 w-4" />
-									{t("tools.password_manager_recovery_copy")}
-								</>
-							)}
+							<Copy className="mr-2 h-4 w-4" />
+							{t("tools.password_manager_recovery_copy")}
 						</Button>
 					</CardContent>
 				</Card>

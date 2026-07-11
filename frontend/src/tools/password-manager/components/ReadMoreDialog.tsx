@@ -69,14 +69,10 @@ export default function ReadMoreDialog() {
 							<Shield className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
 							<div className="space-y-1">
 								<p className="text-sm font-semibold text-foreground">
-									{t(
-										"tools.password_manager_recovery_title",
-									)}
+									{t("tools.password_manager_recovery_title")}
 								</p>
 								<p className="text-xs text-muted-foreground">
-									{t(
-										"tools.password_manager_recovery_desc",
-									)}
+									{t("tools.password_manager_recovery_desc")}
 								</p>
 							</div>
 						</div>

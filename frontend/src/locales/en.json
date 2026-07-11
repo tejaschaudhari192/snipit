@@ -188,6 +188,8 @@
 		"password_manager_choose_file": "Choose File",
 		"password_manager_generate": "Generate",
 		"password_manager_strength_label": "Password strength:",
+		"password_manager_copy_password": "Copy password",
+		"password_manager_delete": "Delete",
 		"password_manager_delete_confirm": "Are you sure you want to delete this item?",
 		"password_manager_recovery_title": "Recovery Key",
 		"password_manager_recovery_desc": "This is your recovery key — a 12-word phrase that can unlock your vault if you forget your master password.",

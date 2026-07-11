@@ -13,6 +13,13 @@ import {
 	Download,
 } from "lucide-react";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
+import { Badge } from "@/components/ui/badge";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -33,6 +40,7 @@ import {
 	formatDate,
 } from "@/tools/password-manager/utils/formatters";
 import { getFieldsForType } from "@/tools/password-manager/utils/item-types";
+import { ITEM_TYPE_OPTIONS } from "@/tools/password-manager/utils/constants";
 import type { PasswordItem } from "@/tools/password-manager/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDeleteItem } from "@/tools/password-manager/hooks/use-delete-item";
@@ -196,41 +204,77 @@ export default function PasswordDetail({
 							</Select>
 						</div>
 					)}
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={() => {
-							onSave({ ...item, isFavorite: !item.isFavorite });
-						}}
-						className={`h-8 w-8 rounded-lg transition-colors ${
-							item.isFavorite
-								? "text-amber-400 hover:text-amber-500 hover:bg-amber-400/10"
-								: "text-muted-foreground hover:text-foreground hover:bg-muted"
-						}`}
-					>
-						<Star
-							className="h-4 w-4"
-							fill={item.isFavorite ? "currentColor" : "none"}
-						/>
-					</Button>
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={() => dispatch(handleEdit(item))}
-						className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-						title={t("common.edit")}
-					>
-						<Edit2 className="h-4 w-4" />
-					</Button>
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={() => confirmDelete(item.id)}
-						className="h-8 w-8 rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10 transition-colors ml-1"
-						title={t("remove") || "Delete"}
-					>
-						<Trash2 className="h-4 w-4" />
-					</Button>
+					<TooltipProvider>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Button
+									variant="ghost"
+									size="icon"
+									onClick={() => {
+										onSave({
+											...item,
+											isFavorite: !item.isFavorite,
+										});
+									}}
+									className={`h-8 w-8 rounded-lg transition-colors ${
+										item.isFavorite
+											? "text-amber-400 hover:text-amber-500 hover:bg-amber-400/10"
+											: "text-muted-foreground hover:text-foreground hover:bg-muted"
+									}`}
+								>
+									<Star
+										className="h-4 w-4"
+										fill={
+											item.isFavorite
+												? "currentColor"
+												: "none"
+										}
+									/>
+								</Button>
+							</TooltipTrigger>
+							<TooltipContent side="bottom">
+								<p>
+									{item.isFavorite
+										? t("remove")
+										: t("tools.password_manager_favorites")}
+								</p>
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
+					<TooltipProvider>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Button
+									variant="ghost"
+									size="icon"
+									onClick={() => dispatch(handleEdit(item))}
+									className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+								>
+									<Edit2 className="h-4 w-4" />
+								</Button>
+							</TooltipTrigger>
+							<TooltipContent side="bottom">
+								<p>{t("tools.password_manager_edit")}</p>
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
+					<TooltipProvider>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Button
+									variant="ghost"
+									size="icon"
+									onClick={() => confirmDelete(item.id)}
+									className="h-8 w-8 rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10 transition-colors ml-1"
+								>
+									<Trash2 className="h-4 w-4" />
+								</Button>
+							</TooltipTrigger>
+							<TooltipContent side="bottom">
+								<p>{t("tools.password_manager_delete")}</p>
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
 				</div>
 			</div>
 
@@ -246,8 +290,20 @@ export default function PasswordDetail({
 							</span>
 						</div>
 						<div className="min-w-0 flex-1">
-							<h2 className="text-2xl font-bold text-foreground truncate mb-1">
-								{item.title}
+							<h2 className="text-2xl font-bold text-foreground truncate mb-1 flex items-center gap-2">
+								<span className="truncate">{item.title}</span>
+								{item.itemType && item.itemType !== "login" && (
+									<Badge
+										variant="outline"
+										className="shrink-0 text-[10px] px-2 py-0 leading-none"
+									>
+										{t(
+											ITEM_TYPE_OPTIONS.find(
+												(o) => o.id === item.itemType,
+											)?.label || item.itemType,
+										)}
+									</Badge>
+								)}
 							</h2>
 							<p className="text-sm text-muted-foreground truncate">
 								{subtitle}
