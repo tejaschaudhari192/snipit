@@ -145,7 +145,7 @@
 		"password_manager_continue": "தொடரவும்",
 		"password_manager_warning_title": "எச்சரிக்கை",
 		"password_manager_warning_desc": "உங்கள் முதன்மை கடவுச்சொல்லை நீங்கள் மறந்துவிட்டால், உங்கள் தரவு நிரந்தரமாக இழக்கப்படும். மீட்டமைப்பு அல்லது மீட்பு எதுவும் இல்லை.",
-		"password_manager_warning_irrecoverable": "மீட்க முடியாத இழப்பு",
+		"password_manager_warning_irrecoverable": "If you forget your master password, your vault data can only be recovered using the Recovery Key provided in the next step. Otherwise, it is permanently lost.",
 		"password_manager_warning_checkbox": "எனது கடவுச்சொல்லை மறந்துவிட்டால் எனது தரவை மீட்டெடுக்க முடியாது என்பதை நான் புரிந்துகொள்கிறேன்.",
 		"password_manager_create_vault": "வால்ட்டை உருவாக்கு",
 		"password_manager_unlock_title": "வால்ட்டைத் திற",

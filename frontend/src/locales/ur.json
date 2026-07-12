@@ -145,7 +145,7 @@
 		"password_manager_continue": "جاری رکھیں",
 		"password_manager_warning_title": "انتباہ",
 		"password_manager_warning_desc": "اگر آپ اپنا ماسٹر پاس ورڈ بھول جاتے ہیں تو آپ کا ڈیٹا ہمیشہ کے لیے ضائع ہو جائے گا۔ کوئی ری سیٹ یا بازیافت نہیں ہے۔",
-		"password_manager_warning_irrecoverable": "ناقابل تلافی نقصان",
+		"password_manager_warning_irrecoverable": "If you forget your master password, your vault data can only be recovered using the Recovery Key provided in the next step. Otherwise, it is permanently lost.",
 		"password_manager_warning_checkbox": "میں سمجھتا ہوں کہ اگر میں اپنا پاس ورڈ بھول جاتا ہوں تو میرا ڈیٹا بازیافت نہیں کیا جا سکتا۔",
 		"password_manager_create_vault": "والٹ بنائیں",
 		"password_manager_unlock_title": "والٹ کو غیر مقفل کریں",

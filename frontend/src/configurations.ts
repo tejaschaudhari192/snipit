@@ -3,6 +3,15 @@
  */
 
 export const CONFIG = {
+	// Password Configuration
+	password: {
+		minLength: 8,
+		requireUppercase: true,
+		requireNumber: true,
+		requireSpecial: true,
+		minZxcvbnScore: 2,
+	},
+
 	// API Configuration
 	apiBaseUrl: import.meta.env.VITE_API_BASE_URL,
 	giphyApiKey: import.meta.env.VITE_GIPHY_API_KEY,

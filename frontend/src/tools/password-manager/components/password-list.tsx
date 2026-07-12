@@ -94,13 +94,13 @@ export default function PasswordList({
 	return (
 		<div className="h-full flex flex-col">
 			{/* Search bar & Mobile Menu */}
-			<div className="p-4 border-b border-border flex items-center gap-2">
+			<div className="p-4 flex items-center gap-2">
 				{isMobile && (
 					<Button
 						variant="ghost"
 						size="icon"
 						onClick={() => dispatch(setSidebarDrawerOpen(true))}
-						className="shrink-0 h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted"
+						className="shrink-0 h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-white/5"
 					>
 						<Menu className="h-5 w-5" />
 					</Button>
@@ -109,7 +109,7 @@ export default function PasswordList({
 					placeholder={t("tools.password_manager_search")}
 					value={search}
 					onChange={(e) => setSearch(e.target.value)}
-					className="bg-background border-border flex-1"
+					className="bg-vault-card border-white/5 text-white placeholder:text-white/30 rounded-xl flex-1"
 				/>
 			</div>
 
@@ -142,28 +142,28 @@ export default function PasswordList({
 						<div
 							key={item.id}
 							onClick={() => onSelect(item)}
-							className={`group w-full overflow-hidden text-left p-3 rounded-xl transition-all ${
+							className={`group w-full overflow-hidden text-left p-3 rounded-2xl transition-all cursor-pointer border border-transparent ${
 								isActive
-									? "bg-primary text-primary-foreground shadow-md"
-									: "hover:bg-muted"
+									? "bg-vault-active text-white shadow-lg"
+									: "hover:bg-white/5 text-white/90"
 							}`}
 						>
-							<div className="flex items-center justify-between mb-1 min-w-0 w-full gap-2">
+							<div className="flex items-center justify-between mb-0 min-w-0 w-full gap-3">
 								<div className="flex items-center gap-3 min-w-0 flex-1">
 									<div
-										className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+										className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
 											isActive
-												? "bg-primary-foreground/20"
+												? "bg-white/20"
 												: getBrandColor(item.title)
 										}`}
 									>
-										<span className="text-white text-xs font-bold">
+										<span className="text-white text-sm font-bold">
 											{getInitials(item.title)}
 										</span>
 									</div>
-									<div className="min-w-0">
+									<div className="min-w-0 flex-1">
 										<h3
-											className={`font-semibold text-sm truncate flex items-center gap-1.5 ${isActive ? "text-primary-foreground" : "text-foreground"}`}
+											className={`font-semibold text-[15px] tracking-tight truncate flex items-center gap-1.5 ${isActive ? "text-white" : "text-white"}`}
 										>
 											<span className="truncate">
 												{item.title}
@@ -172,7 +172,7 @@ export default function PasswordList({
 												item.itemType !== "login" && (
 													<Badge
 														variant="outline"
-														className="shrink-0 text-[9px] px-1.5 py-0 leading-none"
+														className={`shrink-0 text-[9px] px-1.5 py-0 leading-none border-transparent ${isActive ? "bg-white/20 text-white" : "bg-white/10 text-white/70"}`}
 													>
 														{t(
 															ITEM_TYPE_OPTIONS.find(
@@ -186,7 +186,7 @@ export default function PasswordList({
 												)}
 										</h3>
 										<p
-											className={`text-xs truncate ${isActive ? "text-primary-foreground/80" : "text-muted-foreground"}`}
+											className={`text-[13px] truncate ${isActive ? "text-white/80" : "text-white/50"}`}
 										>
 											{subtitle ||
 												item.username ||
@@ -195,11 +195,18 @@ export default function PasswordList({
 										</p>
 									</div>
 								</div>
-								{item.isFavorite && (
-									<Star
-										className={`h-3 w-3 ${isActive ? "text-primary-foreground" : "text-amber-400"}`}
-									/>
-								)}
+								<div className="shrink-0 flex items-center">
+									{item.isFavorite && (
+										<Star
+											className={`h-4 w-4 ${isActive ? "text-white" : "text-amber-400"}`}
+											fill={
+												isActive
+													? "currentColor"
+													: "none"
+											}
+										/>
+									)}
+								</div>
 							</div>
 
 							{/* Actions (visible on hover) */}

@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { Check, Pencil, Trash2, Shield, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import { useAppDispatch, useAppSelector } from "../store";
@@ -22,26 +21,15 @@ import {
 } from "@/tools/password-manager/utils/constants";
 import {
 	SidebarGroup,
-	SidebarGroupLabel,
 	SidebarMenu,
 	SidebarMenuItem,
 	SidebarMenuButton,
-	SidebarMenuAction,
 	SidebarHeader,
 	SidebarContent,
-	SidebarFooter,
 	SidebarGroupContent,
-	SidebarGroupAction,
+	SidebarFooter,
 } from "@/components/ui/sidebar";
-import { Cloud, HardDrive, MoreHorizontal, User } from "lucide-react";
-import TextGradient from "@/components/text-gradient";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-	DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+import { Shield } from "lucide-react";
 import {
 	Dialog,
 	DialogContent,
@@ -49,6 +37,9 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { FolderModal } from "./folder-modal";
+import { FolderList } from "./sidebar/folder-list";
+import { SettingsMenu } from "./sidebar/settings-menu";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface PasswordSidebarProps {
 	onNewItem: (itemType: string) => void;
@@ -169,250 +160,41 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 					</SidebarGroupContent>
 				</SidebarGroup>
 
-				<SidebarGroup>
-					<SidebarGroupLabel>
-						{t("tools.password_manager_folders")}
-					</SidebarGroupLabel>
-					<SidebarGroupAction
-						title={t("tools.password_manager_add_folder")}
-						onClick={() => {
-							setFolderModalMode("create");
-							setFolderName("");
-							setFolderColor(UI_DEFAULTS.FOLDER_COLOR);
-							setFolderModalOpen(true);
-						}}
-					>
-						<Plus />{" "}
-						<span className="sr-only">
-							{t("tools.password_manager_add_folder")}
-						</span>
-					</SidebarGroupAction>
-					<SidebarGroupContent>
-						<ScrollArea className="h-40 pr-3">
-							<SidebarMenu>
-								{folders.map((folder) => (
-									<SidebarMenuItem key={folder.id}>
-										<>
-											<SidebarMenuButton
-												isActive={
-													activeFilter === folder.id
-												}
-												onClick={() =>
-													dispatch(
-														setActiveFilter(
-															folder.id,
-														),
-													)
-												}
-												className="group flex justify-between w-full"
-											>
-												<div className="flex items-center gap-2">
-													<div
-														className="w-2 h-2 rounded-full"
-														style={{
-															backgroundColor:
-																folder.color,
-														}}
-													/>
-													<span>{folder.name}</span>
-												</div>
-											</SidebarMenuButton>
-
-											<DropdownMenu>
-												<DropdownMenuTrigger asChild>
-													<SidebarMenuAction
-														showOnHover
-														className="hover:bg-accent hover:text-accent-foreground"
-													>
-														<MoreHorizontal className="h-4 w-4" />
-													</SidebarMenuAction>
-												</DropdownMenuTrigger>
-												<DropdownMenuContent
-													side="right"
-													align="start"
-												>
-													<DropdownMenuItem
-														onClick={(e) => {
-															e.stopPropagation();
-															setFolderModalMode(
-																"edit",
-															);
-															setActiveFolderId(
-																folder.id,
-															);
-															setFolderName(
-																folder.name,
-															);
-															setFolderColor(
-																folder.color ||
-																	UI_DEFAULTS.FOLDER_COLOR,
-															);
-															setFolderModalOpen(
-																true,
-															);
-														}}
-													>
-														<Pencil className="mr-2 h-4 w-4" />
-														<span>{t("edit")}</span>
-													</DropdownMenuItem>
-													<DropdownMenuItem
-														className="text-destructive focus:text-destructive"
-														onClick={(e) => {
-															e.stopPropagation();
-															setFolderModalMode(
-																"delete",
-															);
-															setActiveFolderId(
-																folder.id,
-															);
-															setFolderName(
-																folder.name,
-															);
-															setFolderModalOpen(
-																true,
-															);
-														}}
-													>
-														<Trash2 className="mr-2 h-4 w-4" />
-														{t("remove")}
-													</DropdownMenuItem>
-												</DropdownMenuContent>
-											</DropdownMenu>
-										</>
-									</SidebarMenuItem>
-								))}
-							</SidebarMenu>
-						</ScrollArea>
-					</SidebarGroupContent>
-				</SidebarGroup>
+				<FolderList
+					folders={folders}
+					activeFilter={activeFilter}
+					onSelectFolder={(id) => dispatch(setActiveFilter(id))}
+					onAddFolder={() => {
+						setFolderModalMode("create");
+						setFolderName("");
+						setFolderColor(UI_DEFAULTS.FOLDER_COLOR);
+						setFolderModalOpen(true);
+					}}
+					onEditFolder={(id, name, color) => {
+						setFolderModalMode("edit");
+						setActiveFolderId(id);
+						setFolderName(name);
+						setFolderColor(color || UI_DEFAULTS.FOLDER_COLOR);
+						setFolderModalOpen(true);
+					}}
+					onDeleteFolder={(id, name) => {
+						setFolderModalMode("delete");
+						setActiveFolderId(id);
+						setFolderName(name);
+						setFolderModalOpen(true);
+					}}
+				/>
 			</SidebarContent>
 
 			<SidebarFooter className="p-2 border-t border-sidebar-border mt-auto shrink-0">
-				<SidebarMenu>
-					<SidebarMenuItem>
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<SidebarMenuButton
-									size="lg"
-									className="w-full justify-start data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-								>
-									<div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary/20 text-primary">
-										<User className="size-4" />
-									</div>
-									<div className="flex flex-col gap-0.5 leading-none mr-auto">
-										<span className="font-semibold text-sm">
-											{user
-												? user.username
-												: t(
-														"tools.password_manager_guest_user",
-													)}
-										</span>
-										<span className="text-xs text-muted-foreground flex items-center gap-1">
-											{isCloudSyncEnabled ? (
-												<>
-													<Cloud className="size-3 text-primary" />{" "}
-													{isSyncing ? (
-														<TextGradient
-															highlightColor="var(--foreground)"
-															baseColor="var(--muted-foreground)"
-															spread={20}
-															duration={2}
-															className="font-medium"
-														>
-															{t(
-																"tools.password_manager_syncing",
-															)}
-														</TextGradient>
-													) : (
-														t(
-															"tools.password_manager_cloud_sync_on",
-														)
-													)}
-												</>
-											) : (
-												<>
-													<HardDrive className="size-3 text-muted-foreground" />{" "}
-													{t(
-														"tools.password_manager_syncing_locally",
-													)}
-												</>
-											)}
-										</span>
-									</div>
-									<MoreHorizontal className="size-4 text-muted-foreground ml-auto" />
-								</SidebarMenuButton>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent
-								side="right"
-								align="end"
-								sideOffset={4}
-								className="w-56"
-							>
-								<div className="px-2 py-1.5 text-sm font-semibold">
-									{t(
-										"tools.password_manager_storage_settings",
-									)}
-								</div>
-								<DropdownMenuSeparator />
-								<DropdownMenuItem
-									className="gap-2 cursor-pointer"
-									onClick={() =>
-										dispatch(setCloudSyncEnabled(false))
-									}
-								>
-									<HardDrive className="size-4 text-muted-foreground" />
-									<div className="flex flex-col">
-										<span>
-											{t(
-												"tools.password_manager_local_storage",
-											)}
-										</span>
-										<span className="text-[10px] text-muted-foreground">
-											{t(
-												"tools.password_manager_local_storage_desc",
-											)}
-										</span>
-									</div>
-									{!isCloudSyncEnabled && (
-										<Check className="size-4 ml-auto" />
-									)}
-								</DropdownMenuItem>
-								<DropdownMenuItem
-									className={`gap-2 cursor-pointer ${!user ? "opacity-50" : ""}`}
-									onClick={() => {
-										if (user)
-											dispatch(setCloudSyncEnabled(true));
-										else
-											alert(
-												"Please log in to enable Cloud Sync",
-											);
-									}}
-								>
-									<Cloud className="size-4 text-muted-foreground" />
-									<div className="flex flex-col">
-										<span>
-											{t(
-												"tools.password_manager_cloud_sync",
-											)}
-										</span>
-										<span className="text-[10px] text-muted-foreground">
-											{!user
-												? t(
-														"tools.password_manager_requires_login",
-													)
-												: t(
-														"tools.password_manager_cloud_sync_desc",
-													)}
-										</span>
-									</div>
-									{isCloudSyncEnabled && (
-										<Check className="size-4 ml-auto" />
-									)}
-								</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					</SidebarMenuItem>
-				</SidebarMenu>
+				<SettingsMenu
+					user={user}
+					isCloudSyncEnabled={isCloudSyncEnabled}
+					isSyncing={isSyncing}
+					onSetCloudSync={(enabled) =>
+						dispatch(setCloudSyncEnabled(enabled))
+					}
+				/>
 			</SidebarFooter>
 
 			<Dialog open={isTypeDialogOpen} onOpenChange={setIsTypeDialogOpen}>

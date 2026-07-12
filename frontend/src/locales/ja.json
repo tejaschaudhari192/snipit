@@ -145,7 +145,7 @@
 		"password_manager_continue": "続行",
 		"password_manager_warning_title": "警告",
 		"password_manager_warning_desc": "マスターパスワードを忘れると、データは永久に失われます。リセットやリカバリの手段はありません。",
-		"password_manager_warning_irrecoverable": "回復不可能な損失",
+		"password_manager_warning_irrecoverable": "If you forget your master password, your vault data can only be recovered using the Recovery Key provided in the next step. Otherwise, it is permanently lost.",
 		"password_manager_warning_checkbox": "パスワードを忘れた場合、データを回復できないことを理解しています。",
 		"password_manager_create_vault": "ボルトを作成",
 		"password_manager_unlock_title": "ボルトのロックを解除",

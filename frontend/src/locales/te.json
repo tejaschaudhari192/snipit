@@ -145,7 +145,7 @@
 		"password_manager_continue": "కొనసాగించండి",
 		"password_manager_warning_title": "హెచ్చరిక",
 		"password_manager_warning_desc": "మీరు మీ మాస్టర్ పాస్‌వర్డ్‌ను మర్చిపోతే, మీ డేటా శాశ్వతంగా కోల్పోతుంది. రీసెట్ లేదా రికవరీ లేదు.",
-		"password_manager_warning_irrecoverable": "కోలుకోలేని నష్టం",
+		"password_manager_warning_irrecoverable": "If you forget your master password, your vault data can only be recovered using the Recovery Key provided in the next step. Otherwise, it is permanently lost.",
 		"password_manager_warning_checkbox": "నేను నా పాస్‌వర్డ్‌ను మర్చిపోతే నా డేటాను తిరిగి పొందలేమని అర్థం చేసుకున్నాను.",
 		"password_manager_create_vault": "వాల్ట్‌ను సృష్టించండి",
 		"password_manager_unlock_title": "వాల్ట్‌ను అన్‌లాక్ చేయండి",

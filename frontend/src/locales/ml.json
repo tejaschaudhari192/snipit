@@ -145,7 +145,7 @@
 		"password_manager_continue": "തുടരുക",
 		"password_manager_warning_title": "മുന്നറിയിപ്പ്",
 		"password_manager_warning_desc": "നിങ്ങളുടെ മാസ്റ്റർ പാസ്‌വേഡ് മറന്നുപോയാൽ, നിങ്ങളുടെ ഡാറ്റ എന്നെന്നേക്കുമായി നഷ്ടപ്പെടും. റീസെറ്റോ വീണ്ടെടുക്കലോ ഇല്ല.",
-		"password_manager_warning_irrecoverable": "തിരിച്ചെടുക്കാനാവാത്ത നഷ്ടം",
+		"password_manager_warning_irrecoverable": "If you forget your master password, your vault data can only be recovered using the Recovery Key provided in the next step. Otherwise, it is permanently lost.",
 		"password_manager_warning_checkbox": "എന്റെ പാസ്‌വേഡ് മറന്നുപോയാൽ എന്റെ ഡാറ്റ വീണ്ടെടുക്കാൻ കഴിയില്ലെന്ന് ഞാൻ മനസ്സിലാക്കുന്നു.",
 		"password_manager_create_vault": "വോൾട്ട് സൃഷ്ടിക്കുക",
 		"password_manager_unlock_title": "വോൾട്ട് അൺലോക്ക് ചെയ്യുക",

@@ -41,6 +41,13 @@
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
 
+	/* Vault specific premium dark theme colors */
+	--color-vault-bg: #0a0a0f;
+	--color-vault-panel: #0e0f15;
+	--color-vault-card: #181922;
+	--color-vault-active: #2f6ffb;
+	--color-vault-warning: #e66c25;
+
 	--animate-cursor-blink: cursor-blink 1s step-end infinite;
 	--animate-progress: toast-progress linear forwards;
 	--animate-pulse-subtle: pulse-subtle 2s ease-in-out infinite;

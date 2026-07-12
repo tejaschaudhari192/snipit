@@ -145,7 +145,7 @@
 		"password_manager_continue": "ચાલુ રાખો",
 		"password_manager_warning_title": "ચેતવણી",
 		"password_manager_warning_desc": "જો તમે તમારો માસ્ટર પાસવર્ડ ભૂલી જશો, તો તમારો ડેટા કાયમ માટે ખોવાઈ જશે. કોઈ રીસેટ અથવા પુનઃપ્રાપ્તિ નથી.",
-		"password_manager_warning_irrecoverable": "પુનઃપ્રાપ્ત કરી ન શકાય તેવું નુકસાન",
+		"password_manager_warning_irrecoverable": "If you forget your master password, your vault data can only be recovered using the Recovery Key provided in the next step. Otherwise, it is permanently lost.",
 		"password_manager_warning_checkbox": "હું સમજું છું કે જો હું મારો પાસવર્ડ ભૂલી જઈશ તો મારો ડેટા પુનઃપ્રાપ્ત કરી શકાશે નહીં.",
 		"password_manager_create_vault": "વૉલ્ટ બનાવો",
 		"password_manager_unlock_title": "વૉલ્ટ અનલૉક કરો",

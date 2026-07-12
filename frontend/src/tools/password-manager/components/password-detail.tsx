@@ -1,18 +1,6 @@
-import { useState, lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
-import {
-	Eye,
-	EyeOff,
-	ArrowLeft,
-	Edit2,
-	Trash2,
-	Star,
-	Folder,
-	Globe,
-	AlertTriangle,
-	Download,
-} from "lucide-react";
-import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
+import { ArrowLeft, Edit2, Trash2, Star, Folder, Globe } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
 	Tooltip,
@@ -21,7 +9,6 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import {
 	Select,
@@ -38,12 +25,17 @@ import {
 import {
 	isOlderThan3Months,
 	formatDate,
+	getBrandColor,
 } from "@/tools/password-manager/utils/formatters";
 import { getFieldsForType } from "@/tools/password-manager/utils/item-types";
 import { ITEM_TYPE_OPTIONS } from "@/tools/password-manager/utils/constants";
 import type { PasswordItem } from "@/tools/password-manager/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SchemaFieldRenderer } from "./detail-fields/schema-field-renderer";
+import { CustomFieldRenderer } from "./detail-fields/custom-field-renderer";
 import { useDeleteItem } from "@/tools/password-manager/hooks/use-delete-item";
+import { Label } from "@/components/ui/label";
+import type { SchemaField } from "./form-fields/schema-fields-editor";
 const PasswordForm = lazy(
 	() => import("@/tools/password-manager/components/password-form"),
 );
@@ -69,7 +61,6 @@ export default function PasswordDetail({
 	const { t } = useTranslation();
 	const dispatch = useAppDispatch();
 	const vault = useAppSelector(selectVault);
-	const [showField, setShowField] = useState<Record<string, boolean>>({});
 	const { isDeleteDialogOpen, confirmDelete, handleConfirm, cancelDelete } =
 		useDeleteItem();
 
@@ -151,19 +142,10 @@ export default function PasswordDetail({
 	const showWarning = isOlderThan3Months(item.updatedAt);
 	const schemaFields = getFieldsForType(item.itemType || "login");
 
-	// Determine the subtitle (usually the first text field, e.g. username, cardNumber, etc)
-	const subtitleField = schemaFields.find(
-		(f) => f.type === "text" || f.type === "email",
-	);
-	const subtitle =
-		subtitleField && item.metadata
-			? item.metadata[subtitleField.key]
-			: "No details";
-
 	return (
-		<div className="flex flex-col h-full bg-card">
-			{/* Header */}
-			<div className="flex items-center gap-3 p-4 border-b border-border">
+		<div className="flex flex-col h-full bg-transparent text-white">
+			{/* Header Actions */}
+			<div className="flex items-center gap-3 p-4 border-b border-white/5">
 				<Button
 					variant="ghost"
 					size="icon"
@@ -280,278 +262,115 @@ export default function PasswordDetail({
 
 			<div className="flex-1 overflow-y-auto no-scrollbar scroll-fade-bottom">
 				{/* Title & Subtitle */}
-				<div className="px-5 pt-6 pb-2">
+				<div className="px-8 pt-8 pb-4">
 					<div className="flex items-center gap-4">
-						<div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-							<span className="text-primary text-2xl font-bold">
+						<div
+							className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${getBrandColor(item.title)}`}
+						>
+							<span className="text-white text-3xl font-bold">
 								{item.title
 									? item.title.substring(0, 2).toUpperCase()
 									: "?"}
 							</span>
 						</div>
 						<div className="min-w-0 flex-1">
-							<h2 className="text-2xl font-bold text-foreground truncate mb-1 flex items-center gap-2">
+							<h2 className="text-[28px] font-bold text-white tracking-tight flex items-center gap-2 mb-1">
 								<span className="truncate">{item.title}</span>
-								{item.itemType && item.itemType !== "login" && (
-									<Badge
-										variant="outline"
-										className="shrink-0 text-[10px] px-2 py-0 leading-none"
-									>
-										{t(
-											ITEM_TYPE_OPTIONS.find(
-												(o) => o.id === item.itemType,
-											)?.label || item.itemType,
-										)}
-									</Badge>
-								)}
 							</h2>
-							<p className="text-sm text-muted-foreground truncate">
-								{subtitle}
-							</p>
+							{item.itemType && (
+								<Badge
+									variant="outline"
+									className="bg-white/10 text-emerald-400 border-transparent text-[11px] px-2 py-0.5 rounded-md leading-none font-medium"
+								>
+									{t(
+										ITEM_TYPE_OPTIONS.find(
+											(o) => o.id === item.itemType,
+										)?.label || item.itemType,
+									)}
+								</Badge>
+							)}
 						</div>
 					</div>
 				</div>
 
 				{/* Expiry warning */}
 				{showWarning && (
-					<div className="mx-5 mt-4 p-3 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-start gap-3">
-						<AlertTriangle className="h-4 w-4 text-orange-400 shrink-0 mt-0.5" />
-						<div>
-							<p className="text-sm font-medium text-orange-300">
-								{t("tools.password_detail_update_warning")}
-							</p>
-							<p className="text-xs text-orange-400/80 mt-0.5">
-								{t("tools.password_detail_update_desc")}
-							</p>
-						</div>
+					<div className="mx-8 mt-4 p-4 rounded-xl bg-vault-warning flex items-center justify-between shadow-sm">
+						<p className="text-[15px] font-medium text-white tracking-tight">
+							It's time to update your password.
+						</p>
+						<a
+							href="#"
+							className="text-sm font-semibold text-white/90 hover:text-white flex items-center gap-1.5 transition-colors"
+						>
+							Update now <Globe className="h-4 w-4" />
+						</a>
 					</div>
 				)}
 
-				<div className="p-5 space-y-5">
-					{/* Details Card */}
-					<div className="border border-border rounded-xl p-4 bg-background shadow-sm">
-						<div className="flex items-center justify-between mb-4">
-							<h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-								{t("tools.password_manager_details_title")}
-							</h3>
-						</div>
-						<div className="space-y-4">
-							{/* Dynamic Schema Fields */}
-							{schemaFields.map((field) => {
-								const value = item.metadata
-									? item.metadata[field.key]
-									: undefined;
-								if (!value) return null;
+				<div className="px-8 pt-8 pb-10 space-y-8">
+					{/* Details Section */}
+					<div className="space-y-6">
+						{/* Dynamic Schema Fields */}
+						{schemaFields.map((field) => {
+							const value = item.metadata
+								? item.metadata[field.key]
+								: undefined;
 
-								if (field.type === "url") {
-									return (
-										<div key={field.key}>
-											<Label className="text-xs text-muted-foreground mb-1.5 block">
-												{t(field.placeholder || "") ||
-													field.label}
-											</Label>
-											<a
-												href={
-													value.startsWith("http")
-														? value
-														: `https://${value}`
-												}
-												target="_blank"
-												rel="noopener noreferrer"
-												className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors min-w-0"
-											>
-												<Globe className="h-3.5 w-3.5 shrink-0" />
-												<span className="truncate min-w-0">
-													{value}
-												</span>
-											</a>
-										</div>
-									);
-								}
+							return (
+								<SchemaFieldRenderer
+									key={field.key}
+									field={field as SchemaField}
+									value={value}
+									fileName={item.metadata?.fileName}
+								/>
+							);
+						})}
 
-								if (field.type === "password") {
-									return (
-										<div key={field.key}>
-											<Label className="text-xs text-muted-foreground mb-1.5 block">
-												{t(field.placeholder || "") ||
-													field.label}
-											</Label>
-											<div className="flex items-center gap-2 min-w-0">
-												<div className="flex-1 flex items-center gap-2 bg-background rounded-xl px-3 py-2.5 border border-border min-w-0">
-													<span className="text-sm font-mono text-foreground flex-1 truncate">
-														{showField[field.key]
-															? value
-															: "•".repeat(
-																	value.length,
-																)}
-													</span>
-													<Button
-														variant="ghost"
-														size="icon"
-														onClick={() =>
-															setShowField(
-																(prev) => ({
-																	...prev,
-																	[field.key]:
-																		!prev[
-																			field
-																				.key
-																		],
-																}),
-															)
-														}
-														className="h-8 w-8 text-muted-foreground hover:text-foreground transition-colors"
-													>
-														{showField[
-															field.key
-														] ? (
-															<EyeOff className="h-4 w-4" />
-														) : (
-															<Eye className="h-4 w-4" />
-														)}
-													</Button>
-													<CopyButton
-														content={value}
-														variant="ghost"
-														size="default"
-														className="h-8 w-8 text-muted-foreground hover:text-foreground transition-colors"
-													/>
-												</div>
-											</div>
-										</div>
-									);
-								}
+						{/* Notes */}
+						{item.notes && (
+							<div>
+								<Label className="text-xs text-muted-foreground mb-1.5 block">
+									{t("tools.password_detail_notes_label")}
+								</Label>
+								<p className="text-sm text-foreground whitespace-pre-wrap wrap-break-word">
+									{item.notes}
+								</p>
+							</div>
+						)}
 
-								if (field.type === "multiline") {
-									const isCredFile =
-										item.itemType === "credfile" &&
-										field.key === "fileContent";
-									return (
-										<div key={field.key}>
-											<div className="flex items-center justify-between mb-1.5">
-												<Label className="text-xs text-muted-foreground block">
-													{t(
-														field.placeholder || "",
-													) || field.label}
-												</Label>
-												{isCredFile && value && (
-													<Button
-														variant="ghost"
-														size="sm"
-														className="h-6 text-xs text-primary hover:text-primary/80 px-2"
-														onClick={() => {
-															const blob =
-																new Blob(
-																	[value],
-																	{
-																		type: "text/plain",
-																	},
-																);
-															const url =
-																URL.createObjectURL(
-																	blob,
-																);
-															const a =
-																document.createElement(
-																	"a",
-																);
-															a.href = url;
-															a.download =
-																item.metadata
-																	?.fileName ||
-																"credentials.txt";
-															document.body.appendChild(
-																a,
-															);
-															a.click();
-															document.body.removeChild(
-																a,
-															);
-															URL.revokeObjectURL(
-																url,
-															);
-														}}
-													>
-														<Download className="h-3 w-3 mr-1" />
-														Download
-													</Button>
+						{/* Created & Last Modified */}
+						{(item.createdAt || item.updatedAt) && (
+							<>
+								<Separator className="bg-border" />
+								<div className="space-y-1.5">
+									{item.createdAt && (
+										<div className="flex items-center justify-between">
+											<span className="text-xs text-muted-foreground">
+												{t(
+													"tools.password_detail_created_label",
 												)}
-											</div>
-											<p className="text-sm font-mono text-foreground whitespace-pre-wrap wrap-break-word bg-background rounded-xl px-3 py-2.5 border border-border">
-												{value}
-											</p>
+											</span>
+											<span className="text-xs text-muted-foreground/80 font-mono">
+												{formatDate(item.createdAt)}
+											</span>
 										</div>
-									);
-								}
-
-								return (
-									<div key={field.key}>
-										<Label className="text-xs text-muted-foreground mb-1.5 block">
-											{t(field.placeholder || "") ||
-												field.label}
-										</Label>
-										<div className="flex items-center gap-2 min-w-0">
-											<div className="flex-1 flex items-center gap-2 bg-background rounded-xl px-3 py-2.5 border border-border min-w-0">
-												<span className="text-sm text-foreground flex-1 truncate">
-													{value}
-												</span>
-												<CopyButton
-													content={value}
-													variant="ghost"
-													size="default"
-													className="h-8 w-8 text-muted-foreground hover:text-foreground transition-colors"
-												/>
-											</div>
+									)}
+									{item.updatedAt && (
+										<div className="flex items-center justify-between">
+											<span className="text-xs text-muted-foreground">
+												{t(
+													"tools.password_detail_modified_label",
+												)}
+											</span>
+											<span className="text-xs text-muted-foreground/80 font-mono">
+												{formatDate(item.updatedAt)}
+											</span>
 										</div>
-									</div>
-								);
-							})}
-
-							{/* Notes */}
-							{item.notes && (
-								<div>
-									<Label className="text-xs text-muted-foreground mb-1.5 block">
-										{t("tools.password_detail_notes_label")}
-									</Label>
-									<p className="text-sm text-foreground whitespace-pre-wrap wrap-break-word">
-										{item.notes}
-									</p>
+									)}
 								</div>
-							)}
-
-							{/* Created & Last Modified */}
-							{(item.createdAt || item.updatedAt) && (
-								<>
-									<Separator className="bg-border" />
-									<div className="space-y-1.5">
-										{item.createdAt && (
-											<div className="flex items-center justify-between">
-												<span className="text-xs text-muted-foreground">
-													{t(
-														"tools.password_detail_created_label",
-													)}
-												</span>
-												<span className="text-xs text-muted-foreground/80 font-mono">
-													{formatDate(item.createdAt)}
-												</span>
-											</div>
-										)}
-										{item.updatedAt && (
-											<div className="flex items-center justify-between">
-												<span className="text-xs text-muted-foreground">
-													{t(
-														"tools.password_detail_modified_label",
-													)}
-												</span>
-												<span className="text-xs text-muted-foreground/80 font-mono">
-													{formatDate(item.updatedAt)}
-												</span>
-											</div>
-										)}
-									</div>
-								</>
-							)}
-						</div>
+							</>
+						)}
 					</div>
 
 					{/* Custom Fields */}
@@ -566,43 +385,10 @@ export default function PasswordDetail({
 								</Label>
 								<div className="space-y-2">
 									{item.customFields.map((field, i) => (
-										<div
+										<CustomFieldRenderer
 											key={i}
-											className="bg-background rounded-xl px-3 py-2.5 border border-border overflow-hidden"
-										>
-											<p className="text-xs text-muted-foreground mb-0.5 truncate">
-												{field.name}
-											</p>
-											{field.type === "password" ? (
-												<span className="text-sm font-mono text-foreground">
-													••••••••
-												</span>
-											) : field.type === "color" ? (
-												<span className="inline-flex items-center gap-2 text-sm text-foreground">
-													<span
-														className="w-4 h-4 rounded-full border border-border"
-														style={{
-															backgroundColor:
-																field.value,
-														}}
-													/>
-													{field.value}
-												</span>
-											) : field.type === "url" ? (
-												<a
-													href={field.value}
-													target="_blank"
-													rel="noopener noreferrer"
-													className="text-sm text-primary hover:text-primary/80 truncate block"
-												>
-													{field.value}
-												</a>
-											) : (
-												<span className="text-sm text-foreground wrap-break-word block">
-													{field.value}
-												</span>
-											)}
-										</div>
+											field={field}
+										/>
 									))}
 								</div>
 							</div>

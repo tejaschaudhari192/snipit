@@ -148,7 +148,7 @@
 		"password_manager_continue": "Continue",
 		"password_manager_warning_title": "Important Warning",
 		"password_manager_warning_desc": "Snipit uses Zero-Knowledge encryption. This means we do not store your master password anywhere.",
-		"password_manager_warning_irrecoverable": "If you forget your master password, your vault data is permanently lost and cannot be recovered by anyone.",
+		"password_manager_warning_irrecoverable": "If you forget your master password, your vault data can only be recovered using the Recovery Key provided in the next step. Otherwise, it is permanently lost.",
 		"password_manager_warning_checkbox": "I understand that my master password cannot be recovered.",
 		"password_manager_create_vault": "Create Vault",
 		"password_manager_unlock_title": "Welcome Back",

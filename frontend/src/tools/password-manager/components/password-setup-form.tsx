@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { cn } from "@/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { PasswordStrengthMeter } from "@/components/ui/password-strength-meter";
+import { usePasswordStrength } from "@/hooks/use-password-strength";
 import { CheckCircle2, Circle, Eye, EyeOff, ShieldCheck } from "lucide-react";
 
 interface PasswordSetupFormProps {
@@ -11,7 +13,6 @@ interface PasswordSetupFormProps {
 	onPasswordChange: (value: string) => void;
 	confirmPassword: string;
 	onConfirmPasswordChange: (value: string) => void;
-	strengthScore: number;
 	showRequirements?: boolean;
 	className?: string;
 }
@@ -21,23 +22,16 @@ export default function PasswordSetupForm({
 	onPasswordChange,
 	confirmPassword,
 	onConfirmPasswordChange,
-	strengthScore,
 	showRequirements = true,
 	className,
 }: PasswordSetupFormProps) {
 	const { t } = useTranslation();
 	const [showPassword, setShowPassword] = useState(false);
-
-	const reqs = {
-		length: password.length >= 8,
-		upper: /[A-Z]/.test(password),
-		number: /[0-9]/.test(password),
-		special: /[^A-Za-z0-9]/.test(password),
-	};
+	const { requirements: reqs } = usePasswordStrength(password);
 
 	return (
-		<div className={className}>
-			<div className="space-y-2">
+		<div className={cn("flex flex-col gap-6", className)}>
+			<div className="space-y-3">
 				<div className="relative">
 					<Input
 						type={showPassword ? "text" : "password"}
@@ -65,16 +59,9 @@ export default function PasswordSetupForm({
 				</div>
 
 				{password && (
-					<Progress
-						value={(strengthScore + 1) * 20}
-						indicatorClassName={
-							strengthScore < 2
-								? "bg-red-500"
-								: strengthScore === 2
-									? "bg-yellow-500"
-									: "bg-green-500"
-						}
-					/>
+					<div className="pt-2">
+						<PasswordStrengthMeter password={password} />
+					</div>
 				)}
 			</div>
 
@@ -86,8 +73,20 @@ export default function PasswordSetupForm({
 					)}
 					value={confirmPassword}
 					onChange={(e) => onConfirmPasswordChange(e.target.value)}
-					className="h-12"
+					className={`h-12 ${
+						confirmPassword && password !== confirmPassword
+							? "border-destructive/50 focus-visible:ring-destructive/20"
+							: ""
+					}`}
 				/>
+				{confirmPassword && password !== confirmPassword && (
+					<p className="text-xs text-destructive font-medium mt-1.5 animate-in fade-in">
+						{t(
+							"auth.reset_password_mismatch_toast",
+							"Passwords do not match",
+						)}
+					</p>
+				)}
 			</div>
 
 			{showRequirements && (

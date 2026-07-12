@@ -163,8 +163,22 @@ export const unlockVault = createAsyncThunk(
  */
 export const createVault = createAsyncThunk(
 	"passwordManager/createVault",
-	async (masterPassword: string) => {
+	async (masterPassword: string, { getState }) => {
+		const state = getState() as { passwordManager: PasswordManagerState };
+		const { userId } = state.passwordManager;
+		if (!userId) throw new Error("No user ID");
+
 		const vault: Vault = { items: [] };
+
+		// Immediately persist the empty vault so it exists on refresh
+		const enc = await encryptVault(vault, masterPassword);
+		await setVaultRecord({
+			userId,
+			version: 1,
+			encryptedBlob: enc,
+			updatedAt: new Date().toISOString(),
+		});
+
 		return { vault, masterPassword };
 	},
 );
@@ -505,6 +519,7 @@ const passwordSlice = createSlice({
 				state.loading = false;
 				state.vault = action.payload.vault;
 				state.masterPassword = action.payload.masterPassword;
+				state.hasExistingVault = true;
 				state.error = null;
 			})
 			.addCase(createVault.rejected, (state, action) => {

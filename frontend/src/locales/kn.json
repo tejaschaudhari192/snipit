@@ -145,7 +145,7 @@
 		"password_manager_continue": "ಮುಂದುವರಿಸಿ",
 		"password_manager_warning_title": "ಎಚ್ಚರಿಕೆ",
 		"password_manager_warning_desc": "ನಿಮ್ಮ ಮಾಸ್ಟರ್ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ನೀವು ಮರೆತರೆ, ನಿಮ್ಮ ಡೇಟಾ ಶಾಶ್ವತವಾಗಿ ಕಳೆದುಹೋಗುತ್ತದೆ. ಯಾವುದೇ ಮರುಹೊಂದಿಸುವಿಕೆ ಅಥವಾ ಚೇತರಿಕೆ ಇಲ್ಲ.",
-		"password_manager_warning_irrecoverable": "ಚೇತರಿಸಿಕೊಳ್ಳಲಾಗದ ನಷ್ಟ",
+		"password_manager_warning_irrecoverable": "If you forget your master password, your vault data can only be recovered using the Recovery Key provided in the next step. Otherwise, it is permanently lost.",
 		"password_manager_warning_checkbox": "ನನ್ನ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ನಾನು ಮರೆತರೆ ನನ್ನ ಡೇಟಾವನ್ನು ಮರುಪಡೆಯಲಾಗುವುದಿಲ್ಲ ಎಂದು ನಾನು ಅರ್ಥಮಾಡಿಕೊಂಡಿದ್ದೇನೆ.",
 		"password_manager_create_vault": "ವಾಲ್ಟ್ ರಚಿಸಿ",
 		"password_manager_unlock_title": "ವಾಲ್ಟ್ ಅನ್ಲಾಕ್ ಮಾಡಿ",

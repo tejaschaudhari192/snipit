@@ -1,19 +1,9 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-	CardDescription,
-} from "@/components/ui/card";
-import { Shield, LockOpen, Loader2, KeyRound } from "lucide-react";
-import { useTranslation } from "react-i18next";
-import TextGradient from "@/components/text-gradient";
-import ReadMoreDialog from "./ReadMoreDialog";
-import PasswordSetupForm from "./password-setup-form";
-import zxcvbn from "zxcvbn";
+import { usePasswordStrength } from "@/hooks/use-password-strength";
+
+import UnlockStandard from "./unlock-steps/unlock-standard";
+import UnlockRecovery from "./unlock-steps/unlock-recovery";
+import UnlockReset from "./unlock-steps/unlock-reset";
 
 interface VaultUnlockProps {
 	onUnlock: (password: string) => void;
@@ -40,7 +30,6 @@ export default function VaultUnlock({
 	onResetMasterPassword,
 	onSetRecoveryMode,
 }: VaultUnlockProps) {
-	const { t } = useTranslation();
 	const [password, setPassword] = useState("");
 	const [shake, setShake] = useState(false);
 
@@ -51,7 +40,9 @@ export default function VaultUnlock({
 	// New password mode (after successful recovery)
 	const [newPassword, setNewPassword] = useState("");
 	const [confirmNewPassword, setConfirmNewPassword] = useState("");
-	const [newStrengthScore, setNewStrengthScore] = useState(0);
+
+	const { score: newStrengthScore, isStrongEnough: isNewPwStrong } =
+		usePasswordStrength(newPassword);
 
 	useEffect(() => {
 		if (error) {
@@ -60,14 +51,6 @@ export default function VaultUnlock({
 			return () => clearTimeout(timer);
 		}
 	}, [error]);
-
-	useEffect(() => {
-		if (newPassword) {
-			setNewStrengthScore(zxcvbn(newPassword).score);
-		} else {
-			setNewStrengthScore(0);
-		}
-	}, [newPassword]);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -90,271 +73,53 @@ export default function VaultUnlock({
 		}
 	};
 
-	const newPwReqs = {
-		length: newPassword.length >= 8,
-		upper: /[A-Z]/.test(newPassword),
-		number: /[0-9]/.test(newPassword),
-		special: /[^A-Za-z0-9]/.test(newPassword),
-	};
-
-	const isNewPwStrong =
-		newStrengthScore >= 2 &&
-		newPwReqs.length &&
-		newPwReqs.upper &&
-		newPwReqs.number &&
-		newPwReqs.special;
 	const newPwMatch =
 		newPassword === confirmNewPassword && newPassword.length > 0;
 
-	// ── New password form (after successful recovery) ───────────────────
-
 	if (recoveryMode) {
 		return (
-			<div className="min-h-[80vh] flex flex-col items-center justify-center p-4">
-				<Card className="w-full max-w-lg bg-background/60 backdrop-blur-xl border-border shadow-2xl">
-					<CardHeader className="space-y-4 pb-6 text-center">
-						<div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center ring-8 ring-primary/5">
-							<KeyRound className="h-8 w-8 text-primary" />
-						</div>
-						<div className="space-y-1">
-							<CardTitle className="text-2xl font-bold tracking-tight">
-								{t(
-									"tools.password_manager_recovery_new_password_title",
-								)}
-							</CardTitle>
-							<CardDescription className="text-base">
-								{t(
-									"tools.password_manager_recovery_new_password_desc",
-								)}
-							</CardDescription>
-						</div>
-					</CardHeader>
-					<CardContent>
-						<form
-							onSubmit={handleSetNewPassword}
-							className="space-y-4"
-						>
-							<PasswordSetupForm
-								password={newPassword}
-								onPasswordChange={setNewPassword}
-								confirmPassword={confirmNewPassword}
-								onConfirmPasswordChange={setConfirmNewPassword}
-								strengthScore={newStrengthScore}
-							/>
-							<Button
-								type="submit"
-								className="w-full h-12 rounded-xl text-base font-semibold"
-								disabled={
-									!isNewPwStrong ||
-									!newPwMatch ||
-									recoveryLoading
-								}
-							>
-								{recoveryLoading ? (
-									<>
-										<Loader2 className="mr-2 h-5 w-5 animate-spin" />
-										{t(
-											"tools.password_manager_recovery_decrypting",
-										)}
-									</>
-								) : (
-									<>
-										<LockOpen className="mr-2 h-5 w-5" />
-										{t(
-											"tools.password_manager_recovery_success",
-										)}
-									</>
-								)}
-							</Button>
-							{recoveryError && (
-								<p className="text-sm text-red-500 text-center">
-									{recoveryError}
-								</p>
-							)}
-						</form>
-
-						<div className="mt-6 text-center">
-							<Button
-								variant="link"
-								onClick={() => onSetRecoveryMode(false)}
-								className="text-sm"
-							>
-								{t("tools.password_manager_back")}
-							</Button>
-						</div>
-					</CardContent>
-				</Card>
-			</div>
+			<UnlockReset
+				newPassword={newPassword}
+				onNewPasswordChange={setNewPassword}
+				confirmNewPassword={confirmNewPassword}
+				onConfirmNewPasswordChange={setConfirmNewPassword}
+				newStrengthScore={newStrengthScore}
+				isNewPwStrong={isNewPwStrong}
+				newPwMatch={newPwMatch}
+				recoveryLoading={recoveryLoading}
+				recoveryError={recoveryError}
+				onSubmit={handleSetNewPassword}
+				onBack={() => onSetRecoveryMode(false)}
+			/>
 		);
 	}
 
 	if (showRecovery) {
 		return (
-			<div className="min-h-[80vh] flex flex-col items-center justify-center p-4">
-				<Card className="w-full max-w-lg bg-background/60 backdrop-blur-xl border-border shadow-2xl">
-					<CardHeader className="space-y-4 pb-6 text-center">
-						<div className="mx-auto w-16 h-16 rounded-full bg-amber-500/10 flex items-center justify-center ring-8 ring-amber-500/5">
-							<KeyRound className="h-8 w-8 text-amber-500" />
-						</div>
-						<div className="space-y-1">
-							<CardTitle className="text-2xl font-bold tracking-tight">
-								{t("tools.password_manager_recovery_use_title")}
-							</CardTitle>
-							<CardDescription className="text-base">
-								{t("tools.password_manager_recovery_use_desc")}
-							</CardDescription>
-						</div>
-					</CardHeader>
-					<CardContent>
-						<form onSubmit={handleRecover} className="space-y-4">
-							<div className="space-y-2">
-								<Input
-									placeholder={t(
-										"tools.password_manager_recovery_placeholder",
-									)}
-									value={recoveryPhrase}
-									onChange={(e) =>
-										setRecoveryPhrase(e.target.value)
-									}
-									className="h-12 text-center"
-									autoFocus
-									disabled={recoveryLoading}
-								/>
-								{recoveryError && (
-									<p className="text-sm text-red-500 text-center animate-in fade-in slide-in-from-top-1">
-										{recoveryError}
-									</p>
-								)}
-							</div>
-
-							<Button
-								type="submit"
-								className="w-full h-12 rounded-xl text-base font-semibold"
-								disabled={
-									!recoveryPhrase.trim() || recoveryLoading
-								}
-							>
-								{recoveryLoading ? (
-									<>
-										<Loader2 className="mr-2 h-5 w-5 animate-spin" />
-										{t(
-											"tools.password_manager_recovery_decrypting",
-										)}
-									</>
-								) : (
-									<>
-										<LockOpen className="mr-2 h-5 w-5" />
-										{t(
-											"tools.password_manager_recovery_unlock",
-										)}
-									</>
-								)}
-							</Button>
-						</form>
-
-						<div className="mt-6 text-center">
-							<Button
-								variant="link"
-								onClick={() => {
-									setShowRecovery(false);
-									setRecoveryPhrase("");
-								}}
-								className="text-sm"
-							>
-								{t("tools.password_manager_back")}
-							</Button>
-						</div>
-					</CardContent>
-				</Card>
-			</div>
+			<UnlockRecovery
+				recoveryPhrase={recoveryPhrase}
+				onRecoveryPhraseChange={setRecoveryPhrase}
+				onSubmit={handleRecover}
+				recoveryError={recoveryError}
+				recoveryLoading={recoveryLoading}
+				onBack={() => {
+					setShowRecovery(false);
+					setRecoveryPhrase("");
+				}}
+			/>
 		);
 	}
 
-	// ── Normal unlock form ──────────────────────────────────────────────
-
 	return (
-		<div className="min-h-[80vh] flex flex-col items-center justify-center p-4">
-			<Card
-				className={`w-full max-w-lg bg-background/60 backdrop-blur-xl border-border shadow-2xl transition-all duration-300 ${shake ? "animate-shake border-red-500/50" : ""}`}
-			>
-				<CardHeader className="space-y-4 pb-6 text-center">
-					<div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center ring-8 ring-primary/5">
-						<Shield className="h-8 w-8 text-primary" />
-					</div>
-					<div className="space-y-1">
-						<CardTitle className="text-2xl font-bold tracking-tight">
-							{t("tools.password_manager_unlock_title")}
-						</CardTitle>
-						<CardDescription className="text-base">
-							{t("tools.password_manager_unlock_subtitle")}
-						</CardDescription>
-					</div>
-				</CardHeader>
-				<CardContent>
-					<form onSubmit={handleSubmit} className="space-y-4">
-						<div className="space-y-2 relative">
-							<Input
-								type="password"
-								placeholder={t(
-									"tools.password_manager_master_placeholder",
-								)}
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								className={`h-12 text-center text-lg tracking-widest ${error ? "border-red-500 focus-visible:ring-red-500" : ""}`}
-								autoFocus
-								disabled={loading}
-							/>
-							{error && (
-								<p className="text-sm text-red-500 text-center animate-in fade-in slide-in-from-top-1">
-									{error}
-								</p>
-							)}
-						</div>
-
-						<Button
-							type="submit"
-							className="w-full h-12 rounded-xl text-base font-semibold"
-							disabled={!password || loading}
-						>
-							{loading ? (
-								<>
-									<Loader2 className="mr-2 h-5 w-5 animate-spin" />
-									<TextGradient
-										highlightColor="var(--foreground)"
-										baseColor="var(--muted-foreground)"
-										spread={20}
-										duration={2}
-										className="font-medium"
-									>
-										{t("tools.password_manager_decrypting")}
-									</TextGradient>
-								</>
-							) : (
-								<>
-									<LockOpen className="mr-2 h-5 w-5" />
-									{t("tools.password_manager_unlock_vault")}
-								</>
-							)}
-						</Button>
-					</form>
-
-					<div className="mt-6 text-center space-y-2">
-						<p className="text-xs text-muted-foreground">
-							{t("tools.password_manager_forgot_password")}{" "}
-							{hasRecoveryKey ? (
-								<button
-									onClick={() => setShowRecovery(true)}
-									className="text-primary hover:text-primary/80 hover:underline transition-colors font-medium"
-								>
-									{t("tools.password_manager_recovery_title")}
-								</button>
-							) : (
-								<ReadMoreDialog />
-							)}
-						</p>
-					</div>
-				</CardContent>
-			</Card>
-		</div>
+		<UnlockStandard
+			password={password}
+			onPasswordChange={setPassword}
+			onSubmit={handleSubmit}
+			error={error}
+			loading={loading}
+			hasRecoveryKey={hasRecoveryKey}
+			onShowRecovery={() => setShowRecovery(true)}
+			shake={shake}
+		/>
 	);
 }

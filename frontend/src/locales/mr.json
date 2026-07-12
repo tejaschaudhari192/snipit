@@ -145,7 +145,7 @@
 		"password_manager_continue": "सुरू ठेवा",
 		"password_manager_warning_title": "चेतावणी",
 		"password_manager_warning_desc": "तुम्ही तुमचा मास्टर पासवर्ड विसरल्यास, तुमचा डेटा कायमचा नष्ट होईल. कोणताही रीसेट किंवा रिकव्हरी पर्याय नाही.",
-		"password_manager_warning_irrecoverable": "न भरून येणारे नुकसान",
+		"password_manager_warning_irrecoverable": "If you forget your master password, your vault data can only be recovered using the Recovery Key provided in the next step. Otherwise, it is permanently lost.",
 		"password_manager_warning_checkbox": "मला समजते की जर मी माझा पासवर्ड विसरलो तर माझा डेटा पुनर्प्राप्त केला जाऊ शकत नाही.",
 		"password_manager_create_vault": "व्हॉल्ट तयार करा",
 		"password_manager_unlock_title": "व्हॉल्ट अनलॉक करा",

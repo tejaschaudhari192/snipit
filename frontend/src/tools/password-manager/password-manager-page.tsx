@@ -220,7 +220,7 @@ function PasswordManagerInner() {
 						)}
 					</div>
 				) : (
-					<div className="flex-1 flex overflow-hidden rounded-2xl border border-border bg-card/50 shadow-sm backdrop-blur-sm m-4 relative">
+					<div className="flex-1 flex overflow-hidden rounded-2xl border border-white/5 bg-vault-bg shadow-2xl m-4 relative">
 						<ResizablePanelGroup
 							orientation="horizontal"
 							id="password-manager-layout"
@@ -230,9 +230,9 @@ function PasswordManagerInner() {
 								defaultSize="20%"
 								minSize="15%"
 								maxSize="35%"
-								className="bg-sidebar"
+								className="bg-vault-panel"
 							>
-								<div className="h-full w-full overflow-hidden border-r border-border flex flex-col">
+								<div className="h-full w-full overflow-hidden border-r border-white/5 flex flex-col">
 									<SidebarProvider className="min-h-0 h-full w-full">
 										<Suspense
 											fallback={<SidebarSkeleton />}
@@ -251,16 +251,16 @@ function PasswordManagerInner() {
 								</div>
 							</ResizablePanel>
 
-							<ResizableHandle className="w-1 bg-border/50 hover:bg-primary/50 transition-colors cursor-col-resize z-10" />
+							<ResizableHandle className="w-px bg-white/5 hover:bg-primary/50 transition-colors cursor-col-resize z-10" />
 
 							{/* Middle - List */}
 							<ResizablePanel
 								defaultSize="25%"
 								minSize="20%"
 								maxSize="40%"
-								className="bg-background/50"
+								className="bg-vault-panel"
 							>
-								<div className="h-full w-full overflow-hidden flex flex-col border-r border-border">
+								<div className="h-full w-full overflow-hidden flex flex-col border-r border-white/5">
 									<Suspense fallback={<ListSkeleton />}>
 										<PasswordList
 											activeId={activeItem?.id ?? null}
@@ -275,13 +275,13 @@ function PasswordManagerInner() {
 								</div>
 							</ResizablePanel>
 
-							<ResizableHandle className="w-1 bg-border/50 hover:bg-primary/50 transition-colors cursor-col-resize z-10" />
+							<ResizableHandle className="w-px bg-white/5 hover:bg-primary/50 transition-colors cursor-col-resize z-10" />
 
 							{/* Right - Detail */}
 							<ResizablePanel
 								defaultSize="55%"
 								minSize="30%"
-								className="bg-background"
+								className="bg-vault-card"
 							>
 								<div className="h-full w-full overflow-hidden flex flex-col">
 									<Suspense fallback={<DetailSkeleton />}>

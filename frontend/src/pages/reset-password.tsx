@@ -19,6 +19,8 @@ import TextGradient from "@/components/text-gradient";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import { PasswordInput } from "@/components/ui/password-input";
+import { PasswordStrengthMeter } from "@/components/ui/password-strength-meter";
+import { usePasswordStrength } from "@/hooks/use-password-strength";
 
 const ResetPasswordPage = () => {
 	const { token } = useParams<{ token: string }>();
@@ -29,6 +31,7 @@ const ResetPasswordPage = () => {
 	const { login } = useAuth();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
+	const { isStrongEnough } = usePasswordStrength(password);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -38,8 +41,13 @@ const ResetPasswordPage = () => {
 			return;
 		}
 
-		if (password.length < 6) {
-			toast.error(t("auth.reset_password_min_length_toast"));
+		if (!isStrongEnough) {
+			toast.error(
+				t(
+					"auth.reset_password_weak_toast",
+					"Password does not meet the requirements",
+				),
+			);
 			return;
 		}
 
@@ -111,6 +119,13 @@ const ResetPasswordPage = () => {
 										}
 									/>
 								</div>
+								{password && (
+									<div className="pt-1">
+										<PasswordStrengthMeter
+											password={password}
+										/>
+									</div>
+								)}
 							</div>
 
 							<div className="space-y-2">
@@ -132,13 +147,27 @@ const ResetPasswordPage = () => {
 											"auth.password_placeholder",
 										)}
 										required
-										className="pl-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all font-mono"
+										className={`pl-10 h-11 bg-background/50 border-border/50 focus:border-primary/30 transition-all font-mono ${
+											confirmPassword &&
+											password !== confirmPassword
+												? "border-destructive/50 focus:border-destructive focus:ring-destructive/20"
+												: ""
+										}`}
 										value={confirmPassword}
 										onChange={(e) =>
 											setConfirmPassword(e.target.value)
 										}
 									/>
 								</div>
+								{confirmPassword &&
+									password !== confirmPassword && (
+										<p className="text-xs text-destructive font-medium mt-1 animate-in fade-in">
+											{t(
+												"auth.reset_password_mismatch_toast",
+												"Passwords do not match",
+											)}
+										</p>
+									)}
 							</div>
 
 							<Button

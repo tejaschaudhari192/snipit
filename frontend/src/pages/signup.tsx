@@ -21,15 +21,19 @@ import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 import { PasswordInput } from "@/components/ui/password-input";
+import { PasswordStrengthMeter } from "@/components/ui/password-strength-meter";
+import { usePasswordStrength } from "@/hooks/use-password-strength";
 
 const SignupPage = () => {
 	const [username, setUsername] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const { user, login } = useAuth();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
+	const { isStrongEnough } = usePasswordStrength(password);
 
 	if (user) {
 		navigate("/");
@@ -38,6 +42,27 @@ const SignupPage = () => {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+
+		if (password !== confirmPassword) {
+			toast.error(
+				t(
+					"auth.reset_password_mismatch_toast",
+					"Passwords do not match",
+				),
+			);
+			return;
+		}
+
+		if (!isStrongEnough) {
+			toast.error(
+				t(
+					"auth.reset_password_weak_toast",
+					"Password does not meet the requirements",
+				),
+			);
+			return;
+		}
+
 		setIsLoading(true);
 		try {
 			await api.post("/auth/register", {
@@ -194,6 +219,56 @@ const SignupPage = () => {
 										}
 									/>
 								</div>
+								{password && (
+									<div className="pt-1">
+										<PasswordStrengthMeter
+											password={password}
+										/>
+									</div>
+								)}
+							</div>
+
+							<div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
+								<Label
+									htmlFor="confirmPassword"
+									className="text-[13px] font-semibold uppercase tracking-wider text-muted-foreground/80 ml-1"
+								>
+									{t(
+										"auth.reset_password_confirm_password_label",
+										"Confirm Password",
+									)}
+								</Label>
+								<div className="relative group">
+									<div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
+										<Lock className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within:text-primary" />
+									</div>
+									<PasswordInput
+										id="confirmPassword"
+										placeholder={t(
+											"auth.password_placeholder",
+										)}
+										required
+										className={`pl-10.5 h-11 bg-background/50 border-border/50 focus:border-primary/40 focus:ring-4 focus:ring-primary/10 transition-all rounded-xl font-medium ${
+											confirmPassword &&
+											password !== confirmPassword
+												? "border-destructive/50 focus:border-destructive focus:ring-destructive/20"
+												: ""
+										}`}
+										value={confirmPassword}
+										onChange={(e) =>
+											setConfirmPassword(e.target.value)
+										}
+									/>
+								</div>
+								{confirmPassword &&
+									password !== confirmPassword && (
+										<p className="text-xs text-destructive font-medium ml-1 mt-1 animate-in fade-in">
+											{t(
+												"auth.reset_password_mismatch_toast",
+												"Passwords do not match",
+											)}
+										</p>
+									)}
 							</div>
 
 							<div className="pt-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-400">
