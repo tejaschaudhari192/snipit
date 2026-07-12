@@ -186,7 +186,32 @@
 		"password_manager_choose_file": "ફાઇલ પસંદ કરો",
 		"password_manager_generate": "બનાવો",
 		"password_manager_strength_label": "પાસવર્ડની મજબૂતાઈ:",
-		"password_manager_delete_confirm": "શું તમે ખરેખર આ વસ્તુને કાઢી નાખવા માંગો છો?"
+		"password_manager_delete_confirm": "શું તમે ખરેખર આ વસ્તુને કાઢી નાખવા માંગો છો?",
+		"password_detail_created_label": "બનાવ્યું",
+		"password_detail_modified_label": "છેલ્લે બદલાયેલ",
+		"password_manager_requirements": "પાસવર્ડની આવશ્યકતાઓ",
+		"password_manager_copy_password": "પાસવર્ડ કૉપિ કરો",
+		"password_manager_delete": "કાઢી નાખો",
+		"password_manager_recovery_title": "રિકવરી કી",
+		"password_manager_recovery_desc": "આ તમારો રિકવરી કી છે — 12-શબ્દોનું વાક્ય જે તમારા માસ્ટર પાસવર્ડ ભૂલાય તો તમારા વોલ્ટને અનલોક કરી શકે છે.",
+		"password_manager_recovery_warning": "આને લખી સુરક્ષિત જગ્યાએ રાખો. જો તમે તમારો માસ્ટર પાસવર્ડ અને આ રિકવરી કી બંને ગુમાવો, તો તમારો વોલ્ટ કાયમ માટે ગુમ થઈ જશે.",
+		"password_manager_recovery_saved": "મેં મારી રિકવરી કી સાચવી છે",
+		"password_manager_recovery_skip": "સ્કિપ — હું જોખમ સમજી ગયો છું",
+		"password_manager_recovery_use_title": "તમારો વોલ્ટ રિકવરી કરો",
+		"password_manager_recovery_use_desc": "તમારો 12-શબ્દોનો રિકવરી ફ્રેઝ દાખલ કરો જેથી તમારા વોલ્ટને અનલોક કરી નવું માસ્ટર પાસવર્ડ સેટ કરી શકો.",
+		"password_manager_recovery_placeholder": "તમારો રિકવરી ફ્રેઝ દાખલ કરો...",
+		"password_manager_recovery_invalid": "અમાન્ય રિકવરી ફ્રેઝ. કૃપા કરીને તમારા શબ્દો તપાસો અને ફરી પ્રયાસ કરો.",
+		"password_manager_recovery_unlock": "વોલ્ટ રિકવરી કરો",
+		"password_manager_recovery_decrypting": "રિકવરી થઈ રહી છે...",
+		"password_manager_recovery_new_password_title": "નવું માસ્ટર પાસવર્ડ સેટ કરો",
+		"password_manager_recovery_new_password_desc": "તમારો વોલ્ટ રિકવરી થયો છે. કૃપા કરીને નવું માસ્ટર પાસવર્ડ બનાવો.",
+		"password_manager_recovery_success": "વોલ્ટ સફળતાપૂર્વક રિકવરી થયો!",
+		"password_manager_recovery_setup_title": "રિકવરી કી સેટ કરો",
+		"password_manager_recovery_setup_desc": "ભૂલી ગયેલા પાસવર્ડથી બચો. હવે રિકવરી કી જનરેટ કરો.",
+		"password_manager_recovery_generate": "રિકવરી કી જનરેટ કરો",
+		"password_manager_recovery_copy": "ક્લિપબોર્ડમાં કૉપિ કરો",
+		"password_manager_recovery_copied": "કૉપિ થયું!",
+		"password_manager_recovery_has_key": "રિકવરી કી સેટ થઈ ગઈ છે"
 	},
 	"errors": {
 		"storage_access_denied": "સ્ટોરેજ ઍક્સેસ નકારવામાં આવી. કૃપા કરીને કૂકીઝ/સ્ટોરેજ સક્ષમ કરો.",
@@ -643,8 +668,8 @@
 		"error": "ભૂલ"
 	},
 	"server_error": {
-		"title": "સુરક્ષિત સાધનો અને ઉપયોગીતાઓ",
-		"subtitle": "તમારો સંવેદનશીલ ડેટા સુરક્ષિત રાખવા માટે રચાયેલ સુરક્ષિત, ક્લાયંટ-સાઇડ ટૂલ્સનો સંગ્રહ. તમારો ડેટા ક્યારેય તમારા ઉપકરણને છોડતો નથી.",
+		"title": "સિસ્ટમ ઑફલાઇન",
+		"subtitle": "અમને અમારી મુખ્ય સેવાઓ સાથે જોડાવામાં મુશ્કેલી પડી રહી છે. અમારી ટીમને જાણ કરવામાં આવી છે અને તે સુધારા પર કામ કરી રહી છે.",
 		"operational": "કાર્યરત",
 		"service_down": "સેવા બંધ",
 		"error_details": "ભૂલની વિગતો",
@@ -652,8 +677,8 @@
 		"safety_button": "સુરક્ષિત સ્થાને પાછા જાઓ"
 	},
 	"error_page": {
-		"title": "સુરક્ષિત સાધનો અને ઉપયોગીતાઓ",
-		"subtitle": "તમારો સંવેદનશીલ ડેટા સુરક્ષિત રાખવા માટે રચાયેલ સુરક્ષિત, ક્લાયંટ-સાઇડ ટૂલ્સનો સંગ્રહ. તમારો ડેટા ક્યારેય તમારા ઉપકરણને છોડતો નથી.",
+		"title": "પૃષ્ઠ મળ્યું નથી",
+		"subtitle": "અરે! તમે શોધી રહ્યા છો તે સ્નિપેટ અસ્તિત્વમાં નથી અથવા સમાપ્ત થયું છે.",
 		"description": "તે કાઢી નાખવામાં આવ્યું હોઈ શકે છે અથવા લિંક ખોટી હોઈ શકે છે.",
 		"go_home": "હોમ પર જાઓ",
 		"create_new": "નવું સ્નિપેટ બનાવો"
@@ -743,7 +768,7 @@
 		}
 	},
 	"ai_dialog": {
-		"title": "સુરક્ષિત સાધનો અને ઉપયોગીતાઓ",
+		"title": "AI સંપાદક સહાયક",
 		"description": "પસંદ કરેલ લખાણ બદલો. AI ને કહો.",
 		"placeholder": "જેમ કે: આને વધુ પ્રોફેશનલ બનાવો.",
 		"cancel": "રદ કરો",
@@ -783,7 +808,7 @@
 		"draw_apply_error": "લાગુ કરવામાં ભૂલ"
 	},
 	"ai_writer": {
-		"title": "સુરક્ષિત સાધનો અને ઉપયોગીતાઓ",
+		"title": "AI લેખક",
 		"description": "તમે જે લખવા માંગો છો તે જણાવો, AI લખશે.",
 		"placeholder": "જેમ કે: લોગિન ફોર્મ માટેનો React ઘટક લખો...",
 		"generating": "લખાઈ રહ્યું છે...",

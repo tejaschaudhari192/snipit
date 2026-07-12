@@ -186,7 +186,32 @@
 		"password_manager_choose_file": "ファイルを選択",
 		"password_manager_generate": "生成",
 		"password_manager_strength_label": "パスワードの強度:",
-		"password_manager_delete_confirm": "本当にこのアイテムを削除しますか？"
+		"password_manager_delete_confirm": "本当にこのアイテムを削除しますか？",
+		"password_detail_created_label": "作成日",
+		"password_detail_modified_label": "最終更新日",
+		"password_manager_requirements": "パスワード要件",
+		"password_manager_copy_password": "パスワードをコピー",
+		"password_manager_delete": "削除",
+		"password_manager_recovery_title": "リカバリキー",
+		"password_manager_recovery_desc": "これはあなたのリカバリキーです — 12語のフレーズで、マスターパスワードを忘れた場合にボールトをアンロックできます。",
+		"password_manager_recovery_warning": "これを書き留めて安全な場所に保管してください。マスターパスワードとリカバリキーの両方を失うと、ボールトは永久に失われます。",
+		"password_manager_recovery_saved": "リカバリキーを保存しました",
+		"password_manager_recovery_skip": "スキップ — リスクを理解しました",
+		"password_manager_recovery_use_title": "ボールトを復元",
+		"password_manager_recovery_use_desc": "12語のリカバリフレーズを入力してボールトをアンロックし、新しいマスターパスワードを設定してください。",
+		"password_manager_recovery_placeholder": "リカバリフレーズを入力してください...",
+		"password_manager_recovery_invalid": "無効なリカバリフレーズです。単語を確認して再試行してください。",
+		"password_manager_recovery_unlock": "ボールトを復元",
+		"password_manager_recovery_decrypting": "復元中...",
+		"password_manager_recovery_new_password_title": "新しいマスターパスワードを設定",
+		"password_manager_recovery_new_password_desc": "ボールトが復元されました。新しいマスターパスワードを作成してください。",
+		"password_manager_recovery_success": "ボールトが正常に復元されました！",
+		"password_manager_recovery_setup_title": "リカバリキーを設定",
+		"password_manager_recovery_setup_desc": "忘れたパスワードに備えて保護してください。今すぐリカバリキーを生成します。",
+		"password_manager_recovery_generate": "リカバリキーを生成",
+		"password_manager_recovery_copy": "クリップボードにコピー",
+		"password_manager_recovery_copied": "コピーしました！",
+		"password_manager_recovery_has_key": "リカバリキーが設定されています"
 	},
 	"errors": {
 		"storage_access_denied": "ストレージアクセスが拒否されました。",
@@ -643,8 +668,8 @@
 		"error": "エラー"
 	},
 	"server_error": {
-		"title": "セキュアツール＆ユーティリティ",
-		"subtitle": "機密データを保護するために設計された、安全なクライアントサイドツールのコレクションです。データがデバイスを離れることはありません。",
+		"title": "システムオフライン",
+		"subtitle": "コアサービスへの接続に問題が発生しています。チームに通知され、修正作業中です。",
 		"operational": "稼働中",
 		"service_down": "サービス停止中",
 		"error_details": "エラー詳細",
@@ -652,8 +677,8 @@
 		"safety_button": "安全な場所に戻る"
 	},
 	"error_page": {
-		"title": "セキュアツール＆ユーティリティ",
-		"subtitle": "機密データを保護するために設計された、安全なクライアントサイドツールのコレクションです。データがデバイスを離れることはありません。",
+		"title": "ページが見つかりません",
+		"subtitle": "おっと！お探しのスニペットは存在しないか、有効期限が切れています。",
 		"description": "削除された可能性があるか、リンクが正しくないか、スニペットの有効期限が切れている可能性があります。",
 		"go_home": "ホームへ",
 		"create_new": "新しいスニペットを作成"
@@ -743,7 +768,7 @@
 		}
 	},
 	"ai_dialog": {
-		"title": "セキュアツール＆ユーティリティ",
+		"title": "AI編集アシスタント",
 		"description": "選択したテキストを変換します。AIに何をしたいか指示してください。",
 		"placeholder": "例：これをもっとプロフェッショナルな表現にするか、箇条書きで要約してください。",
 		"cancel": "キャンセル",
@@ -783,7 +808,7 @@
 		"draw_apply_error": "適用エラー"
 	},
 	"ai_writer": {
-		"title": "セキュアツール＆ユーティリティ",
+		"title": "AIライター",
 		"description": "書きたい内容を説明すると、AIが生成します。",
 		"placeholder": "例：ログインフォームのReactコンポーネントを書いて...",
 		"generating": "生成中...",

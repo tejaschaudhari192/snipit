@@ -186,7 +186,32 @@
 		"password_manager_choose_file": "ফাইল নির্বাচন করুন",
 		"password_manager_generate": "তৈরি করুন",
 		"password_manager_strength_label": "পাসওয়ার্ডের শক্তি:",
-		"password_manager_delete_confirm": "আপনি কি নিশ্চিত যে আপনি এই আইটেমটি মুছে ফেলতে চান?"
+		"password_manager_delete_confirm": "আপনি কি নিশ্চিত যে আপনি এই আইটেমটি মুছে ফেলতে চান?",
+		"password_detail_created_label": "সৃষ্টি করা হয়েছে",
+		"password_detail_modified_label": "শেষ পরিবর্তন",
+		"password_manager_requirements": "পাসওয়ার্ডের প্রয়োজনীয়তা",
+		"password_manager_copy_password": "পাসওয়ার্ড কপি করুন",
+		"password_manager_delete": "মুছে ফেলুন",
+		"password_manager_recovery_title": "রিকভারি কী",
+		"password_manager_recovery_desc": "এটি আপনার রিকভারি কী — একটি ১২-শব্দের বাক্য যা আপনার মাস্টার পাসওয়ার্ড ভুলে গেলে আপনার ভল্ট আনলক করতে পারে।",
+		"password_manager_recovery_warning": "এটি লিখে নিরাপদ স্থানে সংরক্ষণ করুন। যদি আপনি আপনার মাস্টার পাসওয়ার্ড এবং রিকভারি কী উভয়ই হারিয়ে ফেলেন, আপনার ভল্ট চিরতরে হারিয়ে যাবে।",
+		"password_manager_recovery_saved": "আমি আমার রিকভারি কী সংরক্ষণ করেছি",
+		"password_manager_recovery_skip": "এড়িয়ে যান — আমি ঝুঁকি বুঝি",
+		"password_manager_recovery_use_title": "আপনার ভল্ট রিকভার করুন",
+		"password_manager_recovery_use_desc": "আপনার ভল্ট আনলক করতে এবং নতুন মাস্টার পাসওয়ার্ড সেট করতে ১২-শব্দের রিকভারি ফ্রেজটি লিখুন।",
+		"password_manager_recovery_placeholder": "আপনার রিকভারি ফ্রেজ লিখুন...",
+		"password_manager_recovery_invalid": "অবৈধ রিকভারি ফ্রেজ। দয়া করে আপনার শব্দগুলো পরীক্ষা করুন এবং আবার চেষ্টা করুন।",
+		"password_manager_recovery_unlock": "ভল্ট রিকভার করুন",
+		"password_manager_recovery_decrypting": "রিকভার করা হচ্ছে...",
+		"password_manager_recovery_new_password_title": "নতুন মাস্টার পাসওয়ার্ড সেট করুন",
+		"password_manager_recovery_new_password_desc": "আপনার ভল্ট রিকভার হয়েছে। দয়া করে একটি নতুন মাস্টার পাসওয়ার্ড তৈরি করুন।",
+		"password_manager_recovery_success": "ভল্ট সফলভাবে রিকভার হয়েছে!",
+		"password_manager_recovery_setup_title": "রিকভারি কী সেট আপ করুন",
+		"password_manager_recovery_setup_desc": "ভুলে যাওয়া পাসওয়ার্ড থেকে নিজেকে রক্ষা করুন। এখনই একটি রিকভারি কী তৈরি করুন।",
+		"password_manager_recovery_generate": "রিকভারি কী তৈরি করুন",
+		"password_manager_recovery_copy": "ক্লিপবোর্ডে কপি করুন",
+		"password_manager_recovery_copied": "কপি হয়েছে!",
+		"password_manager_recovery_has_key": "রিকভারি কী সেট আপ হয়েছে"
 	},
 	"errors": {
 		"storage_access_denied": "স্টোরেজ অ্যাক্সেস অস্বীকার করা হয়েছে। অনুগ্রহ করে কুকিজ সক্ষম করুন।",
@@ -643,8 +668,8 @@
 		"error": "ত্রুটি"
 	},
 	"server_error": {
-		"title": "সুরক্ষিত টুলস এবং ইউটিলিটি",
-		"subtitle": "আপনার সংবেদনশীল ডেটা সুরক্ষিত রাখতে ডিজাইন করা সুরক্ষিত, ক্লায়েন্ট-সাইড টুলের সংগ্রহ। আপনার ডেটা কখনই আপনার ডিভাইস ছেড়ে যায় না।",
+		"title": "সিস্টেম অফলাইন",
+		"subtitle": "আমাদের মূল পরিষেবাগুলির সাথে সংযোগ করতে সমস্যা হচ্ছে। আমাদের দলকে জানানো হয়েছে এবং তারা এটি ঠিক করার কাজ করছে।",
 		"operational": "কার্যকরী",
 		"service_down": "পরিষেবা বন্ধ",
 		"error_details": "ত্রুটির বিবরণ",
@@ -652,8 +677,8 @@
 		"safety_button": "নিরাপদ স্থানে ফিরে যান"
 	},
 	"error_page": {
-		"title": "সুরক্ষিত টুলস এবং ইউটিলিটি",
-		"subtitle": "আপনার সংবেদনশীল ডেটা সুরক্ষিত রাখতে ডিজাইন করা সুরক্ষিত, ক্লায়েন্ট-সাইড টুলের সংগ্রহ। আপনার ডেটা কখনই আপনার ডিভাইস ছেড়ে যায় না।",
+		"title": "পৃষ্ঠা পাওয়া যায়নি",
+		"subtitle": "ওহ! আপনি যে স্নিপেটটি খুঁজছেন তা বিদ্যমান নেই বা মেয়াদ উত্তীর্ণ হয়েছে।",
 		"description": "এটি মুছে ফেলা হতে পারে বা লিঙ্কটি ভুল হতে পারে।",
 		"go_home": "হোমে যান",
 		"create_new": "নতুন স্নিপেট তৈরি করুন"
@@ -743,7 +768,7 @@
 		}
 	},
 	"ai_dialog": {
-		"title": "সুরক্ষিত টুলস এবং ইউটিলিটি",
+		"title": "AI সম্পাদক সহকারী",
 		"description": "নির্বাচিত টেক্সট পরিবর্তন করুন। AI-কে বলুন।",
 		"placeholder": "যেমন: এটিকে আরও পেশাদার করুন।",
 		"cancel": "বাতিল",
@@ -783,7 +808,7 @@
 		"draw_apply_error": "প্রয়োগ করতে ত্রুটি"
 	},
 	"ai_writer": {
-		"title": "সুরক্ষিত টুলস এবং ইউটিলিটি",
+		"title": "AI লেখক",
 		"description": "আপনি যা লিখতে চান তা বর্ণনা করুন, AI সেটি তৈরি করবে।",
 		"placeholder": "যেমন: লগইন ফর্মের জন্য React উপাদান লিখুন...",
 		"generating": "তৈরি করা হচ্ছে...",

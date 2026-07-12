@@ -186,7 +186,32 @@
 		"password_manager_choose_file": "Datei auswählen",
 		"password_manager_generate": "Generieren",
 		"password_manager_strength_label": "Passwortstärke:",
-		"password_manager_delete_confirm": "Sind Sie sicher, dass Sie dieses Element löschen möchten?"
+		"password_manager_delete_confirm": "Sind Sie sicher, dass Sie dieses Element löschen möchten?",
+		"password_detail_created_label": "Erstellt",
+		"password_detail_modified_label": "Zuletzt geändert",
+		"password_manager_requirements": "Passwortanforderungen",
+		"password_manager_copy_password": "Passwort kopieren",
+		"password_manager_delete": "Löschen",
+		"password_manager_recovery_title": "Wiederherstellungsschlüssel",
+		"password_manager_recovery_desc": "Dies ist Ihr Wiederherstellungsschlüssel – eine 12‑Wort‑Phrase, die Ihren Tresor entsperren kann, falls Sie Ihr Master‑Passwort vergessen.",
+		"password_manager_recovery_warning": "Schreiben Sie dies auf und bewahren Sie es an einem sicheren Ort auf. Wenn Sie sowohl Ihr Master‑Passwort als auch diesen Wiederherstellungsschlüssel verlieren, ist Ihr Tresor dauerhaft verloren.",
+		"password_manager_recovery_saved": "Ich habe meinen Wiederherstellungsschlüssel gespeichert",
+		"password_manager_recovery_skip": "Überspringen – ich verstehe das Risiko",
+		"password_manager_recovery_use_title": "Tresor wiederherstellen",
+		"password_manager_recovery_use_desc": "Geben Sie Ihre 12‑Wort‑Wiederherstellungsphrase ein, um Ihren Tresor zu entsperren und ein neues Master‑Passwort festzulegen.",
+		"password_manager_recovery_placeholder": "Geben Sie Ihre Wiederherstellungsphrase ein...",
+		"password_manager_recovery_invalid": "Ungültige Wiederherstellungsphrase. Bitte prüfen Sie Ihre Wörter und versuchen Sie es erneut.",
+		"password_manager_recovery_unlock": "Tresor wiederherstellen",
+		"password_manager_recovery_decrypting": "Wiederherstellung läuft...",
+		"password_manager_recovery_new_password_title": "Neues Master‑Passwort festlegen",
+		"password_manager_recovery_new_password_desc": "Ihr Tresor wurde wiederhergestellt. Bitte erstellen Sie ein neues Master‑Passwort.",
+		"password_manager_recovery_success": "Tresor erfolgreich wiederhergestellt!",
+		"password_manager_recovery_setup_title": "Wiederherstellungsschlüssel einrichten",
+		"password_manager_recovery_setup_desc": "Schützen Sie sich vor vergessenen Passwörtern. Erzeugen Sie jetzt einen Wiederherstellungsschlüssel.",
+		"password_manager_recovery_generate": "Wiederherstellungsschlüssel erzeugen",
+		"password_manager_recovery_copy": "In die Zwischenablage kopieren",
+		"password_manager_recovery_copied": "Kopiert!",
+		"password_manager_recovery_has_key": "Wiederherstellungsschlüssel ist eingerichtet"
 	},
 	"errors": {
 		"storage_access_denied": "Speicherzugriff verweigert. Bitte aktivieren Sie Cookies/Speicher.",
@@ -643,8 +668,8 @@
 		"error": "Fehler"
 	},
 	"server_error": {
-		"title": "Sichere Tools & Dienstprogramme",
-		"subtitle": "Eine Sammlung sicherer, clientseitiger Tools, die Ihre sensiblen Daten schützen. Ihre Daten verlassen niemals Ihr Gerät.",
+		"title": "System Offline",
+		"subtitle": "Wir haben Probleme, uns mit unseren Kernservices zu verbinden. Unser Team wurde benachrichtigt und arbeitet an einer Lösung.",
 		"operational": "Betriebsbereit",
 		"service_down": "Dienst ausgefallen",
 		"error_details": "Fehlerdetails",
@@ -652,8 +677,8 @@
 		"safety_button": "Zurück zur Sicherheit"
 	},
 	"error_page": {
-		"title": "Sichere Tools & Dienstprogramme",
-		"subtitle": "Eine Sammlung sicherer, clientseitiger Tools, die Ihre sensiblen Daten schützen. Ihre Daten verlassen niemals Ihr Gerät.",
+		"title": "Seite nicht gefunden",
+		"subtitle": "Hoppla! Das Snippet, das Sie suchen, existiert nicht oder ist abgelaufen.",
 		"description": "Es wurde möglicherweise gelöscht, der Link ist falsch, oder das Snippet hat sein Ablaufdatum erreicht.",
 		"go_home": "Zur Startseite",
 		"create_new": "Neues Snippet erstellen"
@@ -743,7 +768,7 @@
 		}
 	},
 	"ai_dialog": {
-		"title": "Sichere Tools & Dienstprogramme",
+		"title": "AI-Bearbeitungsassistent",
 		"description": "Transformieren Sie den ausgewählten Text. Sagen Sie der KI, was Sie tun möchten.",
 		"placeholder": "z. B. Machen Sie dies professioneller oder fassen Sie es in Stichpunkten zusammen.",
 		"cancel": "Abbrechen",
@@ -783,7 +808,7 @@
 		"draw_apply_error": "Fehler beim Anwenden"
 	},
 	"ai_writer": {
-		"title": "Sichere Tools & Dienstprogramme",
+		"title": "AI-Autor",
 		"description": "Beschreiben Sie, was Sie schreiben möchten, und die KI wird es für Sie generieren.",
 		"placeholder": "z. B. Schreibe eine React-Komponente für ein Login-Formular...",
 		"generating": "Generierung...",

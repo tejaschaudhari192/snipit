@@ -186,7 +186,32 @@
 		"password_manager_choose_file": "ਫਾਈਲ ਚੁਣੋ",
 		"password_manager_generate": "ਬਣਾਓ",
 		"password_manager_strength_label": "ਪਾਸਵਰਡ ਦੀ ਤਾਕਤ:",
-		"password_manager_delete_confirm": "ਕੀ ਤੁਸੀਂ ਯਕੀਨੀ ਤੌਰ 'ਤੇ ਇਸ ਆਈਟਮ ਨੂੰ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?"
+		"password_manager_delete_confirm": "ਕੀ ਤੁਸੀਂ ਯਕੀਨੀ ਤੌਰ 'ਤੇ ਇਸ ਆਈਟਮ ਨੂੰ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?",
+		"password_detail_created_label": "ਬਣਾਇਆ ਗਿਆ",
+		"password_detail_modified_label": "ਆਖਰੀ ਸੋਧ",
+		"password_manager_requirements": "ਪਾਸਵਰਡ ਲੋੜਾਂ",
+		"password_manager_copy_password": "ਪਾਸਵਰਡ ਕਾਪੀ ਕਰੋ",
+		"password_manager_delete": "ਹਟਾਓ",
+		"password_manager_recovery_title": "ਰਿਕਵਰੀ ਕੀ",
+		"password_manager_recovery_desc": "ਇਹ ਤੁਹਾਡੀ ਰਿਕਵਰੀ ਕੀ ਹੈ — ਇੱਕ 12-ਸ਼ਬਦਾਂ ਦਾ ਵਾਕਾਂਸ਼ ਜੋ ਤੁਹਾਡੇ ਮਾਸਟਰ ਪਾਸਵਰਡ ਨੂੰ ਭੁੱਲ ਜਾਣ 'ਤੇ ਤੁਹਾਡੇ ਵਾਲਟ ਨੂੰ ਅਨਲੌਕ ਕਰ ਸਕਦਾ ਹੈ।",
+		"password_manager_recovery_warning": "ਇਸਨੂੰ ਲਿਖੋ ਅਤੇ ਇੱਕ ਸੁਰੱਖਿਅਤ ਜਗ੍ਹਾ 'ਤੇ ਸਟੋਰ ਕਰੋ। ਜੇਕਰ ਤੁਸੀਂ ਆਪਣਾ ਮਾਸਟਰ ਪਾਸਵਰਡ ਅਤੇ ਇਹ ਰਿਕਵਰੀ ਕੀ ਦੋਵੇਂ ਗੁਆ ਦਿੰਦੇ ਹੋ, ਤਾਂ ਤੁਹਾਡਾ ਵਾਲਟ ਸਥਾਈ ਤੌਰ 'ਤੇ ਗੁੰਮ ਹੋ ਜਾਵੇਗਾ।",
+		"password_manager_recovery_saved": "ਮੈਂ ਆਪਣੀ ਰਿਕਵਰੀ ਕੀ ਸੁਰੱਖਿਅਤ ਕਰ ਲਈ ਹੈ",
+		"password_manager_recovery_skip": "ਛੱਡੋ — ਮੈਂ ਜੋਖਮ ਨੂੰ ਸਮਝਦਾ ਹਾਂ",
+		"password_manager_recovery_use_title": "ਆਪਣਾ ਵਾਲਟ ਮੁੜ ਪ੍ਰਾਪਤ ਕਰੋ",
+		"password_manager_recovery_use_desc": "ਆਪਣੇ ਵਾਲਟ ਨੂੰ ਅਨਲੌਕ ਕਰਨ ਅਤੇ ਇੱਕ ਨਵਾਂ ਮਾਸਟਰ ਪਾਸਵਰਡ ਸੈੱਟ ਕਰਨ ਲਈ ਆਪਣਾ 12-ਸ਼ਬਦਾਂ ਦਾ ਰਿਕਵਰੀ ਵਾਕਾਂਸ਼ ਦਰਜ ਕਰੋ।",
+		"password_manager_recovery_placeholder": "ਆਪਣਾ ਰਿਕਵਰੀ ਵਾਕਾਂਸ਼ ਦਰਜ ਕਰੋ...",
+		"password_manager_recovery_invalid": "ਅਵੈਧ ਰਿਕਵਰੀ ਵਾਕਾਂਸ਼। ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੇ ਸ਼ਬਦਾਂ ਦੀ ਜਾਂਚ ਕਰੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+		"password_manager_recovery_unlock": "ਵਾਲਟ ਮੁੜ ਪ੍ਰਾਪਤ ਕਰੋ",
+		"password_manager_recovery_decrypting": "ਮੁੜ ਪ੍ਰਾਪਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+		"password_manager_recovery_new_password_title": "ਨਵਾਂ ਮਾਸਟਰ ਪਾਸਵਰਡ ਸੈੱਟ ਕਰੋ",
+		"password_manager_recovery_new_password_desc": "ਤੁਹਾਡਾ ਵਾਲਟ ਮੁੜ ਪ੍ਰਾਪਤ ਕਰ ਲਿਆ ਗਿਆ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਨਵਾਂ ਮਾਸਟਰ ਪਾਸਵਰਡ ਬਣਾਓ।",
+		"password_manager_recovery_success": "ਵਾਲਟ ਸਫਲਤਾਪੂਰਵਕ ਮੁੜ ਪ੍ਰਾਪਤ ਕੀਤਾ ਗਿਆ!",
+		"password_manager_recovery_setup_title": "ਰਿਕਵਰੀ ਕੁੰਜੀ ਸੈੱਟ ਅੱਪ ਕਰੋ",
+		"password_manager_recovery_setup_desc": "ਭੁੱਲੇ ਪਾਸਵਰਡਾਂ ਤੋਂ ਆਪਣੇ ਆਪ ਨੂੰ ਬਚਾਓ। ਹੁਣ ਰਿਕਵਰੀ ਕੁੰਜੀ ਬਣਾਓ।",
+		"password_manager_recovery_generate": "ਰਿਕਵਰੀ ਕੁੰਜੀ ਬਣਾਓ",
+		"password_manager_recovery_copy": "ਕਲਿੱਪਬੋਰਡ 'ਤੇ ਕਾਪੀ ਕਰੋ",
+		"password_manager_recovery_copied": "ਕਾਪੀ ਕੀਤਾ ਗਿਆ!",
+		"password_manager_recovery_has_key": "ਰਿਕਵਰੀ ਕੁੰਜੀ ਸੈੱਟ ਅੱਪ ਹੈ"
 	},
 	"errors": {
 		"storage_access_denied": "ਸਟੋਰੇਜ ਪਹੁੰਚ ਤੋਂ ਇਨਕਾਰ ਕੀਤਾ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਕੁਕੀਜ਼ ਚਾਲੂ ਕਰੋ।",
@@ -643,8 +668,8 @@
 		"error": "ਗਲਤੀ"
 	},
 	"server_error": {
-		"title": "ਸੁਰੱਖਿਅਤ ਟੂਲ ਅਤੇ ਉਪਯੋਗਤਾਵਾਂ",
-		"subtitle": "ਤੁਹਾਡੇ ਸੰਵੇਦਨਸ਼ੀਲ ਡੇਟਾ ਨੂੰ ਸੁਰੱਖਿਅਤ ਰੱਖਣ ਲਈ ਡਿਜ਼ਾਈਨ ਕੀਤੇ ਗਏ ਟੂਲਸ।",
+		"title": "ਸਿਸਟਮ ਆਫਲਾਈਨ",
+		"subtitle": "ਸਾਨੂੰ ਸਾਡੀਆਂ ਮੁੱਖ ਸੇਵਾਵਾਂ ਨਾਲ ਜੁੜਨ ਵਿੱਚ ਮੁਸ਼ਕਲ ਆ ਰਹੀ ਹੈ। ਸਾਡੀ ਟੀਮ ਨੂੰ ਸੂਚਿਤ ਕੀਤਾ ਗਿਆ ਹੈ ਅਤੇ ਇਸਨੂੰ ਠੀਕ ਕਰਨ ਉੱਤੇ ਕੰਮ ਕਰ ਰਹੀ ਹੈ।",
 		"operational": "ਕਾਰਜਸ਼ੀਲ",
 		"service_down": "ਸੇਵਾ ਬੰਦ",
 		"error_details": "ਗਲਤੀ ਦੇ ਵੇਰਵੇ",
@@ -652,8 +677,8 @@
 		"safety_button": "ਸੁਰੱਖਿਅਤ ਥਾਂ 'ਤੇ ਵਾਪਸ ਜਾਓ"
 	},
 	"error_page": {
-		"title": "ਸੁਰੱਖਿਅਤ ਟੂਲ ਅਤੇ ਉਪਯੋਗਤਾਵਾਂ",
-		"subtitle": "ਤੁਹਾਡੇ ਸੰਵੇਦਨਸ਼ੀਲ ਡੇਟਾ ਨੂੰ ਸੁਰੱਖਿਅਤ ਰੱਖਣ ਲਈ ਡਿਜ਼ਾਈਨ ਕੀਤੇ ਗਏ ਟੂਲਸ।",
+		"title": "ਪੰਨਾ ਨਹੀਂ ਲੱਭਿਆ",
+		"subtitle": "ਓਹ! ਤੁਹਾਨੂੰ ਜੋ ਸਨਿੱਪਟ ਲੱਭ ਰਹੇ ਹੋ ਉਹ ਮੌਜੂਦ ਨਹੀਂ ਹੈ ਜਾਂ ਮਿਆਦ ਪੁੱਗ ਗਈ ਹੈ।",
 		"description": "ਇਹ ਹਟਾਇਆ ਜਾ ਸਕਦਾ ਹੈ ਜਾਂ ਲਿੰਕ ਗਲਤ ਹੋ ਸਕਦਾ ਹੈ।",
 		"go_home": "ਹੋਮ 'ਤੇ ਜਾਓ",
 		"create_new": "ਨਵਾਂ ਸਨਿੱਪਟ ਬਣਾਓ"
@@ -743,7 +768,7 @@
 		}
 	},
 	"ai_dialog": {
-		"title": "ਸੁਰੱਖਿਅਤ ਟੂਲ ਅਤੇ ਉਪਯੋਗਤਾਵਾਂ",
+		"title": "AI ਸੰਪਾਦਕ ਸਹਾਇਕ",
 		"description": "ਚੁਣਿਆ ਟੈਕਸਟ ਬਦਲੋ। AI ਨੂੰ ਦੱਸੋ।",
 		"placeholder": "ਉਦਾਹਰਨ ਲਈ: ਇਸਨੂੰ ਵਧੇਰੇ ਪੇਸ਼ੇਵਰ ਬਣਾਓ।",
 		"cancel": "ਰੱਦ ਕਰੋ",
@@ -783,7 +808,7 @@
 		"draw_apply_error": "ਲਾਗੂ ਕਰਨ ਵਿੱਚ ਗਲਤੀ"
 	},
 	"ai_writer": {
-		"title": "ਸੁਰੱਖਿਅਤ ਟੂਲ ਅਤੇ ਉਪਯੋਗਤਾਵਾਂ",
+		"title": "AI ਲੇਖਕ",
 		"description": "ਤੁਸੀਂ ਜੋ ਲਿਖਣਾ ਚਾਹੁੰਦੇ ਹੋ ਉਸਦਾ ਵਰਣਨ ਕਰੋ, AI ਲਿਖੇਗਾ।",
 		"placeholder": "ਉਦਾਹਰਨ ਲਈ: ਲੌਗਇਨ ਫਾਰਮ ਲਈ React ਭਾਗ ਲਿਖੋ...",
 		"generating": "ਲਿਖਿਆ ਜਾ ਰਿਹਾ ਹੈ...",

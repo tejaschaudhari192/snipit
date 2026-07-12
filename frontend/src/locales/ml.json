@@ -186,7 +186,32 @@
 		"password_manager_choose_file": "ഫയൽ തിരഞ്ഞെടുക്കുക",
 		"password_manager_generate": "സൃഷ്ടിക്കുക",
 		"password_manager_strength_label": "പാസ്‌വേഡ് ശക്തി:",
-		"password_manager_delete_confirm": "ഈ ഇനം ഇല്ലാതാക്കാൻ നിങ്ങൾക്ക് ഉറപ്പാണോ?"
+		"password_manager_delete_confirm": "ഈ ഇനം ഇല്ലാതാക്കാൻ നിങ്ങൾക്ക് ഉറപ്പാണോ?",
+		"password_detail_created_label": "സൃഷ്ടിച്ചത്",
+		"password_detail_modified_label": "അവസാനമായി മാറ്റിയത്",
+		"password_manager_requirements": "പാസ്‌വേഡ് ആവശ്യകതകൾ",
+		"password_manager_copy_password": "പാസ്‌വേഡ് പകർത്തുക",
+		"password_manager_delete": "ഇല്ലാതാക്കുക",
+		"password_manager_recovery_title": "റിക്കവറി കീ",
+		"password_manager_recovery_desc": "ഇതാണ് നിങ്ങളുടെ റിക്കവറി കീ — നിങ്ങളുടെ മാസ്റ്റർ പാസ്‌വേഡ് മറന്നുപോയാൽ വാൾട്ട് അൺലോക്ക് ചെയ്യാൻ സഹായിക്കുന്ന 12 വാക്കുകളുള്ള ഒരു വാചകം.",
+		"password_manager_recovery_warning": "ഇത് എവിടെയെങ്കിലും എഴുതി സൂക്ഷിക്കുക. നിങ്ങളുടെ മാസ്റ്റർ പാസ്‌വേഡും ഈ റിക്കവറി കീയും നഷ്ടപ്പെട്ടാൽ, നിങ്ങളുടെ വാൾട്ട് എന്നെന്നേക്കുമായി നഷ്ടപ്പെടും.",
+		"password_manager_recovery_saved": "ഞാൻ എന്റെ റിക്കവറി കീ സൂക്ഷിച്ചു വെച്ചിട്ടുണ്ട്",
+		"password_manager_recovery_skip": "ഒഴിവാക്കുക — ഇതിന്റെ റിസ്ക് എനിക്കറിയാം",
+		"password_manager_recovery_use_title": "നിങ്ങളുടെ വാൾട്ട് വീണ്ടെടുക്കുക",
+		"password_manager_recovery_use_desc": "നിങ്ങളുടെ വാൾട്ട് അൺലോക്ക് ചെയ്യാനും പുതിയ മാസ്റ്റർ പാസ്‌വേഡ് സജ്ਜമാക്കാനും 12 വാക്കുകളുള്ള റിക്കവറി വാചകം നൽകുക.",
+		"password_manager_recovery_placeholder": "നിങ്ങളുടെ റിക്കവറി വാചകം നൽകുക...",
+		"password_manager_recovery_invalid": "അസാധുവായ വീണ്ടെടുക്കൽ വാക്യം. ദയവായി നിങ്ങളുടെ വാക്കുകൾ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.",
+		"password_manager_recovery_unlock": "വോൾട്ട് വീണ്ടെടുക്കുക",
+		"password_manager_recovery_decrypting": "വീണ്ടെടുക്കുന്നു...",
+		"password_manager_recovery_new_password_title": "പുതിയ മാസ്റ്റർ പാസ്‌വേഡ് സജ്ജീകരിക്കുക",
+		"password_manager_recovery_new_password_desc": "നിങ്ങളുടെ വോൾട്ട് വീണ്ടെടുത്തു. ദയവായി പുതിയ മാസ്റ്റർ പാസ്‌വേഡ് സൃഷ്ടിക്കുക.",
+		"password_manager_recovery_success": "വോൾട്ട് വിജയകരമായി വീണ്ടെടുത്തു!",
+		"password_manager_recovery_setup_title": "വീണ്ടെടുക്കൽ കീ സജ്ജീകരിക്കുക",
+		"password_manager_recovery_setup_desc": "മറന്ന പാസ്‌വേഡുകളിൽ നിന്ന് സ്വയം സംരക്ഷിക്കുക. ഇപ്പോൾ വീണ്ടെടുക്കൽ കീ സൃഷ്ടിക്കുക.",
+		"password_manager_recovery_generate": "വീണ്ടെടുക്കൽ കീ സൃഷ്ടിക്കുക",
+		"password_manager_recovery_copy": "ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തുക",
+		"password_manager_recovery_copied": "പകർത്തി!",
+		"password_manager_recovery_has_key": "വീണ്ടെടുക്കൽ കീ സജ്ജമാണ്"
 	},
 	"errors": {
 		"storage_access_denied": "സംഭരണ ആക്സസ് നിഷേധിച്ചു. കുക്കികൾ പ്രവർത്തനക്ഷമമാക്കുക.",
@@ -643,8 +668,8 @@
 		"error": "പിഴവ്"
 	},
 	"server_error": {
-		"title": "സുരക്ഷിത ടൂളുകൾ & യൂട്ടിലിറ്റികൾ",
-		"subtitle": "നിങ്ങളുടെ ഡാറ്റ സുരക്ഷിതമായി സൂക്ഷിക്കാൻ രൂപകൽപ്പന ചെയ്തിട്ടുള്ളവ.",
+		"title": "സിസ്റ്റം ഓഫ്ലൈൻ",
+		"subtitle": "ഞങ്ങളുടെ പ്രധാന സേവനങ്ങളുമായി ബന്ധിപ്പിക്കാൻ ബുദ്ധിമുട്ടുണ്ട്. ഞങ്ങളുടെ ടീമിനെ അറിയിച്ചിട്ടുണ്ട് കൂടാതെ അവർ പരിഹരിക്കാൻ പ്രവർത്തിക്കുന്നു.",
 		"operational": "പ്രവർത്തനക്ഷമം",
 		"service_down": "പ്രവർത്തനരഹിതം",
 		"error_details": "തകരാറിന്റെ വിവരങ്ങൾ",
@@ -652,8 +677,8 @@
 		"safety_button": "സുരക്ഷിത സ്ഥാനത്തേക്ക് മടങ്ങുക"
 	},
 	"error_page": {
-		"title": "സുരക്ഷിത ടൂളുകൾ & യൂട്ടിലിറ്റികൾ",
-		"subtitle": "നിങ്ങളുടെ ഡാറ്റ സുരക്ഷിതമായി സൂക്ഷിക്കാൻ രൂപകൽപ്പന ചെയ്തിട്ടുള്ളവ.",
+		"title": "പേജ് കണ്ടെത്താനായില്ല",
+		"subtitle": "ക്ഷമിക്കണം! നിങ്ങൾ തിരയുന്ന സ്നിപ്പെറ്റ് നിലവിലില്ല അല്ലെങ്കിൽ കാലഹരണപ്പെട്ടു.",
 		"description": "ഇത് ഒഴിവാക്കിയതാകാം അല്ലെങ്കിൽ ലിങ്ക് തെറ്റായതാകാം.",
 		"go_home": "ഹോം പേജിലേക്ക് പോകുക",
 		"create_new": "പുതിയ സ്നിപ്പെറ്റ് നിർമ്മിക്കുക"
@@ -743,7 +768,7 @@
 		}
 	},
 	"ai_dialog": {
-		"title": "സുരക്ഷിത ടൂളുകൾ & യൂട്ടിലിറ്റികൾ",
+		"title": "AI എഡിറ്റർ അസിസ്റ്റന്റ്",
 		"description": "തിരഞ്ഞെടുത്ത വരികൾ മാറ്റുക. AI-നോട് പറയുക.",
 		"placeholder": "ഉദാ. കൂടുതൽ പ്രൊഫഷണൽ ആക്കുക.",
 		"cancel": "റദ്ദാക്കുക",
@@ -783,7 +808,7 @@
 		"draw_apply_error": "പ്രയോഗിക്കുന്നതിൽ പിശക്"
 	},
 	"ai_writer": {
-		"title": "സുരക്ഷിത ടൂളുകൾ & യൂട്ടിലിറ്റികൾ",
+		"title": "AI എഴുത്തുകാരൻ",
 		"description": "എഴുതേണ്ടത് എന്തെന്ന് വിവരിക്കുക, AI നിർമ്മിക്കും.",
 		"placeholder": "ഉദാ. ലോഗിൻ ഫോമിനുള്ള React കോഡ്...",
 		"generating": "നിർമ്മിക്കുന്നു...",

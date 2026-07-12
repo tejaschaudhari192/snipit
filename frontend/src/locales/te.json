@@ -186,7 +186,32 @@
 		"password_manager_choose_file": "ఫైల్‌ను ఎంచుకోండి",
 		"password_manager_generate": "సృష్టించండి",
 		"password_manager_strength_label": "పాస్‌వర్డ్ బలం:",
-		"password_manager_delete_confirm": "మీరు ఖచ్చితంగా ఈ అంశాన్ని తొలగించాలనుకుంటున్నారా?"
+		"password_manager_delete_confirm": "మీరు ఖచ్చితంగా ఈ అంశాన్ని తొలగించాలనుకుంటున్నారా?",
+		"password_detail_created_label": "సృష్టించబడింది",
+		"password_detail_modified_label": "చివరిగా మార్చబడింది",
+		"password_manager_requirements": "పాస్వర్డ్ అవసరాలు",
+		"password_manager_copy_password": "పాస్వర్డ్ కాపీ చేయండి",
+		"password_manager_delete": "తొలగించు",
+		"password_manager_recovery_title": "రికవరీ కీ",
+		"password_manager_recovery_desc": "ఇది మీ రికవరీ కీ — 12‑పదాల వాక్యం, మీరు మీ మాస్టర్ పాస్‌వర్డ్‌ను మర్చిపోయినప్పుడు మీ వాల్ట్‌ను అన్‌లాక్ చేయగలదు.",
+		"password_manager_recovery_warning": "దీనిని రాసి సురక్షిత స్థలంలో ఉంచండి. మీరు మీ మాస్టర్ పాస్‌వర్డ్ మరియు రికవరీ కీ రెండింటిని కోల్పోతే, మీ వాల్ట్ శాశ్వతంగా కోల్పోతారు.",
+		"password_manager_recovery_saved": "నేను నా రికవరీ కీని సేవ్ చేసాను",
+		"password_manager_recovery_skip": "వదిలేయండి — నేను ప్రమాదాన్ని అర్థం చేసుకున్నాను",
+		"password_manager_recovery_use_title": "మీ వాల్ట్‌ను రికవర్ చేయండి",
+		"password_manager_recovery_use_desc": "మీ 12‑పదాల రికవరీ ఫ్రేజ్‌ను నమోదు చేసి మీ వాల్ట్‌ను అన్‌లాక్ చేసి కొత్త మాస్టర్ పాస్‌వర్డ్‌ను సెట్ చేయండి.",
+		"password_manager_recovery_placeholder": "మీ రికవరీ ఫ్రేజ్‌ను నమోదు చేయండి...",
+		"password_manager_recovery_invalid": "చెల్లని రికవరీ ఫ్రేజ్. దయచేసి మీ పదాలను తనిఖీ చేసి మళ్లీ ప్రయత్నించండి.",
+		"password_manager_recovery_unlock": "వాల్ట్‌ను రికవర్ చేయండి",
+		"password_manager_recovery_decrypting": "రికవర్ అవుతోంది...",
+		"password_manager_recovery_new_password_title": "కొత్త మాస్టర్ పాస్‌వర్డ్ సెట్ చేయండి",
+		"password_manager_recovery_new_password_desc": "మీ వాల్ట్ రికవర్ అయింది. దయచేసి కొత్త మాస్టర్ పాస్‌వర్డ్‌ను సృష్టించండి.",
+		"password_manager_recovery_success": "వాల్ట్ విజయవంతంగా రికవర్ అయింది!",
+		"password_manager_recovery_setup_title": "రికవరీ కీ సెటప్ చేయండి",
+		"password_manager_recovery_setup_desc": "మర్చిపోయిన పాస్‌వర్డ్‌లకు 대비 చేయండి. ఇప్పుడు రికవరీ కీని జనరేట్ చేయండి.",
+		"password_manager_recovery_generate": "రికవరీ కీని సృష్టించండి",
+		"password_manager_recovery_copy": "క్లిప్‌బోర్డ్‌కు నకలు చేయి",
+		"password_manager_recovery_copied": "నకలు చేయబడింది!",
+		"password_manager_recovery_has_key": "రికవరీ కీ అమర్చబడింది"
 	},
 	"errors": {
 		"storage_access_denied": "నిల్వ ప్రాప్యత నిరాకరించబడింది. దయచేసి కుక్కీలను ప్రారంభించండి.",
@@ -643,8 +668,8 @@
 		"error": "లోపం"
 	},
 	"server_error": {
-		"title": "సురక్షిత సాధనాలు మరియు యుటిలిటీలు",
-		"subtitle": "మీ డేటాను సురక్షితంగా ఉంచడానికి రూపొందించబడిన సాధనాలు.",
+		"title": "సిస్టమ్ ఆఫ్‌లైన్",
+		"subtitle": "మా కోర్ సేవలకు కనెక్ట్ అవ్వడంలో ఇబ్బంది ఉంది. మా బృందానికి తెలియజేయబడింది మరియు పరిష్కారంపై పని చేస్తోంది.",
 		"operational": "కార్యాచరణలో ఉంది",
 		"service_down": "సేవ నిలిచిపోయింది",
 		"error_details": "లోపం వివరాలు",
@@ -652,8 +677,8 @@
 		"safety_button": "భద్రతకు తిరిగి వెళ్ళు"
 	},
 	"error_page": {
-		"title": "సురక్షిత సాధనాలు మరియు యుటిలిటీలు",
-		"subtitle": "మీ డేటాను సురక్షితంగా ఉంచడానికి రూపొందించబడిన సాధనాలు.",
+		"title": "పేజీ కనుగొనబడలేదు",
+		"subtitle": "అయ్యో! మీరు వెతుకుతున్న స్నిప్పెట్ లేదా గడువు ముగిసింది.",
 		"description": "ఇది తొలగించబడి ఉండవచ్చు లేదా లింక్ తప్పు కావచ్చు.",
 		"go_home": "హోమ్‌కి వెళ్ళు",
 		"create_new": "కొత్త స్నిప్పెట్‌ని సృష్టించండి"
@@ -743,7 +768,7 @@
 		}
 	},
 	"ai_dialog": {
-		"title": "సురక్షిత సాధనాలు మరియు యుటిలిటీలు",
+		"title": "AI ఎడిటర్ అసిస్టెంట్",
 		"description": "ఎంచుకున్న వచనాన్ని మార్చండి. AIకి చెప్పండి.",
 		"placeholder": "ఉదా. దీనిని మరింత వృత్తిపరంగా మార్చండి.",
 		"cancel": "రద్దు చేయి",
@@ -783,7 +808,7 @@
 		"draw_apply_error": "అమలు చేయడంలో లోపం"
 	},
 	"ai_writer": {
-		"title": "సురక్షిత సాధనాలు మరియు యుటిలిటీలు",
+		"title": "AI రచయిత",
 		"description": "రాయాలనుకుంటున్న దాన్ని వివరించండి, AI దాన్ని సృష్టిస్తుంది.",
 		"placeholder": "ఉదా. లాగిన్ ఫారమ్ కోసం React భాగాలను రాయండి...",
 		"generating": "సృష్టించబడుతోంది...",

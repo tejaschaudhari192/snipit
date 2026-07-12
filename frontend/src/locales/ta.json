@@ -186,7 +186,32 @@
 		"password_manager_choose_file": "கோப்பைத் தேர்ந்தெடு",
 		"password_manager_generate": "உருவாக்கு",
 		"password_manager_strength_label": "கடவுச்சொல் வலிமை:",
-		"password_manager_delete_confirm": "இந்த உருப்படியை நிச்சயமாக நீக்க வேண்டுமா?"
+		"password_manager_delete_confirm": "இந்த உருப்படியை நிச்சயமாக நீக்க வேண்டுமா?",
+		"password_detail_created_label": "உருவாக்கப்பட்டது",
+		"password_detail_modified_label": "கடைசியாக மாற்றப்பட்டது",
+		"password_manager_requirements": "கடவுச்சொல் தேவைகள்",
+		"password_manager_copy_password": "கடவுச்சொல் நகலெடுக்கவும்",
+		"password_manager_delete": "அழிக்க",
+		"password_manager_recovery_title": "மீட்பு விசை",
+		"password_manager_recovery_desc": "இது உங்கள் மீட்பு விசை — உங்கள் முதன்மை கடவுச்சொல்லை மறந்தால், உங்கள் வால்ட்டைத் திறக்கக்கூடிய 12 சொற்கள் கொண்ட சொற்றொடர்.",
+		"password_manager_recovery_warning": "இதை எழுதி பாதுகாப்பான இடத்தில் வைக்கவும். முதன்மை கடவுச்சொல் மற்றும் இந்த மீட்பு விசை இரண்டையும் நீங்கள் இழந்தால், உங்கள் வால்ட் நிரந்தரமாக இழக்கப்படும்.",
+		"password_manager_recovery_saved": "எனது மீட்பு விசையை நான் சேமித்துவிட்டேன்",
+		"password_manager_recovery_skip": "தவிர் — அபாயத்தை நான் புரிந்துகொள்கிறேன்",
+		"password_manager_recovery_use_title": "வால்ட்டை மீட்டெடுக்கவும்",
+		"password_manager_recovery_use_desc": "வால்ட்டைத் திறந்து புதிய முதன்மை கடவுச்சொல்லை அமைக்க 12 சொற்கள் கொண்ட மீட்புச் சொற்றொடரை உள்ளிடவும்.",
+		"password_manager_recovery_placeholder": "மீட்புச் சொற்றொடரை உள்ளிடவும்...",
+		"password_manager_recovery_invalid": "தவறான மீட்புச் சொற்றொடர். சொற்களைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.",
+		"password_manager_recovery_unlock": "வால்ட்டை மீட்டெடு",
+		"password_manager_recovery_decrypting": "மீட்டெடுக்கிறது...",
+		"password_manager_recovery_new_password_title": "புதிய மாஸ்டர் கடவுச்சொல்லை அமைக்கவும்",
+		"password_manager_recovery_new_password_desc": "உங்கள் வால்ட் மீட்டெடுக்கப்பட்டது. தயவுசெய்து புதிய மாஸ்டர் கடவுச்சொல்லை உருவாக்கவும்.",
+		"password_manager_recovery_success": "வால்ட் வெற்றிகரமாக மீட்டெடுக்கப்பட்டது!",
+		"password_manager_recovery_setup_title": "மீட்பு விசையை அமைக்கவும்",
+		"password_manager_recovery_setup_desc": "மறந்துபோன கடவுச்சொற்களிலிருந்து உங்களைப் பாதுகாத்துக் கொள்ளுங்கள். இப்போது மீட்பு விசையை உருவாக்கவும்.",
+		"password_manager_recovery_generate": "மீட்பு விசையை உருவாக்கவும்",
+		"password_manager_recovery_copy": "கிளிப்போர்டுக்கு நகலெடுக்கவும்",
+		"password_manager_recovery_copied": "நகலெடுக்கப்பட்டது!",
+		"password_manager_recovery_has_key": "மீட்பு விசை அமைக்கப்பட்டுள்ளது"
 	},
 	"errors": {
 		"storage_access_denied": "சேமிப்பக அணுகல் மறுக்கப்பட்டது. தயவுசெய்து குக்கீகள்/சேமிப்பகத்தை இயக்கவும்.",
@@ -643,8 +668,8 @@
 		"error": "பிழை"
 	},
 	"server_error": {
-		"title": "பாதுகாப்பான கருவிகள் மற்றும் பயன்பாடுகள்",
-		"subtitle": "உங்கள் தரவைப் பாதுகாப்பாக வைத்திருக்க வடிவமைக்கப்பட்ட கருவிகள்.",
+		"title": "சிஸ்டம் ஆஃப்லைன்",
+		"subtitle": "எங்கள் முக்கிய சேவைகளுடன் இணைக்க சிரமம் ஏற்படுகிறது. எங்கள் குழுவிற்கு தெரிவிக்கப்பட்டது மற்றும் அதை சரிசெய்ய வேலை செய்கிறது.",
 		"operational": "செயல்பாட்டில் உள்ளது",
 		"service_down": "சேவை முடங்கியது",
 		"error_details": "பிழை விவரங்கள்",
@@ -652,8 +677,8 @@
 		"safety_button": "பாதுகாப்பான இடத்திற்குச் செல்"
 	},
 	"error_page": {
-		"title": "பாதுகாப்பான கருவிகள் மற்றும் பயன்பாடுகள்",
-		"subtitle": "உங்கள் தரவைப் பாதுகாப்பாக வைத்திருக்க வடிவமைக்கப்பட்ட கருவிகள்.",
+		"title": "பக்கம் கிடைக்கவில்லை",
+		"subtitle": "ஐயோ! நீங்கள் தேடும் துணுக்கு இல்லை அல்லது காலாவதியாகிவிட்டது.",
 		"description": "இது நீக்கப்பட்டிருக்கலாம் அல்லது இணைப்பு தவறாக இருக்கலாம்.",
 		"go_home": "முகப்புக்குச் செல்",
 		"create_new": "புதிய துணுக்கை உருவாக்கு"
@@ -743,7 +768,7 @@
 		}
 	},
 	"ai_dialog": {
-		"title": "பாதுகாப்பான கருவிகள் மற்றும் பயன்பாடுகள்",
+		"title": "AI எடிட்டர் அசிஸ்டென்ட்",
 		"description": "தேர்ந்தெடுக்கப்பட்ட உரையை மாற்றவும். AI இடம் கூறவும்.",
 		"placeholder": "எ.கா. இதை மேலும் தொழில்முறையாக மாற்றவும்.",
 		"cancel": "ரத்துசெய்",
@@ -783,7 +808,7 @@
 		"draw_apply_error": "செயல்படுத்துவதில் பிழை"
 	},
 	"ai_writer": {
-		"title": "பாதுகாப்பான கருவிகள் மற்றும் பயன்பாடுகள்",
+		"title": "AI எழுத்தாளர்",
 		"description": "எழுத விரும்புவதை விவரிக்கவும், AI அதை உருவாக்கும்.",
 		"placeholder": "எ.கா. உள்நுழைவு படிவத்திற்கான React கூறுகளை எழுதுக...",
 		"generating": "உருவாக்கப்படுகிறது...",

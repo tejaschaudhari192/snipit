@@ -186,7 +186,32 @@
 		"password_manager_choose_file": "ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ",
 		"password_manager_generate": "ರಚಿಸಿ",
 		"password_manager_strength_label": "ಪಾಸ್‌ವರ್ಡ್ ಸಾಮರ್ಥ್ಯ:",
-		"password_manager_delete_confirm": "ಈ ಐಟಂ ಅನ್ನು ಅಳಿಸಲು ನೀವು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?"
+		"password_manager_delete_confirm": "ಈ ಐಟಂ ಅನ್ನು ಅಳಿಸಲು ನೀವು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?",
+		"password_detail_created_label": "ಸೃಷ್ಟಿಸಲಾಗಿದೆ",
+		"password_detail_modified_label": "ಕೊನೆಯ ಬದಲಾವಣೆ",
+		"password_manager_requirements": "ಪಾಸ್ವರ್ಡ್ ಅವಶ್ಯಕತೆಗಳು",
+		"password_manager_copy_password": "ಪಾಸ್ವರ್ಡ್ ನಕಲಿಸಿ",
+		"password_manager_delete": "ಅಳಿಸಿ",
+		"password_manager_recovery_title": "ರಿಕವರಿ ಕೀ",
+		"password_manager_recovery_desc": "ಇದು ನಿಮ್ಮ ರಿಕವರಿ ಕೀಲಿ — ನಿಮ್ಮ ಮಾಸ್ಟರ್ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ನೀವು ಮರೆತರೆ ನಿಮ್ಮ ವಾಲ್ಟ್ ಅನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಬಹುದಾದ 12-ಪದಗಳ ನುಡಿಗಟ್ಟು.",
+		"password_manager_recovery_warning": "ಇದನ್ನು ಬರೆದಿಟ್ಟುಕೊಳ್ಳಿ ಮತ್ತು ಸುರಕ್ಷಿತ ಸ್ಥಳದಲ್ಲಿ ಸಂಗ್ರಹಿಸಿ. ನಿಮ್ಮ ಮಾಸ್ಟರ್ ಪಾಸ್‌ವರ್ಡ್ ಮತ್ತು ಈ ರಿಕವರಿ ಕೀ ಎರಡನ್ನೂ ನೀವು ಕಳೆದುಕೊಂಡರೆ, ನಿಮ್ಮ ವಾಲ್ಟ್ ಶಾಶ್ವತವಾಗಿ ಕಳೆದುಹೋಗುತ್ತದೆ.",
+		"password_manager_recovery_saved": "ನಾನು ನನ್ನ ರಿಕವರಿ ಕೀಲಿಯನ್ನು ಉಳಿಸಿದ್ದೇನೆ",
+		"password_manager_recovery_skip": "ಹೋಗಲಿ ಬಿಡಿ — ನಾನು ಅಪಾಯವನ್ನು ಅರ್ಥಮಾಡಿಕೊಂಡಿದ್ದೇನೆ",
+		"password_manager_recovery_use_title": "ನಿಮ್ಮ ವಾಲ್ಟ್ ಅನ್ನು ಮರುಪಡೆಯಿರಿ",
+		"password_manager_recovery_use_desc": "ನಿಮ್ಮ ವಾಲ್ಟ್ ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಮತ್ತು ಹೊಸ ಮಾಸ್ಟರ್ ಪಾಸ್‌ವರ್ಡ್ ಹೊಂದಿಸಲು ನಿಮ್ಮ 12-ಪದಗಳ ರಿಕವರಿ ನುಡಿಗಟ್ಟನ್ನು ನಮೂದಿಸಿ.",
+		"password_manager_recovery_placeholder": "ನಿಮ್ಮ ರಿಕವರಿ ನುಡಿಗಟ್ಟನ್ನು ನಮੂದಿಸಿ...",
+		"password_manager_recovery_invalid": "ಅಮಾನ್ಯವಾದ ರಿಕವರಿ ನುಡಿಗಟ್ಟು. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಪದಗಳನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಮತ್ತೊಮ್ಮೆ ಪ್ರಯತ್ನಿಸಿ.",
+		"password_manager_recovery_unlock": "ವಾಲ್ಟ್ ಮರುಪಡೆಯಿರಿ",
+		"password_manager_recovery_decrypting": "ಮರುಪಡೆಯಲಾಗುತ್ತಿದೆ...",
+		"password_manager_recovery_new_password_title": "ಹೊಸ ಮಾಸ್ಟರ್ ಪಾಸ್‌ವರ್ಡ್ ಹೊಂದಿಸಿ",
+		"password_manager_recovery_new_password_desc": "ನಿಮ್ಮ ವಾಲ್ಟ್ ಅನ್ನು ಮರುಪಡೆಯಲಾಗಿದೆ. ದಯವಿಟ್ಟು ಹೊಸ ಮಾಸ್ಟರ್ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ರಚಿಸಿ.",
+		"password_manager_recovery_success": "ವಾಲ್ಟ್ ಯಶಸ್ವಿಯಾಗಿ ಮರುಪಡೆಯಲಾಗಿದೆ!",
+		"password_manager_recovery_setup_title": "ರಿಕವರಿ ಕೀ ಹೊಂದಿಸಿ",
+		"password_manager_recovery_setup_desc": "ಮರೆತುಹೋದ ಪಾಸ್‌ವರ್ಡ್‌ಗಳಿಂದ ನಿಮ್ಮನ್ನು ರಕ್ಷಿಸಿಕೊಳ್ಳಿ. ಈಗಲೇ ರಿಕವರಿ ಕೀಲಿಯನ್ನು ಜನರೇಟ್ ಮಾಡಿ.",
+		"password_manager_recovery_generate": "ರಿಕವರಿ ಕೀಲಿ ಜನರೇಟ್ ಮಾಡಿ",
+		"password_manager_recovery_copy": "ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಿ",
+		"password_manager_recovery_copied": "ನಕಲಿಸಲಾಗಿದೆ!",
+		"password_manager_recovery_has_key": "ರಿಕವರಿ ಕೀ ಹೊಂದಿಸಲಾಗಿದೆ"
 	},
 	"errors": {
 		"storage_access_denied": "ಶೇಖರಣಾ ಪ್ರವೇಶವನ್ನು ನಿರಾಕರಿಸಲಾಗಿದೆ. ಕುಕೀಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ.",
@@ -643,8 +668,8 @@
 		"error": "ದೋಷ"
 	},
 	"server_error": {
-		"title": "ಸುರಕ್ಷಿತ ಪರಿಕರಗಳು ಮತ್ತು ಉಪಯುಕ್ತತೆಗಳು",
-		"subtitle": "ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಸುರಕ್ಷಿತವಾಗಿರಿಸಲು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ.",
+		"title": "ಸಿಸ್ಟಮ್ ಆಫ್‌ಲೈನ್",
+		"subtitle": "ನಮ್ಮ ಮುಖ್ಯ ಸೇವೆಗಳಿಗೆ ಸಂಪರ್ಕಿಸಲು ತೊಂದರೆಯಾಗುತ್ತಿದೆ. ನಮ್ಮ ತಂಡಕ್ಕೆ ತಿಳಿಸಲಾಗಿದೆ ಮತ್ತು ಅದನ್ನು ಸರಿಪಡಿಸಲು ಕೆಲಸ ಮಾಡುತ್ತಿದೆ.",
 		"operational": "ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿದೆ",
 		"service_down": "ಸೇವೆ ಸ್ಥಗಿತಗೊಂಡಿದೆ",
 		"error_details": "ದೋಷದ ವಿವರಗಳು",
@@ -652,8 +677,8 @@
 		"safety_button": "ಸುರಕ್ಷಿತ ಸ್ಥಾನಕ್ಕೆ ಹಿಂತಿರುಗಿ"
 	},
 	"error_page": {
-		"title": "ಸುರಕ್ಷಿತ ಪರಿಕರಗಳು ಮತ್ತು ಉಪಯುಕ್ತತೆಗಳು",
-		"subtitle": "ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಸುರಕ್ಷಿತವಾಗಿರಿಸಲು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ.",
+		"title": "ಪುಟ ಕಂಡುಬಂದಿಲ್ಲ",
+		"subtitle": "ಅಯ್ಯೋ! ನೀವು ಹುಡುಕುತ್ತಿರುವ ಸ್ನಿಪ್ಪೆಟ್ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ ಅಥವಾ ಮುಕ್ತಾಯಗೊಂಡಿದೆ.",
 		"description": "ಅದನ್ನು ಅಳಿಸಿರಬಹುದು ಅಥವಾ ಲಿಂಕ್ ತಪ್ಪಾಗಿರಬಹುದು.",
 		"go_home": "ಹೋಮ್‌ಗೆ ಹೋಗಿ",
 		"create_new": "ಹೊಸ ಸ್ನಿಪ್ಪೆಟ್ ರಚಿಸಿ"
@@ -743,7 +768,7 @@
 		}
 	},
 	"ai_dialog": {
-		"title": "ಸುರಕ್ಷಿತ ಪರಿಕರಗಳು ಮತ್ತು ಉಪಯುಕ್ತತೆಗಳು",
+		"title": "AI ಸಂಪಾದಕ ಸಹಾಯಕ",
 		"description": "ಆಯ್ಕೆ ಮಾಡಿದ ಪಠ್ಯವನ್ನು ಬದಲಾಯಿಸಿ. AIಗೆ ತಿಳಿಸಿ.",
 		"placeholder": "ಉದಾ. ಇದನ್ನು ಹೆಚ್ಚು ವೃತ್ತಿಪರಗೊಳಿಸಿ.",
 		"cancel": "ರದ್ದುಗೊಳಿಸಿ",
@@ -783,7 +808,7 @@
 		"draw_apply_error": "ಅನ್ವಯಿಸುವಲ್ಲಿ ದೋಷ"
 	},
 	"ai_writer": {
-		"title": "ಸುರಕ್ಷಿತ ಪರಿಕರಗಳು ಮತ್ತು ಉಪಯುಕ್ತತೆಗಳು",
+		"title": "AI ಬರಹಗಾರ",
 		"description": "ಬರೆಯಲು ಬಯಸುವುದನ್ನು ವಿವರಿಸಿ, AI ಅದನ್ನು ಸೃಷ್ಟಿಸುತ್ತದೆ.",
 		"placeholder": "ಉದಾ. ಲಾಗಿನ್ ಫಾರ್ಮ್‌ಗಾಗಿ React ಘಟಕ ಬರೆಯಿರಿ...",
 		"generating": "ರಚಿಸಲಾಗುತ್ತಿದೆ...",

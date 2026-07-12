@@ -186,7 +186,32 @@
 		"password_manager_choose_file": "फ़ाइल चुनें",
 		"password_manager_generate": "उत्पन्न करें",
 		"password_manager_strength_label": "पासवर्ड की ताकत:",
-		"password_manager_delete_confirm": "क्या आप वाकई इस आइटम को हटाना चाहते हैं?"
+		"password_manager_delete_confirm": "क्या आप वाकई इस आइटम को हटाना चाहते हैं?",
+		"password_detail_created_label": "बनाया गया",
+		"password_detail_modified_label": "अंतिम संशोधित",
+		"password_manager_requirements": "पासवर्ड आवश्यकताएँ",
+		"password_manager_copy_password": "पासवर्ड कॉपी करें",
+		"password_manager_delete": "हटाएँ",
+		"password_manager_recovery_title": "रिकवरी कुंजी",
+		"password_manager_recovery_desc": "यह आपकी रिकवरी कुंजी है — एक 12‑शब्दों का वाक्यांश जो आपके मास्टर पासवर्ड को भूल जाने पर आपके वॉल्ट को अनलॉक कर सकता है।",
+		"password_manager_recovery_warning": "इसे लिख लें और सुरक्षित स्थान पर रखें। यदि आप अपना मास्टर पासवर्ड और रिकवरी कुंजी दोनों खो देते हैं, तो आपका वॉल्ट स्थायी रूप से खो जाएगा।",
+		"password_manager_recovery_saved": "मैंने अपनी रिकवरी कुंजी सहेजी है",
+		"password_manager_recovery_skip": "छोड़ें — मैं जोखिम को समझता हूँ",
+		"password_manager_recovery_use_title": "अपना वॉल्ट पुनर्प्राप्त करें",
+		"password_manager_recovery_use_desc": "अपना 12‑शब्दों का रिकवरी वाक्यांश दर्ज करें ताकि आपका वॉल्ट अनलॉक हो सके और नया मास्टर पासवर्ड सेट किया जा सके।",
+		"password_manager_recovery_placeholder": "अपना रिकवरी वाक्यांश दर्ज करें...",
+		"password_manager_recovery_invalid": "अमान्य रिकवरी वाक्यांश। कृपया अपने शब्दों की जाँच करें और पुनः प्रयास करें।",
+		"password_manager_recovery_unlock": "वॉल्ट पुनर्प्राप्त करें",
+		"password_manager_recovery_decrypting": "पुनर्प्राप्त किया जा रहा है...",
+		"password_manager_recovery_new_password_title": "नया मास्टर पासवर्ड सेट करें",
+		"password_manager_recovery_new_password_desc": "आपका वॉल्ट पुनर्प्राप्त हो गया है। कृपया नया मास्टर पासवर्ड बनाएं।",
+		"password_manager_recovery_success": "वॉल्ट सफलतापूर्वक पुनर्प्राप्त हुआ!",
+		"password_manager_recovery_setup_title": "रिकवरी कुंजी सेट करें",
+		"password_manager_recovery_setup_desc": "भूल गए पासवर्ड से बचने के लिए स्वयं को सुरक्षित रखें। अभी रिकवरी कुंजी उत्पन्न करें।",
+		"password_manager_recovery_generate": "रिकवरी कुंजी उत्पन्न करें",
+		"password_manager_recovery_copy": "क्लिपबोर्ड पर कॉपी करें",
+		"password_manager_recovery_copied": "कॉपी किया गया!",
+		"password_manager_recovery_has_key": "रिकवरी कुंजी सेट है"
 	},
 	"errors": {
 		"storage_access_denied": "स्टोरेज एक्सेस अस्वीकृत। कृपया कुकीज/स्टोरेज सक्षम करें।",
@@ -643,8 +668,8 @@
 		"error": "त्रुटि"
 	},
 	"server_error": {
-		"title": "सुरक्षित उपकरण और उपयोगिताएँ",
-		"subtitle": "आपके संवेदनशील डेटा को सुरक्षित रखने के लिए डिज़ाइन किए गए सुरक्षित, क्लाइंट-साइड टूल का संग्रह। आपका डेटा कभी भी आपके डिवाइस से बाहर नहीं जाता है।",
+		"title": "सिस्टम ऑफ़लाइन",
+		"subtitle": "हमें हमारी मुख्य सेवाओं से जुड़ने में परेशानी हो रही है। हमारी टीम को सूचित कर दिया गया है और वह इसे ठीक करने पर काम कर रही है।",
 		"operational": "परिचालन",
 		"service_down": "सेवा बंद",
 		"error_details": "त्रुटि विवरण",
@@ -652,8 +677,8 @@
 		"safety_button": "सुरक्षा पर वापस जाएं"
 	},
 	"error_page": {
-		"title": "सुरक्षित उपकरण और उपयोगिताएँ",
-		"subtitle": "आपके संवेदनशील डेटा को सुरक्षित रखने के लिए डिज़ाइन किए गए सुरक्षित, क्लाइंट-साइड टूल का संग्रह। आपका डेटा कभी भी आपके डिवाइस से बाहर नहीं जाता है।",
+		"title": "पृष्ठ नहीं मिला",
+		"subtitle": "ओह! आप जिस स्निपेट की तलाश कर रहे हैं वह मौजूद नहीं है या समाप्त हो गया है।",
 		"description": "इसे हटाया जा सकता है, लिंक गलत हो सकता है, या स्निपेट अपनी समाप्ति तिथि तक पहुँच सकता है।",
 		"go_home": "होम पर जाएं",
 		"create_new": "नया स्निपेट बनाएं"
@@ -743,7 +768,7 @@
 		}
 	},
 	"ai_dialog": {
-		"title": "सुरक्षित उपकरण और उपयोगिताएँ",
+		"title": "AI संपादक सहायक",
 		"description": "चयनित टेक्स्ट को रूपांतरित करें। AI को बताएं कि आप क्या करना चाहते हैं।",
 		"placeholder": "उदा. इसे और अधिक प्रोफेशनल बनाएं, या मुख्य बिंदुओं में सारांशित करें।",
 		"cancel": "रद्द करें",
@@ -783,7 +808,7 @@
 		"draw_apply_error": "लागू करने में त्रुटि"
 	},
 	"ai_writer": {
-		"title": "सुरक्षित उपकरण और उपयोगिताएँ",
+		"title": "AI लेखक",
 		"description": "बताएं कि आप क्या लिखना चाहते हैं, और AI आपके लिए इसे तैयार कर देगा।",
 		"placeholder": "जैसे: लॉगिन फॉर्म के लिए React कंपोनेंट लिखें...",
 		"generating": "तैयार किया जा रहा है...",
