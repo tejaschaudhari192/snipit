@@ -53,11 +53,16 @@ export const usePasteSync = (
 		isEditRef.current = isEdit;
 	}, [onRemoteUpdate, isEdit]);
 
-	const username = user?.username;
+	const userRef = useRef(user);
+	useEffect(() => {
+		userRef.current = user;
+	}, [user]);
+
+	const userId = user?._id;
 	const hasPaste = !!paste;
 
 	useEffect(() => {
-		if (loading || !id || !paste) return;
+		if (loading || !id || !hasPaste) return;
 
 		const socketUrl = CONFIG.apiBaseUrl
 			? CONFIG.apiBaseUrl.replace(/\/api(\/v\d+)?\/?$/, "")
@@ -70,7 +75,7 @@ export const usePasteSync = (
 		const cleanup = setupSocketHandlers({
 			socket: s,
 			id,
-			user,
+			user: userRef.current,
 			isEditRef,
 			setActiveUsers,
 			setRemoteCursors,
@@ -83,7 +88,7 @@ export const usePasteSync = (
 			cleanup();
 			socketRef.current = null;
 		};
-	}, [id, loading, username, hasPaste, socketRef, paste, user]);
+	}, [id, loading, userId, hasPaste, socketRef]);
 
 	useEffect(() => {
 		if (socket && id) {
