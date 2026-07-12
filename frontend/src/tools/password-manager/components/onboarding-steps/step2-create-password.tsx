@@ -7,7 +7,6 @@ interface Step2CreatePasswordProps {
 	onPasswordChange: (val: string) => void;
 	confirmPassword: string;
 	onConfirmPasswordChange: (val: string) => void;
-	strengthScore: number;
 	isStrongEnough: boolean;
 	passwordsMatch: boolean;
 	onBack: () => void;
@@ -19,7 +18,6 @@ export default function Step2CreatePassword({
 	onPasswordChange,
 	confirmPassword,
 	onConfirmPasswordChange,
-	strengthScore,
 	isStrongEnough,
 	passwordsMatch,
 	onBack,
@@ -44,7 +42,6 @@ export default function Step2CreatePassword({
 					onPasswordChange={onPasswordChange}
 					confirmPassword={confirmPassword}
 					onConfirmPasswordChange={onConfirmPasswordChange}
-					strengthScore={strengthScore}
 				/>
 			</div>
 

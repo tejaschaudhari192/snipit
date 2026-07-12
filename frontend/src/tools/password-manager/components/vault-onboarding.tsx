@@ -36,7 +36,7 @@ export default function VaultOnboarding({
 	// Step 4 State
 	const [recoverySaved, setRecoverySaved] = useState(false);
 
-	const { score, isStrongEnough } = usePasswordStrength(password);
+	const { isStrongEnough } = usePasswordStrength(password);
 
 	// When recoveryMnemonic is set, advance to step 4
 	useEffect(() => {
@@ -98,7 +98,6 @@ export default function VaultOnboarding({
 						onPasswordChange={setPassword}
 						confirmPassword={confirmPassword}
 						onConfirmPasswordChange={setConfirmPassword}
-						strengthScore={score}
 						isStrongEnough={isStrongEnough}
 						passwordsMatch={passwordsMatch}
 						onBack={() => setStep(1)}

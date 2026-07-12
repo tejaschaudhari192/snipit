@@ -41,8 +41,7 @@ export default function VaultUnlock({
 	const [newPassword, setNewPassword] = useState("");
 	const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
-	const { score: newStrengthScore, isStrongEnough: isNewPwStrong } =
-		usePasswordStrength(newPassword);
+	const { isStrongEnough: isNewPwStrong } = usePasswordStrength(newPassword);
 
 	useEffect(() => {
 		if (error) {
@@ -83,7 +82,6 @@ export default function VaultUnlock({
 				onNewPasswordChange={setNewPassword}
 				confirmNewPassword={confirmNewPassword}
 				onConfirmNewPasswordChange={setConfirmNewPassword}
-				newStrengthScore={newStrengthScore}
 				isNewPwStrong={isNewPwStrong}
 				newPwMatch={newPwMatch}
 				recoveryLoading={recoveryLoading}
