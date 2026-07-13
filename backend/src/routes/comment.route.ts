@@ -28,4 +28,16 @@ router.get(
 	catchAsync(commentController.getComments.bind(commentController)),
 );
 
+router.put(
+	"/:id/:commentId",
+	optionalProtect,
+	catchAsync(commentController.updateComment.bind(commentController)),
+);
+
+router.delete(
+	"/:id/:commentId",
+	optionalProtect,
+	catchAsync(commentController.deleteComment.bind(commentController)),
+);
+
 export default router;

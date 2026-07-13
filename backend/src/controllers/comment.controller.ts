@@ -75,6 +75,56 @@ class CommentController {
 			next(error);
 		}
 	}
+
+	async updateComment(req: AuthRequest, res: Response, next: NextFunction) {
+		const pasteId = req.params.id as string;
+		const commentId = req.params.commentId as string;
+		const { content } = req.body;
+		try {
+			const userId = this.getUserId(req);
+			if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+			const comments = await this.pasteService.getCommentsByPasteId(pasteId);
+			const comment = comments.find(c => c.id === commentId);
+			if (!comment) return res.status(404).json({ error: "Comment not found" });
+
+			if (comment.userId !== userId) {
+				return res.status(403).json({ error: "Forbidden: You can only edit your own comments" });
+			}
+
+			const updated = await this.pasteService.updateComment(pasteId, commentId, content);
+			return res.json(updated);
+		} catch (error) {
+			logger.error(`Failed to update comment ${commentId} on paste ${pasteId}`, { error });
+			next(error);
+		}
+	}
+
+	async deleteComment(req: AuthRequest, res: Response, next: NextFunction) {
+		const pasteId = req.params.id as string;
+		const commentId = req.params.commentId as string;
+		try {
+			const userId = this.getUserId(req);
+			if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+			const comments = await this.pasteService.getCommentsByPasteId(pasteId);
+			const comment = comments.find(c => c.id === commentId);
+			if (!comment) return res.status(404).json({ error: "Comment not found" });
+
+			const paste = await this.pasteService.getPasteById(pasteId);
+			const isPasteOwner = paste && paste.owner && paste.owner.toString() === userId;
+
+			if (comment.userId !== userId && !isPasteOwner) {
+				return res.status(403).json({ error: "Forbidden: You can only delete your own comments" });
+			}
+
+			await this.pasteService.deleteComment(pasteId, commentId);
+			return res.json({ success: true });
+		} catch (error) {
+			logger.error(`Failed to delete comment ${commentId} on paste ${pasteId}`, { error });
+			next(error);
+		}
+	}
 }
 
 export default CommentController;

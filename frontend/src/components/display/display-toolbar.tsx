@@ -109,6 +109,8 @@ interface DisplayToolbarProps {
 	commentCount: number;
 	paste: PasteData | undefined;
 	onCommentAdded: (comment: CommentData) => void;
+	onCommentUpdated: (comment: CommentData) => void;
+	onCommentDeleted: (commentId: string) => void;
 	activeUsers?: ActiveUser[];
 	isAutosave?: boolean;
 	setIsAutosave?: (v: boolean) => void;
@@ -155,6 +157,8 @@ export const DisplayToolbar = memo(
 		commentCount,
 		paste,
 		onCommentAdded,
+		onCommentUpdated,
+		onCommentDeleted,
 		activeUsers = [],
 		isAutosave = false,
 		setIsAutosave,
@@ -486,6 +490,8 @@ export const DisplayToolbar = memo(
 											<CommentsSection
 												paste={paste}
 												onCommentAdded={onCommentAdded}
+												onCommentUpdated={onCommentUpdated}
+												onCommentDeleted={onCommentDeleted}
 											/>
 										</Suspense>
 									)}

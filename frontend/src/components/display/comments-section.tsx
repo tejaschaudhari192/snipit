@@ -6,7 +6,14 @@ import { AxiosError } from "axios";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { 
+	MessageScrollerProvider,
+	MessageScroller,
+	MessageScrollerViewport,
+	MessageScrollerContent,
+	MessageScrollerItem
+} from "@/components/ui/message-scroller";
+import { MessageGroup } from "@/components/ui/message";
 import type { PasteData, CommentData } from "@/types";
 import { useApiHelpers } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
@@ -16,11 +23,15 @@ import { CommentBubble } from "./comment-bubble";
 interface CommentsSectionProps {
 	paste: PasteData;
 	onCommentAdded: (comment: CommentData) => void;
+	onCommentUpdated?: (comment: CommentData) => void;
+	onCommentDeleted?: (commentId: string) => void;
 }
 
 export const CommentsSection = ({
 	paste,
 	onCommentAdded,
+	onCommentUpdated,
+	onCommentDeleted,
 }: CommentsSectionProps) => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
@@ -91,27 +102,62 @@ export const CommentsSection = ({
 		}
 	};
 
+	const handleEditComment = async (commentId: string, newContent: string) => {
+		try {
+			const updated = await apiHelpers.editComment(paste.id, commentId, newContent);
+			onCommentUpdated?.(updated);
+			toast.success("Comment updated");
+		} catch (error) {
+			const axiosError = error as AxiosError<{ error: string }>;
+			toast.error(
+				axiosError.response?.data?.error || "Failed to update comment"
+			);
+			throw error;
+		}
+	};
+
+	const handleDeleteComment = async (commentId: string) => {
+		try {
+			await apiHelpers.deleteComment(paste.id, commentId);
+			onCommentDeleted?.(commentId);
+			toast.success("Comment deleted");
+		} catch (error) {
+			const axiosError = error as AxiosError<{ error: string }>;
+			toast.error(
+				axiosError.response?.data?.error || "Failed to delete comment"
+			);
+		}
+	};
+
 	return (
-		<div className="flex flex-col h-[85vh] max-h-full gap-4 pb-2">
-			<ScrollArea className="flex-1 min-h-0 pr-4 -mr-3">
-				<div className="space-y-3 pr-3">
-					{paste.comments && paste.comments.length > 0 ? (
-						paste.comments.map((comment: CommentData) => (
-							<CommentBubble
-								key={comment.id}
-								comment={comment}
-								currentUser={user}
-							/>
-						))
-					) : (
-						<div className="flex flex-col items-center justify-center h-40 text-muted-foreground italic opacity-70">
-							<MessageSquare className="w-8 h-8 mb-2 opacity-20" />
-							<p className="text-sm">{t("common.no_comments")}</p>
-						</div>
-					)}
-					<div ref={scrollRef} />
-				</div>
-			</ScrollArea>
+		<MessageScrollerProvider>
+			<div className="flex flex-col h-[85vh] max-h-full gap-4 pb-2">
+				<MessageScroller className="flex-1 min-h-0 pr-4 -mr-3">
+					<MessageScrollerViewport>
+						<MessageScrollerContent className="pr-3">
+							<MessageGroup>
+								{paste.comments && paste.comments.length > 0 ? (
+									paste.comments.map((comment: CommentData) => (
+										<MessageScrollerItem key={comment.id}>
+											<CommentBubble
+												comment={comment}
+												currentUser={user}
+												onEdit={(newContent) => handleEditComment(comment.id, newContent)}
+												onDelete={() => handleDeleteComment(comment.id)}
+											/>
+										</MessageScrollerItem>
+									))
+								) : (
+									<div className="flex flex-col items-center justify-center h-40 text-muted-foreground italic opacity-70">
+										<MessageSquare className="w-8 h-8 mb-2 opacity-20" />
+										<p className="text-sm">{t("common.no_comments")}</p>
+									</div>
+								)}
+								<div ref={scrollRef} />
+							</MessageGroup>
+						</MessageScrollerContent>
+					</MessageScrollerViewport>
+				</MessageScroller>
 
 			<div className="shrink-0 space-y-3 pt-2 border-t mt-auto bg-background z-10">
 				{canComment ? (
@@ -167,6 +213,7 @@ export const CommentsSection = ({
 					</div>
 				)}
 			</div>
-		</div>
+			</div>
+		</MessageScrollerProvider>
 	);
 };

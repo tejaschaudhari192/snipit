@@ -220,6 +220,25 @@ export const useApiHelpers = () => {
 			return response.data;
 		};
 
+		const editComment = async (
+			id: string,
+			commentId: string,
+			content: string,
+		): Promise<CommentData> => {
+			const response = await api.put(`/comments/${id}/${commentId}`, {
+				content,
+			});
+			return response.data;
+		};
+
+		const deleteComment = async (
+			id: string,
+			commentId: string,
+		): Promise<{ success: boolean }> => {
+			const response = await api.delete(`/comments/${id}/${commentId}`);
+			return response.data;
+		};
+
 		const getUserStats = async (): Promise<{
 			totalSnippets: number;
 			totalViews: number;
@@ -252,6 +271,8 @@ export const useApiHelpers = () => {
 			updateMe,
 			verifyPassword,
 			addComment,
+			editComment,
+			deleteComment,
 			getLabels: async (
 				pasteId: string,
 			): Promise<{ labels: string[] }> => {

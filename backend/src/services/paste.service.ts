@@ -335,6 +335,18 @@ class PasteService {
 		return await commentModel.find({ pasteId }).sort({ createdAt: -1 });
 	}
 
+	async updateComment(pasteId: string, commentId: string, content: string) {
+		return await commentModel.findOneAndUpdate(
+			{ id: commentId, pasteId },
+			{ $set: { content } },
+			{ new: true }
+		);
+	}
+
+	async deleteComment(pasteId: string, commentId: string) {
+		return await commentModel.deleteOne({ id: commentId, pasteId });
+	}
+
 	async getUserStats(ownerId: string) {
 		const stats = await pasteModel.aggregate([
 			{ $match: { owner: new mongoose.Types.ObjectId(ownerId) } },

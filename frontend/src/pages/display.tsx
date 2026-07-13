@@ -582,6 +582,28 @@ const DisplayPage = () => {
 										: prev,
 								)
 							}
+							onCommentUpdated={(updatedComment: CommentData) =>
+								setPaste((prev) =>
+									prev
+										? {
+												...prev,
+												comments: prev.comments?.map((c) =>
+													c.id === updatedComment.id ? updatedComment : c
+												),
+											}
+										: prev,
+								)
+							}
+							onCommentDeleted={(commentId: string) =>
+								setPaste((prev) =>
+									prev
+										? {
+												...prev,
+												comments: prev.comments?.filter((c) => c.id !== commentId),
+											}
+										: prev,
+								)
+							}
 							expiresTime={expiresTime}
 							setExpiresTime={setExpiresTime}
 							setIsCustomExpiryDialogOpen={
