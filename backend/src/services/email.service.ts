@@ -121,6 +121,69 @@ class EmailService {
 		}
 	}
 
+	async sendVaultAccessGrantedEmail(
+		toEmail: string,
+		role: "viewer" | "editor" | "admin",
+		collectionName: string,
+		collectionUrl: string,
+	) {
+		try {
+			logger.info(
+				`Attempting to send vault access granted email via Brevo to: ${toEmail} with role: ${role}`,
+			);
+			const fromAddress = this.getFromAddress();
+			const subject = `You have been granted ${role} access to a password vault`;
+			const text = `You have been granted ${role} access to a password vault collection on Snipit.\n\nYou can access it here: ${collectionUrl}\nCollection: ${collectionName}`;
+			const html = EMAIL_TEMPLATES.VAULT_ACCESS_GRANTED(
+				role,
+				collectionName,
+				collectionUrl,
+			);
+
+			const response = await fetch(
+				"https://api.brevo.com/v3/smtp/email",
+				{
+					method: "POST",
+					headers: {
+						accept: "application/json",
+						"content-type": "application/json",
+						"api-key": configurations.brevo.apiKey,
+					},
+					body: JSON.stringify({
+						sender: {
+							name: "Snipit Vault",
+							email: fromAddress,
+						},
+						to: [
+							{
+								email: toEmail,
+							},
+						],
+						subject,
+						textContent: text,
+						htmlContent: html,
+					}),
+				},
+			);
+
+			if (!response.ok) {
+				const errorData = (await response.json()) as {
+					message?: string;
+				};
+				throw new Error(
+					errorData.message || "Failed to send email via Brevo",
+				);
+			}
+
+			const data = await response.json();
+			logger.info(
+				`Vault access granted email sent via Brevo to ${toEmail}: ${JSON.stringify(data)}`,
+			);
+		} catch (error) {
+			logger.error(`Error sending email to ${toEmail} via Brevo:`, error);
+		}
+	}
+
 	async sendPasswordResetEmail(toEmail: string, resetUrl: string) {
 		try {
 			logger.info(

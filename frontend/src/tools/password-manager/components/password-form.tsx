@@ -12,10 +12,13 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@/tools/password-manager/store";
-import { selectVault } from "@/tools/password-manager/store/password-slice";
+import { selectMergedFolders } from "../store/password-slice";
 import { Upload } from "lucide-react";
 import type { PasswordItem, CustomField } from "../types";
 import { getFieldsForType } from "../utils/item-types";
+import { FolderModal } from "./folder-modal";
+import { useFolderMutations } from "../hooks/use-folder-mutations";
+import { UI_DEFAULTS } from "../utils/constants";
 export interface PasswordFormProps {
 	onAdd: (item: PasswordItem) => void;
 	editItem?: PasswordItem | null;
@@ -43,8 +46,11 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 	const [metadata, setMetadata] = useState<Record<string, string>>(
 		editItem?.metadata ?? {},
 	);
+	
+	const [folderModalOpen, setFolderModalOpen] = useState(false);
+	const { createFolder } = useFolderMutations();
 
-	const vault = useAppSelector(selectVault);
+	const folders = useAppSelector(selectMergedFolders) || [];
 
 	// Populate form when editing
 	useEffect(() => {
@@ -72,11 +78,13 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 	const handleSubmit = () => {
 		if (!title) return;
 		const now = new Date().toISOString();
+		const selectedFolder = folderId !== "none" ? folders.find((f: { id: string; collectionId?: string }) => f.id === folderId) : null;
 		onAdd({
 			id: editItem?.id ?? crypto.randomUUID(),
 			title: title.trim(),
 			...(notes.trim() && { notes: notes.trim() }),
 			...(folderId !== "none" && { folderId }),
+			...(selectedFolder?.collectionId && { collectionId: selectedFolder.collectionId }),
 			...(itemType && itemType !== "other" && { itemType }),
 			...(customFields.filter((f) => f.name.trim()).length > 0 && {
 				customFields: customFields.filter((f) => f.name.trim()),
@@ -90,9 +98,9 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 
 	const addField = () => {
 		setCustomFields([
-			...customFields,
-			{ name: "", type: "text", value: "" },
-		]);
+						...customFields,
+						{ id: crypto.randomUUID(), name: "", type: "text", value: "" },
+					]);
 	};
 
 	const removeField = (index: number) => {
@@ -215,35 +223,40 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 							</SelectContent>
 						</Select>
 					</div>
-					{vault?.folders && vault.folders.length > 0 && (
-						<div className="space-y-1.5 flex-1">
-							<Label className="text-xs text-muted-foreground">
-								Folder
-							</Label>
-							<Select
-								value={folderId}
-								onValueChange={(val: string) =>
-									setFolderId(val)
+					<div className="space-y-1.5 flex-1">
+						<Label className="text-xs text-muted-foreground">
+							Folder
+						</Label>
+						<Select
+							value={folderId}
+							onValueChange={(val: string) => {
+								if (val === "new_folder") {
+									setFolderModalOpen(true);
+								} else {
+									setFolderId(val);
 								}
-							>
-								<SelectTrigger className="w-full bg-background border-border rounded-xl">
-									<SelectValue placeholder="No Folder" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="none">
-										No category
-									</SelectItem>
-									{vault.folders.map(
-										(f: { id: string; name: string }) => (
-											<SelectItem key={f.id} value={f.id}>
-												{f.name}
-											</SelectItem>
-										),
-									)}
-								</SelectContent>
-							</Select>
-						</div>
-					)}
+							}}
+						>
+							<SelectTrigger className="w-full bg-background border-border rounded-xl">
+								<SelectValue placeholder="No Folder" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="none">
+									{t("tools.password_manager_no_folder")}
+								</SelectItem>
+								{folders.map(
+									(f: { id: string; name: string }) => (
+										<SelectItem key={f.id} value={f.id}>
+											{f.name}
+										</SelectItem>
+									),
+								)}
+								<SelectItem value="new_folder" className="text-primary font-medium">
+									+ Create folder
+								</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
 				</div>
 
 				{/* Details Card */}
@@ -308,6 +321,22 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 					</CardContent>
 				</Card>
 			</div>
+
+			<FolderModal
+				open={folderModalOpen}
+				onOpenChange={setFolderModalOpen}
+				mode="create"
+				initialFolderName=""
+				initialFolderColor={UI_DEFAULTS.FOLDER_COLOR}
+				onSave={(name, color) => {
+					createFolder(name, color);
+					setFolderModalOpen(false);
+					// Since we don't return the ID from createFolder synchronously and it generates one,
+					// the folder will appear in the list asynchronously. We could just leave folderId as "none" for now,
+					// or we can just let the user select it once it appears.
+				}}
+				onDelete={() => {}}
+			/>
 
 			{/* Custom Fields */}
 			<CustomFieldsEditor

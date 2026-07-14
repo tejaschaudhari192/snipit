@@ -2,7 +2,9 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IVault extends Document {
 	userId: mongoose.Types.ObjectId;
-	encryptedBlob: string;
+	encryptedPersonalKey: string;
+	encryptedSettings?: string;
+	salt: string;
 	version: number;
 	updatedAt: Date;
 }
@@ -15,7 +17,15 @@ const vaultSchema = new Schema<IVault>(
 			required: true,
 			unique: true,
 		},
-		encryptedBlob: {
+		encryptedPersonalKey: {
+			type: String,
+			required: true,
+		},
+		encryptedSettings: {
+			type: String,
+			required: false,
+		},
+		salt: {
 			type: String,
 			required: true,
 		},

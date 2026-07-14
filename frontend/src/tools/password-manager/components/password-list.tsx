@@ -17,7 +17,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Pencil, Trash2, Star, Menu } from "lucide-react";
+import { Pencil, Trash2, Star, Menu, Users } from "lucide-react";
 import { ITEM_TYPE_OPTIONS } from "@/tools/password-manager/utils/constants";
 import {
 	getDomain,
@@ -60,7 +60,7 @@ export default function PasswordList({
 	const items = vault?.items ?? [];
 
 	// First apply sidebar filter
-	const categoryFiltered = items.filter((item) => {
+	const categoryFiltered = items.filter((item: PasswordItem) => {
 		if (activeFilter === "all") return true;
 		if (activeFilter === "favorites") {
 			return item.isFavorite === true;
@@ -70,7 +70,7 @@ export default function PasswordList({
 			return true;
 		}
 		// Filter by folder
-		if (item.folderId === activeFilter) return true;
+		if (item.folderId === activeFilter || item.collectionId === activeFilter) return true;
 		// Filter by item type (login, card, etc.)
 		return (
 			item.itemType === activeFilter ||
@@ -80,7 +80,7 @@ export default function PasswordList({
 
 	const filtered = search
 		? categoryFiltered.filter(
-				(i) =>
+				(i: PasswordItem) =>
 					i.title.toLowerCase().includes(search.toLowerCase()) ||
 					i.username?.toLowerCase().includes(search.toLowerCase()) ||
 					i.url?.toLowerCase().includes(search.toLowerCase()),
@@ -124,7 +124,7 @@ export default function PasswordList({
 						</p>
 					</div>
 				)}
-				{filtered.map((item) => {
+				{filtered.map((item: PasswordItem) => {
 					const isActive = activeId === item.id;
 					const domain = getDomain(item.url);
 					const schemaFields = getFieldsForType(
@@ -184,6 +184,15 @@ export default function PasswordList({
 														)}
 													</Badge>
 												)}
+											{item.collectionId && (
+												<Badge
+													variant="outline"
+													className={`shrink-0 text-[9px] px-1.5 py-0 leading-none border-transparent flex items-center gap-1 ${isActive ? "bg-white/20 text-white" : "bg-primary/20 text-primary"}`}
+												>
+													<Users className="w-2.5 h-2.5" />
+													Shared
+												</Badge>
+											)}
 										</h3>
 										<p
 											className={`text-[13px] truncate ${isActive ? "text-white/80" : "text-white/50"}`}

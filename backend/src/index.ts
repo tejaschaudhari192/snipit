@@ -12,7 +12,8 @@ const port = configurations.port;
 const server = http.createServer(app);
 
 // Setup Socket.IO
-setupSocket(server);
+const io = setupSocket(server);
+app.set("io", io);
 
 // Start server immediately
 server.listen(port, () => {

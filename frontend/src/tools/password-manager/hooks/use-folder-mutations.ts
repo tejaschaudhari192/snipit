@@ -5,8 +5,10 @@ import {
 	setActiveFilter,
 	selectVault,
 	selectActiveFilter,
+	persistFolders,
 } from "@/tools/password-manager/store/password-slice";
-import type { Folder } from "@/tools/password-manager/types";
+import type { Folder, PasswordItem } from "@/tools/password-manager/types";
+import { toast } from "sonner";
 
 export function useFolderMutations() {
 	const dispatch = useAppDispatch();
@@ -23,13 +25,15 @@ export function useFolderMutations() {
 				createdAt: new Date().toISOString(),
 				updatedAt: new Date().toISOString(),
 			};
+			const newFolders = [...(vault.folders || []), newFolder];
 			dispatch(
 				setVault({
-					...vault,
-					folders: [...(vault.folders || []), newFolder],
-					updatedAt: new Date().toISOString(),
+					folders: newFolders,
 				}),
 			);
+			dispatch(persistFolders(newFolders))
+				.unwrap()
+				.catch((err) => toast.error(err.message || "Failed to create folder"));
 		},
 		[vault, dispatch],
 	);
@@ -37,7 +41,7 @@ export function useFolderMutations() {
 	const editFolder = useCallback(
 		(id: string, name: string, color: string) => {
 			if (!name.trim() || !vault) return;
-			const newFolders = (vault.folders || []).map((f) =>
+			const newFolders = (vault.folders || []).map((f: Folder) =>
 				f.id === id
 					? {
 							...f,
@@ -49,11 +53,12 @@ export function useFolderMutations() {
 			);
 			dispatch(
 				setVault({
-					...vault,
 					folders: newFolders,
-					updatedAt: new Date().toISOString(),
 				}),
 			);
+			dispatch(persistFolders(newFolders))
+				.unwrap()
+				.catch((err) => toast.error(err.message || "Failed to update folder"));
 		},
 		[vault, dispatch],
 	);
@@ -61,12 +66,12 @@ export function useFolderMutations() {
 	const deleteFolder = useCallback(
 		(id: string, deletePasswordsInside = false) => {
 			if (!vault) return;
-			const newFolders = (vault.folders || []).filter((f) => f.id !== id);
+			const newFolders = (vault.folders || []).filter((f: Folder) => f.id !== id);
 			let newItems = vault.items || [];
 			if (deletePasswordsInside) {
-				newItems = newItems.filter((item) => item.folderId !== id);
+				newItems = newItems.filter((item: PasswordItem) => item.folderId !== id);
 			} else {
-				newItems = newItems.map((item) =>
+				newItems = newItems.map((item: PasswordItem) =>
 					item.folderId === id
 						? {
 								...item,
@@ -78,12 +83,13 @@ export function useFolderMutations() {
 			}
 			dispatch(
 				setVault({
-					...vault,
 					folders: newFolders,
 					items: newItems,
-					updatedAt: new Date().toISOString(),
 				}),
 			);
+			dispatch(persistFolders(newFolders))
+				.unwrap()
+				.catch((err) => toast.error(err.message || "Failed to delete folder"));
 			if (activeFilter === id) dispatch(setActiveFilter("all"));
 		},
 		[vault, dispatch, activeFilter],

@@ -78,6 +78,11 @@ export const setupSocket = (server: HTTPServer) => {
 	const inputBuffers = new Map<string, string>();
 
 	io.on("connection", (socket) => {
+		const userId = getSocketUserId(socket);
+		if (userId) {
+			socket.join(userId);
+		}
+
 		const userColor =
 			COLLABORATOR_COLORS[
 				Math.floor(Math.random() * COLLABORATOR_COLORS.length)

@@ -6,12 +6,12 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import { useAppDispatch, useAppSelector } from "../store";
 import {
-	selectVault,
 	selectActiveFilter,
 	selectIsCloudSyncEnabled,
 	selectIsSyncing,
 	setActiveFilter,
 	setCloudSyncEnabled,
+	selectMergedFolders,
 } from "../store/password-slice";
 import { useFolderMutations } from "@/tools/password-manager/hooks/use-folder-mutations";
 import {
@@ -36,10 +36,11 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { FolderModal } from "./folder-modal";
+import { FolderModal, type FolderModalMode } from "./folder-modal";
 import { FolderList } from "./sidebar/folder-list";
 import { SettingsMenu } from "./sidebar/settings-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import ShareFolderModal from "./share-folder-modal";
 
 interface PasswordSidebarProps {
 	onNewItem: (itemType: string) => void;
@@ -49,21 +50,19 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 	const { t } = useTranslation();
 	const dispatch = useAppDispatch();
 	const activeFilter = useAppSelector(selectActiveFilter);
-	const vault = useAppSelector(selectVault);
 	const isCloudSyncEnabled = useAppSelector(selectIsCloudSyncEnabled);
 	const isSyncing = useAppSelector(selectIsSyncing);
 	const { user } = useAuth();
 
 	const [isTypeDialogOpen, setIsTypeDialogOpen] = useState(false);
 	const [folderModalOpen, setFolderModalOpen] = useState(false);
-	const [folderModalMode, setFolderModalMode] = useState<
-		"create" | "edit" | "delete"
-	>("create");
+	const [folderModalMode, setFolderModalMode] = useState<FolderModalMode>("create");
 	const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
 	const [folderName, setFolderName] = useState("");
 	const [folderColor, setFolderColor] = useState(UI_DEFAULTS.FOLDER_COLOR);
+	const [shareModalOpen, setShareModalOpen] = useState(false);
 
-	const folders = vault?.folders || [];
+	const folders = useAppSelector(selectMergedFolders) || [];
 
 	const { createFolder, editFolder, deleteFolder } = useFolderMutations();
 
@@ -183,6 +182,11 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 						setFolderName(name);
 						setFolderModalOpen(true);
 					}}
+					onShareFolder={(id, name) => {
+						setActiveFolderId(id);
+						setFolderName(name);
+						setShareModalOpen(true);
+					}}
 				/>
 			</SidebarContent>
 
@@ -240,6 +244,14 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 					handleSaveFolder("", "", deletePasswords)
 				}
 			/>
+			{activeFolderId && (
+				<ShareFolderModal
+					isOpen={shareModalOpen}
+					onClose={() => setShareModalOpen(false)}
+					folderId={activeFolderId}
+					folderName={folderName}
+				/>
+			)}
 		</div>
 	);
 }

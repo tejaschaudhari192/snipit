@@ -1,9 +1,7 @@
 import { useState, useCallback } from "react";
 import { useAppDispatch } from "@/tools/password-manager/store";
-import {
-	deleteItem,
-	persistVault,
-} from "@/tools/password-manager/store/password-slice";
+import { deleteItem } from "@/tools/password-manager/store/password-slice";
+import { toast } from "sonner";
 
 export function useDeleteItem() {
 	const dispatch = useAppDispatch();
@@ -15,10 +13,17 @@ export function useDeleteItem() {
 		setIsDeleteDialogOpen(true);
 	}, []);
 
-	const handleConfirm = useCallback(() => {
+	const handleConfirm = useCallback(async () => {
 		if (deleteTargetId) {
-			dispatch(deleteItem(deleteTargetId));
-			dispatch(persistVault());
+			try {
+				await dispatch(deleteItem(deleteTargetId)).unwrap();
+			} catch (error: unknown) {
+				toast.error(
+					typeof error === "string" 
+						? error 
+						: (error as Error).message || "Failed to delete item"
+				);
+			}
 		}
 		setIsDeleteDialogOpen(false);
 		setDeleteTargetId(null);

@@ -1,4 +1,5 @@
 import React, { Suspense, useEffect } from "react";
+import { logger } from "@/utils/logger";
 import { Provider } from "react-redux";
 const PasswordSidebar = React.lazy(
 	() => import("./components/password-sidebar"),
@@ -15,14 +16,15 @@ const VaultUnlock = React.lazy(() => import("./components/vault-unlock"));
 const MobileSidebarDrawer = React.lazy(
 	() => import("./components/mobile-sidebar-drawer"),
 );
+const SharingCenter = React.lazy(
+	() => import("./components/sharing-center"),
+);
 import {
 	AppSkeleton,
 	SidebarSkeleton,
 	ListSkeleton,
 	DetailSkeleton,
 } from "./components/skeletons";
-import { useTranslation } from "react-i18next";
-import TextGradient from "@/components/text-gradient";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import {
 	ResizablePanelGroup,
@@ -32,18 +34,19 @@ import {
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { store, useAppDispatch, useAppSelector } from "./store";
 import {
-	selectVault,
+	selectRecoveryMnemonic,
+	selectRecoveryLoading,
+	selectRecoveryError,
+	selectHasRecoveryKey,
+	selectRecoveryMode,
+	selectIsUnlocked,
 	selectVaultLoading,
 	selectVaultError,
 	selectHasExistingVault,
 	selectCloudVaultStatus,
 	selectActiveItem,
 	selectIsNewItem,
-	selectRecoveryMnemonic,
-	selectRecoveryLoading,
-	selectRecoveryError,
-	selectHasRecoveryKey,
-	selectRecoveryMode,
+	selectActiveFilter,
 } from "./store/password-slice";
 import {
 	setCloudVaultStatus,
@@ -52,6 +55,8 @@ import {
 	handleEdit,
 	handleCancelDetail,
 	initializeVault,
+	fetchVaultData,
+	fetchSharedCollections,
 	unlockVault,
 	createVault,
 	enableCloudSync,
@@ -69,22 +74,22 @@ import { useItemMutations } from "@/tools/password-manager/hooks/use-item-mutati
 import { useAuth } from "@/context/AuthContext";
 
 function PasswordManagerInner() {
-	const { t } = useTranslation();
 	const isMobile = useIsMobile();
 	const dispatch = useAppDispatch();
 	const { user } = useAuth();
-	const vault = useAppSelector(selectVault);
 	const loading = useAppSelector(selectVaultLoading);
 	const error = useAppSelector(selectVaultError);
 	const hasExistingVault = useAppSelector(selectHasExistingVault);
 	const cloudVaultStatus = useAppSelector(selectCloudVaultStatus);
 	const activeItem = useAppSelector(selectActiveItem);
 	const isNewItem = useAppSelector(selectIsNewItem);
+	const activeFilter = useAppSelector(selectActiveFilter);
 	const recoveryMnemonic = useAppSelector(selectRecoveryMnemonic);
 	const recoveryLoading = useAppSelector(selectRecoveryLoading);
 	const recoveryError = useAppSelector(selectRecoveryError);
 	const hasRecoveryKey = useAppSelector(selectHasRecoveryKey);
 	const recoveryMode = useAppSelector(selectRecoveryMode);
+	const isUnlocked = useAppSelector(selectIsUnlocked);
 
 	const { saveItem } = useItemMutations();
 
@@ -104,11 +109,25 @@ function PasswordManagerInner() {
 		}
 	}, [user, dispatch]);
 
+	useEffect(() => {
+		if (isUnlocked && user?._id) {
+			const handleFocus = () => {
+				logger.info("[Vault] Window focused, syncing shared collections...");
+				dispatch(fetchSharedCollections()).then(() => dispatch(fetchVaultData()));
+			};
+
+			window.addEventListener("focus", handleFocus);
+			return () => {
+				window.removeEventListener("focus", handleFocus);
+			};
+		}
+	}, [isUnlocked, user?._id, dispatch]);
+
 	if (hasExistingVault === null || cloudVaultStatus === "checking") {
 		return <AppSkeleton />;
 	}
 
-	if (!vault || recoveryMode) {
+	if (!isUnlocked || recoveryMode) {
 		if (!hasExistingVault && !recoveryMode) {
 			if (cloudVaultStatus === "found") {
 				return (
@@ -172,19 +191,7 @@ function PasswordManagerInner() {
 	return (
 		<TooltipProvider>
 			<div className="h-full flex flex-col bg-background">
-				{loading && (
-					<p className="text-sm text-muted-foreground px-4 pt-2">
-						<TextGradient
-							highlightColor="var(--foreground)"
-							baseColor="var(--muted-foreground)"
-							spread={20}
-							duration={2}
-							className="font-medium"
-						>
-							{t("tools.password_manager_loading")}
-						</TextGradient>
-					</p>
-				)}
+
 				{isMobile ? (
 					<div className="flex-1 flex overflow-hidden relative">
 						<Suspense fallback={<SidebarSkeleton />}>
@@ -253,49 +260,65 @@ function PasswordManagerInner() {
 
 							<ResizableHandle className="w-px bg-white/5 hover:bg-primary/50 transition-colors cursor-col-resize z-10" />
 
-							{/* Middle - List */}
-							<ResizablePanel
-								defaultSize="25%"
-								minSize="20%"
-								maxSize="40%"
-								className="bg-vault-panel"
-							>
-								<div className="h-full w-full overflow-hidden flex flex-col border-r border-white/5">
-									<Suspense fallback={<ListSkeleton />}>
-										<PasswordList
-											activeId={activeItem?.id ?? null}
-											onSelect={(item: PasswordItem) =>
-												dispatch(handleSelect(item))
-											}
-											onEdit={(item: PasswordItem) =>
-												dispatch(handleEdit(item))
-											}
-										/>
-									</Suspense>
-								</div>
-							</ResizablePanel>
+							{activeFilter === "sharing" ? (
+								<ResizablePanel
+									defaultSize="80%"
+									minSize="50%"
+									className="bg-vault-panel"
+								>
+									<div className="h-full w-full overflow-hidden flex flex-col">
+										<Suspense fallback={<ListSkeleton />}>
+											<SharingCenter />
+										</Suspense>
+									</div>
+								</ResizablePanel>
+							) : (
+								<>
+									{/* Middle - List */}
+									<ResizablePanel
+										defaultSize="25%"
+										minSize="20%"
+										maxSize="40%"
+										className="bg-vault-panel"
+									>
+										<div className="h-full w-full overflow-hidden flex flex-col border-r border-white/5">
+											<Suspense fallback={<ListSkeleton />}>
+												<PasswordList
+													activeId={activeItem?.id ?? null}
+													onSelect={(item: PasswordItem) =>
+														dispatch(handleSelect(item))
+													}
+													onEdit={(item: PasswordItem) =>
+														dispatch(handleEdit(item))
+													}
+												/>
+											</Suspense>
+										</div>
+									</ResizablePanel>
 
-							<ResizableHandle className="w-px bg-white/5 hover:bg-primary/50 transition-colors cursor-col-resize z-10" />
+									<ResizableHandle className="w-px bg-white/5 hover:bg-primary/50 transition-colors cursor-col-resize z-10" />
 
-							{/* Right - Detail */}
-							<ResizablePanel
-								defaultSize="55%"
-								minSize="30%"
-								className="bg-vault-card"
-							>
-								<div className="h-full w-full overflow-hidden flex flex-col">
-									<Suspense fallback={<DetailSkeleton />}>
-										<PasswordDetail
-											item={activeItem}
-											isNew={isNewItem}
-											onSave={saveItem}
-											onCancel={() =>
-												dispatch(handleCancelDetail())
-											}
-										/>
-									</Suspense>
-								</div>
-							</ResizablePanel>
+									{/* Right - Detail */}
+									<ResizablePanel
+										defaultSize="55%"
+										minSize="30%"
+										className="bg-vault-card"
+									>
+										<div className="h-full w-full overflow-hidden flex flex-col">
+											<Suspense fallback={<DetailSkeleton />}>
+												<PasswordDetail
+													item={activeItem}
+													isNew={isNewItem}
+													onSave={saveItem}
+													onCancel={() =>
+														dispatch(handleCancelDetail())
+													}
+												/>
+											</Suspense>
+										</div>
+									</ResizablePanel>
+								</>
+							)}
 						</ResizablePanelGroup>
 					</div>
 				)}

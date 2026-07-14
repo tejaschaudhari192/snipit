@@ -1,12 +1,12 @@
 import type {
-	VaultRecord,
 	RecoveryRecord,
+	KeyRecord,
 } from "@/tools/password-manager/types";
 
 const DB_NAME = "SnipitPasswordManagerDB";
-const RECORDS_STORE = "vault_records";
 const RECOVERY_STORE = "recovery_records";
-const DB_VERSION = 3;
+const KEYS_STORE = "key_records";
+const DB_VERSION = 4; // Bumped version
 
 function getDB(): Promise<IDBDatabase> {
 	return new Promise((resolve, reject) => {
@@ -19,26 +19,25 @@ function getDB(): Promise<IDBDatabase> {
 		request.onupgradeneeded = (event) => {
 			const db = (event.target as IDBOpenDBRequest).result;
 
-			if (!db.objectStoreNames.contains(RECORDS_STORE)) {
-				db.createObjectStore(RECORDS_STORE, { keyPath: "userId" });
-			}
-
 			if (!db.objectStoreNames.contains(RECOVERY_STORE)) {
 				db.createObjectStore(RECOVERY_STORE, { keyPath: "userId" });
+			}
+			if (!db.objectStoreNames.contains(KEYS_STORE)) {
+				db.createObjectStore(KEYS_STORE, { keyPath: "userId" });
 			}
 		};
 	});
 }
 
-// ─── Per-user vault records store ───────────────────────────────────────────
+// ─── Key records store ──────────────────────────────────────────────────────
 
-export async function getVaultRecord(
+export async function getKeyRecord(
 	userId: string,
-): Promise<VaultRecord | null> {
+): Promise<KeyRecord | null> {
 	const db = await getDB();
 	return new Promise((resolve, reject) => {
-		const transaction = db.transaction(RECORDS_STORE, "readonly");
-		const store = transaction.objectStore(RECORDS_STORE);
+		const transaction = db.transaction(KEYS_STORE, "readonly");
+		const store = transaction.objectStore(KEYS_STORE);
 		const request = store.get(userId);
 
 		request.onsuccess = () => resolve(request.result || null);
@@ -46,11 +45,11 @@ export async function getVaultRecord(
 	});
 }
 
-export async function setVaultRecord(record: VaultRecord): Promise<void> {
+export async function setKeyRecord(record: KeyRecord): Promise<void> {
 	const db = await getDB();
 	return new Promise((resolve, reject) => {
-		const transaction = db.transaction(RECORDS_STORE, "readwrite");
-		const store = transaction.objectStore(RECORDS_STORE);
+		const transaction = db.transaction(KEYS_STORE, "readwrite");
+		const store = transaction.objectStore(KEYS_STORE);
 		const request = store.put(record);
 
 		request.onsuccess = () => resolve();
@@ -58,23 +57,11 @@ export async function setVaultRecord(record: VaultRecord): Promise<void> {
 	});
 }
 
-export async function getAllVaultRecords(): Promise<VaultRecord[]> {
+export async function removeKeyRecord(userId: string): Promise<void> {
 	const db = await getDB();
 	return new Promise((resolve, reject) => {
-		const transaction = db.transaction(RECORDS_STORE, "readonly");
-		const store = transaction.objectStore(RECORDS_STORE);
-		const request = store.getAll();
-
-		request.onsuccess = () => resolve(request.result || []);
-		request.onerror = () => reject(request.error);
-	});
-}
-
-export async function removeVaultRecord(userId: string): Promise<void> {
-	const db = await getDB();
-	return new Promise((resolve, reject) => {
-		const transaction = db.transaction(RECORDS_STORE, "readwrite");
-		const store = transaction.objectStore(RECORDS_STORE);
+		const transaction = db.transaction(KEYS_STORE, "readwrite");
+		const store = transaction.objectStore(KEYS_STORE);
 		const request = store.delete(userId);
 
 		request.onsuccess = () => resolve();

@@ -7,6 +7,7 @@ import {
 	Fingerprint,
 	FileCode,
 	StickyNote,
+	Users,
 } from "lucide-react";
 import type { CustomField } from "../types";
 
@@ -14,6 +15,7 @@ export const SIDEBAR_NAV_ITEMS = [
 	{ icon: Key, label: "tools.password_manager_all_items", id: "all" },
 	{ icon: Star, label: "tools.password_manager_favorites", id: "favorites" },
 	{ icon: Clock, label: "tools.password_manager_recent", id: "recent" },
+	{ icon: Users, label: "Sharing Center", id: "sharing" },
 ];
 
 export const ITEM_TYPE_OPTIONS = [

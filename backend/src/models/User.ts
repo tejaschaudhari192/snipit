@@ -40,6 +40,14 @@ const userSchema = new Schema<IUser>(
 			type: Date,
 			required: false,
 		},
+		publicKey: {
+			type: String,
+			required: false,
+		},
+		encryptedPrivateKey: {
+			type: String,
+			required: false,
+		},
 	},
 	{
 		toJSON: { virtuals: true, versionKey: false },

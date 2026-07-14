@@ -73,6 +73,8 @@ export type UserData = {
 	createdAt: Date;
 	resetPasswordToken?: string | undefined;
 	resetPasswordExpires?: Date | undefined;
+	publicKey?: string | undefined;
+	encryptedPrivateKey?: string | undefined;
 };
 
 export interface RegisterUserData {
