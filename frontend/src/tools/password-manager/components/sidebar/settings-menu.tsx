@@ -63,9 +63,9 @@ export function SettingsMenu({
 			}
 			// 3. Reset state
 			dispatch(resetVault());
-			toast.success(t("tools.password_manager_vault_deleted") || "Vault deleted successfully");
+			toast.success(t("tools.password_manager_vault_deleted"));
 		} catch (error) {
-			toast.error("Failed to delete vault");
+			toast.error(t("tools.password_manager_delete_vault_failed"));
 			console.error(error);
 		} finally {
 			setIsDeleting(false);
@@ -177,7 +177,7 @@ export function SettingsMenu({
 							
 							<div className="mt-2 pt-2 border-t border-border/50">
 								<div className="px-2 py-1 mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-									Danger Zone
+									{t("tools.password_manager_danger_zone")}
 								</div>
 								<DropdownMenuItem
 									className="gap-3 cursor-pointer rounded-md p-2 text-destructive focus:bg-destructive/10 focus:text-destructive transition-colors"
@@ -187,7 +187,7 @@ export function SettingsMenu({
 										<Trash2 className="size-4" />
 									</div>
 									<div className="flex flex-col">
-										<span className="text-sm font-medium">Delete Vault</span>
+										<span className="text-sm font-medium">{t("tools.password_manager_delete_vault")}</span>
 									</div>
 								</DropdownMenuItem>
 							</div>
@@ -201,14 +201,14 @@ export function SettingsMenu({
 					<AlertDialogHeader>
 						<AlertDialogTitle className="text-destructive flex items-center gap-2">
 							<Trash2 className="size-5" />
-							Delete your vault?
+							{t("tools.password_manager_delete_vault_confirm_title")}
 						</AlertDialogTitle>
 						<AlertDialogDescription className="text-base text-foreground/80 mt-2">
-							This action <strong>cannot be undone</strong>. This will permanently delete your vault and remove all your passwords, folders, and shared collections from our servers and this device.
+							<span dangerouslySetInnerHTML={{ __html: t("tools.password_manager_delete_vault_confirm_desc") }} />
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter className="mt-4 gap-2 sm:gap-0">
-						<AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+						<AlertDialogCancel disabled={isDeleting}>{t("cancel")}</AlertDialogCancel>
 						<AlertDialogAction
 							onClick={(e) => {
 								e.preventDefault();
@@ -217,7 +217,7 @@ export function SettingsMenu({
 							disabled={isDeleting}
 							className="bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
 						>
-							{isDeleting ? "Deleting..." : "Delete Vault"}
+							{isDeleting ? t("tools.password_manager_deleting") : t("tools.password_manager_delete_vault")}
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>

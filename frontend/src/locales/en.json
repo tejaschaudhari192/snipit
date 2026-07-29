@@ -223,7 +223,14 @@
 		"pnr_checker_api_error": "Failed to fetch PNR status. Please try again.",
 		"pnr_checker_passenger": "Passenger {{number}}",
 		"pnr_checker_booking_status": "Booking Status",
-		"pnr_checker_no_status": "No passenger status available"
+		"pnr_checker_no_status": "No passenger status available",
+		"password_manager_danger_zone": "Danger Zone",
+		"password_manager_delete_vault": "Delete Vault",
+		"password_manager_delete_vault_confirm_title": "Delete your vault?",
+		"password_manager_delete_vault_confirm_desc": "This action <strong>cannot be undone</strong>. This will permanently delete your vault and remove all your passwords, folders, and shared collections from our servers and this device.",
+		"password_manager_deleting": "Deleting...",
+		"password_manager_vault_deleted": "Vault deleted successfully",
+		"password_manager_delete_vault_failed": "Failed to delete vault"
 	},
 	"errors": {
 		"storage_access_denied": "Storage access denied. Please enable cookies/storage for full functionality.",
