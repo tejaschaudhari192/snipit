@@ -148,6 +148,7 @@ export const createVault = createAsyncThunk(
 			// 5. Save to cloud
 			await api.put("/tools/password-manager/vault", {
 				encryptedPersonalKey,
+				encryptedBlob: encryptedPersonalKey,
 				encryptedSettings: settingsPayload,
 				publicKey: publicKeyJWK,
 				encryptedPrivateKey,
@@ -206,7 +207,7 @@ export const unlockVault = createAsyncThunk(
 
 			// Decrypt personal key
 			const decodedPersonalKeyB64 = decryptWithMEK(
-				vaultData.encryptedPersonalKey,
+				vaultData.encryptedPersonalKey || vaultData.encryptedBlob,
 				mek,
 			) as string;
 			if (!decodedPersonalKeyB64) throw new Error("Invalid password");
@@ -493,6 +494,7 @@ export const resetMasterPassword = createAsyncThunk(
 			// 3. Update backend
 			await api.put("/tools/password-manager/vault", {
 				encryptedPersonalKey,
+				encryptedBlob: encryptedPersonalKey,
 				encryptedPrivateKey,
 				salt: saltStr,
 			});
