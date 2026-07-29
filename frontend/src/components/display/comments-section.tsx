@@ -6,12 +6,12 @@ import { AxiosError } from "axios";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { 
+import {
 	MessageScrollerProvider,
 	MessageScroller,
 	MessageScrollerViewport,
 	MessageScrollerContent,
-	MessageScrollerItem
+	MessageScrollerItem,
 } from "@/components/ui/message-scroller";
 import { MessageGroup } from "@/components/ui/message";
 import type { PasteData, CommentData } from "@/types";
@@ -104,13 +104,17 @@ export const CommentsSection = ({
 
 	const handleEditComment = async (commentId: string, newContent: string) => {
 		try {
-			const updated = await apiHelpers.editComment(paste.id, commentId, newContent);
+			const updated = await apiHelpers.editComment(
+				paste.id,
+				commentId,
+				newContent,
+			);
 			onCommentUpdated?.(updated);
 			toast.success("Comment updated");
 		} catch (error) {
 			const axiosError = error as AxiosError<{ error: string }>;
 			toast.error(
-				axiosError.response?.data?.error || "Failed to update comment"
+				axiosError.response?.data?.error || "Failed to update comment",
 			);
 			throw error;
 		}
@@ -124,7 +128,7 @@ export const CommentsSection = ({
 		} catch (error) {
 			const axiosError = error as AxiosError<{ error: string }>;
 			toast.error(
-				axiosError.response?.data?.error || "Failed to delete comment"
+				axiosError.response?.data?.error || "Failed to delete comment",
 			);
 		}
 	};
@@ -137,20 +141,35 @@ export const CommentsSection = ({
 						<MessageScrollerContent className="pr-3">
 							<MessageGroup>
 								{paste.comments && paste.comments.length > 0 ? (
-									paste.comments.map((comment: CommentData) => (
-										<MessageScrollerItem key={comment.id}>
-											<CommentBubble
-												comment={comment}
-												currentUser={user}
-												onEdit={(newContent) => handleEditComment(comment.id, newContent)}
-												onDelete={() => handleDeleteComment(comment.id)}
-											/>
-										</MessageScrollerItem>
-									))
+									paste.comments.map(
+										(comment: CommentData) => (
+											<MessageScrollerItem
+												key={comment.id}
+											>
+												<CommentBubble
+													comment={comment}
+													currentUser={user}
+													onEdit={(newContent) =>
+														handleEditComment(
+															comment.id,
+															newContent,
+														)
+													}
+													onDelete={() =>
+														handleDeleteComment(
+															comment.id,
+														)
+													}
+												/>
+											</MessageScrollerItem>
+										),
+									)
 								) : (
 									<div className="flex flex-col items-center justify-center h-40 text-muted-foreground italic opacity-70">
 										<MessageSquare className="w-8 h-8 mb-2 opacity-20" />
-										<p className="text-sm">{t("common.no_comments")}</p>
+										<p className="text-sm">
+											{t("common.no_comments")}
+										</p>
 									</div>
 								)}
 								<div ref={scrollRef} />
@@ -159,60 +178,62 @@ export const CommentsSection = ({
 					</MessageScrollerViewport>
 				</MessageScroller>
 
-			<div className="shrink-0 space-y-3 pt-2 border-t mt-auto bg-background z-10">
-				{canComment ? (
-					<div className="space-y-3">
-						{!user && (
-							<div className="flex flex-col gap-1.5">
-								<label className="text-xs font-medium ml-1 text-muted-foreground">
-									{t("common.your_name")}
-								</label>
-								<input
-									type="text"
-									placeholder={t("common.anonymus")}
-									value={authorName}
+				<div className="shrink-0 space-y-3 pt-2 border-t mt-auto bg-background z-10">
+					{canComment ? (
+						<div className="space-y-3">
+							{!user && (
+								<div className="flex flex-col gap-1.5">
+									<label className="text-xs font-medium ml-1 text-muted-foreground">
+										{t("common.your_name")}
+									</label>
+									<input
+										type="text"
+										placeholder={t("common.anonymus")}
+										value={authorName}
+										onChange={(e) =>
+											setAuthorName(e.target.value)
+										}
+										className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+									/>
+								</div>
+							)}
+							<div className="flex flex-col gap-2">
+								<Textarea
+									placeholder={t("common.write_comment")}
+									value={newComment}
 									onChange={(e) =>
-										setAuthorName(e.target.value)
+										setNewComment(e.target.value)
 									}
-									className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+									className="min-h-20 max-h-37.5 resize-y bg-muted/20 focus-visible:ring-primary/30 text-sm"
 								/>
-							</div>
-						)}
-						<div className="flex flex-col gap-2">
-							<Textarea
-								placeholder={t("common.write_comment")}
-								value={newComment}
-								onChange={(e) => setNewComment(e.target.value)}
-								className="min-h-20 max-h-37.5 resize-y bg-muted/20 focus-visible:ring-primary/30 text-sm"
-							/>
-							<div className="flex justify-end">
-								<Button
-									onClick={handleSubmit}
-									disabled={
-										!newComment.trim() || isSubmitting
-									}
-									size="sm"
-									className="gap-2 h-8"
-								>
-									{isSubmitting ? (
-										<ShimmerSection
-											type="mini-loader"
-											className="w-3 h-3"
-										/>
-									) : (
-										<Send className="w-3 h-3" />
-									)}
-									{t("common.post_comment")}
-								</Button>
+								<div className="flex justify-end">
+									<Button
+										onClick={handleSubmit}
+										disabled={
+											!newComment.trim() || isSubmitting
+										}
+										size="sm"
+										className="gap-2 h-8"
+									>
+										{isSubmitting ? (
+											<ShimmerSection
+												type="mini-loader"
+												className="w-3 h-3"
+											/>
+										) : (
+											<Send className="w-3 h-3" />
+										)}
+										{t("common.post_comment")}
+									</Button>
+								</div>
 							</div>
 						</div>
-					</div>
-				) : (
-					<div className="p-4 bg-muted/50 rounded-lg text-center text-sm text-muted-foreground border border-dashed text-balance">
-						{t("common.comment_restricted")}
-					</div>
-				)}
-			</div>
+					) : (
+						<div className="p-4 bg-muted/50 rounded-lg text-center text-sm text-muted-foreground border border-dashed text-balance">
+							{t("common.comment_restricted")}
+						</div>
+					)}
+				</div>
 			</div>
 		</MessageScrollerProvider>
 	);
