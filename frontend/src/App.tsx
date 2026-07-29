@@ -14,6 +14,7 @@ import { TtsProvider } from "@/context";
 import { TtsMiniPlayer } from "@/components/common/tts-mini-player";
 import { AppSkeleton as PasswordAppSkeleton } from "@/tools/password-manager/components/skeletons";
 import { CryptoSafeSkeleton } from "@/tools/cryptsafe/components/skeletons";
+import { PnrCheckerSkeleton } from "@/tools/pnr-checker/components/skeletons";
 import { ToolsPageSkeleton } from "@/pages/skeletons";
 
 const HomePage = lazy(() => import("@/pages/home"));
@@ -26,6 +27,9 @@ const PasswordManagerPage = lazy(
 );
 const CryptoSafePage = lazy(
 	() => import("@/tools/cryptsafe/encrypt-safe-page"),
+);
+const PnrCheckerPage = lazy(
+	() => import("@/tools/pnr-checker/pnr-checker-page"),
 );
 const ProfilePage = lazy(() => import("@/pages/profile"));
 const LoginPage = lazy(() => import("@/pages/login"));
@@ -213,6 +217,18 @@ const App = () => {
 																	}
 																>
 																	<CryptoSafePage />
+																</Suspense>
+															}
+														/>
+														<Route
+															path="/tools/pnr-checker"
+															element={
+																<Suspense
+																	fallback={
+																		<PnrCheckerSkeleton />
+																	}
+																>
+																	<PnrCheckerPage />
 																</Suspense>
 															}
 														/>
