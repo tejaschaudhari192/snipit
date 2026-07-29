@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getVault, updateVault } from "../controllers/vault.controller.js";
+import { getVault, updateVault, deleteVault } from "../controllers/vault.controller.js";
 import {
 	getVaultItems,
 	createVaultItem,
@@ -27,7 +27,7 @@ const router: Router = Router();
 router.use(protect);
 
 // Vault metadata and keys
-router.route("/").get(getVault).put(updateVault);
+router.route("/").get(getVault).put(updateVault).delete(deleteVault);
 
 // Vault Items
 router

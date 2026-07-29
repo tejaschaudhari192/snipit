@@ -3,6 +3,9 @@ import Vault, { type IVault } from "../models/Vault.js";
 import User from "@/models/User.js";
 import { AppError } from "@/lib/errors.js";
 import type { AuthRequest } from "@/middleware/auth.middleware.js";
+import VaultItem from "../models/VaultItem.js";
+import Collection from "../models/Collection.js";
+import CollectionAccess from "../models/CollectionAccess.js";
 
 /**
  * Get the current user's encrypted vault
@@ -105,3 +108,47 @@ export const updateVault = async (
 		next(error);
 	}
 };
+
+/**
+ * Delete the current user's encrypted vault and all associated data
+ * @route DELETE /api/tools/password-manager/vault
+ * @access Private
+ */
+export const deleteVault = async (
+	req: AuthRequest,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		if (!req.user || !req.user._id) {
+			return next(new AppError("User not authenticated", 401));
+		}
+
+		const userId = req.user._id;
+
+		// 1. Delete all vault items
+		await VaultItem.deleteMany({ userId });
+
+		// 2. Delete all collections created by the user
+		await Collection.deleteMany({ createdBy: userId });
+
+		// 3. Delete all collection accesses for the user
+		await CollectionAccess.deleteMany({ userId });
+
+		// 4. Delete the vault itself
+		await Vault.deleteOne({ userId });
+
+		// 5. Unset the user's public and private keys
+		await User.findByIdAndUpdate(userId, {
+			$unset: { publicKey: "", encryptedPrivateKey: "" },
+		});
+
+		res.status(200).json({
+			success: true,
+			message: "Vault and all associated data deleted successfully",
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+

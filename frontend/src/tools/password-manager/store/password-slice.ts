@@ -825,6 +825,21 @@ export const passwordSlice = createSlice({
 			state.activeItem = null;
 			state.isUnlocked = false;
 		},
+		resetVault: (state) => {
+			keyStore.clear();
+			state.personalItems = [];
+			state.sharedCollections = [];
+			state.folders = [];
+			state.activeItem = null;
+			state.isUnlocked = false;
+			state.hasExistingVault = false;
+			state.cloudVaultStatus = "not_found";
+			state.hasRecoveryKey = false;
+			state.recoveryMnemonic = null;
+			state.recoveryMode = false;
+			state.recoveryError = null;
+			state.isNewItem = false;
+		},
 		setVault: (
 			state,
 			action: PayloadAction<{
@@ -1082,6 +1097,7 @@ export const {
 	clearRecoveryMnemonic,
 	setRecoveryMode,
 	lockVault,
+	resetVault,
 	setVault,
 } = passwordSlice.actions;
 
