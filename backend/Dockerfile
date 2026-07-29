@@ -23,6 +23,9 @@ WORKDIR /app
 
 RUN npm install -g pnpm
 
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
 # ── Language SDKs for the code runner ─────────────────────────────────────────
 # Register Microsoft's repo first (required for dotnet-sdk-8.0)
 RUN apt-get update && apt-get install -y --no-install-recommends wget gpg ca-certificates apt-transport-https && \
