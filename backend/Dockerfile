@@ -23,7 +23,7 @@ WORKDIR /app
 
 RUN npm install -g pnpm
 
-ENV PNPM_HOME="/pnpm"
+ENV PNPM_HOME="/pnpm/bin"
 ENV PATH="$PNPM_HOME:$PATH"
 
 # ── Language SDKs for the code runner ─────────────────────────────────────────
