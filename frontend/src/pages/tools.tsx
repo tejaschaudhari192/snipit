@@ -8,7 +8,7 @@ import {
 	CardContent,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Lock } from "lucide-react";
+import { Shield, Lock, Train } from "lucide-react";
 
 // Landing page for the Tools section. Shows a grid of available tools.
 const ToolsPage = () => {
@@ -28,6 +28,13 @@ const ToolsPage = () => {
 			descriptionKey: "tools.password_manager_description",
 			icon: Lock,
 			link: "/tools/passwords",
+		},
+		{
+			id: "pnrChecker",
+			titleKey: "tools.pnr_checker_title",
+			descriptionKey: "tools.pnr_checker_description",
+			icon: Train,
+			link: "/tools/pnr-checker",
 		},
 	];
 

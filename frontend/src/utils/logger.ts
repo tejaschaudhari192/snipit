@@ -1,4 +1,4 @@
-type LogLevel = 'info' | 'warn' | 'error' | 'debug';
+type LogLevel = "info" | "warn" | "error" | "debug";
 
 class Logger {
 	private log(level: LogLevel, message: string, ...args: unknown[]) {
@@ -6,35 +6,35 @@ class Logger {
 		const formattedMessage = `[${timestamp}] [${level.toUpperCase()}] ${message}`;
 
 		switch (level) {
-			case 'info':
+			case "info":
 				console.info(formattedMessage, ...args);
 				break;
-			case 'warn':
+			case "warn":
 				console.warn(formattedMessage, ...args);
 				break;
-			case 'error':
+			case "error":
 				console.error(formattedMessage, ...args);
 				break;
-			case 'debug':
+			case "debug":
 				console.debug(formattedMessage, ...args);
 				break;
 		}
 	}
 
 	info(message: string, ...args: unknown[]) {
-		this.log('info', message, ...args);
+		this.log("info", message, ...args);
 	}
 
 	warn(message: string, ...args: unknown[]) {
-		this.log('warn', message, ...args);
+		this.log("warn", message, ...args);
 	}
 
 	error(message: string, ...args: unknown[]) {
-		this.log('error', message, ...args);
+		this.log("error", message, ...args);
 	}
 
 	debug(message: string, ...args: unknown[]) {
-		this.log('debug', message, ...args);
+		this.log("debug", message, ...args);
 	}
 }
 

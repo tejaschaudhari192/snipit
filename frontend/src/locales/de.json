@@ -211,7 +211,19 @@
 		"password_manager_recovery_generate": "Wiederherstellungsschlüssel erzeugen",
 		"password_manager_recovery_copy": "In die Zwischenablage kopieren",
 		"password_manager_recovery_copied": "Kopiert!",
-		"password_manager_recovery_has_key": "Wiederherstellungsschlüssel ist eingerichtet"
+		"password_manager_recovery_has_key": "Wiederherstellungsschlüssel ist eingerichtet",
+		"pnr_checker_title": "PNR-Prüfer",
+		"pnr_checker_subtitle": "Indian Railway PNR-Status sofort prüfen",
+		"pnr_checker_description": "Indian Railway PNR-Status sofort prüfen",
+		"pnr_checker_label": "10-stellige PNR-Nummer eingeben",
+		"pnr_checker_placeholder": "PNR-Nummer eingeben...",
+		"pnr_checker_check": "Status prüfen",
+		"pnr_checker_enter_pnr": "Bitte geben Sie eine PNR-Nummer ein",
+		"pnr_checker_invalid_pnr": "Bitte geben Sie eine gültige 10-stellige PNR-Nummer ein",
+		"pnr_checker_api_error": "PNR-Status konnte nicht abgerufen werden. Bitte versuchen Sie es erneut.",
+		"pnr_checker_passenger": "Passagier {{number}}",
+		"pnr_checker_booking_status": "Buchungsstatus",
+		"pnr_checker_no_status": "Kein Passagierstatus verfügbar"
 	},
 	"errors": {
 		"storage_access_denied": "Speicherzugriff verweigert. Bitte aktivieren Sie Cookies/Speicher.",

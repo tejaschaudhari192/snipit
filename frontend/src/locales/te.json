@@ -211,7 +211,19 @@
 		"password_manager_recovery_generate": "రికవరీ కీని సృష్టించండి",
 		"password_manager_recovery_copy": "క్లిప్‌బోర్డ్‌కు నకలు చేయి",
 		"password_manager_recovery_copied": "నకలు చేయబడింది!",
-		"password_manager_recovery_has_key": "రికవరీ కీ అమర్చబడింది"
+		"password_manager_recovery_has_key": "రికవరీ కీ అమర్చబడింది",
+		"pnr_checker_title": "PNR తనిఖీదారు",
+		"pnr_checker_subtitle": "భారతీయ రైల్వే PNR స్థితిని తక్షణమే తనిఖీ చేయండి",
+		"pnr_checker_description": "భారతీయ రైల్వే PNR స్థితిని తక్షణమే తనిఖీ చేయండి",
+		"pnr_checker_label": "10 అంకెల PNR నంబర్ నమోదు చేయండి",
+		"pnr_checker_placeholder": "PNR నంబర్ నమోదు చేయండి...",
+		"pnr_checker_check": "స్థితిని తనిఖీ చేయండి",
+		"pnr_checker_enter_pnr": "దయచేసి PNR నంబర్ నమోదు చేయండి",
+		"pnr_checker_invalid_pnr": "దయచేసి చెల్లుబాటు అయ్యే 10 అంకెల PNR నంబర్ నమోదు చేయండి",
+		"pnr_checker_api_error": "PNR స్థితిని పొందడంలో విఫలమైంది. దయచేసి మళ్ళీ ప్రయత్నించండి.",
+		"pnr_checker_passenger": "ప్రయాణీకుడు {{number}}",
+		"pnr_checker_booking_status": "బుకింగ్ స్థితి",
+		"pnr_checker_no_status": "ప్రయాణీకుల స్థితి అందుబాటులో లేదు"
 	},
 	"errors": {
 		"storage_access_denied": "నిల్వ ప్రాప్యత నిరాకరించబడింది. దయచేసి కుక్కీలను ప్రారంభించండి.",

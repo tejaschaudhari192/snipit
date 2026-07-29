@@ -211,7 +211,19 @@
 		"password_manager_recovery_generate": "リカバリキーを生成",
 		"password_manager_recovery_copy": "クリップボードにコピー",
 		"password_manager_recovery_copied": "コピーしました！",
-		"password_manager_recovery_has_key": "リカバリキーが設定されています"
+		"password_manager_recovery_has_key": "リカバリキーが設定されています",
+		"pnr_checker_title": "PNRチェッカー",
+		"pnr_checker_subtitle": "インド鉄道のPNRステータスを即座に確認",
+		"pnr_checker_description": "インド鉄道のPNRステータスを即座に確認",
+		"pnr_checker_label": "10桁のPNR番号を入力",
+		"pnr_checker_placeholder": "PNR番号を入力...",
+		"pnr_checker_check": "ステータスを確認",
+		"pnr_checker_enter_pnr": "PNR番号を入力してください",
+		"pnr_checker_invalid_pnr": "有効な10桁のPNR番号を入力してください",
+		"pnr_checker_api_error": "PNRステータスの取得に失敗しました。もう一度お試しください。",
+		"pnr_checker_passenger": "乗客 {{number}}",
+		"pnr_checker_booking_status": "予約状況",
+		"pnr_checker_no_status": "乗客のステータスはありません"
 	},
 	"errors": {
 		"storage_access_denied": "ストレージアクセスが拒否されました。",

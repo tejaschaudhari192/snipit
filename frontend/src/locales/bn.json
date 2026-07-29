@@ -211,7 +211,19 @@
 		"password_manager_recovery_generate": "রিকভারি কী তৈরি করুন",
 		"password_manager_recovery_copy": "ক্লিপবোর্ডে কপি করুন",
 		"password_manager_recovery_copied": "কপি হয়েছে!",
-		"password_manager_recovery_has_key": "রিকভারি কী সেট আপ হয়েছে"
+		"password_manager_recovery_has_key": "রিকভারি কী সেট আপ হয়েছে",
+		"pnr_checker_title": "PNR চেকার",
+		"pnr_checker_subtitle": "ভারতীয় রেলওয়ে PNR অবস্থান তাৎক্ষণিক পরীক্ষা করুন",
+		"pnr_checker_description": "ভারতীয় রেলওয়ে PNR অবস্থান তাৎক্ষণিক পরীক্ষা করুন",
+		"pnr_checker_label": "10 অঙ্কের PNR নম্বর লিখুন",
+		"pnr_checker_placeholder": "PNR নম্বর লিখুন...",
+		"pnr_checker_check": "অবস্থান পরীক্ষা করুন",
+		"pnr_checker_enter_pnr": "অনুগ্রহ করে একটি PNR নম্বর লিখুন",
+		"pnr_checker_invalid_pnr": "অনুগ্রহ করে একটি বৈধ 10 অঙ্কের PNR নম্বর লিখুন",
+		"pnr_checker_api_error": "PNR অবস্থান আনা সম্ভব হয়নি। অনুগ্রহ করে পুনরায় চেষ্টা করুন।",
+		"pnr_checker_passenger": "যাত্রী {{number}}",
+		"pnr_checker_booking_status": "বুকিং অবস্থা",
+		"pnr_checker_no_status": "কোনো যাত্রীর অবস্থান উপলব্ধ নেই"
 	},
 	"errors": {
 		"storage_access_denied": "স্টোরেজ অ্যাক্সেস অস্বীকার করা হয়েছে। অনুগ্রহ করে কুকিজ সক্ষম করুন।",

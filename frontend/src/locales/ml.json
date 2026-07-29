@@ -211,7 +211,19 @@
 		"password_manager_recovery_generate": "വീണ്ടെടുക്കൽ കീ സൃഷ്ടിക്കുക",
 		"password_manager_recovery_copy": "ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തുക",
 		"password_manager_recovery_copied": "പകർത്തി!",
-		"password_manager_recovery_has_key": "വീണ്ടെടുക്കൽ കീ സജ്ജമാണ്"
+		"password_manager_recovery_has_key": "വീണ്ടെടുക്കൽ കീ സജ്ജമാണ്",
+		"pnr_checker_title": "PNR പരിശോധകൻ",
+		"pnr_checker_subtitle": "ഇന്ത്യൻ റെയിൽവേ PNR നില ഉടൻ പരിശോധിക്കുക",
+		"pnr_checker_description": "ഇന്ത്യൻ റെയിൽവേ PNR നില ഉടൻ പരിശോധിക്കുക",
+		"pnr_checker_label": "10 അക്ക PNR നമ്പർ നൽകുക",
+		"pnr_checker_placeholder": "PNR നമ്പർ നൽകുക...",
+		"pnr_checker_check": "നില പരിശോധിക്കുക",
+		"pnr_checker_enter_pnr": "ദയവായി ഒരു PNR നമ്പർ നൽകുക",
+		"pnr_checker_invalid_pnr": "ദയവായി സാധുവായ 10 അക്ക PNR നമ്പർ നൽകുക",
+		"pnr_checker_api_error": "PNR നില ലഭ്യമാക്കുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
+		"pnr_checker_passenger": "യാത്രക്കാരൻ {{number}}",
+		"pnr_checker_booking_status": "ബുക്കിംഗ് നില",
+		"pnr_checker_no_status": "യാത്രക്കാരുടെ നില ലഭ്യമല്ല"
 	},
 	"errors": {
 		"storage_access_denied": "സംഭരണ ആക്സസ് നിഷേധിച്ചു. കുക്കികൾ പ്രവർത്തനക്ഷമമാക്കുക.",

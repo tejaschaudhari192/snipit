@@ -211,7 +211,19 @@
 		"password_manager_recovery_generate": "રિકવરી કી જનરેટ કરો",
 		"password_manager_recovery_copy": "ક્લિપબોર્ડમાં કૉપિ કરો",
 		"password_manager_recovery_copied": "કૉપિ થયું!",
-		"password_manager_recovery_has_key": "રિકવરી કી સેટ થઈ ગઈ છે"
+		"password_manager_recovery_has_key": "રિકવરી કી સેટ થઈ ગઈ છે",
+		"pnr_checker_title": "PNR ચેકર",
+		"pnr_checker_subtitle": "ભારતીય રેલવે PNR સ્થિતિ તાત્કાલિક તપાસો",
+		"pnr_checker_description": "ભારતીય રેલવે PNR સ્થિતિ તાત્કાલિક તપાસો",
+		"pnr_checker_label": "10 અંકનો PNR નંબર દાખલ કરો",
+		"pnr_checker_placeholder": "PNR નંબર દાખલ કરો...",
+		"pnr_checker_check": "સ્થિતિ તપાસો",
+		"pnr_checker_enter_pnr": "કૃપા કરીને PNR નંબર દાખલ કરો",
+		"pnr_checker_invalid_pnr": "કૃપા કરીને માન્ય 10 અંકનો PNR નંબર દાખલ કરો",
+		"pnr_checker_api_error": "PNR સ્થિતિ મેળવવામાં નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો.",
+		"pnr_checker_passenger": "મુસાફર {{number}}",
+		"pnr_checker_booking_status": "બુકિંગ સ્થિતિ",
+		"pnr_checker_no_status": "કોઈ મુસાફર સ્થિતિ ઉપલબ્ધ નથી"
 	},
 	"errors": {
 		"storage_access_denied": "સ્ટોરેજ ઍક્સેસ નકારવામાં આવી. કૃપા કરીને કૂકીઝ/સ્ટોરેજ સક્ષમ કરો.",

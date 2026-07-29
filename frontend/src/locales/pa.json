@@ -211,7 +211,19 @@
 		"password_manager_recovery_generate": "ਰਿਕਵਰੀ ਕੁੰਜੀ ਬਣਾਓ",
 		"password_manager_recovery_copy": "ਕਲਿੱਪਬੋਰਡ 'ਤੇ ਕਾਪੀ ਕਰੋ",
 		"password_manager_recovery_copied": "ਕਾਪੀ ਕੀਤਾ ਗਿਆ!",
-		"password_manager_recovery_has_key": "ਰਿਕਵਰੀ ਕੁੰਜੀ ਸੈੱਟ ਅੱਪ ਹੈ"
+		"password_manager_recovery_has_key": "ਰਿਕਵਰੀ ਕੁੰਜੀ ਸੈੱਟ ਅੱਪ ਹੈ",
+		"pnr_checker_title": "PNR ਜਾਂਚਕਰਤਾ",
+		"pnr_checker_subtitle": "ਭਾਰਤੀ ਰੇਲਵੇ PNR ਸਥਿਤੀ ਤੁਰੰਤ ਜਾਂਚ ਕਰੋ",
+		"pnr_checker_description": "ਭਾਰਤੀ ਰੇਲਵੇ PNR ਸਥਿਤੀ ਤੁਰੰਤ ਜਾਂਚ ਕਰੋ",
+		"pnr_checker_label": "10 ਅੰਕਾਂ ਦਾ PNR ਨੰਬਰ ਦਰਜ ਕਰੋ",
+		"pnr_checker_placeholder": "PNR ਨੰਬਰ ਦਰਜ ਕਰੋ...",
+		"pnr_checker_check": "ਸਥਿਤੀ ਜਾਂਚ ਕਰੋ",
+		"pnr_checker_enter_pnr": "ਕਿਰਪਾ ਕਰਕੇ PNR ਨੰਬਰ ਦਰਜ ਕਰੋ",
+		"pnr_checker_invalid_pnr": "ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਵੈਧ 10 ਅੰਕਾਂ ਦਾ PNR ਨੰਬਰ ਦਰਜ ਕਰੋ",
+		"pnr_checker_api_error": "PNR ਸਥਿਤੀ ਪ੍ਰਾਪਤ ਕਰਨ ਵਿੱਚ ਅਸਫਲ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+		"pnr_checker_passenger": "ਯਾਤਰੀ {{number}}",
+		"pnr_checker_booking_status": "ਬੁਕਿੰਗ ਸਥਿਤੀ",
+		"pnr_checker_no_status": "ਕੋਈ ਯਾਤਰੀ ਸਥਿਤੀ ਉਪਲਬਧ ਨਹੀਂ"
 	},
 	"errors": {
 		"storage_access_denied": "ਸਟੋਰੇਜ ਪਹੁੰਚ ਤੋਂ ਇਨਕਾਰ ਕੀਤਾ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਕੁਕੀਜ਼ ਚਾਲੂ ਕਰੋ।",

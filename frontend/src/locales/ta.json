@@ -211,7 +211,19 @@
 		"password_manager_recovery_generate": "மீட்பு விசையை உருவாக்கவும்",
 		"password_manager_recovery_copy": "கிளிப்போர்டுக்கு நகலெடுக்கவும்",
 		"password_manager_recovery_copied": "நகலெடுக்கப்பட்டது!",
-		"password_manager_recovery_has_key": "மீட்பு விசை அமைக்கப்பட்டுள்ளது"
+		"password_manager_recovery_has_key": "மீட்பு விசை அமைக்கப்பட்டுள்ளது",
+		"pnr_checker_title": "PNR சரிபார்ப்பான்",
+		"pnr_checker_subtitle": "இந்திய இரயில்வே PNR நிலையை உடனடியாக சரிபார்க்கவும்",
+		"pnr_checker_description": "இந்திய இரயில்வே PNR நிலையை உடனடியாக சரிபார்க்கவும்",
+		"pnr_checker_label": "10 இலக்க PNR எண்ணை உள்ளிடவும்",
+		"pnr_checker_placeholder": "PNR எண்ணை உள்ளிடவும்...",
+		"pnr_checker_check": "நிலையை சரிபார்க்கவும்",
+		"pnr_checker_enter_pnr": "தயவுசெய்து PNR எண்ணை உள்ளிடவும்",
+		"pnr_checker_invalid_pnr": "தயவுசெய்து செல்லுபடியாகும் 10 இலக்க PNR எண்ணை உள்ளிடவும்",
+		"pnr_checker_api_error": "PNR நிலையைப் பெற முடியவில்லை. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.",
+		"pnr_checker_passenger": "பயணி {{number}}",
+		"pnr_checker_booking_status": "முன்பதிவு நிலை",
+		"pnr_checker_no_status": "பயணி நிலை எதுவும் இல்லை"
 	},
 	"errors": {
 		"storage_access_denied": "சேமிப்பக அணுகல் மறுக்கப்பட்டது. தயவுசெய்து குக்கீகள்/சேமிப்பகத்தை இயக்கவும்.",

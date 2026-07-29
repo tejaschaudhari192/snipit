@@ -211,7 +211,19 @@
 		"password_manager_recovery_generate": "ریکوری کی بنائیں",
 		"password_manager_recovery_copy": "کلپ بورڈ پر کاپی کریں",
 		"password_manager_recovery_copied": "کاپی ہو گیا!",
-		"password_manager_recovery_has_key": "ریکوری کی سیٹ اپ ہے"
+		"password_manager_recovery_has_key": "ریکوری کی سیٹ اپ ہے",
+		"pnr_checker_title": "PNR چیکر",
+		"pnr_checker_subtitle": "بھارتی ریلوے PNR کی حیثیت فوری چیک کریں",
+		"pnr_checker_description": "بھارتی ریلوے PNR کی حیثیت فوری چیک کریں",
+		"pnr_checker_label": "10 ہندسوں کا PNR نمبر درج کریں",
+		"pnr_checker_placeholder": "PNR نمبر درج کریں...",
+		"pnr_checker_check": "حیثیت چیک کریں",
+		"pnr_checker_enter_pnr": "براہ کرم PNR نمبر درج کریں",
+		"pnr_checker_invalid_pnr": "براہ کرم ایک درست 10 ہندسوں کا PNR نمبر درج کریں",
+		"pnr_checker_api_error": "PNR حیثیت حاصل کرنے میں ناکام۔ براہ کرم دوبارہ کوشش کریں۔",
+		"pnr_checker_passenger": "مسافر {{number}}",
+		"pnr_checker_booking_status": "بکنگ کی حیثیت",
+		"pnr_checker_no_status": "کوئی مسافر حیثیت دستیاب نہیں"
 	},
 	"errors": {
 		"storage_access_denied": "اسٹوریج تک رسائی مسترد کر دی گئی۔ براہ کرم کوکیز کو فعال کریں۔",

@@ -211,7 +211,19 @@
 		"password_manager_recovery_generate": "रिकवरी की तयार करा",
 		"password_manager_recovery_copy": "क्लिपबोर्डवर कॉपी करा",
 		"password_manager_recovery_copied": "कॉपी केले!",
-		"password_manager_recovery_has_key": "रिकवरी की सेट केली आहे"
+		"password_manager_recovery_has_key": "रिकवरी की सेट केली आहे",
+		"pnr_checker_title": "PNR तपासक",
+		"pnr_checker_subtitle": "भारतीय रेल्वे PNR स्थिती त्वरित तपासा",
+		"pnr_checker_description": "भारतीय रेल्वे PNR स्थिती त्वरित तपासा",
+		"pnr_checker_label": "10 अंकी PNR क्रमांक प्रविष्ट करा",
+		"pnr_checker_placeholder": "PNR क्रमांक प्रविष्ट करा...",
+		"pnr_checker_check": "स्थिती तपासा",
+		"pnr_checker_enter_pnr": "कृपया PNR क्रमांक प्रविष्ट करा",
+		"pnr_checker_invalid_pnr": "कृपया वैध 10 अंकी PNR क्रमांक प्रविष्ट करा",
+		"pnr_checker_api_error": "PNR स्थिती मिळवण्यात अयशस्वी. कृपया पुन्हा प्रयत्न करा.",
+		"pnr_checker_passenger": "प्रवासी {{number}}",
+		"pnr_checker_booking_status": "बुकिंग स्थिती",
+		"pnr_checker_no_status": "कोणतीही प्रवासी स्थिती उपलब्ध नाही"
 	},
 	"errors": {
 		"storage_access_denied": "स्टोरेज प्रवेश नाकारला. कृपया कुकीज/स्टोरेज सक्षम करा.",

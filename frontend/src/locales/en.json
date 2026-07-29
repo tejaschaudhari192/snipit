@@ -211,7 +211,19 @@
 		"password_manager_recovery_generate": "Generate Recovery Key",
 		"password_manager_recovery_copy": "Copy to Clipboard",
 		"password_manager_recovery_copied": "Copied!",
-		"password_manager_recovery_has_key": "Recovery key is set up"
+		"password_manager_recovery_has_key": "Recovery key is set up",
+		"pnr_checker_title": "PNR Checker",
+		"pnr_checker_subtitle": "Check Indian Railway PNR status instantly",
+		"pnr_checker_description": "Check Indian Railway PNR status instantly",
+		"pnr_checker_label": "Enter 10-digit PNR Number",
+		"pnr_checker_placeholder": "Enter PNR number...",
+		"pnr_checker_check": "Check Status",
+		"pnr_checker_enter_pnr": "Please enter a PNR number",
+		"pnr_checker_invalid_pnr": "Please enter a valid 10-digit PNR number",
+		"pnr_checker_api_error": "Failed to fetch PNR status. Please try again.",
+		"pnr_checker_passenger": "Passenger {{number}}",
+		"pnr_checker_booking_status": "Booking Status",
+		"pnr_checker_no_status": "No passenger status available"
 	},
 	"errors": {
 		"storage_access_denied": "Storage access denied. Please enable cookies/storage for full functionality.",
