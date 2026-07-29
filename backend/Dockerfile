@@ -8,7 +8,7 @@ RUN npm install -g pnpm
 
 COPY package.json package-lock.json* ./
 # Install ALL deps (including devDeps) so tsc and tsc-alias are available
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 
 COPY . .
 RUN pnpm build
