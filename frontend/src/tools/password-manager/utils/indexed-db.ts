@@ -1,7 +1,4 @@
-import type {
-	RecoveryRecord,
-	KeyRecord,
-} from "@/tools/password-manager/types";
+import type { RecoveryRecord, KeyRecord } from "@/tools/password-manager/types";
 
 const DB_NAME = "SnipitPasswordManagerDB";
 const RECOVERY_STORE = "recovery_records";
@@ -31,9 +28,7 @@ function getDB(): Promise<IDBDatabase> {
 
 // ─── Key records store ──────────────────────────────────────────────────────
 
-export async function getKeyRecord(
-	userId: string,
-): Promise<KeyRecord | null> {
+export async function getKeyRecord(userId: string): Promise<KeyRecord | null> {
 	const db = await getDB();
 	return new Promise((resolve, reject) => {
 		const transaction = db.transaction(KEYS_STORE, "readonly");

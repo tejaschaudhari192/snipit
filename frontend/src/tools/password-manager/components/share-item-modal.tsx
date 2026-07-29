@@ -44,12 +44,14 @@ export default function ShareItemModal({
 
 		setIsSharing(true);
 		try {
-			await dispatch(shareItem({
-				targetEmail: email,
-				role,
-				item
-			})).unwrap();
-			
+			await dispatch(
+				shareItem({
+					targetEmail: email,
+					role,
+					item,
+				}),
+			).unwrap();
+
 			toast.success(`Securely shared with ${email}`);
 			setEmail("");
 			onClose();
@@ -70,13 +72,16 @@ export default function ShareItemModal({
 						Share "{item.title}"
 					</DialogTitle>
 					<DialogDescription className="text-muted-foreground">
-						Share this password securely using End-to-End Encryption.
+						Share this password securely using End-to-End
+						Encryption.
 					</DialogDescription>
 				</DialogHeader>
 
 				<form onSubmit={handleShare} className="space-y-4 py-4">
 					<div className="space-y-2">
-						<label className="text-sm font-medium">User Email</label>
+						<label className="text-sm font-medium">
+							User Email
+						</label>
 						<Input
 							placeholder="Enter email address"
 							type="email"
@@ -88,10 +93,14 @@ export default function ShareItemModal({
 					</div>
 
 					<div className="space-y-2">
-						<label className="text-sm font-medium">Permission</label>
+						<label className="text-sm font-medium">
+							Permission
+						</label>
 						<Select
 							value={role}
-							onValueChange={(val: "viewer" | "editor") => setRole(val)}
+							onValueChange={(val: "viewer" | "editor") =>
+								setRole(val)
+							}
 						>
 							<SelectTrigger className="w-full bg-black/50 border-white/10 text-white">
 								<SelectValue placeholder="Select permission" />

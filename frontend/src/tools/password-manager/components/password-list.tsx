@@ -70,7 +70,11 @@ export default function PasswordList({
 			return true;
 		}
 		// Filter by folder
-		if (item.folderId === activeFilter || item.collectionId === activeFilter) return true;
+		if (
+			item.folderId === activeFilter ||
+			item.collectionId === activeFilter
+		)
+			return true;
 		// Filter by item type (login, card, etc.)
 		return (
 			item.itemType === activeFilter ||

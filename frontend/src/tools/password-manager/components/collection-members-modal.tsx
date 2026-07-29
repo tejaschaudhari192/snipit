@@ -41,11 +41,15 @@ export default function CollectionMembersModal({
 	const fetchMembers = useCallback(async () => {
 		setLoading(true);
 		try {
-			const res = await api.get(`/tools/password-manager/vault/share/${collectionId}`);
+			const res = await api.get(
+				`/tools/password-manager/vault/share/${collectionId}`,
+			);
 			setMembers(res.data?.data || []);
 		} catch (error: unknown) {
 			const err = error as { response?: { data?: { message?: string } } };
-			toast.error(err.response?.data?.message || "Failed to fetch members");
+			toast.error(
+				err.response?.data?.message || "Failed to fetch members",
+			);
 		} finally {
 			setLoading(false);
 		}
@@ -58,7 +62,8 @@ export default function CollectionMembersModal({
 	}, [isOpen, collectionId, fetchMembers]);
 
 	const handleRevoke = async (accessId: string, email: string) => {
-		if (!confirm(`Are you sure you want to revoke access for ${email}?`)) return;
+		if (!confirm(`Are you sure you want to revoke access for ${email}?`))
+			return;
 
 		try {
 			await dispatch(revokeSharedAccess(accessId)).unwrap();
@@ -120,7 +125,7 @@ export default function CollectionMembersModal({
 												onClick={() =>
 													handleRevoke(
 														member.id,
-														member.email || "user"
+														member.email || "user",
 													)
 												}
 											>

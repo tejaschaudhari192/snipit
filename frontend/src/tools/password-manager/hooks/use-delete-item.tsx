@@ -19,9 +19,9 @@ export function useDeleteItem() {
 				await dispatch(deleteItem(deleteTargetId)).unwrap();
 			} catch (error: unknown) {
 				toast.error(
-					typeof error === "string" 
-						? error 
-						: (error as Error).message || "Failed to delete item"
+					typeof error === "string"
+						? error
+						: (error as Error).message || "Failed to delete item",
 				);
 			}
 		}

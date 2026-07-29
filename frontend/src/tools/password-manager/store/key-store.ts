@@ -5,7 +5,7 @@ class KeyStore {
 	private mek: Uint8Array | null = null;
 	private personalKey: Uint8Array | null = null;
 	private privateKey: string | null = null; // Base64
-	private publicKey: string | null = null;  // Base64
+	private publicKey: string | null = null; // Base64
 	private collectionKeys: Map<string, Uint8Array> = new Map();
 
 	setMEK(key: Uint8Array) {

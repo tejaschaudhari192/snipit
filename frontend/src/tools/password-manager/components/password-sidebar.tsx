@@ -56,7 +56,8 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 
 	const [isTypeDialogOpen, setIsTypeDialogOpen] = useState(false);
 	const [folderModalOpen, setFolderModalOpen] = useState(false);
-	const [folderModalMode, setFolderModalMode] = useState<FolderModalMode>("create");
+	const [folderModalMode, setFolderModalMode] =
+		useState<FolderModalMode>("create");
 	const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
 	const [folderName, setFolderName] = useState("");
 	const [folderColor, setFolderColor] = useState(UI_DEFAULTS.FOLDER_COLOR);

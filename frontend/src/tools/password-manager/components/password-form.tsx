@@ -46,7 +46,7 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 	const [metadata, setMetadata] = useState<Record<string, string>>(
 		editItem?.metadata ?? {},
 	);
-	
+
 	const [folderModalOpen, setFolderModalOpen] = useState(false);
 	const { createFolder } = useFolderMutations();
 
@@ -78,13 +78,21 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 	const handleSubmit = () => {
 		if (!title) return;
 		const now = new Date().toISOString();
-		const selectedFolder = folderId !== "none" ? folders.find((f: { id: string; collectionId?: string }) => f.id === folderId) : null;
+		const selectedFolder =
+			folderId !== "none"
+				? folders.find(
+						(f: { id: string; collectionId?: string }) =>
+							f.id === folderId,
+					)
+				: null;
 		onAdd({
 			id: editItem?.id ?? crypto.randomUUID(),
 			title: title.trim(),
 			...(notes.trim() && { notes: notes.trim() }),
 			...(folderId !== "none" && { folderId }),
-			...(selectedFolder?.collectionId && { collectionId: selectedFolder.collectionId }),
+			...(selectedFolder?.collectionId && {
+				collectionId: selectedFolder.collectionId,
+			}),
 			...(itemType && itemType !== "other" && { itemType }),
 			...(customFields.filter((f) => f.name.trim()).length > 0 && {
 				customFields: customFields.filter((f) => f.name.trim()),
@@ -98,9 +106,9 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 
 	const addField = () => {
 		setCustomFields([
-						...customFields,
-						{ id: crypto.randomUUID(), name: "", type: "text", value: "" },
-					]);
+			...customFields,
+			{ id: crypto.randomUUID(), name: "", type: "text", value: "" },
+		]);
 	};
 
 	const removeField = (index: number) => {
@@ -251,7 +259,10 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 										</SelectItem>
 									),
 								)}
-								<SelectItem value="new_folder" className="text-primary font-medium">
+								<SelectItem
+									value="new_folder"
+									className="text-primary font-medium"
+								>
 									+ Create folder
 								</SelectItem>
 							</SelectContent>

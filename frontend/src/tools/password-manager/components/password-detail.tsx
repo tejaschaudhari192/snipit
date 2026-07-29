@@ -1,6 +1,15 @@
 import { lazy, Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, Edit2, Trash2, Star, Folder, Globe, Share2, FolderPlus } from "lucide-react";
+import {
+	ArrowLeft,
+	Edit2,
+	Trash2,
+	Star,
+	Folder,
+	Globe,
+	Share2,
+	FolderPlus,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
 	Tooltip,
@@ -170,12 +179,20 @@ export default function PasswordDetail({
 									if (val === "new_folder") {
 										setFolderModalOpen(true);
 									} else {
-										const selectedFolder = folders.find((f: { id: string; collectionId?: string }) => f.id === val);
+										const selectedFolder = folders.find(
+											(f: {
+												id: string;
+												collectionId?: string;
+											}) => f.id === val,
+										);
 										onSave({
 											...item,
 											folderId:
-												val === "none" ? undefined : val,
-											collectionId: selectedFolder?.collectionId,
+												val === "none"
+													? undefined
+													: val,
+											collectionId:
+												selectedFolder?.collectionId,
 										});
 									}
 								}}
@@ -195,7 +212,10 @@ export default function PasswordDetail({
 											</SelectItem>
 										),
 									)}
-									<SelectItem value="new_folder" className="text-primary font-medium flex items-center gap-2">
+									<SelectItem
+										value="new_folder"
+										className="text-primary font-medium flex items-center gap-2"
+									>
 										<FolderPlus className="h-4 w-4" />
 										{t("tools.password_manager_add_folder")}
 									</SelectItem>
@@ -214,10 +234,11 @@ export default function PasswordDetail({
 												isFavorite: !item.isFavorite,
 											});
 										}}
-										className={`h-8 w-8 rounded-lg transition-colors ${item.isFavorite
-											? "text-amber-400 hover:text-amber-500 hover:bg-amber-400/10"
-											: "text-muted-foreground hover:text-foreground hover:bg-muted"
-											}`}
+										className={`h-8 w-8 rounded-lg transition-colors ${
+											item.isFavorite
+												? "text-amber-400 hover:text-amber-500 hover:bg-amber-400/10"
+												: "text-muted-foreground hover:text-foreground hover:bg-muted"
+										}`}
 									>
 										<Star
 											className="h-4 w-4"
@@ -233,7 +254,9 @@ export default function PasswordDetail({
 									<p>
 										{item.isFavorite
 											? t("remove")
-											: t("tools.password_manager_favorites")}
+											: t(
+													"tools.password_manager_favorites",
+												)}
 									</p>
 								</TooltipContent>
 							</Tooltip>
@@ -244,7 +267,9 @@ export default function PasswordDetail({
 									<Button
 										variant="ghost"
 										size="icon"
-										onClick={() => setIsShareModalOpen(true)}
+										onClick={() =>
+											setIsShareModalOpen(true)
+										}
 										className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
 									>
 										<Share2 className="h-4 w-4" />
@@ -261,7 +286,9 @@ export default function PasswordDetail({
 									<Button
 										variant="ghost"
 										size="icon"
-										onClick={() => dispatch(handleEdit(item))}
+										onClick={() =>
+											dispatch(handleEdit(item))
+										}
 										className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
 									>
 										<Edit2 className="h-4 w-4" />
@@ -301,13 +328,17 @@ export default function PasswordDetail({
 							>
 								<span className="text-white text-3xl font-bold">
 									{item.title
-										? item.title.substring(0, 2).toUpperCase()
+										? item.title
+												.substring(0, 2)
+												.toUpperCase()
 										: "?"}
 								</span>
 							</div>
 							<div className="min-w-0 flex-1">
 								<h2 className="text-[28px] font-bold text-white tracking-tight flex items-center gap-2 mb-1">
-									<span className="truncate">{item.title}</span>
+									<span className="truncate">
+										{item.title}
+									</span>
 								</h2>
 								{item.itemType && (
 									<Badge
@@ -439,7 +470,9 @@ export default function PasswordDetail({
 								handleConfirm();
 							}}
 							title={t("tools.password_manager_delete_confirm")}
-							description={t("tools.password_manager_delete_desc")}
+							description={t(
+								"tools.password_manager_delete_desc",
+							)}
 						/>
 						<ShareItemModal
 							isOpen={isShareModalOpen}
@@ -459,7 +492,7 @@ export default function PasswordDetail({
 					createFolder(name, color);
 					setFolderModalOpen(false);
 				}}
-				onDelete={() => { }}
+				onDelete={() => {}}
 			/>
 		</>
 	);

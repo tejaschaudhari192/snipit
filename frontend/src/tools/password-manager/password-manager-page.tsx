@@ -16,9 +16,7 @@ const VaultUnlock = React.lazy(() => import("./components/vault-unlock"));
 const MobileSidebarDrawer = React.lazy(
 	() => import("./components/mobile-sidebar-drawer"),
 );
-const SharingCenter = React.lazy(
-	() => import("./components/sharing-center"),
-);
+const SharingCenter = React.lazy(() => import("./components/sharing-center"));
 import {
 	AppSkeleton,
 	SidebarSkeleton,
@@ -112,8 +110,12 @@ function PasswordManagerInner() {
 	useEffect(() => {
 		if (isUnlocked && user?._id) {
 			const handleFocus = () => {
-				logger.info("[Vault] Window focused, syncing shared collections...");
-				dispatch(fetchSharedCollections()).then(() => dispatch(fetchVaultData()));
+				logger.info(
+					"[Vault] Window focused, syncing shared collections...",
+				);
+				dispatch(fetchSharedCollections()).then(() =>
+					dispatch(fetchVaultData()),
+				);
 			};
 
 			window.addEventListener("focus", handleFocus);
@@ -191,7 +193,6 @@ function PasswordManagerInner() {
 	return (
 		<TooltipProvider>
 			<div className="h-full flex flex-col bg-background">
-
 				{isMobile ? (
 					<div className="flex-1 flex overflow-hidden relative">
 						<Suspense fallback={<SidebarSkeleton />}>
@@ -282,14 +283,26 @@ function PasswordManagerInner() {
 										className="bg-vault-panel"
 									>
 										<div className="h-full w-full overflow-hidden flex flex-col border-r border-white/5">
-											<Suspense fallback={<ListSkeleton />}>
+											<Suspense
+												fallback={<ListSkeleton />}
+											>
 												<PasswordList
-													activeId={activeItem?.id ?? null}
-													onSelect={(item: PasswordItem) =>
-														dispatch(handleSelect(item))
+													activeId={
+														activeItem?.id ?? null
 													}
-													onEdit={(item: PasswordItem) =>
-														dispatch(handleEdit(item))
+													onSelect={(
+														item: PasswordItem,
+													) =>
+														dispatch(
+															handleSelect(item),
+														)
+													}
+													onEdit={(
+														item: PasswordItem,
+													) =>
+														dispatch(
+															handleEdit(item),
+														)
 													}
 												/>
 											</Suspense>
@@ -305,13 +318,17 @@ function PasswordManagerInner() {
 										className="bg-vault-card"
 									>
 										<div className="h-full w-full overflow-hidden flex flex-col">
-											<Suspense fallback={<DetailSkeleton />}>
+											<Suspense
+												fallback={<DetailSkeleton />}
+											>
 												<PasswordDetail
 													item={activeItem}
 													isNew={isNewItem}
 													onSave={saveItem}
 													onCancel={() =>
-														dispatch(handleCancelDetail())
+														dispatch(
+															handleCancelDetail(),
+														)
 													}
 												/>
 											</Suspense>

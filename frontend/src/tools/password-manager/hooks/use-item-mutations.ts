@@ -18,9 +18,9 @@ export function useItemMutations() {
 				await dispatch(persistItem(item)).unwrap();
 			} catch (error: unknown) {
 				toast.error(
-					typeof error === "string" 
-						? error 
-						: (error as Error).message || "Failed to save item"
+					typeof error === "string"
+						? error
+						: (error as Error).message || "Failed to save item",
 				);
 			}
 		},

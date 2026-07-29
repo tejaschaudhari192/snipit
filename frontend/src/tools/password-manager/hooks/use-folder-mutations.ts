@@ -33,7 +33,9 @@ export function useFolderMutations() {
 			);
 			dispatch(persistFolders(newFolders))
 				.unwrap()
-				.catch((err) => toast.error(err.message || "Failed to create folder"));
+				.catch((err) =>
+					toast.error(err.message || "Failed to create folder"),
+				);
 		},
 		[vault, dispatch],
 	);
@@ -58,7 +60,9 @@ export function useFolderMutations() {
 			);
 			dispatch(persistFolders(newFolders))
 				.unwrap()
-				.catch((err) => toast.error(err.message || "Failed to update folder"));
+				.catch((err) =>
+					toast.error(err.message || "Failed to update folder"),
+				);
 		},
 		[vault, dispatch],
 	);
@@ -66,10 +70,14 @@ export function useFolderMutations() {
 	const deleteFolder = useCallback(
 		(id: string, deletePasswordsInside = false) => {
 			if (!vault) return;
-			const newFolders = (vault.folders || []).filter((f: Folder) => f.id !== id);
+			const newFolders = (vault.folders || []).filter(
+				(f: Folder) => f.id !== id,
+			);
 			let newItems = vault.items || [];
 			if (deletePasswordsInside) {
-				newItems = newItems.filter((item: PasswordItem) => item.folderId !== id);
+				newItems = newItems.filter(
+					(item: PasswordItem) => item.folderId !== id,
+				);
 			} else {
 				newItems = newItems.map((item: PasswordItem) =>
 					item.folderId === id
@@ -89,7 +97,9 @@ export function useFolderMutations() {
 			);
 			dispatch(persistFolders(newFolders))
 				.unwrap()
-				.catch((err) => toast.error(err.message || "Failed to delete folder"));
+				.catch((err) =>
+					toast.error(err.message || "Failed to delete folder"),
+				);
 			if (activeFilter === id) dispatch(setActiveFilter("all"));
 		},
 		[vault, dispatch, activeFilter],

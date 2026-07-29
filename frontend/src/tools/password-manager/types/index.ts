@@ -2,7 +2,17 @@ export interface CustomField {
 	id: string;
 	name: string;
 	value: string;
-	type: "text" | "password" | "boolean" | "hidden" | "url" | "date" | "number" | "email" | "tel" | "color";
+	type:
+		| "text"
+		| "password"
+		| "boolean"
+		| "hidden"
+		| "url"
+		| "date"
+		| "number"
+		| "email"
+		| "tel"
+		| "color";
 	isProtected?: boolean; // If true, value is masked by default
 }
 
@@ -15,8 +25,15 @@ export interface PasswordItem {
 	url?: string;
 	notes?: string;
 	folderId?: string;
-	collectionId?: string | null;      // null for personal, set for shared
-	itemType?: 'login' | 'card' | 'apikey' | 'passkey' | 'credfile' | 'note' | 'other';
+	collectionId?: string | null; // null for personal, set for shared
+	itemType?:
+		| "login"
+		| "card"
+		| "apikey"
+		| "passkey"
+		| "credfile"
+		| "note"
+		| "other";
 	metadata?: Record<string, string>;
 	customFields?: CustomField[];
 	createdAt?: string;
@@ -45,7 +62,7 @@ export interface CollectionAccess {
 	id: string;
 	collectionId: string;
 	userId: string;
-	role: 'owner' | 'editor' | 'viewer';
+	role: "owner" | "editor" | "viewer";
 	encryptedCollectionKey?: string; // Sometimes populated depending on the endpoint
 }
 
@@ -60,7 +77,7 @@ export interface SharedCollectionMember {
 	userId: string;
 	email: string;
 	username: string;
-	role: 'owner' | 'editor' | 'viewer';
+	role: "owner" | "editor" | "viewer";
 }
 
 export interface SharedCollectionWithMembers extends SharedCollection {
@@ -69,13 +86,13 @@ export interface SharedCollectionWithMembers extends SharedCollection {
 
 export interface ShareItemPayload {
 	targetEmail: string;
-	role: 'viewer' | 'editor';
+	role: "viewer" | "editor";
 	item: PasswordItem;
 }
 
 export interface ShareFolderPayload {
 	targetEmail: string;
-	role: 'viewer' | 'editor';
+	role: "viewer" | "editor";
 	folderId: string;
 	folderName: string;
 }
