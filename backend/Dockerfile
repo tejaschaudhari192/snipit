@@ -45,7 +45,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget gpg ca-cer
         git \
         curl && \
     rm -rf /var/lib/apt/lists/* && \
-    pnpm add -g tsx && \
+    npm install -g tsx && \
     dotnet tool install -g dotnet-script
 
 ENV PATH="$PATH:/root/.dotnet/tools"
