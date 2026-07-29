@@ -1,7 +1,7 @@
 export const CONTENT_MODES = [
 	"text",
 	"code",
-	"richtext",
+	"docs",
 	"draw",
 	"link",
 	"file",

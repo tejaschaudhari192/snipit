@@ -61,7 +61,7 @@ export const ToolbarActionButtons = ({
 
 					{(isCode ||
 						language.toLowerCase() === "text" ||
-						contentType === "richtext") && (
+						contentType === "docs") && (
 						<SaveAsButton
 							content={content}
 							language={language}

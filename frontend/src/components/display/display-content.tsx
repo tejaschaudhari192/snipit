@@ -206,7 +206,7 @@ export const DisplayContent = memo(
 				);
 			}
 
-			if (contentType === "richtext") {
+			if (contentType === "docs") {
 				return (
 					<Suspense
 						fallback={<Skeleton className="flex-1 w-full h-full" />}
@@ -483,7 +483,7 @@ export const DisplayContent = memo(
 				<div
 					className={cn(
 						"flex-1 w-full relative min-h-0 flex flex-col",
-						contentType !== "richtext" && "overflow-hidden",
+						contentType !== "docs" && "overflow-hidden",
 					)}
 				>
 					{renderContent()}

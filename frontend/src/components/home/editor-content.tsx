@@ -205,7 +205,7 @@ export const EditorContent = memo(
 					ref={stableRefCallback}
 					className={cn(
 						"mx-2 mt-0.5 sm:mx-4 sm:mt-1 mb-4 glass-card relative z-20 flex flex-col rounded-2xl",
-						contentType !== "richtext" && "overflow-hidden",
+						contentType !== "docs" && "overflow-hidden",
 						contentType === "draw" && "touch-none",
 						isFullscreen
 							? "fixed inset-0 m-0 z-50 rounded-none h-screen border-none"
@@ -487,7 +487,7 @@ export const EditorContent = memo(
 									onFileSelect={onFileSelect}
 								/>
 							</Suspense>
-						) : contentType === "richtext" ? (
+						) : contentType === "docs" ? (
 							<Suspense
 								fallback={
 									<Skeleton className="flex-1 w-full h-full" />

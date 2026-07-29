@@ -374,7 +374,7 @@ export const DisplayToolbar = memo(
 						)}
 
 					{isEdit &&
-						["text", "richtext"].includes(contentType) &&
+						["text", "docs"].includes(contentType) &&
 						transliterationEnabled !== undefined &&
 						onTransliterationToggle &&
 						transliterationLanguage &&
@@ -490,8 +490,12 @@ export const DisplayToolbar = memo(
 											<CommentsSection
 												paste={paste}
 												onCommentAdded={onCommentAdded}
-												onCommentUpdated={onCommentUpdated}
-												onCommentDeleted={onCommentDeleted}
+												onCommentUpdated={
+													onCommentUpdated
+												}
+												onCommentDeleted={
+													onCommentDeleted
+												}
 											/>
 										</Suspense>
 									)}

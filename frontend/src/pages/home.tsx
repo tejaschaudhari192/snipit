@@ -204,7 +204,7 @@ const HomePage = () => {
 
 	const handleApplyEnhancedText = useCallback(
 		(newText: string) => {
-			if (contentType === "richtext" && tiptapEditorRef.current) {
+			if (contentType === "docs" && tiptapEditorRef.current) {
 				tiptapEditorRef.current
 					.chain()
 					.focus()
@@ -219,7 +219,7 @@ const HomePage = () => {
 
 	const handleApplyWriterText = useCallback(
 		(newText: string) => {
-			if (contentType === "richtext" && tiptapEditorRef.current) {
+			if (contentType === "docs" && tiptapEditorRef.current) {
 				tiptapEditorRef.current
 					.chain()
 					.focus()
@@ -479,7 +479,7 @@ const HomePage = () => {
 							</Suspense>
 						)}
 
-						{["text", "code", "richtext"].includes(contentType) && (
+						{["text", "code", "docs"].includes(contentType) && (
 							<Suspense
 								fallback={
 									<div className="flex items-center gap-2">
@@ -495,7 +495,7 @@ const HomePage = () => {
 									<AiWriterButton
 										onClick={() => {
 											if (
-												contentType === "richtext" &&
+												contentType === "docs" &&
 												tiptapEditorRef.current
 											) {
 												const { from, to } =
@@ -540,7 +540,7 @@ const HomePage = () => {
 
 									<div className="w-px h-6 bg-border/40 mx-1" />
 
-									{["text", "richtext"].includes(
+									{["text", "docs"].includes(
 										contentType,
 									) && (
 										<TransliterationToggle
@@ -589,7 +589,7 @@ const HomePage = () => {
 						<div
 							className={cn(
 								"flex-1 flex flex-col min-h-0 min-w-0 h-full w-full",
-								contentType !== "richtext" && "overflow-clip",
+								contentType !== "docs" && "overflow-clip",
 							)}
 						>
 							<Suspense

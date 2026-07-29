@@ -48,7 +48,7 @@ export interface CursorPosition {
 export type ContentMode =
 	| "text"
 	| "code"
-	| "richtext"
+	| "docs"
 	| "draw"
 	| "link"
 	| "file"

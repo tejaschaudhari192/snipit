@@ -89,7 +89,7 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 			try {
 				let textToSpeak = content;
 
-				if (contentType === "richtext") {
+				if (contentType === "docs") {
 					if (typeof document !== "undefined") {
 						const tempDiv = document.createElement("div");
 						tempDiv.innerHTML = content;

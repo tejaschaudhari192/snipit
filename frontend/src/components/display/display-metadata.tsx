@@ -106,10 +106,10 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 							/>
 							{(() => {
 								if (
-									paste.contentMode === "richtext" ||
-									paste.language === "richtext"
+									paste.contentMode === "docs" ||
+									paste.language === "docs"
 								)
-									return t("home.tab_richtext");
+									return t("home.tab_docs");
 								if (paste.language === "text")
 									return t("home.tab_text");
 								const lang = LANGUAGES.find(

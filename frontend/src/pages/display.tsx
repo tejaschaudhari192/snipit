@@ -386,7 +386,7 @@ const DisplayPage = () => {
 
 	const handleApplyEnhancedText = useCallback(
 		(newText: string) => {
-			if (contentType === "richtext" && tiptapEditorRef.current) {
+			if (contentType === "docs" && tiptapEditorRef.current) {
 				tiptapEditorRef.current
 					.chain()
 					.focus()
@@ -401,7 +401,7 @@ const DisplayPage = () => {
 
 	const handleApplyWriterText = useCallback(
 		(newText: string) => {
-			if (contentType === "richtext" && tiptapEditorRef.current) {
+			if (contentType === "docs" && tiptapEditorRef.current) {
 				tiptapEditorRef.current
 					.chain()
 					.focus()
@@ -587,8 +587,12 @@ const DisplayPage = () => {
 									prev
 										? {
 												...prev,
-												comments: prev.comments?.map((c) =>
-													c.id === updatedComment.id ? updatedComment : c
+												comments: prev.comments?.map(
+													(c) =>
+														c.id ===
+														updatedComment.id
+															? updatedComment
+															: c,
 												),
 											}
 										: prev,
@@ -599,7 +603,9 @@ const DisplayPage = () => {
 									prev
 										? {
 												...prev,
-												comments: prev.comments?.filter((c) => c.id !== commentId),
+												comments: prev.comments?.filter(
+													(c) => c.id !== commentId,
+												),
 											}
 										: prev,
 								)
@@ -680,7 +686,7 @@ const DisplayPage = () => {
 				<div
 					className={cn(
 						"flex-1 flex flex-col w-full min-h-0 h-full",
-						contentType !== "richtext" && "overflow-hidden",
+						contentType !== "docs" && "overflow-hidden",
 					)}
 				>
 					<div

@@ -42,7 +42,7 @@ export const EditorToolbar = ({
 		contentType !== "code" &&
 		contentType !== "text" &&
 		contentType !== "draw" &&
-		contentType !== "richtext"
+		contentType !== "docs"
 	) {
 		return null;
 	}
@@ -61,7 +61,7 @@ export const EditorToolbar = ({
 							: "absolute top-4 right-4 sm:top-8 sm:right-8",
 				)}
 			>
-				{["code", "text", "richtext"].includes(contentType) && (
+				{["code", "text", "docs"].includes(contentType) && (
 					<TtsButton content={content} contentType={contentType} />
 				)}
 

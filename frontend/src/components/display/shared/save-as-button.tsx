@@ -91,7 +91,7 @@ export const SaveAsButton = ({
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="start" className="w-48">
-				{contentType === "richtext" ? (
+				{contentType === "docs" ? (
 					<>
 						<DropdownMenuItem
 							onClick={() => handleDownload("docx")}

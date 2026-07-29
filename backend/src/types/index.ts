@@ -3,7 +3,7 @@ import type { Document } from "mongoose";
 export type ContentMode =
 	| "text"
 	| "code"
-	| "richtext"
+	| "docs"
 	| "draw"
 	| "link"
 	| "file"

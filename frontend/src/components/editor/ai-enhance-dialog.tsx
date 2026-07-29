@@ -57,7 +57,7 @@ export const AiEnhanceDialog = ({
 			return;
 		}
 
-		if (contentType === "richtext") {
+		if (contentType === "docs") {
 			targetInstruction = `${targetInstruction} (IMPORTANT: Return the response as clean, nicely formatted HTML suitable for a rich text editor. Use proper semantic tags like <p>, <strong>, <em>, <ul>, <li>, <h3>, <h4>, <blockquote>, <code> etc. Do NOT wrap the code/response in markdown formatting like \`\`\`html or similar code blocks. Output ONLY the raw HTML content.)`;
 		}
 

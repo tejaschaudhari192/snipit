@@ -4,7 +4,7 @@
 
 export const CONTENT_MODES = [
 	"text",
-	"richtext",
+	"docs",
 	"code",
 	"draw",
 	"link",
@@ -18,7 +18,7 @@ export const ID_TYPES = ["system", "dynamic", "semantic"] as const;
 
 export const LANGUAGES = [
 	{ name: "Plain Text", value: "text" },
-	{ name: "Rich Text", value: "richtext" },
+	{ name: "Rich Text", value: "docs" },
 	{ name: "JavaScript", value: "javascript" },
 	{ name: "TypeScript", value: "typescript" },
 	{ name: "HTML", value: "html" },
