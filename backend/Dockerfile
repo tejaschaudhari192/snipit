@@ -8,12 +8,12 @@ RUN npm install -g pnpm
 
 COPY package.json pnpm-lock.yaml* ./
 # Install ALL deps (including devDeps) so tsc and tsc-alias are available
-RUN pnpm install --no-frozen-lockfile --ignore-scripts
+RUN pnpm install --frozen-lockfile
 
 COPY . .
 RUN pnpm build
 
-RUN rm -rf node_modules && pnpm install --prod --frozen-lockfile --ignore-scripts
+RUN rm -rf node_modules && pnpm install --prod --frozen-lockfile
 
 # =================================================
 # Stage 2 – Runtime
@@ -22,9 +22,6 @@ FROM node:22-bookworm AS runner
 WORKDIR /app
 
 RUN npm install -g pnpm
-
-ENV PNPM_HOME="/pnpm/bin"
-ENV PATH="$PNPM_HOME:$PATH"
 
 # ── Language SDKs for the code runner ─────────────────────────────────────────
 # Register Microsoft's repo first (required for dotnet-sdk-8.0)
@@ -45,7 +42,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget gpg ca-cer
         git \
         curl && \
     rm -rf /var/lib/apt/lists/* && \
-    npm install -g tsx && \
+    pnpm add -g tsx && \
     dotnet tool install -g dotnet-script
 
 ENV PATH="$PATH:/root/.dotnet/tools"
