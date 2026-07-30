@@ -5,7 +5,7 @@ export function AppSkeleton() {
 		<div className="h-full flex flex-col bg-background">
 			<div className="flex-1 flex overflow-hidden bg-pm-surface animate-in fade-in duration-500">
 				{/* Left - Sidebar Skeleton */}
-				<div className="w-[240px] shrink-0 h-full overflow-hidden border-r border-pm-border flex flex-col bg-pm-sidebar shadow-sm z-10 p-4 space-y-4">
+				<div className="w-60 shrink-0 h-full overflow-hidden border-r border-pm-border flex flex-col bg-pm-sidebar shadow-sm z-10 p-4 space-y-4">
 					<Skeleton className="h-8 w-3/4 mb-6 bg-white/5" />
 					<Skeleton className="h-10 w-full rounded-md bg-white/5" />
 					<div className="space-y-2 mt-8">
@@ -33,7 +33,7 @@ export function AppSkeleton() {
 						{Array.from({ length: 8 }).map((_, i) => (
 							<Skeleton
 								key={i}
-								className="h-[60px] w-full rounded-none border-b border-white/5 bg-transparent"
+								className="h-15 w-full rounded-none border-b border-white/5 bg-transparent"
 							/>
 						))}
 					</div>

@@ -228,7 +228,7 @@ function PasswordManagerInner() {
 				) : (
 					<div className="flex-1 flex overflow-hidden bg-pm-surface">
 						{/* Sidebar */}
-						<div className="w-[240px] shrink-0 h-full overflow-hidden border-r border-pm-border flex flex-col bg-pm-sidebar shadow-sm z-10">
+						<div className="w-60 shrink-0 h-full overflow-hidden border-r border-pm-border flex flex-col bg-pm-sidebar shadow-sm z-10">
 							<SidebarProvider className="min-h-0 h-full w-full">
 								<Suspense fallback={<SidebarSkeleton />}>
 									<PasswordSidebar
@@ -273,7 +273,7 @@ function PasswordManagerInner() {
 						>
 							<SheetContent
 								side="right"
-								className="sm:max-w-[520px] p-0 border-l border-pm-border shadow-2xl"
+								className="sm:max-w-130 p-0 border-l border-pm-border shadow-2xl"
 								hideOverlay={false}
 								showCloseButton={false}
 							>

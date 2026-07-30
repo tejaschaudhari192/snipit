@@ -24,7 +24,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { Menu, MoreHorizontal, Pencil, Share2, Trash2, Copy, Folder } from "lucide-react";
+import { Menu, MoreHorizontal, Pencil, Share2, Trash2, Folder } from "lucide-react";
 import { ITEM_TYPE_OPTIONS } from "@/tools/password-manager/utils/constants";
 import {
 	getDomain,
@@ -44,7 +44,6 @@ import {
 	getSortedRowModel,
 	getFilteredRowModel,
 	useReactTable,
-	type ColumnDef,
 } from "@tanstack/react-table";
 
 const DeleteConfirmDialog = lazy(() =>
@@ -109,12 +108,12 @@ export default function PasswordList({
 		handleConfirm,
 		cancelDelete,
 	} = useDeleteItem();
-	const items = vault?.items ?? [];
 	const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 	const activeFolder = folders.find((f: FolderType) => f.id === activeFilter);
 
 	// First apply sidebar filter
 	const categoryFiltered = useMemo(() => {
+		const items = vault?.items ?? [];
 		return items.filter((item: PasswordItem) => {
 			if (activeFilter === "all") return true;
 			if (activeFilter === "favorites") return item.isFavorite === true;
@@ -128,12 +127,11 @@ export default function PasswordList({
 				(!item.itemType && activeFilter === "login")
 			);
 		});
-	}, [items, activeFilter]);
-
-	const columnHelper = createColumnHelper<PasswordItem>();
+	}, [vault?.items, activeFilter]);
 
 	const columns = useMemo(() => {
-		const baseColumns: ColumnDef<PasswordItem, any>[] = [
+		const columnHelper = createColumnHelper<PasswordItem>();
+		return [
 			columnHelper.display({
 				id: "select",
 				header: ({ table }) => (
@@ -174,7 +172,7 @@ export default function PasswordList({
 							<ItemAvatar item={item} />
 							<div className="flex flex-col gap-0.5">
 								<span className="font-semibold text-foreground tracking-tight">{item.title}</span>
-								<span className="text-[13px] text-muted-foreground truncate max-w-[200px]">
+								<span className="text-[13px] text-muted-foreground truncate max-w-50">
 									{subtitle || item.username || domain || "No details"}
 								</span>
 							</div>
@@ -190,10 +188,7 @@ export default function PasswordList({
 					</span>
 				),
 			}),
-		];
-
-		if (folders.length > 0) {
-			baseColumns.push(
+			...(folders.length > 0 ? [
 				columnHelper.accessor("folderId", {
 					header: t("tools.password_manager_table_folder") as string,
 					cell: ({ getValue }) => {
@@ -202,17 +197,14 @@ export default function PasswordList({
 						const folder = folders.find((f: FolderType) => f.id === folderId);
 						if (!folder) return null;
 						return (
-							<Badge variant="outline" className="bg-transparent border-pm-border shadow-none font-medium px-2 py-0.5 text-xs text-foreground/80 rounded-md max-w-[120px]">
+							<Badge variant="outline" className="bg-transparent border-pm-border shadow-none font-medium px-2 py-0.5 text-xs text-foreground/80 rounded-md max-w-30">
 								<Folder className="w-3 h-3 mr-1.5 shrink-0 text-muted-foreground" style={{ color: folder.color }} />
 								<span className="truncate">{folder.name}</span>
 							</Badge>
 						);
 					},
 				})
-			);
-		}
-
-		baseColumns.push(
+			] : []),
 			columnHelper.accessor("itemType", {
 				header: t("tools.password_manager_table_type") as string,
 				cell: ({ getValue }) => {
@@ -243,7 +235,7 @@ export default function PasswordList({
 										<MoreHorizontal className="h-4 w-4 text-muted-foreground" />
 									</Button>
 								</DropdownMenuTrigger>
-								<DropdownMenuContent align="end" className="w-[160px]">
+								<DropdownMenuContent align="end" className="w-40">
 									<DropdownMenuItem
 										onClick={(e) => {
 											e.stopPropagation();
@@ -251,41 +243,35 @@ export default function PasswordList({
 										}}
 									>
 										<Pencil className="mr-2 h-4 w-4" />
-										<span>{t("tools.password_manager_edit")}</span>
+										{t("common.edit")}
 									</DropdownMenuItem>
 									<DropdownMenuItem
 										onClick={(e) => {
 											e.stopPropagation();
-											// handle copy password
-											if (item.password) {
-												navigator.clipboard.writeText(item.password);
-											}
+											// Share functionality
 										}}
-										disabled={!item.password}
 									>
-										<Copy className="mr-2 h-4 w-4" />
-										<span>{t("tools.password_manager_copy_password")}</span>
+										<Share2 className="mr-2 h-4 w-4" />
+										{t("common.share")}
 									</DropdownMenuItem>
 									<DropdownMenuItem
+										className="text-destructive focus:text-destructive"
 										onClick={(e) => {
 											e.stopPropagation();
 											confirmDelete(item.id);
 										}}
-										className="text-destructive focus:text-destructive"
 									>
 										<Trash2 className="mr-2 h-4 w-4" />
-										<span>{t("tools.password_manager_delete")}</span>
+										{t("common.delete")}
 									</DropdownMenuItem>
 								</DropdownMenuContent>
 							</DropdownMenu>
 						</div>
 					);
 				},
-			})
-		);
-
-		return baseColumns;
-	}, [t, confirmDelete, onEdit, folders]);
+			}),
+		];
+	}, [t, folders, onEdit, confirmDelete]);
 
 	const table = useReactTable({
 		data: categoryFiltered,
