@@ -6,7 +6,7 @@ WORKDIR /app
 
 RUN npm install -g pnpm
 
-COPY package.json package-lock.json* ./
+COPY package.json pnpm-lock.yaml* ./
 # Install ALL deps (including devDeps) so tsc and tsc-alias are available
 RUN pnpm install --frozen-lockfile
 
