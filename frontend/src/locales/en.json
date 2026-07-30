@@ -230,7 +230,8 @@
 		"password_manager_delete_vault_confirm_desc": "This action <strong>cannot be undone</strong>. This will permanently delete your vault and remove all your passwords, folders, and shared collections from our servers and this device.",
 		"password_manager_deleting": "Deleting...",
 		"password_manager_vault_deleted": "Vault deleted successfully",
-		"password_manager_delete_vault_failed": "Failed to delete vault"
+		"password_manager_delete_vault_failed": "Failed to delete vault",
+		"password_manager_no_folder": "No Folder"
 	},
 	"errors": {
 		"storage_access_denied": "Storage access denied. Please enable cookies/storage for full functionality.",

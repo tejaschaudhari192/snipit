@@ -223,7 +223,8 @@
 		"pnr_checker_api_error": "PNR स्थिति प्राप्त करने में विफल। कृपया पुनः प्रयास करें।",
 		"pnr_checker_passenger": "यात्री {{number}}",
 		"pnr_checker_booking_status": "बुकिंग स्थिति",
-		"pnr_checker_no_status": "कोई यात्री स्थिति उपलब्ध नहीं"
+		"pnr_checker_no_status": "कोई यात्री स्थिति उपलब्ध नहीं",
+		"password_manager_no_folder": "कोई फ़ोल्डर नहीं"
 	},
 	"errors": {
 		"storage_access_denied": "स्टोरेज एक्सेस अस्वीकृत। कृपया कुकीज/स्टोरेज सक्षम करें।",

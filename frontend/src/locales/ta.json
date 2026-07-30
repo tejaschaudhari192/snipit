@@ -223,7 +223,8 @@
 		"pnr_checker_api_error": "PNR நிலையைப் பெற முடியவில்லை. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.",
 		"pnr_checker_passenger": "பயணி {{number}}",
 		"pnr_checker_booking_status": "முன்பதிவு நிலை",
-		"pnr_checker_no_status": "பயணி நிலை எதுவும் இல்லை"
+		"pnr_checker_no_status": "பயணி நிலை எதுவும் இல்லை",
+		"password_manager_no_folder": "கோப்புறை இல்லை"
 	},
 	"errors": {
 		"storage_access_denied": "சேமிப்பக அணுகல் மறுக்கப்பட்டது. தயவுசெய்து குக்கீகள்/சேமிப்பகத்தை இயக்கவும்.",
