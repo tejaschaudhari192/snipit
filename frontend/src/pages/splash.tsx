@@ -1,5 +1,4 @@
 import icon from "@/assets/brand/icon.png";
-import TextGradient from "@/components/text-gradient";
 import { useTranslation } from "react-i18next";
 import type { HealthData } from "@/types";
 import {
@@ -105,15 +104,17 @@ const SplashPage = ({ healthData }: SplashPageProps) => {
 								{isError ? (
 									t("splash.system_failure")
 								) : (
-									<TextGradient
-										highlightColor="var(--foreground)"
-										baseColor="var(--muted-foreground)"
-										spread={20}
-										duration={2}
-										className="font-medium opacity-90"
-									>
+									<span
+									style={{
+										"--highlight-color": "var(--foreground)",
+										"--base-color": "var(--muted-foreground)",
+										"--spread": "20px",
+										"--duration": "2s"
+									} as React.CSSProperties}
+									className="shimmer font-medium opacity-90"
+								>
 										{currentLabel}
-									</TextGradient>
+									</span>
 								)}
 							</span>
 						</span>

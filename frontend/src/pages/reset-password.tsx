@@ -15,7 +15,6 @@ import {
 import { toast } from "sonner";
 import { Lock, ArrowRight, CheckCircle2 } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
-import TextGradient from "@/components/text-gradient";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import { PasswordInput } from "@/components/ui/password-input";
@@ -178,15 +177,17 @@ const ResetPasswordPage = () => {
 								{isLoading ? (
 									<>
 										<ShimmerSection type="mini-loader" />
-										<TextGradient
-											highlightColor="var(--foreground)"
-											baseColor="var(--muted-foreground)"
-											spread={20}
-											duration={2}
-											className="font-medium"
-										>
+										<span
+									style={{
+										"--highlight-color": "var(--foreground)",
+										"--base-color": "var(--muted-foreground)",
+										"--spread": "20px",
+										"--duration": "2s"
+									} as React.CSSProperties}
+									className="shimmer font-medium"
+								>
 											{t("auth.reset_password_resetting")}
-										</TextGradient>
+										</span>
 									</>
 								) : (
 									<>

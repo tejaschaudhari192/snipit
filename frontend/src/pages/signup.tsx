@@ -16,7 +16,6 @@ import {
 import { toast } from "sonner";
 import { UserPlus, Mail, Lock, User, ArrowRight } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
-import TextGradient from "@/components/text-gradient";
 import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
@@ -280,15 +279,17 @@ const SignupPage = () => {
 									{isLoading ? (
 										<>
 											<ShimmerSection type="mini-loader" />
-											<TextGradient
-												highlightColor="var(--foreground)"
-												baseColor="var(--muted-foreground)"
-												spread={20}
-												duration={2}
-												className="font-medium"
-											>
+											<span
+									style={{
+										"--highlight-color": "var(--foreground)",
+										"--base-color": "var(--muted-foreground)",
+										"--spread": "20px",
+										"--duration": "2s"
+									} as React.CSSProperties}
+									className="shimmer font-medium"
+								>
 												{t("auth.creating_account")}
-											</TextGradient>
+											</span>
 										</>
 									) : (
 										<>

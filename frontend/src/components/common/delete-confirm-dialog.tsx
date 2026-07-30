@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import TextGradient from "@/components/text-gradient";
 
 interface DeleteConfirmDialogProps {
 	isOpen: boolean;
@@ -67,15 +66,17 @@ export const DeleteConfirmDialog = ({
 					>
 						{isDeleting ? (
 							<>
-								<TextGradient
-									highlightColor="var(--foreground)"
-									baseColor="var(--muted-foreground)"
-									spread={20}
-									duration={2}
-									className="font-medium"
+								<span
+									style={{
+										"--highlight-color": "var(--foreground)",
+										"--base-color": "var(--muted-foreground)",
+										"--spread": "20px",
+										"--duration": "2s"
+									} as React.CSSProperties}
+									className="shimmer font-medium"
 								>
 									{t("common.submitting")}
-								</TextGradient>
+								</span>
 							</>
 						) : (
 							t("display.delete_button")

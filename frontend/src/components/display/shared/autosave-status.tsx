@@ -1,6 +1,5 @@
 import { Cloud, AlertCircle, Check, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import TextGradient from "@/components/text-gradient";
 import { StatusBadge } from "./status-badge";
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
@@ -19,15 +18,17 @@ export const AutosaveStatus = ({ status }: AutosaveStatusProps) => {
 					className="text-primary"
 					labelClassName="opacity-70"
 					label={
-						<TextGradient
-							highlightColor="var(--foreground)"
-							baseColor="var(--muted-foreground)"
-							spread={20}
-							duration={2}
-							className="font-medium"
-						>
+						<span
+									style={{
+										"--highlight-color": "var(--foreground)",
+										"--base-color": "var(--muted-foreground)",
+										"--spread": "20px",
+										"--duration": "2s"
+									} as React.CSSProperties}
+									className="shimmer font-medium"
+								>
 							{t("common.saving")}
-						</TextGradient>
+						</span>
 					}
 					icon={
 						<Loader2 className="h-3 w-3 text-primary animate-spin" />

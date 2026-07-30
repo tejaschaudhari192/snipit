@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { User, Cloud, HardDrive, MoreHorizontal, Check, Trash2 } from "lucide-react";
-import TextGradient from "@/components/text-gradient";
 import {
 	SidebarMenu,
 	SidebarMenuItem,
@@ -97,15 +96,17 @@ export function SettingsMenu({
 											<>
 												<Cloud className="size-3 text-primary" />{" "}
 												{isSyncing ? (
-													<TextGradient
-														highlightColor="var(--foreground)"
-														baseColor="var(--muted-foreground)"
-														spread={20}
-														duration={2}
-														className="font-medium"
-													>
+													<span
+									style={{
+										"--highlight-color": "var(--foreground)",
+										"--base-color": "var(--muted-foreground)",
+										"--spread": "20px",
+										"--duration": "2s"
+									} as React.CSSProperties}
+									className="shimmer font-medium"
+								>
 														{t("tools.password_manager_syncing")}
-													</TextGradient>
+													</span>
 												) : (
 													t("tools.password_manager_cloud_sync_on")
 												)}

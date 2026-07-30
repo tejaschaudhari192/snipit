@@ -7,7 +7,6 @@ import { lazy, Suspense, useState, useEffect } from "react";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { ShimmerSection } from "@/components/common/shimmer-section";
-import TextGradient from "@/components/text-gradient";
 import { playRemoveSound } from "@/utils";
 import { useSnippets } from "@/context/SnippetContext";
 import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
@@ -127,15 +126,17 @@ const HistoryPage = () => {
 							{isLoadingMore && (
 								<div className="flex items-center gap-2 text-muted-foreground animate-in fade-in duration-300">
 									<Loader2 className="h-5 w-5 animate-spin text-primary" />
-									<TextGradient
-										highlightColor="var(--foreground)"
-										baseColor="var(--muted-foreground)"
-										spread={20}
-										duration={2}
-										className="font-medium"
-									>
+									<span
+									style={{
+										"--highlight-color": "var(--foreground)",
+										"--base-color": "var(--muted-foreground)",
+										"--spread": "20px",
+										"--duration": "2s"
+									} as React.CSSProperties}
+									className="shimmer font-medium"
+								>
 										{t("common.loading")}
-									</TextGradient>
+									</span>
 								</div>
 							)}
 						</div>

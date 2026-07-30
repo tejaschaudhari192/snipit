@@ -5,7 +5,6 @@ import { ContentTypeSelector } from "@/components/common/content-type-selector";
 
 import { ExpirySelector } from "@/components/common/expiry-selector";
 import { useTranslation } from "react-i18next";
-import TextGradient from "@/components/text-gradient";
 
 import { ButtonGroup } from "@/components/ui/button-group";
 import { ChevronDown, Users } from "lucide-react";
@@ -78,27 +77,31 @@ export const MainToolbar = memo(
 					uploadProgress < 100
 				) {
 					return (
-						<TextGradient
-							highlightColor="var(--foreground)"
-							baseColor="var(--muted-foreground)"
-							spread={20}
-							duration={2}
-							className="font-medium"
-						>
+						<span
+									style={{
+										"--highlight-color": "var(--foreground)",
+										"--base-color": "var(--muted-foreground)",
+										"--spread": "20px",
+										"--duration": "2s"
+									} as React.CSSProperties}
+									className="shimmer font-medium"
+								>
 							{t("home.file_uploading")}
-						</TextGradient>
+						</span>
 					);
 				}
 				return (
-					<TextGradient
-						highlightColor="var(--foreground)"
-						baseColor="var(--muted-foreground)"
-						spread={20}
-						duration={2}
-						className="font-medium"
-					>
+					<span
+									style={{
+										"--highlight-color": "var(--foreground)",
+										"--base-color": "var(--muted-foreground)",
+										"--spread": "20px",
+										"--duration": "2s"
+									} as React.CSSProperties}
+									className="shimmer font-medium"
+								>
 						{t("common.submitting")}
-					</TextGradient>
+					</span>
 				);
 			}
 

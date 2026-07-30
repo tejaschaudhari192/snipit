@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
 import type { DragEvent, ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
-import TextGradient from "@/components/text-gradient";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
 import {
@@ -534,19 +533,21 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 					<div className="space-y-2">
 						<div className="flex items-center justify-between text-sm">
 							<span className="text-muted-foreground">
-								<TextGradient
-									highlightColor="var(--foreground)"
-									baseColor="var(--muted-foreground)"
-									spread={20}
-									duration={2}
-									className="font-medium"
+								<span
+									style={{
+										"--highlight-color": "var(--foreground)",
+										"--base-color": "var(--muted-foreground)",
+										"--spread": "20px",
+										"--duration": "2s"
+									} as React.CSSProperties}
+									className="shimmer font-medium"
 								>
 									{t(
 										isEncrypt
 											? "common.encrypting"
 											: "common.decrypting",
 									)}
-								</TextGradient>
+								</span>
 							</span>
 							<span className="font-medium">{progress}%</span>
 						</div>
@@ -683,19 +684,21 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 							<Unlock className="h-4 w-4" />
 						)}
 						{state === "processing" ? (
-							<TextGradient
-								highlightColor="var(--foreground)"
-								baseColor="var(--muted-foreground)"
-								spread={20}
-								duration={2}
-								className="font-medium"
-							>
+							<span
+									style={{
+										"--highlight-color": "var(--foreground)",
+										"--base-color": "var(--muted-foreground)",
+										"--spread": "20px",
+										"--duration": "2s"
+									} as React.CSSProperties}
+									className="shimmer font-medium"
+								>
 								{t(
 									isEncrypt
 										? "common.encrypting"
 										: "common.decrypting",
 								)}
-							</TextGradient>
+							</span>
 						) : (
 							t(
 								isEncrypt

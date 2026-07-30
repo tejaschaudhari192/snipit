@@ -9,7 +9,6 @@ import {
 	CardDescription,
 } from "@/components/ui/card";
 import { Shield, LockOpen, Loader2 } from "lucide-react";
-import TextGradient from "@/components/text-gradient";
 import ReadMoreDialog from "../ReadMoreDialog";
 
 interface UnlockStandardProps {
@@ -84,15 +83,17 @@ export default function UnlockStandard({
 							{loading ? (
 								<>
 									<Loader2 className="mr-2 h-5 w-5 animate-spin" />
-									<TextGradient
-										highlightColor="var(--foreground)"
-										baseColor="var(--muted-foreground)"
-										spread={20}
-										duration={2}
-										className="font-medium"
-									>
+									<span
+									style={{
+										"--highlight-color": "var(--foreground)",
+										"--base-color": "var(--muted-foreground)",
+										"--spread": "20px",
+										"--duration": "2s"
+									} as React.CSSProperties}
+									className="shimmer font-medium"
+								>
 										{t("tools.password_manager_decrypting")}
-									</TextGradient>
+									</span>
 								</>
 							) : (
 								<>

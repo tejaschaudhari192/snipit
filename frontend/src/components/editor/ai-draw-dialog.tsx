@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import TextGradient from "@/components/text-gradient";
 import { Sparkles, Loader2, Wand2 } from "lucide-react";
 import {
 	Dialog,
@@ -137,15 +136,17 @@ export const AiDrawDialog = ({
 						{isGenerating ? (
 							<>
 								<Loader2 className="w-4 h-4 mr-2 animate-spin" />
-								<TextGradient
-									highlightColor="var(--foreground)"
-									baseColor="var(--muted-foreground)"
-									spread={20}
-									duration={2}
-									className="font-medium"
+								<span
+									style={{
+										"--highlight-color": "var(--foreground)",
+										"--base-color": "var(--muted-foreground)",
+										"--spread": "20px",
+										"--duration": "2s"
+									} as React.CSSProperties}
+									className="shimmer font-medium"
 								>
 									{t("ai.generating")}
-								</TextGradient>
+								</span>
 							</>
 						) : (
 							<>

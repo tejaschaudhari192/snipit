@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dialog";
 import { LogIn } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import TextGradient from "@/components/text-gradient";
 import { useNavigate } from "react-router-dom";
 import type { User } from "@/types";
 import { IdTypeTabs } from "./paste-dialog/id-type-tabs";
@@ -162,25 +161,29 @@ export const PasteDialog = ({
 							contentType === "file" &&
 							isUploading &&
 							uploadProgress < 100 ? (
-								<TextGradient
-									highlightColor="var(--foreground)"
-									baseColor="var(--muted-foreground)"
-									spread={20}
-									duration={2}
-									className="font-medium"
+								<span
+									style={{
+										"--highlight-color": "var(--foreground)",
+										"--base-color": "var(--muted-foreground)",
+										"--spread": "20px",
+										"--duration": "2s"
+									} as React.CSSProperties}
+									className="shimmer font-medium"
 								>
 									{t("home.file_uploading")}
-								</TextGradient>
+								</span>
 							) : (
-								<TextGradient
-									highlightColor="var(--foreground)"
-									baseColor="var(--muted-foreground)"
-									spread={20}
-									duration={2}
-									className="font-medium"
+								<span
+									style={{
+										"--highlight-color": "var(--foreground)",
+										"--base-color": "var(--muted-foreground)",
+										"--spread": "20px",
+										"--duration": "2s"
+									} as React.CSSProperties}
+									className="shimmer font-medium"
 								>
 									{t("common.submitting")}
-								</TextGradient>
+								</span>
 							)
 						) : (
 							t("home.dynamic_id_dialog.submit")

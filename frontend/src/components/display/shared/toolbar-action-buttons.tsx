@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
 import { Edit, Trash2, Save, X, Play, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import TextGradient from "@/components/text-gradient";
 import { SUPPORTED_RUN_LANGUAGES } from "@/constants";
 import { SaveAsButton } from "./save-as-button";
 
@@ -134,15 +133,17 @@ export const ToolbarActionButtons = ({
 							{isSaving ? (
 								<>
 									<Loader2 className="h-4 w-4 animate-spin" />
-									<TextGradient
-										highlightColor="var(--foreground)"
-										baseColor="var(--muted-foreground)"
-										spread={20}
-										duration={2}
-										className="font-medium"
-									>
+									<span
+									style={{
+										"--highlight-color": "var(--foreground)",
+										"--base-color": "var(--muted-foreground)",
+										"--spread": "20px",
+										"--duration": "2s"
+									} as React.CSSProperties}
+									className="shimmer font-medium"
+								>
 										{t("common.saving")}
-									</TextGradient>
+									</span>
 								</>
 							) : (
 								<>
