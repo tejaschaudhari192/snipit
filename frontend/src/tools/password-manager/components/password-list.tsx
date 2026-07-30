@@ -24,7 +24,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { Menu, MoreHorizontal, Pencil, Share2, Trash2, Folder, Copy } from "lucide-react";
+import { Menu, MoreHorizontal, Pencil, Share2, Trash2, Copy, Folder } from "lucide-react";
 import { ITEM_TYPE_OPTIONS } from "@/tools/password-manager/utils/constants";
 import {
 	getDomain,
@@ -34,7 +34,7 @@ import {
 } from "@/tools/password-manager/utils/formatters";
 import { getFaviconUrl } from "@/tools/password-manager/utils/favicon";
 import ShareFolderModal from "./share-folder-modal";
-import type { PasswordItem } from "@/tools/password-manager/types";
+import type { PasswordItem, Folder as FolderType } from "@/tools/password-manager/types";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useDeleteItem } from "@/tools/password-manager/hooks/use-delete-item";
 import {
@@ -44,6 +44,7 @@ import {
 	getSortedRowModel,
 	getFilteredRowModel,
 	useReactTable,
+	type ColumnDef,
 } from "@tanstack/react-table";
 
 const DeleteConfirmDialog = lazy(() =>
@@ -110,7 +111,7 @@ export default function PasswordList({
 	} = useDeleteItem();
 	const items = vault?.items ?? [];
 	const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-	const activeFolder = folders.find((f: any) => f.id === activeFilter);
+	const activeFolder = folders.find((f: FolderType) => f.id === activeFilter);
 
 	// First apply sidebar filter
 	const categoryFiltered = useMemo(() => {
@@ -132,7 +133,7 @@ export default function PasswordList({
 	const columnHelper = createColumnHelper<PasswordItem>();
 
 	const columns = useMemo(() => {
-		const baseColumns: any[] = [
+		const baseColumns: ColumnDef<PasswordItem, any>[] = [
 			columnHelper.display({
 				id: "select",
 				header: ({ table }) => (
@@ -198,7 +199,7 @@ export default function PasswordList({
 					cell: ({ getValue }) => {
 						const folderId = getValue();
 						if (!folderId) return null;
-						const folder = folders.find((f: any) => f.id === folderId);
+						const folder = folders.find((f: FolderType) => f.id === folderId);
 						if (!folder) return null;
 						return (
 							<Badge variant="outline" className="bg-transparent border-pm-border shadow-none font-medium px-2 py-0.5 text-xs text-foreground/80 rounded-md max-w-[120px]">
