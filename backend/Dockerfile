@@ -64,4 +64,4 @@ ENV PORT=10000
 
 EXPOSE 10000
 
-CMD ["pnpm", "run", "start"]
+CMD ["node", "./dist/index.js"]
