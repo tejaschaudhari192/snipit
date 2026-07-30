@@ -91,18 +91,10 @@ function PasswordManagerInner() {
 	useEffect(() => {
 		if (user?._id) {
 			dispatch(setUserId(user._id));
-		}
-	}, [user, dispatch]);
-
-	useEffect(() => {
-		dispatch(initializeVault());
-	}, [dispatch]);
-
-	useEffect(() => {
-		if (user?._id) {
+			dispatch(initializeVault());
 			dispatch(checkRecoveryKey());
 		}
-	}, [user, dispatch]);
+	}, [user?._id, dispatch]);
 
 	useEffect(() => {
 		if (isUnlocked && user?._id) {
