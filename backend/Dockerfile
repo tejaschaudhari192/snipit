@@ -21,6 +21,9 @@ RUN rm -rf node_modules && pnpm install --prod --frozen-lockfile --ignore-script
 FROM node:22-bookworm AS runner
 WORKDIR /app
 
+ENV NODE_OPTIONS="--max-old-space-size=380"
+ENV PNPM_CONFIG_AUDIT=false
+
 RUN npm install -g pnpm
 
 # ── Language SDKs for the code runner ─────────────────────────────────────────
