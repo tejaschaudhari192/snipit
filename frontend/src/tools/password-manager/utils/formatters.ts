@@ -56,3 +56,34 @@ export function formatDate(dateStr?: string): string {
 		return "";
 	}
 }
+
+export function formatRelativeTime(dateStr: string | undefined, justNowText: string): string {
+	if (!dateStr) return "";
+	try {
+		const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+		const date = new Date(dateStr);
+		const daysDifference = Math.round(
+			(date.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24),
+		);
+
+		if (daysDifference === 0) {
+			const hoursDifference = Math.round(
+				(date.getTime() - new Date().getTime()) / (1000 * 60 * 60),
+			);
+			if (hoursDifference === 0) {
+				const minutesDifference = Math.round(
+					(date.getTime() - new Date().getTime()) / (1000 * 60),
+				);
+				if (minutesDifference === 0) {
+					return justNowText;
+				}
+				return rtf.format(minutesDifference, "minute");
+			}
+			return rtf.format(hoursDifference, "hour");
+		}
+
+		return rtf.format(daysDifference, "day");
+	} catch {
+		return "";
+	}
+}

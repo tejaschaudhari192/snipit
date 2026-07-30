@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { logger } from "@/utils/logger";
 import { Provider } from "react-redux";
 const PasswordSidebar = React.lazy(
@@ -24,11 +24,7 @@ import {
 	DetailSkeleton,
 } from "./components/skeletons";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import {
-	ResizablePanelGroup,
-	ResizablePanel,
-	ResizableHandle,
-} from "@/components/ui/resizable";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { store, useAppDispatch, useAppSelector } from "./store";
 import {
@@ -72,6 +68,7 @@ import { useItemMutations } from "@/tools/password-manager/hooks/use-item-mutati
 import { useAuth } from "@/context/AuthContext";
 
 function PasswordManagerInner() {
+	const [searchQuery, setSearchQuery] = useState("");
 	const isMobile = useIsMobile();
 	const dispatch = useAppDispatch();
 	const { user } = useAuth();
@@ -205,9 +202,6 @@ function PasswordManagerInner() {
 										item={activeItem}
 										isNew={isNewItem}
 										onSave={saveItem}
-										onCancel={() =>
-											dispatch(handleCancelDetail())
-										}
 									/>
 								</Suspense>
 							</div>
@@ -216,11 +210,15 @@ function PasswordManagerInner() {
 								<Suspense fallback={<ListSkeleton />}>
 									<PasswordList
 										activeId={null}
+										searchQuery={searchQuery}
 										onSelect={(item: PasswordItem) =>
 											dispatch(handleSelect(item))
 										}
 										onEdit={(item: PasswordItem) =>
 											dispatch(handleEdit(item))
+										}
+										onNewItem={() =>
+											dispatch(handleNewItem())
 										}
 									/>
 								</Suspense>
@@ -228,115 +226,66 @@ function PasswordManagerInner() {
 						)}
 					</div>
 				) : (
-					<div className="flex-1 flex overflow-hidden rounded-2xl border border-white/5 bg-vault-bg shadow-2xl m-4 relative">
-						<ResizablePanelGroup
-							orientation="horizontal"
-							id="password-manager-layout"
-						>
-							{/* Left - Sidebar */}
-							<ResizablePanel
-								defaultSize="20%"
-								minSize="15%"
-								maxSize="35%"
-								className="bg-vault-panel"
-							>
-								<div className="h-full w-full overflow-hidden border-r border-white/5 flex flex-col">
-									<SidebarProvider className="min-h-0 h-full w-full">
-										<Suspense
-											fallback={<SidebarSkeleton />}
-										>
-											<PasswordSidebar
-												onNewItem={(
-													itemType?: string,
-												) =>
-													dispatch(
-														handleNewItem(itemType),
-													)
-												}
-											/>
-										</Suspense>
-									</SidebarProvider>
-								</div>
-							</ResizablePanel>
+					<div className="flex-1 flex overflow-hidden bg-pm-surface">
+						{/* Sidebar */}
+						<div className="w-[240px] shrink-0 h-full overflow-hidden border-r border-pm-border flex flex-col bg-pm-sidebar shadow-sm z-10">
+							<SidebarProvider className="min-h-0 h-full w-full">
+								<Suspense fallback={<SidebarSkeleton />}>
+									<PasswordSidebar
+										searchQuery={searchQuery}
+										onSearchChange={setSearchQuery}
+									/>
+								</Suspense>
+							</SidebarProvider>
+						</div>
 
-							<ResizableHandle className="w-px bg-white/5 hover:bg-primary/50 transition-colors cursor-col-resize z-10" />
-
+						{/* Main Content Area */}
+						<div className="flex-1 min-w-0 h-full overflow-hidden flex flex-col">
 							{activeFilter === "sharing" ? (
-								<ResizablePanel
-									defaultSize="80%"
-									minSize="50%"
-									className="bg-vault-panel"
-								>
-									<div className="h-full w-full overflow-hidden flex flex-col">
-										<Suspense fallback={<ListSkeleton />}>
-											<SharingCenter />
-										</Suspense>
-									</div>
-								</ResizablePanel>
+								<Suspense fallback={<ListSkeleton />}>
+									<SharingCenter />
+								</Suspense>
 							) : (
-								<>
-									{/* Middle - List */}
-									<ResizablePanel
-										defaultSize="25%"
-										minSize="20%"
-										maxSize="40%"
-										className="bg-vault-panel"
-									>
-										<div className="h-full w-full overflow-hidden flex flex-col border-r border-white/5">
-											<Suspense
-												fallback={<ListSkeleton />}
-											>
-												<PasswordList
-													activeId={
-														activeItem?.id ?? null
-													}
-													onSelect={(
-														item: PasswordItem,
-													) =>
-														dispatch(
-															handleSelect(item),
-														)
-													}
-													onEdit={(
-														item: PasswordItem,
-													) =>
-														dispatch(
-															handleEdit(item),
-														)
-													}
-												/>
-											</Suspense>
-										</div>
-									</ResizablePanel>
-
-									<ResizableHandle className="w-px bg-white/5 hover:bg-primary/50 transition-colors cursor-col-resize z-10" />
-
-									{/* Right - Detail */}
-									<ResizablePanel
-										defaultSize="55%"
-										minSize="30%"
-										className="bg-vault-card"
-									>
-										<div className="h-full w-full overflow-hidden flex flex-col">
-											<Suspense
-												fallback={<DetailSkeleton />}
-											>
-												<PasswordDetail
-													item={activeItem}
-													isNew={isNewItem}
-													onSave={saveItem}
-													onCancel={() =>
-														dispatch(
-															handleCancelDetail(),
-														)
-													}
-												/>
-											</Suspense>
-										</div>
-									</ResizablePanel>
-								</>
+								<Suspense fallback={<ListSkeleton />}>
+									<PasswordList
+										activeId={activeItem?.id ?? null}
+										searchQuery={searchQuery}
+										onSelect={(item: PasswordItem) =>
+											dispatch(handleSelect(item))
+										}
+										onEdit={(item: PasswordItem) =>
+											dispatch(handleEdit(item))
+										}
+										onNewItem={() =>
+											dispatch(handleNewItem())
+										}
+									/>
+								</Suspense>
 							)}
-						</ResizablePanelGroup>
+						</div>
+
+						{/* Detail/Edit Sheet */}
+						<Sheet
+							open={!!activeItem || isNewItem}
+							onOpenChange={(open) => {
+								if (!open) dispatch(handleCancelDetail());
+							}}
+						>
+							<SheetContent
+								side="right"
+								className="sm:max-w-[520px] p-0 border-l border-pm-border shadow-2xl"
+								hideOverlay={false}
+								showCloseButton={false}
+							>
+								<Suspense fallback={<DetailSkeleton />}>
+									<PasswordDetail
+										item={activeItem}
+										isNew={isNewItem}
+										onSave={saveItem}
+									/>
+								</Suspense>
+							</SheetContent>
+						</Sheet>
 					</div>
 				)}
 			</div>

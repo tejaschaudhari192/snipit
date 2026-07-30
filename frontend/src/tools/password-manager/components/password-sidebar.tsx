@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-
+import { Shield, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import { useAppDispatch, useAppSelector } from "../store";
@@ -29,24 +28,18 @@ import {
 	SidebarGroupContent,
 	SidebarFooter,
 } from "@/components/ui/sidebar";
-import { Shield } from "lucide-react";
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
+
 import { FolderModal, type FolderModalMode } from "./folder-modal";
 import { FolderList } from "./sidebar/folder-list";
 import { SettingsMenu } from "./sidebar/settings-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ShareFolderModal from "./share-folder-modal";
-
 interface PasswordSidebarProps {
-	onNewItem: (itemType: string) => void;
+	searchQuery: string;
+	onSearchChange: (value: string) => void;
 }
 
-export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
+export default function PasswordSidebar({ searchQuery, onSearchChange }: PasswordSidebarProps) {
 	const { t } = useTranslation();
 	const dispatch = useAppDispatch();
 	const activeFilter = useAppSelector(selectActiveFilter);
@@ -54,7 +47,7 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 	const isSyncing = useAppSelector(selectIsSyncing);
 	const { user } = useAuth();
 
-	const [isTypeDialogOpen, setIsTypeDialogOpen] = useState(false);
+
 	const [folderModalOpen, setFolderModalOpen] = useState(false);
 	const [folderModalMode, setFolderModalMode] =
 		useState<FolderModalMode>("create");
@@ -102,15 +95,17 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 			</SidebarHeader>
 
 			<SidebarContent className="flex-1 overflow-y-auto no-scrollbar flex flex-col bg-sidebar">
-				<div className="p-4 pb-0">
-					<Button
-						onClick={() => setIsTypeDialogOpen(true)}
-						className="w-full gap-2 shadow-sm"
-						variant="default"
-					>
-						<Plus className="h-4 w-4" />
-						{t("tools.password_manager_new_item")}
-					</Button>
+				<div className="p-4 pb-0 flex flex-col gap-2">
+					<div className="relative">
+						<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+						<Input
+							type="search"
+							placeholder="Search..."
+							value={searchQuery}
+							onChange={(e) => onSearchChange(e.target.value)}
+							className="w-full bg-background pl-9 border-border rounded-xl h-9"
+						/>
+					</div>
 				</div>
 				<SidebarGroup>
 					<SidebarGroupContent>
@@ -202,38 +197,7 @@ export default function PasswordSidebar({ onNewItem }: PasswordSidebarProps) {
 				/>
 			</SidebarFooter>
 
-			<Dialog open={isTypeDialogOpen} onOpenChange={setIsTypeDialogOpen}>
-				<DialogContent
-					className="sm:max-w-md bg-background"
-					aria-describedby={undefined}
-				>
-					<DialogHeader>
-						<DialogTitle>
-							{t("tools.password_manager_select_type")}
-						</DialogTitle>
-					</DialogHeader>
-					<div className="grid grid-cols-2 gap-3 py-4">
-						{ITEM_TYPE_OPTIONS.map((item) => (
-							<Button
-								key={item.id}
-								variant="outline"
-								className="h-auto flex flex-col items-center justify-center p-4 gap-2 hover:bg-muted/50 border-border"
-								onClick={() => {
-									setIsTypeDialogOpen(false);
-									onNewItem(item.id);
-								}}
-							>
-								<item.icon
-									className={`h-6 w-6 ${item.color}`}
-								/>
-								<span className="text-sm font-medium">
-									{t(item.label)}
-								</span>
-							</Button>
-						))}
-					</div>
-				</DialogContent>
-			</Dialog>
+
 			<FolderModal
 				open={folderModalOpen}
 				onOpenChange={setFolderModalOpen}

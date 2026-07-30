@@ -1,7 +1,6 @@
 import { lazy, Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-	ArrowLeft,
 	Edit2,
 	Trash2,
 	Star,
@@ -62,14 +61,12 @@ interface PasswordDetailProps {
 	item: PasswordItem | null | undefined;
 	isNew: boolean;
 	onSave: (item: PasswordItem) => void;
-	onCancel: () => void;
 }
 
 export default function PasswordDetail({
 	item,
 	isNew,
 	onSave,
-	onCancel,
 }: PasswordDetailProps) {
 	const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 	const [folderModalOpen, setFolderModalOpen] = useState(false);
@@ -80,35 +77,13 @@ export default function PasswordDetail({
 	const { isDeleteDialogOpen, confirmDelete, handleConfirm, cancelDelete } =
 		useDeleteItem();
 
-	if (!item && !isNew) {
-		return (
-			<div className="flex flex-col items-center justify-center h-full text-muted-foreground px-6 bg-card">
-				<div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
-					<Globe className="h-8 w-8 text-muted-foreground/60" />
-				</div>
-				<p className="text-sm font-medium">
-					{t("tools.password_detail_empty_title")}
-				</p>
-				<p className="text-xs mt-1 text-center">
-					{t("tools.password_detail_empty_desc")}
-				</p>
-			</div>
-		);
-	}
+	if (!item && !isNew) return null;
 
 	if (isNew) {
 		const isEditing = !!(item && item.id);
 		return (
-			<div className="flex flex-col h-full bg-card">
-				<div className="flex items-center gap-3 p-4 border-b border-border">
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={onCancel}
-						className="h-8 w-8 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-					>
-						<ArrowLeft className="h-4 w-4" />
-					</Button>
+			<div className="flex flex-col h-full bg-background">
+				<div className="flex items-center justify-between p-5 border-b border-border">
 					<h2 className="text-sm font-semibold flex-1">
 						{isEditing
 							? t("tools.password_manager_edit_title")
@@ -160,17 +135,9 @@ export default function PasswordDetail({
 
 	return (
 		<>
-			<div className="flex flex-col h-full bg-transparent text-white">
+			<div className="flex flex-col h-full bg-transparent text-foreground">
 				{/* Header Actions */}
-				<div className="flex items-center gap-3 p-4 border-b border-white/5">
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={onCancel}
-						className="h-8 w-8 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-					>
-						<ArrowLeft className="h-4 w-4" />
-					</Button>
+				<div className="flex items-center gap-3 p-5 border-b border-border">
 					<div className="flex-1 min-w-0 flex items-center justify-end gap-2">
 						<div className="w-32">
 							<Select
@@ -335,7 +302,7 @@ export default function PasswordDetail({
 								</span>
 							</div>
 							<div className="min-w-0 flex-1">
-								<h2 className="text-[28px] font-bold text-white tracking-tight flex items-center gap-2 mb-1">
+								<h2 className="text-[28px] font-bold tracking-tight flex items-center gap-2 mb-1">
 									<span className="truncate">
 										{item.title}
 									</span>
@@ -343,7 +310,7 @@ export default function PasswordDetail({
 								{item.itemType && (
 									<Badge
 										variant="outline"
-										className="bg-white/10 text-emerald-400 border-transparent text-[11px] px-2 py-0.5 rounded-md leading-none font-medium"
+										className="bg-primary/10 text-primary border-transparent text-[11px] px-2 py-0.5 rounded-md leading-none font-medium"
 									>
 										{t(
 											ITEM_TYPE_OPTIONS.find(
@@ -358,13 +325,13 @@ export default function PasswordDetail({
 
 					{/* Expiry warning */}
 					{showWarning && (
-						<div className="mx-8 mt-4 p-4 rounded-xl bg-vault-warning flex items-center justify-between shadow-sm">
-							<p className="text-[15px] font-medium text-white tracking-tight">
+						<div className="mx-8 mt-4 p-4 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-between shadow-sm border border-amber-200 dark:border-amber-800">
+							<p className="text-[15px] font-medium text-amber-900 dark:text-amber-200 tracking-tight">
 								It's time to update your password.
 							</p>
 							<a
 								href="#"
-								className="text-sm font-semibold text-white/90 hover:text-white flex items-center gap-1.5 transition-colors"
+								className="text-sm font-semibold text-amber-800 dark:text-amber-300 hover:opacity-80 flex items-center gap-1.5 transition-opacity"
 							>
 								Update now <Globe className="h-4 w-4" />
 							</a>

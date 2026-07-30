@@ -42,12 +42,12 @@
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
 
-	/* Vault specific premium dark theme colors */
-	--color-vault-bg: #0a0a0f;
-	--color-vault-panel: #0e0f15;
-	--color-vault-card: #181922;
-	--color-vault-active: #2f6ffb;
-	--color-vault-warning: #e66c25;
+	/* Password Manager - clean dashboard tokens */
+	--color-pm-surface: var(--pm-surface);
+	--color-pm-sidebar: var(--pm-sidebar);
+	--color-pm-row-hover: var(--pm-row-hover);
+	--color-pm-row-active: var(--pm-row-active);
+	--color-pm-border: var(--pm-border);
 
 	--animate-cursor-blink: cursor-blink 1s step-end infinite;
 	--animate-progress: toast-progress linear forwards;
@@ -94,6 +94,13 @@
 	--sidebar-accent-foreground: oklch(0.35 0.1 280);
 	--sidebar-border: oklch(0.91 0.02 280);
 	--sidebar-ring: oklch(0.55 0.25 280);
+
+	/* Password Manager Light Tokens */
+	--pm-surface: oklch(0.975 0.005 280);
+	--pm-sidebar: oklch(0.995 0.002 280);
+	--pm-row-hover: oklch(0.965 0.008 280);
+	--pm-row-active: oklch(0.94 0.04 250);
+	--pm-border: oklch(0.92 0.01 280);
 }
 
 .dark {
@@ -129,6 +136,13 @@
 	--sidebar-accent-foreground: oklch(0.92 0.02 280);
 	--sidebar-border: oklch(0.3 0.04 280);
 	--sidebar-ring: oklch(0.7 0.2 280);
+
+	/* Password Manager Dark Tokens */
+	--pm-surface: var(--background);
+	--pm-sidebar: var(--sidebar);
+	--pm-row-hover: oklch(0.22 0.03 280);
+	--pm-row-active: oklch(0.28 0.06 280);
+	--pm-border: var(--border);
 }
 
 /* Force popups and tooltips to be above everything */
@@ -719,4 +733,28 @@ body.is-404 .action-url-bar {
 
 .qr-animate-entrance {
 	animation: qr-entrance 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Custom Sleek Scrollbars */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: var(--border) transparent;
+}
+
+::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: var(--border);
+	border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background-color: var(--muted-foreground);
 }

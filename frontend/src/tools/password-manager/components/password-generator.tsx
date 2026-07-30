@@ -140,10 +140,7 @@ export default function PasswordGenerator({
 	};
 
 	return (
-		<div
-			data-vaul-no-drag
-			className="w-full bg-background rounded-t-xl overflow-hidden flex flex-col"
-		>
+		<div className="w-full bg-background rounded-t-xl overflow-hidden flex flex-col">
 			{/* Header section inspired by the red theme */}
 			<div
 				className={`text-white p-4 ${

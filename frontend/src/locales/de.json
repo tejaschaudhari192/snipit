@@ -24,7 +24,6 @@
 	"tools": {
 		"badge": "🔐 Sichere Tools",
 		"title": "Sichere Tools & Dienstprogramme",
-		"cryptoSafe_title": "CryptoSafe",
 		"cryptoSafe_description": "Ordner verschlüsseln & entschlüsseln (nur clientseitig)",
 		"subtitle": "Eine Sammlung sicherer, clientseitiger Tools, die Ihre sensiblen Daten schützen. Ihre Daten verlassen niemals Ihr Gerät.",
 		"encrypt_tab": "Verschlüsseln",
@@ -82,14 +81,10 @@
 		"password_manager_field_value": "Feldwert",
 		"password_manager_add": "Hinzufügen",
 		"password_manager_folders": "Ordner",
-		"password_manager_type_logins": "Logins",
-		"password_manager_type_login": "Login",
 		"password_manager_type_cards": "Karten",
 		"password_manager_type_card": "Karte",
 		"password_manager_type_apikey": "API-Schlüssel",
 		"password_manager_type_api_keys": "API-Schlüssel",
-		"password_manager_type_passkeys": "Passkeys",
-		"password_manager_type_passkey": "Passkey",
 		"password_manager_type_credfile": "Cred-Datei",
 		"password_manager_type_cred_files": "Cred-Dateien",
 		"password_manager_type_notes": "Notizen",
@@ -128,7 +123,6 @@
 		"password_manager_onboarding_subtitle": "Ihre Passwörter und Geheimnisse, lokal verschlüsselt. Nur Sie besitzen den Schlüssel.",
 		"password_manager_onboarding_feature_aes_title": "AES-256 Verschlüsselung",
 		"password_manager_onboarding_feature_aes_desc": "Militärischer Schutz für Ihre Daten.",
-		"password_manager_onboarding_feature_zero_title": "Zero Knowledge",
 		"password_manager_onboarding_feature_zero_desc": "Wir können Ihre Passwörter nicht sehen oder darauf zugreifen.",
 		"password_manager_onboarding_feature_sync_title": "Optionale Synchronisierung",
 		"password_manager_onboarding_feature_sync_desc": "Verschlüsselte Tresore geräteübergreifend synchronisieren.",
@@ -145,7 +139,6 @@
 		"password_manager_continue": "Weiter",
 		"password_manager_warning_title": "Warnung",
 		"password_manager_warning_desc": "Wenn Sie Ihr Master-Passwort vergessen, sind Ihre Daten für immer verloren. Es gibt kein Zurücksetzen oder Wiederherstellen.",
-		"password_manager_warning_irrecoverable": "If you forget your master password, your vault data can only be recovered using the Recovery Key provided in the next step. Otherwise, it is permanently lost.",
 		"password_manager_warning_checkbox": "Ich verstehe, dass meine Daten nicht wiederhergestellt werden können, wenn ich mein Passwort vergesse.",
 		"password_manager_create_vault": "Tresor erstellen",
 		"password_manager_unlock_title": "Tresor entsperren",
@@ -224,7 +217,39 @@
 		"pnr_checker_passenger": "Passagier {{number}}",
 		"pnr_checker_booking_status": "Buchungsstatus",
 		"pnr_checker_no_status": "Kein Passagierstatus verfügbar",
-		"password_manager_no_folder": "Kein Ordner"
+		"password_manager_no_folder": "Kein Ordner",
+		"cryptoSafe_title": "CryptoSafe",
+		"password_manager_type_logins": "Logins",
+		"password_manager_type_login": "Login",
+		"password_manager_type_passkeys": "Passkeys",
+		"password_manager_type_passkey": "Passkey",
+		"password_manager_table_company": "Company",
+		"password_manager_table_last_modified": "Last modified",
+		"password_manager_table_folder": "Folder",
+		"password_manager_table_type": "Type",
+		"password_manager_sharing_center_title": "Sharing Center",
+		"password_manager_sharing_center_desc": "Manage your securely shared passwords and collections.",
+		"password_manager_share_new_collection": "Share New Collection",
+		"password_manager_shared_with_me": "Shared with Me",
+		"password_manager_shared_by_me": "Shared by Me",
+		"password_manager_shared_with_me_empty": "No items shared with you",
+		"password_manager_shared_with_me_empty_desc": "When someone shares a password with you using End-to-End Encryption, it will appear here.",
+		"password_manager_shared_by_me_empty": "You haven't shared anything yet",
+		"password_manager_shared_by_me_empty_desc": "Share items individually from their details page, or create a collection here.",
+		"password_manager_role": "Role",
+		"password_manager_manage_access": "Manage Access",
+		"password_manager_item_singular": "item",
+		"password_manager_item_plural": "items",
+		"password_manager_just_now": "just now",
+		"password_manager_onboarding_feature_zero_title": "Zero Knowledge",
+		"password_manager_warning_irrecoverable": "If you forget your master password, your vault data can only be recovered using the Recovery Key provided in the next step. Otherwise, it is permanently lost.",
+		"password_manager_danger_zone": "Danger Zone",
+		"password_manager_delete_vault": "Delete Vault",
+		"password_manager_delete_vault_confirm_title": "Delete your vault?",
+		"password_manager_delete_vault_confirm_desc": "This action <strong>cannot be undone</strong>. This will permanently delete your vault and remove all your passwords, folders, and shared collections from our servers and this device.",
+		"password_manager_deleting": "Deleting...",
+		"password_manager_vault_deleted": "Vault deleted successfully",
+		"password_manager_delete_vault_failed": "Failed to delete vault"
 	},
 	"errors": {
 		"storage_access_denied": "Speicherzugriff verweigert. Bitte aktivieren Sie Cookies/Speicher.",
@@ -266,7 +291,6 @@
 		"commenter": "Kann kommentieren",
 		"open_discussion": "Diskussion öffnen",
 		"share_code_text": "Code & Text teilen",
-		"snipit": "Snipit",
 		"snippet": "Schnipsel",
 		"discussion": "Diskussion",
 		"discussion_title": "Schnipsel-Diskussion",
@@ -350,7 +374,8 @@
 		"ai_autocomplete": "AI-Autovervollständigung",
 		"no_edit_permitted": "Bearbeiten nicht erlaubt",
 		"set": "Einstellen",
-		"edit": "Bearbeiten"
+		"edit": "Bearbeiten",
+		"snipit": "Snipit"
 	},
 	"profile": {
 		"loading": "Laden...",
@@ -359,7 +384,6 @@
 		"username": "Benutzername",
 		"email": "E-Mail",
 		"joined": "Beigetreten",
-		"snippets_count": "Snippets",
 		"no_snippets": "Noch keine Snippets",
 		"no_snippets_desc": "Ihre geteilten Code-Meisterwerke werden hier erscheinen!",
 		"create_first": "Erstellen Sie Ihren ersten Snippet",
@@ -381,7 +405,8 @@
 		},
 		"avg_views": "Effizienz",
 		"loading_failed": "Profil konnte nicht geladen werden",
-		"update_failed": "Aktualisierung fehlgeschlagen"
+		"update_failed": "Aktualisierung fehlgeschlagen",
+		"snippets_count": "Snippets"
 	},
 	"home": {
 		"loading": "Laden...",
@@ -407,15 +432,10 @@
 			"custom": "Eigenes"
 		},
 		"tab_text": "Klartext",
-		"tab_text_short": "Text",
-		"tab_code": "Code",
-		"tab_code_short": "Code",
-		"tab_docs": "Docs",
 		"tab_docs_short": "Formatieren",
 		"tab_draw": "Zeichnen",
 		"tab_draw_short": "Zeichn.",
 		"tab_link": "Link kürzen",
-		"tab_link_short": "Link",
 		"tab_file": "Datei",
 		"tab_file_short": "Datei",
 		"tab_video": "Kino",
@@ -435,7 +455,6 @@
 		"link_desc": "Fügen Sie unten die lange URL ein, um einen kurzen, weiterleitenden Link zu erstellen.",
 		"link_shortened": "Link gekürzt!",
 		"link_ready_desc": "Ihre Kurz-URL ist bereit zum Teilen",
-		"alias": "Alias",
 		"create_another": "Weitere erstellen",
 		"link_features": {
 			"fast": "Schnelle Weiterleitung",
@@ -471,7 +490,13 @@
 		"add_files": "Dateien hinzufügen",
 		"files_selected": "Dateien ausgewählt",
 		"custom_id_required": "Benutzerdefinierte ID erforderlich",
-		"files_selected_via_paste": "Über Einfügen ausgewählt"
+		"files_selected_via_paste": "Über Einfügen ausgewählt",
+		"tab_text_short": "Text",
+		"tab_code": "Code",
+		"tab_code_short": "Code",
+		"tab_docs": "Docs",
+		"tab_link_short": "Link",
+		"alias": "Alias"
 	},
 	"display": {
 		"loading": "Laden...",
@@ -681,13 +706,13 @@
 		"error": "Fehler"
 	},
 	"server_error": {
-		"title": "System Offline",
 		"subtitle": "Wir haben Probleme, uns mit unseren Kernservices zu verbinden. Unser Team wurde benachrichtigt und arbeitet an einer Lösung.",
 		"operational": "Betriebsbereit",
 		"service_down": "Dienst ausgefallen",
 		"error_details": "Fehlerdetails",
 		"retry_button": "Verbindung erneut versuchen",
-		"safety_button": "Zurück zur Sicherheit"
+		"safety_button": "Zurück zur Sicherheit",
+		"title": "System Offline"
 	},
 	"error_page": {
 		"title": "Seite nicht gefunden",
@@ -767,7 +792,6 @@
 		"start_speaking": "Vorlesen",
 		"stop_speaking": "Stopp",
 		"plain_text": "Klartext",
-		"code": "Code",
 		"drawing": "Zeichnung",
 		"shorten_link": "Link kürzen",
 		"file": "Datei",
@@ -778,7 +802,8 @@
 			"select_language": "Tastatursprache wählen",
 			"tooltip_enable": "Phonetisches Tippen aktivieren — auf Englisch tippen, {{language}} erhalten",
 			"tooltip_disable": "Zurück zur englischen Eingabe wechseln"
-		}
+		},
+		"code": "Code"
 	},
 	"ai_dialog": {
 		"title": "AI-Bearbeitungsassistent",

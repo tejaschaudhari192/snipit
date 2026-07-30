@@ -31,14 +31,14 @@ export function SchemaFieldRenderer({
 	if (field.type === "url") {
 		return (
 			<div className="space-y-1.5">
-				<Label className="text-[13px] text-white/50 block font-medium">
+				<Label className="text-[13px] text-muted-foreground block font-medium">
 					{t(field.placeholder || "") || field.label}
 				</Label>
 				<a
 					href={value.startsWith("http") ? value : `https://${value}`}
 					target="_blank"
 					rel="noopener noreferrer"
-					className="text-[15px] font-medium text-vault-active hover:text-vault-active/80 truncate block transition-colors"
+					className="text-[15px] font-medium text-primary hover:text-primary/80 truncate block transition-colors"
 				>
 					{value}
 				</a>
@@ -50,7 +50,7 @@ export function SchemaFieldRenderer({
 		return (
 			<div className="space-y-1.5 group">
 				<div className="flex items-center justify-between">
-					<Label className="text-[13px] text-white/50 block font-medium">
+					<Label className="text-[13px] text-muted-foreground block font-medium">
 						{t(field.placeholder || "") || field.label}
 					</Label>
 					<div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -94,12 +94,12 @@ export function SchemaFieldRenderer({
 
 	return (
 		<div className="space-y-1.5">
-			<Label className="text-[13px] text-white/50 block font-medium">
+			<Label className="text-[13px] text-muted-foreground block font-medium">
 				{t(field.placeholder || "") || field.label}
 			</Label>
 			<div className="flex items-center justify-between group min-w-0">
 				<span
-					className={`text-[15px] font-medium text-white flex-1 truncate ${field.type === "password" ? "font-mono tracking-widest" : ""}`}
+					className={`text-[15px] font-medium text-foreground flex-1 truncate ${field.type === "password" ? "font-mono tracking-widest" : ""}`}
 				>
 					{field.type === "password" && !showValue
 						? "•".repeat(Math.min(value.length, 20))
@@ -111,7 +111,7 @@ export function SchemaFieldRenderer({
 							variant="ghost"
 							size="icon"
 							onClick={() => setShowValue(!showValue)}
-							className="h-8 w-8 text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+							className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
 						>
 							{showValue ? (
 								<EyeOff className="h-4 w-4" />
@@ -124,7 +124,7 @@ export function SchemaFieldRenderer({
 						content={value}
 						variant="ghost"
 						size="default"
-						className="h-8 w-8 text-white/60 hover:text-white hover:bg-white/10 transition-colors bg-white/5 rounded-lg border-0"
+						className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors bg-muted/30 rounded-lg border-0"
 					/>
 				</div>
 			</div>

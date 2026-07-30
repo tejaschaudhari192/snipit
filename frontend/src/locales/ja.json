@@ -24,7 +24,6 @@
 	"tools": {
 		"badge": "🔐 セキュアツール",
 		"title": "セキュアツール＆ユーティリティ",
-		"cryptoSafe_title": "CryptoSafe",
 		"cryptoSafe_description": "フォルダーの暗号化と復号化（クライアントサイドのみ）",
 		"subtitle": "機密データを保護するために設計された、安全なクライアントサイドツールのコレクションです。データがデバイスを離れることはありません。",
 		"encrypt_tab": "暗号化",
@@ -145,7 +144,6 @@
 		"password_manager_continue": "続行",
 		"password_manager_warning_title": "警告",
 		"password_manager_warning_desc": "マスターパスワードを忘れると、データは永久に失われます。リセットやリカバリの手段はありません。",
-		"password_manager_warning_irrecoverable": "If you forget your master password, your vault data can only be recovered using the Recovery Key provided in the next step. Otherwise, it is permanently lost.",
 		"password_manager_warning_checkbox": "パスワードを忘れた場合、データを回復できないことを理解しています。",
 		"password_manager_create_vault": "ボルトを作成",
 		"password_manager_unlock_title": "ボルトのロックを解除",
@@ -224,7 +222,34 @@
 		"pnr_checker_passenger": "乗客 {{number}}",
 		"pnr_checker_booking_status": "予約状況",
 		"pnr_checker_no_status": "乗客のステータスはありません",
-		"password_manager_no_folder": "フォルダーなし"
+		"password_manager_no_folder": "フォルダーなし",
+		"cryptoSafe_title": "CryptoSafe",
+		"password_manager_table_company": "Company",
+		"password_manager_table_last_modified": "Last modified",
+		"password_manager_table_folder": "Folder",
+		"password_manager_table_type": "Type",
+		"password_manager_sharing_center_title": "Sharing Center",
+		"password_manager_sharing_center_desc": "Manage your securely shared passwords and collections.",
+		"password_manager_share_new_collection": "Share New Collection",
+		"password_manager_shared_with_me": "Shared with Me",
+		"password_manager_shared_by_me": "Shared by Me",
+		"password_manager_shared_with_me_empty": "No items shared with you",
+		"password_manager_shared_with_me_empty_desc": "When someone shares a password with you using End-to-End Encryption, it will appear here.",
+		"password_manager_shared_by_me_empty": "You haven't shared anything yet",
+		"password_manager_shared_by_me_empty_desc": "Share items individually from their details page, or create a collection here.",
+		"password_manager_role": "Role",
+		"password_manager_manage_access": "Manage Access",
+		"password_manager_item_singular": "item",
+		"password_manager_item_plural": "items",
+		"password_manager_just_now": "just now",
+		"password_manager_warning_irrecoverable": "If you forget your master password, your vault data can only be recovered using the Recovery Key provided in the next step. Otherwise, it is permanently lost.",
+		"password_manager_danger_zone": "Danger Zone",
+		"password_manager_delete_vault": "Delete Vault",
+		"password_manager_delete_vault_confirm_title": "Delete your vault?",
+		"password_manager_delete_vault_confirm_desc": "This action <strong>cannot be undone</strong>. This will permanently delete your vault and remove all your passwords, folders, and shared collections from our servers and this device.",
+		"password_manager_deleting": "Deleting...",
+		"password_manager_vault_deleted": "Vault deleted successfully",
+		"password_manager_delete_vault_failed": "Failed to delete vault"
 	},
 	"errors": {
 		"storage_access_denied": "ストレージアクセスが拒否されました。",
@@ -266,7 +291,6 @@
 		"commenter": "コメント可能",
 		"open_discussion": "ディスカッションを開く",
 		"share_code_text": "コードとテキストを共有",
-		"snipit": "Snipit",
 		"snippet": "スニペット",
 		"discussion": "ディスカッション",
 		"discussion_title": "スニペットのディスカッション",
@@ -350,7 +374,8 @@
 		"ai_autocomplete": "AI自動補完",
 		"no_edit_permitted": "編集は許可されていません",
 		"set": "設定",
-		"edit": "編集"
+		"edit": "編集",
+		"snipit": "Snipit"
 	},
 	"profile": {
 		"loading": "読み込み中...",
@@ -410,7 +435,6 @@
 		"tab_text_short": "テキスト",
 		"tab_code": "コード",
 		"tab_code_short": "コード",
-		"tab_docs": "Docs",
 		"tab_docs_short": "リッチ",
 		"tab_draw": "ドローイング",
 		"tab_draw_short": "ドロー",
@@ -471,7 +495,8 @@
 		"add_files": "ファイルを追加",
 		"files_selected": "ファイルが選択されました",
 		"custom_id_required": "カスタムIDが必要です",
-		"files_selected_via_paste": "貼り付けで選択されました"
+		"files_selected_via_paste": "貼り付けで選択されました",
+		"tab_docs": "Docs"
 	},
 	"display": {
 		"loading": "読み込み中...",

@@ -120,6 +120,7 @@ export function SchemaFieldsEditor({
 							{field.type === "password" && (
 								<Drawer
 									direction="right"
+									nested
 									open={showGeneratorFor === field.key}
 									onOpenChange={(open) =>
 										setShowGeneratorFor(
