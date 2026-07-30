@@ -24,7 +24,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { Menu, MoreHorizontal, Pencil, Share2, Trash2, Folder } from "lucide-react";
+import { Menu, MoreHorizontal, Pencil, Trash2, Folder, Copy, Share2 } from "lucide-react";
 import { ITEM_TYPE_OPTIONS } from "@/tools/password-manager/utils/constants";
 import {
 	getDomain,
@@ -243,16 +243,19 @@ export default function PasswordList({
 										}}
 									>
 										<Pencil className="mr-2 h-4 w-4" />
-										{t("common.edit")}
+										<span>{t("tools.password_manager_edit")}</span>
 									</DropdownMenuItem>
 									<DropdownMenuItem
 										onClick={(e) => {
 											e.stopPropagation();
-											// Share functionality
+											if (item.password) {
+												navigator.clipboard.writeText(item.password);
+											}
 										}}
+										disabled={!item.password}
 									>
-										<Share2 className="mr-2 h-4 w-4" />
-										{t("common.share")}
+										<Copy className="mr-2 h-4 w-4" />
+										<span>{t("tools.password_manager_copy_password")}</span>
 									</DropdownMenuItem>
 									<DropdownMenuItem
 										className="text-destructive focus:text-destructive"
@@ -262,7 +265,7 @@ export default function PasswordList({
 										}}
 									>
 										<Trash2 className="mr-2 h-4 w-4" />
-										{t("common.delete")}
+										<span>{t("tools.password_manager_delete")}</span>
 									</DropdownMenuItem>
 								</DropdownMenuContent>
 							</DropdownMenu>
@@ -285,10 +288,10 @@ export default function PasswordList({
 		onGlobalFilterChange: undefined, // Let parent handle search input
 	});
 
-	let pageTitle = "All Items";
-	if (activeFilter === "favorites") pageTitle = "Favorites";
-	else if (activeFilter === "recent") pageTitle = "Recent";
-	else if (activeFilter === "sharing") pageTitle = "Sharing Center";
+	let pageTitle = t("tools.password_manager_all_items");
+	if (activeFilter === "favorites") pageTitle = t("tools.password_manager_favorites");
+	else if (activeFilter === "recent") pageTitle = t("tools.password_manager_recent");
+	else if (activeFilter === "sharing") pageTitle = t("tools.password_manager_sharing_center_title");
 	else {
 		const typeOpt = ITEM_TYPE_OPTIONS.find((o) => o.id === activeFilter);
 		if (typeOpt) pageTitle = t(typeOpt.label);
@@ -314,11 +317,11 @@ export default function PasswordList({
 				<div className="flex items-center gap-2">
 					{activeFolder && (
 						<Button variant="outline" className="gap-2 h-9" size="sm" onClick={() => setIsShareModalOpen(true)}>
-							<Share2 className="h-4 w-4" /> Share
+							<Share2 className="h-4 w-4" /> {t("tools.password_manager_share")}
 						</Button>
 					)}
 					<Button className="h-9 gap-2" size="sm" onClick={onNewItem}>
-						+ New item
+						<span className="mr-1">+</span> {t("tools.password_manager_new_item")}
 					</Button>
 				</div>
 			</div>

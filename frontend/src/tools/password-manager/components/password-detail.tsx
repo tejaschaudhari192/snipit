@@ -135,9 +135,9 @@ export default function PasswordDetail({
 
 	return (
 		<>
-			<div className="flex flex-col h-full bg-transparent text-foreground">
+			<div className="flex flex-col h-full bg-background/95 backdrop-blur-xl text-foreground">
 				{/* Header Actions */}
-				<div className="flex items-center gap-3 p-5 border-b border-border">
+				<div className="flex items-center gap-3 p-5 border-b border-border/40 bg-muted/20">
 					<div className="flex-1 min-w-0 flex items-center justify-end gap-2">
 						<div className="w-32">
 							<Select
@@ -288,12 +288,13 @@ export default function PasswordDetail({
 
 				<div className="flex-1 overflow-y-auto no-scrollbar scroll-fade-bottom">
 					{/* Title & Subtitle */}
-					<div className="px-8 pt-8 pb-4">
-						<div className="flex items-center gap-4">
+					<div className="px-8 pt-10 pb-6 relative overflow-hidden border-b border-border/20">
+						
+						<div className="flex items-center gap-6 relative z-10">
 							<div
-								className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${getBrandColor(item.title)}`}
+								className={`w-20 h-20 rounded-2xl flex items-center justify-center shrink-0 shadow-lg ring-1 ring-black/5 dark:ring-white/10 relative overflow-hidden ${getBrandColor(item.title)}`}
 							>
-								<span className="text-white text-3xl font-bold">
+								<span className="text-white text-3xl font-black tracking-tight drop-shadow-md relative z-10">
 									{item.title
 										? item.title
 												.substring(0, 2)
@@ -302,15 +303,15 @@ export default function PasswordDetail({
 								</span>
 							</div>
 							<div className="min-w-0 flex-1">
-								<h2 className="text-[28px] font-bold tracking-tight flex items-center gap-2 mb-1">
-									<span className="truncate">
+								<h2 className="text-3xl font-extrabold tracking-tight flex items-center gap-2 mb-2.5 text-foreground/90">
+									<span className="truncate drop-shadow-sm">
 										{item.title}
 									</span>
 								</h2>
 								{item.itemType && (
 									<Badge
 										variant="outline"
-										className="bg-primary/10 text-primary border-transparent text-[11px] px-2 py-0.5 rounded-md leading-none font-medium"
+										className="bg-background/80 backdrop-blur-md border-border text-muted-foreground text-[11px] px-2.5 py-1 rounded-md leading-none font-semibold shadow-xs transition-colors hover:bg-muted"
 									>
 										{t(
 											ITEM_TYPE_OPTIONS.find(
@@ -338,9 +339,9 @@ export default function PasswordDetail({
 						</div>
 					)}
 
-					<div className="px-8 pt-8 pb-10 space-y-8">
+					<div className="px-8 pt-6 pb-12 space-y-8 relative z-10">
 						{/* Details Section */}
-						<div className="space-y-6">
+						<div className="bg-muted/20 border border-border/40 rounded-2xl p-6 shadow-xs space-y-6">
 							{/* Dynamic Schema Fields */}
 							{schemaFields.map((field) => {
 								const value = item.metadata
@@ -359,11 +360,11 @@ export default function PasswordDetail({
 
 							{/* Notes */}
 							{item.notes && (
-								<div>
-									<Label className="text-xs text-muted-foreground mb-1.5 block">
+								<div className="pt-2">
+									<Label className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground mb-2 block">
 										{t("tools.password_detail_notes_label")}
 									</Label>
-									<p className="text-sm text-foreground whitespace-pre-wrap wrap-break-word">
+									<p className="text-[14px] leading-relaxed text-foreground/90 whitespace-pre-wrap break-words bg-background/50 p-4 rounded-xl border border-border/50">
 										{item.notes}
 									</p>
 								</div>
@@ -372,28 +373,28 @@ export default function PasswordDetail({
 							{/* Created & Last Modified */}
 							{(item.createdAt || item.updatedAt) && (
 								<>
-									<Separator className="bg-border" />
-									<div className="space-y-1.5">
+									<Separator className="bg-border/50 my-2" />
+									<div className="space-y-2">
 										{item.createdAt && (
 											<div className="flex items-center justify-between">
-												<span className="text-xs text-muted-foreground">
+												<span className="text-[13px] font-medium text-muted-foreground/80">
 													{t(
 														"tools.password_detail_created_label",
 													)}
 												</span>
-												<span className="text-xs text-muted-foreground/80 font-mono">
+												<span className="text-[13px] text-muted-foreground font-mono">
 													{formatDate(item.createdAt)}
 												</span>
 											</div>
 										)}
 										{item.updatedAt && (
 											<div className="flex items-center justify-between">
-												<span className="text-xs text-muted-foreground">
+												<span className="text-[13px] font-medium text-muted-foreground/80">
 													{t(
 														"tools.password_detail_modified_label",
 													)}
 												</span>
-												<span className="text-xs text-muted-foreground/80 font-mono">
+												<span className="text-[13px] text-muted-foreground font-mono">
 													{formatDate(item.updatedAt)}
 												</span>
 											</div>
@@ -405,24 +406,21 @@ export default function PasswordDetail({
 
 						{/* Custom Fields */}
 						{item.customFields && item.customFields.length > 0 && (
-							<>
-								<Separator className="bg-border" />
-								<div>
-									<Label className="text-xs text-muted-foreground mb-2 block">
-										{t(
-											"tools.password_detail_custom_fields_label",
-										)}
-									</Label>
-									<div className="space-y-2">
-										{item.customFields.map((field, i) => (
-											<CustomFieldRenderer
-												key={i}
-												field={field}
-											/>
-										))}
-									</div>
+							<div className="bg-muted/20 border border-border/40 rounded-2xl p-6 shadow-xs">
+								<Label className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground mb-4 block">
+									{t(
+										"tools.password_detail_custom_fields_label",
+									)}
+								</Label>
+								<div className="space-y-3">
+									{item.customFields.map((field, i) => (
+										<CustomFieldRenderer
+											key={i}
+											field={field}
+										/>
+									))}
 								</div>
-							</>
+							</div>
 						)}
 					</div>
 				</div>

@@ -24,7 +24,7 @@ import {
 	DetailSkeleton,
 } from "./components/skeletons";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { store, useAppDispatch, useAppSelector } from "./store";
 import {
@@ -256,18 +256,15 @@ function PasswordManagerInner() {
 							)}
 						</div>
 
-						{/* Detail/Edit Sheet */}
-						<Sheet
+						<Drawer
 							open={!!activeItem || isNewItem}
 							onOpenChange={(open) => {
 								if (!open) dispatch(handleCancelDetail());
 							}}
+							direction="right"
 						>
-							<SheetContent
-								side="right"
-								className="sm:max-w-130 p-0 border-l border-pm-border shadow-2xl"
-								hideOverlay={false}
-								showCloseButton={false}
+							<DrawerContent
+								className="sm:max-w-150 p-0 border-l border-pm-border shadow-2xl h-full rounded-none"
 							>
 								<Suspense fallback={<DetailSkeleton />}>
 									<PasswordDetail
@@ -276,8 +273,8 @@ function PasswordManagerInner() {
 										onSave={saveItem}
 									/>
 								</Suspense>
-							</SheetContent>
-						</Sheet>
+							</DrawerContent>
+						</Drawer>
 					</div>
 				)}
 			</div>
