@@ -2,18 +2,22 @@
 # Stage 1 – Build
 # =================================================
 FROM node:22-bookworm AS builder
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 WORKDIR /app
 
 RUN npm install -g pnpm
 
-COPY package.json package-lock.json* ./
+COPY package.json pnpm-lock.yaml ./
 # Install ALL deps (including devDeps) so tsc and tsc-alias are available
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 COPY . .
 RUN pnpm build
 
-RUN rm -rf node_modules && pnpm install --prod --frozen-lockfile
+RUN rm -rf node_modules && pnpm install --prod
 
 # =================================================
 # Stage 2 – Runtime
