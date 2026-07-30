@@ -8,12 +8,12 @@ RUN npm install -g pnpm
 
 COPY package.json pnpm-lock.yaml* ./
 # Install ALL deps (including devDeps) so tsc and tsc-alias are available
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 COPY . .
 RUN pnpm build
 
-RUN rm -rf node_modules && pnpm install --prod --frozen-lockfile
+RUN rm -rf node_modules && pnpm install --prod --frozen-lockfile --ignore-scripts
 
 # =================================================
 # Stage 2 – Runtime
