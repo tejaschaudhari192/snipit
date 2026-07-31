@@ -86,7 +86,7 @@ export default function ShareFolderModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="sm:max-w-md bg-vault-card border-white/10 text-white shadow-2xl">
+			<DialogContent showCloseButton={false} className="sm:max-w-md bg-background border-white/10 text-foreground shadow-2xl">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<Users className="w-5 h-5 text-primary" />
@@ -115,7 +115,7 @@ export default function ShareFolderModal({
 								<SelectTrigger className="w-full bg-black/50 border-white/10 text-white">
 									<SelectValue placeholder="Choose a folder to share" />
 								</SelectTrigger>
-								<SelectContent className="bg-vault-card border-white/10 text-white">
+								<SelectContent className="bg-background border-white/10 text-foreground">
 									{vault?.folders?.map(
 										(f: {
 											id: string;
@@ -162,7 +162,7 @@ export default function ShareFolderModal({
 							<SelectTrigger className="w-full bg-black/50 border-white/10 text-white">
 								<SelectValue placeholder="Select permission" />
 							</SelectTrigger>
-							<SelectContent className="bg-vault-card border-white/10 text-white">
+							<SelectContent className="bg-background border-white/10 text-foreground">
 								<SelectItem value="viewer">Viewer</SelectItem>
 								<SelectItem value="editor">Editor</SelectItem>
 							</SelectContent>

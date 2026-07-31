@@ -77,7 +77,7 @@ export default function CollectionMembersModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="sm:max-w-lg bg-vault-card border-white/10 text-white shadow-2xl">
+			<DialogContent showCloseButton={false} className="sm:max-w-lg bg-background border-white/10 text-foreground shadow-2xl">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<Users className="w-5 h-5 text-primary" />
