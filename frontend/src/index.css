@@ -186,13 +186,11 @@
 	}
 
 	.moving-border-gradient {
-		background: conic-gradient(
-			from 0deg,
-			transparent 0 240deg,
-			#6366f1 280deg,
-			#a855f7 320deg,
-			#ec4899 360deg
-		);
+		background: conic-gradient(from 0deg,
+				transparent 0 240deg,
+				#6366f1 280deg,
+				#a855f7 320deg,
+				#ec4899 360deg);
 	}
 
 	@keyframes progress-gradient-flow {
@@ -219,6 +217,7 @@
 		0% {
 			background-position: 200% 0;
 		}
+
 		100% {
 			background-position: -200% 0;
 		}
@@ -226,14 +225,12 @@
 
 	.skeleton {
 		@apply relative overflow-hidden bg-muted-foreground/25 dark:bg-muted-foreground/20 border border-border/10;
-		background-image: linear-gradient(
-			90deg,
-			transparent 0%,
-			rgba(255, 255, 255, 0.08) 25%,
-			rgba(255, 255, 255, 0.18) 50%,
-			rgba(255, 255, 255, 0.08) 75%,
-			transparent 100%
-		);
+		background-image: linear-gradient(90deg,
+				transparent 0%,
+				rgba(255, 255, 255, 0.08) 25%,
+				rgba(255, 255, 255, 0.18) 50%,
+				rgba(255, 255, 255, 0.08) 75%,
+				transparent 100%);
 		background-size: 200% 100%;
 		animation: shimmer-gradient 2s infinite linear;
 	}
@@ -243,7 +240,7 @@
 	}
 
 	.glass-morphism {
-		@apply bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)];
+		@apply bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_8px_32px_0_rgba(31, 38, 135, 0.37)];
 	}
 
 	/* Custom Scrollbar Utility */
@@ -293,54 +290,53 @@
 
 	.scroll-fade-bottom {
 		mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-		-webkit-mask-image: linear-gradient(
-			to bottom,
-			black 85%,
-			transparent 100%
-		);
+		-webkit-mask-image: linear-gradient(to bottom,
+				black 85%,
+				transparent 100%);
 	}
 
 	.scroll-fade-y {
-		mask-image: linear-gradient(
-			to bottom,
-			transparent 0%,
-			black 10%,
-			black 90%,
-			transparent 100%
-		);
-		-webkit-mask-image: linear-gradient(
-			to bottom,
-			transparent 0%,
-			black 10%,
-			black 90%,
-			transparent 100%
-		);
+		mask-image: linear-gradient(to bottom,
+				transparent 0%,
+				black 10%,
+				black 90%,
+				transparent 100%);
+		-webkit-mask-image: linear-gradient(to bottom,
+				transparent 0%,
+				black 10%,
+				black 90%,
+				transparent 100%);
 	}
 
 	@keyframes vinyl-spin {
 		from {
 			transform: rotate(0deg);
 		}
+
 		to {
 			transform: rotate(360deg);
 		}
 	}
 
 	@keyframes equalizer-bar {
+
 		0%,
 		100% {
 			height: 4px;
 		}
+
 		50% {
 			height: 12px;
 		}
 	}
 
 	@keyframes music-pulse {
+
 		0%,
 		100% {
 			box-shadow: 0 0 0 0 rgba(111, 66, 193, 0.4);
 		}
+
 		50% {
 			box-shadow: 0 0 0 12px rgba(111, 66, 193, 0);
 		}
@@ -360,10 +356,12 @@ body.is-404 .action-url-bar {
 }
 
 @keyframes cursor-blink {
+
 	0%,
 	100% {
 		opacity: 1;
 	}
+
 	50% {
 		opacity: 0;
 	}
@@ -373,17 +371,20 @@ body.is-404 .action-url-bar {
 	from {
 		transform: scaleX(1);
 	}
+
 	to {
 		transform: scaleX(0);
 	}
 }
 
 @keyframes pulse-subtle {
+
 	0%,
 	100% {
 		opacity: 1;
 		transform: scale(1);
 	}
+
 	50% {
 		opacity: 0.8;
 		transform: scale(0.98);
@@ -395,6 +396,7 @@ body.is-404 .action-url-bar {
 		height: 0;
 		opacity: 0;
 	}
+
 	to {
 		height: var(--radix-collapsible-content-height);
 		opacity: 1;
@@ -406,6 +408,7 @@ body.is-404 .action-url-bar {
 		height: var(--radix-collapsible-content-height);
 		opacity: 1;
 	}
+
 	to {
 		height: 0;
 		opacity: 0;
@@ -443,13 +446,16 @@ body.is-404 .action-url-bar {
 		transform: translateY(0) scale(0.6);
 		opacity: 0;
 	}
+
 	10% {
 		transform: translateY(-20px) scale(1.1);
 		opacity: 1;
 	}
+
 	90% {
 		opacity: 1;
 	}
+
 	100% {
 		transform: translateY(-200px) scale(0.8);
 		opacity: 0;
@@ -582,7 +588,7 @@ body.is-404 .action-url-bar {
 	display: none !important;
 }
 
-.prose ul[data-type="taskList"] li > label {
+.prose ul[data-type="taskList"] li>label {
 	display: inline-flex !important;
 	align-items: center !important;
 	justify-content: center !important;
@@ -591,7 +597,7 @@ body.is-404 .action-url-bar {
 	cursor: pointer !important;
 }
 
-.prose ul[data-type="taskList"] li > label input[type="checkbox"] {
+.prose ul[data-type="taskList"] li>label input[type="checkbox"] {
 	appearance: none !important;
 	-webkit-appearance: none !important;
 	width: 0.95rem !important;
@@ -608,16 +614,12 @@ body.is-404 .action-url-bar {
 	transition: all 0.2s ease !important;
 }
 
-.prose ul[data-type="taskList"] li > label input[type="checkbox"]:checked {
+.prose ul[data-type="taskList"] li>label input[type="checkbox"]:checked {
 	background-color: var(--primary) !important;
 	border-color: var(--primary) !important;
 }
 
-.prose
-	ul[data-type="taskList"]
-	li
-	> label
-	input[type="checkbox"]:checked::after {
+.prose ul[data-type="taskList"] li>label input[type="checkbox"]:checked::after {
 	content: "" !important;
 	position: absolute !important;
 	left: 35% !important;
@@ -629,15 +631,15 @@ body.is-404 .action-url-bar {
 	transform: rotate(45deg) !important;
 }
 
-.prose ul[data-type="taskList"] li > div {
+.prose ul[data-type="taskList"] li>div {
 	flex: 1 !important;
 }
 
-.prose ul[data-type="taskList"] li > div > p {
+.prose ul[data-type="taskList"] li>div>p {
 	margin: 0 !important;
 }
 
-.prose ul[data-type="taskList"] li[data-checked="true"] > div {
+.prose ul[data-type="taskList"] li[data-checked="true"]>div {
 	text-decoration: line-through !important;
 	opacity: 0.6 !important;
 }
@@ -666,14 +668,17 @@ body.is-404 .action-url-bar {
 	from {
 		opacity: 0;
 	}
+
 	to {
 		opacity: 1;
 	}
 }
+
 @keyframes dialog-overlay-out {
 	from {
 		opacity: 1;
 	}
+
 	to {
 		opacity: 0;
 	}
@@ -687,12 +692,10 @@ body.is-404 .action-url-bar {
 @keyframes dialog-content-in {
 	from {
 		opacity: 0;
-		transform: translate(
-				calc(-50% + var(--click-cx, 0px)),
-				calc(-50% + var(--click-cy, 0px))
-			)
-			scale(0.08);
+		transform: translate(calc(-50% + var(--click-cx, 0px)),
+				calc(-50% + var(--click-cy, 0px))) scale(0.08);
 	}
+
 	to {
 		opacity: 1;
 		transform: translate(-50%, -50%) scale(1);
@@ -704,19 +707,18 @@ body.is-404 .action-url-bar {
 		opacity: 1;
 		transform: translate(-50%, -50%) scale(1);
 	}
+
 	to {
 		opacity: 0;
-		transform: translate(
-				calc(-50% + var(--click-cx, 0px)),
-				calc(-50% + var(--click-cy, 0px))
-			)
-			scale(0.08);
+		transform: translate(calc(-50% + var(--click-cx, 0px)),
+				calc(-50% + var(--click-cy, 0px))) scale(0.08);
 	}
 }
 
 [data-slot="dialog-overlay"][data-state="open"] {
 	animation: dialog-overlay-in 200ms ease forwards;
 }
+
 [data-slot="dialog-overlay"][data-state="closed"] {
 	animation: dialog-overlay-out 150ms ease forwards;
 }
@@ -724,6 +726,7 @@ body.is-404 .action-url-bar {
 [data-slot="dialog-content"][data-state="open"] {
 	animation: dialog-content-in 220ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+
 [data-slot="dialog-content"][data-state="closed"] {
 	animation: dialog-content-out 180ms cubic-bezier(0.55, 0, 1, 0.45) forwards;
 }
@@ -734,6 +737,7 @@ body.is-404 .action-url-bar {
 		transform: scale(0.9) rotate(-3deg);
 		opacity: 0;
 	}
+
 	to {
 		transform: scale(1) rotate(0deg);
 		opacity: 1;
