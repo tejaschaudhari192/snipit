@@ -65,7 +65,7 @@ export default function ShareItemModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent showCloseButton={false} className="sm:max-w-md bg-background border-white/10 text-foreground shadow-2xl">
+			<DialogContent showCloseButton={false} className="sm:max-w-md bg-background border-border text-foreground shadow-2xl">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<Users className="w-5 h-5 text-primary" />
@@ -88,7 +88,7 @@ export default function ShareItemModal({
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
 							required
-							className="bg-black/50 border-white/10 text-white placeholder:text-white/30"
+							className="bg-background border-border text-foreground placeholder:text-muted-foreground"
 						/>
 					</div>
 
@@ -102,10 +102,10 @@ export default function ShareItemModal({
 								setRole(val)
 							}
 						>
-							<SelectTrigger className="w-full bg-black/50 border-white/10 text-white">
+							<SelectTrigger className="w-full bg-background border-border text-foreground">
 								<SelectValue placeholder="Select permission" />
 							</SelectTrigger>
-							<SelectContent className="bg-background border-white/10 text-foreground">
+							<SelectContent className="bg-background border-border text-foreground">
 								<SelectItem value="viewer">Viewer</SelectItem>
 								<SelectItem value="editor">Editor</SelectItem>
 							</SelectContent>
@@ -117,7 +117,7 @@ export default function ShareItemModal({
 							type="button"
 							variant="outline"
 							onClick={onClose}
-							className="border-white/10 bg-transparent text-white hover:bg-white/5"
+							className="border-border bg-transparent text-foreground hover:bg-muted"
 						>
 							Cancel
 						</Button>

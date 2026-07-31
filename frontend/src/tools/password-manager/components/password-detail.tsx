@@ -80,12 +80,12 @@ export default function PasswordDetail({
 	if (!item && !isNew) return null;
 
 	if (isNew) {
-		const isEditing = !!(item && item.id);
+		const isExistingItem = !!(item && item.createdAt);
 		return (
 			<div className="flex flex-col h-full bg-background">
 				<div className="flex items-center justify-between p-5 border-b border-border">
 					<h2 className="text-sm font-semibold flex-1">
-						{isEditing
+						{isExistingItem
 							? t("tools.password_manager_edit_title")
 							: t("tools.password_manager_new_title")}
 					</h2>
@@ -95,7 +95,7 @@ export default function PasswordDetail({
 						size="sm"
 						className="h-8 px-4"
 					>
-						{isEditing
+						{isExistingItem
 							? t("tools.password_manager_save")
 							: t("tools.password_manager_add")}
 					</Button>
@@ -120,7 +120,7 @@ export default function PasswordDetail({
 						<PasswordForm
 							key={item?.id ?? `new_${item?.itemType || "login"}`}
 							onAdd={onSave}
-							editItem={isEditing ? item : undefined}
+							editItem={item}
 						/>
 					</Suspense>
 				</div>

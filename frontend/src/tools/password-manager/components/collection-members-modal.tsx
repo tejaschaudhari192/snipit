@@ -77,7 +77,7 @@ export default function CollectionMembersModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent showCloseButton={false} className="sm:max-w-lg bg-background border-white/10 text-foreground shadow-2xl">
+			<DialogContent showCloseButton={false} className="sm:max-w-lg bg-background border-border text-foreground shadow-2xl">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<Users className="w-5 h-5 text-primary" />
@@ -103,10 +103,10 @@ export default function CollectionMembersModal({
 							{members.map((member) => (
 								<div
 									key={member.id}
-									className="flex items-center justify-between p-3 rounded-lg border border-white/5 bg-black/20"
+									className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/50"
 								>
 									<div>
-										<p className="font-medium text-white/90">
+										<p className="font-medium text-foreground">
 											{member.username || "Unknown User"}
 										</p>
 										<p className="text-xs text-muted-foreground">
@@ -114,7 +114,7 @@ export default function CollectionMembersModal({
 										</p>
 									</div>
 									<div className="flex items-center gap-3">
-										<span className="text-xs capitalize text-white/50 bg-white/5 px-2 py-1 rounded">
+										<span className="text-xs capitalize text-muted-foreground bg-background px-2 py-1 rounded border border-border">
 											{member.role}
 										</span>
 										{member.role !== "owner" && (
@@ -144,7 +144,7 @@ export default function CollectionMembersModal({
 						type="button"
 						variant="outline"
 						onClick={onClose}
-						className="border-white/10 bg-transparent text-white hover:bg-white/5"
+						className="border-border bg-transparent text-foreground hover:bg-muted"
 					>
 						Close
 					</Button>
