@@ -475,42 +475,84 @@ export const deleteFolderAsync = createAsyncThunk(
 		let newItems = [...state.personalItems];
 
 		try {
+			const personalKey = keyStore.getPersonalKey();
+			if (!personalKey) throw new Error("Vault is locked");
+
 			if (deletePasswordsInside) {
-				const itemsToDelete = state.personalItems.filter((i) => i.folderId === id);
-				for (const item of itemsToDelete) {
+				// Delete all items in this folder — check both personal items and shared-collection items
+				const personalToDelete = state.personalItems.filter((i) => i.folderId === id);
+
+				// If this folder was shared, its items live in sharedCollections keyed by collectionId
+				const sharedToDelete: PasswordItem[] = folder.collectionId
+					? (state.sharedCollections.find(
+							c => c.collection.id === folder.collectionId,
+						)?.items ?? []).filter((i) => i.folderId === id || !i.folderId)
+					: [];
+
+				const allToDelete = [
+					...personalToDelete,
+					...sharedToDelete.filter(s => !personalToDelete.some(p => p.id === s.id)),
+				];
+
+				for (const item of allToDelete) {
 					await api.delete(`/tools/password-manager/vault/items/${item.id}`);
 				}
 				newItems = newItems.filter((item) => item.folderId !== id);
 			} else {
-				// We keep the items but unshare them and remove them from the folder
-				const itemsToUpdate = state.personalItems.filter((i) => i.folderId === id);
-				const personalKey = keyStore.getPersonalKey();
-				if (!personalKey) throw new Error("Vault is locked");
+				// Keep the items but move them back to personal (un-share) and remove from folder.
+				// Items may be in personalItems (if never fully shared) OR in sharedCollections
+				// (if folder.collectionId is set — items were re-encrypted with collection key).
+				const itemsFromPersonal = state.personalItems.filter((i) => i.folderId === id);
 
-				for (const item of itemsToUpdate) {
-					const updatedItem = { ...item, folderId: undefined, collectionId: null, updatedAt: new Date().toISOString() };
+				// Gather items that live in the shared collection (encrypted with collection key)
+				const sharedCollection = folder.collectionId
+					? state.sharedCollections.find(c => c.collection.id === folder.collectionId)
+					: undefined;
+				const itemsFromShared: PasswordItem[] = sharedCollection
+					? sharedCollection.items.filter(
+							i => i.folderId === id || !i.folderId,
+						)
+					: [];
+
+				// Merge, avoiding duplicates
+				const allToUpdate = [
+					...itemsFromPersonal,
+					...itemsFromShared.filter(s => !itemsFromPersonal.some(p => p.id === s.id)),
+				];
+
+				for (const item of allToUpdate) {
+					// Always re-encrypt with personal key (item may currently be collection-key encrypted)
+					const updatedItem: PasswordItem = {
+						...item,
+						folderId: undefined,
+						collectionId: undefined,
+						updatedAt: new Date().toISOString(),
+					};
 					const encryptedPayload = encryptPayload(updatedItem, personalKey);
 					await api.put(`/tools/password-manager/vault/items/${item.id}`, {
 						encryptedPayload,
-						collectionId: null,
+						collectionId: null, // detach from collection in DB
 					});
-					
+
+					// Update or add to personal items list
 					const index = newItems.findIndex(i => i.id === item.id);
 					if (index !== -1) {
 						newItems[index] = updatedItem;
+					} else {
+						newItems.push(updatedItem);
 					}
 				}
 			}
 
-			// If the folder was a shared collection, delete the collection
+			// If the folder was a shared collection, delete the collection.
+			// Items have already been detached (collectionId: null in DB above),
+			// so deleting the collection only removes recipient access — it does NOT orphan items.
 			if (folder.collectionId) {
 				await api.delete(`/tools/password-manager/vault/collections/${folder.collectionId}`);
 				dispatch(fetchSharedCollections());
 			}
 
 			// Persist the new folders array
-			const personalKey = keyStore.getPersonalKey();
-			if (!personalKey) throw new Error("Vault is locked");
 			const settingsPayload = await encryptPayload({ folders: newFolders }, personalKey);
 			await api.put("/tools/password-manager/vault", { encryptedSettings: settingsPayload });
 
