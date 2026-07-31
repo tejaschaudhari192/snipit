@@ -250,7 +250,8 @@
 		"password_manager_delete_vault_confirm_desc": "इस कार्रवाई को <strong>पूर्ववत नहीं किया जा सकता</strong>। यह स्थायी रूप से आपके वॉल्ट को हटा देगा।",
 		"password_manager_deleting": "हटाया जा रहा है...",
 		"password_manager_vault_deleted": "वॉल्ट सफलतापूर्वक हटा दिया गया",
-		"password_manager_delete_vault_failed": "वॉल्ट हटाने में विफल"
+		"password_manager_delete_vault_failed": "वॉल्ट हटाने में विफल",
+		"password_manager_delete_desc": "इस कार्रवाई को पूर्ववत नहीं किया जा सकता। यह चयनित आइटम को स्थायी रूप से हटा देगा।"
 	},
 	"errors": {
 		"storage_access_denied": "स्टोरेज एक्सेस अस्वीकृत। कृपया कुकीज/स्टोरेज सक्षम करें।",

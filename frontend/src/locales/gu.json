@@ -250,7 +250,8 @@
 		"password_manager_delete_vault_confirm_desc": "આ ક્રિયા <strong>રદ કરી શકાતી નથી</strong>. તે તમારું વૉલ્ટ કાયમ માટે કાઢી નાખશે.",
 		"password_manager_deleting": "કાઢી નાખી રહ્યું છે...",
 		"password_manager_vault_deleted": "વૉલ્ટ સફળતાપૂર્વક કાઢી નાખ્યું",
-		"password_manager_delete_vault_failed": "વૉલ્ટ કાઢી નાખવામાં નિષ્ફળ"
+		"password_manager_delete_vault_failed": "વૉલ્ટ કાઢી નાખવામાં નિષ્ફળ",
+		"password_manager_delete_desc": "આ ક્રિયા રદ કરી શકાતી નથી. તે પસંદ કરેલી આઇટમ્સને કાયમ માટે કાઢી નાખશે."
 	},
 	"errors": {
 		"storage_access_denied": "સ્ટોરેજ ઍક્સેસ નકારવામાં આવી. કૃપા કરીને કૂકીઝ/સ્ટોરેજ સક્ષમ કરો.",

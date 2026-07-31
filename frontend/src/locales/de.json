@@ -250,7 +250,8 @@
 		"password_manager_delete_vault_confirm_desc": "Diese Aktion <strong>kann nicht rückgängig gemacht werden</strong>. Ihr Tresor wird dauerhaft gelöscht und alle Ihre Passwörter, Ordner und freigegebenen Sammlungen werden von unseren Servern und diesem Gerät entfernt.",
 		"password_manager_deleting": "Löschen...",
 		"password_manager_vault_deleted": "Tresor erfolgreich gelöscht",
-		"password_manager_delete_vault_failed": "Fehler beim Löschen des Tresors"
+		"password_manager_delete_vault_failed": "Fehler beim Löschen des Tresors",
+		"password_manager_delete_desc": "Diese Aktion kann nicht rückgängig gemacht werden. Dadurch werden die ausgewählten Elemente dauerhaft gelöscht."
 	},
 	"errors": {
 		"storage_access_denied": "Speicherzugriff verweigert. Bitte aktivieren Sie Cookies/Speicher.",

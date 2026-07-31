@@ -250,7 +250,8 @@
 		"password_manager_delete_vault_confirm_desc": "ही कृती <strong>अन्डू केली जाऊ शकत नाही</strong>. हे तुमचे व्हॉल्ट कायमचे हटवेल.",
 		"password_manager_deleting": "हटवत आहे...",
 		"password_manager_vault_deleted": "व्हॉल्ट यशस्वीरित्या हटवले",
-		"password_manager_delete_vault_failed": "व्हॉल्ट हटवण्यात अयशस्वी"
+		"password_manager_delete_vault_failed": "व्हॉल्ट हटवण्यात अयशस्वी",
+		"password_manager_delete_desc": "ही कृती अन्डू केली जाऊ शकत नाही. हे निवडलेले आयटम कायमचे हटवेल."
 	},
 	"errors": {
 		"storage_access_denied": "स्टोरेज प्रवेश नाकारला. कृपया कुकीज/स्टोरेज सक्षम करा.",

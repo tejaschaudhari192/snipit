@@ -250,7 +250,8 @@
 		"password_manager_delete_vault_confirm_desc": "এই কাজ <strong>বাতিল করা যাবে না</strong>। এটি আপনার ভল্ট স্থায়ীভাবে মুছে ফেলবে।",
 		"password_manager_deleting": "মোছা হচ্ছে...",
 		"password_manager_vault_deleted": "ভল্ট সফলভাবে মুছে ফেলা হয়েছে",
-		"password_manager_delete_vault_failed": "ভল্ট মুছতে ব্যর্থ"
+		"password_manager_delete_vault_failed": "ভল্ট মুছতে ব্যর্থ",
+		"password_manager_delete_desc": "এই কাজ বাতিল করা যাবে না। এটি নির্বাচিত আইটেম স্থায়ীভাবে মুছে ফেলবে।"
 	},
 	"errors": {
 		"storage_access_denied": "স্টোরেজ অ্যাক্সেস অস্বীকার করা হয়েছে। অনুগ্রহ করে কুকিজ সক্ষম করুন।",

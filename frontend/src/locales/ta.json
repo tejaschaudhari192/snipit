@@ -250,7 +250,8 @@
 		"password_manager_delete_vault_confirm_desc": "இச்செயலை <strong>செயல்தவிர்க்க முடியாது</strong>. இது உங்கள் பெட்டகத்தை நிரந்தரமாக அழித்துவிடும்.",
 		"password_manager_deleting": "அழிக்கப்படுகிறது...",
 		"password_manager_vault_deleted": "பெட்டகம் வெற்றிகரமாக அழிக்கப்பட்டது",
-		"password_manager_delete_vault_failed": "பெட்டகத்தை அழிக்க முடியவில்லை"
+		"password_manager_delete_vault_failed": "பெட்டகத்தை அழிக்க முடியவில்லை",
+		"password_manager_delete_desc": "இச்செயலை செயல்தவிர்க்க முடியாது. இது தேர்ந்தெடுக்கப்பட்ட உருப்படிகளை நிரந்தரமாக அழித்துவிடும்."
 	},
 	"errors": {
 		"storage_access_denied": "சேமிப்பக அணுகல் மறுக்கப்பட்டது. தயவுசெய்து குக்கீகள்/சேமிப்பகத்தை இயக்கவும்.",

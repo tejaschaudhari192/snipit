@@ -250,7 +250,8 @@
 		"password_manager_delete_vault_confirm_desc": "ഈ പ്രവർത്തനം <strong>പിൻവലിക്കാൻ കഴിയില്ല</strong>. ഇത് നിങ്ങളുടെ വോൾട്ട് പൂർണ്ണമായി മായ്ക്കും.",
 		"password_manager_deleting": "മായ്ക്കുന്നു...",
 		"password_manager_vault_deleted": "വോൾട്ട് വിജയകരമായി മായ്ച്ചു",
-		"password_manager_delete_vault_failed": "വോൾട്ട് മായ്ക്കാൻ കഴിഞ്ഞില്ല"
+		"password_manager_delete_vault_failed": "വോൾട്ട് മായ്ക്കാൻ കഴിഞ്ഞില്ല",
+		"password_manager_delete_desc": "ഈ പ്രവർത്തനം പിൻവലിക്കാൻ കഴിയില്ല. ഇത് തിരഞ്ഞെടുത്ത ഇനങ്ങൾ പൂർണ്ണമായി മായ്ക്കും."
 	},
 	"errors": {
 		"storage_access_denied": "സംഭരണ ആക്സസ് നിഷേധിച്ചു. കുക്കികൾ പ്രവർത്തനക്ഷമമാക്കുക.",

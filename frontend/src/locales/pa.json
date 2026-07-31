@@ -250,7 +250,8 @@
 		"password_manager_delete_vault_confirm_desc": "ਇਹ ਕਾਰਵਾਈ <strong>ਰੱਦ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ</strong>। ਇਹ ਤੁਹਾਡੇ ਵਾਲਟ ਨੂੰ ਪੱਕੇ ਤੌਰ 'ਤੇ ਮਿਟਾ ਦੇਵੇਗਾ।",
 		"password_manager_deleting": "ਮਿਟਾਇਆ ਜਾ ਰਿਹਾ ਹੈ...",
 		"password_manager_vault_deleted": "ਵਾਲਟ ਸਫਲਤਾਪੂਰਵਕ ਮਿਟਾਇਆ ਗਿਆ",
-		"password_manager_delete_vault_failed": "ਵਾਲਟ ਮਿਟਾਉਣ ਵਿੱਚ ਅਸਫਲ"
+		"password_manager_delete_vault_failed": "ਵਾਲਟ ਮਿਟਾਉਣ ਵਿੱਚ ਅਸਫਲ",
+		"password_manager_delete_desc": "ਇਹ ਕਾਰਵਾਈ ਰੱਦ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ। ਇਹ ਚੁਣੀਆਂ ਗਈਆਂ ਆਈਟਮਾਂ ਨੂੰ ਪੱਕੇ ਤੌਰ 'ਤੇ ਮਿਟਾ ਦੇਵੇਗਾ।"
 	},
 	"errors": {
 		"storage_access_denied": "ਸਟੋਰੇਜ ਪਹੁੰਚ ਤੋਂ ਇਨਕਾਰ ਕੀਤਾ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਕੁਕੀਜ਼ ਚਾਲੂ ਕਰੋ।",

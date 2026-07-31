@@ -250,7 +250,8 @@
 		"password_manager_delete_vault_confirm_desc": "ఈ చర్య <strong>వెనక్కి తీసుకోబడదు</strong>. ఇది మీ వాల్ట్‌ను శాశ్వతంగా తొలగిస్తుంది.",
 		"password_manager_deleting": "తొలగిస్తోంది...",
 		"password_manager_vault_deleted": "వాల్ట్ విజయవంతంగా తొలగించబడింది",
-		"password_manager_delete_vault_failed": "వాల్ట్ తొలగింపు విఫలమైంది"
+		"password_manager_delete_vault_failed": "వాల్ట్ తొలగింపు విఫలమైంది",
+		"password_manager_delete_desc": "ఈ చర్య వెనక్కి తీసుకోబడదు. ఇది ఎంచుకున్న అంశాలను శాశ్వతంగా తొలగిస్తుంది."
 	},
 	"errors": {
 		"storage_access_denied": "నిల్వ ప్రాప్యత నిరాకరించబడింది. దయచేసి కుక్కీలను ప్రారంభించండి.",

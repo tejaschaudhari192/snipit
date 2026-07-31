@@ -250,7 +250,8 @@
 		"password_manager_deleting": "Deleting...",
 		"password_manager_vault_deleted": "Vault deleted successfully",
 		"password_manager_delete_vault_failed": "Failed to delete vault",
-		"password_manager_no_folder": "No Folder"
+		"password_manager_no_folder": "No Folder",
+		"password_manager_delete_desc": "This action cannot be undone. This will permanently delete the selected item(s)."
 	},
 	"errors": {
 		"storage_access_denied": "Storage access denied. Please enable cookies/storage for full functionality.",

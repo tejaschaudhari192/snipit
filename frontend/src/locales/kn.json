@@ -250,7 +250,8 @@
 		"password_manager_delete_vault_confirm_desc": "ಈ ಕ್ರಿಯೆಯನ್ನು <strong>ಹಿಂತೆಗೆದುಕೊಳ್ಳಲಾಗುವುದಿಲ್ಲ</strong>. ಇದು ನಿಮ್ಮ ವಾಲ್ಟ್ ಅನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸುತ್ತದೆ.",
 		"password_manager_deleting": "ಅಳಿಸಲಾಗುತ್ತಿದೆ...",
 		"password_manager_vault_deleted": "ವಾಲ್ಟ್ ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ",
-		"password_manager_delete_vault_failed": "ವಾಲ್ಟ್ ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ"
+		"password_manager_delete_vault_failed": "ವಾಲ್ಟ್ ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ",
+		"password_manager_delete_desc": "ಈ ಕ್ರಿಯೆಯನ್ನು ಹಿಂತೆಗೆದುಕೊಳ್ಳಲಾಗುವುದಿಲ್ಲ. ಇದು ಆಯ್ಕೆಮಾಡಿದ ಐಟಂಗಳನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸುತ್ತದೆ."
 	},
 	"errors": {
 		"storage_access_denied": "ಶೇಖರಣಾ ಪ್ರವೇಶವನ್ನು ನಿರಾಕರಿಸಲಾಗಿದೆ. ಕುಕೀಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ.",

@@ -250,7 +250,8 @@
 		"password_manager_delete_vault_confirm_desc": "この操作は<strong>取り消すことができません</strong>。これによりボルトは永久に削除され、すべてのデータが失われます。",
 		"password_manager_deleting": "削除中...",
 		"password_manager_vault_deleted": "ボルトが正常に削除されました",
-		"password_manager_delete_vault_failed": "ボルトの削除に失敗しました"
+		"password_manager_delete_vault_failed": "ボルトの削除に失敗しました",
+		"password_manager_delete_desc": "この操作は取り消すことができません。選択したアイテムは完全に削除されます。"
 	},
 	"errors": {
 		"storage_access_denied": "ストレージアクセスが拒否されました。",

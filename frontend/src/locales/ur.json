@@ -250,7 +250,8 @@
 		"password_manager_delete_vault_confirm_desc": "اس عمل کو <strong>واپس نہیں لیا جا سکتا</strong>۔ یہ آپ کا والٹ ہمیشہ کے لیے حذف کر دے گا۔",
 		"password_manager_deleting": "حذف ہو رہا ہے...",
 		"password_manager_vault_deleted": "والٹ کامیابی سے حذف ہو گیا",
-		"password_manager_delete_vault_failed": "والٹ کو حذف کرنے میں ناکامی"
+		"password_manager_delete_vault_failed": "والٹ کو حذف کرنے میں ناکامی",
+		"password_manager_delete_desc": "اس عمل کو واپس نہیں لیا جا سکتا۔ یہ منتخب آئٹمز کو ہمیشہ کے لیے حذف کر دے گا۔"
 	},
 	"errors": {
 		"storage_access_denied": "اسٹوریج تک رسائی مسترد کر دی گئی۔ براہ کرم کوکیز کو فعال کریں۔",
