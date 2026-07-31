@@ -94,7 +94,7 @@ export default function PasswordSidebar({ searchQuery, onSearchChange }: Passwor
 				</div>
 			</SidebarHeader>
 
-			<SidebarContent className="flex-1 overflow-y-auto no-scrollbar flex flex-col bg-sidebar">
+			<SidebarContent className="flex-1 overflow-y-clip no-scrollbar flex flex-col bg-sidebar">
 				<div className="p-4 pb-0 flex flex-col gap-2">
 					<div className="relative">
 						<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
