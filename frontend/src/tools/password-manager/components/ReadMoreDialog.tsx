@@ -16,9 +16,9 @@ export default function ReadMoreDialog() {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<button className="text-primary hover:text-primary/80 hover:underline transition-colors font-medium">
+				<Button variant="link" className="p-0 h-auto font-medium text-primary">
 					{t("tools.password_manager_read_more")}
-				</button>
+				</Button>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-md bg-background/95 backdrop-blur-xl border-border shadow-2xl p-0 overflow-hidden">
 				<div className="bg-destructive/10 p-6 flex flex-col items-center text-center space-y-3 border-b border-border">
