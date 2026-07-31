@@ -190,6 +190,7 @@
 		"password_detail_modified_label": "अंतिम संशोधित",
 		"password_manager_requirements": "पासवर्ड आवश्यकताएँ",
 		"password_manager_copy_password": "पासवर्ड कॉपी करें",
+		"password_manager_delete_title": "आइटम हटाएं",
 		"password_manager_delete": "हटाएँ",
 		"password_manager_recovery_title": "रिकवरी कुंजी",
 		"password_manager_recovery_desc": "यह आपकी रिकवरी कुंजी है — एक 12‑शब्दों का वाक्यांश जो आपके मास्टर पासवर्ड को भूल जाने पर आपके वॉल्ट को अनलॉक कर सकता है।",

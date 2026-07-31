@@ -190,6 +190,7 @@
 		"password_detail_modified_label": "చివరిగా మార్చబడింది",
 		"password_manager_requirements": "పాస్వర్డ్ అవసరాలు",
 		"password_manager_copy_password": "పాస్వర్డ్ కాపీ చేయండి",
+		"password_manager_delete_title": "అంశాన్ని తొలగించు",
 		"password_manager_delete": "తొలగించు",
 		"password_manager_recovery_title": "రికవరీ కీ",
 		"password_manager_recovery_desc": "ఇది మీ రికవరీ కీ — 12‑పదాల వాక్యం, మీరు మీ మాస్టర్ పాస్‌వర్డ్‌ను మర్చిపోయినప్పుడు మీ వాల్ట్‌ను అన్‌లాక్ చేయగలదు.",

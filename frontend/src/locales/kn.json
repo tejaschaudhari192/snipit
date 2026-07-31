@@ -190,6 +190,7 @@
 		"password_detail_modified_label": "ಕೊನೆಯ ಬದಲಾವಣೆ",
 		"password_manager_requirements": "ಪಾಸ್ವರ್ಡ್ ಅವಶ್ಯಕತೆಗಳು",
 		"password_manager_copy_password": "ಪಾಸ್ವರ್ಡ್ ನಕಲಿಸಿ",
+		"password_manager_delete_title": "ಐಟಂ ಅಳಿಸಿ",
 		"password_manager_delete": "ಅಳಿಸಿ",
 		"password_manager_recovery_title": "ರಿಕವರಿ ಕೀ",
 		"password_manager_recovery_desc": "ಇದು ನಿಮ್ಮ ರಿಕವರಿ ಕೀಲಿ — ನಿಮ್ಮ ಮಾಸ್ಟರ್ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ನೀವು ಮರೆತರೆ ನಿಮ್ಮ ವಾಲ್ಟ್ ಅನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಬಹುದಾದ 12-ಪದಗಳ ನುಡಿಗಟ್ಟು.",

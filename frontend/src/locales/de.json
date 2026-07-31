@@ -184,6 +184,7 @@
 		"password_detail_modified_label": "Zuletzt geändert",
 		"password_manager_requirements": "Passwortanforderungen",
 		"password_manager_copy_password": "Passwort kopieren",
+		"password_manager_delete_title": "Element löschen",
 		"password_manager_delete": "Löschen",
 		"password_manager_recovery_title": "Wiederherstellungsschlüssel",
 		"password_manager_recovery_desc": "Dies ist Ihr Wiederherstellungsschlüssel – eine 12‑Wort‑Phrase, die Ihren Tresor entsperren kann, falls Sie Ihr Master‑Passwort vergessen.",

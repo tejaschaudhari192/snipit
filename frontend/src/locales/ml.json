@@ -190,6 +190,7 @@
 		"password_detail_modified_label": "അവസാനമായി മാറ്റിയത്",
 		"password_manager_requirements": "പാസ്‌വേഡ് ആവശ്യകതകൾ",
 		"password_manager_copy_password": "പാസ്‌വേഡ് പകർത്തുക",
+		"password_manager_delete_title": "ഇനം നീക്കം ചെയ്യുക",
 		"password_manager_delete": "ഇല്ലാതാക്കുക",
 		"password_manager_recovery_title": "റിക്കവറി കീ",
 		"password_manager_recovery_desc": "ഇതാണ് നിങ്ങളുടെ റിക്കവറി കീ — നിങ്ങളുടെ മാസ്റ്റർ പാസ്‌വേഡ് മറന്നുപോയാൽ വാൾട്ട് അൺലോക്ക് ചെയ്യാൻ സഹായിക്കുന്ന 12 വാക്കുകളുള്ള ഒരു വാചകം.",

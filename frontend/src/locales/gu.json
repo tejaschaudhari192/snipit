@@ -190,6 +190,7 @@
 		"password_detail_modified_label": "છેલ્લે બદલાયેલ",
 		"password_manager_requirements": "પાસવર્ડની આવશ્યકતાઓ",
 		"password_manager_copy_password": "પાસવર્ડ કૉપિ કરો",
+		"password_manager_delete_title": "આઇટમ કાઢી નાખો",
 		"password_manager_delete": "કાઢી નાખો",
 		"password_manager_recovery_title": "રિકવરી કી",
 		"password_manager_recovery_desc": "આ તમારો રિકવરી કી છે — 12-શબ્દોનું વાક્ય જે તમારા માસ્ટર પાસવર્ડ ભૂલાય તો તમારા વોલ્ટને અનલોક કરી શકે છે.",

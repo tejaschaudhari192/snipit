@@ -189,6 +189,7 @@
 		"password_detail_modified_label": "最終更新日",
 		"password_manager_requirements": "パスワード要件",
 		"password_manager_copy_password": "パスワードをコピー",
+		"password_manager_delete_title": "アイテムを削除",
 		"password_manager_delete": "削除",
 		"password_manager_recovery_title": "リカバリキー",
 		"password_manager_recovery_desc": "これはあなたのリカバリキーです — 12語のフレーズで、マスターパスワードを忘れた場合にボールトをアンロックできます。",
