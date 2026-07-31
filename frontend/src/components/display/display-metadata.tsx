@@ -13,6 +13,7 @@ import { guestStorage } from "@/utils/guest-storage";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { LANGUAGES } from "@/constants";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 
 interface DisplayMetadataProps {
 	paste?: PasteData;
@@ -165,13 +166,15 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 							paste.owner.toString() !== user._id.toString())) &&
 						!isSavedByLabels &&
 						!isEditingLabels && (
-							<button
+							<Button
+								variant={isSaved ? "secondary" : "ghost"}
+								size="sm"
 								onClick={handleSaveSnippet}
 								disabled={isSaving}
-								className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all text-xs font-bold ${
+								className={`h-7 px-3 text-xs font-bold gap-1.5 ${
 									isSaved
-										? "bg-primary/20 text-primary"
-										: "bg-muted hover:bg-primary/10 text-muted-foreground hover:text-primary"
+										? "bg-primary/20 text-primary hover:bg-primary/30"
+										: "bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary"
 								}`}
 								title="Save snippet"
 							>
@@ -187,7 +190,7 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 									: isSaved
 										? "Saved"
 										: "Save"}
-							</button>
+							</Button>
 						)}
 					<div className="w-full sm:w-auto">
 						<LabelManager

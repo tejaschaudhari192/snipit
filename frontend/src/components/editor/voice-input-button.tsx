@@ -107,21 +107,25 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 					</span>
 
 					<div className="flex items-center gap-3 border-l border-border/50 pl-3">
-						<button
+						<Button
+							variant="secondary"
+							size="icon"
 							onClick={stopRecording}
-							className="h-7 w-7 rounded-full bg-secondary hover:bg-secondary/80 active:scale-95 flex items-center justify-center transition-all cursor-pointer shadow-sm"
+							className="h-7 w-7 p-0 rounded-full active:scale-95 flex items-center justify-center transition-all shadow-sm"
 							title={t("editor.stop_recording")}
 						>
 							<div className="h-3 w-3 bg-red-500 rounded-[3px]" />
-						</button>
+						</Button>
 
-						<button
+						<Button
+							variant="ghost"
+							size="icon"
 							onClick={discardRecording}
-							className="h-7 w-7 rounded-full hover:bg-accent active:scale-95 flex items-center justify-center transition-all cursor-pointer text-foreground/60 hover:text-foreground"
+							className="h-7 w-7 p-0 rounded-full active:scale-95 flex items-center justify-center transition-all text-foreground/60 hover:text-foreground"
 							title={t("common.cancel")}
 						>
 							<X className="h-4 w-4" />
-						</button>
+						</Button>
 					</div>
 				</div>
 			)}

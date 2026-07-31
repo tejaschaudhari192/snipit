@@ -66,18 +66,22 @@ export const CommentBubble = ({
 				>
 					{isMe && !isEditing && (
 						<div className="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-							<button
+							<Button
+								variant="outline"
+								size="icon"
 								onClick={() => setIsEditing(true)}
-								className="p-1.5 bg-background border shadow-sm rounded-md text-muted-foreground hover:text-foreground transition-colors"
+								className="h-6 w-6 rounded-md text-muted-foreground hover:text-foreground transition-colors shadow-sm"
 							>
 								<Pencil className="w-3 h-3" />
-							</button>
-							<button
+							</Button>
+							<Button
+								variant="outline"
+								size="icon"
 								onClick={onDelete}
-								className="p-1.5 bg-background border shadow-sm rounded-md text-muted-foreground hover:text-destructive transition-colors"
+								className="h-6 w-6 rounded-md text-muted-foreground hover:text-destructive transition-colors shadow-sm"
 							>
 								<Trash2 className="w-3 h-3" />
-							</button>
+							</Button>
 						</div>
 					)}
 

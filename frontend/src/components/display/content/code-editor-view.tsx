@@ -3,6 +3,7 @@ import { useState, useRef, useEffect, lazy, Suspense } from "react";
 import type { ContentMode, EditorChange } from "@/types";
 import { ZenModeToggle } from "@/components/common/zen-mode-toggle";
 import { PlainTextEditor } from "@/components/common/plain-text-editor";
+import { Textarea } from "@/components/ui/textarea";
 import { MonacoConfig } from "@/hooks/use-monaco-config";
 import type { useTransliteration } from "@/hooks/use-transliteration";
 
@@ -211,17 +212,17 @@ export const CodeEditorView = ({
 					className="absolute top-8 right-8 z-50"
 				/>
 			)}
-			<textarea
+			<Textarea
 				readOnly={!isEdit}
 				value={content}
 				onChange={
 					isEdit ? (e) => onContentChange(e.target.value) : undefined
 				}
-				className={`font-mono text-sm resize-none glass-card rounded-2xl p-6 leading-relaxed animate-in fade-in zoom-in-95 duration-500 ${
+				className={`font-mono text-sm resize-none glass-card p-6 leading-relaxed animate-in fade-in zoom-in-95 duration-500 shadow-none ${
 					!isEdit
 						? "select-all cursor-text"
 						: "focus-visible:ring-primary/20"
-				} ${isFullscreen || isWindowFullscreen ? "flex-1 rounded-none border-0" : "flex-1 h-full min-h-0"}`}
+				} ${isFullscreen || isWindowFullscreen ? "flex-1 rounded-none border-0" : "flex-1 h-full min-h-0 rounded-2xl"}`}
 				style={{ fontSize: `${fontSize}px` }}
 				placeholder="Start typing your content here..."
 			/>

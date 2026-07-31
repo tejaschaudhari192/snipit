@@ -128,7 +128,7 @@ export default function UnlockRecovery({
 									</span>
 								</Button>
 							</div>
-							<input
+							<Input
 								type="file"
 								ref={fileInputRef}
 								onChange={handleFileUpload}

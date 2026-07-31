@@ -2,6 +2,7 @@ import React from "react";
 import { cn } from "@/utils";
 import { useTranslation } from "react-i18next";
 import type { MusicTrack } from "@/types";
+import { Button } from "@/components/ui/button";
 
 interface MusicPlaylistProps {
 	playlist: MusicTrack[];
@@ -34,13 +35,14 @@ const MusicPlaylist: React.FC<MusicPlaylistProps> = ({
 				{playlist.map((track, index) => {
 					const isActive = currentTrack?.videoId === track.videoId;
 					return (
-						<button
+						<Button
 							key={track.videoId}
+							variant="ghost"
 							onClick={() => onTrackSelect(index)}
 							className={cn(
-								"flex items-center gap-4 p-3 rounded-2xl transition-all duration-300 text-left border group",
+								"w-full h-auto flex items-center justify-start gap-4 p-3 rounded-2xl transition-all duration-300 text-left border group font-normal",
 								isActive
-									? "bg-primary/10 border-primary/20 shadow-[0_8px_20px_rgba(var(--primary),0.05)]"
+									? "bg-primary/10 border-primary/20 shadow-[0_8px_20px_rgba(var(--primary),0.05)] hover:bg-primary/20"
 									: "bg-white/2 border-transparent hover:bg-white/5 hover:border-white/5",
 							)}
 						>
@@ -87,7 +89,7 @@ const MusicPlaylist: React.FC<MusicPlaylistProps> = ({
 									{decode(track.channel)}
 								</p>
 							</div>
-						</button>
+						</Button>
 					);
 				})}
 			</div>

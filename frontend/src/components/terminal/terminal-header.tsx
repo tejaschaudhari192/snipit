@@ -9,6 +9,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { cn } from "@/utils";
 import { SUPPORTED_RUN_LANGUAGES } from "@/constants";
+import { Button } from "@/components/ui/button";
 
 interface TerminalHeaderProps {
 	language: string;
@@ -36,31 +37,34 @@ export const TerminalHeader = ({
 			<div className="flex items-center gap-6">
 				{/* Mac-style Window Controls */}
 				<div className="flex items-center gap-2 group/dots">
-					<button
+					<Button
+						variant="ghost"
 						onClick={onClose}
-						className="group relative h-3 w-3 rounded-full bg-rose-500 hover:bg-rose-400 transition-all flex items-center justify-center shadow-inner"
+						className="p-0 h-3 w-3 min-w-0 min-h-0 rounded-full bg-rose-500 hover:bg-rose-400 hover:text-rose-950 transition-all flex items-center justify-center shadow-inner group relative"
 						title={t("common.close")}
 					>
 						<X className="h-2 w-2 text-rose-950 opacity-0 group-hover/dots:opacity-100 transition-opacity" />
-					</button>
-					<button
+					</Button>
+					<Button
+						variant="ghost"
 						onClick={onClose}
-						className="group relative h-3 w-3 rounded-full bg-amber-500 hover:bg-amber-400 transition-all flex items-center justify-center shadow-inner"
+						className="p-0 h-3 w-3 min-w-0 min-h-0 rounded-full bg-amber-500 hover:bg-amber-400 transition-all flex items-center justify-center shadow-inner group relative"
 						title="Minimize"
 					>
 						<div className="h-px w-1.5 bg-amber-950 opacity-0 group-hover/dots:opacity-100 transition-opacity" />
-					</button>
-					<button
+					</Button>
+					<Button
+						variant="ghost"
 						onClick={() =>
 							onPositionChange(
 								position === "bottom" ? "right" : "bottom",
 							)
 						}
-						className="group relative h-3 w-3 rounded-full bg-emerald-500 hover:bg-emerald-400 transition-all flex items-center justify-center shadow-inner"
+						className="p-0 h-3 w-3 min-w-0 min-h-0 rounded-full bg-emerald-500 hover:bg-emerald-400 transition-all flex items-center justify-center shadow-inner group relative"
 						title="Toggle Layout"
 					>
 						<PanelRight className="h-2 w-2 text-emerald-950 opacity-0 group-hover/dots:opacity-100 transition-opacity transform rotate-45" />
-					</button>
+					</Button>
 				</div>
 
 				<div className="flex items-center gap-2.5 text-white/60">
@@ -74,58 +78,66 @@ export const TerminalHeader = ({
 
 				{SUPPORTED_RUN_LANGUAGES.includes(language.toLowerCase()) &&
 					(isRunning ? (
-						<button
+						<Button
+							variant="outline"
+							size="sm"
 							onClick={onStop}
-							className="flex items-center gap-2 group px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-all font-bold text-rose-400 text-[11px]"
+							className="flex items-center gap-2 h-7 group px-3 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border-rose-500/20 transition-all font-bold text-rose-400 hover:text-rose-400 text-[11px]"
 						>
 							<Square className="h-3 w-3 fill-rose-500 text-rose-500" />
 							{t("display.terminal.stop")}
-						</button>
+						</Button>
 					) : (
-						<button
+						<Button
+							variant="outline"
+							size="sm"
 							onClick={onRun}
-							className="flex items-center gap-2 group px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 transition-all font-bold text-emerald-400 text-[11px]"
+							className="flex items-center gap-2 h-7 group px-3 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border-emerald-500/20 transition-all font-bold text-emerald-400 hover:text-emerald-400 text-[11px]"
 						>
 							<Play className="h-3 w-3 fill-emerald-500 text-emerald-500" />
 							{t("display.terminal.run_code")}
-						</button>
+						</Button>
 					))}
 			</div>
 
 			<div className="flex items-center gap-2">
 				<div className="flex items-center bg-white/5 rounded-lg p-0.5 mr-2">
-					<button
+					<Button
+						variant="ghost"
 						onClick={() => onPositionChange("bottom")}
 						className={cn(
-							"p-1 rounded-md transition-all",
+							"p-1 h-6 w-6 rounded-md transition-all",
 							position === "bottom"
-								? "bg-white/10 text-white shadow-sm"
-								: "text-white/30 hover:text-white/60",
+								? "bg-white/10 text-white shadow-sm hover:bg-white/10 hover:text-white"
+								: "text-white/30 hover:text-white/60 hover:bg-transparent",
 						)}
 						title="Bottom"
 					>
 						<PanelBottom className="h-3.5 w-3.5" />
-					</button>
-					<button
+					</Button>
+					<Button
+						variant="ghost"
 						onClick={() => onPositionChange("right")}
 						className={cn(
-							"p-1 rounded-md transition-all",
+							"p-1 h-6 w-6 rounded-md transition-all",
 							position === "right"
-								? "bg-white/10 text-white shadow-sm"
-								: "text-white/30 hover:text-white/60",
+								? "bg-white/10 text-white shadow-sm hover:bg-white/10 hover:text-white"
+								: "text-white/30 hover:text-white/60 hover:bg-transparent",
 						)}
 						title="Right"
 					>
 						<PanelRight className="h-3.5 w-3.5" />
-					</button>
+					</Button>
 				</div>
 
-				<button
+				<Button
+					variant="ghost"
+					size="icon"
 					onClick={onClose}
-					className="p-1 hover:bg-white/10 rounded-md transition-all text-white/40 hover:text-white"
+					className="h-6 w-6 rounded-md transition-all text-white/40 hover:text-white hover:bg-white/10"
 				>
 					<X className="h-4 w-4" />
-				</button>
+				</Button>
 			</div>
 		</div>
 	);

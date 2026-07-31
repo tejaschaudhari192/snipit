@@ -2,6 +2,8 @@ import { useState, useRef, type KeyboardEvent } from "react";
 import { X, Tag } from "lucide-react";
 import { cn } from "@/utils";
 import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface TagInputProps {
 	tags: string[];
@@ -76,21 +78,23 @@ export const TagInput = ({
 							<Tag className="w-3 h-3" />
 							{tag}
 							{!disabled && (
-								<button
+								<Button
+									variant="ghost"
+									size="icon"
 									type="button"
 									onClick={(e) => {
 										e.stopPropagation();
 										removeTag(index);
 									}}
-									className="hover:bg-primary/20 rounded-full p-0.5 transition-colors focus:outline-none"
+									className="hover:bg-primary/20 rounded-full p-0.5 transition-colors focus:outline-none h-4 w-4 bg-transparent text-primary hover:text-primary"
 								>
 									<X className="w-3 h-3" />
-								</button>
+								</Button>
 							)}
 						</span>
 					))}
 				{!disabled && (
-					<input
+					<Input
 						ref={inputRef}
 						type="text"
 						value={inputValue}
@@ -103,7 +107,7 @@ export const TagInput = ({
 								? placeholder || t("common.add_label")
 								: ""
 						}
-						className="flex-1 min-w-30 bg-transparent border-none outline-none text-[13px] placeholder:text-muted-foreground focus:ring-0 p-0"
+						className="flex-1 min-w-30 bg-transparent border-none outline-none text-[13px] placeholder:text-muted-foreground focus-visible:ring-0 p-0 h-auto shadow-none"
 						disabled={disabled}
 						autoFocus={autoFocus}
 					/>

@@ -1,4 +1,5 @@
 import { useRef, useCallback, type RefObject } from "react";
+import { Textarea } from "@/components/ui/textarea";
 
 const EDITOR_FONT_FAMILY = "'JetBrains Mono', 'Fira Code', monospace";
 const LINE_HEIGHT_MULTIPLIER = 1.6;
@@ -86,7 +87,7 @@ export const PlainTextEditor = ({
 			</div>
 
 			{/* Editable textarea */}
-			<textarea
+			<Textarea
 				ref={textareaRef}
 				readOnly={!isEdit}
 				value={content}
@@ -97,7 +98,7 @@ export const PlainTextEditor = ({
 				onKeyDown={isEdit ? handleKeyDown : undefined}
 				onPaste={onPaste}
 				spellCheck={false}
-				className="flex-1 h-full resize-none bg-transparent border-0 outline-none p-5 text-foreground caret-primary focus:ring-0 focus-visible:ring-0 focus-visible:outline-none"
+				className="flex-1 h-full resize-none bg-transparent border-0 outline-none p-5 text-foreground caret-primary focus:ring-0 focus-visible:ring-0 focus-visible:outline-none shadow-none rounded-none"
 				style={{
 					...sharedTypography,
 					fontWeight: 500,

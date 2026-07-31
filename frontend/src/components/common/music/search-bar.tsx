@@ -70,15 +70,17 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, isLoading }) => {
 					className="h-8 text-xs w-full bg-background border-border min-w-0 pr-6"
 				/>
 				{searchQuery && (
-					<button
+					<Button
+						variant="ghost"
+						size="icon"
 						onClick={() => {
 							setSearchQuery("");
 							setSuggestions([]);
 						}}
-						className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground outline-none"
+						className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground outline-none h-4 w-4 p-0 hover:bg-transparent"
 					>
 						<X className="w-3 h-3" />
-					</button>
+					</Button>
 				)}
 			</div>
 			<Button
@@ -99,18 +101,19 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, isLoading }) => {
 					/>
 					<div className="absolute left-0 right-18 top-9 z-50 bg-background/95 border border-border/80 rounded-md shadow-xl backdrop-blur-md max-h-45 overflow-y-auto py-1.5 animate-in fade-in slide-in-from-top-1 duration-150">
 						{suggestions.map((suggestion, index) => (
-							<button
+							<Button
 								key={index}
+								variant="ghost"
 								onClick={() => {
 									setSearchQuery(suggestion);
 									setShowSuggestions(false);
 									onSearch(suggestion);
 								}}
-								className="w-full text-left px-3.5 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/65 transition-colors truncate flex items-center gap-2 font-sans"
+								className="w-full justify-start text-left px-3.5 py-1.5 h-auto text-xs text-muted-foreground hover:text-foreground hover:bg-muted/65 transition-colors truncate flex items-center gap-2 font-sans font-normal"
 							>
 								<Search className="w-3 h-3 text-muted-foreground/50 shrink-0" />
 								{suggestion}
-							</button>
+							</Button>
 						))}
 					</div>
 				</>

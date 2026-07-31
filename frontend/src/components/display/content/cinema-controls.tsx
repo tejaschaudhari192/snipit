@@ -166,13 +166,14 @@ export const CinemaControls = ({
 				<div className="flex items-center gap-2">
 					<div className="hidden sm:flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-xl p-1">
 						{emojis.map((emoji) => (
-							<button
+							<Button
 								key={emoji}
+								variant="ghost"
 								onClick={() => sendReaction(emoji)}
-								className="hover:scale-125 hover:rotate-6 text-xl transition-transform px-1"
+								className="hover:scale-125 hover:rotate-6 text-xl transition-transform px-1 h-auto py-0 hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
 							>
 								{emoji}
-							</button>
+							</Button>
 						))}
 					</div>
 					<Button

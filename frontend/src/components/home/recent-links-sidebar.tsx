@@ -43,20 +43,24 @@ export const RecentLinksSidebar = ({
 					</h3>
 				</div>
 				<div className="flex items-center gap-1">
-					<button
-						className="p-1.5 rounded-md hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"
+					<Button
+						variant="ghost"
+						size="icon"
+						className="h-6 w-6 p-0 rounded-md hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"
 						onClick={() => refreshSnippets()}
 						title={t("common.refresh")}
 					>
 						<RefreshCw className="h-3 w-3" />
-					</button>
-					<button
-						className="p-1.5 rounded-md hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
+					</Button>
+					<Button
+						variant="ghost"
+						size="icon"
+						className="h-6 w-6 p-0 rounded-md hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
 						onClick={() => setIsHistoryVisible(false)}
 						title={t("common.close")}
 					>
 						<X className="h-3 w-3" />
-					</button>
+					</Button>
 				</div>
 			</div>
 

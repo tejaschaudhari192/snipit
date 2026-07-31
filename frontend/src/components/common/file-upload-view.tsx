@@ -2,6 +2,7 @@ import { FileUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/utils";
 import FilePreview from "@/components/common/file-preview";
 import { FileUploadItem } from "./file-upload-item";
@@ -52,7 +53,7 @@ export const FileUploadView = ({
 			onDrop={handleDrop}
 		>
 			<div className="w-full max-w-xl my-auto">
-				<input
+				<Input
 					type="file"
 					ref={fileInputRef}
 					className="hidden"

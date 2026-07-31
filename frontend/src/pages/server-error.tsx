@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { AlertCircle, RefreshCw, Home, ServerOff } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import type { ServiceStatus } from "@/types";
 
 interface ServerErrorPageProps {
@@ -83,21 +84,24 @@ const ServerErrorPage = ({ error, services }: ServerErrorPageProps) => {
 				)}
 
 				<div className="flex flex-col sm:flex-row items-center gap-4">
-					<button
+					<Button
 						onClick={() => window.location.reload()}
-						className="group relative flex items-center gap-2 px-8 py-4 bg-foreground text-background rounded-full font-bold transition-all hover:scale-105 active:scale-95 overflow-hidden"
+						className="group relative flex items-center gap-2 px-8 h-14 bg-foreground text-background hover:bg-foreground/90 rounded-full font-bold transition-all hover:scale-105 active:scale-95 overflow-hidden"
 					>
 						<RefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
 						{t("server_error.retry_button")}
-					</button>
+					</Button>
 
-					<Link
-						to="/"
-						className="flex items-center gap-2 px-8 py-4 bg-muted hover:bg-muted/80 text-foreground rounded-full font-bold transition-all hover:scale-105 active:scale-95"
+					<Button
+						asChild
+						variant="secondary"
+						className="flex items-center gap-2 px-8 h-14 bg-muted hover:bg-muted/80 text-foreground rounded-full font-bold transition-all hover:scale-105 active:scale-95"
 					>
-						<Home className="w-4 h-4" />
-						{t("server_error.safety_button")}
-					</Link>
+						<Link to="/">
+							<Home className="w-4 h-4" />
+							{t("server_error.safety_button")}
+						</Link>
+					</Button>
 				</div>
 			</div>
 

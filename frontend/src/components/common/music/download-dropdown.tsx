@@ -48,26 +48,28 @@ const DownloadDropdown: React.FC<DownloadDropdownProps> = ({
 					<div
 						className={`absolute right-0 ${dropdownTopClass} z-120 bg-background/95 border border-border/80 rounded-md shadow-xl backdrop-blur-md py-1 min-w-[120px] animate-in fade-in slide-in-from-top-1 duration-150`}
 					>
-						<button
+						<Button
+							variant="ghost"
 							onClick={(e) => {
 								e.stopPropagation();
 								downloadTrack(videoId, title, "128");
 								setIsOpen(false);
 							}}
-							className="w-full text-left px-3.5 py-1.5 text-[10px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/65 transition-colors font-sans"
+							className="w-full justify-start text-left px-3.5 py-1.5 h-auto text-[10px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/65 transition-colors font-sans"
 						>
 							Medium (128 kbps)
-						</button>
-						<button
+						</Button>
+						<Button
+							variant="ghost"
 							onClick={(e) => {
 								e.stopPropagation();
 								downloadTrack(videoId, title, "320");
 								setIsOpen(false);
 							}}
-							className="w-full text-left px-3.5 py-1.5 text-[10px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/65 transition-colors font-sans"
+							className="w-full justify-start text-left px-3.5 py-1.5 h-auto text-[10px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/65 transition-colors font-sans"
 						>
 							High (320 kbps)
-						</button>
+						</Button>
 					</div>
 				</>
 			)}

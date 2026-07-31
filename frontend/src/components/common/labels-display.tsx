@@ -1,5 +1,6 @@
 import { Tag as TagIcon, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface LabelsDisplayProps {
 	labels: string[];
@@ -17,15 +18,17 @@ export const LabelsDisplay = ({ labels, onRemove }: LabelsDisplayProps) => (
 				<TagIcon className="w-3 h-3" />
 				{label}
 				{onRemove && (
-					<button
+					<Button
+						variant="ghost"
+						size="icon"
 						onClick={(e) => {
 							e.preventDefault();
 							onRemove(label);
 						}}
-						className="hover:bg-primary/30 rounded-full p-0.5 transition-colors focus:outline-none ml-1"
+						className="hover:bg-primary/30 rounded-full p-0.5 transition-colors focus:outline-none ml-1 h-3.5 w-3.5 bg-transparent text-primary hover:text-primary"
 					>
 						<X className="w-2.5 h-2.5" />
-					</button>
+					</Button>
 				)}
 			</Badge>
 		))}

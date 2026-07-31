@@ -10,6 +10,7 @@ import {
 	TooltipProvider,
 } from "@/components/ui/tooltip";
 import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
 
 const MusicBubble: React.FC = () => {
 	const {
@@ -114,17 +115,19 @@ const MusicBubble: React.FC = () => {
 					</div>
 				</div>
 
-				<button
+				<Button
+					variant="ghost"
+					size="icon"
 					onClick={(e) => {
 						e.stopPropagation();
 						setIsVisible(false);
 						localStore.setItem("music-bubble-visible", "false");
 					}}
-					className="h-5 w-5 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer shrink-0"
+					className="h-5 w-5 p-0 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer shrink-0"
 					aria-label="Hide Music Player"
 				>
 					<X className="h-3.5 w-3.5" />
-				</button>
+				</Button>
 			</div>
 		);
 	}
@@ -134,12 +137,13 @@ const MusicBubble: React.FC = () => {
 			<TooltipProvider>
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<button
+						<Button
+							variant="ghost"
 							onClick={openPlayer}
 							className={cn(
-								"w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 hover:scale-110 active:scale-95 group shadow-2xl",
+								"p-0 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 hover:scale-110 active:scale-95 group shadow-2xl hover:bg-transparent",
 								isPlaying
-									? "bg-primary text-primary-foreground shadow-primary/30"
+									? "bg-primary text-primary-foreground shadow-primary/30 hover:bg-primary"
 									: "bg-popover text-muted-foreground border border-border hover:border-primary/50 hover:text-primary",
 							)}
 							aria-label="Open Music Player"
@@ -151,7 +155,7 @@ const MusicBubble: React.FC = () => {
 							<div className="absolute -top-1 -right-1 bg-popover text-foreground text-[9px] font-black px-1.5 py-0.5 rounded-full border border-border shadow-lg truncate max-w-10">
 								IN
 							</div>
-						</button>
+						</Button>
 					</TooltipTrigger>
 					<TooltipContent
 						side="left"
@@ -162,17 +166,19 @@ const MusicBubble: React.FC = () => {
 				</Tooltip>
 			</TooltipProvider>
 
-			<button
+			<Button
+				variant="outline"
+				size="icon"
 				onClick={(e) => {
 					e.stopPropagation();
 					setIsVisible(false);
 					localStore.setItem("music-bubble-visible", "false");
 				}}
-				className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-popover border border-border flex items-center justify-center text-muted-foreground hover:text-foreground shadow cursor-pointer z-60"
+				className="absolute -top-1 -left-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-muted-foreground hover:text-foreground shadow cursor-pointer z-60"
 				aria-label="Hide Music Player"
 			>
 				<X className="h-3 w-3" />
-			</button>
+			</Button>
 		</div>
 	);
 };

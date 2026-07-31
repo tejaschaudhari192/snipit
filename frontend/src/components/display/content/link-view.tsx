@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
 	Link as LinkIcon,
 	AlertCircle,
@@ -180,17 +181,18 @@ export const LinkView = ({
 						{t("common.redirect_desc")}
 					</p>
 
-					<a
-						href={getDestinationUrl(content)}
-						target="_blank"
-						rel="noopener noreferrer"
-						className="group relative inline-flex items-center justify-center px-8 py-3.5 font-bold text-white transition-all duration-200 bg-primary rounded-xl hover:bg-primary/90 shadow-xl shadow-primary/20 active:scale-95 text-sm"
-					>
-						{t("common.visit_link")}
-						<div className="ml-2 group-hover:translate-x-1 transition-transform">
-							<ExternalLink className="w-4 h-4" />
-						</div>
-					</a>
+					<Button asChild size="lg" className="group relative px-8 h-12 font-bold rounded-xl shadow-xl shadow-primary/20 text-sm">
+						<a
+							href={getDestinationUrl(content)}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{t("common.visit_link")}
+							<div className="ml-2 group-hover:translate-x-1 transition-transform">
+								<ExternalLink className="w-4 h-4" />
+							</div>
+						</a>
+					</Button>
 				</div>
 			</div>
 		);
@@ -294,15 +296,16 @@ export const LinkView = ({
 					</span>
 				</div>
 
-				<button
+				<Button
+					size="lg"
 					onClick={handleVisit}
-					className="group relative inline-flex items-center justify-center w-full sm:w-auto px-10 py-4 font-bold text-white transition-all duration-200 bg-primary rounded-2xl hover:bg-primary/90 shadow-xl shadow-primary/20 active:scale-95"
+					className="group relative w-full sm:w-auto px-10 h-14 font-bold rounded-2xl shadow-xl shadow-primary/20"
 				>
 					{t("common.skip_countdown")}
 					<div className="ml-2 group-hover:translate-x-1 transition-transform">
 						<ArrowRight className="w-5 h-5" />
 					</div>
-				</button>
+				</Button>
 			</div>
 		);
 	}
@@ -322,17 +325,18 @@ export const LinkView = ({
 			<p className="text-muted-foreground mb-8 text-center max-w-md font-medium">
 				{t("common.redirect_desc")}
 			</p>
-			<a
-				href={getDestinationUrl(content)}
-				target="_blank"
-				rel="noopener noreferrer"
-				className="group relative inline-flex items-center justify-center px-10 py-4 font-bold text-white transition-all duration-200 bg-primary rounded-2xl hover:bg-primary/90 shadow-xl shadow-primary/20 active:scale-95"
-			>
-				{t("common.visit_link")}
-				<div className="ml-2 group-hover:translate-x-1 transition-transform">
-					🚀
-				</div>
-			</a>
+			<Button asChild size="lg" className="group relative px-10 h-14 font-bold rounded-2xl shadow-xl shadow-primary/20">
+				<a
+					href={getDestinationUrl(content)}
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					{t("common.visit_link")}
+					<div className="ml-2 group-hover:translate-x-1 transition-transform">
+						🚀
+					</div>
+				</a>
+			</Button>
 		</div>
 	);
 };
