@@ -56,7 +56,7 @@ export function FolderList({
 				</span>
 			</SidebarGroupAction>
 			<SidebarGroupContent>
-				<ScrollArea className="h-40 pr-3">
+				<ScrollArea className="h-40 pr-3" viewportClassName="scroll-fade">
 					<SidebarMenu>
 						{folders.map((folder) => (
 							<SidebarMenuItem key={folder.id}>

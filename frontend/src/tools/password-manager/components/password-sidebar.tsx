@@ -130,7 +130,7 @@ export default function PasswordSidebar({ searchQuery, onSearchChange }: Passwor
 
 				<SidebarGroup>
 					<SidebarGroupContent>
-						<ScrollArea className="h-35 pr-3">
+						<ScrollArea className="h-35 pr-3" viewportClassName="scroll-fade">
 							<SidebarMenu>
 								{ITEM_TYPE_OPTIONS.map((item) => (
 									<SidebarMenuItem key={item.id}>
