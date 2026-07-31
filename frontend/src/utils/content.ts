@@ -13,6 +13,7 @@ export function detectContentMode(
 		"contentMode" | "redirectUrl" | "fileUrl" | "language"
 	>,
 ): ContentMode {
+	if (data.language === "richtext") return "docs";
 	return (
 		data.contentMode ??
 		(data.redirectUrl

@@ -467,47 +467,27 @@ body.is-404 .action-url-bar {
 }
 
 /* TipTap Table Styles */
-.tableWrapper {
+.prose {
 	overflow-x: auto;
-	margin: 1.5rem 0;
-	border: 1px solid var(--border);
-	border-radius: var(--radius);
 }
 
 .prose table {
 	border-collapse: collapse;
-	table-layout: fixed;
+	table-layout: auto;
 	width: 100%;
-	min-width: 600px;
-	margin: 0;
+	margin: 1.5rem 0;
 }
 
 .prose td,
 .prose th {
 	border: 1px solid var(--border);
 	box-sizing: border-box;
-	min-width: 3em;
-	padding: 10px 14px;
+	min-width: 80px;
+	padding: 8px 12px;
 	position: relative;
 	vertical-align: top;
 	text-align: left;
 	word-break: normal;
-}
-
-.tableWrapper table td:first-child,
-.tableWrapper table th:first-child {
-	border-left: none;
-}
-.tableWrapper table td:last-child,
-.tableWrapper table th:last-child {
-	border-right: none;
-}
-.tableWrapper table tr:first-child th,
-.tableWrapper table tr:first-child td {
-	border-top: none;
-}
-.tableWrapper table tr:last-child td {
-	border-bottom: none;
 }
 
 .prose th {

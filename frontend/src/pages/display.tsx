@@ -217,11 +217,13 @@ const DisplayPage = () => {
 	const setLanguage = useCallback(
 		(newLang: string) => {
 			_setLanguage(newLang);
-			if (newLang === "text") {
-				setContentType((prev) => (prev === "code" ? "text" : prev));
+			if (newLang === "richtext") {
+				setContentType("docs");
+			} else if (newLang === "text") {
+				setContentType((prev) => (prev === "code" || prev === "docs" ? "text" : prev));
 			} else {
 				if (isDetecting) return;
-				setContentType((prev) => (prev === "text" ? "code" : prev));
+				setContentType((prev) => (prev === "text" || prev === "docs" ? "code" : prev));
 			}
 		},
 		[isDetecting, _setLanguage, setContentType],
