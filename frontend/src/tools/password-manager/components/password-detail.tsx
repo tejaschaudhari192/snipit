@@ -100,7 +100,7 @@ export default function PasswordDetail({
 							: t("tools.password_manager_add")}
 					</Button>
 				</div>
-				<div className="flex-1 overflow-y-auto no-scrollbar scroll-fade-bottom">
+				<div className="flex-1 overflow-y-auto no-scrollbar scroll-fade-b">
 					<Suspense
 						fallback={
 							<div className="p-5 space-y-5 animate-pulse">
@@ -286,7 +286,7 @@ export default function PasswordDetail({
 					</div>
 				</div>
 
-				<div className="flex-1 overflow-y-auto no-scrollbar scroll-fade-bottom">
+				<div className="flex-1 overflow-y-auto no-scrollbar scroll-fade-b">
 					{/* Title & Subtitle */}
 					<div className="px-8 pt-10 pb-6 relative overflow-hidden border-b border-border/20">
 						
