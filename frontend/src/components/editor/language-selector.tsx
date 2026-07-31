@@ -12,6 +12,7 @@ import aiGif from "@/assets/images/ai.gif";
 import { cn } from "@/utils";
 import { LANGUAGES } from "@/constants";
 import { memo } from "react";
+import { Button } from "@/components/ui/button";
 
 interface LanguageSelectorProps {
 	value: string;
@@ -31,17 +32,18 @@ export const LanguageSelector = memo(
 
 		if (isDetecting) {
 			return (
-				<button
+				<Button
 					type="button"
+					variant="ghost"
 					className={cn(
-						"group relative w-40 h-9 shrink-0 rounded-md p-px overflow-hidden focus:outline-none",
+						"group relative w-40 h-9 shrink-0 rounded-md p-px overflow-hidden focus:outline-none focus:ring-0 shadow-none bg-transparent hover:bg-transparent",
 						className,
 					)}
 				>
 					<div className="absolute left-1/2 top-1/2 h-100 w-100 -translate-x-1/2 -translate-y-1/2">
 						<div className="h-full w-full opacity-70 moving-border-gradient animate-moving-border" />
 					</div>
-					<div className="relative z-10 flex h-full w-full items-center justify-center gap-2 rounded-md bg-background dark:bg-slate-900 text-sm font-bold">
+					<div className="relative z-10 flex h-full w-full items-center justify-center gap-2 rounded-[5px] bg-background dark:bg-slate-900 text-sm font-bold">
 						<span className="whitespace-nowrap">
 							{t("home.auto_detecting")}
 						</span>
@@ -51,7 +53,7 @@ export const LanguageSelector = memo(
 							className="w-5 h-5 shrink-0"
 						/>
 					</div>
-				</button>
+				</Button>
 			);
 		}
 

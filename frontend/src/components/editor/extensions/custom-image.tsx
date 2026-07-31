@@ -11,6 +11,7 @@ import {
 	FileText,
 } from "lucide-react";
 import { cn } from "@/utils";
+import { Button } from "@/components/ui/button";
 
 const ImageNodeView = (props: NodeViewProps) => {
 	const { node, updateAttributes, deleteNode, selected } = props;
@@ -121,121 +122,139 @@ const ImageNodeView = (props: NodeViewProps) => {
 
 						{/* Bubble Menu/Toolbar */}
 						<div className="absolute -bottom-14 left-1/2 -translate-x-1/2 bg-background border border-border/80 shadow-xl rounded-xl p-1.5 flex items-center gap-1 z-30 select-none">
-							<button
+							<Button
+								variant="ghost"
+								size="icon"
 								onClick={() =>
 									updateAttributes({ layout: "wrap" })
 								}
 								className={cn(
-									"p-1.5 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer",
+									"h-7 w-7 rounded-lg text-muted-foreground transition-colors",
 									layout === "wrap" &&
 										"bg-accent text-primary",
 								)}
 								title="Wrap Text"
 							>
 								<WrapText className="w-4 h-4" />
-							</button>
-							<button
+							</Button>
+							<Button
+								variant="ghost"
+								size="icon"
 								onClick={() =>
 									updateAttributes({ layout: "break-text" })
 								}
 								className={cn(
-									"p-1.5 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer",
+									"h-7 w-7 rounded-lg text-muted-foreground transition-colors",
 									layout === "break-text" &&
 										"bg-accent text-primary",
 								)}
 								title="Break Text"
 							>
 								<FileText className="w-4 h-4" />
-							</button>
+							</Button>
 
 							<div className="w-px h-4 bg-border mx-1" />
 
-							<button
+							<Button
+								variant="ghost"
+								size="sm"
 								onClick={() =>
 									updateAttributes({ width: "30%" })
 								}
 								className={cn(
-									"px-2.5 py-1 text-xs font-semibold rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer",
+									"h-7 px-2.5 text-xs font-semibold rounded-lg text-muted-foreground transition-colors",
 									width === "30%" && "bg-accent text-primary",
 								)}
 							>
 								S
-							</button>
-							<button
+							</Button>
+							<Button
+								variant="ghost"
+								size="sm"
 								onClick={() =>
 									updateAttributes({ width: "50%" })
 								}
 								className={cn(
-									"px-2.5 py-1 text-xs font-semibold rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer",
+									"h-7 px-2.5 text-xs font-semibold rounded-lg text-muted-foreground transition-colors",
 									width === "50%" && "bg-accent text-primary",
 								)}
 							>
 								M
-							</button>
-							<button
+							</Button>
+							<Button
+								variant="ghost"
+								size="sm"
 								onClick={() =>
 									updateAttributes({ width: "100%" })
 								}
 								className={cn(
-									"px-2.5 py-1 text-xs font-semibold rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer",
+									"h-7 px-2.5 text-xs font-semibold rounded-lg text-muted-foreground transition-colors",
 									width === "100%" &&
 										"bg-accent text-primary",
 								)}
 							>
 								L
-							</button>
+							</Button>
 
 							<div className="w-px h-4 bg-border mx-1" />
 
-							<button
+							<Button
+								variant="ghost"
+								size="icon"
 								onClick={() =>
 									updateAttributes({ align: "left" })
 								}
 								className={cn(
-									"p-1.5 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer",
+									"h-7 w-7 rounded-lg text-muted-foreground transition-colors",
 									align === "left" &&
 										"bg-accent text-primary",
 								)}
 								title="Align Left"
 							>
 								<AlignLeft className="w-4 h-4" />
-							</button>
-							<button
+							</Button>
+							<Button
+								variant="ghost"
+								size="icon"
 								onClick={() =>
 									updateAttributes({ align: "center" })
 								}
 								className={cn(
-									"p-1.5 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer",
+									"h-7 w-7 rounded-lg text-muted-foreground transition-colors",
 									align === "center" &&
 										"bg-accent text-primary",
 								)}
 								title="Align Center"
 							>
 								<AlignCenter className="w-4 h-4" />
-							</button>
-							<button
+							</Button>
+							<Button
+								variant="ghost"
+								size="icon"
 								onClick={() =>
 									updateAttributes({ align: "right" })
 								}
 								className={cn(
-									"p-1.5 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer",
+									"h-7 w-7 rounded-lg text-muted-foreground transition-colors",
 									align === "right" &&
 										"bg-accent text-primary",
 								)}
 								title="Align Right"
 							>
 								<AlignRight className="w-4 h-4" />
-							</button>
+							</Button>
 
 							<div className="w-px h-4 bg-border mx-1" />
 
-							<button
+							<Button
+								variant="ghost"
+								size="icon"
 								onClick={() => deleteNode()}
-								className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
+								className="h-7 w-7 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
 								title="Delete Image"
 							>
 								<Trash2 className="w-4 h-4" />
-							</button>
+							</Button>
 						</div>
 					</>
 				)}

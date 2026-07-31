@@ -3,6 +3,7 @@ import type { DragEvent, ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
+import { Input } from "@/components/ui/input";
 import {
 	Card,
 	CardContent,
@@ -430,7 +431,7 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 							</Button>
 						</div>
 
-						<input
+						<Input
 							ref={fileInputRef}
 							type="file"
 							multiple
@@ -438,7 +439,7 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 							onChange={handleFileInputChange}
 						/>
 						{isEncrypt && (
-							<input
+							<Input
 								ref={folderInputRef}
 								type="file"
 								multiple

@@ -110,7 +110,7 @@ export const SemanticIdTab = ({
 					<span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider w-8 shrink-0">
 						{t("home.semantic_id_words")}
 					</span>
-					<input
+					<Input
 						type="range"
 						min="1"
 						max="4"
@@ -118,7 +118,6 @@ export const SemanticIdTab = ({
 						value={wordCount}
 						onChange={(e) => setWordCount(parseInt(e.target.value))}
 						disabled={disabled}
-						className="flex-1 h-1.5 bg-primary/10 rounded-lg appearance-none cursor-pointer accent-primary transition-all duration-300 hover:accent-primary/80 disabled:opacity-50 disabled:cursor-not-allowed"
 					/>
 					<div className="w-6 h-6 flex items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0">
 						{wordCount}

@@ -1,3 +1,6 @@
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
 interface FindReplaceProps {
 	findText: string;
 	setFindText: (text: string) => void;
@@ -23,20 +26,22 @@ export function FindReplace({
 				<span className="text-xs font-bold text-foreground/80 tracking-wide">
 					Find & Replace
 				</span>
-				<button
+				<Button
+					variant="ghost"
+					size="sm"
 					onClick={onClose}
-					className="text-[10px] font-semibold text-muted-foreground hover:text-foreground px-1.5 py-0.5 rounded bg-muted/40 hover:bg-muted transition-colors cursor-pointer"
+					className="text-[10px] font-semibold text-muted-foreground hover:text-foreground px-1.5 py-0.5 h-6 rounded bg-muted/40 hover:bg-muted transition-colors cursor-pointer"
 				>
 					Esc
-				</button>
+				</Button>
 			</div>
 			<div className="flex items-center gap-1.5 border border-border/60 rounded px-2.5 py-1 bg-background shadow-inner">
-				<input
+				<Input
 					type="text"
 					placeholder="Find text..."
 					value={findText}
 					onChange={(e) => setFindText(e.target.value)}
-					className="flex-1 bg-transparent border-none outline-none text-xs text-foreground placeholder:text-muted-foreground/60"
+					className="flex-1 bg-transparent border-none outline-none focus-visible:ring-0 shadow-none text-xs text-foreground placeholder:text-muted-foreground/60 h-auto p-0"
 					autoFocus
 				/>
 				{findText && (
@@ -46,29 +51,32 @@ export function FindReplace({
 				)}
 			</div>
 			<div className="flex items-center gap-1.5 border border-border/60 rounded px-2.5 py-1 bg-background shadow-inner">
-				<input
+				<Input
 					type="text"
 					placeholder="Replace with..."
 					value={replaceText}
 					onChange={(e) => setReplaceText(e.target.value)}
-					className="flex-1 bg-transparent border-none outline-none text-xs text-foreground placeholder:text-muted-foreground/60"
+					className="flex-1 bg-transparent border-none outline-none focus-visible:ring-0 shadow-none text-xs text-foreground placeholder:text-muted-foreground/60 h-auto p-0"
 				/>
 			</div>
 			<div className="flex items-center gap-2 mt-1">
-				<button
+				<Button
+					variant="outline"
+					size="sm"
 					onClick={() => onReplace(false)}
 					disabled={!findText}
-					className="flex-1 text-[11px] py-1.5 px-3 rounded bg-muted hover:bg-accent text-foreground disabled:opacity-50 transition-colors font-semibold cursor-pointer border border-border/30"
+					className="flex-1 text-[11px] h-8"
 				>
 					Replace
-				</button>
-				<button
+				</Button>
+				<Button
+					size="sm"
 					onClick={() => onReplace(true)}
 					disabled={!findText}
-					className="flex-1 text-[11px] py-1.5 px-3 rounded bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 transition-colors font-semibold cursor-pointer shadow-sm"
+					className="flex-1 text-[11px] h-8 shadow-sm"
 				>
 					Replace All
-				</button>
+				</Button>
 			</div>
 		</div>
 	);

@@ -3,6 +3,7 @@ import { ReactNodeViewRenderer, NodeViewWrapper } from "@tiptap/react";
 import type { NodeViewProps } from "@tiptap/react";
 import { FileText, Download, Trash2 } from "lucide-react";
 import { cn } from "@/utils";
+import { Button } from "@/components/ui/button";
 
 const AttachmentNodeView = (props: NodeViewProps) => {
 	const { node, deleteNode, selected } = props;
@@ -48,13 +49,15 @@ const AttachmentNodeView = (props: NodeViewProps) => {
 					>
 						<Download className="w-4 h-4" />
 					</a>
-					<button
+					<Button
+						variant="ghost"
+						size="icon"
 						onClick={() => deleteNode()}
-						className="p-1.5 rounded-md hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
+						className="h-7 w-7 rounded-md hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
 						title="Delete Attachment"
 					>
 						<Trash2 className="w-4 h-4" />
-					</button>
+					</Button>
 				</div>
 			</div>
 		</NodeViewWrapper>

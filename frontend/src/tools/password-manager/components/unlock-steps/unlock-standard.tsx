@@ -108,12 +108,13 @@ export default function UnlockStandard({
 						<p className="text-xs text-muted-foreground">
 							{t("tools.password_manager_forgot_password")}{" "}
 							{hasRecoveryKey ? (
-								<button
+								<Button
+									variant="link"
 									onClick={onShowRecovery}
-									className="text-primary hover:text-primary/80 hover:underline transition-colors font-medium"
+									className="p-0 h-auto text-primary hover:text-primary/80 font-medium"
 								>
 									{t("tools.password_manager_recovery_title")}
-								</button>
+								</Button>
 							) : (
 								<ReadMoreDialog />
 							)}

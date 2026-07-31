@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import { UploadCloud } from "lucide-react";
 import { cn } from "@/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface MediaDialogProps {
 	isOpen: boolean;
@@ -84,28 +86,30 @@ export function MediaDialog({
 
 				{/* Custom Tabs */}
 				<div className="flex bg-muted/80 p-1 rounded-lg w-full mb-4 border border-border/10 select-none">
-					<button
+					<Button
+						variant="ghost"
 						onClick={() => setTab("upload")}
 						className={cn(
-							"flex-1 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer",
+							"flex-1 h-8 text-xs font-semibold rounded-md transition-all cursor-pointer",
 							tab === "upload"
 								? "bg-background text-foreground shadow-sm"
-								: "text-muted-foreground hover:text-foreground",
+								: "text-muted-foreground hover:text-foreground hover:bg-transparent",
 						)}
 					>
 						Upload
-					</button>
-					<button
+					</Button>
+					<Button
+						variant="ghost"
 						onClick={() => setTab("link")}
 						className={cn(
-							"flex-1 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer",
+							"flex-1 h-8 text-xs font-semibold rounded-md transition-all cursor-pointer",
 							tab === "link"
 								? "bg-background text-foreground shadow-sm"
-								: "text-muted-foreground hover:text-foreground",
+								: "text-muted-foreground hover:text-foreground hover:bg-transparent",
 						)}
 					>
 						Link
-					</button>
+					</Button>
 				</div>
 
 				{/* Tab Content */}
@@ -124,7 +128,7 @@ export function MediaDialog({
 							<p className="text-[10px] text-muted-foreground text-center">
 								Max file size 50MB
 							</p>
-							<input
+							<Input
 								type="file"
 								ref={fileInputRef}
 								className="hidden"
@@ -142,20 +146,20 @@ export function MediaDialog({
 							/>
 						</div>
 
-						<button
+						<Button
 							onClick={handleUpload}
 							disabled={!selectedFile || isUploading}
 							className={cn(
-								"w-full h-9 bg-primary text-primary-foreground text-xs font-semibold rounded-lg shadow-sm hover:opacity-90 transition-all cursor-pointer flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed",
+								"w-full h-9",
 								isUploading && "animate-pulse",
 							)}
 						>
 							{isUploading ? "Uploading..." : "Upload"}
-						</button>
+						</Button>
 					</div>
 				) : (
 					<div className="flex flex-col gap-4">
-						<input
+						<Input
 							type="text"
 							placeholder={
 								type === "image"
@@ -166,17 +170,17 @@ export function MediaDialog({
 							}
 							value={linkUrl}
 							onChange={(e) => setLinkUrl(e.target.value)}
-							className="w-full h-9 px-3 rounded-lg border border-border bg-background text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+							className="w-full h-9"
 						/>
 
-						<button
+						<Button
 							onClick={handleEmbedLink}
 							disabled={!linkUrl.trim()}
-							className="w-full h-9 bg-primary text-primary-foreground text-xs font-semibold rounded-lg shadow-sm hover:opacity-90 transition-all cursor-pointer flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+							className="w-full h-9"
 							type="button"
 						>
 							Embed Link
-						</button>
+						</Button>
 					</div>
 				)}
 			</DialogContent>

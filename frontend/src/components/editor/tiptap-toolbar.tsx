@@ -9,6 +9,8 @@ import {
 import { cn } from "@/utils";
 import { Editor } from "@tiptap/core";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import { MediaDialog } from "./media-dialog";
 import { GifPopover } from "./gif-popover";
@@ -265,14 +267,13 @@ export function TiptapToolbar({
 							<label className="text-xs text-muted-foreground font-medium">
 								Link URL
 							</label>
-							<input
+							<Input
 								type="text"
 								placeholder="https://example.com"
 								value={linkInputUrl}
 								onChange={(e) =>
 									setLinkInputUrl(e.target.value)
 								}
-								className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-1 focus:ring-primary"
 								onKeyDown={(e) => {
 									if (e.key === "Enter") handleSaveLink();
 								}}
@@ -280,18 +281,17 @@ export function TiptapToolbar({
 							/>
 						</div>
 						<div className="flex justify-end gap-2 mt-2">
-							<button
+							<Button
+								variant="ghost"
 								onClick={() => setLinkDialogOpen(false)}
-								className="px-4 py-2 rounded-lg text-xs font-semibold text-muted-foreground hover:bg-muted transition-colors cursor-pointer"
 							>
 								Cancel
-							</button>
-							<button
+							</Button>
+							<Button
 								onClick={handleSaveLink}
-								className="px-4 py-2 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer"
 							>
 								Save Link
-							</button>
+							</Button>
 						</div>
 					</DialogContent>
 				</Dialog>
@@ -311,14 +311,14 @@ export function TiptapToolbar({
 							<label className="text-xs text-muted-foreground font-medium">
 								LaTeX Code
 							</label>
-							<input
+							<Input
 								type="text"
 								placeholder="e.g. E=mc^2"
 								value={latexInputFormula}
 								onChange={(e) =>
 									setLatexInputFormula(e.target.value)
 								}
-								className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-1 focus:ring-primary font-mono"
+								className="font-mono"
 								onKeyDown={(e) => {
 									if (e.key === "Enter") handleSaveLatex();
 								}}
@@ -326,18 +326,17 @@ export function TiptapToolbar({
 							/>
 						</div>
 						<div className="flex justify-end gap-2 mt-2">
-							<button
+							<Button
+								variant="ghost"
 								onClick={() => setLatexDialogOpen(false)}
-								className="px-4 py-2 rounded-lg text-xs font-semibold text-muted-foreground hover:bg-muted transition-colors cursor-pointer"
 							>
 								Cancel
-							</button>
-							<button
+							</Button>
+							<Button
 								onClick={handleSaveLatex}
-								className="px-4 py-2 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer"
 							>
 								Insert Formula
-							</button>
+							</Button>
 						</div>
 					</DialogContent>
 				</Dialog>

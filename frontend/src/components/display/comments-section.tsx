@@ -19,6 +19,7 @@ import { useApiHelpers } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { CommentBubble } from "./comment-bubble";
+import { Input } from "@/components/ui/input";
 
 interface CommentsSectionProps {
 	paste: PasteData;
@@ -73,7 +74,7 @@ export const CommentsSection = ({
 	const canComment = isExplicitUser
 		? ["admin", "editor", "commenter"].includes(userRole)
 		: paste.allowComments &&
-			["admin", "editor", "commenter", "viewer"].includes(userRole);
+		["admin", "editor", "commenter", "viewer"].includes(userRole);
 
 	const handleSubmit = async () => {
 		if (!newComment.trim()) return;
@@ -95,7 +96,7 @@ export const CommentsSection = ({
 			const axiosError = error as AxiosError<{ error: string }>;
 			toast.error(
 				axiosError.response?.data?.error ||
-					t("messages.comment_failed"),
+				t("messages.comment_failed"),
 			);
 		} finally {
 			setIsSubmitting(false);
@@ -186,14 +187,13 @@ export const CommentsSection = ({
 									<label className="text-xs font-medium ml-1 text-muted-foreground">
 										{t("common.your_name")}
 									</label>
-									<input
+									<Input
 										type="text"
 										placeholder={t("common.anonymus")}
 										value={authorName}
 										onChange={(e) =>
 											setAuthorName(e.target.value)
 										}
-										className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
 									/>
 								</div>
 							)}

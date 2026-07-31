@@ -9,6 +9,7 @@ import {
 	TooltipTrigger,
 	TooltipContent,
 } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 import type { Editor } from "@tiptap/core";
 
 const EMOJI_CATEGORIES = [
@@ -228,9 +229,9 @@ export function EmojiPicker({ editor }: EmojiPickerProps) {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<PopoverTrigger asChild>
-						<button className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer">
+						<Button variant="ghost" size="icon" className="h-8 w-8 rounded-md border-transparent">
 							<Smile className="h-4 w-4" />
-						</button>
+						</Button>
 					</PopoverTrigger>
 				</TooltipTrigger>
 				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
@@ -254,8 +255,9 @@ export function EmojiPicker({ editor }: EmojiPickerProps) {
 							</span>
 							<div className="grid grid-cols-8 gap-1">
 								{category.emojis.map((emoji) => (
-									<button
+									<Button
 										key={emoji}
+										variant="ghost"
 										onClick={() => {
 											editor
 												.chain()
@@ -263,10 +265,10 @@ export function EmojiPicker({ editor }: EmojiPickerProps) {
 												.insertContent(emoji)
 												.run();
 										}}
-										className="h-6 w-6 flex items-center justify-center text-sm hover:bg-accent rounded transition-colors cursor-pointer"
+										className="h-6 w-6 p-0 text-sm hover:bg-accent rounded transition-colors cursor-pointer"
 									>
 										{emoji}
-									</button>
+									</Button>
 								))}
 							</div>
 						</div>

@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { User, Tag, Bookmark, FilterX } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLabels } from "@/hooks/use-labels";
 
@@ -114,7 +115,7 @@ const ProfilePage = () => {
 			const errorMessage =
 				error instanceof Error && "response" in error
 					? (error as { response?: { data?: { message?: string } } })
-							.response?.data?.message
+						.response?.data?.message
 					: undefined;
 			toast.error(errorMessage || t("profile.update_failed"));
 		} finally {
@@ -141,15 +142,15 @@ const ProfilePage = () => {
 
 	const displayPastes = searchQuery.trim()
 		? pastes.filter(
-				(p) =>
-					p.id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-					p.fileName
-						?.toLowerCase()
-						.includes(searchQuery.toLowerCase()) ||
-					p.content
-						?.toLowerCase()
-						.includes(searchQuery.toLowerCase()),
-			)
+			(p) =>
+				p.id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				p.fileName
+					?.toLowerCase()
+					.includes(searchQuery.toLowerCase()) ||
+				p.content
+					?.toLowerCase()
+					.includes(searchQuery.toLowerCase()),
+		)
 		: pastes;
 	const displayLoading = loadingPastes;
 
@@ -173,22 +174,24 @@ const ProfilePage = () => {
 								<div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors">
 									<Tag className="h-4 w-4" />
 								</div>
-								<input
+								<Input
 									type="text"
 									placeholder="Search your snippets..."
 									value={searchQuery}
 									onChange={(e) =>
 										setSearchQuery(e.target.value)
 									}
-									className="w-full pl-11 pr-4 h-12 bg-background/50 border border-border/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all text-sm font-medium"
+									className="pl-11 pr-12 h-12 rounded-2xl"
 								/>
 								{searchQuery && (
-									<button
+									<Button
+										variant="ghost"
+										size="icon"
 										onClick={() => setSearchQuery("")}
-										className="absolute inset-y-0 right-4 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+										className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground rounded-full"
 									>
 										<FilterX className="h-4 w-4" />
-									</button>
+									</Button>
 								)}
 							</div>
 						</div>
@@ -246,29 +249,32 @@ const ProfilePage = () => {
 									Filters
 								</div>
 								{allLabels.map((label) => (
-									<button
+									<Button
 										key={label}
+										variant={activeLabel === label ? "default" : "outline"}
+										size="sm"
 										onClick={() => handleLabelClick(label)}
-										className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 border ${
-											activeLabel === label
-												? "bg-primary text-primary-foreground border-primary shadow-md scale-105"
-												: "bg-background border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"
-										}`}
+										className={`rounded-full text-xs font-bold transition-all shrink-0 ${activeLabel === label
+												? "shadow-md scale-105"
+												: "text-muted-foreground"
+											}`}
 									>
 										{label}
-									</button>
+									</Button>
 								))}
 								{activeLabel && (
-									<button
+									<Button
+										variant="ghost"
+										size="icon"
 										onClick={() => {
 											setActiveLabel(null);
 											clearFilter();
 										}}
-										className="p-1.5 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors shrink-0"
+										className="h-8 w-8 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 shrink-0"
 										title="Clear filter"
 									>
 										<FilterX className="w-4 h-4" />
-									</button>
+									</Button>
 								)}
 							</div>
 						)}
@@ -290,7 +296,7 @@ const ProfilePage = () => {
 									<ProfileSnippetList
 										pastes={filteredPastes || []}
 										loading={filteredPastes === null}
-										loadMore={() => {}}
+										loadMore={() => { }}
 										hasMore={false}
 										isLoadingMore={false}
 									/>
@@ -352,7 +358,7 @@ const ProfilePage = () => {
 										<ProfileSnippetList
 											pastes={savedPastes}
 											loading={loadingSaved}
-											loadMore={() => {}}
+											loadMore={() => { }}
 											hasMore={false}
 											isLoadingMore={false}
 										/>

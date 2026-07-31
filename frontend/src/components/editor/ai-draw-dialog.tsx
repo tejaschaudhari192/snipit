@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useApiHelpers } from "@/lib/api";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -99,12 +100,11 @@ export const AiDrawDialog = ({
 
 					<div className="flex items-center space-x-3 px-1">
 						<div className="relative flex items-center">
-							<input
-								type="checkbox"
+							<Checkbox
 								id="clear-board"
 								checked={clearBoard}
-								onChange={(e) =>
-									setClearBoard(e.target.checked)
+								onCheckedChange={(checked) =>
+									setClearBoard(checked as boolean)
 								}
 								className="w-5 h-5 rounded-lg border-border/50 text-primary focus:ring-primary/30 cursor-pointer bg-background/50 transition-all hover:border-primary/50"
 							/>

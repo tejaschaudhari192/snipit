@@ -51,7 +51,7 @@ export const EditorToolbar = ({
 		<TooltipProvider>
 			<div
 				className={cn(
-					"flex items-center gap-2 z-101",
+					"flex items-center gap-2 z-40",
 					contentType === "draw"
 						? isFullscreen || isWindowFullscreen
 							? "fixed top-4 right-4"

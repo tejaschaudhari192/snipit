@@ -3,6 +3,7 @@ import {
 	TooltipTrigger,
 	TooltipContent,
 } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 
 export function TooltipButton({
 	onClick,
@@ -20,9 +21,9 @@ export function TooltipButton({
 	return (
 		<Tooltip>
 			<TooltipTrigger asChild>
-				<button onClick={onClick} className={className}>
+				<Button variant="ghost" size="icon" onClick={onClick} className={className}>
 					{children}
-				</button>
+				</Button>
 			</TooltipTrigger>
 			<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
 				<span className="font-semibold text-white">{title}</span>

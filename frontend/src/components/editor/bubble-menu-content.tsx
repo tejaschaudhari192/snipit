@@ -25,6 +25,8 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
 	Dialog,
 	DialogContent,
@@ -95,7 +97,7 @@ export function BubbleMenuContent() {
 				{/* AI Input Header */}
 				<div className="flex items-center gap-2 px-2.5 py-1.5 border-b border-border/50">
 					<Sparkles className="h-4 w-4 text-purple-500 animate-pulse shrink-0" />
-					<input
+					<Input
 						type="text"
 						value={customPrompt}
 						onChange={(e) => setCustomPrompt(e.target.value)}
@@ -110,18 +112,19 @@ export function BubbleMenuContent() {
 								: "Ask AI to edit or generate..."
 						}
 						disabled={isLoading}
-						className="flex-1 bg-transparent text-sm outline-none border-none placeholder:text-muted-foreground/70 text-foreground"
+						className="flex-1 bg-transparent border-0 focus-visible:ring-0 shadow-none h-8 text-sm px-0 placeholder:text-muted-foreground/70"
 						autoFocus
 					/>
-					<button
+					<Button
+						size="icon"
 						onClick={() =>
 							customPrompt.trim() && handleAiAction(customPrompt)
 						}
 						disabled={isLoading || !customPrompt.trim()}
-						className="flex h-6 w-6 items-center justify-center rounded-full bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white cursor-pointer transition-colors shrink-0"
+						className="h-6 w-6 rounded-full bg-purple-600 hover:bg-purple-700 text-white shrink-0"
 					>
 						<ArrowUp className="h-3.5 w-3.5" />
-					</button>
+					</Button>
 				</div>
 
 				{/* Options List */}
@@ -130,67 +133,72 @@ export function BubbleMenuContent() {
 						<div className="px-2.5 py-1 text-[10px] font-semibold text-muted-foreground/80 uppercase tracking-wider">
 							Edit or review selection
 						</div>
-						<button
+						<Button
+							variant="ghost"
 							onClick={() =>
 								handleAiAction(
 									"Improve the writing quality, grammar, and style.",
 								)
 							}
-							className="flex w-full items-center gap-2 px-2.5 py-1.5 hover:bg-accent rounded-sm text-left font-medium transition-colors cursor-pointer"
+							className="w-full justify-start gap-2 h-8 px-2.5 rounded-sm"
 						>
 							<RefreshCw className="h-3.5 w-3.5 text-purple-500" />
 							<span>Improve writing</span>
-						</button>
-						<button
+						</Button>
+						<Button
+							variant="ghost"
 							onClick={() =>
 								handleAiAction(
 									"Identify and fix spelling, grammar, or syntax errors.",
 								)
 							}
-							className="flex w-full items-center gap-2 px-2.5 py-1.5 hover:bg-accent rounded-sm text-left font-medium transition-colors cursor-pointer"
+							className="w-full justify-start gap-2 h-8 px-2.5 rounded-sm"
 						>
 							<CheckCheck className="h-3.5 w-3.5 text-purple-500" />
 							<span>Fix grammar</span>
-						</button>
-						<button
+						</Button>
+						<Button
+							variant="ghost"
 							onClick={() =>
 								handleAiAction(
 									"Make this selection shorter and more concise.",
 								)
 							}
-							className="flex w-full items-center gap-2 px-2.5 py-1.5 hover:bg-accent rounded-sm text-left font-medium transition-colors cursor-pointer"
+							className="w-full justify-start gap-2 h-8 px-2.5 rounded-sm"
 						>
 							<ChevronDown className="h-3.5 w-3.5 text-purple-500 rotate-180" />
 							<span>Make shorter</span>
-						</button>
-						<button
+						</Button>
+						<Button
+							variant="ghost"
 							onClick={() =>
 								handleAiAction(
 									"Expand this selection with more detailed information.",
 								)
 							}
-							className="flex w-full items-center gap-2 px-2.5 py-1.5 hover:bg-accent rounded-sm text-left font-medium transition-colors cursor-pointer"
+							className="w-full justify-start gap-2 h-8 px-2.5 rounded-sm"
 						>
 							<ChevronDown className="h-3.5 w-3.5 text-purple-500" />
 							<span>Make longer</span>
-						</button>
+						</Button>
 
 						<div className="h-px bg-border/50 my-1 mx-1" />
 
 						<div className="px-2.5 py-1 text-[10px] font-semibold text-muted-foreground/80 uppercase tracking-wider">
 							Use AI to do more
 						</div>
-						<button
+						<Button
+							variant="ghost"
 							onClick={() =>
 								handleAiAction(
 									"Continue writing or extending the thoughts in this text.",
 								)
 							}
-							className="flex w-full items-center gap-2 px-2.5 py-1.5 hover:bg-accent rounded-sm text-left font-medium transition-colors cursor-pointer"
+							className="w-full justify-start gap-2 h-8 px-2.5 rounded-sm"
 						>
 							<Play className="h-3.5 w-3.5 text-purple-500" />
 							<span>Continue writing</span>
-						</button>
+						</Button>
 					</div>
 				)}
 			</div>
@@ -234,10 +242,10 @@ export function BubbleMenuContent() {
 			>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<button className="flex h-7 items-center gap-1 px-2 rounded-sm text-foreground hover:bg-accent text-xs font-medium cursor-pointer transition-colors border-0 outline-none whitespace-nowrap">
+						<Button variant="ghost" size="sm" className="h-7 px-2 rounded-sm text-xs font-medium border-0 gap-1">
 							<span>{currentHeading}</span>
 							<ChevronDown className="h-3 w-3 text-muted-foreground" />
-						</button>
+						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="start" className="w-32">
 						<DropdownMenuItem
@@ -292,7 +300,7 @@ export function BubbleMenuContent() {
 			>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<button className="flex h-7 items-center gap-1 px-2 rounded-sm text-foreground hover:bg-accent text-xs font-medium cursor-pointer transition-colors border-0 outline-none whitespace-nowrap">
+						<Button variant="ghost" size="sm" className="h-7 px-2 rounded-sm text-xs font-medium border-0 gap-1">
 							<span
 								style={{
 									fontFamily:
@@ -304,7 +312,7 @@ export function BubbleMenuContent() {
 								{currentFontName}
 							</span>
 							<ChevronDown className="h-3 w-3 text-muted-foreground" />
-						</button>
+						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent
 						align="start"
@@ -444,15 +452,15 @@ export function BubbleMenuContent() {
 			<EditorBubbleItem onSelect={() => {}} className="flex items-center">
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<button className="flex h-7 w-8 items-center justify-center rounded-sm text-foreground hover:bg-accent cursor-pointer transition-colors text-xs font-semibold border-0 outline-none">
+						<Button variant="ghost" size="icon" className="h-7 w-8 rounded-sm border-0">
 							<span
-								className="underline decoration-2"
+								className="underline decoration-2 text-xs font-semibold"
 								style={{ color: currentColor }}
 							>
 								A
 							</span>
 							<ChevronDown className="h-2.5 w-2.5 text-muted-foreground ml-0.5" />
-						</button>
+						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-32">
 						<DropdownMenuItem
@@ -510,10 +518,10 @@ export function BubbleMenuContent() {
 			<EditorBubbleItem onSelect={() => {}} className="flex items-center">
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<button className="flex h-7 w-8 items-center justify-center rounded-sm text-foreground hover:bg-accent cursor-pointer transition-colors border-0 outline-none">
+						<Button variant="ghost" size="icon" className="h-7 w-8 rounded-sm border-0">
 							<Highlighter className="h-3.5 w-3.5" />
 							<ChevronDown className="h-2.5 w-2.5 text-muted-foreground ml-0.5" />
-						</button>
+						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-36">
 						<DropdownMenuItem
@@ -599,12 +607,11 @@ export function BubbleMenuContent() {
 						<label className="text-xs text-muted-foreground font-medium">
 							Link URL
 						</label>
-						<input
+						<Input
 							type="text"
 							placeholder="https://example.com"
 							value={linkInputUrl}
 							onChange={(e) => setLinkInputUrl(e.target.value)}
-							className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-1 focus:ring-primary text-foreground"
 							onKeyDown={(e) => {
 								if (e.key === "Enter") handleSaveLink();
 							}}
@@ -612,18 +619,17 @@ export function BubbleMenuContent() {
 						/>
 					</div>
 					<div className="flex justify-end gap-2 mt-2">
-						<button
+						<Button
+							variant="ghost"
 							onClick={() => setLinkDialogOpen(false)}
-							className="px-4 py-2 rounded-lg text-xs font-semibold text-muted-foreground hover:bg-muted transition-colors cursor-pointer"
 						>
 							Cancel
-						</button>
-						<button
+						</Button>
+						<Button
 							onClick={handleSaveLink}
-							className="px-4 py-2 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer"
 						>
 							Save Link
-						</button>
+						</Button>
 					</div>
 				</DialogContent>
 			</Dialog>

@@ -17,6 +17,7 @@ import {
 	TooltipTrigger,
 	TooltipContent,
 } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 import { FONTS } from "../utils/fonts";
 
 export function HeadingDropdown({ editor }: { editor: Editor }) {
@@ -33,10 +34,10 @@ export function HeadingDropdown({ editor }: { editor: Editor }) {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<DropdownMenuTrigger asChild>
-						<button className="flex h-8 items-center gap-1 px-2.5 rounded-md text-foreground hover:bg-accent text-xs font-semibold cursor-pointer transition-colors border border-border/40 bg-background/50 shadow-sm">
+						<Button variant="outline" size="sm" className="h-8 gap-1 px-2.5 text-xs font-semibold shadow-sm border-border/40 bg-background/50">
 							<span>{currentHeading}</span>
 							<ChevronDown className="h-3 w-3 text-muted-foreground" />
-						</button>
+						</Button>
 					</DropdownMenuTrigger>
 				</TooltipTrigger>
 				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
@@ -90,7 +91,7 @@ export function FontDropdown({ editor }: { editor: Editor }) {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<DropdownMenuTrigger asChild>
-						<button className="flex h-8 items-center gap-1 px-2.5 rounded-md text-foreground hover:bg-accent text-xs font-semibold cursor-pointer transition-colors border border-border/40 bg-background/50 shadow-sm whitespace-nowrap">
+						<Button variant="outline" size="sm" className="h-8 gap-1 px-2.5 text-xs font-semibold shadow-sm border-border/40 bg-background/50 whitespace-nowrap">
 							<span
 								style={{
 									fontFamily:
@@ -102,7 +103,7 @@ export function FontDropdown({ editor }: { editor: Editor }) {
 								{currentFontName}
 							</span>
 							<ChevronDown className="h-3 w-3 text-muted-foreground" />
-						</button>
+						</Button>
 					</DropdownMenuTrigger>
 				</TooltipTrigger>
 				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
@@ -146,7 +147,7 @@ export function AlignmentDropdown({ editor }: { editor: Editor }) {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<DropdownMenuTrigger asChild>
-						<button className="flex h-8 w-8 items-center justify-center rounded-md text-foreground hover:bg-accent cursor-pointer transition-colors border border-transparent">
+						<Button variant="ghost" size="icon" className="h-8 w-8 rounded-md border-transparent">
 							{editor.isActive({ textAlign: "center" }) ? (
 								<AlignCenter className="h-4 w-4" />
 							) : editor.isActive({ textAlign: "right" }) ? (
@@ -156,7 +157,7 @@ export function AlignmentDropdown({ editor }: { editor: Editor }) {
 							) : (
 								<AlignLeft className="h-4 w-4" />
 							)}
-						</button>
+						</Button>
 					</DropdownMenuTrigger>
 				</TooltipTrigger>
 				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
@@ -211,7 +212,7 @@ export function LineHeightDropdown({ editor }: { editor: Editor }) {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<DropdownMenuTrigger asChild>
-						<button className="flex h-8 w-8 items-center justify-center rounded-md text-foreground hover:bg-accent cursor-pointer transition-colors border border-transparent">
+						<Button variant="ghost" size="icon" className="h-8 w-8 rounded-md border-transparent">
 							<svg
 								viewBox="0 0 24 24"
 								fill="none"
@@ -228,7 +229,7 @@ export function LineHeightDropdown({ editor }: { editor: Editor }) {
 								<line x1="4" y1="12" x2="4" y2="2" />
 								<line x1="4" y1="12" x2="4" y2="22" />
 							</svg>
-						</button>
+						</Button>
 					</DropdownMenuTrigger>
 				</TooltipTrigger>
 				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">

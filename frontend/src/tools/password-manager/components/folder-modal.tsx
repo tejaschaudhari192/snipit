@@ -160,12 +160,14 @@ export function FolderModal({
 							</label>
 							<div className="flex flex-wrap gap-3">
 								{PRESET_COLORS.map((color) => (
-									<button
+									<Button
 										key={color}
 										type="button"
+										variant="outline"
+										size="icon"
 										onClick={() => setFolderColor(color)}
 										className={cn(
-											"w-8 h-8 rounded-full border-2 ring-offset-background transition-all hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+											"w-8 h-8 rounded-full border-2 p-0 transition-all hover:scale-110",
 											folderColor === color
 												? "border-foreground scale-110 shadow-sm"
 												: "border-transparent shadow-sm",
@@ -176,10 +178,12 @@ export function FolderModal({
 								))}
 
 								<div className="relative">
-									<button
+									<Button
 										type="button"
+										variant="outline"
+										size="icon"
 										className={cn(
-											"w-8 h-8 rounded-full border-2 flex items-center justify-center ring-offset-background transition-all hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+											"w-8 h-8 rounded-full border-2 p-0 flex items-center justify-center transition-all hover:scale-110",
 											!PRESET_COLORS.includes(folderColor)
 												? "border-foreground scale-110 shadow-sm"
 												: "border-transparent shadow-sm",
@@ -197,13 +201,13 @@ export function FolderModal({
 										}
 										title="Custom color"
 									/>
-									<input
+									<Input
 										type="color"
 										value={folderColor}
 										onChange={(e) =>
 											setFolderColor(e.target.value)
 										}
-										className="absolute inset-0 w-8 h-8 opacity-0 cursor-pointer"
+										className="absolute inset-0 w-8 h-8 p-0 border-0 opacity-0 cursor-pointer"
 										title="Custom color"
 									/>
 								</div>

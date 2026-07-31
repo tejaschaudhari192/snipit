@@ -11,6 +11,7 @@ import {
 	TooltipTrigger,
 	TooltipContent,
 } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 
 export function ColorControls({ editor }: { editor: Editor }) {
 	const currentColor =
@@ -23,7 +24,7 @@ export function ColorControls({ editor }: { editor: Editor }) {
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<DropdownMenuTrigger asChild>
-							<button className="flex h-8 w-9 items-center justify-center rounded-md text-foreground hover:bg-accent cursor-pointer transition-colors border border-transparent">
+							<Button variant="ghost" className="h-8 w-9 px-0 border-transparent">
 								<span
 									className="underline decoration-2 text-sm font-bold"
 									style={{ color: currentColor }}
@@ -31,7 +32,7 @@ export function ColorControls({ editor }: { editor: Editor }) {
 									A
 								</span>
 								<ChevronDown className="h-2.5 w-2.5 text-muted-foreground ml-0.5" />
-							</button>
+							</Button>
 						</DropdownMenuTrigger>
 					</TooltipTrigger>
 					<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
@@ -96,10 +97,10 @@ export function ColorControls({ editor }: { editor: Editor }) {
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<DropdownMenuTrigger asChild>
-							<button className="flex h-8 w-9 items-center justify-center rounded-md text-foreground hover:bg-accent cursor-pointer transition-colors border border-transparent">
+							<Button variant="ghost" className="h-8 w-9 px-0 border-transparent">
 								<Highlighter className="h-4 w-4" />
 								<ChevronDown className="h-2.5 w-2.5 text-muted-foreground ml-0.5" />
-							</button>
+							</Button>
 						</DropdownMenuTrigger>
 					</TooltipTrigger>
 					<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">

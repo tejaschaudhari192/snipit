@@ -12,6 +12,8 @@ import {
 	TooltipTrigger,
 	TooltipContent,
 } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface GifPopoverProps {
 	onSelect: (url: string) => void;
@@ -223,9 +225,9 @@ export function GifPopover({ onSelect }: GifPopoverProps) {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<PopoverTrigger asChild>
-						<button className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer">
+						<Button variant="ghost" size="icon" className="h-8 w-8 rounded-md border-transparent">
 							<GifIcon className="h-4.5 w-4.5" />
-						</button>
+						</Button>
 					</PopoverTrigger>
 				</TooltipTrigger>
 				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
@@ -239,12 +241,12 @@ export function GifPopover({ onSelect }: GifPopoverProps) {
 				className="w-72 p-3 border border-border/50 bg-background shadow-2xl rounded-2xl flex flex-col gap-3 overflow-hidden"
 			>
 				{/* Search Box */}
-				<input
+				<Input
 					type="text"
 					placeholder="Search GIF"
 					value={searchQuery}
 					onChange={(e) => setSearchQuery(e.target.value)}
-					className="w-full h-8.5 px-3 rounded-lg border border-border bg-background text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+					className="w-full h-8.5"
 					autoFocus
 				/>
 
@@ -267,13 +269,14 @@ export function GifPopover({ onSelect }: GifPopoverProps) {
 					) : (
 						<div className="grid grid-cols-2 gap-2 w-full pb-2">
 							{gifs.map((gif) => (
-								<button
+								<Button
 									key={gif.id}
+									variant="ghost"
 									onClick={() => {
 										onSelect(gif.url);
 										setIsOpen(false);
 									}}
-									className="group relative aspect-video w-full overflow-hidden rounded-lg border border-border/40 hover:border-primary/50 transition-colors cursor-pointer bg-muted/20 flex items-center justify-center"
+									className="group relative aspect-video w-full overflow-hidden rounded-lg border border-border/40 hover:border-primary/50 transition-colors cursor-pointer bg-muted/20 flex items-center justify-center p-0 h-auto"
 								>
 									<img
 										src={gif.url}
@@ -281,7 +284,7 @@ export function GifPopover({ onSelect }: GifPopoverProps) {
 										className="h-full w-full object-cover transition-transform group-hover:scale-105"
 										loading="lazy"
 									/>
-								</button>
+								</Button>
 							))}
 							{loadingMore && (
 								<div className="col-span-2 py-2 flex items-center justify-center">
