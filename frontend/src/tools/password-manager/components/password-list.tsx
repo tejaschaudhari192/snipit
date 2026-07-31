@@ -1,6 +1,7 @@
 import { useState, useMemo, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
+import BulkActionBar from "./bulk-action-bar";
 import {
 	selectVault,
 	selectActiveFilter,
@@ -141,6 +142,7 @@ export default function PasswordList({
 							table.toggleAllPageRowsSelected(!!value)
 						}
 						aria-label="Select all"
+						className="border-muted-foreground/30 shadow-sm"
 					/>
 				),
 				cell: ({ row }) => (
@@ -149,6 +151,7 @@ export default function PasswordList({
 						onCheckedChange={(value) => row.toggleSelected(!!value)}
 						aria-label="Select row"
 						onClick={(e) => e.stopPropagation()}
+						className="border-muted-foreground/30 shadow-sm"
 					/>
 				),
 				enableSorting: false,
@@ -276,17 +279,25 @@ export default function PasswordList({
 		];
 	}, [t, folders, onEdit, confirmDelete]);
 
+	const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+
 	const table = useReactTable({
 		data: categoryFiltered,
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
+		enableRowSelection: true,
 		state: {
 			globalFilter: searchQuery,
+			rowSelection,
 		},
+		onRowSelectionChange: setRowSelection,
 		onGlobalFilterChange: undefined, // Let parent handle search input
 	});
+
+	const selectedItems = table.getSelectedRowModel().rows.map((r) => r.original);
+	const hasSelection = selectedItems.length > 0;
 
 	let pageTitle = t("tools.password_manager_all_items");
 	if (activeFilter === "favorites") pageTitle = t("tools.password_manager_favorites");
@@ -298,7 +309,7 @@ export default function PasswordList({
 	}
 
 	return (
-		<div className="h-full flex flex-col bg-pm-surface">
+		<div className="h-full flex flex-col bg-pm-surface relative">
 			{/* Header */}
 			<div className="flex items-center justify-between p-6 pb-4">
 				<div className="flex items-center gap-3">
@@ -312,15 +323,21 @@ export default function PasswordList({
 							<Menu className="h-5 w-5" />
 						</Button>
 					)}
-					<h1 className="text-2xl font-bold text-foreground">{pageTitle}</h1>
+					{hasSelection ? (
+						<span className="text-sm font-medium text-muted-foreground">
+							{selectedItems.length} item{selectedItems.length > 1 ? "s" : ""} selected
+						</span>
+					) : (
+						<h1 className="text-2xl font-bold text-foreground">{pageTitle}</h1>
+					)}
 				</div>
 				<div className="flex items-center gap-2">
-					{activeFolder && (
+					{activeFolder && !hasSelection && (
 						<Button variant="outline" className="gap-2 h-9" size="sm" onClick={() => setIsShareModalOpen(true)}>
 							<Share2 className="h-4 w-4" /> {t("tools.password_manager_share")}
 						</Button>
 					)}
-					<Button className="h-9 gap-2" size="sm" onClick={onNewItem}>
+					<Button className="h-9 gap-2" size="sm" onClick={onNewItem} disabled={hasSelection}>
 						<span className="mr-1">+</span> {t("tools.password_manager_new_item")}
 					</Button>
 				</div>
@@ -335,7 +352,12 @@ export default function PasswordList({
 								<TableRow key={headerGroup.id} className="border-pm-border hover:bg-transparent">
 									{headerGroup.headers.map((header) => {
 										return (
-											<TableHead key={header.id} className="h-11 px-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80">
+											<TableHead 
+												key={header.id} 
+												className={`h-11 px-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80 ${
+													header.id === 'select' ? 'w-[40px] pr-2' : ''
+												}`}
+											>
 												{header.isPlaceholder
 													? null
 													: flexRender(
@@ -354,12 +376,28 @@ export default function PasswordList({
 									<TableRow
 										key={row.id}
 										data-state={row.getIsSelected() && "selected"}
-										onClick={() => onSelect(row.original)}
-										className={`group cursor-pointer border-pm-border/60 transition-colors ${row.original.id === activeId ? "bg-pm-row-active hover:bg-pm-row-active" : "hover:bg-pm-row-hover"
-											}`}
+										onClick={() => {
+											if (hasSelection) {
+												row.toggleSelected();
+											} else {
+												onSelect(row.original);
+											}
+										}}
+										className={`group cursor-pointer border-pm-border/60 transition-colors ${
+											row.getIsSelected()
+												? "bg-primary/5 hover:bg-primary/5"
+												: row.original.id === activeId
+													? "bg-pm-row-active hover:bg-pm-row-active"
+													: "hover:bg-pm-row-hover"
+										}`}
 									>
 										{row.getVisibleCells().map((cell) => (
-											<TableCell key={cell.id} className="py-3 px-4">
+											<TableCell 
+												key={cell.id} 
+												className={`py-3 px-4 ${
+													cell.column.id === 'select' ? 'w-[40px] pr-2' : ''
+												}`}
+											>
 												{flexRender(
 													cell.column.columnDef.cell,
 													cell.getContext(),
@@ -384,6 +422,13 @@ export default function PasswordList({
 					</Table>
 				</div>
 			</div>
+
+			{/* Bulk Action Bar */}
+			<BulkActionBar
+				selectedItems={selectedItems}
+				folders={folders}
+				onClearSelection={() => table.resetRowSelection()}
+			/>
 
 			{deleteTargetId && (
 				<Suspense fallback={null}>
