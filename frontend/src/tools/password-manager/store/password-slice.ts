@@ -405,9 +405,34 @@ export const persistItem = createAsyncThunk(
 
 export const deleteItem = createAsyncThunk(
 	"passwordManager/deleteItem",
-	async (id: string, { rejectWithValue }) => {
+	async (id: string, { getState, rejectWithValue, dispatch }) => {
+		const state = (getState() as { passwordManager: PasswordManagerState })
+			.passwordManager;
+		// Find the item to see if it has a collectionId
+		let targetCollectionId: string | undefined;
+		const itemInPersonal = state.personalItems.find(i => i.id === id);
+		if (itemInPersonal?.collectionId) {
+			targetCollectionId = itemInPersonal.collectionId;
+		} else {
+			for (const coll of state.sharedCollections) {
+				if (coll.items.some(i => i.id === id)) {
+					targetCollectionId = coll.collection.id;
+					break;
+				}
+			}
+		}
+
 		try {
 			await api.delete(`/tools/password-manager/vault/items/${id}`);
+			
+			// If it was part of a hidden collection (meaning an individually shared item), delete the collection too
+			if (targetCollectionId) {
+				const collection = state.sharedCollections.find(c => c.collection.id === targetCollectionId);
+				if (collection?.collection.isHidden) {
+					dispatch(deleteCollection(targetCollectionId));
+				}
+			}
+
 			return id;
 		} catch (error: unknown) {
 			const err = error as {
@@ -418,6 +443,85 @@ export const deleteItem = createAsyncThunk(
 				return id;
 			}
 			return rejectWithValue(err.message || "Failed to delete item");
+		}
+	},
+);
+
+export const deleteCollection = createAsyncThunk(
+	"passwordManager/deleteCollection",
+	async (collectionId: string, { rejectWithValue, dispatch }) => {
+		try {
+			await api.delete(`/tools/password-manager/vault/collections/${collectionId}`);
+			dispatch(fetchSharedCollections());
+			return collectionId;
+		} catch (error: unknown) {
+			const err = error as { response?: { data?: { message?: string } }; message?: string };
+			return rejectWithValue(err.response?.data?.message || err.message || "Failed to delete collection");
+		}
+	},
+);
+
+export const deleteFolderAsync = createAsyncThunk(
+	"passwordManager/deleteFolderAsync",
+	async (
+		{ id, deletePasswordsInside }: { id: string; deletePasswordsInside: boolean },
+		{ getState, rejectWithValue, dispatch },
+	) => {
+		const state = (getState() as { passwordManager: PasswordManagerState }).passwordManager;
+		const folder = state.folders.find((f) => f.id === id);
+		if (!folder) return rejectWithValue("Folder not found");
+
+		const newFolders = state.folders.filter((f) => f.id !== id);
+		let newItems = [...state.personalItems];
+
+		try {
+			if (deletePasswordsInside) {
+				const itemsToDelete = state.personalItems.filter((i) => i.folderId === id);
+				for (const item of itemsToDelete) {
+					await api.delete(`/tools/password-manager/vault/items/${item.id}`);
+				}
+				newItems = newItems.filter((item) => item.folderId !== id);
+			} else {
+				// We keep the items but unshare them and remove them from the folder
+				const itemsToUpdate = state.personalItems.filter((i) => i.folderId === id);
+				const personalKey = keyStore.getPersonalKey();
+				if (!personalKey) throw new Error("Vault is locked");
+
+				for (const item of itemsToUpdate) {
+					const updatedItem = { ...item, folderId: undefined, collectionId: null, updatedAt: new Date().toISOString() };
+					const encryptedPayload = encryptPayload(updatedItem, personalKey);
+					await api.put(`/tools/password-manager/vault/items/${item.id}`, {
+						encryptedPayload,
+						collectionId: null,
+					});
+					
+					const index = newItems.findIndex(i => i.id === item.id);
+					if (index !== -1) {
+						newItems[index] = updatedItem;
+					}
+				}
+			}
+
+			// If the folder was a shared collection, delete the collection
+			if (folder.collectionId) {
+				await api.delete(`/tools/password-manager/vault/collections/${folder.collectionId}`);
+				dispatch(fetchSharedCollections());
+			}
+
+			// Persist the new folders array
+			const personalKey = keyStore.getPersonalKey();
+			if (!personalKey) throw new Error("Vault is locked");
+			const settingsPayload = await encryptPayload({ folders: newFolders }, personalKey);
+			await api.put("/tools/password-manager/vault", { encryptedSettings: settingsPayload });
+
+			dispatch(setVault({ folders: newFolders, items: newItems }));
+			if (state.activeFilter === id) dispatch(setActiveFilter("all"));
+
+			return { id, newFolders, newItems };
+		} catch (error: unknown) {
+			const err = error as { message?: string };
+			dispatch(fetchVaultData()); // resync if something failed mid-way
+			return rejectWithValue(err.message || "Failed to delete folder");
 		}
 	},
 );
