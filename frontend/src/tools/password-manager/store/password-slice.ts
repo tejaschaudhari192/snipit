@@ -149,6 +149,7 @@ export const createVault = createAsyncThunk(
 			await api.put("/tools/password-manager/vault", {
 				encryptedPersonalKey,
 				encryptedBlob: encryptedPersonalKey,
+				encryptedVaultBlob: encryptedPersonalKey,
 				encryptedSettings: settingsPayload,
 				publicKey: publicKeyJWK,
 				encryptedPrivateKey,
