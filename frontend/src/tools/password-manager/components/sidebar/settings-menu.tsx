@@ -155,7 +155,7 @@ export function SettingsMenu({
 								className={`gap-3 cursor-pointer rounded-md p-2 transition-colors focus:bg-accent ${!user ? "opacity-50" : ""}`}
 								onClick={() => {
 									if (user) onSetCloudSync(true);
-									else alert("Please log in to enable Cloud Sync");
+									else toast.error(t("tools.password_manager_requires_login"));
 								}}
 							>
 								<div className="bg-muted p-1.5 rounded-md">
