@@ -240,7 +240,7 @@
 	}
 
 	.glass-morphism {
-		@apply bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_8px_32px_0_rgba(31, 38, 135, 0.37)];
+		@apply bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)];
 	}
 
 	/* Custom Scrollbar Utility */
