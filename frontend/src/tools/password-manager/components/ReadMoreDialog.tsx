@@ -81,7 +81,7 @@ export default function ReadMoreDialog() {
 				<DialogFooter className="p-4 bg-muted/20 border-t border-border">
 					<DialogClose asChild>
 						<Button className="w-full font-semibold rounded-xl">
-							{t("common.close", "Close")}
+							{t("common.close")}
 						</Button>
 					</DialogClose>
 				</DialogFooter>

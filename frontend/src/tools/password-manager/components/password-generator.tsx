@@ -130,7 +130,7 @@ export default function PasswordGenerator({
 	const handleCopy = async () => {
 		if (!password) return;
 		await navigator.clipboard.writeText(password);
-		toast.success(t("tools.password_generator_copied", "Copied!"));
+		toast.success(t("tools.password_generator_copied"));
 	};
 
 	const handleFill = () => {
@@ -266,7 +266,7 @@ export default function PasswordGenerator({
 					<div className="space-y-4">
 						<div className="flex items-center justify-between">
 							<span className="text-sm font-medium">
-								{t("tools.password_generator_length", "Length")}
+								{t("tools.password_generator_length")}
 							</span>
 							<div className="flex items-center gap-4">
 								<Slider
@@ -305,7 +305,7 @@ export default function PasswordGenerator({
 
 				<div className="space-y-4">
 					<h4 className="text-sm font-bold">
-						{t("tools.password_generator_include", "Include")}
+						{t("tools.password_generator_include")}
 					</h4>
 
 					<div className="flex items-center justify-between">
@@ -323,7 +323,7 @@ export default function PasswordGenerator({
 
 					<div className="flex items-center justify-between">
 						<span className="text-sm">
-							{t("tools.password_generator_digits", "Digits")}
+							{t("tools.password_generator_digits")}
 						</span>
 						<Switch
 							checked={useNumbers}
