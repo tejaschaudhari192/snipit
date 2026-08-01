@@ -51,7 +51,8 @@ const PasswordForm = lazy(
 );
 const DeleteConfirmDialog = lazy(() =>
 	import("@/components/common/delete-confirm-dialog").then((m) => ({
-		default: m.DeleteConfirmDialog})),
+		default: m.DeleteConfirmDialog,
+	})),
 );
 import { FolderModal } from "./folder-modal";
 import { useFolderMutations } from "../hooks/use-folder-mutations";
@@ -64,7 +65,9 @@ interface PasswordDetailProps {
 }
 
 function DetailAvatar({ item }: { item: PasswordItem }) {
-	const faviconUrl = getFaviconUrl(item.url || item.metadata?.url || item.metadata?.website);
+	const faviconUrl = getFaviconUrl(
+		item.url || item.metadata?.url || item.metadata?.website,
+	);
 	const [imgError, setImgError] = useState(false);
 
 	if (faviconUrl && !imgError) {
@@ -85,9 +88,7 @@ function DetailAvatar({ item }: { item: PasswordItem }) {
 			className={`w-20 h-20 rounded-2xl flex items-center justify-center shrink-0 shadow-lg ring-1 ring-black/5 dark:ring-white/10 relative overflow-hidden ${getBrandColor(item.title)}`}
 		>
 			<span className="text-white text-3xl font-black tracking-tight drop-shadow-md relative z-10">
-				{item.title
-					? item.title.substring(0, 2).toUpperCase()
-					: "?"}
+				{item.title ? item.title.substring(0, 2).toUpperCase() : "?"}
 			</span>
 		</div>
 	);
@@ -116,8 +117,8 @@ export default function PasswordDetail({
 				<div className="flex items-center justify-between p-5 border-b border-border">
 					<h2 className="text-sm font-semibold flex-1">
 						{isExistingItem
-							? t("tools.password_manager_edit_title")
-							: t("tools.password_manager_new_title")}
+							? t("tools.password_manager.edit_title")
+							: t("tools.password_manager.new_title")}
 					</h2>
 					<Button
 						type="submit"
@@ -126,8 +127,8 @@ export default function PasswordDetail({
 						className="h-8 px-4"
 					>
 						{isExistingItem
-							? t("tools.password_manager_save")
-							: t("tools.password_manager_add")}
+							? t("tools.password_manager.save")
+							: t("tools.password_manager.add")}
 					</Button>
 				</div>
 				<div className="flex-1 overflow-y-auto no-scrollbar scroll-fade-b">
@@ -189,7 +190,8 @@ export default function PasswordDetail({
 													? undefined
 													: val,
 											collectionId:
-												selectedFolder?.collectionId});
+												selectedFolder?.collectionId,
+										});
 									}
 								}}
 							>
@@ -213,7 +215,7 @@ export default function PasswordDetail({
 										className="text-primary font-medium flex items-center gap-2"
 									>
 										<FolderPlus className="h-4 w-4" />
-										{t("tools.password_manager_add_folder")}
+										{t("tools.password_manager.add_folder")}
 									</SelectItem>
 								</SelectContent>
 							</Select>
@@ -227,7 +229,8 @@ export default function PasswordDetail({
 										onClick={() => {
 											onSave({
 												...item,
-												isFavorite: !item.isFavorite});
+												isFavorite: !item.isFavorite,
+											});
 										}}
 										className={`h-8 w-8 rounded-lg transition-colors ${
 											item.isFavorite
@@ -250,7 +253,7 @@ export default function PasswordDetail({
 										{item.isFavorite
 											? t("remove")
 											: t(
-													"tools.password_manager_favorites",
+													"tools.password_manager.favorites",
 												)}
 									</p>
 								</TooltipContent>
@@ -290,7 +293,7 @@ export default function PasswordDetail({
 									</Button>
 								</TooltipTrigger>
 								<TooltipContent side="bottom">
-									<p>{t("tools.password_manager_edit")}</p>
+									<p>{t("tools.password_manager.edit")}</p>
 								</TooltipContent>
 							</Tooltip>
 						</TooltipProvider>
@@ -307,7 +310,7 @@ export default function PasswordDetail({
 									</Button>
 								</TooltipTrigger>
 								<TooltipContent side="bottom">
-									<p>{t("tools.password_manager_delete")}</p>
+									<p>{t("tools.password_manager.delete")}</p>
 								</TooltipContent>
 							</Tooltip>
 						</TooltipProvider>
@@ -317,7 +320,6 @@ export default function PasswordDetail({
 				<div className="flex-1 overflow-y-auto no-scrollbar scroll-fade-b">
 					{/* Title & Subtitle */}
 					<div className="px-8 pt-10 pb-6 relative overflow-hidden border-b border-border/20">
-						
 						<div className="flex items-center gap-6 relative z-10">
 							<DetailAvatar item={item} />
 							<div className="min-w-0 flex-1">
@@ -364,10 +366,14 @@ export default function PasswordDetail({
 							{schemaFields.map((field) => {
 								const itemKey = field.key as keyof PasswordItem;
 								const value =
-									item[itemKey] !== undefined && item[itemKey] !== "" && item[itemKey] !== null
+									item[itemKey] !== undefined &&
+									item[itemKey] !== "" &&
+									item[itemKey] !== null
 										? (item[itemKey] as string)
 										: item.metadata
-											? (item.metadata[field.key] as string)
+											? (item.metadata[
+													field.key
+												] as string)
 											: undefined;
 
 								return (
@@ -456,9 +462,9 @@ export default function PasswordDetail({
 							onConfirm={() => {
 								handleConfirm();
 							}}
-							title={t("tools.password_manager_delete_confirm")}
+							title={t("tools.password_manager.delete_confirm")}
 							description={t(
-								"tools.password_manager_delete_desc",
+								"tools.password_manager.delete_desc",
 							)}
 						/>
 						<ShareItemModal

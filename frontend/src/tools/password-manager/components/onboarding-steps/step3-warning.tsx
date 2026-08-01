@@ -28,13 +28,13 @@ export default function Step3Warning({
 					<AlertTriangle className="h-8 w-8 text-red-500" />
 				</div>
 				<h2 className="text-2xl font-bold">
-					{t("tools.password_manager_warning_title")}
+					{t("tools.password_manager.warning_title")}
 				</h2>
 				<p className="text-muted-foreground">
-					{t("tools.password_manager_warning_desc")}
+					{t("tools.password_manager.warning_desc")}
 				</p>
 				<p className="font-semibold text-foreground bg-muted/50 p-4 rounded-xl border border-border">
-					{t("tools.password_manager_warning_irrecoverable")}
+					{t("tools.password_manager.warning_irrecoverable")}
 				</p>
 			</div>
 
@@ -50,14 +50,14 @@ export default function Step3Warning({
 						htmlFor="understand"
 						className="text-sm font-medium leading-none cursor-pointer"
 					>
-						{t("tools.password_manager_warning_checkbox")}
+						{t("tools.password_manager.warning_checkbox")}
 					</Label>
 				</div>
 			</div>
 
 			<div className="flex justify-between items-center pt-4">
 				<Button variant="ghost" onClick={onBack}>
-					{t("tools.password_manager_back")}
+					{t("tools.password_manager.back")}
 				</Button>
 				<Button
 					onClick={onNext}
@@ -67,11 +67,11 @@ export default function Step3Warning({
 					{recoveryLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							{t("tools.password_manager_recovery_generate")}
+							{t("tools.password_manager.recovery.generate")}
 						</>
 					) : (
 						<>
-							{t("tools.password_manager_create_vault")}
+							{t("tools.password_manager.create_vault")}
 							<span className="ml-2">→</span>
 						</>
 					)}

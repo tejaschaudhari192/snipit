@@ -45,10 +45,10 @@ export default function UnlockStandard({
 					</div>
 					<div className="space-y-1">
 						<CardTitle className="text-2xl font-bold tracking-tight">
-							{t("tools.password_manager_unlock_title")}
+							{t("tools.password_manager.unlock_title")}
 						</CardTitle>
 						<CardDescription className="text-base">
-							{t("tools.password_manager_unlock_subtitle")}
+							{t("tools.password_manager.unlock_subtitle")}
 						</CardDescription>
 					</div>
 				</CardHeader>
@@ -58,7 +58,7 @@ export default function UnlockStandard({
 							<Input
 								type="password"
 								placeholder={t(
-									"tools.password_manager_master_placeholder",
+									"tools.password_manager.master_placeholder",
 								)}
 								value={password}
 								onChange={(e) =>
@@ -84,21 +84,25 @@ export default function UnlockStandard({
 								<>
 									<Loader2 className="mr-2 h-5 w-5 animate-spin" />
 									<span
-									style={{
-										"--highlight-color": "var(--foreground)",
-										"--base-color": "var(--muted-foreground)",
-										"--spread": "20px",
-										"--duration": "2s"
-									} as React.CSSProperties}
-									className="shimmer font-medium"
-								>
-										{t("tools.password_manager_decrypting")}
+										style={
+											{
+												"--highlight-color":
+													"var(--foreground)",
+												"--base-color":
+													"var(--muted-foreground)",
+												"--spread": "20px",
+												"--duration": "2s",
+											} as React.CSSProperties
+										}
+										className="shimmer font-medium"
+									>
+										{t("tools.password_manager.decrypting")}
 									</span>
 								</>
 							) : (
 								<>
 									<LockOpen className="mr-2 h-5 w-5" />
-									{t("tools.password_manager_unlock_vault")}
+									{t("tools.password_manager.unlock_vault")}
 								</>
 							)}
 						</Button>
@@ -106,14 +110,14 @@ export default function UnlockStandard({
 
 					<div className="mt-6 text-center space-y-2">
 						<p className="text-xs text-muted-foreground">
-							{t("tools.password_manager_forgot_password")}{" "}
+							{t("tools.password_manager.forgot_password")}{" "}
 							{hasRecoveryKey ? (
 								<Button
 									variant="link"
 									onClick={onShowRecovery}
 									className="p-0 h-auto text-primary hover:text-primary/80 font-medium"
 								>
-									{t("tools.password_manager_recovery_title")}
+									{t("tools.password_manager.recovery.title")}
 								</Button>
 							) : (
 								<ReadMoreDialog />

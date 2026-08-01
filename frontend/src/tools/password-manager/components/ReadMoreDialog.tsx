@@ -16,8 +16,11 @@ export default function ReadMoreDialog() {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button variant="link" className="p-0 h-auto font-medium text-primary">
-					{t("tools.password_manager_read_more")}
+				<Button
+					variant="link"
+					className="p-0 h-auto font-medium text-primary"
+				>
+					{t("tools.password_manager.read_more")}
 				</Button>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-md bg-background/95 backdrop-blur-xl border-border shadow-2xl p-0 overflow-hidden">
@@ -26,12 +29,12 @@ export default function ReadMoreDialog() {
 						<ShieldAlert className="w-6 h-6 text-destructive" />
 					</div>
 					<DialogTitle className="text-xl font-bold tracking-tight text-foreground">
-						{t("tools.password_manager_zero_knowledge_title")}
+						{t("tools.password_manager.zero_knowledge_title")}
 					</DialogTitle>
 				</div>
 				<div className="p-6 space-y-6">
 					<DialogDescription className="text-sm text-foreground/80 leading-relaxed">
-						{t("tools.password_manager_read_more_description")}
+						{t("tools.password_manager.read_more_description")}
 					</DialogDescription>
 
 					<div className="bg-muted/50 rounded-xl p-4 border border-border space-y-3">
@@ -40,12 +43,12 @@ export default function ReadMoreDialog() {
 							<div className="space-y-1">
 								<p className="text-sm font-semibold text-foreground">
 									{t(
-										"tools.password_manager_cannot_recover_title",
+										"tools.password_manager.cannot_recover_title",
 									)}
 								</p>
 								<p className="text-xs text-muted-foreground">
 									{t(
-										"tools.password_manager_cannot_recover_desc",
+										"tools.password_manager.cannot_recover_desc",
 									)}
 								</p>
 							</div>
@@ -55,12 +58,12 @@ export default function ReadMoreDialog() {
 							<div className="space-y-1">
 								<p className="text-sm font-semibold text-foreground">
 									{t(
-										"tools.password_manager_reset_vault_title",
+										"tools.password_manager.reset_vault_title",
 									)}
 								</p>
 								<p className="text-xs text-muted-foreground">
 									{t(
-										"tools.password_manager_reset_vault_desc",
+										"tools.password_manager.reset_vault_desc",
 									)}
 								</p>
 							</div>
@@ -69,10 +72,10 @@ export default function ReadMoreDialog() {
 							<Shield className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
 							<div className="space-y-1">
 								<p className="text-sm font-semibold text-foreground">
-									{t("tools.password_manager_recovery_title")}
+									{t("tools.password_manager.recovery.title")}
 								</p>
 								<p className="text-xs text-muted-foreground">
-									{t("tools.password_manager_recovery_desc")}
+									{t("tools.password_manager.recovery.desc")}
 								</p>
 							</div>
 						</div>

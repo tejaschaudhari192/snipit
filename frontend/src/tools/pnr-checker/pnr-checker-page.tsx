@@ -15,10 +15,10 @@ const PnrCheckerPage = () => {
 							{t("tools.badge")}
 						</div>
 						<h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 tracking-tighter leading-[1.1] bg-clip-text text-transparent bg-linear-to-r from-foreground via-foreground/95 to-foreground/80">
-							{t("tools.pnr_checker_title")}
+							{t("tools.pnr_checker.title")}
 						</h1>
 						<p className="text-base md:text-lg text-muted-foreground font-medium max-w-xl mx-auto leading-relaxed">
-							{t("tools.pnr_checker_subtitle")}
+							{t("tools.pnr_checker.subtitle")}
 						</p>
 					</div>
 				</div>

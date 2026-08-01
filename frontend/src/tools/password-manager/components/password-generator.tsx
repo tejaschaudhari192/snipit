@@ -25,17 +25,17 @@ interface PasswordGeneratorProps {
 const getStrengthLabel = (score: number) => {
 	switch (score) {
 		case 0:
-			return "tools.password_generator_strength_risky";
+			return "tools.password_generator.strength_risky";
 		case 1:
-			return "tools.password_generator_strength_weak";
+			return "tools.password_generator.strength_weak";
 		case 2:
-			return "tools.password_generator_strength_fair";
+			return "tools.password_generator.strength_fair";
 		case 3:
-			return "tools.password_generator_strength_strong";
+			return "tools.password_generator.strength_strong";
 		case 4:
-			return "tools.password_generator_strength_secure";
+			return "tools.password_generator.strength_secure";
 		default:
-			return "tools.password_generator_strength_unknown";
+			return "tools.password_generator.strength_unknown";
 	}
 };
 
@@ -112,7 +112,8 @@ export default function PasswordGenerator({
 				symbols: true,
 				uppercase: useUpper,
 				lowercase: true,
-				strict: true});
+				strict: true,
+			});
 		}
 
 		const evaluation = zxcvbn(newPassword);
@@ -129,7 +130,10 @@ export default function PasswordGenerator({
 	const handleCopy = async () => {
 		if (!password) return;
 		await navigator.clipboard.writeText(password);
-		toast.add({ title: t("tools.password_generator_copied"), type: "success" });
+		toast.add({
+			title: t("tools.password_generator.copied"),
+			type: "success",
+		});
 	};
 
 	const handleFill = () => {
@@ -214,7 +218,7 @@ export default function PasswordGenerator({
 						className="bg-transparent text-white border-white hover:bg-white hover:text-[#b30e0e] h-8 px-6 rounded-full font-medium"
 						onClick={handleFill}
 					>
-						{t("tools.password_generator_fill")}
+						{t("tools.password_generator.fill")}
 					</Button>
 				</div>
 				{feedback && (
@@ -233,14 +237,14 @@ export default function PasswordGenerator({
 							<div className="flex flex-col">
 								<span className="text-sm font-medium">
 									{t(
-										"tools.password_generator_words",
+										"tools.password_generator.words",
 										"Words",
 									)}
 								</span>
 								<span className="text-xs text-muted-foreground">
 									(
 									{t(
-										"tools.password_generator_length",
+										"tools.password_generator.length",
 										"Length",
 									)}{" "}
 									- {password.length})
@@ -265,7 +269,7 @@ export default function PasswordGenerator({
 					<div className="space-y-4">
 						<div className="flex items-center justify-between">
 							<span className="text-sm font-medium">
-								{t("tools.password_generator_length")}
+								{t("tools.password_generator.length")}
 							</span>
 							<div className="flex items-center gap-4">
 								<Slider
@@ -289,7 +293,7 @@ export default function PasswordGenerator({
 				<div className="flex items-center justify-between">
 					<span className="text-sm font-medium">
 						{t(
-							"tools.password_generator_pronounceable",
+							"tools.password_generator.pronounceable",
 							"Pronounceable",
 						)}
 					</span>
@@ -304,13 +308,13 @@ export default function PasswordGenerator({
 
 				<div className="space-y-4">
 					<h4 className="text-sm font-bold">
-						{t("tools.password_generator_include")}
+						{t("tools.password_generator.include")}
 					</h4>
 
 					<div className="flex items-center justify-between">
 						<span className="text-sm">
 							{t(
-								"tools.password_generator_uppercase",
+								"tools.password_generator.uppercase",
 								"Uppercase",
 							)}
 						</span>
@@ -322,7 +326,7 @@ export default function PasswordGenerator({
 
 					<div className="flex items-center justify-between">
 						<span className="text-sm">
-							{t("tools.password_generator_digits")}
+							{t("tools.password_generator.digits")}
 						</span>
 						<Switch
 							checked={useNumbers}
@@ -337,7 +341,7 @@ export default function PasswordGenerator({
 						<div className="flex items-center justify-between">
 							<span className="text-sm font-medium">
 								{t(
-									"tools.password_generator_separated_by",
+									"tools.password_generator.separated_by",
 									"Separated By",
 								)}
 							</span>
@@ -351,31 +355,31 @@ export default function PasswordGenerator({
 								<SelectContent>
 									<SelectItem value="none">
 										{t(
-											"tools.password_generator_sep_none",
+											"tools.password_generator.sep_none",
 											"None",
 										)}
 									</SelectItem>
 									<SelectItem value="hash">
 										{t(
-											"tools.password_generator_sep_hash",
+											"tools.password_generator.sep_hash",
 											"Hash (#)",
 										)}
 									</SelectItem>
 									<SelectItem value="hyphen">
 										{t(
-											"tools.password_generator_sep_hyphen",
+											"tools.password_generator.sep_hyphen",
 											"Hyphen (-)",
 										)}
 									</SelectItem>
 									<SelectItem value="space">
 										{t(
-											"tools.password_generator_sep_space",
+											"tools.password_generator.sep_space",
 											"Space",
 										)}
 									</SelectItem>
 									<SelectItem value="comma">
 										{t(
-											"tools.password_generator_sep_comma",
+											"tools.password_generator.sep_comma",
 											"Comma (,)",
 										)}
 									</SelectItem>

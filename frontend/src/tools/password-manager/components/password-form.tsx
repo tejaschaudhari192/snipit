@@ -99,10 +99,12 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 			...(notes.trim() && { notes: notes.trim() }),
 			...(folderId !== "none" && { folderId }),
 			...(selectedFolder?.collectionId && {
-				collectionId: selectedFolder.collectionId}),
+				collectionId: selectedFolder.collectionId,
+			}),
 			...(itemType && itemType !== "other" && { itemType }),
 			...(customFields.filter((f) => f.name.trim()).length > 0 && {
-				customFields: customFields.filter((f) => f.name.trim())}),
+				customFields: customFields.filter((f) => f.name.trim()),
+			}),
 			...(Object.keys(metadata).length > 0 && { metadata }),
 			createdAt: editItem?.createdAt ?? now,
 			updatedAt: now,
@@ -151,7 +153,8 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 			setMetadata((prev) => ({
 				...prev,
 				fileName: file.name,
-				fileContent: content}));
+				fileContent: content,
+			}));
 			if (!title) {
 				setTitle(file.name);
 			}
@@ -182,7 +185,7 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 						<Input
 							required
 							placeholder={t(
-								"tools.password_manager_title_placeholder",
+								"tools.password_manager.title_placeholder",
 							)}
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
@@ -210,28 +213,28 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 							<SelectTrigger className="w-full bg-background border-border rounded-xl">
 								<SelectValue
 									placeholder={t(
-										"tools.password_manager_type_login",
+										"tools.password_manager.type_login",
 									)}
 								/>
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value="login">
-									{t("tools.password_manager_type_login")}
+									{t("tools.password_manager.type_login")}
 								</SelectItem>
 								<SelectItem value="card">
-									{t("tools.password_manager_type_card")}
+									{t("tools.password_manager.type_card")}
 								</SelectItem>
 								<SelectItem value="apikey">
-									{t("tools.password_manager_type_apikey")}
+									{t("tools.password_manager.type_apikey")}
 								</SelectItem>
 								<SelectItem value="passkey">
-									{t("tools.password_manager_type_passkey")}
+									{t("tools.password_manager.type_passkey")}
 								</SelectItem>
 								<SelectItem value="credfile">
-									{t("tools.password_manager_type_credfile")}
+									{t("tools.password_manager.type_credfile")}
 								</SelectItem>
 								<SelectItem value="note">
-									{t("tools.password_manager_type_note")}
+									{t("tools.password_manager.type_note")}
 								</SelectItem>
 							</SelectContent>
 						</Select>
@@ -255,7 +258,7 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value="none">
-									{t("tools.password_manager_no_folder")}
+									{t("tools.password_manager.no_folder")}
 								</SelectItem>
 								{folders.map(
 									(f: { id: string; name: string }) => (
@@ -279,7 +282,7 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 				<Card className="shadow-sm border-border gap-0 py-0 overflow-hidden">
 					<CardHeader className="px-4 py-3 bg-muted/20 border-b border-border/40">
 						<CardTitle className="text-sm font-semibold flex items-center gap-2">
-							{t("tools.password_manager_details_title")}
+							{t("tools.password_manager.details_title")}
 						</CardTitle>
 					</CardHeader>
 					<CardContent className="px-4 py-4 space-y-4">
@@ -288,12 +291,12 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 								<div className="space-y-1">
 									<Label className="text-sm font-medium">
 										{t(
-											"tools.password_manager_upload_file",
+											"tools.password_manager.upload_file",
 										)}
 									</Label>
 									<p className="text-xs text-muted-foreground">
 										{t(
-											"tools.password_manager_upload_file_desc",
+											"tools.password_manager.upload_file_desc",
 										)}
 									</p>
 								</div>
@@ -310,7 +313,7 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 									>
 										<Upload className="mr-2 h-4 w-4" />
 										{t(
-											"tools.password_manager_choose_file",
+											"tools.password_manager.choose_file",
 										)}
 									</Label>
 								</div>
@@ -326,7 +329,7 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 						{/* Global Notes */}
 						<div className="space-y-1.5 pt-2">
 							<Label className="text-xs text-muted-foreground">
-								{t("tools.password_manager_notes_placeholder")}
+								{t("tools.password_manager.notes_placeholder")}
 							</Label>
 							<Textarea
 								value={notes}

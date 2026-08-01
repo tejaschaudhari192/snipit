@@ -33,10 +33,10 @@ export default function Step4RecoveryKey({
 					<KeyRound className="h-8 w-8 text-primary" />
 				</div>
 				<h2 className="text-2xl font-bold">
-					{t("tools.password_manager_recovery_title")}
+					{t("tools.password_manager.recovery.title")}
 				</h2>
 				<p className="text-muted-foreground">
-					{t("tools.password_manager_recovery_desc")}
+					{t("tools.password_manager.recovery.desc")}
 				</p>
 			</div>
 
@@ -55,7 +55,7 @@ export default function Step4RecoveryKey({
 								onClick={onCopy}
 							>
 								<Copy className="mr-2 h-4 w-4" />
-								{t("tools.password_manager_recovery_copy")}
+								{t("tools.password_manager.recovery.copy")}
 							</Button>
 							<Button
 								variant="outline"
@@ -64,7 +64,7 @@ export default function Step4RecoveryKey({
 							>
 								<Download className="mr-2 h-4 w-4" />
 								{t(
-									"tools.password_manager_recovery_download",
+									"tools.password_manager.recovery.download",
 									"Download",
 								)}
 							</Button>
@@ -77,7 +77,7 @@ export default function Step4RecoveryKey({
 				<CardContent className="p-4 flex items-start gap-3">
 					<AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
 					<p className="text-sm text-amber-700 dark:text-amber-300">
-						{t("tools.password_manager_recovery_warning")}
+						{t("tools.password_manager.recovery.warning")}
 					</p>
 				</CardContent>
 			</Card>
@@ -94,7 +94,7 @@ export default function Step4RecoveryKey({
 						htmlFor="recovery-saved"
 						className="text-sm font-medium leading-none cursor-pointer"
 					>
-						{t("tools.password_manager_recovery_saved")}
+						{t("tools.password_manager.recovery.saved")}
 					</Label>
 				</div>
 			</div>
@@ -105,14 +105,14 @@ export default function Step4RecoveryKey({
 					disabled={!recoverySaved}
 					className="rounded-full px-6"
 				>
-					{t("tools.password_manager_create_vault")}
+					{t("tools.password_manager.create_vault")}
 				</Button>
 				<Button
 					variant="ghost"
 					onClick={onSkip}
 					className="text-muted-foreground"
 				>
-					{t("tools.password_manager_recovery_skip")}
+					{t("tools.password_manager.recovery.skip")}
 				</Button>
 			</div>
 		</div>

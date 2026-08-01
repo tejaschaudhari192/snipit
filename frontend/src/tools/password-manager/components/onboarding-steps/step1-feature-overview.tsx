@@ -19,10 +19,10 @@ export default function Step1FeatureOverview({
 					<Shield className="h-8 w-8 md:h-10 md:w-10 text-primary" />
 				</div>
 				<h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-					{t("tools.password_manager_onboarding_title")}
+					{t("tools.password_manager.onboarding_title")}
 				</h1>
 				<p className="text-sm md:text-base text-muted-foreground max-w-sm mx-auto">
-					{t("tools.password_manager_onboarding_subtitle")}
+					{t("tools.password_manager.onboarding_subtitle")}
 				</p>
 			</div>
 
@@ -33,12 +33,12 @@ export default function Step1FeatureOverview({
 						<div>
 							<h3 className="font-semibold text-sm">
 								{t(
-									"tools.password_manager_onboarding_feature_aes_title",
+									"tools.password_manager.onboarding_feature_aes_title",
 								)}
 							</h3>
 							<p className="text-xs text-muted-foreground mt-0.5 sm:mt-0">
 								{t(
-									"tools.password_manager_onboarding_feature_aes_desc",
+									"tools.password_manager.onboarding_feature_aes_desc",
 								)}
 							</p>
 						</div>
@@ -50,12 +50,12 @@ export default function Step1FeatureOverview({
 						<div>
 							<h3 className="font-semibold text-sm">
 								{t(
-									"tools.password_manager_onboarding_feature_zero_title",
+									"tools.password_manager.onboarding_feature_zero_title",
 								)}
 							</h3>
 							<p className="text-xs text-muted-foreground mt-0.5 sm:mt-0">
 								{t(
-									"tools.password_manager_onboarding_feature_zero_desc",
+									"tools.password_manager.onboarding_feature_zero_desc",
 								)}
 							</p>
 						</div>
@@ -67,12 +67,12 @@ export default function Step1FeatureOverview({
 						<div>
 							<h3 className="font-semibold text-sm">
 								{t(
-									"tools.password_manager_onboarding_feature_sync_title",
+									"tools.password_manager.onboarding_feature_sync_title",
 								)}
 							</h3>
 							<p className="text-xs text-muted-foreground mt-0.5 sm:mt-0">
 								{t(
-									"tools.password_manager_onboarding_feature_sync_desc",
+									"tools.password_manager.onboarding_feature_sync_desc",
 								)}
 							</p>
 						</div>
@@ -86,7 +86,7 @@ export default function Step1FeatureOverview({
 					size="lg"
 					className="rounded-full px-8"
 				>
-					{t("tools.password_manager_onboarding_cta")}{" "}
+					{t("tools.password_manager.onboarding_cta")}{" "}
 					<span className="ml-2">→</span>
 				</Button>
 			</div>

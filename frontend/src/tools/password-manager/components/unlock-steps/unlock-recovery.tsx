@@ -38,11 +38,13 @@ export default function UnlockRecovery({
 
 		if (file.size > 102400) {
 			// 100KB limit
-			toast.add({ title: 
-				t(
-					"tools.password_manager_recovery_file_too_large",
+			toast.add({
+				title: t(
+					"tools.password_manager.recovery.file_too_large",
 					"File is too large",
-				), type: "error" });
+				),
+				type: "error",
+			});
 			return;
 		}
 
@@ -51,19 +53,23 @@ export default function UnlockRecovery({
 			const text = event.target?.result as string;
 			if (text) {
 				onRecoveryPhraseChange(text.trim());
-				toast.add({ title: 
-					t(
-						"tools.password_manager_recovery_file_read_success",
+				toast.add({
+					title: t(
+						"tools.password_manager.recovery.file_read_success",
 						"Recovery key loaded",
-					), type: "success" });
+					),
+					type: "success",
+				});
 			}
 		};
 		reader.onerror = () => {
-			toast.add({ title: 
-				t(
-					"tools.password_manager_recovery_file_read_error",
+			toast.add({
+				title: t(
+					"tools.password_manager.recovery.file_read_error",
 					"Failed to read file",
-				), type: "error" });
+				),
+				type: "error",
+			});
 		};
 		reader.readAsText(file);
 
@@ -79,10 +85,10 @@ export default function UnlockRecovery({
 					</div>
 					<div className="space-y-1">
 						<CardTitle className="text-2xl font-bold tracking-tight">
-							{t("tools.password_manager_recovery_use_title")}
+							{t("tools.password_manager.recovery.use_title")}
 						</CardTitle>
 						<CardDescription className="text-base">
-							{t("tools.password_manager_recovery_use_desc")}
+							{t("tools.password_manager.recovery.use_desc")}
 						</CardDescription>
 					</div>
 				</CardHeader>
@@ -91,7 +97,7 @@ export default function UnlockRecovery({
 						<div className="space-y-2">
 							<Input
 								placeholder={t(
-									"tools.password_manager_recovery_placeholder",
+									"tools.password_manager.recovery.placeholder",
 								)}
 								value={recoveryPhrase}
 								onChange={(e) =>
@@ -119,7 +125,7 @@ export default function UnlockRecovery({
 									<Upload className="mr-2 h-4 w-4 text-muted-foreground" />
 									<span className="text-muted-foreground">
 										{t(
-											"tools.password_manager_recovery_upload",
+											"tools.password_manager.recovery.upload",
 											"Upload Key File (.txt)",
 										)}
 									</span>
@@ -143,14 +149,14 @@ export default function UnlockRecovery({
 								<>
 									<Loader2 className="mr-2 h-5 w-5 animate-spin" />
 									{t(
-										"tools.password_manager_recovery_decrypting",
+										"tools.password_manager.recovery.decrypting",
 									)}
 								</>
 							) : (
 								<>
 									<LockOpen className="mr-2 h-5 w-5" />
 									{t(
-										"tools.password_manager_recovery_unlock",
+										"tools.password_manager.recovery.unlock",
 									)}
 								</>
 							)}
@@ -163,7 +169,7 @@ export default function UnlockRecovery({
 							onClick={onBack}
 							className="text-sm"
 						>
-							{t("tools.password_manager_back")}
+							{t("tools.password_manager.back")}
 						</Button>
 					</div>
 				</CardContent>

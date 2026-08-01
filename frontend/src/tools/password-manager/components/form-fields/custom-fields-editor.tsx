@@ -32,7 +32,7 @@ export function CustomFieldsEditor({
 		<div className="space-y-2 px-5">
 			<div className="flex items-center justify-between">
 				<Label className="text-sm font-medium">
-					{t("tools.password_manager_custom_fields")}
+					{t("tools.password_manager.custom_fields")}
 				</Label>
 				<Button
 					type="button"
@@ -41,13 +41,13 @@ export function CustomFieldsEditor({
 					onClick={addField}
 				>
 					<Plus className="h-3 w-3 mr-1" />
-					{t("tools.password_manager_add_field")}
+					{t("tools.password_manager.add_field")}
 				</Button>
 			</div>
 			{customFields.map((field, i) => (
 				<div key={i} className="flex gap-2 items-start">
 					<Input
-						placeholder={t("tools.password_manager_field_name")}
+						placeholder={t("tools.password_manager.field_name")}
 						value={field.name}
 						onChange={(e) => updateField(i, "name", e.target.value)}
 						className="flex-1"
@@ -77,7 +77,7 @@ export function CustomFieldsEditor({
 										? "color"
 										: "text"
 						}
-						placeholder={t("tools.password_manager_field_value")}
+						placeholder={t("tools.password_manager.field_value")}
 						value={field.value}
 						onChange={(e) =>
 							updateField(i, "value", e.target.value)

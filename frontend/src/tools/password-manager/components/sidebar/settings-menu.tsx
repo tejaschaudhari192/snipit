@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { User, Cloud, HardDrive, MoreHorizontal, Check, Trash2 } from "lucide-react";
+import {
+	User,
+	Cloud,
+	HardDrive,
+	MoreHorizontal,
+	Check,
+	Trash2,
+} from "lucide-react";
 import {
 	SidebarMenu,
 	SidebarMenuItem,
@@ -62,9 +69,15 @@ export function SettingsMenu({
 			}
 			// 3. Reset state
 			dispatch(resetVault());
-			toast.add({ title: t("tools.password_manager_vault_deleted"), type: "success" });
+			toast.add({
+				title: t("tools.password_manager.vault_deleted"),
+				type: "success",
+			});
 		} catch (error) {
-			toast.add({ title: t("tools.password_manager_delete_vault_failed"), type: "error" });
+			toast.add({
+				title: t("tools.password_manager.delete_vault.failed"),
+				type: "error",
+			});
 			console.error(error);
 		} finally {
 			setIsDeleting(false);
@@ -89,7 +102,9 @@ export function SettingsMenu({
 									<span className="font-semibold text-sm">
 										{user
 											? user.username
-											: t("tools.password_manager_guest_user")}
+											: t(
+													"tools.password_manager.guest_user",
+												)}
 									</span>
 									<span className="text-xs text-muted-foreground flex items-center gap-1">
 										{isCloudSyncEnabled ? (
@@ -97,24 +112,36 @@ export function SettingsMenu({
 												<Cloud className="size-3 text-primary" />{" "}
 												{isSyncing ? (
 													<span
-									style={{
-										"--highlight-color": "var(--foreground)",
-										"--base-color": "var(--muted-foreground)",
-										"--spread": "20px",
-										"--duration": "2s"
-									} as React.CSSProperties}
-									className="shimmer font-medium"
-								>
-														{t("tools.password_manager_syncing")}
+														style={
+															{
+																"--highlight-color":
+																	"var(--foreground)",
+																"--base-color":
+																	"var(--muted-foreground)",
+																"--spread":
+																	"20px",
+																"--duration":
+																	"2s",
+															} as React.CSSProperties
+														}
+														className="shimmer font-medium"
+													>
+														{t(
+															"tools.password_manager.syncing",
+														)}
 													</span>
 												) : (
-													t("tools.password_manager_cloud_sync_on")
+													t(
+														"tools.password_manager.cloud_sync_on",
+													)
 												)}
 											</>
 										) : (
 											<>
 												<HardDrive className="size-3 text-muted-foreground" />{" "}
-												{t("tools.password_manager_syncing_locally")}
+												{t(
+													"tools.password_manager.syncing_locally",
+												)}
 											</>
 										)}
 									</span>
@@ -129,7 +156,7 @@ export function SettingsMenu({
 							className="w-64 p-2"
 						>
 							<div className="px-2 py-1.5 text-sm font-semibold text-foreground/80">
-								{t("tools.password_manager_storage_settings")}
+								{t("tools.password_manager.storage_settings")}
 							</div>
 							<DropdownMenuSeparator className="my-1" />
 							<DropdownMenuItem
@@ -141,10 +168,14 @@ export function SettingsMenu({
 								</div>
 								<div className="flex flex-col flex-1">
 									<span className="text-sm font-medium">
-										{t("tools.password_manager_local_storage")}
+										{t(
+											"tools.password_manager.local_storage",
+										)}
 									</span>
 									<span className="text-[10px] text-muted-foreground leading-tight">
-										{t("tools.password_manager_local_storage_desc")}
+										{t(
+											"tools.password_manager.local_storage_desc",
+										)}
 									</span>
 								</div>
 								{!isCloudSyncEnabled && (
@@ -155,7 +186,13 @@ export function SettingsMenu({
 								className={`gap-3 cursor-pointer rounded-md p-2 transition-colors focus:bg-accent ${!user ? "opacity-50" : ""}`}
 								onClick={() => {
 									if (user) onSetCloudSync(true);
-									else toast.add({ title: t("tools.password_manager_requires_login"), type: "error" });
+									else
+										toast.add({
+											title: t(
+												"tools.password_manager.requires_login",
+											),
+											type: "error",
+										});
 								}}
 							>
 								<div className="bg-muted p-1.5 rounded-md">
@@ -163,22 +200,26 @@ export function SettingsMenu({
 								</div>
 								<div className="flex flex-col flex-1">
 									<span className="text-sm font-medium">
-										{t("tools.password_manager_cloud_sync")}
+										{t("tools.password_manager.cloud_sync")}
 									</span>
 									<span className="text-[10px] text-muted-foreground leading-tight">
 										{!user
-											? t("tools.password_manager_requires_login")
-											: t("tools.password_manager_cloud_sync_desc")}
+											? t(
+													"tools.password_manager.requires_login",
+												)
+											: t(
+													"tools.password_manager.cloud_sync_desc",
+												)}
 									</span>
 								</div>
 								{isCloudSyncEnabled && (
 									<Check className="size-4 text-primary ml-auto" />
 								)}
 							</DropdownMenuItem>
-							
+
 							<div className="mt-2 pt-2 border-t border-border/50">
 								<div className="px-2 py-1 mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-									{t("tools.password_manager_danger_zone")}
+									{t("tools.password_manager.danger_zone")}
 								</div>
 								<DropdownMenuItem
 									className="gap-3 cursor-pointer rounded-md p-2 text-destructive focus:bg-destructive/10 focus:text-destructive transition-colors"
@@ -188,7 +229,11 @@ export function SettingsMenu({
 										<Trash2 className="size-4" />
 									</div>
 									<div className="flex flex-col">
-										<span className="text-sm font-medium">{t("tools.password_manager_delete_vault")}</span>
+										<span className="text-sm font-medium">
+											{t(
+												"tools.password_manager.delete_vault.title",
+											)}
+										</span>
 									</div>
 								</DropdownMenuItem>
 							</div>
@@ -197,19 +242,32 @@ export function SettingsMenu({
 				</SidebarMenuItem>
 			</SidebarMenu>
 
-			<AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+			<AlertDialog
+				open={isDeleteDialogOpen}
+				onOpenChange={setIsDeleteDialogOpen}
+			>
 				<AlertDialogContent className="border-destructive/20">
 					<AlertDialogHeader>
 						<AlertDialogTitle className="text-destructive flex items-center gap-2">
 							<Trash2 className="size-5" />
-							{t("tools.password_manager_delete_vault_confirm_title")}
+							{t(
+								"tools.password_manager.delete_vault.confirm_title",
+							)}
 						</AlertDialogTitle>
 						<AlertDialogDescription className="text-base text-foreground/80 mt-2">
-							<span dangerouslySetInnerHTML={{ __html: t("tools.password_manager_delete_vault_confirm_desc") }} />
+							<span
+								dangerouslySetInnerHTML={{
+									__html: t(
+										"tools.password_manager.delete_vault.confirm_desc",
+									),
+								}}
+							/>
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter className="mt-4 gap-2 sm:gap-0">
-						<AlertDialogCancel disabled={isDeleting}>{t("cancel")}</AlertDialogCancel>
+						<AlertDialogCancel disabled={isDeleting}>
+							{t("cancel")}
+						</AlertDialogCancel>
 						<AlertDialogAction
 							onClick={(e) => {
 								e.preventDefault();
@@ -218,7 +276,11 @@ export function SettingsMenu({
 							disabled={isDeleting}
 							className="bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
 						>
-							{isDeleting ? t("tools.password_manager_deleting") : t("tools.password_manager_delete_vault")}
+							{isDeleting
+								? t("tools.password_manager.deleting")
+								: t(
+										"tools.password_manager.delete_vault.title",
+									)}
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>

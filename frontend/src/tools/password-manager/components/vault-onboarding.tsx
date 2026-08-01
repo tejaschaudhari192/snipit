@@ -48,7 +48,10 @@ export default function VaultOnboarding({
 	const handleCopy = useCallback(async () => {
 		if (!recoveryMnemonic) return;
 		await navigator.clipboard.writeText(recoveryMnemonic);
-		toast.add({ title: t("tools.password_manager_recovery_copied"), type: "success" });
+		toast.add({
+			title: t("tools.password_manager.recovery.copied"),
+			type: "success",
+		});
 	}, [recoveryMnemonic, t]);
 
 	const handleDownload = useCallback(() => {
@@ -62,11 +65,13 @@ export default function VaultOnboarding({
 		a.click();
 		document.body.removeChild(a);
 		URL.revokeObjectURL(url);
-		toast.add({ title: 
-			t(
-				"tools.password_manager_recovery_downloaded",
+		toast.add({
+			title: t(
+				"tools.password_manager.recovery.downloaded",
 				"Downloaded recovery key",
-			), type: "success" });
+			),
+			type: "success",
+		});
 	}, [recoveryMnemonic, t]);
 
 	const handleCreateVault = useCallback(() => {

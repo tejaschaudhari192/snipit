@@ -95,7 +95,7 @@ export function FolderModal({
 						</div>
 						<DialogTitle className="text-xl">
 							{mode === "create" &&
-								t("tools.password_manager_add_folder")}
+								t("tools.password_manager.add_folder")}
 							{mode === "edit" && "Edit Folder"}
 							{mode === "delete" && "Delete Folder"}
 						</DialogTitle>
@@ -146,7 +146,7 @@ export function FolderModal({
 								value={folderName}
 								onChange={(e) => setFolderName(e.target.value)}
 								placeholder={t(
-									"tools.password_manager_new_folder_placeholder",
+									"tools.password_manager.new_folder_placeholder",
 								)}
 								className="h-10"
 								onKeyDown={(e) => {

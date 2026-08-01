@@ -35,12 +35,12 @@ export const PnrCheckerPanel = () => {
 	const checkPNR = useCallback(async () => {
 		const pnr = pnrInput.trim();
 		if (!pnr) {
-			setError(t("tools.pnr_checker_enter_pnr"));
+			setError(t("tools.pnr_checker.enter_pnr"));
 			return;
 		}
 
 		if (!/^\d{10}$/.test(pnr)) {
-			setError(t("tools.pnr_checker_invalid_pnr"));
+			setError(t("tools.pnr_checker.invalid_pnr"));
 			return;
 		}
 
@@ -52,7 +52,7 @@ export const PnrCheckerPanel = () => {
 			const url = `${PNR_API_BASE}?pnr=${encodeURIComponent(pnr)}`;
 			const response = await fetch(url);
 			if (!response.ok) {
-				throw new Error(t("tools.pnr_checker_api_error"));
+				throw new Error(t("tools.pnr_checker.api_error"));
 			}
 			const result: PnrData = await response.json();
 
@@ -66,7 +66,7 @@ export const PnrCheckerPanel = () => {
 			setError(
 				err instanceof Error
 					? err.message
-					: t("tools.pnr_checker_api_error"),
+					: t("tools.pnr_checker.api_error"),
 			);
 		} finally {
 			setLoading(false);
@@ -101,7 +101,7 @@ export const PnrCheckerPanel = () => {
 				className="flex justify-between items-center py-2"
 			>
 				<span className="text-sm font-medium text-muted-foreground">
-					{t("tools.pnr_checker_passenger", { number: num })}
+					{t("tools.pnr_checker.passenger", { number: num })}
 				</span>
 				<Badge variant={variant} className="text-xs font-semibold">
 					{status}
@@ -120,7 +120,7 @@ export const PnrCheckerPanel = () => {
 							htmlFor="pnr-input"
 							className="text-sm font-semibold"
 						>
-							{t("tools.pnr_checker_label")}
+							{t("tools.pnr_checker.label")}
 						</Label>
 						<div className="flex gap-2">
 							<Input
@@ -129,7 +129,7 @@ export const PnrCheckerPanel = () => {
 								inputMode="numeric"
 								pattern="\d*"
 								maxLength={10}
-								placeholder={t("tools.pnr_checker_placeholder")}
+								placeholder={t("tools.pnr_checker.placeholder")}
 								value={pnrInput}
 								onChange={(e) =>
 									setPnrInput(
@@ -150,7 +150,7 @@ export const PnrCheckerPanel = () => {
 								) : (
 									<Search className="h-4 w-4" />
 								)}
-								{t("tools.pnr_checker_check")}
+								{t("tools.pnr_checker.check")}
 							</Button>
 						</div>
 					</div>
@@ -229,7 +229,7 @@ export const PnrCheckerPanel = () => {
 							<div className="flex items-center gap-2 mb-3">
 								<Users className="h-4 w-4 text-primary" />
 								<span className="text-sm font-semibold text-foreground">
-									{t("tools.pnr_checker_booking_status")}
+									{t("tools.pnr_checker.booking_status")}
 								</span>
 							</div>
 							{renderPassengerStatus(1, data.status1)}
@@ -238,7 +238,7 @@ export const PnrCheckerPanel = () => {
 							{renderPassengerStatus(4, data.status4)}
 							{!data.status1 && (
 								<p className="text-sm text-muted-foreground italic">
-									{t("tools.pnr_checker_no_status")}
+									{t("tools.pnr_checker.no_status")}
 								</p>
 							)}
 						</div>

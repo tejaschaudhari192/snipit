@@ -1,14 +1,28 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import type { ParsedImportItem, DuplicateStrategy } from "../utils/importers/types";
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogDescription,
+} from "@/components/ui/dialog";
+import type {
+	ParsedImportItem,
+	DuplicateStrategy,
+} from "../utils/importers/types";
 import StepFileSelect from "./import-steps/step-file-select";
 import StepParsePreview from "./import-steps/step-parse-preview";
 import StepOneByOne from "./import-steps/step-one-by-one";
 import StepBulkImport from "./import-steps/step-bulk-import";
 import StepDone from "./import-steps/step-done";
 
-type ImportStep = "FILE_SELECT" | "PARSE_PREVIEW" | "ONE_BY_ONE" | "BULK_IMPORT" | "DONE";
+type ImportStep =
+	| "FILE_SELECT"
+	| "PARSE_PREVIEW"
+	| "ONE_BY_ONE"
+	| "BULK_IMPORT"
+	| "DONE";
 
 interface ImportWizardProps {
 	isOpen: boolean;
@@ -19,7 +33,8 @@ export default function ImportWizard({ isOpen, onClose }: ImportWizardProps) {
 	const { t } = useTranslation();
 	const [step, setStep] = useState<ImportStep>("FILE_SELECT");
 	const [parsedItems, setParsedItems] = useState<ParsedImportItem[]>([]);
-	const [duplicateStrategy, setDuplicateStrategy] = useState<DuplicateStrategy>("ask");
+	const [duplicateStrategy, setDuplicateStrategy] =
+		useState<DuplicateStrategy>("ask");
 
 	// Stats for DONE step
 	const [importedCount, setImportedCount] = useState(0);
@@ -57,7 +72,11 @@ export default function ImportWizard({ isOpen, onClose }: ImportWizardProps) {
 						duplicateStrategy={duplicateStrategy}
 						onDuplicateStrategyChange={setDuplicateStrategy}
 						onBack={() => setStep("FILE_SELECT")}
-						onNext={(mode: "bulk" | "one_by_one") => setStep(mode === "bulk" ? "BULK_IMPORT" : "ONE_BY_ONE")}
+						onNext={(mode: "bulk" | "one_by_one") =>
+							setStep(
+								mode === "bulk" ? "BULK_IMPORT" : "ONE_BY_ONE",
+							)
+						}
 					/>
 				);
 			case "ONE_BY_ONE":
@@ -104,14 +123,14 @@ export default function ImportWizard({ isOpen, onClose }: ImportWizardProps) {
 		<Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
 			<DialogContent className="sm:max-w-175 p-0 overflow-hidden flex flex-col max-h-[85vh]">
 				<DialogHeader className="px-6 py-4 border-b border-pm-border">
-					<DialogTitle>{t("password_manager_import_title")}</DialogTitle>
+					<DialogTitle>
+						{t("tools.password_manager.import.title")}
+					</DialogTitle>
 					<DialogDescription>
-						{t("password_manager_import_description")}
+						{t("tools.password_manager.import.description")}
 					</DialogDescription>
 				</DialogHeader>
-				<div className="flex-1 overflow-y-auto">
-					{renderStep()}
-				</div>
+				<div className="flex-1 overflow-y-auto">{renderStep()}</div>
 			</DialogContent>
 		</Dialog>
 	);

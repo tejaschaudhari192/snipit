@@ -48,9 +48,9 @@ export default function SharingCenter() {
 					<p className="text-xs text-muted-foreground mt-1">
 						{coll.items.length}{" "}
 						{coll.items.length === 1
-							? t("tools.password_manager_item_singular")
-							: t("tools.password_manager_item_plural")}{" "}
-						• {t("tools.password_manager_role")}:{" "}
+							? t("tools.password_manager.item_singular")
+							: t("tools.password_manager.item_plural")}{" "}
+						• {t("tools.password_manager.role")}:{" "}
 						<span className="capitalize text-muted-foreground">
 							{coll.access.role}
 						</span>
@@ -68,7 +68,7 @@ export default function SharingCenter() {
 					}}
 				>
 					<Settings className="w-4 h-4" />
-					{t("tools.password_manager_manage_access")}
+					{t("tools.password_manager.manage_access")}
 				</Button>
 			)}
 		</div>
@@ -80,10 +80,10 @@ export default function SharingCenter() {
 				<div>
 					<h2 className="text-2xl font-semibold flex items-center gap-2">
 						<Users className="w-6 h-6 text-primary" />
-						{t("tools.password_manager_sharing_center_title")}
+						{t("tools.password_manager.sharing_center_title")}
 					</h2>
 					<p className="text-sm text-muted-foreground mt-1">
-						{t("tools.password_manager_sharing_center_desc")}
+						{t("tools.password_manager.sharing_center_desc")}
 					</p>
 				</div>
 				<Button
@@ -91,7 +91,7 @@ export default function SharingCenter() {
 					onClick={() => setIsShareNewModalOpen(true)}
 				>
 					<UserPlus className="w-4 h-4" />
-					{t("tools.password_manager_share_new_collection")}
+					{t("tools.password_manager.share_new_collection")}
 				</Button>
 			</div>
 
@@ -105,7 +105,7 @@ export default function SharingCenter() {
 						value="with-me"
 						className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary flex gap-2"
 					>
-						{t("tools.password_manager_shared_with_me")}
+						{t("tools.password_manager.shared_with_me")}
 						<Badge
 							variant="secondary"
 							className="bg-black/40 hover:bg-black/40 rounded-sm px-1.5 py-0 text-xs"
@@ -117,7 +117,7 @@ export default function SharingCenter() {
 						value="by-me"
 						className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary flex gap-2"
 					>
-						{t("tools.password_manager_shared_by_me")}
+						{t("tools.password_manager.shared_by_me")}
 						<Badge
 							variant="secondary"
 							className="bg-black/40 hover:bg-black/40 rounded-sm px-1.5 py-0 text-xs"
@@ -132,10 +132,14 @@ export default function SharingCenter() {
 						<div className="flex flex-col items-center justify-center p-12 border border-border rounded-xl bg-card text-center">
 							<Shield className="w-12 h-12 text-muted-foreground/50 mb-4" />
 							<h3 className="text-lg font-medium text-foreground">
-								{t("tools.password_manager_shared_with_me_empty")}
+								{t(
+									"tools.password_manager.shared_with_me_empty",
+								)}
 							</h3>
 							<p className="text-sm text-muted-foreground mt-2 max-w-sm">
-								{t("tools.password_manager_shared_with_me_empty_desc")}
+								{t(
+									"tools.password_manager.shared_with_me_empty_desc",
+								)}
 							</p>
 						</div>
 					) : (
@@ -152,10 +156,12 @@ export default function SharingCenter() {
 						<div className="flex flex-col items-center justify-center p-12 border border-border rounded-xl bg-card text-center">
 							<Users className="w-12 h-12 text-muted-foreground/50 mb-4" />
 							<h3 className="text-lg font-medium text-foreground">
-								{t("tools.password_manager_shared_by_me_empty")}
+								{t("tools.password_manager.shared_by_me_empty")}
 							</h3>
 							<p className="text-sm text-muted-foreground mt-2 max-w-sm">
-								{t("tools.password_manager_shared_by_me_empty_desc")}
+								{t(
+									"tools.password_manager.shared_by_me_empty_desc",
+								)}
 							</p>
 						</div>
 					) : (

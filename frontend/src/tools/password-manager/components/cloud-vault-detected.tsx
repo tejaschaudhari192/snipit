@@ -21,10 +21,10 @@ export default function CloudVaultDetected({
 						<Cloud className="h-10 w-10 text-primary" />
 					</div>
 					<h1 className="text-3xl font-bold tracking-tight">
-						{t("tools.password_manager_cloud_vault_title")}
+						{t("tools.password_manager.cloud_vault_title")}
 					</h1>
 					<p className="text-muted-foreground">
-						{t("tools.password_manager_cloud_vault_desc")}
+						{t("tools.password_manager.cloud_vault_desc")}
 					</p>
 				</div>
 
@@ -34,7 +34,7 @@ export default function CloudVaultDetected({
 						size="lg"
 						className="w-full rounded-full"
 					>
-						{t("tools.password_manager_cloud_enable_sync")}
+						{t("tools.password_manager.cloud_enable_sync")}
 					</Button>
 					<Button
 						variant="outline"
@@ -43,7 +43,7 @@ export default function CloudVaultDetected({
 						className="w-full rounded-full"
 					>
 						<ServerOff className="mr-2 h-4 w-4" />
-						{t("tools.password_manager_cloud_start_fresh")}
+						{t("tools.password_manager.cloud_start_fresh")}
 					</Button>
 				</div>
 			</div>

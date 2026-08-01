@@ -36,7 +36,7 @@ export default function PasswordSetupForm({
 					<Input
 						type={showPassword ? "text" : "password"}
 						placeholder={t(
-							"tools.password_manager_master_password_placeholder",
+							"tools.password_manager.master_password_placeholder",
 						)}
 						value={password}
 						onChange={(e) => onPasswordChange(e.target.value)}
@@ -69,7 +69,7 @@ export default function PasswordSetupForm({
 				<Input
 					type={showPassword ? "text" : "password"}
 					placeholder={t(
-						"tools.password_manager_confirm_password_placeholder",
+						"tools.password_manager.confirm_password_placeholder",
 					)}
 					value={confirmPassword}
 					onChange={(e) => onConfirmPasswordChange(e.target.value)}
@@ -95,7 +95,7 @@ export default function PasswordSetupForm({
 						<div className="flex items-center gap-2 mb-4">
 							<ShieldCheck className="h-4 w-4 text-primary" />
 							<h4 className="text-sm font-medium">
-								{t("tools.password_manager_requirements")}
+								{t("tools.password_manager.requirements")}
 							</h4>
 						</div>
 
@@ -104,25 +104,25 @@ export default function PasswordSetupForm({
 								{
 									key: "length",
 									label: t(
-										"tools.password_manager_req_length",
+										"tools.password_manager.req_length",
 									),
 								},
 								{
 									key: "upper",
 									label: t(
-										"tools.password_manager_req_uppercase",
+										"tools.password_manager.req_uppercase",
 									),
 								},
 								{
 									key: "number",
 									label: t(
-										"tools.password_manager_req_number",
+										"tools.password_manager.req_number",
 									),
 								},
 								{
 									key: "special",
 									label: t(
-										"tools.password_manager_req_special",
+										"tools.password_manager.req_special",
 									),
 								},
 							].map(({ key, label }) => {

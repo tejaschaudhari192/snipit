@@ -27,37 +27,53 @@ export const ITEM_TYPE_SCHEMAS: Record<string, ItemTypeSchema> = {
 		fields: [
 			{
 				key: "username",
-				label: "Username",
+				label: "tools.password_manager.fields.username",
 				type: "text",
-				placeholder: "tools.password_manager_username_placeholder",
+				placeholder: "tools.password_manager.username_placeholder",
 			},
 			{
 				key: "password",
-				label: "Password",
+				label: "tools.password_manager.fields.password",
 				type: "password",
-				placeholder: "tools.password_manager_password_placeholder",
+				placeholder: "tools.password_manager.password_placeholder",
 			},
 			{
 				key: "url",
-				label: "Website",
+				label: "tools.password_manager.fields.website",
 				type: "url",
-				placeholder: "tools.password_manager_url_placeholder",
+				placeholder: "tools.password_manager.url_placeholder",
 			},
 		],
 	},
 	card: {
 		id: "card",
 		fields: [
-			{ key: "cardholderName", label: "Cardholder Name", type: "text" },
+			{
+				key: "cardholderName",
+				label: "tools.password_manager.fields.cardholder_name",
+				type: "text",
+			},
 			{
 				key: "cardNumber",
-				label: "Card Number",
+				label: "tools.password_manager.fields.card_number",
 				type: "text",
-				placeholder: "tools.password_manager_card_number",
+				placeholder: "tools.password_manager.card_number",
 			},
-			{ key: "expiration", label: "Expiration (MM/YY)", type: "text" },
-			{ key: "cvv", label: "CVV / CVC", type: "password" },
-			{ key: "pin", label: "PIN", type: "password" },
+			{
+				key: "expiration",
+				label: "tools.password_manager.fields.expiration",
+				type: "text",
+			},
+			{
+				key: "cvv",
+				label: "tools.password_manager.fields.cvv",
+				type: "password",
+			},
+			{
+				key: "pin",
+				label: "tools.password_manager.fields.pin",
+				type: "password",
+			},
 		],
 	},
 	apikey: {
@@ -65,31 +81,47 @@ export const ITEM_TYPE_SCHEMAS: Record<string, ItemTypeSchema> = {
 		fields: [
 			{
 				key: "keyId",
-				label: "Key ID",
+				label: "tools.password_manager.fields.key_id",
 				type: "text",
-				placeholder: "tools.password_manager_key_id",
+				placeholder: "tools.password_manager.key_id",
 			},
 			{
 				key: "apiKey",
-				label: "API Key",
+				label: "tools.password_manager.fields.api_key",
 				type: "password",
-				placeholder: "tools.password_manager_password_placeholder",
+				placeholder: "tools.password_manager.password_placeholder",
 			},
 			{
 				key: "url",
-				label: "Base URL",
+				label: "tools.password_manager.fields.base_url",
 				type: "url",
-				placeholder: "tools.password_manager_url_placeholder",
+				placeholder: "tools.password_manager.url_placeholder",
 			},
 		],
 	},
 	passkey: {
 		id: "passkey",
 		fields: [
-			{ key: "displayName", label: "Display Name", type: "text" },
-			{ key: "userId", label: "User ID", type: "text" },
-			{ key: "publicKey", label: "Public Key", type: "multiline" },
-			{ key: "privateKey", label: "Private Key", type: "password" },
+			{
+				key: "displayName",
+				label: "tools.password_manager.fields.display_name",
+				type: "text",
+			},
+			{
+				key: "userId",
+				label: "tools.password_manager.fields.user_id",
+				type: "text",
+			},
+			{
+				key: "publicKey",
+				label: "tools.password_manager.fields.public_key",
+				type: "multiline",
+			},
+			{
+				key: "privateKey",
+				label: "tools.password_manager.fields.private_key",
+				type: "password",
+			},
 		],
 	},
 	credfile: {
@@ -97,11 +129,15 @@ export const ITEM_TYPE_SCHEMAS: Record<string, ItemTypeSchema> = {
 		fields: [
 			{
 				key: "fileName",
-				label: "File Name",
+				label: "tools.password_manager.fields.file_name",
 				type: "text",
-				placeholder: "tools.password_manager_cred_file_name",
+				placeholder: "tools.password_manager.cred_file_name",
 			},
-			{ key: "fileContent", label: "File Content", type: "file" },
+			{
+				key: "fileContent",
+				label: "tools.password_manager.fields.file_content",
+				type: "file",
+			},
 		],
 	},
 	note: {

@@ -29,10 +29,10 @@ export default function Step2CreatePassword({
 		<div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-500 max-w-md mx-auto w-full">
 			<div className="text-center space-y-2">
 				<h2 className="text-2xl font-bold">
-					{t("tools.password_manager_create_title")}
+					{t("tools.password_manager.create_title")}
 				</h2>
 				<p className="text-sm text-muted-foreground">
-					{t("tools.password_manager_create_subtitle")}
+					{t("tools.password_manager.create_subtitle")}
 				</p>
 			</div>
 
@@ -47,14 +47,14 @@ export default function Step2CreatePassword({
 
 			<div className="flex justify-between items-center pt-4">
 				<Button variant="ghost" onClick={onBack}>
-					{t("tools.password_manager_back")}
+					{t("tools.password_manager.back")}
 				</Button>
 				<Button
 					onClick={onNext}
 					disabled={!isStrongEnough || !passwordsMatch}
 					className="rounded-full px-6"
 				>
-					{t("tools.password_manager_continue")}{" "}
+					{t("tools.password_manager.continue")}{" "}
 					<span className="ml-2">→</span>
 				</Button>
 			</div>

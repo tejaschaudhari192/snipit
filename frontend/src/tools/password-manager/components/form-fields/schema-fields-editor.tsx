@@ -18,7 +18,15 @@ import { usePasswordStrength } from "@/hooks/use-password-strength";
 export interface SchemaField {
 	key: string;
 	label: string;
-	type: "text" | "password" | "email" | "multiline" | "url" | "number" | "file" | "tel";
+	type:
+		| "text"
+		| "password"
+		| "email"
+		| "multiline"
+		| "url"
+		| "number"
+		| "file"
+		| "tel";
 	placeholder?: string;
 }
 
@@ -70,7 +78,8 @@ export function SchemaFieldsEditor({
 						onClick={() =>
 							setShowPasswordFor((prev) => ({
 								...prev,
-								[field.key]: !prev[field.key]}))
+								[field.key]: !prev[field.key],
+							}))
 						}
 						className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground transition-colors"
 					>
@@ -94,7 +103,7 @@ export function SchemaFieldsEditor({
 						<span
 							className={`text-[10px] font-medium ml-2 ${details.textColor}`}
 						>
-							{t("tools.password_manager_strength_label")}{" "}
+							{t("tools.password_manager.strength_label")}{" "}
 							{t(details.label)}
 						</span>
 					</div>
@@ -137,16 +146,16 @@ export function SchemaFieldsEditor({
 										>
 											<RefreshCw className="h-3 w-3" />
 											{t(
-												"tools.password_manager_generate",
+												"tools.password_manager.generate",
 											)}
 										</Button>
 									</DrawerTrigger>
-									<DrawerContent className="p-4 bg-background h-full">
+									<DrawerContent className="p-4 bg-background h-full sm:max-w-sm">
 										<div className="mx-auto w-full max-w-sm h-full overflow-y-auto no-scrollbar">
 											<DrawerHeader className="px-0">
 												<DrawerTitle>
 													{t(
-														"tools.password_generator_title",
+														"tools.password_generator.title",
 													)}
 												</DrawerTitle>
 											</DrawerHeader>

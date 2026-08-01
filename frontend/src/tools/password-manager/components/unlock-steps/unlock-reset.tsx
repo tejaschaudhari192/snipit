@@ -47,12 +47,12 @@ export default function UnlockReset({
 					<div className="space-y-1">
 						<CardTitle className="text-2xl font-bold tracking-tight">
 							{t(
-								"tools.password_manager_recovery_new_password_title",
+								"tools.password_manager.recovery.new_password_title",
 							)}
 						</CardTitle>
 						<CardDescription className="text-base">
 							{t(
-								"tools.password_manager_recovery_new_password_desc",
+								"tools.password_manager.recovery.new_password_desc",
 							)}
 						</CardDescription>
 					</div>
@@ -76,14 +76,14 @@ export default function UnlockReset({
 								<>
 									<Loader2 className="mr-2 h-5 w-5 animate-spin" />
 									{t(
-										"tools.password_manager_recovery_decrypting",
+										"tools.password_manager.recovery.decrypting",
 									)}
 								</>
 							) : (
 								<>
 									<LockOpen className="mr-2 h-5 w-5" />
 									{t(
-										"tools.password_manager_recovery_success",
+										"tools.password_manager.recovery.success",
 									)}
 								</>
 							)}
@@ -101,7 +101,7 @@ export default function UnlockReset({
 							onClick={onBack}
 							className="text-sm"
 						>
-							{t("tools.password_manager_back")}
+							{t("tools.password_manager.back")}
 						</Button>
 					</div>
 				</CardContent>

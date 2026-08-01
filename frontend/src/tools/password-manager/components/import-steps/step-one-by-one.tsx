@@ -3,13 +3,22 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import type { ParsedImportItem, DuplicateStrategy } from "../../utils/importers/types";
+import type {
+	ParsedImportItem,
+	DuplicateStrategy,
+} from "../../utils/importers/types";
 import { useAppDispatch } from "../../store";
 import { persistItem, createFolderAsync } from "../../store/password-slice";
 import { Progress } from "@/components/ui/progress";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, AlertTriangle, Check, X, RefreshCw } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { ITEM_TYPE_OPTIONS } from "../../utils/constants";
 import type { PasswordItem } from "../../types";
 
@@ -20,7 +29,12 @@ interface Props {
 	onCancel: () => void;
 }
 
-export default function StepOneByOne({ items, duplicateStrategy, onDone, onCancel }: Props) {
+export default function StepOneByOne({
+	items,
+	duplicateStrategy,
+	onDone,
+	onCancel,
+}: Props) {
 	const { t } = useTranslation();
 	const dispatch = useAppDispatch();
 	const [currentIndex, setCurrentIndex] = useState(0);
@@ -42,7 +56,8 @@ export default function StepOneByOne({ items, duplicateStrategy, onDone, onCance
 	const [editedPassword, setEditedPassword] = useState("");
 	const [editedUrl, setEditedUrl] = useState("");
 	const [editedNotes, setEditedNotes] = useState("");
-	const [editedType, setEditedType] = useState<PasswordItem["itemType"]>("login");
+	const [editedType, setEditedType] =
+		useState<PasswordItem["itemType"]>("login");
 
 	const [showSourcePass, setShowSourcePass] = useState(false);
 	const [showResultPass, setShowResultPass] = useState(false);
@@ -61,7 +76,7 @@ export default function StepOneByOne({ items, duplicateStrategy, onDone, onCance
 			setEditedNotes(items[0].mapped.notes || "");
 			setEditedType(items[0].mapped.itemType || "login");
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	// Sync form fields when navigating to a new item
@@ -125,10 +140,13 @@ export default function StepOneByOne({ items, duplicateStrategy, onDone, onCance
 			// Handle Folder Creation — use ref to prevent race conditions
 			if (item.sourceFolder) {
 				if (!folderCacheRef.current[item.sourceFolder]) {
-					const newFolder = await dispatch(createFolderAsync({
-						name: item.sourceFolder,
-						color: "#888888",
-						isVirtual: false})).unwrap();
+					const newFolder = await dispatch(
+						createFolderAsync({
+							name: item.sourceFolder,
+							color: "#888888",
+							isVirtual: false,
+						}),
+					).unwrap();
 					// Write to ref immediately (synchronous — no batching)
 					folderCacheRef.current[item.sourceFolder] = newFolder.id;
 				}
@@ -141,7 +159,10 @@ export default function StepOneByOne({ items, duplicateStrategy, onDone, onCance
 			advance();
 		} catch (e) {
 			console.error("Failed to save item", e);
-			setSaveError((e as Error)?.message || t("password_manager_import_save_error"));
+			setSaveError(
+				(e as Error)?.message ||
+					t("tools.password_manager.import.save_error"),
+			);
 		} finally {
 			setIsSaving(false);
 		}
@@ -157,15 +178,29 @@ export default function StepOneByOne({ items, duplicateStrategy, onDone, onCance
 			<div className="p-4 border-b border-pm-border bg-muted/20">
 				<div className="flex items-center justify-between mb-2">
 					<div className="text-sm font-medium">
-						{t("password_manager_import_reviewing_item", { current: currentIndex + 1, total: items.length })}
+						{t("tools.password_manager.import.reviewing_item", {
+							current: currentIndex + 1,
+							total: items.length,
+						})}
 					</div>
-					<div className="text-sm text-muted-foreground">{progress}%</div>
+					<div className="text-sm text-muted-foreground">
+						{progress}%
+					</div>
 				</div>
 				<Progress value={progress} className="h-2 mb-2" />
 				<div className="flex gap-4 text-xs font-medium">
-					<span className="text-emerald-600">✓ {importedCountUI} {t("password_manager_import_imported")}</span>
-					<span className="text-muted-foreground">? {items.length - currentIndex} {t("password_manager_import_remaining")}</span>
-					<span className="text-destructive">✗ {skippedCountUI} {t("password_manager_import_skipped")}</span>
+					<span className="text-emerald-600">
+						✓ {importedCountUI}{" "}
+						{t("tools.password_manager.import.imported")}
+					</span>
+					<span className="text-muted-foreground">
+						? {items.length - currentIndex}{" "}
+						{t("tools.password_manager.import.remaining")}
+					</span>
+					<span className="text-destructive">
+						✗ {skippedCountUI}{" "}
+						{t("tools.password_manager.import.skipped")}
+					</span>
 				</div>
 			</div>
 
@@ -175,8 +210,16 @@ export default function StepOneByOne({ items, duplicateStrategy, onDone, onCance
 					<div className="mb-6 p-4 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-400 flex gap-3">
 						<AlertTriangle className="w-5 h-5 shrink-0" />
 						<div className="text-sm">
-							<p className="font-semibold mb-1">{t("password_manager_import_duplicate_detected")}</p>
-							<p>{t("password_manager_import_duplicate_info")}</p>
+							<p className="font-semibold mb-1">
+								{t(
+									"tools.password_manager.import.duplicate_detected",
+								)}
+							</p>
+							<p>
+								{t(
+									"tools.password_manager.import.duplicate_info",
+								)}
+							</p>
 						</div>
 					</div>
 				)}
@@ -185,7 +228,9 @@ export default function StepOneByOne({ items, duplicateStrategy, onDone, onCance
 					<div className="mb-6 p-4 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive flex items-center gap-3">
 						<AlertTriangle className="w-5 h-5 shrink-0" />
 						<div className="flex-1 text-sm">
-							<p className="font-semibold mb-0.5">{t("password_manager_import_save_failed")}</p>
+							<p className="font-semibold mb-0.5">
+								{t("tools.password_manager.import.save_failed")}
+							</p>
 							<p className="text-xs opacity-80">{saveError}</p>
 						</div>
 						<Button
@@ -195,7 +240,7 @@ export default function StepOneByOne({ items, duplicateStrategy, onDone, onCance
 							onClick={handleAccept}
 						>
 							<RefreshCw className="w-3.5 h-3.5" />
-							{t("password_manager_import_retry")}
+							{t("tools.password_manager.import.retry")}
 						</Button>
 					</div>
 				)}
@@ -204,32 +249,63 @@ export default function StepOneByOne({ items, duplicateStrategy, onDone, onCance
 					{/* Source Panel */}
 					<div className="space-y-4">
 						<div className="text-xs font-bold tracking-wider text-muted-foreground uppercase mb-4">
-							{t("password_manager_import_source_data", { app: item.sourceApp })}
+							{t("tools.password_manager.import.source_data", {
+								app: item.sourceApp,
+							})}
 						</div>
 
-						{Object.entries(item.sourceFields).map(([key, value]) => {
-							if (!value) return null;
-							const isPass = key.toLowerCase().includes("password");
-							return (
-								<div key={key} className="space-y-1">
-									<Label className="text-xs text-muted-foreground capitalize">{key}</Label>
-									<div className="text-sm bg-muted/30 p-2.5 rounded-md border border-pm-border break-all flex items-center justify-between">
-										<span className={isPass && !showSourcePass ? "font-mono" : ""}>
-											{isPass && !showSourcePass ? "••••••••••••••••" : value}
-										</span>
-										{isPass && (
-											<Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setShowSourcePass(!showSourcePass)}>
-												{showSourcePass ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-											</Button>
-										)}
+						{Object.entries(item.sourceFields).map(
+							([key, value]) => {
+								if (!value) return null;
+								const isPass = key
+									.toLowerCase()
+									.includes("password");
+								return (
+									<div key={key} className="space-y-1">
+										<Label className="text-xs text-muted-foreground capitalize">
+											{key}
+										</Label>
+										<div className="text-sm bg-muted/30 p-2.5 rounded-md border border-pm-border break-all flex items-center justify-between">
+											<span
+												className={
+													isPass && !showSourcePass
+														? "font-mono"
+														: ""
+												}
+											>
+												{isPass && !showSourcePass
+													? "••••••••••••••••"
+													: value}
+											</span>
+											{isPass && (
+												<Button
+													variant="ghost"
+													size="icon"
+													className="h-6 w-6"
+													onClick={() =>
+														setShowSourcePass(
+															!showSourcePass,
+														)
+													}
+												>
+													{showSourcePass ? (
+														<EyeOff className="w-3.5 h-3.5" />
+													) : (
+														<Eye className="w-3.5 h-3.5" />
+													)}
+												</Button>
+											)}
+										</div>
 									</div>
-								</div>
-							);
-						})}
+								);
+							},
+						)}
 
 						{item.sourceFolder && (
 							<div className="space-y-1">
-								<Label className="text-xs text-muted-foreground">{t("password_manager_import_folder")}</Label>
+								<Label className="text-xs text-muted-foreground">
+									{t("tools.password_manager.import.folder")}
+								</Label>
 								<div className="text-sm bg-muted/30 p-2.5 rounded-md border border-pm-border">
 									{item.sourceFolder}
 								</div>
@@ -240,61 +316,110 @@ export default function StepOneByOne({ items, duplicateStrategy, onDone, onCance
 					{/* Result Panel */}
 					<div className="space-y-4">
 						<div className="text-xs font-bold tracking-wider text-primary uppercase mb-4">
-							{t("password_manager_import_will_be_saved_as")}
+							{t(
+								"tools.password_manager.import.will_be_saved_as",
+							)}
 						</div>
 
 						<div className="space-y-1">
-							<Label className="text-xs text-muted-foreground">{t("title")}</Label>
-							<Input value={editedTitle} onChange={(e) => setEditedTitle(e.target.value)} className="h-10" />
+							<Label className="text-xs text-muted-foreground">
+								{t("title")}
+							</Label>
+							<Input
+								value={editedTitle}
+								onChange={(e) => setEditedTitle(e.target.value)}
+								className="h-10"
+							/>
 						</div>
 
 						<div className="space-y-1">
-							<Label className="text-xs text-muted-foreground">{t("tools.password_manager_username")}</Label>
-							<Input value={editedUsername} onChange={(e) => setEditedUsername(e.target.value)} className="h-10" />
+							<Label className="text-xs text-muted-foreground">
+								{t("tools.password_manager.username")}
+							</Label>
+							<Input
+								value={editedUsername}
+								onChange={(e) =>
+									setEditedUsername(e.target.value)
+								}
+								className="h-10"
+							/>
 						</div>
 
 						<div className="space-y-1">
-							<Label className="text-xs text-muted-foreground">{t("tools.password_manager_password")}</Label>
+							<Label className="text-xs text-muted-foreground">
+								{t("tools.password_manager.password")}
+							</Label>
 							<div className="relative">
 								<Input
 									type={showResultPass ? "text" : "password"}
 									value={editedPassword}
-									onChange={(e) => setEditedPassword(e.target.value)}
+									onChange={(e) =>
+										setEditedPassword(e.target.value)
+									}
 									className="h-10 pr-10 font-mono"
 								/>
 								<Button
 									variant="ghost"
 									size="icon"
 									className="absolute right-1 top-1 h-8 w-8 text-muted-foreground"
-									onClick={() => setShowResultPass(!showResultPass)}
+									onClick={() =>
+										setShowResultPass(!showResultPass)
+									}
 								>
-									{showResultPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+									{showResultPass ? (
+										<EyeOff className="w-4 h-4" />
+									) : (
+										<Eye className="w-4 h-4" />
+									)}
 								</Button>
 							</div>
 						</div>
 
 						<div className="space-y-1">
-							<Label className="text-xs text-muted-foreground">{t("tools.password_manager_url")}</Label>
-							<Input value={editedUrl} onChange={(e) => setEditedUrl(e.target.value)} className="h-10" />
+							<Label className="text-xs text-muted-foreground">
+								{t("tools.password_manager.url")}
+							</Label>
+							<Input
+								value={editedUrl}
+								onChange={(e) => setEditedUrl(e.target.value)}
+								className="h-10"
+							/>
 						</div>
 
 						<div className="space-y-1">
-							<Label className="text-xs text-muted-foreground">{t("tools.password_manager_type")}</Label>
-							<Select value={editedType} onValueChange={(val: string) => setEditedType(val as PasswordItem["itemType"])}>
+							<Label className="text-xs text-muted-foreground">
+								{t("tools.password_manager.type")}
+							</Label>
+							<Select
+								value={editedType}
+								onValueChange={(val: string) =>
+									setEditedType(
+										val as PasswordItem["itemType"],
+									)
+								}
+							>
 								<SelectTrigger className="h-10">
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent>
 									{ITEM_TYPE_OPTIONS.map((opt) => (
-										<SelectItem key={opt.id} value={opt.id}>{t(opt.label)}</SelectItem>
+										<SelectItem key={opt.id} value={opt.id}>
+											{t(opt.label)}
+										</SelectItem>
 									))}
 								</SelectContent>
 							</Select>
 						</div>
 
 						<div className="space-y-1">
-							<Label className="text-xs text-muted-foreground">{t("tools.password_manager_notes")}</Label>
-							<Textarea value={editedNotes} onChange={(e) => setEditedNotes(e.target.value)} className="min-h-20 resize-y" />
+							<Label className="text-xs text-muted-foreground">
+								{t("tools.password_manager.notes")}
+							</Label>
+							<Textarea
+								value={editedNotes}
+								onChange={(e) => setEditedNotes(e.target.value)}
+								className="min-h-20 resize-y"
+							/>
 						</div>
 					</div>
 				</div>
@@ -302,8 +427,12 @@ export default function StepOneByOne({ items, duplicateStrategy, onDone, onCance
 
 			{/* Footer Actions */}
 			<div className="p-4 border-t border-pm-border bg-background flex items-center justify-between gap-4">
-				<Button variant="ghost" onClick={onCancel} className="text-muted-foreground">
-					{t("password_manager_import_cancel")}
+				<Button
+					variant="ghost"
+					onClick={onCancel}
+					className="text-muted-foreground"
+				>
+					{t("tools.password_manager.import.cancel")}
 				</Button>
 				<div className="flex gap-3">
 					<Button
@@ -312,11 +441,14 @@ export default function StepOneByOne({ items, duplicateStrategy, onDone, onCance
 						onClick={handleSkip}
 						disabled={isSaving}
 					>
-						<X className="w-4 h-4 mr-1.5" /> {t("password_manager_import_skip")}
+						<X className="w-4 h-4 mr-1.5" />{" "}
+						{t("tools.password_manager.import.skip")}
 					</Button>
 					<Button onClick={handleAccept} disabled={isSaving}>
 						<Check className="w-4 h-4 mr-1.5" />
-						{isSaving ? t("password_manager_import_saving") : t("password_manager_import_accept_next")}
+						{isSaving
+							? t("tools.password_manager.import.saving")
+							: t("tools.password_manager.import.accept_next")}
 					</Button>
 				</div>
 			</div>

@@ -44,19 +44,22 @@ export function FolderList({
 	return (
 		<SidebarGroup>
 			<SidebarGroupLabel>
-				{t("tools.password_manager_folders")}
+				{t("tools.password_manager.folders")}
 			</SidebarGroupLabel>
 			<SidebarGroupAction
-				title={t("tools.password_manager_add_folder")}
+				title={t("tools.password_manager.add_folder")}
 				onClick={onAddFolder}
 			>
 				<Plus />{" "}
 				<span className="sr-only">
-					{t("tools.password_manager_add_folder")}
+					{t("tools.password_manager.add_folder")}
 				</span>
 			</SidebarGroupAction>
 			<SidebarGroupContent>
-				<ScrollArea className="h-40 pr-3" viewportClassName="scroll-fade">
+				<ScrollArea
+					className="h-40 pr-3"
+					viewportClassName="scroll-fade"
+				>
 					<SidebarMenu>
 						{folders.map((folder) => (
 							<SidebarMenuItem key={folder.id}>

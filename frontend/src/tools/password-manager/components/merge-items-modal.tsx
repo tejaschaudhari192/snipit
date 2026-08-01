@@ -14,7 +14,16 @@ import { Label } from "@/components/ui/label";
 import { Check, Info, GitMerge } from "lucide-react";
 import type { PasswordItem } from "@/tools/password-manager/types";
 
-type TopLevelStringField = Extract<keyof PasswordItem, "username" | "password" | "url" | "title" | "folderId" | "collectionId" | "notes">;
+type TopLevelStringField = Extract<
+	keyof PasswordItem,
+	| "username"
+	| "password"
+	| "url"
+	| "title"
+	| "folderId"
+	| "collectionId"
+	| "notes"
+>;
 
 interface MergeItemsModalProps {
 	isOpen: boolean;
@@ -45,8 +54,16 @@ export function MergeItemsModal({
 			const foundConflicts: Conflict[] = [];
 			const defaultResolutions: Record<string, string> = {};
 
-			const checkField = (field: string, label: string, isTopLevel: boolean) => {
-				const values: { id: string; value: string; isTopLevel: boolean }[] = [];
+			const checkField = (
+				field: string,
+				label: string,
+				isTopLevel: boolean,
+			) => {
+				const values: {
+					id: string;
+					value: string;
+					isTopLevel: boolean;
+				}[] = [];
 				const seenValues = new Set<string>();
 
 				items.forEach((item) => {
@@ -54,7 +71,10 @@ export function MergeItemsModal({
 					if (isTopLevel) {
 						val = item[field as TopLevelStringField] || "";
 					} else {
-						val = item.metadata?.[field] || item[field as TopLevelStringField] || "";
+						val =
+							item.metadata?.[field] ||
+							item[field as TopLevelStringField] ||
+							"";
 					}
 
 					if (val && !seenValues.has(val)) {
@@ -70,24 +90,31 @@ export function MergeItemsModal({
 				}
 			};
 			checkField("title", t("title"), true);
-			checkField("folderId", t("tools.password_manager_folder"), true);
-			checkField("collectionId", t("tools.password_manager_collection"), true);
+			checkField("folderId", t("tools.password_manager.folder"), true);
+			checkField(
+				"collectionId",
+				t("tools.password_manager.collection"),
+				true,
+			);
 
 			// Dynamically find all metadata fields across all selected items
 			const allMetaKeys = new Set<string>();
-			items.forEach(i => {
-				if (i.metadata) Object.keys(i.metadata).forEach(k => allMetaKeys.add(k));
+			items.forEach((i) => {
+				if (i.metadata)
+					Object.keys(i.metadata).forEach((k) => allMetaKeys.add(k));
 				// some standard fields might exist at top level due to imports
 				if (i.username) allMetaKeys.add("username");
 				if (i.password) allMetaKeys.add("password");
 				if (i.url) allMetaKeys.add("url");
 			});
 
-			allMetaKeys.forEach(key => {
+			allMetaKeys.forEach((key) => {
 				let label = key.charAt(0).toUpperCase() + key.slice(1);
-				if (key === "username") label = t("tools.password_manager_username");
-				else if (key === "password") label = t("tools.password_manager_password");
-				else if (key === "url") label = t("tools.password_manager_url");
+				if (key === "username")
+					label = t("tools.password_manager.username");
+				else if (key === "password")
+					label = t("tools.password_manager.password");
+				else if (key === "url") label = t("tools.password_manager.url");
 				checkField(key, label, false);
 			});
 
@@ -116,8 +143,9 @@ export function MergeItemsModal({
 
 		// Merge non-conflicting fields
 		const allFieldsToMerge = new Set<string>();
-		sortedItems.forEach(i => {
-			if (i.metadata) Object.keys(i.metadata).forEach(k => allFieldsToMerge.add(k));
+		sortedItems.forEach((i) => {
+			if (i.metadata)
+				Object.keys(i.metadata).forEach((k) => allFieldsToMerge.add(k));
 			if (i.username) allFieldsToMerge.add("username");
 			if (i.password) allFieldsToMerge.add("password");
 			if (i.url) allFieldsToMerge.add("url");
@@ -125,21 +153,30 @@ export function MergeItemsModal({
 
 		sortedItems.forEach((item) => {
 			// Merge notes
-			if (item.id !== baseItem.id && item.notes && !mergedItem.notes?.includes(item.notes)) {
+			if (
+				item.id !== baseItem.id &&
+				item.notes &&
+				!mergedItem.notes?.includes(item.notes)
+			) {
 				mergedItem.notes = mergedItem.notes
-					? `${mergedItem.notes}\n\n--- ${t("tools.password_manager_merged_from")} ${item.title} ---\n${item.notes}`
+					? `${mergedItem.notes}\n\n--- ${t("tools.password_manager.merged_from")} ${item.title} ---\n${item.notes}`
 					: item.notes;
 			}
 
 			// Merge custom fields
 			if (item.customFields) {
-				item.customFields.forEach(cf => {
-					if (!mergedItem.customFields?.some(mcf => mcf.name === cf.name && mcf.value === cf.value)) {
+				item.customFields.forEach((cf) => {
+					if (
+						!mergedItem.customFields?.some(
+							(mcf) =>
+								mcf.name === cf.name && mcf.value === cf.value,
+						)
+					) {
 						mergedItem.customFields?.push({
 							id: crypto.randomUUID(),
 							name: cf.name,
 							value: cf.value,
-							type: cf.type
+							type: cf.type,
 						});
 					}
 				});
@@ -148,41 +185,61 @@ export function MergeItemsModal({
 
 		// Apply non-conflicting missing fields to base item
 		const applyIfMissing = (field: string, isTopLevel: boolean) => {
-			if (!conflicts.find(c => c.field === field)) {
-				const itemWithValue = sortedItems.find(i => isTopLevel ? i[field as TopLevelStringField] : (i.metadata?.[field] || i[field as TopLevelStringField]));
+			if (!conflicts.find((c) => c.field === field)) {
+				const itemWithValue = sortedItems.find((i) =>
+					isTopLevel
+						? i[field as TopLevelStringField]
+						: i.metadata?.[field] ||
+							i[field as TopLevelStringField],
+				);
 				if (itemWithValue) {
 					if (isTopLevel) {
-						Object.assign(mergedItem, { [field]: itemWithValue[field as TopLevelStringField] });
+						Object.assign(mergedItem, {
+							[field]:
+								itemWithValue[field as TopLevelStringField],
+						});
 					} else {
-						mergedItem.metadata![field] = itemWithValue.metadata?.[field] || (itemWithValue[field as TopLevelStringField] as string);
+						mergedItem.metadata![field] =
+							itemWithValue.metadata?.[field] ||
+							(itemWithValue[
+								field as TopLevelStringField
+							] as string);
 					}
 				}
 			}
 		};
 
-		allFieldsToMerge.forEach(key => applyIfMissing(key, false));
-		["title", "folderId", "collectionId"].forEach(key => applyIfMissing(key, true));
+		allFieldsToMerge.forEach((key) => applyIfMissing(key, false));
+		["title", "folderId", "collectionId"].forEach((key) =>
+			applyIfMissing(key, true),
+		);
 
 		// Apply conflict resolutions
-		conflicts.forEach(conflict => {
+		conflicts.forEach((conflict) => {
 			const chosenId = resolutions[conflict.field];
-			const chosenOption = conflict.values.find(v => v.id === chosenId);
+			const chosenOption = conflict.values.find((v) => v.id === chosenId);
 			if (chosenOption) {
 				if (conflict.values[0].isTopLevel) {
-					mergedItem[conflict.field as TopLevelStringField] = chosenOption.value;
+					mergedItem[conflict.field as TopLevelStringField] =
+						chosenOption.value;
 				} else {
 					mergedItem.metadata![conflict.field] = chosenOption.value;
 				}
 			}
 
 			// Add the unchosen ones as custom fields so data isn't lost
-			conflict.values.forEach(v => {
-				if (v.id !== chosenId && conflict.field !== "folderId" && conflict.field !== "collectionId") {
+			conflict.values.forEach((v) => {
+				if (
+					v.id !== chosenId &&
+					conflict.field !== "folderId" &&
+					conflict.field !== "collectionId"
+				) {
 					mergedItem.customFields?.push({
 						id: crypto.randomUUID(),
-						name: `${conflict.label} (${t("tools.password_manager_merged_old")})`,
+						name: `${conflict.label} (${t("tools.password_manager.merged_old")})`,
 						value: v.value,
-						type: conflict.field === "password" ? "password" : "text"
+						type:
+							conflict.field === "password" ? "password" : "text",
 					});
 				}
 			});
@@ -190,7 +247,10 @@ export function MergeItemsModal({
 
 		mergedItem.updatedAt = new Date().toISOString();
 
-		onMerge(mergedItem, items.map(i => i.id));
+		onMerge(
+			mergedItem,
+			items.map((i) => i.id),
+		);
 		onClose();
 	};
 
@@ -200,10 +260,10 @@ export function MergeItemsModal({
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<GitMerge className="w-5 h-5" />
-						{t("tools.password_manager_merge_items")}
+						{t("tools.password_manager.merge_items")}
 					</DialogTitle>
 					<DialogDescription>
-						{t("tools.password_manager_merge_desc")}
+						{t("tools.password_manager.merge_desc")}
 					</DialogDescription>
 				</DialogHeader>
 
@@ -213,31 +273,60 @@ export function MergeItemsModal({
 							<div className="space-y-4">
 								<div className="flex items-start gap-2 p-3 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-lg text-sm">
 									<Info className="w-4 h-4 shrink-0 mt-0.5" />
-									<p>{t("tools.password_manager_merge_conflict_desc")}</p>
+									<p>
+										{t(
+											"tools.password_manager.merge_conflict_desc",
+										)}
+									</p>
 								</div>
 
 								{conflicts.map((conflict) => (
-									<div key={conflict.field} className="space-y-2">
+									<div
+										key={conflict.field}
+										className="space-y-2"
+									>
 										<Label className="font-semibold text-sm">
-											{conflict.label} {t("tools.password_manager_conflict")}
+											{conflict.label}{" "}
+											{t(
+												"tools.password_manager.conflict",
+											)}
 										</Label>
 										<div className="flex flex-col gap-2">
 											{conflict.values.map((v) => (
 												<button
 													key={v.id}
 													type="button"
-													onClick={() => setResolutions(prev => ({ ...prev, [conflict.field]: v.id }))}
-													className={`flex items-center justify-between w-full overflow-hidden px-4 py-3 rounded-xl border text-left transition-all ${resolutions[conflict.field] === v.id
-														? "border-primary bg-primary/5 ring-1 ring-primary/20"
-														: "border-border hover:border-primary/50 hover:bg-muted/50"
-														}`}
+													onClick={() =>
+														setResolutions(
+															(prev) => ({
+																...prev,
+																[conflict.field]:
+																	v.id,
+															}),
+														)
+													}
+													className={`flex items-center justify-between w-full overflow-hidden px-4 py-3 rounded-xl border text-left transition-all ${
+														resolutions[
+															conflict.field
+														] === v.id
+															? "border-primary bg-primary/5 ring-1 ring-primary/20"
+															: "border-border hover:border-primary/50 hover:bg-muted/50"
+													}`}
 												>
-													<span className={`text-sm truncate min-w-0 flex-1 mr-4 ${conflict.field === "password" ? "font-mono" : ""}`}>
-														{conflict.field === "password" && resolutions[conflict.field] !== v.id
+													<span
+														className={`text-sm truncate min-w-0 flex-1 mr-4 ${conflict.field === "password" ? "font-mono" : ""}`}
+													>
+														{conflict.field ===
+															"password" &&
+														resolutions[
+															conflict.field
+														] !== v.id
 															? "••••••••"
 															: v.value}
 													</span>
-													{resolutions[conflict.field] === v.id && (
+													{resolutions[
+														conflict.field
+													] === v.id && (
 														<Check className="w-4 h-4 text-primary shrink-0" />
 													)}
 												</button>
@@ -249,7 +338,11 @@ export function MergeItemsModal({
 						) : (
 							<div className="py-8 text-center text-muted-foreground flex flex-col items-center gap-2">
 								<Check className="w-8 h-8 text-green-500" />
-								<p>{t("tools.password_manager_merge_no_conflicts")}</p>
+								<p>
+									{t(
+										"tools.password_manager.merge_no_conflicts",
+									)}
+								</p>
 							</div>
 						)}
 					</div>
@@ -257,10 +350,10 @@ export function MergeItemsModal({
 
 				<DialogFooter className="mt-2">
 					<Button variant="outline" onClick={onClose}>
-						{t("tools.password_manager_cancel")}
+						{t("tools.password_manager.cancel")}
 					</Button>
 					<Button onClick={handleMerge}>
-						{t("tools.password_manager_confirm_merge")}
+						{t("tools.password_manager.confirm_merge")}
 					</Button>
 				</DialogFooter>
 			</DialogContent>
