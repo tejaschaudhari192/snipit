@@ -11,7 +11,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { timeAgo } from "@/utils";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import type { PasteData } from "@/types";
 import { useSnippets } from "@/context/SnippetContext";
 
@@ -100,11 +100,12 @@ export const RecentLinksSidebar = ({
 									onClick={() => {
 										const shortUrl = `${window.location.origin}/${item.id}`;
 										navigator.clipboard.writeText(shortUrl);
-										toast.success(
-											t("header.copied_link", {
-												id: `/${item.id}`,
+										toast.add({
+											title: t("header.copied_link", {
+												id: `/${item.id}`
 											}),
-										);
+											type: "success"
+										});
 									}}
 								>
 									<Copy className="h-3 w-3" />

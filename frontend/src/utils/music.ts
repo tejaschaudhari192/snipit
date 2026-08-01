@@ -1,4 +1,4 @@
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { CONFIG } from "@/configurations";
 
 /**
@@ -13,7 +13,7 @@ export const downloadTrack = async (
 	title: string,
 	quality: "128" | "320" = "128",
 ): Promise<void> => {
-	toast.info("Requesting secure audio download...", { duration: 3000 });
+	toast.add({ title: "Requesting secure audio download...", type: "info" });
 	try {
 		const response = await fetch(
 			`${CONFIG.apiBaseUrl}/music/download?v=${encodeURIComponent(videoId)}&q=${quality}`,
@@ -25,9 +25,10 @@ export const downloadTrack = async (
 
 		const data = await response.json();
 		if (data.url) {
-			toast.success(
-				"Download link resolved successfully! Starting download...",
-			);
+			toast.add({
+				title:
+					"Download link resolved successfully! Starting download...", type: "success"
+			});
 
 			// Open the resolved direct URL to trigger browser download / redirect
 			const a = document.createElement("a");
@@ -43,7 +44,7 @@ export const downloadTrack = async (
 		}
 	} catch (error) {
 		console.error("Failed to download audio via backend proxy:", error);
-		toast.error("Download failed. Directing to web browser download...");
+		toast.add({ title: "Download failed. Directing to web browser download...", type: "error" });
 		try {
 			// Instant fallback direct open if backend proxy call failed
 			window.open(
@@ -51,9 +52,10 @@ export const downloadTrack = async (
 				"_blank",
 			);
 		} catch {
-			toast.error(
-				"All download engines are busy. Please try again later.",
-			);
+			toast.add({
+				title:
+					"All download engines are busy. Please try again later.", type: "error"
+			});
 		}
 	}
 };

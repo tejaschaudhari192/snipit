@@ -112,16 +112,14 @@ const formatDate = (date: Date): string => {
 	return new Intl.DateTimeFormat("en-US", {
 		month: "short",
 		day: "2-digit",
-		year: "numeric",
-	}).format(date);
+		year: "numeric"}).format(date);
 };
 
 const formatTime = (date: Date): string => {
 	return new Intl.DateTimeFormat("en-US", {
 		hour: "2-digit",
 		minute: "2-digit",
-		hour12: true,
-	}).format(date);
+		hour12: true}).format(date);
 };
 
 export function DatePicker({

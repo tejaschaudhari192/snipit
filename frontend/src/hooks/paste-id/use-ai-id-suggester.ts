@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import api from "@/lib/api";
 import { type AiIdFileContext } from "@/types";
 
@@ -18,7 +18,7 @@ export const useAiIdSuggester = (
 		const hasFiles = files && files.length > 0;
 
 		if (!hasContent && !hasFiles) {
-			toast.warning(t("messages.empty_content"));
+			toast.add({ title: t("messages.empty_content"), type: "warning" });
 			return;
 		}
 
@@ -28,16 +28,14 @@ export const useAiIdSuggester = (
 				content,
 				files: files?.map((f) => ({
 					name: f.name || f.fileName,
-					type: f.mimeType || f.fileMimeType,
-				})),
-			});
+					type: f.mimeType || f.fileMimeType}))});
 			if (response.data?.id) {
 				setCustomId(response.data.id);
-				toast.success(t("home.ai_id_suggested"));
+				toast.add({ title: t("home.ai_id_suggested"), type: "success" });
 			}
 		} catch (error) {
 			console.error("Failed to suggest ID:", error);
-			toast.error(t("errors.ai_failed"));
+			toast.add({ title: t("errors.ai_failed"), type: "error" });
 		} finally {
 			setIsSuggesting(false);
 		}

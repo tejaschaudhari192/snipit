@@ -32,8 +32,7 @@ const MusicControls: React.FC<MusicControlsProps> = ({
 	shuffle,
 	onToggleShuffle,
 	repeat,
-	onToggleRepeat,
-}) => {
+	onToggleRepeat}) => {
 	return (
 		<div className="flex items-center justify-between w-full px-1">
 			<Button

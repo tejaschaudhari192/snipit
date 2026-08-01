@@ -77,8 +77,7 @@ export function useYouTubePlayer({
 							console.error("YouTube Player Error:", e?.data);
 							onErrorRef.current?.(e?.data);
 						},
-					},
-				});
+					}});
 			}
 		};
 
@@ -149,8 +148,7 @@ export function useYouTubePlayer({
 			if (isReady && playerRef.current) {
 				playerRef.current.loadVideoById({
 					videoId,
-					startSeconds,
-				});
+					startSeconds});
 			}
 		},
 		[isReady],
@@ -161,8 +159,7 @@ export function useYouTubePlayer({
 			if (isReady && playerRef.current) {
 				playerRef.current.cueVideoById({
 					videoId,
-					startSeconds,
-				});
+					startSeconds});
 			}
 		},
 		[isReady],

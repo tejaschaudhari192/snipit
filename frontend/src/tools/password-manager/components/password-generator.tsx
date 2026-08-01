@@ -15,7 +15,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 interface PasswordGeneratorProps {
 	onGenerate?: (password: string) => void;
@@ -112,8 +112,7 @@ export default function PasswordGenerator({
 				symbols: true,
 				uppercase: useUpper,
 				lowercase: true,
-				strict: true,
-			});
+				strict: true});
 		}
 
 		const evaluation = zxcvbn(newPassword);
@@ -130,7 +129,7 @@ export default function PasswordGenerator({
 	const handleCopy = async () => {
 		if (!password) return;
 		await navigator.clipboard.writeText(password);
-		toast.success(t("tools.password_generator_copied"));
+		toast.add({ title: t("tools.password_generator_copied"), type: "success" });
 	};
 
 	const handleFill = () => {

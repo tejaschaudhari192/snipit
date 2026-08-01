@@ -10,7 +10,7 @@ import { QrCode, Download } from "lucide-react";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 interface QRDialogProps {
 	url: string;
@@ -35,7 +35,7 @@ export const QRDialog = ({ url, isOpen, onOpenChange }: QRDialogProps) => {
 			document.body.appendChild(downloadLink);
 			downloadLink.click();
 			document.body.removeChild(downloadLink);
-			toast.success(t("messages.qr_downloaded"));
+			toast.add({ title: t("messages.qr_downloaded"), type: "success" });
 		}
 	};
 

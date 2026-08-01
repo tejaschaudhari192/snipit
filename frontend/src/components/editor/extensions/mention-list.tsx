@@ -56,8 +56,7 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
 					return true;
 				}
 				return false;
-			},
-		}));
+			}}));
 
 		if (!props.items.length) {
 			return null;

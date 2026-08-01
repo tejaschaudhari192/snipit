@@ -27,8 +27,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
 	showHint = false,
 	mode = "split",
 	direction = "horizontal",
-	storageKey,
-}) => {
+	storageKey}) => {
 	const { t } = useTranslation();
 	const [leftWidth, setLeftWidth] = useState(() => {
 		if (storageKey) {

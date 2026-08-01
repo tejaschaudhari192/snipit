@@ -81,8 +81,7 @@ export const FileUploadView = ({
 									</h2>
 									<p className="text-[10px] text-muted-foreground font-bold">
 										{t("home.files_selected", {
-											count: files.length,
-										})}
+											count: files.length})}
 									</p>
 								</div>
 							</div>
@@ -141,8 +140,7 @@ export const FileUploadView = ({
 								</p>
 								<p className="text-[10px] font-bold text-muted-foreground/60 pt-2">
 									{t("home.file_max_size", {
-										size: `${CONFIG.defaults.maxFileSize / (1024 * 1024)}MB`,
-									})}
+										size: `${CONFIG.defaults.maxFileSize / (1024 * 1024)}MB`})}
 								</p>
 							</div>
 							<div className="flex items-center gap-4 text-xs font-bold text-muted-foreground/60">

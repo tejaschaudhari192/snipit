@@ -39,8 +39,7 @@ export const useLiveKit = ({
 		const res = await fetch(tokenUrl, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ roomName, identity, isHost }),
-		});
+			body: JSON.stringify({ roomName, identity, isHost })});
 		if (!res.ok) {
 			throw new Error("Failed to fetch LiveKit token");
 		}
@@ -180,8 +179,7 @@ export const useLiveKit = ({
 				activeRoom = new Room({
 					publishDefaults: {
 						videoCodec: "vp8",
-					},
-				});
+					}});
 				roomRef.current = activeRoom;
 
 				activeRoom.on(RoomEvent.TrackSubscribed, (track) => {

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { MessageSquare, Send } from "lucide-react";
 import { AxiosError } from "axios";
 
@@ -90,14 +90,15 @@ export const CommentsSection = ({
 				onCommentAdded(newCommentData);
 				setNewComment("");
 				setAuthorName("");
-				toast.success(t("messages.comment_added"));
+				toast.add({ title: t("messages.comment_added"), type: "success" });
 			}
 		} catch (error) {
 			const axiosError = error as AxiosError<{ error: string }>;
-			toast.error(
-				axiosError.response?.data?.error ||
-				t("messages.comment_failed"),
-			);
+			toast.add({
+				title:
+					axiosError.response?.data?.error ||
+					t("messages.comment_failed"), type: "error"
+			});
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -111,12 +112,12 @@ export const CommentsSection = ({
 				newContent,
 			);
 			onCommentUpdated?.(updated);
-			toast.success("Comment updated");
+			toast.add({ title: "Comment updated", type: "success" });
 		} catch (error) {
 			const axiosError = error as AxiosError<{ error: string }>;
-			toast.error(
-				axiosError.response?.data?.error || "Failed to update comment",
-			);
+			toast.add({
+				title:
+					axiosError.response?.data?.error || "Failed to update comment", type: "error" });
 			throw error;
 		}
 	};
@@ -125,12 +126,12 @@ export const CommentsSection = ({
 		try {
 			await apiHelpers.deleteComment(paste.id, commentId);
 			onCommentDeleted?.(commentId);
-			toast.success("Comment deleted");
+			toast.add({ title: "Comment deleted", type: "success" });
 		} catch (error) {
 			const axiosError = error as AxiosError<{ error: string }>;
-			toast.error(
-				axiosError.response?.data?.error || "Failed to delete comment",
-			);
+			toast.add({
+				title:
+					axiosError.response?.data?.error || "Failed to delete comment", type: "error" });
 		}
 	};
 

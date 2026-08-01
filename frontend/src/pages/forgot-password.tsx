@@ -14,7 +14,7 @@ import {
 	CardTitle,
 	CardFooter,
 } from "@/components/ui/card";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { Mail, ArrowLeft, ArrowRight, KeyRound } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 
@@ -31,13 +31,12 @@ const ForgotPasswordPage = () => {
 		try {
 			await forgotPassword(email);
 			setIsSubmitted(true);
-			toast.success(t("auth.forgot_password_success_toast"));
+			toast.add({ title: t("auth.forgot_password_success_toast"), type: "success" });
 		} catch (error) {
 			const axiosError = error as AxiosError<{ message: string }>;
-			toast.error(
+			toast.add({ title: 
 				axiosError.response?.data?.message ||
-					t("auth.forgot_password_failed_toast"),
-			);
+					t("auth.forgot_password_failed_toast"), type: "error" });
 		} finally {
 			setIsLoading(false);
 		}

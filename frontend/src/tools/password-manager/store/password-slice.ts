@@ -95,8 +95,7 @@ export const generateRecoveryKey = createAsyncThunk(
 				encryptedMnemonic: encryptedRecord.encrypted,
 				salt: encryptedRecord.salt,
 				iv: encryptedRecord.iv,
-				updatedAt: new Date().toISOString(),
-			});
+				updatedAt: new Date().toISOString()});
 
 			return mnemonic;
 		} catch (error) {
@@ -153,8 +152,7 @@ export const createVault = createAsyncThunk(
 				encryptedSettings: settingsPayload,
 				publicKey: publicKeyJWK,
 				encryptedPrivateKey,
-				salt: saltStr,
-			});
+				salt: saltStr});
 
 			// 6. Save to local IndexedDB for offline unlock caching
 			await setKeyRecord({
@@ -162,8 +160,7 @@ export const createVault = createAsyncThunk(
 				encryptedPersonalKey,
 				encryptedPrivateKey,
 				salt: saltStr,
-				updatedAt: new Date().toISOString(),
-			});
+				updatedAt: new Date().toISOString()});
 
 			// Setup complete, fetch items (will be empty)
 			dispatch(fetchVaultData());
@@ -282,8 +279,7 @@ export const fetchVaultData = createAsyncThunk(
 							);
 							personalItems.push({
 								...(migrated?.data as PasswordItem),
-								id: item.id,
-							});
+								id: item.id});
 						}
 					} catch (e) {
 						logger.error("Failed to decrypt personal item", e);
@@ -306,8 +302,7 @@ export const fetchVaultData = createAsyncThunk(
 								rawSharedItems.push({
 									...(migrated?.data as PasswordItem),
 									id: item.id,
-									collectionId: item.collectionId,
-								});
+									collectionId: item.collectionId});
 							}
 						} catch (e) {
 							logger.error("Failed to decrypt shared item", e);
@@ -355,8 +350,7 @@ export const persistItem = createAsyncThunk(
 			// Upsert to backend
 			await api.put(`/tools/password-manager/vault/items/${item.id}`, {
 				encryptedPayload,
-				collectionId: item.collectionId || null,
-			});
+				collectionId: item.collectionId || null});
 
 			return item;
 		} catch (error: unknown) {
@@ -379,8 +373,7 @@ export const persistItem = createAsyncThunk(
 						await api.post(`/tools/password-manager/vault/items`, {
 							id: item.id,
 							encryptedPayload,
-							collectionId: item.collectionId,
-						});
+							collectionId: item.collectionId});
 						return item;
 					}
 					const personalKey = keyStore.getPersonalKey();
@@ -389,8 +382,7 @@ export const persistItem = createAsyncThunk(
 					await api.post(`/tools/password-manager/vault/items`, {
 						id: item.id,
 						encryptedPayload,
-						collectionId: item.collectionId,
-					});
+						collectionId: item.collectionId});
 					return item;
 				} catch (innerError) {
 					dispatch(fetchVaultData());
@@ -581,8 +573,7 @@ export const persistFolders = createAsyncThunk(
 			);
 
 			await api.put("/tools/password-manager/vault", {
-				encryptedSettings: settingsPayload,
-			});
+				encryptedSettings: settingsPayload});
 
 			return folders;
 		} catch (error) {
@@ -636,8 +627,7 @@ export const recoverWithMnemonic = createAsyncThunk(
 			const recoveredPassword = await decryptMasterPassword(mnemonic, {
 				encrypted: record.encryptedMnemonic,
 				salt: record.salt,
-				iv: record.iv,
-			});
+				iv: record.iv});
 			return recoveredPassword;
 		} catch {
 			return rejectWithValue("Invalid recovery key");
@@ -674,8 +664,7 @@ export const resetMasterPassword = createAsyncThunk(
 				encryptedPersonalKey,
 				encryptedBlob: encryptedPersonalKey,
 				encryptedPrivateKey,
-				salt: saltStr,
-			});
+				salt: saltStr});
 
 			// 4. Update local keyStore and IndexedDB
 			keyStore.setMEK(newMek);
@@ -684,8 +673,7 @@ export const resetMasterPassword = createAsyncThunk(
 				encryptedPersonalKey,
 				encryptedPrivateKey,
 				salt: saltStr,
-				updatedAt: new Date().toISOString(),
-			});
+				updatedAt: new Date().toISOString()});
 
 			return true;
 		} catch (error) {
@@ -1263,8 +1251,7 @@ export const passwordSlice = createSlice({
 						: item,
 				);
 			});
-	},
-});
+	}});
 
 export const {
 	setUserId,

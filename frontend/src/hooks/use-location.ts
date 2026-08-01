@@ -34,8 +34,7 @@ export const useLocation = () => {
 		region: "default",
 		state: "Unknown",
 		loading: true,
-		error: null,
-	});
+		error: null});
 
 	useEffect(() => {
 		const fetchLocation = async () => {
@@ -55,8 +54,7 @@ export const useLocation = () => {
 				setLocation((prev) => ({
 					...prev,
 					loading: false,
-					error: "Geolocation not supported",
-				}));
+					error: "Geolocation not supported"}));
 				return;
 			}
 
@@ -95,16 +93,14 @@ export const useLocation = () => {
 						setLocation((prev) => ({
 							...prev,
 							loading: false,
-							error: msg,
-						}));
+							error: msg}));
 					}
 				},
 				(error) => {
 					setLocation((prev) => ({
 						...prev,
 						loading: false,
-						error: error.message,
-					}));
+						error: error.message}));
 				},
 			);
 		};

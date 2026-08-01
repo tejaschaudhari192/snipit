@@ -29,8 +29,7 @@ import { useAiAutocomplete } from "@/hooks/use-ai-autocomplete";
 
 const DisplayError = lazy(() =>
 	import("@/components/common/core/error").then((m) => ({
-		default: m.default,
-	})),
+		default: m.default})),
 );
 import { useRemoteCursors } from "@/hooks/use-remote-cursors";
 import { useDisplayState } from "@/hooks/use-display-state";
@@ -52,38 +51,31 @@ import { CONFIG } from "@/configurations";
 import { Skeleton } from "@/components/ui/skeleton";
 const DisplayToolbar = lazy(() =>
 	import("@/components/display/display-toolbar").then((m) => ({
-		default: m.DisplayToolbar,
-	})),
+		default: m.DisplayToolbar})),
 );
 const AiWriterDialog = lazy(() =>
 	import("@/components/editor/ai-writer-dialog").then((m) => ({
-		default: m.AiWriterDialog,
-	})),
+		default: m.AiWriterDialog})),
 );
 const DisplayMetadata = lazy(() =>
 	import("@/components/display/display-metadata").then((m) => ({
-		default: m.DisplayMetadata,
-	})),
+		default: m.DisplayMetadata})),
 );
 const EditControls = lazy(() =>
 	import("@/components/display/edit-controls").then((m) => ({
-		default: m.EditControls,
-	})),
+		default: m.EditControls})),
 );
 const PasswordGate = lazy(() =>
 	import("@/components/display/password-gate").then((m) => ({
-		default: m.PasswordGate,
-	})),
+		default: m.PasswordGate})),
 );
 const DisplayWorkspace = lazy(() =>
 	import("@/components/display/display-workspace").then((m) => ({
-		default: m.DisplayWorkspace,
-	})),
+		default: m.DisplayWorkspace})),
 );
 const DisplayDialogs = lazy(() =>
 	import("@/components/display/display-dialogs").then((m) => ({
-		default: m.DisplayDialogs,
-	})),
+		default: m.DisplayDialogs})),
 );
 
 const DisplayPage = () => {
@@ -178,8 +170,7 @@ const DisplayPage = () => {
 
 	const { setupAutocomplete } = useAiAutocomplete({
 		language,
-		enabled: isAiAutocompleteEnabled,
-	});
+		enabled: isAiAutocompleteEnabled});
 
 	useEffect(() => {
 		// Preload Monaco Editor only if the content type is code or text
@@ -277,8 +268,7 @@ const DisplayPage = () => {
 		setUpdatedContent,
 		updateAllFromData,
 		setPaste,
-		setIsAutosave,
-	});
+		setIsAutosave});
 
 	useEffect(() => {
 		hoistedRemoteUpdateRef.current = (data) =>
@@ -317,8 +307,7 @@ const DisplayPage = () => {
 		user,
 		hasPending,
 		uploadFiles: uploadAll,
-		resetFileUpload,
-	});
+		resetFileUpload});
 	useDisplayInit({ id, state, user });
 
 	const handleRecordingChange = useCallback(
@@ -326,8 +315,7 @@ const DisplayPage = () => {
 			if (sharedSocketRef.current && id) {
 				sharedSocketRef.current.emit("set-recording-status", {
 					pasteId: id,
-					isRecording,
-				});
+					isRecording});
 			}
 		},
 		[id],
@@ -343,8 +331,7 @@ const DisplayPage = () => {
 			);
 			if (editorInstance) {
 				handleEditorChange({
-					content: val,
-				});
+					content: val});
 			}
 		},
 		[
@@ -441,8 +428,7 @@ const DisplayPage = () => {
 			editPassword,
 		},
 		originalPaste: paste,
-		isAdmin: isOwnerOrAdmin,
-	});
+		isAdmin: isOwnerOrAdmin});
 
 	const handleEditorMount: OnMount = (ed, monaco) => {
 		editorInstanceRef.current = ed;
@@ -471,8 +457,7 @@ const DisplayPage = () => {
 						startColumn: e.selection.startColumn,
 						endLineNumber: e.selection.endLineNumber,
 						endColumn: e.selection.endColumn,
-					},
-				});
+					}});
 			}
 		});
 	};
@@ -539,8 +524,7 @@ const DisplayPage = () => {
 
 	const visibleActiveUsers = syncUsers.map((u) => ({
 		...u,
-		isMe: u.socketId === sharedSocketRef.current?.id,
-	}));
+		isMe: u.socketId === sharedSocketRef.current?.id}));
 
 	return (
 		<>
@@ -635,8 +619,7 @@ const DisplayPage = () => {
 											updatedContent ??
 											paste?.content ??
 											"",
-										language,
-									});
+										language});
 								}
 							}}
 							isCode={contentType === "code"}

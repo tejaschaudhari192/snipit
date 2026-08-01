@@ -43,7 +43,7 @@ import { CONFIG } from "./configurations";
 import { MusicProvider } from "@/context/MusicContext";
 import { useMusic } from "@/context/use-music";
 import MusicPlayerSkeleton from "@/components/common/music/music-player-skeleton";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 
@@ -73,12 +73,16 @@ const App = () => {
 			const customEvent = e as CustomEvent;
 			const code = customEvent.detail?.code;
 			if (code === "access_denied") {
-				toast.error(t("errors.storage_access_denied"), {
-					id: "storage-error",
+				toast.add({
+					title: t("errors.storage_access_denied"),
+					type: "error",
+					id: "storage-error"
 				});
 			} else if (code === "save_failed") {
-				toast.error(t("errors.storage_save_failed"), {
-					id: "storage-error",
+				toast.add({
+					title: t("errors.storage_save_failed"),
+					type: "error",
+					id: "storage-error"
 				});
 			}
 		};

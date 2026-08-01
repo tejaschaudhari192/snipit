@@ -51,8 +51,7 @@ const PasswordForm = lazy(
 );
 const DeleteConfirmDialog = lazy(() =>
 	import("@/components/common/delete-confirm-dialog").then((m) => ({
-		default: m.DeleteConfirmDialog,
-	})),
+		default: m.DeleteConfirmDialog})),
 );
 import { FolderModal } from "./folder-modal";
 import { useFolderMutations } from "../hooks/use-folder-mutations";
@@ -190,8 +189,7 @@ export default function PasswordDetail({
 													? undefined
 													: val,
 											collectionId:
-												selectedFolder?.collectionId,
-										});
+												selectedFolder?.collectionId});
 									}
 								}}
 							>
@@ -229,8 +227,7 @@ export default function PasswordDetail({
 										onClick={() => {
 											onSave({
 												...item,
-												isFavorite: !item.isFavorite,
-											});
+												isFavorite: !item.isFavorite});
 										}}
 										className={`h-8 w-8 rounded-lg transition-colors ${
 											item.isFavorite

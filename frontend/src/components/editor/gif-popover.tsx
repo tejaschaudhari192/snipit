@@ -151,8 +151,7 @@ export function GifPopover({ onSelect }: GifPopoverProps) {
 					const formatted = json.data.map((item: GiphyGifItem) => ({
 						id: item.id,
 						url: item.images.fixed_width.url,
-						title: item.title,
-					}));
+						title: item.title}));
 					setGifs((prev) =>
 						isLoadMore ? [...prev, ...formatted] : formatted,
 					);

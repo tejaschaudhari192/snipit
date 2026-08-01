@@ -27,7 +27,7 @@ import api from "@/lib/api";
 import { removeKeyRecord, removeRecoveryRecord } from "../../utils/indexed-db";
 import { resetVault, selectUserId } from "../../store/password-slice";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 interface SettingsMenuProps {
 	user: { username: string } | null;
@@ -62,9 +62,9 @@ export function SettingsMenu({
 			}
 			// 3. Reset state
 			dispatch(resetVault());
-			toast.success(t("tools.password_manager_vault_deleted"));
+			toast.add({ title: t("tools.password_manager_vault_deleted"), type: "success" });
 		} catch (error) {
-			toast.error(t("tools.password_manager_delete_vault_failed"));
+			toast.add({ title: t("tools.password_manager_delete_vault_failed"), type: "error" });
 			console.error(error);
 		} finally {
 			setIsDeleting(false);
@@ -155,7 +155,7 @@ export function SettingsMenu({
 								className={`gap-3 cursor-pointer rounded-md p-2 transition-colors focus:bg-accent ${!user ? "opacity-50" : ""}`}
 								onClick={() => {
 									if (user) onSetCloudSync(true);
-									else toast.error(t("tools.password_manager_requires_login"));
+									else toast.add({ title: t("tools.password_manager_requires_login"), type: "error" });
 								}}
 							>
 								<div className="bg-muted p-1.5 rounded-md">

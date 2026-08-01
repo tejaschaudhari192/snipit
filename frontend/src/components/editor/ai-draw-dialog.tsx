@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useApiHelpers } from "@/lib/api";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { Badge } from "@/components/ui/badge";
 
 interface AiDrawDialogProps {
@@ -35,7 +35,7 @@ export const AiDrawDialog = ({
 
 	const handleGenerate = async () => {
 		if (!description.trim()) {
-			toast.warning(t("ai.draw_empty_description"));
+			toast.add({ title: t("ai.draw_empty_description"), type: "warning" });
 			return;
 		}
 
@@ -47,11 +47,11 @@ export const AiDrawDialog = ({
 				onApply(elements, clearBoard);
 				onClose();
 				setDescription("");
-				toast.success(t("ai.draw_success"));
+				toast.add({ title: t("ai.draw_success"), type: "success" });
 			}
 		} catch (error) {
 			console.error("Failed to generate diagram:", error);
-			toast.error(t("ai.draw_error"));
+			toast.add({ title: t("ai.draw_error"), type: "error" });
 		} finally {
 			setIsGenerating(false);
 		}

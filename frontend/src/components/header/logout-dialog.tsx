@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { LogOut } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { useAuth } from "@/context/AuthContext";
 import {
 	AlertDialog,
@@ -48,7 +48,7 @@ export const LogoutDialog = ({ open, onOpenChange }: LogoutDialogProps) => {
 						variant="destructive"
 						onClick={async () => {
 							await logout();
-							toast.success(t("auth.logout_confirm"));
+							toast.add({ title: t("auth.logout_confirm"), type: "success" });
 						}}
 						className="font-bold"
 					>

@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Users, Loader2 } from "lucide-react";
 import type { PasswordItem } from "@/tools/password-manager/types";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { useAppDispatch } from "@/tools/password-manager/store";
 import { shareItem } from "@/tools/password-manager/store/password-slice";
 import { Label } from "@/components/ui/label";
@@ -53,23 +53,23 @@ export default function BulkShareModal({
 					shareItem({
 						targetEmail: email,
 						role,
-						item,
-					}),
+						item}),
 				).unwrap();
 				successCount++;
 			} catch (error: unknown) {
 				const msg =
 					error instanceof Error ? error.message : String(error);
-				toast.error(`Failed to share "${item.title}": ${msg}`);
+				toast.add({ title: `Failed to share "${item.title}": ${msg}`, type: "error" });
 			}
 		}
 
 		setIsSharing(false);
 
 		if (successCount > 0) {
-			toast.success(
-				`Shared ${successCount}/${items.length} item${items.length > 1 ? "s" : ""} securely with ${email}`,
-			);
+			toast.add({
+				title: `Shared ${successCount}/${items.length} item${items.length > 1 ? "s" : ""} securely with ${email}`,
+				type: "success"
+			});
 		}
 
 		if (successCount === items.length) {

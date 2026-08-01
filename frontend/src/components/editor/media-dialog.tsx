@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { FileService } from "@/lib/file-service";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import {
 	Dialog,
 	DialogContent,
@@ -44,7 +44,7 @@ export function MediaDialog({
 			setIsUploading(true);
 			const { url, error } = await FileService.upload(selectedFile);
 			if (error) {
-				toast.error(error);
+				toast.add({ title: error, type: "error" });
 				return;
 			}
 			if (url) {
@@ -53,12 +53,12 @@ export function MediaDialog({
 						? `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB`
 						: `${(selectedFile.size / 1024).toFixed(1)} KB`;
 				onInsert(url, selectedFile.name, sizeStr);
-				toast.success("Uploaded and embedded successfully!");
+				toast.add({ title: "Uploaded and embedded successfully!", type: "success" });
 				handleClose();
 			}
 		} catch (err) {
 			console.error(err);
-			toast.error("An error occurred during upload");
+			toast.add({ title: "An error occurred during upload", type: "error" });
 		} finally {
 			setIsUploading(false);
 		}

@@ -62,8 +62,7 @@ export const TransliterationToggle = memo(
 								<span className="font-medium text-sm hidden sm:inline-block">
 									{enabled
 										? t("editor.transliteration.enabled", {
-												language: langName,
-											})
+												language: langName})
 										: t("editor.transliteration.disabled")}
 								</span>
 							</Button>

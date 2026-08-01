@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { useTranslation } from "react-i18next";
 import { useApiHelpers } from "@/lib/api";
 import { CONFIG } from "@/configurations";
@@ -30,9 +30,9 @@ export const useLanguageDetection = () => {
 			if (result.language && result.language !== "text") {
 				const detectedLang =
 					result.language === "bash" ? "shell" : result.language;
-				toast.success(
-					t("home.detected_language", { language: detectedLang }),
-				);
+				toast.add({
+					title: t("home.detected_language", { language: detectedLang }),
+				});
 				return { language: detectedLang, isCode: true };
 			} else if (result.language === "text") {
 				return { language: "text", isCode: false };

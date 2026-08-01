@@ -20,7 +20,7 @@ import {
 	shareFolder,
 	selectVault,
 } from "@/tools/password-manager/store/password-slice";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
 import { useEffect } from "react";
 import { Label } from "@/components/ui/label";
@@ -70,16 +70,15 @@ export default function ShareFolderModal({
 					targetEmail: email,
 					role,
 					folderId: finalFolderId,
-					folderName: finalFolderName,
-				}),
+					folderName: finalFolderName}),
 			).unwrap();
 
-			toast.success(`Folder securely shared with ${email}`);
+			toast.add({ title: `Folder securely shared with ${email}`, type: "success" });
 			setEmail("");
 			onClose();
 		} catch (error: unknown) {
 			const msg = error instanceof Error ? error.message : String(error);
-			toast.error(msg || "Failed to share folder securely");
+			toast.add({ title: msg || "Failed to share folder securely", type: "error" });
 		} finally {
 			setIsSharing(false);
 		}

@@ -128,8 +128,7 @@ export default function StepOneByOne({ items, duplicateStrategy, onDone, onCance
 					const newFolder = await dispatch(createFolderAsync({
 						name: item.sourceFolder,
 						color: "#888888",
-						isVirtual: false,
-					})).unwrap();
+						isVirtual: false})).unwrap();
 					// Write to ref immediately (synchronous — no batching)
 					folderCacheRef.current[item.sourceFolder] = newFolder.id;
 				}

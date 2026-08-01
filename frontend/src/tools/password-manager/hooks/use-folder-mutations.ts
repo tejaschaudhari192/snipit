@@ -7,7 +7,7 @@ import {
 	deleteFolderAsync,
 } from "@/tools/password-manager/store/password-slice";
 import type { Folder } from "@/tools/password-manager/types";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 export function useFolderMutations() {
 	const dispatch = useAppDispatch();
@@ -26,13 +26,12 @@ export function useFolderMutations() {
 			const newFolders = [...(vault.folders || []), newFolder];
 			dispatch(
 				setVault({
-					folders: newFolders,
-				}),
+					folders: newFolders}),
 			);
 			dispatch(persistFolders(newFolders))
 				.unwrap()
 				.catch((err) =>
-					toast.error(err.message || "Failed to create folder"),
+					toast.add({ title: err.message || "Failed to create folder", type: "error" }),
 				);
 		},
 		[vault, dispatch],
@@ -53,13 +52,12 @@ export function useFolderMutations() {
 			);
 			dispatch(
 				setVault({
-					folders: newFolders,
-				}),
+					folders: newFolders}),
 			);
 			dispatch(persistFolders(newFolders))
 				.unwrap()
 				.catch((err) =>
-					toast.error(err.message || "Failed to update folder"),
+					toast.add({ title: err.message || "Failed to update folder", type: "error" }),
 				);
 		},
 		[vault, dispatch],
@@ -71,7 +69,7 @@ export function useFolderMutations() {
 			dispatch(deleteFolderAsync({ id, deletePasswordsInside }))
 				.unwrap()
 				.catch((err) =>
-					toast.error(err || "Failed to delete folder"),
+					toast.add({ title: err || "Failed to delete folder", type: "error" }),
 				);
 		},
 		[vault, dispatch],

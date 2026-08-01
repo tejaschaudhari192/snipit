@@ -30,8 +30,7 @@ const TrackItem: React.FC<TrackItemProps> = ({
 	onDragStart,
 	onDragEnd,
 	onDragOver,
-	onDrop,
-}) => {
+	onDrop}) => {
 	const { isPlaying } = useMusic();
 
 	return (

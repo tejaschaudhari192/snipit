@@ -13,8 +13,7 @@ interface MusicPlaylistProps {
 const MusicPlaylist: React.FC<MusicPlaylistProps> = ({
 	playlist,
 	currentTrack,
-	onTrackSelect,
-}) => {
+	onTrackSelect}) => {
 	const { t } = useTranslation();
 
 	// Robust decoding for display

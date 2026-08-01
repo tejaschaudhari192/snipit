@@ -67,8 +67,7 @@ export function SchemaFieldRenderer({
 								className="h-6 text-xs text-primary hover:text-primary/80 px-2"
 								onClick={() => {
 									const blob = new Blob([value], {
-										type: "text/plain",
-									});
+										type: "text/plain"});
 									const url = URL.createObjectURL(blob);
 									const a = document.createElement("a");
 									a.href = url;

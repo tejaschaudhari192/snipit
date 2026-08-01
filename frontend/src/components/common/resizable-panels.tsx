@@ -39,8 +39,7 @@ export const ResizablePanels: React.FC<ResizablePanelsProps> = ({
 	minSize = 15,
 	maxSize = 85,
 	className,
-	storageKey,
-}) => {
+	storageKey}) => {
 	const [firstSize, setFirstSize] = useState(() => {
 		if (storageKey) {
 			const saved = localStore.getItem(storageKey);

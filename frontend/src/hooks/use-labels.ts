@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { useApiHelpers } from "@/lib/api";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { useAuth } from "@/context/AuthContext";
 
 export const useLabels = (pasteId?: string) => {
@@ -50,7 +50,7 @@ export const useLabels = (pasteId?: string) => {
 				fetchAllLabels();
 				return true;
 			} catch {
-				toast.error("Failed to update labels");
+				toast.add({ title: "Failed to update labels", type: "error" });
 				setLabels(previousLabels);
 				return false;
 			}
@@ -64,8 +64,7 @@ export const useLabels = (pasteId?: string) => {
 			allLabels,
 			isLoading,
 			updateLabels,
-			fetchLabels,
-		}),
+			fetchLabels}),
 		[labels, allLabels, isLoading, updateLabels, fetchLabels],
 	);
 };

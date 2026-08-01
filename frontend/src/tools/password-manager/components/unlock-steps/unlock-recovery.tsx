@@ -10,7 +10,7 @@ import {
 	CardDescription,
 } from "@/components/ui/card";
 import { KeyRound, LockOpen, Loader2, Upload } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 interface UnlockRecoveryProps {
 	recoveryPhrase: string;
@@ -38,12 +38,11 @@ export default function UnlockRecovery({
 
 		if (file.size > 102400) {
 			// 100KB limit
-			toast.error(
+			toast.add({ title: 
 				t(
 					"tools.password_manager_recovery_file_too_large",
 					"File is too large",
-				),
-			);
+				), type: "error" });
 			return;
 		}
 
@@ -52,21 +51,19 @@ export default function UnlockRecovery({
 			const text = event.target?.result as string;
 			if (text) {
 				onRecoveryPhraseChange(text.trim());
-				toast.success(
+				toast.add({ title: 
 					t(
 						"tools.password_manager_recovery_file_read_success",
 						"Recovery key loaded",
-					),
-				);
+					), type: "success" });
 			}
 		};
 		reader.onerror = () => {
-			toast.error(
+			toast.add({ title: 
 				t(
 					"tools.password_manager_recovery_file_read_error",
 					"Failed to read file",
-				),
-			);
+				), type: "error" });
 		};
 		reader.readAsText(file);
 

@@ -104,25 +104,21 @@ export function usePinchZoom(initialFontSize = CONFIG.defaults.fontSize) {
 		};
 
 		element.addEventListener("touchstart", handleTouchStart, {
-			passive: false,
-		});
+			passive: false});
 		element.addEventListener("touchmove", handleTouchMove, {
-			passive: false,
-		});
+			passive: false});
 		element.addEventListener("touchend", handleTouchEnd);
 		// Use capture to intercept events before monaco editor
 		element.addEventListener("wheel", handleWheel, {
 			passive: false,
-			capture: true,
-		});
+			capture: true});
 
 		return () => {
 			element.removeEventListener("touchstart", handleTouchStart);
 			element.removeEventListener("touchmove", handleTouchMove);
 			element.removeEventListener("touchend", handleTouchEnd);
 			element.removeEventListener("wheel", handleWheel, {
-				capture: true,
-			});
+				capture: true});
 		};
 	}, [element, setFontSize]);
 

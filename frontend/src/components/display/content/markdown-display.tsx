@@ -94,8 +94,7 @@ export const MarkdownDisplay = memo(
 				),
 				p: ({ node, ...props }) => (
 					<p className="mb-2 leading-relaxed" {...props} />
-				),
-			}),
+				)}),
 			[],
 		);
 

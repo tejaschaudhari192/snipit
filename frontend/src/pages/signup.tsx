@@ -13,7 +13,7 @@ import {
 	CardTitle,
 	CardFooter,
 } from "@/components/ui/card";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { UserPlus, Mail, Lock, User, ArrowRight } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { useAuth } from "@/context/AuthContext";
@@ -43,22 +43,20 @@ const SignupPage = () => {
 		e.preventDefault();
 
 		if (password !== confirmPassword) {
-			toast.error(
+			toast.add({ title: 
 				t(
 					"auth.reset_password_mismatch_toast",
 					"Passwords do not match",
-				),
-			);
+				), type: "error" });
 			return;
 		}
 
 		if (!isStrongEnough) {
-			toast.error(
+			toast.add({ title: 
 				t(
 					"auth.reset_password_weak_toast",
 					"Password does not meet the requirements",
-				),
-			);
+				), type: "error" });
 			return;
 		}
 
@@ -67,15 +65,13 @@ const SignupPage = () => {
 			await api.post("/auth/register", {
 				username,
 				email,
-				password,
-			});
-			toast.success(t("auth.signup_success"));
+				password});
+			toast.add({ title: t("auth.signup_success"), type: "success" });
 			navigate("/login");
 		} catch (error) {
 			const axiosError = error as AxiosError<{ message: string }>;
-			toast.error(
-				axiosError.response?.data?.message || t("auth.signup_failed"),
-			);
+			toast.add({ title: 
+				axiosError.response?.data?.message || t("auth.signup_failed"), type: "error" });
 		} finally {
 			setIsLoading(false);
 		}
@@ -87,23 +83,21 @@ const SignupPage = () => {
 		setIsLoading(true);
 		try {
 			const response = await api.post("/auth/google", {
-				idToken: credentialResponse.credential,
-			});
+				idToken: credentialResponse.credential});
 			login(response.data);
-			toast.success(t("auth.login_success"));
+			toast.add({ title: t("auth.login_success"), type: "success" });
 			navigate("/");
 		} catch (error) {
 			const axiosError = error as AxiosError<{ message: string }>;
-			toast.error(
-				axiosError.response?.data?.message || t("auth.login_failed"),
-			);
+			toast.add({ title: 
+				axiosError.response?.data?.message || t("auth.login_failed"), type: "error" });
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
 	const handleGoogleError = () => {
-		toast.error(t("auth.google_login_failed"));
+		toast.add({ title: t("auth.google_login_failed"), type: "error" });
 	};
 
 	return (

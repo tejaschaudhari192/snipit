@@ -35,8 +35,7 @@ export const useTerminalExecution = ({
 		if (opening && socket && textValue) {
 			socket.emit("run-code", {
 				code: textValue,
-				language,
-			});
+				language});
 		}
 	}, [isTerminalOpen, socket, textValue, language]);
 

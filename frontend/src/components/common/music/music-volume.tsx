@@ -21,8 +21,7 @@ const MusicVolume: React.FC<MusicVolumeProps> = ({
 	volume,
 	onVolumeChange,
 	quality,
-	onQualityChange,
-}) => {
+	onQualityChange}) => {
 	const handleToggleMute = () => {
 		onVolumeChange(volume === 0 ? 50 : 0);
 	};

@@ -41,8 +41,7 @@ export const useAiEnhance = () => {
 								setIsAiDialogOpen(true);
 							}
 						}
-					},
-				});
+					}});
 			};
 
 			registerAiAction(

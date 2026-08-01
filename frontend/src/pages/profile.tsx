@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import { useApiHelpers } from "@/lib/api";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { Link } from "react-router-dom";
 import { User, Tag, Bookmark, FilterX } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
@@ -17,18 +17,15 @@ import type { User as UserType } from "@/types";
 
 const ProfileInfo = lazy(() =>
 	import("@/components/profile/profile-info").then((m) => ({
-		default: m.ProfileInfo,
-	})),
+		default: m.ProfileInfo})),
 );
 const ProfileSnippetList = lazy(() =>
 	import("@/components/profile/profile-snippet-list").then((m) => ({
-		default: m.ProfileSnippetList,
-	})),
+		default: m.ProfileSnippetList})),
 );
 const LogoutDialog = lazy(() =>
 	import("@/components/header/logout-dialog").then((m) => ({
-		default: m.LogoutDialog,
-	})),
+		default: m.LogoutDialog})),
 );
 
 const ProfilePage = () => {
@@ -106,10 +103,9 @@ const ProfilePage = () => {
 		try {
 			setIsUpdating(true);
 			const updatedUser = await apiHelpers.updateMe({
-				username: newName,
-			});
+				username: newName});
 			setUser({ ...user!, username: updatedUser.username });
-			toast.success(t("profile.profile_updated"));
+			toast.add({ title: t("profile.profile_updated"), type: "success" });
 			setIsEditingName(false);
 		} catch (error: unknown) {
 			const errorMessage =
@@ -117,7 +113,7 @@ const ProfilePage = () => {
 					? (error as { response?: { data?: { message?: string } } })
 						.response?.data?.message
 					: undefined;
-			toast.error(errorMessage || t("profile.update_failed"));
+			toast.add({ title: errorMessage || t("profile.update_failed"), type: "error" });
 		} finally {
 			setIsUpdating(false);
 		}

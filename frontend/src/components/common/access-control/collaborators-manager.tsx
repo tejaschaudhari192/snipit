@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 import { cn } from "@/utils";
 import type { ShareRole } from "@/types";
 import { useApiHelpers } from "@/lib/api";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface ShareItem {
@@ -83,17 +83,16 @@ export const CollaboratorsManager = ({
 					...allowedUsers,
 					...results.map((i) => i.email),
 				]);
-				toast.success(t("messages.collaborators_added"));
+				toast.add({ title: t("messages.collaborators_added"), type: "success" });
 			} catch {
-				toast.error(t("messages.collaborators_failed"));
+				toast.add({ title: t("messages.collaborators_failed"), type: "error" });
 			} finally {
 				setIsUpdating(false);
 			}
 		} else {
 			const newShareItems = uniqueEmails.map((email) => ({
 				email,
-				role: pendingRole,
-			}));
+				role: pendingRole}));
 			setCollaborators([...collaborators, ...newShareItems]);
 			setAllowedUsers([
 				...allowedUsers,
@@ -115,9 +114,9 @@ export const CollaboratorsManager = ({
 				setAllowedUsers(
 					allowedUsers.filter((e) => e !== emailToRemove),
 				);
-				toast.success(t("messages.collaborator_removed"));
+				toast.add({ title: t("messages.collaborator_removed"), type: "success" });
 			} catch {
-				toast.error(t("messages.collaborator_remove_failed"));
+				toast.add({ title: t("messages.collaborator_remove_failed"), type: "error" });
 			} finally {
 				setUpdatingEmails((prev) =>
 					prev.filter((e) => e !== emailToRemove),
@@ -147,9 +146,9 @@ export const CollaboratorsManager = ({
 							: item,
 					),
 				);
-				toast.success(t("messages.collaborator_updated"));
+				toast.add({ title: t("messages.collaborator_updated"), type: "success" });
 			} catch {
-				toast.error(t("messages.collaborator_update_failed"));
+				toast.add({ title: t("messages.collaborator_update_failed"), type: "error" });
 			} finally {
 				setUpdatingEmails((prev) => prev.filter((e) => e !== email));
 			}

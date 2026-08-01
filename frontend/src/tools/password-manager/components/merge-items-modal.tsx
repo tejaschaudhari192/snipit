@@ -14,6 +14,8 @@ import { Label } from "@/components/ui/label";
 import { Check, Info, GitMerge } from "lucide-react";
 import type { PasswordItem } from "@/tools/password-manager/types";
 
+type TopLevelStringField = Extract<keyof PasswordItem, "username" | "password" | "url" | "title" | "folderId" | "collectionId" | "notes">;
+
 interface MergeItemsModalProps {
 	isOpen: boolean;
 	onClose: () => void;
@@ -50,9 +52,9 @@ export function MergeItemsModal({
 				items.forEach((item) => {
 					let val = "";
 					if (isTopLevel) {
-						val = (item as any)[field] || "";
+						val = item[field as TopLevelStringField] || "";
 					} else {
-						val = item.metadata?.[field] || (item as any)[field] || "";
+						val = item.metadata?.[field] || item[field as TopLevelStringField] || "";
 					}
 
 					if (val && !seenValues.has(val)) {
@@ -76,9 +78,9 @@ export function MergeItemsModal({
 			items.forEach(i => {
 				if (i.metadata) Object.keys(i.metadata).forEach(k => allMetaKeys.add(k));
 				// some standard fields might exist at top level due to imports
-				if ((i as any).username) allMetaKeys.add("username");
-				if ((i as any).password) allMetaKeys.add("password");
-				if ((i as any).url) allMetaKeys.add("url");
+				if (i.username) allMetaKeys.add("username");
+				if (i.password) allMetaKeys.add("password");
+				if (i.url) allMetaKeys.add("url");
 			});
 
 			allMetaKeys.forEach(key => {
@@ -116,9 +118,9 @@ export function MergeItemsModal({
 		const allFieldsToMerge = new Set<string>();
 		sortedItems.forEach(i => {
 			if (i.metadata) Object.keys(i.metadata).forEach(k => allFieldsToMerge.add(k));
-			if ((i as any).username) allFieldsToMerge.add("username");
-			if ((i as any).password) allFieldsToMerge.add("password");
-			if ((i as any).url) allFieldsToMerge.add("url");
+			if (i.username) allFieldsToMerge.add("username");
+			if (i.password) allFieldsToMerge.add("password");
+			if (i.url) allFieldsToMerge.add("url");
 		});
 
 		sortedItems.forEach((item) => {
@@ -147,12 +149,12 @@ export function MergeItemsModal({
 		// Apply non-conflicting missing fields to base item
 		const applyIfMissing = (field: string, isTopLevel: boolean) => {
 			if (!conflicts.find(c => c.field === field)) {
-				const itemWithValue = sortedItems.find(i => isTopLevel ? (i as any)[field] : (i.metadata?.[field] || (i as any)[field]));
+				const itemWithValue = sortedItems.find(i => isTopLevel ? i[field as TopLevelStringField] : (i.metadata?.[field] || i[field as TopLevelStringField]));
 				if (itemWithValue) {
 					if (isTopLevel) {
-						(mergedItem as any)[field] = (itemWithValue as any)[field];
+						Object.assign(mergedItem, { [field]: itemWithValue[field as TopLevelStringField] });
 					} else {
-						mergedItem.metadata![field] = itemWithValue.metadata?.[field] || (itemWithValue as any)[field];
+						mergedItem.metadata![field] = itemWithValue.metadata?.[field] || (itemWithValue[field as TopLevelStringField] as string);
 					}
 				}
 			}
@@ -167,7 +169,7 @@ export function MergeItemsModal({
 			const chosenOption = conflict.values.find(v => v.id === chosenId);
 			if (chosenOption) {
 				if (conflict.values[0].isTopLevel) {
-					(mergedItem as any)[conflict.field] = chosenOption.value;
+					mergedItem[conflict.field as TopLevelStringField] = chosenOption.value;
 				} else {
 					mergedItem.metadata![conflict.field] = chosenOption.value;
 				}
@@ -194,7 +196,7 @@ export function MergeItemsModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="sm:max-w-[500px]">
+			<DialogContent className="sm:max-w-125">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<GitMerge className="w-5 h-5" />
@@ -226,8 +228,8 @@ export function MergeItemsModal({
 													type="button"
 													onClick={() => setResolutions(prev => ({ ...prev, [conflict.field]: v.id }))}
 													className={`flex items-center justify-between w-full overflow-hidden px-4 py-3 rounded-xl border text-left transition-all ${resolutions[conflict.field] === v.id
-															? "border-primary bg-primary/5 ring-1 ring-primary/20"
-															: "border-border hover:border-primary/50 hover:bg-muted/50"
+														? "border-primary bg-primary/5 ring-1 ring-primary/20"
+														: "border-border hover:border-primary/50 hover:bg-muted/50"
 														}`}
 												>
 													<span className={`text-sm truncate min-w-0 flex-1 mr-4 ${conflict.field === "password" ? "font-mono" : ""}`}>

@@ -7,7 +7,7 @@ import type { PasteData } from "@/types";
 import { useAuth } from "@/context/AuthContext";
 import { useApiHelpers } from "@/lib/api";
 import { useState, useEffect, useCallback } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { useSnippets } from "@/context/SnippetContext";
 import { guestStorage } from "@/utils/guest-storage";
 import { ShimmerSection } from "@/components/common/shimmer-section";
@@ -47,15 +47,15 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 				setIsSaved(result.saved);
 
 				if (result.saved) {
-					toast.success(t("display.snippet_saved"));
+					toast.add({ title: t("display.snippet_saved"), type: "success" });
 				} else {
-					toast.success(t("display.snippet_unsaved"));
+					toast.add({ title: t("display.snippet_unsaved"), type: "success" });
 				}
 
 				loadSavedProfile(true);
 			} catch (error) {
 				console.error("Failed to toggle save snippet", error);
-				toast.error(t("display.save_failed"));
+				toast.add({ title: t("display.save_failed"), type: "error" });
 			} finally {
 				setIsSaving(false);
 			}
@@ -66,9 +66,9 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 				const saved = guestStorage.toggleSaved(paste);
 
 				if (saved) {
-					toast.success(t("display.snippet_saved"));
+					toast.add({ title: t("display.snippet_saved"), type: "success" });
 				} else {
-					toast.success(t("display.snippet_unsaved"));
+					toast.add({ title: t("display.snippet_unsaved"), type: "success" });
 				}
 
 				setIsSaved(saved);

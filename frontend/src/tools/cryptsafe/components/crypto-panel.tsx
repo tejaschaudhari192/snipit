@@ -64,12 +64,10 @@ async function readEntry(entry: FileSystemEntry, path = ""): Promise<File[]> {
 			fileEntry.file((file: File) => {
 				const relPath = path ? `${path}/${file.name}` : file.name;
 				const patchedFile = new File([file], file.name, {
-					type: file.type,
-				});
+					type: file.type});
 				Object.defineProperty(patchedFile, "webkitRelativePath", {
 					value: relPath,
-					writable: false,
-				});
+					writable: false});
 				resolve([patchedFile]);
 			});
 		});
@@ -252,8 +250,7 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 								),
 						path: isEncrypt
 							? (f as EncryptedFile).outputName
-							: (f as DecryptedFile).originalPath,
-					})),
+							: (f as DecryptedFile).originalPath})),
 				);
 
 				await writeToDirectory(
@@ -324,8 +321,7 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 						),
 				path: isEncrypt
 					? (f as EncryptedFile).outputName
-					: (f as DecryptedFile).originalPath,
-			})),
+					: (f as DecryptedFile).originalPath})),
 		);
 
 		setZipProgress(0);

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { usePasswordStrength } from "@/hooks/use-password-strength";
 
 import Step1FeatureOverview from "./onboarding-steps/step1-feature-overview";
@@ -48,7 +48,7 @@ export default function VaultOnboarding({
 	const handleCopy = useCallback(async () => {
 		if (!recoveryMnemonic) return;
 		await navigator.clipboard.writeText(recoveryMnemonic);
-		toast.success(t("tools.password_manager_recovery_copied"));
+		toast.add({ title: t("tools.password_manager_recovery_copied"), type: "success" });
 	}, [recoveryMnemonic, t]);
 
 	const handleDownload = useCallback(() => {
@@ -62,12 +62,11 @@ export default function VaultOnboarding({
 		a.click();
 		document.body.removeChild(a);
 		URL.revokeObjectURL(url);
-		toast.success(
+		toast.add({ title: 
 			t(
 				"tools.password_manager_recovery_downloaded",
 				"Downloaded recovery key",
-			),
-		);
+			), type: "success" });
 	}, [recoveryMnemonic, t]);
 
 	const handleCreateVault = useCallback(() => {

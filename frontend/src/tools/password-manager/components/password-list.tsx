@@ -53,8 +53,7 @@ import {
 
 const DeleteConfirmDialog = lazy(() =>
 	import("@/components/common/delete-confirm-dialog").then((m) => ({
-		default: m.DeleteConfirmDialog,
-	})),
+		default: m.DeleteConfirmDialog})),
 );
 
 interface PasswordListProps {
@@ -152,8 +151,7 @@ export default function PasswordList({
 				"metadata.url",
 				"metadata.username",
 				"metadata.email"
-			],
-		});
+			]});
 	}, [categoryFiltered, searchQuery]);
 
 	const [visibleCount, setVisibleCount] = useState(50);
@@ -199,8 +197,7 @@ export default function PasswordList({
 						className="border-muted-foreground/30 shadow-sm"
 					/>
 				),
-				enableSorting: false,
-			}),
+				enableSorting: false}),
 			columnHelper.accessor("title", {
 				header: t("tools.password_manager_table_company") as string,
 				cell: ({ row }) => {
@@ -226,16 +223,14 @@ export default function PasswordList({
 							</div>
 						</div>
 					);
-				},
-			}),
+				}}),
 			columnHelper.accessor("updatedAt", {
 				header: t("tools.password_manager_table_last_modified") as string,
 				cell: ({ getValue }) => (
 					<span className="text-sm text-muted-foreground whitespace-nowrap">
 						{formatRelativeTime(getValue(), t("tools.password_manager_just_now") as string)}
 					</span>
-				),
-			}),
+				)}),
 			...(folders.length > 0 ? [
 				columnHelper.accessor("folderId", {
 					header: t("tools.password_manager_table_folder") as string,
@@ -250,8 +245,7 @@ export default function PasswordList({
 								<span className="truncate">{folder.name}</span>
 							</Badge>
 						);
-					},
-				})
+					}})
 			] : []),
 			columnHelper.accessor("itemType", {
 				header: t("tools.password_manager_table_type") as string,
@@ -264,8 +258,7 @@ export default function PasswordList({
 							{option ? t(option.label) : type}
 						</Badge>
 					);
-				},
-			}),
+				}}),
 			columnHelper.display({
 				id: "actions",
 				cell: ({ row }) => {
@@ -319,8 +312,7 @@ export default function PasswordList({
 							</DropdownMenu>
 						</div>
 					);
-				},
-			}),
+				}}),
 		];
 	}, [t, folders, onEdit, confirmDelete]);
 
@@ -334,8 +326,7 @@ export default function PasswordList({
 		state: {
 			rowSelection,
 		},
-		onRowSelectionChange: setRowSelection,
-	});
+		onRowSelectionChange: setRowSelection});
 
 	const selectedItems = table.getSelectedRowModel().rows.map((r) => r.original);
 	const hasSelection = selectedItems.length > 0;

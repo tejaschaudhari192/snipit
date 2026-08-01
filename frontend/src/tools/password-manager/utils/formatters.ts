@@ -50,8 +50,7 @@ export function formatDate(dateStr?: string): string {
 			month: "short",
 			day: "numeric",
 			hour: "2-digit",
-			minute: "2-digit",
-		}).format(new Date(dateStr));
+			minute: "2-digit"}).format(new Date(dateStr));
 	} catch {
 		return "";
 	}

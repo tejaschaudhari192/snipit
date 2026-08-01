@@ -1,6 +1,6 @@
 import { localStore } from "@/utils/storage";
 import { useState, useCallback } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { useTranslation } from "react-i18next";
 import { isSnipitDrawing } from "@/utils";
 
@@ -65,8 +65,7 @@ export const useAiDraw = ({
 							setTextValue(
 								JSON.stringify({
 									...currentDrawing,
-									elements: mergedElements,
-								}),
+									elements: mergedElements}),
 							);
 						} catch {
 							setTextValue(drawingStr);
@@ -80,7 +79,7 @@ export const useAiDraw = ({
 				setDrawRevision(drawRevision + 1);
 			} catch (error) {
 				console.error("Failed to apply AI drawing:", error);
-				toast.error(t("ai.draw_apply_error"));
+				toast.add({ title: t("ai.draw_apply_error"), type: "error" });
 			}
 		},
 		[drawRevision, setDrawRevision, setTextValue, t],

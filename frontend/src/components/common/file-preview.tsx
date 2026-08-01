@@ -6,8 +6,7 @@ import { MonacoConfig } from "@/hooks/use-monaco-config";
 
 const MonacoEditor = lazy(() =>
 	import("@monaco-editor/react").then((m) => ({
-		default: m.Editor,
-	})),
+		default: m.Editor})),
 );
 interface FilePreviewProps {
 	url: string;

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useApiHelpers } from "@/lib/api";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 export const useSemanticGenerator = (setCustomId: (v: string) => void) => {
 	const { generateWordId, getWordCategories } = useApiHelpers();
@@ -31,7 +31,7 @@ export const useSemanticGenerator = (setCustomId: (v: string) => void) => {
 			setCustomId(id);
 		} catch (error) {
 			console.error("Failed to generate semantic ID:", error);
-			toast.error("Failed to generate words");
+			toast.add({ title: "Failed to generate words", type: "error" });
 		} finally {
 			setIsGenerating(false);
 		}

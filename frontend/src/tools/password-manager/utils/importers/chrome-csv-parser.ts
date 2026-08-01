@@ -11,8 +11,7 @@ export function parseChromeCSV(rawCSV: string): ParsedImportItem[] {
 		note: string;
 	}>(rawCSV.trim(), {
 		header: true,
-		skipEmptyLines: true,
-	});
+		skipEmptyLines: true});
 
 	if (parsed.errors && parsed.errors.length > 0) {
 		console.warn("Chrome CSV parse errors:", parsed.errors);
@@ -49,8 +48,7 @@ export function parseChromeCSV(rawCSV: string): ParsedImportItem[] {
 			},
 			mapped,
 			isDuplicate: false,
-			isSkipped: false,
-		});
+			isSkipped: false});
 	}
 
 	return results;

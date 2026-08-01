@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useApiHelpers } from "@/lib/api";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { Loader2, Wand2 } from "lucide-react";
 import { AxiosError } from "axios";
 import { useTranslation } from "react-i18next";
@@ -64,16 +64,16 @@ export const AiWriterDialog = ({
 			);
 			if (res && res.result) {
 				setResult(res.result);
-				toast.success(t("ai_dialog.success"));
+				toast.add({ title: t("ai_dialog.success"), type: "success" });
 			} else {
-				toast.error(t("ai_dialog.error_failed"));
+				toast.add({ title: t("ai_dialog.error_failed"), type: "error" });
 			}
 		} catch (error: unknown) {
 			console.error("AI Writer error:", error);
 			const axiosError = error as AxiosError<{ error: string }>;
 			const errorMsg =
 				axiosError?.response?.data?.error || "Failed to generate text";
-			toast.error(errorMsg);
+			toast.add({ title: errorMsg, type: "error" });
 		} finally {
 			setIsLoading(false);
 		}

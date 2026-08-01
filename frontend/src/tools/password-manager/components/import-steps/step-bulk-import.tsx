@@ -40,7 +40,7 @@ function DuplicateAskDialog({
 
 	return (
 		<Dialog open modal>
-			<DialogContent className="sm:max-w-[420px]" onInteractOutside={(e) => e.preventDefault()}>
+			<DialogContent className="sm:max-w-105" onInteractOutside={(e) => e.preventDefault()}>
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<AlertTriangle className="w-5 h-5 text-amber-500" />
@@ -104,7 +104,7 @@ export default function StepBulkImport({ items, duplicateStrategy, onDone }: Pro
 				resolve: (decision: DuplicateDecision) => {
 					setPendingDuplicate(null);
 					resolve(decision);
-				},
+				}
 			});
 		});
 	}, []);
@@ -158,7 +158,7 @@ export default function StepBulkImport({ items, duplicateStrategy, onDone }: Pro
 							const newFolder = await dispatch(createFolderAsync({
 								name: item.sourceFolder,
 								color: "#888888",
-								isVirtual: false,
+								isVirtual: false
 							})).unwrap();
 							localFolderCache[item.sourceFolder] = newFolder.id;
 						} catch (e) {
@@ -215,8 +215,8 @@ export default function StepBulkImport({ items, duplicateStrategy, onDone }: Pro
 				<div className="space-y-4">
 					<Progress value={progress} className="h-3" />
 					<div className="flex justify-center gap-6 text-sm font-medium">
-						<span className="text-emerald-600 flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4"/> {importedCount} {t("password_manager_import_imported")}</span>
-						<span className="text-muted-foreground flex items-center gap-1.5"><FileX2 className="w-4 h-4"/> {skippedCount} {t("password_manager_import_skipped")}</span>
+						<span className="text-emerald-600 flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" /> {importedCount} {t("password_manager_import_imported")}</span>
+						<span className="text-muted-foreground flex items-center gap-1.5"><FileX2 className="w-4 h-4" /> {skippedCount} {t("password_manager_import_skipped")}</span>
 					</div>
 				</div>
 

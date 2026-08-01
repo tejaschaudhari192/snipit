@@ -9,7 +9,7 @@ import React, {
 import { useApiHelpers } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import type { PasteData } from "@/types";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { useTranslation } from "react-i18next";
 import { guestStorage } from "@/utils/guest-storage";
 
@@ -55,8 +55,7 @@ const initialState: SnippetState = {
 };
 
 export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
-	children,
-}) => {
+	children }) => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
 	const apiHelpers = useApiHelpers();
@@ -106,7 +105,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 			setHistory((prev) => ({
 				...prev,
 				loading: isFirstLoad,
-				isLoadingMore: !isFirstLoad,
+				isLoadingMore: !isFirstLoad
 			}));
 
 			try {
@@ -177,16 +176,16 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 						page: page + 1,
 						hasMore: endIndex < allHistory.length,
 						loading: false,
-						isLoadingMore: false,
+						isLoadingMore: false
 					}));
 				}
 			} catch (err) {
 				console.error("Failed to fetch history", err);
-				if (isFirstLoad) toast.error(t("history.sync_failed"));
+				if (isFirstLoad) toast.add({ title: t("history.sync_failed"), type: "error" });
 				setHistory((prev) => ({
 					...prev,
 					loading: false,
-					isLoadingMore: false,
+					isLoadingMore: false
 				}));
 			} finally {
 				isHistoryFetching.current = false;
@@ -211,7 +210,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 			setProfile((prev) => ({
 				...prev,
 				loading: isFirstLoad,
-				isLoadingMore: !isFirstLoad,
+				isLoadingMore: !isFirstLoad
 			}));
 
 			try {
@@ -228,7 +227,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 						page: isFirstLoad ? 2 : prev.page + 1,
 						hasMore: data.hasMore,
 						loading: false,
-						isLoadingMore: false,
+						isLoadingMore: false
 					}));
 				} else {
 					// Guest Pagination for Created
@@ -245,16 +244,16 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 						page: page + 1,
 						hasMore: endIndex < allCreated.length,
 						loading: false,
-						isLoadingMore: false,
+						isLoadingMore: false
 					}));
 				}
 			} catch (err) {
 				console.error("Failed to fetch profile pastes", err);
-				if (isFirstLoad) toast.error(t("profile.loading_failed"));
+				if (isFirstLoad) toast.add({ title: t("profile.loading_failed"), type: "error" });
 				setProfile((prev) => ({
 					...prev,
 					loading: false,
-					isLoadingMore: false,
+					isLoadingMore: false
 				}));
 			} finally {
 				isProfileFetching.current = false;
@@ -270,7 +269,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 			isSavedProfileFetching.current = true;
 			setSavedProfile((prev) => ({
 				...prev,
-				loading: isFirstLoad,
+				loading: isFirstLoad
 			}));
 
 			try {
@@ -281,7 +280,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 						page: 1,
 						hasMore: false,
 						loading: false,
-						isLoadingMore: false,
+						isLoadingMore: false
 					});
 				} else {
 					// Guest Pagination for Saved
@@ -300,14 +299,14 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 						page: page + 1,
 						hasMore: endIndex < allSaved.length,
 						loading: false,
-						isLoadingMore: false,
+						isLoadingMore: false
 					}));
 				}
 			} catch (err) {
 				console.error("Failed to fetch saved pastes", err);
 				setSavedProfile((prev) => ({
 					...prev,
-					loading: false,
+					loading: false
 				}));
 			} finally {
 				isSavedProfileFetching.current = false;
@@ -374,15 +373,15 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 				// Update Local State
 				setHistory((prev) => ({
 					...prev,
-					items: prev.items.filter((p) => p.id !== id),
+					items: prev.items.filter((p) => p.id !== id)
 				}));
 				setProfile((prev) => ({
 					...prev,
-					items: prev.items.filter((p) => p.id !== id),
+					items: prev.items.filter((p) => p.id !== id)
 				}));
 				setSavedProfile((prev) => ({
 					...prev,
-					items: prev.items.filter((p) => p.id !== id),
+					items: prev.items.filter((p) => p.id !== id)
 				}));
 				setFilteredPastes((prev) =>
 					prev ? prev.filter((p) => p.id !== id) : null,
@@ -391,14 +390,15 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 				// Update Local Storage
 				guestStorage.removeSnippetEverywhere(id);
 
-				toast.success(
-					t("messages.snippet_deleted_id", {
-						id: `/${id}`,
+				toast.add({
+					title: t("messages.snippet_deleted_id", {
+						id: `/${id}`
 					}),
-				);
+					type: "success"
+				});
 			} catch (err) {
 				console.error("Failed to delete snippet", err);
-				toast.error(t("messages.delete_failed"));
+				toast.add({ title: t("messages.delete_failed"), type: "error" });
 			}
 		},
 		[user, apiHelpers, t],

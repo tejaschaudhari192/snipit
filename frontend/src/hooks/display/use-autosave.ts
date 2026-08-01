@@ -3,7 +3,7 @@ import { CONFIG } from "@/configurations";
 import { type PasteData } from "@/types";
 import type { ShareEntry } from "@/hooks/use-display-state";
 import { useApiHelpers } from "@/lib/api";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 interface UseAutosaveProps {
 	isAutosave: boolean;
@@ -68,14 +68,12 @@ export const useAutosave = ({
 				JSON.stringify(
 					config.collaborators.map((c) => ({
 						email: c.email,
-						role: c.role,
-					})),
+						role: c.role})),
 				) !==
 				JSON.stringify(
 					(originalPaste.collaborators || []).map((c) => ({
 						email: c.email,
-						role: c.role,
-					})),
+						role: c.role})),
 				);
 
 			const allowedUsersChanged =
@@ -121,7 +119,7 @@ export const useAutosave = ({
 					const { available } = await checkIdAvailability(trimmedId);
 					if (!available) {
 						setSaveStatus("error");
-						toast.error("Custom ID is not available");
+						toast.add({ title: "Custom ID is not available", type: "error" });
 						return;
 					}
 				} catch (error) {
@@ -165,14 +163,12 @@ export const useAutosave = ({
 				JSON.stringify(
 					config.collaborators.map((c) => ({
 						email: c.email,
-						role: c.role,
-					})),
+						role: c.role})),
 				) !==
 				JSON.stringify(
 					(originalPaste.collaborators || []).map((c) => ({
 						email: c.email,
-						role: c.role,
-					})),
+						role: c.role})),
 				);
 
 			const allowedUsersChanged =

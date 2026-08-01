@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { useTranslation } from "react-i18next";
 import type { OnMount, Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
@@ -76,7 +76,7 @@ export const usePasteHandlers = ({
 			if (valueRef.current.trim() !== "") return;
 			handleLanguageDetection(
 				e.clipboardData.getData("text/plain") ||
-					e.clipboardData.getData("text"),
+				e.clipboardData.getData("text"),
 			);
 		},
 		[handleLanguageDetection],
@@ -125,11 +125,11 @@ export const usePasteHandlers = ({
 			if (pastedFiles.length > 0) {
 				setContentType("file");
 				addFiles(pastedFiles);
-				toast.success(
-					t("home.files_selected_via_paste", {
+				toast.add({
+					title: t("home.files_selected_via_paste", {
 						count: pastedFiles.length,
 					}),
-				);
+				});
 			}
 		};
 

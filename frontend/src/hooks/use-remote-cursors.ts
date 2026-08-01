@@ -57,8 +57,7 @@ function createCursorWidget(
 				lineNumber: currentPos.lineNumber,
 				column: currentPos.column,
 			},
-			preference: [0],
-		}),
+			preference: [0]}),
 	};
 
 	return {

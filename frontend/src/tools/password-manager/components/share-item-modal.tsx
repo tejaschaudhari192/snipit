@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Users } from "lucide-react";
 import type { PasswordItem } from "@/tools/password-manager/types";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { useAppDispatch } from "@/tools/password-manager/store";
 import { shareItem } from "@/tools/password-manager/store/password-slice";
 import { Label } from "@/components/ui/label";
@@ -49,16 +49,15 @@ export default function ShareItemModal({
 				shareItem({
 					targetEmail: email,
 					role,
-					item,
-				}),
+					item}),
 			).unwrap();
 
-			toast.success(`Securely shared with ${email}`);
+			toast.add({ title: `Securely shared with ${email}`, type: "success" });
 			setEmail("");
 			onClose();
 		} catch (error: unknown) {
 			const msg = error instanceof Error ? error.message : String(error);
-			toast.error(msg || "Failed to share securely");
+			toast.add({ title: msg || "Failed to share securely", type: "error" });
 		} finally {
 			setIsSharing(false);
 		}

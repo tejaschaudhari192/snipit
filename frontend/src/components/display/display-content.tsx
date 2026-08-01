@@ -3,15 +3,13 @@ import { useRef, useEffect, memo, lazy, Suspense } from "react";
 import { cn } from "@/utils";
 const EditorToolbar = lazy(() =>
 	import("@/components/common/editor-toolbar").then((m) => ({
-		default: m.EditorToolbar,
-	})),
+		default: m.EditorToolbar})),
 );
 import { EditorToolbarSkeleton } from "@/components/common/editor-toolbar-skeleton";
 import type { PasteData, ContentMode, EditorChange } from "@/types";
 const ResizableSplitPane = lazy(() =>
 	import("@/components/common/resizable-split-pane").then((m) => ({
-		default: m.ResizableSplitPane,
-	})),
+		default: m.ResizableSplitPane})),
 );
 import { useMarkdownLayout } from "@/hooks/use-markdown-layout";
 
@@ -22,50 +20,41 @@ import type { FileUploadStatus } from "@/lib/file-service";
 
 const MarkdownDisplay = lazy(() =>
 	import("@/components/display/content/markdown-display").then((m) => ({
-		default: m.MarkdownDisplay,
-	})),
+		default: m.MarkdownDisplay})),
 );
 const HtmlDisplay = lazy(() =>
 	import("@/components/display/content/html-display").then((m) => ({
-		default: m.HtmlDisplay,
-	})),
+		default: m.HtmlDisplay})),
 );
 const FileDisplay = lazy(() =>
 	import("@/components/display/content/file-display").then((m) => ({
-		default: m.FileDisplay,
-	})),
+		default: m.FileDisplay})),
 );
 const CodeEditorView = lazy(() =>
 	import("@/components/display/content/code-editor-view").then((m) => ({
-		default: m.CodeEditorView,
-	})),
+		default: m.CodeEditorView})),
 );
 const LinkView = lazy(() =>
 	import("@/components/display/content/link-view").then((m) => ({
-		default: m.LinkView,
-	})),
+		default: m.LinkView})),
 );
 const CollabDraw = lazy(() =>
 	import("@/components/display/collab-draw").then((m) => ({
-		default: m.CollabDraw,
-	})),
+		default: m.CollabDraw})),
 );
 const FileEditView = lazy(() =>
 	import("@/components/display/content/file-edit-view").then((m) => ({
-		default: m.FileEditView,
-	})),
+		default: m.FileEditView})),
 );
 
 const VideoDisplay = lazy(() =>
 	import("@/components/display/content/video-display").then((m) => ({
-		default: m.VideoDisplay,
-	})),
+		default: m.VideoDisplay})),
 );
 
 const TiptapEditor = lazy(() =>
 	import("@/components/editor/tiptap-editor").then((m) => ({
-		default: m.TiptapEditor,
-	})),
+		default: m.TiptapEditor})),
 );
 
 import { Editor } from "@tiptap/core";

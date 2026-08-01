@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Users, Trash2, ShieldAlert } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import api from "@/lib/api";
 import { useAppDispatch } from "@/tools/password-manager/store";
 import { revokeSharedAccess } from "@/tools/password-manager/store/password-slice";
@@ -47,9 +47,8 @@ export default function CollectionMembersModal({
 			setMembers(res.data?.data || []);
 		} catch (error: unknown) {
 			const err = error as { response?: { data?: { message?: string } } };
-			toast.error(
-				err.response?.data?.message || "Failed to fetch members",
-			);
+			toast.add({ title: 
+				err.response?.data?.message || "Failed to fetch members", type: "error" });
 		} finally {
 			setLoading(false);
 		}
@@ -67,11 +66,11 @@ export default function CollectionMembersModal({
 
 		try {
 			await dispatch(revokeSharedAccess(accessId)).unwrap();
-			toast.success(`Access revoked for ${email}`);
+			toast.add({ title: `Access revoked for ${email}`, type: "success" });
 			fetchMembers();
 		} catch (error: unknown) {
 			const msg = error instanceof Error ? error.message : String(error);
-			toast.error(msg || "Failed to revoke access");
+			toast.add({ title: msg || "Failed to revoke access", type: "error" });
 		}
 	};
 

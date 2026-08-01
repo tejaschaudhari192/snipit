@@ -6,7 +6,7 @@ import {
 } from "@/tools/password-manager/store/password-slice";
 import type { PasswordItem } from "@/tools/password-manager/types";
 
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 export function useItemMutations() {
 	const dispatch = useAppDispatch();
@@ -17,11 +17,10 @@ export function useItemMutations() {
 				dispatch(handleSelect(item));
 				await dispatch(persistItem(item)).unwrap();
 			} catch (error: unknown) {
-				toast.error(
+				toast.add({ title: 
 					typeof error === "string"
 						? error
-						: (error as Error).message || "Failed to save item",
-				);
+						: (error as Error).message || "Failed to save item", type: "error" });
 			}
 		},
 		[dispatch],

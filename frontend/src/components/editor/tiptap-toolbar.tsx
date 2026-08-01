@@ -51,8 +51,7 @@ export function TiptapToolbar({
 		type: "image" | "video" | "attachment";
 	}>({
 		isOpen: false,
-		type: "image",
-	});
+		type: "image"});
 
 	const [linkDialogOpen, setLinkDialogOpen] = useState(false);
 	const [linkInputUrl, setLinkInputUrl] = useState("");
@@ -67,8 +66,7 @@ export function TiptapToolbar({
 			}>;
 			setMediaModal({
 				isOpen: true,
-				type: customEvent.detail.type,
-			});
+				type: customEvent.detail.type});
 		};
 		window.addEventListener("open-media-modal", handleOpenMedia);
 		return () => {
@@ -115,8 +113,7 @@ export function TiptapToolbar({
 						href: url,
 						filename: filename || "attachment",
 						filesize: filesize || "",
-					},
-				})
+					}})
 				.run();
 		}
 	};
@@ -186,8 +183,7 @@ export function TiptapToolbar({
 							.insertTable({
 								rows: r,
 								cols: c,
-								withHeaderRow: true,
-							})
+								withHeaderRow: true})
 							.run()
 					}
 				/>

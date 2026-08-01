@@ -14,7 +14,6 @@ const PasswordSidebar = React.lazy(() => import("./password-sidebar"));
 export default function MobileSidebarDrawer() {
 	const dispatch = useAppDispatch();
 	const isSidebarDrawerOpen = useAppSelector(selectIsSidebarDrawerOpen);
-	const [searchQuery, setSearchQuery] = React.useState("");
 
 	return (
 		<Sheet
@@ -32,10 +31,7 @@ export default function MobileSidebarDrawer() {
 				<div className="h-full w-full">
 					<SidebarProvider className="min-h-0 h-full w-full">
 						<Suspense fallback={<SidebarSkeleton />}>
-							<PasswordSidebar
-								searchQuery={searchQuery}
-								onSearchChange={setSearchQuery}
-							/>
+							<PasswordSidebar />
 						</Suspense>
 					</SidebarProvider>
 				</div>

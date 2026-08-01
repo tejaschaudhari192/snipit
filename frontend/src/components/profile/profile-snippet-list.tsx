@@ -26,8 +26,7 @@ export const ProfileSnippetList = ({
 	const loaderRef = useInfiniteScroll({
 		hasMore,
 		isLoading: isLoadingMore,
-		loadMore,
-	});
+		loadMore});
 
 	return (
 		<div className="space-y-6">

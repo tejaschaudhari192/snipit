@@ -45,8 +45,7 @@ export const localStore = {
 			if (typeof window !== "undefined") {
 				window.dispatchEvent(
 					new CustomEvent("snipit-storage-error", {
-						detail: { code: "access_denied" },
-					}),
+						detail: { code: "access_denied" }}),
 				);
 			}
 			return null;
@@ -65,8 +64,7 @@ export const localStore = {
 			if (typeof window !== "undefined") {
 				window.dispatchEvent(
 					new CustomEvent("snipit-storage-error", {
-						detail: { code: "save_failed" },
-					}),
+						detail: { code: "save_failed" }}),
 				);
 			}
 		}

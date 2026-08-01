@@ -2,7 +2,7 @@ import { CheckCircle2, Copy, Download, ExternalLink } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { QRCodeCanvas } from "qrcode.react";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 interface ShortenedResultCardProps {
 	shortenedResult: {
@@ -32,15 +32,16 @@ export const ShortenedResultCard = ({
 			document.body.appendChild(downloadLink);
 			downloadLink.click();
 			document.body.removeChild(downloadLink);
-			toast.success(t("messages.qr_downloaded"));
+			toast.add({ title: t("messages.qr_downloaded"), type: "success" });
 		}
 	};
 
 	const copyLink = () => {
 		navigator.clipboard.writeText(shortenedResult.url);
-		toast.success(
-			t("header.copied_link", { id: `/${shortenedResult.id}` }),
-		);
+		toast.add({
+			title: t("header.copied_link", { id: `/${shortenedResult.id}` }),
+			type: "success"
+		});
 	};
 
 	return (

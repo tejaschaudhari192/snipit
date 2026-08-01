@@ -12,7 +12,7 @@ import {
 	CardTitle,
 	CardFooter,
 } from "@/components/ui/card";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { Lock, ArrowRight, CheckCircle2 } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { useTranslation } from "react-i18next";
@@ -36,36 +36,34 @@ const ResetPasswordPage = () => {
 		e.preventDefault();
 
 		if (password !== confirmPassword) {
-			toast.error(t("auth.reset_password_mismatch_toast"));
+			toast.add({ title: t("auth.reset_password_mismatch_toast"), type: "error" });
 			return;
 		}
 
 		if (!isStrongEnough) {
-			toast.error(
+			toast.add({ title: 
 				t(
 					"auth.reset_password_weak_toast",
 					"Password does not meet the requirements",
-				),
-			);
+				), type: "error" });
 			return;
 		}
 
 		setIsLoading(true);
 		try {
 			if (!token) {
-				toast.error(t("auth.reset_password_invalid_token_toast"));
+				toast.add({ title: t("auth.reset_password_invalid_token_toast"), type: "error" });
 				return;
 			}
 			const data = await resetPassword(token, password);
 			login(data);
-			toast.success(t("auth.reset_password_success_toast"));
+			toast.add({ title: t("auth.reset_password_success_toast"), type: "success" });
 			navigate("/");
 		} catch (error) {
 			const axiosError = error as AxiosError<{ message: string }>;
-			toast.error(
+			toast.add({ title: 
 				axiosError.response?.data?.message ||
-					t("auth.reset_password_failed_toast"),
-			);
+					t("auth.reset_password_failed_toast"), type: "error" });
 		} finally {
 			setIsLoading(false);
 		}

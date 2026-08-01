@@ -56,8 +56,7 @@ export const TerminalPanel = ({
 			cursorBlink: true,
 			convertEol: true,
 			rows: 15,
-			allowTransparency: false,
-		});
+			allowTransparency: false});
 
 		const fit = new FitAddon();
 		term.loadAddon(fit);

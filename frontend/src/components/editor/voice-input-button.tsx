@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { useApiHelpers } from "@/lib/api";
 import { usePaste } from "@/context/PasteContext";
-import { toast } from "sonner";
+import { toast } from "../ui/toast";
 import { cn } from "@/utils";
 import { useTranslation } from "react-i18next";
 import { formatAudioDuration } from "@/utils/audio";
@@ -62,22 +62,33 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 		const handleTranscribe = async (blob: Blob) => {
 			setIsTranscribing(true);
 			setAudioBlob(null); // Clear immediately to prevent re-triggering from state changes
-			const loadingToast = toast.loading(t("editor.transcribing"));
+			const loadingToast = toast.add({
+				title: t("editor.transcribing"),
+				type: "loading"
+			});
 			try {
 				const { text } = await transcribeAudio(blob);
 				if (text) {
 					// Use a functional approach if possible, but here we append to current textValue
 					const newValue = textValue ? `${textValue}\n${text}` : text;
 					setTextValue(newValue);
-					toast.success(t("editor.transcription_success"), {
+					toast.add({
+						title: t("editor.transcription_success"),
+						type: "success",
 						id: loadingToast,
 					});
 				} else {
-					toast.dismiss(loadingToast);
+					toast.add({
+						title: t("editor.transcription_failed"),
+						type: "error",
+						id: loadingToast
+					});
 				}
 			} catch (error) {
 				console.error("Transcription error:", error);
-				toast.error(t("editor.transcription_failed"), {
+				toast.add({
+					title: t("editor.transcription_failed"),
+					type: "error",
 					id: loadingToast,
 				});
 			} finally {

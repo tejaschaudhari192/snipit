@@ -61,8 +61,7 @@ export const useHealthCheck = () => {
 				setError(true);
 				setHealthData((prev) => ({
 					status: "down",
-					services: prev?.services || {},
-				}));
+					services: prev?.services || {}}));
 				eventSource.close();
 				setLoading(false);
 			};

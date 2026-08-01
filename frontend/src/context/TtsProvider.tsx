@@ -1,12 +1,11 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { useApiHelpers } from "@/lib/api";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { TtsContext } from "./TtsContext";
 import { generatePuterSpeech } from "@/lib/puter-tts";
 
 export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
-	children,
-}) => {
+	children }) => {
 	const { prepareSpeech, detectSpeechLanguage } = useApiHelpers();
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [isPaused, setIsPaused] = useState(false);
@@ -143,9 +142,11 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 					audio.onplay = () => {
 						setIsPlaying(true);
 						setIsPreparing(false);
-						toast.info("Playing text-to-speech", {
+						toast.add({
+							title: "Playing text-to-speech",
 							description: `Language: ${detectedLang} | Voice: Nova | Engine: Puter.js`,
-							duration: 4000,
+							timeout: 4000,
+							type: "info"
 						});
 					};
 

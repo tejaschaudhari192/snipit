@@ -559,8 +559,7 @@ export async function writeToFolder(
 			}
 		).showDirectoryPicker({
 			mode: "readwrite",
-			startIn: "downloads",
-		});
+			startIn: "downloads"});
 
 		// Write each file, creating subdirectories as needed
 		for (const { blob, path } of files) {
@@ -622,8 +621,7 @@ export async function readFilesFromDirectory(
 			const patchedFile = new File([file], name, { type: file.type });
 			Object.defineProperty(patchedFile, "webkitRelativePath", {
 				value: relPath,
-				writable: false,
-			});
+				writable: false});
 			files.push(patchedFile);
 		} else if (handle.kind === "directory") {
 			const subFiles = await readFilesFromDirectory(
@@ -730,14 +728,12 @@ async function writeFileToDirectory(
 	let currentHandle = rootHandle;
 	for (const part of parts) {
 		currentHandle = await currentHandle.getDirectoryHandle(part, {
-			create: true,
-		});
+			create: true});
 	}
 
 	// Write the file
 	const fileHandle = await currentHandle.getFileHandle(fileName, {
-		create: true,
-	});
+		create: true});
 	const writable = await fileHandle.createWritable();
 	await writable.write(blob);
 	await writable.close();

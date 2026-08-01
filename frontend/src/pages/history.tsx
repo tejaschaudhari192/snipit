@@ -12,8 +12,7 @@ import { useSnippets } from "@/context/SnippetContext";
 import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
 const SnippetCard = lazy(() =>
 	import("@/components/snippets/snippet-card").then((m) => ({
-		default: m.SnippetCard,
-	})),
+		default: m.SnippetCard})),
 );
 
 const HistoryPage = () => {
@@ -26,8 +25,7 @@ const HistoryPage = () => {
 	const loaderRef = useInfiniteScroll({
 		hasMore,
 		isLoading: isLoadingMore,
-		loadMore: () => loadHistory(false),
-	});
+		loadMore: () => loadHistory(false)});
 
 	useEffect(() => {
 		if (items.length === 0) {

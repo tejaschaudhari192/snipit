@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useApiHelpers } from "@/lib/api";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { Loader2, Sparkles, Wand2 } from "lucide-react";
 import { AxiosError } from "axios";
 import { useTranslation } from "react-i18next";
@@ -53,7 +53,7 @@ export const AiEnhanceDialog = ({
 	const handleEnhance = async (overrideInstruction?: string) => {
 		let targetInstruction = overrideInstruction ?? instruction;
 		if (!targetInstruction.trim()) {
-			toast.error(t("ai_dialog.error_instruction"));
+			toast.add({ title: t("ai_dialog.error_instruction"), type: "error" });
 			return;
 		}
 
@@ -69,16 +69,16 @@ export const AiEnhanceDialog = ({
 			);
 			if (res && res.result) {
 				setResult(res.result);
-				toast.success(t("ai_dialog.success"));
+				toast.add({ title: t("ai_dialog.success"), type: "success" });
 			} else {
-				toast.error(t("ai_dialog.error_failed"));
+				toast.add({ title: t("ai_dialog.error_failed"), type: "error" });
 			}
 		} catch (error: unknown) {
 			console.error("AI Enhance error:", error);
 			const axiosError = error as AxiosError<{ error: string }>;
 			const errorMsg =
 				axiosError?.response?.data?.error || "Failed to process text";
-			toast.error(errorMsg);
+			toast.add({ title: errorMsg, type: "error" });
 		} finally {
 			setIsLoading(false);
 		}

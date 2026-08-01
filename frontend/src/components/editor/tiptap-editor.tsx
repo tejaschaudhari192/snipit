@@ -125,13 +125,11 @@ export function TiptapEditor({
 	const [stats, setStats] = useState({
 		words: 0,
 		characters: 0,
-		readTime: 0,
-	});
+		readTime: 0});
 
 	const transliterationRef = useRef({
 		enabled: transliteration?.enabled ?? false,
-		targetLanguage: transliteration?.targetLanguage ?? "hi",
-	});
+		targetLanguage: transliteration?.targetLanguage ?? "hi"});
 
 	useEffect(() => {
 		transliterationRef.current = {
@@ -150,8 +148,7 @@ export function TiptapEditor({
 		setStats({
 			words: wordCount,
 			characters: charCount,
-			readTime: readingTime,
-		});
+			readTime: readingTime});
 	};
 
 	useEffect(() => {
@@ -188,8 +185,7 @@ export function TiptapEditor({
 					if (index === -1) break;
 					occurrences.push({
 						from: pos + index,
-						to: pos + index + findText.length,
-					});
+						to: pos + index + findText.length});
 					index += findText.length;
 				}
 			}
@@ -256,38 +252,33 @@ export function TiptapEditor({
 			suggestion: {
 				items: () => suggestionItems,
 				render: renderItems,
-			},
-		});
+			}});
 	}, []);
 
 	const extensions = useMemo(() => {
 		return [
 			StarterKit.configure({
-				horizontalRule: false,
-			}),
+				horizontalRule: false}),
 			Placeholder.configure({
 				placeholder: ({ node }) => {
 					if (node.type.name === "paragraph") {
 						return "Press '/' for commands...";
 					}
 					return "";
-				},
-			}),
+				}}),
 			TextStyle,
 			Color,
 			TiptapUnderline,
 			TiptapLink,
 			Highlight.configure({
-				multicolor: true,
-			}),
+				multicolor: true}),
 			Superscript,
 			Subscript,
 			Mention.configure({
 				HTMLAttributes: {
 					class: "mention bg-primary/10 text-primary px-1.5 py-0.5 rounded font-medium border border-primary/20",
 				},
-				suggestion: mentionSuggestion,
-			}),
+				suggestion: mentionSuggestion}),
 			HorizontalRule,
 			TaskList,
 			TaskItem,
@@ -299,41 +290,33 @@ export function TiptapEditor({
 			Youtube.configure({
 				HTMLAttributes: {
 					class: "rounded-lg border border-border shadow-sm max-w-full my-4",
-				},
-			}),
+				}}),
 			GlobalDragHandle.configure({
 				dragHandleWidth: 20,
-				scrollTreshold: 100,
-			}),
+				scrollTreshold: 100}),
 			slashCommand,
 			Transliteration.configure({
-				transliterationRef,
-			}),
+				transliterationRef}),
 			Table.configure({
 				resizable: true,
 				HTMLAttributes: {
 					class: "border-collapse border border-border w-full my-4",
-				},
-			}),
+				}}),
 			TableRow.configure({
 				HTMLAttributes: {
 					class: "border-b border-border/80",
-				},
-			}),
+				}}),
 			TableHeader.configure({
 				HTMLAttributes: {
 					class: "border border-border/85 bg-muted/30 px-3 py-2 text-left font-bold text-xs select-none",
-				},
-			}),
+				}}),
 			TableCell.configure({
 				HTMLAttributes: {
 					class: "border border-border/70 px-3 py-2 text-xs",
-				},
-			}),
+				}}),
 			TextAlign.configure({
 				types: ["heading", "paragraph"],
-				alignments: ["left", "center", "right", "justify"],
-			}),
+				alignments: ["left", "center", "right", "justify"]}),
 			Indent,
 			LineHeight,
 		];

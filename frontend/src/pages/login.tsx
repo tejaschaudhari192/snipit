@@ -14,7 +14,7 @@ import {
 	CardTitle,
 	CardFooter,
 } from "@/components/ui/card";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { LogIn, Mail, Lock, ArrowRight } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { useTranslation } from "react-i18next";
@@ -40,13 +40,14 @@ const LoginPage = () => {
 		try {
 			const response = await api.post("/auth/login", { email, password });
 			login(response.data);
-			toast.success(t("auth.login_success"));
+			toast.add({ title: t("auth.login_success"), type: "success" });
 			navigate("/");
 		} catch (error) {
 			const axiosError = error as AxiosError<{ message: string }>;
-			toast.error(
-				axiosError.response?.data?.message || t("auth.login_failed"),
-			);
+			toast.add({
+				title:
+					axiosError.response?.data?.message || t("auth.login_failed"), type: "error"
+			});
 		} finally {
 			setIsLoading(false);
 		}
@@ -58,23 +59,25 @@ const LoginPage = () => {
 		setIsLoading(true);
 		try {
 			const response = await api.post("/auth/google", {
-				idToken: credentialResponse.credential,
+				idToken: credentialResponse.credential
 			});
 			login(response.data);
-			toast.success(t("auth.login_success"));
+			toast.add({ title: t("auth.login_success"), type: "success" });
 			navigate("/");
 		} catch (error) {
 			const axiosError = error as AxiosError<{ message: string }>;
-			toast.error(
-				axiosError.response?.data?.message || t("auth.login_failed"),
-			);
+			toast.add({
+				title:
+					axiosError.response?.data?.message || t("auth.login_failed"),
+				type: "error"
+			});
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
 	const handleGoogleError = () => {
-		toast.error(t("auth.google_login_failed"));
+		toast.add({ title: t("auth.google_login_failed"), type: "error" });
 	};
 
 	return (
@@ -182,14 +185,14 @@ const LoginPage = () => {
 										<>
 											<ShimmerSection type="mini-loader" />
 											<span
-									style={{
-										"--highlight-color": "var(--foreground)",
-										"--base-color": "var(--muted-foreground)",
-										"--spread": "20px",
-										"--duration": "2s"
-									} as React.CSSProperties}
-									className="shimmer font-medium"
-								>
+												style={{
+													"--highlight-color": "var(--foreground)",
+													"--base-color": "var(--muted-foreground)",
+													"--spread": "20px",
+													"--duration": "2s"
+												} as React.CSSProperties}
+												className="shimmer font-medium"
+											>
 												{t("auth.logging_in")}
 											</span>
 										</>

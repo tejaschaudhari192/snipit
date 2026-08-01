@@ -79,8 +79,7 @@ export function parseEnpassJSON(rawJSON: string): ParsedImportItem[] {
 						name: field.label || field.type,
 						value: field.value,
 						type: "password",
-						isProtected: true,
-					});
+						isProtected: true});
 				}
 			} else if (field.type === "url") {
 				if (!url) url = field.value;
@@ -89,15 +88,13 @@ export function parseEnpassJSON(rawJSON: string): ParsedImportItem[] {
 					id: crypto.randomUUID(),
 					name: field.label || "TOTP",
 					value: field.value,
-					type: "text",
-				});
+					type: "text"});
 			} else if (field.type === "phone") {
 				customFields.push({
 					id: crypto.randomUUID(),
 					name: field.label || "Phone",
 					value: field.value,
-					type: "tel",
-				});
+					type: "tel"});
 			} else if (field.type !== "section") {
 				// Dump rest into metadata or custom fields
 				customFields.push({
@@ -105,8 +102,7 @@ export function parseEnpassJSON(rawJSON: string): ParsedImportItem[] {
 					name: field.label || field.type,
 					value: field.value,
 					type: field.sensitive === 1 ? "password" : "text",
-					isProtected: field.sensitive === 1,
-				});
+					isProtected: field.sensitive === 1});
 			}
 		}
 		
@@ -143,8 +139,7 @@ export function parseEnpassJSON(rawJSON: string): ParsedImportItem[] {
 			sourceFolder,
 			mapped,
 			isDuplicate: false,
-			isSkipped,
-		});
+			isSkipped});
 	}
 
 	return results;

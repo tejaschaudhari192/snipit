@@ -68,8 +68,7 @@ export const generatePuterSpeech = async (
 	// If the user desires a different voice or provider in the future, we can map `detectedLanguage` here.
 	const audio = await window.puter.ai.txt2speech(text, {
 		provider: "openai",
-		voice: "nova",
-	});
+		voice: "nova"});
 
 	return audio;
 };

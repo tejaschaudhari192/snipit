@@ -99,12 +99,10 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 			...(notes.trim() && { notes: notes.trim() }),
 			...(folderId !== "none" && { folderId }),
 			...(selectedFolder?.collectionId && {
-				collectionId: selectedFolder.collectionId,
-			}),
+				collectionId: selectedFolder.collectionId}),
 			...(itemType && itemType !== "other" && { itemType }),
 			...(customFields.filter((f) => f.name.trim()).length > 0 && {
-				customFields: customFields.filter((f) => f.name.trim()),
-			}),
+				customFields: customFields.filter((f) => f.name.trim())}),
 			...(Object.keys(metadata).length > 0 && { metadata }),
 			createdAt: editItem?.createdAt ?? now,
 			updatedAt: now,
@@ -153,8 +151,7 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 			setMetadata((prev) => ({
 				...prev,
 				fileName: file.name,
-				fileContent: content,
-			}));
+				fileContent: content}));
 			if (!title) {
 				setTitle(file.name);
 			}
