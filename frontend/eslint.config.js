@@ -20,6 +20,10 @@ export default tseslint.config([
 			reactRefresh.configs.vite,
 		],
 		rules: {
+			"react-refresh/only-export-components": [
+				"error",
+				{ allowConstantExport: true }
+			],
 			"tailwind-canonical/tailwind-canonical-classes": [
 				"warn",
 				{
@@ -32,4 +36,10 @@ export default tseslint.config([
 			globals: globals.browser,
 		},
 	},
+	{
+		files: ["src/components/ui/**/*.{ts,tsx}"],
+		rules: {
+			"react-refresh/only-export-components": "off",
+		},
+	}
 ]);
