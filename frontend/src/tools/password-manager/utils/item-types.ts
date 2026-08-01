@@ -6,7 +6,8 @@ export type FieldType =
 	| "number"
 	| "email"
 	| "tel"
-	| "multiline";
+	| "multiline"
+	| "file";
 
 export interface ItemFieldDef {
 	key: string;
@@ -100,7 +101,7 @@ export const ITEM_TYPE_SCHEMAS: Record<string, ItemTypeSchema> = {
 				type: "text",
 				placeholder: "tools.password_manager_cred_file_name",
 			},
-			{ key: "fileContent", label: "File Content", type: "multiline" },
+			{ key: "fileContent", label: "File Content", type: "file" },
 		],
 	},
 	note: {

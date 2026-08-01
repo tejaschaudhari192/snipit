@@ -18,7 +18,7 @@ import { usePasswordStrength } from "@/hooks/use-password-strength";
 export interface SchemaField {
 	key: string;
 	label: string;
-	type: "text" | "password" | "email" | "multiline" | "url" | "number";
+	type: "text" | "password" | "email" | "multiline" | "url" | "number" | "file" | "tel";
 	placeholder?: string;
 }
 
@@ -107,6 +107,8 @@ export function SchemaFieldsEditor({
 		<>
 			{schemaFields.map((field) => {
 				const val = metadata[field.key] || "";
+
+				if (field.type === "file") return null;
 
 				return (
 					<div key={field.key} className="space-y-1.5">
