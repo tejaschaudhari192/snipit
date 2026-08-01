@@ -26,8 +26,8 @@ export const downloadTrack = async (
 		const data = await response.json();
 		if (data.url) {
 			toast.add({
-				title:
-					"Download link resolved successfully! Starting download...", type: "success"
+				title: "Download link resolved successfully! Starting download...",
+				type: "success",
 			});
 
 			// Open the resolved direct URL to trigger browser download / redirect
@@ -44,7 +44,10 @@ export const downloadTrack = async (
 		}
 	} catch (error) {
 		console.error("Failed to download audio via backend proxy:", error);
-		toast.add({ title: "Download failed. Directing to web browser download...", type: "error" });
+		toast.add({
+			title: "Download failed. Directing to web browser download...",
+			type: "error",
+		});
 		try {
 			// Instant fallback direct open if backend proxy call failed
 			window.open(
@@ -53,8 +56,8 @@ export const downloadTrack = async (
 			);
 		} catch {
 			toast.add({
-				title:
-					"All download engines are busy. Please try again later.", type: "error"
+				title: "All download engines are busy. Please try again later.",
+				type: "error",
 			});
 		}
 	}

@@ -28,71 +28,86 @@ import { usePageTitle } from "@/hooks/use-page-title";
 import { useAiDraw } from "@/hooks/use-ai-draw";
 const TerminalContainer = lazy(() =>
 	import("@/components/terminal/terminal-container").then((m) => ({
-		default: m.TerminalContainer})),
+		default: m.TerminalContainer,
+	})),
 );
 const ResizablePanels = lazy(() =>
 	import("@/components/common/resizable-panels").then((m) => ({
-		default: m.ResizablePanels})),
+		default: m.ResizablePanels,
+	})),
 );
 import { useAiAutocomplete } from "@/hooks/use-ai-autocomplete";
 import { storage } from "@/utils/storage";
 const MainToolbar = lazy(() =>
 	import("@/components/home/main-toolbar").then((m) => ({
-		default: m.MainToolbar})),
+		default: m.MainToolbar,
+	})),
 );
 const AiDrawDialog = lazy(() =>
 	import("@/components/editor/ai-draw-dialog").then((m) => ({
-		default: m.AiDrawDialog})),
+		default: m.AiDrawDialog,
+	})),
 );
 import { usePasteHandlers } from "@/hooks/use-paste-handlers";
 import { useTerminalExecution } from "@/hooks/use-terminal-execution";
 
 const LanguageSelector = lazy(() =>
 	import("@/components/editor/language-selector").then((m) => ({
-		default: m.LanguageSelector})),
+		default: m.LanguageSelector,
+	})),
 );
 const FontSizeControls = lazy(() =>
 	import("@/components/editor/font-size-controls").then((m) => ({
-		default: m.FontSizeControls})),
+		default: m.FontSizeControls,
+	})),
 );
 const CustomExpiryDialog = lazy(() =>
 	import("@/components/home/custom-expiry-dialog").then((m) => ({
-		default: m.CustomExpiryDialog})),
+		default: m.CustomExpiryDialog,
+	})),
 );
 const EditorContent = lazy(() =>
 	import("@/components/home/editor-content").then((m) => ({
-		default: m.EditorContent})),
+		default: m.EditorContent,
+	})),
 );
 const VoiceInputButton = lazy(() =>
 	import("@/components/editor/voice-input-button").then((m) => ({
-		default: m.VoiceInputButton})),
+		default: m.VoiceInputButton,
+	})),
 );
 const AiAutocompleteToggle = lazy(() =>
 	import("@/components/editor/ai-autocomplete-toggle").then((m) => ({
-		default: m.AiAutocompleteToggle})),
+		default: m.AiAutocompleteToggle,
+	})),
 );
 const TransliterationToggle = lazy(() =>
 	import("@/components/editor/transliteration-toggle").then((m) => ({
-		default: m.TransliterationToggle})),
+		default: m.TransliterationToggle,
+	})),
 );
 import { useTransliteration } from "@/hooks/use-transliteration";
 const AiEnhanceDialog = lazy(() =>
 	import("@/components/editor/ai-enhance-dialog").then((m) => ({
-		default: m.AiEnhanceDialog})),
+		default: m.AiEnhanceDialog,
+	})),
 );
 const AiWriterDialog = lazy(() =>
 	import("@/components/editor/ai-writer-dialog").then((m) => ({
-		default: m.AiWriterDialog})),
+		default: m.AiWriterDialog,
+	})),
 );
 
 // New Lazy Buttons
 const AiDrawButton = lazy(() =>
 	import("@/components/editor/ai-draw-button").then((m) => ({
-		default: m.AiDrawButton})),
+		default: m.AiDrawButton,
+	})),
 );
 const AiWriterButton = lazy(() =>
 	import("@/components/editor/ai-writer-button").then((m) => ({
-		default: m.AiWriterButton})),
+		default: m.AiWriterButton,
+	})),
 );
 
 // Shimmer Skeletons
@@ -223,13 +238,15 @@ const HomePage = () => {
 
 	const { setupAutocomplete } = useAiAutocomplete({
 		language,
-		enabled: isAiAutocompleteEnabled});
+		enabled: isAiAutocompleteEnabled,
+	});
 
 	const { isAiDrawDialogOpen, setIsAiDrawDialogOpen, handleAiDrawApply } =
 		useAiDraw({
 			drawRevision,
 			setDrawRevision,
-			setTextValue});
+			setTextValue,
+		});
 
 	const {
 		isTerminalOpen,
@@ -258,7 +275,8 @@ const HomePage = () => {
 		textValue,
 		setLanguage,
 		setupAiAction,
-		setupAutocomplete});
+		setupAutocomplete,
+	});
 
 	// Sync Autocomplete
 	useEffect(() => {
@@ -276,7 +294,8 @@ const HomePage = () => {
 		contentType,
 		isFullscreen,
 		onContentTypeChange,
-		setIsFullscreen});
+		setIsFullscreen,
+	});
 
 	useEffect(() => {
 		setShortenedResult(null);
@@ -308,12 +327,14 @@ const HomePage = () => {
 						: valueRef.current.trim().length > 0;
 		if (!hasContent) {
 			playErrorSound();
-			toast.add({ title: 
-				t(
+			toast.add({
+				title: t(
 					contentType === "file"
 						? "messages.empty_file"
 						: "messages.empty_content",
-				), type: "warning" });
+				),
+				type: "warning",
+			});
 			return;
 		}
 		const result = await handleSubmit(
@@ -321,7 +342,8 @@ const HomePage = () => {
 			idTypeTab === "dynamic" ? customId.trim() : undefined,
 			{},
 		);
-		if (result !== true) toast.add({ title: result as string, type: "error" });
+		if (result !== true)
+			toast.add({ title: result as string, type: "error" });
 	};
 
 	const handleCollaborative = async () => {
@@ -337,12 +359,14 @@ const HomePage = () => {
 						: valueRef.current.trim().length > 0;
 		if (!hasContent) {
 			playErrorSound();
-			toast.add({ title: 
-				t(
+			toast.add({
+				title: t(
 					contentType === "file"
 						? "messages.empty_file"
 						: "messages.empty_content",
-				), type: "warning" });
+				),
+				type: "warning",
+			});
 			return;
 		}
 		const result = await handleSubmit(
@@ -355,7 +379,8 @@ const HomePage = () => {
 				isCollaborative: true,
 			},
 		);
-		if (result !== true) toast.add({ title: result as string, type: "error" });
+		if (result !== true)
+			toast.add({ title: result as string, type: "error" });
 	};
 
 	const handleDialogSubmit = async () => {
@@ -519,9 +544,7 @@ const HomePage = () => {
 
 									<div className="w-px h-6 bg-border/40 mx-1" />
 
-									{["text", "docs"].includes(
-										contentType,
-									) && (
+									{["text", "docs"].includes(contentType) && (
 										<TransliterationToggle
 											enabled={transliteration.enabled}
 											onToggle={transliteration.toggle}

@@ -76,7 +76,7 @@ export const usePasteHandlers = ({
 			if (valueRef.current.trim() !== "") return;
 			handleLanguageDetection(
 				e.clipboardData.getData("text/plain") ||
-				e.clipboardData.getData("text"),
+					e.clipboardData.getData("text"),
 			);
 		},
 		[handleLanguageDetection],

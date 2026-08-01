@@ -47,8 +47,10 @@ export default function CollectionMembersModal({
 			setMembers(res.data?.data || []);
 		} catch (error: unknown) {
 			const err = error as { response?: { data?: { message?: string } } };
-			toast.add({ title: 
-				err.response?.data?.message || "Failed to fetch members", type: "error" });
+			toast.add({
+				title: err.response?.data?.message || "Failed to fetch members",
+				type: "error",
+			});
 		} finally {
 			setLoading(false);
 		}
@@ -66,17 +68,26 @@ export default function CollectionMembersModal({
 
 		try {
 			await dispatch(revokeSharedAccess(accessId)).unwrap();
-			toast.add({ title: `Access revoked for ${email}`, type: "success" });
+			toast.add({
+				title: `Access revoked for ${email}`,
+				type: "success",
+			});
 			fetchMembers();
 		} catch (error: unknown) {
 			const msg = error instanceof Error ? error.message : String(error);
-			toast.add({ title: msg || "Failed to revoke access", type: "error" });
+			toast.add({
+				title: msg || "Failed to revoke access",
+				type: "error",
+			});
 		}
 	};
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent showCloseButton={false} className="sm:max-w-lg bg-background border-border text-foreground shadow-2xl">
+			<DialogContent
+				showCloseButton={false}
+				className="sm:max-w-lg bg-background border-border text-foreground shadow-2xl"
+			>
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<Users className="w-5 h-5 text-primary" />

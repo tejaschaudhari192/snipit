@@ -40,7 +40,7 @@ export const ShortenedResultCard = ({
 		navigator.clipboard.writeText(shortenedResult.url);
 		toast.add({
 			title: t("header.copied_link", { id: `/${shortenedResult.id}` }),
-			type: "success"
+			type: "success",
 		});
 	};
 

@@ -64,7 +64,8 @@ export const useLabels = (pasteId?: string) => {
 			allLabels,
 			isLoading,
 			updateLabels,
-			fetchLabels}),
+			fetchLabels,
+		}),
 		[labels, allLabels, isLoading, updateLabels, fetchLabels],
 	);
 };

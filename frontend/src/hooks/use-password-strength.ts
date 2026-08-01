@@ -37,42 +37,42 @@ const getStrengthDetails = (score: number): PasswordStrengthDetails => {
 	switch (score) {
 		case 0:
 			return {
-				label: "tools.password_generator_strength_risky",
+				label: "tools.password_generator.strength_risky",
 				color: "bg-destructive shadow-[0_0_10px_rgba(220,38,38,0.5)]",
 				textColor: "text-destructive",
 				icon: ShieldAlert,
 			};
 		case 1:
 			return {
-				label: "tools.password_generator_strength_weak",
+				label: "tools.password_generator.strength_weak",
 				color: "bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.5)]",
 				textColor: "text-orange-500",
 				icon: ShieldAlert,
 			};
 		case 2:
 			return {
-				label: "tools.password_generator_strength_fair",
+				label: "tools.password_generator.strength_fair",
 				color: "bg-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.5)]",
 				textColor: "text-yellow-500",
 				icon: Shield,
 			};
 		case 3:
 			return {
-				label: "tools.password_generator_strength_strong",
+				label: "tools.password_generator.strength_strong",
 				color: "bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)]",
 				textColor: "text-emerald-400",
 				icon: ShieldCheck,
 			};
 		case 4:
 			return {
-				label: "tools.password_generator_strength_secure",
+				label: "tools.password_generator.strength_secure",
 				color: "bg-emerald-600 shadow-[0_0_10px_rgba(5,150,105,0.5)]",
 				textColor: "text-emerald-600",
 				icon: ShieldCheck,
 			};
 		default:
 			return {
-				label: "tools.password_generator_strength_unknown",
+				label: "tools.password_generator.strength_unknown",
 				color: "bg-muted",
 				textColor: "text-muted-foreground",
 				icon: Shield,

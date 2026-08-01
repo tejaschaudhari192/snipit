@@ -43,20 +43,24 @@ const SignupPage = () => {
 		e.preventDefault();
 
 		if (password !== confirmPassword) {
-			toast.add({ title: 
-				t(
+			toast.add({
+				title: t(
 					"auth.reset_password_mismatch_toast",
 					"Passwords do not match",
-				), type: "error" });
+				),
+				type: "error",
+			});
 			return;
 		}
 
 		if (!isStrongEnough) {
-			toast.add({ title: 
-				t(
+			toast.add({
+				title: t(
 					"auth.reset_password_weak_toast",
 					"Password does not meet the requirements",
-				), type: "error" });
+				),
+				type: "error",
+			});
 			return;
 		}
 
@@ -65,13 +69,18 @@ const SignupPage = () => {
 			await api.post("/auth/register", {
 				username,
 				email,
-				password});
+				password,
+			});
 			toast.add({ title: t("auth.signup_success"), type: "success" });
 			navigate("/login");
 		} catch (error) {
 			const axiosError = error as AxiosError<{ message: string }>;
-			toast.add({ title: 
-				axiosError.response?.data?.message || t("auth.signup_failed"), type: "error" });
+			toast.add({
+				title:
+					axiosError.response?.data?.message ||
+					t("auth.signup_failed"),
+				type: "error",
+			});
 		} finally {
 			setIsLoading(false);
 		}
@@ -83,14 +92,19 @@ const SignupPage = () => {
 		setIsLoading(true);
 		try {
 			const response = await api.post("/auth/google", {
-				idToken: credentialResponse.credential});
+				idToken: credentialResponse.credential,
+			});
 			login(response.data);
 			toast.add({ title: t("auth.login_success"), type: "success" });
 			navigate("/");
 		} catch (error) {
 			const axiosError = error as AxiosError<{ message: string }>;
-			toast.add({ title: 
-				axiosError.response?.data?.message || t("auth.login_failed"), type: "error" });
+			toast.add({
+				title:
+					axiosError.response?.data?.message ||
+					t("auth.login_failed"),
+				type: "error",
+			});
 		} finally {
 			setIsLoading(false);
 		}
@@ -274,14 +288,18 @@ const SignupPage = () => {
 										<>
 											<ShimmerSection type="mini-loader" />
 											<span
-									style={{
-										"--highlight-color": "var(--foreground)",
-										"--base-color": "var(--muted-foreground)",
-										"--spread": "20px",
-										"--duration": "2s"
-									} as React.CSSProperties}
-									className="shimmer font-medium"
-								>
+												style={
+													{
+														"--highlight-color":
+															"var(--foreground)",
+														"--base-color":
+															"var(--muted-foreground)",
+														"--spread": "20px",
+														"--duration": "2s",
+													} as React.CSSProperties
+												}
+												className="shimmer font-medium"
+											>
 												{t("auth.creating_account")}
 											</span>
 										</>

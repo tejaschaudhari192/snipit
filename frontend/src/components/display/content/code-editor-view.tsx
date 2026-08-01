@@ -28,7 +28,8 @@ interface CodeEditorViewProps {
 
 const MonacoEditor = lazy(() =>
 	import("@monaco-editor/react").then((m) => ({
-		default: m.Editor})),
+		default: m.Editor,
+	})),
 );
 
 export const CodeEditorView = ({
@@ -148,7 +149,8 @@ export const CodeEditorView = ({
 								if (onEditorChange && ev.changes) {
 									onEditorChange({
 										changes: ev.changes,
-										content: val ?? undefined});
+										content: val ?? undefined,
+									});
 								}
 							}}
 							onMount={onMount}

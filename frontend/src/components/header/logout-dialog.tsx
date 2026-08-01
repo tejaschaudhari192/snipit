@@ -48,7 +48,10 @@ export const LogoutDialog = ({ open, onOpenChange }: LogoutDialogProps) => {
 						variant="destructive"
 						onClick={async () => {
 							await logout();
-							toast.add({ title: t("auth.logout_confirm"), type: "success" });
+							toast.add({
+								title: t("auth.logout_confirm"),
+								type: "success",
+							});
 						}}
 						className="font-bold"
 					>

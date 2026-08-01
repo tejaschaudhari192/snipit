@@ -17,7 +17,8 @@ const api = axios.create({
 	headers: {
 		"Content-Type": "application/json",
 	},
-	withCredentials: true});
+	withCredentials: true,
+});
 
 export const useApiHelpers = () => {
 	return useMemo(() => {
@@ -79,7 +80,8 @@ export const useApiHelpers = () => {
 			content: string,
 		): Promise<{ language: string }> => {
 			const response = await api.post("/ai/detect-speech-language", {
-				content});
+				content,
+			});
 			return response.data;
 		};
 
@@ -89,7 +91,8 @@ export const useApiHelpers = () => {
 		): Promise<{ result: string }> => {
 			const response = await api.post("/ai/enhance", {
 				content,
-				instruction});
+				instruction,
+			});
 			return response.data;
 		};
 
@@ -101,7 +104,8 @@ export const useApiHelpers = () => {
 			const response = await api.post("/ai/autocomplete", {
 				language,
 				prefix: prefix.slice(-1500),
-				suffix: suffix.slice(0, 500)});
+				suffix: suffix.slice(0, 500),
+			});
 			return response.data;
 		};
 
@@ -120,7 +124,8 @@ export const useApiHelpers = () => {
 			const response = await api.post("/ai/transcribe", formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
-				}});
+				},
+			});
 			return response.data;
 		};
 
@@ -130,7 +135,8 @@ export const useApiHelpers = () => {
 		): Promise<{ text: string }> => {
 			const response = await api.post("/ai/prepare-speech", {
 				content,
-				contentType});
+				contentType,
+			});
 			return response.data;
 		};
 
@@ -156,7 +162,8 @@ export const useApiHelpers = () => {
 			limit: number = 10,
 		): Promise<PaginatedResponse<PasteData>> => {
 			const response = await api.get("/pastes/user/pastes", {
-				params: { page, limit }});
+				params: { page, limit },
+			});
 			return response.data;
 		};
 
@@ -172,7 +179,8 @@ export const useApiHelpers = () => {
 			categories: string[],
 		): Promise<{ id: string }> => {
 			const response = await api.get("/pastes/generate-word-id", {
-				params: { count, categories: categories.join(",") }});
+				params: { count, categories: categories.join(",") },
+			});
 			return response.data;
 		};
 
@@ -195,7 +203,8 @@ export const useApiHelpers = () => {
 			password: string,
 		): Promise<PasteData> => {
 			const response = await api.post(`/pastes/${id}/verify-password`, {
-				password});
+				password,
+			});
 			return response.data;
 		};
 
@@ -206,7 +215,8 @@ export const useApiHelpers = () => {
 		): Promise<CommentData> => {
 			const response = await api.post(`/comments/${id}`, {
 				content,
-				author});
+				author,
+			});
 			return response.data;
 		};
 
@@ -216,7 +226,8 @@ export const useApiHelpers = () => {
 			content: string,
 		): Promise<CommentData> => {
 			const response = await api.put(`/comments/${id}/${commentId}`, {
-				content});
+				content,
+			});
 			return response.data;
 		};
 
@@ -273,7 +284,8 @@ export const useApiHelpers = () => {
 				labels: string[],
 			): Promise<{ labels: string[] }> => {
 				const response = await api.post(`/labels/snippet/${pasteId}`, {
-					labels});
+					labels,
+				});
 				return response.data;
 			},
 			getAllLabels: async (): Promise<{ labels: string[] }> => {
@@ -298,7 +310,8 @@ export const useApiHelpers = () => {
 				email: string,
 			): Promise<{ success: boolean; data: string }> => {
 				const response = await api.post("/auth/forgotpassword", {
-					email});
+					email,
+				});
 				return response.data;
 			},
 			resetPassword: async (
@@ -308,7 +321,8 @@ export const useApiHelpers = () => {
 				User & { success: boolean; token: string; message?: string }
 			> => {
 				const response = await api.put(`/auth/resetpassword/${token}`, {
-					password});
+					password,
+				});
 				return response.data;
 			},
 			addCollaborator: async (
@@ -318,7 +332,8 @@ export const useApiHelpers = () => {
 			): Promise<{ email: string; role: ShareRole; userId?: string }> => {
 				const response = await api.post(`/collaborators/${pasteId}`, {
 					email,
-					role});
+					role,
+				});
 				return response.data;
 			},
 			removeCollaborator: async (
@@ -326,7 +341,8 @@ export const useApiHelpers = () => {
 				email: string,
 			): Promise<{ success: boolean; email: string }> => {
 				const response = await api.delete(`/collaborators/${pasteId}`, {
-					data: { email }});
+					data: { email },
+				});
 				return response.data;
 			},
 		};

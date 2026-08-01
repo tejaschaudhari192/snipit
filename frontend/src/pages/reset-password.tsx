@@ -36,34 +36,48 @@ const ResetPasswordPage = () => {
 		e.preventDefault();
 
 		if (password !== confirmPassword) {
-			toast.add({ title: t("auth.reset_password_mismatch_toast"), type: "error" });
+			toast.add({
+				title: t("auth.reset_password_mismatch_toast"),
+				type: "error",
+			});
 			return;
 		}
 
 		if (!isStrongEnough) {
-			toast.add({ title: 
-				t(
+			toast.add({
+				title: t(
 					"auth.reset_password_weak_toast",
 					"Password does not meet the requirements",
-				), type: "error" });
+				),
+				type: "error",
+			});
 			return;
 		}
 
 		setIsLoading(true);
 		try {
 			if (!token) {
-				toast.add({ title: t("auth.reset_password_invalid_token_toast"), type: "error" });
+				toast.add({
+					title: t("auth.reset_password_invalid_token_toast"),
+					type: "error",
+				});
 				return;
 			}
 			const data = await resetPassword(token, password);
 			login(data);
-			toast.add({ title: t("auth.reset_password_success_toast"), type: "success" });
+			toast.add({
+				title: t("auth.reset_password_success_toast"),
+				type: "success",
+			});
 			navigate("/");
 		} catch (error) {
 			const axiosError = error as AxiosError<{ message: string }>;
-			toast.add({ title: 
-				axiosError.response?.data?.message ||
-					t("auth.reset_password_failed_toast"), type: "error" });
+			toast.add({
+				title:
+					axiosError.response?.data?.message ||
+					t("auth.reset_password_failed_toast"),
+				type: "error",
+			});
 		} finally {
 			setIsLoading(false);
 		}
@@ -176,14 +190,18 @@ const ResetPasswordPage = () => {
 									<>
 										<ShimmerSection type="mini-loader" />
 										<span
-									style={{
-										"--highlight-color": "var(--foreground)",
-										"--base-color": "var(--muted-foreground)",
-										"--spread": "20px",
-										"--duration": "2s"
-									} as React.CSSProperties}
-									className="shimmer font-medium"
-								>
+											style={
+												{
+													"--highlight-color":
+														"var(--foreground)",
+													"--base-color":
+														"var(--muted-foreground)",
+													"--spread": "20px",
+													"--duration": "2s",
+												} as React.CSSProperties
+											}
+											className="shimmer font-medium"
+										>
 											{t("auth.reset_password_resetting")}
 										</span>
 									</>

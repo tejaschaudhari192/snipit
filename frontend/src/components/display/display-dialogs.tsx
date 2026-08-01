@@ -37,7 +37,8 @@ export const DisplayDialogs: React.FC<DisplayDialogsProps> = ({
 	selectedText,
 	prefillInstruction,
 	applyEnhancedText,
-	contentType}) => {
+	contentType,
+}) => {
 	return (
 		<Suspense fallback={null}>
 			<CustomExpiryDialog

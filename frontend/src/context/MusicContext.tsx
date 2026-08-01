@@ -19,7 +19,8 @@ import { useYouTubePlayer } from "@/hooks/use-youtube-player";
 import { usePlaylistManager } from "@/hooks/use-playlist-manager";
 
 export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
-	children }) => {
+	children,
+}) => {
 	const [isPlaying, setIsPlaying] = useState(false);
 
 	const [socket, setSocket] = useState<Socket | null>(null);
@@ -69,8 +70,8 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		null,
 	);
 
-	const handleNextRef = useRef<() => void>(() => { });
-	const handleTrackEndRef = useRef<() => void>(() => { });
+	const handleNextRef = useRef<() => void>(() => {});
+	const handleTrackEndRef = useRef<() => void>(() => {});
 
 	useEffect(() => {
 		setIsMounted(true);
@@ -132,7 +133,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		onError: () => {
 			console.error("YouTube Player Error");
 			handleNextRef.current();
-		}
+		},
 	});
 
 	const {
@@ -171,7 +172,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 					handleNextRef.current();
 				}
 			}
-		}
+		},
 	});
 
 	const region = "default";
@@ -230,7 +231,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				const decodedTracks = data.tracks.map((track: MusicTrack) => ({
 					...track,
 					title: decodeHtml(track.title),
-					channel: decodeHtml(track.channel)
+					channel: decodeHtml(track.channel),
 				}));
 
 				return decodedTracks;
@@ -411,7 +412,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				) {
 					socket.emit("music:seek", {
 						pasteId,
-						currentTime: seconds
+						currentTime: seconds,
 					});
 				}
 			}
@@ -445,8 +446,8 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				playerRef.current.setPlaybackQuality(newQuality);
 			}
 			toast.add({
-				title:
-					`Audio quality set to ${newQuality === "tiny" ? "Low" : newQuality === "small" ? "Medium" : newQuality === "medium" ? "High" : "Auto"}`, type: "success"
+				title: `Audio quality set to ${newQuality === "tiny" ? "Low" : newQuality === "small" ? "Medium" : newQuality === "medium" ? "High" : "Auto"}`,
+				type: "success",
 			});
 		},
 		[playerRef],
@@ -499,15 +500,18 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				const decodedTracks = data.tracks.map((track: MusicTrack) => ({
 					...track,
 					title: decodeHtml(track.title),
-					channel: decodeHtml(track.channel)
+					channel: decodeHtml(track.channel),
 				}));
 				setSearchResults(decodedTracks);
 				toast.add({
-					title:
-						`Found ${decodedTracks.length} tracks for "${query}"`, type: "success"
+					title: `Found ${decodedTracks.length} tracks for "${query}"`,
+					type: "success",
 				});
 			} else {
-				toast.add({ title: "No tracks found on YouTube", type: "error" });
+				toast.add({
+					title: "No tracks found on YouTube",
+					type: "error",
+				});
 			}
 		} catch (error) {
 			console.error("Search error:", error);
@@ -535,7 +539,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 							(t: MusicTrack) => ({
 								...t,
 								title: decodeHtml(t.title),
-								channel: decodeHtml(t.channel)
+								channel: decodeHtml(t.channel),
 							}),
 						);
 						const filteredTracks = decodedTracks
@@ -589,11 +593,14 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				currentTime: 0,
 				playlist: [],
 				shuffle,
-				repeat
+				repeat,
 			});
 		}
 
-		toast.add({ title: "Music queue and progress cleared", type: "success" });
+		toast.add({
+			title: "Music queue and progress cleared",
+			type: "success",
+		});
 	}, [
 		isReady,
 		playerRef,
@@ -640,7 +647,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 						currentTime: currentTimeRef.current,
 						playlist: nextPlaylist,
 						shuffle,
-						repeat
+						repeat,
 					});
 				}
 
@@ -687,13 +694,16 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 						currentTime: currentTimeRef.current,
 						playlist: nextPlaylist,
 						shuffle,
-						repeat
+						repeat,
 					});
 				}
 
 				return nextPlaylist;
 			});
-			toast.add({ title: `"${track.title}" will play next`, type: "success" });
+			toast.add({
+				title: `"${track.title}" will play next`,
+				type: "success",
+			});
 		},
 		[
 			currentIndex,
@@ -734,7 +744,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 						currentTime: currentTimeRef.current,
 						playlist: nextPlaylist,
 						shuffle,
-						repeat
+						repeat,
 					});
 				}
 
@@ -805,10 +815,10 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 
 				if (
 					Math.floor(nextTime) % CONFIG.defaults.musicSaveInterval ===
-					0 &&
+						0 &&
 					Math.floor(nextTime) >=
-					lastSavedTimeRef.current +
-					CONFIG.defaults.musicSaveInterval
+						lastSavedTimeRef.current +
+							CONFIG.defaults.musicSaveInterval
 				) {
 					lastSavedTimeRef.current = Math.floor(nextTime);
 					localStore.setItem(
@@ -840,7 +850,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			region,
 			shuffle,
 			repeat,
-			volume
+			volume,
 		});
 	}, [
 		socket,
@@ -876,7 +886,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 					playlist,
 					region,
 					shuffle,
-					repeat
+					repeat,
 				});
 			}, 3000);
 			return () => clearInterval(syncInterval);
@@ -1238,7 +1248,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				toggleRepeat: handleToggleRepeat,
 				openPlayer: () => setIsPlayerOpen(true),
 				closePlayer: () => setIsPlayerOpen(false),
-				refreshPlaylist: () => { },
+				refreshPlaylist: () => {},
 				playAtIndex: handlePlayAtIndex,
 				searchTracks: handleSearchTracks,
 				playSearchTrack: handlePlaySearchTrack,

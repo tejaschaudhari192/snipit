@@ -23,7 +23,8 @@ interface LanguageIconProps {
 
 export const LanguageIcon: React.FC<LanguageIconProps> = ({
 	language,
-	className}) => {
+	className,
+}) => {
 	const lang = language.toLowerCase();
 
 	const iconMap: Record<string, string> = {

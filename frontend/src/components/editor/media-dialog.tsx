@@ -53,12 +53,18 @@ export function MediaDialog({
 						? `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB`
 						: `${(selectedFile.size / 1024).toFixed(1)} KB`;
 				onInsert(url, selectedFile.name, sizeStr);
-				toast.add({ title: "Uploaded and embedded successfully!", type: "success" });
+				toast.add({
+					title: "Uploaded and embedded successfully!",
+					type: "success",
+				});
 				handleClose();
 			}
 		} catch (err) {
 			console.error(err);
-			toast.add({ title: "An error occurred during upload", type: "error" });
+			toast.add({
+				title: "An error occurred during upload",
+				type: "error",
+			});
 		} finally {
 			setIsUploading(false);
 		}

@@ -66,7 +66,10 @@ export const AiWriterDialog = ({
 				setResult(res.result);
 				toast.add({ title: t("ai_dialog.success"), type: "success" });
 			} else {
-				toast.add({ title: t("ai_dialog.error_failed"), type: "error" });
+				toast.add({
+					title: t("ai_dialog.error_failed"),
+					type: "error",
+				});
 			}
 		} catch (error: unknown) {
 			console.error("AI Writer error:", error);
@@ -187,14 +190,18 @@ export const AiWriterDialog = ({
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 									<span
-									style={{
-										"--highlight-color": "var(--foreground)",
-										"--base-color": "var(--muted-foreground)",
-										"--spread": "20px",
-										"--duration": "2s"
-									} as React.CSSProperties}
-									className="shimmer font-medium"
-								>
+										style={
+											{
+												"--highlight-color":
+													"var(--foreground)",
+												"--base-color":
+													"var(--muted-foreground)",
+												"--spread": "20px",
+												"--duration": "2s",
+											} as React.CSSProperties
+										}
+										className="shimmer font-medium"
+									>
 										{t("ai_writer.generating") ||
 											"Generating..."}
 									</span>

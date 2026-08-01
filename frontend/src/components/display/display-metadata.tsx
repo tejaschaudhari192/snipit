@@ -47,9 +47,15 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 				setIsSaved(result.saved);
 
 				if (result.saved) {
-					toast.add({ title: t("display.snippet_saved"), type: "success" });
+					toast.add({
+						title: t("display.snippet_saved"),
+						type: "success",
+					});
 				} else {
-					toast.add({ title: t("display.snippet_unsaved"), type: "success" });
+					toast.add({
+						title: t("display.snippet_unsaved"),
+						type: "success",
+					});
 				}
 
 				loadSavedProfile(true);
@@ -66,9 +72,15 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 				const saved = guestStorage.toggleSaved(paste);
 
 				if (saved) {
-					toast.add({ title: t("display.snippet_saved"), type: "success" });
+					toast.add({
+						title: t("display.snippet_saved"),
+						type: "success",
+					});
 				} else {
-					toast.add({ title: t("display.snippet_unsaved"), type: "success" });
+					toast.add({
+						title: t("display.snippet_unsaved"),
+						type: "success",
+					});
 				}
 
 				setIsSaved(saved);

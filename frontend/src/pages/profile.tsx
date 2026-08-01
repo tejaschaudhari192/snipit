@@ -17,15 +17,18 @@ import type { User as UserType } from "@/types";
 
 const ProfileInfo = lazy(() =>
 	import("@/components/profile/profile-info").then((m) => ({
-		default: m.ProfileInfo})),
+		default: m.ProfileInfo,
+	})),
 );
 const ProfileSnippetList = lazy(() =>
 	import("@/components/profile/profile-snippet-list").then((m) => ({
-		default: m.ProfileSnippetList})),
+		default: m.ProfileSnippetList,
+	})),
 );
 const LogoutDialog = lazy(() =>
 	import("@/components/header/logout-dialog").then((m) => ({
-		default: m.LogoutDialog})),
+		default: m.LogoutDialog,
+	})),
 );
 
 const ProfilePage = () => {
@@ -103,7 +106,8 @@ const ProfilePage = () => {
 		try {
 			setIsUpdating(true);
 			const updatedUser = await apiHelpers.updateMe({
-				username: newName});
+				username: newName,
+			});
 			setUser({ ...user!, username: updatedUser.username });
 			toast.add({ title: t("profile.profile_updated"), type: "success" });
 			setIsEditingName(false);
@@ -111,9 +115,12 @@ const ProfilePage = () => {
 			const errorMessage =
 				error instanceof Error && "response" in error
 					? (error as { response?: { data?: { message?: string } } })
-						.response?.data?.message
+							.response?.data?.message
 					: undefined;
-			toast.add({ title: errorMessage || t("profile.update_failed"), type: "error" });
+			toast.add({
+				title: errorMessage || t("profile.update_failed"),
+				type: "error",
+			});
 		} finally {
 			setIsUpdating(false);
 		}
@@ -138,15 +145,15 @@ const ProfilePage = () => {
 
 	const displayPastes = searchQuery.trim()
 		? pastes.filter(
-			(p) =>
-				p.id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				p.fileName
-					?.toLowerCase()
-					.includes(searchQuery.toLowerCase()) ||
-				p.content
-					?.toLowerCase()
-					.includes(searchQuery.toLowerCase()),
-		)
+				(p) =>
+					p.id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+					p.fileName
+						?.toLowerCase()
+						.includes(searchQuery.toLowerCase()) ||
+					p.content
+						?.toLowerCase()
+						.includes(searchQuery.toLowerCase()),
+			)
 		: pastes;
 	const displayLoading = loadingPastes;
 
@@ -247,13 +254,18 @@ const ProfilePage = () => {
 								{allLabels.map((label) => (
 									<Button
 										key={label}
-										variant={activeLabel === label ? "default" : "outline"}
+										variant={
+											activeLabel === label
+												? "default"
+												: "outline"
+										}
 										size="sm"
 										onClick={() => handleLabelClick(label)}
-										className={`rounded-full text-xs font-bold transition-all shrink-0 ${activeLabel === label
+										className={`rounded-full text-xs font-bold transition-all shrink-0 ${
+											activeLabel === label
 												? "shadow-md scale-105"
 												: "text-muted-foreground"
-											}`}
+										}`}
 									>
 										{label}
 									</Button>
@@ -292,7 +304,7 @@ const ProfilePage = () => {
 									<ProfileSnippetList
 										pastes={filteredPastes || []}
 										loading={filteredPastes === null}
-										loadMore={() => { }}
+										loadMore={() => {}}
 										hasMore={false}
 										isLoadingMore={false}
 									/>
@@ -354,7 +366,7 @@ const ProfilePage = () => {
 										<ProfileSnippetList
 											pastes={savedPastes}
 											loading={loadingSaved}
-											loadMore={() => { }}
+											loadMore={() => {}}
 											hasMore={false}
 											isLoadingMore={false}
 										/>

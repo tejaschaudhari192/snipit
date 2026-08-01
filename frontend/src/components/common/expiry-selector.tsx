@@ -123,7 +123,8 @@ export const ExpirySelector = memo(
 									year: "numeric",
 									hour: "numeric",
 									minute: "2-digit",
-									hour12: true})}
+									hour12: true,
+								})}
 							</SelectItem>
 						)}
 					</SelectGroup>

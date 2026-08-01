@@ -12,7 +12,8 @@ interface DownloadDropdownProps {
 const DownloadDropdown: React.FC<DownloadDropdownProps> = ({
 	videoId,
 	title,
-	size = "md"}) => {
+	size = "md",
+}) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const { downloadTrack } = useMusic();
 

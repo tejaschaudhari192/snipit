@@ -53,13 +53,17 @@ export default function BulkShareModal({
 					shareItem({
 						targetEmail: email,
 						role,
-						item}),
+						item,
+					}),
 				).unwrap();
 				successCount++;
 			} catch (error: unknown) {
 				const msg =
 					error instanceof Error ? error.message : String(error);
-				toast.add({ title: `Failed to share "${item.title}": ${msg}`, type: "error" });
+				toast.add({
+					title: `Failed to share "${item.title}": ${msg}`,
+					type: "error",
+				});
 			}
 		}
 
@@ -68,7 +72,7 @@ export default function BulkShareModal({
 		if (successCount > 0) {
 			toast.add({
 				title: `Shared ${successCount}/${items.length} item${items.length > 1 ? "s" : ""} securely with ${email}`,
-				type: "success"
+				type: "success",
 			});
 		}
 

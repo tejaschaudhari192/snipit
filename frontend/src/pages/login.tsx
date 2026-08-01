@@ -46,7 +46,9 @@ const LoginPage = () => {
 			const axiosError = error as AxiosError<{ message: string }>;
 			toast.add({
 				title:
-					axiosError.response?.data?.message || t("auth.login_failed"), type: "error"
+					axiosError.response?.data?.message ||
+					t("auth.login_failed"),
+				type: "error",
 			});
 		} finally {
 			setIsLoading(false);
@@ -59,7 +61,7 @@ const LoginPage = () => {
 		setIsLoading(true);
 		try {
 			const response = await api.post("/auth/google", {
-				idToken: credentialResponse.credential
+				idToken: credentialResponse.credential,
 			});
 			login(response.data);
 			toast.add({ title: t("auth.login_success"), type: "success" });
@@ -68,8 +70,9 @@ const LoginPage = () => {
 			const axiosError = error as AxiosError<{ message: string }>;
 			toast.add({
 				title:
-					axiosError.response?.data?.message || t("auth.login_failed"),
-				type: "error"
+					axiosError.response?.data?.message ||
+					t("auth.login_failed"),
+				type: "error",
 			});
 		} finally {
 			setIsLoading(false);
@@ -185,12 +188,16 @@ const LoginPage = () => {
 										<>
 											<ShimmerSection type="mini-loader" />
 											<span
-												style={{
-													"--highlight-color": "var(--foreground)",
-													"--base-color": "var(--muted-foreground)",
-													"--spread": "20px",
-													"--duration": "2s"
-												} as React.CSSProperties}
+												style={
+													{
+														"--highlight-color":
+															"var(--foreground)",
+														"--base-color":
+															"var(--muted-foreground)",
+														"--spread": "20px",
+														"--duration": "2s",
+													} as React.CSSProperties
+												}
 												className="shimmer font-medium"
 											>
 												{t("auth.logging_in")}

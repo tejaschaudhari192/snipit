@@ -23,7 +23,8 @@ export const useMonacoConfig = () => {
 					availableLanguages: {
 						"*": monacoLocale,
 					},
-				}});
+				},
+			});
 		});
 
 		return () => {

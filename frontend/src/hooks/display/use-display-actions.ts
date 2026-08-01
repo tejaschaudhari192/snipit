@@ -77,7 +77,10 @@ export const useDisplayActions = ({
 					: (updatedContent || paste?.content)?.trim() !== "";
 
 			if (!hasContent) {
-				toast.add({ title: t("messages.content_required"), type: "error" });
+				toast.add({
+					title: t("messages.content_required"),
+					type: "error",
+				});
 				setSaveStatus("error");
 				return;
 			}
@@ -86,8 +89,11 @@ export const useDisplayActions = ({
 				(idTypeTab === "dynamic" || idTypeTab === "semantic") &&
 				!customId.trim()
 			) {
-				toast.add({ title: 
-					t("home.custom_id_required") || "Custom ID is required", type: "error" });
+				toast.add({
+					title:
+						t("home.custom_id_required") || "Custom ID is required",
+					type: "error",
+				});
 				setSaveStatus("error");
 				return;
 			}
@@ -97,7 +103,10 @@ export const useDisplayActions = ({
 				!editPassword &&
 				!(paste?.isPasswordProtected || paste?.password)
 			) {
-				toast.add({ title: t("messages.password_required"), type: "error" });
+				toast.add({
+					title: t("messages.password_required"),
+					type: "error",
+				});
 				setSaveStatus("error");
 				return;
 			}
@@ -151,7 +160,8 @@ export const useDisplayActions = ({
 					allowedUsers,
 					collaborators: collaborators.map((c) => ({
 						email: c.email,
-						role: c.role})),
+						role: c.role,
+					})),
 					publicRole,
 					allowComments,
 					expiresTime,
@@ -172,7 +182,8 @@ export const useDisplayActions = ({
 					allowedUsers: paste?.allowedUsers || [],
 					collaborators: (paste?.collaborators || []).map((c) => ({
 						email: c.email,
-						role: c.role})),
+						role: c.role,
+					})),
 					publicRole: paste?.publicRole,
 					allowComments: paste?.allowComments,
 					expiresTime: paste?.expiresTime,
@@ -250,9 +261,12 @@ export const useDisplayActions = ({
 				setSaveStatus("error");
 				setTimeout(() => setSaveStatus("idle"), 5000);
 				const axiosError = error as AxiosError<{ error: string }>;
-				toast.add({ title: 
-					axiosError.response?.data?.error ??
-						t("messages.update_failed"), type: "error" });
+				toast.add({
+					title:
+						axiosError.response?.data?.error ??
+						t("messages.update_failed"),
+					type: "error",
+				});
 			} finally {
 				setIsSaving(false);
 			}
@@ -336,7 +350,10 @@ export const useDisplayActions = ({
 			setIsDeleting(true);
 			playRemoveSound();
 			await apiHelpers.deletePaste(id!);
-			toast.add({ title: t("messages.snippet_deleted"), type: "success" });
+			toast.add({
+				title: t("messages.snippet_deleted"),
+				type: "success",
+			});
 			navigate("/");
 		} catch {
 			toast.add({ title: t("messages.delete_failed"), type: "error" });

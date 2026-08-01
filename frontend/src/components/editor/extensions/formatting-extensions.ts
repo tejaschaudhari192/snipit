@@ -72,7 +72,8 @@ export const Indent = Extension.create({
 								if (currentIndent < this.options.maxLevel) {
 									tr.setNodeMarkup(pos, undefined, {
 										...node.attrs,
-										indent: currentIndent + 1});
+										indent: currentIndent + 1,
+									});
 								}
 							}
 						},
@@ -93,7 +94,8 @@ export const Indent = Extension.create({
 								if (currentIndent > this.options.minLevel) {
 									tr.setNodeMarkup(pos, undefined, {
 										...node.attrs,
-										indent: currentIndent - 1});
+										indent: currentIndent - 1,
+									});
 								}
 							}
 						},
@@ -102,7 +104,8 @@ export const Indent = Extension.create({
 					return true;
 				},
 		};
-	}});
+	},
+});
 
 export const LineHeight = Extension.create({
 	name: "lineHeight",
@@ -155,7 +158,8 @@ export const LineHeight = Extension.create({
 							if (this.options.types.includes(node.type.name)) {
 								tr.setNodeMarkup(pos, undefined, {
 									...node.attrs,
-									lineHeight});
+									lineHeight,
+								});
 							}
 						},
 					);
@@ -173,7 +177,8 @@ export const LineHeight = Extension.create({
 							if (this.options.types.includes(node.type.name)) {
 								tr.setNodeMarkup(pos, undefined, {
 									...node.attrs,
-									lineHeight: this.options.defaultLineHeight});
+									lineHeight: this.options.defaultLineHeight,
+								});
 							}
 						},
 					);
@@ -181,4 +186,5 @@ export const LineHeight = Extension.create({
 					return true;
 				},
 		};
-	}});
+	},
+});

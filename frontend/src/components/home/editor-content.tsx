@@ -26,49 +26,59 @@ import { MonacoConfig } from "@/hooks/use-monaco-config";
 
 const EditorToolbar = lazy(() =>
 	import("@/components/common/editor-toolbar").then((m) => ({
-		default: m.EditorToolbar})),
+		default: m.EditorToolbar,
+	})),
 );
 
 const FileUploadView = lazy(() =>
 	import("@/components/common/file-upload-view").then((m) => ({
-		default: m.FileUploadView})),
+		default: m.FileUploadView,
+	})),
 );
 
 const LinkResultView = lazy(() =>
 	import("@/components/home/link-result-view").then((m) => ({
-		default: m.LinkResultView})),
+		default: m.LinkResultView,
+	})),
 );
 
 const ResizableSplitPane = lazy(() =>
 	import("@/components/common/resizable-split-pane").then((m) => ({
-		default: m.ResizableSplitPane})),
+		default: m.ResizableSplitPane,
+	})),
 );
 
 const CollabDraw = lazy(() =>
 	import("@/components/display/collab-draw").then((m) => ({
-		default: m.CollabDraw})),
+		default: m.CollabDraw,
+	})),
 );
 const MarkdownDisplay = lazy(() =>
 	import("@/components/display/content/markdown-display").then((m) => ({
-		default: m.MarkdownDisplay})),
+		default: m.MarkdownDisplay,
+	})),
 );
 const HtmlDisplay = lazy(() =>
 	import("@/components/display/content/html-display").then((m) => ({
-		default: m.HtmlDisplay})),
+		default: m.HtmlDisplay,
+	})),
 );
 
 const VideoSetupView = lazy(() =>
 	import("./video-setup-view").then((m) => ({
-		default: m.VideoSetupView})),
+		default: m.VideoSetupView,
+	})),
 );
 
 const TiptapEditor = lazy(() =>
 	import("@/components/editor/tiptap-editor").then((m) => ({
-		default: m.TiptapEditor})),
+		default: m.TiptapEditor,
+	})),
 );
 const MonacoEditor = lazy(() =>
 	import("@monaco-editor/react").then((m) => ({
-		default: m.Editor})),
+		default: m.Editor,
+	})),
 );
 
 const EditorInnerSkeleton = () => (

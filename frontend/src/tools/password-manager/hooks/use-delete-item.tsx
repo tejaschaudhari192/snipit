@@ -18,10 +18,14 @@ export function useDeleteItem() {
 			try {
 				await dispatch(deleteItem(deleteTargetId)).unwrap();
 			} catch (error: unknown) {
-				toast.add({ title: 
-					typeof error === "string"
-						? error
-						: (error as Error).message || "Failed to delete item", type: "error" });
+				toast.add({
+					title:
+						typeof error === "string"
+							? error
+							: (error as Error).message ||
+								"Failed to delete item",
+					type: "error",
+				});
 			}
 		}
 		setIsDeleteDialogOpen(false);

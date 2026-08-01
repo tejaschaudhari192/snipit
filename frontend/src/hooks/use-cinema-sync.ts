@@ -142,7 +142,8 @@ export function useCinemaSync({
 				socket.emit("video-timeline-ping", {
 					pasteId,
 					timestamp: videoRef.current.currentTime,
-					duration: videoRef.current.duration || undefined});
+					duration: videoRef.current.duration || undefined,
+				});
 			}
 		}, 3000);
 
@@ -172,7 +173,8 @@ export function useCinemaSync({
 			pasteId,
 			action,
 			timestamp: time,
-			duration: videoRef.current?.duration || undefined});
+			duration: videoRef.current?.duration || undefined,
+		});
 	};
 
 	return {

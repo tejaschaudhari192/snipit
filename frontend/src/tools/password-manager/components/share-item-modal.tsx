@@ -49,15 +49,22 @@ export default function ShareItemModal({
 				shareItem({
 					targetEmail: email,
 					role,
-					item}),
+					item,
+				}),
 			).unwrap();
 
-			toast.add({ title: `Securely shared with ${email}`, type: "success" });
+			toast.add({
+				title: `Securely shared with ${email}`,
+				type: "success",
+			});
 			setEmail("");
 			onClose();
 		} catch (error: unknown) {
 			const msg = error instanceof Error ? error.message : String(error);
-			toast.add({ title: msg || "Failed to share securely", type: "error" });
+			toast.add({
+				title: msg || "Failed to share securely",
+				type: "error",
+			});
 		} finally {
 			setIsSharing(false);
 		}
@@ -65,7 +72,10 @@ export default function ShareItemModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent showCloseButton={false} className="sm:max-w-md bg-background border-border text-foreground shadow-2xl">
+			<DialogContent
+				showCloseButton={false}
+				className="sm:max-w-md bg-background border-border text-foreground shadow-2xl"
+			>
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<Users className="w-5 h-5 text-primary" />

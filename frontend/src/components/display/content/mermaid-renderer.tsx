@@ -34,7 +34,8 @@ export const MermaidRenderer = ({ content }: MermaidRendererProps) => {
 			startOnLoad: false,
 			theme: isDark ? "dark" : "default",
 			securityLevel: "loose",
-			fontFamily: "Inter, sans-serif"}),
+			fontFamily: "Inter, sans-serif",
+		}),
 		[isDark],
 	);
 

@@ -54,7 +54,8 @@ const KOKORO_VOICES = [
 
 export const ProfileTtsSettings: React.FC<ProfileTtsSettingsProps> = ({
 	ttsVoice,
-	onVoiceChange}) => {
+	onVoiceChange,
+}) => {
 	return (
 		<div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300 fill-mode-both">
 			<Card className="border border-border/50 bg-background/60 backdrop-blur-3xl shadow-xl rounded-4xl overflow-hidden ring-1 ring-white/5">

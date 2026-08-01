@@ -3,11 +3,13 @@ import { ResizablePanels } from "@/components/common/resizable-panels";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 const TerminalContainer = React.lazy(() =>
 	import("@/components/terminal/terminal-container").then((m) => ({
-		default: m.TerminalContainer})),
+		default: m.TerminalContainer,
+	})),
 );
 const DisplayContent = React.lazy(() =>
 	import("@/components/display/display-content").then((m) => ({
-		default: m.DisplayContent})),
+		default: m.DisplayContent,
+	})),
 );
 import type { PasteData, ContentMode, ActiveUser, EditorChange } from "@/types";
 import { Socket } from "socket.io-client";

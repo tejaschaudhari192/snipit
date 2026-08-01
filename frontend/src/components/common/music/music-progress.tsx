@@ -10,7 +10,8 @@ interface MusicProgressProps {
 const MusicProgress: React.FC<MusicProgressProps> = ({
 	currentTime,
 	duration,
-	onSeek}) => {
+	onSeek,
+}) => {
 	const [isSeeking, setIsSeeking] = useState(false);
 	const [seekValue, setSeekValue] = useState(0);
 

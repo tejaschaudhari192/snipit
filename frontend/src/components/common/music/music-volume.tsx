@@ -21,7 +21,8 @@ const MusicVolume: React.FC<MusicVolumeProps> = ({
 	volume,
 	onVolumeChange,
 	quality,
-	onQualityChange}) => {
+	onQualityChange,
+}) => {
 	const handleToggleMute = () => {
 		onVolumeChange(volume === 0 ? 50 : 0);
 	};
@@ -66,10 +67,30 @@ const MusicVolume: React.FC<MusicVolumeProps> = ({
 						<SelectValue placeholder="Auto" />
 					</SelectTrigger>
 					<SelectContent>
-						<SelectItem value="tiny" className="text-[10px] font-medium">Low</SelectItem>
-						<SelectItem value="small" className="text-[10px] font-medium">Medium</SelectItem>
-						<SelectItem value="medium" className="text-[10px] font-medium">High</SelectItem>
-						<SelectItem value="default" className="text-[10px] font-medium">Auto</SelectItem>
+						<SelectItem
+							value="tiny"
+							className="text-[10px] font-medium"
+						>
+							Low
+						</SelectItem>
+						<SelectItem
+							value="small"
+							className="text-[10px] font-medium"
+						>
+							Medium
+						</SelectItem>
+						<SelectItem
+							value="medium"
+							className="text-[10px] font-medium"
+						>
+							High
+						</SelectItem>
+						<SelectItem
+							value="default"
+							className="text-[10px] font-medium"
+						>
+							Auto
+						</SelectItem>
 					</SelectContent>
 				</Select>
 			</div>

@@ -12,7 +12,8 @@ interface ProfileActivityCardProps {
 export const ProfileActivityCard: React.FC<ProfileActivityCardProps> = ({
 	totalViews,
 	favoriteLanguage,
-	averageViews}) => {
+	averageViews,
+}) => {
 	const { t } = useTranslation();
 
 	return (

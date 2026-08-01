@@ -35,7 +35,10 @@ export const AiDrawDialog = ({
 
 	const handleGenerate = async () => {
 		if (!description.trim()) {
-			toast.add({ title: t("ai.draw_empty_description"), type: "warning" });
+			toast.add({
+				title: t("ai.draw_empty_description"),
+				type: "warning",
+			});
 			return;
 		}
 
@@ -137,12 +140,16 @@ export const AiDrawDialog = ({
 							<>
 								<Loader2 className="w-4 h-4 mr-2 animate-spin" />
 								<span
-									style={{
-										"--highlight-color": "var(--foreground)",
-										"--base-color": "var(--muted-foreground)",
-										"--spread": "20px",
-										"--duration": "2s"
-									} as React.CSSProperties}
+									style={
+										{
+											"--highlight-color":
+												"var(--foreground)",
+											"--base-color":
+												"var(--muted-foreground)",
+											"--spread": "20px",
+											"--duration": "2s",
+										} as React.CSSProperties
+									}
 									className="shimmer font-medium"
 								>
 									{t("ai.generating")}

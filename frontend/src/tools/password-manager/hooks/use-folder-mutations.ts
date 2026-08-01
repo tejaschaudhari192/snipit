@@ -26,12 +26,16 @@ export function useFolderMutations() {
 			const newFolders = [...(vault.folders || []), newFolder];
 			dispatch(
 				setVault({
-					folders: newFolders}),
+					folders: newFolders,
+				}),
 			);
 			dispatch(persistFolders(newFolders))
 				.unwrap()
 				.catch((err) =>
-					toast.add({ title: err.message || "Failed to create folder", type: "error" }),
+					toast.add({
+						title: err.message || "Failed to create folder",
+						type: "error",
+					}),
 				);
 		},
 		[vault, dispatch],
@@ -43,21 +47,25 @@ export function useFolderMutations() {
 			const newFolders = (vault.folders || []).map((f: Folder) =>
 				f.id === id
 					? {
-						...f,
-						name: name.trim(),
-						color,
-						updatedAt: new Date().toISOString(),
-					}
+							...f,
+							name: name.trim(),
+							color,
+							updatedAt: new Date().toISOString(),
+						}
 					: f,
 			);
 			dispatch(
 				setVault({
-					folders: newFolders}),
+					folders: newFolders,
+				}),
 			);
 			dispatch(persistFolders(newFolders))
 				.unwrap()
 				.catch((err) =>
-					toast.add({ title: err.message || "Failed to update folder", type: "error" }),
+					toast.add({
+						title: err.message || "Failed to update folder",
+						type: "error",
+					}),
 				);
 		},
 		[vault, dispatch],
@@ -69,7 +77,10 @@ export function useFolderMutations() {
 			dispatch(deleteFolderAsync({ id, deletePasswordsInside }))
 				.unwrap()
 				.catch((err) =>
-					toast.add({ title: err || "Failed to delete folder", type: "error" }),
+					toast.add({
+						title: err || "Failed to delete folder",
+						type: "error",
+					}),
 				);
 		},
 		[vault, dispatch],

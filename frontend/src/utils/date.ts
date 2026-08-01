@@ -82,7 +82,8 @@ export function getTimeRemaining(
 	if (years > 0) {
 		return t
 			? t(years > 1 ? "common.time.years" : "common.time.year", {
-					count: years})
+					count: years,
+				})
 			: `${years} year${years > 1 ? "s" : ""}`;
 	}
 	if (remainingMonths > 0) {
@@ -98,13 +99,15 @@ export function getTimeRemaining(
 	if (remainingDays > 0) {
 		return t
 			? t(remainingDays > 1 ? "common.time.days" : "common.time.day", {
-					count: remainingDays})
+					count: remainingDays,
+				})
 			: `${remainingDays} day${remainingDays > 1 ? "s" : ""}`;
 	}
 	if (remainingHours > 0) {
 		return t
 			? t(remainingHours > 1 ? "common.time.hours" : "common.time.hour", {
-					count: remainingHours})
+					count: remainingHours,
+				})
 			: `${remainingHours} hour${remainingHours > 1 ? "s" : ""}`;
 	}
 	if (remainingMinutes > 0) {

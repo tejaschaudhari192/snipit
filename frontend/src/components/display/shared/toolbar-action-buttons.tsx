@@ -134,14 +134,18 @@ export const ToolbarActionButtons = ({
 								<>
 									<Loader2 className="h-4 w-4 animate-spin" />
 									<span
-									style={{
-										"--highlight-color": "var(--foreground)",
-										"--base-color": "var(--muted-foreground)",
-										"--spread": "20px",
-										"--duration": "2s"
-									} as React.CSSProperties}
-									className="shimmer font-medium"
-								>
+										style={
+											{
+												"--highlight-color":
+													"var(--foreground)",
+												"--base-color":
+													"var(--muted-foreground)",
+												"--spread": "20px",
+												"--duration": "2s",
+											} as React.CSSProperties
+										}
+										className="shimmer font-medium"
+									>
 										{t("common.saving")}
 									</span>
 								</>

@@ -26,7 +26,8 @@ export const ProfileSnippetList = ({
 	const loaderRef = useInfiniteScroll({
 		hasMore,
 		isLoading: isLoadingMore,
-		loadMore});
+		loadMore,
+	});
 
 	return (
 		<div className="space-y-6">
@@ -71,12 +72,16 @@ export const ProfileSnippetList = ({
 							<div className="flex items-center gap-2 text-muted-foreground animate-in fade-in duration-300">
 								<Loader2 className="h-5 w-5 animate-spin text-primary" />
 								<span
-									style={{
-										"--highlight-color": "var(--foreground)",
-										"--base-color": "var(--muted-foreground)",
-										"--spread": "20px",
-										"--duration": "2s"
-									} as React.CSSProperties}
+									style={
+										{
+											"--highlight-color":
+												"var(--foreground)",
+											"--base-color":
+												"var(--muted-foreground)",
+											"--spread": "20px",
+											"--duration": "2s",
+										} as React.CSSProperties
+									}
 									className="shimmer font-medium"
 								>
 									{t("common.loading")}

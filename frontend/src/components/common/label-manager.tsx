@@ -11,7 +11,8 @@ const LabelsDisplay = lazy(() =>
 );
 const LabelInputSection = lazy(() =>
 	import("./label-input-section").then((m) => ({
-		default: m.LabelInputSection})),
+		default: m.LabelInputSection,
+	})),
 );
 
 interface LabelManagerProps {

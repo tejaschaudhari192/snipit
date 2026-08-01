@@ -33,7 +33,10 @@ export const FileUploadItem = ({
 	}
 
 	return (
-		<Attachment state={state} className="w-full sm:w-60 bg-background/50 hover:bg-background transition-colors">
+		<Attachment
+			state={state}
+			className="w-full sm:w-60 bg-background/50 hover:bg-background transition-colors"
+		>
 			<AttachmentMedia>
 				<FileTypeIcon
 					fileName={file.fileName}
@@ -53,7 +56,10 @@ export const FileUploadItem = ({
 			</AttachmentContent>
 			{!isUploading && onRemove && (
 				<AttachmentActions>
-					<AttachmentAction aria-label={`Remove ${file.fileName}`} onClick={() => onRemove(file.id)}>
+					<AttachmentAction
+						aria-label={`Remove ${file.fileName}`}
+						onClick={() => onRemove(file.id)}
+					>
 						<X className="h-4 w-4" />
 					</AttachmentAction>
 				</AttachmentActions>

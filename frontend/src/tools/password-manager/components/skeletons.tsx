@@ -28,7 +28,7 @@ export function AppSkeleton() {
 							<Skeleton className="h-9 w-24 rounded-md bg-white/5" />
 						</div>
 					</div>
-					
+
 					<div className="space-y-1 mt-6">
 						{Array.from({ length: 8 }).map((_, i) => (
 							<Skeleton

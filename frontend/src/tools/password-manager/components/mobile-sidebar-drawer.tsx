@@ -1,9 +1,15 @@
 import React, { Suspense } from "react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import {
+	Sheet,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+	SheetDescription,
+} from "@/components/ui/sheet";
 import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
 import {
 	selectIsSidebarDrawerOpen,
-	setSidebarDrawerOpen
+	setSidebarDrawerOpen,
 } from "@/tools/password-manager/store/password-slice";
 import { SidebarSkeleton } from "./skeletons";
 

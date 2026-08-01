@@ -59,7 +59,8 @@ export const useEditorSync = ({
 							data.changes.map((change: EditorChange) => ({
 								range: change.range,
 								text: change.text,
-								forceMoveMarkers: true})),
+								forceMoveMarkers: true,
+							})),
 							() => null,
 						);
 
@@ -136,7 +137,8 @@ export const useEditorSync = ({
 
 			socketRef.current.emit("edit-paste", {
 				pasteId: id,
-				...data});
+				...data,
+			});
 		},
 		[id, isEdit, socketRef],
 	);

@@ -50,13 +50,17 @@ export function formatDate(dateStr?: string): string {
 			month: "short",
 			day: "numeric",
 			hour: "2-digit",
-			minute: "2-digit"}).format(new Date(dateStr));
+			minute: "2-digit",
+		}).format(new Date(dateStr));
 	} catch {
 		return "";
 	}
 }
 
-export function formatRelativeTime(dateStr: string | undefined, justNowText: string): string {
+export function formatRelativeTime(
+	dateStr: string | undefined,
+	justNowText: string,
+): string {
 	if (!dateStr) return "";
 	try {
 		const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });

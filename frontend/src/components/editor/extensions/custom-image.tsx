@@ -305,4 +305,5 @@ export const CustomImage = Node.create({
 
 	addNodeView() {
 		return ReactNodeViewRenderer(ImageNodeView);
-	}});
+	},
+});

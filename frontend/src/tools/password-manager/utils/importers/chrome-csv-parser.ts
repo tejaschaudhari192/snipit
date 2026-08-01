@@ -11,7 +11,8 @@ export function parseChromeCSV(rawCSV: string): ParsedImportItem[] {
 		note: string;
 	}>(rawCSV.trim(), {
 		header: true,
-		skipEmptyLines: true});
+		skipEmptyLines: true,
+	});
 
 	if (parsed.errors && parsed.errors.length > 0) {
 		console.warn("Chrome CSV parse errors:", parsed.errors);
@@ -24,7 +25,12 @@ export function parseChromeCSV(rawCSV: string): ParsedImportItem[] {
 
 		const mapped: PasswordItem = {
 			id: crypto.randomUUID(),
-			title: row.name || new URL(row.url.startsWith("http") ? row.url : `https://${row.url}`).hostname || "Unknown",
+			title:
+				row.name ||
+				new URL(
+					row.url.startsWith("http") ? row.url : `https://${row.url}`,
+				).hostname ||
+				"Unknown",
 			username: row.username,
 			password: row.password,
 			url: row.url,
@@ -48,7 +54,8 @@ export function parseChromeCSV(rawCSV: string): ParsedImportItem[] {
 			},
 			mapped,
 			isDuplicate: false,
-			isSkipped: false});
+			isSkipped: false,
+		});
 	}
 
 	return results;

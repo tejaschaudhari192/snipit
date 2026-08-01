@@ -9,7 +9,8 @@ interface MusicVisualizerProps {
 
 const MusicVisualizer: React.FC<MusicVisualizerProps> = ({
 	isPlaying,
-	thumbnail}) => {
+	thumbnail,
+}) => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const { volume } = useMusic();
 

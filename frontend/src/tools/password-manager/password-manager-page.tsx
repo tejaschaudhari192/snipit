@@ -95,7 +95,6 @@ function PasswordManagerInner() {
 		}
 	}, [user?._id, dispatch]);
 
-
 	if (hasExistingVault === null || cloudVaultStatus === "checking") {
 		return <AppSkeleton />;
 	}
@@ -246,9 +245,7 @@ function PasswordManagerInner() {
 							}}
 							direction="right"
 						>
-							<DrawerContent
-								className="sm:max-w-150 p-0 border-l border-pm-border shadow-2xl h-full rounded-none"
-							>
+							<DrawerContent className="sm:max-w-150 p-0 border-l border-pm-border shadow-2xl h-full rounded-none">
 								<Suspense fallback={<DetailSkeleton />}>
 									<PasswordDetail
 										item={activeItem}

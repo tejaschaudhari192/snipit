@@ -83,16 +83,23 @@ export const CollaboratorsManager = ({
 					...allowedUsers,
 					...results.map((i) => i.email),
 				]);
-				toast.add({ title: t("messages.collaborators_added"), type: "success" });
+				toast.add({
+					title: t("messages.collaborators_added"),
+					type: "success",
+				});
 			} catch {
-				toast.add({ title: t("messages.collaborators_failed"), type: "error" });
+				toast.add({
+					title: t("messages.collaborators_failed"),
+					type: "error",
+				});
 			} finally {
 				setIsUpdating(false);
 			}
 		} else {
 			const newShareItems = uniqueEmails.map((email) => ({
 				email,
-				role: pendingRole}));
+				role: pendingRole,
+			}));
 			setCollaborators([...collaborators, ...newShareItems]);
 			setAllowedUsers([
 				...allowedUsers,
@@ -114,9 +121,15 @@ export const CollaboratorsManager = ({
 				setAllowedUsers(
 					allowedUsers.filter((e) => e !== emailToRemove),
 				);
-				toast.add({ title: t("messages.collaborator_removed"), type: "success" });
+				toast.add({
+					title: t("messages.collaborator_removed"),
+					type: "success",
+				});
 			} catch {
-				toast.add({ title: t("messages.collaborator_remove_failed"), type: "error" });
+				toast.add({
+					title: t("messages.collaborator_remove_failed"),
+					type: "error",
+				});
 			} finally {
 				setUpdatingEmails((prev) =>
 					prev.filter((e) => e !== emailToRemove),
@@ -146,9 +159,15 @@ export const CollaboratorsManager = ({
 							: item,
 					),
 				);
-				toast.add({ title: t("messages.collaborator_updated"), type: "success" });
+				toast.add({
+					title: t("messages.collaborator_updated"),
+					type: "success",
+				});
 			} catch {
-				toast.add({ title: t("messages.collaborator_update_failed"), type: "error" });
+				toast.add({
+					title: t("messages.collaborator_update_failed"),
+					type: "error",
+				});
 			} finally {
 				setUpdatingEmails((prev) => prev.filter((e) => e !== email));
 			}

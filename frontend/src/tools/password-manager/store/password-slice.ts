@@ -95,7 +95,8 @@ export const generateRecoveryKey = createAsyncThunk(
 				encryptedMnemonic: encryptedRecord.encrypted,
 				salt: encryptedRecord.salt,
 				iv: encryptedRecord.iv,
-				updatedAt: new Date().toISOString()});
+				updatedAt: new Date().toISOString(),
+			});
 
 			return mnemonic;
 		} catch (error) {
@@ -152,7 +153,8 @@ export const createVault = createAsyncThunk(
 				encryptedSettings: settingsPayload,
 				publicKey: publicKeyJWK,
 				encryptedPrivateKey,
-				salt: saltStr});
+				salt: saltStr,
+			});
 
 			// 6. Save to local IndexedDB for offline unlock caching
 			await setKeyRecord({
@@ -160,7 +162,8 @@ export const createVault = createAsyncThunk(
 				encryptedPersonalKey,
 				encryptedPrivateKey,
 				salt: saltStr,
-				updatedAt: new Date().toISOString()});
+				updatedAt: new Date().toISOString(),
+			});
 
 			// Setup complete, fetch items (will be empty)
 			dispatch(fetchVaultData());
@@ -279,7 +282,8 @@ export const fetchVaultData = createAsyncThunk(
 							);
 							personalItems.push({
 								...(migrated?.data as PasswordItem),
-								id: item.id});
+								id: item.id,
+							});
 						}
 					} catch (e) {
 						logger.error("Failed to decrypt personal item", e);
@@ -302,7 +306,8 @@ export const fetchVaultData = createAsyncThunk(
 								rawSharedItems.push({
 									...(migrated?.data as PasswordItem),
 									id: item.id,
-									collectionId: item.collectionId});
+									collectionId: item.collectionId,
+								});
 							}
 						} catch (e) {
 							logger.error("Failed to decrypt shared item", e);
@@ -350,7 +355,8 @@ export const persistItem = createAsyncThunk(
 			// Upsert to backend
 			await api.put(`/tools/password-manager/vault/items/${item.id}`, {
 				encryptedPayload,
-				collectionId: item.collectionId || null});
+				collectionId: item.collectionId || null,
+			});
 
 			return item;
 		} catch (error: unknown) {
@@ -373,7 +379,8 @@ export const persistItem = createAsyncThunk(
 						await api.post(`/tools/password-manager/vault/items`, {
 							id: item.id,
 							encryptedPayload,
-							collectionId: item.collectionId});
+							collectionId: item.collectionId,
+						});
 						return item;
 					}
 					const personalKey = keyStore.getPersonalKey();
@@ -382,7 +389,8 @@ export const persistItem = createAsyncThunk(
 					await api.post(`/tools/password-manager/vault/items`, {
 						id: item.id,
 						encryptedPayload,
-						collectionId: item.collectionId});
+						collectionId: item.collectionId,
+					});
 					return item;
 				} catch (innerError) {
 					dispatch(fetchVaultData());
@@ -402,12 +410,12 @@ export const deleteItem = createAsyncThunk(
 			.passwordManager;
 		// Find the item to see if it has a collectionId
 		let targetCollectionId: string | undefined;
-		const itemInPersonal = state.personalItems.find(i => i.id === id);
+		const itemInPersonal = state.personalItems.find((i) => i.id === id);
 		if (itemInPersonal?.collectionId) {
 			targetCollectionId = itemInPersonal.collectionId;
 		} else {
 			for (const coll of state.sharedCollections) {
-				if (coll.items.some(i => i.id === id)) {
+				if (coll.items.some((i) => i.id === id)) {
 					targetCollectionId = coll.collection.id;
 					break;
 				}
@@ -416,10 +424,12 @@ export const deleteItem = createAsyncThunk(
 
 		try {
 			await api.delete(`/tools/password-manager/vault/items/${id}`);
-			
+
 			// If it was part of a hidden collection (meaning an individually shared item), delete the collection too
 			if (targetCollectionId) {
-				const collection = state.sharedCollections.find(c => c.collection.id === targetCollectionId);
+				const collection = state.sharedCollections.find(
+					(c) => c.collection.id === targetCollectionId,
+				);
 				if (collection?.collection.isHidden) {
 					dispatch(deleteCollection(targetCollectionId));
 				}
@@ -443,12 +453,21 @@ export const deleteCollection = createAsyncThunk(
 	"passwordManager/deleteCollection",
 	async (collectionId: string, { rejectWithValue, dispatch }) => {
 		try {
-			await api.delete(`/tools/password-manager/vault/collections/${collectionId}`);
+			await api.delete(
+				`/tools/password-manager/vault/collections/${collectionId}`,
+			);
 			dispatch(fetchSharedCollections());
 			return collectionId;
 		} catch (error: unknown) {
-			const err = error as { response?: { data?: { message?: string } }; message?: string };
-			return rejectWithValue(err.response?.data?.message || err.message || "Failed to delete collection");
+			const err = error as {
+				response?: { data?: { message?: string } };
+				message?: string;
+			};
+			return rejectWithValue(
+				err.response?.data?.message ||
+					err.message ||
+					"Failed to delete collection",
+			);
 		}
 	},
 );
@@ -456,10 +475,14 @@ export const deleteCollection = createAsyncThunk(
 export const deleteFolderAsync = createAsyncThunk(
 	"passwordManager/deleteFolderAsync",
 	async (
-		{ id, deletePasswordsInside }: { id: string; deletePasswordsInside: boolean },
+		{
+			id,
+			deletePasswordsInside,
+		}: { id: string; deletePasswordsInside: boolean },
 		{ getState, rejectWithValue, dispatch },
 	) => {
-		const state = (getState() as { passwordManager: PasswordManagerState }).passwordManager;
+		const state = (getState() as { passwordManager: PasswordManagerState })
+			.passwordManager;
 		const folder = state.folders.find((f) => f.id === id);
 		if (!folder) return rejectWithValue("Folder not found");
 
@@ -472,44 +495,58 @@ export const deleteFolderAsync = createAsyncThunk(
 
 			if (deletePasswordsInside) {
 				// Delete all items in this folder — check both personal items and shared-collection items
-				const personalToDelete = state.personalItems.filter((i) => i.folderId === id);
+				const personalToDelete = state.personalItems.filter(
+					(i) => i.folderId === id,
+				);
 
 				// If this folder was shared, its items live in sharedCollections keyed by collectionId
 				const sharedToDelete: PasswordItem[] = folder.collectionId
-					? (state.sharedCollections.find(
-							c => c.collection.id === folder.collectionId,
-						)?.items ?? []).filter((i) => i.folderId === id || !i.folderId)
+					? (
+							state.sharedCollections.find(
+								(c) => c.collection.id === folder.collectionId,
+							)?.items ?? []
+						).filter((i) => i.folderId === id || !i.folderId)
 					: [];
 
 				const allToDelete = [
 					...personalToDelete,
-					...sharedToDelete.filter(s => !personalToDelete.some(p => p.id === s.id)),
+					...sharedToDelete.filter(
+						(s) => !personalToDelete.some((p) => p.id === s.id),
+					),
 				];
 
 				for (const item of allToDelete) {
-					await api.delete(`/tools/password-manager/vault/items/${item.id}`);
+					await api.delete(
+						`/tools/password-manager/vault/items/${item.id}`,
+					);
 				}
 				newItems = newItems.filter((item) => item.folderId !== id);
 			} else {
 				// Keep the items but move them back to personal (un-share) and remove from folder.
 				// Items may be in personalItems (if never fully shared) OR in sharedCollections
 				// (if folder.collectionId is set — items were re-encrypted with collection key).
-				const itemsFromPersonal = state.personalItems.filter((i) => i.folderId === id);
+				const itemsFromPersonal = state.personalItems.filter(
+					(i) => i.folderId === id,
+				);
 
 				// Gather items that live in the shared collection (encrypted with collection key)
 				const sharedCollection = folder.collectionId
-					? state.sharedCollections.find(c => c.collection.id === folder.collectionId)
+					? state.sharedCollections.find(
+							(c) => c.collection.id === folder.collectionId,
+						)
 					: undefined;
 				const itemsFromShared: PasswordItem[] = sharedCollection
 					? sharedCollection.items.filter(
-							i => i.folderId === id || !i.folderId,
+							(i) => i.folderId === id || !i.folderId,
 						)
 					: [];
 
 				// Merge, avoiding duplicates
 				const allToUpdate = [
 					...itemsFromPersonal,
-					...itemsFromShared.filter(s => !itemsFromPersonal.some(p => p.id === s.id)),
+					...itemsFromShared.filter(
+						(s) => !itemsFromPersonal.some((p) => p.id === s.id),
+					),
 				];
 
 				for (const item of allToUpdate) {
@@ -520,14 +557,20 @@ export const deleteFolderAsync = createAsyncThunk(
 						collectionId: undefined,
 						updatedAt: new Date().toISOString(),
 					};
-					const encryptedPayload = encryptPayload(updatedItem, personalKey);
-					await api.put(`/tools/password-manager/vault/items/${item.id}`, {
-						encryptedPayload,
-						collectionId: null, // detach from collection in DB
-					});
+					const encryptedPayload = encryptPayload(
+						updatedItem,
+						personalKey,
+					);
+					await api.put(
+						`/tools/password-manager/vault/items/${item.id}`,
+						{
+							encryptedPayload,
+							collectionId: null, // detach from collection in DB
+						},
+					);
 
 					// Update or add to personal items list
-					const index = newItems.findIndex(i => i.id === item.id);
+					const index = newItems.findIndex((i) => i.id === item.id);
 					if (index !== -1) {
 						newItems[index] = updatedItem;
 					} else {
@@ -540,13 +583,20 @@ export const deleteFolderAsync = createAsyncThunk(
 			// Items have already been detached (collectionId: null in DB above),
 			// so deleting the collection only removes recipient access — it does NOT orphan items.
 			if (folder.collectionId) {
-				await api.delete(`/tools/password-manager/vault/collections/${folder.collectionId}`);
+				await api.delete(
+					`/tools/password-manager/vault/collections/${folder.collectionId}`,
+				);
 				dispatch(fetchSharedCollections());
 			}
 
 			// Persist the new folders array
-			const settingsPayload = await encryptPayload({ folders: newFolders }, personalKey);
-			await api.put("/tools/password-manager/vault", { encryptedSettings: settingsPayload });
+			const settingsPayload = await encryptPayload(
+				{ folders: newFolders },
+				personalKey,
+			);
+			await api.put("/tools/password-manager/vault", {
+				encryptedSettings: settingsPayload,
+			});
 
 			dispatch(setVault({ folders: newFolders, items: newItems }));
 			if (state.activeFilter === id) dispatch(setActiveFilter("all"));
@@ -573,7 +623,8 @@ export const persistFolders = createAsyncThunk(
 			);
 
 			await api.put("/tools/password-manager/vault", {
-				encryptedSettings: settingsPayload});
+				encryptedSettings: settingsPayload,
+			});
 
 			return folders;
 		} catch (error) {
@@ -586,9 +637,10 @@ export const createFolderAsync = createAsyncThunk(
 	"passwordManager/createFolderAsync",
 	async (
 		folder: Omit<Folder, "id" | "createdAt" | "updatedAt">,
-		{ getState, dispatch }
+		{ getState, dispatch },
 	) => {
-		const state = (getState() as { passwordManager: PasswordManagerState }).passwordManager;
+		const state = (getState() as { passwordManager: PasswordManagerState })
+			.passwordManager;
 		const newFolder: Folder = {
 			...folder,
 			id: crypto.randomUUID(),
@@ -598,7 +650,7 @@ export const createFolderAsync = createAsyncThunk(
 		const newFolders = [...state.folders, newFolder];
 		await dispatch(persistFolders(newFolders));
 		return newFolder;
-	}
+	},
 );
 
 export const importItems = createAsyncThunk(
@@ -610,7 +662,7 @@ export const importItems = createAsyncThunk(
 			results.push(result);
 		}
 		return results;
-	}
+	},
 );
 
 export const recoverWithMnemonic = createAsyncThunk(
@@ -627,7 +679,8 @@ export const recoverWithMnemonic = createAsyncThunk(
 			const recoveredPassword = await decryptMasterPassword(mnemonic, {
 				encrypted: record.encryptedMnemonic,
 				salt: record.salt,
-				iv: record.iv});
+				iv: record.iv,
+			});
 			return recoveredPassword;
 		} catch {
 			return rejectWithValue("Invalid recovery key");
@@ -664,7 +717,8 @@ export const resetMasterPassword = createAsyncThunk(
 				encryptedPersonalKey,
 				encryptedBlob: encryptedPersonalKey,
 				encryptedPrivateKey,
-				salt: saltStr});
+				salt: saltStr,
+			});
 
 			// 4. Update local keyStore and IndexedDB
 			keyStore.setMEK(newMek);
@@ -673,7 +727,8 @@ export const resetMasterPassword = createAsyncThunk(
 				encryptedPersonalKey,
 				encryptedPrivateKey,
 				salt: saltStr,
-				updatedAt: new Date().toISOString()});
+				updatedAt: new Date().toISOString(),
+			});
 
 			return true;
 		} catch (error) {
@@ -1251,7 +1306,8 @@ export const passwordSlice = createSlice({
 						: item,
 				);
 			});
-	}});
+	},
+});
 
 export const {
 	setUserId,

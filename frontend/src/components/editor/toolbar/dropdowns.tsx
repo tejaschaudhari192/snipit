@@ -34,7 +34,11 @@ export function HeadingDropdown({ editor }: { editor: Editor }) {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<DropdownMenuTrigger asChild>
-						<Button variant="outline" size="sm" className="h-8 gap-1 px-2.5 text-xs font-semibold shadow-sm border-border/40 bg-background/50">
+						<Button
+							variant="outline"
+							size="sm"
+							className="h-8 gap-1 px-2.5 text-xs font-semibold shadow-sm border-border/40 bg-background/50"
+						>
 							<span>{currentHeading}</span>
 							<ChevronDown className="h-3 w-3 text-muted-foreground" />
 						</Button>
@@ -91,7 +95,11 @@ export function FontDropdown({ editor }: { editor: Editor }) {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<DropdownMenuTrigger asChild>
-						<Button variant="outline" size="sm" className="h-8 gap-1 px-2.5 text-xs font-semibold shadow-sm border-border/40 bg-background/50 whitespace-nowrap">
+						<Button
+							variant="outline"
+							size="sm"
+							className="h-8 gap-1 px-2.5 text-xs font-semibold shadow-sm border-border/40 bg-background/50 whitespace-nowrap"
+						>
 							<span
 								style={{
 									fontFamily:
@@ -147,7 +155,11 @@ export function AlignmentDropdown({ editor }: { editor: Editor }) {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" size="icon" className="h-8 w-8 rounded-md border-transparent">
+						<Button
+							variant="ghost"
+							size="icon"
+							className="h-8 w-8 rounded-md border-transparent"
+						>
 							{editor.isActive({ textAlign: "center" }) ? (
 								<AlignCenter className="h-4 w-4" />
 							) : editor.isActive({ textAlign: "right" }) ? (
@@ -212,7 +224,11 @@ export function LineHeightDropdown({ editor }: { editor: Editor }) {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" size="icon" className="h-8 w-8 rounded-md border-transparent">
+						<Button
+							variant="ghost"
+							size="icon"
+							className="h-8 w-8 rounded-md border-transparent"
+						>
 							<svg
 								viewBox="0 0 24 24"
 								fill="none"

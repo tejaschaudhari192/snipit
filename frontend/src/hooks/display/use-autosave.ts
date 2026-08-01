@@ -68,12 +68,14 @@ export const useAutosave = ({
 				JSON.stringify(
 					config.collaborators.map((c) => ({
 						email: c.email,
-						role: c.role})),
+						role: c.role,
+					})),
 				) !==
 				JSON.stringify(
 					(originalPaste.collaborators || []).map((c) => ({
 						email: c.email,
-						role: c.role})),
+						role: c.role,
+					})),
 				);
 
 			const allowedUsersChanged =
@@ -119,7 +121,10 @@ export const useAutosave = ({
 					const { available } = await checkIdAvailability(trimmedId);
 					if (!available) {
 						setSaveStatus("error");
-						toast.add({ title: "Custom ID is not available", type: "error" });
+						toast.add({
+							title: "Custom ID is not available",
+							type: "error",
+						});
 						return;
 					}
 				} catch (error) {
@@ -163,12 +168,14 @@ export const useAutosave = ({
 				JSON.stringify(
 					config.collaborators.map((c) => ({
 						email: c.email,
-						role: c.role})),
+						role: c.role,
+					})),
 				) !==
 				JSON.stringify(
 					(originalPaste.collaborators || []).map((c) => ({
 						email: c.email,
-						role: c.role})),
+						role: c.role,
+					})),
 				);
 
 			const allowedUsersChanged =

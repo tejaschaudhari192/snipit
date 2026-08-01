@@ -61,6 +61,8 @@ export const Transliteration = Extension.create({
 						}
 						return false;
 					},
-				}}),
+				},
+			}),
 		];
-	}});
+	},
+});

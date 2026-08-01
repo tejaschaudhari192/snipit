@@ -124,7 +124,8 @@ export const VideoDisplay = ({
 		roomName: paste.id || "",
 		identity: isHost ? "host" : viewerIdentity,
 		isHost: !!(isP2pMode && isHost),
-		videoRef: isHost ? videoRef : undefined});
+		videoRef: isHost ? videoRef : undefined,
+	});
 
 	const remoteStream = remoteVideoStream;
 	const isConnectingActual = isLiveKitConnecting;
@@ -244,7 +245,8 @@ export const VideoDisplay = ({
 		setDuration,
 		setIsPlaying,
 		setIsBuffering,
-		setCommentsList});
+		setCommentsList,
+	});
 
 	// Floating Emoji tray
 	const emojis = ["🎉", "😂", "😮", "❤️", "🍿", "🔥", "👏"];
@@ -280,7 +282,8 @@ export const VideoDisplay = ({
 		if (!socket || !chatInput.trim()) return;
 		socket.emit("video-chat-message", {
 			pasteId: paste.id,
-			text: chatInput.trim()});
+			text: chatInput.trim(),
+		});
 		setChatInput("");
 	};
 
@@ -451,7 +454,8 @@ export const VideoDisplay = ({
 												timestamp:
 													videoRef.current
 														?.currentTime || 0,
-												duration: dur});
+												duration: dur,
+											});
 										}
 									}
 								}}

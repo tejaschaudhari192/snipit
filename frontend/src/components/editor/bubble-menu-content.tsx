@@ -242,7 +242,11 @@ export function BubbleMenuContent() {
 			>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" size="sm" className="h-7 px-2 rounded-sm text-xs font-medium border-0 gap-1">
+						<Button
+							variant="ghost"
+							size="sm"
+							className="h-7 px-2 rounded-sm text-xs font-medium border-0 gap-1"
+						>
 							<span>{currentHeading}</span>
 							<ChevronDown className="h-3 w-3 text-muted-foreground" />
 						</Button>
@@ -300,7 +304,11 @@ export function BubbleMenuContent() {
 			>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" size="sm" className="h-7 px-2 rounded-sm text-xs font-medium border-0 gap-1">
+						<Button
+							variant="ghost"
+							size="sm"
+							className="h-7 px-2 rounded-sm text-xs font-medium border-0 gap-1"
+						>
 							<span
 								style={{
 									fontFamily:
@@ -452,7 +460,11 @@ export function BubbleMenuContent() {
 			<EditorBubbleItem onSelect={() => {}} className="flex items-center">
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" size="icon" className="h-7 w-8 rounded-sm border-0">
+						<Button
+							variant="ghost"
+							size="icon"
+							className="h-7 w-8 rounded-sm border-0"
+						>
 							<span
 								className="underline decoration-2 text-xs font-semibold"
 								style={{ color: currentColor }}
@@ -518,7 +530,11 @@ export function BubbleMenuContent() {
 			<EditorBubbleItem onSelect={() => {}} className="flex items-center">
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" size="icon" className="h-7 w-8 rounded-sm border-0">
+						<Button
+							variant="ghost"
+							size="icon"
+							className="h-7 w-8 rounded-sm border-0"
+						>
 							<Highlighter className="h-3.5 w-3.5" />
 							<ChevronDown className="h-2.5 w-2.5 text-muted-foreground ml-0.5" />
 						</Button>
@@ -625,11 +641,7 @@ export function BubbleMenuContent() {
 						>
 							Cancel
 						</Button>
-						<Button
-							onClick={handleSaveLink}
-						>
-							Save Link
-						</Button>
+						<Button onClick={handleSaveLink}>Save Link</Button>
 					</div>
 				</DialogContent>
 			</Dialog>

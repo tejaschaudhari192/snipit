@@ -28,10 +28,15 @@ export const useAiIdSuggester = (
 				content,
 				files: files?.map((f) => ({
 					name: f.name || f.fileName,
-					type: f.mimeType || f.fileMimeType}))});
+					type: f.mimeType || f.fileMimeType,
+				})),
+			});
 			if (response.data?.id) {
 				setCustomId(response.data.id);
-				toast.add({ title: t("home.ai_id_suggested"), type: "success" });
+				toast.add({
+					title: t("home.ai_id_suggested"),
+					type: "success",
+				});
 			}
 		} catch (error) {
 			console.error("Failed to suggest ID:", error);

@@ -78,28 +78,32 @@ export const MainToolbar = memo(
 				) {
 					return (
 						<span
-									style={{
-										"--highlight-color": "var(--foreground)",
-										"--base-color": "var(--muted-foreground)",
-										"--spread": "20px",
-										"--duration": "2s"
-									} as React.CSSProperties}
-									className="shimmer font-medium"
-								>
+							style={
+								{
+									"--highlight-color": "var(--foreground)",
+									"--base-color": "var(--muted-foreground)",
+									"--spread": "20px",
+									"--duration": "2s",
+								} as React.CSSProperties
+							}
+							className="shimmer font-medium"
+						>
 							{t("home.file_uploading")}
 						</span>
 					);
 				}
 				return (
 					<span
-									style={{
-										"--highlight-color": "var(--foreground)",
-										"--base-color": "var(--muted-foreground)",
-										"--spread": "20px",
-										"--duration": "2s"
-									} as React.CSSProperties}
-									className="shimmer font-medium"
-								>
+						style={
+							{
+								"--highlight-color": "var(--foreground)",
+								"--base-color": "var(--muted-foreground)",
+								"--spread": "20px",
+								"--duration": "2s",
+							} as React.CSSProperties
+						}
+						className="shimmer font-medium"
+					>
 						{t("common.submitting")}
 					</span>
 				);

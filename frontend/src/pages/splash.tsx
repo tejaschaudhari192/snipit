@@ -105,14 +105,18 @@ const SplashPage = ({ healthData }: SplashPageProps) => {
 									t("splash.system_failure")
 								) : (
 									<span
-									style={{
-										"--highlight-color": "var(--foreground)",
-										"--base-color": "var(--muted-foreground)",
-										"--spread": "20px",
-										"--duration": "2s"
-									} as React.CSSProperties}
-									className="shimmer font-medium opacity-90"
-								>
+										style={
+											{
+												"--highlight-color":
+													"var(--foreground)",
+												"--base-color":
+													"var(--muted-foreground)",
+												"--spread": "20px",
+												"--duration": "2s",
+											} as React.CSSProperties
+										}
+										className="shimmer font-medium opacity-90"
+									>
 										{currentLabel}
 									</span>
 								)}

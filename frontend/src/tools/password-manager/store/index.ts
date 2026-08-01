@@ -6,7 +6,8 @@ import passwordReducer from "./password-slice";
 export const store = configureStore({
 	reducer: {
 		passwordManager: passwordReducer,
-	}});
+	},
+});
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

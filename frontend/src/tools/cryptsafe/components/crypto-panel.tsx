@@ -64,10 +64,12 @@ async function readEntry(entry: FileSystemEntry, path = ""): Promise<File[]> {
 			fileEntry.file((file: File) => {
 				const relPath = path ? `${path}/${file.name}` : file.name;
 				const patchedFile = new File([file], file.name, {
-					type: file.type});
+					type: file.type,
+				});
 				Object.defineProperty(patchedFile, "webkitRelativePath", {
 					value: relPath,
-					writable: false});
+					writable: false,
+				});
 				resolve([patchedFile]);
 			});
 		});
@@ -250,7 +252,8 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 								),
 						path: isEncrypt
 							? (f as EncryptedFile).outputName
-							: (f as DecryptedFile).originalPath})),
+							: (f as DecryptedFile).originalPath,
+					})),
 				);
 
 				await writeToDirectory(
@@ -321,7 +324,8 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 						),
 				path: isEncrypt
 					? (f as EncryptedFile).outputName
-					: (f as DecryptedFile).originalPath})),
+					: (f as DecryptedFile).originalPath,
+			})),
 		);
 
 		setZipProgress(0);
@@ -531,12 +535,16 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 						<div className="flex items-center justify-between text-sm">
 							<span className="text-muted-foreground">
 								<span
-									style={{
-										"--highlight-color": "var(--foreground)",
-										"--base-color": "var(--muted-foreground)",
-										"--spread": "20px",
-										"--duration": "2s"
-									} as React.CSSProperties}
+									style={
+										{
+											"--highlight-color":
+												"var(--foreground)",
+											"--base-color":
+												"var(--muted-foreground)",
+											"--spread": "20px",
+											"--duration": "2s",
+										} as React.CSSProperties
+									}
 									className="shimmer font-medium"
 								>
 									{t(
@@ -682,14 +690,18 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 						)}
 						{state === "processing" ? (
 							<span
-									style={{
-										"--highlight-color": "var(--foreground)",
-										"--base-color": "var(--muted-foreground)",
+								style={
+									{
+										"--highlight-color":
+											"var(--foreground)",
+										"--base-color":
+											"var(--muted-foreground)",
 										"--spread": "20px",
-										"--duration": "2s"
-									} as React.CSSProperties}
-									className="shimmer font-medium"
-								>
+										"--duration": "2s",
+									} as React.CSSProperties
+								}
+								className="shimmer font-medium"
+							>
 								{t(
 									isEncrypt
 										? "common.encrypting"

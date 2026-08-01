@@ -53,7 +53,10 @@ export const AiEnhanceDialog = ({
 	const handleEnhance = async (overrideInstruction?: string) => {
 		let targetInstruction = overrideInstruction ?? instruction;
 		if (!targetInstruction.trim()) {
-			toast.add({ title: t("ai_dialog.error_instruction"), type: "error" });
+			toast.add({
+				title: t("ai_dialog.error_instruction"),
+				type: "error",
+			});
 			return;
 		}
 
@@ -71,7 +74,10 @@ export const AiEnhanceDialog = ({
 				setResult(res.result);
 				toast.add({ title: t("ai_dialog.success"), type: "success" });
 			} else {
-				toast.add({ title: t("ai_dialog.error_failed"), type: "error" });
+				toast.add({
+					title: t("ai_dialog.error_failed"),
+					type: "error",
+				});
 			}
 		} catch (error: unknown) {
 			console.error("AI Enhance error:", error);

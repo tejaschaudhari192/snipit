@@ -102,9 +102,9 @@ export const RecentLinksSidebar = ({
 										navigator.clipboard.writeText(shortUrl);
 										toast.add({
 											title: t("header.copied_link", {
-												id: `/${item.id}`
+												id: `/${item.id}`,
 											}),
-											type: "success"
+											type: "success",
 										});
 									}}
 								>

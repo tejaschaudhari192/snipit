@@ -32,47 +32,58 @@ import { Skeleton } from "@/components/ui/skeleton";
 // Lazy Loaded Components
 const FontSizeControls = lazy(() =>
 	import("@/components/editor/font-size-controls").then((m) => ({
-		default: m.FontSizeControls})),
+		default: m.FontSizeControls,
+	})),
 );
 const LanguageSelector = lazy(() =>
 	import("@/components/editor/language-selector").then((m) => ({
-		default: m.LanguageSelector})),
+		default: m.LanguageSelector,
+	})),
 );
 const AiAutocompleteToggle = lazy(() =>
 	import("@/components/editor/ai-autocomplete-toggle").then((m) => ({
-		default: m.AiAutocompleteToggle})),
+		default: m.AiAutocompleteToggle,
+	})),
 );
 const TransliterationToggle = lazy(() =>
 	import("@/components/editor/transliteration-toggle").then((m) => ({
-		default: m.TransliterationToggle})),
+		default: m.TransliterationToggle,
+	})),
 );
 const AiWriterButton = lazy(() =>
 	import("@/components/editor/ai-writer-button").then((m) => ({
-		default: m.AiWriterButton})),
+		default: m.AiWriterButton,
+	})),
 );
 const VoiceInputButton = lazy(() =>
 	import("@/components/editor/voice-input-button").then((m) => ({
-		default: m.VoiceInputButton})),
+		default: m.VoiceInputButton,
+	})),
 );
 const ExpirySelector = lazy(() =>
 	import("@/components/common/expiry-selector").then((m) => ({
-		default: m.ExpirySelector})),
+		default: m.ExpirySelector,
+	})),
 );
 const CommentsSection = lazy(() =>
 	import("@/components/display/comments-section").then((m) => ({
-		default: m.CommentsSection})),
+		default: m.CommentsSection,
+	})),
 );
 const UserAvatarList = lazy(() =>
 	import("./shared/user-avatar-list").then((m) => ({
-		default: m.UserAvatarList})),
+		default: m.UserAvatarList,
+	})),
 );
 const AutosaveStatus = lazy(() =>
 	import("./shared/autosave-status").then((m) => ({
-		default: m.AutosaveStatus})),
+		default: m.AutosaveStatus,
+	})),
 );
 const ToolbarActionButtons = lazy(() =>
 	import("./shared/toolbar-action-buttons").then((m) => ({
-		default: m.ToolbarActionButtons})),
+		default: m.ToolbarActionButtons,
+	})),
 );
 
 // Fallback Skeletons

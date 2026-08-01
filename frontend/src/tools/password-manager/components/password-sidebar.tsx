@@ -41,7 +41,6 @@ export default function PasswordSidebar() {
 	const isSyncing = useAppSelector(selectIsSyncing);
 	const { user } = useAuth();
 
-
 	const [folderModalOpen, setFolderModalOpen] = useState(false);
 	const [folderModalMode, setFolderModalMode] =
 		useState<FolderModalMode>("create");
@@ -112,7 +111,10 @@ export default function PasswordSidebar() {
 
 				<SidebarGroup>
 					<SidebarGroupContent>
-						<ScrollArea className="h-35 pr-3" viewportClassName="scroll-fade">
+						<ScrollArea
+							className="h-35 pr-3"
+							viewportClassName="scroll-fade"
+						>
 							<SidebarMenu>
 								{ITEM_TYPE_OPTIONS.map((item) => (
 									<SidebarMenuItem key={item.id}>
@@ -178,7 +180,6 @@ export default function PasswordSidebar() {
 					}
 				/>
 			</SidebarFooter>
-
 
 			<FolderModal
 				open={folderModalOpen}

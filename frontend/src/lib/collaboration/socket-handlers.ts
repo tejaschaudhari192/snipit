@@ -54,11 +54,13 @@ export const setupSocketHandlers = ({
 	socket.on("connect", () => {
 		socket.emit("join-paste", {
 			pasteId: id,
-			userName: user?.username});
+			userName: user?.username,
+		});
 		if (isEditRef.current) {
 			socket.emit("set-editing-status", {
 				pasteId: id,
-				isEditing: true});
+				isEditing: true,
+			});
 		}
 	});
 
@@ -103,7 +105,8 @@ export const setupSocketHandlers = ({
 				[data.socketId]: {
 					position: data.position,
 					selection: data.selection,
-				}}));
+				},
+			}));
 		},
 	);
 

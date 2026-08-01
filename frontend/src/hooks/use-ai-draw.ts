@@ -65,7 +65,8 @@ export const useAiDraw = ({
 							setTextValue(
 								JSON.stringify({
 									...currentDrawing,
-									elements: mergedElements}),
+									elements: mergedElements,
+								}),
 							);
 						} catch {
 							setTextValue(drawingStr);

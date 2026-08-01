@@ -229,7 +229,11 @@ export function EmojiPicker({ editor }: EmojiPickerProps) {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<PopoverTrigger asChild>
-						<Button variant="ghost" size="icon" className="h-8 w-8 rounded-md border-transparent">
+						<Button
+							variant="ghost"
+							size="icon"
+							className="h-8 w-8 rounded-md border-transparent"
+						>
 							<Smile className="h-4 w-4" />
 						</Button>
 					</PopoverTrigger>

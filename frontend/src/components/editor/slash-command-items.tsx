@@ -75,7 +75,8 @@ export const suggestionItems: CustomSuggestionItem[] = [
 			editor.chain().focus().deleteRange(range).run();
 			window.dispatchEvent(
 				new CustomEvent("open-media-modal", {
-					detail: { type: "image" }}),
+					detail: { type: "image" },
+				}),
 			);
 		},
 	},
@@ -88,7 +89,8 @@ export const suggestionItems: CustomSuggestionItem[] = [
 			editor.chain().focus().deleteRange(range).run();
 			window.dispatchEvent(
 				new CustomEvent("open-media-modal", {
-					detail: { type: "video" }}),
+					detail: { type: "video" },
+				}),
 			);
 		},
 	},

@@ -79,7 +79,7 @@ export const usePasteSubmission = (
 			const isP2pVideo = contentType === "video" && files.length > 0;
 			let finalFiles =
 				!isP2pVideo &&
-					(contentType === "file" || contentType === "video")
+				(contentType === "file" || contentType === "video")
 					? readyAttachments
 					: [];
 			if (
@@ -102,7 +102,7 @@ export const usePasteSubmission = (
 				content: isP2pVideo
 					? "p2p://local-stream"
 					: (contentType === "file" || contentType === "video") &&
-						finalFiles.length > 0
+						  finalFiles.length > 0
 						? finalFiles[0].url
 						: contentType === "draw" && !textValue.trim()
 							? JSON.stringify({ elements: [], appState: {} })
@@ -149,7 +149,7 @@ export const usePasteSubmission = (
 				visibility: finalVisibility,
 				allowedUsers:
 					finalVisibility === "shared" ||
-						finalEditPermission === "shared"
+					finalEditPermission === "shared"
 						? (options.allowedUsers ?? allowedUsers)
 						: undefined,
 				password: (options.password ?? password) || undefined,
@@ -158,7 +158,7 @@ export const usePasteSubmission = (
 				publicRole: finalPublicRole,
 				allowComments: options.allowComments ?? allowComments,
 				redirectionType:
-					contentType === "link" ? redirectionType : undefined
+					contentType === "link" ? redirectionType : undefined,
 			});
 
 			if (user && labels.length > 0) {
@@ -172,15 +172,15 @@ export const usePasteSubmission = (
 			toast.add({
 				title: t("messages.snippet_created", {
 					idType: selectedIdType,
-					id: `/${data.id}`
+					id: `/${data.id}`,
 				}),
-				type: "success"
+				type: "success",
 			});
 
 			if (contentType === "link" && onShortened) {
 				onShortened({
 					id: data.id,
-					url: window.location.origin + "/" + data.id
+					url: window.location.origin + "/" + data.id,
 				});
 				return true;
 			}
@@ -192,7 +192,7 @@ export const usePasteSubmission = (
 					localVideoFile: isP2pVideo
 						? getRawFile(files[0].id)
 						: undefined,
-				}
+				},
 			});
 			if (!user) {
 				guestStorage.addToHistory(data);

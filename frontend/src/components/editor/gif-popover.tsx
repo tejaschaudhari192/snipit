@@ -151,7 +151,8 @@ export function GifPopover({ onSelect }: GifPopoverProps) {
 					const formatted = json.data.map((item: GiphyGifItem) => ({
 						id: item.id,
 						url: item.images.fixed_width.url,
-						title: item.title}));
+						title: item.title,
+					}));
 					setGifs((prev) =>
 						isLoadMore ? [...prev, ...formatted] : formatted,
 					);
@@ -224,7 +225,11 @@ export function GifPopover({ onSelect }: GifPopoverProps) {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<PopoverTrigger asChild>
-						<Button variant="ghost" size="icon" className="h-8 w-8 rounded-md border-transparent">
+						<Button
+							variant="ghost"
+							size="icon"
+							className="h-8 w-8 rounded-md border-transparent"
+						>
 							<GifIcon className="h-4.5 w-4.5" />
 						</Button>
 					</PopoverTrigger>

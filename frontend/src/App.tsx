@@ -76,13 +76,13 @@ const App = () => {
 				toast.add({
 					title: t("errors.storage_access_denied"),
 					type: "error",
-					id: "storage-error"
+					id: "storage-error",
 				});
 			} else if (code === "save_failed") {
 				toast.add({
 					title: t("errors.storage_save_failed"),
 					type: "error",
-					id: "storage-error"
+					id: "storage-error",
 				});
 			}
 		};

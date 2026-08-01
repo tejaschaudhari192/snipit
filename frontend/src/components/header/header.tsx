@@ -14,30 +14,36 @@ import { useMusic } from "@/context/use-music";
 
 const ThemeToggle = lazy(() =>
 	import("@/components/header/theme-toggle").then((m) => ({
-		default: m.default})),
+		default: m.default,
+	})),
 );
 const BrandLogo = lazy(() =>
 	import("@/components/common/brand-logo").then((m) => ({
-		default: m.BrandLogo})),
+		default: m.BrandLogo,
+	})),
 );
 const ActionUrlBar = lazy(() =>
 	import("@/components/common/action-url-bar").then((m) => ({
-		default: m.ActionUrlBar})),
+		default: m.ActionUrlBar,
+	})),
 );
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/context/AuthContext";
 
 const LanguageSwitcher = lazy(() =>
 	import("@/components/header/language-switcher").then((m) => ({
-		default: m.LanguageSwitcher})),
+		default: m.LanguageSwitcher,
+	})),
 );
 const JumpToDialog = lazy(() =>
 	import("@/components/header/jump-to-dialog").then((m) => ({
-		default: m.JumpToDialog})),
+		default: m.JumpToDialog,
+	})),
 );
 const LogoutDialog = lazy(() =>
 	import("@/components/header/logout-dialog").then((m) => ({
-		default: m.LogoutDialog})),
+		default: m.LogoutDialog,
+	})),
 );
 
 interface HeaderProps {

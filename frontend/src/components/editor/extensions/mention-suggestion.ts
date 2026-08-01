@@ -34,7 +34,8 @@ export const mentionSuggestion = {
 			onStart: (props: SuggestionProps<MentionItem>) => {
 				component = new ReactRenderer(MentionList, {
 					props: props as unknown as MentionListProps,
-					editor: props.editor});
+					editor: props.editor,
+				});
 
 				if (
 					!props.clientRect ||
@@ -53,7 +54,8 @@ export const mentionSuggestion = {
 					showOnCreate: true,
 					interactive: true,
 					trigger: "manual",
-					placement: "bottom-start"});
+					placement: "bottom-start",
+				});
 			},
 
 			onUpdate(props: SuggestionProps<MentionItem>) {
@@ -74,7 +76,8 @@ export const mentionSuggestion = {
 				if (!rect) return;
 
 				popup[0].setProps({
-					getReferenceClientRect: () => rect});
+					getReferenceClientRect: () => rect,
+				});
 			},
 
 			onKeyDown(props: { event: KeyboardEvent }) {

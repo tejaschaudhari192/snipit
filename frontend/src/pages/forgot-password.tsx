@@ -31,12 +31,18 @@ const ForgotPasswordPage = () => {
 		try {
 			await forgotPassword(email);
 			setIsSubmitted(true);
-			toast.add({ title: t("auth.forgot_password_success_toast"), type: "success" });
+			toast.add({
+				title: t("auth.forgot_password_success_toast"),
+				type: "success",
+			});
 		} catch (error) {
 			const axiosError = error as AxiosError<{ message: string }>;
-			toast.add({ title: 
-				axiosError.response?.data?.message ||
-					t("auth.forgot_password_failed_toast"), type: "error" });
+			toast.add({
+				title:
+					axiosError.response?.data?.message ||
+					t("auth.forgot_password_failed_toast"),
+				type: "error",
+			});
 		} finally {
 			setIsLoading(false);
 		}
@@ -116,14 +122,18 @@ const ForgotPasswordPage = () => {
 											<>
 												<ShimmerSection type="mini-loader" />
 												<span
-									style={{
-										"--highlight-color": "var(--foreground)",
-										"--base-color": "var(--muted-foreground)",
-										"--spread": "20px",
-										"--duration": "2s"
-									} as React.CSSProperties}
-									className="shimmer font-medium"
-								>
+													style={
+														{
+															"--highlight-color":
+																"var(--foreground)",
+															"--base-color":
+																"var(--muted-foreground)",
+															"--spread": "20px",
+															"--duration": "2s",
+														} as React.CSSProperties
+													}
+													className="shimmer font-medium"
+												>
 													{t(
 														"auth.forgot_password_sending",
 													)}

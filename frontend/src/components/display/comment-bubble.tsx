@@ -34,7 +34,8 @@ export const CommentBubble = ({
 
 	const formattedTime = new Date(comment.createdAt).toLocaleTimeString([], {
 		hour: "2-digit",
-		minute: "2-digit"});
+		minute: "2-digit",
+	});
 
 	const handleSave = () => {
 		if (editContent.trim() && editContent !== comment.content) {

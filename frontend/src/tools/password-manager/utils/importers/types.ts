@@ -3,7 +3,7 @@ import type { PasswordItem } from "../../types";
 export interface ParsedImportItem {
 	id: string; // Temporary ID for the UI list
 	sourceApp: "chrome" | "enpass";
-	
+
 	// Original fields extracted from the file
 	sourceFields: {
 		title?: string;
@@ -14,7 +14,7 @@ export interface ParsedImportItem {
 		[key: string]: string | undefined;
 	};
 	sourceFolder?: string;
-	
+
 	// The mapped output
 	mapped: PasswordItem;
 

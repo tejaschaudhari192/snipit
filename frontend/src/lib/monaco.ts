@@ -12,7 +12,8 @@ export const defineMonacoThemes = (monaco: Monaco) => {
 			"editorCursor.foreground": "#fafafa",
 			"editorIndentGuide.background": "#404040",
 			"editorIndentGuide.activeBackground": "#707070",
-		}});
+		},
+	});
 
 	monaco.editor.defineTheme("snipit-light", {
 		base: "vs",
@@ -25,5 +26,6 @@ export const defineMonacoThemes = (monaco: Monaco) => {
 			"editorCursor.foreground": "#000000",
 			"editorIndentGuide.background": "#d3d3d3",
 			"editorIndentGuide.activeBackground": "#939393",
-		}});
+		},
+	});
 };

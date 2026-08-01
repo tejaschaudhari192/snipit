@@ -6,20 +6,32 @@ import type { ParsedImportItem } from "./types";
  */
 export function normalizeImportItem(
 	item: ParsedImportItem,
-	existingItems: PasswordItem[]
+	existingItems: PasswordItem[],
 ): ParsedImportItem {
 	const mapped = item.mapped;
 
 	// Normalize URL
-	if (mapped.url && !mapped.url.startsWith("http://") && !mapped.url.startsWith("https://")) {
+	if (
+		mapped.url &&
+		!mapped.url.startsWith("http://") &&
+		!mapped.url.startsWith("https://")
+	) {
 		mapped.url = `https://${mapped.url}`;
 	}
-	
-	if (mapped.metadata?.url && !mapped.metadata.url.startsWith("http://") && !mapped.metadata.url.startsWith("https://")) {
+
+	if (
+		mapped.metadata?.url &&
+		!mapped.metadata.url.startsWith("http://") &&
+		!mapped.metadata.url.startsWith("https://")
+	) {
 		mapped.metadata.url = `https://${mapped.metadata.url}`;
 	}
-	
-	if (mapped.metadata?.website && !mapped.metadata.website.startsWith("http://") && !mapped.metadata.website.startsWith("https://")) {
+
+	if (
+		mapped.metadata?.website &&
+		!mapped.metadata.website.startsWith("http://") &&
+		!mapped.metadata.website.startsWith("https://")
+	) {
 		mapped.metadata.website = `https://${mapped.metadata.website}`;
 	}
 
@@ -30,14 +42,25 @@ export function normalizeImportItem(
 	// Check for duplicates
 	// Simple duplicate heuristic: Same title, and (same username or same URL)
 	const duplicate = existingItems.find((existing) => {
-		const sameTitle = existing.title.toLowerCase() === mapped.title.toLowerCase();
-		
-		const existingDomain = extractDomain(existing.url || existing.metadata?.url || existing.metadata?.website);
-		const newDomain = extractDomain(mapped.url || mapped.metadata?.url || mapped.metadata?.website);
-		
-		const sameUrl = existingDomain && newDomain && existingDomain === newDomain;
-		const sameUsername = existing.username && mapped.username && existing.username.toLowerCase() === mapped.username.toLowerCase();
-		
+		const sameTitle =
+			existing.title.toLowerCase() === mapped.title.toLowerCase();
+
+		const existingDomain = extractDomain(
+			existing.url ||
+				existing.metadata?.url ||
+				existing.metadata?.website,
+		);
+		const newDomain = extractDomain(
+			mapped.url || mapped.metadata?.url || mapped.metadata?.website,
+		);
+
+		const sameUrl =
+			existingDomain && newDomain && existingDomain === newDomain;
+		const sameUsername =
+			existing.username &&
+			mapped.username &&
+			existing.username.toLowerCase() === mapped.username.toLowerCase();
+
 		return sameTitle && (sameUrl || sameUsername);
 	});
 

@@ -14,7 +14,8 @@ export const useFileUpload = () => {
 	const [state, setState] = useState<MultiUploadState>({
 		files: [],
 		isUploading: false,
-		error: null});
+		error: null,
+	});
 
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -40,7 +41,8 @@ export const useFileUpload = () => {
 				...prev,
 				files: prev.files.map((f) =>
 					f.id === id ? { ...f, ...updates } : f,
-				)}));
+				),
+			}));
 		},
 		[],
 	);
@@ -117,7 +119,8 @@ export const useFileUpload = () => {
 		setState((prev) => ({
 			...prev,
 			files: [...prev.files, ...newStatuses],
-			error: null}));
+			error: null,
+		}));
 	}, []);
 
 	const uploadAll = useCallback(async () => {
@@ -136,7 +139,8 @@ export const useFileUpload = () => {
 		setState((prev) => ({
 			...prev,
 			isUploading: false,
-			error: hasError ? "Some uploads failed" : null}));
+			error: hasError ? "Some uploads failed" : null,
+		}));
 
 		return updatedFiles;
 	}, [state.files, uploadSingleFile]);
@@ -145,7 +149,8 @@ export const useFileUpload = () => {
 		pendingFilesRef.current.delete(id);
 		setState((prev) => ({
 			...prev,
-			files: prev.files.filter((f) => f.id !== id)}));
+			files: prev.files.filter((f) => f.id !== id),
+		}));
 	}, []);
 
 	const reset = useCallback(() => {
@@ -153,7 +158,8 @@ export const useFileUpload = () => {
 		setState({
 			files: [],
 			isUploading: false,
-			error: null});
+			error: null,
+		});
 	}, []);
 
 	// Selectors

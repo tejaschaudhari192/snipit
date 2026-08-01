@@ -40,13 +40,15 @@ export const getMonacoContext = (
 		startLineNumber: 1,
 		startColumn: 1,
 		endLineNumber: position.lineNumber,
-		endColumn: position.column});
+		endColumn: position.column,
+	});
 
 	const suffix = model.getValueInRange({
 		startLineNumber: position.lineNumber,
 		startColumn: position.column,
 		endLineNumber: model.getLineCount(),
-		endColumn: model.getLineMaxColumn(model.getLineCount())});
+		endColumn: model.getLineMaxColumn(model.getLineCount()),
+	});
 
 	return { prefix, suffix };
 };

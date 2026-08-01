@@ -24,7 +24,10 @@ export function ColorControls({ editor }: { editor: Editor }) {
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<DropdownMenuTrigger asChild>
-							<Button variant="ghost" className="h-8 w-9 px-0 border-transparent">
+							<Button
+								variant="ghost"
+								className="h-8 w-9 px-0 border-transparent"
+							>
 								<span
 									className="underline decoration-2 text-sm font-bold"
 									style={{ color: currentColor }}
@@ -97,7 +100,10 @@ export function ColorControls({ editor }: { editor: Editor }) {
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<DropdownMenuTrigger asChild>
-							<Button variant="ghost" className="h-8 w-9 px-0 border-transparent">
+							<Button
+								variant="ghost"
+								className="h-8 w-9 px-0 border-transparent"
+							>
 								<Highlighter className="h-4 w-4" />
 								<ChevronDown className="h-2.5 w-2.5 text-muted-foreground ml-0.5" />
 							</Button>

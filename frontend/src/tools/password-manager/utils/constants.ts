@@ -12,46 +12,46 @@ import {
 import type { CustomField } from "../types";
 
 export const SIDEBAR_NAV_ITEMS = [
-	{ icon: Key, label: "tools.password_manager_all_items", id: "all" },
-	{ icon: Star, label: "tools.password_manager_favorites", id: "favorites" },
-	{ icon: Clock, label: "tools.password_manager_recent", id: "recent" },
+	{ icon: Key, label: "tools.password_manager.all_items", id: "all" },
+	{ icon: Star, label: "tools.password_manager.favorites", id: "favorites" },
+	{ icon: Clock, label: "tools.password_manager.recent", id: "recent" },
 	{ icon: Users, label: "Sharing Center", id: "sharing" },
 ];
 
 export const ITEM_TYPE_OPTIONS = [
 	{
 		icon: Key,
-		label: "tools.password_manager_type_logins",
+		label: "tools.password_manager.type_logins",
 		id: "login",
 		color: "text-blue-500",
 	},
 	{
 		icon: CreditCard,
-		label: "tools.password_manager_type_cards",
+		label: "tools.password_manager.type_cards",
 		id: "card",
 		color: "text-purple-500",
 	},
 	{
 		icon: FileCode,
-		label: "tools.password_manager_type_api_keys",
+		label: "tools.password_manager.type_api_keys",
 		id: "apikey",
 		color: "text-emerald-500",
 	},
 	{
 		icon: Fingerprint,
-		label: "tools.password_manager_type_passkeys",
+		label: "tools.password_manager.type_passkeys",
 		id: "passkey",
 		color: "text-amber-500",
 	},
 	{
 		icon: Shield,
-		label: "tools.password_manager_type_cred_files",
+		label: "tools.password_manager.type_cred_files",
 		id: "credfile",
 		color: "text-rose-500",
 	},
 	{
 		icon: StickyNote,
-		label: "tools.password_manager_type_notes",
+		label: "tools.password_manager.type_notes",
 		id: "note",
 		color: "text-cyan-500",
 	},

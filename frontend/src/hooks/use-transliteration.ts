@@ -76,7 +76,8 @@ export function useTransliteration() {
 								range: range,
 								sortText: String(index).padStart(2, "0"),
 								detail: "Transliteration",
-								filterText: wordInfo.word});
+								filterText: wordInfo.word,
+							});
 						});
 
 						// Always offer the original english word at the end
@@ -87,10 +88,12 @@ export function useTransliteration() {
 							range: range,
 							sortText: "99",
 							detail: "Original",
-							filterText: wordInfo.word});
+							filterText: wordInfo.word,
+						});
 
 						return { suggestions };
-					}});
+					},
+				});
 		},
 		[enabled, targetLanguage],
 	);
@@ -140,7 +143,8 @@ export function useTransliteration() {
 								range: range,
 								sortText: String(index).padStart(2, "0"),
 								detail: "Transliteration",
-								filterText: wordInfo.word});
+								filterText: wordInfo.word,
+							});
 						});
 
 						suggestions.push({
@@ -150,10 +154,12 @@ export function useTransliteration() {
 							range: range,
 							sortText: "99",
 							detail: "Original",
-							filterText: wordInfo.word});
+							filterText: wordInfo.word,
+						});
 
 						return { suggestions };
-					}});
+					},
+				});
 		}
 
 		return () => {

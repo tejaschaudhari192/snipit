@@ -129,10 +129,12 @@ export const CollabDraw = ({
 							elements: data.elements,
 							appState: data.appState as Parameters<
 								ExcalidrawAPI["updateScene"]
-							>[0]["appState"]});
+							>[0]["appState"],
+						});
 						if (elementsChanged && data.elements.length > 0) {
 							excalidrawAPI.scrollToContent(data.elements, {
-								fitToViewport: true});
+								fitToViewport: true,
+							});
 						}
 						if (data.files) {
 							excalidrawAPI.addFiles(Object.values(data.files));
@@ -206,7 +208,8 @@ export const CollabDraw = ({
 					elements: mergedElements,
 					appState: data.appState as Parameters<
 						ExcalidrawAPI["updateScene"]
-					>[0]["appState"]});
+					>[0]["appState"],
+				});
 				if (data.files) {
 					excalidrawAPI.addFiles(Object.values(data.files));
 				}
@@ -253,7 +256,8 @@ export const CollabDraw = ({
 					appState: {
 						...appState,
 						collaborators: currentCollaborators,
-					}});
+					},
+				});
 			}
 		};
 
@@ -326,7 +330,8 @@ export const CollabDraw = ({
 
 		if (changed) {
 			excalidrawAPI.updateScene({
-				collaborators: currentCollaborators});
+				collaborators: currentCollaborators,
+			});
 		}
 	}, [activeUsers, excalidrawAPI, socketRef]);
 
@@ -347,7 +352,8 @@ export const CollabDraw = ({
 			pointer: payload.pointer,
 			button: payload.button,
 			username: myName,
-			selectedElementIds: excalidrawAPI.getAppState().selectedElementIds});
+			selectedElementIds: excalidrawAPI.getAppState().selectedElementIds,
+		});
 	};
 
 	const handleChange = (
@@ -389,7 +395,8 @@ export const CollabDraw = ({
 						theme: currentAppState.theme,
 						viewBackgroundColor:
 							currentAppState.viewBackgroundColor,
-					}});
+					},
+				});
 			}, 30);
 		}
 
@@ -403,7 +410,8 @@ export const CollabDraw = ({
 							theme: currentAppState.theme,
 							viewBackgroundColor:
 								currentAppState.viewBackgroundColor,
-						}}),
+						},
+					}),
 				);
 			}, 100);
 		}

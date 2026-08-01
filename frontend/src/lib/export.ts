@@ -11,7 +11,8 @@ export const exportToCodePdf = async (content: string, fileName: string) => {
 	const doc = new jsPDF({
 		orientation: "landscape",
 		unit: "mm",
-		format: "a4"});
+		format: "a4",
+	});
 
 	doc.setFont("courier");
 	doc.setFontSize(7);
@@ -138,7 +139,8 @@ export const exportToDocx = (htmlContent: string, fileName: string) => {
 	const sourceHTML = header + htmlContent + footer;
 
 	const blob = new Blob(["\ufeff" + sourceHTML], {
-		type: "application/msword"});
+		type: "application/msword",
+	});
 
 	const url = URL.createObjectURL(blob);
 	const a = document.createElement("a");

@@ -32,7 +32,8 @@ import BulkShareModal from "./bulk-share-modal";
 
 const DeleteConfirmDialog = lazy(() =>
 	import("@/components/common/delete-confirm-dialog").then((m) => ({
-		default: m.DeleteConfirmDialog})),
+		default: m.DeleteConfirmDialog,
+	})),
 );
 
 const BULK_SHARE_LIMIT = 20;
@@ -62,7 +63,8 @@ export default function BulkActionBar({
 		setIsLoading(true);
 		const updated = selectedItems.map((item) => ({
 			...item,
-			folderId: folderId ?? undefined}));
+			folderId: folderId ?? undefined,
+		}));
 
 		const results = await Promise.allSettled(
 			updated.map((item) => dispatch(persistItem(item)).unwrap()),
@@ -74,14 +76,19 @@ export default function BulkActionBar({
 		const failCount = results.length - successCount;
 
 		if (failCount > 0) {
-			toast.add({ title: `Failed to move ${failCount} item${failCount > 1 ? "s" : ""}.`, type: "error" });
+			toast.add({
+				title: `Failed to move ${failCount} item${failCount > 1 ? "s" : ""}.`,
+				type: "error",
+			});
 		}
 		if (successCount > 0) {
 			const folderName = folderId
-				? folders.find((f) => f.id === folderId)?.name ?? "folder"
+				? (folders.find((f) => f.id === folderId)?.name ?? "folder")
 				: "No Folder";
-			toast.add({ title: 
-				`Moved ${successCount} item${successCount > 1 ? "s" : ""} to ${folderName}`, type: "success" });
+			toast.add({
+				title: `Moved ${successCount} item${successCount > 1 ? "s" : ""} to ${folderName}`,
+				type: "success",
+			});
 		}
 
 		setIsLoading(false);
@@ -102,12 +109,16 @@ export default function BulkActionBar({
 		const failCount = results.length - successCount;
 
 		if (failCount > 0) {
-			toast.add({ title: 
-				`Failed to delete ${failCount} item${failCount > 1 ? "s" : ""}.`, type: "error" });
+			toast.add({
+				title: `Failed to delete ${failCount} item${failCount > 1 ? "s" : ""}.`,
+				type: "error",
+			});
 		}
 		if (successCount > 0) {
-			toast.add({ title: 
-				`Deleted ${successCount} item${successCount > 1 ? "s" : ""}`, type: "success" });
+			toast.add({
+				title: `Deleted ${successCount} item${successCount > 1 ? "s" : ""}`,
+				type: "success",
+			});
 		}
 
 		setIsLoading(false);

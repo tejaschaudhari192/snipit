@@ -17,10 +17,13 @@ export function useItemMutations() {
 				dispatch(handleSelect(item));
 				await dispatch(persistItem(item)).unwrap();
 			} catch (error: unknown) {
-				toast.add({ title: 
-					typeof error === "string"
-						? error
-						: (error as Error).message || "Failed to save item", type: "error" });
+				toast.add({
+					title:
+						typeof error === "string"
+							? error
+							: (error as Error).message || "Failed to save item",
+					type: "error",
+				});
 			}
 		},
 		[dispatch],

@@ -87,7 +87,8 @@ interface PasteContextType {
 const PasteContext = createContext<PasteContextType | undefined>(undefined);
 
 export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
-	children}) => {
+	children,
+}) => {
 	// State Initialization
 	const [visibility, setVisibility] = useState<Visibility>(
 		CONFIG.defaults.visibility,
@@ -208,7 +209,8 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 				} else if (newMode === "draw") {
 					const emptyDraw = JSON.stringify({
 						elements: [],
-						appState: {}});
+						appState: {},
+					});
 					setTextValue(emptyDraw);
 				} else {
 					setTextValue("");
@@ -297,7 +299,8 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			resetFileUpload,
 			onContentTypeChange,
 			resetPaste,
-			getRawFile}),
+			getRawFile,
+		}),
 		[
 			visibility,
 			setVisibility,

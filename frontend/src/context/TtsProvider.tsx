@@ -5,7 +5,8 @@ import { TtsContext } from "./TtsContext";
 import { generatePuterSpeech } from "@/lib/puter-tts";
 
 export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
-	children }) => {
+	children,
+}) => {
 	const { prepareSpeech, detectSpeechLanguage } = useApiHelpers();
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [isPaused, setIsPaused] = useState(false);
@@ -146,7 +147,7 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 							title: "Playing text-to-speech",
 							description: `Language: ${detectedLang} | Voice: Nova | Engine: Puter.js`,
 							timeout: 4000,
-							type: "info"
+							type: "info",
 						});
 					};
 

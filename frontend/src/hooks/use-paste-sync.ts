@@ -81,7 +81,8 @@ export const usePasteSync = (
 			setRemoteCursors,
 			onRemoteUpdateRef,
 			isRemoteUpdate,
-			syncStateRef});
+			syncStateRef,
+		});
 
 		return () => {
 			cleanup();
@@ -93,7 +94,8 @@ export const usePasteSync = (
 		if (socket && id) {
 			socket.emit("set-editing-status", {
 				pasteId: id,
-				isEditing: isEdit});
+				isEditing: isEdit,
+			});
 		}
 	}, [isEdit, socket, id]);
 

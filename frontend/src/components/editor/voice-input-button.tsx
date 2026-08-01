@@ -64,7 +64,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 			setAudioBlob(null); // Clear immediately to prevent re-triggering from state changes
 			const loadingToast = toast.add({
 				title: t("editor.transcribing"),
-				type: "loading"
+				type: "loading",
 			});
 			try {
 				const { text } = await transcribeAudio(blob);
@@ -81,7 +81,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 					toast.add({
 						title: t("editor.transcription_failed"),
 						type: "error",
-						id: loadingToast
+						id: loadingToast,
 					});
 				}
 			} catch (error) {

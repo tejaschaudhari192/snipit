@@ -20,7 +20,8 @@ export const useAudioRecorder = () => {
 	const startRecording = useCallback(async () => {
 		try {
 			const stream = await navigator.mediaDevices.getUserMedia({
-				audio: true});
+				audio: true,
+			});
 			streamRef.current = stream;
 
 			// Timer logic

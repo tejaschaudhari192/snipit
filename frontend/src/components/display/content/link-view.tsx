@@ -181,7 +181,11 @@ export const LinkView = ({
 						{t("common.redirect_desc")}
 					</p>
 
-					<Button asChild size="lg" className="group relative px-8 h-12 font-bold rounded-xl shadow-xl shadow-primary/20 text-sm">
+					<Button
+						asChild
+						size="lg"
+						className="group relative px-8 h-12 font-bold rounded-xl shadow-xl shadow-primary/20 text-sm"
+					>
 						<a
 							href={getDestinationUrl(content)}
 							target="_blank"
@@ -325,7 +329,11 @@ export const LinkView = ({
 			<p className="text-muted-foreground mb-8 text-center max-w-md font-medium">
 				{t("common.redirect_desc")}
 			</p>
-			<Button asChild size="lg" className="group relative px-10 h-14 font-bold rounded-2xl shadow-xl shadow-primary/20">
+			<Button
+				asChild
+				size="lg"
+				className="group relative px-10 h-14 font-bold rounded-2xl shadow-xl shadow-primary/20"
+			>
 				<a
 					href={getDestinationUrl(content)}
 					target="_blank"

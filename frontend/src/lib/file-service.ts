@@ -26,7 +26,8 @@ export const FileService = {
 		fileUrl: null,
 		fileName: file.name,
 		fileSize: file.size,
-		fileMimeType: file.type || "application/octet-stream"}),
+		fileMimeType: file.type || "application/octet-stream",
+	}),
 
 	/**
 	 * Maps a paste object to an array of FileUploadStatus
@@ -43,7 +44,8 @@ export const FileService = {
 				fileUrl: f.url,
 				isUploading: false,
 				progress: 100,
-				error: null}));
+				error: null,
+			}));
 		}
 
 		if (paste.fileUrl) {
@@ -98,7 +100,8 @@ export const FileService = {
 				.upload(filePath, file, {
 					cacheControl: "3600",
 					upsert: true,
-					contentType: file.type || "application/octet-stream"});
+					contentType: file.type || "application/octet-stream",
+				});
 
 			if (uploadError) {
 				return { url: null, error: uploadError.message };

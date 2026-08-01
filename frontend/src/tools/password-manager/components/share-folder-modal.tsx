@@ -70,15 +70,22 @@ export default function ShareFolderModal({
 					targetEmail: email,
 					role,
 					folderId: finalFolderId,
-					folderName: finalFolderName}),
+					folderName: finalFolderName,
+				}),
 			).unwrap();
 
-			toast.add({ title: `Folder securely shared with ${email}`, type: "success" });
+			toast.add({
+				title: `Folder securely shared with ${email}`,
+				type: "success",
+			});
 			setEmail("");
 			onClose();
 		} catch (error: unknown) {
 			const msg = error instanceof Error ? error.message : String(error);
-			toast.add({ title: msg || "Failed to share folder securely", type: "error" });
+			toast.add({
+				title: msg || "Failed to share folder securely",
+				type: "error",
+			});
 		} finally {
 			setIsSharing(false);
 		}
@@ -86,7 +93,10 @@ export default function ShareFolderModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent showCloseButton={false} className="sm:max-w-md bg-background border-border text-foreground shadow-2xl">
+			<DialogContent
+				showCloseButton={false}
+				className="sm:max-w-md bg-background border-border text-foreground shadow-2xl"
+			>
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<Users className="w-5 h-5 text-primary" />

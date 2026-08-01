@@ -56,12 +56,12 @@ export function SchemaFieldRenderer({
 		);
 	}
 
-	
 	if (field.type === "file") {
 		const kb = Math.round(value.length / 1024);
-		const sizeString = kb > 1024 ? `${(kb / 1024).toFixed(1)} MB` : `${kb} KB`;
+		const sizeString =
+			kb > 1024 ? `${(kb / 1024).toFixed(1)} MB` : `${kb} KB`;
 		const fName = fileName || "credentials.txt";
-		
+
 		return (
 			<div className="space-y-1.5 mt-2 mb-2">
 				<Label className="text-[13px] text-muted-foreground block font-medium mb-1">
@@ -73,13 +73,17 @@ export function SchemaFieldRenderer({
 					</AttachmentMedia>
 					<AttachmentContent>
 						<AttachmentTitle>{fName}</AttachmentTitle>
-						<AttachmentDescription>Text File · {sizeString}</AttachmentDescription>
+						<AttachmentDescription>
+							Text File · {sizeString}
+						</AttachmentDescription>
 					</AttachmentContent>
 					<AttachmentActions>
 						<AttachmentAction
 							aria-label={`Download ${fName}`}
 							onClick={() => {
-								const blob = new Blob([value], { type: "text/plain" });
+								const blob = new Blob([value], {
+									type: "text/plain",
+								});
 								const url = URL.createObjectURL(blob);
 								const a = document.createElement("a");
 								a.href = url;
@@ -112,7 +116,6 @@ export function SchemaFieldRenderer({
 							size="default"
 							className="h-6 w-6 text-primary hover:text-primary/80 bg-primary/10 rounded border-0"
 						/>
-						
 					</div>
 				</div>
 				<p className="text-sm font-mono text-foreground whitespace-pre-wrap wrap-break-word bg-background rounded-xl px-3 py-2.5 border border-border">

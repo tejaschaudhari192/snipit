@@ -22,7 +22,7 @@ export default tseslint.config([
 		rules: {
 			"react-refresh/only-export-components": [
 				"error",
-				{ allowConstantExport: true }
+				{ allowConstantExport: true },
 			],
 			"tailwind-canonical/tailwind-canonical-classes": [
 				"warn",
@@ -41,5 +41,5 @@ export default tseslint.config([
 		rules: {
 			"react-refresh/only-export-components": "off",
 		},
-	}
+	},
 ]);

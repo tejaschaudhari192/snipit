@@ -74,7 +74,7 @@ export const CommentsSection = ({
 	const canComment = isExplicitUser
 		? ["admin", "editor", "commenter"].includes(userRole)
 		: paste.allowComments &&
-		["admin", "editor", "commenter", "viewer"].includes(userRole);
+			["admin", "editor", "commenter", "viewer"].includes(userRole);
 
 	const handleSubmit = async () => {
 		if (!newComment.trim()) return;
@@ -90,14 +90,18 @@ export const CommentsSection = ({
 				onCommentAdded(newCommentData);
 				setNewComment("");
 				setAuthorName("");
-				toast.add({ title: t("messages.comment_added"), type: "success" });
+				toast.add({
+					title: t("messages.comment_added"),
+					type: "success",
+				});
 			}
 		} catch (error) {
 			const axiosError = error as AxiosError<{ error: string }>;
 			toast.add({
 				title:
 					axiosError.response?.data?.error ||
-					t("messages.comment_failed"), type: "error"
+					t("messages.comment_failed"),
+				type: "error",
 			});
 		} finally {
 			setIsSubmitting(false);
@@ -117,7 +121,10 @@ export const CommentsSection = ({
 			const axiosError = error as AxiosError<{ error: string }>;
 			toast.add({
 				title:
-					axiosError.response?.data?.error || "Failed to update comment", type: "error" });
+					axiosError.response?.data?.error ||
+					"Failed to update comment",
+				type: "error",
+			});
 			throw error;
 		}
 	};
@@ -131,7 +138,10 @@ export const CommentsSection = ({
 			const axiosError = error as AxiosError<{ error: string }>;
 			toast.add({
 				title:
-					axiosError.response?.data?.error || "Failed to delete comment", type: "error" });
+					axiosError.response?.data?.error ||
+					"Failed to delete comment",
+				type: "error",
+			});
 		}
 	};
 

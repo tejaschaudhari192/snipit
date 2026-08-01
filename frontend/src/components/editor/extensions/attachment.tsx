@@ -106,10 +106,12 @@ export const Attachment = Node.create({
 				"data-type": "attachment",
 				"data-href": HTMLAttributes.href,
 				"data-filename": HTMLAttributes.filename,
-				"data-filesize": HTMLAttributes.filesize}),
+				"data-filesize": HTMLAttributes.filesize,
+			}),
 		];
 	},
 
 	addNodeView() {
 		return ReactNodeViewRenderer(AttachmentNodeView);
-	}});
+	},
+});

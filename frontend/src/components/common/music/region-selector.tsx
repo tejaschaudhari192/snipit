@@ -15,7 +15,8 @@ interface RegionSelectorProps {
 
 const RegionSelector: React.FC<RegionSelectorProps> = ({
 	currentRegion,
-	onRegionChange}) => {
+	onRegionChange,
+}) => {
 	const { t } = useTranslation();
 
 	const REGIONS = [

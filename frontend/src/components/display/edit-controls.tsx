@@ -5,7 +5,8 @@ import { AdvancedConfigSkeleton } from "@/components/common/advanced-config-grid
 
 const AdvancedConfigGrid = lazy(() =>
 	import("@/components/common/advanced-config-grid").then((m) => ({
-		default: m.AdvancedConfigGrid})),
+		default: m.AdvancedConfigGrid,
+	})),
 );
 
 import type {

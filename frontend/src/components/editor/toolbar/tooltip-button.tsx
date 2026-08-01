@@ -21,7 +21,12 @@ export function TooltipButton({
 	return (
 		<Tooltip>
 			<TooltipTrigger asChild>
-				<Button variant="ghost" size="icon" onClick={onClick} className={className}>
+				<Button
+					variant="ghost"
+					size="icon"
+					onClick={onClick}
+					className={className}
+				>
 					{children}
 				</Button>
 			</TooltipTrigger>

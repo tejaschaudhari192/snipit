@@ -20,7 +20,8 @@ interface TtsButtonProps {
 export const TtsButton: React.FC<TtsButtonProps> = ({
 	content,
 	contentType,
-	className}) => {
+	className,
+}) => {
 	const { t } = useTranslation();
 	const { speak, stop, isPlaying, isPreparing } = useTts();
 
