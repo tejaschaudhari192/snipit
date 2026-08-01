@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AlertTriangle, Loader2 } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 interface Step3WarningProps {
 	understandWarning: boolean;
@@ -45,12 +46,12 @@ export default function Step3Warning({
 					className="mt-1"
 				/>
 				<div className="space-y-1 leading-none">
-					<label
+					<Label
 						htmlFor="understand"
 						className="text-sm font-medium leading-none cursor-pointer"
 					>
 						{t("tools.password_manager_warning_checkbox")}
-					</label>
+					</Label>
 				</div>
 			</div>
 

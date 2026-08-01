@@ -1,5 +1,4 @@
 import React, { Suspense, useEffect, useState } from "react";
-import { logger } from "@/utils/logger";
 import { Provider } from "react-redux";
 const PasswordSidebar = React.lazy(
 	() => import("./components/password-sidebar"),
@@ -17,6 +16,7 @@ const MobileSidebarDrawer = React.lazy(
 	() => import("./components/mobile-sidebar-drawer"),
 );
 const SharingCenter = React.lazy(() => import("./components/sharing-center"));
+const ImportWizard = React.lazy(() => import("./components/import-wizard"));
 import {
 	AppSkeleton,
 	SidebarSkeleton,
@@ -49,8 +49,6 @@ import {
 	handleEdit,
 	handleCancelDetail,
 	initializeVault,
-	fetchVaultData,
-	fetchSharedCollections,
 	unlockVault,
 	createVault,
 	enableCloudSync,
@@ -69,6 +67,7 @@ import { useAuth } from "@/context/AuthContext";
 
 function PasswordManagerInner() {
 	const [searchQuery, setSearchQuery] = useState("");
+	const [isImportOpen, setIsImportOpen] = useState(false);
 	const isMobile = useIsMobile();
 	const dispatch = useAppDispatch();
 	const { user } = useAuth();
@@ -96,23 +95,6 @@ function PasswordManagerInner() {
 		}
 	}, [user?._id, dispatch]);
 
-	useEffect(() => {
-		if (isUnlocked && user?._id) {
-			const handleFocus = () => {
-				logger.info(
-					"[Vault] Window focused, syncing shared collections...",
-				);
-				dispatch(fetchSharedCollections()).then(() =>
-					dispatch(fetchVaultData()),
-				);
-			};
-
-			window.addEventListener("focus", handleFocus);
-			return () => {
-				window.removeEventListener("focus", handleFocus);
-			};
-		}
-	}, [isUnlocked, user?._id, dispatch]);
 
 	if (hasExistingVault === null || cloudVaultStatus === "checking") {
 		return <AppSkeleton />;
@@ -203,6 +185,7 @@ function PasswordManagerInner() {
 									<PasswordList
 										activeId={null}
 										searchQuery={searchQuery}
+										onSearchChange={setSearchQuery}
 										onSelect={(item: PasswordItem) =>
 											dispatch(handleSelect(item))
 										}
@@ -212,6 +195,7 @@ function PasswordManagerInner() {
 										onNewItem={() =>
 											dispatch(handleNewItem())
 										}
+										onImport={() => setIsImportOpen(true)}
 									/>
 								</Suspense>
 							</div>
@@ -223,10 +207,7 @@ function PasswordManagerInner() {
 						<div className="w-60 shrink-0 h-full overflow-hidden border-r border-pm-border flex flex-col bg-pm-sidebar shadow-sm z-10">
 							<SidebarProvider className="min-h-0 h-full w-full">
 								<Suspense fallback={<SidebarSkeleton />}>
-									<PasswordSidebar
-										searchQuery={searchQuery}
-										onSearchChange={setSearchQuery}
-									/>
+									<PasswordSidebar />
 								</Suspense>
 							</SidebarProvider>
 						</div>
@@ -242,6 +223,7 @@ function PasswordManagerInner() {
 									<PasswordList
 										activeId={activeItem?.id ?? null}
 										searchQuery={searchQuery}
+										onSearchChange={setSearchQuery}
 										onSelect={(item: PasswordItem) =>
 											dispatch(handleSelect(item))
 										}
@@ -251,6 +233,7 @@ function PasswordManagerInner() {
 										onNewItem={() =>
 											dispatch(handleNewItem())
 										}
+										onImport={() => setIsImportOpen(true)}
 									/>
 								</Suspense>
 							)}
@@ -277,6 +260,15 @@ function PasswordManagerInner() {
 						</Drawer>
 					</div>
 				)}
+
+				<Suspense fallback={null}>
+					{isImportOpen && (
+						<ImportWizard
+							isOpen={isImportOpen}
+							onClose={() => setIsImportOpen(false)}
+						/>
+					)}
+				</Suspense>
 			</div>
 		</TooltipProvider>
 	);

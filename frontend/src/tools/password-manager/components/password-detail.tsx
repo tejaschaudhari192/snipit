@@ -37,6 +37,7 @@ import {
 } from "@/tools/password-manager/utils/formatters";
 import { getFieldsForType } from "@/tools/password-manager/utils/item-types";
 import { ITEM_TYPE_OPTIONS } from "@/tools/password-manager/utils/constants";
+import { getFaviconUrl } from "@/tools/password-manager/utils/favicon";
 import type { PasswordItem } from "@/tools/password-manager/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SchemaFieldRenderer } from "./detail-fields/schema-field-renderer";
@@ -61,6 +62,36 @@ interface PasswordDetailProps {
 	item: PasswordItem | null | undefined;
 	isNew: boolean;
 	onSave: (item: PasswordItem) => void;
+}
+
+function DetailAvatar({ item }: { item: PasswordItem }) {
+	const faviconUrl = getFaviconUrl(item.url || item.metadata?.url || item.metadata?.website);
+	const [imgError, setImgError] = useState(false);
+
+	if (faviconUrl && !imgError) {
+		return (
+			<div className="w-20 h-20 rounded-2xl border border-border/50 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-lg ring-1 ring-black/5 dark:ring-white/10 relative">
+				<img
+					src={faviconUrl}
+					alt=""
+					className="w-12 h-12 object-contain relative z-10"
+					onError={() => setImgError(true)}
+				/>
+			</div>
+		);
+	}
+
+	return (
+		<div
+			className={`w-20 h-20 rounded-2xl flex items-center justify-center shrink-0 shadow-lg ring-1 ring-black/5 dark:ring-white/10 relative overflow-hidden ${getBrandColor(item.title)}`}
+		>
+			<span className="text-white text-3xl font-black tracking-tight drop-shadow-md relative z-10">
+				{item.title
+					? item.title.substring(0, 2).toUpperCase()
+					: "?"}
+			</span>
+		</div>
+	);
 }
 
 export default function PasswordDetail({
@@ -291,17 +322,7 @@ export default function PasswordDetail({
 					<div className="px-8 pt-10 pb-6 relative overflow-hidden border-b border-border/20">
 						
 						<div className="flex items-center gap-6 relative z-10">
-							<div
-								className={`w-20 h-20 rounded-2xl flex items-center justify-center shrink-0 shadow-lg ring-1 ring-black/5 dark:ring-white/10 relative overflow-hidden ${getBrandColor(item.title)}`}
-							>
-								<span className="text-white text-3xl font-black tracking-tight drop-shadow-md relative z-10">
-									{item.title
-										? item.title
-												.substring(0, 2)
-												.toUpperCase()
-										: "?"}
-								</span>
-							</div>
+							<DetailAvatar item={item} />
 							<div className="min-w-0 flex-1">
 								<h2 className="text-3xl font-extrabold tracking-tight flex items-center gap-2 mb-2.5 text-foreground/90">
 									<span className="truncate drop-shadow-sm">
@@ -344,9 +365,13 @@ export default function PasswordDetail({
 						<div className="bg-muted/20 border border-border/40 rounded-2xl p-6 shadow-xs space-y-6">
 							{/* Dynamic Schema Fields */}
 							{schemaFields.map((field) => {
-								const value = item.metadata
-									? item.metadata[field.key]
-									: undefined;
+								const itemKey = field.key as keyof PasswordItem;
+								const value =
+									item[itemKey] !== undefined && item[itemKey] !== "" && item[itemKey] !== null
+										? (item[itemKey] as string)
+										: item.metadata
+											? (item.metadata[field.key] as string)
+											: undefined;
 
 								return (
 									<SchemaFieldRenderer
@@ -364,7 +389,7 @@ export default function PasswordDetail({
 									<Label className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground mb-2 block">
 										{t("tools.password_detail_notes_label")}
 									</Label>
-									<p className="text-[14px] leading-relaxed text-foreground/90 whitespace-pre-wrap break-words bg-background/50 p-4 rounded-xl border border-border/50">
+									<p className="text-[14px] leading-relaxed text-foreground/90 whitespace-pre-wrap wrap-break-word bg-background/50 p-4 rounded-xl border border-border/50">
 										{item.notes}
 									</p>
 								</div>

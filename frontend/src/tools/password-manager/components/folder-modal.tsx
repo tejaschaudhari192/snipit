@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/utils";
 import { FolderPlus, Pencil, Trash2 } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 const PRESET_COLORS = [
 	"#ef4444", // red
@@ -119,12 +120,12 @@ export function FolderModal({
 									className="mt-0.5"
 								/>
 								<div className="space-y-1 leading-none">
-									<label
+									<Label
 										htmlFor="delete-passwords"
 										className="text-sm font-medium cursor-pointer"
 									>
 										Delete all passwords inside this folder
-									</label>
+									</Label>
 									<p className="text-xs text-muted-foreground">
 										This action cannot be undone.
 									</p>
@@ -137,9 +138,9 @@ export function FolderModal({
 				{mode !== "delete" && (
 					<div className="flex flex-col gap-5 py-2">
 						<div className="space-y-2">
-							<label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+							<Label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
 								Folder Name
-							</label>
+							</Label>
 							<Input
 								autoFocus
 								value={folderName}
@@ -155,9 +156,9 @@ export function FolderModal({
 						</div>
 
 						<div className="space-y-3">
-							<label className="text-sm font-medium leading-none">
+							<Label className="text-sm font-medium leading-none">
 								Folder Color
-							</label>
+							</Label>
 							<div className="flex flex-wrap gap-3">
 								{PRESET_COLORS.map((color) => (
 									<Button

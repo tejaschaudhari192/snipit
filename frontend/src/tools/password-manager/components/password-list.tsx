@@ -1,15 +1,19 @@
-import { useState, useMemo, lazy, Suspense } from "react";
+import { useState, useMemo, lazy, Suspense, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { matchSorter } from "match-sorter";
 import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
 import BulkActionBar from "./bulk-action-bar";
 import {
 	selectVault,
 	selectActiveFilter,
 	setSidebarDrawerOpen,
+	deleteItem,
+	handleEdit,
 } from "@/tools/password-manager/store/password-slice";
 import { getFieldsForType } from "@/tools/password-manager/utils/item-types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
 	DropdownMenu,
@@ -25,7 +29,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { Menu, MoreHorizontal, Pencil, Trash2, Folder, Copy, Share2 } from "lucide-react";
+import { Menu, MoreHorizontal, Pencil, Trash2, Folder, Copy, Share2, Upload, Search, GitMerge } from "lucide-react";
 import { ITEM_TYPE_OPTIONS } from "@/tools/password-manager/utils/constants";
 import {
 	getDomain,
@@ -35,6 +39,7 @@ import {
 } from "@/tools/password-manager/utils/formatters";
 import { getFaviconUrl } from "@/tools/password-manager/utils/favicon";
 import ShareFolderModal from "./share-folder-modal";
+import { MergeItemsModal } from "./merge-items-modal";
 import type { PasswordItem, Folder as FolderType } from "@/tools/password-manager/types";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useDeleteItem } from "@/tools/password-manager/hooks/use-delete-item";
@@ -43,7 +48,6 @@ import {
 	flexRender,
 	getCoreRowModel,
 	getSortedRowModel,
-	getFilteredRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
 
@@ -56,9 +60,11 @@ const DeleteConfirmDialog = lazy(() =>
 interface PasswordListProps {
 	activeId: string | null;
 	searchQuery: string;
+	onSearchChange?: (val: string) => void;
 	onSelect: (item: PasswordItem) => void;
 	onEdit: (item: PasswordItem) => void;
 	onNewItem: () => void;
+	onImport: () => void;
 }
 
 function ItemAvatar({ item }: { item: PasswordItem }) {
@@ -92,9 +98,11 @@ function ItemAvatar({ item }: { item: PasswordItem }) {
 export default function PasswordList({
 	activeId,
 	searchQuery,
+	onSearchChange,
 	onSelect,
 	onEdit,
 	onNewItem,
+	onImport,
 }: PasswordListProps) {
 	const { t } = useTranslation();
 	const isMobile = useIsMobile();
@@ -110,6 +118,8 @@ export default function PasswordList({
 		cancelDelete,
 	} = useDeleteItem();
 	const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+	const [isMergeModalOpen, setIsMergeModalOpen] = useState(false);
+	const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
 	const activeFolder = folders.find((f: FolderType) => f.id === activeFilter);
 
 	// First apply sidebar filter
@@ -129,6 +139,41 @@ export default function PasswordList({
 			);
 		});
 	}, [vault?.items, activeFilter]);
+
+	const searchFiltered = useMemo(() => {
+		if (!searchQuery) return categoryFiltered;
+		return matchSorter(categoryFiltered, searchQuery, {
+			keys: [
+				"title",
+				"username",
+				"url",
+				"notes",
+				"metadata.website",
+				"metadata.url",
+				"metadata.username",
+				"metadata.email"
+			],
+		});
+	}, [categoryFiltered, searchQuery]);
+
+	const [visibleCount, setVisibleCount] = useState(50);
+	const scrollContainerRef = useRef<HTMLDivElement>(null);
+	
+	useEffect(() => {
+		setVisibleCount(50);
+		if (scrollContainerRef.current) {
+			scrollContainerRef.current.scrollTop = 0;
+		}
+	}, [activeFilter, searchQuery]);
+
+	const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+		const target = e.currentTarget;
+		if (target.scrollHeight - target.scrollTop <= target.clientHeight + 200) {
+			if (visibleCount < searchFiltered.length) {
+				setVisibleCount((prev) => Math.min(prev + 50, searchFiltered.length));
+			}
+		}
+	};
 
 	const columns = useMemo(() => {
 		const columnHelper = createColumnHelper<PasswordItem>();
@@ -279,21 +324,17 @@ export default function PasswordList({
 		];
 	}, [t, folders, onEdit, confirmDelete]);
 
-	const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
-
 	const table = useReactTable({
-		data: categoryFiltered,
+		data: useMemo(() => searchFiltered.slice(0, visibleCount), [searchFiltered, visibleCount]),
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
-		getFilteredRowModel: getFilteredRowModel(),
 		enableRowSelection: true,
+		manualPagination: true,
 		state: {
-			globalFilter: searchQuery,
 			rowSelection,
 		},
 		onRowSelectionChange: setRowSelection,
-		onGlobalFilterChange: undefined, // Let parent handle search input
 	});
 
 	const selectedItems = table.getSelectedRowModel().rows.map((r) => r.original);
@@ -312,7 +353,7 @@ export default function PasswordList({
 		<div className="h-full flex flex-col bg-pm-surface relative">
 			{/* Header */}
 			<div className="flex items-center justify-between p-6 pb-4">
-				<div className="flex items-center gap-3">
+				<div className="flex items-center gap-3 whitespace-nowrap">
 					{isMobile && (
 						<Button
 							variant="ghost"
@@ -324,27 +365,66 @@ export default function PasswordList({
 						</Button>
 					)}
 					{hasSelection ? (
-						<span className="text-sm font-medium text-muted-foreground">
-							{selectedItems.length} item{selectedItems.length > 1 ? "s" : ""} selected
-						</span>
+						<div className="flex items-center gap-4">
+							<span className="text-sm font-medium text-muted-foreground">
+								{selectedItems.length} item{selectedItems.length > 1 ? "s" : ""} selected
+							</span>
+							{selectedItems.length > 1 && (
+								<Button size="sm" variant="secondary" onClick={() => setIsMergeModalOpen(true)}>
+									<GitMerge className="w-4 h-4 mr-2" />
+									{t("tools.password_manager_merge")}
+								</Button>
+							)}
+						</div>
 					) : (
 						<h1 className="text-2xl font-bold text-foreground">{pageTitle}</h1>
 					)}
 				</div>
-				<div className="flex items-center gap-2">
+				{!hasSelection && onSearchChange && (
+					<div className="relative flex-1 max-w-md mx-6 hidden sm:block">
+						<Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+						<Input
+							type="search"
+							placeholder={t("tools.password_manager_search")}
+							value={searchQuery}
+							onChange={(e) => onSearchChange(e.target.value)}
+							className="w-full bg-background pl-10 border-border rounded-xl h-9 shadow-sm"
+						/>
+					</div>
+				)}
+				<div className="flex items-center gap-2 shrink-0">
 					{activeFolder && !hasSelection && (
-						<Button variant="outline" className="gap-2 h-9" size="sm" onClick={() => setIsShareModalOpen(true)}>
+						<Button variant="outline" className="gap-2 h-9 hidden sm:flex" size="sm" onClick={() => setIsShareModalOpen(true)}>
 							<Share2 className="h-4 w-4" /> {t("tools.password_manager_share")}
 						</Button>
 					)}
+					<Button variant="outline" className="h-9 gap-2 hidden sm:flex" size="sm" onClick={onImport} disabled={hasSelection}>
+						<Upload className="w-4 h-4 mr-1" /> Import
+					</Button>
 					<Button className="h-9 gap-2" size="sm" onClick={onNewItem} disabled={hasSelection}>
-						<span className="mr-1">+</span> {t("tools.password_manager_new_item")}
+						<span className="mr-1">+</span> <span className="hidden sm:inline">{t("tools.password_manager_new_item")}</span>
 					</Button>
 				</div>
 			</div>
 
+			{/* Mobile search bar if applicable */}
+			{!hasSelection && onSearchChange && (
+				<div className="sm:hidden px-6 pb-4">
+					<div className="relative w-full">
+						<Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+						<Input
+							type="search"
+							placeholder={t("tools.password_manager_search")}
+							value={searchQuery}
+							onChange={(e) => onSearchChange(e.target.value)}
+							className="w-full bg-background pl-10 border-border rounded-xl h-9 shadow-sm"
+						/>
+					</div>
+				</div>
+			)}
+
 			{/* Table */}
-			<div className="flex-1 overflow-y-auto px-6 pb-6">
+			<div className="flex-1 overflow-y-auto px-6 pb-6" onScroll={handleScroll} ref={scrollContainerRef}>
 				<div className="rounded-xl border border-pm-border bg-background shadow-sm overflow-hidden">
 					<Table>
 						<TableHeader className="bg-muted/30 hover:bg-muted/30">
@@ -355,7 +435,7 @@ export default function PasswordList({
 											<TableHead 
 												key={header.id} 
 												className={`h-11 px-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80 ${
-													header.id === 'select' ? 'w-[40px] pr-2' : ''
+													header.id === 'select' ? 'w-10 pr-2' : ''
 												}`}
 											>
 												{header.isPlaceholder
@@ -395,7 +475,7 @@ export default function PasswordList({
 											<TableCell 
 												key={cell.id} 
 												className={`py-3 px-4 ${
-													cell.column.id === 'select' ? 'w-[40px] pr-2' : ''
+													cell.column.id === 'select' ? 'w-10 pr-2' : ''
 												}`}
 											>
 												{flexRender(
@@ -443,13 +523,27 @@ export default function PasswordList({
 					/>
 				</Suspense>
 			)}
-			{activeFolder && (
+			{isShareModalOpen && activeFolder && (
 				<ShareFolderModal
 					isOpen={isShareModalOpen}
 					onClose={() => setIsShareModalOpen(false)}
 					folderId={activeFolder.id}
 				/>
 			)}
+			<MergeItemsModal
+				isOpen={isMergeModalOpen}
+				onClose={() => setIsMergeModalOpen(false)}
+				items={selectedItems}
+				onMerge={(mergedItem, originalItemIds) => {
+					dispatch(handleEdit(mergedItem));
+					originalItemIds.forEach(id => {
+						if (id !== mergedItem.id) {
+							dispatch(deleteItem(id));
+						}
+					});
+					setRowSelection({});
+				}}
+			/>
 		</div>
 	);
 }

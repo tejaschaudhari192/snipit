@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { KeyRound, Copy, Download, AlertTriangle } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 interface Step4RecoveryKeyProps {
 	recoveryMnemonic: string | null;
@@ -89,12 +90,12 @@ export default function Step4RecoveryKey({
 					className="mt-1"
 				/>
 				<div className="space-y-1 leading-none">
-					<label
+					<Label
 						htmlFor="recovery-saved"
 						className="text-sm font-medium leading-none cursor-pointer"
 					>
 						{t("tools.password_manager_recovery_saved")}
-					</label>
+					</Label>
 				</div>
 			</div>
 

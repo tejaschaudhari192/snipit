@@ -1,14 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, UserPlus, Shield, Lock, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
-import {
-	selectSharedCollections,
-	fetchSharedCollections,
-	fetchVaultData,
-} from "@/tools/password-manager/store/password-slice";
+import { useAppSelector } from "@/tools/password-manager/store";
+import { selectSharedCollections } from "@/tools/password-manager/store/password-slice";
 import { Badge } from "@/components/ui/badge";
 import CollectionMembersModal from "./collection-members-modal";
 import ShareFolderModal from "./share-folder-modal";
@@ -23,14 +19,7 @@ export default function SharingCenter() {
 	const [isShareNewModalOpen, setIsShareNewModalOpen] = useState(false);
 	const { t } = useTranslation();
 
-	const dispatch = useAppDispatch();
 	const sharedCollections = useAppSelector(selectSharedCollections);
-
-	useEffect(() => {
-		dispatch(fetchSharedCollections()).then(() =>
-			dispatch(fetchVaultData()),
-		);
-	}, [dispatch]);
 
 	const sharedWithMe = sharedCollections.filter(
 		(c) => c.access.role !== "owner",

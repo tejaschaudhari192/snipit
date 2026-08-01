@@ -43,9 +43,13 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 	const [customFields, setCustomFields] = useState<CustomField[]>(
 		editItem?.customFields ?? [],
 	);
-	const [metadata, setMetadata] = useState<Record<string, string>>(
-		editItem?.metadata ?? {},
-	);
+	const [metadata, setMetadata] = useState<Record<string, string>>(() => {
+		const meta = { ...(editItem?.metadata ?? {}) };
+		if (editItem?.username) meta.username = editItem.username;
+		if (editItem?.password) meta.password = editItem.password;
+		if (editItem?.url) meta.url = editItem.url;
+		return meta;
+	});
 
 	const [folderModalOpen, setFolderModalOpen] = useState(false);
 	const { createFolder } = useFolderMutations();
@@ -60,7 +64,11 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 			setItemType(editItem.itemType ?? "login");
 			setFolderId(editItem.folderId ?? "none");
 			setCustomFields(editItem.customFields ?? []);
-			setMetadata(editItem.metadata ?? {});
+			const meta = { ...(editItem.metadata ?? {}) };
+			if (editItem.username) meta.username = editItem.username;
+			if (editItem.password) meta.password = editItem.password;
+			if (editItem.url) meta.url = editItem.url;
+			setMetadata(meta);
 		} else {
 			resetForm();
 		}
@@ -271,13 +279,13 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 				</div>
 
 				{/* Details Card */}
-				<Card className="shadow-sm border-border">
-					<CardHeader className="px-4 pt-4 pb-2">
+				<Card className="shadow-sm border-border gap-0 py-0 overflow-hidden">
+					<CardHeader className="px-4 py-3 bg-muted/20 border-b border-border/40">
 						<CardTitle className="text-sm font-semibold flex items-center gap-2">
 							{t("tools.password_manager_details_title")}
 						</CardTitle>
 					</CardHeader>
-					<CardContent className="px-4 pb-4 space-y-4">
+					<CardContent className="px-4 py-4 space-y-4">
 						{itemType === "credfile" && (
 							<div className="flex items-center justify-between p-3 border border-border rounded-xl bg-muted/30 border-dashed">
 								<div className="space-y-1">

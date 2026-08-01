@@ -591,6 +591,37 @@ export const persistFolders = createAsyncThunk(
 	},
 );
 
+export const createFolderAsync = createAsyncThunk(
+	"passwordManager/createFolderAsync",
+	async (
+		folder: Omit<Folder, "id" | "createdAt" | "updatedAt">,
+		{ getState, dispatch }
+	) => {
+		const state = (getState() as { passwordManager: PasswordManagerState }).passwordManager;
+		const newFolder: Folder = {
+			...folder,
+			id: crypto.randomUUID(),
+			createdAt: new Date().toISOString(),
+			updatedAt: new Date().toISOString(),
+		};
+		const newFolders = [...state.folders, newFolder];
+		await dispatch(persistFolders(newFolders));
+		return newFolder;
+	}
+);
+
+export const importItems = createAsyncThunk(
+	"passwordManager/importItems",
+	async (items: PasswordItem[], { dispatch }) => {
+		const results = [];
+		for (const item of items) {
+			const result = await dispatch(persistItem(item)).unwrap();
+			results.push(result);
+		}
+		return results;
+	}
+);
+
 export const recoverWithMnemonic = createAsyncThunk(
 	"passwordManager/recoverWithMnemonic",
 	async (mnemonic: string, { getState, rejectWithValue }) => {
@@ -1141,6 +1172,9 @@ export const passwordSlice = createSlice({
 					state.activeItem = item;
 				}
 				state.isNewItem = false;
+			})
+			.addCase(createFolderAsync.fulfilled, (state, action) => {
+				state.folders.push(action.payload);
 			})
 			// deleteItem
 			.addCase(deleteItem.fulfilled, (state, action) => {

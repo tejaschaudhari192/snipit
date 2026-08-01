@@ -23,6 +23,7 @@ import {
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
 import { useEffect } from "react";
+import { Label } from "@/components/ui/label";
 
 interface ShareFolderModalProps {
 	isOpen: boolean;
@@ -103,9 +104,9 @@ export default function ShareFolderModal({
 				<form onSubmit={handleShare} className="space-y-4 py-4">
 					{!folderId && (
 						<div className="space-y-2">
-							<label className="text-sm font-medium">
+							<Label className="text-sm font-medium">
 								Select Folder
-							</label>
+							</Label>
 							<Select
 								value={selectedFolderId}
 								onValueChange={(val) =>
@@ -136,9 +137,9 @@ export default function ShareFolderModal({
 						</div>
 					)}
 					<div className="space-y-2">
-						<label className="text-sm font-medium">
+						<Label className="text-sm font-medium">
 							User Email
-						</label>
+						</Label>
 						<Input
 							placeholder="Enter email address"
 							type="email"
@@ -150,9 +151,9 @@ export default function ShareFolderModal({
 					</div>
 
 					<div className="space-y-2">
-						<label className="text-sm font-medium">
+						<Label className="text-sm font-medium">
 							Permission
-						</label>
+						</Label>
 						<Select
 							value={role}
 							onValueChange={(val: "viewer" | "editor") =>

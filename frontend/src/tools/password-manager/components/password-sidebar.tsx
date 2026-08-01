@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Shield, Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Shield } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import { useAppDispatch, useAppSelector } from "../store";
@@ -34,12 +33,7 @@ import { FolderList } from "./sidebar/folder-list";
 import { SettingsMenu } from "./sidebar/settings-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ShareFolderModal from "./share-folder-modal";
-interface PasswordSidebarProps {
-	searchQuery: string;
-	onSearchChange: (value: string) => void;
-}
-
-export default function PasswordSidebar({ searchQuery, onSearchChange }: PasswordSidebarProps) {
+export default function PasswordSidebar() {
 	const { t } = useTranslation();
 	const dispatch = useAppDispatch();
 	const activeFilter = useAppSelector(selectActiveFilter);
@@ -94,19 +88,7 @@ export default function PasswordSidebar({ searchQuery, onSearchChange }: Passwor
 				</div>
 			</SidebarHeader>
 
-			<SidebarContent className="flex-1 overflow-y-clip no-scrollbar flex flex-col bg-sidebar">
-				<div className="p-4 pb-0 flex flex-col gap-2">
-					<div className="relative">
-						<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-						<Input
-							type="search"
-							placeholder="Search..."
-							value={searchQuery}
-							onChange={(e) => onSearchChange(e.target.value)}
-							className="w-full bg-background pl-9 border-border rounded-xl h-9"
-						/>
-					</div>
-				</div>
+			<SidebarContent className="flex-1 overflow-y-clip no-scrollbar flex flex-col bg-sidebar pt-4">
 				<SidebarGroup>
 					<SidebarGroupContent>
 						<SidebarMenu>

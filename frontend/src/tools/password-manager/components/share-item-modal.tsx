@@ -20,6 +20,7 @@ import type { PasswordItem } from "@/tools/password-manager/types";
 import { toast } from "sonner";
 import { useAppDispatch } from "@/tools/password-manager/store";
 import { shareItem } from "@/tools/password-manager/store/password-slice";
+import { Label } from "@/components/ui/label";
 
 interface ShareItemModalProps {
 	isOpen: boolean;
@@ -79,9 +80,9 @@ export default function ShareItemModal({
 
 				<form onSubmit={handleShare} className="space-y-4 py-4">
 					<div className="space-y-2">
-						<label className="text-sm font-medium">
+						<Label className="text-sm font-medium">
 							User Email
-						</label>
+						</Label>
 						<Input
 							placeholder="Enter email address"
 							type="email"
@@ -93,9 +94,9 @@ export default function ShareItemModal({
 					</div>
 
 					<div className="space-y-2">
-						<label className="text-sm font-medium">
+						<Label className="text-sm font-medium">
 							Permission
-						</label>
+						</Label>
 						<Select
 							value={role}
 							onValueChange={(val: "viewer" | "editor") =>
