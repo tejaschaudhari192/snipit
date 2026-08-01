@@ -76,7 +76,7 @@ function ItemAvatar({ item }: { item: PasswordItem }) {
 				<img
 					src={faviconUrl}
 					alt=""
-					className="w-4 h-4 object-contain"
+					className="w-6 h-6 object-contain"
 					onError={() => setImgError(true)}
 				/>
 			</div>

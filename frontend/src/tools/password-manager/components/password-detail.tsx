@@ -73,7 +73,7 @@ function DetailAvatar({ item }: { item: PasswordItem }) {
 				<img
 					src={faviconUrl}
 					alt=""
-					className="w-12 h-12 object-contain relative z-10"
+					className="w-16 h-16 object-contain relative z-10"
 					onError={() => setImgError(true)}
 				/>
 			</div>
