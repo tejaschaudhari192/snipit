@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import {
 	Dialog,
@@ -38,6 +39,7 @@ export default function ShareFolderModal({
 	folderId,
 	folderName,
 }: ShareFolderModalProps) {
+	const { t } = useTranslation();
 	const [email, setEmail] = useState("");
 	const [role, setRole] = useState<"viewer" | "editor">("viewer");
 	const [selectedFolderId, setSelectedFolderId] = useState<string>("");
@@ -75,7 +77,10 @@ export default function ShareFolderModal({
 			).unwrap();
 
 			toast.add({
-				title: `Folder securely shared with ${email}`,
+				title: t(
+					"tools.password_manager.share.folder_securely_shared_with",
+					{ email },
+				),
 				type: "success",
 			});
 			setEmail("");
@@ -83,7 +88,9 @@ export default function ShareFolderModal({
 		} catch (error: unknown) {
 			const msg = error instanceof Error ? error.message : String(error);
 			toast.add({
-				title: msg || "Failed to share folder securely",
+				title:
+					msg ||
+					t("tools.password_manager.share.failed_to_share_folder"),
 				type: "error",
 			});
 		} finally {
@@ -101,12 +108,14 @@ export default function ShareFolderModal({
 					<DialogTitle className="flex items-center gap-2">
 						<Users className="w-5 h-5 text-primary" />
 						{folderName
-							? `Share Folder "${folderName}"`
-							: "Share a Folder"}
+							? t(
+									"tools.password_manager.share.share_folder_title",
+									{ name: folderName },
+								)
+							: t("tools.password_manager.share.share_a_folder")}
 					</DialogTitle>
 					<DialogDescription className="text-muted-foreground">
-						Share this entire folder and all its passwords using
-						End-to-End Encryption.
+						{t("tools.password_manager.share.share_folder_desc")}
 					</DialogDescription>
 				</DialogHeader>
 
@@ -114,7 +123,9 @@ export default function ShareFolderModal({
 					{!folderId && (
 						<div className="space-y-2">
 							<Label className="text-sm font-medium">
-								Select Folder
+								{t(
+									"tools.password_manager.share.select_folder",
+								)}
 							</Label>
 							<Select
 								value={selectedFolderId}
@@ -123,7 +134,11 @@ export default function ShareFolderModal({
 								}
 							>
 								<SelectTrigger className="w-full bg-background border-border text-foreground">
-									<SelectValue placeholder="Choose a folder to share" />
+									<SelectValue
+										placeholder={t(
+											"tools.password_manager.share.choose_folder_to_share",
+										)}
+									/>
 								</SelectTrigger>
 								<SelectContent className="bg-background border-border text-foreground">
 									{vault?.folders?.map(
@@ -147,10 +162,12 @@ export default function ShareFolderModal({
 					)}
 					<div className="space-y-2">
 						<Label className="text-sm font-medium">
-							User Email
+							{t("tools.password_manager.share.user_email")}
 						</Label>
 						<Input
-							placeholder="Enter email address"
+							placeholder={t(
+								"tools.password_manager.share.enter_email",
+							)}
 							type="email"
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
@@ -161,7 +178,7 @@ export default function ShareFolderModal({
 
 					<div className="space-y-2">
 						<Label className="text-sm font-medium">
-							Permission
+							{t("tools.password_manager.share.permission")}
 						</Label>
 						<Select
 							value={role}
@@ -170,11 +187,19 @@ export default function ShareFolderModal({
 							}
 						>
 							<SelectTrigger className="w-full bg-background border-border text-foreground">
-								<SelectValue placeholder="Select permission" />
+								<SelectValue
+									placeholder={t(
+										"tools.password_manager.share.select_permission",
+									)}
+								/>
 							</SelectTrigger>
 							<SelectContent className="bg-background border-border text-foreground">
-								<SelectItem value="viewer">Viewer</SelectItem>
-								<SelectItem value="editor">Editor</SelectItem>
+								<SelectItem value="viewer">
+									{t("tools.password_manager.share.viewer")}
+								</SelectItem>
+								<SelectItem value="editor">
+									{t("tools.password_manager.share.editor")}
+								</SelectItem>
 							</SelectContent>
 						</Select>
 					</div>
@@ -196,7 +221,11 @@ export default function ShareFolderModal({
 								isSharing
 							}
 						>
-							{isSharing ? "Sharing..." : "Share Securely"}
+							{isSharing
+								? t("tools.password_manager.share.sharing")
+								: t(
+										"tools.password_manager.share.share_securely",
+									)}
 						</Button>
 					</div>
 				</form>

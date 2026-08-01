@@ -494,7 +494,7 @@ export default function PasswordList({
 							onClick={() => setIsShareModalOpen(true)}
 						>
 							<Share2 className="h-4 w-4" />{" "}
-							{t("tools.password_manager.share")}
+							{t("tools.password_manager.share_btn")}
 						</Button>
 					)}
 					<Button

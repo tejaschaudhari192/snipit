@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import {
 	Dialog,
@@ -33,6 +34,7 @@ export default function ShareItemModal({
 	onClose,
 	item,
 }: ShareItemModalProps) {
+	const { t } = useTranslation();
 	const [email, setEmail] = useState("");
 	const [role, setRole] = useState<"viewer" | "editor">("viewer");
 
@@ -54,7 +56,9 @@ export default function ShareItemModal({
 			).unwrap();
 
 			toast.add({
-				title: `Securely shared with ${email}`,
+				title: t("tools.password_manager.share.securely_shared_with", {
+					email,
+				}),
 				type: "success",
 			});
 			setEmail("");
@@ -62,7 +66,7 @@ export default function ShareItemModal({
 		} catch (error: unknown) {
 			const msg = error instanceof Error ? error.message : String(error);
 			toast.add({
-				title: msg || "Failed to share securely",
+				title: msg || t("tools.password_manager.share.failed_to_share"),
 				type: "error",
 			});
 		} finally {
@@ -79,21 +83,24 @@ export default function ShareItemModal({
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<Users className="w-5 h-5 text-primary" />
-						Share "{item.title}"
+						{t("tools.password_manager.share.share_item_title", {
+							title: item.title,
+						})}
 					</DialogTitle>
 					<DialogDescription className="text-muted-foreground">
-						Share this password securely using End-to-End
-						Encryption.
+						{t("tools.password_manager.share.share_item_desc")}
 					</DialogDescription>
 				</DialogHeader>
 
 				<form onSubmit={handleShare} className="space-y-4 py-4">
 					<div className="space-y-2">
 						<Label className="text-sm font-medium">
-							User Email
+							{t("tools.password_manager.share.user_email")}
 						</Label>
 						<Input
-							placeholder="Enter email address"
+							placeholder={t(
+								"tools.password_manager.share.enter_email",
+							)}
 							type="email"
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
@@ -104,7 +111,7 @@ export default function ShareItemModal({
 
 					<div className="space-y-2">
 						<Label className="text-sm font-medium">
-							Permission
+							{t("tools.password_manager.share.permission")}
 						</Label>
 						<Select
 							value={role}
@@ -113,11 +120,19 @@ export default function ShareItemModal({
 							}
 						>
 							<SelectTrigger className="w-full bg-background border-border text-foreground">
-								<SelectValue placeholder="Select permission" />
+								<SelectValue
+									placeholder={t(
+										"tools.password_manager.share.select_permission",
+									)}
+								/>
 							</SelectTrigger>
 							<SelectContent className="bg-background border-border text-foreground">
-								<SelectItem value="viewer">Viewer</SelectItem>
-								<SelectItem value="editor">Editor</SelectItem>
+								<SelectItem value="viewer">
+									{t("tools.password_manager.share.viewer")}
+								</SelectItem>
+								<SelectItem value="editor">
+									{t("tools.password_manager.share.editor")}
+								</SelectItem>
 							</SelectContent>
 						</Select>
 					</div>
@@ -132,7 +147,11 @@ export default function ShareItemModal({
 							Cancel
 						</Button>
 						<Button type="submit" disabled={!email || isSharing}>
-							{isSharing ? "Sharing..." : "Share Securely"}
+							{isSharing
+								? t("tools.password_manager.share.sharing")
+								: t(
+										"tools.password_manager.share.share_securely",
+									)}
 						</Button>
 					</div>
 				</form>

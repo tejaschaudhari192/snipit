@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState, useEffect, useCallback } from "react";
 import {
 	Dialog,
@@ -34,6 +35,7 @@ export default function CollectionMembersModal({
 	collectionId,
 	collectionName,
 }: CollectionMembersModalProps) {
+	const { t } = useTranslation();
 	const [members, setMembers] = useState<MemberData[]>([]);
 	const [loading, setLoading] = useState(true);
 	const dispatch = useAppDispatch();
@@ -48,7 +50,9 @@ export default function CollectionMembersModal({
 		} catch (error: unknown) {
 			const err = error as { response?: { data?: { message?: string } } };
 			toast.add({
-				title: err.response?.data?.message || "Failed to fetch members",
+				title:
+					err.response?.data?.message ||
+					t("tools.password_manager.share.failed_to_fetch_members"),
 				type: "error",
 			});
 		} finally {
@@ -63,20 +67,27 @@ export default function CollectionMembersModal({
 	}, [isOpen, collectionId, fetchMembers]);
 
 	const handleRevoke = async (accessId: string, email: string) => {
-		if (!confirm(`Are you sure you want to revoke access for ${email}?`))
+		if (
+			!confirm(
+				t("tools.password_manager.share.revoke_confirm", { email }),
+			)
+		)
 			return;
 
 		try {
 			await dispatch(revokeSharedAccess(accessId)).unwrap();
 			toast.add({
-				title: `Access revoked for ${email}`,
+				title: t("tools.password_manager.share.access_revoked", {
+					email,
+				}),
 				type: "success",
 			});
 			fetchMembers();
 		} catch (error: unknown) {
 			const msg = error instanceof Error ? error.message : String(error);
 			toast.add({
-				title: msg || "Failed to revoke access",
+				title:
+					msg || t("tools.password_manager.share.failed_to_revoke"),
 				type: "error",
 			});
 		}
@@ -91,10 +102,12 @@ export default function CollectionMembersModal({
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<Users className="w-5 h-5 text-primary" />
-						Manage Access
+						{t("tools.password_manager.share.manage_access")}
 					</DialogTitle>
 					<DialogDescription className="text-muted-foreground">
-						People with access to "{collectionName}"
+						{t("tools.password_manager.share.people_with_access", {
+							name: collectionName,
+						})}
 					</DialogDescription>
 				</DialogHeader>
 
@@ -106,7 +119,11 @@ export default function CollectionMembersModal({
 					) : members.length === 0 ? (
 						<div className="text-center text-muted-foreground py-8 flex flex-col items-center">
 							<ShieldAlert className="w-8 h-8 mb-2 opacity-50" />
-							<p>No members found</p>
+							<p>
+								{t(
+									"tools.password_manager.share.no_members_found",
+								)}
+							</p>
 						</div>
 					) : (
 						<div className="space-y-2">
@@ -117,10 +134,16 @@ export default function CollectionMembersModal({
 								>
 									<div>
 										<p className="font-medium text-foreground">
-											{member.username || "Unknown User"}
+											{member.username ||
+												t(
+													"tools.password_manager.share.unknown_user",
+												)}
 										</p>
 										<p className="text-xs text-muted-foreground">
-											{member.email || "Unknown Email"}
+											{member.email ||
+												t(
+													"tools.password_manager.share.unknown_email",
+												)}
 										</p>
 									</div>
 									<div className="flex items-center gap-3">

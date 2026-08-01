@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import {
 	Dialog,
@@ -33,6 +34,7 @@ export default function BulkShareModal({
 	onClose,
 	items,
 }: BulkShareModalProps) {
+	const { t } = useTranslation();
 	const [email, setEmail] = useState("");
 	const [role, setRole] = useState<"viewer" | "editor">("viewer");
 	const [isSharing, setIsSharing] = useState(false);
@@ -61,7 +63,10 @@ export default function BulkShareModal({
 				const msg =
 					error instanceof Error ? error.message : String(error);
 				toast.add({
-					title: `Failed to share "${item.title}": ${msg}`,
+					title: t(
+						"tools.password_manager.share.failed_to_share_item_msg",
+						{ title: item.title, msg },
+					),
 					type: "error",
 				});
 			}
@@ -71,7 +76,11 @@ export default function BulkShareModal({
 
 		if (successCount > 0) {
 			toast.add({
-				title: `Shared ${successCount}/${items.length} item${items.length > 1 ? "s" : ""} securely with ${email}`,
+				title: t("tools.password_manager.share.bulk_shared_success", {
+					successCount,
+					totalCount: items.length,
+					email,
+				}),
 				type: "success",
 			});
 		}
@@ -91,21 +100,24 @@ export default function BulkShareModal({
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<Users className="w-5 h-5 text-primary" />
-						Share {items.length} Item{items.length > 1 ? "s" : ""}
+						{t("tools.password_manager.share.bulk_share_title", {
+							count: items.length,
+						})}
 					</DialogTitle>
 					<DialogDescription className="text-muted-foreground">
-						Each item will be end-to-end encrypted and shared as a
-						separate secure collection.
+						{t("tools.password_manager.share.bulk_share_desc")}
 					</DialogDescription>
 				</DialogHeader>
 
 				<form onSubmit={handleShare} className="space-y-4 py-4">
 					<div className="space-y-2">
 						<Label className="text-sm font-medium">
-							User Email
+							{t("tools.password_manager.share.user_email")}
 						</Label>
 						<Input
-							placeholder="Enter email address"
+							placeholder={t(
+								"tools.password_manager.share.enter_email",
+							)}
 							type="email"
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
@@ -117,7 +129,7 @@ export default function BulkShareModal({
 
 					<div className="space-y-2">
 						<Label className="text-sm font-medium">
-							Permission
+							{t("tools.password_manager.share.permission")}
 						</Label>
 						<Select
 							value={role}
@@ -127,11 +139,19 @@ export default function BulkShareModal({
 							disabled={isSharing}
 						>
 							<SelectTrigger className="w-full bg-background border-border text-foreground">
-								<SelectValue placeholder="Select permission" />
+								<SelectValue
+									placeholder={t(
+										"tools.password_manager.share.select_permission",
+									)}
+								/>
 							</SelectTrigger>
 							<SelectContent className="bg-background border-border text-foreground">
-								<SelectItem value="viewer">Viewer</SelectItem>
-								<SelectItem value="editor">Editor</SelectItem>
+								<SelectItem value="viewer">
+									{t("tools.password_manager.share.viewer")}
+								</SelectItem>
+								<SelectItem value="editor">
+									{t("tools.password_manager.share.editor")}
+								</SelectItem>
 							</SelectContent>
 						</Select>
 					</div>
@@ -154,10 +174,10 @@ export default function BulkShareModal({
 							{isSharing ? (
 								<>
 									<Loader2 className="w-4 h-4 animate-spin" />
-									Sharing…
+									{t("tools.password_manager.share.sharing")}
 								</>
 							) : (
-								"Share Securely"
+								t("tools.password_manager.share.share_securely")
 							)}
 						</Button>
 					</div>
