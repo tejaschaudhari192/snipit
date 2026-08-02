@@ -1,8 +1,6 @@
 import nacl from "tweetnacl";
 import naclUtil from "tweetnacl-util";
 
-export const ALGO_NAME = "tweetnacl";
-
 /**
  * Derive a Master Encryption Key (MEK) from the user's master password.
  * TweetNaCl does not include a KDF like PBKDF2/Argon2, so we still rely on native WebCrypto for derivation.
@@ -65,26 +63,6 @@ export function generateSymmetricKey(): Uint8Array {
 	return nacl.randomBytes(nacl.secretbox.keyLength);
 }
 
-export function exportKeyRaw(key: Uint8Array): Uint8Array {
-	return key; // No-op, already Uint8Array
-}
-
-export function importKeyRaw(key: Uint8Array): Uint8Array {
-	return key; // No-op
-}
-
-export function exportPublicKeyJWK(key: string): string {
-	return key;
-}
-
-export function exportPrivateKeyJWK(key: string): string {
-	return key;
-}
-
-export function importPrivateKeyJWK(key: string): string {
-	return key;
-}
-
 /**
  * Encrypt data symmetrically using MEK (SecretBox)
  */
@@ -131,74 +109,6 @@ export function decryptSymmetric(
 
 export const decryptWithMEK = decryptSymmetric;
 export const decryptPayload = decryptSymmetric;
-
-/**
- * Encrypt data asymmetrically for a recipient (Box)
- * Uses an ephemeral keypair for the sender to emulate sealedBox.
- */
-export function encryptAsymmetric(
-	data: unknown,
-	theirPublicKeyBase64: string,
-): string {
-	const ephemeralKeyPair = nacl.box.keyPair();
-	const theirPublicKey = naclUtil.decodeBase64(theirPublicKeyBase64);
-	const nonce = nacl.randomBytes(nacl.box.nonceLength);
-	const messageUint8 = naclUtil.decodeUTF8(JSON.stringify(data));
-
-	const box = nacl.box(
-		messageUint8,
-		nonce,
-		theirPublicKey,
-		ephemeralKeyPair.secretKey,
-	);
-
-	// Payload format: [ephemeralPublicKey(32)][nonce(24)][box]
-	const fullMessage = new Uint8Array(
-		ephemeralKeyPair.publicKey.length + nonce.length + box.length,
-	);
-	fullMessage.set(ephemeralKeyPair.publicKey);
-	fullMessage.set(nonce, ephemeralKeyPair.publicKey.length);
-	fullMessage.set(box, ephemeralKeyPair.publicKey.length + nonce.length);
-
-	return naclUtil.encodeBase64(fullMessage);
-}
-
-/**
- * Decrypt data asymmetrically (Box)
- */
-export function decryptAsymmetric(
-	encryptedBase64: string,
-	mySecretKeyBase64: string,
-): unknown {
-	const messageWithNonceAsUint8Array = naclUtil.decodeBase64(encryptedBase64);
-	const mySecretKey = naclUtil.decodeBase64(mySecretKeyBase64);
-
-	const ephemeralPublicKey = messageWithNonceAsUint8Array.slice(
-		0,
-		nacl.box.publicKeyLength,
-	);
-	const nonce = messageWithNonceAsUint8Array.slice(
-		nacl.box.publicKeyLength,
-		nacl.box.publicKeyLength + nacl.box.nonceLength,
-	);
-	const message = messageWithNonceAsUint8Array.slice(
-		nacl.box.publicKeyLength + nacl.box.nonceLength,
-		messageWithNonceAsUint8Array.length,
-	);
-
-	const decrypted = nacl.box.open(
-		message,
-		nonce,
-		ephemeralPublicKey,
-		mySecretKey,
-	);
-	if (!decrypted) {
-		throw new Error("Could not decrypt message");
-	}
-
-	const base64Decoded = naclUtil.encodeUTF8(decrypted);
-	return JSON.parse(base64Decoded);
-}
 
 /**
  * Helper to encrypt a raw collection key for a recipient

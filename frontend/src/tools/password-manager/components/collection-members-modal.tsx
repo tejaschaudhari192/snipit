@@ -58,7 +58,7 @@ export default function CollectionMembersModal({
 		} finally {
 			setLoading(false);
 		}
-	}, [collectionId]);
+	}, [collectionId, t]);
 
 	useEffect(() => {
 		if (isOpen && collectionId) {

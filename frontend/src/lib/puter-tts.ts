@@ -26,7 +26,7 @@ declare global {
 let puterJsLoaded = false;
 let puterJsPromise: Promise<void> | null = null;
 
-export const loadPuterJs = (): Promise<void> => {
+const loadPuterJs = (): Promise<void> => {
 	if (puterJsLoaded && window.puter) return Promise.resolve();
 	if (puterJsPromise) return puterJsPromise;
 

@@ -55,48 +55,13 @@ export const ITEM_TYPE_OPTIONS = [
 		id: "note",
 		color: "text-cyan-500",
 	},
+	{
+		icon: Users,
+		label: "tools.password_manager.type_identities",
+		id: "identity",
+		color: "text-indigo-500",
+	},
 ];
-
-export const PASSWORD_GENERATOR_CONFIG = {
-	UPPERCASE: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-	LOWERCASE: "abcdefghijklmnopqrstuvwxyz",
-	NUMBERS: "0123456789",
-	SYMBOLS: "!@#$%^&*()_+-=[]{}|;:,.<>?",
-	WORDS: [
-		"apple",
-		"brave",
-		"crane",
-		"dance",
-		"eagle",
-		"flame",
-		"grape",
-		"haste",
-		"ideal",
-		"jelly",
-		"knife",
-		"lemon",
-		"mango",
-		"noble",
-		"ocean",
-		"pearl",
-		"quilt",
-		"river",
-		"stone",
-		"tiger",
-		"unity",
-		"vocal",
-		"whale",
-		"xray",
-		"yacht",
-		"zebra",
-		"swede",
-		"graveyard",
-		"coffee",
-		"breeze",
-		"rocket",
-		"forest",
-	],
-};
 
 export const CUSTOM_FIELD_TYPES: CustomField["type"][] = [
 	"text",
@@ -109,22 +74,7 @@ export const CUSTOM_FIELD_TYPES: CustomField["type"][] = [
 	"color",
 ];
 
-export const PASSWORD_STRENGTH_CONFIG = {
-	MIN_LENGTH_WEAK: 8,
-	MIN_LENGTH_GOOD: 12,
-	SCORE_WEAK: 2,
-	SCORE_GOOD: 4,
-	SCORE_ULTIMATE: 5,
-};
-
 export const UI_DEFAULTS = {
 	FOLDER_COLOR: "#8b5cf6",
 	DEFAULT_ITEM_TYPE: "login",
-};
-
-export const MASTER_PASSWORD_REQUIREMENTS = {
-	MIN_LENGTH: 8,
-	REQUIRE_UPPERCASE: true,
-	REQUIRE_NUMBER: true,
-	REQUIRE_SPECIAL: true,
 };

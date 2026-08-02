@@ -215,7 +215,7 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 				allResults = await encryptFiles(
 					files,
 					password,
-					(filename, bytes, index) => {
+					(filename: string, bytes: number, index: number) => {
 						setCurrentFile(`[Encrypting] ${filename}`);
 						setCurrentSizeBytes(bytes);
 						setProgress(
@@ -227,7 +227,7 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 				allResults = await decryptFiles(
 					files,
 					password,
-					(filename, bytes, index) => {
+					(filename: string, bytes: number, index: number) => {
 						setCurrentFile(`[Decrypting] ${filename}`);
 						setCurrentSizeBytes(bytes);
 						setProgress(
@@ -259,7 +259,7 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 				await writeToDirectory(
 					dirHandle,
 					outputFiles,
-					(path, bytes, index) => {
+					(path: string, bytes: number, index: number) => {
 						setCurrentFile(`[Writing output] ${path}`);
 						setCurrentSizeBytes(bytes);
 						setProgress(
@@ -279,7 +279,7 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 				await deleteFilesFromDirectory(
 					dirHandle,
 					sourcePaths,
-					(path, index) => {
+					(path: string, index: number) => {
 						setCurrentFile(`[Deleting source] ${path}`);
 						setCurrentSizeBytes(0);
 						setProgress(
@@ -329,9 +329,15 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 		);
 
 		setZipProgress(0);
-		await downloadAsZip(fileList, zipName, (_path, _bytes, index) => {
-			setZipProgress(Math.round(((index + 1) / fileList.length) * 100));
-		});
+		await downloadAsZip(
+			fileList,
+			zipName,
+			(_path: string, _bytes: number, index: number) => {
+				setZipProgress(
+					Math.round(((index + 1) / fileList.length) * 100),
+				);
+			},
+		);
 		setZipProgress(-1);
 	};
 

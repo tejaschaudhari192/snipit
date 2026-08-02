@@ -33,6 +33,7 @@ export interface PasswordItem {
 		| "passkey"
 		| "credfile"
 		| "note"
+		| "identity"
 		| "other";
 	metadata?: Record<string, string>;
 	customFields?: CustomField[];

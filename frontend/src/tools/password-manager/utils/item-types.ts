@@ -32,6 +32,11 @@ export const ITEM_TYPE_SCHEMAS: Record<string, ItemTypeSchema> = {
 				placeholder: "tools.password_manager.username_placeholder",
 			},
 			{
+				key: "email",
+				label: "tools.password_manager.fields.email",
+				type: "email",
+			},
+			{
 				key: "password",
 				label: "tools.password_manager.fields.password",
 				type: "password",
@@ -74,6 +79,11 @@ export const ITEM_TYPE_SCHEMAS: Record<string, ItemTypeSchema> = {
 				label: "tools.password_manager.fields.pin",
 				type: "password",
 			},
+			{
+				key: "zipCode",
+				label: "tools.password_manager.fields.zip_code",
+				type: "text",
+			},
 		],
 	},
 	apikey: {
@@ -90,6 +100,11 @@ export const ITEM_TYPE_SCHEMAS: Record<string, ItemTypeSchema> = {
 				label: "tools.password_manager.fields.api_key",
 				type: "password",
 				placeholder: "tools.password_manager.password_placeholder",
+			},
+			{
+				key: "environment",
+				label: "tools.password_manager.fields.environment",
+				type: "text",
 			},
 			{
 				key: "url",
@@ -122,6 +137,12 @@ export const ITEM_TYPE_SCHEMAS: Record<string, ItemTypeSchema> = {
 				label: "tools.password_manager.fields.private_key",
 				type: "password",
 			},
+			{
+				key: "url",
+				label: "tools.password_manager.fields.website",
+				type: "url",
+				placeholder: "tools.password_manager.url_placeholder",
+			},
 		],
 	},
 	credfile: {
@@ -143,6 +164,56 @@ export const ITEM_TYPE_SCHEMAS: Record<string, ItemTypeSchema> = {
 	note: {
 		id: "note",
 		fields: [],
+	},
+	identity: {
+		id: "identity",
+		fields: [
+			{
+				key: "firstName",
+				label: "tools.password_manager.fields.first_name",
+				type: "text",
+			},
+			{
+				key: "lastName",
+				label: "tools.password_manager.fields.last_name",
+				type: "text",
+			},
+			{
+				key: "email",
+				label: "tools.password_manager.fields.email",
+				type: "email",
+			},
+			{
+				key: "phone",
+				label: "tools.password_manager.fields.phone",
+				type: "tel",
+			},
+			{
+				key: "address",
+				label: "tools.password_manager.fields.address",
+				type: "multiline",
+			},
+			{
+				key: "city",
+				label: "tools.password_manager.fields.city",
+				type: "text",
+			},
+			{
+				key: "state",
+				label: "tools.password_manager.fields.state",
+				type: "text",
+			},
+			{
+				key: "zipCode",
+				label: "tools.password_manager.fields.zip_code",
+				type: "text",
+			},
+			{
+				key: "ssn",
+				label: "tools.password_manager.fields.ssn",
+				type: "password",
+			},
+		],
 	},
 };
 

@@ -93,10 +93,25 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 							f.id === folderId,
 					)
 				: null;
+
+		// Extract root fields from metadata
+		const rootFields = {
+			...(metadata.username && { username: metadata.username }),
+			...(metadata.password && { password: metadata.password }),
+			...(metadata.url && { url: metadata.url }),
+		};
+
+		// Remove root fields from metadata before saving
+		const cleanMetadata = { ...metadata };
+		delete cleanMetadata.username;
+		delete cleanMetadata.password;
+		delete cleanMetadata.url;
+
 		onAdd({
 			id: editItem?.id ?? crypto.randomUUID(),
 			title: title.trim(),
 			...(notes.trim() && { notes: notes.trim() }),
+			...rootFields,
 			...(folderId !== "none" && { folderId }),
 			...(selectedFolder?.collectionId && {
 				collectionId: selectedFolder.collectionId,
@@ -105,7 +120,9 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 			...(customFields.filter((f) => f.name.trim()).length > 0 && {
 				customFields: customFields.filter((f) => f.name.trim()),
 			}),
-			...(Object.keys(metadata).length > 0 && { metadata }),
+			...(Object.keys(cleanMetadata).length > 0 && {
+				metadata: cleanMetadata,
+			}),
 			createdAt: editItem?.createdAt ?? now,
 			updatedAt: now,
 		} as PasswordItem);

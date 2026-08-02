@@ -322,9 +322,21 @@
 				"public_key": "Public Key",
 				"private_key": "Private Key",
 				"file_name": "File Name",
-				"file_content": "File Content"
+				"file_content": "File Content",
+				"email": "Email Address",
+				"zip_code": "ZIP / Postal Code",
+				"environment": "Environment (e.g. Prod/Staging)",
+				"first_name": "First Name",
+				"last_name": "Last Name",
+				"phone": "Phone Number",
+				"address": "Street Address",
+				"city": "City",
+				"state": "State / Province",
+				"ssn": "SSN / ID Number"
 			},
-			"share_btn": "Share"
+			"share_btn": "Share",
+			"type_identity": "Identity",
+			"type_identities": "Identities"
 		},
 		"password_generator": {
 			"title": "Password Generator",

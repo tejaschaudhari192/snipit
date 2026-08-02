@@ -19,8 +19,7 @@ export const CONFIG = {
 	// Supabase Configuration
 	supabaseUrl: import.meta.env.VITE_SUPABASE_URL,
 	supabaseAnonKey: import.meta.env.VITE_SUPABASE_ANON_KEY,
-	supabaseStorageBucket:
-		import.meta.env.VITE_SUPABASE_STORAGE_BUCKET || "uploads",
+	supabaseStorageBucket: import.meta.env.VITE_SUPABASE_STORAGE_BUCKET,
 
 	// Google Auth Configuration
 	googleClientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
