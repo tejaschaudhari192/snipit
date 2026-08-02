@@ -18,7 +18,7 @@ app.set("io", io);
 // Start server immediately
 server.listen(port, "0.0.0.0", () => {
 	logger.info(`🚀 Server listening on ${port}`);
-	logger.info(`🌍 Environment: ${process.env.NODE_ENV}`);
+	logger.info(`🌍 Environment: ${configurations.node_env}`);
 });
 
 // Connect to Database in background

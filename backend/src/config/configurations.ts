@@ -4,6 +4,7 @@ import { z } from "zod";
 dotenv.config();
 
 const envSchema = z.object({
+	NODE_ENV: z.string(),
 	PORT: z.string(),
 	DOMAIN: z.string().url(),
 	DB_USER: z.string(),
@@ -40,6 +41,7 @@ if (!parsedEnv.success) {
 const env = parsedEnv.data;
 
 const configurations = {
+	node_env: env.NODE_ENV,
 	port: parseInt(env.PORT, 10),
 	domain: env.DOMAIN,
 	database: {
