@@ -54,7 +54,7 @@ export function CustomFieldsEditor({
 					/>
 					<Select
 						value={field.type}
-						onValueChange={(val) => updateField(i, "type", val)}
+						onValueChange={(val) => updateField(i, "type", val!)}
 					>
 						<SelectTrigger className="w-28">
 							<SelectValue />

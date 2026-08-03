@@ -16,12 +16,13 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Users, Loader2 } from "lucide-react";
+import { Users } from "lucide-react";
 import type { PasswordItem } from "@/tools/password-manager/types";
 import { toast } from "@/components/ui/toast";
 import { useAppDispatch } from "@/tools/password-manager/store";
 import { shareItem } from "@/tools/password-manager/store/password-slice";
 import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
 
 interface BulkShareModalProps {
 	isOpen: boolean;
@@ -133,9 +134,8 @@ export default function BulkShareModal({
 						</Label>
 						<Select
 							value={role}
-							onValueChange={(val: "viewer" | "editor") =>
-								setRole(val)
-							}
+							onValueChange={(val) => { if (!val) return; return setRole(val)
+							; }}
 							disabled={isSharing}
 						>
 							<SelectTrigger className="w-full bg-background border-border text-foreground">
@@ -173,7 +173,7 @@ export default function BulkShareModal({
 						>
 							{isSharing ? (
 								<>
-									<Loader2 className="w-4 h-4 animate-spin" />
+									<Spinner className="w-4 h-4 animate-spin" />
 									{t("tools.password_manager.share.sharing")}
 								</>
 							) : (

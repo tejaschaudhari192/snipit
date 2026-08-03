@@ -84,3 +84,42 @@ export function DetailSkeleton() {
 		</div>
 	);
 }
+
+export function SharingCenterSkeleton() {
+	return (
+		<div className="h-full flex flex-col p-6 space-y-6 overflow-y-auto animate-in fade-in duration-500">
+			<div className="flex items-center justify-between">
+				<div className="space-y-2">
+					<Skeleton className="h-8 w-48 rounded-md" />
+					<Skeleton className="h-4 w-64 rounded-md" />
+				</div>
+				<Skeleton className="h-10 w-48 rounded-md" />
+			</div>
+
+			<div className="space-y-4">
+				<div className="flex gap-4 border-b border-border pb-2">
+					<Skeleton className="h-8 w-32 rounded-md" />
+					<Skeleton className="h-8 w-32 rounded-md" />
+				</div>
+
+				<div className="grid gap-4 mt-6">
+					{Array.from({ length: 3 }).map((_, i) => (
+						<div
+							key={i}
+							className="p-4 border border-border rounded-xl bg-card flex items-center justify-between"
+						>
+							<div className="flex items-center gap-4">
+								<Skeleton className="w-11 h-11 rounded-full" />
+								<div className="space-y-2">
+									<Skeleton className="h-5 w-40 rounded-md" />
+									<Skeleton className="h-4 w-24 rounded-md" />
+								</div>
+							</div>
+							<Skeleton className="h-9 w-32 rounded-md hidden sm:block" />
+						</div>
+					))}
+				</div>
+			</div>
+		</div>
+	);
+}

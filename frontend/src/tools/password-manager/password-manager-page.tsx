@@ -243,7 +243,7 @@ function PasswordManagerInner() {
 							onOpenChange={(open) => {
 								if (!open) dispatch(handleCancelDetail());
 							}}
-							direction="right"
+							swipeDirection="right"
 						>
 							<DrawerContent className="sm:max-w-150 p-0 border-l border-pm-border shadow-2xl h-full rounded-none">
 								<Suspense fallback={<DetailSkeleton />}>

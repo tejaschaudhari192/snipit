@@ -21,6 +21,12 @@ import {
 	DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
+	ItemContent,
+	ItemTitle,
+	ItemDescription,
+	ItemMedia,
+} from "@/components/ui/item";
+import {
 	AlertDialog,
 	AlertDialogAction,
 	AlertDialogCancel,
@@ -90,64 +96,64 @@ export function SettingsMenu({
 			<SidebarMenu>
 				<SidebarMenuItem>
 					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<SidebarMenuButton
-								size="lg"
-								className="w-full justify-start data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground transition-all duration-200"
-							>
-								<div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary/20 text-primary">
-									<User className="size-4" />
-								</div>
-								<div className="flex flex-col gap-0.5 leading-none mr-auto">
-									<span className="font-semibold text-sm">
-										{user
-											? user.username
-											: t(
-													"tools.password_manager.guest_user",
-												)}
-									</span>
-									<span className="text-xs text-muted-foreground flex items-center gap-1">
-										{isCloudSyncEnabled ? (
-											<>
-												<Cloud className="size-3 text-primary" />{" "}
-												{isSyncing ? (
-													<span
-														style={
-															{
-																"--highlight-color":
-																	"var(--foreground)",
-																"--base-color":
-																	"var(--muted-foreground)",
-																"--spread":
-																	"20px",
-																"--duration":
-																	"2s",
-															} as React.CSSProperties
-														}
-														className="shimmer font-medium"
-													>
-														{t(
-															"tools.password_manager.syncing",
-														)}
-													</span>
-												) : (
-													t(
-														"tools.password_manager.cloud_sync_on",
-													)
-												)}
-											</>
-										) : (
-											<>
-												<HardDrive className="size-3 text-muted-foreground" />{" "}
-												{t(
-													"tools.password_manager.syncing_locally",
-												)}
-											</>
-										)}
-									</span>
-								</div>
-								<MoreHorizontal className="size-4 text-muted-foreground ml-auto" />
-							</SidebarMenuButton>
+						<DropdownMenuTrigger
+							render={
+								<SidebarMenuButton
+									size="lg"
+									className="w-full justify-start data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground transition-all duration-200"
+								/>
+							}
+						>
+							<div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary/20 text-primary">
+								<User className="size-4" />
+							</div>
+							<div className="flex flex-col gap-0.5 leading-none mr-auto">
+								<span className="font-semibold text-sm">
+									{user
+										? user.username
+										: t(
+												"tools.password_manager.guest_user",
+											)}
+								</span>
+								<span className="text-xs text-muted-foreground flex items-center gap-1">
+									{isCloudSyncEnabled ? (
+										<>
+											<Cloud className="size-3 text-primary" />{" "}
+											{isSyncing ? (
+												<span
+													style={
+														{
+															"--highlight-color":
+																"var(--foreground)",
+															"--base-color":
+																"var(--muted-foreground)",
+															"--spread": "20px",
+															"--duration": "2s",
+														} as React.CSSProperties
+													}
+													className="shimmer font-medium"
+												>
+													{t(
+														"tools.password_manager.syncing",
+													)}
+												</span>
+											) : (
+												t(
+													"tools.password_manager.cloud_sync_on",
+												)
+											)}
+										</>
+									) : (
+										<>
+											<HardDrive className="size-3 text-muted-foreground" />{" "}
+											{t(
+												"tools.password_manager.syncing_locally",
+											)}
+										</>
+									)}
+								</span>
+							</div>
+							<MoreHorizontal className="size-4 text-muted-foreground ml-auto" />
 						</DropdownMenuTrigger>
 						<DropdownMenuContent
 							side="right"
@@ -163,21 +169,21 @@ export function SettingsMenu({
 								className="gap-3 cursor-pointer rounded-md p-2 transition-colors focus:bg-accent"
 								onClick={() => onSetCloudSync(false)}
 							>
-								<div className="bg-muted p-1.5 rounded-md">
-									<HardDrive className="size-4 text-muted-foreground" />
-								</div>
-								<div className="flex flex-col flex-1">
-									<span className="text-sm font-medium">
+								<ItemMedia variant="icon" className="bg-muted p-2 rounded-md">
+									<HardDrive className="text-muted-foreground" />
+								</ItemMedia>
+								<ItemContent>
+									<ItemTitle>
 										{t(
 											"tools.password_manager.local_storage",
 										)}
-									</span>
-									<span className="text-[10px] text-muted-foreground leading-tight">
+									</ItemTitle>
+									<ItemDescription className="text-[10px] leading-tight">
 										{t(
 											"tools.password_manager.local_storage_desc",
 										)}
-									</span>
-								</div>
+									</ItemDescription>
+								</ItemContent>
 								{!isCloudSyncEnabled && (
 									<Check className="size-4 text-primary ml-auto" />
 								)}
@@ -195,14 +201,14 @@ export function SettingsMenu({
 										});
 								}}
 							>
-								<div className="bg-muted p-1.5 rounded-md">
-									<Cloud className="size-4 text-muted-foreground" />
-								</div>
-								<div className="flex flex-col flex-1">
-									<span className="text-sm font-medium">
+								<ItemMedia variant="icon" className="bg-muted p-2 rounded-md">
+									<Cloud className="text-muted-foreground" />
+								</ItemMedia>
+								<ItemContent>
+									<ItemTitle>
 										{t("tools.password_manager.cloud_sync")}
-									</span>
-									<span className="text-[10px] text-muted-foreground leading-tight">
+									</ItemTitle>
+									<ItemDescription className="text-[10px] leading-tight">
 										{!user
 											? t(
 													"tools.password_manager.requires_login",
@@ -210,8 +216,8 @@ export function SettingsMenu({
 											: t(
 													"tools.password_manager.cloud_sync_desc",
 												)}
-									</span>
-								</div>
+									</ItemDescription>
+								</ItemContent>
 								{isCloudSyncEnabled && (
 									<Check className="size-4 text-primary ml-auto" />
 								)}
@@ -225,16 +231,16 @@ export function SettingsMenu({
 									className="gap-3 cursor-pointer rounded-md p-2 text-destructive focus:bg-destructive/10 focus:text-destructive transition-colors"
 									onClick={() => setIsDeleteDialogOpen(true)}
 								>
-									<div className="bg-destructive/10 p-1.5 rounded-md text-destructive">
-										<Trash2 className="size-4" />
-									</div>
-									<div className="flex flex-col">
-										<span className="text-sm font-medium">
+									<ItemMedia variant="icon" className="bg-destructive/10 p-2 rounded-md text-destructive">
+										<Trash2 />
+									</ItemMedia>
+									<ItemContent>
+										<ItemTitle>
 											{t(
 												"tools.password_manager.delete_vault.title",
 											)}
-										</span>
-									</div>
+										</ItemTitle>
+									</ItemContent>
 								</DropdownMenuItem>
 							</div>
 						</DropdownMenuContent>

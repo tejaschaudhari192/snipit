@@ -161,7 +161,7 @@ export default function StepOneByOne({
 			console.error("Failed to save item", e);
 			setSaveError(
 				(e as Error)?.message ||
-					t("tools.password_manager.import.save_error"),
+				t("tools.password_manager.import.save_error"),
 			);
 		} finally {
 			setIsSaving(false);
@@ -392,7 +392,7 @@ export default function StepOneByOne({
 							</Label>
 							<Select
 								value={editedType}
-								onValueChange={(val: string) =>
+								onValueChange={(val: string | null) =>
 									setEditedType(
 										val as PasswordItem["itemType"],
 									)

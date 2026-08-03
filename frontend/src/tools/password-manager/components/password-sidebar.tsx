@@ -112,8 +112,7 @@ export default function PasswordSidebar() {
 				<SidebarGroup>
 					<SidebarGroupContent>
 						<ScrollArea
-							className="h-35 pr-3"
-							viewportClassName="scroll-fade"
+							className="h-35 pr-3 scroll-fade"
 						>
 							<SidebarMenu>
 								{ITEM_TYPE_OPTIONS.map((item) => (

@@ -115,8 +115,8 @@ export default function ShareItemModal({
 						</Label>
 						<Select
 							value={role}
-							onValueChange={(val: "viewer" | "editor") =>
-								setRole(val)
+							onValueChange={(val: "viewer" | "editor" | null) =>
+								setRole(val!)
 							}
 						>
 							<SelectTrigger className="w-full bg-background border-border text-foreground">
@@ -150,8 +150,8 @@ export default function ShareItemModal({
 							{isSharing
 								? t("tools.password_manager.share.sharing")
 								: t(
-										"tools.password_manager.share.share_securely",
-									)}
+									"tools.password_manager.share.share_securely",
+								)}
 						</Button>
 					</div>
 				</form>

@@ -4,7 +4,7 @@ import { cn } from "@/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { PasswordStrengthMeter } from "@/components/ui/password-strength-meter";
+import { PasswordStrengthMeter } from "@/components/common/password-strength-meter";
 import { usePasswordStrength } from "@/hooks/use-password-strength";
 import { CheckCircle2, Circle, Eye, EyeOff, ShieldCheck } from "lucide-react";
 

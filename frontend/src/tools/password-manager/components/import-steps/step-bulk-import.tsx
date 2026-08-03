@@ -49,7 +49,6 @@ function DuplicateAskDialog({ pending }: { pending: PendingDuplicate | null }) {
 		<Dialog open modal>
 			<DialogContent
 				className="sm:max-w-105"
-				onInteractOutside={(e) => e.preventDefault()}
 			>
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">

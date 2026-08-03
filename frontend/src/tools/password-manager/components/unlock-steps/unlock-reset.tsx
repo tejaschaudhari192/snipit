@@ -7,8 +7,9 @@ import {
 	CardTitle,
 	CardDescription,
 } from "@/components/ui/card";
-import { KeyRound, LockOpen, Loader2 } from "lucide-react";
+import { KeyRound, LockOpen } from "lucide-react";
 import PasswordSetupForm from "../password-setup-form";
+import { Spinner } from "@/components/ui/spinner";
 
 interface UnlockResetProps {
 	newPassword: string;
@@ -74,7 +75,7 @@ export default function UnlockReset({
 						>
 							{recoveryLoading ? (
 								<>
-									<Loader2 className="mr-2 h-5 w-5 animate-spin" />
+									<Spinner className="mr-2 h-5 w-5 animate-spin" />
 									{t(
 										"tools.password_manager.recovery.decrypting",
 									)}

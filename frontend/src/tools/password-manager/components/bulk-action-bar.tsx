@@ -13,14 +13,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-	X,
-	Trash2,
-	FolderInput,
-	Share2,
-	Loader2,
-	FolderMinus,
-} from "lucide-react";
+import { X, Trash2, FolderInput, Share2, FolderMinus } from "lucide-react";
 import { toast } from "@/components/ui/toast";
 import { useAppDispatch } from "@/tools/password-manager/store";
 import {
@@ -29,6 +22,7 @@ import {
 } from "@/tools/password-manager/store/password-slice";
 import type { PasswordItem, Folder } from "@/tools/password-manager/types";
 import BulkShareModal from "./bulk-share-modal";
+import { Spinner } from "@/components/ui/spinner";
 
 const DeleteConfirmDialog = lazy(() =>
 	import("@/components/common/delete-confirm-dialog").then((m) => ({
@@ -157,8 +151,8 @@ export default function BulkActionBar({
 					{/* Move to Folder */}
 					{personalFolders.length > 0 && (
 						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button
+							<DropdownMenuTrigger render={
+							<Button
 									variant="ghost"
 									size="sm"
 									className="h-8 gap-1.5 text-sm"
@@ -167,7 +161,7 @@ export default function BulkActionBar({
 									<FolderInput className="w-4 h-4" />
 									Move
 								</Button>
-							</DropdownMenuTrigger>
+						} />
 							<DropdownMenuContent
 								align="center"
 								side="top"
@@ -204,8 +198,8 @@ export default function BulkActionBar({
 					{/* Share */}
 					<TooltipProvider>
 						<Tooltip>
-							<TooltipTrigger asChild>
-								<span>
+							<TooltipTrigger render={
+							<span>
 									<Button
 										variant="ghost"
 										size="sm"
@@ -219,7 +213,7 @@ export default function BulkActionBar({
 										Share
 									</Button>
 								</span>
-							</TooltipTrigger>
+						} />
 							{!canShare && (
 								<TooltipContent>
 									Select {BULK_SHARE_LIMIT} or fewer items to
@@ -240,7 +234,7 @@ export default function BulkActionBar({
 						onClick={() => setIsDeleteOpen(true)}
 					>
 						{isLoading ? (
-							<Loader2 className="w-4 h-4 animate-spin" />
+							<Spinner className="w-4 h-4 animate-spin" />
 						) : (
 							<Trash2 className="w-4 h-4" />
 						)}

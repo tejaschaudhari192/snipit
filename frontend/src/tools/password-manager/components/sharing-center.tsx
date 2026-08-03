@@ -4,10 +4,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, UserPlus, Shield, Lock, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAppSelector } from "@/tools/password-manager/store";
-import { selectSharedCollections } from "@/tools/password-manager/store/password-slice";
+import {
+	selectSharedCollections,
+	selectVaultLoading,
+} from "@/tools/password-manager/store/password-slice";
 import { Badge } from "@/components/ui/badge";
 import CollectionMembersModal from "./collection-members-modal";
 import ShareFolderModal from "./share-folder-modal";
+import { SharingCenterSkeleton } from "./skeletons";
 
 import type { SharedCollection } from "@/tools/password-manager/types";
 
@@ -20,6 +24,7 @@ export default function SharingCenter() {
 	const { t } = useTranslation();
 
 	const sharedCollections = useAppSelector(selectSharedCollections);
+	const isLoading = useAppSelector(selectVaultLoading);
 
 	const sharedWithMe = sharedCollections.filter(
 		(c) => c.access.role !== "owner",
@@ -73,6 +78,10 @@ export default function SharingCenter() {
 			)}
 		</div>
 	);
+
+	if (isLoading && sharedCollections.length === 0) {
+		return <SharingCenterSkeleton />;
+	}
 
 	return (
 		<div className="h-full flex flex-col p-6 space-y-6 overflow-y-auto">

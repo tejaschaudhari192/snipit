@@ -174,6 +174,7 @@ export default function PasswordDetail({
 							<Select
 								value={item.folderId || "none"}
 								onValueChange={(val) => {
+									if (!val) return;
 									if (val === "new_folder") {
 										setFolderModalOpen(true);
 									} else {
@@ -222,56 +223,61 @@ export default function PasswordDetail({
 						</div>
 						<TooltipProvider>
 							<Tooltip>
-								<TooltipTrigger asChild>
-									<Button
-										variant="ghost"
-										size="icon"
-										onClick={() => {
-											onSave({
-												...item,
-												isFavorite: !item.isFavorite,
-											});
-										}}
-										className={`h-8 w-8 rounded-lg transition-colors ${
-											item.isFavorite
+								<TooltipTrigger
+									render={
+										<Button
+											variant="ghost"
+											size="icon"
+											onClick={() => {
+												onSave({
+													...item,
+													isFavorite: !item.isFavorite,
+												});
+											}}
+											className={`h-8 w-8 rounded-lg transition-colors ${item.isFavorite
 												? "text-amber-400 hover:text-amber-500 hover:bg-amber-400/10"
 												: "text-muted-foreground hover:text-foreground hover:bg-muted"
-										}`}
-									>
-										<Star
-											className="h-4 w-4"
-											fill={
-												item.isFavorite
-													? "currentColor"
-													: "none"
-											}
-										/>
-									</Button>
+												}`}
+										>
+											<Star
+												className="h-4 w-4"
+												fill={
+													item.isFavorite
+														? "currentColor"
+														: "none"
+												}
+											/>
+										</Button>
+									}
+								>
 								</TooltipTrigger>
 								<TooltipContent side="bottom">
 									<p>
 										{item.isFavorite
 											? t("remove")
 											: t(
-													"tools.password_manager.favorites",
-												)}
+												"tools.password_manager.favorites",
+											)}
 									</p>
 								</TooltipContent>
 							</Tooltip>
 						</TooltipProvider>
 						<TooltipProvider>
 							<Tooltip>
-								<TooltipTrigger asChild>
-									<Button
-										variant="ghost"
-										size="icon"
-										onClick={() =>
-											setIsShareModalOpen(true)
-										}
-										className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-									>
-										<Share2 className="h-4 w-4" />
-									</Button>
+								<TooltipTrigger
+									render={
+										<Button
+											variant="ghost"
+											size="icon"
+											onClick={() =>
+												setIsShareModalOpen(true)
+											}
+											className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+										>
+											<Share2 className="h-4 w-4" />
+										</Button>
+									}
+								>
 								</TooltipTrigger>
 								<TooltipContent side="bottom">
 									<p>Share</p>
@@ -280,7 +286,20 @@ export default function PasswordDetail({
 						</TooltipProvider>
 						<TooltipProvider>
 							<Tooltip>
-								<TooltipTrigger asChild>
+								<TooltipTrigger
+									render={
+										<Button
+											variant="ghost"
+											size="icon"
+											onClick={() =>
+												dispatch(handleEdit(item))
+											}
+											className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+										>
+											<Edit2 className="h-4 w-4" />
+										</Button>
+									}
+								>
 									<Button
 										variant="ghost"
 										size="icon"
@@ -299,15 +318,18 @@ export default function PasswordDetail({
 						</TooltipProvider>
 						<TooltipProvider>
 							<Tooltip>
-								<TooltipTrigger asChild>
-									<Button
-										variant="ghost"
-										size="icon"
-										onClick={() => confirmDelete(item.id)}
-										className="h-8 w-8 rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10 transition-colors ml-1"
-									>
-										<Trash2 className="h-4 w-4" />
-									</Button>
+								<TooltipTrigger
+									render={
+										<Button
+											variant="ghost"
+											size="icon"
+											onClick={() => confirmDelete(item.id)}
+											className="h-8 w-8 rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10 transition-colors ml-1"
+										>
+											<Trash2 className="h-4 w-4" />
+										</Button>
+									}
+								>
 								</TooltipTrigger>
 								<TooltipContent side="bottom">
 									<p>{t("tools.password_manager.delete")}</p>
@@ -367,13 +389,13 @@ export default function PasswordDetail({
 								const itemKey = field.key as keyof PasswordItem;
 								const value =
 									item[itemKey] !== undefined &&
-									item[itemKey] !== "" &&
-									item[itemKey] !== null
+										item[itemKey] !== "" &&
+										item[itemKey] !== null
 										? (item[itemKey] as string)
 										: item.metadata
 											? (item.metadata[
-													field.key
-												] as string)
+												field.key
+											] as string)
 											: undefined;
 
 								return (
@@ -474,7 +496,7 @@ export default function PasswordDetail({
 						/>
 					</Suspense>
 				)}
-			</div>
+			</div >
 			<FolderModal
 				open={folderModalOpen}
 				onOpenChange={setFolderModalOpen}
@@ -485,7 +507,7 @@ export default function PasswordDetail({
 					createFolder(name, color);
 					setFolderModalOpen(false);
 				}}
-				onDelete={() => {}}
+				onDelete={() => { }}
 			/>
 		</>
 	);

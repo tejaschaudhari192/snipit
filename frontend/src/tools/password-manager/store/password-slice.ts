@@ -1249,7 +1249,11 @@ export const passwordSlice = createSlice({
 				state.folders = action.payload;
 			})
 			// Sharing
+			.addCase(fetchSharedCollections.pending, (state) => {
+				state.loading = true;
+			})
 			.addCase(fetchSharedCollections.fulfilled, (state, action) => {
+				state.loading = false;
 				const collections = action.payload as {
 					id: string;
 					name: string;

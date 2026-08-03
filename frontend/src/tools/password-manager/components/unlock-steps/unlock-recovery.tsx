@@ -9,8 +9,9 @@ import {
 	CardTitle,
 	CardDescription,
 } from "@/components/ui/card";
-import { KeyRound, LockOpen, Loader2, Upload } from "lucide-react";
+import { KeyRound, LockOpen, Upload } from "lucide-react";
 import { toast } from "@/components/ui/toast";
+import { Spinner } from "@/components/ui/spinner";
 
 interface UnlockRecoveryProps {
 	recoveryPhrase: string;
@@ -147,7 +148,7 @@ export default function UnlockRecovery({
 						>
 							{recoveryLoading ? (
 								<>
-									<Loader2 className="mr-2 h-5 w-5 animate-spin" />
+									<Spinner className="mr-2 h-5 w-5 animate-spin" />
 									{t(
 										"tools.password_manager.recovery.decrypting",
 									)}

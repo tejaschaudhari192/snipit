@@ -8,8 +8,9 @@ import {
 	CardTitle,
 	CardDescription,
 } from "@/components/ui/card";
-import { Shield, LockOpen, Loader2 } from "lucide-react";
+import { Shield, LockOpen } from "lucide-react";
 import ReadMoreDialog from "../ReadMoreDialog";
+import { Spinner } from "@/components/ui/spinner";
 
 interface UnlockStandardProps {
 	password: string;
@@ -82,7 +83,7 @@ export default function UnlockStandard({
 						>
 							{loading ? (
 								<>
-									<Loader2 className="mr-2 h-5 w-5 animate-spin" />
+									<Spinner className="mr-2 h-5 w-5 animate-spin" />
 									<span
 										style={
 											{

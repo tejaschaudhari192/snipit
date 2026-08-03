@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { AlertTriangle, Loader2 } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
 
 interface Step3WarningProps {
 	understandWarning: boolean;
@@ -66,7 +67,7 @@ export default function Step3Warning({
 				>
 					{recoveryLoading ? (
 						<>
-							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							<Spinner className="mr-2 h-4 w-4 animate-spin" />
 							{t("tools.password_manager.recovery.generate")}
 						</>
 					) : (

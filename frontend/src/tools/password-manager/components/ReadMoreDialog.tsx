@@ -15,13 +15,15 @@ export default function ReadMoreDialog() {
 	const { t } = useTranslation();
 	return (
 		<Dialog>
-			<DialogTrigger asChild>
-				<Button
-					variant="link"
-					className="p-0 h-auto font-medium text-primary"
-				>
-					{t("tools.password_manager.read_more")}
-				</Button>
+			<DialogTrigger
+				render={
+					<Button
+						variant="link"
+						className="p-0 h-auto font-medium text-primary"
+					/>
+				}
+			>
+				{t("tools.password_manager.read_more")}
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-md bg-background/95 backdrop-blur-xl border-border shadow-2xl p-0 overflow-hidden">
 				<div className="bg-destructive/10 p-6 flex flex-col items-center text-center space-y-3 border-b border-border">
@@ -82,10 +84,10 @@ export default function ReadMoreDialog() {
 					</div>
 				</div>
 				<DialogFooter className="p-4 bg-muted/20 border-t border-border">
-					<DialogClose asChild>
-						<Button className="w-full font-semibold rounded-xl">
-							{t("common.close")}
-						</Button>
+					<DialogClose
+						render={<Button className="w-full font-semibold rounded-xl" />}
+					>
+						{t("common.close")}
 					</DialogClose>
 				</DialogFooter>
 			</DialogContent>

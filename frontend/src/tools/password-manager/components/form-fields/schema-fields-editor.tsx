@@ -11,7 +11,10 @@ import {
 	DrawerTitle,
 	DrawerTrigger,
 } from "@/components/ui/drawer";
-import PasswordGenerator from "@/tools/password-manager/components/password-generator";
+import { lazy, Suspense } from "react";
+const PasswordGenerator = lazy(
+	() => import("@/tools/password-manager/components/password-generator"),
+);
 import { Eye, EyeOff, RefreshCw } from "lucide-react";
 import { usePasswordStrength } from "@/hooks/use-password-strength";
 
@@ -19,14 +22,14 @@ export interface SchemaField {
 	key: string;
 	label: string;
 	type:
-		| "text"
-		| "password"
-		| "email"
-		| "multiline"
-		| "url"
-		| "number"
-		| "file"
-		| "tel";
+	| "text"
+	| "password"
+	| "email"
+	| "multiline"
+	| "url"
+	| "number"
+	| "file"
+	| "tel";
 	placeholder?: string;
 }
 
@@ -129,8 +132,7 @@ export function SchemaFieldsEditor({
 							</Label>
 							{field.type === "password" && (
 								<Drawer
-									direction="right"
-									nested
+									swipeDirection="right"
 									open={showGeneratorFor === field.key}
 									onOpenChange={(open) =>
 										setShowGeneratorFor(
@@ -138,17 +140,20 @@ export function SchemaFieldsEditor({
 										)
 									}
 								>
-									<DrawerTrigger asChild>
-										<Button
-											variant="link"
-											type="button"
-											className="h-auto p-0 text-xs text-primary hover:text-primary/80 transition-colors flex items-center gap-1 font-medium"
-										>
-											<RefreshCw className="h-3 w-3" />
-											{t(
-												"tools.password_manager.generate",
-											)}
-										</Button>
+									<DrawerTrigger
+										render={
+											<Button
+												variant="link"
+												type="button"
+												className="h-auto p-0 text-xs text-primary hover:text-primary/80 transition-colors flex items-center gap-1 font-medium"
+											>
+												<RefreshCw className="h-3 w-3" />
+												{t(
+													"tools.password_manager.generate",
+												)}
+											</Button>
+										}
+									>
 									</DrawerTrigger>
 									<DrawerContent className="p-4 bg-background h-full sm:max-w-sm">
 										<div className="mx-auto w-full max-w-sm h-full overflow-y-auto no-scrollbar">
@@ -160,22 +165,32 @@ export function SchemaFieldsEditor({
 												</DrawerTitle>
 											</DrawerHeader>
 											<div className="mt-2">
-												<PasswordGenerator
-													onGenerate={(pwd) => {
-														updateMetadata(
-															field.key,
-															pwd,
-														);
-														setShowGeneratorFor(
-															null,
-														);
-													}}
-													onClose={() =>
-														setShowGeneratorFor(
-															null,
-														)
+												<Suspense
+													fallback={
+														<div className="p-4 text-center text-sm text-muted-foreground">
+															{t(
+																"common.loading",
+															)}
+														</div>
 													}
-												/>
+												>
+													<PasswordGenerator
+														onGenerate={(pwd) => {
+															updateMetadata(
+																field.key,
+																pwd,
+															);
+															setShowGeneratorFor(
+																null,
+															);
+														}}
+														onClose={() =>
+															setShowGeneratorFor(
+																null,
+															)
+														}
+													/>
+												</Suspense>
 											</div>
 										</div>
 									</DrawerContent>

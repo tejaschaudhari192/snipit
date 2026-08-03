@@ -6,15 +6,18 @@ import BulkActionBar from "./bulk-action-bar";
 import {
 	selectVault,
 	selectActiveFilter,
+	selectVaultLoading,
 	setSidebarDrawerOpen,
 	deleteItem,
 	handleEdit,
 } from "@/tools/password-manager/store/password-slice";
+import { ListSkeleton } from "./skeletons";
 import { getFieldsForType } from "@/tools/password-manager/utils/item-types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ItemContent, ItemTitle, ItemDescription } from "@/components/ui/item";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -31,7 +34,6 @@ import {
 } from "@/components/ui/table";
 import {
 	Menu,
-	MoreHorizontal,
 	Pencil,
 	Trash2,
 	Folder,
@@ -40,6 +42,7 @@ import {
 	Upload,
 	Search,
 	GitMerge,
+	MoreVertical,
 } from "lucide-react";
 import { ITEM_TYPE_OPTIONS } from "@/tools/password-manager/utils/constants";
 import {
@@ -50,7 +53,11 @@ import {
 } from "@/tools/password-manager/utils/formatters";
 import { getFaviconUrl } from "@/tools/password-manager/utils/favicon";
 import ShareFolderModal from "./share-folder-modal";
-import { MergeItemsModal } from "./merge-items-modal";
+const MergeItemsModal = lazy(() =>
+	import("./merge-items-modal").then((m) => ({
+		default: m.MergeItemsModal,
+	})),
+);
 import type {
 	PasswordItem,
 	Folder as FolderType,
@@ -128,6 +135,7 @@ export default function PasswordList({
 		(state) => state.passwordManager?.folders || [],
 	);
 	const activeFilter = useAppSelector(selectActiveFilter);
+	const isLoading = useAppSelector(selectVaultLoading);
 	const {
 		isDeleteDialogOpen,
 		deleteTargetId,
@@ -235,8 +243,8 @@ export default function PasswordList({
 					const item = row.original;
 					const domain = getDomain(
 						item.url ||
-							item.metadata?.url ||
-							item.metadata?.website,
+						item.metadata?.url ||
+						item.metadata?.website,
 					);
 					const schemaFields = getFieldsForType(
 						item.itemType || "login",
@@ -252,17 +260,17 @@ export default function PasswordList({
 					return (
 						<div className="flex items-center gap-3.5">
 							<ItemAvatar item={item} />
-							<div className="flex flex-col gap-0.5">
-								<span className="font-semibold text-foreground tracking-tight">
+							<ItemContent className="gap-0.5">
+								<ItemTitle className="font-semibold text-foreground tracking-tight">
 									{item.title}
-								</span>
-								<span className="text-[13px] text-muted-foreground truncate max-w-50">
+								</ItemTitle>
+								<ItemDescription className="text-[13px] truncate max-w-50">
 									{subtitle ||
 										item.username ||
 										domain ||
 										"No details"}
-								</span>
-							</div>
+								</ItemDescription>
+							</ItemContent>
 						</div>
 					);
 				},
@@ -282,34 +290,34 @@ export default function PasswordList({
 			}),
 			...(folders.length > 0
 				? [
-						columnHelper.accessor("folderId", {
-							header: t(
-								"tools.password_manager.table_folder",
-							) as string,
-							cell: ({ getValue }) => {
-								const folderId = getValue();
-								if (!folderId) return null;
-								const folder = folders.find(
-									(f: FolderType) => f.id === folderId,
-								);
-								if (!folder) return null;
-								return (
-									<Badge
-										variant="outline"
-										className="bg-transparent border-pm-border shadow-none font-medium px-2 py-0.5 text-xs text-foreground/80 rounded-md max-w-30"
-									>
-										<Folder
-											className="w-3 h-3 mr-1.5 shrink-0 text-muted-foreground"
-											style={{ color: folder.color }}
-										/>
-										<span className="truncate">
-											{folder.name}
-										</span>
-									</Badge>
-								);
-							},
-						}),
-					]
+					columnHelper.accessor("folderId", {
+						header: t(
+							"tools.password_manager.table_folder",
+						) as string,
+						cell: ({ getValue }) => {
+							const folderId = getValue();
+							if (!folderId) return null;
+							const folder = folders.find(
+								(f: FolderType) => f.id === folderId,
+							);
+							if (!folder) return null;
+							return (
+								<Badge
+									variant="outline"
+									className="bg-transparent border-pm-border shadow-none font-medium px-2 py-0.5 text-xs text-foreground/80 rounded-md max-w-30"
+								>
+									<Folder
+										className="w-3 h-3 mr-1.5 shrink-0 text-muted-foreground"
+										style={{ color: folder.color }}
+									/>
+									<span className="truncate">
+										{folder.name}
+									</span>
+								</Badge>
+							);
+						},
+					}),
+				]
 				: []),
 			columnHelper.accessor("itemType", {
 				header: t("tools.password_manager.table_type") as string,
@@ -336,17 +344,19 @@ export default function PasswordList({
 					return (
 						<div className="text-right opacity-0 group-hover:opacity-100 transition-opacity flex justify-end">
 							<DropdownMenu>
-								<DropdownMenuTrigger asChild>
-									<Button
-										variant="ghost"
-										className="h-8 w-8 p-0"
-										onClick={(e) => e.stopPropagation()}
-									>
-										<span className="sr-only">
-											Open menu
-										</span>
-										<MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-									</Button>
+								<DropdownMenuTrigger
+									render={
+										<Button
+											variant="ghost"
+											className="h-8 w-8 p-0"
+											onClick={(e) => e.stopPropagation()}
+										/>
+									}
+								>
+									<span className="sr-only">
+										Open menu
+									</span>
+									<MoreVertical className="h-4 w-4" />
 								</DropdownMenuTrigger>
 								<DropdownMenuContent
 									align="end"
@@ -433,6 +443,10 @@ export default function PasswordList({
 	else {
 		const typeOpt = ITEM_TYPE_OPTIONS.find((o) => o.id === activeFilter);
 		if (typeOpt) pageTitle = t(typeOpt.label);
+	}
+
+	if (isLoading && vault?.items?.length === 0) {
+		return <ListSkeleton />;
 	}
 
 	return (
@@ -554,20 +568,19 @@ export default function PasswordList({
 										return (
 											<TableHead
 												key={header.id}
-												className={`h-11 px-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80 ${
-													header.id === "select"
-														? "w-10 pr-2"
-														: ""
-												}`}
+												className={`h-11 px-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80 ${header.id === "select"
+													? "w-10 pr-2"
+													: ""
+													}`}
 											>
 												{header.isPlaceholder
 													? null
 													: flexRender(
-															header.column
-																.columnDef
-																.header,
-															header.getContext(),
-														)}
+														header.column
+															.columnDef
+															.header,
+														header.getContext(),
+													)}
 											</TableHead>
 										);
 									})}
@@ -589,22 +602,20 @@ export default function PasswordList({
 												onSelect(row.original);
 											}
 										}}
-										className={`group cursor-pointer border-pm-border/60 transition-colors ${
-											row.getIsSelected()
-												? "bg-primary/5 hover:bg-primary/5"
-												: row.original.id === activeId
-													? "bg-pm-row-active hover:bg-pm-row-active"
-													: "hover:bg-pm-row-hover"
-										}`}
+										className={`group cursor-pointer border-pm-border/60 transition-colors ${row.getIsSelected()
+											? "bg-primary/5 hover:bg-primary/5"
+											: row.original.id === activeId
+												? "bg-pm-row-active hover:bg-pm-row-active"
+												: "hover:bg-pm-row-hover"
+											}`}
 									>
 										{row.getVisibleCells().map((cell) => (
 											<TableCell
 												key={cell.id}
-												className={`py-3 px-4 ${
-													cell.column.id === "select"
-														? "w-10 pr-2"
-														: ""
-												}`}
+												className={`py-3 px-4 ${cell.column.id === "select"
+													? "w-10 pr-2"
+													: ""
+													}`}
 											>
 												{flexRender(
 													cell.column.columnDef.cell,
@@ -622,11 +633,11 @@ export default function PasswordList({
 									>
 										{searchQuery
 											? t(
-													"tools.password_manager.no_results",
-												)
+												"tools.password_manager.no_results",
+											)
 											: t(
-													"tools.password_manager.no_passwords",
-												)}
+												"tools.password_manager.no_passwords",
+											)}
 									</TableCell>
 								</TableRow>
 							)}
@@ -662,20 +673,22 @@ export default function PasswordList({
 					folderId={activeFolder.id}
 				/>
 			)}
-			<MergeItemsModal
-				isOpen={isMergeModalOpen}
-				onClose={() => setIsMergeModalOpen(false)}
-				items={selectedItems}
-				onMerge={(mergedItem, originalItemIds) => {
-					dispatch(handleEdit(mergedItem));
-					originalItemIds.forEach((id) => {
-						if (id !== mergedItem.id) {
-							dispatch(deleteItem(id));
-						}
-					});
-					setRowSelection({});
-				}}
-			/>
+			<Suspense fallback={null}>
+				<MergeItemsModal
+					isOpen={isMergeModalOpen}
+					onClose={() => setIsMergeModalOpen(false)}
+					items={selectedItems}
+					onMerge={(mergedItem, originalItemIds) => {
+						dispatch(handleEdit(mergedItem));
+						originalItemIds.forEach((id) => {
+							if (id !== mergedItem.id) {
+								dispatch(deleteItem(id));
+							}
+						});
+						setRowSelection({});
+					}}
+				/>
+			</Suspense>
 		</div>
 	);
 }

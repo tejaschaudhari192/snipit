@@ -57,8 +57,7 @@ export function FolderList({
 			</SidebarGroupAction>
 			<SidebarGroupContent>
 				<ScrollArea
-					className="h-40 pr-3"
-					viewportClassName="scroll-fade"
+					className="h-40 pr-3 scroll-fade"
 				>
 					<SidebarMenu>
 						{folders.map((folder) => (
@@ -113,13 +112,15 @@ export function FolderList({
 
 									{!folder.isVirtual && (
 										<DropdownMenu>
-											<DropdownMenuTrigger asChild>
-												<SidebarMenuAction
-													showOnHover
-													className="hover:bg-accent hover:text-accent-foreground"
-												>
-													<MoreHorizontal className="h-4 w-4" />
-												</SidebarMenuAction>
+											<DropdownMenuTrigger
+												render={
+													<SidebarMenuAction
+														showOnHover
+														className="hover:bg-accent hover:text-accent-foreground"
+													>
+														<MoreHorizontal className="h-4 w-4" />
+													</SidebarMenuAction>
+												}>
 											</DropdownMenuTrigger>
 											<DropdownMenuContent
 												side="right"
