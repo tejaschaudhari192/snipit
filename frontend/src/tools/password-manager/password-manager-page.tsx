@@ -48,15 +48,8 @@ import {
 	handleSelect,
 	handleEdit,
 	handleCancelDetail,
-	initializeVault,
-	unlockVault,
-	createVault,
 	enableCloudSync,
 	setUserId,
-	generateRecoveryKey,
-	checkRecoveryKey,
-	recoverWithMnemonic,
-	resetMasterPassword,
 	clearRecoveryMnemonic,
 	setRecoveryMode,
 } from "./store/password-slice";
@@ -64,6 +57,7 @@ import type { PasswordItem } from "./types/index";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useItemMutations } from "@/tools/password-manager/hooks/use-item-mutations";
 import { useAuth } from "@/context/AuthContext";
+import { checkRecoveryKey, createVault, generateRecoveryKey, initializeVault, recoverWithMnemonic, resetMasterPassword, unlockVault } from "./store/thunks";
 
 function PasswordManagerInner() {
 	const [searchQuery, setSearchQuery] = useState("");

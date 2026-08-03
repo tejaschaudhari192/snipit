@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { useAppDispatch } from "@/tools/password-manager/store";
-import { deleteItem } from "@/tools/password-manager/store/password-slice";
 import { toast } from "@/components/ui/toast";
+import { deleteItem } from "../store/thunks";
 
 export function useDeleteItem() {
 	const dispatch = useAppDispatch();

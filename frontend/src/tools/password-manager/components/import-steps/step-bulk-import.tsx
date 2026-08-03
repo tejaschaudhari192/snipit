@@ -6,7 +6,6 @@ import type {
 	DuplicateStrategy,
 } from "../../utils/importers/types";
 import { useAppDispatch } from "../../store";
-import { persistItem, createFolderAsync } from "../../store/password-slice";
 import { Progress } from "@/components/ui/progress";
 import {
 	CheckCircle2,
@@ -25,6 +24,7 @@ import {
 	DialogDescription,
 	DialogFooter,
 } from "@/components/ui/dialog";
+import { createFolderAsync, persistItem } from "../../store/thunks";
 
 interface Props {
 	items: ParsedImportItem[];

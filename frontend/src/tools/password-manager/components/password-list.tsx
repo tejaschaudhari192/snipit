@@ -8,7 +8,6 @@ import {
 	selectActiveFilter,
 	selectVaultLoading,
 	setSidebarDrawerOpen,
-	deleteItem,
 	handleEdit,
 } from "@/tools/password-manager/store/password-slice";
 import { ListSkeleton } from "./skeletons";
@@ -71,6 +70,7 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
+import { deleteItem } from "../store/thunks";
 
 const DeleteConfirmDialog = lazy(() =>
 	import("@/components/common/delete-confirm-dialog").then((m) => ({

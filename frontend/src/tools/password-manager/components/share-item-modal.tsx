@@ -20,8 +20,8 @@ import { Users } from "lucide-react";
 import type { PasswordItem } from "@/tools/password-manager/types";
 import { toast } from "@/components/ui/toast";
 import { useAppDispatch } from "@/tools/password-manager/store";
-import { shareItem } from "@/tools/password-manager/store/password-slice";
 import { Label } from "@/components/ui/label";
+import { shareItem } from "../store/thunks";
 
 interface ShareItemModalProps {
 	isOpen: boolean;

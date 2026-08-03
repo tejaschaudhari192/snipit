@@ -16,13 +16,10 @@ import {
 import { X, Trash2, FolderInput, Share2, FolderMinus } from "lucide-react";
 import { toast } from "@/components/ui/toast";
 import { useAppDispatch } from "@/tools/password-manager/store";
-import {
-	deleteItem,
-	persistItem,
-} from "@/tools/password-manager/store/password-slice";
 import type { PasswordItem, Folder } from "@/tools/password-manager/types";
 import BulkShareModal from "./bulk-share-modal";
 import { Spinner } from "@/components/ui/spinner";
+import { deleteItem, persistItem } from "../store/thunks";
 
 const DeleteConfirmDialog = lazy(() =>
 	import("@/components/common/delete-confirm-dialog").then((m) => ({

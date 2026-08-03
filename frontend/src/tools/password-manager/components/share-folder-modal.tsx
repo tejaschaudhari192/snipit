@@ -18,13 +18,13 @@ import {
 } from "@/components/ui/select";
 import { Users } from "lucide-react";
 import {
-	shareFolder,
 	selectVault,
 } from "@/tools/password-manager/store/password-slice";
 import { toast } from "@/components/ui/toast";
 import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
 import { useEffect } from "react";
 import { Label } from "@/components/ui/label";
+import { shareFolder } from "../store/thunks";
 
 interface ShareFolderModalProps {
 	isOpen: boolean;

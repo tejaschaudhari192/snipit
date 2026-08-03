@@ -8,7 +8,6 @@ import type {
 	DuplicateStrategy,
 } from "../../utils/importers/types";
 import { useAppDispatch } from "../../store";
-import { persistItem, createFolderAsync } from "../../store/password-slice";
 import { Progress } from "@/components/ui/progress";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, AlertTriangle, Check, X, RefreshCw } from "lucide-react";
@@ -21,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { ITEM_TYPE_OPTIONS } from "../../utils/constants";
 import type { PasswordItem } from "../../types";
+import { createFolderAsync, persistItem } from "../../store/thunks";
 
 interface Props {
 	items: ParsedImportItem[];

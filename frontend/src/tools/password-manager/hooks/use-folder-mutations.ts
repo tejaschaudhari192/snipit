@@ -3,11 +3,10 @@ import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
 import {
 	setVault,
 	selectVault,
-	persistFolders,
-	deleteFolderAsync,
 } from "@/tools/password-manager/store/password-slice";
 import type { Folder } from "@/tools/password-manager/types";
 import { toast } from "@/components/ui/toast";
+import { deleteFolderAsync, persistFolders } from "../store/thunks";
 
 export function useFolderMutations() {
 	const dispatch = useAppDispatch();

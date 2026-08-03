@@ -12,7 +12,7 @@ import { Users, Trash2, ShieldAlert } from "lucide-react";
 import { toast } from "@/components/ui/toast";
 import api from "@/lib/api";
 import { useAppDispatch } from "@/tools/password-manager/store";
-import { revokeSharedAccess } from "@/tools/password-manager/store/password-slice";
+import { revokeSharedAccess } from "@/tools/password-manager/store/thunks";
 
 interface CollectionMembersModalProps {
 	isOpen: boolean;
