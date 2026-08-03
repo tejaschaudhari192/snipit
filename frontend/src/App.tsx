@@ -15,7 +15,12 @@ import { TtsMiniPlayer } from "@/components/common/tts-mini-player";
 import { AppSkeleton as PasswordAppSkeleton } from "@/tools/password-manager/components/skeletons";
 import { CryptoSafeSkeleton } from "@/tools/cryptsafe/components/skeletons";
 import { PnrCheckerSkeleton } from "@/tools/pnr-checker/components/skeletons";
-import { ToolsPageSkeleton } from "@/pages/skeletons";
+import {
+	ToolsPageSkeleton,
+	HistoryPageSkeleton,
+	ProfilePageSkeleton,
+	AboutPageSkeleton,
+} from "@/pages/skeletons";
 
 const HomePage = lazy(() => import("@/pages/home"));
 const DisplayPage = lazy(() => import("@/pages/display"));
@@ -161,7 +166,13 @@ const App = () => {
 														<Route
 															path="/profile"
 															element={
-																<ProfilePage />
+																<Suspense
+																	fallback={
+																		<ProfilePageSkeleton />
+																	}
+																>
+																	<ProfilePage />
+																</Suspense>
 															}
 														/>
 														<Route
@@ -185,7 +196,13 @@ const App = () => {
 														<Route
 															path="/about"
 															element={
-																<AboutPage />
+																<Suspense
+																	fallback={
+																		<AboutPageSkeleton />
+																	}
+																>
+																	<AboutPage />
+																</Suspense>
 															}
 														/>
 														<Route
@@ -239,7 +256,13 @@ const App = () => {
 														<Route
 															path="/history"
 															element={
-																<HistoryPage />
+																<Suspense
+																	fallback={
+																		<HistoryPageSkeleton />
+																	}
+																>
+																	<HistoryPage />
+																</Suspense>
 															}
 														/>
 													</Routes>

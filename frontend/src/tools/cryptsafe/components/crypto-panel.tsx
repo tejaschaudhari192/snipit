@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import type { DragEvent, ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { PasswordInput } from "@/components/ui/password-input";
+import { PasswordInput } from "@/components/common/password-input";
 import { Input } from "@/components/ui/input";
 import {
 	Card,
@@ -23,18 +23,8 @@ import {
 	type EncryptedFile,
 	type DecryptedFile,
 } from "@/lib/crypto";
-import {
-	Lock,
-	Unlock,
-	FolderOpen,
-	FileText,
-	KeyRound,
-	CheckCircle2,
-	AlertCircle,
-	Loader2,
-	UploadCloud,
-	FileDown,
-} from "lucide-react";
+import { Lock, Unlock, FolderOpen, FileText, KeyRound, CheckCircle2, AlertCircle, UploadCloud, FileDown } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 type ProcessState = "idle" | "processing" | "done" | "error";
 
@@ -612,7 +602,7 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 								disabled={zipProgress >= 0}
 							>
 								{zipProgress >= 0 ? (
-									<Loader2 className="h-4 w-4 animate-spin" />
+									<Spinner className="h-4 w-4 animate-spin" />
 								) : (
 									<FileDown className="h-4 w-4" />
 								)}
@@ -688,7 +678,7 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 						className="w-full gap-2"
 					>
 						{state === "processing" ? (
-							<Loader2 className="h-4 w-4 animate-spin" />
+							<Spinner className="h-4 w-4 animate-spin" />
 						) : isEncrypt ? (
 							<Lock className="h-4 w-4" />
 						) : (

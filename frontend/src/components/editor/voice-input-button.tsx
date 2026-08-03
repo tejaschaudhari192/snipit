@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Mic, Loader2, X } from "lucide-react";
+import { Mic, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { useApiHelpers } from "@/lib/api";
@@ -9,6 +9,7 @@ import { cn } from "@/utils";
 import { useTranslation } from "react-i18next";
 import { formatAudioDuration } from "@/utils/audio";
 import { VoiceWaveform } from "./voice-waveform";
+import { Spinner } from "@/components/ui/spinner";
 import {
 	Tooltip,
 	TooltipContent,
@@ -144,7 +145,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 			{!isRecording && (
 				<TooltipProvider>
 					<Tooltip>
-						<TooltipTrigger asChild>
+						<TooltipTrigger render={
 							<Button
 								variant="outline"
 								size="icon-sm"
@@ -156,12 +157,12 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 								)}
 							>
 								{isTranscribing ? (
-									<Loader2 className="h-4 w-4 animate-spin" />
+									<Spinner className="h-4 w-4 animate-spin" />
 								) : (
 									<Mic className="h-5 w-5 text-red-500 fill-red-500/10" />
 								)}
 							</Button>
-						</TooltipTrigger>
+						} />
 						<TooltipContent side="top">
 							<p>{t("editor.start_recording")}</p>
 						</TooltipContent>

@@ -1,10 +1,4 @@
-import {
-	Download,
-	FileText,
-	Code as CodeIcon,
-	FileDown,
-	Loader2,
-} from "lucide-react";
+import { Download, FileText, Code as CodeIcon, FileDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { LANGUAGE_EXTENSIONS } from "@/constants";
 import { useState } from "react";
@@ -16,6 +10,7 @@ import {
 	DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import {
 	exportToCodePdf,
 	exportToPreviewPdf,
@@ -73,15 +68,15 @@ export const SaveAsButton = ({
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
-				<Button
+			<DropdownMenuTrigger render={
+							<Button
 					variant="outline"
 					size="sm"
 					className={className}
 					disabled={isGenerating}
 				>
 					{isGenerating ? (
-						<Loader2 className="h-4 w-4 animate-spin" />
+						<Spinner className="h-4 w-4 animate-spin" />
 					) : (
 						<Download className="h-4 w-4" />
 					)}
@@ -89,7 +84,7 @@ export const SaveAsButton = ({
 						{t("common.save_as")}
 					</span>
 				</Button>
-			</DropdownMenuTrigger>
+						} />
 			<DropdownMenuContent align="start" className="w-48">
 				{contentType === "docs" ? (
 					<>

@@ -5,7 +5,6 @@ import {
 	SelectGroup,
 	SelectItem,
 	SelectTrigger,
-	SelectValue,
 } from "@/components/ui/select";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
@@ -29,7 +28,8 @@ export const LanguageSwitcher = ({ className }: LanguageSwitcherProps) => {
 		}
 	}, [i18n.language, language]);
 
-	const handleLanguageChange = (value: string) => {
+	const handleLanguageChange = (value: string | null) => {
+		if (!value) return;
 		setLanguage(value);
 		i18n.changeLanguage(value);
 		localStore.setItem("lang", value);
@@ -38,7 +38,9 @@ export const LanguageSwitcher = ({ className }: LanguageSwitcherProps) => {
 	return (
 		<Select onValueChange={handleLanguageChange} value={language}>
 			<SelectTrigger className={className}>
-				<SelectValue placeholder="Select Language" />
+				<span data-slot="select-value">
+					{UI_LANGUAGES.find((l) => l.value === language)?.label || "Select Language"}
+				</span>
 			</SelectTrigger>
 			<SelectContent>
 				<SelectGroup>

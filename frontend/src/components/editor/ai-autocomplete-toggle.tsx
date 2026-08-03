@@ -25,8 +25,8 @@ export const AiAutocompleteToggle = ({
 	return (
 		<TooltipProvider>
 			<Tooltip>
-				<TooltipTrigger asChild>
-					<div
+				<TooltipTrigger render={
+							<div
 						onClick={() => onToggle(!enabled)}
 						className={cn(
 							"flex items-center gap-2.5 px-2.5 h-9 rounded-md border transition-all duration-300 shadow-sm select-none cursor-pointer active:scale-95 group",
@@ -54,7 +54,7 @@ export const AiAutocompleteToggle = ({
 							)}
 						/>
 					</div>
-				</TooltipTrigger>
+						} />
 				<TooltipContent side="top">
 					<p>{t("editor.ai_autocomplete_tooltip")}</p>
 				</TooltipContent>

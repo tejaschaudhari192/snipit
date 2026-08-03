@@ -58,7 +58,7 @@ export const LanguageSelector = memo(
 		}
 
 		return (
-			<Select value={value} onValueChange={onValueChange}>
+			<Select value={value} onValueChange={(val) => { if (val) onValueChange(val); }}>
 				<SelectTrigger
 					className={cn(
 						"w-40 h-9 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm transition-all focus:ring-primary/20 shrink-0",

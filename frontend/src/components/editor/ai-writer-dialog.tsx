@@ -11,9 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useApiHelpers } from "@/lib/api";
 import { toast } from "@/components/ui/toast";
-import { Loader2, Wand2 } from "lucide-react";
+import { Wand2 } from "lucide-react";
 import { AxiosError } from "axios";
 import { useTranslation } from "react-i18next";
+import { Spinner } from "@/components/ui/spinner";
 
 export interface AiWriterDialogProps {
 	isOpen: boolean;
@@ -188,7 +189,7 @@ export const AiWriterDialog = ({
 						<Button onClick={handleWrite} disabled={isLoading}>
 							{isLoading ? (
 								<>
-									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									<Spinner className="mr-2 h-4 w-4 animate-spin" />
 									<span
 										style={
 											{

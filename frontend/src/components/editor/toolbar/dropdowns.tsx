@@ -32,9 +32,9 @@ export function HeadingDropdown({ editor }: { editor: Editor }) {
 	return (
 		<DropdownMenu>
 			<Tooltip>
-				<TooltipTrigger asChild>
-					<DropdownMenuTrigger asChild>
-						<Button
+				<TooltipTrigger render={
+							<DropdownMenuTrigger render={
+							<Button
 							variant="outline"
 							size="sm"
 							className="h-8 gap-1 px-2.5 text-xs font-semibold shadow-sm border-border/40 bg-background/50"
@@ -42,8 +42,8 @@ export function HeadingDropdown({ editor }: { editor: Editor }) {
 							<span>{currentHeading}</span>
 							<ChevronDown className="h-3 w-3 text-muted-foreground" />
 						</Button>
-					</DropdownMenuTrigger>
-				</TooltipTrigger>
+						} />
+						} />
 				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
 					<span className="font-semibold text-white">Headings</span>
 				</TooltipContent>
@@ -93,9 +93,9 @@ export function FontDropdown({ editor }: { editor: Editor }) {
 	return (
 		<DropdownMenu>
 			<Tooltip>
-				<TooltipTrigger asChild>
-					<DropdownMenuTrigger asChild>
-						<Button
+				<TooltipTrigger render={
+							<DropdownMenuTrigger render={
+							<Button
 							variant="outline"
 							size="sm"
 							className="h-8 gap-1 px-2.5 text-xs font-semibold shadow-sm border-border/40 bg-background/50 whitespace-nowrap"
@@ -112,8 +112,8 @@ export function FontDropdown({ editor }: { editor: Editor }) {
 							</span>
 							<ChevronDown className="h-3 w-3 text-muted-foreground" />
 						</Button>
-					</DropdownMenuTrigger>
-				</TooltipTrigger>
+						} />
+						} />
 				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
 					<span className="font-semibold text-white">
 						Font Family
@@ -153,9 +153,9 @@ export function AlignmentDropdown({ editor }: { editor: Editor }) {
 	return (
 		<DropdownMenu>
 			<Tooltip>
-				<TooltipTrigger asChild>
-					<DropdownMenuTrigger asChild>
-						<Button
+				<TooltipTrigger render={
+							<DropdownMenuTrigger render={
+							<Button
 							variant="ghost"
 							size="icon"
 							className="h-8 w-8 rounded-md border-transparent"
@@ -170,8 +170,8 @@ export function AlignmentDropdown({ editor }: { editor: Editor }) {
 								<AlignLeft className="h-4 w-4" />
 							)}
 						</Button>
-					</DropdownMenuTrigger>
-				</TooltipTrigger>
+						} />
+						} />
 				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
 					<span className="font-semibold text-white">Align Text</span>
 				</TooltipContent>
@@ -222,9 +222,9 @@ export function LineHeightDropdown({ editor }: { editor: Editor }) {
 	return (
 		<DropdownMenu>
 			<Tooltip>
-				<TooltipTrigger asChild>
-					<DropdownMenuTrigger asChild>
-						<Button
+				<TooltipTrigger render={
+							<DropdownMenuTrigger render={
+							<Button
 							variant="ghost"
 							size="icon"
 							className="h-8 w-8 rounded-md border-transparent"
@@ -246,8 +246,8 @@ export function LineHeightDropdown({ editor }: { editor: Editor }) {
 								<line x1="4" y1="12" x2="4" y2="22" />
 							</svg>
 						</Button>
-					</DropdownMenuTrigger>
-				</TooltipTrigger>
+						} />
+						} />
 				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
 					<span className="font-semibold text-white">
 						Line Height

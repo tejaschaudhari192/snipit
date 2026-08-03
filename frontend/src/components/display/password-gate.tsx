@@ -5,10 +5,11 @@ import {
 	CardTitle,
 	CardDescription,
 } from "@/components/ui/card";
-import { PasswordInput } from "@/components/ui/password-input";
+import { PasswordInput } from "@/components/common/password-input";
 import { Button } from "@/components/ui/button";
-import { Lock, Loader2 } from "lucide-react";
+import { Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Spinner } from "@/components/ui/spinner";
 
 interface PasswordGateProps {
 	passwordInput: string;
@@ -81,7 +82,7 @@ export const PasswordGate = ({
 						<div className="relative flex items-center justify-center w-full h-full">
 							{isVerifying ? (
 								<div className="flex items-center gap-2">
-									<Loader2 className="h-4 w-4 animate-spin text-primary-foreground" />
+									<Spinner className="h-4 w-4 animate-spin text-primary-foreground" />
 									<span className="flex overflow-hidden tracking-wide">
 										{t("common.unlocking")
 											.split("")

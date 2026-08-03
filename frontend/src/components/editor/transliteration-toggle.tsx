@@ -46,7 +46,7 @@ export const TransliterationToggle = memo(
 			<div className={cn("flex items-center gap-1", className)}>
 				<TooltipProvider>
 					<Tooltip>
-						<TooltipTrigger asChild>
+						<TooltipTrigger render={
 							<Button
 								variant={enabled ? "default" : "outline"}
 								size="sm"
@@ -67,7 +67,7 @@ export const TransliterationToggle = memo(
 										: t("editor.transliteration.disabled")}
 								</span>
 							</Button>
-						</TooltipTrigger>
+						} />
 						<TooltipContent side="top">
 							<p>
 								{enabled
@@ -86,7 +86,7 @@ export const TransliterationToggle = memo(
 				</TooltipProvider>
 
 				{enabled && (
-					<Select value={language} onValueChange={onLanguageChange}>
+					<Select value={language} onValueChange={(val) => { if (val) onLanguageChange(val); }}>
 						<SelectTrigger className="w-30 h-9 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm transition-all focus:ring-primary/20 shrink-0">
 							<SelectValue
 								placeholder={t(

@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
-import { Edit, Trash2, Save, X, Play, Loader2 } from "lucide-react";
+import { Edit, Trash2, Save, X, Play } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { SUPPORTED_RUN_LANGUAGES } from "@/constants";
 import { SaveAsButton } from "./save-as-button";
+import { Spinner } from "@/components/ui/spinner";
 
 interface ToolbarActionButtonsProps {
 	isEdit: boolean;
@@ -132,7 +133,7 @@ export const ToolbarActionButtons = ({
 						>
 							{isSaving ? (
 								<>
-									<Loader2 className="h-4 w-4 animate-spin" />
+									<Spinner className="h-4 w-4 animate-spin" />
 									<span
 										style={
 											{

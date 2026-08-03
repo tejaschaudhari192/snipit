@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Sparkles, Loader2, Wand2 } from "lucide-react";
+import { Sparkles, Wand2 } from "lucide-react";
 import {
 	Dialog,
 	DialogContent,
@@ -15,6 +15,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useApiHelpers } from "@/lib/api";
 import { toast } from "@/components/ui/toast";
 import { Badge } from "@/components/ui/badge";
+import { Spinner } from "@/components/ui/spinner";
 
 interface AiDrawDialogProps {
 	isOpen: boolean;
@@ -73,7 +74,7 @@ export const AiDrawDialog = ({
 							</div>
 							{t("ai.draw_title")}
 							<Badge
-								variant="glass"
+								
 								className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border-primary/20 text-primary bg-primary/10"
 							>
 								Beta
@@ -138,7 +139,7 @@ export const AiDrawDialog = ({
 					>
 						{isGenerating ? (
 							<>
-								<Loader2 className="w-4 h-4 mr-2 animate-spin" />
+								<Spinner className="w-4 h-4 mr-2 animate-spin" />
 								<span
 									style={
 										{

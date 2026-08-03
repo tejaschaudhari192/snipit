@@ -4,7 +4,7 @@ import {
 	PopoverTrigger,
 	PopoverContent,
 } from "@/components/ui/popover";
-import { Loader2 } from "lucide-react";
+;
 import { CONFIG } from "@/configurations";
 import { cn } from "@/utils";
 import {
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 
 interface GifPopoverProps {
 	onSelect: (url: string) => void;
@@ -223,17 +224,17 @@ export function GifPopover({ onSelect }: GifPopoverProps) {
 	return (
 		<Popover open={isOpen} onOpenChange={setIsOpen}>
 			<Tooltip>
-				<TooltipTrigger asChild>
-					<PopoverTrigger asChild>
-						<Button
+				<TooltipTrigger render={
+							<PopoverTrigger render={
+							<Button
 							variant="ghost"
 							size="icon"
 							className="h-8 w-8 rounded-md border-transparent"
 						>
 							<GifIcon className="h-4.5 w-4.5" />
 						</Button>
-					</PopoverTrigger>
-				</TooltipTrigger>
+						} />
+						} />
 				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
 					<span className="font-semibold text-white">
 						Search & Insert GIF
@@ -265,7 +266,7 @@ export function GifPopover({ onSelect }: GifPopoverProps) {
 					)}
 				>
 					{loading ? (
-						<Loader2 className="h-6 w-6 animate-spin text-primary shrink-0" />
+						<Spinner className="h-6 w-6 animate-spin text-primary shrink-0" />
 					) : gifs.length === 0 ? (
 						<p className="text-[10px] text-muted-foreground">
 							No GIFs found.
@@ -292,7 +293,7 @@ export function GifPopover({ onSelect }: GifPopoverProps) {
 							))}
 							{loadingMore && (
 								<div className="col-span-2 py-2 flex items-center justify-center">
-									<Loader2 className="h-4 w-4 animate-spin text-primary shrink-0" />
+									<Spinner className="h-4 w-4 animate-spin text-primary shrink-0" />
 								</div>
 							)}
 						</div>

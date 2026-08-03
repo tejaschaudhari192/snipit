@@ -6,7 +6,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
-import { Loader2, Train, Search, MapPin, Clock, Users } from "lucide-react";
+import { Train, Search, MapPin, Clock, Users } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 interface PnrData {
 	pnr: string;
@@ -146,7 +147,7 @@ export const PnrCheckerPanel = () => {
 								className="h-11 px-6 gap-2"
 							>
 								{loading ? (
-									<Loader2 className="h-4 w-4 animate-spin" />
+									<Spinner className="h-4 w-4 animate-spin" />
 								) : (
 									<Search className="h-4 w-4" />
 								)}

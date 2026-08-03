@@ -1,33 +1,19 @@
 import icon from "@/assets/brand/icon.png";
 import { useTranslation } from "react-i18next";
 import type { HealthData } from "@/types";
-import {
-	Database,
-	HardDrive,
-	Mail,
-	Sparkles,
-	Check,
-	Loader2,
-	AlertCircle,
-	Cloud,
-	Cpu,
-	Activity,
-	Terminal,
-	Server,
-	Lock,
-	Shield,
-	RefreshCw,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { Database, HardDrive, Mail, Sparkles, Check, AlertCircle, Cloud, Cpu, Activity, Terminal, Server, Lock, Shield, RefreshCw } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
-const ICON_MAP: Record<string, LucideIcon> = {
+import type { ElementType } from "react";
+
+const ICON_MAP: Record<string, ElementType<{ className?: string }>> = {
 	database: Database,
 	"hard-drive": HardDrive,
 	cloud: Cloud,
 	mail: Mail,
 	sparkles: Sparkles,
 	check: Check,
-	loader: Loader2,
+	loader: Spinner,
 	cpu: Cpu,
 	activity: Activity,
 	terminal: Terminal,
@@ -45,7 +31,7 @@ const DynamicIcon = ({
 	name?: string;
 	className?: string;
 }) => {
-	const IconComponent = ICON_MAP[name || ""] || Loader2;
+	const IconComponent = ICON_MAP[name!] || Spinner;
 	return <IconComponent className={className} />;
 };
 
@@ -68,11 +54,10 @@ const SplashPage = ({ healthData }: SplashPageProps) => {
 		return (
 			<DynamicIcon
 				name={backendIcon}
-				className={`w-4 h-4 transition-all duration-300 ${
-					progress === 100
+				className={`w-4 h-4 transition-all duration-300 ${progress === 100
 						? "text-green-500"
 						: "text-primary animate-pulse"
-				} ${!backendIcon || backendIcon === "loader" ? "animate-spin" : ""}`}
+					} ${!backendIcon || backendIcon === "loader" ? "animate-spin" : ""}`}
 			/>
 		);
 	};

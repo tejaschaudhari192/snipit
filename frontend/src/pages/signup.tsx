@@ -3,7 +3,11 @@ import { AxiosError } from "axios";
 import api from "@/lib/api";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import {
+	InputGroup,
+	InputGroupInput,
+	InputGroupAddon,
+} from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import {
 	Card,
@@ -19,8 +23,8 @@ import { ShimmerSection } from "@/components/common/shimmer-section";
 import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
-import { PasswordInput } from "@/components/ui/password-input";
-import { PasswordStrengthMeter } from "@/components/ui/password-strength-meter";
+import { PasswordInput } from "@/components/common/password-input";
+import { PasswordStrengthMeter } from "@/components/common/password-strength-meter";
 import { usePasswordStrength } from "@/hooks/use-password-strength";
 
 const SignupPage = () => {
@@ -155,24 +159,24 @@ const SignupPage = () => {
 								>
 									{t("auth.username_label")}
 								</Label>
-								<div className="relative group">
-									<div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-										<User className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within:text-primary" />
-									</div>
-									<Input
+								<InputGroup className="h-11 bg-background/50 border-border/50 focus-within:border-primary/40 focus-within:ring-4 focus-within:ring-primary/10 transition-all rounded-xl">
+									<InputGroupAddon align="inline-start">
+										<User className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within/input-group:text-primary ml-1" />
+									</InputGroupAddon>
+									<InputGroupInput
 										id="username"
 										type="text"
 										placeholder={t(
 											"auth.username_placeholder",
 										)}
 										required
-										className="pl-10.5 h-11 bg-background/50 border-border/50 focus:border-primary/40 focus:ring-4 focus:ring-primary/10 transition-all rounded-xl font-medium"
+										className="font-medium"
 										value={username}
 										onChange={(e) =>
 											setUsername(e.target.value)
 										}
 									/>
-								</div>
+								</InputGroup>
 							</div>
 
 							<div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
@@ -182,24 +186,24 @@ const SignupPage = () => {
 								>
 									{t("auth.email_label")}
 								</Label>
-								<div className="relative group">
-									<div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-										<Mail className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within:text-primary" />
-									</div>
-									<Input
+								<InputGroup className="h-11 bg-background/50 border-border/50 focus-within:border-primary/40 focus-within:ring-4 focus-within:ring-primary/10 transition-all rounded-xl">
+									<InputGroupAddon align="inline-start">
+										<Mail className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within/input-group:text-primary ml-1" />
+									</InputGroupAddon>
+									<InputGroupInput
 										id="email"
 										type="email"
 										placeholder={t(
 											"auth.email_placeholder",
 										)}
 										required
-										className="pl-10.5 h-11 bg-background/50 border-border/50 focus:border-primary/40 focus:ring-4 focus:ring-primary/10 transition-all rounded-xl font-medium"
+										className="font-medium"
 										value={email}
 										onChange={(e) =>
 											setEmail(e.target.value)
 										}
 									/>
-								</div>
+								</InputGroup>
 							</div>
 
 							<div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
@@ -255,12 +259,11 @@ const SignupPage = () => {
 											"auth.password_placeholder",
 										)}
 										required
-										className={`pl-10.5 h-11 bg-background/50 border-border/50 focus:border-primary/40 focus:ring-4 focus:ring-primary/10 transition-all rounded-xl font-medium ${
-											confirmPassword &&
-											password !== confirmPassword
+										className={`pl-10.5 h-11 bg-background/50 border-border/50 focus:border-primary/40 focus:ring-4 focus:ring-primary/10 transition-all rounded-xl font-medium ${confirmPassword &&
+												password !== confirmPassword
 												? "border-destructive/50 focus:border-destructive focus:ring-destructive/20"
 												: ""
-										}`}
+											}`}
 										value={confirmPassword}
 										onChange={(e) =>
 											setConfirmPassword(e.target.value)

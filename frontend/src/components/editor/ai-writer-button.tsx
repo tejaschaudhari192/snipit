@@ -18,8 +18,8 @@ export const AiWriterButton = ({ onClick }: Props) => {
 	return (
 		<TooltipProvider>
 			<Tooltip>
-				<TooltipTrigger asChild>
-					<Button
+				<TooltipTrigger render={
+							<Button
 						variant="outline"
 						size="icon-sm"
 						onClick={onClick}
@@ -27,7 +27,7 @@ export const AiWriterButton = ({ onClick }: Props) => {
 					>
 						<Wand2 className="h-4.5 w-4.5 group-hover:scale-110 transition-transform duration-300" />
 					</Button>
-				</TooltipTrigger>
+						} />
 				<TooltipContent side="top">
 					<p>{t("editor.ai_writer")}</p>
 				</TooltipContent>

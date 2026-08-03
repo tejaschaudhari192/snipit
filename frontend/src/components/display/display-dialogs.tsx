@@ -1,7 +1,11 @@
 import React, { Suspense } from "react";
 import { CustomExpiryDialog } from "@/components/home/custom-expiry-dialog";
 import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
-import { AiEnhanceDialog } from "@/components/editor/ai-enhance-dialog";
+const AiEnhanceDialog = React.lazy(() =>
+	import("@/components/editor/ai-enhance-dialog").then((m) => ({
+		default: m.AiEnhanceDialog,
+	})),
+);
 
 interface DisplayDialogsProps {
 	isCustomExpiryDialogOpen: boolean;

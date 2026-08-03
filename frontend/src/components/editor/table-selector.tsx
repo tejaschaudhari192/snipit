@@ -38,17 +38,17 @@ export function TableSelector({ onSelect }: TableSelectorProps) {
 	return (
 		<Popover open={isOpen} onOpenChange={setIsOpen}>
 			<Tooltip>
-				<TooltipTrigger asChild>
-					<PopoverTrigger asChild>
-						<Button
+				<TooltipTrigger render={
+							<PopoverTrigger render={
+							<Button
 							variant="ghost"
 							size="icon"
 							className="h-8 w-8 rounded-md border-transparent"
 						>
 							<TableIcon className="h-4 w-4" />
 						</Button>
-					</PopoverTrigger>
-				</TooltipTrigger>
+						} />
+						} />
 				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
 					<span className="font-semibold text-white">
 						Insert Table

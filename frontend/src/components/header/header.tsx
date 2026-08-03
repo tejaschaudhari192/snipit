@@ -233,26 +233,22 @@ const Header = ({ className }: HeaderProps) => {
 
 			<div className="md:hidden flex items-center gap-1.5 shrink-0">
 				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button
+					<DropdownMenuTrigger render={
+							<Button
 							variant="outline"
 							size="icon"
 							className="h-9 w-9"
 						>
 							<Menu className="h-5 w-5" />
 						</Button>
-					</DropdownMenuTrigger>
+						} />
 					<DropdownMenuContent
 						align="end"
 						className="w-55 p-1 rounded-xl"
 					>
 						{!user ? (
 							<>
-								<DropdownMenuItem
-									asChild
-									className="rounded-lg"
-								>
-									<Link
+								<DropdownMenuItem className="rounded-lg" render={<Link
 										to="/profile"
 										className="flex items-center gap-3 w-full p-3 bg-primary/5 rounded-xl border border-primary/10"
 									>
@@ -264,8 +260,7 @@ const Header = ({ className }: HeaderProps) => {
 												{t("header.guest")}
 											</p>
 										</div>
-									</Link>
-								</DropdownMenuItem>
+									</Link>} />
 								<div className="h-px bg-muted my-2" />
 							</>
 						) : (
@@ -286,30 +281,24 @@ const Header = ({ className }: HeaderProps) => {
 								</div>
 							</Link>
 						)}
-						<DropdownMenuItem asChild className="rounded-lg">
-							<Link
+						<DropdownMenuItem className="rounded-lg" render={<Link
 								to="/tools"
 								className="flex items-center gap-2 py-2"
 							>
 								<span>{t("header.tools")}</span>
-							</Link>
-						</DropdownMenuItem>
-						<DropdownMenuItem asChild className="rounded-lg">
-							<Link
+							</Link>} />
+						<DropdownMenuItem className="rounded-lg" render={<Link
 								to="/about"
 								className="flex items-center gap-2 py-2"
 							>
 								<span>{t("header.about")}</span>
-							</Link>
-						</DropdownMenuItem>
-						<DropdownMenuItem asChild className="rounded-lg">
-							<Link
+							</Link>} />
+						<DropdownMenuItem className="rounded-lg" render={<Link
 								to="/history"
 								className="flex items-center gap-2 py-2"
 							>
 								<span>{t("header.history")}</span>
-							</Link>
-						</DropdownMenuItem>
+							</Link>} />
 						<DropdownMenuItem
 							className="rounded-lg"
 							onClick={openPlayer}
@@ -330,14 +319,12 @@ const Header = ({ className }: HeaderProps) => {
 							</div>
 						</DropdownMenuItem>
 						{path.length > 1 && (
-							<DropdownMenuItem asChild className="rounded-lg">
-								<Link
+							<DropdownMenuItem className="rounded-lg" render={<Link
 									to="/"
 									className="flex items-center gap-2 py-2"
 								>
 									<span>{t("header.new_snippet")}</span>
-								</Link>
-							</DropdownMenuItem>
+								</Link>} />
 						)}
 						<div className="h-px bg-muted my-2" />
 						<div className="px-2 py-2 space-y-3">

@@ -1,5 +1,6 @@
-import { RefreshCw, Tv, Loader2, AlertCircle, VolumeX } from "lucide-react";
+import { RefreshCw, Tv, AlertCircle, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 
 interface CinemaUnmuteOverlayProps {
 	isVisible: boolean;
@@ -108,7 +109,7 @@ export const CinemaP2pConnectingOverlay = ({
 
 	return (
 		<div className="absolute inset-0 z-30 flex flex-col gap-4 items-center justify-center bg-black/80 backdrop-blur-md p-6 text-center">
-			<Loader2 className="w-12 h-12 text-primary animate-spin" />
+			<Spinner className="w-12 h-12 text-primary animate-spin" />
 			<div className="space-y-1 max-w-sm">
 				<h3 className="text-sm font-bold text-white tracking-wider">
 					Connecting to watch party stream...

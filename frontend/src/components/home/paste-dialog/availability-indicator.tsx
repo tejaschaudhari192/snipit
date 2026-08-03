@@ -1,5 +1,6 @@
-import { Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, XCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Spinner } from "@/components/ui/spinner";
 
 interface Props {
 	isChecking: boolean;
@@ -23,7 +24,7 @@ export const IdAvailabilityIndicator = ({
 				/{customId}
 			</span>
 			{isChecking ? (
-				<Loader2 className="h-3 w-3 animate-spin ml-2 text-muted-foreground" />
+				<Spinner className="h-3 w-3 animate-spin ml-2 text-muted-foreground" />
 			) : isAvailable === true ? (
 				<span className="flex items-center gap-1 ml-2 text-[11px] text-emerald-500 animate-in zoom-in-50 duration-300">
 					<CheckCircle2 className="h-3 w-3" />

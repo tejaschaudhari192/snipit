@@ -1,11 +1,12 @@
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
-import { Inbox, Loader2 } from "lucide-react";
+import { Inbox } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { SnippetCard } from "@/components/snippets/snippet-card";
 import { useTranslation } from "react-i18next";
 import type { PasteData } from "@/types";
+import { Spinner } from "@/components/ui/spinner";
 
 interface ProfileSnippetListProps {
 	pastes: PasteData[];
@@ -70,7 +71,7 @@ export const ProfileSnippetList = ({
 					>
 						{isLoadingMore && (
 							<div className="flex items-center gap-2 text-muted-foreground animate-in fade-in duration-300">
-								<Loader2 className="h-5 w-5 animate-spin text-primary" />
+								<Spinner className="h-5 w-5 animate-spin text-primary" />
 								<span
 									style={
 										{

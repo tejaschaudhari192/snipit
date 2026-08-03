@@ -28,8 +28,8 @@ export const UserAvatarList = ({ users }: UserAvatarListProps) => {
 				<div className="flex items-center -space-x-2.5">
 					{displayUsers.map((u) => (
 						<Tooltip key={u.socketId}>
-							<TooltipTrigger asChild>
-								<div className="relative group cursor-pointer z-0 first:z-10 hover:z-50! transition-all duration-300">
+							<TooltipTrigger render={
+							<div className="relative group cursor-pointer z-0 first:z-10 hover:z-50! transition-all duration-300">
 									<div
 										className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-[11px] sm:text-xs font-black border-2 border-background shadow-lg shadow-black/10 transition-transform group-hover:-translate-y-1 relative`}
 										style={{
@@ -74,7 +74,7 @@ export const UserAvatarList = ({ users }: UserAvatarListProps) => {
 										)}
 									</div>
 								</div>
-							</TooltipTrigger>
+						} />
 							<TooltipContent
 								side="top"
 								align="center"
@@ -105,13 +105,13 @@ export const UserAvatarList = ({ users }: UserAvatarListProps) => {
 
 					{remainingCount > 0 && (
 						<Tooltip>
-							<TooltipTrigger asChild>
-								<div className="relative group cursor-pointer z-0 hover:z-50! transition-all duration-300">
+							<TooltipTrigger render={
+							<div className="relative group cursor-pointer z-0 hover:z-50! transition-all duration-300">
 									<div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold border-2 border-background shadow-lg shadow-black/10 bg-secondary text-secondary-foreground transition-transform group-hover:-translate-y-1">
 										+{remainingCount}
 									</div>
 								</div>
-							</TooltipTrigger>
+						} />
 							<TooltipContent
 								side="top"
 								align="center"

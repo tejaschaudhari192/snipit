@@ -24,15 +24,15 @@ const ToolsPage = () => {
 		},
 		{
 			id: "passwordManager",
-			titleKey: "tools.password_manager_title",
-			descriptionKey: "tools.password_manager_description",
+			titleKey: "tools.password_manager.title",
+			descriptionKey: "tools.password_manager.description",
 			icon: Lock,
 			link: "/tools/passwords",
 		},
 		{
 			id: "pnrChecker",
-			titleKey: "tools.pnr_checker_title",
-			descriptionKey: "tools.pnr_checker_description",
+			titleKey: "tools.pnr_checker.title",
+			descriptionKey: "tools.pnr_checker.description",
 			icon: Train,
 			link: "/tools/pnr-checker",
 		},
@@ -74,8 +74,8 @@ const ToolsPage = () => {
 								</CardDescription>
 							</CardHeader>
 							<CardContent className="flex justify-end mt-auto">
-								<Button asChild>
-									<Link to={tool.link}>Open</Link>
+								<Button render={<Link to={tool.link} />}>
+									{t("common.open")}
 								</Button>
 							</CardContent>
 						</Card>

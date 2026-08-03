@@ -1,9 +1,10 @@
 import React from "react";
-import { Volume2, Square, Loader2 } from "lucide-react";
+import { Volume2, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTts } from "@/hooks/use-tts";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/utils";
+import { Spinner } from "@/components/ui/spinner";
 import {
 	Tooltip,
 	TooltipContent,
@@ -36,8 +37,8 @@ export const TtsButton: React.FC<TtsButtonProps> = ({
 	return (
 		<TooltipProvider>
 			<Tooltip>
-				<TooltipTrigger asChild>
-					<Button
+				<TooltipTrigger render={
+							<Button
 						variant="outline"
 						size="icon-sm"
 						onClick={handleToggle}
@@ -49,14 +50,14 @@ export const TtsButton: React.FC<TtsButtonProps> = ({
 						)}
 					>
 						{isPreparing ? (
-							<Loader2 className="h-4 w-4 animate-spin" />
+							<Spinner className="h-4 w-4 animate-spin" />
 						) : isPlaying ? (
 							<Square className="h-4 w-4 fill-current" />
 						) : (
 							<Volume2 className="h-4.5 w-4.5" />
 						)}
 					</Button>
-				</TooltipTrigger>
+						} />
 				<TooltipContent side="top">
 					<p>
 						{isPlaying || isPreparing

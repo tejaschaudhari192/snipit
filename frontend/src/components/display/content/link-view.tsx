@@ -1,18 +1,10 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-	Link as LinkIcon,
-	AlertCircle,
-	Timer,
-	Zap,
-	MousePointerClick,
-	ExternalLink,
-	Loader2,
-	ArrowRight,
-} from "lucide-react";
+import { Link as LinkIcon, AlertCircle, Timer, Zap, MousePointerClick, ExternalLink, ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { RedirectionType } from "@/types";
+import { Spinner } from "@/components/ui/spinner";
 
 interface LinkViewProps {
 	isEdit: boolean;
@@ -181,11 +173,8 @@ export const LinkView = ({
 						{t("common.redirect_desc")}
 					</p>
 
-					<Button
-						asChild
-						size="lg"
-						className="group relative px-8 h-12 font-bold rounded-xl shadow-xl shadow-primary/20 text-sm"
-					>
+					<Button size="lg"
+						className="group relative px-8 h-12 font-bold rounded-xl shadow-xl shadow-primary/20 text-sm" render={
 						<a
 							href={getDestinationUrl(content)}
 							target="_blank"
@@ -196,7 +185,7 @@ export const LinkView = ({
 								<ExternalLink className="w-4 h-4" />
 							</div>
 						</a>
-					</Button>
+					} />
 				</div>
 			</div>
 		);
@@ -212,7 +201,7 @@ export const LinkView = ({
 				<div className="relative w-20 h-20 mb-8 flex items-center justify-center">
 					<div className="absolute inset-0 bg-primary/25 blur-xl rounded-full animate-pulse" />
 					<div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shadow-lg">
-						<Loader2 className="w-8 h-8 text-primary animate-spin" />
+						<Spinner className="w-8 h-8 text-primary animate-spin" />
 					</div>
 				</div>
 
@@ -329,12 +318,9 @@ export const LinkView = ({
 			<p className="text-muted-foreground mb-8 text-center max-w-md font-medium">
 				{t("common.redirect_desc")}
 			</p>
-			<Button
-				asChild
-				size="lg"
-				className="group relative px-10 h-14 font-bold rounded-2xl shadow-xl shadow-primary/20"
-			>
-				<a
+			<Button size="lg"
+				className="group relative px-10 h-14 font-bold rounded-2xl shadow-xl shadow-primary/20" render={
+						<a
 					href={getDestinationUrl(content)}
 					target="_blank"
 					rel="noopener noreferrer"
@@ -344,7 +330,7 @@ export const LinkView = ({
 						🚀
 					</div>
 				</a>
-			</Button>
+					} />
 		</div>
 	);
 };

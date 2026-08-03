@@ -1,6 +1,7 @@
-import { Cloud, AlertCircle, Check, Loader2 } from "lucide-react";
+import { Cloud, AlertCircle, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { StatusBadge } from "./status-badge";
+import { Spinner } from "@/components/ui/spinner";
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
 
@@ -33,7 +34,7 @@ export const AutosaveStatus = ({ status }: AutosaveStatusProps) => {
 						</span>
 					}
 					icon={
-						<Loader2 className="h-3 w-3 text-primary animate-spin" />
+						<Spinner className="h-3 w-3 text-primary animate-spin" />
 					}
 				/>
 			);

@@ -410,8 +410,8 @@ export const DisplayToolbar = memo(
 					{isEdit && setIsAutosave && (
 						<TooltipProvider>
 							<Tooltip>
-								<TooltipTrigger asChild>
-									<div
+								<TooltipTrigger render={
+							<div
 										className={cn(
 											"flex items-center gap-2 px-2.5 h-9 rounded-lg border transition-all cursor-pointer select-none active:scale-95 shrink-0",
 											isAutosave
@@ -429,7 +429,7 @@ export const DisplayToolbar = memo(
 											className="scale-[0.7] data-[state=checked]:bg-emerald-500"
 										/>
 									</div>
-								</TooltipTrigger>
+						} />
 								<TooltipContent
 									side="bottom"
 									align="center"
@@ -454,8 +454,8 @@ export const DisplayToolbar = memo(
 					)}
 					{canShowDiscussion && (
 						<Sheet modal={false}>
-							<SheetTrigger asChild>
-								<Button
+							<SheetTrigger render={
+							<Button
 									variant="ghost"
 									size="sm"
 									className="gap-2 text-primary font-semibold hover:bg-primary/5 shrink-0"
@@ -470,10 +470,9 @@ export const DisplayToolbar = memo(
 										</span>
 									)}
 								</Button>
-							</SheetTrigger>
+						} />
 							<SheetContent
-								hideOverlay
-								className="flex flex-col h-full sm:max-w-md w-full border-l shadow-2xl p-0 overflow-hidden"
+																className="flex flex-col h-full sm:max-w-md w-full border-l shadow-2xl p-0 overflow-hidden"
 							>
 								<SheetHeader className="p-6 pb-2 border-b">
 									<SheetTitle className="flex items-center gap-2 text-xl">

@@ -17,8 +17,8 @@ import { Lock, ArrowRight, CheckCircle2 } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
-import { PasswordInput } from "@/components/ui/password-input";
-import { PasswordStrengthMeter } from "@/components/ui/password-strength-meter";
+import { PasswordInput } from "@/components/common/password-input";
+import { PasswordStrengthMeter } from "@/components/common/password-strength-meter";
 import { usePasswordStrength } from "@/hooks/use-password-strength";
 
 const ResetPasswordPage = () => {

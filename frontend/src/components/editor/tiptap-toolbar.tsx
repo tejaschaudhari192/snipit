@@ -158,7 +158,7 @@ export function TiptapToolbar({
 	};
 
 	return (
-		<TooltipProvider delayDuration={400}>
+		<TooltipProvider delay={400}>
 			<div className="flex flex-wrap items-center gap-1 p-1.5 border-b border-border/40 bg-muted/20 select-none w-full">
 				<HistoryControls editor={editor} />
 				<div className="w-px h-5 bg-border/40 mx-1 self-center" />

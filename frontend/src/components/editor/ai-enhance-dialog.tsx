@@ -11,9 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useApiHelpers } from "@/lib/api";
 import { toast } from "@/components/ui/toast";
-import { Loader2, Sparkles, Wand2 } from "lucide-react";
+import { Sparkles, Wand2 } from "lucide-react";
 import { AxiosError } from "axios";
 import { useTranslation } from "react-i18next";
+import { Spinner } from "@/components/ui/spinner";
 
 export interface AiEnhanceDialogProps {
 	isOpen: boolean;
@@ -208,7 +209,7 @@ export const AiEnhanceDialog = ({
 						>
 							{isLoading ? (
 								<>
-									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									<Spinner className="mr-2 h-4 w-4 animate-spin" />
 									{t("ai_dialog.enhancing")}
 								</>
 							) : (

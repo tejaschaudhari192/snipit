@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
 import type { MermaidConfig } from "mermaid";
 import { useTheme } from "next-themes";
-import { Loader2, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 interface MermaidRendererProps {
 	content: string;
@@ -75,7 +76,7 @@ export const MermaidRenderer = ({ content }: MermaidRendererProps) => {
 	if (isLoading) {
 		return (
 			<div className="flex justify-center p-8">
-				<Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+				<Spinner className="w-6 h-6 animate-spin text-muted-foreground" />
 			</div>
 		);
 	}

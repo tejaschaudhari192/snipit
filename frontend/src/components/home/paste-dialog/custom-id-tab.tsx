@@ -1,4 +1,4 @@
-import { Sparkles, Loader2 } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,7 @@ import { useIdAvailability } from "@/hooks/paste-id/use-id-availability";
 import { useAiIdSuggester } from "@/hooks/paste-id/use-ai-id-suggester";
 import { usePaste } from "@/context/PasteContext";
 import { type AiIdFileContext } from "@/types";
+import { Spinner } from "@/components/ui/spinner";
 
 interface Props {
 	customId: string;
@@ -64,7 +65,7 @@ export const CustomIdTab = ({
 					title={t("home.suggest_id_ai")}
 				>
 					{isSuggesting ? (
-						<Loader2 className="h-4 w-4 animate-spin" />
+						<Spinner className="h-4 w-4 animate-spin" />
 					) : (
 						<Sparkles className="h-4 w-4" />
 					)}

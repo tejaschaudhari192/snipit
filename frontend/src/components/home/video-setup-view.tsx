@@ -1,10 +1,11 @@
 import { memo, useState, useEffect } from "react";
-import { Film, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { Film, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import type { FileUploadStatus } from "@/lib/file-service";
 import { checkStreamableLink } from "@/utils/video-utils";
 import { useTranslation } from "react-i18next";
+import { Spinner } from "@/components/ui/spinner";
 
 interface VideoSetupViewProps {
 	textValue: string;
@@ -83,7 +84,7 @@ export const VideoSetupView = memo(
 							/>
 							<div className="absolute right-3 flex items-center pointer-events-none">
 								{isValidating && (
-									<Loader2 className="w-4 h-4 text-muted-foreground animate-spin" />
+									<Spinner className="w-4 h-4 text-muted-foreground animate-spin" />
 								)}
 								{!isValidating && validationError && (
 									<AlertCircle className="w-4 h-4 text-destructive" />
