@@ -24,8 +24,8 @@
 	"tools": {
 		"badge": "🔐 సురక్షిత సాధనాలు",
 		"title": "సురక్షిత సాధనాలు మరియు యుటిలిటీలు",
-		"cryptoSafe_title": "క్రిప్టోసేఫ్",
-		"cryptoSafe_description": "ఫోల్డర్ ఎన్‌క్రిప్టర్ మరియు డిక్రిప్టర్",
+		"cryptoSafe_title": "CryptoSafe",
+		"cryptoSafe_description": "Folder encryptor & decrypter (client-side only)",
 		"subtitle": "మీ డేటాను సురక్షితంగా ఉంచడానికి రూపొందించబడిన సాధనాలు.",
 		"encrypt_tab": "ఎన్‌క్రిప్ట్ చేయండి",
 		"decrypt_tab": "డిక్రిప్ట్ చేయండి",
@@ -390,7 +390,8 @@
 		"ai_autocomplete": "AI ఆటో కంప్లీట్",
 		"no_edit_permitted": "సవరణ అనుమతించబడదు",
 		"set": "సెట్ చేయండి",
-		"edit": "సవరించండి"
+		"edit": "సవరించండి",
+		"open": "Open"
 	},
 	"profile": {
 		"loading": "లోడ్ అవుతోంది...",

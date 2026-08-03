@@ -24,8 +24,8 @@
 	"tools": {
 		"badge": "🔐 ಸುರಕ್ಷಿತ ಸಾಧನಗಳು",
 		"title": "ಸುರಕ್ಷಿತ ಪರಿಕರಗಳು ಮತ್ತು ಉಪಯುಕ್ತತೆಗಳು",
-		"cryptoSafe_title": "ಕ್ರಿಪ್ಟೋಸೇಫ್",
-		"cryptoSafe_description": "ಫೋಲ್ಡರ್ ಎನ್‌ಕ್ರಿಪ್ಟರ್ ಮತ್ತು ಡಿಕ್ರಿಪ್ಟರ್",
+		"cryptoSafe_title": "CryptoSafe",
+		"cryptoSafe_description": "Folder encryptor & decrypter (client-side only)",
 		"subtitle": "ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಸುರಕ್ಷಿತವಾಗಿರಿಸಲು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ.",
 		"encrypt_tab": "ಎನ್‌ಕ್ರಿಪ್ಟ್",
 		"decrypt_tab": "ಡಿಕ್ರಿಪ್ಟ್",
@@ -390,7 +390,8 @@
 		"ai_autocomplete": "AI ಸ್ವಯಂ ಪೂರ್ಣಗೊಳಿಸುವಿಕೆ",
 		"no_edit_permitted": "ಸಂಪಾದನೆಗೆ ಅನುಮತಿಯಿಲ್ಲ",
 		"set": "ಹೊಂದಿಸಿ",
-		"edit": "ಸಂಪಾದಿಸಿ"
+		"edit": "ಸಂಪಾದಿಸಿ",
+		"open": "Open"
 	},
 	"profile": {
 		"loading": "ಲೋಡ್ ಆಗುತ್ತಿದೆ...",

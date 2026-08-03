@@ -24,7 +24,7 @@
 	"tools": {
 		"badge": "🔐 セキュアツール",
 		"title": "セキュアツール＆ユーティリティ",
-		"cryptoSafe_description": "フォルダーの暗号化と復号化（クライアントサイドのみ）",
+		"cryptoSafe_description": "Folder encryptor & decrypter (client-side only)",
 		"subtitle": "機密データを保護するために設計された、安全なクライアントサイドツールのコレクションです。データがデバイスを離れることはありません。",
 		"encrypt_tab": "暗号化",
 		"decrypt_tab": "復号化",
@@ -390,7 +390,8 @@
 		"no_edit_permitted": "編集は許可されていません",
 		"set": "設定",
 		"edit": "編集",
-		"snipit": "Snipit"
+		"snipit": "Snipit",
+		"open": "Open"
 	},
 	"profile": {
 		"loading": "読み込み中...",

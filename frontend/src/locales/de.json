@@ -24,7 +24,7 @@
 	"tools": {
 		"badge": "🔐 Sichere Tools",
 		"title": "Sichere Tools & Dienstprogramme",
-		"cryptoSafe_description": "Ordner verschlüsseln & entschlüsseln (nur clientseitig)",
+		"cryptoSafe_description": "Folder encryptor & decrypter (client-side only)",
 		"subtitle": "Eine Sammlung sicherer, clientseitiger Tools, die Ihre sensiblen Daten schützen. Ihre Daten verlassen niemals Ihr Gerät.",
 		"encrypt_tab": "Verschlüsseln",
 		"decrypt_tab": "Entschlüsseln",
@@ -390,7 +390,8 @@
 		"no_edit_permitted": "Bearbeiten nicht erlaubt",
 		"set": "Einstellen",
 		"edit": "Bearbeiten",
-		"snipit": "Snipit"
+		"snipit": "Snipit",
+		"open": "Open"
 	},
 	"profile": {
 		"loading": "Laden...",

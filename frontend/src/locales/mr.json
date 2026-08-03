@@ -24,8 +24,8 @@
 	"tools": {
 		"badge": "🔐 सुरक्षित साधने",
 		"title": "सुरक्षित साधने आणि युटिलिटीज",
-		"cryptoSafe_title": "क्रिप्टोसेफ",
-		"cryptoSafe_description": "फोल्डर एन्क्रिप्टर आणि डिक्रिप्टर (केवळ क्लायंट-साइड)",
+		"cryptoSafe_title": "CryptoSafe",
+		"cryptoSafe_description": "Folder encryptor & decrypter (client-side only)",
 		"subtitle": "तुमचा संवेदनशील डेटा सुरक्षित ठेवण्यासाठी डिझाइन केलेल्या सुरक्षित, क्लायंट-साइड टूल्सचा संग्रह. तुमचा डेटा तुमच्या डिव्हाइसवरून कधीही बाहेर जात नाही.",
 		"encrypt_tab": "एन्क्रिप्ट करा",
 		"decrypt_tab": "डिक्रिप्ट करा",
@@ -390,7 +390,8 @@
 		"ai_autocomplete": "एआय ऑटो-कम्प्लीट",
 		"no_edit_permitted": "संपादन करण्याची परवानगी नाही",
 		"set": "सेट करा",
-		"edit": "संपादित करा"
+		"edit": "संपादित करा",
+		"open": "Open"
 	},
 	"profile": {
 		"loading": "लोड होत आहे...",

@@ -510,7 +510,8 @@
 		"ai_autocomplete": "AI Autocomplete",
 		"no_edit_permitted": "Edit not permitted",
 		"set": "Set",
-		"edit": "Edit"
+		"edit": "Edit",
+		"open": "Open"
 	},
 	"profile": {
 		"loading": "Loading...",

@@ -24,8 +24,8 @@
 	"tools": {
 		"badge": "🔐 സുരക്ഷിത ഉപകരണങ്ങൾ",
 		"title": "സുരക്ഷിത ടൂളുകൾ & യൂട്ടിലിറ്റികൾ",
-		"cryptoSafe_title": "ക്രിപ്റ്റോസേഫ്",
-		"cryptoSafe_description": "ഫോൾഡർ എൻക്രിപ്റ്ററും ഡിക്രിപ്റ്ററും",
+		"cryptoSafe_title": "CryptoSafe",
+		"cryptoSafe_description": "Folder encryptor & decrypter (client-side only)",
 		"subtitle": "നിങ്ങളുടെ ഡാറ്റ സുരക്ഷിതമായി സൂക്ഷിക്കാൻ രൂപകൽപ്പന ചെയ്തിട്ടുള്ളവ.",
 		"encrypt_tab": "എൻക്രിപ്റ്റ്",
 		"decrypt_tab": "ഡിക്രിപ്റ്റ്",
@@ -390,7 +390,8 @@
 		"ai_autocomplete": "AI സ്വയം പൂരിപ്പിക്കൽ",
 		"no_edit_permitted": "തിരുത്താൻ അനുമതിയില്ല",
 		"set": "സെറ്റ് ചെയ്യുക",
-		"edit": "എഡിറ്റ് ചെയ്യുക"
+		"edit": "എഡിറ്റ് ചെയ്യുക",
+		"open": "Open"
 	},
 	"profile": {
 		"loading": "ശേഖരിക്കുന്നു...",

@@ -24,8 +24,8 @@
 	"tools": {
 		"badge": "🔐 ਸੁਰੱਖਿਅਤ ਟੂਲ",
 		"title": "ਸੁਰੱਖਿਅਤ ਟੂਲ ਅਤੇ ਉਪਯੋਗਤਾਵਾਂ",
-		"cryptoSafe_title": "ਕ੍ਰਿਪਟੋਸੇਫ",
-		"cryptoSafe_description": "ਫੋਲਡਰ ਐਨਕ੍ਰਿਪਟਰ ਅਤੇ ਡਿਕ੍ਰਿਪਟਰ (ਸਿਰਫ਼ ਕਲਾਇੰਟ-ਸਾਈਡ)",
+		"cryptoSafe_title": "CryptoSafe",
+		"cryptoSafe_description": "Folder encryptor & decrypter (client-side only)",
 		"subtitle": "ਤੁਹਾਡੇ ਸੰਵੇਦਨਸ਼ੀਲ ਡੇਟਾ ਨੂੰ ਸੁਰੱਖਿਅਤ ਰੱਖਣ ਲਈ ਡਿਜ਼ਾਈਨ ਕੀਤੇ ਗਏ ਟੂਲਸ।",
 		"encrypt_tab": "ਐਨਕ੍ਰਿਪਟ ਕਰੋ",
 		"decrypt_tab": "ਡਿਕ੍ਰਿਪਟ ਕਰੋ",
@@ -390,7 +390,8 @@
 		"ai_autocomplete": "AI ਆਟੋ-ਕੰਪਲੀਟ",
 		"no_edit_permitted": "ਸੋਧ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ ਹੈ",
 		"set": "ਸੈੱਟ ਕਰੋ",
-		"edit": "ਸੰਪਾਦਿਤ ਕਰੋ"
+		"edit": "ਸੰਪਾਦਿਤ ਕਰੋ",
+		"open": "Open"
 	},
 	"profile": {
 		"loading": "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",

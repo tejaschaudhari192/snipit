@@ -24,8 +24,8 @@
 	"tools": {
 		"badge": "🔐 সুরক্ষিত টুলস",
 		"title": "সুরক্ষিত টুলস এবং ইউটিলিটি",
-		"cryptoSafe_title": "ক্রিপ্টোসেফ",
-		"cryptoSafe_description": "ফোল্ডার এনক্রিপ্টর এবং ডিক্রিপ্টর (শুধুমাত্র ক্লায়েন্ট-সাইড)",
+		"cryptoSafe_title": "CryptoSafe",
+		"cryptoSafe_description": "Folder encryptor & decrypter (client-side only)",
 		"subtitle": "আপনার সংবেদনশীল ডেটা সুরক্ষিত রাখতে ডিজাইন করা সুরক্ষিত, ক্লায়েন্ট-সাইড টুলের সংগ্রহ। আপনার ডেটা কখনই আপনার ডিভাইস ছেড়ে যায় না।",
 		"encrypt_tab": "এনক্রিপ্ট করুন",
 		"decrypt_tab": "ডিক্রিপ্ট করুন",
@@ -390,7 +390,8 @@
 		"ai_autocomplete": "AI স্বয়ংক্রিয় সমাপ্তি",
 		"no_edit_permitted": "সম্পাদনা অনুমোদিত নয়",
 		"set": "সেট করুন",
-		"edit": "সম্পাদনা করুন"
+		"edit": "সম্পাদনা করুন",
+		"open": "Open"
 	},
 	"profile": {
 		"loading": "লোড হচ্ছে...",

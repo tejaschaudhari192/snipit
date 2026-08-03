@@ -24,8 +24,8 @@
 	"tools": {
 		"badge": "🔐 பாதுகாப்பான கருவிகள்",
 		"title": "பாதுகாப்பான கருவிகள் மற்றும் பயன்பாடுகள்",
-		"cryptoSafe_title": "கிரிப்டோசேஃப்",
-		"cryptoSafe_description": "கோப்புறை குறியாக்கி மற்றும் குறிவிலக்கி (கிளையன்ட்-பக்கம் மட்டும்)",
+		"cryptoSafe_title": "CryptoSafe",
+		"cryptoSafe_description": "Folder encryptor & decrypter (client-side only)",
 		"subtitle": "உங்கள் தரவைப் பாதுகாப்பாக வைத்திருக்க வடிவமைக்கப்பட்ட கருவிகள்.",
 		"encrypt_tab": "குறியாக்கு",
 		"decrypt_tab": "குறிவிலக்கு",
@@ -390,7 +390,8 @@
 		"ai_autocomplete": "AI தானியங்கி நிறைவு",
 		"no_edit_permitted": "திருத்த அனுமதி இல்லை",
 		"set": "அமை",
-		"edit": "திருத்து"
+		"edit": "திருத்து",
+		"open": "Open"
 	},
 	"profile": {
 		"loading": "ஏற்றப்படுகிறது...",
