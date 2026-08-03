@@ -70,7 +70,19 @@ export const LanguageSelector = memo(
 						className,
 					)}
 				>
-					<SelectValue placeholder="Language" />
+					<SelectValue placeholder="Language">
+						{value && (
+							<span className="inline-flex items-center gap-2">
+								<LanguageIcon
+									language={value}
+									className="h-4 w-4 shrink-0"
+								/>
+								<span>
+									{LANGUAGES.find((l) => l.value === value)?.name || value}
+								</span>
+							</span>
+						)}
+					</SelectValue>
 				</SelectTrigger>
 				<SelectContent>
 					<SelectGroup>

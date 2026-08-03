@@ -10,6 +10,7 @@ import { Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/utils";
 import { memo } from "react";
+import { EXPIRY_OPTIONS } from "@/constants";
 
 interface ExpirySelectorProps {
 	expiresTime: string;
@@ -50,56 +51,41 @@ export const ExpirySelector = memo(
 				>
 					<div className="flex items-center gap-2 whitespace-nowrap">
 						<Clock className="h-4 w-4 text-primary shrink-0" />
-						<SelectValue
-							placeholder={t("home.select_expire_time")}
-						/>
+						<SelectValue placeholder={t("home.select_expire_time")}>
+							{(() => {
+								const selectedOption = EXPIRY_OPTIONS.find(
+									(opt) => opt.value === expiresTime,
+								);
+								if (selectedOption) return t(selectedOption.labelKey);
+								if (expiresTime === "custom_action")
+									return t("home.expire_options.custom");
+								if (isCustomDate) {
+									return new Date(expiresTime).toLocaleString([], {
+										month: "short",
+										day: "numeric",
+										year: "numeric",
+										hour: "numeric",
+										minute: "2-digit",
+										hour12: true,
+									});
+								}
+								return null;
+							})()}
+						</SelectValue>
 					</div>
 				</SelectTrigger>
 
 				<SelectContent className="rounded-xl shadow-xl border-border/40 p-1">
 					<SelectGroup className="space-y-0.5">
-						<SelectItem
-							value="one-time"
-							className="rounded-lg cursor-pointer"
-						>
-							{t("home.expire_options.one_time_snippet")}
-						</SelectItem>
-						<SelectItem
-							value="never"
-							className="rounded-lg cursor-pointer"
-						>
-							{t("home.expire_options.never")}
-						</SelectItem>
-						<SelectItem
-							value="1h"
-							className="rounded-lg cursor-pointer"
-						>
-							{t("home.expire_options.expire_in_1_hour")}
-						</SelectItem>
-						<SelectItem
-							value="1d"
-							className="rounded-lg cursor-pointer"
-						>
-							{t("home.expire_options.expire_in_1_day")}
-						</SelectItem>
-						<SelectItem
-							value="1w"
-							className="rounded-lg cursor-pointer"
-						>
-							{t("home.expire_options.expire_in_1_week")}
-						</SelectItem>
-						<SelectItem
-							value="1m"
-							className="rounded-lg cursor-pointer"
-						>
-							{t("home.expire_options.expire_in_1_month")}
-						</SelectItem>
-						<SelectItem
-							value="1y"
-							className="rounded-lg cursor-pointer"
-						>
-							{t("home.expire_options.expire_in_1_year")}
-						</SelectItem>
+						{EXPIRY_OPTIONS.map((option) => (
+							<SelectItem
+								key={option.value}
+								value={option.value}
+								className="rounded-lg cursor-pointer"
+							>
+								{t(option.labelKey)}
+							</SelectItem>
+						))}
 
 						{/* 
                       Visible item for picking/uploading custom date. 

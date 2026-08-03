@@ -1,7 +1,8 @@
-import { Eye, EyeOff, Layout } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { cn } from "@/utils";
 import { useTranslation } from "react-i18next";
+import { MARKDOWN_LAYOUT_MODES } from "@/constants";
 
 export type MarkdownLayoutMode = "split" | "editor" | "preview";
 
@@ -18,23 +19,7 @@ export const MarkdownLayoutToggles = ({
 }: MarkdownLayoutTogglesProps) => {
 	const { t } = useTranslation();
 
-	const MODES = [
-		{
-			id: "editor" as const,
-			icon: EyeOff,
-			title: t("common.editor_only"),
-		},
-		{
-			id: "split" as const,
-			icon: Layout,
-			title: t("common.split_view"),
-		},
-		{
-			id: "preview" as const,
-			icon: Eye,
-			title: t("common.preview_only"),
-		},
-	];
+
 
 	return (
 		<div
@@ -43,7 +28,7 @@ export const MarkdownLayoutToggles = ({
 				className,
 			)}
 		>
-			{MODES.map(({ id, icon: Icon, title }) => (
+			{MARKDOWN_LAYOUT_MODES.map(({ id, icon: Icon, titleKey }) => (
 				<Button
 					key={id}
 					variant="ghost"
@@ -55,7 +40,7 @@ export const MarkdownLayoutToggles = ({
 							? "bg-primary text-primary-foreground shadow-lg"
 							: "text-white/60 hover:text-white hover:bg-white/10",
 					)}
-					title={title}
+					title={t(titleKey)}
 				>
 					<Icon className="h-3.5 w-3.5" />
 				</Button>

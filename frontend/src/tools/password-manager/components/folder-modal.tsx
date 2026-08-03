@@ -14,17 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/utils";
 import { FolderPlus, Pencil, Trash2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
-
-const PRESET_COLORS = [
-	"#ef4444", // red
-	"#f97316", // orange
-	"#eab308", // yellow
-	"#22c55e", // green
-	"#3b82f6", // blue
-	"#8b5cf6", // purple
-	"#ec4899", // pink
-	"#71717a", // gray
-];
+import { PRESET_COLORS } from "@/tools/password-manager/utils/constants";
 
 export type FolderModalMode = "create" | "edit" | "delete";
 
