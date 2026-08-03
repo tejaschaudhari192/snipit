@@ -89,7 +89,7 @@ export default function ReadMoreDialog() {
 							<Button className="w-full font-semibold rounded-xl" />
 						}
 					>
-						{t("common.close")}
+						{t("common.actions.close")}
 					</DialogClose>
 				</DialogFooter>
 			</DialogContent>
