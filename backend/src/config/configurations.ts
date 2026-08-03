@@ -67,7 +67,6 @@ const configurations = {
 			"https://cpaste.vercel.app",
 			"https://snipit-nu.vercel.app",
 			"https://cpaste.onrender.com",
-			"http://localhost:5173",
 		],
 	},
 	job_secret: env.JOB_SECRET,
