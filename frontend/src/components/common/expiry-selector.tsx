@@ -34,6 +34,7 @@ export const ExpirySelector = memo(
 			<Select
 				value={expiresTime}
 				onValueChange={(val) => {
+					if (!val) return;
 					if (val === "custom_action") {
 						setIsCustomExpiryDialogOpen(true);
 					} else {

@@ -74,7 +74,7 @@ export function MultiEmailInput({
 			className={cn(
 				"flex flex-wrap items-center gap-2 p-2 rounded-md border border-input bg-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
 				isReadOnly &&
-					"opacity-50 cursor-not-allowed focus-within:ring-0",
+				"opacity-50 cursor-not-allowed focus-within:ring-0",
 				className,
 			)}
 			onClick={() => !isReadOnly && inputRef.current?.focus()}
@@ -103,7 +103,7 @@ export function MultiEmailInput({
 					className="flex-1 border-0 bg-transparent p-0 placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 min-w-37.5"
 					placeholder={value.length === 0 ? placeholder : ""}
 					value={currentInputValue}
-					onChange={(e) => setCurrentInputValue(e.target.value)}
+					onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCurrentInputValue(e.target.value)}
 					onKeyDown={handleKeyDown}
 					onBlur={() => {
 						if (currentInputValue.trim()) {

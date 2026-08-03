@@ -1,6 +1,7 @@
 import { cn } from "@/utils";
-import { Loader2 } from "lucide-react";
+;
 import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
 
 const CardShimmer = ({ className }: { className?: string }) => (
 	<div
@@ -141,12 +142,12 @@ export const ShimmerSection = ({
 						className,
 					)}
 				>
-					<Loader2 className="animate-spin text-primary h-10 w-10" />
+					<Spinner className="animate-spin text-primary h-10 w-10" />
 				</div>
 			);
 		case "mini-loader":
 			return (
-				<Loader2
+				<Spinner
 					className={cn(
 						"animate-spin text-current h-4 w-4",
 						className,

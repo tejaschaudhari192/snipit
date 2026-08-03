@@ -31,7 +31,8 @@ export const VisibilitySelector = ({
 }: VisibilitySelectorProps) => {
 	const { t } = useTranslation();
 
-	const handleValueChange = (val: string) => {
+	const handleValueChange = (val: string | null) => {
+		if (!val) return;
 		if (val === "restricted") {
 			setVisibility("private");
 			setPublicRole("viewer");

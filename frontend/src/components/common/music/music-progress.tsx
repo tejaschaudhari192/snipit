@@ -28,13 +28,15 @@ const MusicProgress: React.FC<MusicProgressProps> = ({
 		return `${mins}:${secs.toString().padStart(2, "0")}`;
 	};
 
-	const handleValueChange = (values: number[]) => {
+	const handleValueChange = (values: number | readonly number[]) => {
+		const val = Array.isArray(values) ? values[0] : values;
 		setIsSeeking(true);
-		setSeekValue(values[0]);
+		setSeekValue(val);
 	};
 
-	const handleValueCommit = (values: number[]) => {
-		onSeek(values[0]);
+	const handleValueCommit = (values: number | readonly number[]) => {
+		const val = Array.isArray(values) ? values[0] : values;
+		onSeek(val);
 		setIsSeeking(false);
 	};
 
@@ -46,7 +48,7 @@ const MusicProgress: React.FC<MusicProgressProps> = ({
 				max={duration || 100}
 				step={1}
 				onValueChange={handleValueChange}
-				onValueCommit={handleValueCommit}
+				onValueCommitted={handleValueCommit}
 				className="py-1"
 			/>
 

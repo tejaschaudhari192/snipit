@@ -5,7 +5,7 @@ import { cn } from "@/utils";
 import { LockedSettingWrapper } from "@/components/common/locked-setting-wrapper";
 
 import { Switch } from "@/components/ui/switch";
-import { PasswordInput } from "@/components/ui/password-input";
+import { PasswordInput } from "@/components/common/password-input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { IdTypeTabs } from "@/components/home/paste-dialog/id-type-tabs";
 import { LabelManager } from "@/components/common/label-manager";

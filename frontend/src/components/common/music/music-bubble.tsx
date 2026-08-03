@@ -136,8 +136,8 @@ const MusicBubble: React.FC = () => {
 		<div className="fixed bottom-6 right-6 z-50 group/bubble">
 			<TooltipProvider>
 				<Tooltip>
-					<TooltipTrigger asChild>
-						<Button
+					<TooltipTrigger render={
+							<Button
 							variant="ghost"
 							onClick={openPlayer}
 							className={cn(
@@ -156,7 +156,7 @@ const MusicBubble: React.FC = () => {
 								IN
 							</div>
 						</Button>
-					</TooltipTrigger>
+						} />
 					<TooltipContent
 						side="left"
 						className="bg-popover border-border text-foreground text-[10px] font-bold uppercase tracking-widest"

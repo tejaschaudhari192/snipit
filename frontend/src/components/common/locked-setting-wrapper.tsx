@@ -22,11 +22,11 @@ export const LockedSettingWrapper = ({
 	return (
 		<TooltipProvider>
 			<Tooltip>
-				<TooltipTrigger asChild>
-					<div className="cursor-not-allowed w-full opacity-60">
+				<TooltipTrigger render={
+							<div className="cursor-not-allowed w-full opacity-60">
 						{children}
 					</div>
-				</TooltipTrigger>
+						} />
 				<TooltipContent side="top">
 					<p>{tooltipText}</p>
 				</TooltipContent>

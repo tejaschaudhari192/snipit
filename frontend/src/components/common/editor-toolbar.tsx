@@ -68,14 +68,14 @@ export const EditorToolbar = ({
 				{showMarkdownToggles &&
 					(language === "markdown" || language === "html") && (
 						<Tooltip>
-							<TooltipTrigger asChild>
-								<div>
+							<TooltipTrigger render={
+							<div>
 									<MarkdownLayoutToggles
 										mode={mdLayoutMode}
 										onModeChange={onMdLayoutModeChange}
 									/>
 								</div>
-							</TooltipTrigger>
+						} />
 							<TooltipContent side="left">
 								<p>{t("common.layout")}</p>
 							</TooltipContent>
@@ -83,8 +83,8 @@ export const EditorToolbar = ({
 					)}
 
 				<Tooltip>
-					<TooltipTrigger asChild>
-						<div>
+					<TooltipTrigger render={
+							<div>
 							<ZenModeToggle
 								isFullscreen={isFullscreen}
 								isWindowFullscreen={isWindowFullscreen}
@@ -92,7 +92,7 @@ export const EditorToolbar = ({
 								onWindowToggle={onToggleWindowFullscreen}
 							/>
 						</div>
-					</TooltipTrigger>
+						} />
 					<TooltipContent side="left">
 						<p>
 							{isFullscreen

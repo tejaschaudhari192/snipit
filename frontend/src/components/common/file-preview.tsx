@@ -1,8 +1,9 @@
 import { cn } from "@/utils";
-import { FileAudio, Loader2 } from "lucide-react";
+import { FileAudio } from "lucide-react";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { MonacoConfig } from "@/hooks/use-monaco-config";
+import { Spinner } from "@/components/ui/spinner";
 
 const MonacoEditor = lazy(() =>
 	import("@monaco-editor/react").then((m) => ({
@@ -156,7 +157,7 @@ export const FilePreview = ({
 			<div className={containerClass} style={{ height: maxHeight }}>
 				{loadingContent ? (
 					<div className="flex flex-col items-center gap-2">
-						<Loader2 className="h-8 w-8 text-primary animate-spin" />
+						<Spinner className="h-8 w-8 text-primary animate-spin" />
 						<span className="text-xs font-medium text-muted-foreground">
 							Loading preview...
 						</span>
@@ -166,7 +167,7 @@ export const FilePreview = ({
 						<Suspense
 							fallback={
 								<div className="flex items-center justify-center h-full">
-									<Loader2 className="h-6 w-6 text-primary animate-spin" />
+									<Spinner className="h-6 w-6 text-primary animate-spin" />
 								</div>
 							}
 						>
