@@ -8,11 +8,16 @@ import { defineConfig } from "eslint/config";
 
 export default defineConfig([
 	{
-		ignores: ["dist/**/*", ".vercel/**/*", "src/components/ui/**/*", ".agent/**/*"],
+		ignores: [
+			"dist/**/*",
+			".vercel/**/*",
+			"src/components/ui/**/*",
+			".agent/**/*",
+		],
 	},
 	{
 		files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-		plugins: { 
+		plugins: {
 			js,
 			"react-hooks": pluginReactHooks,
 			"react-refresh": pluginReactRefresh,
@@ -31,7 +36,10 @@ export default defineConfig([
 			"@typescript-eslint/ban-ts-comment": "off",
 			"no-extra-boolean-cast": "off",
 			"react-hooks/exhaustive-deps": "warn",
-			"react-refresh/only-export-components": ["warn", { allowConstantExport: true }]
-		}
-	}
+			"react-refresh/only-export-components": [
+				"warn",
+				{ allowConstantExport: true },
+			],
+		},
+	},
 ]);

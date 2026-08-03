@@ -462,7 +462,9 @@ const HomePage = () => {
 													textValue,
 												);
 											}}
-											title={t("home.misc.auto_detecting")}
+											title={t(
+												"home.misc.auto_detecting",
+											)}
 										>
 											<Code2 className="h-4 w-4 text-muted-foreground" />
 										</Button>

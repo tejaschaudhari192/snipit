@@ -32,7 +32,10 @@ export const ShortenedResultCard = ({
 			document.body.appendChild(downloadLink);
 			downloadLink.click();
 			document.body.removeChild(downloadLink);
-			toast.add({ title: t("messages.success.qr_downloaded"), type: "success" });
+			toast.add({
+				title: t("messages.success.qr_downloaded"),
+				type: "success",
+			});
 		}
 	};
 

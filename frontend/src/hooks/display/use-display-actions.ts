@@ -91,7 +91,8 @@ export const useDisplayActions = ({
 			) {
 				toast.add({
 					title:
-						t("home.id_generation.custom_id_required") || "Custom ID is required",
+						t("home.id_generation.custom_id_required") ||
+						"Custom ID is required",
 					type: "error",
 				});
 				setSaveStatus("error");
@@ -356,7 +357,10 @@ export const useDisplayActions = ({
 			});
 			navigate("/");
 		} catch {
-			toast.add({ title: t("messages.error.delete_failed"), type: "error" });
+			toast.add({
+				title: t("messages.error.delete_failed"),
+				type: "error",
+			});
 			setIsDeleting(false);
 			setIsDeleteDialogOpen(false);
 		}

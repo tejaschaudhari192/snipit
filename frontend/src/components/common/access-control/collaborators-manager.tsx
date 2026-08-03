@@ -326,7 +326,9 @@ export const CollaboratorsManager = ({
 													{t("common.access.admin")}
 												</SelectItem>
 												<SelectItem value="commenter">
-													{t("common.access.commenter")}
+													{t(
+														"common.access.commenter",
+													)}
 												</SelectItem>
 											</SelectContent>
 										</Select>

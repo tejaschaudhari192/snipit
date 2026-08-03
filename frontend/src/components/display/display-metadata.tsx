@@ -61,7 +61,10 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 				loadSavedProfile(true);
 			} catch (error) {
 				console.error("Failed to toggle save snippet", error);
-				toast.add({ title: t("display.status.save_failed"), type: "error" });
+				toast.add({
+					title: t("display.status.save_failed"),
+					type: "error",
+				});
 			} finally {
 				setIsSaving(false);
 			}

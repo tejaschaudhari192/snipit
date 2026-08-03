@@ -200,7 +200,9 @@ export const CommentsSection = ({
 									</label>
 									<Input
 										type="text"
-										placeholder={t("common.discussion.anonymous")}
+										placeholder={t(
+											"common.discussion.anonymous",
+										)}
 										value={authorName}
 										onChange={(e) =>
 											setAuthorName(e.target.value)
@@ -210,7 +212,9 @@ export const CommentsSection = ({
 							)}
 							<div className="flex flex-col gap-2">
 								<Textarea
-									placeholder={t("common.discussion.write_comment")}
+									placeholder={t(
+										"common.discussion.write_comment",
+									)}
 									value={newComment}
 									onChange={(e) =>
 										setNewComment(e.target.value)

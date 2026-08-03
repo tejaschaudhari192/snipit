@@ -530,7 +530,9 @@ const DisplayPage = () => {
 							if (data.redirectUrl && data.contentMode === "link")
 								window.location.href = data.content;
 						} catch {
-							setPasswordError(t("messages.error.password_incorrect"));
+							setPasswordError(
+								t("messages.error.password_incorrect"),
+							);
 						} finally {
 							setIsVerifyingPassword(false);
 						}

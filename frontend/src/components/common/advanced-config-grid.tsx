@@ -283,7 +283,9 @@ export const AdvancedConfigGrid = ({
 											<Lock className="h-4 w-4" />
 										</div>
 										<span className="text-sm font-semibold">
-											{t("common.auth.password_protected")}
+											{t(
+												"common.auth.password_protected",
+											)}
 										</span>
 									</div>
 									<Switch

@@ -18,7 +18,10 @@ export const useAiIdSuggester = (
 		const hasFiles = files && files.length > 0;
 
 		if (!hasContent && !hasFiles) {
-			toast.add({ title: t("messages.validation.empty_content"), type: "warning" });
+			toast.add({
+				title: t("messages.validation.empty_content"),
+				type: "warning",
+			});
 			return;
 		}
 

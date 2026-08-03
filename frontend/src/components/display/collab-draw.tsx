@@ -232,7 +232,9 @@ export const CollabDraw = ({
 					(u) => u.socketId === data.socketId,
 				);
 				const displayName =
-					data.username || roomUser?.name || t("common.discussion.anonymous");
+					data.username ||
+					roomUser?.name ||
+					t("common.discussion.anonymous");
 				const displayColor =
 					roomUser?.color || data.color?.background || "#ff0000";
 
@@ -344,7 +346,8 @@ export const CollabDraw = ({
 		const ourSelf = activeUsers.find(
 			(u) => u.socketId === socketRef.current?.id,
 		);
-		const myName = user?.username || ourSelf?.name || t("common.discussion.anonymous");
+		const myName =
+			user?.username || ourSelf?.name || t("common.discussion.anonymous");
 
 		// payload.pointer natively contains scene coordinates from Excalidraw
 		socketRef.current.emit("draw-update", {
