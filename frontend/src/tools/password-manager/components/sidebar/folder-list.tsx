@@ -56,9 +56,7 @@ export function FolderList({
 				</span>
 			</SidebarGroupAction>
 			<SidebarGroupContent>
-				<ScrollArea
-					className="h-40 pr-3 scroll-fade"
-				>
+				<ScrollArea className="h-40 pr-3 scroll-fade">
 					<SidebarMenu>
 						{folders.map((folder) => (
 							<SidebarMenuItem key={folder.id}>
@@ -120,8 +118,8 @@ export function FolderList({
 													>
 														<MoreHorizontal className="h-4 w-4" />
 													</SidebarMenuAction>
-												}>
-											</DropdownMenuTrigger>
+												}
+											></DropdownMenuTrigger>
 											<DropdownMenuContent
 												side="right"
 												align="start"

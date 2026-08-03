@@ -39,7 +39,8 @@ export const LanguageSwitcher = ({ className }: LanguageSwitcherProps) => {
 		<Select onValueChange={handleLanguageChange} value={language}>
 			<SelectTrigger className={className}>
 				<span data-slot="select-value">
-					{UI_LANGUAGES.find((l) => l.value === language)?.label || "Select Language"}
+					{UI_LANGUAGES.find((l) => l.value === language)?.label ||
+						"Select Language"}
 				</span>
 			</SelectTrigger>
 			<SelectContent>

@@ -109,9 +109,9 @@ export default function ShareFolderModal({
 						<Users className="w-5 h-5 text-primary" />
 						{folderName
 							? t(
-								"tools.password_manager.share.share_folder_title",
-								{ name: folderName },
-							)
+									"tools.password_manager.share.share_folder_title",
+									{ name: folderName },
+								)
 							: t("tools.password_manager.share.share_a_folder")}
 					</DialogTitle>
 					<DialogDescription className="text-muted-foreground">
@@ -224,8 +224,8 @@ export default function ShareFolderModal({
 							{isSharing
 								? t("tools.password_manager.share.sharing")
 								: t(
-									"tools.password_manager.share.share_securely",
-								)}
+										"tools.password_manager.share.share_securely",
+									)}
 						</Button>
 					</div>
 				</form>

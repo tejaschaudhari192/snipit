@@ -241,16 +241,18 @@ export function BubbleMenuContent() {
 				className="flex items-center gap-0.5"
 			>
 				<DropdownMenu>
-					<DropdownMenuTrigger render={
+					<DropdownMenuTrigger
+						render={
 							<Button
-							variant="ghost"
-							size="sm"
-							className="h-7 px-2 rounded-sm text-xs font-medium border-0 gap-1"
-						>
-							<span>{currentHeading}</span>
-							<ChevronDown className="h-3 w-3 text-muted-foreground" />
-						</Button>
-						} />
+								variant="ghost"
+								size="sm"
+								className="h-7 px-2 rounded-sm text-xs font-medium border-0 gap-1"
+							>
+								<span>{currentHeading}</span>
+								<ChevronDown className="h-3 w-3 text-muted-foreground" />
+							</Button>
+						}
+					/>
 					<DropdownMenuContent align="start" className="w-32">
 						<DropdownMenuItem
 							onSelect={() =>
@@ -303,25 +305,27 @@ export function BubbleMenuContent() {
 				className="flex items-center gap-0.5"
 			>
 				<DropdownMenu>
-					<DropdownMenuTrigger render={
+					<DropdownMenuTrigger
+						render={
 							<Button
-							variant="ghost"
-							size="sm"
-							className="h-7 px-2 rounded-sm text-xs font-medium border-0 gap-1"
-						>
-							<span
-								style={{
-									fontFamily:
-										currentFont === "Default"
-											? "inherit"
-											: currentFont,
-								}}
+								variant="ghost"
+								size="sm"
+								className="h-7 px-2 rounded-sm text-xs font-medium border-0 gap-1"
 							>
-								{currentFontName}
-							</span>
-							<ChevronDown className="h-3 w-3 text-muted-foreground" />
-						</Button>
-						} />
+								<span
+									style={{
+										fontFamily:
+											currentFont === "Default"
+												? "inherit"
+												: currentFont,
+									}}
+								>
+									{currentFontName}
+								</span>
+								<ChevronDown className="h-3 w-3 text-muted-foreground" />
+							</Button>
+						}
+					/>
 					<DropdownMenuContent
 						align="start"
 						className="w-52 max-h-60 overflow-y-auto custom-scrollbar"
@@ -459,21 +463,23 @@ export function BubbleMenuContent() {
 
 			<EditorBubbleItem onSelect={() => {}} className="flex items-center">
 				<DropdownMenu>
-					<DropdownMenuTrigger render={
+					<DropdownMenuTrigger
+						render={
 							<Button
-							variant="ghost"
-							size="icon"
-							className="h-7 w-8 rounded-sm border-0"
-						>
-							<span
-								className="underline decoration-2 text-xs font-semibold"
-								style={{ color: currentColor }}
+								variant="ghost"
+								size="icon"
+								className="h-7 w-8 rounded-sm border-0"
 							>
-								A
-							</span>
-							<ChevronDown className="h-2.5 w-2.5 text-muted-foreground ml-0.5" />
-						</Button>
-						} />
+								<span
+									className="underline decoration-2 text-xs font-semibold"
+									style={{ color: currentColor }}
+								>
+									A
+								</span>
+								<ChevronDown className="h-2.5 w-2.5 text-muted-foreground ml-0.5" />
+							</Button>
+						}
+					/>
 					<DropdownMenuContent align="end" className="w-32">
 						<DropdownMenuItem
 							onSelect={() =>
@@ -529,16 +535,18 @@ export function BubbleMenuContent() {
 			{/* Highlight Color dropdown inside Bubble Menu */}
 			<EditorBubbleItem onSelect={() => {}} className="flex items-center">
 				<DropdownMenu>
-					<DropdownMenuTrigger render={
+					<DropdownMenuTrigger
+						render={
 							<Button
-							variant="ghost"
-							size="icon"
-							className="h-7 w-8 rounded-sm border-0"
-						>
-							<Highlighter className="h-3.5 w-3.5" />
-							<ChevronDown className="h-2.5 w-2.5 text-muted-foreground ml-0.5" />
-						</Button>
-						} />
+								variant="ghost"
+								size="icon"
+								className="h-7 w-8 rounded-sm border-0"
+							>
+								<Highlighter className="h-3.5 w-3.5" />
+								<ChevronDown className="h-2.5 w-2.5 text-muted-foreground ml-0.5" />
+							</Button>
+						}
+					/>
 					<DropdownMenuContent align="end" className="w-36">
 						<DropdownMenuItem
 							onSelect={() =>

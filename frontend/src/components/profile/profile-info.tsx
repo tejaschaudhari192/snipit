@@ -206,17 +206,23 @@ export const ProfileInfo = ({
 										{t("profile.guest_hint")}
 									</p>
 									<div className="flex gap-2">
-										<Button className="flex-1 h-11 rounded-2xl font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all" render={
-						<a href="/signup">
-												{t("header.signup")}
-											</a>
-					} />
-										<Button variant="outline"
-											className="flex-1 h-11 rounded-2xl font-black hover:bg-primary/5 transition-all" render={
-						<a href="/login">
-												{t("header.login")}
-											</a>
-					} />
+										<Button
+											className="flex-1 h-11 rounded-2xl font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+											render={
+												<a href="/signup">
+													{t("header.signup")}
+												</a>
+											}
+										/>
+										<Button
+											variant="outline"
+											className="flex-1 h-11 rounded-2xl font-black hover:bg-primary/5 transition-all"
+											render={
+												<a href="/login">
+													{t("header.login")}
+												</a>
+											}
+										/>
 									</div>
 								</div>
 							) : (

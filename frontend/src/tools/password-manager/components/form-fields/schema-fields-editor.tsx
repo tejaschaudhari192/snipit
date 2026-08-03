@@ -22,14 +22,14 @@ export interface SchemaField {
 	key: string;
 	label: string;
 	type:
-	| "text"
-	| "password"
-	| "email"
-	| "multiline"
-	| "url"
-	| "number"
-	| "file"
-	| "tel";
+		| "text"
+		| "password"
+		| "email"
+		| "multiline"
+		| "url"
+		| "number"
+		| "file"
+		| "tel";
 	placeholder?: string;
 }
 
@@ -153,8 +153,7 @@ export function SchemaFieldsEditor({
 												)}
 											</Button>
 										}
-									>
-									</DrawerTrigger>
+									></DrawerTrigger>
 									<DrawerContent className="p-4 bg-background h-full sm:max-w-sm">
 										<div className="mx-auto w-full max-w-sm h-full overflow-y-auto no-scrollbar">
 											<DrawerHeader className="px-0">

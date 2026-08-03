@@ -259,11 +259,12 @@ const SignupPage = () => {
 											"auth.password_placeholder",
 										)}
 										required
-										className={`pl-10.5 h-11 bg-background/50 border-border/50 focus:border-primary/40 focus:ring-4 focus:ring-primary/10 transition-all rounded-xl font-medium ${confirmPassword &&
-												password !== confirmPassword
+										className={`pl-10.5 h-11 bg-background/50 border-border/50 focus:border-primary/40 focus:ring-4 focus:ring-primary/10 transition-all rounded-xl font-medium ${
+											confirmPassword &&
+											password !== confirmPassword
 												? "border-destructive/50 focus:border-destructive focus:ring-destructive/20"
 												: ""
-											}`}
+										}`}
 										value={confirmPassword}
 										onChange={(e) =>
 											setConfirmPassword(e.target.value)

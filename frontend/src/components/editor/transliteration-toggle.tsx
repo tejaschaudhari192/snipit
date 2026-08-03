@@ -46,28 +46,35 @@ export const TransliterationToggle = memo(
 			<div className={cn("flex items-center gap-1", className)}>
 				<TooltipProvider>
 					<Tooltip>
-						<TooltipTrigger render={
-							<Button
-								variant={enabled ? "default" : "outline"}
-								size="sm"
-								onClick={onToggle}
-								className={cn(
-									"gap-2 h-9 px-3 transition-all",
-									enabled
-										? "bg-primary text-primary-foreground shadow-md hover:bg-primary/90"
-										: "bg-background/50 hover:bg-background/80 border-border/40 shadow-sm text-muted-foreground",
-								)}
-							>
-								<Keyboard className="h-4 w-4" />
-								<span className="font-medium text-sm hidden sm:inline-block">
-									{enabled
-										? t("editor.transliteration.enabled", {
-												language: langName,
-											})
-										: t("editor.transliteration.disabled")}
-								</span>
-							</Button>
-						} />
+						<TooltipTrigger
+							render={
+								<Button
+									variant={enabled ? "default" : "outline"}
+									size="sm"
+									onClick={onToggle}
+									className={cn(
+										"gap-2 h-9 px-3 transition-all",
+										enabled
+											? "bg-primary text-primary-foreground shadow-md hover:bg-primary/90"
+											: "bg-background/50 hover:bg-background/80 border-border/40 shadow-sm text-muted-foreground",
+									)}
+								>
+									<Keyboard className="h-4 w-4" />
+									<span className="font-medium text-sm hidden sm:inline-block">
+										{enabled
+											? t(
+													"editor.transliteration.enabled",
+													{
+														language: langName,
+													},
+												)
+											: t(
+													"editor.transliteration.disabled",
+												)}
+									</span>
+								</Button>
+							}
+						/>
 						<TooltipContent side="top">
 							<p>
 								{enabled
@@ -86,7 +93,12 @@ export const TransliterationToggle = memo(
 				</TooltipProvider>
 
 				{enabled && (
-					<Select value={language} onValueChange={(val) => { if (val) onLanguageChange(val); }}>
+					<Select
+						value={language}
+						onValueChange={(val) => {
+							if (val) onLanguageChange(val);
+						}}
+					>
 						<SelectTrigger className="w-30 h-9 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm transition-all focus:ring-primary/20 shrink-0">
 							<SelectValue
 								placeholder={t(

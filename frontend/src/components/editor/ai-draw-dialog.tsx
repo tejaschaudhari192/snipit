@@ -73,10 +73,7 @@ export const AiDrawDialog = ({
 								<Sparkles className="w-5 h-5 animate-pulse" />
 							</div>
 							{t("ai.draw_title")}
-							<Badge
-								
-								className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border-primary/20 text-primary bg-primary/10"
-							>
+							<Badge className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border-primary/20 text-primary bg-primary/10">
 								Beta
 							</Badge>
 						</DialogTitle>

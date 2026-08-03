@@ -32,18 +32,22 @@ export function HeadingDropdown({ editor }: { editor: Editor }) {
 	return (
 		<DropdownMenu>
 			<Tooltip>
-				<TooltipTrigger render={
-							<DropdownMenuTrigger render={
-							<Button
-							variant="outline"
-							size="sm"
-							className="h-8 gap-1 px-2.5 text-xs font-semibold shadow-sm border-border/40 bg-background/50"
-						>
-							<span>{currentHeading}</span>
-							<ChevronDown className="h-3 w-3 text-muted-foreground" />
-						</Button>
-						} />
-						} />
+				<TooltipTrigger
+					render={
+						<DropdownMenuTrigger
+							render={
+								<Button
+									variant="outline"
+									size="sm"
+									className="h-8 gap-1 px-2.5 text-xs font-semibold shadow-sm border-border/40 bg-background/50"
+								>
+									<span>{currentHeading}</span>
+									<ChevronDown className="h-3 w-3 text-muted-foreground" />
+								</Button>
+							}
+						/>
+					}
+				/>
 				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
 					<span className="font-semibold text-white">Headings</span>
 				</TooltipContent>
@@ -93,27 +97,31 @@ export function FontDropdown({ editor }: { editor: Editor }) {
 	return (
 		<DropdownMenu>
 			<Tooltip>
-				<TooltipTrigger render={
-							<DropdownMenuTrigger render={
-							<Button
-							variant="outline"
-							size="sm"
-							className="h-8 gap-1 px-2.5 text-xs font-semibold shadow-sm border-border/40 bg-background/50 whitespace-nowrap"
-						>
-							<span
-								style={{
-									fontFamily:
-										currentFont === "Default"
-											? "inherit"
-											: currentFont,
-								}}
-							>
-								{currentFontName}
-							</span>
-							<ChevronDown className="h-3 w-3 text-muted-foreground" />
-						</Button>
-						} />
-						} />
+				<TooltipTrigger
+					render={
+						<DropdownMenuTrigger
+							render={
+								<Button
+									variant="outline"
+									size="sm"
+									className="h-8 gap-1 px-2.5 text-xs font-semibold shadow-sm border-border/40 bg-background/50 whitespace-nowrap"
+								>
+									<span
+										style={{
+											fontFamily:
+												currentFont === "Default"
+													? "inherit"
+													: currentFont,
+										}}
+									>
+										{currentFontName}
+									</span>
+									<ChevronDown className="h-3 w-3 text-muted-foreground" />
+								</Button>
+							}
+						/>
+					}
+				/>
 				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
 					<span className="font-semibold text-white">
 						Font Family
@@ -153,25 +161,35 @@ export function AlignmentDropdown({ editor }: { editor: Editor }) {
 	return (
 		<DropdownMenu>
 			<Tooltip>
-				<TooltipTrigger render={
-							<DropdownMenuTrigger render={
-							<Button
-							variant="ghost"
-							size="icon"
-							className="h-8 w-8 rounded-md border-transparent"
-						>
-							{editor.isActive({ textAlign: "center" }) ? (
-								<AlignCenter className="h-4 w-4" />
-							) : editor.isActive({ textAlign: "right" }) ? (
-								<AlignRight className="h-4 w-4" />
-							) : editor.isActive({ textAlign: "justify" }) ? (
-								<AlignJustify className="h-4 w-4" />
-							) : (
-								<AlignLeft className="h-4 w-4" />
-							)}
-						</Button>
-						} />
-						} />
+				<TooltipTrigger
+					render={
+						<DropdownMenuTrigger
+							render={
+								<Button
+									variant="ghost"
+									size="icon"
+									className="h-8 w-8 rounded-md border-transparent"
+								>
+									{editor.isActive({
+										textAlign: "center",
+									}) ? (
+										<AlignCenter className="h-4 w-4" />
+									) : editor.isActive({
+											textAlign: "right",
+									  }) ? (
+										<AlignRight className="h-4 w-4" />
+									) : editor.isActive({
+											textAlign: "justify",
+									  }) ? (
+										<AlignJustify className="h-4 w-4" />
+									) : (
+										<AlignLeft className="h-4 w-4" />
+									)}
+								</Button>
+							}
+						/>
+					}
+				/>
 				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
 					<span className="font-semibold text-white">Align Text</span>
 				</TooltipContent>
@@ -222,32 +240,36 @@ export function LineHeightDropdown({ editor }: { editor: Editor }) {
 	return (
 		<DropdownMenu>
 			<Tooltip>
-				<TooltipTrigger render={
-							<DropdownMenuTrigger render={
-							<Button
-							variant="ghost"
-							size="icon"
-							className="h-8 w-8 rounded-md border-transparent"
-						>
-							<svg
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="2"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								className="h-4 w-4"
-							>
-								<line x1="21" y1="6" x2="3" y2="6" />
-								<line x1="21" y1="12" x2="9" y2="12" />
-								<line x1="21" y1="18" x2="3" y2="18" />
-								<polyline points="6 10 4 12 6 14" />
-								<line x1="4" y1="12" x2="4" y2="2" />
-								<line x1="4" y1="12" x2="4" y2="22" />
-							</svg>
-						</Button>
-						} />
-						} />
+				<TooltipTrigger
+					render={
+						<DropdownMenuTrigger
+							render={
+								<Button
+									variant="ghost"
+									size="icon"
+									className="h-8 w-8 rounded-md border-transparent"
+								>
+									<svg
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="2"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										className="h-4 w-4"
+									>
+										<line x1="21" y1="6" x2="3" y2="6" />
+										<line x1="21" y1="12" x2="9" y2="12" />
+										<line x1="21" y1="18" x2="3" y2="18" />
+										<polyline points="6 10 4 12 6 14" />
+										<line x1="4" y1="12" x2="4" y2="2" />
+										<line x1="4" y1="12" x2="4" y2="22" />
+									</svg>
+								</Button>
+							}
+						/>
+					}
+				/>
 				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
 					<span className="font-semibold text-white">
 						Line Height

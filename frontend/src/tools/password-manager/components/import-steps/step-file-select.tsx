@@ -109,10 +109,11 @@ export default function StepFileSelect({ onNext, onCancel }: Props) {
 			</div>
 
 			<div
-				className={`border-2 border-dashed rounded-xl p-10 flex flex-col items-center justify-center gap-4 transition-colors ${isDragging
+				className={`border-2 border-dashed rounded-xl p-10 flex flex-col items-center justify-center gap-4 transition-colors ${
+					isDragging
 						? "border-primary bg-primary/5"
 						: "border-pm-border hover:border-primary/50"
-					}`}
+				}`}
 				onDragOver={(e) => {
 					e.preventDefault();
 					setIsDragging(true);
@@ -150,11 +151,11 @@ export default function StepFileSelect({ onNext, onCancel }: Props) {
 					<p className="text-sm text-muted-foreground mt-1">
 						{sourceApp === "chrome"
 							? t(
-								"tools.password_manager.import.chrome_export_desc",
-							)
+									"tools.password_manager.import.chrome_export_desc",
+								)
 							: t(
-								"tools.password_manager.import.enpass_export_desc",
-							)}
+									"tools.password_manager.import.enpass_export_desc",
+								)}
 					</p>
 				</div>
 			</div>

@@ -231,13 +231,15 @@ export default function PasswordDetail({
 											onClick={() => {
 												onSave({
 													...item,
-													isFavorite: !item.isFavorite,
+													isFavorite:
+														!item.isFavorite,
 												});
 											}}
-											className={`h-8 w-8 rounded-lg transition-colors ${item.isFavorite
-												? "text-amber-400 hover:text-amber-500 hover:bg-amber-400/10"
-												: "text-muted-foreground hover:text-foreground hover:bg-muted"
-												}`}
+											className={`h-8 w-8 rounded-lg transition-colors ${
+												item.isFavorite
+													? "text-amber-400 hover:text-amber-500 hover:bg-amber-400/10"
+													: "text-muted-foreground hover:text-foreground hover:bg-muted"
+											}`}
 										>
 											<Star
 												className="h-4 w-4"
@@ -249,15 +251,14 @@ export default function PasswordDetail({
 											/>
 										</Button>
 									}
-								>
-								</TooltipTrigger>
+								></TooltipTrigger>
 								<TooltipContent side="bottom">
 									<p>
 										{item.isFavorite
 											? t("remove")
 											: t(
-												"tools.password_manager.favorites",
-											)}
+													"tools.password_manager.favorites",
+												)}
 									</p>
 								</TooltipContent>
 							</Tooltip>
@@ -277,8 +278,7 @@ export default function PasswordDetail({
 											<Share2 className="h-4 w-4" />
 										</Button>
 									}
-								>
-								</TooltipTrigger>
+								></TooltipTrigger>
 								<TooltipContent side="bottom">
 									<p>Share</p>
 								</TooltipContent>
@@ -323,14 +323,15 @@ export default function PasswordDetail({
 										<Button
 											variant="ghost"
 											size="icon"
-											onClick={() => confirmDelete(item.id)}
+											onClick={() =>
+												confirmDelete(item.id)
+											}
 											className="h-8 w-8 rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10 transition-colors ml-1"
 										>
 											<Trash2 className="h-4 w-4" />
 										</Button>
 									}
-								>
-								</TooltipTrigger>
+								></TooltipTrigger>
 								<TooltipContent side="bottom">
 									<p>{t("tools.password_manager.delete")}</p>
 								</TooltipContent>
@@ -389,13 +390,13 @@ export default function PasswordDetail({
 								const itemKey = field.key as keyof PasswordItem;
 								const value =
 									item[itemKey] !== undefined &&
-										item[itemKey] !== "" &&
-										item[itemKey] !== null
+									item[itemKey] !== "" &&
+									item[itemKey] !== null
 										? (item[itemKey] as string)
 										: item.metadata
 											? (item.metadata[
-												field.key
-											] as string)
+													field.key
+												] as string)
 											: undefined;
 
 								return (
@@ -496,7 +497,7 @@ export default function PasswordDetail({
 						/>
 					</Suspense>
 				)}
-			</div >
+			</div>
 			<FolderModal
 				open={folderModalOpen}
 				onOpenChange={setFolderModalOpen}
@@ -507,7 +508,7 @@ export default function PasswordDetail({
 					createFolder(name, color);
 					setFolderModalOpen(false);
 				}}
-				onDelete={() => { }}
+				onDelete={() => {}}
 			/>
 		</>
 	);

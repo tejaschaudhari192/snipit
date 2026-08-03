@@ -134,8 +134,10 @@ export default function BulkShareModal({
 						</Label>
 						<Select
 							value={role}
-							onValueChange={(val) => { if (!val) return; return setRole(val)
-							; }}
+							onValueChange={(val) => {
+								if (!val) return;
+								return setRole(val);
+							}}
 							disabled={isSharing}
 						>
 							<SelectTrigger className="w-full bg-background border-border text-foreground">

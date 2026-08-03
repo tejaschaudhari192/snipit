@@ -233,34 +233,41 @@ const Header = ({ className }: HeaderProps) => {
 
 			<div className="md:hidden flex items-center gap-1.5 shrink-0">
 				<DropdownMenu>
-					<DropdownMenuTrigger render={
+					<DropdownMenuTrigger
+						render={
 							<Button
-							variant="outline"
-							size="icon"
-							className="h-9 w-9"
-						>
-							<Menu className="h-5 w-5" />
-						</Button>
-						} />
+								variant="outline"
+								size="icon"
+								className="h-9 w-9"
+							>
+								<Menu className="h-5 w-5" />
+							</Button>
+						}
+					/>
 					<DropdownMenuContent
 						align="end"
 						className="w-55 p-1 rounded-xl"
 					>
 						{!user ? (
 							<>
-								<DropdownMenuItem className="rounded-lg" render={<Link
-										to="/profile"
-										className="flex items-center gap-3 w-full p-3 bg-primary/5 rounded-xl border border-primary/10"
-									>
-										<div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
-											<User className="h-5 w-5" />
-										</div>
-										<div className="flex flex-col min-w-0">
-											<p className="text-sm font-black truncate text-primary leading-tight">
-												{t("header.guest")}
-											</p>
-										</div>
-									</Link>} />
+								<DropdownMenuItem
+									className="rounded-lg"
+									render={
+										<Link
+											to="/profile"
+											className="flex items-center gap-3 w-full p-3 bg-primary/5 rounded-xl border border-primary/10"
+										>
+											<div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+												<User className="h-5 w-5" />
+											</div>
+											<div className="flex flex-col min-w-0">
+												<p className="text-sm font-black truncate text-primary leading-tight">
+													{t("header.guest")}
+												</p>
+											</div>
+										</Link>
+									}
+								/>
 								<div className="h-px bg-muted my-2" />
 							</>
 						) : (
@@ -281,24 +288,39 @@ const Header = ({ className }: HeaderProps) => {
 								</div>
 							</Link>
 						)}
-						<DropdownMenuItem className="rounded-lg" render={<Link
-								to="/tools"
-								className="flex items-center gap-2 py-2"
-							>
-								<span>{t("header.tools")}</span>
-							</Link>} />
-						<DropdownMenuItem className="rounded-lg" render={<Link
-								to="/about"
-								className="flex items-center gap-2 py-2"
-							>
-								<span>{t("header.about")}</span>
-							</Link>} />
-						<DropdownMenuItem className="rounded-lg" render={<Link
-								to="/history"
-								className="flex items-center gap-2 py-2"
-							>
-								<span>{t("header.history")}</span>
-							</Link>} />
+						<DropdownMenuItem
+							className="rounded-lg"
+							render={
+								<Link
+									to="/tools"
+									className="flex items-center gap-2 py-2"
+								>
+									<span>{t("header.tools")}</span>
+								</Link>
+							}
+						/>
+						<DropdownMenuItem
+							className="rounded-lg"
+							render={
+								<Link
+									to="/about"
+									className="flex items-center gap-2 py-2"
+								>
+									<span>{t("header.about")}</span>
+								</Link>
+							}
+						/>
+						<DropdownMenuItem
+							className="rounded-lg"
+							render={
+								<Link
+									to="/history"
+									className="flex items-center gap-2 py-2"
+								>
+									<span>{t("header.history")}</span>
+								</Link>
+							}
+						/>
 						<DropdownMenuItem
 							className="rounded-lg"
 							onClick={openPlayer}
@@ -319,12 +341,17 @@ const Header = ({ className }: HeaderProps) => {
 							</div>
 						</DropdownMenuItem>
 						{path.length > 1 && (
-							<DropdownMenuItem className="rounded-lg" render={<Link
-									to="/"
-									className="flex items-center gap-2 py-2"
-								>
-									<span>{t("header.new_snippet")}</span>
-								</Link>} />
+							<DropdownMenuItem
+								className="rounded-lg"
+								render={
+									<Link
+										to="/"
+										className="flex items-center gap-2 py-2"
+									>
+										<span>{t("header.new_snippet")}</span>
+									</Link>
+								}
+							/>
 						)}
 						<div className="h-px bg-muted my-2" />
 						<div className="px-2 py-2 space-y-3">

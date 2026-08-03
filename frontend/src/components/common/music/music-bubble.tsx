@@ -136,27 +136,29 @@ const MusicBubble: React.FC = () => {
 		<div className="fixed bottom-6 right-6 z-50 group/bubble">
 			<TooltipProvider>
 				<Tooltip>
-					<TooltipTrigger render={
+					<TooltipTrigger
+						render={
 							<Button
-							variant="ghost"
-							onClick={openPlayer}
-							className={cn(
-								"p-0 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 hover:scale-110 active:scale-95 group shadow-2xl hover:bg-transparent",
-								isPlaying
-									? "bg-primary text-primary-foreground shadow-primary/30 hover:bg-primary"
-									: "bg-popover text-muted-foreground border border-border hover:border-primary/50 hover:text-primary",
-							)}
-							aria-label="Open Music Player"
-						>
-							<div className="relative flex items-center justify-center">
-								<Music className="w-6 h-6 transition-transform group-hover:rotate-12" />
-							</div>
+								variant="ghost"
+								onClick={openPlayer}
+								className={cn(
+									"p-0 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 hover:scale-110 active:scale-95 group shadow-2xl hover:bg-transparent",
+									isPlaying
+										? "bg-primary text-primary-foreground shadow-primary/30 hover:bg-primary"
+										: "bg-popover text-muted-foreground border border-border hover:border-primary/50 hover:text-primary",
+								)}
+								aria-label="Open Music Player"
+							>
+								<div className="relative flex items-center justify-center">
+									<Music className="w-6 h-6 transition-transform group-hover:rotate-12" />
+								</div>
 
-							<div className="absolute -top-1 -right-1 bg-popover text-foreground text-[9px] font-black px-1.5 py-0.5 rounded-full border border-border shadow-lg truncate max-w-10">
-								IN
-							</div>
-						</Button>
-						} />
+								<div className="absolute -top-1 -right-1 bg-popover text-foreground text-[9px] font-black px-1.5 py-0.5 rounded-full border border-border shadow-lg truncate max-w-10">
+									IN
+								</div>
+							</Button>
+						}
+					/>
 					<TooltipContent
 						side="left"
 						className="bg-popover border-border text-foreground text-[10px] font-bold uppercase tracking-widest"

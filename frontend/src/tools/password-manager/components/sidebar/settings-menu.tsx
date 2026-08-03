@@ -169,7 +169,10 @@ export function SettingsMenu({
 								className="gap-3 cursor-pointer rounded-md p-2 transition-colors focus:bg-accent"
 								onClick={() => onSetCloudSync(false)}
 							>
-								<ItemMedia variant="icon" className="bg-muted p-2 rounded-md">
+								<ItemMedia
+									variant="icon"
+									className="bg-muted p-2 rounded-md"
+								>
 									<HardDrive className="text-muted-foreground" />
 								</ItemMedia>
 								<ItemContent>
@@ -201,7 +204,10 @@ export function SettingsMenu({
 										});
 								}}
 							>
-								<ItemMedia variant="icon" className="bg-muted p-2 rounded-md">
+								<ItemMedia
+									variant="icon"
+									className="bg-muted p-2 rounded-md"
+								>
 									<Cloud className="text-muted-foreground" />
 								</ItemMedia>
 								<ItemContent>
@@ -231,7 +237,10 @@ export function SettingsMenu({
 									className="gap-3 cursor-pointer rounded-md p-2 text-destructive focus:bg-destructive/10 focus:text-destructive transition-colors"
 									onClick={() => setIsDeleteDialogOpen(true)}
 								>
-									<ItemMedia variant="icon" className="bg-destructive/10 p-2 rounded-md text-destructive">
+									<ItemMedia
+										variant="icon"
+										className="bg-destructive/10 p-2 rounded-md text-destructive"
+									>
 										<Trash2 />
 									</ItemMedia>
 									<ItemContent>

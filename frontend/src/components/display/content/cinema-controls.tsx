@@ -71,7 +71,7 @@ export const CinemaControls = ({
 					disabled={!isFinite(duration) || isNaN(duration)}
 					step={0.1}
 					onValueChange={(values) => {
-						const val = (Array.isArray(values) ? values[0] : values);
+						const val = Array.isArray(values) ? values[0] : values;
 						if (val !== undefined && videoRef.current) {
 							videoRef.current.currentTime = val;
 							setCurrentTime(val);
@@ -149,7 +149,9 @@ export const CinemaControls = ({
 								max={1}
 								step={0.05}
 								onValueChange={(values) => {
-									const val = (Array.isArray(values) ? values[0] : values);
+									const val = Array.isArray(values)
+										? values[0]
+										: values;
 									if (val !== undefined) {
 										setVolume(val);
 										if (videoRef.current)

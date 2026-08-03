@@ -22,22 +22,26 @@ export function ColorControls({ editor }: { editor: Editor }) {
 			{/* Text Color */}
 			<DropdownMenu>
 				<Tooltip>
-					<TooltipTrigger render={
-							<DropdownMenuTrigger render={
-							<Button
-								variant="ghost"
-								className="h-8 w-9 px-0 border-transparent"
-							>
-								<span
-									className="underline decoration-2 text-sm font-bold"
-									style={{ color: currentColor }}
-								>
-									A
-								</span>
-								<ChevronDown className="h-2.5 w-2.5 text-muted-foreground ml-0.5" />
-							</Button>
-						} />
-						} />
+					<TooltipTrigger
+						render={
+							<DropdownMenuTrigger
+								render={
+									<Button
+										variant="ghost"
+										className="h-8 w-9 px-0 border-transparent"
+									>
+										<span
+											className="underline decoration-2 text-sm font-bold"
+											style={{ color: currentColor }}
+										>
+											A
+										</span>
+										<ChevronDown className="h-2.5 w-2.5 text-muted-foreground ml-0.5" />
+									</Button>
+								}
+							/>
+						}
+					/>
 					<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
 						<span className="font-semibold text-white">
 							Text Color
@@ -98,17 +102,21 @@ export function ColorControls({ editor }: { editor: Editor }) {
 			{/* Text Highlight / Background Color */}
 			<DropdownMenu>
 				<Tooltip>
-					<TooltipTrigger render={
-							<DropdownMenuTrigger render={
-							<Button
-								variant="ghost"
-								className="h-8 w-9 px-0 border-transparent"
-							>
-								<Highlighter className="h-4 w-4" />
-								<ChevronDown className="h-2.5 w-2.5 text-muted-foreground ml-0.5" />
-							</Button>
-						} />
-						} />
+					<TooltipTrigger
+						render={
+							<DropdownMenuTrigger
+								render={
+									<Button
+										variant="ghost"
+										className="h-8 w-9 px-0 border-transparent"
+									>
+										<Highlighter className="h-4 w-4" />
+										<ChevronDown className="h-2.5 w-2.5 text-muted-foreground ml-0.5" />
+									</Button>
+								}
+							/>
+						}
+					/>
 					<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
 						<span className="font-semibold text-white">
 							Highlight Text

@@ -410,26 +410,28 @@ export const DisplayToolbar = memo(
 					{isEdit && setIsAutosave && (
 						<TooltipProvider>
 							<Tooltip>
-								<TooltipTrigger render={
-							<div
-										className={cn(
-											"flex items-center gap-2 px-2.5 h-9 rounded-lg border transition-all cursor-pointer select-none active:scale-95 shrink-0",
-											isAutosave
-												? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
-												: "bg-background/50 border-border/50 hover:bg-muted/80",
-										)}
-										onClick={() =>
-											setIsAutosave(!isAutosave)
-										}
-									>
-										<Save className="h-4 w-4" />
-										<Switch
-											checked={isAutosave}
-											onCheckedChange={setIsAutosave}
-											className="scale-[0.7] data-[state=checked]:bg-emerald-500"
-										/>
-									</div>
-						} />
+								<TooltipTrigger
+									render={
+										<div
+											className={cn(
+												"flex items-center gap-2 px-2.5 h-9 rounded-lg border transition-all cursor-pointer select-none active:scale-95 shrink-0",
+												isAutosave
+													? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
+													: "bg-background/50 border-border/50 hover:bg-muted/80",
+											)}
+											onClick={() =>
+												setIsAutosave(!isAutosave)
+											}
+										>
+											<Save className="h-4 w-4" />
+											<Switch
+												checked={isAutosave}
+												onCheckedChange={setIsAutosave}
+												className="scale-[0.7] data-[state=checked]:bg-emerald-500"
+											/>
+										</div>
+									}
+								/>
 								<TooltipContent
 									side="bottom"
 									align="center"
@@ -454,26 +456,26 @@ export const DisplayToolbar = memo(
 					)}
 					{canShowDiscussion && (
 						<Sheet modal={false}>
-							<SheetTrigger render={
-							<Button
-									variant="ghost"
-									size="sm"
-									className="gap-2 text-primary font-semibold hover:bg-primary/5 shrink-0"
-								>
-									<MessageSquare className="h-4 w-4" />
-									<span className="hidden sm:inline">
-										{t("common.discussion")}
-									</span>
-									{commentCount > 0 && (
-										<span className="bg-primary/10 px-1.5 py-0.5 rounded text-[10px] animate-in zoom-in-50">
-											{commentCount}
+							<SheetTrigger
+								render={
+									<Button
+										variant="ghost"
+										size="sm"
+										className="gap-2 text-primary font-semibold hover:bg-primary/5 shrink-0"
+									>
+										<MessageSquare className="h-4 w-4" />
+										<span className="hidden sm:inline">
+											{t("common.discussion")}
 										</span>
-									)}
-								</Button>
-						} />
-							<SheetContent
-																className="flex flex-col h-full sm:max-w-md w-full border-l shadow-2xl p-0 overflow-hidden"
-							>
+										{commentCount > 0 && (
+											<span className="bg-primary/10 px-1.5 py-0.5 rounded text-[10px] animate-in zoom-in-50">
+												{commentCount}
+											</span>
+										)}
+									</Button>
+								}
+							/>
+							<SheetContent className="flex flex-col h-full sm:max-w-md w-full border-l shadow-2xl p-0 overflow-hidden">
 								<SheetHeader className="p-6 pb-2 border-b">
 									<SheetTitle className="flex items-center gap-2 text-xl">
 										<MessageSquare className="w-5 h-5 text-primary" />

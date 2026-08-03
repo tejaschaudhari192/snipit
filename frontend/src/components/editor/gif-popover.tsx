@@ -4,7 +4,6 @@ import {
 	PopoverTrigger,
 	PopoverContent,
 } from "@/components/ui/popover";
-;
 import { CONFIG } from "@/configurations";
 import { cn } from "@/utils";
 import {
@@ -224,17 +223,21 @@ export function GifPopover({ onSelect }: GifPopoverProps) {
 	return (
 		<Popover open={isOpen} onOpenChange={setIsOpen}>
 			<Tooltip>
-				<TooltipTrigger render={
-							<PopoverTrigger render={
-							<Button
-							variant="ghost"
-							size="icon"
-							className="h-8 w-8 rounded-md border-transparent"
-						>
-							<GifIcon className="h-4.5 w-4.5" />
-						</Button>
-						} />
-						} />
+				<TooltipTrigger
+					render={
+						<PopoverTrigger
+							render={
+								<Button
+									variant="ghost"
+									size="icon"
+									className="h-8 w-8 rounded-md border-transparent"
+								>
+									<GifIcon className="h-4.5 w-4.5" />
+								</Button>
+							}
+						/>
+					}
+				/>
 				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
 					<span className="font-semibold text-white">
 						Search & Insert GIF

@@ -146,14 +146,15 @@ export default function PasswordGenerator({
 		<div className="w-full bg-background rounded-t-xl overflow-hidden flex flex-col">
 			{/* Header section inspired by the red theme */}
 			<div
-				className={`text-white p-4 ${strengthScore < 2
-					? "bg-[#da1111]"
-					: strengthScore === 2
-						? "bg-amber-600"
-						: strengthScore === 3
-							? "bg-emerald-500"
-							: "bg-emerald-600"
-					}`}
+				className={`text-white p-4 ${
+					strengthScore < 2
+						? "bg-[#da1111]"
+						: strengthScore === 2
+							? "bg-amber-600"
+							: strengthScore === 3
+								? "bg-emerald-500"
+								: "bg-emerald-600"
+				}`}
 			>
 				<div className="flex items-center justify-between mb-8">
 					<Button
@@ -198,14 +199,15 @@ export default function PasswordGenerator({
 
 			{/* Strength & Fill Bar */}
 			<div
-				className={`text-white px-4 py-3 flex flex-col gap-1 border-t border-white/10 ${strengthScore < 2
-					? "bg-[#b30e0e]"
-					: strengthScore === 2
-						? "bg-amber-700"
-						: strengthScore === 3
-							? "bg-emerald-600"
-							: "bg-emerald-700"
-					}`}
+				className={`text-white px-4 py-3 flex flex-col gap-1 border-t border-white/10 ${
+					strengthScore < 2
+						? "bg-[#b30e0e]"
+						: strengthScore === 2
+							? "bg-amber-700"
+							: strengthScore === 3
+								? "bg-emerald-600"
+								: "bg-emerald-700"
+				}`}
 			>
 				<div className="flex items-center justify-between">
 					<span className="font-bold text-sm tracking-wide">
@@ -251,7 +253,11 @@ export default function PasswordGenerator({
 							<div className="flex items-center gap-4">
 								<Slider
 									value={[wordCount]}
-									onValueChange={(val) => setWordCount(Array.isArray(val) ? val[0] : val)}
+									onValueChange={(val) =>
+										setWordCount(
+											Array.isArray(val) ? val[0] : val,
+										)
+									}
 									min={2}
 									max={10}
 									step={1}
@@ -272,7 +278,11 @@ export default function PasswordGenerator({
 							<div className="flex items-center gap-4">
 								<Slider
 									value={[length]}
-									onValueChange={(val) => setLength(Array.isArray(val) ? val[0] : val)}
+									onValueChange={(val) =>
+										setLength(
+											Array.isArray(val) ? val[0] : val,
+										)
+									}
 									min={8}
 									max={64}
 									step={1}

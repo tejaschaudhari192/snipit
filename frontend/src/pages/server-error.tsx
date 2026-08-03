@@ -92,13 +92,16 @@ const ServerErrorPage = ({ error, services }: ServerErrorPageProps) => {
 						{t("server_error.retry_button")}
 					</Button>
 
-					<Button variant="secondary"
-						className="flex items-center gap-2 px-8 h-14 bg-muted hover:bg-muted/80 text-foreground rounded-full font-bold transition-all hover:scale-105 active:scale-95" render={
-						<Link to="/">
-							<Home className="w-4 h-4" />
-							{t("server_error.safety_button")}
-						</Link>
-					} />
+					<Button
+						variant="secondary"
+						className="flex items-center gap-2 px-8 h-14 bg-muted hover:bg-muted/80 text-foreground rounded-full font-bold transition-all hover:scale-105 active:scale-95"
+						render={
+							<Link to="/">
+								<Home className="w-4 h-4" />
+								{t("server_error.safety_button")}
+							</Link>
+						}
+					/>
 				</div>
 			</div>
 

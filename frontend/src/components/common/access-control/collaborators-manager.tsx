@@ -197,7 +197,10 @@ export const CollaboratorsManager = ({
 				<div className="flex gap-1 items-center px-1 sm:pr-1 w-full sm:w-auto justify-end border-t sm:border-t-0 sm:border-l border-border/10 pt-2 sm:pt-0 pl-0 sm:pl-2">
 					<Select
 						value={pendingRole}
-						onValueChange={(r) => { if (!r) return; return setPendingRole(r); }}
+						onValueChange={(r) => {
+							if (!r) return;
+							return setPendingRole(r);
+						}}
 						disabled={disabled || isUpdating}
 					>
 						<SelectTrigger className="w-25 h-10 text-sm font-medium border-none bg-transparent hover:bg-muted/50 focus:ring-0 shadow-none">
@@ -297,8 +300,13 @@ export const CollaboratorsManager = ({
 									<>
 										<Select
 											value={item.role}
-											onValueChange={(r) => { if (!r) return; return handleUpdateRole(item.email, r)
-											; }}
+											onValueChange={(r) => {
+												if (!r) return;
+												return handleUpdateRole(
+													item.email,
+													r,
+												);
+											}}
 											disabled={
 												disabled ||
 												updatingEmails.length > 0

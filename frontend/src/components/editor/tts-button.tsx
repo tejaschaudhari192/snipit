@@ -37,27 +37,29 @@ export const TtsButton: React.FC<TtsButtonProps> = ({
 	return (
 		<TooltipProvider>
 			<Tooltip>
-				<TooltipTrigger render={
-							<Button
-						variant="outline"
-						size="icon-sm"
-						onClick={handleToggle}
-						className={cn(
-							"relative transition-all duration-300",
-							isPlaying &&
-								"border-primary text-primary bg-primary/5",
-							className,
-						)}
-					>
-						{isPreparing ? (
-							<Spinner className="h-4 w-4 animate-spin" />
-						) : isPlaying ? (
-							<Square className="h-4 w-4 fill-current" />
-						) : (
-							<Volume2 className="h-4.5 w-4.5" />
-						)}
-					</Button>
-						} />
+				<TooltipTrigger
+					render={
+						<Button
+							variant="outline"
+							size="icon-sm"
+							onClick={handleToggle}
+							className={cn(
+								"relative transition-all duration-300",
+								isPlaying &&
+									"border-primary text-primary bg-primary/5",
+								className,
+							)}
+						>
+							{isPreparing ? (
+								<Spinner className="h-4 w-4 animate-spin" />
+							) : isPlaying ? (
+								<Square className="h-4 w-4 fill-current" />
+							) : (
+								<Volume2 className="h-4.5 w-4.5" />
+							)}
+						</Button>
+					}
+				/>
 				<TooltipContent side="top">
 					<p>
 						{isPlaying || isPreparing

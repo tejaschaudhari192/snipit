@@ -23,7 +23,17 @@ import {
 	type EncryptedFile,
 	type DecryptedFile,
 } from "@/lib/crypto";
-import { Lock, Unlock, FolderOpen, FileText, KeyRound, CheckCircle2, AlertCircle, UploadCloud, FileDown } from "lucide-react";
+import {
+	Lock,
+	Unlock,
+	FolderOpen,
+	FileText,
+	KeyRound,
+	CheckCircle2,
+	AlertCircle,
+	UploadCloud,
+	FileDown,
+} from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 
 type ProcessState = "idle" | "processing" | "done" | "error";

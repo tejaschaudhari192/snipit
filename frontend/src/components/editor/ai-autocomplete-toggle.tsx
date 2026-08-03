@@ -25,36 +25,38 @@ export const AiAutocompleteToggle = ({
 	return (
 		<TooltipProvider>
 			<Tooltip>
-				<TooltipTrigger render={
-							<div
-						onClick={() => onToggle(!enabled)}
-						className={cn(
-							"flex items-center gap-2.5 px-2.5 h-9 rounded-md border transition-all duration-300 shadow-sm select-none cursor-pointer active:scale-95 group",
-							enabled
-								? "bg-violet-500/10 border-violet-500/30 text-violet-600 dark:text-violet-400 shadow-md shadow-violet-500/5"
-								: "bg-background border-border text-foreground hover:border-primary/40 hover:bg-muted/50",
-							className,
-						)}
-					>
-						<AiCursorIcon
+				<TooltipTrigger
+					render={
+						<div
+							onClick={() => onToggle(!enabled)}
 							className={cn(
-								"h-4.5 w-4.5 transition-all duration-300",
+								"flex items-center gap-2.5 px-2.5 h-9 rounded-md border transition-all duration-300 shadow-sm select-none cursor-pointer active:scale-95 group",
 								enabled
-									? "scale-110 text-violet-600 dark:text-violet-400"
-									: "text-foreground opacity-70 group-hover:opacity-100",
+									? "bg-violet-500/10 border-violet-500/30 text-violet-600 dark:text-violet-400 shadow-md shadow-violet-500/5"
+									: "bg-background border-border text-foreground hover:border-primary/40 hover:bg-muted/50",
+								className,
 							)}
-						/>
-						<Switch
-							checked={enabled}
-							onCheckedChange={onToggle}
-							className={cn(
-								"scale-[0.8] transition-all duration-300",
-								"data-[state=checked]:bg-violet-500 data-[state=unchecked]:bg-foreground/20",
-								enabled && "shadow-sm shadow-violet-500/20",
-							)}
-						/>
-					</div>
-						} />
+						>
+							<AiCursorIcon
+								className={cn(
+									"h-4.5 w-4.5 transition-all duration-300",
+									enabled
+										? "scale-110 text-violet-600 dark:text-violet-400"
+										: "text-foreground opacity-70 group-hover:opacity-100",
+								)}
+							/>
+							<Switch
+								checked={enabled}
+								onCheckedChange={onToggle}
+								className={cn(
+									"scale-[0.8] transition-all duration-300",
+									"data-[state=checked]:bg-violet-500 data-[state=unchecked]:bg-foreground/20",
+									enabled && "shadow-sm shadow-violet-500/20",
+								)}
+							/>
+						</div>
+					}
+				/>
 				<TooltipContent side="top">
 					<p>{t("editor.ai_autocomplete_tooltip")}</p>
 				</TooltipContent>

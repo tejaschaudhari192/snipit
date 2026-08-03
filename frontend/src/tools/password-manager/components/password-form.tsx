@@ -89,9 +89,9 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 		const selectedFolder =
 			folderId !== "none"
 				? folders.find(
-					(f: { id: string; collectionId?: string }) =>
-						f.id === folderId,
-				)
+						(f: { id: string; collectionId?: string }) =>
+							f.id === folderId,
+					)
 				: null;
 
 		// Extract root fields from metadata
@@ -371,7 +371,7 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 					// the folder will appear in the list asynchronously. We could just leave folderId as "none" for now,
 					// or we can just let the user select it once it appears.
 				}}
-				onDelete={() => { }}
+				onDelete={() => {}}
 			/>
 
 			{/* Custom Fields */}

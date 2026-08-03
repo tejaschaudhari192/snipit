@@ -150,8 +150,8 @@ export default function ShareItemModal({
 							{isSharing
 								? t("tools.password_manager.share.sharing")
 								: t(
-									"tools.password_manager.share.share_securely",
-								)}
+										"tools.password_manager.share.share_securely",
+									)}
 						</Button>
 					</div>
 				</form>

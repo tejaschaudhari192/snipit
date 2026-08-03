@@ -68,23 +68,25 @@ export const SaveAsButton = ({
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger render={
-							<Button
-					variant="outline"
-					size="sm"
-					className={className}
-					disabled={isGenerating}
-				>
-					{isGenerating ? (
-						<Spinner className="h-4 w-4 animate-spin" />
-					) : (
-						<Download className="h-4 w-4" />
-					)}
-					<span className="hidden sm:inline ml-2">
-						{t("common.save_as")}
-					</span>
-				</Button>
-						} />
+			<DropdownMenuTrigger
+				render={
+					<Button
+						variant="outline"
+						size="sm"
+						className={className}
+						disabled={isGenerating}
+					>
+						{isGenerating ? (
+							<Spinner className="h-4 w-4 animate-spin" />
+						) : (
+							<Download className="h-4 w-4" />
+						)}
+						<span className="hidden sm:inline ml-2">
+							{t("common.save_as")}
+						</span>
+					</Button>
+				}
+			/>
 			<DropdownMenuContent align="start" className="w-48">
 				{contentType === "docs" ? (
 					<>

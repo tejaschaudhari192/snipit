@@ -145,24 +145,26 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 			{!isRecording && (
 				<TooltipProvider>
 					<Tooltip>
-						<TooltipTrigger render={
-							<Button
-								variant="outline"
-								size="icon-sm"
-								onClick={startRecording}
-								disabled={isTranscribing}
-								className={cn(
-									"h-9 w-9 shrink-0 relative transition-all duration-300",
-									isTranscribing && "opacity-80",
-								)}
-							>
-								{isTranscribing ? (
-									<Spinner className="h-4 w-4 animate-spin" />
-								) : (
-									<Mic className="h-5 w-5 text-red-500 fill-red-500/10" />
-								)}
-							</Button>
-						} />
+						<TooltipTrigger
+							render={
+								<Button
+									variant="outline"
+									size="icon-sm"
+									onClick={startRecording}
+									disabled={isTranscribing}
+									className={cn(
+										"h-9 w-9 shrink-0 relative transition-all duration-300",
+										isTranscribing && "opacity-80",
+									)}
+								>
+									{isTranscribing ? (
+										<Spinner className="h-4 w-4 animate-spin" />
+									) : (
+										<Mic className="h-5 w-5 text-red-500 fill-red-500/10" />
+									)}
+								</Button>
+							}
+						/>
 						<TooltipContent side="top">
 							<p>{t("editor.start_recording")}</p>
 						</TooltipContent>

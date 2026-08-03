@@ -243,8 +243,8 @@ export default function PasswordList({
 					const item = row.original;
 					const domain = getDomain(
 						item.url ||
-						item.metadata?.url ||
-						item.metadata?.website,
+							item.metadata?.url ||
+							item.metadata?.website,
 					);
 					const schemaFields = getFieldsForType(
 						item.itemType || "login",
@@ -290,34 +290,34 @@ export default function PasswordList({
 			}),
 			...(folders.length > 0
 				? [
-					columnHelper.accessor("folderId", {
-						header: t(
-							"tools.password_manager.table_folder",
-						) as string,
-						cell: ({ getValue }) => {
-							const folderId = getValue();
-							if (!folderId) return null;
-							const folder = folders.find(
-								(f: FolderType) => f.id === folderId,
-							);
-							if (!folder) return null;
-							return (
-								<Badge
-									variant="outline"
-									className="bg-transparent border-pm-border shadow-none font-medium px-2 py-0.5 text-xs text-foreground/80 rounded-md max-w-30"
-								>
-									<Folder
-										className="w-3 h-3 mr-1.5 shrink-0 text-muted-foreground"
-										style={{ color: folder.color }}
-									/>
-									<span className="truncate">
-										{folder.name}
-									</span>
-								</Badge>
-							);
-						},
-					}),
-				]
+						columnHelper.accessor("folderId", {
+							header: t(
+								"tools.password_manager.table_folder",
+							) as string,
+							cell: ({ getValue }) => {
+								const folderId = getValue();
+								if (!folderId) return null;
+								const folder = folders.find(
+									(f: FolderType) => f.id === folderId,
+								);
+								if (!folder) return null;
+								return (
+									<Badge
+										variant="outline"
+										className="bg-transparent border-pm-border shadow-none font-medium px-2 py-0.5 text-xs text-foreground/80 rounded-md max-w-30"
+									>
+										<Folder
+											className="w-3 h-3 mr-1.5 shrink-0 text-muted-foreground"
+											style={{ color: folder.color }}
+										/>
+										<span className="truncate">
+											{folder.name}
+										</span>
+									</Badge>
+								);
+							},
+						}),
+					]
 				: []),
 			columnHelper.accessor("itemType", {
 				header: t("tools.password_manager.table_type") as string,
@@ -353,9 +353,7 @@ export default function PasswordList({
 										/>
 									}
 								>
-									<span className="sr-only">
-										Open menu
-									</span>
+									<span className="sr-only">Open menu</span>
 									<MoreVertical className="h-4 w-4" />
 								</DropdownMenuTrigger>
 								<DropdownMenuContent
@@ -568,19 +566,20 @@ export default function PasswordList({
 										return (
 											<TableHead
 												key={header.id}
-												className={`h-11 px-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80 ${header.id === "select"
-													? "w-10 pr-2"
-													: ""
-													}`}
+												className={`h-11 px-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80 ${
+													header.id === "select"
+														? "w-10 pr-2"
+														: ""
+												}`}
 											>
 												{header.isPlaceholder
 													? null
 													: flexRender(
-														header.column
-															.columnDef
-															.header,
-														header.getContext(),
-													)}
+															header.column
+																.columnDef
+																.header,
+															header.getContext(),
+														)}
 											</TableHead>
 										);
 									})}
@@ -602,20 +601,22 @@ export default function PasswordList({
 												onSelect(row.original);
 											}
 										}}
-										className={`group cursor-pointer border-pm-border/60 transition-colors ${row.getIsSelected()
-											? "bg-primary/5 hover:bg-primary/5"
-											: row.original.id === activeId
-												? "bg-pm-row-active hover:bg-pm-row-active"
-												: "hover:bg-pm-row-hover"
-											}`}
+										className={`group cursor-pointer border-pm-border/60 transition-colors ${
+											row.getIsSelected()
+												? "bg-primary/5 hover:bg-primary/5"
+												: row.original.id === activeId
+													? "bg-pm-row-active hover:bg-pm-row-active"
+													: "hover:bg-pm-row-hover"
+										}`}
 									>
 										{row.getVisibleCells().map((cell) => (
 											<TableCell
 												key={cell.id}
-												className={`py-3 px-4 ${cell.column.id === "select"
-													? "w-10 pr-2"
-													: ""
-													}`}
+												className={`py-3 px-4 ${
+													cell.column.id === "select"
+														? "w-10 pr-2"
+														: ""
+												}`}
 											>
 												{flexRender(
 													cell.column.columnDef.cell,
@@ -633,11 +634,11 @@ export default function PasswordList({
 									>
 										{searchQuery
 											? t(
-												"tools.password_manager.no_results",
-											)
+													"tools.password_manager.no_results",
+												)
 											: t(
-												"tools.password_manager.no_passwords",
-											)}
+													"tools.password_manager.no_passwords",
+												)}
 									</TableCell>
 								</TableRow>
 							)}

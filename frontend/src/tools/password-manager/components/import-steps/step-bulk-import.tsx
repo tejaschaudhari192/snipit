@@ -47,9 +47,7 @@ function DuplicateAskDialog({ pending }: { pending: PendingDuplicate | null }) {
 
 	return (
 		<Dialog open modal>
-			<DialogContent
-				className="sm:max-w-105"
-			>
+			<DialogContent className="sm:max-w-105">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<AlertTriangle className="w-5 h-5 text-amber-500" />

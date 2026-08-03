@@ -151,17 +151,19 @@ export default function BulkActionBar({
 					{/* Move to Folder */}
 					{personalFolders.length > 0 && (
 						<DropdownMenu>
-							<DropdownMenuTrigger render={
-							<Button
-									variant="ghost"
-									size="sm"
-									className="h-8 gap-1.5 text-sm"
-									disabled={isLoading}
-								>
-									<FolderInput className="w-4 h-4" />
-									Move
-								</Button>
-						} />
+							<DropdownMenuTrigger
+								render={
+									<Button
+										variant="ghost"
+										size="sm"
+										className="h-8 gap-1.5 text-sm"
+										disabled={isLoading}
+									>
+										<FolderInput className="w-4 h-4" />
+										Move
+									</Button>
+								}
+							/>
 							<DropdownMenuContent
 								align="center"
 								side="top"
@@ -198,22 +200,24 @@ export default function BulkActionBar({
 					{/* Share */}
 					<TooltipProvider>
 						<Tooltip>
-							<TooltipTrigger render={
-							<span>
-									<Button
-										variant="ghost"
-										size="sm"
-										className="h-8 gap-1.5 text-sm"
-										disabled={isLoading || !canShare}
-										onClick={() =>
-											setIsShareModalOpen(true)
-										}
-									>
-										<Share2 className="w-4 h-4" />
-										Share
-									</Button>
-								</span>
-						} />
+							<TooltipTrigger
+								render={
+									<span>
+										<Button
+											variant="ghost"
+											size="sm"
+											className="h-8 gap-1.5 text-sm"
+											disabled={isLoading || !canShare}
+											onClick={() =>
+												setIsShareModalOpen(true)
+											}
+										>
+											<Share2 className="w-4 h-4" />
+											Share
+										</Button>
+									</span>
+								}
+							/>
 							{!canShare && (
 								<TooltipContent>
 									Select {BULK_SHARE_LIMIT} or fewer items to

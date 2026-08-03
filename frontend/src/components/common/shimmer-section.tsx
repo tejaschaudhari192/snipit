@@ -1,5 +1,4 @@
 import { cn } from "@/utils";
-;
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 
