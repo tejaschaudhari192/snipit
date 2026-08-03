@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { cn } from "@/utils";
 import { memo } from "react";
 import { EXPIRY_OPTIONS } from "@/constants";
+import { OptionDisplay } from "@/components/common/option-display";
 
 interface ExpirySelectorProps {
 	expiresTime: string;
@@ -49,30 +50,35 @@ export const ExpirySelector = memo(
 						className,
 					)}
 				>
-					<div className="flex items-center gap-2 whitespace-nowrap">
-						<Clock className="h-4 w-4 text-primary shrink-0" />
-						<SelectValue placeholder={t("home.select_expire_time")}>
-							{(() => {
-								const selectedOption = EXPIRY_OPTIONS.find(
-									(opt) => opt.value === expiresTime,
+					<SelectValue placeholder={t("home.select_expire_time")}>
+						{(() => {
+							const selectedOption = EXPIRY_OPTIONS.find(
+								(opt) => opt.value === expiresTime,
+							);
+							if (selectedOption) {
+								return <OptionDisplay icon={selectedOption.icon} label={t(selectedOption.labelKey)} />;
+							}
+							if (expiresTime === "custom_action") {
+								return <OptionDisplay icon={Clock} label={t("home.expire_options.custom")} />;
+							}
+							if (isCustomDate) {
+								return (
+									<OptionDisplay
+										icon={Clock}
+										label={new Date(expiresTime).toLocaleString([], {
+											month: "short",
+											day: "numeric",
+											year: "numeric",
+											hour: "numeric",
+											minute: "2-digit",
+											hour12: true,
+										})}
+									/>
 								);
-								if (selectedOption) return t(selectedOption.labelKey);
-								if (expiresTime === "custom_action")
-									return t("home.expire_options.custom");
-								if (isCustomDate) {
-									return new Date(expiresTime).toLocaleString([], {
-										month: "short",
-										day: "numeric",
-										year: "numeric",
-										hour: "numeric",
-										minute: "2-digit",
-										hour12: true,
-									});
-								}
-								return null;
-							})()}
-						</SelectValue>
-					</div>
+							}
+							return null;
+						})()}
+					</SelectValue>
 				</SelectTrigger>
 
 				<SelectContent className="rounded-xl shadow-xl border-border/40 p-1">

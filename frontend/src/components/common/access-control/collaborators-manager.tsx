@@ -10,6 +10,8 @@ import { MultiEmailInput } from "@/components/common/multi-email-input";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { ROLE_OPTIONS } from "@/constants";
+import { OptionDisplay } from "@/components/common/option-display";
 import { cn } from "@/utils";
 import type { ShareRole } from "@/types";
 import { useApiHelpers } from "@/lib/api";
@@ -203,22 +205,20 @@ export const CollaboratorsManager = ({
 						}}
 						disabled={disabled || isUpdating}
 					>
-						<SelectTrigger className="w-25 h-10 text-sm font-medium border-none bg-transparent hover:bg-muted/50 focus:ring-0 shadow-none">
-							<SelectValue />
+						<SelectTrigger className="w-32 h-10 text-sm font-medium border-none bg-transparent hover:bg-muted/50 focus:ring-0 shadow-none">
+							<SelectValue>
+								{(() => {
+									const opt = ROLE_OPTIONS.find(o => o.value === pendingRole);
+									return opt ? <OptionDisplay icon={opt.icon} label={t(opt.labelKey)} /> : null;
+								})()}
+							</SelectValue>
 						</SelectTrigger>
 						<SelectContent>
-							<SelectItem value="viewer">
-								{t("common.access.viewer")}
-							</SelectItem>
-							<SelectItem value="editor">
-								{t("common.access.editor")}
-							</SelectItem>
-							<SelectItem value="admin">
-								{t("common.access.admin")}
-							</SelectItem>
-							<SelectItem value="commenter">
-								{t("common.access.commenter")}
-							</SelectItem>
+							{ROLE_OPTIONS.map((opt) => (
+								<SelectItem key={opt.value} value={opt.value}>
+									<OptionDisplay icon={opt.icon} label={t(opt.labelKey)} />
+								</SelectItem>
+							))}
 						</SelectContent>
 					</Select>
 					<Button
@@ -312,24 +312,20 @@ export const CollaboratorsManager = ({
 												updatingEmails.length > 0
 											}
 										>
-											<SelectTrigger className="flex-1 min-[440px]:w-25 h-10 bg-background border-input/50">
-												<SelectValue />
+											<SelectTrigger className="flex-1 min-[440px]:w-32 h-10 bg-background border-input/50">
+												<SelectValue>
+													{(() => {
+														const opt = ROLE_OPTIONS.find(o => o.value === item.role);
+														return opt ? <OptionDisplay icon={opt.icon} label={t(opt.labelKey)} /> : null;
+													})()}
+												</SelectValue>
 											</SelectTrigger>
 											<SelectContent>
-												<SelectItem value="viewer">
-													{t("common.access.viewer")}
-												</SelectItem>
-												<SelectItem value="editor">
-													{t("common.access.editor")}
-												</SelectItem>
-												<SelectItem value="admin">
-													{t("common.access.admin")}
-												</SelectItem>
-												<SelectItem value="commenter">
-													{t(
-														"common.access.commenter",
-													)}
-												</SelectItem>
+												{ROLE_OPTIONS.map((opt) => (
+													<SelectItem key={opt.value} value={opt.value}>
+														<OptionDisplay icon={opt.icon} label={t(opt.labelKey)} />
+													</SelectItem>
+												))}
 											</SelectContent>
 										</Select>
 										<Button

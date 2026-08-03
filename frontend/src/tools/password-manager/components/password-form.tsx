@@ -18,7 +18,8 @@ import type { PasswordItem, CustomField } from "../types";
 import { getFieldsForType } from "../utils/item-types";
 import { FolderModal } from "./folder-modal";
 import { useFolderMutations } from "../hooks/use-folder-mutations";
-import { UI_DEFAULTS } from "../utils/constants";
+import { UI_DEFAULTS, ITEM_TYPE_OPTIONS } from "../utils/constants";
+import { OptionDisplay } from "@/components/common/option-display";
 export interface PasswordFormProps {
 	onAdd: (item: PasswordItem) => void;
 	editItem?: PasswordItem | null;
@@ -227,32 +228,20 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 								// Keep metadata instead of clearing it, so user doesn't lose data on misclick
 							}}
 						>
-							<SelectTrigger className="w-full bg-background border-border rounded-xl">
-								<SelectValue
-									placeholder={t(
-										"tools.password_manager.type_login",
-									)}
-								/>
+							<SelectTrigger className="w-full bg-background border-border rounded-xl capitalize">
+								<SelectValue>
+									{(() => {
+										const opt = ITEM_TYPE_OPTIONS.find(o => o.id === itemType);
+										return opt ? <OptionDisplay icon={opt.icon} label={t(opt.label)} /> : null;
+									})()}
+								</SelectValue>
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="login">
-									{t("tools.password_manager.type_login")}
-								</SelectItem>
-								<SelectItem value="card">
-									{t("tools.password_manager.type_card")}
-								</SelectItem>
-								<SelectItem value="apikey">
-									{t("tools.password_manager.type_apikey")}
-								</SelectItem>
-								<SelectItem value="passkey">
-									{t("tools.password_manager.type_passkey")}
-								</SelectItem>
-								<SelectItem value="credfile">
-									{t("tools.password_manager.type_credfile")}
-								</SelectItem>
-								<SelectItem value="note">
-									{t("tools.password_manager.type_note")}
-								</SelectItem>
+								{ITEM_TYPE_OPTIONS.map((opt) => (
+									<SelectItem key={opt.id} value={opt.id}>
+										<OptionDisplay icon={opt.icon} label={t(opt.label)} />
+									</SelectItem>
+								))}
 							</SelectContent>
 						</Select>
 					</div>
