@@ -10,12 +10,6 @@
 		"format": "prettier --write .",
 		"preview": "vite preview"
 	},
-	"lint-staged": {
-		"src/**/*{js,html,css,ts,tsx}": [
-			"pnpm lint",
-			"pnpm format"
-		]
-	},
 	"dependencies": {
 		"@base-ui/react": "^1.6.0",
 		"@excalidraw/excalidraw": "^0.18.1",
@@ -61,10 +55,12 @@
 		"axios": "^1.15.2",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
+		"date-fns": "^4.4.0",
 		"diceware-generator": "^3.0.1",
 		"diceware-wordlist-en": "^1.0.0",
 		"generate-password-ts": "^1.6.5",
 		"i18next": "^25.10.10",
+		"input-otp": "^1.4.2",
 		"jspdf": "^4.2.1",
 		"katex": "^0.16.45",
 		"livekit-client": "^2.19.1",
@@ -77,7 +73,7 @@
 		"qrcode.react": "^4.2.0",
 		"radix-ui": "^1.4.3",
 		"react": "^19.2.5",
-		"react-day-picker": "^9.14.0",
+		"react-day-picker": "^10.0.1",
 		"react-dom": "^19.2.5",
 		"react-i18next": "^15.7.4",
 		"react-markdown": "^10.1.0",

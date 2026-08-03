@@ -14,13 +14,6 @@
 	"author": "",
 	"license": "ISC",
 	"type": "module",
-	"lint-staged": {
-		"src/**/*{js,ts}": [
-			"pnpm format",
-			"pnpm lint",
-			"npm run build"
-		]
-	},
 	"dependencies": {
 		"@supabase/supabase-js": "^2.105.0",
 		"@types/cors": "^2.8.19",

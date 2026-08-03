@@ -1,7 +1,7 @@
 {
     "name": "snipit",
     "version": "1.0.0",
-    "description": "",
+    "type": "module",
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
@@ -18,12 +18,6 @@
     "license": "ISC",
     "dependencies": {
         "groq-sdk": "^0.37.0"
-    },
-    "lint-staged": {
-        "src/**/*{js,html,css,ts,tsx}": [
-            "eslint --fix",
-            "prettier --write"
-        ]
     },
     "devDependencies": {
         "@eslint/js": "^9.39.4",
