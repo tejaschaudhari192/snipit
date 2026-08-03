@@ -406,7 +406,7 @@
 	"profile": {
 		"loading": "Laden...",
 		"overview": "Profilübersicht",
-		"title": "Sichere Tools & Dienstprogramme",
+		"title": "Ihr Profil",
 		"username": "Benutzername",
 		"email": "E-Mail",
 		"joined": "Beigetreten",
@@ -468,7 +468,7 @@
 			"share": "Einfaches Teilen"
 		},
 		"dynamic_id_dialog": {
-			"title": "Sichere Tools & Dienstprogramme",
+			"title": "Benutzerdefinierte ID eingeben",
 			"description": "Wählen Sie eine eindeुते Kennung. Diese wird in der URL Ihres Snippets verwendet.",
 			"placeholder": "Geben Sie Ihre benutzerdefinierte ID ein...",
 			"preview": "Vorschau:",
@@ -578,7 +578,7 @@
 	"history": {
 		"loading": "Laden...",
 		"overview": "Übersicht",
-		"title": "Sichere Tools & Dienstprogramme",
+		"title": "Verlauf",
 		"recent_links": "Aktuelle Links",
 		"plain_text_snippet": "Klartext",
 		"link_snippet": "Link kürzen",
@@ -633,110 +633,110 @@
 	"about_page": {
 		"loading": "Laden...",
 		"overview": "Übersicht",
-		"title": "Sichere Tools & Dienstprogramme",
-		"subtitle": "Eine Sammlung sicherer, clientseitiger Tools, die Ihre sensiblen Daten schützen. Ihre Daten verlassen niemals Ihr Gerät.",
+		"title": "Über",
+		"subtitle": "Ein Projekt zweier Entwickler, die Code-Sharing einfach und schön machen wollen.",
 		"features_title": "Leistungsstarke Funktionen",
 		"features_subtitle": "Alles, was Sie für nahtloses Code-Sharing brauchen",
 		"features": {
 			"syntax_highlighting": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "Syntax-Hervorhebung",
 				"desc": "Schöne Code-Anzeige mit Unterstützung für 15+ Programmiersprachen."
 			},
 			"sharing": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "Einfaches Teilen",
 				"desc": "Teilen Sie Ihre Snippets mühelos mit einem einfachen Link oder QR-Code."
 			},
 			"drawing": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "Interaktives Zeichnen",
 				"desc": "Kollaboratives Whiteboard zum Skizzieren von Ideen und Diagrammen neben Ihrem Code."
 			},
 			"terminal_execution": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "Interaktives Terminal",
 				"desc": "Führen Sie Ihre Code-Snippets (Bash, Python, Java usw.) direkt im integrierten Hochleistungsterminal aus."
 			},
 			"ai_edit_assistant": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "KI-Bearbeitungsassistent",
 				"desc": "Verbessern Sie Ihren Code, beheben Sie Fehler oder erklären Sie Logik mit dem integrierten KI-Assistenten."
 			},
 			"real_time_collaboration": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "Echtzeit-Zusammenarbeit",
 				"desc": "Bearbeiten Sie Code und Zeichnungen gemeinsam in Echtzeit mit Live-Cursors und Präsenzanzeige."
 			},
 			"file_share": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "Dateifreigabe",
 				"desc": "Laden Sie Dateien sicher hoch und teilen Sie sie über einen eindeutigen Link."
 			},
 			"redirect_urls": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "Links kürzen",
 				"desc": "Erstellen Sie kurze, handliche Links, die sofort zu jedem beliebigen Ziel weiterleiten."
 			},
 			"ai_detection": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "KI-Spracherkennung",
 				"desc": "Erkennt Programmiersprachen automatisch mit KI-Technologie."
 			},
 			"save_as_export": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "Flexibler Export",
 				"desc": "Laden Sie Ihre Snippets in verschiedenen Formaten herunter, darunter PDF, Klartext oder sprachspezifische Erweiterungen."
 			},
 			"expiration": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "Ablaufkontrolle",
 				"desc": "Snippets laufen nach 1 Stunde bis 1 Jahr ab, wählen Sie ein benutzerdefiniertes Datum, oder behalten Sie sie für immer."
 			},
 			"custom_ids": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "Benutzerdefinierte URLs",
 				"desc": "Erstellen Sie einprägsame URLs für einfaches Snippet-Teilen."
 			},
 			"password": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "Erhöhte Sicherheit",
 				"desc": "Schützen Sie vertraulichen Code mit Passwörtern und verwalten Sie granulare Zugriffsberechtigungen."
 			},
 			"access_control": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "Rollenbasierte Zugriffskontrolle",
 				"desc": "Erteilen Sie bestimmten Benutzern Viewer-, Editor- oder Admin-Rollen für eine präzise Zusammenarbeit."
 			},
 			"profile": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "Benutzerprofile",
 				"desc": "Erstellen Sie ein Konto, um Ihre Snippets zu verwalten, zu bearbeiten und den Überblick zu behalten."
 			},
 			"dark_mode": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "Dunkelmodus",
 				"desc": "Augenschonend mit einer schönen dunklen Theme-Option."
 			},
 			"multi_language": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "Mehrsprachige Oberfläche",
 				"desc": "Benutzeroबरfläche in Englisch, Deutsch, Hindi, Japanisch und Marathi."
 			},
 			"labels": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "Smarte Labels",
 				"desc": "Organisieren Sie Ihre Snippets mit einem leistungsstarken, benutzerspezifischen Label-System. Kennzeichnen und kategorisieren Sie Ihren Code für den sofortigen Abruf und eine personalisierte Organisation."
 			},
 			"music_integration": {
-				"title": "Sichere Tools & Dienstprogramme",
+				"title": "Zero-Bandbreiten Musik",
 				"desc": "Streamen Sie Ihre Lieblingslieder direkt in Ihrem Arbeitsbereich mit energiesparenden Hintergrund-Playern, benutzerdefinierten Bitraten und einem proxy-gesicherten MP3-Downloader."
 			}
 		},
 		"story": {
-			"title": "Sichere Tools & Dienstprogramme",
+			"title": "Unsere Geschichte",
 			"p1": "Snipit entstand aus einer einfachen Idee: Code-Sharing sollte schön, schnell und mühelos sein. Als Entwickler teilten wir ständig Code-Snippets mit Kollegen, Freunden und der Community, aber bestehende Lösungen fühlten sich klobig und veraltet an.",
 			"p2": "Also beschlossen wir, etwas Besseres zu bauen. Snipit kombiniert elegantes Design mit leistungsstarker Funktionalität und ist das perfekte Werkzeug für Entwickler, die sowohl Form als auch Funktion schätzen.",
 			"p3": "Mit modernen Webtechnologien und Fokus auf Benutzererfahrung gebaut, will Snipit die erste Wahl für Code-Sharing in der Entwickler-Community sein."
 		},
 		"team": {
-			"title": "Sichere Tools & Dienstprogramme",
+			"title": "Das Team",
 			"roles": {
 				"developer": "Entwickler",
 				"quality_engineer": "Qualitätsingenieur"
 			}
 		},
 		"contribute": {
-			"title": "Sichere Tools & Dienstprogramme",
+			"title": "Mitmachen?",
 			"desc": "Snipit ist Open Source und wir freuen uns über Beiträge aus der Community. Ob Fehlerbehebung, neue Funktionen oder Verbesserungen der Dokumentation – jeder Beitrag zählt.",
 			"gitlab_button": "GitLab",
 			"contact_button": "Kontakt aufnehmen",
 			"telegram_button": "Telegram"
 		},
 		"faq": {
-			"title": "Sichere Tools & Dienstprogramme",
+			"title": "Häufig gestellte Fragen (FAQ)",
 			"items": {
 				"free": {
 					"question": "Ist Snipit kostenlos?",
