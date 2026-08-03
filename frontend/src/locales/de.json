@@ -386,7 +386,9 @@
 			"anonymous": "Anonym",
 			"write_comment": "Schreiben Sie einen Kommentar...",
 			"post_comment": "Kommentar posten",
-			"comment_restricted": "Sie haben keine Berechtigung, diesen Schnipsel zu kommentieren."
+			"comment_restricted": "Sie haben keine Berechtigung, diesen Schnipsel zu kommentieren.",
+			"open": "Diskussion öffnen",
+			"title": "Diskussion"
 		},
 		"redirect": {
 			"ready": "Weiterleitung bereit",

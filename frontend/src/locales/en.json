@@ -506,7 +506,9 @@
 			"anonymous": "Anonymous",
 			"write_comment": "Write a comment...",
 			"post_comment": "Post Comment",
-			"comment_restricted": "You don't have permission to comment on this snippet."
+			"comment_restricted": "You don't have permission to comment on this snippet.",
+			"open": "Open discussion",
+			"title": "Discussion"
 		},
 		"redirect": {
 			"ready": "Redirect Ready",

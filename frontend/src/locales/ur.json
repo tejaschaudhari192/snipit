@@ -386,7 +386,9 @@
 			"anonymous": "گمنام",
 			"write_comment": "تبصرہ لکھیں...",
 			"post_comment": "تبصرہ پوسٹ کریں",
-			"comment_restricted": "آپ کو تبصرہ کرنے کی اجازت نہیں ہے۔"
+			"comment_restricted": "آپ کو تبصرہ کرنے کی اجازت نہیں ہے۔",
+			"open": "کھلی گفتگو",
+			"title": "گفتگو"
 		},
 		"redirect": {
 			"ready": "ریڈائریکٹ تیار ہے",

@@ -386,7 +386,9 @@
 			"anonymous": "匿名",
 			"write_comment": "コメントを書く...",
 			"post_comment": "コメントを投稿",
-			"comment_restricted": "このスニペットにコメントする権限がありません。"
+			"comment_restricted": "このスニペットにコメントする権限がありません。",
+			"open": "ディスカッションを開く",
+			"title": "ディスカッション"
 		},
 		"redirect": {
 			"ready": "リダイレクトの準備完了",
