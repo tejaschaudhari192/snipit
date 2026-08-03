@@ -75,7 +75,7 @@ export const SemanticIdTab = ({
 
 			<div className="flex gap-2">
 				<Input
-					placeholder={t("home.semantic_id_placeholder")}
+					placeholder={t("home.id_generation.semantic_placeholder")}
 					value={customId}
 					className="h-10 text-sm focus-visible:ring-primary/40 transition-shadow bg-card/40 hover:bg-card/60"
 					onChange={(e) => setCustomId(e.target.value)}
@@ -88,7 +88,7 @@ export const SemanticIdTab = ({
 					className="h-10 w-10 shrink-0 bg-primary/5 border-primary/20 hover:bg-primary/10 text-primary transition-all active:scale-95"
 					onClick={handleGenerate}
 					disabled={disabled || isGenerating}
-					title={t("home.semantic_id_generate")}
+					title={t("home.id_generation.semantic_generate")}
 				>
 					<RefreshCw
 						className={cn(
@@ -108,7 +108,7 @@ export const SemanticIdTab = ({
 			<div className="flex items-center gap-3">
 				<div className="flex-1 flex items-center gap-3 bg-card/40 border border-border/50 rounded-md px-3 h-10 transition-colors hover:bg-card/60">
 					<span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider w-8 shrink-0">
-						{t("home.semantic_id_words")}
+						{t("home.id_generation.semantic_words")}
 					</span>
 					<Input
 						type="range"

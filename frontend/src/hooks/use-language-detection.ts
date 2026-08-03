@@ -31,7 +31,7 @@ export const useLanguageDetection = () => {
 				const detectedLang =
 					result.language === "bash" ? "shell" : result.language;
 				toast.add({
-					title: t("home.detected_language", {
+					title: t("home.misc.detected_language", {
 						language: detectedLang,
 					}),
 				});

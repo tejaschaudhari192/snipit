@@ -99,10 +99,10 @@ export const UserAvatarList = ({ users }: UserAvatarListProps) => {
 									)}
 								>
 									{u.isRecording
-										? t("display.status_recording")
+										? t("display.status.recording")
 										: u.isEditing
-											? t("display.status_editing")
-											: t("display.status_viewing")}
+											? t("display.status.editing")
+											: t("display.status.viewing")}
 								</span>
 							</TooltipContent>
 						</Tooltip>

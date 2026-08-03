@@ -30,7 +30,7 @@ export const AutosaveStatus = ({ status }: AutosaveStatusProps) => {
 							}
 							className="shimmer font-medium"
 						>
-							{t("common.saving")}
+							{t("common.states.saving")}
 						</span>
 					}
 					icon={
@@ -42,7 +42,7 @@ export const AutosaveStatus = ({ status }: AutosaveStatusProps) => {
 			return (
 				<StatusBadge
 					className="text-destructive animate-bounce"
-					label={t("common.save_failed")}
+					label={t("common.states.save_failed")}
 					icon={
 						<>
 							<Cloud className="h-4 w-4 text-destructive opacity-50" />
@@ -56,7 +56,7 @@ export const AutosaveStatus = ({ status }: AutosaveStatusProps) => {
 				<StatusBadge
 					className="text-emerald-500 animate-in fade-in slide-in-from-left-2"
 					labelClassName="opacity-80"
-					label={t("common.saved")}
+					label={t("common.states.saved")}
 					icon={
 						<>
 							<Cloud className="h-4 w-4 fill-emerald-500/10" />

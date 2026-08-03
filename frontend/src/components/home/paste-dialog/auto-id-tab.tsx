@@ -6,7 +6,7 @@ export const AutoIdTab = () => {
 	return (
 		<div className="flex flex-col items-center justify-center p-4 rounded-lg bg-card/40 border border-dashed border-border/40 min-h-20">
 			<p className="text-[13px] text-muted-foreground font-medium text-center">
-				{t("home.paste_system_id_desc")}
+				{t("home.id_generation.automatic_desc")}
 			</p>
 		</div>
 	);

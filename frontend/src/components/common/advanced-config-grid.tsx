@@ -154,7 +154,7 @@ export const AdvancedConfigGrid = ({
 	const isIdDisabled = disabled || (!isOwner && !isAdmin);
 	const tooltipText =
 		!user && !pasteId
-			? t("common.auth_required") || "Authentication Required"
+			? t("common.auth.auth_required") || "Authentication Required"
 			: t("common.no_edit_permitted") || "Edit not permitted";
 
 	return (
@@ -164,7 +164,7 @@ export const AdvancedConfigGrid = ({
 				<div>
 					<SectionHeader
 						icon={Tag}
-						label={t("home.identification_type")}
+						label={t("home.misc.identification_type")}
 					/>
 					<LockedSettingWrapper
 						disabled={isIdDisabled}
@@ -229,7 +229,7 @@ export const AdvancedConfigGrid = ({
 										<Settings className="h-4 w-4" />
 									</div>
 									<span className="text-sm font-semibold">
-										{t("common.open_discussion")}
+										{t("common.discussion.open")}
 									</span>
 								</div>
 								<Switch
@@ -283,7 +283,7 @@ export const AdvancedConfigGrid = ({
 											<Lock className="h-4 w-4" />
 										</div>
 										<span className="text-sm font-semibold">
-											{t("common.password_protected")}
+											{t("common.auth.password_protected")}
 										</span>
 									</div>
 									<Switch
@@ -308,7 +308,7 @@ export const AdvancedConfigGrid = ({
 													)
 												}
 												placeholder={t(
-													"common.password_placeholder",
+													"common.auth.password_placeholder",
 												)}
 												disabled={
 													disabled ||
@@ -345,7 +345,7 @@ export const AdvancedConfigGrid = ({
 													(!isOwner && !isAdmin)
 												}
 											>
-												{t("common.set")}
+												{t("common.actions.set")}
 											</Button>
 										</div>
 									);
@@ -363,10 +363,10 @@ export const AdvancedConfigGrid = ({
 					<div className="flex flex-col justify-center items-center text-center p-4 rounded-xl border border-dashed border-primary/20 bg-primary/5 min-h-35 animate-in fade-in duration-300">
 						<LogIn className="h-5 w-5 text-primary/50 mb-2 animate-bounce" />
 						<p className="text-primary font-bold text-sm mb-1">
-							{t("common.auth_required")}
+							{t("common.auth.auth_required")}
 						</p>
 						<p className="text-xs text-muted-foreground mb-3 leading-relaxed">
-							{t("common.auth_required_desc")}
+							{t("common.auth.auth_required_desc")}
 						</p>
 						<div className="flex items-center gap-2 w-full">
 							<Button

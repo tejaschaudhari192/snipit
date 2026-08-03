@@ -126,7 +126,7 @@ export const usePasteHandlers = ({
 				setContentType("file");
 				addFiles(pastedFiles);
 				toast.add({
-					title: t("home.files_selected_via_paste", {
+					title: t("home.file_upload.files_selected_via_paste", {
 						count: pastedFiles.length,
 					}),
 				});

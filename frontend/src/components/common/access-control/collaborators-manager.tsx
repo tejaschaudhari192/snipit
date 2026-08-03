@@ -84,12 +84,12 @@ export const CollaboratorsManager = ({
 					...results.map((i) => i.email),
 				]);
 				toast.add({
-					title: t("messages.collaborators_added"),
+					title: t("messages.success.collaborators_added"),
 					type: "success",
 				});
 			} catch {
 				toast.add({
-					title: t("messages.collaborators_failed"),
+					title: t("messages.error.collaborators_failed"),
 					type: "error",
 				});
 			} finally {
@@ -122,12 +122,12 @@ export const CollaboratorsManager = ({
 					allowedUsers.filter((e) => e !== emailToRemove),
 				);
 				toast.add({
-					title: t("messages.collaborator_removed"),
+					title: t("messages.success.collaborator_removed"),
 					type: "success",
 				});
 			} catch {
 				toast.add({
-					title: t("messages.collaborator_remove_failed"),
+					title: t("messages.error.collaborator_remove_failed"),
 					type: "error",
 				});
 			} finally {
@@ -160,12 +160,12 @@ export const CollaboratorsManager = ({
 					),
 				);
 				toast.add({
-					title: t("messages.collaborator_updated"),
+					title: t("messages.success.collaborator_updated"),
 					type: "success",
 				});
 			} catch {
 				toast.add({
-					title: t("messages.collaborator_update_failed"),
+					title: t("messages.error.collaborator_update_failed"),
 					type: "error",
 				});
 			} finally {
@@ -189,7 +189,7 @@ export const CollaboratorsManager = ({
 						onChange={setPendingEmails}
 						inputValue={inputValue}
 						onInputChange={setInputValue}
-						placeholder={t("common.add_people_placeholder")}
+						placeholder={t("common.access.add_people_placeholder")}
 						className="min-h-9 border-none bg-transparent shadow-none focus-within:ring-0 focus-within:ring-offset-0 text-[13px] px-2 py-0"
 						isReadOnly={disabled || isUpdating}
 					/>
@@ -208,16 +208,16 @@ export const CollaboratorsManager = ({
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="viewer">
-								{t("common.viewer")}
+								{t("common.access.viewer")}
 							</SelectItem>
 							<SelectItem value="editor">
-								{t("common.editor")}
+								{t("common.access.editor")}
 							</SelectItem>
 							<SelectItem value="admin">
-								{t("common.admin")}
+								{t("common.access.admin")}
 							</SelectItem>
 							<SelectItem value="commenter">
-								{t("common.commenter")}
+								{t("common.access.commenter")}
 							</SelectItem>
 						</SelectContent>
 					</Select>
@@ -238,7 +238,7 @@ export const CollaboratorsManager = ({
 						{isUpdating ? (
 							<span className="animate-pulse">...</span>
 						) : (
-							t("common.add")
+							t("common.actions.add")
 						)}
 					</Button>
 				</div>
@@ -253,7 +253,7 @@ export const CollaboratorsManager = ({
 				>
 					{!compact && (
 						<p className="text-[11px] font-semibold text-muted-foreground tracking-wide mt-3 mb-1 px-1">
-							{t("common.people_with_access")}
+							{t("common.access.people_with_access")}
 						</p>
 					)}
 					{collaborators.map((item) => (
@@ -317,16 +317,16 @@ export const CollaboratorsManager = ({
 											</SelectTrigger>
 											<SelectContent>
 												<SelectItem value="viewer">
-													{t("common.viewer")}
+													{t("common.access.viewer")}
 												</SelectItem>
 												<SelectItem value="editor">
-													{t("common.editor")}
+													{t("common.access.editor")}
 												</SelectItem>
 												<SelectItem value="admin">
-													{t("common.admin")}
+													{t("common.access.admin")}
 												</SelectItem>
 												<SelectItem value="commenter">
-													{t("common.commenter")}
+													{t("common.access.commenter")}
 												</SelectItem>
 											</SelectContent>
 										</Select>
@@ -343,7 +343,7 @@ export const CollaboratorsManager = ({
 											}
 										>
 											<span className="sr-only">
-												{t("common.remove")}
+												{t("common.actions.remove")}
 											</span>
 											<X width="14" height="14" />
 										</Button>

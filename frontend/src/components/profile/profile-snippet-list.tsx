@@ -85,7 +85,7 @@ export const ProfileSnippetList = ({
 									}
 									className="shimmer font-medium"
 								>
-									{t("common.loading")}
+									{t("common.states.loading")}
 								</span>
 							</div>
 						)}

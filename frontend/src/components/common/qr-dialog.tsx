@@ -35,7 +35,7 @@ export const QRDialog = ({ url, isOpen, onOpenChange }: QRDialogProps) => {
 			document.body.appendChild(downloadLink);
 			downloadLink.click();
 			document.body.removeChild(downloadLink);
-			toast.add({ title: t("messages.qr_downloaded"), type: "success" });
+			toast.add({ title: t("messages.success.qr_downloaded"), type: "success" });
 		}
 	};
 
@@ -79,7 +79,7 @@ export const QRDialog = ({ url, isOpen, onOpenChange }: QRDialogProps) => {
 						onClick={downloadQR}
 					>
 						<Download className="h-4 w-4" />
-						{t("common.download_qr")}
+						{t("common.actions.download_qr")}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

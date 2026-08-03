@@ -48,10 +48,10 @@ export const FileUploadItem = ({
 				<AttachmentTitle>{file.fileName}</AttachmentTitle>
 				<AttachmentDescription>
 					{file.isUploading
-						? `${Math.round(file.progress)}% • ${t("home.file_uploading")}`
+						? `${Math.round(file.progress)}% • ${t("home.file_upload.uploading")}`
 						: file.progress === 100
-							? t("home.file_ready")
-							: t("home.file_selected")}
+							? t("home.file_upload.ready")
+							: t("home.file_upload.selected")}
 				</AttachmentDescription>
 			</AttachmentContent>
 			{!isUploading && onRemove && (

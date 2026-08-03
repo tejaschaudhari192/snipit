@@ -45,16 +45,16 @@ export const PasswordGate = ({
 						</div>
 					</div>
 					<CardTitle className="text-3xl font-black tracking-tight text-transparent bg-clip-text bg-linear-to-b from-foreground via-foreground to-muted-foreground drop-shadow-sm text-center">
-						{t("common.password_protected")}
+						{t("common.auth.password_protected")}
 					</CardTitle>
 					<CardDescription className="text-base text-muted-foreground text-center">
-						{t("common.enter_password_desc")}
+						{t("common.auth.enter_password_desc")}
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-4">
 					<div className="space-y-2">
 						<PasswordInput
-							placeholder={t("common.password_placeholder")}
+							placeholder={t("common.auth.password_placeholder")}
 							value={passwordInput}
 							onChange={(e) => {
 								setPasswordInput(e.target.value);
@@ -84,7 +84,7 @@ export const PasswordGate = ({
 								<div className="flex items-center gap-2">
 									<Spinner className="h-4 w-4 animate-spin text-primary-foreground" />
 									<span className="flex overflow-hidden tracking-wide">
-										{t("common.unlocking")
+										{t("common.states.unlocking")
 											.split("")
 											.map((char, i) => (
 												<span
@@ -105,7 +105,7 @@ export const PasswordGate = ({
 								</div>
 							) : (
 								<div className="flex items-center gap-2 animate-in fade-in slide-in-from-top-4 duration-300">
-									<span>{t("common.unlock")}</span>
+									<span>{t("common.auth.unlock")}</span>
 								</div>
 							)}
 						</div>

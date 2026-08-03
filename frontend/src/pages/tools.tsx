@@ -75,7 +75,7 @@ const ToolsPage = () => {
 							</CardHeader>
 							<CardContent className="flex justify-end mt-auto">
 								<Button render={<Link to={tool.link} />}>
-									{t("common.open")}
+									{t("common.actions.open")}
 								</Button>
 							</CardContent>
 						</Card>

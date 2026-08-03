@@ -295,7 +295,7 @@ export const EditorContent = memo(
 										handlePaste as unknown as React.ClipboardEventHandler<HTMLTextAreaElement>
 									}
 									placeholder={t(
-										"home.enter_snippet_placeholder",
+										"home.inputs.snippet_placeholder",
 									)}
 								/>
 							)
@@ -506,7 +506,7 @@ export const EditorContent = memo(
 								value={textValue}
 								onChange={(e) => setTextValue(e.target.value)}
 								placeholder={t(
-									"home.enter_snippet_placeholder",
+									"home.inputs.snippet_placeholder",
 								)}
 								className="h-full w-full mx-auto resize-none border-0 focus-visible:ring-0 p-6 bg-background"
 								onPaste={handlePaste}

@@ -555,8 +555,8 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 								>
 									{t(
 										isEncrypt
-											? "common.encrypting"
-											: "common.decrypting",
+											? "common.states.encrypting"
+											: "common.states.decrypting",
 									)}
 								</span>
 							</span>
@@ -710,8 +710,8 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 							>
 								{t(
 									isEncrypt
-										? "common.encrypting"
-										: "common.decrypting",
+										? "common.states.encrypting"
+										: "common.states.decrypting",
 								)}
 							</span>
 						) : (

@@ -18,7 +18,7 @@ export const useAiIdSuggester = (
 		const hasFiles = files && files.length > 0;
 
 		if (!hasContent && !hasFiles) {
-			toast.add({ title: t("messages.empty_content"), type: "warning" });
+			toast.add({ title: t("messages.validation.empty_content"), type: "warning" });
 			return;
 		}
 
@@ -34,7 +34,7 @@ export const useAiIdSuggester = (
 			if (response.data?.id) {
 				setCustomId(response.data.id);
 				toast.add({
-					title: t("home.ai_id_suggested"),
+					title: t("home.id_generation.ai_suggested"),
 					type: "success",
 				});
 			}

@@ -400,7 +400,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 				guestStorage.removeSnippetEverywhere(id);
 
 				toast.add({
-					title: t("messages.snippet_deleted_id", {
+					title: t("messages.success.snippet_deleted_id", {
 						id: `/${id}`,
 					}),
 					type: "success",
@@ -408,7 +408,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 			} catch (err) {
 				console.error("Failed to delete snippet", err);
 				toast.add({
-					title: t("messages.delete_failed"),
+					title: t("messages.error.delete_failed"),
 					type: "error",
 				});
 			}

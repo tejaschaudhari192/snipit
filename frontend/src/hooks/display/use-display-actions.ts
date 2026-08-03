@@ -78,7 +78,7 @@ export const useDisplayActions = ({
 
 			if (!hasContent) {
 				toast.add({
-					title: t("messages.content_required"),
+					title: t("messages.validation.content_required"),
 					type: "error",
 				});
 				setSaveStatus("error");
@@ -91,7 +91,7 @@ export const useDisplayActions = ({
 			) {
 				toast.add({
 					title:
-						t("home.custom_id_required") || "Custom ID is required",
+						t("home.id_generation.custom_id_required") || "Custom ID is required",
 					type: "error",
 				});
 				setSaveStatus("error");
@@ -104,7 +104,7 @@ export const useDisplayActions = ({
 				!(paste?.isPasswordProtected || paste?.password)
 			) {
 				toast.add({
-					title: t("messages.password_required"),
+					title: t("messages.error.password_required"),
 					type: "error",
 				});
 				setSaveStatus("error");
@@ -264,7 +264,7 @@ export const useDisplayActions = ({
 				toast.add({
 					title:
 						axiosError.response?.data?.error ??
-						t("messages.update_failed"),
+						t("messages.error.update_failed"),
 					type: "error",
 				});
 			} finally {
@@ -351,12 +351,12 @@ export const useDisplayActions = ({
 			playRemoveSound();
 			await apiHelpers.deletePaste(id!);
 			toast.add({
-				title: t("messages.snippet_deleted"),
+				title: t("messages.success.snippet_deleted"),
 				type: "success",
 			});
 			navigate("/");
 		} catch {
-			toast.add({ title: t("messages.delete_failed"), type: "error" });
+			toast.add({ title: t("messages.error.delete_failed"), type: "error" });
 			setIsDeleting(false);
 			setIsDeleteDialogOpen(false);
 		}

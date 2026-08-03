@@ -41,7 +41,7 @@ export const TerminalHeader = ({
 						variant="ghost"
 						onClick={onClose}
 						className="p-0 h-3 w-3 min-w-0 min-h-0 rounded-full bg-rose-500 hover:bg-rose-400 hover:text-rose-950 transition-all flex items-center justify-center shadow-inner group relative"
-						title={t("common.close")}
+						title={t("common.actions.close")}
 					>
 						<X className="h-2 w-2 text-rose-950 opacity-0 group-hover/dots:opacity-100 transition-opacity" />
 					</Button>

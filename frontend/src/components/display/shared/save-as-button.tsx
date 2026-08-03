@@ -82,7 +82,7 @@ export const SaveAsButton = ({
 							<Download className="h-4 w-4" />
 						)}
 						<span className="hidden sm:inline ml-2">
-							{t("common.save_as")}
+							{t("common.actions.save_as")}
 						</span>
 					</Button>
 				}

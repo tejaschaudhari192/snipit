@@ -71,16 +71,16 @@ export const LinkResultView = ({
 								<Link className="h-6 w-6" />
 							</div>
 							<h2 className="text-xl font-bold tracking-tight">
-								{t("home.tab_link")}
+								{t("home.tabs.link.full")}
 							</h2>
 							<p className="text-muted-foreground text-sm font-medium">
-								{t("home.link_desc")}
+								{t("home.inputs.link_description")}
 							</p>
 						</div>
 						<Input
 							value={textValue}
 							onChange={(e) => setTextValue(e.target.value)}
-							placeholder={t("home.link_placeholder")}
+							placeholder={t("home.inputs.link_placeholder")}
 							className="h-12 text-base px-5 rounded-xl border-primary/20 focus-visible:ring-primary/20 bg-background"
 						/>
 
@@ -98,21 +98,21 @@ export const LinkResultView = ({
 										className="text-xs font-bold gap-1.5"
 									>
 										<MousePointerClick className="h-3.5 w-3.5 text-primary shrink-0" />
-										{t("common.redirection_click")}
+										{t("common.redirect.click")}
 									</TabsTrigger>
 									<TabsTrigger
 										value="timer"
 										className="text-xs font-bold gap-1.5"
 									>
 										<Timer className="h-3.5 w-3.5 text-amber-500 shrink-0" />
-										{t("common.redirection_timer")}
+										{t("common.redirect.timer")}
 									</TabsTrigger>
 									<TabsTrigger
 										value="direct"
 										className="text-xs font-bold gap-1.5"
 									>
 										<Zap className="h-3.5 w-3.5 text-indigo-500 shrink-0" />
-										{t("common.redirection_direct")}
+										{t("common.redirect.direct")}
 									</TabsTrigger>
 								</TabsList>
 							</Tabs>
@@ -124,7 +124,7 @@ export const LinkResultView = ({
 											<span className="inline-block w-1.5 h-1.5 rounded-full bg-primary" />
 											<span>
 												{t(
-													"common.redirection_click_desc",
+													"common.redirect.click_desc",
 												)}
 											</span>
 										</>
@@ -134,7 +134,7 @@ export const LinkResultView = ({
 											<span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
 											<span>
 												{t(
-													"common.redirection_timer_desc",
+													"common.redirect.timer_desc",
 												)}
 											</span>
 										</>
@@ -144,7 +144,7 @@ export const LinkResultView = ({
 											<span className="inline-block w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
 											<span>
 												{t(
-													"common.redirection_direct_desc",
+													"common.redirect.direct_desc",
 												)}
 											</span>
 										</>

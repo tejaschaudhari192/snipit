@@ -77,10 +77,10 @@ export const FileUploadView = ({
 								</div>
 								<div>
 									<h2 className="text-sm font-bold tracking-tight">
-										{t("home.tab_file")}
+										{t("home.tabs.file.full")}
 									</h2>
 									<p className="text-[10px] text-muted-foreground font-bold">
-										{t("home.files_selected", {
+										{t("home.file_upload.files_selected", {
 											count: files.length,
 										})}
 									</p>
@@ -95,7 +95,7 @@ export const FileUploadView = ({
 										onClick={handleAddClick}
 										className="h-8 text-[11px] font-bold rounded-lg px-4 border-primary/20 hover:bg-primary/5 text-primary"
 									>
-										{t("home.add_files")}
+										{t("home.file_upload.add_files")}
 									</Button>
 									<Button
 										variant="ghost"
@@ -103,7 +103,7 @@ export const FileUploadView = ({
 										onClick={onClearFile}
 										className="h-8 text-[11px] font-bold rounded-lg px-4 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
 									>
-										{t("common.clear_all")}
+										{t("common.actions.clear_all")}
 									</Button>
 								</div>
 							)}
@@ -134,13 +134,13 @@ export const FileUploadView = ({
 									<FileUp className="h-8 w-8" />
 								</div>
 								<h2 className="text-xl font-bold tracking-tight">
-									{t("home.tab_file")}
+									{t("home.tabs.file.full")}
 								</h2>
 								<p className="text-muted-foreground text-sm font-medium">
-									{t("home.file_drop")}
+									{t("home.file_upload.drop_prompt")}
 								</p>
 								<p className="text-[10px] font-bold text-muted-foreground/60 pt-2">
-									{t("home.file_max_size", {
+									{t("home.file_upload.max_size", {
 										size: `${CONFIG.defaults.maxFileSize / (1024 * 1024)}MB`,
 									})}
 								</p>

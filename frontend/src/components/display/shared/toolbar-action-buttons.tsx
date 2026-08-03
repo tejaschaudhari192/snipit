@@ -56,7 +56,7 @@ export const ToolbarActionButtons = ({
 						content={content}
 						className="gap-2 px-3 h-9 w-auto rounded-md text-sm font-medium shrink-0"
 					>
-						<span>{t("display.copy_button")}</span>
+						<span>{t("display.actions.copy")}</span>
 					</CopyButton>
 
 					{(isCode ||
@@ -103,7 +103,7 @@ export const ToolbarActionButtons = ({
 						>
 							<Edit className="h-4 w-4" />
 							<span className="hidden sm:inline">
-								{t("display.edit_button")}
+								{t("display.actions.edit")}
 							</span>
 						</Button>
 					)}
@@ -116,7 +116,7 @@ export const ToolbarActionButtons = ({
 						>
 							<Trash2 className="h-4 w-4" />
 							<span className="hidden sm:inline">
-								{t("display.delete_button")}
+								{t("display.actions.delete")}
 							</span>
 						</Button>
 					)}
@@ -147,14 +147,14 @@ export const ToolbarActionButtons = ({
 										}
 										className="shimmer font-medium"
 									>
-										{t("common.saving")}
+										{t("common.states.saving")}
 									</span>
 								</>
 							) : (
 								<>
 									<Save className="h-4 w-4" />
 									<span className="hidden sm:inline">
-										{t("display.save_button")}
+										{t("display.actions.save")}
 									</span>
 								</>
 							)}

@@ -68,7 +68,7 @@ export const SnippetCard = ({
 						</span>
 						{isShared && (
 							<span className="text-[10px] sm:text-xs font-bold text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded uppercase tracking-wider ml-auto sm:ml-0">
-								{t("common.shared")}
+								{t("common.access.shared")}
 							</span>
 						)}
 					</div>

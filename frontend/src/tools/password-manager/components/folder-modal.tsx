@@ -229,8 +229,8 @@ export function FolderModal({
 						onClick={handleSave}
 					>
 						{mode === "delete"
-							? t("display.delete_button")
-							: t("common.save")}
+							? t("display.actions.delete")
+							: t("common.actions.save")}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

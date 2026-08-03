@@ -168,7 +168,7 @@ export function SchemaFieldsEditor({
 													fallback={
 														<div className="p-4 text-center text-sm text-muted-foreground">
 															{t(
-																"common.loading",
+																"common.states.loading",
 															)}
 														</div>
 													}

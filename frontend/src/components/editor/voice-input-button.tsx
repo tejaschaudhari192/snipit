@@ -134,7 +134,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 							size="icon"
 							onClick={discardRecording}
 							className="h-7 w-7 p-0 rounded-full active:scale-95 flex items-center justify-center transition-all text-foreground/60 hover:text-foreground"
-							title={t("common.cancel")}
+							title={t("common.actions.cancel")}
 						>
 							<X className="h-4 w-4" />
 						</Button>

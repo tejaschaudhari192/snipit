@@ -91,7 +91,7 @@ export const CommentsSection = ({
 				setNewComment("");
 				setAuthorName("");
 				toast.add({
-					title: t("messages.comment_added"),
+					title: t("messages.success.comment_added"),
 					type: "success",
 				});
 			}
@@ -100,7 +100,7 @@ export const CommentsSection = ({
 			toast.add({
 				title:
 					axiosError.response?.data?.error ||
-					t("messages.comment_failed"),
+					t("messages.error.comment_failed"),
 				type: "error",
 			});
 		} finally {
@@ -180,7 +180,7 @@ export const CommentsSection = ({
 									<div className="flex flex-col items-center justify-center h-40 text-muted-foreground italic opacity-70">
 										<MessageSquare className="w-8 h-8 mb-2 opacity-20" />
 										<p className="text-sm">
-											{t("common.no_comments")}
+											{t("common.discussion.no_comments")}
 										</p>
 									</div>
 								)}
@@ -196,11 +196,11 @@ export const CommentsSection = ({
 							{!user && (
 								<div className="flex flex-col gap-1.5">
 									<label className="text-xs font-medium ml-1 text-muted-foreground">
-										{t("common.your_name")}
+										{t("common.discussion.your_name")}
 									</label>
 									<Input
 										type="text"
-										placeholder={t("common.anonymus")}
+										placeholder={t("common.discussion.anonymous")}
 										value={authorName}
 										onChange={(e) =>
 											setAuthorName(e.target.value)
@@ -210,7 +210,7 @@ export const CommentsSection = ({
 							)}
 							<div className="flex flex-col gap-2">
 								<Textarea
-									placeholder={t("common.write_comment")}
+									placeholder={t("common.discussion.write_comment")}
 									value={newComment}
 									onChange={(e) =>
 										setNewComment(e.target.value)
@@ -234,14 +234,14 @@ export const CommentsSection = ({
 										) : (
 											<Send className="w-3 h-3" />
 										)}
-										{t("common.post_comment")}
+										{t("common.discussion.post_comment")}
 									</Button>
 								</div>
 							</div>
 						</div>
 					) : (
 						<div className="p-4 bg-muted/50 rounded-lg text-center text-sm text-muted-foreground border border-dashed text-balance">
-							{t("common.comment_restricted")}
+							{t("common.discussion.comment_restricted")}
 						</div>
 					)}
 				</div>

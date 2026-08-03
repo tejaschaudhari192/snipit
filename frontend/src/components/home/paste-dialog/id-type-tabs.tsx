@@ -51,7 +51,7 @@ export const IdTypeTabs = ({
 					disabled={disabled}
 				>
 					<Fingerprint className="h-3.5 w-3.5 mr-2" />
-					{t("home.paste_system_id")}
+					{t("home.id_generation.automatic")}
 				</TabsTrigger>
 				<TabsTrigger
 					value="dynamic"
@@ -59,7 +59,7 @@ export const IdTypeTabs = ({
 					disabled={disabled}
 				>
 					<Wand2 className="h-3.5 w-3.5 mr-2" />
-					{t("home.paste_dynamic_id")}
+					{t("home.id_generation.custom")}
 				</TabsTrigger>
 				<TabsTrigger
 					value="semantic"
@@ -67,7 +67,7 @@ export const IdTypeTabs = ({
 					disabled={disabled}
 				>
 					<Hash className="h-3.5 w-3.5 mr-2" />
-					{t("home.semantic_id_tab")}
+					{t("home.id_generation.semantic_tab")}
 				</TabsTrigger>
 			</TabsList>
 

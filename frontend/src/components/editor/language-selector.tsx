@@ -45,7 +45,7 @@ export const LanguageSelector = memo(
 					</div>
 					<div className="relative z-10 flex h-full w-full items-center justify-center gap-2 rounded-[5px] bg-background dark:bg-slate-900 text-sm font-bold">
 						<span className="whitespace-nowrap">
-							{t("home.auto_detecting")}
+							{t("home.misc.auto_detecting")}
 						</span>
 						<img
 							src={aiGif}

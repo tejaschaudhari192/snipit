@@ -42,13 +42,13 @@ export const DeleteConfirmDialog = ({
 						<Trash2 className="size-8" />
 					</AlertDialogMedia>
 					<AlertDialogTitle>
-						{title || t("display.delete_button")}
+						{title || t("display.actions.delete")}
 					</AlertDialogTitle>
 					<AlertDialogTitle className="sr-only">
 						Confirm Deletion
 					</AlertDialogTitle>
 					<AlertDialogDescription>
-						{description || t("messages.delete_confirm")}
+						{description || t("messages.confirm.delete")}
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
@@ -79,11 +79,11 @@ export const DeleteConfirmDialog = ({
 									}
 									className="shimmer font-medium"
 								>
-									{t("common.submitting")}
+									{t("common.states.submitting")}
 								</span>
 							</>
 						) : (
-							t("display.delete_button")
+							t("display.actions.delete")
 						)}
 					</AlertDialogAction>
 				</AlertDialogFooter>

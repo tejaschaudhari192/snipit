@@ -170,7 +170,7 @@ export const usePasteSubmission = (
 			}
 
 			toast.add({
-				title: t("messages.snippet_created", {
+				title: t("messages.success.snippet_created", {
 					idType: selectedIdType,
 					id: `/${data.id}`,
 				}),
@@ -206,13 +206,13 @@ export const usePasteSubmission = (
 				details?: { path: string[]; message: string }[];
 			}>;
 			if (axiosError.response?.status === 409)
-				return t("messages.id_conflict");
+				return t("messages.error.id_conflict");
 			const details = axiosError.response?.data?.details;
 			if (details && details.length > 0) return details[0].message;
 			return (
 				axiosError.response?.data?.error ||
 				(error as Error).message ||
-				t("messages.snippet_failed")
+				t("messages.error.snippet_failed")
 			);
 		} finally {
 			setIsSubmitting(false);

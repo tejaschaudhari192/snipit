@@ -330,8 +330,8 @@ const HomePage = () => {
 			toast.add({
 				title: t(
 					contentType === "file"
-						? "messages.empty_file"
-						: "messages.empty_content",
+						? "messages.validation.empty_file"
+						: "messages.validation.empty_content",
 				),
 				type: "warning",
 			});
@@ -362,8 +362,8 @@ const HomePage = () => {
 			toast.add({
 				title: t(
 					contentType === "file"
-						? "messages.empty_file"
-						: "messages.empty_content",
+						? "messages.validation.empty_file"
+						: "messages.validation.empty_content",
 				),
 				type: "warning",
 			});
@@ -462,7 +462,7 @@ const HomePage = () => {
 													textValue,
 												);
 											}}
-											title={t("home.auto_detecting")}
+											title={t("home.misc.auto_detecting")}
 										>
 											<Code2 className="h-4 w-4 text-muted-foreground" />
 										</Button>

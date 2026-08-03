@@ -48,12 +48,12 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 
 				if (result.saved) {
 					toast.add({
-						title: t("display.snippet_saved"),
+						title: t("display.status.snippet_saved"),
 						type: "success",
 					});
 				} else {
 					toast.add({
-						title: t("display.snippet_unsaved"),
+						title: t("display.status.snippet_unsaved"),
 						type: "success",
 					});
 				}
@@ -61,7 +61,7 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 				loadSavedProfile(true);
 			} catch (error) {
 				console.error("Failed to toggle save snippet", error);
-				toast.add({ title: t("display.save_failed"), type: "error" });
+				toast.add({ title: t("display.status.save_failed"), type: "error" });
 			} finally {
 				setIsSaving(false);
 			}
@@ -73,12 +73,12 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 
 				if (saved) {
 					toast.add({
-						title: t("display.snippet_saved"),
+						title: t("display.status.snippet_saved"),
 						type: "success",
 					});
 				} else {
 					toast.add({
-						title: t("display.snippet_unsaved"),
+						title: t("display.status.snippet_unsaved"),
 						type: "success",
 					});
 				}
@@ -122,9 +122,9 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 									paste.contentMode === "docs" ||
 									paste.language === "docs"
 								)
-									return t("home.tab_docs");
+									return t("home.tabs.docs.full");
 								if (paste.language === "text")
-									return t("home.tab_text");
+									return t("home.tabs.text.full");
 								const lang = LANGUAGES.find(
 									(l) => l.value === paste.language,
 								);

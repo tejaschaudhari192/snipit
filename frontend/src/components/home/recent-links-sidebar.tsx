@@ -48,7 +48,7 @@ export const RecentLinksSidebar = ({
 						size="icon"
 						className="h-6 w-6 p-0 rounded-md hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"
 						onClick={() => refreshSnippets()}
-						title={t("common.refresh")}
+						title={t("common.actions.refresh")}
 					>
 						<RefreshCw className="h-3 w-3" />
 					</Button>
@@ -57,7 +57,7 @@ export const RecentLinksSidebar = ({
 						size="icon"
 						className="h-6 w-6 p-0 rounded-md hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
 						onClick={() => setIsHistoryVisible(false)}
-						title={t("common.close")}
+						title={t("common.actions.close")}
 					>
 						<X className="h-3 w-3" />
 					</Button>
@@ -109,7 +109,7 @@ export const RecentLinksSidebar = ({
 									}}
 								>
 									<Copy className="h-3 w-3" />
-									{t("display.copy_button")}
+									{t("display.actions.copy")}
 								</Button>
 								<Button
 									variant="secondary"
@@ -136,7 +136,7 @@ export const RecentLinksSidebar = ({
 									}
 								>
 									<ExternalLink className="h-3 w-3" />
-									{t("common.visit_link")}
+									{t("common.redirect.visit_link")}
 								</Button>
 								{onDeleteHistoryItem && (
 									<Button
@@ -147,7 +147,7 @@ export const RecentLinksSidebar = ({
 											e.stopPropagation();
 											onDeleteHistoryItem(item.id);
 										}}
-										title={t("display.delete_button")}
+										title={t("display.actions.delete")}
 									>
 										<Trash2 className="h-3 w-3" />
 									</Button>

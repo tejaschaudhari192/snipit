@@ -100,8 +100,8 @@ export const EditorToolbar = ({
 					<TooltipContent side="left">
 						<p>
 							{isFullscreen
-								? t("common.shrink_editor")
-								: t("common.expand_editor")}
+								? t("common.actions.shrink_editor")
+								: t("common.actions.expand_editor")}
 						</p>
 					</TooltipContent>
 				</Tooltip>

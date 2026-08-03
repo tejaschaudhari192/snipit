@@ -62,7 +62,7 @@ export const CustomIdTab = ({
 					className="h-10 w-10 shrink-0 bg-primary/5 border-primary/20 hover:bg-primary/10 text-primary transition-all"
 					onClick={handleSuggestId}
 					disabled={disabled || isSuggesting}
-					title={t("home.suggest_id_ai")}
+					title={t("home.id_generation.suggest_ai")}
 				>
 					{isSuggesting ? (
 						<Spinner className="h-4 w-4 animate-spin" />

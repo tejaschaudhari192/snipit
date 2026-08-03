@@ -180,7 +180,7 @@ export const AiEnhanceDialog = ({
 									className="h-6 text-[10px] text-muted-foreground hover:text-primary"
 									onClick={() => setResult(null)}
 								>
-									{t("common.clear_all")}
+									{t("common.actions.clear_all")}
 								</Button>
 							</div>
 							<div className="p-4 bg-muted/30 rounded-xl border border-border/30 text-sm max-h-62.5 overflow-y-auto whitespace-pre-wrap font-mono shadow-inner custom-scrollbar selection:bg-primary/20">

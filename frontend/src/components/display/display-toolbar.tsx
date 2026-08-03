@@ -286,7 +286,7 @@ export const DisplayToolbar = memo(
 										size="icon"
 										className="h-9 w-9 shrink-0 bg-background/80 backdrop-blur-sm border-border/50 shadow-sm"
 										onClick={onAutoDetect}
-										title={t("home.auto_detecting")}
+										title={t("home.misc.auto_detecting")}
 									>
 										<Code2 className="h-4 w-4 text-muted-foreground" />
 									</Button>
@@ -310,7 +310,7 @@ export const DisplayToolbar = memo(
 							onClick={() => setIsOptionsOpen(!isOptionsOpen)}
 						>
 							<span className="hidden sm:inline">
-								{t("home.advanced_config")}
+								{t("home.misc.advanced_config")}
 							</span>
 							<ChevronDown
 								className={cn(
@@ -465,7 +465,7 @@ export const DisplayToolbar = memo(
 									>
 										<MessageSquare className="h-4 w-4" />
 										<span className="hidden sm:inline">
-											{t("common.discussion")}
+											{t("common.discussion.title")}
 										</span>
 										{commentCount > 0 && (
 											<span className="bg-primary/10 px-1.5 py-0.5 rounded text-[10px] animate-in zoom-in-50">
@@ -479,10 +479,10 @@ export const DisplayToolbar = memo(
 								<SheetHeader className="p-6 pb-2 border-b">
 									<SheetTitle className="flex items-center gap-2 text-xl">
 										<MessageSquare className="w-5 h-5 text-primary" />
-										{t("common.discussion_title")}
+										{t("common.discussion.subtitle")}
 									</SheetTitle>
 									<SheetDescription>
-										{t("common.discussion_desc")}
+										{t("common.discussion.desc")}
 									</SheetDescription>
 								</SheetHeader>
 								<div className="flex-1 min-h-0 p-6">

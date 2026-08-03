@@ -126,7 +126,7 @@ export const AiDrawDialog = ({
 						disabled={isGenerating}
 						className="rounded-xl font-bold uppercase tracking-wider text-xs h-11"
 					>
-						{t("common.cancel")}
+						{t("common.actions.cancel")}
 					</Button>
 					<Button
 						onClick={handleGenerate}

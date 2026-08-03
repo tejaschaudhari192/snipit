@@ -32,7 +32,7 @@ export const ShortenedResultCard = ({
 			document.body.appendChild(downloadLink);
 			downloadLink.click();
 			document.body.removeChild(downloadLink);
-			toast.add({ title: t("messages.qr_downloaded"), type: "success" });
+			toast.add({ title: t("messages.success.qr_downloaded"), type: "success" });
 		}
 	};
 
@@ -53,10 +53,10 @@ export const ShortenedResultCard = ({
 
 				<div className="space-y-2">
 					<h2 className="text-2xl font-black tracking-tight text-foreground">
-						{t("home.link_shortened")}
+						{t("home.misc.link_shortened")}
 					</h2>
 					<p className="text-muted-foreground font-medium">
-						{t("home.link_ready_desc")}
+						{t("home.misc.link_ready_desc")}
 					</p>
 				</div>
 
@@ -78,7 +78,7 @@ export const ShortenedResultCard = ({
 						onClick={downloadQR}
 					>
 						<Download className="h-3 w-3" />
-						{t("common.download_qr")}
+						{t("common.actions.download_qr")}
 					</Button>
 				</div>
 
@@ -96,13 +96,13 @@ export const ShortenedResultCard = ({
 								onClick={copyLink}
 							>
 								<Copy className="h-3.5 w-3.5" />
-								{t("display.copy_button")}
+								{t("display.actions.copy")}
 							</Button>
 						</div>
 					</div>
 					<div className="flex items-center justify-between px-2 text-[11px] font-bold text-muted-foreground/80 tracking-wide">
 						<span>
-							{t("home.alias")}: {shortenedResult.id}
+							{t("home.misc.alias")}: {shortenedResult.id}
 						</span>
 					</div>
 				</div>
@@ -115,14 +115,14 @@ export const ShortenedResultCard = ({
 						}
 					>
 						<ExternalLink className="h-4 w-4 mr-2" />
-						{t("common.visit_link")}
+						{t("common.redirect.visit_link")}
 					</Button>
 					<Button
 						variant="outline"
 						className="flex-1 h-11 font-bold border-border/50 bg-background/50 backdrop-blur-sm"
 						onClick={() => setTextValue("")}
 					>
-						{t("home.create_another")}
+						{t("home.misc.create_another")}
 					</Button>
 				</div>
 			</div>

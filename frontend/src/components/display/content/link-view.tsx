@@ -89,16 +89,16 @@ export const LinkView = ({
 					<LinkIcon className="w-10 h-10 text-primary" />
 				</div>
 				<h3 className="text-2xl font-black mb-3">
-					{t("home.tab_link")}
+					{t("home.tabs.link.full")}
 				</h3>
 				<p className="text-muted-foreground mb-8 text-center max-w-sm font-medium">
-					{t("home.link_desc")}
+					{t("home.inputs.link_description")}
 				</p>
 				<div className="w-full max-w-md">
 					<Input
 						value={content}
 						onChange={(e) => onContentChange(e.target.value)}
-						placeholder={t("home.link_placeholder")}
+						placeholder={t("home.inputs.link_placeholder")}
 						className="h-12 text-base px-5 rounded-xl border-primary/20 focus-visible:ring-primary/20 bg-background shadow-inner text-center"
 					/>
 				</div>
@@ -113,13 +113,13 @@ export const LinkView = ({
 				case "direct":
 					return {
 						icon: <Zap className="w-4 h-4 text-amber-500" />,
-						title: t("common.redirection_direct"),
+						title: t("common.redirect.direct"),
 						color: "bg-amber-500/10 text-amber-500 border-amber-500/20",
 					};
 				case "timer":
 					return {
 						icon: <Timer className="w-4 h-4 text-indigo-500" />,
-						title: t("common.redirection_timer"),
+						title: t("common.redirect.timer"),
 						color: "bg-indigo-500/10 text-indigo-500 border-indigo-500/20",
 					};
 				default:
@@ -127,7 +127,7 @@ export const LinkView = ({
 						icon: (
 							<MousePointerClick className="w-4 h-4 text-emerald-500" />
 						),
-						title: t("common.redirection_click"),
+						title: t("common.redirect.click"),
 						color: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
 					};
 			}
@@ -147,7 +147,7 @@ export const LinkView = ({
 					</div>
 					<div className="flex-1 flex flex-col gap-1">
 						<h4 className="text-sm font-bold text-amber-500 leading-tight">
-							{t("common.admin_preview_banner")}
+							{t("common.redirect.admin_preview_banner")}
 						</h4>
 						<p className="text-xs text-muted-foreground/80 font-medium">
 							To test the live auto-redirection flow, open this
@@ -163,7 +163,7 @@ export const LinkView = ({
 
 					<div className="flex items-center gap-2 mb-2">
 						<h3 className="text-xl font-bold">
-							{t("common.redirect_ready")}
+							{t("common.redirect.ready")}
 						</h3>
 						<span
 							className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${mode.color} shadow-sm`}
@@ -178,7 +178,7 @@ export const LinkView = ({
 					</p>
 
 					<p className="text-muted-foreground mb-6 text-center max-w-md text-sm font-medium">
-						{t("common.redirect_desc")}
+						{t("common.redirect.desc")}
 					</p>
 
 					<Button
@@ -190,7 +190,7 @@ export const LinkView = ({
 								target="_blank"
 								rel="noopener noreferrer"
 							>
-								{t("common.visit_link")}
+								{t("common.redirect.visit_link")}
 								<div className="ml-2 group-hover:translate-x-1 transition-transform">
 									<ExternalLink className="w-4 h-4" />
 								</div>
@@ -217,7 +217,7 @@ export const LinkView = ({
 				</div>
 
 				<h3 className="text-2xl font-black mb-3 text-center bg-linear-to-r from-primary to-purple-500 bg-clip-text text-transparent animate-pulse">
-					{t("common.redirecting_now")}
+					{t("common.states.redirecting_now")}
 				</h3>
 
 				<p className="text-sm text-muted-foreground/80 font-medium mb-6 text-center max-w-sm">
@@ -284,7 +284,7 @@ export const LinkView = ({
 				</div>
 
 				<h3 className="text-2xl font-black mb-2 text-center">
-					{t("common.redirect_ready")}
+					{t("common.redirect.ready")}
 				</h3>
 
 				<p className="text-muted-foreground/95 mb-6 text-center max-w-sm text-sm font-medium">
@@ -305,7 +305,7 @@ export const LinkView = ({
 					onClick={handleVisit}
 					className="group relative w-full sm:w-auto px-10 h-14 font-bold rounded-2xl shadow-xl shadow-primary/20"
 				>
-					{t("common.skip_countdown")}
+					{t("common.redirect.skip_countdown")}
 					<div className="ml-2 group-hover:translate-x-1 transition-transform">
 						<ArrowRight className="w-5 h-5" />
 					</div>
@@ -324,10 +324,10 @@ export const LinkView = ({
 				<LinkIcon className="w-10 h-10 text-primary" />
 			</div>
 			<h3 className="text-2xl font-black mb-3">
-				{t("common.redirect_ready")}
+				{t("common.redirect.ready")}
 			</h3>
 			<p className="text-muted-foreground mb-8 text-center max-w-md font-medium">
-				{t("common.redirect_desc")}
+				{t("common.redirect.desc")}
 			</p>
 			<Button
 				size="lg"
@@ -338,7 +338,7 @@ export const LinkView = ({
 						target="_blank"
 						rel="noopener noreferrer"
 					>
-						{t("common.visit_link")}
+						{t("common.redirect.visit_link")}
 						<div className="ml-2 group-hover:translate-x-1 transition-transform">
 							🚀
 						</div>
