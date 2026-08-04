@@ -21,16 +21,13 @@ export const ContentTypeSelector = memo(
 	}: ContentTypeSelectorProps) => {
 		const { t } = useTranslation();
 
-
 		return (
 			<Tabs
 				value={value}
 				onValueChange={(val) => onValueChange(val as ContentMode)}
 				className={cn("w-full", className)}
 			>
-				<TabsList className={cn(
-					"min-h-fit",
-				)}>
+				<TabsList className={cn("min-h-fit")}>
 					{TABS_CONFIG.map((tab) => {
 						if (tab.requiresFileOption && !showFileOption)
 							return null;

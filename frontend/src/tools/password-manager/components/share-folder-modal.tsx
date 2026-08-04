@@ -17,9 +17,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Users } from "lucide-react";
-import {
-	selectVault,
-} from "@/tools/password-manager/store/password-slice";
+import { selectVault } from "@/tools/password-manager/store/password-slice";
 import { toast } from "@/components/ui/toast";
 import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
 import { useEffect } from "react";

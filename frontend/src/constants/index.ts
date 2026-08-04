@@ -1,7 +1,24 @@
 /**
  * Frontend Constants
  */
-import { FileText, Code2, Link, FileUp, Paintbrush, Film, EyeOff, Layout, Eye, Pencil, Shield, MessageSquare, Globe, Lock, Users, Clock } from "lucide-react";
+import {
+	FileText,
+	Code2,
+	Link,
+	FileUp,
+	Paintbrush,
+	Film,
+	EyeOff,
+	Layout,
+	Eye,
+	Pencil,
+	Shield,
+	MessageSquare,
+	Globe,
+	Lock,
+	Users,
+	Clock,
+} from "lucide-react";
 
 export const CONTENT_MODES = [
 	"text",
@@ -26,7 +43,11 @@ export const ROLE_OPTIONS = [
 	{ value: "viewer", labelKey: "common.access.viewer", icon: Eye },
 	{ value: "editor", labelKey: "common.access.editor", icon: Pencil },
 	{ value: "admin", labelKey: "common.access.admin", icon: Shield },
-	{ value: "commenter", labelKey: "common.access.commenter", icon: MessageSquare },
+	{
+		value: "commenter",
+		labelKey: "common.access.commenter",
+		icon: MessageSquare,
+	},
 ] as const;
 
 export const ID_TYPES = ["system", "dynamic", "semantic"] as const;
@@ -203,13 +224,37 @@ export const SUPPORTED_RUN_LANGUAGES = [
 ];
 
 export const EXPIRY_OPTIONS = [
-	{ value: "one-time", labelKey: "home.expire_options.one_time_snippet", icon: Clock },
+	{
+		value: "one-time",
+		labelKey: "home.expire_options.one_time_snippet",
+		icon: Clock,
+	},
 	{ value: "never", labelKey: "home.expire_options.never", icon: Clock },
-	{ value: "1h", labelKey: "home.expire_options.expire_in_1_hour", icon: Clock },
-	{ value: "1d", labelKey: "home.expire_options.expire_in_1_day", icon: Clock },
-	{ value: "1w", labelKey: "home.expire_options.expire_in_1_week", icon: Clock },
-	{ value: "1m", labelKey: "home.expire_options.expire_in_1_month", icon: Clock },
-	{ value: "1y", labelKey: "home.expire_options.expire_in_1_year", icon: Clock },
+	{
+		value: "1h",
+		labelKey: "home.expire_options.expire_in_1_hour",
+		icon: Clock,
+	},
+	{
+		value: "1d",
+		labelKey: "home.expire_options.expire_in_1_day",
+		icon: Clock,
+	},
+	{
+		value: "1w",
+		labelKey: "home.expire_options.expire_in_1_week",
+		icon: Clock,
+	},
+	{
+		value: "1m",
+		labelKey: "home.expire_options.expire_in_1_month",
+		icon: Clock,
+	},
+	{
+		value: "1y",
+		labelKey: "home.expire_options.expire_in_1_year",
+		icon: Clock,
+	},
 ];
 
 export const TABS_CONFIG = [

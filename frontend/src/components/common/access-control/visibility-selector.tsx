@@ -79,28 +79,53 @@ export const VisibilitySelector = ({
 					<SelectTrigger className="w-full min-[440px]:w-36 h-10 font-medium bg-background border-input/50 focus:ring-primary/20">
 						<SelectValue>
 							{(() => {
-								const val = visibility === "public" ? publicRole : "restricted";
-								const opt = val === "restricted"
-									? VISIBILITY_OPTIONS.find(o => o.value === val)
-									: ROLE_OPTIONS.find(o => o.value === val);
-								return opt ? <OptionDisplay icon={opt.icon} label={t(opt.labelKey)} /> : null;
+								const val =
+									visibility === "public"
+										? publicRole
+										: "restricted";
+								const opt =
+									val === "restricted"
+										? VISIBILITY_OPTIONS.find(
+												(o) => o.value === val,
+											)
+										: ROLE_OPTIONS.find(
+												(o) => o.value === val,
+											);
+								return opt ? (
+									<OptionDisplay
+										icon={opt.icon}
+										label={t(opt.labelKey)}
+									/>
+								) : null;
 							})()}
 						</SelectValue>
 					</SelectTrigger>
 					<SelectContent>
 						{(() => {
-							const restrictedOpt = VISIBILITY_OPTIONS.find(o => o.value === "restricted");
-							return restrictedOpt && (
-								<SelectItem value="restricted">
-									<OptionDisplay icon={restrictedOpt.icon} label={t(restrictedOpt.labelKey)} />
-								</SelectItem>
+							const restrictedOpt = VISIBILITY_OPTIONS.find(
+								(o) => o.value === "restricted",
+							);
+							return (
+								restrictedOpt && (
+									<SelectItem value="restricted">
+										<OptionDisplay
+											icon={restrictedOpt.icon}
+											label={t(restrictedOpt.labelKey)}
+										/>
+									</SelectItem>
+								)
 							);
 						})()}
-						{ROLE_OPTIONS.filter(o => o.value !== "admin").map(opt => (
-							<SelectItem key={opt.value} value={opt.value}>
-								<OptionDisplay icon={opt.icon} label={t(opt.labelKey)} />
-							</SelectItem>
-						))}
+						{ROLE_OPTIONS.filter((o) => o.value !== "admin").map(
+							(opt) => (
+								<SelectItem key={opt.value} value={opt.value}>
+									<OptionDisplay
+										icon={opt.icon}
+										label={t(opt.labelKey)}
+									/>
+								</SelectItem>
+							),
+						)}
 					</SelectContent>
 				</Select>
 			</div>

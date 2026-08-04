@@ -13,8 +13,6 @@ import { Button } from "@/components/ui/button";
 import type { Editor } from "@tiptap/core";
 import { EMOJI_CATEGORIES } from "@/constants";
 
-
-
 interface EmojiPickerProps {
 	editor: Editor;
 }

@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { cn } from "@/utils";
 import { useTranslation } from "react-i18next";
@@ -18,8 +17,6 @@ export const MarkdownLayoutToggles = ({
 	className,
 }: MarkdownLayoutTogglesProps) => {
 	const { t } = useTranslation();
-
-
 
 	return (
 		<div

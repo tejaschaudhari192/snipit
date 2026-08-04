@@ -57,7 +57,15 @@ import type { PasswordItem } from "./types/index";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useItemMutations } from "@/tools/password-manager/hooks/use-item-mutations";
 import { useAuth } from "@/context/AuthContext";
-import { checkRecoveryKey, createVault, generateRecoveryKey, initializeVault, recoverWithMnemonic, resetMasterPassword, unlockVault } from "./store/thunks";
+import {
+	checkRecoveryKey,
+	createVault,
+	generateRecoveryKey,
+	initializeVault,
+	recoverWithMnemonic,
+	resetMasterPassword,
+	unlockVault,
+} from "./store/thunks";
 
 function PasswordManagerInner() {
 	const [searchQuery, setSearchQuery] = useState("");

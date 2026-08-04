@@ -78,7 +78,8 @@ export const LanguageSelector = memo(
 									className="h-4 w-4 shrink-0"
 								/>
 								<span>
-									{LANGUAGES.find((l) => l.value === value)?.name || value}
+									{LANGUAGES.find((l) => l.value === value)
+										?.name || value}
 								</span>
 							</span>
 						)}

@@ -1,8 +1,6 @@
 import { useCallback } from "react";
 import { useAppDispatch } from "@/tools/password-manager/store";
-import {
-	handleSelect,
-} from "@/tools/password-manager/store/password-slice";
+import { handleSelect } from "@/tools/password-manager/store/password-slice";
 import type { PasswordItem } from "@/tools/password-manager/types";
 
 import { toast } from "@/components/ui/toast";

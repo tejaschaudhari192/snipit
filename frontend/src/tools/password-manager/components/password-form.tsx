@@ -231,15 +231,25 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 							<SelectTrigger className="w-full bg-background border-border rounded-xl capitalize">
 								<SelectValue>
 									{(() => {
-										const opt = ITEM_TYPE_OPTIONS.find(o => o.id === itemType);
-										return opt ? <OptionDisplay icon={opt.icon} label={t(opt.label)} /> : null;
+										const opt = ITEM_TYPE_OPTIONS.find(
+											(o) => o.id === itemType,
+										);
+										return opt ? (
+											<OptionDisplay
+												icon={opt.icon}
+												label={t(opt.label)}
+											/>
+										) : null;
 									})()}
 								</SelectValue>
 							</SelectTrigger>
 							<SelectContent>
 								{ITEM_TYPE_OPTIONS.map((opt) => (
 									<SelectItem key={opt.id} value={opt.id}>
-										<OptionDisplay icon={opt.icon} label={t(opt.label)} />
+										<OptionDisplay
+											icon={opt.icon}
+											label={t(opt.label)}
+										/>
 									</SelectItem>
 								))}
 							</SelectContent>

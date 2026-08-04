@@ -56,16 +56,28 @@ export const ExpirySelector = memo(
 								(opt) => opt.value === expiresTime,
 							);
 							if (selectedOption) {
-								return <OptionDisplay icon={selectedOption.icon} label={t(selectedOption.labelKey)} />;
+								return (
+									<OptionDisplay
+										icon={selectedOption.icon}
+										label={t(selectedOption.labelKey)}
+									/>
+								);
 							}
 							if (expiresTime === "custom_action") {
-								return <OptionDisplay icon={Clock} label={t("home.expire_options.custom")} />;
+								return (
+									<OptionDisplay
+										icon={Clock}
+										label={t("home.expire_options.custom")}
+									/>
+								);
 							}
 							if (isCustomDate) {
 								return (
 									<OptionDisplay
 										icon={Clock}
-										label={new Date(expiresTime).toLocaleString([], {
+										label={new Date(
+											expiresTime,
+										).toLocaleString([], {
 											month: "short",
 											day: "numeric",
 											year: "numeric",

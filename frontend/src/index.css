@@ -186,11 +186,13 @@
 	}
 
 	.moving-border-gradient {
-		background: conic-gradient(from 0deg,
-				transparent 0 240deg,
-				#6366f1 280deg,
-				#a855f7 320deg,
-				#ec4899 360deg);
+		background: conic-gradient(
+			from 0deg,
+			transparent 0 240deg,
+			#6366f1 280deg,
+			#a855f7 320deg,
+			#ec4899 360deg
+		);
 	}
 
 	@keyframes progress-gradient-flow {
@@ -225,12 +227,14 @@
 
 	.skeleton {
 		@apply relative overflow-hidden bg-muted-foreground/25 dark:bg-muted-foreground/20 border border-border/10;
-		background-image: linear-gradient(90deg,
-				transparent 0%,
-				rgba(255, 255, 255, 0.08) 25%,
-				rgba(255, 255, 255, 0.18) 50%,
-				rgba(255, 255, 255, 0.08) 75%,
-				transparent 100%);
+		background-image: linear-gradient(
+			90deg,
+			transparent 0%,
+			rgba(255, 255, 255, 0.08) 25%,
+			rgba(255, 255, 255, 0.18) 50%,
+			rgba(255, 255, 255, 0.08) 75%,
+			transparent 100%
+		);
 		background-size: 200% 100%;
 		animation: shimmer-gradient 2s infinite linear;
 	}
@@ -299,7 +303,6 @@
 	}
 
 	@keyframes equalizer-bar {
-
 		0%,
 		100% {
 			height: 4px;
@@ -311,7 +314,6 @@
 	}
 
 	@keyframes music-pulse {
-
 		0%,
 		100% {
 			box-shadow: 0 0 0 0 rgba(111, 66, 193, 0.4);
@@ -336,7 +338,6 @@ body.is-404 .action-url-bar {
 }
 
 @keyframes cursor-blink {
-
 	0%,
 	100% {
 		opacity: 1;
@@ -358,7 +359,6 @@ body.is-404 .action-url-bar {
 }
 
 @keyframes pulse-subtle {
-
 	0%,
 	100% {
 		opacity: 1;
@@ -570,7 +570,7 @@ body.is-404 .action-url-bar {
 	display: none !important;
 }
 
-.prose ul[data-type="taskList"] li>label {
+.prose ul[data-type="taskList"] li > label {
 	display: inline-flex !important;
 	align-items: center !important;
 	justify-content: center !important;
@@ -579,7 +579,7 @@ body.is-404 .action-url-bar {
 	cursor: pointer !important;
 }
 
-.prose ul[data-type="taskList"] li>label input[type="checkbox"] {
+.prose ul[data-type="taskList"] li > label input[type="checkbox"] {
 	appearance: none !important;
 	-webkit-appearance: none !important;
 	width: 0.95rem !important;
@@ -596,12 +596,16 @@ body.is-404 .action-url-bar {
 	transition: all 0.2s ease !important;
 }
 
-.prose ul[data-type="taskList"] li>label input[type="checkbox"]:checked {
+.prose ul[data-type="taskList"] li > label input[type="checkbox"]:checked {
 	background-color: var(--primary) !important;
 	border-color: var(--primary) !important;
 }
 
-.prose ul[data-type="taskList"] li>label input[type="checkbox"]:checked::after {
+.prose
+	ul[data-type="taskList"]
+	li
+	> label
+	input[type="checkbox"]:checked::after {
 	content: "" !important;
 	position: absolute !important;
 	left: 35% !important;
@@ -613,15 +617,15 @@ body.is-404 .action-url-bar {
 	transform: rotate(45deg) !important;
 }
 
-.prose ul[data-type="taskList"] li>div {
+.prose ul[data-type="taskList"] li > div {
 	flex: 1 !important;
 }
 
-.prose ul[data-type="taskList"] li>div>p {
+.prose ul[data-type="taskList"] li > div > p {
 	margin: 0 !important;
 }
 
-.prose ul[data-type="taskList"] li[data-checked="true"]>div {
+.prose ul[data-type="taskList"] li[data-checked="true"] > div {
 	text-decoration: line-through !important;
 	opacity: 0.6 !important;
 }
@@ -674,8 +678,11 @@ body.is-404 .action-url-bar {
 @keyframes dialog-content-in {
 	from {
 		opacity: 0;
-		transform: translate(calc(-50% + var(--click-cx, 0px)),
-				calc(-50% + var(--click-cy, 0px))) scale(0.08);
+		transform: translate(
+				calc(-50% + var(--click-cx, 0px)),
+				calc(-50% + var(--click-cy, 0px))
+			)
+			scale(0.08);
 	}
 
 	to {
@@ -692,8 +699,11 @@ body.is-404 .action-url-bar {
 
 	to {
 		opacity: 0;
-		transform: translate(calc(-50% + var(--click-cx, 0px)),
-				calc(-50% + var(--click-cy, 0px))) scale(0.08);
+		transform: translate(
+				calc(-50% + var(--click-cx, 0px)),
+				calc(-50% + var(--click-cy, 0px))
+			)
+			scale(0.08);
 	}
 }
 

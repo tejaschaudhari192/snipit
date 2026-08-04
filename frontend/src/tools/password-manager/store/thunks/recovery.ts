@@ -1,7 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "@/lib/api";
 import { keyStore } from "../key-store";
-import { getRecoveryRecord, setRecoveryRecord, setKeyRecord } from "../../utils/indexed-db";
+import {
+	getRecoveryRecord,
+	setRecoveryRecord,
+	setKeyRecord,
+} from "../../utils/indexed-db";
 import {
 	generateRecoveryMnemonic,
 	encryptMasterPassword,

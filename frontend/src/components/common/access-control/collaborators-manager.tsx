@@ -208,15 +208,25 @@ export const CollaboratorsManager = ({
 						<SelectTrigger className="w-32 h-10 text-sm font-medium border-none bg-transparent hover:bg-muted/50 focus:ring-0 shadow-none">
 							<SelectValue>
 								{(() => {
-									const opt = ROLE_OPTIONS.find(o => o.value === pendingRole);
-									return opt ? <OptionDisplay icon={opt.icon} label={t(opt.labelKey)} /> : null;
+									const opt = ROLE_OPTIONS.find(
+										(o) => o.value === pendingRole,
+									);
+									return opt ? (
+										<OptionDisplay
+											icon={opt.icon}
+											label={t(opt.labelKey)}
+										/>
+									) : null;
 								})()}
 							</SelectValue>
 						</SelectTrigger>
 						<SelectContent>
 							{ROLE_OPTIONS.map((opt) => (
 								<SelectItem key={opt.value} value={opt.value}>
-									<OptionDisplay icon={opt.icon} label={t(opt.labelKey)} />
+									<OptionDisplay
+										icon={opt.icon}
+										label={t(opt.labelKey)}
+									/>
 								</SelectItem>
 							))}
 						</SelectContent>
@@ -315,15 +325,35 @@ export const CollaboratorsManager = ({
 											<SelectTrigger className="flex-1 min-[440px]:w-32 h-10 bg-background border-input/50">
 												<SelectValue>
 													{(() => {
-														const opt = ROLE_OPTIONS.find(o => o.value === item.role);
-														return opt ? <OptionDisplay icon={opt.icon} label={t(opt.labelKey)} /> : null;
+														const opt =
+															ROLE_OPTIONS.find(
+																(o) =>
+																	o.value ===
+																	item.role,
+															);
+														return opt ? (
+															<OptionDisplay
+																icon={opt.icon}
+																label={t(
+																	opt.labelKey,
+																)}
+															/>
+														) : null;
 													})()}
 												</SelectValue>
 											</SelectTrigger>
 											<SelectContent>
 												{ROLE_OPTIONS.map((opt) => (
-													<SelectItem key={opt.value} value={opt.value}>
-														<OptionDisplay icon={opt.icon} label={t(opt.labelKey)} />
+													<SelectItem
+														key={opt.value}
+														value={opt.value}
+													>
+														<OptionDisplay
+															icon={opt.icon}
+															label={t(
+																opt.labelKey,
+															)}
+														/>
 													</SelectItem>
 												))}
 											</SelectContent>
