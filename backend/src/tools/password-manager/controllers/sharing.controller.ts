@@ -33,7 +33,9 @@ export const lookupUserPublicKey = async (
 			return next(new AppError("User not found", 404));
 		}
 		if (!targetUser.publicKey) {
-			return next(new AppError("User has not set up their secure vault", 400));
+			return next(
+				new AppError("User has not set up their secure vault", 400),
+			);
 		}
 
 		res.status(200).json({
@@ -63,9 +65,15 @@ export const shareCollection = async (
 			return next(new AppError("User not authenticated", 401));
 		}
 
-		const { collectionId, targetUserId, encryptedCollectionKey, role } = req.body;
+		const { collectionId, targetUserId, encryptedCollectionKey, role } =
+			req.body;
 
-		if (!collectionId || !targetUserId || !encryptedCollectionKey || !role) {
+		if (
+			!collectionId ||
+			!targetUserId ||
+			!encryptedCollectionKey ||
+			!role
+		) {
 			return next(new AppError("Missing required fields", 400));
 		}
 
@@ -75,7 +83,9 @@ export const shareCollection = async (
 			return next(new AppError("Collection not found", 404));
 		}
 		if (collection.createdBy.toString() !== req.user._id.toString()) {
-			return next(new AppError("Only the owner can share a collection", 403));
+			return next(
+				new AppError("Only the owner can share a collection", 403),
+			);
 		}
 
 		// Upsert access
@@ -85,9 +95,8 @@ export const shareCollection = async (
 				encryptedCollectionKey,
 				role,
 			},
-			{ new: true, upsert: true }
+			{ new: true, upsert: true },
 		);
-
 
 		res.status(200).json({
 			success: true,
@@ -104,11 +113,14 @@ export const shareCollection = async (
 					targetUserDoc.email,
 					role as "viewer" | "editor" | "admin",
 					collection.name || "Shared Collection",
-					collectionUrl
+					collectionUrl,
 				);
 			}
 		} catch (emailError) {
-			console.error("Failed to send share notification email:", emailError);
+			console.error(
+				"Failed to send share notification email:",
+				emailError,
+			);
 		}
 	} catch (error) {
 		next(error);
@@ -181,10 +193,8 @@ export const shareItem = async (
 				collectionId: collection._id,
 				encryptedPayload,
 			},
-			{ new: true, upsert: true }
+			{ new: true, upsert: true },
 		);
-
-
 
 		res.status(201).json({
 			success: true,
@@ -201,11 +211,14 @@ export const shareItem = async (
 					targetUserDoc.email,
 					role as "viewer" | "editor" | "admin",
 					itemTitle || "a password",
-					collectionUrl
+					collectionUrl,
 				);
 			}
 		} catch (emailError) {
-			console.error("Failed to send share notification email:", emailError);
+			console.error(
+				"Failed to send share notification email:",
+				emailError,
+			);
 		}
 	} catch (error) {
 		next(error);
@@ -226,9 +239,23 @@ export const shareFolder = async (
 			return next(new AppError("User not authenticated", 401));
 		}
 
-		const { targetUserId, encryptedCollectionKeyForOwner, encryptedCollectionKeyForRecipient, role, folderName, items } = req.body;
+		const {
+			targetUserId,
+			encryptedCollectionKeyForOwner,
+			encryptedCollectionKeyForRecipient,
+			role,
+			folderName,
+			items,
+		} = req.body;
 
-		if (!targetUserId || !encryptedCollectionKeyForOwner || !encryptedCollectionKeyForRecipient || !role || !folderName || !items) {
+		if (
+			!targetUserId ||
+			!encryptedCollectionKeyForOwner ||
+			!encryptedCollectionKeyForRecipient ||
+			!role ||
+			!folderName ||
+			!items
+		) {
 			return next(new AppError("Missing required fields", 400));
 		}
 
@@ -256,24 +283,25 @@ export const shareFolder = async (
 		});
 
 		// 4. Bulk Upsert VaultItems
-		const ops = items.map((item: { id: string; encryptedPayload: string }) => ({
-			updateOne: {
-				filter: { id: item.id },
-				update: {
-					$set: {
-						userId: req.user?._id,
-						collectionId: collection._id,
-						encryptedPayload: item.encryptedPayload,
-					}
+		const ops = items.map(
+			(item: { id: string; encryptedPayload: string }) => ({
+				updateOne: {
+					filter: { id: item.id },
+					update: {
+						$set: {
+							userId: req.user?._id,
+							collectionId: collection._id,
+							encryptedPayload: item.encryptedPayload,
+						},
+					},
+					upsert: true,
 				},
-				upsert: true
-			}
-		}));
+			}),
+		);
 
 		if (ops.length > 0) {
 			await VaultItem.bulkWrite(ops);
 		}
-
 
 		res.status(201).json({
 			success: true,
@@ -290,11 +318,14 @@ export const shareFolder = async (
 					targetUserDoc.email,
 					role as "viewer" | "editor" | "admin",
 					folderName,
-					collectionUrl
+					collectionUrl,
 				);
 			}
 		} catch (emailError) {
-			console.error("Failed to send share notification email:", emailError);
+			console.error(
+				"Failed to send share notification email:",
+				emailError,
+			);
 		}
 	} catch (error) {
 		next(error);
@@ -323,18 +354,26 @@ export const getCollectionAccess = async (
 			return next(new AppError("Collection not found", 404));
 		}
 		if (collection.createdBy.toString() !== req.user._id.toString()) {
-			return next(new AppError("Only the owner can view access list", 403));
+			return next(
+				new AppError("Only the owner can view access list", 403),
+			);
 		}
 
 		const accessList = await CollectionAccess.aggregate([
-			{ $match: { collectionId: new mongoose.Types.ObjectId(collectionId as string) } },
+			{
+				$match: {
+					collectionId: new mongoose.Types.ObjectId(
+						collectionId as string,
+					),
+				},
+			},
 			{
 				$lookup: {
 					from: "users",
 					localField: "userId",
 					foreignField: "_id",
-					as: "user"
-				}
+					as: "user",
+				},
 			},
 			{ $unwind: "$user" },
 			{
@@ -343,14 +382,14 @@ export const getCollectionAccess = async (
 					role: 1,
 					userId: "$user._id",
 					email: "$user.email",
-					username: "$user.username"
-				}
-			}
+					username: "$user.username",
+				},
+			},
 		]);
 
 		res.status(200).json({
 			success: true,
-			data: accessList.map(a => ({
+			data: accessList.map((a) => ({
 				id: a._id,
 				userId: a.userId,
 				email: a.email,
@@ -389,7 +428,10 @@ export const revokeAccess = async (
 		}
 
 		const collection = await Collection.findById(access.collectionId);
-		if (!collection || collection.createdBy.toString() !== req.user._id.toString()) {
+		if (
+			!collection ||
+			collection.createdBy.toString() !== req.user._id.toString()
+		) {
 			return next(new AppError("Only the owner can revoke access", 403));
 		}
 

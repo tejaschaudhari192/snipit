@@ -31,33 +31,38 @@ export const getVaultItems = async (
 							$match: {
 								$expr: {
 									$and: [
-										{ $eq: ["$collectionId", "$$collectionId"] },
-										{ $eq: ["$userId", userId] }
-									]
-								}
-							}
-						}
+										{
+											$eq: [
+												"$collectionId",
+												"$$collectionId",
+											],
+										},
+										{ $eq: ["$userId", userId] },
+									],
+								},
+							},
+						},
 					],
-					as: "access"
-				}
+					as: "access",
+				},
 			},
 			{
 				$match: {
 					$or: [
 						{ userId: userId },
-						{ "access.0": { $exists: true } }
-					]
-				}
-			}
+						{ "access.0": { $exists: true } },
+					],
+				},
+			},
 		]);
 
 		res.status(200).json({
 			success: true,
-			data: items.map(item => ({
+			data: items.map((item) => ({
 				id: item.id,
 				collectionId: item.collectionId,
 				encryptedPayload: item.encryptedPayload,
-				updatedAt: item.updatedAt
+				updatedAt: item.updatedAt,
 			})),
 		});
 	} catch (error) {
@@ -82,7 +87,9 @@ export const createVaultItem = async (
 		const { id, collectionId, encryptedPayload } = req.body;
 
 		if (!id || !encryptedPayload) {
-			return next(new AppError("id and encryptedPayload are required", 400));
+			return next(
+				new AppError("id and encryptedPayload are required", 400),
+			);
 		}
 
 		// Check if user has access to collection if provided
@@ -93,7 +100,10 @@ export const createVaultItem = async (
 			});
 			if (!access || access.role === "viewer") {
 				return next(
-					new AppError("Not authorized to create items in this collection", 403)
+					new AppError(
+						"Not authorized to create items in this collection",
+						403,
+					),
 				);
 			}
 		}
@@ -147,16 +157,21 @@ export const updateVaultItem = async (
 							$match: {
 								$expr: {
 									$and: [
-										{ $eq: ["$collectionId", "$$collectionId"] },
-										{ $eq: ["$userId", userId] }
-									]
-								}
-							}
-						}
+										{
+											$eq: [
+												"$collectionId",
+												"$$collectionId",
+											],
+										},
+										{ $eq: ["$userId", userId] },
+									],
+								},
+							},
+						},
 					],
-					as: "access"
-				}
-			}
+					as: "access",
+				},
+			},
 		]);
 
 		if (!itemData) {
@@ -170,7 +185,9 @@ export const updateVaultItem = async (
 
 		if (!isOwner) {
 			if (!hasAccess || accessRole === "viewer") {
-				return next(new AppError("Not authorized to edit this item", 403));
+				return next(
+					new AppError("Not authorized to edit this item", 403),
+				);
 			}
 		}
 
@@ -178,14 +195,23 @@ export const updateVaultItem = async (
 		if (!item) return next(new AppError("Item not found", 404)); // should not happen
 
 		// If moving to a new collection, verify they have permission to that destination collection
-		if (collectionId !== undefined && collectionId !== (item.collectionId ? item.collectionId.toString() : null)) {
+		if (
+			collectionId !== undefined &&
+			collectionId !==
+				(item.collectionId ? item.collectionId.toString() : null)
+		) {
 			if (collectionId) {
 				const destAccess = await CollectionAccess.findOne({
 					collectionId,
 					userId: req.user._id,
 				});
 				if (!destAccess || destAccess.role === "viewer") {
-					return next(new AppError("Not authorized to move items into this collection", 403));
+					return next(
+						new AppError(
+							"Not authorized to move items into this collection",
+							403,
+						),
+					);
 				}
 				item.collectionId = collectionId;
 			} else {
@@ -200,8 +226,6 @@ export const updateVaultItem = async (
 			success: true,
 			data: { id: item.id, updatedAt: item.updatedAt },
 		});
-
-
 	} catch (error) {
 		next(error);
 	}
@@ -234,16 +258,21 @@ export const deleteVaultItem = async (
 							$match: {
 								$expr: {
 									$and: [
-										{ $eq: ["$collectionId", "$$collectionId"] },
-										{ $eq: ["$userId", req.user._id] }
-									]
-								}
-							}
-						}
+										{
+											$eq: [
+												"$collectionId",
+												"$$collectionId",
+											],
+										},
+										{ $eq: ["$userId", req.user._id] },
+									],
+								},
+							},
+						},
 					],
-					as: "access"
-				}
-			}
+					as: "access",
+				},
+			},
 		]);
 
 		if (!itemData) {
@@ -257,7 +286,9 @@ export const deleteVaultItem = async (
 
 		if (!isOwner) {
 			if (!hasAccess || accessRole === "viewer") {
-				return next(new AppError("Not authorized to delete this item", 403));
+				return next(
+					new AppError("Not authorized to delete this item", 403),
+				);
 			}
 		}
 

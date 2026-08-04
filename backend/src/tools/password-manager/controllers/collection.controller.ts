@@ -24,7 +24,12 @@ export const getCollections = async (
 
 		const collections = accessList
 			.map((access) => {
-				const coll = access.collectionId as unknown as { _id: string; name: string; isHidden: boolean; updatedAt: Date };
+				const coll = access.collectionId as unknown as {
+					_id: string;
+					name: string;
+					isHidden: boolean;
+					updatedAt: Date;
+				};
 				if (!coll) return null;
 				return {
 					id: coll._id,
@@ -64,7 +69,10 @@ export const createCollection = async (
 
 		if (!name || !encryptedCollectionKey) {
 			return next(
-				new AppError("name and encryptedCollectionKey are required", 400)
+				new AppError(
+					"name and encryptedCollectionKey are required",
+					400,
+				),
 			);
 		}
 
@@ -120,15 +128,17 @@ export const deleteCollection = async (
 		}
 
 		if (collection.createdBy.toString() !== req.user._id.toString()) {
-			return next(new AppError("Only the owner can delete a collection", 403));
+			return next(
+				new AppError("Only the owner can delete a collection", 403),
+			);
 		}
 
 		// Delete all access rows
 		await CollectionAccess.deleteMany({ collectionId: id });
-		
+
 		// Note: The items should also be deleted or orphaned.
 		// For now we will rely on client to delete items or server to clean up.
-		
+
 		await collection.deleteOne();
 
 		res.status(200).json({

@@ -67,7 +67,13 @@ export const updateVault = async (
 			return next(new AppError("User not authenticated", 401));
 		}
 
-		const { encryptedPersonalKey, encryptedSettings, publicKey, encryptedPrivateKey, salt } = req.body;
+		const {
+			encryptedPersonalKey,
+			encryptedSettings,
+			publicKey,
+			encryptedPrivateKey,
+			salt,
+		} = req.body;
 
 		const updateData: Partial<IVault> = {
 			updatedAt: new Date(),
@@ -151,4 +157,3 @@ export const deleteVault = async (
 		next(error);
 	}
 };
-

@@ -339,7 +339,7 @@ class PasteService {
 		return await commentModel.findOneAndUpdate(
 			{ id: commentId, pasteId },
 			{ $set: { content } },
-			{ new: true }
+			{ new: true },
 		);
 	}
 

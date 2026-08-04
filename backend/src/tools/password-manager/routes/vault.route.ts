@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { getVault, updateVault, deleteVault } from "../controllers/vault.controller.js";
+import {
+	getVault,
+	updateVault,
+	deleteVault,
+} from "../controllers/vault.controller.js";
 import {
 	getVaultItems,
 	createVaultItem,
@@ -30,23 +34,12 @@ router.use(protect);
 router.route("/").get(getVault).put(updateVault).delete(deleteVault);
 
 // Vault Items
-router
-	.route("/items")
-	.get(getVaultItems)
-	.post(createVaultItem);
-router
-	.route("/items/:id")
-	.put(updateVaultItem)
-	.delete(deleteVaultItem);
+router.route("/items").get(getVaultItems).post(createVaultItem);
+router.route("/items/:id").put(updateVaultItem).delete(deleteVaultItem);
 
 // Collections
-router
-	.route("/collections")
-	.get(getCollections)
-	.post(createCollection);
-router
-	.route("/collections/:id")
-	.delete(deleteCollection);
+router.route("/collections").get(getCollections).post(createCollection);
+router.route("/collections/:id").delete(deleteCollection);
 
 // Sharing
 router.post("/share/lookup", lookupUserPublicKey);

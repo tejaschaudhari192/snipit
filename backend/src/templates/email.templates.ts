@@ -1,5 +1,9 @@
 export const EMAIL_TEMPLATES = {
-	VAULT_ACCESS_GRANTED: (role: string, collectionName: string, collectionUrl: string) => {
+	VAULT_ACCESS_GRANTED: (
+		role: string,
+		collectionName: string,
+		collectionUrl: string,
+	) => {
 		const lowerRole = role.toLowerCase();
 		let message =
 			"You have been granted viewer access to a password vault collection. You can now access the shared passwords.";
