@@ -19,7 +19,8 @@
 		"jump_to_placeholder": "Snippet-ID eingeben...",
 		"account": "Konto",
 		"guest": "Gast",
-		"tools": "Werkzeuge"
+		"tools": "Werkzeuge",
+		"send_feedback": "Feedback senden"
 	},
 	"tools": {
 		"badge": "🔐 Sichere Tools",
@@ -954,5 +955,25 @@
 			"default": "Standard"
 		},
 		"unknown_artist": "Unbekannter Künstler"
+	},
+	"feedback": {
+		"title": "Feedback senden",
+		"description": "Lassen Sie uns wissen, ob Sie einen Fehler gefunden haben, eine neue Funktion wünschen oder einfach nur allgemeines Feedback haben.",
+		"type": "Typ",
+		"type_bug": "🐛 Fehler melden",
+		"type_feature": "✨ Funktionsanfrage",
+		"type_general": "💬 Allgemeines Feedback",
+		"email_optional": "E-Mail (Optional)",
+		"email_placeholder": "your@email.com",
+		"subject": "Betreff",
+		"subject_placeholder": "Kurze Zusammenfassung Ihres Feedbacks",
+		"desc": "Beschreibung",
+		"desc_placeholder": "Bitte geben Sie so viele Details wie möglich an...",
+		"cancel": "Abbrechen",
+		"submit": "Absenden",
+		"submitting": "Wird gesendet...",
+		"err_required": "Bitte füllen Sie alle erforderlichen Felder aus.",
+		"err_failed": "Feedback konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.",
+		"success": "Feedback erfolgreich gesendet. Vielen Dank!"
 	}
 }

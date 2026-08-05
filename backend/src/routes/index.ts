@@ -10,6 +10,7 @@ import collaboratorRouter from "./collaborator.route.js";
 import musicRouter from "./music.route.js";
 import livekitRouter from "./livekit.routes.js";
 import vaultRouter from "../tools/password-manager/routes/vault.route.js";
+import feedbackRouter from "./feedback.routes.js";
 
 const router: Router = Router();
 
@@ -25,5 +26,6 @@ router.use("/collaborators", collaboratorRouter);
 router.use("/music", musicRouter);
 router.use("/livekit", livekitRouter);
 router.use("/tools/password-manager/vault", vaultRouter);
+router.use("/feedback", feedbackRouter);
 
 export default router;

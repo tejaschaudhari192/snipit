@@ -1,7 +1,4 @@
-import {
-	createSlice,
-	type PayloadAction,
-} from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 import type {
 	PasswordManagerState,
@@ -28,18 +25,6 @@ import {
 	checkRecoveryKey,
 	generateRecoveryKey,
 } from "./thunks";
-
-
-
-
-
-
-
-
-
-
-
-
 
 const initialState: PasswordManagerState = {
 	userId: "",
@@ -76,7 +61,10 @@ const initialState: PasswordManagerState = {
 	collectionKeys: {},
 };
 
-const updatePersistedItemInState = (state: PasswordManagerState, item: PasswordItem) => {
+const updatePersistedItemInState = (
+	state: PasswordManagerState,
+	item: PasswordItem,
+) => {
 	if (item.collectionId) {
 		const collIndex = state.sharedCollections.findIndex(
 			(c) => c.collection.id === item.collectionId,
@@ -102,9 +90,7 @@ const updatePersistedItemInState = (state: PasswordManagerState, item: PasswordI
 			state.personalItems.push(item);
 		}
 		state.sharedCollections.forEach((c) => {
-			c.items = c.items.filter(
-				(i: PasswordItem) => i.id !== item.id,
-			);
+			c.items = c.items.filter((i: PasswordItem) => i.id !== item.id);
 		});
 	}
 	if (state.activeItem?.id === item.id) {

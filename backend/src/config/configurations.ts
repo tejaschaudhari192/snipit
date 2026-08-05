@@ -26,6 +26,7 @@ const envSchema = z.object({
 	BREVO_API_KEY: z.string(),
 	LIVEKIT_API_KEY: z.string(),
 	LIVEKIT_API_SECRET: z.string(),
+	ADMIN_EMAIL: z.string().email().optional(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
@@ -83,6 +84,7 @@ const configurations = {
 		apiKey: env.LIVEKIT_API_KEY,
 		apiSecret: env.LIVEKIT_API_SECRET,
 	},
+	adminEmail: env.ADMIN_EMAIL,
 };
 
 export default configurations;

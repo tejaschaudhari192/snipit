@@ -9,7 +9,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, Search, User, Music } from "lucide-react";
+import { Menu, Search, User, Music, MessageSquare } from "lucide-react";
 import { useMusic } from "@/context/use-music";
 
 const ThemeToggle = lazy(() =>
@@ -43,6 +43,11 @@ const JumpToDialog = lazy(() =>
 const LogoutDialog = lazy(() =>
 	import("@/components/header/logout-dialog").then((m) => ({
 		default: m.LogoutDialog,
+	})),
+);
+const FeedbackDialog = lazy(() =>
+	import("@/components/common/feedback-dialog").then((m) => ({
+		default: m.FeedbackDialog,
 	})),
 );
 
@@ -120,6 +125,7 @@ const Header = ({ className }: HeaderProps) => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
 	const [isJumpToDialogOpen, setIsJumpToDialogOpen] = useState(false);
+	const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
 
 	const url = window.location.href;
 
@@ -220,6 +226,16 @@ const Header = ({ className }: HeaderProps) => {
 					title={t("music.open_player") || "Open Music Player"}
 				>
 					<Music className="h-4 w-4" />
+				</Button>
+				<div className="w-px h-4 bg-border mx-1" />
+				<Button
+					variant="ghost"
+					size="icon"
+					className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted"
+					onClick={() => setIsFeedbackDialogOpen(true)}
+					title={t("header.send_feedback")}
+				>
+					<MessageSquare className="h-4 w-4" />
 				</Button>
 				<div className="w-px h-4 bg-border mx-1" />
 				<Suspense
@@ -353,6 +369,15 @@ const Header = ({ className }: HeaderProps) => {
 								}
 							/>
 						)}
+						<DropdownMenuItem
+							className="rounded-lg"
+							onClick={() => setIsFeedbackDialogOpen(true)}
+						>
+							<div className="flex items-center gap-2 py-2 text-primary">
+								<MessageSquare className="h-4 w-4" />
+								<span>{t("header.send_feedback")}</span>
+							</div>
+						</DropdownMenuItem>
 						<div className="h-px bg-muted my-2" />
 						<div className="px-2 py-2 space-y-3">
 							<div className="flex items-center justify-between">
@@ -387,6 +412,10 @@ const Header = ({ className }: HeaderProps) => {
 				<JumpToDialog
 					isOpen={isJumpToDialogOpen}
 					onOpenChange={setIsJumpToDialogOpen}
+				/>
+				<FeedbackDialog
+					isOpen={isFeedbackDialogOpen}
+					onClose={() => setIsFeedbackDialogOpen(false)}
 				/>
 			</Suspense>
 		</header>

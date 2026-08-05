@@ -19,7 +19,8 @@
 		"jump_to_placeholder": "スニペットIDを入力...",
 		"account": "アカウント",
 		"guest": "ゲスト",
-		"tools": "ツール"
+		"tools": "ツール",
+		"send_feedback": "フィードバックを送信"
 	},
 	"tools": {
 		"badge": "🔐 セキュアツール",
@@ -954,5 +955,25 @@
 			"default": "デフォルト"
 		},
 		"unknown_artist": "不明なアーティスト"
+	},
+	"feedback": {
+		"title": "フィードバックを送信",
+		"description": "バグを見つけた場合、新しい機能が欲しい場合、または一般的なフィードバックがある場合はお知らせください。",
+		"type": "タイプ",
+		"type_bug": "🐛 バグを報告",
+		"type_feature": "✨ 機能リクエスト",
+		"type_general": "💬 一般的なフィードバック",
+		"email_optional": "メール (任意)",
+		"email_placeholder": "your@email.com",
+		"subject": "件名",
+		"subject_placeholder": "フィードバックの簡単な概要",
+		"desc": "説明",
+		"desc_placeholder": "できるだけ詳細な情報を提供してください...",
+		"cancel": "キャンセル",
+		"submit": "送信",
+		"submitting": "送信中...",
+		"err_required": "すべての必須フィールドに入力してください。",
+		"err_failed": "フィードバックの送信に失敗しました。後でもう一度お試しください。",
+		"success": "フィードバックが正常に送信されました。ありがとうございます！"
 	}
 }

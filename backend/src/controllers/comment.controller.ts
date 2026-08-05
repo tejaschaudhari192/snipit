@@ -91,11 +91,9 @@ class CommentController {
 				return res.status(404).json({ error: "Comment not found" });
 
 			if (comment.userId !== userId) {
-				return res
-					.status(403)
-					.json({
-						error: "Forbidden: You can only edit your own comments",
-					});
+				return res.status(403).json({
+					error: "Forbidden: You can only edit your own comments",
+				});
 			}
 
 			const updated = await this.pasteService.updateComment(
@@ -131,11 +129,9 @@ class CommentController {
 				paste && paste.owner && paste.owner.toString() === userId;
 
 			if (comment.userId !== userId && !isPasteOwner) {
-				return res
-					.status(403)
-					.json({
-						error: "Forbidden: You can only delete your own comments",
-					});
+				return res.status(403).json({
+					error: "Forbidden: You can only delete your own comments",
+				});
 			}
 
 			await this.pasteService.deleteComment(pasteId, commentId);

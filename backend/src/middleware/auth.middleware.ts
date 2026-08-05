@@ -67,3 +67,33 @@ export const optionalProtect = async (
 		next();
 	}
 };
+
+export const optionalAuth = async (
+	req: AuthRequest,
+	res: Response,
+	next: NextFunction,
+) => {
+	const token = extractTokenFromRequest(req);
+
+	if (!token) {
+		return next();
+	}
+
+	try {
+		const decodedId = getUserIdFromToken(token);
+		if (!decodedId) {
+			return next();
+		}
+
+		const user = await User.findById(decodedId).select("-password").exec();
+
+		if (user) {
+			req.user = user;
+		}
+
+		next();
+	} catch (error) {
+		// Even on error, we proceed as anonymous
+		next();
+	}
+};

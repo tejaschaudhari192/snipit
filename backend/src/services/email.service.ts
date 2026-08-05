@@ -410,6 +410,75 @@ class EmailService {
 			);
 		}
 	}
+
+	async sendFeedbackEmail(
+		adminEmail: string,
+		type: string,
+		title: string,
+		description: string,
+		userEmail: string,
+	) {
+		try {
+			logger.info(
+				`Attempting to send feedback email via Brevo to: ${adminEmail}`,
+			);
+			const fromAddress = this.getFromAddress();
+			const subject = `[Snipit Feedback] ${type.toUpperCase()}: ${title}`;
+
+			// Fallback text
+			const text = `New Feedback Received\n\nType: ${type}\nFrom: ${userEmail}\n\nTitle: ${title}\nDescription: ${description}`;
+
+			const html = EMAIL_TEMPLATES.FEEDBACK_RECEIVED(
+				type,
+				title,
+				description,
+				userEmail,
+			);
+
+			const response = await fetch(
+				"https://api.brevo.com/v3/smtp/email",
+				{
+					method: "POST",
+					headers: {
+						accept: "application/json",
+						"api-key": configurations.brevo.apiKey,
+						"content-type": "application/json",
+					},
+					body: JSON.stringify({
+						sender: {
+							name: "Snipit Feedback",
+							email: fromAddress,
+						},
+						to: [
+							{
+								email: adminEmail,
+								name: "Snipit Admin",
+							},
+						],
+						replyTo: userEmail ? { email: userEmail } : undefined,
+						subject,
+						htmlContent: html,
+						textContent: text,
+					}),
+				},
+			);
+
+			if (!response.ok) {
+				const errorData = (await response.json()) as any;
+				throw new Error(
+					errorData.message ||
+						"Failed to send feedback email via Brevo",
+				);
+			}
+
+			logger.info(`Successfully sent feedback email to ${adminEmail}`);
+		} catch (error) {
+			logger.error(
+				`Error sending feedback email to ${adminEmail}:`,
+				error,
+			);
+		}
+	}
 }
 
 export default EmailService;

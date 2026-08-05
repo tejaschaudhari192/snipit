@@ -19,7 +19,8 @@
 		"jump_to_placeholder": "Enter snippet ID...",
 		"account": "Account",
 		"guest": "Guest",
-		"tools": "Tools"
+		"tools": "Tools",
+		"send_feedback": "Send Feedback"
 	},
 	"tools": {
 		"badge": "🔐 Secure Tools",
@@ -833,8 +834,20 @@
 				"desc": "Organize your snippets with a powerful, user-specific labeling system. Tag and categorize your code for instant retrieval and a personalized organization experience."
 			},
 			"music_integration": {
-				"title": "Zero-Bandwidth Music",
-				"desc": "Stream your favorite songs directly within your workspace using low-bandwidth background players, custom bitrates, and a proxy-secured MP3 downloader."
+				"title": "YouTube Music Integration",
+				"desc": "Stream your favorite songs directly within your workspace using YouTube-powered playback, custom playlists, and integrated audio players."
+			},
+			"pnr_checker": {
+				"title": "PNR Checker",
+				"desc": "Check PNR status and travel details quickly with an integrated PNR lookup tool."
+			},
+			"cryptsafe": {
+				"title": "File & Folder Encrypter",
+				"desc": "Securely encrypt and decrypt files and folders with CryptSafe using AES-GCM (PBKDF2, 100k iterations, SHA-256) for enhanced data protection."
+			},
+			"password_manager": {
+				"title": "Password Manager",
+				"desc": "Store, generate, and manage passwords securely with a built-in vault and sharing capabilities. Uses zero-knowledge encryption so only you can access your data."
 			}
 		},
 		"story": {
@@ -1074,5 +1087,25 @@
 			"default": "Hindi"
 		},
 		"unknown_artist": "Unknown Artist"
+	},
+	"feedback": {
+		"title": "Send Feedback",
+		"description": "Let us know if you found a bug, want a new feature, or just have some general feedback.",
+		"type": "Type",
+		"type_bug": "🐛 Report a Bug",
+		"type_feature": "✨ Feature Request",
+		"type_general": "💬 General Feedback",
+		"email_optional": "Email (Optional)",
+		"email_placeholder": "your@email.com",
+		"subject": "Subject",
+		"subject_placeholder": "Brief summary of your feedback",
+		"desc": "Description",
+		"desc_placeholder": "Please provide as much detail as possible...",
+		"cancel": "Cancel",
+		"submit": "Submit",
+		"submitting": "Submitting...",
+		"err_required": "Please fill in all required fields.",
+		"err_failed": "Failed to submit feedback. Please try again later.",
+		"success": "Feedback submitted successfully. Thank you!"
 	}
 }
