@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import api from "@/lib/api";
+import { getMe, logoutUser } from "@/lib/api/auth";
 
 import type { User } from "@/types";
 
@@ -22,8 +22,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const checkAuth = React.useCallback(async () => {
 		try {
-			const response = await api.get("/auth/me");
-			setUser(response.data);
+			const userData = await getMe();
+			setUser(userData);
 		} catch {
 			setUser(null);
 		} finally {
@@ -41,7 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const logout = React.useCallback(async () => {
 		try {
-			await api.post("/auth/logout");
+			await logoutUser();
 			setUser(null);
 		} catch (error) {
 			console.error("Logout failed", error);

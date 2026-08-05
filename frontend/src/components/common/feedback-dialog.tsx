@@ -21,7 +21,7 @@ import {
 import { toast } from "@/components/ui/toast";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuth } from "@/context/AuthContext";
-import api from "@/lib/api";
+import { submitFeedback } from "@/lib/api/feedback";
 
 interface FeedbackDialogProps {
 	isOpen: boolean;
@@ -59,7 +59,7 @@ export function FeedbackDialog({ isOpen, onClose }: FeedbackDialogProps) {
 				userEmail: user?.email || email || undefined,
 			};
 
-			await api.post("/api/feedback", payload);
+			await submitFeedback(payload);
 
 			toast.add({
 				title: t("feedback.success"),

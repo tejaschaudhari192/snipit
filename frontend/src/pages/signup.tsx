@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AxiosError } from "axios";
-import api from "@/lib/api";
+import { registerUser, loginGoogle } from "@/lib/api/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -70,7 +70,7 @@ const SignupPage = () => {
 
 		setIsLoading(true);
 		try {
-			await api.post("/auth/register", {
+			await registerUser({
 				username,
 				email,
 				password,
@@ -95,10 +95,10 @@ const SignupPage = () => {
 	) => {
 		setIsLoading(true);
 		try {
-			const response = await api.post("/auth/google", {
+			const data = await loginGoogle({
 				idToken: credentialResponse.credential,
 			});
-			login(response.data);
+			login(data);
 			toast.add({ title: t("auth.login_success"), type: "success" });
 			navigate("/");
 		} catch (error) {

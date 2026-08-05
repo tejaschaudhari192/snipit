@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "@/components/ui/toast";
-import api from "@/lib/api";
+import { suggestId } from "@/lib/api/ai";
 import { type AiIdFileContext } from "@/types";
 
 export const useAiIdSuggester = (
@@ -27,15 +27,15 @@ export const useAiIdSuggester = (
 
 		setIsSuggesting(true);
 		try {
-			const response = await api.post("/ai/suggest-id", {
+			const data = await suggestId({
 				content,
 				files: files?.map((f) => ({
 					name: f.name || f.fileName,
 					type: f.mimeType || f.fileMimeType,
 				})),
 			});
-			if (response.data?.id) {
-				setCustomId(response.data.id);
+			if (data?.id) {
+				setCustomId(data.id);
 				toast.add({
 					title: t("home.id_generation.ai_suggested"),
 					type: "success",
