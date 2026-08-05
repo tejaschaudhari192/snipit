@@ -120,7 +120,8 @@ export const useDisplayActions = ({
 						(f) => !removedServerFileUrls.has(f.url),
 					) || []),
 					...(paste?.fileUrl &&
-					!removedServerFileUrls.has(paste.fileUrl)
+					!removedServerFileUrls.has(paste.fileUrl) &&
+					!paste?.files?.some((f) => f.url === paste.fileUrl)
 						? [
 								{
 									url: paste.fileUrl,
