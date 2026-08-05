@@ -79,7 +79,7 @@ export const MainToolbar = memo(
 					className="flex flex-row flex-wrap items-center justify-between gap-y-2 w-full"
 				>
 					{/* Left: Type Selector */}
-					<div ref={leftRef} className="order-1 w-auto">
+					<div ref={leftRef} className="order-1 w-full sm:w-auto max-w-full overflow-x-auto no-scrollbar">
 						{!hideTypeSelector && (
 							<ContentTypeSelector
 								value={contentType}

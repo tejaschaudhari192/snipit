@@ -765,7 +765,7 @@ body.is-404 .action-url-bar {
 }
 
 .tab-trigger-base {
-	@apply flex-1 flex items-center justify-center p-3 h-8;
+	@apply flex-none sm:flex-1 shrink-0 flex items-center justify-center p-3 h-8;
 }
 
 .tab-text-full {
