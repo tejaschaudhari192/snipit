@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useApiHelpers } from "@/lib/api";
+import { generateDrawContent } from "@/lib/api/ai";
 import { toast } from "@/components/ui/toast";
 import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
@@ -29,7 +29,7 @@ export const AiDrawDialog = ({
 	onApply,
 }: AiDrawDialogProps) => {
 	const { t } = useTranslation();
-	const apiHelpers = useApiHelpers();
+
 	const [description, setDescription] = useState("");
 	const [isGenerating, setIsGenerating] = useState(false);
 	const [clearBoard, setClearBoard] = useState(false);
@@ -45,8 +45,7 @@ export const AiDrawDialog = ({
 
 		setIsGenerating(true);
 		try {
-			const { elements } =
-				await apiHelpers.generateDrawContent(description);
+			const { elements } = await generateDrawContent(description);
 			if (elements) {
 				onApply(elements, clearBoard);
 				onClose();

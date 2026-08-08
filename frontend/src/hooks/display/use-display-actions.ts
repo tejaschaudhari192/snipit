@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "@/components/ui/toast";
 import { AxiosError } from "axios";
-import { useApiHelpers } from "@/lib/api";
+import { updatePaste, deletePaste } from "@/lib/api/pastes";
 import { guestStorage } from "@/utils/guest-storage";
 import { clearDrafts, playRemoveSound } from "@/utils";
 import type { User, FileAttachment, UpdatePasteData } from "@/types";
@@ -31,7 +31,7 @@ export const useDisplayActions = ({
 }: UseDisplayActionsProps) => {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const apiHelpers = useApiHelpers();
+
 	const {
 		contentType,
 		paste,
@@ -238,7 +238,7 @@ export const useDisplayActions = ({
 					return;
 				}
 
-				const data = await apiHelpers.updatePaste(id!, updates);
+				const data = await updatePaste(id!, updates);
 
 				if (data) {
 					updateAllFromData(data);
@@ -290,8 +290,7 @@ export const useDisplayActions = ({
 			allowComments,
 			expiresTime,
 			id,
-			apiHelpers,
-			user,
+
 			navigate,
 			removedServerFileUrls,
 			updateAllFromData,
@@ -351,7 +350,7 @@ export const useDisplayActions = ({
 		try {
 			setIsDeleting(true);
 			playRemoveSound();
-			await apiHelpers.deletePaste(id!);
+			await deletePaste(id!);
 			toast.add({
 				title: t("messages.success.snippet_deleted"),
 				type: "success",

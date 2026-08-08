@@ -14,7 +14,7 @@ import { ROLE_OPTIONS } from "@/constants";
 import { OptionDisplay } from "@/components/common/option-display";
 import { cn } from "@/utils";
 import type { ShareRole } from "@/types";
-import { useApiHelpers } from "@/lib/api";
+import { addCollaborator, removeCollaborator } from "@/lib/api/collaborators";
 import { toast } from "@/components/ui/toast";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -43,7 +43,7 @@ export const CollaboratorsManager = ({
 	compact = false,
 }: CollaboratorsManagerProps) => {
 	const { t } = useTranslation();
-	const apiHelpers = useApiHelpers();
+
 	const [pendingEmails, setPendingEmails] = useState<string[]>([]);
 	const [inputValue, setInputValue] = useState("");
 	const [pendingRole, setPendingRole] = useState<ShareRole>("editor");
@@ -74,7 +74,7 @@ export const CollaboratorsManager = ({
 			setIsUpdating(true);
 			try {
 				const updatePromises = uniqueEmails.map((email) =>
-					apiHelpers.addCollaborator(pasteId, email, pendingRole),
+					addCollaborator(pasteId, email, pendingRole),
 				);
 				const results = await Promise.all(updatePromises);
 				setCollaborators([
@@ -116,7 +116,7 @@ export const CollaboratorsManager = ({
 		if (pasteId) {
 			setUpdatingEmails((prev) => [...prev, emailToRemove]);
 			try {
-				await apiHelpers.removeCollaborator(pasteId, emailToRemove);
+				await removeCollaborator(pasteId, emailToRemove);
 				setCollaborators(
 					collaborators.filter((i) => i.email !== emailToRemove),
 				);
@@ -149,11 +149,7 @@ export const CollaboratorsManager = ({
 		if (pasteId) {
 			setUpdatingEmails((prev) => [...prev, email]);
 			try {
-				const result = await apiHelpers.addCollaborator(
-					pasteId,
-					email,
-					newRole,
-				);
+				const result = await addCollaborator(pasteId, email, newRole);
 				setCollaborators(
 					collaborators.map((item) =>
 						item.email === email

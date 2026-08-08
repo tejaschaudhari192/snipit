@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useApiHelpers } from "@/lib/api";
+import { enhanceContent } from "@/lib/api/ai";
 import { useEditor, EditorBubbleItem } from "novel";
 import {
 	Sparkles,
@@ -41,7 +41,6 @@ export function BubbleMenuContent() {
 	const [isAiOpen, setIsAiOpen] = useState(false);
 	const [customPrompt, setCustomPrompt] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	const apiHelpers = useApiHelpers();
 
 	const [linkDialogOpen, setLinkDialogOpen] = useState(false);
 	const [linkInputUrl, setLinkInputUrl] = useState("");
@@ -76,7 +75,7 @@ export function BubbleMenuContent() {
 		setIsLoading(true);
 		try {
 			const formattedPrompt = `${prompt} (IMPORTANT: Return the response as clean, nicely formatted HTML suitable for a rich text editor. Use proper semantic tags like <p>, <strong>, <em>, <ul>, <li>, <h3>, <h4>, <blockquote>, <code> etc. Do NOT wrap the code/response in markdown formatting like \`\`\`html or similar code blocks. Output ONLY the raw HTML content.)`;
-			const response = await apiHelpers.enhanceContent(
+			const response = await enhanceContent(
 				selectedText,
 				formattedPrompt,
 			);

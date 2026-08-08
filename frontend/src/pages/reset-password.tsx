@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AxiosError } from "axios";
-import { useApiHelpers } from "@/lib/api";
+import { resetPassword } from "@/lib/api/auth";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -26,7 +26,7 @@ const ResetPasswordPage = () => {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	const { resetPassword } = useApiHelpers();
+
 	const { login } = useAuth();
 	const { t } = useTranslation();
 	const navigate = useNavigate();

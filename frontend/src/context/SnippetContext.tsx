@@ -6,7 +6,8 @@ import React, {
 	useEffect,
 	useRef,
 } from "react";
-import { useApiHelpers } from "@/lib/api";
+import { getUserPastes, deletePaste, getUserStats } from "@/lib/api/pastes";
+import { getSavedPastes, getSnippetsByLabel } from "@/lib/api/labels";
 import { useAuth } from "@/context/AuthContext";
 import type { PasteData } from "@/types";
 import { toast } from "@/components/ui/toast";
@@ -59,7 +60,6 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
-	const apiHelpers = useApiHelpers();
 
 	const [history, setHistory] = useState<SnippetState>(initialState);
 	const [profile, setProfile] = useState<SnippetState>(initialState);
@@ -115,7 +115,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 
 				if (user) {
 					// Use current state for page number
-					const backendData = await apiHelpers.getUserPastes(
+					const backendData = await getUserPastes(
 						isFirstLoad ? 1 : historyStateRef.current.page,
 						10,
 					);
@@ -196,7 +196,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 				isHistoryFetching.current = false;
 			}
 		},
-		[user, apiHelpers, t], // removed history.page
+		[user, t], // removed history.page
 	);
 
 	const loadProfile = useCallback(
@@ -220,7 +220,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 
 			try {
 				if (user) {
-					const data = await apiHelpers.getUserPastes(
+					const data = await getUserPastes(
 						isFirstLoad ? 1 : profileStateRef.current.page,
 						10,
 					);
@@ -268,7 +268,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 				isProfileFetching.current = false;
 			}
 		},
-		[user, apiHelpers, t], // removed profile.page
+		[user, t], // removed profile.page
 	);
 
 	const loadSavedProfile = useCallback(
@@ -283,7 +283,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 
 			try {
 				if (user) {
-					const data = await apiHelpers.getSavedPastes();
+					const data = await getSavedPastes();
 					setSavedProfile({
 						items: data.snippets,
 						page: 1,
@@ -321,20 +321,20 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 				isSavedProfileFetching.current = false;
 			}
 		},
-		[user, apiHelpers],
+		[user],
 	);
 
 	const loadFilteredPastes = useCallback(
 		async (label: string) => {
 			if (!user) return;
 			try {
-				const data = await apiHelpers.getSnippetsByLabel(label);
+				const data = await getSnippetsByLabel(label);
 				setFilteredPastes(data.snippets);
 			} catch (err) {
 				console.error("Failed to fetch filtered pastes", err);
 			}
 		},
-		[user, apiHelpers],
+		[user],
 	);
 
 	const clearFilter = useCallback(() => {
@@ -344,12 +344,12 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 	const loadStats = useCallback(async () => {
 		if (!user) return;
 		try {
-			const data = await apiHelpers.getUserStats();
+			const data = await getUserStats();
 			setStats(data);
 		} catch (err) {
 			console.error("Failed to fetch user stats", err);
 		}
-	}, [user, apiHelpers]);
+	}, [user]);
 
 	const clearHistoryState = useCallback(() => {
 		setHistory(initialState);
@@ -376,7 +376,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 				);
 
 				if (user && itemInHistory && itemInHistory.owner) {
-					await apiHelpers.deletePaste(id);
+					await deletePaste(id);
 				}
 
 				// Update Local State
@@ -413,7 +413,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 				});
 			}
 		},
-		[user, apiHelpers, t],
+		[user, t],
 	);
 
 	// Clear states when user changes/logs out

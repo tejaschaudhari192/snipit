@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import api from "@/lib/api";
+import { updateVault } from "@/lib/api/password-manager";
 import { keyStore } from "../key-store";
 import {
 	getRecoveryRecord,
@@ -102,7 +102,7 @@ export const resetMasterPassword = createAsyncThunk(
 			const encryptedPrivateKey = encryptWithMEK(privateKey, newMek);
 
 			// 3. Update backend
-			await api.put("/tools/password-manager/vault", {
+			await updateVault({
 				encryptedPersonalKey,
 				encryptedBlob: encryptedPersonalKey,
 				encryptedPrivateKey,

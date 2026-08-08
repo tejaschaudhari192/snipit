@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
-import { useApiHelpers } from "@/lib/api";
+import { updateMe } from "@/lib/api/auth";
 import { toast } from "@/components/ui/toast";
 import { Link } from "react-router-dom";
 import { User, Tag, Bookmark, FilterX } from "lucide-react";
@@ -35,7 +35,7 @@ const ProfilePage = () => {
 	const { t } = useTranslation();
 	usePageTitle("profile.title");
 	const { user, loading: authLoading, setUser } = useAuth();
-	const apiHelpers = useApiHelpers();
+
 	const {
 		profile,
 		savedProfile,
@@ -105,7 +105,7 @@ const ProfilePage = () => {
 
 		try {
 			setIsUpdating(true);
-			const updatedUser = await apiHelpers.updateMe({
+			const updatedUser = await updateMe({
 				username: newName,
 			});
 			setUser({ ...user!, username: updatedUser.username });

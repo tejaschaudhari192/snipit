@@ -1,5 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import api from "@/lib/api";
+import {
+	getVault,
+	updateVault,
+	getVaultItems,
+} from "@/lib/api/password-manager";
 import { keyStore } from "../key-store";
 import {
 	deriveMEK,
@@ -16,7 +20,13 @@ import {
 } from "../../utils/crypto";
 import { getKeyRecord, setKeyRecord } from "../../utils/indexed-db";
 import { logger } from "@/utils/logger";
-import type { PasswordManagerState, PasswordItem, Folder } from "../../types";
+import type {
+	PasswordManagerState,
+	PasswordItem,
+	Folder,
+	ServerVaultData,
+	ServerEncryptedItem,
+} from "../../types";
 import { setCloudVaultStatus } from "../password-slice";
 import { fetchSharedCollections } from "./sharing";
 
@@ -28,8 +38,8 @@ export const initializeVault = createAsyncThunk(
 		if (!state.userId) return;
 
 		try {
-			const res = await api.get("/tools/password-manager/vault");
-			if (res.data?.data) {
+			const res = await getVault<{ data: ServerVaultData }>();
+			if (res.data) {
 				dispatch(setCloudVaultStatus("found"));
 			} else {
 				dispatch(setCloudVaultStatus("not_found"));
@@ -82,7 +92,7 @@ export const createVault = createAsyncThunk(
 			);
 
 			// 5. Save to cloud
-			await api.put("/tools/password-manager/vault", {
+			await updateVault({
 				encryptedPersonalKey,
 				encryptedBlob: encryptedPersonalKey,
 				encryptedVaultBlob: encryptedPersonalKey,
@@ -120,12 +130,12 @@ export const unlockVault = createAsyncThunk(
 
 		try {
 			// Get cloud vault to get the encrypted keys
-			const res = await api.get("/tools/password-manager/vault");
-			if (!res.data?.data) {
+			const res = await getVault<{ data: ServerVaultData }>();
+			if (!res.data) {
 				return rejectWithValue("Vault not found on server");
 			}
 
-			const vaultData = res.data.data;
+			const vaultData = res.data;
 
 			const keyRecord = await getKeyRecord(state.userId);
 			let saltStr = vaultData.salt || keyRecord?.salt;
@@ -142,13 +152,25 @@ export const unlockVault = createAsyncThunk(
 
 			const mek = await deriveMEK(password, saltStr);
 
+			const encryptedPersonalKey =
+				vaultData.encryptedPersonalKey || vaultData.encryptedBlob;
+			if (!encryptedPersonalKey)
+				throw new Error(
+					"Vault is corrupted: Missing encrypted personal key",
+				);
+
 			// Decrypt personal key
 			const decodedPersonalKeyB64 = decryptWithMEK(
-				vaultData.encryptedPersonalKey || vaultData.encryptedBlob,
+				encryptedPersonalKey,
 				mek,
 			) as string;
 			if (!decodedPersonalKeyB64) throw new Error("Invalid password");
 			const personalKey = decodeBase64(decodedPersonalKeyB64);
+
+			if (!vaultData.encryptedPrivateKey)
+				throw new Error(
+					"Vault is corrupted: Missing encrypted private key",
+				);
 
 			// Decrypt private key
 			const privateKey = decryptWithMEK(
@@ -196,10 +218,10 @@ export const fetchVaultData = createAsyncThunk(
 
 		try {
 			// Fetch items
-			const itemsRes = await api.get(
-				"/tools/password-manager/vault/items",
-			);
-			const encryptedItems = itemsRes.data?.data || [];
+			const itemsRes = await getVaultItems<{
+				data: ServerEncryptedItem[];
+			}>();
+			const encryptedItems = itemsRes.data || [];
 
 			const personalItems: PasswordItem[] = [];
 			const rawSharedItems: PasswordItem[] = [];

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { toast } from "@/components/ui/toast";
 import { useTranslation } from "react-i18next";
-import { useApiHelpers } from "@/lib/api";
+import { detectLanguage as detectLanguageApi } from "@/lib/api/ai";
 import { CONFIG } from "@/configurations";
 
 export const useLanguageDetection = () => {
 	const [isDetecting, setIsDetecting] = useState(false);
-	const apiHelpers = useApiHelpers();
+
 	const { t } = useTranslation();
 
 	const detectLanguage = async (content: string) => {
@@ -15,7 +15,7 @@ export const useLanguageDetection = () => {
 		setIsDetecting(true);
 		const startTime = Date.now();
 		try {
-			const result = await apiHelpers.detectLanguage(content);
+			const result = await detectLanguageApi(content);
 
 			// Maintain loader for at least DETECTION_DELAY to avoid flickering
 			const elapsedTime = Date.now() - startTime;

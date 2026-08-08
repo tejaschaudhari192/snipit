@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/message-scroller";
 import { MessageGroup } from "@/components/ui/message";
 import type { PasteData, CommentData } from "@/types";
-import { useApiHelpers } from "@/lib/api";
+import { addComment, editComment, deleteComment } from "@/lib/api/comments";
 import { useAuth } from "@/context/AuthContext";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { CommentBubble } from "./comment-bubble";
@@ -36,7 +36,7 @@ export const CommentsSection = ({
 }: CommentsSectionProps) => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
-	const apiHelpers = useApiHelpers();
+
 	const [newComment, setNewComment] = useState("");
 	const [authorName, setAuthorName] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -81,7 +81,7 @@ export const CommentsSection = ({
 
 		setIsSubmitting(true);
 		try {
-			const newCommentData = await apiHelpers.addComment(
+			const newCommentData = await addComment(
 				paste.id,
 				newComment,
 				authorName || undefined,
@@ -110,11 +110,7 @@ export const CommentsSection = ({
 
 	const handleEditComment = async (commentId: string, newContent: string) => {
 		try {
-			const updated = await apiHelpers.editComment(
-				paste.id,
-				commentId,
-				newContent,
-			);
+			const updated = await editComment(paste.id, commentId, newContent);
 			onCommentUpdated?.(updated);
 			toast.add({ title: "Comment updated", type: "success" });
 		} catch (error) {
@@ -131,7 +127,7 @@ export const CommentsSection = ({
 
 	const handleDeleteComment = async (commentId: string) => {
 		try {
-			await apiHelpers.deleteComment(paste.id, commentId);
+			await deleteComment(paste.id, commentId);
 			onCommentDeleted?.(commentId);
 			toast.add({ title: "Comment deleted", type: "success" });
 		} catch (error) {

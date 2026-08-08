@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useApiHelpers } from "@/lib/api";
+import { getPaste } from "@/lib/api/pastes";
 import { guestStorage } from "@/utils/guest-storage";
 import { detectContentMode } from "@/utils";
 import type { PasteData, User } from "@/types";
@@ -14,7 +14,7 @@ interface UseDisplayInitProps {
 
 export const useDisplayInit = ({ id, state, user }: UseDisplayInitProps) => {
 	const location = useLocation();
-	const apiHelpers = useApiHelpers();
+
 	const {
 		updateAllFromData,
 		setContentType,
@@ -38,7 +38,7 @@ export const useDisplayInit = ({ id, state, user }: UseDisplayInitProps) => {
 
 				if (!id) return;
 
-				const data = await apiHelpers.getPaste(id);
+				const data = await getPaste(id);
 				if (data) {
 					updateAllFromData(data);
 					setContentType(detectContentMode(data));
@@ -54,7 +54,6 @@ export const useDisplayInit = ({ id, state, user }: UseDisplayInitProps) => {
 		loadData();
 	}, [
 		id,
-		apiHelpers,
 		location.state,
 		user,
 		updateAllFromData,

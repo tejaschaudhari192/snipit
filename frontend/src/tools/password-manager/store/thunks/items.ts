@@ -1,5 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import api from "@/lib/api";
+import {
+	createVaultItem,
+	updateVaultItem,
+	deleteVaultItem,
+} from "@/lib/api/password-manager";
 import { keyStore } from "../key-store";
 import { encryptPayload } from "../../utils/crypto";
 import type { PasswordManagerState, PasswordItem } from "../../types";
@@ -21,13 +25,10 @@ export const persistItem = createAsyncThunk(
 					return rejectWithValue("Collection key not found");
 
 				const encryptedPayload = encryptPayload(item, collectionKey);
-				await api.put(
-					`/tools/password-manager/vault/items/${item.id}`,
-					{
-						encryptedPayload,
-						collectionId: item.collectionId,
-					},
-				);
+				await updateVaultItem(item.id, {
+					encryptedPayload,
+					collectionId: item.collectionId,
+				});
 				return item;
 			}
 
@@ -38,7 +39,7 @@ export const persistItem = createAsyncThunk(
 			const encryptedPayload = encryptPayload(item, personalKey);
 
 			// Upsert to backend
-			await api.put(`/tools/password-manager/vault/items/${item.id}`, {
+			await updateVaultItem(item.id, {
 				encryptedPayload,
 				collectionId: item.collectionId || null,
 			});
@@ -61,7 +62,7 @@ export const persistItem = createAsyncThunk(
 							item,
 							collectionKey,
 						);
-						await api.post(`/tools/password-manager/vault/items`, {
+						await createVaultItem({
 							id: item.id,
 							encryptedPayload,
 							collectionId: item.collectionId,
@@ -71,7 +72,7 @@ export const persistItem = createAsyncThunk(
 					const personalKey = keyStore.getPersonalKey();
 					if (!personalKey) return rejectWithValue("Vault is locked");
 					const encryptedPayload = encryptPayload(item, personalKey);
-					await api.post(`/tools/password-manager/vault/items`, {
+					await createVaultItem({
 						id: item.id,
 						encryptedPayload,
 						collectionId: item.collectionId,
@@ -108,7 +109,7 @@ export const deleteItem = createAsyncThunk(
 		}
 
 		try {
-			await api.delete(`/tools/password-manager/vault/items/${id}`);
+			await deleteVaultItem(id);
 
 			// If it was part of a hidden collection (meaning an individually shared item), delete the collection too
 			if (targetCollectionId) {

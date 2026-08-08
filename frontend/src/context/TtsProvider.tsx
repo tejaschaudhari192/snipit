@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
-import { useApiHelpers } from "@/lib/api";
+import { prepareSpeech, detectSpeechLanguage } from "@/lib/api/ai";
 import { toast } from "@/components/ui/toast";
 import { TtsContext } from "./TtsContext";
 import { generatePuterSpeech } from "@/lib/puter-tts";
@@ -7,7 +7,6 @@ import { generatePuterSpeech } from "@/lib/puter-tts";
 export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
 }) => {
-	const { prepareSpeech, detectSpeechLanguage } = useApiHelpers();
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [isPaused, setIsPaused] = useState(false);
 	const [isPreparing, setIsPreparing] = useState(false);
@@ -170,7 +169,7 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 				stop();
 			}
 		},
-		[prepareSpeech, detectSpeechLanguage, stop, isPlaying],
+		[stop, isPlaying],
 	);
 
 	useEffect(() => {

@@ -12,7 +12,7 @@ import type { OnMount, BeforeMount, Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 import { type Socket } from "socket.io-client";
 
-import { useApiHelpers } from "@/lib/api";
+import { verifyPassword } from "@/lib/api/pastes";
 import { useTheme } from "@/hooks/use-theme";
 import { useAuth } from "@/context/AuthContext";
 import { useMusic } from "@/context/use-music";
@@ -88,7 +88,7 @@ const DisplayDialogs = lazy(() =>
 
 const DisplayPage = () => {
 	const { id } = useParams<{ id: string }>();
-	const apiHelpers = useApiHelpers();
+
 	const { theme } = useTheme();
 	const { user } = useAuth();
 	const { t } = useTranslation();
@@ -522,7 +522,7 @@ const DisplayPage = () => {
 					handleVerifyPassword={async () => {
 						setIsVerifyingPassword(true);
 						try {
-							const data = await apiHelpers.verifyPassword(
+							const data = await verifyPassword(
 								id!,
 								passwordInput,
 							);

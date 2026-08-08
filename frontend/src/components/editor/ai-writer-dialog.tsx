@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useApiHelpers } from "@/lib/api";
+import { enhanceContent } from "@/lib/api/ai";
 import { toast } from "@/components/ui/toast";
 import { Wand2 } from "lucide-react";
 import { AxiosError } from "axios";
@@ -32,7 +32,7 @@ export const AiWriterDialog = ({
 	contentType,
 }: AiWriterDialogProps) => {
 	const { t } = useTranslation();
-	const apiHelpers = useApiHelpers();
+
 	const [instruction, setInstruction] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [result, setResult] = useState<string | null>(null);
@@ -59,7 +59,7 @@ export const AiWriterDialog = ({
 				targetInstruction = `${targetInstruction} (IMPORTANT: Return the response as clean, nicely formatted HTML suitable for a rich text editor. Use proper semantic tags like <p>, <strong>, <em>, <ul>, <li>, <h3>, <h4>, <blockquote>, <code> etc. Do NOT wrap the code/response in markdown formatting like \`\`\`html or similar code blocks. Output ONLY the raw HTML content.)`;
 			}
 
-			const res = await apiHelpers.enhanceContent(
+			const res = await enhanceContent(
 				selectedText || "",
 				targetInstruction,
 			);

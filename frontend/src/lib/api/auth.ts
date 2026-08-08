@@ -37,3 +37,20 @@ export const registerUser = async (payload: RegisterPayload) => {
 	const response = await api.post("/auth/register", payload);
 	return response.data;
 };
+
+export const updateMe = async (data: { username: string }) => {
+	const response = await api.put("/auth/me", data);
+	return response.data;
+};
+
+export const forgotPassword = async (email: string) => {
+	const response = await api.post("/auth/forgotpassword", { email });
+	return response.data;
+};
+
+export const resetPassword = async (token: string, password: string) => {
+	const response = await api.put(`/auth/resetpassword/${token}`, {
+		password,
+	});
+	return response.data;
+};

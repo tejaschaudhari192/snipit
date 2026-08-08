@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Mic, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
-import { useApiHelpers } from "@/lib/api";
+import { transcribeAudio } from "@/lib/api/ai";
 import { usePaste } from "@/context/PasteContext";
 import { toast } from "../ui/toast";
 import { cn } from "@/utils";
@@ -41,7 +41,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 		audioBlob,
 		setAudioBlob,
 	} = useAudioRecorder();
-	const { transcribeAudio } = useApiHelpers();
+
 	const pasteContext = usePaste();
 
 	const textValue =

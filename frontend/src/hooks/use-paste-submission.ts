@@ -2,7 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "@/components/ui/toast";
 import { useTranslation } from "react-i18next";
 import { AxiosError } from "axios";
-import { useApiHelpers } from "@/lib/api";
+import { submitPaste } from "@/lib/api/pastes";
+import { updateLabels } from "@/lib/api/labels";
 import { useAuth } from "@/context/AuthContext";
 import { usePaste } from "@/context/PasteContext";
 import { clearDrafts, dateConverter } from "@/utils";
@@ -34,7 +35,7 @@ export const usePasteSubmission = (
 	const { t } = useTranslation();
 	const { user } = useAuth();
 	const navigate = useNavigate();
-	const apiHelpers = useApiHelpers();
+
 	const {
 		visibility,
 		editPermission,
@@ -98,7 +99,7 @@ export const usePasteSubmission = (
 					.filter((a): a is FileAttachment => a !== null);
 			}
 
-			const data = await apiHelpers.submitPaste({
+			const data = await submitPaste({
 				content: isP2pVideo
 					? "p2p://local-stream"
 					: (contentType === "file" || contentType === "video") &&
@@ -163,7 +164,7 @@ export const usePasteSubmission = (
 
 			if (user && labels.length > 0) {
 				try {
-					await apiHelpers.updateLabels(data.id, labels);
+					await updateLabels(data.id, labels);
 				} catch (err) {
 					console.error("Failed to save labels during creation", err);
 				}

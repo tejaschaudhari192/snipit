@@ -25,13 +25,9 @@ export const ContentTypeSelector = memo(
 			<Tabs
 				value={value}
 				onValueChange={(val) => onValueChange(val as ContentMode)}
-				className={cn("w-max sm:w-full", className)}
+				className={cn("min-h-full w-max sm:w-full", className)}
 			>
-				<TabsList
-					className={cn(
-						"min-h-fit flex w-max sm:w-full no-scrollbar justify-start",
-					)}
-				>
+				<TabsList className={cn("min-h-fit")}>
 					{TABS_CONFIG.map((tab) => {
 						if (tab.requiresFileOption && !showFileOption)
 							return null;

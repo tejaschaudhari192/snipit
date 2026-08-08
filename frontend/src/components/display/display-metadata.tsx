@@ -5,7 +5,7 @@ import { getTimeRemaining } from "@/utils";
 import { useTranslation } from "react-i18next";
 import type { PasteData } from "@/types";
 import { useAuth } from "@/context/AuthContext";
-import { useApiHelpers } from "@/lib/api";
+import { savePaste } from "@/lib/api/labels";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "@/components/ui/toast";
 import { useSnippets } from "@/context/SnippetContext";
@@ -23,7 +23,7 @@ interface DisplayMetadataProps {
 export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
-	const apiHelpers = useApiHelpers();
+
 	const { savedProfile, loadSavedProfile } = useSnippets();
 	const [isSaving, setIsSaving] = useState(false);
 	const [isSaved, setIsSaved] = useState(false);
@@ -43,7 +43,7 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 		if (user) {
 			try {
 				setIsSaving(true);
-				const result = await apiHelpers.savePaste(paste.id);
+				const result = await savePaste(paste.id);
 				setIsSaved(result.saved);
 
 				if (result.saved) {

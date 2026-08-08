@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { CONFIG } from "@/configurations";
 import { type PasteData } from "@/types";
 import type { ShareEntry } from "@/hooks/use-display-state";
-import { useApiHelpers } from "@/lib/api";
+import { checkIdAvailability } from "@/lib/api/pastes";
 import { toast } from "@/components/ui/toast";
 
 interface UseAutosaveProps {
@@ -48,7 +48,6 @@ export const useAutosave = ({
 	originalPaste,
 }: UseAutosaveProps) => {
 	const onSaveRef = useRef(onSave);
-	const { checkIdAvailability } = useApiHelpers();
 
 	// Keep the latest onSave function without triggering effects
 	useEffect(() => {

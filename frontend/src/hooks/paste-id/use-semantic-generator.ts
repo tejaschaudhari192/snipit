@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
-import { useApiHelpers } from "@/lib/api";
+import { generateWordId, getWordCategories } from "@/lib/api/pastes";
 import { toast } from "@/components/ui/toast";
 
 export const useSemanticGenerator = (setCustomId: (v: string) => void) => {
-	const { generateWordId, getWordCategories } = useApiHelpers();
 	const [wordCount, setWordCount] = useState(1);
 	const [categories, setCategories] = useState<string[]>([]);
 	const [selectedCats, setSelectedCats] = useState<string[]>([
@@ -22,7 +21,7 @@ export const useSemanticGenerator = (setCustomId: (v: string) => void) => {
 			}
 		};
 		fetchCategories();
-	}, [getWordCategories]);
+	}, []);
 
 	const handleGenerate = useCallback(async () => {
 		setIsGenerating(true);
@@ -35,7 +34,7 @@ export const useSemanticGenerator = (setCustomId: (v: string) => void) => {
 		} finally {
 			setIsGenerating(false);
 		}
-	}, [wordCount, selectedCats, generateWordId, setCustomId]);
+	}, [wordCount, selectedCats, setCustomId]);
 
 	const toggleCategory = (cat: string) => {
 		setSelectedCats((prev) =>

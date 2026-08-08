@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useApiHelpers } from "@/lib/api";
+import { enhanceContent } from "@/lib/api/ai";
 import { toast } from "@/components/ui/toast";
 import { Sparkles, Wand2 } from "lucide-react";
 import { AxiosError } from "axios";
@@ -34,7 +34,7 @@ export const AiEnhanceDialog = ({
 	contentType,
 }: AiEnhanceDialogProps) => {
 	const { t } = useTranslation();
-	const apiHelpers = useApiHelpers();
+
 	const [instruction, setInstruction] = useState(initialInstruction);
 	const [isLoading, setIsLoading] = useState(false);
 	const [result, setResult] = useState<string | null>(null);
@@ -67,10 +67,7 @@ export const AiEnhanceDialog = ({
 
 		setIsLoading(true);
 		try {
-			const res = await apiHelpers.enhanceContent(
-				selectedText,
-				targetInstruction,
-			);
+			const res = await enhanceContent(selectedText, targetInstruction);
 			if (res && res.result) {
 				setResult(res.result);
 				toast.add({ title: t("ai_dialog.success"), type: "success" });

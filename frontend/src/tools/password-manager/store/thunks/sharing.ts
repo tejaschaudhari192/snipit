@@ -1,5 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import api from "@/lib/api";
+import {
+	getVaultCollections,
+	deleteVaultCollection,
+	lookupShareUser,
+	shareVaultItem,
+	shareVaultFolder,
+	revokeVaultAccess,
+} from "@/lib/api/password-manager";
 import { keyStore } from "../key-store";
 import {
 	generateSymmetricKey,
@@ -12,6 +19,10 @@ import type {
 	PasswordManagerState,
 	ShareItemPayload,
 	ShareFolderPayload,
+	ServerCollection,
+	LookupShareUserResponse,
+	ShareVaultItemResponse,
+	ShareVaultFolderResponse,
 } from "../../types";
 
 import { persistFolders } from "./folders";
@@ -23,10 +34,10 @@ export const fetchSharedCollections = createAsyncThunk(
 		if (!privateKey) return rejectWithValue("Vault is locked");
 
 		try {
-			const res = await api.get(
-				"/tools/password-manager/vault/collections",
-			);
-			const collections = res.data?.data || [];
+			const res = await getVaultCollections<{
+				data: ServerCollection[];
+			}>();
+			const collections = res.data || [];
 
 			for (const coll of collections) {
 				if (coll.encryptedCollectionKey) {
@@ -55,9 +66,7 @@ export const deleteCollection = createAsyncThunk(
 	"passwordManager/deleteCollection",
 	async (collectionId: string, { rejectWithValue, dispatch }) => {
 		try {
-			await api.delete(
-				`/tools/password-manager/vault/collections/${collectionId}`,
-			);
+			await deleteVaultCollection(collectionId);
 			dispatch(fetchSharedCollections());
 			return collectionId;
 		} catch (error: unknown) {
@@ -85,12 +94,11 @@ export const shareItem = createAsyncThunk(
 
 		try {
 			// 1. Lookup recipient
-			const lookupRes = await api.post(
-				"/tools/password-manager/vault/share/lookup",
-				{ email: payload.targetEmail },
-			);
+			const lookupRes = await lookupShareUser<{
+				data: LookupShareUserResponse;
+			}>({ email: payload.targetEmail });
 			const { userId: targetUserId, publicKey: theirPublicKey } =
-				lookupRes.data.data;
+				lookupRes.data;
 
 			// 2. Generate symmetric key for the new collection
 			const rawCollectionKey = generateSymmetricKey();
@@ -110,20 +118,19 @@ export const shareItem = createAsyncThunk(
 			);
 
 			// 5. Hit API to create collection, access, and item
-			const shareRes = await api.post(
-				"/tools/password-manager/vault/share/item",
-				{
-					targetUserId,
-					encryptedCollectionKeyForOwner,
-					encryptedCollectionKeyForRecipient,
-					role: payload.role,
-					itemId: payload.item.id,
-					encryptedPayload,
-					itemTitle: payload.item.title,
-				},
-			);
+			const shareRes = await shareVaultItem<{
+				data: ShareVaultItemResponse;
+			}>({
+				targetUserId,
+				encryptedCollectionKeyForOwner,
+				encryptedCollectionKeyForRecipient,
+				role: payload.role,
+				itemId: payload.item.id,
+				encryptedPayload,
+				itemTitle: payload.item.title,
+			});
 
-			const { collectionId, itemId } = shareRes.data.data;
+			const { collectionId, itemId } = shareRes.data;
 
 			// 6. Store the collection key in our local keyStore
 			keyStore.setCollectionKey(collectionId, rawCollectionKey);
@@ -162,12 +169,11 @@ export const shareFolder = createAsyncThunk(
 			);
 
 			// 2. Lookup recipient
-			const lookupRes = await api.post(
-				"/tools/password-manager/vault/share/lookup",
-				{ email: payload.targetEmail },
-			);
+			const lookupRes = await lookupShareUser<{
+				data: LookupShareUserResponse;
+			}>({ email: payload.targetEmail });
 			const { userId: targetUserId, publicKey: theirPublicKey } =
-				lookupRes.data.data;
+				lookupRes.data;
 
 			// 3. Generate symmetric key for the new collection
 			const rawCollectionKey = generateSymmetricKey();
@@ -189,19 +195,18 @@ export const shareFolder = createAsyncThunk(
 			});
 
 			// 6. Hit API to create collection, access, and items
-			const shareRes = await api.post(
-				"/tools/password-manager/vault/share/folder",
-				{
-					targetUserId,
-					encryptedCollectionKeyForOwner,
-					encryptedCollectionKeyForRecipient,
-					role: payload.role,
-					folderName: payload.folderName,
-					items: encryptedItems,
-				},
-			);
+			const shareRes = await shareVaultFolder<{
+				data: ShareVaultFolderResponse;
+			}>({
+				targetUserId,
+				encryptedCollectionKeyForOwner,
+				encryptedCollectionKeyForRecipient,
+				role: payload.role,
+				folderName: payload.folderName,
+				items: encryptedItems,
+			});
 
-			const { collectionId } = shareRes.data.data;
+			const { collectionId } = shareRes.data;
 			keyStore.setCollectionKey(collectionId, rawCollectionKey);
 
 			// 7. Update folder with collectionId and persist it
@@ -229,7 +234,7 @@ export const revokeSharedAccess = createAsyncThunk(
 	"passwordManager/revokeSharedAccess",
 	async (accessId: string, { rejectWithValue, dispatch }) => {
 		try {
-			await api.delete(`/tools/password-manager/vault/share/${accessId}`);
+			await revokeVaultAccess(accessId);
 			dispatch(fetchSharedCollections());
 			return accessId;
 		} catch (error: unknown) {

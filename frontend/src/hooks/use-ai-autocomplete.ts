@@ -6,7 +6,7 @@ import type {
 	CancellationToken,
 	Position,
 } from "monaco-editor";
-import { useApiHelpers } from "@/lib/api";
+import { getAutocomplete } from "@/lib/api/ai";
 import { processAiCompletion, getMonacoContext } from "@/utils/ai-autocomplete";
 
 interface UseAiAutocompleteOptions {
@@ -18,7 +18,6 @@ export const useAiAutocomplete = ({
 	language,
 	enabled,
 }: UseAiAutocompleteOptions) => {
-	const apiHelpers = useApiHelpers();
 	const providerRef = useRef<{ dispose: () => void } | null>(null);
 	const abortRef = useRef<AbortController | null>(null);
 
@@ -64,12 +63,11 @@ export const useAiAutocomplete = ({
 						}
 
 						try {
-							const { completion } =
-								await apiHelpers.getAutocomplete(
-									language,
-									prefix,
-									suffix,
-								);
+							const { completion } = await getAutocomplete(
+								language,
+								prefix,
+								suffix,
+							);
 
 							if (!completion || token.isCancellationRequested) {
 								return { items: [] };
@@ -106,7 +104,7 @@ export const useAiAutocomplete = ({
 
 			providerRef.current = provider;
 		},
-		[enabled, language, apiHelpers],
+		[enabled, language],
 	);
 
 	useEffect(() => {

@@ -79,7 +79,10 @@ export const MainToolbar = memo(
 					className="flex flex-row flex-wrap items-center justify-between gap-y-2 w-full"
 				>
 					{/* Left: Type Selector */}
-					<div ref={leftRef} className="order-1 w-full sm:w-auto max-w-full overflow-x-auto no-scrollbar">
+					<div
+						ref={leftRef}
+						className="min-h-fit order-1 w-full sm:w-auto max-w-full overflow-x-auto overflow-y-hidden scrollbar-none"
+					>
 						{!hideTypeSelector && (
 							<ContentTypeSelector
 								value={contentType}
@@ -97,7 +100,7 @@ export const MainToolbar = memo(
 						<div
 							ref={middleRef}
 							className={cn(
-								"flex items-center justify-start gap-2 overflow-x-auto no-scrollbar px-2 py-1 xl:py-0 transition-all",
+								"flex items-center justify-start gap-2 overflow-x-auto overflow-y-hidden scrollbar-none px-2 py-1 xl:py-0 transition-all",
 								needsSecondRow
 									? "order-3 w-full"
 									: "order-2 flex-1 justify-center",

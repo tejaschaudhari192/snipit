@@ -1,5 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import api from "@/lib/api";
+import {
+	deleteVaultItem,
+	updateVaultItem,
+	deleteVaultCollection,
+	updateVault,
+} from "@/lib/api/password-manager";
 import { keyStore } from "../key-store";
 import { encryptPayload } from "../../utils/crypto";
 import type { PasswordManagerState, PasswordItem, Folder } from "../../types";
@@ -52,9 +57,7 @@ export const deleteFolderAsync = createAsyncThunk(
 				];
 
 				for (const item of allToDelete) {
-					await api.delete(
-						`/tools/password-manager/vault/items/${item.id}`,
-					);
+					await deleteVaultItem(item.id);
 				}
 				newItems = newItems.filter((item) => item.folderId !== id);
 			} else {
@@ -97,13 +100,10 @@ export const deleteFolderAsync = createAsyncThunk(
 						updatedItem,
 						personalKey,
 					);
-					await api.put(
-						`/tools/password-manager/vault/items/${item.id}`,
-						{
-							encryptedPayload,
-							collectionId: null, // detach from collection in DB
-						},
-					);
+					await updateVaultItem(item.id, {
+						encryptedPayload,
+						collectionId: null, // detach from collection in DB
+					});
 
 					// Update or add to personal items list
 					const index = newItems.findIndex((i) => i.id === item.id);
@@ -119,9 +119,7 @@ export const deleteFolderAsync = createAsyncThunk(
 			// Items have already been detached (collectionId: null in DB above),
 			// so deleting the collection only removes recipient access — it does NOT orphan items.
 			if (folder.collectionId) {
-				await api.delete(
-					`/tools/password-manager/vault/collections/${folder.collectionId}`,
-				);
+				await deleteVaultCollection(folder.collectionId);
 				dispatch(fetchSharedCollections());
 			}
 
@@ -130,7 +128,7 @@ export const deleteFolderAsync = createAsyncThunk(
 				{ folders: newFolders },
 				personalKey,
 			);
-			await api.put("/tools/password-manager/vault", {
+			await updateVault({
 				encryptedSettings: settingsPayload,
 			});
 
@@ -158,7 +156,7 @@ export const persistFolders = createAsyncThunk(
 				personalKey,
 			);
 
-			await api.put("/tools/password-manager/vault", {
+			await updateVault({
 				encryptedSettings: settingsPayload,
 			});
 

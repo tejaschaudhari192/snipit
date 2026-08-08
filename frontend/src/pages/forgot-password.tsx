@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AxiosError } from "axios";
-import { useApiHelpers } from "@/lib/api";
+import { forgotPassword } from "@/lib/api/auth";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,6 @@ const ForgotPasswordPage = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [isSubmitted, setIsSubmitted] = useState(false);
 	const { t } = useTranslation();
-	const { forgotPassword } = useApiHelpers();
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();

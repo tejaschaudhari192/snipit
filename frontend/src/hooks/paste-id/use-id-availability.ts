@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { useApiHelpers } from "@/lib/api";
+import { checkIdAvailability } from "@/lib/api/pastes";
 
 export const useIdAvailability = (
 	customId: string,
 	idTypeTab: string,
 	originalId?: string,
 ) => {
-	const { checkIdAvailability } = useApiHelpers();
 	const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
 	const [isChecking, setIsChecking] = useState(false);
 
@@ -35,7 +34,7 @@ export const useIdAvailability = (
 		}, 500);
 
 		return () => clearTimeout(timer);
-	}, [customId, idTypeTab, checkIdAvailability, originalId]);
+	}, [customId, idTypeTab, originalId]);
 
 	return { isAvailable, isChecking };
 };
