@@ -97,7 +97,7 @@ export function FeedbackDialog({ isOpen, onClose }: FeedbackDialogProps) {
 						<Label>{t("feedback.type")}</Label>
 						<Select
 							value={type}
-							onValueChange={(val: any) => setType(val)}
+							onValueChange={(val) => val && setType(val)}
 						>
 							<SelectTrigger>
 								<SelectValue />

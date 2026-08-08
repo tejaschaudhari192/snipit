@@ -47,6 +47,7 @@ export function useToolbarWrap(deps: React.DependencyList) {
 		if (middleRef.current) ro.observe(middleRef.current);
 
 		return () => ro.disconnect();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, deps);
 
 	return {

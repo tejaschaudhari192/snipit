@@ -494,11 +494,7 @@ const DisplayPage = () => {
 		);
 	}
 
-	if (
-		paste &&
-		(paste.isPasswordProtected || !!paste.password) &&
-		!paste.content
-	) {
+	if (paste && paste.isPasswordProtected && !paste.content) {
 		return (
 			<Suspense
 				fallback={

@@ -278,6 +278,7 @@ export const useDisplayActions = ({
 			paste,
 			updatedContent,
 			t,
+			user,
 			isPasswordEnabled,
 			editPassword,
 			language,

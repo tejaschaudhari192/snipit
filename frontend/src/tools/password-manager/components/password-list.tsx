@@ -155,7 +155,7 @@ export default function PasswordList({
 		const items = vault?.items ?? [];
 		return items.filter((item: PasswordItem) => {
 			if (activeFilter === "all") return true;
-			if (activeFilter === "favorites") return item.isFavorite === true;
+			if (activeFilter === "favorites") return !!item.isFavorite;
 			if (activeFilter === "recent") return true; // placeholder for recent
 			// Filter by folder
 			if (

@@ -98,15 +98,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 		};
 
 		handleTranscribe(audioBlob);
-	}, [
-		audioBlob,
-		isTranscribing,
-		transcribeAudio,
-		setTextValue,
-		textValue,
-		setAudioBlob,
-		t,
-	]);
+	}, [audioBlob, isTranscribing, setTextValue, textValue, setAudioBlob, t]);
 
 	return (
 		<div className={cn("flex items-center gap-2 shrink-0", className)}>

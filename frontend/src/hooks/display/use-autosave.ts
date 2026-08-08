@@ -150,7 +150,6 @@ export const useAutosave = ({
 		lastLocalEditRef,
 		config,
 		originalPaste,
-		checkIdAvailability,
 		setSaveStatus,
 	]);
 

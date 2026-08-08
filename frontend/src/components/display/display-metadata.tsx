@@ -162,9 +162,9 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 										: "bg-red-500"
 							}`}
 						/>
-						{t(`common.${paste.visibility || "public"}`)}
+						{t(`common.access.${paste.visibility}`)}
 					</div>
-					{(paste.isPasswordProtected || !!paste.password) && (
+					{paste.isPasswordProtected && (
 						<>
 							<div className="w-px h-3 bg-border hidden sm:block" />
 							<div className="flex items-center gap-1.5 text-muted-foreground font-medium uppercase tracking-wider">

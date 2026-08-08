@@ -107,7 +107,7 @@ function DrawerContent({
 
 	return (
 		<DrawerPortal data-slot="drawer-portal">
-			{modal === true && (
+			{modal && (
 				<DrawerOverlay
 					data-snap-points={hasSnapPoints ? "" : undefined}
 				/>

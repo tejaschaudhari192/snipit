@@ -109,7 +109,7 @@ export const useDisplayState = () => {
 			data.password !== undefined ||
 			data.isPasswordProtected !== undefined
 		) {
-			const isPassEnabled = !!data.password || !!data.isPasswordProtected;
+			const isPassEnabled = !!data.isPasswordProtected;
 			setIsPasswordEnabled(isPassEnabled);
 			if (!isPassEnabled) {
 				setPaste((prev) => {
