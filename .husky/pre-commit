@@ -1,2 +1,5 @@
-npx lint-staged
-npm run build --prefix frontend
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "✨ Running format, lint, and build checks on staged files..."
+pnpm lint-staged
