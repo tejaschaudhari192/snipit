@@ -136,7 +136,11 @@ export default function ShareFolderModal({
 										placeholder={t(
 											"tools.password_manager.share.choose_folder_to_share",
 										)}
-									/>
+									>
+										{selectedFolderId
+											? vault?.folders?.find(f => f.id === selectedFolderId)?.name
+											: undefined}
+									</SelectValue>
 								</SelectTrigger>
 								<SelectContent className="bg-background border-border text-foreground">
 									{vault?.folders?.map(
@@ -189,7 +193,13 @@ export default function ShareFolderModal({
 									placeholder={t(
 										"tools.password_manager.share.select_permission",
 									)}
-								/>
+								>
+									{role === "editor" 
+										? t("tools.password_manager.share.editor")
+										: role === "viewer"
+											? t("tools.password_manager.share.viewer")
+											: undefined}
+								</SelectValue>
 							</SelectTrigger>
 							<SelectContent className="bg-background border-border text-foreground">
 								<SelectItem value="viewer">

@@ -281,7 +281,7 @@ export function SettingsMenu({
 					</AlertDialogHeader>
 					<AlertDialogFooter className="mt-4 gap-2 sm:gap-0">
 						<AlertDialogCancel disabled={isDeleting}>
-							{t("cancel")}
+							{t("common.actions.cancel")}
 						</AlertDialogCancel>
 						<AlertDialogAction
 							onClick={(e) => {

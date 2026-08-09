@@ -124,7 +124,13 @@ export default function ShareItemModal({
 									placeholder={t(
 										"tools.password_manager.share.select_permission",
 									)}
-								/>
+								>
+									{role === "editor" 
+										? t("tools.password_manager.share.editor")
+										: role === "viewer"
+											? t("tools.password_manager.share.viewer")
+											: undefined}
+								</SelectValue>
 							</SelectTrigger>
 							<SelectContent className="bg-background border-border text-foreground">
 								<SelectItem value="viewer">

@@ -42,7 +42,7 @@ export function SchemaFieldRenderer({
 		return (
 			<div className="space-y-1.5">
 				<Label className="text-[13px] text-muted-foreground block font-medium">
-					{t(field.placeholder || "") || field.label}
+					{field.placeholder ? t(field.placeholder) : t(field.label)}
 				</Label>
 				<a
 					href={value.startsWith("http") ? value : `https://${value}`}
@@ -65,7 +65,7 @@ export function SchemaFieldRenderer({
 		return (
 			<div className="space-y-1.5 mt-2 mb-2">
 				<Label className="text-[13px] text-muted-foreground block font-medium mb-1">
-					{t(field.placeholder || "") || field.label}
+					{field.placeholder ? t(field.placeholder) : t(field.label)}
 				</Label>
 				<Attachment>
 					<AttachmentMedia>
@@ -107,7 +107,7 @@ export function SchemaFieldRenderer({
 			<div className="space-y-1.5 group">
 				<div className="flex items-center justify-between">
 					<Label className="text-[13px] text-muted-foreground block font-medium">
-						{t(field.placeholder || "") || field.label}
+						{field.placeholder ? t(field.placeholder) : t(field.label)}
 					</Label>
 					<div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
 						<CopyButton
@@ -128,7 +128,7 @@ export function SchemaFieldRenderer({
 	return (
 		<div className="space-y-1.5">
 			<Label className="text-[13px] text-muted-foreground block font-medium">
-				{t(field.placeholder || "") || field.label}
+				{field.placeholder ? t(field.placeholder) : t(field.label)}
 			</Label>
 			<div className="flex items-center justify-between group min-w-0">
 				<span

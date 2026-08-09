@@ -127,8 +127,8 @@ export function SchemaFieldsEditor({
 						<div className="flex items-center justify-between">
 							<Label className="text-xs text-muted-foreground">
 								{field.placeholder
-									? t(field.placeholder) || field.label
-									: field.label}
+									? t(field.placeholder) || t(field.label)
+									: t(field.label)}
 							</Label>
 							{field.type === "password" && (
 								<Drawer

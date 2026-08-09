@@ -358,7 +358,19 @@ export default function PasswordGenerator({
 								onValueChange={(val) => setSeparator(val!)}
 							>
 								<SelectTrigger className="w-32 h-8">
-									<SelectValue />
+									<SelectValue>
+										{separator === "none"
+											? t("tools.password_generator.sep_none", "None")
+											: separator === "hash"
+												? t("tools.password_generator.sep_hash", "Hash (#)")
+												: separator === "hyphen"
+													? t("tools.password_generator.sep_hyphen", "Hyphen (-)")
+													: separator === "space"
+														? t("tools.password_generator.sep_space", "Space")
+														: separator === "comma"
+															? t("tools.password_generator.sep_comma", "Comma (,)")
+															: undefined}
+									</SelectValue>
 								</SelectTrigger>
 								<SelectContent>
 									<SelectItem value="none">

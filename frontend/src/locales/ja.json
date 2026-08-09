@@ -25,7 +25,7 @@
 	"tools": {
 		"badge": "🔐 セキュアツール",
 		"title": "セキュアツール＆ユーティリティ",
-		"cryptoSafe_description": "Folder encryptor & decrypter (client-side only)",
+		"cryptoSafe_description": "フォルダー暗号化および復号化 (クライアント側のみ)",
 		"subtitle": "機密データを保護するために設計された、安全なクライアントサイドツールのコレクションです。データがデバイスを離れることはありません。",
 		"encrypt_tab": "暗号化",
 		"decrypt_tab": "復号化",
@@ -182,7 +182,13 @@
 				"generate": "リカバリキーを生成",
 				"copy": "クリップボードにコピー",
 				"copied": "コピーしました！",
-				"has_key": "リカバリキーが設定されています"
+				"has_key": "リカバリキーが設定されています",
+				"download": "ダウンロード",
+				"file_too_large": "ファイルが大きすぎます",
+				"file_read_success": "ファイルの読み取り成功",
+				"file_read_error": "ファイル読み取りエラー",
+				"upload": "アップロード",
+				"downloaded": "ダウンロード済み"
 			},
 			"no_folder": "フォルダーなし",
 			"table_company": "会社",
@@ -215,8 +221,157 @@
 			"vault_deleted": "ボルトが正常に削除されました",
 			"delete_desc": "この操作は取り消すことができません。選択したアイテムは完全に削除されます。",
 			"fields": {
-				"email": "Email"
-			}
+				"email": "Email",
+				"username": "ユーザー名",
+				"password": "パスワード",
+				"website": "Webサイト",
+				"cardholder_name": "クレジットカード名義人氏名",
+				"card_number": "カード番号",
+				"expiration": "有効期限 (MM/YY)",
+				"cvv": "CVV / CVC",
+				"pin": "ピン",
+				"key_id": "キーID",
+				"api_key": "APIキー",
+				"base_url": "ベース URL",
+				"display_name": "表示名",
+				"user_id": "ユーザーID",
+				"public_key": "公開鍵",
+				"private_key": "秘密鍵",
+				"file_name": "ファイル名",
+				"file_content": "ファイルの内容",
+				"zip_code": "郵便番号",
+				"environment": "環境 (例: 本番/ステージング)",
+				"first_name": "ファーストネーム",
+				"last_name": "苗字",
+				"phone": "電話番号",
+				"address": "住所",
+				"city": "市",
+				"state": "州/県",
+				"ssn": "SSN/ID番号"
+			},
+			"import": {
+				"duplicate_detected": "重複が検出されました",
+				"duplicate_info": "重複した情報",
+				"duplicate": "重複",
+				"processed_total": "処理された合計",
+				"items": "アイテム",
+				"local_processing": "ローカル処理",
+				"save_failed": "保存に失敗しました",
+				"saving": "保存",
+				"accept_next": "次へ同意する",
+				"more_items": "その他のアイテム",
+				"one_by_one": "ひとつひとつ",
+				"one_by_one_desc": "1つずつ説明",
+				"title": "パスワードをインポートする",
+				"description": "Google Chrome や Enpass などの他のアプリからパスワードをインポートします。",
+				"source_app": "ソースアプリ",
+				"file_type": "ファイルの種類",
+				"chrome_csv": "Google Chrome（CSV）",
+				"enpass_json": "エンパス(JSON)",
+				"upload": "クリックしてアップロードするか、ドラッグ アンド ドロップします",
+				"chrome_export_desc": "Chrome CSV エクスポート ファイルを選択してください",
+				"enpass_export_desc": "Enpass JSON エクスポート ファイルを選択してください",
+				"items_found": "{{count}} 個のアイテムが見つかりました",
+				"ready": "準備ができて",
+				"duplicates": "重複",
+				"archived": "アーカイブ/ゴミ箱に捨てられた",
+				"duplicate_handling": "重複の処理",
+				"ask_each": "それぞれ聞いてください",
+				"skip_all": "重複をすべてスキップする",
+				"overwrite": "既存のものを上書きする",
+				"keep_both": "両方とも保管しておいてください",
+				"mode": "インポートモード",
+				"all_at_once": "一括インポート",
+				"all_at_once_desc": "高速で、設定をすべての項目に適用します。",
+				"review_one_by_one": "一つ一つ見直してみる",
+				"review_one_by_one_desc": "保存する前に、各項目を確認して編集します。",
+				"start": "インポートの開始",
+				"processing": "処理...",
+				"next": "次",
+				"cancel": "キャンセル",
+				"reviewing_item": "{{total}} 個中アイテム {{current}} をレビュー中",
+				"imported": "輸入された",
+				"remaining": "残り",
+				"skipped": "スキップしました",
+				"potential_duplicate": "潜在的な重複が検出されました",
+				"duplicate_desc": "同様の詳細を持つアイテムが Vault 内にすでに存在します。これを受け入れると、上書きしない限り、既存のアイテムと一緒に新しいアイテムとして保存されます。",
+				"source_data": "ソースデータ ({{app}})",
+				"will_be_saved_as": "として保存されます",
+				"accept_and_next": "同意して次へ",
+				"skip": "スキップ",
+				"cancel_import": "インポートのキャンセル",
+				"importing_passwords": "パスワードをインポートしています...",
+				"items_processed": "{{total}} 件中 {{current}} 件が処理されました",
+				"processing_item": "処理中: {{title}}",
+				"complete": "インポート完了！",
+				"successfully_processed": "{{total}} 個のアイテムが正常に処理されました。",
+				"successfully_imported": "正常にインポートされました",
+				"skipped_duplicates": "スキップまたは重複",
+				"locally_stored": "データは完全にローカルで処理され、保管庫に安全に保管されました。",
+				"done": "終わり",
+				"no_items": "このファイルにパスワードが見つからないか、ファイルが無効です。",
+				"save_error": "パスワードの保存に失敗しました",
+				"retry": "リトライ",
+				"folder": "フォルダ",
+				"importing": "インポート中...",
+				"stop": "停止"
+			},
+			"username": "ユーザー名",
+			"password": "パスワード",
+			"url": "URL",
+			"type": "タイプ",
+			"notes": "注意事項",
+			"folder": "フォルダ",
+			"collection": "コレクション",
+			"merged_from": "マージ元",
+			"merged_old": "古いものを統合",
+			"merge_items": "アイテムを結合する",
+			"merge_desc": "ゴーデスク",
+			"merge_conflict_desc": "マージ競合の説明",
+			"conflict": "対立",
+			"merge_no_conflicts": "競合しないマージ",
+			"cancel": "キャンセル",
+			"confirm_merge": "マージの確認",
+			"merge": "マージ",
+			"share": {
+				"share_item_title": "「{{title}}」を共有する",
+				"share_item_desc": "エンドツーエンド暗号化を使用して、このパスワードを安全に共有します。",
+				"share_folder_title": "共有フォルダ「{{名前}}」",
+				"share_a_folder": "フォルダーを共有する",
+				"share_folder_desc": "エンドツーエンド暗号化を使用して、このフォルダー全体とそのすべてのパスワードを共有します。",
+				"bulk_share_title": "{{count}} 個のアイテム{{s}}を共有",
+				"bulk_share_desc": "各アイテムはエンドツーエンドで暗号化され、別個の安全なコレクションとして共有されます。",
+				"user_email": "ユーザーのメールアドレス",
+				"enter_email": "メールアドレスを入力してください",
+				"permission": "許可",
+				"select_permission": "権限の選択",
+				"viewer": "ビューア",
+				"editor": "エディタ",
+				"cancel": "キャンセル",
+				"share_securely": "安全に共有する",
+				"sharing": "共有中...",
+				"securely_shared_with": "{{email}} と安全に共有",
+				"failed_to_share": "安全に共有できませんでした",
+				"folder_securely_shared_with": "フォルダは {{email}} と安全に共有されました",
+				"failed_to_share_folder": "フォルダーを安全に共有できませんでした",
+				"failed_to_share_item_msg": "「{{title}}」を共有できませんでした: {{msg}}",
+				"bulk_shared_success": "{{successCount}}/{{totalCount}} アイテム{{s}}を {{email}} で安全に共有しました",
+				"select_folder": "フォルダーの選択",
+				"choose_folder_to_share": "共有するフォルダーを選択してください",
+				"manage_access": "アクセスの管理",
+				"people_with_access": "「{{name}}」にアクセスできる人",
+				"no_members_found": "メンバーが見つかりませんでした",
+				"unknown_user": "不明なユーザー",
+				"unknown_email": "不明なメールアドレス",
+				"revoke_confirm": "{{email}} へのアクセスを取り消してもよろしいですか?",
+				"access_revoked": "{{email}} のアクセスが取り消されました",
+				"failed_to_revoke": "アクセス権の取り消しに失敗しました",
+				"failed_to_fetch_members": "メンバーの取得に失敗しました",
+				"close": "近い"
+			},
+			"share_btn": "共有",
+			"type_identity": "身元",
+			"type_identities": "アイデンティティ"
 		},
 		"password_generator": {
 			"title": "パスワードジェネレーター",
@@ -265,7 +420,7 @@
 			"booking_status": "予約状況",
 			"no_status": "乗客のステータスはありません"
 		},
-		"cryptoSafe_title": "CryptoSafe"
+		"cryptoSafe_title": "クリプトセーフ"
 	},
 	"errors": {
 		"storage_access_denied": "ストレージアクセスが拒否されました。",
@@ -320,7 +475,7 @@
 		"autosave": "自動保存",
 		"ai_autocomplete": "AI自動補完",
 		"no_edit_permitted": "編集は許可されていません",
-		"snipit": "Snipit",
+		"snipit": "スニピット",
 		"actions": {
 			"save": "保存",
 			"cancel": "キャンセル",
@@ -338,7 +493,7 @@
 			"add_label": "ラベルを追加",
 			"clear_all": "すべてクリア",
 			"set": "設定",
-			"open": "Open",
+			"open": "開ける",
 			"add": "追加",
 			"remove": "削除"
 		},
@@ -404,7 +559,8 @@
 			"direct_desc": "即時のシームレスなリダイレクト",
 			"admin_preview_banner": "管理者プレビュー: 設定を変更できるようにするため、作成者および管理者に対する自動リダイレクトは無効化されています。",
 			"skip_countdown": "今すぐリダイレクト"
-		}
+		},
+		"layout": "レイアウト"
 	},
 	"profile": {
 		"loading": "読み込み中...",
@@ -488,7 +644,7 @@
 				"short": "コード"
 			},
 			"docs": {
-				"full": "Docs",
+				"full": "ドキュメント",
 				"short": "ドキュメント"
 			},
 			"draw": {
@@ -716,6 +872,18 @@
 			"music_integration": {
 				"title": "ゼロ帯域幅ミュージック",
 				"desc": "低帯域幅のバックグラウンドプレーヤー、カスタムビットレート、プロキシで保護されたMP3ダウンローダーを使用して、ワークスペース内で直接お気に入りの曲をストリーミングできます。"
+			},
+			"pnr_checker": {
+				"title": "PNRチェッカー",
+				"desc": "統合された PNR ルックアップ ツールを使用して、PNR ステータスと旅行の詳細をすばやく確認します。"
+			},
+			"cryptsafe": {
+				"title": "ファイルとフォルダーの暗号化",
+				"desc": "データ保護を強化するために、AES-GCM (PBKDF2、100k 反復、SHA-256) を使用した CryptSafe でファイルとフォルダーを安全に暗号化および復号化します。"
+			},
+			"password_manager": {
+				"title": "パスワードマネージャー",
+				"desc": "内蔵のボールトと共有機能を使用して、パスワードを安全に保存、生成、管理します。ゼロ知識暗号化を使用するため、自分だけがデータにアクセスできます。"
 			}
 		},
 		"story": {
@@ -842,7 +1010,8 @@
 		"reset_password_failed_toast": "パスワードのリセットに失敗しました",
 		"reset_password_mismatch_toast": "パスワードが一致しません",
 		"reset_password_min_length_toast": "パスワードは6文字以上である必要があります",
-		"reset_password_invalid_token_toast": "無効なトークン"
+		"reset_password_invalid_token_toast": "無効なトークン",
+		"reset_password_weak_toast": "パスワードをリセット 弱いトースト"
 	},
 	"editor": {
 		"ai_enhance": "✨ AIで選択範囲を強化...",
@@ -975,5 +1144,8 @@
 		"err_required": "すべての必須フィールドに入力してください。",
 		"err_failed": "フィードバックの送信に失敗しました。後でもう一度お試しください。",
 		"success": "フィードバックが正常に送信されました。ありがとうございます！"
-	}
+	},
+	"title": "タイトル",
+	"common_back": "共通背面",
+	"remove": "取り除く"
 }

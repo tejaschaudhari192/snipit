@@ -270,7 +270,13 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 							}}
 						>
 							<SelectTrigger className="w-full bg-background border-border rounded-xl">
-								<SelectValue placeholder="No Folder" />
+								<SelectValue placeholder="No Folder">
+									{folderId === "new_folder"
+										? "+ Create folder"
+										: folderId === "none" || !folderId
+											? t("tools.password_manager.no_folder")
+											: folders.find((f: { id: string; name: string }) => f.id === folderId)?.name || t("tools.password_manager.no_folder")}
+								</SelectValue>
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value="none">

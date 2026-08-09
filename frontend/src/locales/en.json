@@ -238,7 +238,13 @@
 				"generate": "Generate Recovery Key",
 				"copy": "Copy to Clipboard",
 				"copied": "Copied!",
-				"has_key": "Recovery key is set up"
+				"has_key": "Recovery key is set up",
+				"download": "Download",
+				"file_too_large": "File Too Large",
+				"file_read_success": "File Read Success",
+				"file_read_error": "File Read Error",
+				"upload": "Upload",
+				"downloaded": "Downloaded"
 			},
 			"danger_zone": "Danger Zone",
 			"delete_vault": {
@@ -304,7 +310,19 @@
 				"retry": "Retry",
 				"folder": "Folder",
 				"importing": "Importing...",
-				"stop": "Stop"
+				"stop": "Stop",
+				"duplicate_detected": "Duplicate Detected",
+				"duplicate_info": "Duplicate Info",
+				"duplicate": "Duplicate",
+				"processed_total": "Processed Total",
+				"items": "Items",
+				"local_processing": "Local Processing",
+				"save_failed": "Save Failed",
+				"saving": "Saving",
+				"accept_next": "Accept Next",
+				"more_items": "More Items",
+				"one_by_one": "One By One",
+				"one_by_one_desc": "One By One Desc"
 			},
 			"fields": {
 				"username": "Username",
@@ -337,7 +355,24 @@
 			},
 			"share_btn": "Share",
 			"type_identity": "Identity",
-			"type_identities": "Identities"
+			"type_identities": "Identities",
+			"username": "Username",
+			"password": "Password",
+			"url": "Url",
+			"type": "Type",
+			"notes": "Notes",
+			"folder": "Folder",
+			"collection": "Collection",
+			"merged_from": "Merged From",
+			"merged_old": "Merged Old",
+			"merge_items": "Merge Items",
+			"merge_desc": "Merge Desc",
+			"merge_conflict_desc": "Merge Conflict Desc",
+			"conflict": "Conflict",
+			"merge_no_conflicts": "Merge No Conflicts",
+			"cancel": "Cancel",
+			"confirm_merge": "Confirm Merge",
+			"merge": "Merge"
 		},
 		"password_generator": {
 			"title": "Password Generator",
@@ -524,7 +559,8 @@
 			"direct_desc": "Instant, seamless redirection",
 			"admin_preview_banner": "Admin Preview: Automatic redirection is disabled for creators and admins to allow configuration.",
 			"skip_countdown": "Redirect Now"
-		}
+		},
+		"layout": "Layout"
 	},
 	"profile": {
 		"loading": "Loading...",
@@ -974,7 +1010,8 @@
 		"reset_password_failed_toast": "Failed to reset password",
 		"reset_password_mismatch_toast": "Passwords do not match",
 		"reset_password_min_length_toast": "Password must be at least 6 characters",
-		"reset_password_invalid_token_toast": "Invalid token"
+		"reset_password_invalid_token_toast": "Invalid token",
+		"reset_password_weak_toast": "Reset Password Weak Toast"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI Enhance Selection...",
@@ -1107,5 +1144,8 @@
 		"err_required": "Please fill in all required fields.",
 		"err_failed": "Failed to submit feedback. Please try again later.",
 		"success": "Feedback submitted successfully. Thank you!"
-	}
+	},
+	"title": "Title",
+	"common_back": "Common Back",
+	"remove": "Remove"
 }

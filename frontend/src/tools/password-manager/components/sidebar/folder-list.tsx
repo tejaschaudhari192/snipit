@@ -135,7 +135,7 @@ export function FolderList({
 													}}
 												>
 													<Pencil className="mr-2 h-4 w-4" />
-													<span>{t("edit")}</span>
+													<span>{t("common.actions.edit")}</span>
 												</DropdownMenuItem>
 												{!folder.collectionId &&
 													onShareFolder && (
@@ -204,7 +204,7 @@ export function FolderList({
 													}}
 												>
 													<Trash2 className="mr-2 h-4 w-4" />
-													{t("remove")}
+													{t("common.actions.remove")}
 												</DropdownMenuItem>
 											</DropdownMenuContent>
 										</DropdownMenu>

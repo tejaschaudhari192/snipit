@@ -25,7 +25,7 @@
 	"tools": {
 		"badge": "🔐 Sichere Tools",
 		"title": "Sichere Tools & Dienstprogramme",
-		"cryptoSafe_description": "Folder encryptor & decrypter (client-side only)",
+		"cryptoSafe_description": "Ordnerverschlüsselung und -entschlüsselung (nur clientseitig)",
 		"subtitle": "Eine Sammlung sicherer, clientseitiger Tools, die Ihre sensiblen Daten schützen. Ihre Daten verlassen niemals Ihr Gerät.",
 		"encrypt_tab": "Verschlüsseln",
 		"decrypt_tab": "Entschlüsseln",
@@ -177,13 +177,19 @@
 				"generate": "Wiederherstellungsschlüssel erzeugen",
 				"copy": "In die Zwischenablage kopieren",
 				"copied": "Kopiert!",
-				"has_key": "Wiederherstellungsschlüssel ist eingerichtet"
+				"has_key": "Wiederherstellungsschlüssel ist eingerichtet",
+				"download": "Herunterladen",
+				"file_too_large": "Datei zu groß",
+				"file_read_success": "Erfolgreiches Lesen der Datei",
+				"file_read_error": "Fehler beim Lesen der Datei",
+				"upload": "Hochladen",
+				"downloaded": "Heruntergeladen"
 			},
 			"no_folder": "Kein Ordner",
-			"type_logins": "Logins",
+			"type_logins": "Anmeldungen",
 			"type_login": "Login",
-			"type_passkeys": "Passkeys",
-			"type_passkey": "Passkey",
+			"type_passkeys": "Passschlüssel",
+			"type_passkey": "Hauptschlüssel",
 			"table_company": "Unternehmen",
 			"table_last_modified": "Zuletzt geändert",
 			"table_folder": "Ordner",
@@ -202,7 +208,7 @@
 			"item_singular": "Element",
 			"item_plural": "Elemente",
 			"just_now": "gerade eben",
-			"onboarding_feature_zero_title": "Zero Knowledge",
+			"onboarding_feature_zero_title": "Null Wissen",
 			"warning_irrecoverable": "Wenn Sie Ihr Master-Passwort vergessen, können Ihre Tresordaten nur mit dem Wiederherstellungsschlüssel im nächsten Schritt wiederhergestellt werden. Andernfalls sind sie dauerhaft verloren.",
 			"danger_zone": "Gefahrenzone",
 			"delete_vault": {
@@ -215,8 +221,157 @@
 			"vault_deleted": "Tresor erfolgreich gelöscht",
 			"delete_desc": "Diese Aktion kann nicht rückgängig gemacht werden. Dadurch werden die ausgewählten Elemente dauerhaft gelöscht.",
 			"fields": {
-				"email": "Email"
-			}
+				"email": "Email",
+				"username": "Benutzername",
+				"password": "Passwort",
+				"website": "Webseite",
+				"cardholder_name": "Name des Karteninhabers",
+				"card_number": "Kartennummer",
+				"expiration": "Ablauf (MM/JJ)",
+				"cvv": "CVV / CVC",
+				"pin": "STIFT",
+				"key_id": "Schlüssel-ID",
+				"api_key": "API-Schlüssel",
+				"base_url": "Basis-URL",
+				"display_name": "Anzeigename",
+				"user_id": "Benutzer-ID",
+				"public_key": "Öffentlicher Schlüssel",
+				"private_key": "Privater Schlüssel",
+				"file_name": "Dateiname",
+				"file_content": "Dateiinhalt",
+				"zip_code": "Postleitzahl",
+				"environment": "Umgebung (z. B. Produktion/Staging)",
+				"first_name": "Vorname",
+				"last_name": "Nachname",
+				"phone": "Telefonnummer",
+				"address": "Straßenadresse",
+				"city": "Stadt",
+				"state": "Staat/Provinz",
+				"ssn": "SSN/ID-Nummer"
+			},
+			"import": {
+				"duplicate_detected": "Duplikat erkannt",
+				"duplicate_info": "Doppelte Informationen",
+				"duplicate": "Duplikat",
+				"processed_total": "Verarbeitete Gesamtsumme",
+				"items": "Artikel",
+				"local_processing": "Lokale Verarbeitung",
+				"save_failed": "Speichern fehlgeschlagen",
+				"saving": "Sparen",
+				"accept_next": "Akzeptieren Sie Weiter",
+				"more_items": "Weitere Artikel",
+				"one_by_one": "Einer nach dem anderen",
+				"one_by_one_desc": "Eins nach dem anderen Desc",
+				"title": "Passwörter importieren",
+				"description": "Importieren Sie Ihre Passwörter aus anderen Apps wie Google Chrome und Enpass.",
+				"source_app": "Quell-App",
+				"file_type": "Dateityp",
+				"chrome_csv": "Google Chrome (CSV)",
+				"enpass_json": "Enpass (JSON)",
+				"upload": "Klicken Sie zum Hochladen oder ziehen Sie es per Drag & Drop",
+				"chrome_export_desc": "Bitte wählen Sie Ihre Chrome CSV-Exportdatei aus",
+				"enpass_export_desc": "Bitte wählen Sie Ihre Enpass-JSON-Exportdatei aus",
+				"items_found": "{{count}} Artikel gefunden",
+				"ready": "bereit",
+				"duplicates": "Duplikate",
+				"archived": "archiviert/in den Papierkorb verschoben",
+				"duplicate_handling": "Umgang mit Duplikaten",
+				"ask_each": "Fragen Sie mich nach jedem",
+				"skip_all": "Überspringen Sie alle Duplikate",
+				"overwrite": "Vorhandenes überschreiben",
+				"keep_both": "Behalte beides",
+				"mode": "Importmodus",
+				"all_at_once": "Alles auf einmal importieren",
+				"all_at_once_desc": "Schnell, wendet Einstellungen auf alle Elemente an.",
+				"review_one_by_one": "Überprüfen Sie sie einzeln",
+				"review_one_by_one_desc": "Überprüfen und bearbeiten Sie jedes Element vor dem Speichern.",
+				"start": "Starten Sie den Import",
+				"processing": "Verarbeitung...",
+				"next": "Nächste",
+				"cancel": "Stornieren",
+				"reviewing_item": "Überprüfen von Element {{current}} von {{total}}",
+				"imported": "importiert",
+				"remaining": "übrig",
+				"skipped": "übersprungen",
+				"potential_duplicate": "Potenzielles Duplikat erkannt",
+				"duplicate_desc": "In Ihrem Tresor ist bereits ein Artikel mit ähnlichen Details vorhanden. Wenn Sie dies akzeptieren, wird es als neues Element neben dem vorhandenen gespeichert, es sei denn, Ihre Strategie besteht darin, es zu überschreiben.",
+				"source_data": "Quelldaten ({{app}})",
+				"will_be_saved_as": "Wird gespeichert unter",
+				"accept_and_next": "Akzeptieren und weiter",
+				"skip": "Überspringen",
+				"cancel_import": "Import abbrechen",
+				"importing_passwords": "Passwörter importieren...",
+				"items_processed": "{{current}} von {{total}} Elementen verarbeitet",
+				"processing_item": "Verarbeitung: {{title}}",
+				"complete": "Import abgeschlossen!",
+				"successfully_processed": "{{total}} Elemente erfolgreich verarbeitet.",
+				"successfully_imported": "Erfolgreich importiert",
+				"skipped_duplicates": "Übersprungen oder Duplikate",
+				"locally_stored": "Ihre Daten wurden vollständig lokal verarbeitet und sicher in Ihrem Tresor gespeichert.",
+				"done": "Erledigt",
+				"no_items": "In dieser Datei wurden keine Passwörter gefunden oder die Datei ist ungültig.",
+				"save_error": "Passwort konnte nicht gespeichert werden",
+				"retry": "Wiederholen",
+				"folder": "Ordner",
+				"importing": "Importieren...",
+				"stop": "Stoppen"
+			},
+			"username": "Benutzername",
+			"password": "Passwort",
+			"url": "URL",
+			"type": "Typ",
+			"notes": "Notizen",
+			"folder": "Ordner",
+			"collection": "Sammlung",
+			"merged_from": "Zusammengeführt von",
+			"merged_old": "Alt zusammengeführt",
+			"merge_items": "Elemente zusammenführen",
+			"merge_desc": "Gehe Desc",
+			"merge_conflict_desc": "Konfliktbeschreibung zusammenführen",
+			"conflict": "Konflikt",
+			"merge_no_conflicts": "Keine Konflikte zusammenführen",
+			"cancel": "Stornieren",
+			"confirm_merge": "Bestätigen Sie die Zusammenführung",
+			"merge": "Verschmelzen",
+			"share": {
+				"share_item_title": "Teilen Sie „{{title}}“",
+				"share_item_desc": "Teilen Sie dieses Passwort sicher mit der Ende-zu-Ende-Verschlüsselung.",
+				"share_folder_title": "Ordner „{{name}}“ freigeben",
+				"share_a_folder": "Geben Sie einen Ordner frei",
+				"share_folder_desc": "Geben Sie diesen gesamten Ordner und alle seine Passwörter mithilfe der Ende-zu-Ende-Verschlüsselung frei.",
+				"bulk_share_title": "Teilen Sie {{count}} Artikel{{s}}",
+				"bulk_share_desc": "Jedes Element wird Ende-zu-Ende-verschlüsselt und als separate sichere Sammlung geteilt.",
+				"user_email": "Benutzer-E-Mail",
+				"enter_email": "Geben Sie die E-Mail-Adresse ein",
+				"permission": "Erlaubnis",
+				"select_permission": "Berechtigung auswählen",
+				"viewer": "Zuschauer",
+				"editor": "Editor",
+				"cancel": "Stornieren",
+				"share_securely": "Sicher teilen",
+				"sharing": "Teilen...",
+				"securely_shared_with": "Sicher geteilt mit {{email}}",
+				"failed_to_share": "Sicheres Teilen fehlgeschlagen",
+				"folder_securely_shared_with": "Ordner sicher mit {{email}} geteilt",
+				"failed_to_share_folder": "Ordner konnte nicht sicher freigegeben werden",
+				"failed_to_share_item_msg": "„{{title}}“ konnte nicht geteilt werden: {{msg}}",
+				"bulk_shared_success": "{{successCount}}/{{totalCount}} Element{{s}} sicher mit {{email}} geteilt",
+				"select_folder": "Wählen Sie Ordner aus",
+				"choose_folder_to_share": "Wählen Sie einen Ordner zum Teilen aus",
+				"manage_access": "Zugriff verwalten",
+				"people_with_access": "Personen mit Zugriff auf „{{name}}“",
+				"no_members_found": "Keine Mitglieder gefunden",
+				"unknown_user": "Unbekannter Benutzer",
+				"unknown_email": "Unbekannte E-Mail",
+				"revoke_confirm": "Sind Sie sicher, dass Sie den Zugriff für {{email}} widerrufen möchten?",
+				"access_revoked": "Zugriff für {{email}} widerrufen",
+				"failed_to_revoke": "Der Zugriff konnte nicht widerrufen werden",
+				"failed_to_fetch_members": "Mitglieder konnten nicht abgerufen werden",
+				"close": "Schließen"
+			},
+			"share_btn": "Aktie",
+			"type_identity": "Identität",
+			"type_identities": "Identitäten"
 		},
 		"password_generator": {
 			"title": "Passwort-Generator",
@@ -338,7 +493,7 @@
 			"add_label": "Label hinzufügen",
 			"clear_all": "Alles löschen",
 			"set": "Einstellen",
-			"open": "Open",
+			"open": "Offen",
 			"add": "Hinzufügen",
 			"remove": "Entfernen"
 		},
@@ -404,7 +559,8 @@
 			"direct_desc": "Sofortige, nahtlose Weiterleitung",
 			"admin_preview_banner": "Administrator-Vorschau: Die automatische Weiterleitung ist für Ersteller und Administratoren deaktiviert, um Konfigurationen zu ermöglichen.",
 			"skip_countdown": "Jetzt weiterleiten"
-		}
+		},
+		"layout": "Layout"
 	},
 	"profile": {
 		"loading": "Laden...",
@@ -435,7 +591,7 @@
 		"avg_views": "Effizienz",
 		"loading_failed": "Profil konnte nicht geladen werden",
 		"update_failed": "Aktualisierung fehlgeschlagen",
-		"snippets_count": "Snippets"
+		"snippets_count": "Ausschnitte"
 	},
 	"home": {
 		"loading": "Laden...",
@@ -488,7 +644,7 @@
 				"short": "Code"
 			},
 			"docs": {
-				"full": "Docs",
+				"full": "Dokumente",
 				"short": "Dokumente"
 			},
 			"draw": {
@@ -716,6 +872,18 @@
 			"music_integration": {
 				"title": "Zero-Bandbreiten Musik",
 				"desc": "Streamen Sie Ihre Lieblingslieder direkt in Ihrem Arbeitsbereich mit energiesparenden Hintergrund-Playern, benutzerdefinierten Bitraten und einem proxy-gesicherten MP3-Downloader."
+			},
+			"pnr_checker": {
+				"title": "PNR-Checker",
+				"desc": "Überprüfen Sie den PNR-Status und die Reisedetails schnell mit einem integrierten PNR-Suchtool."
+			},
+			"cryptsafe": {
+				"title": "Datei- und Ordnerverschlüsseler",
+				"desc": "Verschlüsseln und entschlüsseln Sie Dateien und Ordner sicher mit CryptSafe mithilfe von AES-GCM (PBKDF2, 100.000 Iterationen, SHA-256) für verbesserten Datenschutz."
+			},
+			"password_manager": {
+				"title": "Passwort-Manager",
+				"desc": "Speichern, generieren und verwalten Sie Passwörter sicher mit einem integrierten Tresor und Freigabefunktionen. Verwendet Zero-Knowledge-Verschlüsselung, sodass nur Sie auf Ihre Daten zugreifen können."
 			}
 		},
 		"story": {
@@ -779,7 +947,7 @@
 		"error_details": "Fehlerdetails",
 		"retry_button": "Verbindung erneut versuchen",
 		"safety_button": "Zurück zur Sicherheit",
-		"title": "System Offline"
+		"title": "System offline"
 	},
 	"error_page": {
 		"title": "Seite nicht gefunden",
@@ -842,7 +1010,8 @@
 		"reset_password_failed_toast": "Passwort zurücksetzen fehlgeschlagen",
 		"reset_password_mismatch_toast": "Passwörter stimmen nicht überein",
 		"reset_password_min_length_toast": "Passwort muss mindestens 6 Zeichen lang sein",
-		"reset_password_invalid_token_toast": "Ungültiger Token"
+		"reset_password_invalid_token_toast": "Ungültiger Token",
+		"reset_password_weak_toast": "Passwort zurücksetzen Weak Toast"
 	},
 	"editor": {
 		"ai_enhance": "✨ KI-Auswahl verbessern...",
@@ -975,5 +1144,8 @@
 		"err_required": "Bitte füllen Sie alle erforderlichen Felder aus.",
 		"err_failed": "Feedback konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.",
 		"success": "Feedback erfolgreich gesendet. Vielen Dank!"
-	}
+	},
+	"title": "Titel",
+	"common_back": "Gemeinsamer Rücken",
+	"remove": "Entfernen"
 }

@@ -247,7 +247,7 @@ function PasswordManagerInner() {
 							}}
 							swipeDirection="right"
 						>
-							<DrawerContent className="sm:max-w-150 p-0 border-l border-pm-border shadow-2xl h-full rounded-none">
+							<DrawerContent className="sm:!w-[42rem] sm:!max-w-[42rem] p-0 border-l border-pm-border shadow-2xl h-full rounded-none">
 								<Suspense fallback={<DetailSkeleton />}>
 									<PasswordDetail
 										item={activeItem}

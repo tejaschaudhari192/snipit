@@ -399,7 +399,11 @@ export default function StepOneByOne({
 								}
 							>
 								<SelectTrigger className="h-10">
-									<SelectValue />
+									<SelectValue>
+										{editedType
+											? t(ITEM_TYPE_OPTIONS.find(o => o.id === editedType)?.label || editedType)
+											: undefined}
+									</SelectValue>
 								</SelectTrigger>
 								<SelectContent>
 									{ITEM_TYPE_OPTIONS.map((opt) => (

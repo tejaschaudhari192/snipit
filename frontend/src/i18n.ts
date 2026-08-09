@@ -33,6 +33,10 @@ i18n.use(initReactI18next).init({
 	},
 	lng: localStore.getItem("lang") ?? "en",
 	fallbackLng: "en",
+	parseMissingKeyHandler: (key) => {
+		console.error(`Missing translation key: ${key}`);
+		return key;
+	},
 	interpolation: {
 		escapeValue: false,
 	},
