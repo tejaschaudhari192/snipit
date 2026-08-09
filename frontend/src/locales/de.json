@@ -420,7 +420,29 @@
 			"booking_status": "Buchungsstatus",
 			"no_status": "Kein Passagierstatus verfügbar"
 		},
-		"cryptoSafe_title": "CryptoSafe"
+		"cryptoSafe_title": "CryptoSafe",
+		"cinema": {
+			"title": "Kino – Partys ansehen",
+			"description": "Synchronisierte Wiedergabe, Live-Chat und schwebende Emojis. Genießen Sie Videos in perfekter Synchronisierung mit Ihren Freunden.",
+			"hero_title": "Gemeinsam ansehen",
+			"hero_subtitle": "Synchronisierte Wiedergabe, Live-Chat und schwebende Emojis. Genießen Sie Videos in perfekter Synchronisierung mit Ihren Freunden.",
+			"create_tab": "Raum schaffen",
+			"join_tab": "Treten Sie dem Raum bei",
+			"url_label": "Video-URL",
+			"url_placeholder": "https://example.com/video.mp4",
+			"local_file_toggle": "Lokaler Dateistream (P2P)",
+			"select_file": "Wählen Sie Videodatei",
+			"start_btn": "Watch Party starten",
+			"creating": "Raum schaffen...",
+			"join_label": "Raumlink oder ID",
+			"join_placeholder": "Hier den Watch-Party-Link einfügen",
+			"join_btn": "Treten Sie dem Raum bei",
+			"auth_required": "Für die Ausrichtung von Uhrenpartys ist eine Anmeldung erforderlich.",
+			"invalid_url": "Bitte geben Sie eine gültige Video-URL ein.",
+			"features_sync": "Perfekte Synchronisierung",
+			"features_chat": "Live-Chat und Emojis",
+			"features_p2p": "Direktes P2P-Streaming"
+		}
 	},
 	"errors": {
 		"storage_access_denied": "Speicherzugriff verweigert. Bitte aktivieren Sie Cookies/Speicher.",

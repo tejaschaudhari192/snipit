@@ -1,18 +1,18 @@
 import { useEffect, useRef } from "react";
 import { type Socket } from "socket.io-client";
+import type { MediaPlayerInstance } from "@vidstack/react";
 
 interface UseCinemaSyncOptions {
 	socket: Socket | null | undefined;
-	pasteId: string | undefined;
+	roomId: string | undefined;
 	isHost: boolean;
 	isP2pMode: boolean;
-	videoRef: React.RefObject<HTMLVideoElement | null>;
+	videoRef: React.RefObject<MediaPlayerInstance | null>;
 	isPlaying: boolean;
 	duration: number;
 	setCurrentTime: React.Dispatch<React.SetStateAction<number>>;
 	setDuration: React.Dispatch<React.SetStateAction<number>>;
 	setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
-	setIsBuffering: React.Dispatch<React.SetStateAction<boolean>>;
 	setCommentsList: React.Dispatch<
 		React.SetStateAction<
 			Array<{ sender: string; text: string; color: string }>
@@ -22,7 +22,7 @@ interface UseCinemaSyncOptions {
 
 export function useCinemaSync({
 	socket,
-	pasteId,
+	roomId,
 	isHost,
 	isP2pMode,
 	videoRef,
@@ -31,7 +31,6 @@ export function useCinemaSync({
 	setCurrentTime,
 	setDuration,
 	setIsPlaying,
-	setIsBuffering,
 	setCommentsList,
 }: UseCinemaSyncOptions) {
 	const isIncomingEvent = useRef(false);
@@ -62,28 +61,37 @@ export function useCinemaSync({
 						videoRef.current.currentTime = data.timestamp;
 					}
 				}
-				videoRef.current.play().catch((err) => {
-					if (err.name !== "AbortError") {
-						console.error("Cinema: Sync play failed:", err);
-					}
-					setIsPlaying(false);
-					setIsBuffering(false);
-				});
+				try {
+					videoRef.current.play().catch((err) => {
+						if (err.name !== "AbortError") {
+							console.error("Cinema: Sync play failed:", err);
+						}
+						setIsPlaying(false);
+					});
+				} catch {
+					console.warn(
+						"Cinema: Ignored sync play, media not ready yet",
+					);
+				}
 				setIsPlaying(true);
 			} else if (data.action === "pause") {
 				setCurrentTime(data.timestamp);
-				videoRef.current.pause();
+				try {
+					videoRef.current.pause();
+				} catch {
+					console.warn(
+						"Cinema: Ignored sync pause, media not ready yet",
+					);
+				}
 				if (!isP2pMode || isHost) {
 					videoRef.current.currentTime = data.timestamp;
 				}
 				setIsPlaying(false);
-				setIsBuffering(false);
 			} else if (data.action === "seek") {
 				setCurrentTime(data.timestamp);
 				if (!isP2pMode || isHost) {
 					videoRef.current.currentTime = data.timestamp;
 				}
-				setIsBuffering(false);
 			}
 
 			setTimeout(() => {
@@ -129,7 +137,6 @@ export function useCinemaSync({
 		setCurrentTime,
 		setDuration,
 		setIsPlaying,
-		setIsBuffering,
 		setCommentsList,
 	]);
 
@@ -138,9 +145,9 @@ export function useCinemaSync({
 		if (!socket || !isPlaying || !videoRef.current) return;
 
 		const interval = setInterval(() => {
-			if (videoRef.current && pasteId) {
+			if (videoRef.current && roomId) {
 				socket.emit("video-timeline-ping", {
-					pasteId,
+					roomId,
 					timestamp: videoRef.current.currentTime,
 					duration: videoRef.current.duration || undefined,
 				});
@@ -148,7 +155,7 @@ export function useCinemaSync({
 		}, 3000);
 
 		return () => clearInterval(interval);
-	}, [socket, isPlaying, pasteId, videoRef]);
+	}, [socket, isPlaying, roomId, videoRef]);
 
 	// Smooth playhead estimation for watchers in P2P mode
 	useEffect(() => {
@@ -168,9 +175,9 @@ export function useCinemaSync({
 		action: "play" | "pause" | "seek",
 		time: number,
 	) => {
-		if (!socket || isIncomingEvent.current || !pasteId) return;
+		if (!socket || isIncomingEvent.current || !roomId) return;
 		socket.emit("video-sync-action", {
-			pasteId,
+			roomId,
 			action,
 			timestamp: time,
 			duration: videoRef.current?.duration || undefined,

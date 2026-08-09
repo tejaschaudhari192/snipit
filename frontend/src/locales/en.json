@@ -420,6 +420,32 @@
 			"passenger": "Passenger {{number}}",
 			"booking_status": "Booking Status",
 			"no_status": "No passenger status available"
+		},
+		"cinema": {
+			"title": "Cinema - Watch Parties",
+			"description": "Synchronized playback, live chat, and floating emojis. Enjoy videos in perfect sync with your friends.",
+			"hero_title": "Watch Together",
+			"hero_subtitle": "Synchronized playback, live chat, and floating emojis. Enjoy videos in perfect sync with your friends.",
+			"create_tab": "Create Room",
+			"join_tab": "Join Room",
+			"url_label": "Video URL",
+			"url_placeholder": "https://example.com/video.mp4",
+			"local_file_toggle": "Local File Stream (P2P)",
+			"select_file": "Select Video File",
+			"start_btn": "Start Watch Party",
+			"creating": "Creating Room...",
+			"join_label": "Room Link or ID",
+			"join_placeholder": "Paste watch party link here",
+			"join_btn": "Join Room",
+			"auth_required": "Login required to host watch parties.",
+			"invalid_url": "Please enter a valid video URL.",
+			"features_sync": "Perfect Sync",
+			"features_chat": "Live Chat & Emojis",
+			"features_p2p": "Direct P2P Streaming",
+			"loading_room": "Loading Watch Party...",
+			"room_not_found": "Watch party not found",
+			"return_btn": "Return to Cinema",
+			"create_failed": "Failed to create watch party"
 		}
 	},
 	"errors": {

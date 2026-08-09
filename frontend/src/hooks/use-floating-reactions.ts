@@ -10,7 +10,7 @@ export interface FloatingEmoji {
 
 export function useFloatingReactions(
 	socket: Socket | null | undefined,
-	pasteId: string | undefined,
+	roomId: string | undefined,
 	username: string | undefined,
 ) {
 	const [reactions, setReactions] = useState<FloatingEmoji[]>([]);
@@ -42,8 +42,8 @@ export function useFloatingReactions(
 	}, [socket]);
 
 	const handleSendReaction = (emoji: string) => {
-		if (socket && pasteId) {
-			socket.emit("video-reaction-send", { pasteId, emoji });
+		if (socket && roomId) {
+			socket.emit("video-reaction-send", { roomId, emoji });
 		}
 		// Optimistic update
 		setReactions((prev) => [

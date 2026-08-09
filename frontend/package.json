@@ -10,7 +10,6 @@
 		"format": "prettier --write .",
 		"preview": "vite preview"
 	},
-
 	"dependencies": {
 		"@base-ui/react": "^1.6.0",
 		"@excalidraw/excalidraw": "^0.18.1",
@@ -51,6 +50,7 @@
 		"@tiptap/react": "2.27.2",
 		"@tiptap/suggestion": "2.27.2",
 		"@types/zxcvbn": "^4.4.5",
+		"@vidstack/react": "^1.15.6",
 		"@xterm/addon-fit": "^0.11.0",
 		"@xterm/xterm": "^5.5.0",
 		"axios": "^1.15.2",
@@ -100,6 +100,7 @@
 		"@types/papaparse": "^5.5.2",
 		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
+		"@vitalets/google-translate-api": "^9.2.1",
 		"@vitejs/plugin-react": "^5.2.0",
 		"eslint": "^9.39.4",
 		"eslint-plugin-react": "^7.37.5",

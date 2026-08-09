@@ -17,7 +17,7 @@ import { useMarkdownLayout } from "@/hooks/use-markdown-layout";
 
 import type { Socket } from "socket.io-client";
 import type { ActiveUser } from "@/types";
-import { CinemaSkeleton } from "@/components/display/content/cinema-skeleton";
+
 import type { FileUploadStatus } from "@/lib/file-service";
 
 const MarkdownDisplay = lazy(() =>
@@ -53,12 +53,6 @@ const CollabDraw = lazy(() =>
 const FileEditView = lazy(() =>
 	import("@/components/display/content/file-edit-view").then((m) => ({
 		default: m.FileEditView,
-	})),
-);
-
-const VideoDisplay = lazy(() =>
-	import("@/components/display/content/video-display").then((m) => ({
-		default: m.VideoDisplay,
 	})),
 );
 
@@ -190,22 +184,6 @@ export const DisplayContent = memo(
 		};
 
 		const renderContent = () => {
-			if (contentType === "video") {
-				return (
-					<Suspense fallback={<CinemaSkeleton />}>
-						<VideoDisplay
-							paste={paste}
-							contentRef={contentRef}
-							socketRef={socketRef}
-							activeUsers={activeUsers}
-							isEdit={isEdit}
-							content={content}
-							onContentChange={onContentChange}
-						/>
-					</Suspense>
-				);
-			}
-
 			if (contentType === "docs") {
 				return (
 					<Suspense

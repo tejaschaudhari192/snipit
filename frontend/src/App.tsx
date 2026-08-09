@@ -15,6 +15,7 @@ import { TtsMiniPlayer } from "@/components/common/tts-mini-player";
 import { AppSkeleton as PasswordAppSkeleton } from "@/tools/password-manager/components/skeletons";
 import { CryptoSafeSkeleton } from "@/tools/cryptsafe/components/skeletons";
 import { PnrCheckerSkeleton } from "@/tools/pnr-checker/components/skeletons";
+import { CinemaPageSkeleton } from "@/tools/cinema/components/skeletons";
 import {
 	ToolsPageSkeleton,
 	HistoryPageSkeleton,
@@ -36,6 +37,9 @@ const CryptoSafePage = lazy(
 const PnrCheckerPage = lazy(
 	() => import("@/tools/pnr-checker/pnr-checker-page"),
 );
+
+const CinemaPage = lazy(() => import("@/tools/cinema/cinema-page"));
+const CinemaRoomPage = lazy(() => import("@/tools/cinema/cinema-room-page"));
 const ProfilePage = lazy(() => import("@/pages/profile"));
 const LoginPage = lazy(() => import("@/pages/login"));
 const SignupPage = lazy(() => import("@/pages/signup"));
@@ -238,6 +242,30 @@ const App = () => {
 																	}
 																>
 																	<CryptoSafePage />
+																</Suspense>
+															}
+														/>
+														<Route
+															path="/tools/cinema"
+															element={
+																<Suspense
+																	fallback={
+																		<CinemaPageSkeleton />
+																	}
+																>
+																	<CinemaPage />
+																</Suspense>
+															}
+														/>
+														<Route
+															path="/tools/cinema/:roomId"
+															element={
+																<Suspense
+																	fallback={
+																		<CinemaPageSkeleton />
+																	}
+																>
+																	<CinemaRoomPage />
 																</Suspense>
 															}
 														/>

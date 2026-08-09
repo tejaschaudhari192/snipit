@@ -420,7 +420,29 @@
 			"booking_status": "予約状況",
 			"no_status": "乗客のステータスはありません"
 		},
-		"cryptoSafe_title": "クリプトセーフ"
+		"cryptoSafe_title": "クリプトセーフ",
+		"cinema": {
+			"title": "映画 - 鑑賞パーティー",
+			"description": "同期再生、ライブチャット、フローティング絵文字。友達と完璧に同期してビデオを楽しみましょう。",
+			"hero_title": "一緒に見る",
+			"hero_subtitle": "同期再生、ライブチャット、フローティング絵文字。友達と完璧に同期してビデオを楽しみましょう。",
+			"create_tab": "ルームの作成",
+			"join_tab": "ルームに参加する",
+			"url_label": "動画のURL",
+			"url_placeholder": "https://example.com/video.mp4",
+			"local_file_toggle": "ローカル ファイル ストリーム (P2P)",
+			"select_file": "ビデオファイルの選択",
+			"start_btn": "ウォッチパーティーを開始する",
+			"creating": "ルームを作成しています...",
+			"join_label": "ルームリンクまたはID",
+			"join_placeholder": "ウォッチ パーティーのリンクをここに貼り付けます",
+			"join_btn": "ルームに参加する",
+			"auth_required": "ウォッチパーティーを主催するにはログインが必要です。",
+			"invalid_url": "有効なビデオ URL を入力してください。",
+			"features_sync": "完璧な同期",
+			"features_chat": "ライブチャットと絵文字",
+			"features_p2p": "直接 P2P ストリーミング"
+		}
 	},
 	"errors": {
 		"storage_access_denied": "ストレージアクセスが拒否されました。",

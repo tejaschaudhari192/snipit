@@ -318,13 +318,9 @@ const HomePage = () => {
 		const hasContent =
 			contentType === "file"
 				? files.length > 0 || hasPending
-				: contentType === "video"
-					? valueRef.current.trim().length > 0 ||
-						files.length > 0 ||
-						hasPending
-					: contentType === "draw"
-						? true
-						: valueRef.current.trim().length > 0;
+				: contentType === "draw"
+					? true
+					: valueRef.current.trim().length > 0;
 		if (!hasContent) {
 			playErrorSound();
 			toast.add({
@@ -350,13 +346,9 @@ const HomePage = () => {
 		const hasContent =
 			contentType === "file"
 				? files.length > 0 || hasPending
-				: contentType === "video"
-					? valueRef.current.trim().length > 0 ||
-						files.length > 0 ||
-						hasPending
-					: contentType === "draw"
-						? true
-						: valueRef.current.trim().length > 0;
+				: contentType === "draw"
+					? true
+					: valueRef.current.trim().length > 0;
 		if (!hasContent) {
 			playErrorSound();
 			toast.add({

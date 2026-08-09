@@ -1,14 +1,7 @@
 import { ID_TYPES } from "@/constants";
 import type { User, ShareRole, PublicRole } from "./user";
 
-export type ContentMode =
-	| "text"
-	| "code"
-	| "docs"
-	| "draw"
-	| "link"
-	| "file"
-	| "video";
+export type ContentMode = "text" | "code" | "docs" | "draw" | "link" | "file";
 export type Visibility = "public" | "private" | "shared";
 export type EditPermission = "owner" | "shared" | "public";
 export type RedirectionType = "click" | "timer" | "direct";

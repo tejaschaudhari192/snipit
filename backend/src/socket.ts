@@ -24,11 +24,18 @@ import crypto from "crypto";
 
 const pasteService = new PasteService();
 const permissionService = new PermissionService();
-const activeUsers = new Map<string, ActiveUser & { pasteId: string }>();
+const activeUsers = new Map<
+	string,
+	ActiveUser & { pasteId: string; cinemaRoomId?: string }
+>();
 const roomContent = new Map<string, string>();
 const sharedMusicState = new Map<string, SharedMusicState>();
 
 const sharedVideoState = new Map<string, SharedVideoState>();
+const cinemaRooms = new Map<
+	string,
+	{ hostSocketId: string; url: string; isP2pMode: boolean }
+>();
 
 // Helpers
 const getSocketUserId = (socket: Socket): string | null => {
@@ -96,6 +103,7 @@ export const setupSocket = (server: HTTPServer) => {
 			isEditing: false,
 			isRecording: false,
 			pasteId: "",
+			cinemaRoomId: "",
 		});
 
 		const broadcastRoomUsers = (pasteId: string) => {
@@ -104,6 +112,85 @@ export const setupSocket = (server: HTTPServer) => {
 			);
 			io.to(pasteId).emit("room-users", roomUsers);
 		};
+
+		const broadcastCinemaUsers = (roomId: string) => {
+			const roomUsers = Array.from(activeUsers.values()).filter(
+				(u) => u.cinemaRoomId === roomId,
+			);
+			io.to(roomId).emit("cinema-room-users", roomUsers);
+		};
+
+		socket.on("create-cinema-room", ({ roomId, videoUrl, isP2pMode }) => {
+			const user = activeUsers.get(socket.id);
+			if (user) {
+				user.cinemaRoomId = roomId;
+				socket.join(roomId);
+				cinemaRooms.set(roomId, {
+					hostSocketId: socket.id,
+					url: videoUrl,
+					isP2pMode,
+				});
+				broadcastCinemaUsers(roomId);
+			}
+		});
+
+		socket.on("join-cinema-room", ({ roomId, userName }) => {
+			const user = activeUsers.get(socket.id);
+			if (user) {
+				user.cinemaRoomId = roomId;
+				if (userName) user.name = userName;
+				socket.join(roomId);
+
+				const roomState = cinemaRooms.get(roomId);
+				if (roomState) {
+					socket.emit("cinema-room-state", {
+						videoUrl: roomState.url,
+						isP2pMode: roomState.isP2pMode,
+						hostSocketId: roomState.hostSocketId,
+					});
+				}
+
+				const vState = sharedVideoState.get(roomId);
+				if (vState) {
+					let currentPos = vState.currentTime;
+					if (vState.isPlaying) {
+						const elapsed =
+							(Date.now() - vState.lastSyncedAt) / 1000;
+						currentPos += elapsed;
+					}
+					socket.emit("video-sync-state", {
+						action: vState.isPlaying ? "play" : "pause",
+						timestamp: currentPos,
+						duration: vState.duration,
+					});
+				}
+
+				broadcastCinemaUsers(roomId);
+			}
+		});
+
+		socket.on("leave-cinema-room", (roomId) => {
+			const user = activeUsers.get(socket.id);
+			if (user && user.cinemaRoomId === roomId) {
+				user.cinemaRoomId = "";
+				socket.leave(roomId);
+				broadcastCinemaUsers(roomId);
+
+				const roomState = cinemaRooms.get(roomId);
+				if (roomState && roomState.hostSocketId === socket.id) {
+					cinemaRooms.delete(roomId);
+					sharedVideoState.delete(roomId);
+					io.to(roomId).emit("cinema-host-disconnected");
+				}
+
+				const roomUsers = Array.from(activeUsers.values()).filter(
+					(u) => u.cinemaRoomId === roomId,
+				);
+				if (roomUsers.length === 0) {
+					sharedVideoState.delete(roomId);
+				}
+			}
+		});
 
 		socket.on("join-paste", async ({ pasteId, userName }) => {
 			const userId = getSocketUserId(socket);
@@ -420,23 +507,23 @@ export const setupSocket = (server: HTTPServer) => {
 		socket.on(
 			"video-sync-action",
 			async (data: {
-				pasteId: string;
+				roomId: string;
 				action: "play" | "pause" | "seek";
 				timestamp: number;
 				duration?: number;
 			}) => {
 				const user = activeUsers.get(socket.id);
-				if (!user || user.pasteId !== data.pasteId) return;
+				if (!user || user.cinemaRoomId !== data.roomId) return;
 
 				const isPlaying = data.action === "play";
-				sharedVideoState.set(data.pasteId, {
+				sharedVideoState.set(data.roomId, {
 					isPlaying,
 					currentTime: data.timestamp,
 					lastSyncedAt: Date.now(),
 					duration: data.duration,
 				});
 
-				socket.to(data.pasteId).emit("video-sync-state", {
+				socket.to(data.roomId).emit("video-sync-state", {
 					action: data.action,
 					timestamp: data.timestamp,
 					duration: data.duration,
@@ -446,11 +533,11 @@ export const setupSocket = (server: HTTPServer) => {
 
 		socket.on(
 			"video-reaction-send",
-			async (data: { pasteId: string; emoji: string }) => {
+			async (data: { roomId: string; emoji: string }) => {
 				const user = activeUsers.get(socket.id);
-				if (!user || user.pasteId !== data.pasteId) return;
+				if (!user || user.cinemaRoomId !== data.roomId) return;
 
-				io.to(data.pasteId).emit("video-reaction-received", {
+				io.to(data.roomId).emit("video-reaction-received", {
 					emoji: data.emoji,
 					name: user.name,
 				});
@@ -459,11 +546,11 @@ export const setupSocket = (server: HTTPServer) => {
 
 		socket.on(
 			"video-chat-message",
-			async (data: { pasteId: string; text: string }) => {
+			async (data: { roomId: string; text: string }) => {
 				const user = activeUsers.get(socket.id);
-				if (!user || user.pasteId !== data.pasteId) return;
+				if (!user || user.cinemaRoomId !== data.roomId) return;
 
-				io.to(data.pasteId).emit("video-chat-message-received", {
+				io.to(data.roomId).emit("video-chat-message-received", {
 					text: data.text,
 					sender: user.name,
 					color: user.color,
@@ -474,20 +561,20 @@ export const setupSocket = (server: HTTPServer) => {
 		socket.on(
 			"video-timeline-ping",
 			async (data: {
-				pasteId: string;
+				roomId: string;
 				timestamp: number;
 				duration?: number;
 			}) => {
 				const user = activeUsers.get(socket.id);
-				if (!user || user.pasteId !== data.pasteId) return;
+				if (!user || user.cinemaRoomId !== data.roomId) return;
 
-				const vState = sharedVideoState.get(data.pasteId);
+				const vState = sharedVideoState.get(data.roomId);
 				if (vState) {
 					vState.currentTime = data.timestamp;
 					vState.lastSyncedAt = Date.now();
 					if (data.duration) vState.duration = data.duration;
 				} else {
-					sharedVideoState.set(data.pasteId, {
+					sharedVideoState.set(data.roomId, {
 						isPlaying: true,
 						currentTime: data.timestamp,
 						lastSyncedAt: Date.now(),
@@ -495,7 +582,7 @@ export const setupSocket = (server: HTTPServer) => {
 					});
 				}
 
-				socket.to(data.pasteId).emit("video-timeline-update", {
+				socket.to(data.roomId).emit("video-timeline-update", {
 					socketId: socket.id,
 					timestamp: data.timestamp,
 					duration: data.duration,

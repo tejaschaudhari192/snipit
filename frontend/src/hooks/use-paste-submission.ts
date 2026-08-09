@@ -54,8 +54,6 @@ export const usePasteSubmission = (
 		uploadFiles,
 		labels,
 		redirectionType,
-		files,
-		getRawFile,
 	} = usePaste();
 
 	const handleSubmit = async (
@@ -76,18 +74,8 @@ export const usePasteSubmission = (
 				finalPublicRole = "editor";
 			}
 
-			// Handle pending file uploads if any (bypass upload if Cinema local video P2P)
-			const isP2pVideo = contentType === "video" && files.length > 0;
-			let finalFiles =
-				!isP2pVideo &&
-				(contentType === "file" || contentType === "video")
-					? readyAttachments
-					: [];
-			if (
-				!isP2pVideo &&
-				(contentType === "file" || contentType === "video") &&
-				hasPending
-			) {
+			let finalFiles = contentType === "file" ? readyAttachments : [];
+			if (contentType === "file" && hasPending) {
 				const results = await uploadFiles();
 				const errors = results.filter((r) => r.error);
 				if (errors.length > 0) {
@@ -100,10 +88,8 @@ export const usePasteSubmission = (
 			}
 
 			const data = await submitPaste({
-				content: isP2pVideo
-					? "p2p://local-stream"
-					: (contentType === "file" || contentType === "video") &&
-						  finalFiles.length > 0
+				content:
+					contentType === "file" && finalFiles.length > 0
 						? finalFiles[0].url
 						: contentType === "draw" && !textValue.trim()
 							? JSON.stringify({ elements: [], appState: {} })
@@ -113,32 +99,15 @@ export const usePasteSubmission = (
 				idType: selectedIdType,
 				customId: providedId,
 				contentMode: contentType,
-				// Keep legacy fields for first file if exists or local file details if P2P
-				fileUrl: isP2pVideo
-					? "p2p://local-stream"
-					: finalFiles.length > 0
-						? finalFiles[0].url
-						: undefined,
-				fileName: isP2pVideo
-					? files[0].fileName
-					: finalFiles.length > 0
-						? finalFiles[0].name
-						: undefined,
-				fileSize: isP2pVideo
-					? files[0].fileSize
-					: finalFiles.length > 0
-						? finalFiles[0].size
-						: undefined,
-				fileMimeType: isP2pVideo
-					? getRawFile(files[0].id)?.type
-					: finalFiles.length > 0
-						? finalFiles[0].mimeType
-						: undefined,
-				files: isP2pVideo
-					? undefined
-					: finalFiles.length > 0
-						? finalFiles
-						: undefined,
+				// Keep legacy fields for first file if exists
+				fileUrl: finalFiles.length > 0 ? finalFiles[0].url : undefined,
+				fileName:
+					finalFiles.length > 0 ? finalFiles[0].name : undefined,
+				fileSize:
+					finalFiles.length > 0 ? finalFiles[0].size : undefined,
+				fileMimeType:
+					finalFiles.length > 0 ? finalFiles[0].mimeType : undefined,
+				files: finalFiles.length > 0 ? finalFiles : undefined,
 				redirectUrl: contentType === "link",
 				language:
 					contentType === "code" || contentType === "text"
@@ -190,9 +159,6 @@ export const usePasteSubmission = (
 				state: {
 					pasteData: data,
 					isCollaborative: options.isCollaborative,
-					localVideoFile: isP2pVideo
-						? getRawFile(files[0].id)
-						: undefined,
 				},
 			});
 			if (!user) {

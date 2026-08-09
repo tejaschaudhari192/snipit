@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { type ActiveUser } from "@/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -26,13 +27,26 @@ export const CinemaChat = ({
 	setChatInput,
 	sendChatMessage,
 }: CinemaChatProps) => {
+	const [isSending, setIsSending] = useState(false);
+
+	const handleSend = () => {
+		if (isSending || !chatInput.trim()) return;
+
+		setIsSending(true);
+		sendChatMessage();
+
+		setTimeout(() => {
+			setIsSending(false);
+		}, 500);
+	};
+
 	return (
-		<div className="w-full md:w-64 border-t md:border-t-0 md:border-l border-white/10 bg-black/80 flex flex-col shrink-0 p-4 min-h-87.5 md:min-h-0">
+		<div className="w-full md:w-64 border-t md:border-t-0 md:border-l border-border bg-card/95 flex flex-col shrink-0 p-4 min-h-87.5 md:min-h-0 backdrop-blur-md">
 			{/* Top Section: Active Watchers */}
-			<div className="flex flex-col gap-2 min-h-0 border-b border-white/5 pb-3">
+			<div className="flex flex-col gap-2 min-h-0 border-b border-border pb-3">
 				<div className="flex items-center gap-2">
 					<div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse" />
-					<span className="text-xs font-bold text-white/60 tracking-wider uppercase">
+					<span className="text-xs font-bold text-muted-foreground tracking-wider uppercase">
 						Watch Party ({activeUsers.length})
 					</span>
 				</div>
@@ -44,16 +58,16 @@ export const CinemaChat = ({
 							title={`${friend.name} (${friend.isEditing ? "Editing" : "Watching"})`}
 							className="relative"
 						>
-							<Avatar className="w-7 h-7 rounded-full border border-white/20 shrink-0">
+							<Avatar className="w-7 h-7 rounded-full border border-border shrink-0">
 								<AvatarFallback
 									style={{ backgroundColor: friend.color }}
-									className="text-black font-bold text-[10px] flex items-center justify-center w-full h-full"
+									className="text-primary-foreground font-bold text-[10px] flex items-center justify-center w-full h-full"
 								>
 									{friend.name.substring(0, 2).toUpperCase()}
 								</AvatarFallback>
 							</Avatar>
 							{friend.isMe && (
-								<div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-primary rounded-full border border-black" />
+								<div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-primary rounded-full border border-background" />
 							)}
 						</div>
 					))}
@@ -62,13 +76,13 @@ export const CinemaChat = ({
 
 			{/* Middle Section: Live Chat History */}
 			<div className="flex-1 flex flex-col gap-2 min-h-0 py-3">
-				<span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">
+				<span className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
 					Live Chat
 				</span>
 				<ScrollArea className="flex-1 pr-2">
 					<div className="flex flex-col gap-2.5">
 						{commentsList.length === 0 ? (
-							<div className="text-center py-8 text-white/30 text-xs italic">
+							<div className="text-center py-8 text-muted-foreground/50 text-xs italic">
 								No messages yet. Say hi!
 							</div>
 						) : (
@@ -83,7 +97,7 @@ export const CinemaChat = ({
 									>
 										{msg.sender}
 									</span>
-									<span className="text-white/95 wrap-break-word bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5 inline-block w-fit max-w-[95%]">
+									<span className="text-foreground wrap-break-word bg-muted px-2.5 py-1.5 rounded-lg border border-border inline-block w-fit max-w-[95%]">
 										{msg.text}
 									</span>
 								</div>
@@ -94,22 +108,24 @@ export const CinemaChat = ({
 			</div>
 
 			{/* Bottom Section: Chat Input */}
-			<div className="pt-3 border-t border-white/5 flex gap-1 bg-transparent">
+			<div className="pt-3 border-t border-border flex gap-1 bg-transparent">
 				<Input
 					placeholder="Send message..."
 					value={chatInput}
+					maxLength={500}
 					onChange={(e) => setChatInput(e.target.value)}
 					onKeyDown={(e) => {
 						if (e.key === "Enter") {
-							sendChatMessage();
+							handleSend();
 						}
 					}}
-					className="bg-white/5 border-white/10 text-white placeholder-white/40 h-9 text-xs"
+					className="bg-background border-border text-foreground placeholder:text-muted-foreground h-9 text-xs"
 				/>
 				<Button
 					size="icon"
-					onClick={sendChatMessage}
-					className="h-9 w-9 shrink-0 bg-primary hover:bg-primary/95 text-primary-foreground"
+					disabled={isSending}
+					onClick={handleSend}
+					className="h-9 w-9 shrink-0 bg-primary hover:bg-primary/95 text-primary-foreground disabled:opacity-50"
 				>
 					<Send className="w-4 h-4" />
 				</Button>

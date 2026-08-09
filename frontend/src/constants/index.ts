@@ -7,7 +7,6 @@ import {
 	Link,
 	FileUp,
 	Paintbrush,
-	Film,
 	EyeOff,
 	Layout,
 	Eye,
@@ -27,7 +26,6 @@ export const CONTENT_MODES = [
 	"draw",
 	"link",
 	"file",
-	"video",
 ] as const;
 export const VISIBILITIES = ["public", "private", "shared"] as const;
 export const VISIBILITY_OPTIONS = [
@@ -295,12 +293,6 @@ export const TABS_CONFIG = [
 		fullKey: "home.tabs.file.full",
 		shortKey: "home.tabs.file.short",
 		requiresFileOption: true,
-	},
-	{
-		id: "video",
-		icon: Film,
-		fullKey: "home.tabs.video.full",
-		shortKey: "home.tabs.video.short",
 	},
 ];
 

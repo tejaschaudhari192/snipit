@@ -8,13 +8,20 @@ import {
 	CardContent,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Lock, Train } from "lucide-react";
+import { Shield, Lock, Train, Film } from "lucide-react";
 
 // Landing page for the Tools section. Shows a grid of available tools.
 const ToolsPage = () => {
 	const { t } = useTranslation();
 
 	const toolsConfig = [
+		{
+			id: "cinema",
+			titleKey: "tools.cinema.title",
+			descriptionKey: "tools.cinema.description",
+			icon: Film,
+			link: "/tools/cinema",
+		},
 		{
 			id: "cryptoSafe",
 			titleKey: "tools.cryptoSafe_title",
@@ -74,7 +81,10 @@ const ToolsPage = () => {
 								</CardDescription>
 							</CardHeader>
 							<CardContent className="flex justify-end mt-auto">
-								<Button render={<Link to={tool.link} />}>
+								<Button
+									render={<Link to={tool.link} />}
+									nativeButton={false}
+								>
 									{t("common.actions.open")}
 								</Button>
 							</CardContent>
