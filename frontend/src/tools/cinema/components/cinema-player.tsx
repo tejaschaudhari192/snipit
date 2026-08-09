@@ -27,7 +27,7 @@ export interface CinemaPlayerProps {
 	localFile: File | null;
 	localUrl: string;
 	videoSrc: string;
-	remoteVideoStream?: MediaStreamTrack | null;
+	remoteMediaStream?: MediaStream | null;
 
 	isPlaying: boolean;
 	currentTime: number;
@@ -57,9 +57,9 @@ export const CinemaPlayer = (props: CinemaPlayerProps) => {
 			? props.localUrl
 				? { src: props.localUrl, type: "video/mp4" as const }
 				: ""
-			: props.remoteVideoStream
+			: props.remoteMediaStream
 				? {
-						src: new MediaStream([props.remoteVideoStream]),
+						src: props.remoteMediaStream,
 						type: "video/object" as const,
 					}
 				: ""

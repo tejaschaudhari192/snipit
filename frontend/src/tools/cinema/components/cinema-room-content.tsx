@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { type Socket } from "socket.io-client";
 import { type ActiveUser } from "@/types";
 import type { MediaPlayerInstance } from "@vidstack/react";
@@ -62,17 +62,34 @@ export const CinemaRoomContent = ({
 	});
 
 	// Use React components for receiving tracks
-	const tracks = useTracks([Track.Source.Camera], { onlySubscribed: true });
+	const videoTracks = useTracks([Track.Source.Camera], {
+		onlySubscribed: true,
+	});
+	const audioTracks = useTracks([Track.Source.Microphone], {
+		onlySubscribed: true,
+	});
 	const participants = useParticipants();
 	const hostParticipant = participants.find((p) => p.identity === "host");
 
-	const remoteVideoStream =
-		tracks.length > 0
-			? tracks[0].publication.track?.mediaStreamTrack
-			: null;
+	const remoteMediaStream = useMemo(() => {
+		const tracks: MediaStreamTrack[] = [];
+		if (
+			videoTracks.length > 0 &&
+			videoTracks[0].publication.track?.mediaStreamTrack
+		) {
+			tracks.push(videoTracks[0].publication.track.mediaStreamTrack);
+		}
+		if (
+			audioTracks.length > 0 &&
+			audioTracks[0].publication.track?.mediaStreamTrack
+		) {
+			tracks.push(audioTracks[0].publication.track.mediaStreamTrack);
+		}
+		return tracks.length > 0 ? new MediaStream(tracks) : null;
+	}, [videoTracks, audioTracks]);
 
 	const isConnectingActual =
-		isP2pMode && !isHost && (!remoteVideoStream || !hostParticipant);
+		isP2pMode && !isHost && (!remoteMediaStream || !hostParticipant);
 	const isHostDisconnectedActual = isP2pMode && !isHost && !hostParticipant;
 
 	// Custom hook for flying emojis
@@ -120,7 +137,7 @@ export const CinemaRoomContent = ({
 				localFile={localFile}
 				localUrl={localUrl}
 				videoSrc={videoSrc}
-				remoteVideoStream={remoteVideoStream}
+				remoteMediaStream={remoteMediaStream}
 				isPlaying={isPlaying}
 				currentTime={currentTime}
 				duration={duration}
