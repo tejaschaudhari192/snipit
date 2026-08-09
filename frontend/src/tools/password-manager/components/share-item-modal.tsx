@@ -125,10 +125,14 @@ export default function ShareItemModal({
 										"tools.password_manager.share.select_permission",
 									)}
 								>
-									{role === "editor" 
-										? t("tools.password_manager.share.editor")
+									{role === "editor"
+										? t(
+												"tools.password_manager.share.editor",
+											)
 										: role === "viewer"
-											? t("tools.password_manager.share.viewer")
+											? t(
+													"tools.password_manager.share.viewer",
+												)
 											: undefined}
 								</SelectValue>
 							</SelectTrigger>

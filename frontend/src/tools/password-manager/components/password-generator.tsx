@@ -360,15 +360,30 @@ export default function PasswordGenerator({
 								<SelectTrigger className="w-32 h-8">
 									<SelectValue>
 										{separator === "none"
-											? t("tools.password_generator.sep_none", "None")
+											? t(
+													"tools.password_generator.sep_none",
+													"None",
+												)
 											: separator === "hash"
-												? t("tools.password_generator.sep_hash", "Hash (#)")
+												? t(
+														"tools.password_generator.sep_hash",
+														"Hash (#)",
+													)
 												: separator === "hyphen"
-													? t("tools.password_generator.sep_hyphen", "Hyphen (-)")
+													? t(
+															"tools.password_generator.sep_hyphen",
+															"Hyphen (-)",
+														)
 													: separator === "space"
-														? t("tools.password_generator.sep_space", "Space")
+														? t(
+																"tools.password_generator.sep_space",
+																"Space",
+															)
 														: separator === "comma"
-															? t("tools.password_generator.sep_comma", "Comma (,)")
+															? t(
+																	"tools.password_generator.sep_comma",
+																	"Comma (,)",
+																)
 															: undefined}
 									</SelectValue>
 								</SelectTrigger>

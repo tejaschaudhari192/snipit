@@ -135,7 +135,11 @@ export function FolderList({
 													}}
 												>
 													<Pencil className="mr-2 h-4 w-4" />
-													<span>{t("common.actions.edit")}</span>
+													<span>
+														{t(
+															"common.actions.edit",
+														)}
+													</span>
 												</DropdownMenuItem>
 												{!folder.collectionId &&
 													onShareFolder && (

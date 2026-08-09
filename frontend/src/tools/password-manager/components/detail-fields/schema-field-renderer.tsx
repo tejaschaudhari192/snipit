@@ -107,7 +107,9 @@ export function SchemaFieldRenderer({
 			<div className="space-y-1.5 group">
 				<div className="flex items-center justify-between">
 					<Label className="text-[13px] text-muted-foreground block font-medium">
-						{field.placeholder ? t(field.placeholder) : t(field.label)}
+						{field.placeholder
+							? t(field.placeholder)
+							: t(field.label)}
 					</Label>
 					<div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
 						<CopyButton

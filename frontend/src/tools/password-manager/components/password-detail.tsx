@@ -200,9 +200,19 @@ export default function PasswordDetail({
 									<Folder className="h-3 w-3 mr-2 text-muted-foreground" />
 									<SelectValue placeholder="Folder">
 										{item.folderId === "new_folder"
-											? t("tools.password_manager.add_folder")
-											: item.folderId && item.folderId !== "none"
-												? folders.find((f: { id: string; name: string }) => f.id === item.folderId)?.name
+											? t(
+													"tools.password_manager.add_folder",
+												)
+											: item.folderId &&
+												  item.folderId !== "none"
+												? folders.find(
+														(f: {
+															id: string;
+															name: string;
+														}) =>
+															f.id ===
+															item.folderId,
+													)?.name
 												: "No folder"}
 									</SelectValue>
 								</SelectTrigger>
