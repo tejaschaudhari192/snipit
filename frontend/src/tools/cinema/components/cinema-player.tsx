@@ -9,7 +9,7 @@ import {
 	defaultLayoutIcons,
 	DefaultVideoLayout,
 } from "@vidstack/react/player/layouts/default";
-import { type RefObject } from "react";
+import { type RefObject, useEffect, useRef } from "react";
 import { type Socket } from "socket.io-client";
 import { Tv } from "lucide-react";
 import {
@@ -52,18 +52,15 @@ export interface CinemaPlayerProps {
 }
 
 export const CinemaPlayer = (props: CinemaPlayerProps) => {
-	const finalSrc = props.isP2pMode
-		? props.isHost
-			? props.localUrl
-				? { src: props.localUrl, type: "video/mp4" as const }
-				: ""
-			: props.remoteMediaStream
-				? {
-						src: props.remoteMediaStream,
-						type: "video/object" as const,
-					}
-				: ""
-		: props.videoSrc;
+	// For non-guest-P2P: figure out what src to pass to Vidstack
+	const finalSrc =
+		props.isP2pMode && !props.isHost
+			? null // Guest in P2P mode: use native video element, not Vidstack
+			: props.isP2pMode && props.isHost
+				? props.localUrl
+					? { src: props.localUrl, type: "video/mp4" as const }
+					: ""
+				: props.videoSrc;
 
 	const handleTimeUpdate = () => {
 		if (!props.videoRef.current) return;
@@ -119,6 +116,81 @@ export const CinemaPlayer = (props: CinemaPlayerProps) => {
 			}
 		}
 	};
+
+	// Native video ref for guest P2P stream (srcObject-based)
+	const nativeVideoRef = useRef<HTMLVideoElement | null>(null);
+	useEffect(() => {
+		const vid = nativeVideoRef.current;
+		if (!vid) return;
+		if (props.remoteMediaStream) {
+			vid.srcObject = props.remoteMediaStream;
+			vid.play().catch(() => {
+				// Autoplay blocked — user must click play
+			});
+		} else {
+			vid.srcObject = null;
+		}
+	}, [props.remoteMediaStream]);
+
+	// Guest P2P: render native <video> with srcObject for WebRTC stream
+	if (props.isP2pMode && !props.isHost) {
+		return (
+			<div
+				ref={props.theaterRef}
+				className="flex-1 flex flex-col justify-center relative bg-black min-h-0 min-w-0 group rounded-2xl overflow-hidden"
+				style={
+					{
+						"--video-brand": "hsl(var(--primary))",
+					} as React.CSSProperties
+				}
+			>
+				<CinemaP2pConnectingOverlay
+					isConnecting={props.isConnectingActual}
+				/>
+				<CinemaHostDisconnectedOverlay
+					isVisible={!!props.isHostDisconnectedActual}
+				/>
+
+				{/* Floating reactions */}
+				<div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
+					{props.reactions.map((react) => (
+						<div
+							key={react.id}
+							style={{ left: `${react.left}%` }}
+							className="absolute bottom-24 animate-float-emoji flex flex-col items-center gap-1 bg-background/25 backdrop-blur-md px-2.5 py-1 rounded-full border border-border/50 shadow-lg"
+						>
+							<span className="text-3xl filter drop-shadow-md">
+								{react.emoji}
+							</span>
+							<span className="text-[10px] text-foreground/80 font-bold whitespace-nowrap drop-shadow-md">
+								{react.name}
+							</span>
+						</div>
+					))}
+				</div>
+
+				{/* Native video element for WebRTC stream */}
+				<div className="flex-1 flex items-center justify-center min-h-0 w-full relative z-10">
+					{props.remoteMediaStream ? (
+						<video
+							ref={nativeVideoRef}
+							className="w-full h-full object-contain bg-black"
+							playsInline
+							autoPlay
+							controls
+						/>
+					) : (
+						<div className="flex flex-col items-center gap-4 text-muted-foreground">
+							<Tv className="w-12 h-12 animate-pulse" />
+							<span className="text-sm font-semibold">
+								Waiting for host stream...
+							</span>
+						</div>
+					)}
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div
@@ -180,7 +252,7 @@ export const CinemaPlayer = (props: CinemaPlayerProps) => {
 					<MediaPlayer
 						ref={props.videoRef}
 						src={finalSrc || undefined}
-						crossOrigin="anonymous"
+						crossOrigin={props.isP2pMode ? undefined : "anonymous"}
 						playsInline
 						autoPlay
 						onTimeUpdate={handleTimeUpdate}

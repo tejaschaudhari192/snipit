@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type Socket } from "socket.io-client";
 import { type ActiveUser } from "@/types";
 import type { MediaPlayerInstance } from "@vidstack/react";
@@ -71,22 +71,22 @@ export const CinemaRoomContent = ({
 	const participants = useParticipants();
 	const hostParticipant = participants.find((p) => p.identity === "host");
 
-	const remoteMediaStream = useMemo(() => {
-		const tracks: MediaStreamTrack[] = [];
-		if (
-			videoTracks.length > 0 &&
-			videoTracks[0].publication.track?.mediaStreamTrack
-		) {
-			tracks.push(videoTracks[0].publication.track.mediaStreamTrack);
+	const videoTrack = videoTracks[0]?.publication?.track?.mediaStreamTrack;
+	const audioTrack = audioTracks[0]?.publication?.track?.mediaStreamTrack;
+
+	const [remoteMediaStream, setRemoteMediaStream] =
+		useState<MediaStream | null>(null);
+
+	useEffect(() => {
+		if (!videoTrack && !audioTrack) {
+			setRemoteMediaStream(null);
+			return;
 		}
-		if (
-			audioTracks.length > 0 &&
-			audioTracks[0].publication.track?.mediaStreamTrack
-		) {
-			tracks.push(audioTracks[0].publication.track.mediaStreamTrack);
-		}
-		return tracks.length > 0 ? new MediaStream(tracks) : null;
-	}, [videoTracks, audioTracks]);
+		const stream = new MediaStream();
+		if (videoTrack) stream.addTrack(videoTrack);
+		if (audioTrack) stream.addTrack(audioTrack);
+		setRemoteMediaStream(stream);
+	}, [videoTrack, audioTrack]);
 
 	const isConnectingActual =
 		isP2pMode && !isHost && (!remoteMediaStream || !hostParticipant);
