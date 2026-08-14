@@ -6,6 +6,7 @@
 	"scripts": {
 		"dev": "vite --host",
 		"build": "tsc -b && vite build",
+		"build2": "tsc -b",
 		"lint": "eslint .",
 		"format": "prettier --write .",
 		"preview": "vite preview"
@@ -59,7 +60,6 @@
 		"date-fns": "^4.4.0",
 		"diceware-generator": "^3.0.1",
 		"diceware-wordlist-en": "^1.0.0",
-		"generate-password-ts": "^1.6.5",
 		"i18next": "^25.10.10",
 		"input-otp": "^1.4.2",
 		"jspdf": "^4.2.1",

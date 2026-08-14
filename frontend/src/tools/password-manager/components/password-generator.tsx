@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import { generate } from "generate-password-ts";
+import { generatePassword as generateRandomPassword } from "../utils/generate-password";
 import zxcvbn from "zxcvbn";
 import diceware from "diceware-generator";
 import enWordlist from "diceware-wordlist-en";
@@ -106,7 +106,7 @@ export default function PasswordGenerator({
 			}
 		} else {
 			// Secure Random Character Generation
-			newPassword = generate({
+			newPassword = generateRandomPassword({
 				length: length,
 				numbers: useNumbers,
 				symbols: true,
