@@ -22,6 +22,7 @@ import { toast } from "@/components/ui/toast";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuth } from "@/context/AuthContext";
 import { submitFeedback } from "@/lib/api/feedback";
+import { FEEDBACK_OPTIONS } from "@/constants";
 
 interface FeedbackDialogProps {
 	isOpen: boolean;
@@ -99,19 +100,27 @@ export function FeedbackDialog({ isOpen, onClose }: FeedbackDialogProps) {
 							value={type}
 							onValueChange={(val) => val && setType(val)}
 						>
-							<SelectTrigger>
-								<SelectValue />
+							<SelectTrigger className="w-fit">
+								<SelectValue className="w-fit">
+									{FEEDBACK_OPTIONS.find(
+										(o) => o.value === type,
+									)?.labelKey &&
+										t(
+											FEEDBACK_OPTIONS.find(
+												(o) => o.value === type,
+											)!.labelKey,
+										)}
+								</SelectValue>
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="bug">
-									{t("feedback.type_bug")}
-								</SelectItem>
-								<SelectItem value="feature">
-									{t("feedback.type_feature")}
-								</SelectItem>
-								<SelectItem value="general">
-									{t("feedback.type_general")}
-								</SelectItem>
+								{FEEDBACK_OPTIONS.map((opt) => (
+									<SelectItem
+										key={opt.value}
+										value={opt.value}
+									>
+										{t(opt.labelKey)}
+									</SelectItem>
+								))}
 							</SelectContent>
 						</Select>
 					</div>
