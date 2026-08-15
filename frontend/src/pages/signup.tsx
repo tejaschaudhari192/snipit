@@ -155,11 +155,11 @@ const SignupPage = () => {
 							<div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
 								<Label
 									htmlFor="username"
-									className="text-[13px] font-semibold uppercase tracking-wider text-muted-foreground/80 ml-1"
+									className="section-label"
 								>
 									{t("auth.username_label")}
 								</Label>
-								<InputGroup className="h-11 bg-background/50 border-border/50 focus-within:border-primary/40 focus-within:ring-4 focus-within:ring-primary/10 transition-all rounded-xl">
+								<InputGroup className="input-glass">
 									<InputGroupAddon align="inline-start">
 										<User className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within/input-group:text-primary ml-1" />
 									</InputGroupAddon>
@@ -182,11 +182,11 @@ const SignupPage = () => {
 							<div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
 								<Label
 									htmlFor="email"
-									className="text-[13px] font-semibold uppercase tracking-wider text-muted-foreground/80 ml-1"
+									className="section-label"
 								>
 									{t("auth.email_label")}
 								</Label>
-								<InputGroup className="h-11 bg-background/50 border-border/50 focus-within:border-primary/40 focus-within:ring-4 focus-within:ring-primary/10 transition-all rounded-xl">
+								<InputGroup className="input-glass">
 									<InputGroupAddon align="inline-start">
 										<Mail className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within/input-group:text-primary ml-1" />
 									</InputGroupAddon>
@@ -209,7 +209,7 @@ const SignupPage = () => {
 							<div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
 								<Label
 									htmlFor="password"
-									className="text-[13px] font-semibold uppercase tracking-wider text-muted-foreground/80 ml-1"
+									className="section-label"
 								>
 									{t("auth.password_label")}
 								</Label>
@@ -242,7 +242,7 @@ const SignupPage = () => {
 							<div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
 								<Label
 									htmlFor="confirmPassword"
-									className="text-[13px] font-semibold uppercase tracking-wider text-muted-foreground/80 ml-1"
+									className="section-label"
 								>
 									{t(
 										"auth.reset_password_confirm_password_label",
@@ -284,7 +284,7 @@ const SignupPage = () => {
 
 							<div className="pt-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-400">
 								<Button
-									className="w-full h-11 text-sm font-bold transition-all gap-2 rounded-xl bg-primary hover:shadow-lg hover:shadow-primary/20 active:scale-[0.98] duration-200"
+									className="btn-primary-bounce"
 									type="submit"
 									disabled={isLoading}
 								>

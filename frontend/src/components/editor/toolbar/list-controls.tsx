@@ -9,7 +9,7 @@ export function ListControls({ editor }: { editor: Editor }) {
 			<TooltipButton
 				onClick={() => editor.chain().focus().toggleBulletList().run()}
 				className={cn(
-					"h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer",
+					"icon-btn",
 					editor.isActive("bulletList") &&
 						"bg-accent border-border/40 text-accent-foreground shadow-sm",
 				)}
@@ -22,7 +22,7 @@ export function ListControls({ editor }: { editor: Editor }) {
 			<TooltipButton
 				onClick={() => editor.chain().focus().toggleOrderedList().run()}
 				className={cn(
-					"h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer",
+					"icon-btn",
 					editor.isActive("orderedList") &&
 						"bg-accent border-border/40 text-accent-foreground shadow-sm",
 				)}
@@ -35,7 +35,7 @@ export function ListControls({ editor }: { editor: Editor }) {
 			<TooltipButton
 				onClick={() => editor.chain().focus().toggleTaskList().run()}
 				className={cn(
-					"h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer",
+					"icon-btn",
 					editor.isActive("taskList") &&
 						"bg-accent border-border/40 text-accent-foreground shadow-sm",
 				)}

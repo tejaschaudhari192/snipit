@@ -162,7 +162,7 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
 						className={cn(
 							"pointer-events-none flex items-center justify-center",
 							direction === "horizontal"
-								? "sticky top-0 h-screen w-full flex-col"
+								? "sticky top-0 h-dvh w-full flex-col"
 								: "absolute left-0 w-full h-full flex-row",
 						)}
 					>

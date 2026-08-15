@@ -9,7 +9,7 @@ export function BlockControls({ editor }: { editor: Editor }) {
 			<TooltipButton
 				onClick={() => editor.chain().focus().toggleBlockquote().run()}
 				className={cn(
-					"h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer",
+					"icon-btn",
 					editor.isActive("blockquote") &&
 						"bg-accent border-border/40 text-accent-foreground shadow-sm",
 				)}
@@ -22,7 +22,7 @@ export function BlockControls({ editor }: { editor: Editor }) {
 			<TooltipButton
 				onClick={() => editor.chain().focus().toggleCodeBlock().run()}
 				className={cn(
-					"h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer",
+					"icon-btn",
 					editor.isActive("codeBlock") &&
 						"bg-accent border-border/40 text-accent-foreground shadow-sm",
 				)}
@@ -35,7 +35,7 @@ export function BlockControls({ editor }: { editor: Editor }) {
 			<TooltipButton
 				onClick={() => editor.chain().focus().toggleCode().run()}
 				className={cn(
-					"h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer",
+					"icon-btn",
 					editor.isActive("code") &&
 						"bg-accent border-border/40 text-accent-foreground shadow-sm",
 				)}
@@ -47,7 +47,7 @@ export function BlockControls({ editor }: { editor: Editor }) {
 
 			<TooltipButton
 				onClick={() => editor.chain().focus().setHorizontalRule().run()}
-				className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer"
+				className="icon-btn"
 				title="Horizontal Rule"
 			>
 				<Minus className="h-4 w-4" />

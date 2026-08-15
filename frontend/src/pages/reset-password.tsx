@@ -107,7 +107,7 @@ const ResetPasswordPage = () => {
 							<div className="space-y-2">
 								<Label
 									htmlFor="password"
-									className="text-[13px] font-semibold uppercase tracking-wider text-muted-foreground/80 ml-1"
+									className="section-label"
 								>
 									{t(
 										"auth.reset_password_new_password_label",
@@ -142,7 +142,7 @@ const ResetPasswordPage = () => {
 							<div className="space-y-2">
 								<Label
 									htmlFor="confirmPassword"
-									className="text-[13px] font-semibold uppercase tracking-wider text-muted-foreground/80 ml-1"
+									className="section-label"
 								>
 									{t(
 										"auth.reset_password_confirm_password_label",

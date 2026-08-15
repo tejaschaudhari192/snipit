@@ -238,7 +238,7 @@ export function GifPopover({ onSelect }: GifPopoverProps) {
 						/>
 					}
 				/>
-				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
+				<TooltipContent className="kbd-badge">
 					<span className="font-semibold text-white">
 						Search & Insert GIF
 					</span>

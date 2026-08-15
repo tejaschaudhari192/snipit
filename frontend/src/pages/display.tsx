@@ -546,7 +546,7 @@ const DisplayPage = () => {
 
 	return (
 		<>
-			<div className="flex flex-col h-screen overflow-hidden bg-background">
+			<div className="flex flex-col h-dvh overflow-hidden bg-background">
 				{!isFullscreen && !isWindowFullscreen && (
 					<div className="shrink-0">
 						<DisplayToolbar

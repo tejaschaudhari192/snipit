@@ -344,7 +344,7 @@ export function TiptapEditor({
 			className={cn(
 				"relative flex flex-col overflow-hidden transition-all",
 				isZenMode
-					? "fixed inset-0 z-9999 bg-background text-foreground w-screen h-screen border-none"
+					? "fixed inset-0 z-9999 bg-background text-foreground w-screen h-dvh border-none"
 					: "w-full h-full rounded-xl bg-background border border-border/40",
 			)}
 			onDragEnter={handleDragEnter}
@@ -412,7 +412,7 @@ export function TiptapEditor({
 						attributes: {
 							id: "tiptap-editor-container",
 							class: cn(
-								"prose prose-sm sm:prose-base dark:prose-invert focus:outline-none max-w-4xl mx-auto w-full min-h-screen outline-none px-6 sm:px-10 py-8 bg-background border border-border/40 shadow-sm rounded-lg transition-all",
+								"prose prose-sm sm:prose-base dark:prose-invert focus:outline-none max-w-4xl mx-auto w-full min-h-dvh outline-none px-6 sm:px-10 py-8 bg-background border border-border/40 shadow-sm rounded-lg transition-all",
 								isZenMode &&
 									"shadow-none border-none bg-muted/20 max-w-3xl",
 							),

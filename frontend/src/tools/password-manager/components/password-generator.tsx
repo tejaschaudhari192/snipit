@@ -310,7 +310,7 @@ export default function PasswordGenerator({
 					<Switch
 						checked={pronounceable}
 						onCheckedChange={setPronounceable}
-						className="data-[state=checked]:bg-blue-500"
+						className="data-:bg-blue-500"
 					/>
 				</div>
 

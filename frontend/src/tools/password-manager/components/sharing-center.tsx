@@ -112,7 +112,7 @@ export default function SharingCenter() {
 				<TabsList className="bg-muted border border-border w-full justify-start p-1 rounded-lg">
 					<TabsTrigger
 						value="with-me"
-						className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary flex gap-2"
+						className="data-:bg-primary/20 data-:text-primary flex gap-2"
 					>
 						{t("tools.password_manager.shared_with_me")}
 						<Badge
@@ -124,7 +124,7 @@ export default function SharingCenter() {
 					</TabsTrigger>
 					<TabsTrigger
 						value="by-me"
-						className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary flex gap-2"
+						className="data-:bg-primary/20 data-:text-primary flex gap-2"
 					>
 						{t("tools.password_manager.shared_by_me")}
 						<Badge

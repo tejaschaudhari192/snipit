@@ -91,7 +91,7 @@ export default function VaultOnboarding({
 	const passwordsMatch = password === confirmPassword && password.length > 0;
 
 	return (
-		<div className="h-full w-full overflow-y-auto flex flex-col items-center justify-center p-4 md:p-8">
+		<div className="h-full w-full overflow-y-auto flex flex-col items-center justify-center p-4 @md:p-8">
 			<div className="w-full my-auto py-8">
 				{step === 1 && (
 					<Step1FeatureOverview onNext={() => setStep(2)} />

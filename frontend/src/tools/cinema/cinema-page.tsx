@@ -95,7 +95,7 @@ export default function CinemaPage() {
 	};
 
 	return (
-		<div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-6 relative overflow-hidden">
+		<div className="min-h-dvh bg-background text-foreground flex flex-col items-center justify-center p-6 relative overflow-hidden">
 			{/* Background gradients */}
 			<div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] -z-10" />
 			<div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-violet-500/20 rounded-full blur-[100px] -z-10" />
@@ -147,13 +147,13 @@ export default function CinemaPage() {
 					<TabsList className="grid w-full grid-cols-2 bg-muted border border-border p-1 rounded-2xl mb-6">
 						<TabsTrigger
 							value="create"
-							className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+							className="rounded-xl data-:bg-primary data-:text-primary-foreground"
 						>
 							{t("tools.cinema.create_tab")}
 						</TabsTrigger>
 						<TabsTrigger
 							value="join"
-							className="rounded-xl data-[state=active]:bg-background data-[state=active]:text-foreground"
+							className="rounded-xl data-:bg-background data-:text-foreground"
 						>
 							{t("tools.cinema.join_tab")}
 						</TabsTrigger>

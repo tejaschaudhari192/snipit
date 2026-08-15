@@ -103,7 +103,7 @@ export default function CinemaRoomPage() {
 
 	if (loading) {
 		return (
-			<div className="w-full h-screen flex flex-col items-center justify-center bg-background text-foreground">
+			<div className="w-full h-dvh flex flex-col items-center justify-center bg-background text-foreground">
 				<Loader2 className="w-10 h-10 animate-spin text-primary mb-4" />
 				<p className="text-sm font-semibold tracking-wider uppercase text-muted-foreground">
 					Loading Watch Party...
@@ -114,7 +114,7 @@ export default function CinemaRoomPage() {
 
 	if (error) {
 		return (
-			<div className="w-full h-screen flex flex-col items-center justify-center bg-background text-foreground space-y-4">
+			<div className="w-full h-dvh flex flex-col items-center justify-center bg-background text-foreground space-y-4">
 				<p className="text-xl font-bold text-destructive">{error}</p>
 				<button
 					onClick={() => navigate("/tools/cinema")}
@@ -127,7 +127,7 @@ export default function CinemaRoomPage() {
 	}
 
 	return (
-		<div className="w-full h-screen bg-background overflow-hidden relative">
+		<div className="w-full h-dvh bg-background overflow-hidden relative">
 			<VideoDisplay
 				roomId={roomId!}
 				videoSrc={videoSrc}

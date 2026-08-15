@@ -238,7 +238,7 @@ export const AdvancedConfigGrid = ({
 									disabled={
 										disabled || (!isOwner && !isAdmin)
 									}
-									className="scale-90 data-[state=checked]:bg-emerald-500"
+									className="scale-90 data-:bg-emerald-500"
 								/>
 							</div>
 						</LockedSettingWrapper>

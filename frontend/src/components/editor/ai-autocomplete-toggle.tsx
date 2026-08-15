@@ -50,7 +50,7 @@ export const AiAutocompleteToggle = ({
 								onCheckedChange={onToggle}
 								className={cn(
 									"scale-[0.8] transition-all duration-300",
-									"data-[state=checked]:bg-violet-500 data-[state=unchecked]:bg-foreground/20",
+									"data-:bg-violet-500 data-:bg-foreground/20",
 									enabled && "shadow-sm shadow-violet-500/20",
 								)}
 							/>

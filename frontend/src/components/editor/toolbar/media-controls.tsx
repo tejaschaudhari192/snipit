@@ -42,7 +42,7 @@ export function MediaControls({
 
 			<TooltipButton
 				onClick={onOpenLatexDialog}
-				className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer"
+				className="icon-btn"
 				title="LaTeX Formula"
 			>
 				<Sigma className="h-4 w-4" />
@@ -50,7 +50,7 @@ export function MediaControls({
 
 			<TooltipButton
 				onClick={onAddImage}
-				className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer"
+				className="icon-btn"
 				title="Insert Image"
 			>
 				<ImageIcon className="h-4 w-4" />
@@ -58,7 +58,7 @@ export function MediaControls({
 
 			<TooltipButton
 				onClick={onAddVideo}
-				className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer"
+				className="icon-btn"
 				title="Insert Video"
 			>
 				<VideoIcon className="h-4 w-4" />
@@ -66,7 +66,7 @@ export function MediaControls({
 
 			<TooltipButton
 				onClick={onAddAttachment}
-				className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer"
+				className="icon-btn"
 				title="Insert Attachment"
 			>
 				<Paperclip className="h-4 w-4" />

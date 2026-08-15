@@ -158,7 +158,7 @@ const ProfilePage = () => {
 	const displayLoading = loadingPastes;
 
 	return (
-		<div className="relative min-h-screen bg-background overflow-x-hidden flex flex-col items-center w-full">
+		<div className="relative min-h-dvh bg-background overflow-x-hidden flex flex-col items-center w-full">
 			<div className="relative z-10 container mx-auto px-4 py-4 md:py-6 max-w-7xl w-full animate-in fade-in duration-700">
 				<div className="flex flex-col lg:grid lg:grid-cols-12 gap-4 items-start">
 					<div className="w-full lg:col-span-4 lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto custom-scrollbar max-w-2xl mx-auto lg:max-w-none flex flex-col gap-6 pt-1 pb-4">

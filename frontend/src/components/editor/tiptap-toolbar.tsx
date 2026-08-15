@@ -161,18 +161,18 @@ export function TiptapToolbar({
 		<TooltipProvider delay={400}>
 			<div className="flex flex-wrap items-center gap-1 p-1.5 border-b border-border/40 bg-muted/20 select-none w-full">
 				<HistoryControls editor={editor} />
-				<div className="w-px h-5 bg-border/40 mx-1 self-center" />
+				<div className="divider-v" />
 
 				<HeadingDropdown editor={editor} />
 				<FontDropdown editor={editor} />
-				<div className="w-px h-5 bg-border/40 mx-1 self-center" />
+				<div className="divider-v" />
 
 				<FormattingControls editor={editor} />
-				<div className="w-px h-5 bg-border/40 mx-1 self-center" />
+				<div className="divider-v" />
 
 				<ListControls editor={editor} />
 				<BlockControls editor={editor} />
-				<div className="w-px h-5 bg-border/40 mx-1 self-center" />
+				<div className="divider-v" />
 
 				<AlignmentDropdown editor={editor} />
 				<LineHeightDropdown editor={editor} />
@@ -191,7 +191,7 @@ export function TiptapToolbar({
 							.run()
 					}
 				/>
-				<div className="w-px h-5 bg-border/40 mx-1 self-center" />
+				<div className="divider-v" />
 
 				<MediaControls
 					editor={editor}
@@ -209,19 +209,19 @@ export function TiptapToolbar({
 						editor.chain().focus().setImage({ src: url }).run()
 					}
 				/>
-				<div className="w-px h-5 bg-border/40 mx-1 self-center" />
+				<div className="divider-v" />
 
 				<ColorControls editor={editor} />
 
 				{/* Emoji Picker Popover */}
 				<EmojiPicker editor={editor} />
 
-				<div className="w-px h-5 bg-border/40 mx-1 self-center" />
+				<div className="divider-v" />
 
 				{/* Find & Replace */}
 				<TooltipButton
 					onClick={onToggleFindReplace}
-					className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer"
+					className="icon-btn"
 					title="Find & Replace"
 					shortcut="Ctrl H"
 				>
@@ -232,7 +232,7 @@ export function TiptapToolbar({
 				<TooltipButton
 					onClick={onToggleZenMode}
 					className={cn(
-						"h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer",
+						"icon-btn",
 						isZenMode &&
 							"bg-accent border-border/40 text-accent-foreground shadow-sm",
 					)}

@@ -126,7 +126,7 @@ const App = () => {
 							<MusicProvider>
 								<TtsProvider>
 									<Router>
-										<div className="h-screen w-full m-0 p-0 box-border flex flex-col overflow-hidden bg-background text-foreground font-sans">
+										<div className="h-dvh w-full m-0 p-0 box-border flex flex-col overflow-hidden bg-background text-foreground font-sans">
 											<Header />
 											<main className="flex-1 flex flex-col min-h-0 overflow-y-auto overflow-x-hidden relative custom-scrollbar">
 												<Suspense fallback={<Loader />}>

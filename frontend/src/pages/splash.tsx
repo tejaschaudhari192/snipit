@@ -79,7 +79,7 @@ const SplashPage = ({ healthData }: SplashPageProps) => {
 	};
 
 	return (
-		<div className="relative h-screen w-screen overflow-hidden bg-background text-foreground transition-colors duration-300 flex flex-col items-center justify-center pointer-events-none">
+		<div className="relative h-dvh w-screen overflow-hidden bg-background text-foreground transition-colors duration-300 flex flex-col items-center justify-center pointer-events-none">
 			<div className="relative z-10 flex flex-col items-center justify-center animate-in fade-in zoom-in duration-700">
 				<div className="flex flex-col items-center justify-center mb-6">
 					<div className="relative flex items-center justify-center w-32 h-32 mb-8">

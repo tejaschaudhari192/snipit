@@ -171,7 +171,7 @@ function PasswordManagerInner() {
 							<MobileSidebarDrawer />
 						</Suspense>
 						{activeItem || isNewItem ? (
-							<div className="h-full w-full overflow-hidden flex flex-col bg-background absolute inset-0 z-10">
+							<div className="h-full w-full overflow-hidden flex flex-col bg-background absolute inset-0 z-10 @container">
 								<Suspense fallback={<DetailSkeleton />}>
 									<PasswordDetail
 										item={activeItem}
@@ -181,7 +181,7 @@ function PasswordManagerInner() {
 								</Suspense>
 							</div>
 						) : (
-							<div className="h-full w-full overflow-hidden flex flex-col bg-background relative z-0">
+							<div className="h-full w-full overflow-hidden flex flex-col bg-background relative z-0 @container">
 								<Suspense fallback={<ListSkeleton />}>
 									<PasswordList
 										activeId={null}
@@ -214,7 +214,7 @@ function PasswordManagerInner() {
 						</div>
 
 						{/* Main Content Area */}
-						<div className="flex-1 min-w-0 h-full overflow-hidden flex flex-col">
+						<div className="flex-1 min-w-0 h-full overflow-hidden flex flex-col @container">
 							{activeFilter === "sharing" ? (
 								<Suspense fallback={<ListSkeleton />}>
 									<SharingCenter />

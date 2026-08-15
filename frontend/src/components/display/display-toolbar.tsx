@@ -427,7 +427,7 @@ export const DisplayToolbar = memo(
 											<Switch
 												checked={isAutosave}
 												onCheckedChange={setIsAutosave}
-												className="scale-[0.7] data-[state=checked]:bg-emerald-500"
+												className="scale-[0.7] data-:bg-emerald-500"
 											/>
 										</div>
 									}

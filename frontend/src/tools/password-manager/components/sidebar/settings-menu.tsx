@@ -100,7 +100,7 @@ export function SettingsMenu({
 							render={
 								<SidebarMenuButton
 									size="lg"
-									className="w-full justify-start data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground transition-all duration-200"
+									className="w-full justify-start data-:bg-sidebar-accent data-:text-sidebar-accent-foreground transition-all duration-200"
 								/>
 							}
 						>

@@ -7,7 +7,7 @@ export function HistoryControls({ editor }: { editor: Editor }) {
 		<>
 			<TooltipButton
 				onClick={() => editor.chain().focus().undo().run()}
-				className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer disabled:opacity-40"
+				className="icon-btn disabled:opacity-40"
 				title="Undo"
 				shortcut="Ctrl Z"
 			>
@@ -16,7 +16,7 @@ export function HistoryControls({ editor }: { editor: Editor }) {
 
 			<TooltipButton
 				onClick={() => editor.chain().focus().redo().run()}
-				className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer disabled:opacity-40"
+				className="icon-btn disabled:opacity-40"
 				title="Redo"
 				shortcut="Ctrl Y"
 			>

@@ -16,7 +16,7 @@ export function FormattingControls({ editor }: { editor: Editor }) {
 			<TooltipButton
 				onClick={() => editor.chain().focus().toggleBold().run()}
 				className={cn(
-					"h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer",
+					"icon-btn",
 					editor.isActive("bold") &&
 						"bg-accent border-border/40 text-accent-foreground shadow-sm",
 				)}
@@ -29,7 +29,7 @@ export function FormattingControls({ editor }: { editor: Editor }) {
 			<TooltipButton
 				onClick={() => editor.chain().focus().toggleItalic().run()}
 				className={cn(
-					"h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer",
+					"icon-btn",
 					editor.isActive("italic") &&
 						"bg-accent border-border/40 text-accent-foreground shadow-sm",
 				)}
@@ -42,7 +42,7 @@ export function FormattingControls({ editor }: { editor: Editor }) {
 			<TooltipButton
 				onClick={() => editor.chain().focus().toggleUnderline().run()}
 				className={cn(
-					"h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer",
+					"icon-btn",
 					editor.isActive("underline") &&
 						"bg-accent border-border/40 text-accent-foreground shadow-sm",
 				)}
@@ -55,7 +55,7 @@ export function FormattingControls({ editor }: { editor: Editor }) {
 			<TooltipButton
 				onClick={() => editor.chain().focus().toggleStrike().run()}
 				className={cn(
-					"h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer",
+					"icon-btn",
 					editor.isActive("strike") &&
 						"bg-accent border-border/40 text-accent-foreground shadow-sm",
 				)}
@@ -68,7 +68,7 @@ export function FormattingControls({ editor }: { editor: Editor }) {
 			<TooltipButton
 				onClick={() => editor.chain().focus().toggleSuperscript().run()}
 				className={cn(
-					"h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer",
+					"icon-btn",
 					editor.isActive("superscript") &&
 						"bg-accent border-border/40 text-accent-foreground shadow-sm",
 				)}
@@ -80,7 +80,7 @@ export function FormattingControls({ editor }: { editor: Editor }) {
 			<TooltipButton
 				onClick={() => editor.chain().focus().toggleSubscript().run()}
 				className={cn(
-					"h-8 w-8 flex items-center justify-center rounded-md hover:bg-accent transition-colors border border-transparent text-foreground cursor-pointer",
+					"icon-btn",
 					editor.isActive("subscript") &&
 						"bg-accent border-border/40 text-accent-foreground shadow-sm",
 				)}

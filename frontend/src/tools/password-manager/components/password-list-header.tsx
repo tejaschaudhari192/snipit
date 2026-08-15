@@ -93,7 +93,7 @@ export function PasswordListHeader({
 					)}
 				</div>
 				{!hasSelection && onSearchChange && (
-					<div className="relative flex-1 max-w-md mx-6 hidden sm:block">
+					<div className="relative flex-1 max-w-md mx-6 hidden @md:block">
 						<Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
 						<Input
 							type="search"
@@ -108,7 +108,7 @@ export function PasswordListHeader({
 					{activeFolder && !hasSelection && (
 						<Button
 							variant="outline"
-							className="gap-2 h-9 hidden sm:flex"
+							className="gap-2 h-9 hidden @md:flex"
 							size="sm"
 							onClick={onShareModalOpen}
 						>
@@ -118,7 +118,7 @@ export function PasswordListHeader({
 					)}
 					<DropdownMenu>
 						<DropdownMenuTrigger
-							className={`${buttonVariants({ variant: "outline", size: "sm" })} h-9 gap-2 hidden sm:flex`}
+							className={`${buttonVariants({ variant: "outline", size: "sm" })} h-9 gap-2 hidden @md:flex`}
 							disabled={hasSelection}
 						>
 							<MoreVertical className="w-4 h-4 mr-1" />{" "}
@@ -154,7 +154,7 @@ export function PasswordListHeader({
 						disabled={hasSelection}
 					>
 						<span className="text-lg">+</span>{" "}
-						<span className="hidden sm:inline">
+						<span className="hidden @md:inline">
 							{t("tools.password_manager.new_item")}
 						</span>
 					</Button>
@@ -163,7 +163,7 @@ export function PasswordListHeader({
 
 			{/* Mobile search bar if applicable */}
 			{!hasSelection && onSearchChange && (
-				<div className="sm:hidden px-6 pb-4">
+				<div className="@md:hidden px-6 pb-4">
 					<div className="relative w-full">
 						<Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
 						<Input

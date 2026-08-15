@@ -48,7 +48,7 @@ export function HeadingDropdown({ editor }: { editor: Editor }) {
 						/>
 					}
 				/>
-				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
+				<TooltipContent className="kbd-badge">
 					<span className="font-semibold text-white">Headings</span>
 				</TooltipContent>
 			</Tooltip>
@@ -122,7 +122,7 @@ export function FontDropdown({ editor }: { editor: Editor }) {
 						/>
 					}
 				/>
-				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
+				<TooltipContent className="kbd-badge">
 					<span className="font-semibold text-white">
 						Font Family
 					</span>
@@ -190,7 +190,7 @@ export function AlignmentDropdown({ editor }: { editor: Editor }) {
 						/>
 					}
 				/>
-				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
+				<TooltipContent className="kbd-badge">
 					<span className="font-semibold text-white">Align Text</span>
 				</TooltipContent>
 			</Tooltip>
@@ -270,7 +270,7 @@ export function LineHeightDropdown({ editor }: { editor: Editor }) {
 						/>
 					}
 				/>
-				<TooltipContent className="flex flex-col items-center justify-center p-1.5 px-2.5 select-none bg-zinc-950 dark:bg-zinc-900 border border-border/20 text-white text-[11px] rounded-md font-sans z-50">
+				<TooltipContent className="kbd-badge">
 					<span className="font-semibold text-white">
 						Line Height
 					</span>
