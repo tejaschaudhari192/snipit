@@ -157,7 +157,7 @@ const Header = ({ className }: HeaderProps) => {
 				)}
 			</div>
 
-			<div className="hidden md:flex items-center gap-3 min-w-0 shrink-0">
+			<div className="hidden xl:flex items-center gap-3 min-w-0 shrink-0">
 				<nav className="flex items-center gap-1 bg-muted/30 p-1 rounded-lg mr-2">
 					<Link to={"/tools"}>
 						<Button
@@ -247,7 +247,7 @@ const Header = ({ className }: HeaderProps) => {
 				<UserMenu />
 			</div>
 
-			<div className="md:hidden flex items-center gap-1.5 shrink-0">
+			<div className="xl:hidden flex items-center gap-1.5 shrink-0">
 				<DropdownMenu>
 					<DropdownMenuTrigger
 						render={
