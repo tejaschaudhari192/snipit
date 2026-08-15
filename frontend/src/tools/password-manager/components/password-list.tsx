@@ -617,6 +617,14 @@ export default function PasswordList({
 														? "w-10 pr-2"
 														: ""
 												}`}
+												onClick={(e) => {
+													if (
+														cell.column.id ===
+														"select"
+													) {
+														e.stopPropagation();
+													}
+												}}
 											>
 												{flexRender(
 													cell.column.columnDef.cell,
