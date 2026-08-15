@@ -28,6 +28,7 @@ type TopLevelStringField = Extract<
 interface MergeItemsModalProps {
 	isOpen: boolean;
 	onClose: () => void;
+	onSkip?: () => void;
 	items: PasswordItem[];
 	onMerge: (mergedItem: PasswordItem, originalItemIds: string[]) => void;
 }
@@ -41,6 +42,7 @@ interface Conflict {
 export function MergeItemsModal({
 	isOpen,
 	onClose,
+	onSkip,
 	items,
 	onMerge,
 }: MergeItemsModalProps) {
@@ -348,10 +350,15 @@ export function MergeItemsModal({
 					</div>
 				</ScrollArea>
 
-				<DialogFooter className="mt-2">
-					<Button variant="outline" onClick={onClose}>
+				<DialogFooter className="mt-2 flex flex-wrap gap-2 sm:justify-end">
+					<Button variant="ghost" onClick={onClose}>
 						{t("tools.password_manager.cancel")}
 					</Button>
+					{onSkip && (
+						<Button variant="outline" onClick={onSkip}>
+							{t("tools.password_manager.skip")}
+						</Button>
+					)}
 					<Button onClick={handleMerge}>
 						{t("tools.password_manager.confirm_merge")}
 					</Button>

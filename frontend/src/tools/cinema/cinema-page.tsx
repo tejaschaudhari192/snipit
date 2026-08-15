@@ -106,7 +106,7 @@ export default function CinemaPage() {
 						<Film className="w-12 h-12 text-primary" />
 					</div>
 					<h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
-						{t("tools.cinema.hero_title", "Watch Together")}
+						{t("tools.cinema.hero_title")}
 					</h1>
 					<p className="text-lg text-muted-foreground max-w-lg mx-auto">
 						{t(
@@ -120,7 +120,7 @@ export default function CinemaPage() {
 					<div className="bg-card border border-border rounded-xl p-4 flex flex-col items-center text-center gap-2">
 						<Zap className="w-6 h-6 text-yellow-500" />
 						<span className="text-sm font-bold">
-							{t("tools.cinema.features_sync", "Perfect Sync")}
+							{t("tools.cinema.features_sync")}
 						</span>
 					</div>
 					<div className="bg-card border border-border rounded-xl p-4 flex flex-col items-center text-center gap-2">
@@ -149,13 +149,13 @@ export default function CinemaPage() {
 							value="create"
 							className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
 						>
-							{t("tools.cinema.create_tab", "Create Room")}
+							{t("tools.cinema.create_tab")}
 						</TabsTrigger>
 						<TabsTrigger
 							value="join"
 							className="rounded-xl data-[state=active]:bg-background data-[state=active]:text-foreground"
 						>
-							{t("tools.cinema.join_tab", "Join Room")}
+							{t("tools.cinema.join_tab")}
 						</TabsTrigger>
 					</TabsList>
 
@@ -166,7 +166,7 @@ export default function CinemaPage() {
 						{!isP2p && (
 							<div className="space-y-2">
 								<Label className="text-foreground/80">
-									{t("tools.cinema.url_label", "Video URL")}
+									{t("tools.cinema.url_label")}
 								</Label>
 								<Input
 									placeholder={t(
@@ -232,7 +232,7 @@ export default function CinemaPage() {
 						>
 							<Play className="w-5 h-5 mr-2" />
 							{isCreating
-								? t("tools.cinema.creating", "Creating Room...")
+								? t("tools.cinema.creating")
 								: t(
 										"tools.cinema.start_btn",
 										"Start Watch Party",
@@ -274,7 +274,7 @@ export default function CinemaPage() {
 							variant="secondary"
 							className="w-full h-12 text-md font-bold rounded-xl"
 						>
-							{t("tools.cinema.join_btn", "Join Room")}
+							{t("tools.cinema.join_btn")}
 						</Button>
 					</TabsContent>
 				</Tabs>
