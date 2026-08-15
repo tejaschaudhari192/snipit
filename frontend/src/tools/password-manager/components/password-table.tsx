@@ -139,7 +139,9 @@ export function PasswordTable({
 						item.itemType || "login",
 					);
 					const subtitleField = schemaFields.find(
-						(f) => f.type === "text" || f.type === "email",
+						(f) =>
+							(f.type === "text" || f.type === "email") &&
+							item.metadata?.[f.key],
 					);
 					const subtitle =
 						subtitleField && item.metadata
@@ -154,8 +156,8 @@ export function PasswordTable({
 									{item.title}
 								</ItemTitle>
 								<ItemDescription className="text-[13px] truncate max-w-50">
-									{subtitle ||
-										item.username ||
+									{item.username ||
+										subtitle ||
 										domain ||
 										"No details"}
 								</ItemDescription>
