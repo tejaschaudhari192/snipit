@@ -106,7 +106,7 @@ export const MarkdownDisplay = memo(
 			<div
 				ref={contentRef}
 				id="markdown-preview-container"
-				className="prose prose-sm md:prose-base max-w-none dark:prose-invert wrap-break-word p-3 md:p-10 rounded-2xl border border-border/50 bg-background/60 backdrop-blur-xl shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-500 md:max-w-7xl w-full mx-auto"
+				className="prose prose-sm md:prose-base max-w-none dark:prose-invert wrap-break-word p-4 md:p-6 lg:p-8 w-full animate-in fade-in duration-500"
 				style={{ fontSize: `${fontSize}px` }}
 			>
 				<ReactMarkdown

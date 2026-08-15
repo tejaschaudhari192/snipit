@@ -86,7 +86,15 @@ export default function StepFileSelect({ onNext, onCancel }: Props) {
 						}
 					>
 						<SelectTrigger>
-							<SelectValue />
+							<SelectValue>
+								{sourceApp === "chrome"
+									? t(
+											"tools.password_manager.import.chrome_csv",
+										)
+									: t(
+											"tools.password_manager.import.enpass_json",
+										)}
+							</SelectValue>
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="chrome">

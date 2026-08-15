@@ -104,7 +104,9 @@ export const TransliterationToggle = memo(
 								placeholder={t(
 									"editor.transliteration.select_language",
 								)}
-							/>
+							>
+								{selectedLangObj?.label}
+							</SelectValue>
 						</SelectTrigger>
 						<SelectContent>
 							<SelectGroup>

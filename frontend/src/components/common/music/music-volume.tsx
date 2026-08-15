@@ -82,7 +82,14 @@ const MusicVolume: React.FC<MusicVolumeProps> = ({
 								className="bg-muted/40 hover:bg-muted border border-border/30 hover:border-border/60 rounded text-[9px] font-semibold h-5 py-0 px-1.5 outline-none cursor-pointer text-muted-foreground hover:text-foreground transition-all shrink-0 focus:ring-0 shadow-none w-auto gap-1 [&>svg]:h-3 [&>svg]:w-3"
 								title="Streaming Audio Quality"
 							>
-								<SelectValue placeholder="Auto" />
+								<SelectValue placeholder="Auto">
+									{{
+										tiny: "Low",
+										small: "Medium",
+										medium: "High",
+										default: "Auto",
+									}[quality] || "Auto"}
+								</SelectValue>
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem

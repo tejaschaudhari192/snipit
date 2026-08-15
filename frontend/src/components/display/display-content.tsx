@@ -351,7 +351,7 @@ export const DisplayContent = memo(
 									</Suspense>
 								}
 								right={
-									<div className="h-full overflow-y-auto bg-background/30 p-1 sm:p-4">
+									<div className="h-full overflow-y-auto bg-background/30">
 										<Suspense
 											fallback={
 												<div className="flex-1 p-6 space-y-4 w-full h-full bg-background/30">
@@ -382,7 +382,7 @@ export const DisplayContent = memo(
 					);
 				}
 				return (
-					<div className="h-full overflow-y-auto p-1 sm:p-4 md:p-8 flex flex-col items-center">
+					<div className="h-full overflow-y-auto flex flex-col items-center">
 						<div className="my-auto w-full flex flex-col items-center h-full max-h-full">
 							<Suspense
 								fallback={

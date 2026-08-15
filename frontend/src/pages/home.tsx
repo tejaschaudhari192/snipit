@@ -538,7 +538,9 @@ const HomePage = () => {
 
 									<div className="w-px h-6 bg-border/40 mx-1" />
 
-									{["text", "docs"].includes(contentType) && (
+									{["text", "docs", "code"].includes(
+										contentType,
+									) && (
 										<TransliterationToggle
 											enabled={transliteration.enabled}
 											onToggle={transliteration.toggle}
