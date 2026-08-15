@@ -9,12 +9,14 @@ interface ShortenedResultCardProps {
 		id: string;
 		url: string;
 	};
-	setTextValue: (v: string) => void;
+	setTextValue?: (v: string) => void;
+	onClose?: () => void;
 }
 
 export const ShortenedResultCard = ({
 	shortenedResult,
 	setTextValue,
+	onClose,
 }: ShortenedResultCardProps) => {
 	const { t } = useTranslation();
 
@@ -120,13 +122,23 @@ export const ShortenedResultCard = ({
 						<ExternalLink className="h-4 w-4 mr-2" />
 						{t("common.redirect.visit_link")}
 					</Button>
-					<Button
-						variant="outline"
-						className="flex-1 h-11 font-bold border-border/50 bg-background/50 backdrop-blur-sm"
-						onClick={() => setTextValue("")}
-					>
-						{t("home.misc.create_another")}
-					</Button>
+					{setTextValue ? (
+						<Button
+							variant="outline"
+							className="flex-1 h-11 font-bold border-border/50 bg-background/50 backdrop-blur-sm"
+							onClick={() => setTextValue("")}
+						>
+							{t("home.misc.create_another")}
+						</Button>
+					) : onClose ? (
+						<Button
+							variant="outline"
+							className="flex-1 h-11 font-bold border-border/50 bg-background/50 backdrop-blur-sm"
+							onClick={onClose}
+						>
+							{t("common.actions.close")}
+						</Button>
+					) : null}
 				</div>
 			</div>
 		</div>

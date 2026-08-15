@@ -13,6 +13,7 @@ import {
 import { useTranslation } from "react-i18next";
 import type { RedirectionType } from "@/types";
 import { Spinner } from "@/components/ui/spinner";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface LinkViewProps {
 	isEdit: boolean;
@@ -21,6 +22,7 @@ interface LinkViewProps {
 	contentRef: (node: HTMLElement | null) => void;
 	isAdmin?: boolean;
 	redirectionType?: RedirectionType;
+	setRedirectionType?: (val: RedirectionType) => void;
 }
 
 export const LinkView = ({
@@ -30,6 +32,7 @@ export const LinkView = ({
 	contentRef,
 	isAdmin = false,
 	redirectionType = "click",
+	setRedirectionType,
 }: LinkViewProps) => {
 	const { t } = useTranslation();
 	const [timeLeft, setTimeLeft] = useState(5);
@@ -99,8 +102,90 @@ export const LinkView = ({
 						value={content}
 						onChange={(e) => onContentChange(e.target.value)}
 						placeholder={t("home.inputs.link_placeholder")}
-						className="h-12 text-base px-5 rounded-xl border-primary/20 focus-visible:ring-primary/20 bg-background shadow-inner text-center"
+						className="h-12 text-base px-5 rounded-xl border-primary/20 focus-visible:ring-primary/20 bg-background shadow-inner text-center mb-6"
 					/>
+
+					{setRedirectionType && (
+						<div className="flex flex-col items-center animate-in fade-in slide-in-from-top-2 duration-500">
+							<Tabs
+								value={redirectionType}
+								onValueChange={(v) =>
+									setRedirectionType(v as RedirectionType)
+								}
+								className="w-full mb-3"
+							>
+								<TabsList className="grid w-full grid-cols-3 h-10 bg-muted border border-border/50 p-1 rounded-xl shadow-inner">
+									<TabsTrigger
+										value="click"
+										className="text-[10px] sm:text-xs font-bold gap-1 sm:gap-1.5"
+									>
+										<MousePointerClick className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary shrink-0" />
+										<span className="hidden sm:inline">
+											{t("common.redirect.click")}
+										</span>
+										<span className="sm:hidden">Click</span>
+									</TabsTrigger>
+									<TabsTrigger
+										value="timer"
+										className="text-[10px] sm:text-xs font-bold gap-1 sm:gap-1.5"
+									>
+										<Timer className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-amber-500 shrink-0" />
+										<span className="hidden sm:inline">
+											{t("common.redirect.timer")}
+										</span>
+										<span className="sm:hidden">5s</span>
+									</TabsTrigger>
+									<TabsTrigger
+										value="direct"
+										className="text-[10px] sm:text-xs font-bold gap-1 sm:gap-1.5"
+									>
+										<Zap className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-indigo-500 shrink-0" />
+										<span className="hidden sm:inline">
+											{t("common.redirect.direct")}
+										</span>
+										<span className="sm:hidden">
+											Direct
+										</span>
+									</TabsTrigger>
+								</TabsList>
+							</Tabs>
+
+							<div className="flex items-center justify-center w-full text-xs font-bold px-1 select-none">
+								<div className="text-[11px] text-muted-foreground/80 font-medium flex items-center gap-1.5">
+									{redirectionType === "click" && (
+										<>
+											<span className="inline-block w-1.5 h-1.5 rounded-full bg-primary" />
+											<span>
+												{t(
+													"common.redirect.click_desc",
+												)}
+											</span>
+										</>
+									)}
+									{redirectionType === "timer" && (
+										<>
+											<span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+											<span>
+												{t(
+													"common.redirect.timer_desc",
+												)}
+											</span>
+										</>
+									)}
+									{redirectionType === "direct" && (
+										<>
+											<span className="inline-block w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+											<span>
+												{t(
+													"common.redirect.direct_desc",
+												)}
+											</span>
+										</>
+									)}
+								</div>
+							</div>
+						</div>
+					)}
 				</div>
 			</div>
 		);

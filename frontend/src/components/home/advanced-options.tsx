@@ -11,10 +11,12 @@ const AdvancedConfigGrid = lazy(() =>
 );
 
 interface AdvancedOptionsProps {
-	onSubmit: () => void;
+	onSubmit?: () => void;
 }
 
-export const AdvancedOptions = ({ onSubmit }: AdvancedOptionsProps) => {
+export const AdvancedOptions = ({
+	onSubmit = () => {},
+}: AdvancedOptionsProps = {}) => {
 	const {
 		idTypeTab,
 		setIdTypeTab,

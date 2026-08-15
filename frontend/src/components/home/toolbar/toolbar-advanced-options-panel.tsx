@@ -10,16 +10,12 @@ interface ToolbarAdvancedOptionsPanelProps {
 	isOptionsOpen: boolean;
 	setIsOptionsOpen: (val: boolean) => void;
 	handleCollaborative: () => void;
-	handleDialogSubmit: () => void;
-	dialogError: string;
 }
 
 export function ToolbarAdvancedOptionsPanel({
 	isOptionsOpen,
 	setIsOptionsOpen,
 	handleCollaborative,
-	handleDialogSubmit,
-	dialogError,
 }: ToolbarAdvancedOptionsPanelProps) {
 	const { t } = useTranslation();
 
@@ -49,19 +45,8 @@ export function ToolbarAdvancedOptionsPanel({
 					</div>
 
 					<ScrollArea className="max-h-112.5 pr-2">
-						<AdvancedOptions onSubmit={handleDialogSubmit} />
+						<AdvancedOptions />
 					</ScrollArea>
-
-					{dialogError && (
-						<div className="animate-in fade-in slide-in-from-top-2 duration-300 p-4 mt-4 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-500 flex items-start gap-3 shadow-sm shadow-red-500/5">
-							<div className="mt-0.5 shrink-0 bg-red-500/20 w-5 h-5 rounded-full flex items-center justify-center text-[10px]">
-								⚠️
-							</div>
-							<p className="font-medium leading-relaxed italic">
-								{dialogError}
-							</p>
-						</div>
-					)}
 				</div>
 			</CollapsibleContent>
 		</Collapsible>

@@ -10,7 +10,6 @@ interface ToolbarSubmitButtonProps {
 	isUploading: boolean;
 	uploadProgress: number;
 	contentType: ContentMode;
-	shortenedResult?: { id: string } | null;
 	isOptionsOpen: boolean;
 	setIsOptionsOpen: (val: boolean) => void;
 	handleQuickPaste: () => void;
@@ -21,7 +20,6 @@ export function ToolbarSubmitButton({
 	isUploading,
 	uploadProgress,
 	contentType,
-	shortenedResult,
 	isOptionsOpen,
 	setIsOptionsOpen,
 	handleQuickPaste,
@@ -56,9 +54,7 @@ export function ToolbarSubmitButton({
 			return t("home.actions.upload");
 		}
 		if (contentType === "link") {
-			return !!shortenedResult
-				? t("home.misc.link_shortened")
-				: t("home.actions.shorten");
+			return t("home.actions.shorten");
 		}
 		return t("home.actions.paste");
 	};

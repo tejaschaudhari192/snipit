@@ -7,7 +7,12 @@ const EditorToolbar = lazy(() =>
 	})),
 );
 import { EditorToolbarSkeleton } from "@/components/common/editor-toolbar-skeleton";
-import type { PasteData, ContentMode, EditorChange } from "@/types";
+import type {
+	PasteData,
+	ContentMode,
+	EditorChange,
+	RedirectionType,
+} from "@/types";
 const ResizableSplitPane = lazy(() =>
 	import("@/components/common/resizable-split-pane").then((m) => ({
 		default: m.ResizableSplitPane,
@@ -104,6 +109,8 @@ interface DisplayContentProps {
 	transliteration?: ReturnType<typeof useTransliteration>;
 	onEditorInstance?: (editor: Editor | null) => void;
 	onMarkdownLayoutModeChange?: (mode: "split" | "editor" | "preview") => void;
+	redirectionType?: RedirectionType;
+	setRedirectionType?: (v: RedirectionType) => void;
 }
 
 export const DisplayContent = memo(
@@ -141,6 +148,8 @@ export const DisplayContent = memo(
 		fileUploadError = null,
 		transliteration,
 		onEditorInstance,
+		redirectionType,
+		setRedirectionType,
 	}: DisplayContentProps) => {
 		const containerRef = useRef<HTMLDivElement>(null);
 		const [mdLayoutMode, setMdLayoutMode] = useMarkdownLayout();
@@ -305,7 +314,10 @@ export const DisplayContent = memo(
 							onContentChange={onContentChange}
 							contentRef={contentRef}
 							isAdmin={isAdmin}
-							redirectionType={paste?.redirectionType}
+							redirectionType={
+								redirectionType ?? paste?.redirectionType
+							}
+							setRedirectionType={setRedirectionType}
 						/>
 					</Suspense>
 				);

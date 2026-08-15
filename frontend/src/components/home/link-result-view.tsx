@@ -6,7 +6,6 @@ import { cn } from "@/utils";
 import type { PasteData, RedirectionType } from "@/types";
 import { QRDialog } from "@/components/common/qr-dialog";
 import { useState } from "react";
-import { ShortenedResultCard } from "./shortened-result-card";
 import { RecentLinksSidebar } from "./recent-links-sidebar";
 import { usePaste } from "@/context/PasteContext";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,10 +13,6 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 interface LinkResultViewProps {
 	textValue: string;
 	setTextValue: (v: string) => void;
-	shortenedResult?: {
-		id: string;
-		url: string;
-	} | null;
 	isHistoryVisible: boolean;
 	setIsHistoryVisible: (v: boolean) => void;
 	linkHistory: Array<PasteData>;
@@ -27,7 +22,6 @@ interface LinkResultViewProps {
 export const LinkResultView = ({
 	textValue,
 	setTextValue,
-	shortenedResult,
 	isHistoryVisible,
 	setIsHistoryVisible,
 	linkHistory,
@@ -59,12 +53,7 @@ export const LinkResultView = ({
 					</Button>
 				)}
 
-				{shortenedResult ? (
-					<ShortenedResultCard
-						shortenedResult={shortenedResult}
-						setTextValue={setTextValue}
-					/>
-				) : (
+				{
 					<div className="w-full max-w-xl space-y-6">
 						<div className="flex flex-col items-center gap-2 text-center">
 							<div className="p-3 rounded-lg bg-primary/10 text-primary border border-primary/20">
@@ -153,7 +142,7 @@ export const LinkResultView = ({
 							</div>
 						</div>
 					</div>
-				)}
+				}
 			</div>
 
 			{isHistoryVisible && (

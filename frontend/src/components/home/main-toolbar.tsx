@@ -26,10 +26,7 @@ interface MainToolbarProps {
 	uploadProgress?: number;
 	handleQuickPaste: () => void;
 	handleCollaborative: () => void;
-	handleDialogSubmit: () => void;
 	hideTypeSelector?: boolean;
-	dialogError?: string;
-	shortenedResult?: { id: string } | null;
 	isTerminalOpen?: boolean;
 	onToggleTerminal?: () => void;
 	isCode?: boolean;
@@ -50,9 +47,6 @@ export const MainToolbar = memo(
 		handleQuickPaste,
 		handleCollaborative,
 		hideTypeSelector = false,
-		handleDialogSubmit,
-		dialogError = "",
-		shortenedResult = null,
 		isTerminalOpen = false,
 		onToggleTerminal,
 		isCode = false,
@@ -151,38 +145,32 @@ export const MainToolbar = memo(
 							needsSecondRow ? "order-2" : "order-3",
 						)}
 					>
-						{!(contentType === "link" && !!shortenedResult) && (
-							<div className="flex items-center gap-2 flex-1 sm:flex-none">
-								<ExpirySelector
-									expiresTime={expiresTime}
-									setExpiresTime={setExpiresTime}
-									setIsCustomExpiryDialogOpen={
-										setIsCustomExpiryDialogOpen
-									}
-									className="w-full sm:w-fit"
-								/>
+						<div className="flex items-center gap-2 flex-1 sm:flex-none">
+							<ExpirySelector
+								expiresTime={expiresTime}
+								setExpiresTime={setExpiresTime}
+								setIsCustomExpiryDialogOpen={
+									setIsCustomExpiryDialogOpen
+								}
+								className="w-full sm:w-fit"
+							/>
 
-								<ToolbarSubmitButton
-									isSubmitting={isSubmitting}
-									isUploading={isUploading}
-									uploadProgress={uploadProgress}
-									contentType={contentType}
-									shortenedResult={shortenedResult}
-									isOptionsOpen={isOptionsOpen}
-									setIsOptionsOpen={setIsOptionsOpen}
-									handleQuickPaste={handleQuickPaste}
-								/>
-							</div>
-						)}
+							<ToolbarSubmitButton
+								isSubmitting={isSubmitting}
+								isUploading={isUploading}
+								uploadProgress={uploadProgress}
+								contentType={contentType}
+								isOptionsOpen={isOptionsOpen}
+								setIsOptionsOpen={setIsOptionsOpen}
+								handleQuickPaste={handleQuickPaste}
+							/>
+						</div>
 					</div>
 				</div>
-
 				<ToolbarAdvancedOptionsPanel
 					isOptionsOpen={isOptionsOpen}
 					setIsOptionsOpen={setIsOptionsOpen}
 					handleCollaborative={handleCollaborative}
-					handleDialogSubmit={handleDialogSubmit}
-					dialogError={dialogError}
 				/>
 			</div>
 		);

@@ -6,7 +6,7 @@ import {
 	lazy,
 	useState,
 } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import type { OnMount, BeforeMount, Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
@@ -48,8 +48,11 @@ import type {
 	SelectionRange,
 	SocketUpdateData,
 } from "@/types";
-import { CONFIG } from "@/configurations";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { ShortenedResultCard } from "@/components/home/shortened-result-card";
+import { CONFIG } from "@/configurations";
+
 const DisplayToolbar = lazy(() =>
 	import("@/components/display/display-toolbar").then((m) => ({
 		default: m.DisplayToolbar,
@@ -85,9 +88,22 @@ const DisplayDialogs = lazy(() =>
 		default: m.DisplayDialogs,
 	})),
 );
-
 const DisplayPage = () => {
 	const { id } = useParams<{ id: string }>();
+	const location = useLocation();
+	const navigate = useNavigate();
+
+	const [showLinkSuccessModal, setShowLinkSuccessModal] = useState(
+		() => location.state?.showLinkSuccessModal || false,
+	);
+
+	useEffect(() => {
+		if (location.state?.showLinkSuccessModal) {
+			const newState = { ...location.state };
+			delete newState.showLinkSuccessModal;
+			navigate(location.pathname, { replace: true, state: newState });
+		}
+	}, [location, navigate]);
 
 	const { theme } = useTheme();
 	const { user } = useAuth();
@@ -859,12 +875,30 @@ const DisplayPage = () => {
 								removedServerFileUrls={removedServerFileUrls}
 								transliteration={transliteration}
 								onEditorInstance={handleTiptapMount}
+								redirectionType={state.redirectionType}
+								setRedirectionType={state.setRedirectionType}
 							/>
 						</Suspense>
 					</div>
 				</div>
 			</div>
 
+			<Dialog
+				open={showLinkSuccessModal}
+				onOpenChange={setShowLinkSuccessModal}
+			>
+				<DialogContent className="max-w-2xl bg-transparent border-none shadow-none p-0 flex justify-center [&>button]:hidden">
+					{paste && (
+						<ShortenedResultCard
+							shortenedResult={{
+								id: paste.id,
+								url: window.location.origin + "/" + paste.id,
+							}}
+							onClose={() => setShowLinkSuccessModal(false)}
+						/>
+					)}
+				</DialogContent>
+			</Dialog>
 			<DisplayDialogs
 				isCustomExpiryDialogOpen={isCustomExpiryDialogOpen}
 				setIsCustomExpiryDialogOpen={setIsCustomExpiryDialogOpen}

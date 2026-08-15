@@ -11,7 +11,13 @@ const DisplayContent = React.lazy(() =>
 		default: m.DisplayContent,
 	})),
 );
-import type { PasteData, ContentMode, ActiveUser, EditorChange } from "@/types";
+import type {
+	PasteData,
+	ContentMode,
+	ActiveUser,
+	EditorChange,
+	RedirectionType,
+} from "@/types";
 import { Socket } from "socket.io-client";
 import type { BeforeMount, OnMount } from "@monaco-editor/react";
 import type { FileUploadStatus } from "@/lib/file-service";
@@ -59,6 +65,8 @@ interface DisplayWorkspaceProps {
 	fileUploadError: string | null;
 	transliteration?: ReturnType<typeof useTransliteration>;
 	onEditorInstance?: (editor: Editor | null) => void;
+	redirectionType?: RedirectionType;
+	setRedirectionType?: (v: RedirectionType) => void;
 }
 
 export const DisplayWorkspace = memo(
@@ -100,6 +108,8 @@ export const DisplayWorkspace = memo(
 		fileUploadError,
 		transliteration,
 		onEditorInstance,
+		redirectionType,
+		setRedirectionType,
 	}: DisplayWorkspaceProps) => {
 		if (!paste) {
 			return <ShimmerSection type="editor" className="flex-1" />;
@@ -154,6 +164,8 @@ export const DisplayWorkspace = memo(
 						fileUploadError={fileUploadError}
 						transliteration={transliteration}
 						onEditorInstance={onEditorInstance}
+						redirectionType={redirectionType}
+						setRedirectionType={setRedirectionType}
 					/>
 				</Suspense>
 			</div>

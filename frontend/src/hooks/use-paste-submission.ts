@@ -29,9 +29,7 @@ interface SubmitOptions {
 	isCollaborative?: boolean;
 }
 
-export const usePasteSubmission = (
-	onShortened?: (result: { id: string; url: string }) => void,
-) => {
+export const usePasteSubmission = () => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
 	const navigate = useNavigate();
@@ -147,18 +145,11 @@ export const usePasteSubmission = (
 				type: "success",
 			});
 
-			if (contentType === "link" && onShortened) {
-				onShortened({
-					id: data.id,
-					url: window.location.origin + "/" + data.id,
-				});
-				return true;
-			}
-
 			navigate("/" + data.id, {
 				state: {
 					pasteData: data,
 					isCollaborative: options.isCollaborative,
+					showLinkSuccessModal: contentType === "link",
 				},
 			});
 			if (!user) {

@@ -102,7 +102,6 @@ interface EditorContentProps {
 	previewUrl?: string | null;
 	isFullscreen: boolean;
 	setIsFullscreen: (val: boolean | ((p: boolean) => boolean)) => void;
-	shortenedResult?: { id: string; url: string } | null;
 	historyItems?: Array<PasteData>;
 	onDeleteHistoryItem?: (id: string) => void;
 	drawRevision?: number;
@@ -124,7 +123,6 @@ export const EditorContent = memo(
 		previewUrl,
 		isFullscreen,
 		setIsFullscreen,
-		shortenedResult,
 		historyItems = [],
 		onDeleteHistoryItem,
 		drawRevision = 0,
@@ -453,7 +451,6 @@ export const EditorContent = memo(
 								<LinkResultView
 									textValue={textValue}
 									setTextValue={setTextValue}
-									shortenedResult={shortenedResult}
 									isHistoryVisible={isHistoryVisible}
 									setIsHistoryVisible={setIsHistoryVisible}
 									linkHistory={linkHistory}

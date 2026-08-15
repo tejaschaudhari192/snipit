@@ -130,10 +130,8 @@ const HomePage = () => {
 		setLanguage,
 		textValue,
 		setTextValue,
-		setPassword,
 		idTypeTab,
 		customId,
-		setCustomId,
 		isSubmitting,
 		isUploading,
 		uploadProgress,
@@ -157,13 +155,15 @@ const HomePage = () => {
 	}, [contentType, t]);
 
 	usePageTitle(undefined, getTitle());
-	const { history, deleteSnippet } = useSnippets();
+	const { history, deleteSnippet, loadHistory } = useSnippets();
 
-	// UI States
-	const [shortenedResult, setShortenedResult] = useState<{
-		id: string;
-		url: string;
-	} | null>(null);
+	useEffect(() => {
+		if (history.items.length === 0) {
+			loadHistory(true);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [isCustomExpiryDialogOpen, setIsCustomExpiryDialogOpen] =
 		useState(false);
@@ -171,7 +171,6 @@ const HomePage = () => {
 		new Date(Date.now() + 24 * 60 * 60 * 1000),
 	);
 	const [isFullscreen, setIsFullscreen] = useState(false);
-	const [dialogError, setDialogError] = useState("");
 	const [drawRevision, setDrawRevision] = useState(0);
 
 	// Refs
@@ -180,7 +179,7 @@ const HomePage = () => {
 	const monacoInstanceRef = useRef<Monaco | null>(null);
 
 	// Custom Hooks
-	const { handleSubmit } = usePasteSubmission(setShortenedResult);
+	const { handleSubmit } = usePasteSubmission();
 	const {
 		fontSize,
 		ref: editorContainerRefSetter,
@@ -311,14 +310,6 @@ const HomePage = () => {
 	});
 
 	useEffect(() => {
-		setShortenedResult(null);
-	}, [contentType, setExpiresTime]);
-
-	useEffect(() => {
-		if (textValue === "" && shortenedResult) setShortenedResult(null);
-	}, [textValue, shortenedResult]);
-
-	useEffect(() => {
 		if (contextPreviewUrl) {
 			setPreviewUrl(contextPreviewUrl);
 		} else {
@@ -388,21 +379,6 @@ const HomePage = () => {
 			toast.add({ title: result as string, type: "error" });
 	};
 
-	const handleDialogSubmit = async () => {
-		setDialogError("");
-		const result = await handleSubmit(
-			idTypeTab,
-			idTypeTab === "dynamic" ? customId.trim() : undefined,
-			{},
-		);
-		if (result === true) {
-			if (idTypeTab === "dynamic") setCustomId("");
-			setPassword("");
-		} else {
-			setDialogError(result as string);
-		}
-	};
-
 	const onEditorMount = useCallback(
 		(editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
 			editorInstanceRef.current = editor;
@@ -433,9 +409,7 @@ const HomePage = () => {
 						isSubmitting={isSubmitting}
 						isUploading={isUploading}
 						uploadProgress={uploadProgress}
-						handleDialogSubmit={handleDialogSubmit}
-						dialogError={dialogError}
-						shortenedResult={shortenedResult}
+						hideTypeSelector={isUploading}
 						isCode={contentType === "code"}
 						language={language}
 						isTerminalOpen={isTerminalOpen}
@@ -634,7 +608,6 @@ const HomePage = () => {
 										resetFileUpload();
 									}}
 									previewUrl={previewUrl}
-									shortenedResult={shortenedResult}
 									historyItems={history.items}
 									onDeleteHistoryItem={deleteSnippet}
 									drawRevision={drawRevision}
