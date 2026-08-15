@@ -1085,6 +1085,10 @@
 			"select_language": "కీబోర్డ్ భాషను ఎంచుకోండి",
 			"tooltip_enable": "ఫోనెటిక్ టైపింగ్‌ను ప్రారంభించండి — ఇంగ్లీష్‌లో టైప్ చేసి {{language}} పొందండి",
 			"tooltip_disable": "ఇంగ్లీష్ ఇన్‌పుట్‌కు తిరిగి మారండి"
+		},
+		"monaco_toggle": {
+			"tooltip_enable": "అధునాతన ఎడిటర్‌కు మారండి (Monaco)",
+			"tooltip_disable": "స్థానిక ఎడిటర్‌కు మారండి"
 		}
 	},
 	"ai_dialog": {

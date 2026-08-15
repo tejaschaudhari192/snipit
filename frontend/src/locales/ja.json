@@ -1085,6 +1085,10 @@
 			"select_language": "キーボード言語を選択",
 			"tooltip_enable": "フォニック入力を有効にする — 英語で入力して{{language}}に変換",
 			"tooltip_disable": "英語入力に戻す"
+		},
+		"monaco_toggle": {
+			"tooltip_enable": "高度なエディタに切り替える (Monaco)",
+			"tooltip_disable": "ネイティブエディタに切り替える"
 		}
 	},
 	"ai_dialog": {

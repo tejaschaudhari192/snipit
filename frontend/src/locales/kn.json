@@ -1085,6 +1085,10 @@
 			"select_language": "ಕೀಬೋರ್ಡ್ ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
 			"tooltip_enable": "ಫೋನೆಟಿಕ್ ಟೈಪಿಂಗ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ — ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿ ಟೈಪ್ ಮಾಡಿ, {{language}} ಪಡೆಯಿರಿ",
 			"tooltip_disable": "ಇಂಗ್ಲಿಷ್ ಇನ್‌ಪುಟ್‌ಗೆ ಹಿಂತಿರುಗಿ"
+		},
+		"monaco_toggle": {
+			"tooltip_enable": "ಸುಧಾರಿತ ಸಂಪಾದಕಕ್ಕೆ ಬದಲಿಸಿ (Monaco)",
+			"tooltip_disable": "ಮೂಲ ಸಂಪಾದಕಕ್ಕೆ ಬದಲಿಸಿ"
 		}
 	},
 	"ai_dialog": {

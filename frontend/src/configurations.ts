@@ -46,6 +46,7 @@ export const CONFIG = {
 		musicCurrentIndex: "snipit-music-current-index",
 		musicPlaytime: "snipit-music-playtime",
 		autosave: "snipit-autosave",
+		plaintextEditorMode: "snipit-plaintext-editor-mode",
 	},
 
 	// Default Values

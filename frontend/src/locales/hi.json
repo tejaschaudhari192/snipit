@@ -1085,6 +1085,10 @@
 			"select_language": "कीबोर्ड भाषा चुनें",
 			"tooltip_enable": "ध्वन्यात्मक टाइपिंग सक्षम करें — अंग्रेजी में टाइप करें, {{language}} प्राप्त करें",
 			"tooltip_disable": "अंग्रेजी इनपुट पर वापस जाएँ"
+		},
+		"monaco_toggle": {
+			"tooltip_enable": "उन्नत संपादक पर जाएँ (Monaco)",
+			"tooltip_disable": "मूल संपादक पर जाएँ"
 		}
 	},
 	"ai_dialog": {

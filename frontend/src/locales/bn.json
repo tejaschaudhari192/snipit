@@ -1085,6 +1085,10 @@
 			"select_language": "কীবোর্ড ভাষা বেছে নিন",
 			"tooltip_enable": "ফোনেটিক টাইপিং চালু করুন — ইংরেজিতে টাইপ করুন, {{language}} পান",
 			"tooltip_disable": "ইংরেজি ইনপুটে ফিরে যান"
+		},
+		"monaco_toggle": {
+			"tooltip_enable": "উন্নত সম্পাদকে যান (Monaco)",
+			"tooltip_disable": "নেটিভ সম্পাদকে যান"
 		}
 	},
 	"ai_dialog": {

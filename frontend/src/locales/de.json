@@ -1085,7 +1085,11 @@
 			"tooltip_enable": "Phonetisches Tippen aktivieren — auf Englisch tippen, {{language}} erhalten",
 			"tooltip_disable": "Zurück zur englischen Eingabe wechseln"
 		},
-		"code": "Code"
+		"code": "Code",
+		"monaco_toggle": {
+			"tooltip_enable": "Zum erweiterten Editor wechseln (Monaco)",
+			"tooltip_disable": "Zum nativen Editor wechseln"
+		}
 	},
 	"ai_dialog": {
 		"title": "AI-Bearbeitungsassistent",

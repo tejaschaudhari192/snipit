@@ -97,6 +97,11 @@ const AiWriterDialog = lazy(() =>
 		default: m.AiWriterDialog,
 	})),
 );
+const MonacoPlaintextToggle = lazy(() =>
+	import("@/components/editor/monaco-plaintext-toggle").then((m) => ({
+		default: m.MonacoPlaintextToggle,
+	})),
+);
 
 // New Lazy Buttons
 const AiDrawButton = lazy(() =>
@@ -235,6 +240,14 @@ const HomePage = () => {
 	const [isAiAutocompleteEnabled, setIsAiAutocompleteEnabled] = useState(() =>
 		storage.get(CONFIG.storageKeys.aiAutocomplete, false),
 	);
+
+	const [isMonacoPlaintext, setIsMonacoPlaintext] = useState<boolean>(() =>
+		storage.get(CONFIG.storageKeys.plaintextEditorMode, false),
+	);
+
+	useEffect(() => {
+		storage.set(CONFIG.storageKeys.plaintextEditorMode, isMonacoPlaintext);
+	}, [isMonacoPlaintext]);
 
 	const { setupAutocomplete } = useAiAutocomplete({
 		language,
@@ -536,6 +549,13 @@ const HomePage = () => {
 										onToggle={setIsAiAutocompleteEnabled}
 									/>
 
+									{contentType === "text" && (
+										<MonacoPlaintextToggle
+											enabled={isMonacoPlaintext}
+											onToggle={setIsMonacoPlaintext}
+										/>
+									)}
+
 									<div className="w-px h-6 bg-border/40 mx-1" />
 
 									{["text", "docs", "code"].includes(
@@ -620,6 +640,7 @@ const HomePage = () => {
 									drawRevision={drawRevision}
 									transliteration={transliteration}
 									onEditorInstance={handleTiptapMount}
+									isMonacoPlaintext={isMonacoPlaintext}
 								/>
 							</Suspense>
 						</div>

@@ -1085,6 +1085,10 @@
 			"select_language": "ਕੀਬੋਰਡ ਭਾਸ਼ਾ ਚੁਣੋ",
 			"tooltip_enable": "ਫੋਨੇਟਿਕ ਟਾਈਪਿੰਗ ਚਾਲੂ ਕਰੋ — ਅੰਗਰੇਜ਼ੀ ਵਿੱਚ ਟਾਈਪ ਕਰੋ, {{language}} ਪ੍ਰਾਪਤ ਕਰੋ",
 			"tooltip_disable": "ਅੰਗਰੇਜ਼ੀ ਇਨਪੁਟ 'ਤੇ ਵਾਪਸ ਜਾਓ"
+		},
+		"monaco_toggle": {
+			"tooltip_enable": "ਐਡਵਾਂਸਡ ਸੰਪਾਦਕ 'ਤੇ ਜਾਓ (Monaco)",
+			"tooltip_disable": "ਮੂਲ ਸੰਪਾਦਕ 'ਤੇ ਜਾਓ"
 		}
 	},
 	"ai_dialog": {

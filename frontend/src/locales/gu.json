@@ -1085,6 +1085,10 @@
 			"select_language": "કીબોર્ડ ભાષા પસંદ કરો",
 			"tooltip_enable": "ફોનેટિક ટાઈપિંગ સક્ષમ કરો — અંગ્રેજીમાં ટાઇપ કરો, {{language}} મેળવો",
 			"tooltip_disable": "અંગ્રેજી ઇનપુટ પર પાછા જાઓ"
+		},
+		"monaco_toggle": {
+			"tooltip_enable": "અદ્યતન સંપાદક પર સ્વિચ કરો (Monaco)",
+			"tooltip_disable": "મૂળ સંપાદક પર સ્વિચ કરો"
 		}
 	},
 	"ai_dialog": {

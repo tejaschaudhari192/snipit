@@ -1085,6 +1085,10 @@
 			"select_language": "कीबोर्ड भाषा निवडा",
 			"tooltip_enable": "फोनेटिक टायपिंग सक्षम करा — इंग्रजीत टाईप करा, {{language}} मिळवा",
 			"tooltip_disable": "इंग्रजी इनपुटवर परत जा"
+		},
+		"monaco_toggle": {
+			"tooltip_enable": "प्रगत संपादकावर जा (Monaco)",
+			"tooltip_disable": "मूळ संपादकावर जा"
 		}
 	},
 	"ai_dialog": {

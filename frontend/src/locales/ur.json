@@ -1085,6 +1085,10 @@
 			"select_language": "کیبورڈ زبان منتخب کریں",
 			"tooltip_enable": "فونیٹک ٹائپنگ فعال کریں — انگریزی میں ٹائپ کریں، {{language}} حاصل کریں",
 			"tooltip_disable": "انگریزی ان پٹ پر واپس جائیں"
+		},
+		"monaco_toggle": {
+			"tooltip_enable": "ایڈوانسڈ ایڈیٹر پر جائیں (Monaco)",
+			"tooltip_disable": "آبائی ایڈیٹر پر جائیں"
 		}
 	},
 	"ai_dialog": {
