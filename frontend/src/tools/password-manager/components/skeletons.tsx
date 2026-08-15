@@ -1,4 +1,19 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { Loader2 } from "lucide-react";
+
+export function InitialLoader() {
+	return (
+		<div className="h-full w-full bg-background flex flex-col items-center justify-center space-y-6 animate-in fade-in duration-500">
+			<div className="flex flex-col items-center gap-4">
+				<Loader2 className="w-10 h-10 text-primary animate-spin" />
+				<div className="space-y-2 flex flex-col items-center opacity-50">
+					<Skeleton className="h-4 w-32" />
+					<Skeleton className="h-3 w-48" />
+				</div>
+			</div>
+		</div>
+	);
+}
 
 export function AppSkeleton() {
 	return (

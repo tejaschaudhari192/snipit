@@ -18,10 +18,10 @@ const MobileSidebarDrawer = React.lazy(
 const SharingCenter = React.lazy(() => import("./components/sharing-center"));
 const ImportWizard = React.lazy(() => import("./components/import-wizard"));
 import {
-	AppSkeleton,
 	SidebarSkeleton,
 	ListSkeleton,
 	DetailSkeleton,
+	InitialLoader,
 } from "./components/skeletons";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
@@ -98,14 +98,14 @@ function PasswordManagerInner() {
 	}, [user?._id, dispatch]);
 
 	if (hasExistingVault === null || cloudVaultStatus === "checking") {
-		return <AppSkeleton />;
+		return <InitialLoader />;
 	}
 
 	if (!isUnlocked || recoveryMode) {
 		if (!hasExistingVault && !recoveryMode) {
 			if (cloudVaultStatus === "found") {
 				return (
-					<Suspense fallback={<AppSkeleton />}>
+					<Suspense fallback={<InitialLoader />}>
 						<CloudVaultDetected
 							onEnableSync={() => {
 								dispatch(enableCloudSync());
@@ -119,7 +119,7 @@ function PasswordManagerInner() {
 			}
 
 			return (
-				<Suspense fallback={<AppSkeleton />}>
+				<Suspense fallback={<InitialLoader />}>
 					<VaultOnboarding
 						onComplete={(password: string) =>
 							dispatch(createVault(password))
@@ -137,7 +137,7 @@ function PasswordManagerInner() {
 			);
 		}
 		return (
-			<Suspense fallback={<AppSkeleton />}>
+			<Suspense fallback={<InitialLoader />}>
 				<VaultUnlock
 					onUnlock={(password: string) =>
 						dispatch(unlockVault(password))
