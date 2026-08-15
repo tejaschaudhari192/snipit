@@ -262,6 +262,7 @@ export default function PasswordGenerator({
 									max={10}
 									step={1}
 									className="w-32"
+									style={{ touchAction: "none" }}
 								/>
 								<span className="w-4 text-right text-sm">
 									{wordCount}
@@ -287,6 +288,7 @@ export default function PasswordGenerator({
 									max={64}
 									step={1}
 									className="w-32"
+									style={{ touchAction: "none" }}
 								/>
 								<span className="w-4 text-right text-sm">
 									{length}
