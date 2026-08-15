@@ -14,7 +14,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/utils";
 import { FolderPlus, Pencil, Trash2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import { PRESET_COLORS } from "@/tools/password-manager/utils/constants";
+import {
+	PRESET_COLORS,
+	FOLDER_ICONS,
+} from "@/tools/password-manager/utils/constants";
 
 export type FolderModalMode = "create" | "edit" | "delete";
 
@@ -24,7 +27,8 @@ interface FolderModalProps {
 	mode: FolderModalMode;
 	initialFolderName: string;
 	initialFolderColor: string;
-	onSave: (name: string, color: string) => void;
+	initialFolderIcon?: string;
+	onSave: (name: string, color: string, iconName: string) => void;
 	onDelete: (deletePasswords: boolean) => void;
 }
 
@@ -34,28 +38,31 @@ export function FolderModal({
 	mode,
 	initialFolderName,
 	initialFolderColor,
+	initialFolderIcon = "folder",
 	onSave,
 	onDelete,
 }: FolderModalProps) {
 	const { t } = useTranslation();
 	const [folderName, setFolderName] = useState(initialFolderName);
 	const [folderColor, setFolderColor] = useState(initialFolderColor);
+	const [folderIcon, setFolderIcon] = useState(initialFolderIcon);
 	const [deletePasswords, setDeletePasswords] = useState(false);
 
 	useEffect(() => {
 		if (open) {
 			setFolderName(initialFolderName);
 			setFolderColor(initialFolderColor);
+			setFolderIcon(initialFolderIcon);
 			setDeletePasswords(false);
 		}
-	}, [open, initialFolderName, initialFolderColor]);
+	}, [open, initialFolderName, initialFolderColor, initialFolderIcon]);
 
 	const handleSave = () => {
 		if (mode === "delete") {
 			onDelete(deletePasswords);
 		} else {
 			if (!folderName.trim()) return;
-			onSave(folderName, folderColor);
+			onSave(folderName, folderColor, folderIcon);
 		}
 	};
 
@@ -86,14 +93,18 @@ export function FolderModal({
 						<DialogTitle className="text-xl">
 							{mode === "create" &&
 								t("tools.password_manager.add_folder")}
-							{mode === "edit" && "Edit Folder"}
-							{mode === "delete" && "Delete Folder"}
+							{mode === "edit" &&
+								t("tools.password_manager.edit_folder")}
+							{mode === "delete" &&
+								t("tools.password_manager.delete_folder")}
 						</DialogTitle>
 					</div>
 					{mode === "delete" && (
 						<div className="space-y-4">
 							<DialogDescription>
-								Are you sure you want to delete the folder{" "}
+								{t(
+									"tools.password_manager.delete_folder_confirm",
+								)}{" "}
 								<span className="font-medium text-foreground">
 									"{folderName}"
 								</span>
@@ -114,10 +125,14 @@ export function FolderModal({
 										htmlFor="delete-passwords"
 										className="text-sm font-medium cursor-pointer"
 									>
-										Delete all passwords inside this folder
+										{t(
+											"tools.password_manager.delete_passwords_inside",
+										)}
 									</Label>
 									<p className="text-xs text-muted-foreground">
-										This action cannot be undone.
+										{t(
+											"tools.password_manager.action_cannot_be_undone",
+										)}
 									</p>
 								</div>
 							</div>
@@ -129,7 +144,7 @@ export function FolderModal({
 					<div className="flex flex-col gap-5 py-2">
 						<div className="space-y-2">
 							<Label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-								Folder Name
+								{t("tools.password_manager.folder_name")}
 							</Label>
 							<Input
 								autoFocus
@@ -147,7 +162,7 @@ export function FolderModal({
 
 						<div className="space-y-3">
 							<Label className="text-sm font-medium leading-none">
-								Folder Color
+								{t("tools.password_manager.folder_color")}
 							</Label>
 							<div className="flex flex-wrap gap-3">
 								{PRESET_COLORS.map((color) => (
@@ -202,6 +217,33 @@ export function FolderModal({
 										title="Custom color"
 									/>
 								</div>
+							</div>
+						</div>
+						<div className="space-y-3">
+							<Label className="text-sm font-medium leading-none">
+								{t("tools.password_manager.folder_icon")}
+							</Label>
+							<div className="flex flex-wrap gap-2">
+								{FOLDER_ICONS.map((iconOpt) => (
+									<Button
+										key={iconOpt.id}
+										type="button"
+										variant="outline"
+										size="icon"
+										onClick={() =>
+											setFolderIcon(iconOpt.id)
+										}
+										className={cn(
+											"w-9 h-9 transition-all text-muted-foreground",
+											folderIcon === iconOpt.id
+												? "border-primary bg-primary/10 text-primary shadow-sm"
+												: "hover:bg-muted",
+										)}
+										title={iconOpt.label}
+									>
+										<iconOpt.icon className="w-5 h-5" />
+									</Button>
+								))}
 							</div>
 						</div>
 					</div>

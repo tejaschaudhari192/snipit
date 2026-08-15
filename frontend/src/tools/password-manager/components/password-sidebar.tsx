@@ -47,6 +47,7 @@ export default function PasswordSidebar() {
 	const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
 	const [folderName, setFolderName] = useState("");
 	const [folderColor, setFolderColor] = useState(UI_DEFAULTS.FOLDER_COLOR);
+	const [folderIcon, setFolderIcon] = useState("folder");
 	const [shareModalOpen, setShareModalOpen] = useState(false);
 
 	const folders = useAppSelector(selectMergedFolders) || [];
@@ -56,6 +57,7 @@ export default function PasswordSidebar() {
 	const handleSaveFolder = (
 		name: string,
 		color: string,
+		iconName: string,
 		deletePasswordsInside = false,
 	) => {
 		if (folderModalMode === "delete") {
@@ -66,9 +68,9 @@ export default function PasswordSidebar() {
 		}
 
 		if (folderModalMode === "create") {
-			createFolder(name, color);
+			createFolder(name, color, iconName);
 		} else if (folderModalMode === "edit" && activeFolderId) {
-			editFolder(activeFolderId, name, color);
+			editFolder(activeFolderId, name, color, iconName);
 		}
 
 		setFolderModalOpen(false);
@@ -111,7 +113,7 @@ export default function PasswordSidebar() {
 
 				<SidebarGroup>
 					<SidebarGroupContent>
-						<ScrollArea className="h-35 pr-3 scroll-fade">
+						<ScrollArea className="h-35 pr-3 fade-y">
 							<SidebarMenu>
 								{ITEM_TYPE_OPTIONS.map((item) => (
 									<SidebarMenuItem key={item.id}>
@@ -144,13 +146,15 @@ export default function PasswordSidebar() {
 						setFolderModalMode("create");
 						setFolderName("");
 						setFolderColor(UI_DEFAULTS.FOLDER_COLOR);
+						setFolderIcon("folder");
 						setFolderModalOpen(true);
 					}}
-					onEditFolder={(id, name, color) => {
+					onEditFolder={(id, name, color, iconName) => {
 						setFolderModalMode("edit");
 						setActiveFolderId(id);
 						setFolderName(name);
 						setFolderColor(color || UI_DEFAULTS.FOLDER_COLOR);
+						setFolderIcon(iconName || "folder");
 						setFolderModalOpen(true);
 					}}
 					onDeleteFolder={(id, name) => {
@@ -184,9 +188,10 @@ export default function PasswordSidebar() {
 				mode={folderModalMode}
 				initialFolderName={folderName}
 				initialFolderColor={folderColor}
+				initialFolderIcon={folderIcon}
 				onSave={handleSaveFolder}
 				onDelete={(deletePasswords) =>
-					handleSaveFolder("", "", deletePasswords)
+					handleSaveFolder("", "", "", deletePasswords)
 				}
 			/>
 			{activeFolderId && (

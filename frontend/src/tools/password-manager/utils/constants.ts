@@ -8,6 +8,19 @@ import {
 	FileCode,
 	StickyNote,
 	Users,
+	FolderIcon,
+	Gamepad2,
+	Briefcase,
+	Book,
+	Building,
+	Heart,
+	Camera,
+	Globe,
+	Music,
+	GraduationCap,
+	Plane,
+	Code,
+	Landmark,
 } from "lucide-react";
 import type { CustomField } from "../types";
 
@@ -20,6 +33,22 @@ export const SIDEBAR_NAV_ITEMS = [
 		label: "tools.password_manager.sharing_center_title",
 		id: "sharing",
 	},
+];
+
+export const FOLDER_ICONS = [
+	{ id: "folder", icon: FolderIcon, label: "Folder" },
+	{ id: "briefcase", icon: Briefcase, label: "Work" },
+	{ id: "gamepad", icon: Gamepad2, label: "Entertainment" },
+	{ id: "book", icon: Book, label: "Study" },
+	{ id: "building", icon: Building, label: "Business" },
+	{ id: "heart", icon: Heart, label: "Social" },
+	{ id: "camera", icon: Camera, label: "Media" },
+	{ id: "globe", icon: Globe, label: "Travel" },
+	{ id: "music", icon: Music, label: "Music" },
+	{ id: "graduation", icon: GraduationCap, label: "Education" },
+	{ id: "plane", icon: Plane, label: "Vacation" },
+	{ id: "code", icon: Code, label: "Code" },
+	{ id: "government", icon: Landmark, label: "Government" },
 ];
 
 export const ITEM_TYPE_OPTIONS = [

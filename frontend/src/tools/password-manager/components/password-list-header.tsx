@@ -153,7 +153,7 @@ export function PasswordListHeader({
 						onClick={onNewItem}
 						disabled={hasSelection}
 					>
-						<span className="mr-1">+</span>{" "}
+						<span className="text-lg">+</span>{" "}
 						<span className="hidden sm:inline">
 							{t("tools.password_manager.new_item")}
 						</span>

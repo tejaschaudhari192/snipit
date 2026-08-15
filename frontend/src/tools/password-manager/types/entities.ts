@@ -45,6 +45,7 @@ export interface Folder {
 	id: string;
 	name: string;
 	color: string;
+	iconName?: string;
 	collectionId?: string;
 	isVirtual?: boolean;
 	createdAt?: string;

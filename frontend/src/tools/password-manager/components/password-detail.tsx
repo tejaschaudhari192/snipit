@@ -33,12 +33,11 @@ import {
 import {
 	isOlderThan3Months,
 	formatDate,
-	getBrandColor,
 } from "@/tools/password-manager/utils/formatters";
 import { getFieldsForType } from "@/tools/password-manager/utils/item-types";
 import { ITEM_TYPE_OPTIONS } from "@/tools/password-manager/utils/constants";
-import { getFaviconUrl } from "@/tools/password-manager/utils/favicon";
 import type { PasswordItem } from "@/tools/password-manager/types";
+import { ItemAvatar } from "./item-avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SchemaFieldRenderer } from "./detail-fields/schema-field-renderer";
 import { CustomFieldRenderer } from "./detail-fields/custom-field-renderer";
@@ -62,36 +61,6 @@ interface PasswordDetailProps {
 	item: PasswordItem | null | undefined;
 	isNew: boolean;
 	onSave: (item: PasswordItem) => void;
-}
-
-function DetailAvatar({ item }: { item: PasswordItem }) {
-	const faviconUrl = getFaviconUrl(
-		item.url || item.metadata?.url || item.metadata?.website,
-	);
-	const [imgError, setImgError] = useState(false);
-
-	if (faviconUrl && !imgError) {
-		return (
-			<div className="w-20 h-20 rounded-2xl border border-border/50 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-lg ring-1 ring-black/5 dark:ring-white/10 relative">
-				<img
-					src={faviconUrl}
-					alt=""
-					className="w-16 h-16 object-contain relative z-10"
-					onError={() => setImgError(true)}
-				/>
-			</div>
-		);
-	}
-
-	return (
-		<div
-			className={`w-20 h-20 rounded-2xl flex items-center justify-center shrink-0 shadow-lg ring-1 ring-black/5 dark:ring-white/10 relative overflow-hidden ${getBrandColor(item.title)}`}
-		>
-			<span className="text-white text-3xl font-black tracking-tight drop-shadow-md relative z-10">
-				{item.title ? item.title.substring(0, 2).toUpperCase() : "?"}
-			</span>
-		</div>
-	);
 }
 
 export default function PasswordDetail({
@@ -131,7 +100,7 @@ export default function PasswordDetail({
 							: t("tools.password_manager.add")}
 					</Button>
 				</div>
-				<div className="flex-1 overflow-y-auto no-scrollbar scroll-fade-b">
+				<div className="flex-1 overflow-y-auto no-scrollbar fade-bottom">
 					<Suspense
 						fallback={
 							<div className="p-5 space-y-5 animate-pulse">
@@ -356,11 +325,18 @@ export default function PasswordDetail({
 					</div>
 				</div>
 
-				<div className="flex-1 overflow-y-auto no-scrollbar scroll-fade-b">
+				<div className="flex-1 overflow-y-auto no-scrollbar fade-bottom">
 					{/* Title & Subtitle */}
 					<div className="px-8 pt-10 pb-6 relative overflow-hidden border-b border-border/20">
 						<div className="flex items-center gap-6 relative z-10">
-							<DetailAvatar item={item} />
+							<ItemAvatar
+								item={item}
+								className="w-20 h-20 rounded-2xl border border-border/50 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-lg ring-1 ring-black/5 dark:ring-white/10 relative"
+								imgClassName="w-16 h-16 object-contain relative z-10"
+								fallbackClassName="w-20 h-20 rounded-2xl shadow-lg ring-1 ring-black/5 dark:ring-white/10"
+								fallbackTextClassName="text-white text-3xl font-black tracking-tight drop-shadow-md"
+								useTwoLetters={true}
+							/>
 							<div className="min-w-0 flex-1">
 								<h2 className="text-3xl font-extrabold tracking-tight flex items-center gap-2 mb-2.5 text-foreground/90">
 									<span className="truncate drop-shadow-sm">

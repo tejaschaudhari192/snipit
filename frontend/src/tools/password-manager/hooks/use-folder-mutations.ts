@@ -13,12 +13,13 @@ export function useFolderMutations() {
 	const vault = useAppSelector(selectVault);
 
 	const createFolder = useCallback(
-		(name: string, color: string) => {
+		(name: string, color: string, iconName?: string) => {
 			if (!name.trim() || !vault) return;
 			const newFolder: Folder = {
 				id: crypto.randomUUID(),
 				name: name.trim(),
 				color,
+				iconName,
 				createdAt: new Date().toISOString(),
 				updatedAt: new Date().toISOString(),
 			};
@@ -41,7 +42,7 @@ export function useFolderMutations() {
 	);
 
 	const editFolder = useCallback(
-		(id: string, name: string, color: string) => {
+		(id: string, name: string, color: string, iconName?: string) => {
 			if (!name.trim() || !vault) return;
 			const newFolders = (vault.folders || []).map((f: Folder) =>
 				f.id === id
@@ -49,6 +50,7 @@ export function useFolderMutations() {
 							...f,
 							name: name.trim(),
 							color,
+							iconName,
 							updatedAt: new Date().toISOString(),
 						}
 					: f,
