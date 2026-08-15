@@ -94,7 +94,7 @@ export const TransliterationToggle = memo(
 
 				{enabled && (
 					<Select
-						value={language}
+						value={selectedLangObj ? language : undefined}
 						onValueChange={(val) => {
 							if (val) onLanguageChange(val);
 						}}

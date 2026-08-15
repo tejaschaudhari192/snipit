@@ -35,8 +35,13 @@ export const LanguageSwitcher = ({ className }: LanguageSwitcherProps) => {
 		localStore.setItem("lang", value);
 	};
 
+	const isValidLanguage = UI_LANGUAGES.some((l) => l.value === language);
+
 	return (
-		<Select onValueChange={handleLanguageChange} value={language}>
+		<Select
+			onValueChange={handleLanguageChange}
+			value={isValidLanguage ? language : undefined}
+		>
 			<SelectTrigger className={className}>
 				<span data-slot="select-value">
 					{UI_LANGUAGES.find((l) => l.value === language)?.label ||

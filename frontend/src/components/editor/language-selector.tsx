@@ -57,9 +57,11 @@ export const LanguageSelector = memo(
 			);
 		}
 
+		const isValidLanguage = LANGUAGES.some((l) => l.value === value);
+
 		return (
 			<Select
-				value={value}
+				value={isValidLanguage ? value : undefined}
 				onValueChange={(val) => {
 					if (val) onValueChange(val);
 				}}
