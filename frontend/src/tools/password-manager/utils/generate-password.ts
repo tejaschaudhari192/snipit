@@ -3,6 +3,8 @@
  * Replaces generate-password-ts to avoid Node crypto module imports.
  */
 
+import { PASSWORD_CHARS } from "./constants";
+
 export interface GenerateOptions {
 	length?: number;
 	numbers?: boolean;
@@ -22,22 +24,18 @@ export function generatePassword(options: GenerateOptions = {}): string {
 		strict = true,
 	} = options;
 
-	const chars = {
-		lowercase: "abcdefghijklmnopqrstuvwxyz",
-		uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-		numbers: "0123456789",
-		symbols: "!@#$%^&*()_+-=[]{}|;:,.<>?",
-	};
-
 	let pool = "";
-	if (uppercase) pool += chars.uppercase;
-	if (numbers) pool += chars.numbers;
-	if (lowercase) pool += chars.lowercase;
-	if (symbols) pool += chars.symbols;
+	if (uppercase) pool += PASSWORD_CHARS.uppercase;
+	if (numbers) pool += PASSWORD_CHARS.numbers;
+	if (lowercase) pool += PASSWORD_CHARS.lowercase;
+	if (symbols) pool += PASSWORD_CHARS.symbols;
 
 	if (strict && pool.length === 0) {
 		pool =
-			chars.lowercase + chars.uppercase + chars.numbers + chars.symbols;
+			PASSWORD_CHARS.lowercase +
+			PASSWORD_CHARS.uppercase +
+			PASSWORD_CHARS.numbers +
+			PASSWORD_CHARS.symbols;
 	}
 
 	const array = new Uint32Array(length);

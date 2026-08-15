@@ -93,3 +93,10 @@ export const PRESET_COLORS = [
 	"#ec4899", // pink
 	"#71717a", // gray
 ];
+
+export const PASSWORD_CHARS = {
+	lowercase: "abcdefghijklmnopqrstuvwxyz",
+	uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+	numbers: "0123456789",
+	symbols: "!@#$%^&*()_+-=[]{}|;:,.<>?",
+};
