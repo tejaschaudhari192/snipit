@@ -35,7 +35,7 @@ const EncryptSafePage = () => {
 					onValueChange={(v) =>
 						setActiveTab(v as "encrypt" | "decrypt")
 					}
-					className="w-full"
+					className="w-full flex-col"
 				>
 					<TabsList className="grid grid-cols-2 w-full mb-8 bg-muted/50 p-1 rounded-xl h-auto">
 						<TabsTrigger

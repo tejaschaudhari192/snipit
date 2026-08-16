@@ -773,5 +773,5 @@ body.is-404 .action-url-bar {
 }
 
 .tab-text-short {
-	@apply inline min-[440px]:hidden whitespace-nowrap;
+	@apply min-[440px]:hidden whitespace-nowrap;
 }

@@ -75,7 +75,7 @@ export const MainToolbar = memo(
 					{/* Left: Type Selector */}
 					<div
 						ref={leftRef}
-						className="min-h-fit order-1 w-full sm:w-auto max-w-full overflow-x-auto overflow-y-hidden scrollbar-none"
+						className="min-h-fit order-1 w-full sm:w-auto max-w-full"
 					>
 						{!hideTypeSelector && (
 							<ContentTypeSelector

@@ -42,32 +42,35 @@ export const IdTypeTabs = ({
 		<Tabs
 			value={idTypeTab}
 			onValueChange={(v) => !disabled && setIdTypeTab(v as IdTypeTab)}
-			className="w-full"
+			className="w-full flex-col"
 		>
-			<TabsList className="grid w-full grid-cols-3 h-9 mb-4">
+			<TabsList className="flex w-full items-center justify-between h-9 mb-4 p-1 gap-1">
 				<TabsTrigger
 					value="system"
-					className="text-xs"
+					className="flex-1 px-1.5 py-1 text-xs gap-1.5 min-w-0"
 					disabled={disabled}
+					title={t("home.id_generation.automatic")}
 				>
-					<Fingerprint className="h-3.5 w-3.5 mr-2" />
-					{t("home.id_generation.automatic")}
+					<Fingerprint className="h-3.5 w-3.5 shrink-0" />
+					<span className="truncate">{compact ? "Auto" : t("home.id_generation.automatic")}</span>
 				</TabsTrigger>
 				<TabsTrigger
 					value="dynamic"
-					className="text-xs"
+					className="flex-1 px-1.5 py-1 text-xs gap-1.5 min-w-0"
 					disabled={disabled}
+					title={t("home.id_generation.custom")}
 				>
-					<Wand2 className="h-3.5 w-3.5 mr-2" />
-					{t("home.id_generation.custom")}
+					<Wand2 className="h-3.5 w-3.5 shrink-0" />
+					<span className="truncate">{compact ? "Custom" : t("home.id_generation.custom")}</span>
 				</TabsTrigger>
 				<TabsTrigger
 					value="semantic"
-					className="text-xs"
+					className="flex-1 px-1.5 py-1 text-xs gap-1.5 min-w-0"
 					disabled={disabled}
+					title={t("home.id_generation.semantic_tab")}
 				>
-					<Hash className="h-3.5 w-3.5 mr-2" />
-					{t("home.id_generation.semantic_tab")}
+					<Hash className="h-3.5 w-3.5 shrink-0" />
+					<span className="truncate">{compact ? "Words" : t("home.id_generation.semantic_tab")}</span>
 				</TabsTrigger>
 			</TabsList>
 

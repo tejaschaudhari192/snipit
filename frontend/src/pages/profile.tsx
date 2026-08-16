@@ -314,7 +314,7 @@ const ProfilePage = () => {
 							<Tabs
 								value={activeTab}
 								onValueChange={setActiveTab}
-								className="w-full"
+								className="w-full flex-col"
 							>
 								<TabsList className="mb-4 mx-2">
 									<TabsTrigger

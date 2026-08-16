@@ -143,7 +143,7 @@ export default function CinemaPage() {
 					</div>
 				</div>
 
-				<Tabs defaultValue="create" className="w-full">
+				<Tabs defaultValue="create" className="w-full flex-col">
 					<TabsList className="grid w-full grid-cols-2 bg-muted border border-border p-1 rounded-2xl mb-6">
 						<TabsTrigger
 							value="create"

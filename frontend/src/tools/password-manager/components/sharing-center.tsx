@@ -107,7 +107,7 @@ export default function SharingCenter() {
 			<Tabs
 				value={activeTab}
 				onValueChange={setActiveTab}
-				className="w-full"
+				className="w-full flex-col"
 			>
 				<TabsList className="bg-muted border border-border w-full justify-start p-1 rounded-lg">
 					<TabsTrigger
