@@ -172,6 +172,8 @@ const DisplayPage = () => {
 		_setLanguage,
 		removedServerFileUrls,
 		removeServerFile,
+		folderId,
+		setFolderId,
 	} = state;
 
 	const transliteration = useTransliteration();
@@ -758,6 +760,8 @@ const DisplayPage = () => {
 											setIsPasswordEnabled={
 												setIsPasswordEnabled
 											}
+											folderId={folderId}
+											setFolderId={setFolderId}
 											editPermission={editPermission}
 											setEditPermission={
 												setEditPermission

@@ -4,14 +4,15 @@ import { useAuth } from "@/context/AuthContext";
 import { updateMe } from "@/lib/api/auth";
 import { toast } from "@/components/ui/toast";
 import { Link } from "react-router-dom";
-import { User, Tag, Bookmark, FilterX } from "lucide-react";
+import { User, Tag, FilterX } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLabels } from "@/hooks/use-labels";
-
+import { FolderTree } from "@/components/profile/folder-tree";
+import { ProfileFileManager } from "@/components/profile/profile-file-manager";
 import { useSnippets } from "@/context/SnippetContext";
+import { useFolders } from "@/context/FolderContext";
 import { usePageTitle } from "@/hooks/use-page-title";
 import type { User as UserType } from "@/types";
 
@@ -35,13 +36,13 @@ const ProfilePage = () => {
 	const { t } = useTranslation();
 	usePageTitle("profile.title");
 	const { user, loading: authLoading, setUser } = useAuth();
+	const { activeFolderId, currentFolderContents, loadingContents } =
+		useFolders();
 
 	const {
 		profile,
-		savedProfile,
 		filteredPastes,
 		loadProfile,
-		loadSavedProfile,
 		loadFilteredPastes,
 		clearFilter,
 		stats,
@@ -57,35 +58,24 @@ const ProfilePage = () => {
 		isLoadingMore,
 	} = profile;
 
-	const { items: savedPastes, loading: loadingSaved } = savedProfile;
-
 	const [isEditingName, setIsEditingName] = useState(false);
 	const [newName, setNewName] = useState("");
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 	const [activeLabel, setActiveLabel] = useState<string | null>(null);
-	const [activeTab, setActiveTab] = useState("owned");
 	const [searchQuery, setSearchQuery] = useState("");
+	const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
 	useEffect(() => {
 		if (user) {
 			setNewName(user.username);
 			if (pastes.length === 0) loadProfile(true);
-			if (savedPastes.length === 0) loadSavedProfile(true);
 			loadStats();
 		} else {
 			setNewName("Guest");
 			if (pastes.length === 0) loadProfile(true);
-			if (savedPastes.length === 0) loadSavedProfile(true);
 		}
-	}, [
-		user,
-		loadProfile,
-		loadSavedProfile,
-		loadStats,
-		pastes.length,
-		savedPastes.length,
-	]);
+	}, [user, loadProfile, loadStats, pastes.length]);
 
 	const handleLabelClick = (label: string) => {
 		if (activeLabel === label) {
@@ -128,13 +118,12 @@ const ProfilePage = () => {
 
 	if (authLoading) {
 		return (
-			<div className="container mx-auto px-4 py-12 max-w-7xl animate-in fade-in duration-500">
-				<div className="flex flex-col lg:grid lg:grid-cols-12 gap-8">
+			<div className="w-full px-2 py-4">
+				<div className="flex flex-col lg:grid lg:grid-cols-12 gap-4">
 					<div className="lg:col-span-4">
 						<ShimmerSection type="card" className="h-100" />
 					</div>
 					<div className="lg:col-span-8 flex flex-col gap-4">
-						<ShimmerSection type="card" />
 						<ShimmerSection type="card" />
 						<ShimmerSection type="card" />
 					</div>
@@ -158,50 +147,55 @@ const ProfilePage = () => {
 	const displayLoading = loadingPastes;
 
 	return (
-		<div className="relative min-h-dvh bg-background overflow-x-hidden flex flex-col items-center w-full">
-			<div className="relative z-10 container mx-auto px-4 py-4 md:py-6 max-w-7xl w-full animate-in fade-in duration-700">
-				<div className="flex flex-col lg:grid lg:grid-cols-12 gap-4 items-start">
-					<div className="w-full lg:col-span-4 lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto custom-scrollbar max-w-2xl mx-auto lg:max-w-none flex flex-col gap-6 pt-1 pb-4">
-						{/* Alignment Header & Search */}
-						<div className="px-2 space-y-4">
-							<div className="flex items-center gap-3 h-10">
-								<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-									<User className="h-5 w-5" />
-								</div>
-								<h2 className="text-3xl font-black tracking-tight italic leading-none truncate">
-									{t("profile.overview")}
-								</h2>
+		<div className="relative min-h-dvh bg-background w-full">
+			<div className="flex w-full gap-6 p-4 md:p-6">
+				{/* Left Sidebar Section */}
+				<aside className="w-full lg:w-80 shrink-0 border border-border/60 bg-sidebar/50 backdrop-blur-xl rounded-2xl p-4 flex flex-col h-fit sticky top-4 shadow-sm">
+					{/* Header */}
+					<div className="space-y-3.5 mb-3">
+						<div className="flex items-center gap-3 px-1">
+							<div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+								<User className="h-5 w-5" />
 							</div>
-
-							<div className="relative group">
-								<div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors">
-									<Tag className="h-4 w-4" />
-								</div>
-								<Input
-									type="text"
-									placeholder="Search your snippets..."
-									value={searchQuery}
-									onChange={(e) =>
-										setSearchQuery(e.target.value)
-									}
-									className="pl-11 pr-12 h-12 rounded-2xl"
-								/>
-								{searchQuery && (
-									<Button
-										variant="ghost"
-										size="icon"
-										onClick={() => setSearchQuery("")}
-										className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground rounded-full"
-									>
-										<FilterX className="h-4 w-4" />
-									</Button>
-								)}
-							</div>
+							<h2 className="text-2xl font-bold tracking-tight truncate">
+								{t("profile.overview")}
+							</h2>
 						</div>
 
+						<div className="relative group">
+							<div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors">
+								<Tag className="h-4 w-4" />
+							</div>
+							<Input
+								type="text"
+								placeholder="Search snippets..."
+								value={searchQuery}
+								onChange={(e) => setSearchQuery(e.target.value)}
+								className="pl-9.5 pr-8 h-10 text-sm rounded-xl bg-background/50"
+							/>
+							{searchQuery && (
+								<Button
+									variant="ghost"
+									size="icon"
+									onClick={() => setSearchQuery("")}
+									className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground hover:text-foreground rounded-full"
+								>
+									<FilterX className="h-3.5 w-3.5" />
+								</Button>
+							)}
+						</div>
+					</div>
+
+					{/* Folder Explorer */}
+					<div className="flex-1 py-1">
+						<FolderTree />
+					</div>
+
+					{/* Profile / Account Footer */}
+					<div className="pt-3 mt-3 border-t border-border/50">
 						<Suspense
 							fallback={
-								<ShimmerSection type="card" className="h-100" />
+								<ShimmerSection type="card" className="h-16" />
 							}
 						>
 							<ProfileInfo
@@ -224,158 +218,165 @@ const ProfilePage = () => {
 							/>
 						</Suspense>
 					</div>
-					<div className="w-full lg:col-span-8 max-w-4xl mx-auto lg:max-w-none">
-						<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 px-2">
-							<div className="flex items-center gap-3">
-								<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-									<User className="h-5 w-5" />
-								</div>
-								<h2 className="text-3xl font-black tracking-tight italic">
-									{t("profile.your_snippets")}
-								</h2>
+				</aside>
+
+				{/* Right Content Section */}
+				<main className="flex-1 min-w-0 bg-transparent p-0 space-y-4">
+					<div className="flex items-center justify-between gap-4 mb-3 px-1">
+						<div className="flex items-center gap-2.5">
+							<div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+								<User className="h-4.5 w-4.5" />
 							</div>
-							<Link to="/">
-								<Button
-									size="sm"
-									className="gap-2 font-black rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all px-6 w-full sm:w-auto"
-								>
-									{t("header.new_snippet")}
-								</Button>
-							</Link>
+							<h2 className="text-2xl font-black tracking-tight italic">
+								{t("profile.your_snippets")}
+							</h2>
 						</div>
 
-						{/* Labels Filter Bar */}
-						{allLabels && allLabels.length > 0 && (
-							<div className="flex items-center gap-2 mb-4 px-2 overflow-x-auto no-scrollbar pb-2">
-								<div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground tracking-wider mr-2 shrink-0">
-									<Tag className="w-3 h-3" />
-									Filters
-								</div>
-								{allLabels.map((label) => (
-									<Button
-										key={label}
-										variant={
-											activeLabel === label
-												? "default"
-												: "outline"
-										}
-										size="sm"
-										onClick={() => handleLabelClick(label)}
-										className={`rounded-full text-xs font-bold transition-all shrink-0 ${
-											activeLabel === label
-												? "shadow-md scale-105"
-												: "text-muted-foreground"
+						{allLabels.length > 0 && (
+							<div className="hidden sm:flex items-center gap-1 overflow-x-auto max-w-md custom-scrollbar py-1">
+								{allLabels.slice(0, 6).map((lbl) => (
+									<button
+										key={lbl}
+										onClick={() => handleLabelClick(lbl)}
+										className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-colors cursor-pointer shrink-0 ${
+											activeLabel === lbl
+												? "bg-primary text-primary-foreground"
+												: "bg-muted/50 hover:bg-muted text-muted-foreground"
 										}`}
 									>
-										{label}
-									</Button>
+										{lbl}
+									</button>
 								))}
-								{activeLabel && (
-									<Button
-										variant="ghost"
-										size="icon"
-										onClick={() => {
-											setActiveLabel(null);
-											clearFilter();
-										}}
-										className="h-8 w-8 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 shrink-0"
-										title="Clear filter"
-									>
-										<FilterX className="w-4 h-4" />
-									</Button>
-								)}
 							</div>
 						)}
 
-						{/* Content Area */}
-						{activeLabel ? (
-							<div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
-								<div className="flex items-center gap-2 px-2 mb-4 text-sm text-muted-foreground">
-									<span>Showing results for</span>
-									<span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary font-bold">
-										{activeLabel}
-									</span>
-								</div>
-								<Suspense
-									fallback={
-										<ShimmerSection type="card" lines={3} />
-									}
-								>
-									<ProfileSnippetList
-										pastes={filteredPastes || []}
-										loading={filteredPastes === null}
-										loadMore={() => {}}
-										hasMore={false}
-										isLoadingMore={false}
-									/>
-								</Suspense>
-							</div>
-						) : (
-							<Tabs
-								value={activeTab}
-								onValueChange={setActiveTab}
-								className="w-full flex-col"
+						<Link to="/">
+							<Button
+								size="sm"
+								className="gap-2 font-black rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all px-6 w-full sm:w-auto"
 							>
-								<TabsList className="mb-4 mx-2">
-									<TabsTrigger
-										value="owned"
-										className="gap-2 px-6"
-									>
-										<User className="w-4 h-4" />
-										My Snippets
-									</TabsTrigger>
-									<TabsTrigger
-										value="saved"
-										className="gap-2 px-6"
-									>
-										<Bookmark className="w-4 h-4" />
-										Saved
-									</TabsTrigger>
-								</TabsList>
-								<TabsContent
-									value="owned"
-									className="mt-0 outline-none"
-								>
-									<Suspense
-										fallback={
-											<ShimmerSection type="card" />
-										}
-									>
-										<ProfileSnippetList
-											pastes={displayPastes}
-											loading={displayLoading}
-											loadMore={() =>
-												user && loadProfile(false)
-											}
-											hasMore={user ? hasMore : false}
-											isLoadingMore={
-												user ? isLoadingMore : false
-											}
-										/>
-									</Suspense>
-								</TabsContent>
-								<TabsContent
-									value="saved"
-									className="mt-0 outline-none"
-								>
-									<Suspense
-										fallback={
-											<ShimmerSection type="card" />
-										}
-									>
-										<ProfileSnippetList
-											pastes={savedPastes}
-											loading={loadingSaved}
-											loadMore={() => {}}
-											hasMore={false}
-											isLoadingMore={false}
-										/>
-									</Suspense>
-								</TabsContent>
-							</Tabs>
-						)}
+								{t("header.new_snippet")}
+							</Button>
+						</Link>
 					</div>
-				</div>
+
+					{/* Labels Filter Bar */}
+					{allLabels && allLabels.length > 0 && (
+						<div className="flex items-center gap-2 mb-4 px-2 overflow-x-auto no-scrollbar pb-2">
+							<div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground tracking-wider mr-2 shrink-0">
+								<Tag className="w-3 h-3" />
+								Filters
+							</div>
+							{allLabels.map((label) => (
+								<Button
+									key={label}
+									variant={
+										activeLabel === label
+											? "default"
+											: "outline"
+									}
+									size="sm"
+									onClick={() => handleLabelClick(label)}
+									className={`rounded-full text-xs font-bold transition-all shrink-0 ${
+										activeLabel === label
+											? "shadow-md scale-105"
+											: "text-muted-foreground"
+									}`}
+								>
+									{label}
+								</Button>
+							))}
+							{activeLabel && (
+								<Button
+									variant="ghost"
+									size="icon"
+									onClick={() => {
+										setActiveLabel(null);
+										clearFilter();
+									}}
+									className="h-8 w-8 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 shrink-0"
+									title="Clear filter"
+								>
+									<FilterX className="w-4 h-4" />
+								</Button>
+							)}
+						</div>
+					)}
+
+					{/* Content Area */}
+					{activeLabel ? (
+						<div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+							<div className="flex items-center gap-2 px-2 mb-4 text-sm text-muted-foreground">
+								<span>Showing results for</span>
+								<span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary font-bold">
+									{activeLabel}
+								</span>
+							</div>
+							<Suspense
+								fallback={
+									<ShimmerSection type="card" lines={3} />
+								}
+							>
+								<ProfileSnippetList
+									pastes={filteredPastes || []}
+									loading={filteredPastes === null}
+									loadMore={() => {}}
+									hasMore={false}
+									isLoadingMore={false}
+									viewMode={viewMode}
+								/>
+							</Suspense>
+						</div>
+					) : (
+						<>
+							<ProfileFileManager
+								viewMode={viewMode}
+								onViewModeChange={setViewMode}
+								subfolders={
+									activeFolderId !== null
+										? currentFolderContents.subfolders
+										: undefined
+								}
+							/>
+
+							<Suspense fallback={<ShimmerSection type="card" />}>
+								<ProfileSnippetList
+									pastes={
+										activeFolderId !== null
+											? currentFolderContents.snippets
+											: displayPastes
+									}
+									loading={
+										activeFolderId !== null
+											? loadingContents
+											: displayLoading
+									}
+									loadMore={() =>
+										user &&
+										activeFolderId === null &&
+										loadProfile(false)
+									}
+									hasMore={
+										user && activeFolderId === null
+											? hasMore
+											: false
+									}
+									isLoadingMore={
+										user && activeFolderId === null
+											? isLoadingMore
+											: false
+									}
+									isFolderEmpty={
+										activeFolderId !== null &&
+										currentFolderContents.snippets
+											.length === 0
+									}
+									viewMode={viewMode}
+								/>
+							</Suspense>
+						</>
+					)}
+				</main>
 			</div>
 			<Suspense fallback={null}>
 				<LogoutDialog

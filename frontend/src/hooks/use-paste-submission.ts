@@ -52,6 +52,7 @@ export const usePasteSubmission = () => {
 		uploadFiles,
 		labels,
 		redirectionType,
+		folderId,
 	} = usePaste();
 
 	const handleSubmit = async (
@@ -127,6 +128,7 @@ export const usePasteSubmission = () => {
 				allowComments: options.allowComments ?? allowComments,
 				redirectionType:
 					contentType === "link" ? redirectionType : undefined,
+				folderId: user ? folderId : undefined,
 			});
 
 			if (user && labels.length > 0) {

@@ -206,6 +206,18 @@ export const COLLABORATOR_COLORS = [
 	"#f43f5e",
 ];
 
+export const FOLDER_COLORS = [
+	{ name: "Gray", hex: "" },
+	{ name: "Red", hex: "#ef4444" },
+	{ name: "Orange", hex: "#f97316" },
+	{ name: "Amber", hex: "#f59e0b" },
+	{ name: "Green", hex: "#22c55e" },
+	{ name: "Blue", hex: "#3b82f6" },
+	{ name: "Indigo", hex: "#6366f1" },
+	{ name: "Violet", hex: "#8b5cf6" },
+	{ name: "Pink", hex: "#ec4899" },
+];
+
 export const SUPPORTED_RUN_LANGUAGES = [
 	"javascript",
 	"python",

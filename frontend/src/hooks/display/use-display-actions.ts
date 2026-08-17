@@ -57,6 +57,7 @@ export const useDisplayActions = ({
 		setIsDeleteDialogOpen,
 		idTypeTab,
 		redirectionType,
+		folderId,
 	} = state;
 
 	const handleEditSave = useCallback(
@@ -170,6 +171,7 @@ export const useDisplayActions = ({
 					contentMode: contentType,
 					files: finalFiles,
 					redirectionType,
+					folderId,
 				};
 
 				const originalValues = {
@@ -192,6 +194,7 @@ export const useDisplayActions = ({
 					contentMode: paste?.contentMode,
 					files: paste?.files || [],
 					redirectionType: paste?.redirectionType || "click",
+					folderId: paste?.folderId || null,
 				};
 
 				const updates: UpdatePasteData = {};
@@ -303,6 +306,7 @@ export const useDisplayActions = ({
 			idTypeTab,
 			redirectionType,
 			resetFileUpload,
+			folderId,
 		],
 	);
 

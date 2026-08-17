@@ -12,6 +12,7 @@ import { DisplayLoading } from "@/components/display/display-loading";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { TtsProvider } from "@/context";
 import { TtsMiniPlayer } from "@/components/common/tts-mini-player";
+import { FolderProvider } from "@/context/FolderContext";
 import { AppSkeleton as PasswordAppSkeleton } from "@/tools/password-manager/components/skeletons";
 import { CryptoSafeSkeleton } from "@/tools/cryptsafe/components/skeletons";
 import { PnrCheckerSkeleton } from "@/tools/pnr-checker/components/skeletons";
@@ -121,192 +122,196 @@ const App = () => {
 		<ThemeProvider>
 			<GoogleOAuthProvider clientId={CONFIG.googleClientId}>
 				<AuthProvider>
-					<SnippetProvider>
-						<PasteProvider>
-							<MusicProvider>
-								<TtsProvider>
-									<Router>
-										<div className="h-dvh w-full m-0 p-0 box-border flex flex-col overflow-hidden bg-background text-foreground font-sans">
-											<Header />
-											<main className="flex-1 flex flex-col min-h-0 overflow-y-auto overflow-x-hidden relative custom-scrollbar">
-												<Suspense fallback={<Loader />}>
-													<Routes>
-														<Route
-															path="/"
-															element={
-																<Suspense
-																	fallback={
-																		<HomeLoading />
-																	}
-																>
-																	<HomePage />
-																</Suspense>
-															}
-														/>
-														<Route
-															path="/login"
-															element={
-																<LoginPage />
-															}
-														/>
-														<Route
-															path="/signup"
-															element={
-																<SignupPage />
-															}
-														/>
-														<Route
-															path="/forgot-password"
-															element={
-																<ForgotPasswordPage />
-															}
-														/>
-														<Route
-															path="/reset-password"
-															element={
-																<ResetPasswordPage />
-															}
-														/>
-														<Route
-															path="/profile"
-															element={
-																<Suspense
-																	fallback={
-																		<ProfilePageSkeleton />
-																	}
-																>
-																	<ProfilePage />
-																</Suspense>
-															}
-														/>
-														<Route
-															path="/server-error"
-															element={
-																<ServerErrorPage />
-															}
-														/>
-														<Route
-															path="/:id"
-															element={
-																<Suspense
-																	fallback={
-																		<DisplayLoading />
-																	}
-																>
-																	<DisplayPage />
-																</Suspense>
-															}
-														/>
-														<Route
-															path="/about"
-															element={
-																<Suspense
-																	fallback={
-																		<AboutPageSkeleton />
-																	}
-																>
-																	<AboutPage />
-																</Suspense>
-															}
-														/>
-														<Route
-															path="/tools"
-															element={
-																<Suspense
-																	fallback={
-																		<ToolsPageSkeleton />
-																	}
-																>
-																	<ToolsPage />
-																</Suspense>
-															}
-														/>
-														<Route
-															path="/tools/passwords"
-															element={
-																<Suspense
-																	fallback={
-																		<PasswordAppSkeleton />
-																	}
-																>
-																	<PasswordManagerPage />
-																</Suspense>
-															}
-														/>
-														<Route
-															path="/tools/cryptoSafe"
-															element={
-																<Suspense
-																	fallback={
-																		<CryptoSafeSkeleton />
-																	}
-																>
-																	<CryptoSafePage />
-																</Suspense>
-															}
-														/>
-														<Route
-															path="/tools/cinema"
-															element={
-																<Suspense
-																	fallback={
-																		<CinemaPageSkeleton />
-																	}
-																>
-																	<CinemaPage />
-																</Suspense>
-															}
-														/>
-														<Route
-															path="/tools/cinema/:roomId"
-															element={
-																<Suspense
-																	fallback={
-																		<CinemaPageSkeleton />
-																	}
-																>
-																	<CinemaRoomPage />
-																</Suspense>
-															}
-														/>
-														<Route
-															path="/tools/pnr-checker"
-															element={
-																<Suspense
-																	fallback={
-																		<PnrCheckerSkeleton />
-																	}
-																>
-																	<PnrCheckerPage />
-																</Suspense>
-															}
-														/>
-														<Route
-															path="/history"
-															element={
-																<Suspense
-																	fallback={
-																		<HistoryPageSkeleton />
-																	}
-																>
-																	<HistoryPage />
-																</Suspense>
-															}
-														/>
-													</Routes>
-												</Suspense>
-											</main>
-										</div>
-										<Suspense fallback={null}>
-											<MusicBubble />
-										</Suspense>
-										<MusicPlayerWrapper />
-									</Router>
-									<TtsMiniPlayer />
-								</TtsProvider>
-							</MusicProvider>
-						</PasteProvider>
-					</SnippetProvider>
+					<FolderProvider>
+						<SnippetProvider>
+							<PasteProvider>
+								<MusicProvider>
+									<TtsProvider>
+										<Router>
+											<div className="h-dvh w-full m-0 p-0 box-border flex flex-col overflow-hidden bg-background text-foreground font-sans">
+												<Header />
+												<main className="flex-1 flex flex-col min-h-0 overflow-y-auto overflow-x-hidden relative custom-scrollbar">
+													<Suspense
+														fallback={<Loader />}
+													>
+														<Routes>
+															<Route
+																path="/"
+																element={
+																	<Suspense
+																		fallback={
+																			<HomeLoading />
+																		}
+																	>
+																		<HomePage />
+																	</Suspense>
+																}
+															/>
+															<Route
+																path="/login"
+																element={
+																	<LoginPage />
+																}
+															/>
+															<Route
+																path="/signup"
+																element={
+																	<SignupPage />
+																}
+															/>
+															<Route
+																path="/forgot-password"
+																element={
+																	<ForgotPasswordPage />
+																}
+															/>
+															<Route
+																path="/reset-password"
+																element={
+																	<ResetPasswordPage />
+																}
+															/>
+															<Route
+																path="/profile"
+																element={
+																	<Suspense
+																		fallback={
+																			<ProfilePageSkeleton />
+																		}
+																	>
+																		<ProfilePage />
+																	</Suspense>
+																}
+															/>
+															<Route
+																path="/server-error"
+																element={
+																	<ServerErrorPage />
+																}
+															/>
+															<Route
+																path="/:id"
+																element={
+																	<Suspense
+																		fallback={
+																			<DisplayLoading />
+																		}
+																	>
+																		<DisplayPage />
+																	</Suspense>
+																}
+															/>
+															<Route
+																path="/about"
+																element={
+																	<Suspense
+																		fallback={
+																			<AboutPageSkeleton />
+																		}
+																	>
+																		<AboutPage />
+																	</Suspense>
+																}
+															/>
+															<Route
+																path="/tools"
+																element={
+																	<Suspense
+																		fallback={
+																			<ToolsPageSkeleton />
+																		}
+																	>
+																		<ToolsPage />
+																	</Suspense>
+																}
+															/>
+															<Route
+																path="/tools/passwords"
+																element={
+																	<Suspense
+																		fallback={
+																			<PasswordAppSkeleton />
+																		}
+																	>
+																		<PasswordManagerPage />
+																	</Suspense>
+																}
+															/>
+															<Route
+																path="/tools/cryptoSafe"
+																element={
+																	<Suspense
+																		fallback={
+																			<CryptoSafeSkeleton />
+																		}
+																	>
+																		<CryptoSafePage />
+																	</Suspense>
+																}
+															/>
+															<Route
+																path="/tools/cinema"
+																element={
+																	<Suspense
+																		fallback={
+																			<CinemaPageSkeleton />
+																		}
+																	>
+																		<CinemaPage />
+																	</Suspense>
+																}
+															/>
+															<Route
+																path="/tools/cinema/:roomId"
+																element={
+																	<Suspense
+																		fallback={
+																			<CinemaPageSkeleton />
+																		}
+																	>
+																		<CinemaRoomPage />
+																	</Suspense>
+																}
+															/>
+															<Route
+																path="/tools/pnr-checker"
+																element={
+																	<Suspense
+																		fallback={
+																			<PnrCheckerSkeleton />
+																		}
+																	>
+																		<PnrCheckerPage />
+																	</Suspense>
+																}
+															/>
+															<Route
+																path="/history"
+																element={
+																	<Suspense
+																		fallback={
+																			<HistoryPageSkeleton />
+																		}
+																	>
+																		<HistoryPage />
+																	</Suspense>
+																}
+															/>
+														</Routes>
+													</Suspense>
+												</main>
+											</div>
+											<Suspense fallback={null}>
+												<MusicBubble />
+											</Suspense>
+											<MusicPlayerWrapper />
+										</Router>
+										<TtsMiniPlayer />
+									</TtsProvider>
+								</MusicProvider>
+							</PasteProvider>
+						</SnippetProvider>
+					</FolderProvider>
 				</AuthProvider>
 			</GoogleOAuthProvider>
 		</ThemeProvider>

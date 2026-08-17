@@ -26,6 +26,17 @@ export interface FileAttachment {
 	mimeType: string;
 }
 
+export interface FolderData {
+	_id: string;
+	name: string;
+	owner: string;
+	parentId: string | null;
+	path: string;
+	color?: string | null;
+	icon?: string | null;
+	createdAt: string;
+}
+
 export interface PasteData {
 	id: string;
 	content: string;
@@ -59,6 +70,7 @@ export interface PasteData {
 	comments?: CommentData[];
 	labels?: string[];
 	files?: FileAttachment[];
+	folderId?: string | null;
 }
 
 export interface CreatePasteData {
@@ -87,6 +99,7 @@ export interface CreatePasteData {
 	publicRole?: PublicRole;
 	allowComments?: boolean;
 	files?: FileAttachment[];
+	folderId?: string | null;
 }
 
 export interface UpdatePasteData {
@@ -113,4 +126,5 @@ export interface UpdatePasteData {
 	fileSize?: number | null;
 	fileMimeType?: string | null;
 	files?: FileAttachment[];
+	folderId?: string | null;
 }

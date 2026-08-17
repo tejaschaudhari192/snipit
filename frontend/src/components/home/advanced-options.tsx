@@ -35,6 +35,8 @@ export const AdvancedOptions = ({
 		setPublicRole,
 		allowComments,
 		setAllowComments,
+		folderId,
+		setFolderId,
 	} = usePaste();
 
 	const [isPasswordEnabled, setIsPasswordEnabled] = useState(!!password);
@@ -68,6 +70,8 @@ export const AdvancedOptions = ({
 					setAllowedUsers={setAllowedUsers}
 					collaborators={collaborators}
 					setCollaborators={setCollaborators}
+					folderId={folderId}
+					setFolderId={setFolderId}
 					isOwner={true}
 					isAdmin={true}
 					onSubmit={onSubmit}

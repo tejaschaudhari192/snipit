@@ -51,6 +51,11 @@ export const createPasteSchema = z.object({
 			}),
 		)
 		.optional(),
+	folderId: z
+		.string()
+		.regex(/^[0-9a-fA-F]{24}$/, { message: "Invalid Folder ID" })
+		.nullable()
+		.optional(),
 });
 
 export const updatePasteSchema = createPasteSchema.partial().extend({

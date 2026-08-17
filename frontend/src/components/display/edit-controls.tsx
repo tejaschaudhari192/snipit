@@ -66,6 +66,8 @@ interface EditControlsProps {
 	originalPasswordProtected?: boolean;
 	redirectionType?: RedirectionType;
 	setRedirectionType?: (v: RedirectionType) => void;
+	folderId?: string | null;
+	setFolderId?: (v: string | null) => void;
 }
 
 export const EditControls = (props: EditControlsProps) => {

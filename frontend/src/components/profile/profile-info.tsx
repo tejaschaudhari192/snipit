@@ -1,25 +1,26 @@
 import {
 	User,
-	Mail,
-	Calendar,
 	Edit2,
 	Check,
 	X,
+	LogOut,
+	MoreHorizontal,
 	Eye,
 	Files,
-	LogOut,
 } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTranslation } from "react-i18next";
-import { formatDate } from "@/utils";
 import type { User as UserType, PasteData } from "@/types";
-
-// Componentized cards
-import { ProfileActivityCard } from "./profile-activity-card";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+	DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 interface ProfileInfoProps {
 	user: UserType;
@@ -53,202 +54,157 @@ export const ProfileInfo = ({
 	const { t } = useTranslation();
 
 	const totalViews = stats?.totalViews ?? 0;
-	const favoriteLanguage = stats?.mostUsedLanguage ?? "N/A";
 	const totalSnippets = stats?.totalSnippets ?? pastes.length;
-	const averageViews =
-		pastes.length > 0 ? (totalViews / pastes.length).toFixed(1) : "0.0";
 
 	const isGuest = user.email === "Guest User";
 
 	return (
-		<div className="space-y-6">
-			<div className="animate-in fade-in zoom-in-95 duration-500">
-				<Card className="border border-border/50 bg-background/60 backdrop-blur-3xl shadow-2xl rounded-5xl ring-1 ring-white/5 overflow-hidden">
-					<div className="h-32 bg-linear-to-br from-primary/30 via-primary/10 to-transparent relative">
-						<div className="absolute inset-0 bg-grid-white/5" />
+		<div className="w-full">
+			<DropdownMenu>
+				<DropdownMenuTrigger className="w-full h-auto flex items-center justify-between transition-all duration-200 p-2.5 rounded-xl border border-transparent hover:border-sidebar-border hover:bg-muted/50 cursor-pointer text-left outline-none">
+					<Avatar className="h-9 w-9 rounded-xl ring-1 ring-primary/20 shrink-0 bg-primary/10">
+						<AvatarImage src="" />
+						<AvatarFallback className="rounded-xl bg-background flex items-center justify-center">
+							<User className="h-5 w-5 text-primary" />
+						</AvatarFallback>
+					</Avatar>
+
+					<div className="flex flex-col gap-0.5 leading-none mr-auto min-w-0 text-left pl-2">
+						<span className="font-bold text-sm truncate">
+							{user.username}
+						</span>
+						<span className="text-xs text-muted-foreground truncate">
+							{user.email}
+						</span>
 					</div>
-					<CardContent className="relative pt-0 px-8 pb-10">
-						<div className="flex flex-col items-center -mt-16 mb-6">
-							<div className="relative group">
-								<Avatar className="h-32 w-32 rounded-3xl p-1.5 shadow-2xl ring-8 ring-background/80 transition-transform hover:scale-105 duration-300 bg-linear-to-br from-primary to-primary/60">
-									<AvatarImage
-										className="rounded-2xl"
-										src=""
-									/>
-									<AvatarFallback className="rounded-2xl bg-background flex items-center justify-center">
-										<User className="h-20 w-20 text-primary/80" />
-									</AvatarFallback>
-								</Avatar>
-							</div>
 
-							<div className="mt-6 w-full text-center space-y-4">
-								<div className="min-h-12 flex items-center justify-center">
-									{isEditingName && !isGuest ? (
-										<div className="flex items-center gap-2 max-w-sm mx-auto animate-in fade-in slide-in-from-top-2 duration-300">
-											<Input
-												value={newName}
-												onChange={(e) =>
-													setNewName(e.target.value)
-												}
-												className="text-xl font-bold h-12 bg-background/50 border-primary/30 focus-visible:ring-primary/50"
-												autoFocus
-												onKeyDown={(e) => {
-													if (e.key === "Enter")
-														handleUpdateName();
-													if (e.key === "Escape")
-														setIsEditingName(false);
-												}}
-											/>
-											<div className="flex gap-1.5">
-												<Button
-													onClick={handleUpdateName}
-													disabled={isUpdating}
-													size="icon"
-													className="h-12 w-12 flex items-center justify-center rounded-xl shadow-lg shadow-primary/20"
-												>
-													{isUpdating ? (
-														<ShimmerSection type="mini-loader" />
-													) : (
-														<Check className="h-5 w-5" />
-													)}
-												</Button>
-												<Button
-													variant="outline"
-													size="icon"
-													className="h-12 w-12 shrink-0 rounded-xl"
-													onClick={() =>
-														setIsEditingName(false)
-													}
-												>
-													<X className="h-5 w-5" />
-												</Button>
-											</div>
-										</div>
-									) : (
-										<div className="flex items-center justify-center gap-2 group animate-in fade-in slide-in-from-bottom-2 duration-300">
-											<h1 className="text-3xl font-black tracking-tight flex items-center gap-3">
-												{user.username}
-												{!isGuest && (
-													<span className="h-2.5 w-2.5 rounded-full bg-green-500 shadow-[0_0_12px_rgba(34,197,94,0.6)] animate-pulse shrink-0" />
-												)}
-											</h1>
-											{!isGuest && (
-												<Button
-													variant="ghost"
-													size="icon"
-													className="h-8 w-8 text-muted-foreground hover:text-primary transition-colors opacity-0 group-hover:opacity-100"
-													onClick={() =>
-														setIsEditingName(true)
-													}
-												>
-													<Edit2 className="h-4 w-4" />
-												</Button>
-											)}
-										</div>
-									)}
-								</div>
+					<MoreHorizontal className="h-4 w-4 text-muted-foreground ml-auto shrink-0" />
+				</DropdownMenuTrigger>
 
-								<div className="space-y-1.5 pt-1">
-									{!isGuest && (
-										<div className="flex items-center justify-center gap-2 text-sm text-muted-foreground/80 font-medium">
-											<Mail className="h-4 w-4" />
-											{user.email}
-										</div>
-									)}
-									<div className="flex items-center justify-center gap-2 text-xs text-muted-foreground/60 font-bold uppercase tracking-wider">
-										<Calendar className="h-3.5 w-3.5" />
-										{isGuest
-											? t("profile.guest_mode")
-											: t("profile.joined")}{" "}
-										{!isGuest &&
-											formatDate(
-												user.createdAt || new Date(),
-												{
-													month: "long",
-													year: "numeric",
-												},
-											)}
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div className="grid grid-cols-2 gap-4 pt-2">
-							<div className="bg-primary/3 hover:bg-primary/6 border border-primary/10 rounded-4xl p-5 text-center transition-all group/stat">
-								<div className="flex justify-center mb-1">
-									<Files className="h-4 w-4 text-primary/40 group-hover/stat:text-primary/70 transition-colors" />
-								</div>
-								<div className="text-3xl font-black text-primary">
-									{totalSnippets}
-								</div>
-								<div className="text-[10px] uppercase tracking-[0.2em] font-black text-primary/60 group-hover/stat:text-primary transition-colors">
-									{t("profile.snippets_count")}
-								</div>
-							</div>
-							<div className="bg-muted/20 hover:bg-muted/30 border border-border/50 rounded-4xl p-5 text-center transition-all group/stat">
-								<div className="flex justify-center mb-1">
-									<Eye className="h-4 w-4 text-muted-foreground/30 group-hover/stat:text-foreground/50 transition-colors" />
-								</div>
-								<div className="text-3xl font-black text-foreground tabular-nums">
-									{totalViews}
-								</div>
-								<div className="text-[10px] uppercase tracking-[0.2em] font-black text-muted-foreground group-hover/stat:text-foreground transition-colors">
-									{t("profile.views")}
-								</div>
-							</div>
-						</div>
-
-						<div className="pt-4">
-							<div className="h-px bg-border/40 mb-6 mx-4" />
-							{isGuest ? (
-								<div className="flex flex-col gap-3">
-									<p className="text-[10px] text-center text-muted-foreground font-bold uppercase tracking-widest px-4 leading-relaxed">
-										{t("profile.guest_hint")}
-									</p>
-									<div className="flex gap-2">
-										<Button
-											className="flex-1 h-11 rounded-2xl font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
-											render={
-												<a href="/signup">
-													{t("header.signup")}
-												</a>
-											}
-										/>
-										<Button
-											variant="outline"
-											className="flex-1 h-11 rounded-2xl font-black hover:bg-primary/5 transition-all"
-											render={
-												<a href="/login">
-													{t("header.login")}
-												</a>
-											}
-										/>
-									</div>
-								</div>
-							) : (
+				<DropdownMenuContent
+					side="top"
+					align="start"
+					sideOffset={8}
+					className="w-64 p-2 rounded-2xl shadow-xl border-border/60 bg-background/95 backdrop-blur-xl"
+				>
+					{/* User Info Header / Edit Name */}
+					<div className="px-2 py-1.5 space-y-1">
+						{isEditingName && !isGuest ? (
+							<div className="flex items-center gap-1.5 w-full pt-1">
+								<Input
+									value={newName}
+									onChange={(e) => setNewName(e.target.value)}
+									className="text-xs h-7 bg-background px-2"
+									autoFocus
+									onKeyDown={(e) => {
+										if (e.key === "Enter")
+											handleUpdateName();
+										if (e.key === "Escape")
+											setIsEditingName(false);
+									}}
+								/>
 								<Button
-									variant="outline"
-									className="w-full h-11 rounded-2xl border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 font-black gap-3 group/logout bg-red-500/2"
-									onClick={onLogout}
+									onClick={handleUpdateName}
+									disabled={isUpdating}
+									size="icon"
+									className="h-7 w-7 shrink-0"
 								>
-									<div className="flex items-center justify-center gap-2">
-										<LogOut className="h-3.5 w-3.5 transition-transform group-hover/logout:-translate-x-0.5" />
-										<span className="uppercase tracking-[0.2em] text-[10px]">
-											{t("header.logout")}
-										</span>
-									</div>
+									{isUpdating ? (
+										<ShimmerSection type="mini-loader" />
+									) : (
+										<Check className="h-3 w-3" />
+									)}
 								</Button>
-							)}
-						</div>
-					</CardContent>
-				</Card>
-			</div>
+								<Button
+									variant="ghost"
+									size="icon"
+									className="h-7 w-7 shrink-0"
+									onClick={() => setIsEditingName(false)}
+								>
+									<X className="h-3 w-3" />
+								</Button>
+							</div>
+						) : (
+							<div className="flex items-center justify-between">
+								<div className="min-w-0 flex-1">
+									<div className="text-xs font-bold text-foreground truncate">
+										{user.username}
+									</div>
+									<div className="text-[10px] text-muted-foreground truncate">
+										{user.email}
+									</div>
+								</div>
+								{!isGuest && (
+									<Button
+										variant="ghost"
+										size="icon"
+										className="h-6 w-6 text-muted-foreground hover:text-primary shrink-0"
+										onClick={() => setIsEditingName(true)}
+									>
+										<Edit2 className="h-3 w-3" />
+									</Button>
+								)}
+							</div>
+						)}
+					</div>
 
-			<ProfileActivityCard
-				totalViews={totalViews}
-				favoriteLanguage={favoriteLanguage}
-				averageViews={averageViews}
-			/>
+					<DropdownMenuSeparator className="my-1.5" />
+
+					{/* Quick Stats Grid */}
+					<div className="grid grid-cols-2 gap-1.5 px-1 py-1">
+						<div className="bg-primary/5 rounded-lg p-2 text-center border border-primary/10">
+							<div className="flex justify-center mb-0.5">
+								<Files className="h-3 w-3 text-primary/70" />
+							</div>
+							<div className="text-xs font-black text-primary">
+								{totalSnippets}
+							</div>
+							<div className="text-[9px] uppercase font-bold text-muted-foreground">
+								{t("profile.snippets_count")}
+							</div>
+						</div>
+						<div className="bg-muted/40 rounded-lg p-2 text-center border border-border/40">
+							<div className="flex justify-center mb-0.5">
+								<Eye className="h-3 w-3 text-muted-foreground" />
+							</div>
+							<div className="text-xs font-black text-foreground">
+								{totalViews}
+							</div>
+							<div className="text-[9px] uppercase font-bold text-muted-foreground">
+								{t("profile.views")}
+							</div>
+						</div>
+					</div>
+
+					<DropdownMenuSeparator className="my-1.5" />
+
+					{/* Logout or Login/Signup Actions */}
+					{isGuest ? (
+						<div className="flex gap-1.5 p-1">
+							<a
+								href="/signup"
+								className="flex-1 h-7 text-xs rounded-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 flex items-center justify-center"
+							>
+								{t("header.signup")}
+							</a>
+							<a
+								href="/login"
+								className="flex-1 h-7 text-xs rounded-lg font-bold border border-input bg-background hover:bg-accent hover:text-accent-foreground flex items-center justify-center"
+							>
+								{t("header.login")}
+							</a>
+						</div>
+					) : (
+						<DropdownMenuItem
+							className="gap-2 cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive rounded-lg p-2 font-bold text-xs"
+							onClick={onLogout}
+						>
+							<LogOut className="h-3.5 w-3.5" />
+							<span>{t("header.logout")}</span>
+						</DropdownMenuItem>
+					)}
+				</DropdownMenuContent>
+			</DropdownMenu>
 		</div>
 	);
 };

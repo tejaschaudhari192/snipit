@@ -74,6 +74,7 @@ export const useDisplayState = () => {
 	const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 	const [redirectionType, setRedirectionType] =
 		useState<RedirectionType>("click");
+	const [folderId, setFolderId] = useState<string | null>(null);
 
 	const removeServerFile = useCallback((url: string) => {
 		setRemovedServerFileUrls((prev) => {
@@ -99,6 +100,7 @@ export const useDisplayState = () => {
 		if (data.expiresTime !== undefined) setExpiresTime(data.expiresTime);
 		if (data.redirectionType !== undefined)
 			setRedirectionType(data.redirectionType);
+		if (data.folderId !== undefined) setFolderId(data.folderId);
 		if (data.id !== undefined) {
 			setCustomId(data.id);
 			if (data.id.length !== 5) {
@@ -206,6 +208,8 @@ export const useDisplayState = () => {
 		redirectionType,
 		setRedirectionType,
 		updateAllFromData,
+		folderId,
+		setFolderId,
 	};
 };
 

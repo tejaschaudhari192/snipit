@@ -1,16 +1,31 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { LogIn, Lock, Shield, Settings, Tag } from "lucide-react";
+import {
+	LogIn,
+	Lock,
+	Shield,
+	Settings,
+	Tag,
+	Folder,
+	ChevronDown,
+} from "lucide-react";
 import { cn } from "@/utils";
 import { LockedSettingWrapper } from "@/components/common/locked-setting-wrapper";
 
 import { Switch } from "@/components/ui/switch";
+import {
+	Popover,
+	PopoverTrigger,
+	PopoverContent,
+} from "@/components/ui/popover";
+import { FolderTreeList } from "@/components/common/folder-tree-list";
 import { PasswordInput } from "@/components/common/password-input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { IdTypeTabs } from "@/components/home/paste-dialog/id-type-tabs";
 import { LabelManager } from "@/components/common/label-manager";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
+import { useFolders } from "@/context/FolderContext";
 import { useNavigate } from "react-router-dom";
 
 const VisibilitySelector = lazy(() =>
@@ -63,6 +78,8 @@ export interface AdvancedConfigGridProps {
 			role: ShareRole;
 		}[],
 	) => void;
+	folderId?: string | null;
+	setFolderId?: (v: string | null) => void;
 	isOwner: boolean;
 	isAdmin: boolean;
 	disabled?: boolean;
@@ -139,6 +156,8 @@ export const AdvancedConfigGrid = ({
 	setAllowedUsers,
 	collaborators,
 	setCollaborators,
+	folderId,
+	setFolderId,
 	isOwner,
 	isAdmin,
 	disabled = false,
@@ -150,6 +169,8 @@ export const AdvancedConfigGrid = ({
 	const { t } = useTranslation();
 	const { user } = useAuth();
 	const navigate = useNavigate();
+	const { folders } = useFolders();
+	const [folderPopoverOpen, setFolderPopoverOpen] = useState(false);
 
 	const isIdDisabled = disabled || (!isOwner && !isAdmin);
 	const tooltipText =
@@ -157,10 +178,12 @@ export const AdvancedConfigGrid = ({
 			? t("common.auth.auth_required") || "Authentication Required"
 			: t("common.no_edit_permitted") || "Edit not permitted";
 
+	const selectedFolder = folders.find((f) => f._id === folderId);
+
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 			{/* Column 1: Identification */}
-			<div className="flex flex-col space-y-1">
+			<div className="flex flex-col space-y-4">
 				<div>
 					<SectionHeader
 						icon={Tag}
@@ -182,6 +205,55 @@ export const AdvancedConfigGrid = ({
 							disabled={isIdDisabled}
 						/>
 					</LockedSettingWrapper>
+				</div>
+
+				<div>
+					<SectionHeader
+						icon={Folder}
+						label={t("tools.password_manager.folder")}
+					/>
+					<Popover
+						open={folderPopoverOpen}
+						onOpenChange={setFolderPopoverOpen}
+					>
+						<PopoverTrigger
+							className={cn(
+								"w-full h-11 px-3.5 rounded-xl border border-border/50 text-xs font-bold flex items-center justify-between cursor-pointer transition-colors duration-200 outline-none",
+								selectedFolder
+									? "bg-primary/10 border-primary/40 text-primary hover:border-primary/60"
+									: "bg-background/60 text-foreground/80 hover:border-primary/45 focus:border-primary/50",
+							)}
+						>
+							<div className="flex items-center gap-2 min-w-0">
+								<Folder
+									className="w-3.5 h-3.5 shrink-0"
+									style={{
+										color:
+											selectedFolder?.color ||
+											(selectedFolder
+												? "currentColor"
+												: "var(--color-primary)"),
+									}}
+								/>
+								<span className="truncate">
+									{selectedFolder
+										? selectedFolder.name
+										: t("profile.root_no_folder")}
+								</span>
+							</div>
+							<ChevronDown className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+						</PopoverTrigger>
+						<PopoverContent
+							align="start"
+							className="w-[--radix-popover-trigger-width] p-1 bg-popover/90 backdrop-blur-xl border border-border/50 rounded-xl shadow-xl z-50"
+						>
+							<FolderTreeList
+								folderId={folderId}
+								setFolderId={setFolderId}
+								onSelect={() => setFolderPopoverOpen(false)}
+							/>
+						</PopoverContent>
+					</Popover>
 				</div>
 
 				<div>
@@ -238,7 +310,7 @@ export const AdvancedConfigGrid = ({
 									disabled={
 										disabled || (!isOwner && !isAdmin)
 									}
-									className="scale-90 data-:bg-emerald-500"
+									className="scale-90 data-[state=checked]:bg-emerald-500"
 								/>
 							</div>
 						</LockedSettingWrapper>
@@ -264,7 +336,7 @@ export const AdvancedConfigGrid = ({
 								)}
 							>
 								<div
-									className="flex items-between justify-between select-none"
+									className="flex items-center justify-between select-none"
 									onClick={() =>
 										!disabled &&
 										(isOwner || isAdmin) &&

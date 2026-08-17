@@ -71,6 +71,8 @@ interface PasteContextType {
 	setIsSubmitting: (v: boolean) => void;
 	labels: string[];
 	setLabels: (v: string[]) => void;
+	folderId: string | null;
+	setFolderId: (v: string | null) => void;
 
 	// File Upload Actions
 	uploadFiles: () => Promise<FileUploadStatus[]>;
@@ -126,6 +128,7 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 	const [labels, setLabels] = useState<string[]>([]);
 	const [redirectionType, setRedirectionType] =
 		useState<RedirectionType>("click");
+	const [folderId, setFolderId] = useState<string | null>(null);
 
 	const {
 		files,
@@ -237,6 +240,7 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 		setIdTypeTab("system");
 		setLabels([]);
 		setRedirectionType("click");
+		setFolderId(null);
 	}, [setTextValue]);
 
 	const uploadProgress = React.useMemo(() => {
@@ -300,6 +304,8 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			onContentTypeChange,
 			resetPaste,
 			getRawFile,
+			folderId,
+			setFolderId,
 		}),
 		[
 			visibility,
@@ -349,6 +355,8 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			readyAttachments,
 			hasPending,
 			getRawFile,
+			folderId,
+			setFolderId,
 		],
 	);
 

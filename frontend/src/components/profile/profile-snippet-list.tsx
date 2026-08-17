@@ -14,6 +14,8 @@ interface ProfileSnippetListProps {
 	loadMore: () => void;
 	hasMore: boolean;
 	isLoadingMore: boolean;
+	isFolderEmpty?: boolean;
+	viewMode?: "grid" | "list";
 }
 
 export const ProfileSnippetList = ({
@@ -22,6 +24,8 @@ export const ProfileSnippetList = ({
 	loadMore,
 	hasMore,
 	isLoadingMore,
+	isFolderEmpty = false,
+	viewMode = "grid",
 }: ProfileSnippetListProps) => {
 	const { t } = useTranslation();
 	const loaderRef = useInfiniteScroll({
@@ -44,24 +48,39 @@ export const ProfileSnippetList = ({
 						<Inbox className="h-8 w-8 md:h-10 md:w-10 text-muted-foreground" />
 					</div>
 					<h3 className="text-2xl font-semibold mb-2">
-						{t("profile.no_snippets")}
+						{isFolderEmpty
+							? t("profile.folder_empty")
+							: t("profile.no_snippets")}
 					</h3>
 					<p className="text-muted-foreground mb-8 text-lg">
-						{t("profile.no_snippets_desc")}
+						{isFolderEmpty
+							? t("profile.folder_empty_desc")
+							: t("profile.no_snippets_desc")}
 					</p>
 					<Link to="/">
 						<Button
 							size="lg"
 							className="rounded-full px-8 shadow-xl shadow-primary/20 hover:scale-105 transition-transform font-bold"
 						>
-							{t("profile.create_first")}
+							{isFolderEmpty
+								? t("profile.create_snippet")
+								: t("profile.create_first")}
 						</Button>
 					</Link>
 				</div>
 			) : (
-				<div className="grid gap-4">
+				<div
+					className={
+						viewMode === "grid" ? "grid gap-4" : "space-y-2.5"
+					}
+				>
 					{pastes.map((paste, idx) => (
-						<SnippetCard key={paste.id} item={paste} index={idx} />
+						<SnippetCard
+							key={paste.id}
+							item={paste}
+							index={idx}
+							viewMode={viewMode}
+						/>
 					))}
 
 					{/* Infinite Scroll Trigger */}

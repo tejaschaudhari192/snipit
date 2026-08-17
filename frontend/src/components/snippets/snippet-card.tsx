@@ -1,25 +1,49 @@
+import { useState } from "react";
 import { timeAgo } from "@/utils";
 import type { PasteData } from "@/types";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { ExternalLink, Calendar, Tag } from "lucide-react";
+import {
+	ExternalLink,
+	Calendar,
+	Tag,
+	MoreVertical,
+	FolderInput,
+	Trash2,
+} from "lucide-react";
 import { LanguageBadge } from "@/components/common/language-badge";
 import { ExpirationBadge } from "@/components/common/expiration-badge";
 import { useAuth } from "@/context/AuthContext";
+import { useSnippets } from "@/context/SnippetContext";
+import { useFolders } from "@/context/FolderContext";
+import { MoveFolderDialog } from "@/components/profile/move-folder-dialog";
+import {
+	DropdownMenu,
+	DropdownMenuTrigger,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 interface SnippetCardProps {
 	item: PasteData;
 	index: number;
 	showViews?: boolean;
+	viewMode?: "grid" | "list";
 }
 
 export const SnippetCard = ({
 	item,
 	index,
 	showViews = true,
+	viewMode = "grid",
 }: SnippetCardProps) => {
 	const { t, i18n } = useTranslation();
 	const { user } = useAuth();
+	const { deleteSnippet } = useSnippets();
+	const { loadFolderContents, activeFolderId, getFolderPathString } =
+		useFolders();
+	const [moveOpen, setMoveOpen] = useState(false);
 
 	const isExpired = (expiresAt: string) => {
 		return new Date(expiresAt).getTime() < Date.now();
@@ -37,6 +61,147 @@ export const SnippetCard = ({
 
 	const isShared =
 		user && item.owner && item.owner.toString() !== user._id.toString();
+
+	const folderPath = getFolderPathString(item.folderId || null);
+
+	if (viewMode === "list") {
+		return (
+			<div
+				className="min-w-0 animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both"
+				style={{ animationDelay: `${index * 30}ms` }}
+			>
+				<div
+					className={`group flex items-center justify-between gap-3 glass-card px-4 py-3 transition-all duration-200 hover:border-primary/40 hover:bg-card/80 ${
+						expired
+							? "opacity-60 border-destructive/30"
+							: expiringSoon
+								? "border-amber-500/30"
+								: ""
+					}`}
+				>
+					<Link
+						to={"/" + item.id}
+						className="flex items-center gap-3 min-w-0 flex-1"
+					>
+						<LanguageBadge
+							language={item.language}
+							contentMode={item.contentMode}
+							isLink={!!item.redirectUrl}
+							isFile={item.contentMode === "file"}
+							fileName={item.fileName}
+							mimeType={item.fileMimeType}
+						/>
+						<div className="flex flex-col min-w-0 flex-1">
+							<div className="flex items-center gap-2">
+								<span className="font-mono text-xs font-bold text-foreground/90 truncate">
+									/{item.id}
+								</span>
+								{folderPath && (
+									<span className="text-[10px] text-muted-foreground/80 bg-muted/40 px-1.5 py-0.5 rounded font-mono truncate max-w-[150px]">
+										{folderPath}
+									</span>
+								)}
+								{isShared && (
+									<span className="text-[9px] font-bold text-blue-500 bg-blue-500/10 px-1.5 py-0.5 rounded uppercase">
+										{t("common.access.shared")}
+									</span>
+								)}
+							</div>
+							<span className="text-xs text-muted-foreground truncate font-mono mt-0.5">
+								{item.contentMode === "draw"
+									? t("common.drawing")
+									: item.contentMode === "link" ||
+										  item.redirectUrl
+										? item.content
+										: item.contentMode === "file" &&
+											  item.fileName
+											? item.fileName
+											: item.content}
+							</span>
+						</div>
+					</Link>
+
+					<div className="flex items-center gap-4 text-xs shrink-0">
+						<div className="hidden md:flex items-center gap-1.5 text-muted-foreground/60 text-[11px] font-bold uppercase">
+							<Calendar className="h-3 w-3" />
+							<span>{timeAgo(item.createdAt, t)}</span>
+						</div>
+
+						{showViews && (
+							<span className="text-xs text-muted-foreground font-medium hidden sm:inline">
+								{new Intl.NumberFormat(i18n.language).format(
+									item.views || 0,
+								)}{" "}
+								{t("profile.views")}
+							</span>
+						)}
+
+						{user &&
+							item.owner &&
+							item.owner.toString() === user._id.toString() && (
+								<div
+									onClick={(e) => {
+										e.preventDefault();
+										e.stopPropagation();
+									}}
+								>
+									<DropdownMenu>
+										<DropdownMenuTrigger className="p-1 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer outline-none">
+											<MoreVertical className="w-4 h-4" />
+										</DropdownMenuTrigger>
+										<DropdownMenuContent
+											align="end"
+											className="w-40"
+										>
+											<DropdownMenuItem
+												onClick={() =>
+													setMoveOpen(true)
+												}
+												className="gap-2 cursor-pointer"
+											>
+												<FolderInput className="w-3.5 h-3.5" />
+												<span>Move to Folder</span>
+											</DropdownMenuItem>
+											<DropdownMenuSeparator />
+											<DropdownMenuItem
+												onClick={async (e) => {
+													e.stopPropagation();
+													if (
+														window.confirm(
+															"Are you sure you want to delete this snippet?",
+														)
+													) {
+														await deleteSnippet(
+															item.id,
+														);
+														await loadFolderContents(
+															activeFolderId,
+														);
+													}
+												}}
+												variant="destructive"
+												className="gap-2 cursor-pointer"
+											>
+												<Trash2 className="w-3.5 h-3.5" />
+												<span>Delete</span>
+											</DropdownMenuItem>
+										</DropdownMenuContent>
+									</DropdownMenu>
+								</div>
+							)}
+					</div>
+				</div>
+
+				<MoveFolderDialog
+					open={moveOpen}
+					onOpenChange={setMoveOpen}
+					itemId={item.id}
+					itemType="snippet"
+					currentParentId={item.folderId}
+				/>
+			</div>
+		);
+	}
 
 	return (
 		<div
@@ -66,6 +231,11 @@ export const SnippetCard = ({
 						<span className="text-[10px] sm:text-xs text-muted-foreground font-mono bg-muted/30 px-2 py-0.5 rounded italic truncate max-w-20 sm:max-w-none">
 							/{item.id}
 						</span>
+						{folderPath && (
+							<span className="text-[10px] text-muted-foreground/80 bg-muted/40 px-2 py-0.5 rounded font-mono truncate max-w-[120px]">
+								{folderPath}
+							</span>
+						)}
 						{isShared && (
 							<span className="text-[10px] sm:text-xs font-bold text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded uppercase tracking-wider ml-auto sm:ml-0">
 								{t("common.access.shared")}
@@ -85,6 +255,60 @@ export const SnippetCard = ({
 								expiresTime={item.expiresTime}
 							/>
 						)}
+						{user &&
+							item.owner &&
+							item.owner.toString() === user._id.toString() && (
+								<div
+									onClick={(e) => {
+										e.preventDefault();
+										e.stopPropagation();
+									}}
+									className="shrink-0 relative z-20"
+								>
+									<DropdownMenu>
+										<DropdownMenuTrigger className="p-1 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer outline-none flex items-center justify-center">
+											<MoreVertical className="w-3.5 h-3.5" />
+										</DropdownMenuTrigger>
+										<DropdownMenuContent
+											align="end"
+											className="w-40"
+										>
+											<DropdownMenuItem
+												onClick={() =>
+													setMoveOpen(true)
+												}
+												className="gap-2 cursor-pointer"
+											>
+												<FolderInput className="w-3.5 h-3.5" />
+												<span>Move to Folder</span>
+											</DropdownMenuItem>
+											<DropdownMenuSeparator />
+											<DropdownMenuItem
+												onClick={async (e) => {
+													e.stopPropagation();
+													if (
+														window.confirm(
+															"Are you sure you want to delete this snippet?",
+														)
+													) {
+														await deleteSnippet(
+															item.id,
+														);
+														await loadFolderContents(
+															activeFolderId,
+														);
+													}
+												}}
+												variant="destructive"
+												className="gap-2 cursor-pointer"
+											>
+												<Trash2 className="w-3.5 h-3.5" />
+												<span>Delete</span>
+											</DropdownMenuItem>
+										</DropdownMenuContent>
+									</DropdownMenu>
+								</div>
+							)}
 					</div>
 				</div>
 
@@ -154,6 +378,13 @@ export const SnippetCard = ({
 					</div>
 				</div>
 			</Link>
+			<MoveFolderDialog
+				open={moveOpen}
+				onOpenChange={setMoveOpen}
+				itemId={item.id}
+				itemType="snippet"
+				currentParentId={item.folderId}
+			/>
 		</div>
 	);
 };

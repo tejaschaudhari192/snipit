@@ -11,6 +11,7 @@ import musicRouter from "./music.route.js";
 import livekitRouter from "./livekit.routes.js";
 import vaultRouter from "../tools/password-manager/routes/vault.route.js";
 import feedbackRouter from "./feedback.routes.js";
+import folderRouter from "./folder.route.js";
 
 const router: Router = Router();
 
@@ -27,5 +28,6 @@ router.use("/music", musicRouter);
 router.use("/livekit", livekitRouter);
 router.use("/tools/password-manager/vault", vaultRouter);
 router.use("/feedback", feedbackRouter);
+router.use("/folders", folderRouter);
 
 export default router;

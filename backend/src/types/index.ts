@@ -107,6 +107,19 @@ export type CollaboratorData = {
 	createdAt: Date;
 };
 
+export interface FolderData {
+	_id: string;
+	name: string;
+	owner: any;
+	parentId: any;
+	path: string;
+	color?: string | null;
+	icon?: string | null;
+	createdAt: Date;
+}
+
+export type IFolder = Document & FolderData;
+
 export type PasteData = {
 	id: string;
 	content: string;
@@ -132,6 +145,7 @@ export type PasteData = {
 	publicRole?: PublicRole | undefined;
 	allowComments?: boolean | undefined;
 	files?: FileAttachment[] | undefined;
+	folderId?: string | null | undefined;
 };
 
 export interface ShareEntry {
@@ -166,6 +180,7 @@ export interface UpdatePasteData {
 	editPermission?: EditPermission | undefined;
 	burnAfterRead?: boolean | undefined;
 	files?: FileAttachment[] | undefined;
+	folderId?: string | null | undefined;
 }
 
 export type IPaste = Document & {
@@ -193,4 +208,5 @@ export type IPaste = Document & {
 	publicRole?: PublicRole | undefined;
 	allowComments?: boolean | undefined;
 	files?: FileAttachment[] | undefined;
+	folderId?: string | null | undefined;
 };

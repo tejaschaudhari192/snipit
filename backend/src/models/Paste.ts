@@ -111,6 +111,12 @@ const pasteSchema = new Schema<IPaste>(
 				mimeType: { type: String, required: true },
 			},
 		],
+		folderId: {
+			type: Schema.Types.ObjectId,
+			ref: "folder",
+			default: null,
+			index: true,
+		},
 	},
 	{
 		toJSON: { virtuals: true, versionKey: false },
