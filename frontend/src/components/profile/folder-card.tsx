@@ -22,15 +22,9 @@ export const FolderCard: React.FC<FolderCardProps> = ({ folder, index }) => {
 	const [renameOpen, setRenameOpen] = useState(false);
 	const [moveOpen, setMoveOpen] = useState(false);
 
-	const handleDelete = async (e: React.MouseEvent) => {
+	const handleDelete = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		if (
-			window.confirm(
-				"Are you sure you want to delete this folder? All child folders will be deleted, and snippets inside will be moved to Root.",
-			)
-		) {
-			await deleteFolder(folder._id);
-		}
+		deleteFolder(folder._id);
 	};
 
 	return (

@@ -352,22 +352,26 @@ export const useDisplayActions = ({
 	);
 
 	const onDeleteConfirm = async () => {
+		const targetId = id!;
+		setIsDeleteDialogOpen(false);
+		setIsDeleting(false);
+		playRemoveSound();
+
+		toast.add({
+			title: t("messages.success.snippet_deleted_id", {
+				id: `/${targetId}`,
+			}),
+			type: "success",
+		});
+
 		try {
-			setIsDeleting(true);
-			playRemoveSound();
-			await deletePaste(id!);
-			toast.add({
-				title: t("messages.success.snippet_deleted"),
-				type: "success",
-			});
+			await deletePaste(targetId);
 			navigate("/");
 		} catch {
 			toast.add({
 				title: t("messages.error.delete_failed"),
 				type: "error",
 			});
-			setIsDeleting(false);
-			setIsDeleteDialogOpen(false);
 		}
 	};
 

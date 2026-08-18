@@ -166,18 +166,10 @@ export const SnippetCard = ({
 											<DropdownMenuItem
 												onClick={async (e) => {
 													e.stopPropagation();
-													if (
-														window.confirm(
-															"Are you sure you want to delete this snippet?",
-														)
-													) {
-														await deleteSnippet(
-															item.id,
-														);
-														await loadFolderContents(
-															activeFolderId,
-														);
-													}
+													deleteSnippet(item.id);
+													loadFolderContents(
+														activeFolderId,
+													);
 												}}
 												variant="destructive"
 												className="gap-2 cursor-pointer"
@@ -286,18 +278,10 @@ export const SnippetCard = ({
 											<DropdownMenuItem
 												onClick={async (e) => {
 													e.stopPropagation();
-													if (
-														window.confirm(
-															"Are you sure you want to delete this snippet?",
-														)
-													) {
-														await deleteSnippet(
-															item.id,
-														);
-														await loadFolderContents(
-															activeFolderId,
-														);
-													}
+													deleteSnippet(item.id);
+													loadFolderContents(
+														activeFolderId,
+													);
 												}}
 												variant="destructive"
 												className="gap-2 cursor-pointer"

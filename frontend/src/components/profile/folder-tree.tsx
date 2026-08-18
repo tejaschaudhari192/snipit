@@ -195,17 +195,9 @@ export const FolderTree: React.FC = () => {
 											<Edit className="w-2.5 h-2.5" />
 										</button>
 										<button
-											onClick={async (e) => {
+											onClick={(e) => {
 												e.stopPropagation();
-												if (
-													window.confirm(
-														t(
-															"folders.delete_confirm",
-														),
-													)
-												) {
-													await deleteFolder(node.id);
-												}
+												deleteFolder(node.id);
 											}}
 											className="p-0.5 text-muted-foreground/50 hover:text-destructive hover:bg-muted rounded transition-colors"
 											title={t("folders.delete")}
