@@ -358,7 +358,6 @@ export const DisplayContent = memo(
 											contentRef={contentRef}
 											onMount={handleMount}
 											hideFullscreen={true}
-											transliteration={transliteration}
 										/>
 									</Suspense>
 								}
@@ -441,7 +440,6 @@ export const DisplayContent = memo(
 						contentRef={contentRef}
 						onMount={handleMount}
 						hideFullscreen={true}
-						transliteration={transliteration}
 					/>
 				</Suspense>
 			);

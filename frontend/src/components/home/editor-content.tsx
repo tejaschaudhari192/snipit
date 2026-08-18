@@ -16,13 +16,21 @@ import { useTheme } from "@/hooks/use-theme";
 import { useFileDrop } from "@/hooks/use-file-drop";
 import type { PasteData } from "@/types";
 import { Textarea } from "@/components/ui/textarea";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useEditorLayout } from "@/hooks/use-editor-layout";
 import { cn } from "@/utils";
 import type { useTransliteration } from "@/hooks/use-transliteration";
 import type { Editor as TiptapEditorInstance } from "@tiptap/core";
-import { PlainTextEditor } from "@/components/common/plain-text-editor";
 import { MonacoConfig } from "@/hooks/use-monaco-config";
+import {
+	EditorSkeleton,
+	EditorToolbarSkeleton,
+	CollabDrawSkeleton,
+	EditorContentSkeleton,
+	PreviewPaneSkeleton,
+	FileUploadSkeleton,
+	LinkResultSkeleton,
+	TiptapEditorSkeleton,
+} from "@/components/common/editor-skeleton";
 
 const EditorToolbar = lazy(() =>
 	import("@/components/common/editor-toolbar").then((m) => ({
@@ -73,21 +81,6 @@ const MonacoEditor = lazy(() =>
 	import("@monaco-editor/react").then((m) => ({
 		default: m.Editor,
 	})),
-);
-
-const EditorInnerSkeleton = () => (
-	<div className="flex-1 p-6 space-y-4 w-full h-full bg-background/50">
-		<div className="animate-pulse space-y-4">
-			<Skeleton className="w-3/4 h-4 rounded opacity-40 bg-muted-foreground/30" />
-			<Skeleton className="w-1/2 h-4 rounded opacity-40 bg-muted-foreground/30" />
-			<Skeleton className="w-5/6 h-4 rounded opacity-40 bg-muted-foreground/30" />
-			<div className="pt-4 space-y-2">
-				<Skeleton className="w-full h-3 rounded-full opacity-20 bg-muted-foreground/30" />
-				<Skeleton className="w-full h-3 rounded-full opacity-20 bg-muted-foreground/30" />
-				<Skeleton className="w-2/3 h-3 rounded-full opacity-20 bg-muted-foreground/30" />
-			</div>
-		</div>
-	</div>
 );
 
 interface EditorContentProps {
@@ -206,15 +199,7 @@ export const EditorContent = memo(
 							: "flex-1 min-h-0",
 					)}
 				>
-					<Suspense
-						fallback={
-							<div className="absolute top-4 right-4 sm:top-8 sm:right-8 flex gap-2">
-								<Skeleton className="h-9 w-9 rounded-lg" />
-								<Skeleton className="h-9 w-9 rounded-lg" />
-								<Skeleton className="h-9 w-9 rounded-lg" />
-							</div>
-						}
-					>
+					<Suspense fallback={<EditorToolbarSkeleton />}>
 						<EditorToolbar
 							contentType={contentType}
 							content={textValue}
@@ -230,11 +215,7 @@ export const EditorContent = memo(
 
 					<div className="flex-1 w-full h-full relative min-h-0 flex flex-col">
 						{contentType === "draw" ? (
-							<Suspense
-								fallback={
-									<Skeleton className="w-full h-full rounded-xl" />
-								}
-							>
+							<Suspense fallback={<CollabDrawSkeleton />}>
 								<CollabDraw
 									key={`draw-${drawRevision}`}
 									isEdit={true}
@@ -245,11 +226,7 @@ export const EditorContent = memo(
 							</Suspense>
 						) : contentType === "text" ? (
 							transliteration?.enabled || isMonacoPlaintext ? (
-								<Suspense
-									fallback={
-										<Skeleton className="h-full w-full" />
-									}
-								>
+								<Suspense fallback={<EditorContentSkeleton />}>
 									<MonacoConfig />
 									<MonacoEditor
 										height="100%"
@@ -266,7 +243,7 @@ export const EditorContent = memo(
 										className="flex-1"
 										beforeMount={handleEditorWillMount}
 										onMount={onMount}
-										loading={<EditorInnerSkeleton />}
+										loading={<EditorSkeleton />}
 										options={{
 											minimap: { enabled: false },
 											fontSize: fontSize,
@@ -278,28 +255,38 @@ export const EditorContent = memo(
 									/>
 								</Suspense>
 							) : (
-								<PlainTextEditor
-									content={textValue}
-									onContentChange={setTextValue}
-									fontSize={fontSize}
-									textareaRef={
-										userInputRef as React.RefObject<HTMLTextAreaElement | null>
-									}
-									onPaste={
-										handlePaste as unknown as React.ClipboardEventHandler<HTMLTextAreaElement>
-									}
-									placeholder={t(
-										"home.inputs.snippet_placeholder",
-									)}
-								/>
+								<Suspense fallback={<EditorContentSkeleton />}>
+									<MonacoConfig />
+									<MonacoEditor
+										height="100%"
+										language="plaintext"
+										value={textValue}
+										onChange={(value) =>
+											setTextValue(value || "")
+										}
+										theme={
+											theme === "dark"
+												? "snipit-dark"
+												: "snipit-light"
+										}
+										className="flex-1"
+										beforeMount={handleEditorWillMount}
+										onMount={onMount}
+										loading={<EditorSkeleton />}
+										options={{
+											minimap: { enabled: false },
+											fontSize: fontSize,
+											padding: { top: 16 },
+											mouseWheelZoom: true,
+											wordWrap: "on",
+											automaticLayout: true,
+										}}
+									/>
+								</Suspense>
 							)
 						) : contentType === "code" ? (
 							language === "markdown" || language === "html" ? (
-								<Suspense
-									fallback={
-										<Skeleton className="flex-1 w-full h-full" />
-									}
-								>
+								<Suspense fallback={<EditorContentSkeleton />}>
 									<MonacoConfig />
 									<ResizableSplitPane
 										className="flex-1"
@@ -310,7 +297,7 @@ export const EditorContent = memo(
 										left={
 											<Suspense
 												fallback={
-													<Skeleton className="h-full w-full" />
+													<EditorContentSkeleton />
 												}
 											>
 												<MonacoEditor
@@ -331,9 +318,7 @@ export const EditorContent = memo(
 														handleEditorWillMount
 													}
 													onMount={onMount}
-													loading={
-														<EditorInnerSkeleton />
-													}
+													loading={<EditorSkeleton />}
 													options={{
 														minimap: {
 															enabled: false,
@@ -351,7 +336,7 @@ export const EditorContent = memo(
 											<div className="h-full w-full overflow-y-auto bg-background/50">
 												<Suspense
 													fallback={
-														<Skeleton className="p-10 rounded-2xl h-64 w-full" />
+														<PreviewPaneSkeleton />
 													}
 												>
 													{language === "markdown" ? (
@@ -371,11 +356,7 @@ export const EditorContent = memo(
 									/>
 								</Suspense>
 							) : (
-								<Suspense
-									fallback={
-										<Skeleton className="h-full w-full" />
-									}
-								>
+								<Suspense fallback={<EditorContentSkeleton />}>
 									<MonacoConfig />
 									<MonacoEditor
 										height="100%"
@@ -392,7 +373,7 @@ export const EditorContent = memo(
 										className="flex-1"
 										beforeMount={handleEditorWillMount}
 										onMount={onMount}
-										loading={<EditorInnerSkeleton />}
+										loading={<EditorSkeleton />}
 										options={{
 											minimap: { enabled: false },
 											fontSize: fontSize,
@@ -405,20 +386,7 @@ export const EditorContent = memo(
 								</Suspense>
 							)
 						) : contentType === "file" ? (
-							<Suspense
-								fallback={
-									<div className="h-full w-full flex items-center justify-center p-10">
-										<div className="w-full max-w-xl space-y-6">
-											<div className="flex flex-col items-center gap-4">
-												<Skeleton className="h-12 w-12 rounded-xl" />
-												<Skeleton className="h-8 w-48" />
-												<Skeleton className="h-4 w-64" />
-											</div>
-											<Skeleton className="h-75 w-full rounded-2xl border-2 border-dashed" />
-										</div>
-									</div>
-								}
-							>
+							<Suspense fallback={<FileUploadSkeleton />}>
 								<FileUploadView
 									files={files}
 									previewUrl={previewUrl}
@@ -434,20 +402,7 @@ export const EditorContent = memo(
 								/>
 							</Suspense>
 						) : contentType === "link" ? (
-							<Suspense
-								fallback={
-									<div className="h-full w-full flex items-center justify-center p-6">
-										<div className="w-full max-w-xl space-y-8">
-											<div className="flex flex-col items-center gap-4">
-												<Skeleton className="h-14 w-14 rounded-xl" />
-												<Skeleton className="h-8 w-40" />
-												<Skeleton className="h-4 w-60" />
-											</div>
-											<Skeleton className="h-12 w-full rounded-xl" />
-										</div>
-									</div>
-								}
-							>
+							<Suspense fallback={<LinkResultSkeleton />}>
 								<LinkResultView
 									textValue={textValue}
 									setTextValue={setTextValue}
@@ -458,11 +413,7 @@ export const EditorContent = memo(
 								/>
 							</Suspense>
 						) : contentType === "docs" ? (
-							<Suspense
-								fallback={
-									<Skeleton className="flex-1 w-full h-full" />
-								}
-							>
+							<Suspense fallback={<TiptapEditorSkeleton />}>
 								<TiptapEditor
 									value={textValue}
 									onChange={setTextValue}
