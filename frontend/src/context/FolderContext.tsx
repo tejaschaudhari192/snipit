@@ -209,6 +209,26 @@ export const FolderProvider: React.FC<{ children: React.ReactNode }> = ({
 		color?: string | null,
 		icon?: string | null,
 	) => {
+		const tempId = `temp_${Date.now()}`;
+		const tempFolder: FolderData = {
+			_id: tempId,
+			name,
+			owner: "local",
+			parentId: parentId || null,
+			path: `/${name}`,
+			color: color || null,
+			icon: icon || null,
+			createdAt: new Date().toISOString(),
+		};
+
+		// Optimistic update
+		setFolders((prev) => [...prev, tempFolder]);
+
+		const toastId = toast.add({
+			title: t("folders.creating", "Creating folder..."),
+			type: "loading",
+		});
+
 		try {
 			const newFolder = await foldersApi.createFolder({
 				name,
@@ -216,15 +236,27 @@ export const FolderProvider: React.FC<{ children: React.ReactNode }> = ({
 				color,
 				icon,
 			});
-			toast.add({ title: t("folders.created_success"), type: "success" });
+
+			setFolders((prev) =>
+				prev.map((f) => (f._id === tempId ? newFolder : f)),
+			);
+
+			toast.update(toastId, {
+				title: t("folders.created_success"),
+				type: "success",
+			});
+
 			await loadTree();
 			if (activeFolderId === (parentId || null)) {
 				await loadFolderContents(activeFolderId);
 			}
 			return newFolder;
 		} catch (error: unknown) {
+			// Rollback
+			setFolders((prev) => prev.filter((f) => f._id !== tempId));
+
 			const err = error as { response?: { data?: { error?: string } } };
-			toast.add({
+			toast.update(toastId, {
 				title:
 					err?.response?.data?.error || t("folders.created_failed"),
 				type: "error",
@@ -239,19 +271,54 @@ export const FolderProvider: React.FC<{ children: React.ReactNode }> = ({
 		color?: string | null,
 		icon?: string | null,
 	) => {
+		const previousFolder = folders.find((f) => f._id === id);
+
+		// Optimistic update
+		setFolders((prev) =>
+			prev.map((f) =>
+				f._id === id
+					? {
+							...f,
+							name,
+							color: color !== undefined ? color : f.color,
+							icon: icon !== undefined ? icon : f.icon,
+						}
+					: f,
+			),
+		);
+
+		const toastId = toast.add({
+			title: t("folders.renaming", "Updating folder..."),
+			type: "loading",
+		});
+
 		try {
 			const updated = await foldersApi.updateFolder(id, {
 				name,
 				color,
 				icon,
 			});
-			toast.add({ title: t("folders.updated_success"), type: "success" });
+
+			setFolders((prev) => prev.map((f) => (f._id === id ? updated : f)));
+
+			toast.update(toastId, {
+				title: t("folders.updated_success"),
+				type: "success",
+			});
+
 			await loadTree();
 			await loadFolderContents(activeFolderId);
 			return updated;
 		} catch (error: unknown) {
+			// Rollback
+			if (previousFolder) {
+				setFolders((prev) =>
+					prev.map((f) => (f._id === id ? previousFolder : f)),
+				);
+			}
+
 			const err = error as { response?: { data?: { error?: string } } };
-			toast.add({
+			toast.update(toastId, {
 				title:
 					err?.response?.data?.error || t("folders.updated_failed"),
 				type: "error",
@@ -261,15 +328,43 @@ export const FolderProvider: React.FC<{ children: React.ReactNode }> = ({
 	};
 
 	const moveFolder = async (id: string, newParentId: string | null) => {
+		const previousFolder = folders.find((f) => f._id === id);
+
+		// Optimistic update
+		setFolders((prev) =>
+			prev.map((f) =>
+				f._id === id ? { ...f, parentId: newParentId } : f,
+			),
+		);
+
+		const toastId = toast.add({
+			title: t("folders.moving", "Moving folder..."),
+			type: "loading",
+		});
+
 		try {
 			const moved = await foldersApi.moveFolder(id, newParentId);
-			toast.add({ title: t("folders.move_success"), type: "success" });
+
+			setFolders((prev) => prev.map((f) => (f._id === id ? moved : f)));
+
+			toast.update(toastId, {
+				title: t("folders.move_success"),
+				type: "success",
+			});
+
 			await loadTree();
 			await loadFolderContents(activeFolderId);
 			return moved;
 		} catch (error: unknown) {
+			// Rollback
+			if (previousFolder) {
+				setFolders((prev) =>
+					prev.map((f) => (f._id === id ? previousFolder : f)),
+				);
+			}
+
 			const err = error as { response?: { data?: { error?: string } } };
-			toast.add({
+			toast.update(toastId, {
 				title: err?.response?.data?.error || t("folders.move_failed"),
 				type: "error",
 			});
@@ -278,9 +373,24 @@ export const FolderProvider: React.FC<{ children: React.ReactNode }> = ({
 	};
 
 	const deleteFolder = async (id: string) => {
+		const previousFolders = [...folders];
+
+		// Optimistic update
+		setFolders((prev) => prev.filter((f) => f._id !== id));
+
+		const toastId = toast.add({
+			title: t("folders.deleting", "Deleting folder..."),
+			type: "loading",
+		});
+
 		try {
 			await foldersApi.deleteFolder(id);
-			toast.add({ title: t("folders.deleted_success"), type: "success" });
+
+			toast.update(toastId, {
+				title: t("folders.deleted_success"),
+				type: "success",
+			});
+
 			await loadTree();
 			if (activeFolderId === id) {
 				setActiveFolderId(null);
@@ -289,8 +399,11 @@ export const FolderProvider: React.FC<{ children: React.ReactNode }> = ({
 			}
 			return true;
 		} catch (error: unknown) {
+			// Rollback
+			setFolders(previousFolders);
+
 			const err = error as { response?: { data?: { error?: string } } };
-			toast.add({
+			toast.update(toastId, {
 				title:
 					err?.response?.data?.error || t("folders.deleted_failed"),
 				type: "error",

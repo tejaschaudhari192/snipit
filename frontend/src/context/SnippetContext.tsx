@@ -370,6 +370,10 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const deleteSnippet = useCallback(
 		async (id: string) => {
+			const toastId = toast.add({
+				title: t("messages.loading.deleting", "Deleting snippet..."),
+				type: "loading",
+			});
 			try {
 				const itemInHistory = historyStateRef.current.items.find(
 					(p) => p.id === id,
@@ -399,7 +403,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 				// Update Local Storage
 				guestStorage.removeSnippetEverywhere(id);
 
-				toast.add({
+				toast.update(toastId, {
 					title: t("messages.success.snippet_deleted_id", {
 						id: `/${id}`,
 					}),
@@ -407,7 +411,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 				});
 			} catch (err) {
 				console.error("Failed to delete snippet", err);
-				toast.add({
+				toast.update(toastId, {
 					title: t("messages.error.delete_failed"),
 					type: "error",
 				});

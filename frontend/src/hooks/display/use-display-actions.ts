@@ -357,18 +357,22 @@ export const useDisplayActions = ({
 		setIsDeleting(false);
 		playRemoveSound();
 
-		toast.add({
-			title: t("messages.success.snippet_deleted_id", {
-				id: `/${targetId}`,
-			}),
-			type: "success",
+		const toastId = toast.add({
+			title: t("messages.loading.deleting", "Deleting snippet..."),
+			type: "loading",
 		});
 
 		try {
 			await deletePaste(targetId);
+			toast.update(toastId, {
+				title: t("messages.success.snippet_deleted_id", {
+					id: `/${targetId}`,
+				}),
+				type: "success",
+			});
 			navigate("/");
 		} catch {
-			toast.add({
+			toast.update(toastId, {
 				title: t("messages.error.delete_failed"),
 				type: "error",
 			});
