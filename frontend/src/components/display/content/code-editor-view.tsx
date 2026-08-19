@@ -2,10 +2,7 @@ import type { BeforeMount, OnMount } from "@monaco-editor/react";
 import { useState, useRef, useEffect, lazy, Suspense } from "react";
 import type { ContentMode, EditorChange } from "@/types";
 import { ZenModeToggle } from "@/components/common/zen-mode-toggle";
-import { PlainTextEditor } from "@/components/common/plain-text-editor";
-import { Textarea } from "@/components/ui/textarea";
 import { MonacoConfig } from "@/hooks/use-monaco-config";
-import type { useTransliteration } from "@/hooks/use-transliteration";
 
 interface CodeEditorViewProps {
 	isEdit: boolean;
@@ -23,7 +20,6 @@ interface CodeEditorViewProps {
 	contentRef: (node: HTMLElement | null) => void;
 	onMount?: OnMount;
 	hideFullscreen?: boolean;
-	transliteration?: ReturnType<typeof useTransliteration>;
 }
 
 const MonacoEditor = lazy(() =>
@@ -45,7 +41,6 @@ export const CodeEditorView = ({
 	contentRef,
 	onMount,
 	hideFullscreen = false,
-	transliteration,
 }: CodeEditorViewProps) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [isFullscreen, setIsFullscreen] = useState(false);
@@ -77,42 +72,8 @@ export const CodeEditorView = ({
 		setIsFullscreen(!isFullscreen);
 	};
 
-	// ── Plaintext: use lightweight editor instead of Monaco ──
-	if (contentType === "text" && !transliteration?.enabled) {
-		return (
-			<div
-				ref={(node) => {
-					containerRef.current = node;
-					if (typeof contentRef === "function") contentRef(node);
-				}}
-				className={`glass-card rounded-2xl animate-in fade-in zoom-in-95 duration-500 flex flex-col flex-1 h-full ${isFullscreen || isWindowFullscreen ? "fixed inset-0 m-0 z-50 rounded-none h-dvh border-none" : "min-h-0"}`}
-			>
-				{!hideFullscreen && (
-					<ZenModeToggle
-						isFullscreen={isFullscreen}
-						isWindowFullscreen={isWindowFullscreen}
-						onToggle={toggleFullscreen}
-						onWindowToggle={toggleWindowFullscreen}
-						className="absolute top-8 right-8"
-					/>
-				)}
-				<div className="flex-1 w-full h-full relative overflow-hidden">
-					<PlainTextEditor
-						content={content}
-						onContentChange={onContentChange}
-						isEdit={isEdit}
-						fontSize={fontSize}
-					/>
-				</div>
-			</div>
-		);
-	}
-
-	// ── Code: use Monaco editor for syntax highlighting ──
-	if (
-		contentType === "code" ||
-		(contentType === "text" && transliteration?.enabled)
-	) {
+	// ── Code & Plaintext: use Monaco editor for all text/code editing ──
+	if (contentType === "code" || contentType === "text") {
 		return (
 			<div
 				ref={(node) => {
@@ -193,39 +154,4 @@ export const CodeEditorView = ({
 			</div>
 		);
 	}
-
-	// ── Fallback for other content types ──
-	return (
-		<div
-			ref={(node) => {
-				containerRef.current = node;
-				if (typeof contentRef === "function") contentRef(node);
-			}}
-			className={`relative z-10 ${isFullscreen || isWindowFullscreen ? "fixed inset-0 m-0 z-50 rounded-none h-dvh border-none bg-background flex flex-col" : ""}`}
-		>
-			{!hideFullscreen && (
-				<ZenModeToggle
-					isFullscreen={isFullscreen}
-					isWindowFullscreen={isWindowFullscreen}
-					onToggle={toggleFullscreen}
-					onWindowToggle={toggleWindowFullscreen}
-					className="absolute top-8 right-8 z-50"
-				/>
-			)}
-			<Textarea
-				readOnly={!isEdit}
-				value={content}
-				onChange={
-					isEdit ? (e) => onContentChange(e.target.value) : undefined
-				}
-				className={`font-mono text-sm resize-none glass-card p-6 leading-relaxed animate-in fade-in zoom-in-95 duration-500 shadow-none ${
-					!isEdit
-						? "select-all cursor-text"
-						: "focus-visible:ring-primary/20"
-				} ${isFullscreen || isWindowFullscreen ? "flex-1 rounded-none border-0" : "flex-1 h-full min-h-0 rounded-2xl"}`}
-				style={{ fontSize: `${fontSize}px` }}
-				placeholder="Start typing your content here..."
-			/>
-		</div>
-	);
 };
