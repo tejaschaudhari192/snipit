@@ -17,6 +17,7 @@ import {
 	LanguageSelectorSkeleton,
 	AiButtonSkeleton,
 	MainToolbarSkeleton,
+	EditorContentSkeleton,
 } from "@/components/common/skeletons";
 
 import { cn, playErrorSound } from "@/utils";
@@ -558,7 +559,7 @@ const HomePage = () => {
 						>
 							<Suspense
 								fallback={
-									<div className="h-full w-full animate-pulse bg-muted/10 rounded-xl m-2" />
+									<EditorContentSkeleton className="rounded-xl m-2 bg-muted/10" />
 								}
 							>
 								<EditorContent
