@@ -225,7 +225,7 @@ export const FolderProvider: React.FC<{ children: React.ReactNode }> = ({
 		setFolders((prev) => [...prev, tempFolder]);
 
 		const toastId = toast.add({
-			title: t("folders.creating", "Creating folder..."),
+			title: t("folders.creating"),
 			type: "loading",
 		});
 
@@ -288,7 +288,7 @@ export const FolderProvider: React.FC<{ children: React.ReactNode }> = ({
 		);
 
 		const toastId = toast.add({
-			title: t("folders.renaming", "Updating folder..."),
+			title: t("folders.renaming"),
 			type: "loading",
 		});
 
@@ -338,7 +338,7 @@ export const FolderProvider: React.FC<{ children: React.ReactNode }> = ({
 		);
 
 		const toastId = toast.add({
-			title: t("folders.moving", "Moving folder..."),
+			title: t("folders.moving"),
 			type: "loading",
 		});
 
@@ -379,7 +379,7 @@ export const FolderProvider: React.FC<{ children: React.ReactNode }> = ({
 		setFolders((prev) => prev.filter((f) => f._id !== id));
 
 		const toastId = toast.add({
-			title: t("folders.deleting", "Deleting folder..."),
+			title: t("folders.deleting"),
 			type: "loading",
 		});
 
