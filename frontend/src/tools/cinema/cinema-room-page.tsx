@@ -5,7 +5,8 @@ import io, { type Socket } from "socket.io-client";
 import { CONFIG } from "@/configurations";
 import { VideoDisplay } from "./components/video-display";
 import type { ActiveUser } from "@/types";
-import { Loader2 } from "lucide-react";
+import { Loader2, ArrowLeft, AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function CinemaRoomPage() {
 	const { roomId } = useParams<{ roomId: string }>();
@@ -26,10 +27,13 @@ export default function CinemaRoomPage() {
 	const [activeUsers, setActiveUsers] = useState<ActiveUser[]>([]);
 	const [videoSrc, setVideoSrc] = useState<string>(state?.videoUrl || "");
 	const [isP2pMode, setIsP2pMode] = useState<boolean>(state?.isP2p || false);
+	const [isHostDisconnected, setIsHostDisconnected] = useState(false);
 	const [localFile, setLocalFile] = useState<File | null>(
 		state?.localVideoFile || null,
 	);
 
+	const loadingRef = useRef(loading);
+	loadingRef.current = loading;
 	const socketRef = useRef<Socket | null>(null);
 	const contentRef = useRef<HTMLElement | null>(null);
 
@@ -42,6 +46,7 @@ export default function CinemaRoomPage() {
 
 		const socket = io(socketUrl, {
 			transports: ["websocket", "polling"],
+			withCredentials: true,
 			path: "/socket.io",
 			query: {
 				userId: user?._id || "",
@@ -51,13 +56,23 @@ export default function CinemaRoomPage() {
 
 		socketRef.current = socket;
 
+		// Connection timeout to avoid hanging indefinitely
+		const timeoutId = setTimeout(() => {
+			if (loadingRef.current && !state?.videoUrl) {
+				setError("Watch party room not found or host has left.");
+				setLoading(false);
+			}
+		}, 8000);
+
 		socket.on("connect", () => {
 			if (isHost && state?.videoUrl) {
 				socket.emit("create-cinema-room", {
 					roomId,
 					videoUrl: state.videoUrl,
 					isP2pMode: state.isP2p || false,
+					userName: user?.username || "Host",
 				});
+				clearTimeout(timeoutId);
 				setLoading(false);
 			} else {
 				socket.emit("join-cinema-room", {
@@ -74,14 +89,25 @@ export default function CinemaRoomPage() {
 				isP2pMode: boolean;
 				hostSocketId: string;
 			}) => {
+				clearTimeout(timeoutId);
 				setVideoSrc(data.videoUrl);
 				setIsP2pMode(data.isP2pMode);
+				setIsHostDisconnected(false);
 				setLoading(false);
 			},
 		);
 
+		socket.on("cinema-room-error", (data: { message?: string }) => {
+			clearTimeout(timeoutId);
+			setError(
+				data.message ||
+					"Watch party room not found or host has ended the session.",
+			);
+			setLoading(false);
+		});
+
 		socket.on("cinema-host-disconnected", () => {
-			// Handle host disconnect logic natively in player overlay
+			setIsHostDisconnected(true);
 		});
 
 		socket.on("cinema-room-users", (users: ActiveUser[]) => {
@@ -90,11 +116,13 @@ export default function CinemaRoomPage() {
 
 		socket.on("connect_error", (err) => {
 			console.error("Socket connection error:", err);
+			clearTimeout(timeoutId);
 			setError("Failed to connect to watch party servers.");
 			setLoading(false);
 		});
 
 		return () => {
+			clearTimeout(timeoutId);
 			socket.emit("leave-cinema-room", roomId);
 			socket.disconnect();
 			socketRef.current = null;
@@ -114,14 +142,23 @@ export default function CinemaRoomPage() {
 
 	if (error) {
 		return (
-			<div className="w-full h-dvh flex flex-col items-center justify-center bg-background text-foreground space-y-4">
-				<p className="text-xl font-bold text-destructive">{error}</p>
-				<button
+			<div className="w-full h-dvh flex flex-col items-center justify-center bg-background text-foreground space-y-4 p-6 text-center">
+				<div className="w-16 h-16 rounded-2xl bg-destructive/10 border border-destructive/20 flex items-center justify-center text-destructive mb-2 shadow-lg shadow-destructive/10">
+					<AlertCircle className="w-8 h-8" />
+				</div>
+				<h2 className="text-2xl font-bold text-foreground">
+					Watch Party Unavailable
+				</h2>
+				<p className="text-sm text-muted-foreground max-w-md">
+					{error}
+				</p>
+				<Button
 					onClick={() => navigate("/tools/cinema")}
-					className="px-4 py-2 bg-primary text-primary-foreground font-bold rounded-lg hover:bg-primary/90"
+					className="mt-4 gap-2 font-bold"
 				>
+					<ArrowLeft className="w-4 h-4" />
 					Return to Cinema
-				</button>
+				</Button>
 			</div>
 		);
 	}
@@ -133,6 +170,7 @@ export default function CinemaRoomPage() {
 				videoSrc={videoSrc}
 				isP2pMode={isP2pMode}
 				isHost={isHost}
+				isHostDisconnected={isHostDisconnected}
 				localFile={localFile}
 				setLocalFile={setLocalFile}
 				contentRef={(node) => (contentRef.current = node)}

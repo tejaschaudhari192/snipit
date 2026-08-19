@@ -120,19 +120,23 @@ export const setupSocket = (server: HTTPServer) => {
 			io.to(roomId).emit("cinema-room-users", roomUsers);
 		};
 
-		socket.on("create-cinema-room", ({ roomId, videoUrl, isP2pMode }) => {
-			const user = activeUsers.get(socket.id);
-			if (user) {
-				user.cinemaRoomId = roomId;
-				socket.join(roomId);
-				cinemaRooms.set(roomId, {
-					hostSocketId: socket.id,
-					url: videoUrl,
-					isP2pMode,
-				});
-				broadcastCinemaUsers(roomId);
-			}
-		});
+		socket.on(
+			"create-cinema-room",
+			({ roomId, videoUrl, isP2pMode, userName }) => {
+				const user = activeUsers.get(socket.id);
+				if (user) {
+					user.cinemaRoomId = roomId;
+					if (userName) user.name = userName;
+					socket.join(roomId);
+					cinemaRooms.set(roomId, {
+						hostSocketId: socket.id,
+						url: videoUrl,
+						isP2pMode,
+					});
+					broadcastCinemaUsers(roomId);
+				}
+			},
+		);
 
 		socket.on("join-cinema-room", ({ roomId, userName }) => {
 			const user = activeUsers.get(socket.id);
@@ -148,24 +152,29 @@ export const setupSocket = (server: HTTPServer) => {
 						isP2pMode: roomState.isP2pMode,
 						hostSocketId: roomState.hostSocketId,
 					});
-				}
 
-				const vState = sharedVideoState.get(roomId);
-				if (vState) {
-					let currentPos = vState.currentTime;
-					if (vState.isPlaying) {
-						const elapsed =
-							(Date.now() - vState.lastSyncedAt) / 1000;
-						currentPos += elapsed;
+					const vState = sharedVideoState.get(roomId);
+					if (vState) {
+						let currentPos = vState.currentTime;
+						if (vState.isPlaying) {
+							const elapsed =
+								(Date.now() - vState.lastSyncedAt) / 1000;
+							currentPos += elapsed;
+						}
+						socket.emit("video-sync-state", {
+							action: vState.isPlaying ? "play" : "pause",
+							timestamp: currentPos,
+							duration: vState.duration,
+						});
 					}
-					socket.emit("video-sync-state", {
-						action: vState.isPlaying ? "play" : "pause",
-						timestamp: currentPos,
-						duration: vState.duration,
+
+					broadcastCinemaUsers(roomId);
+				} else {
+					socket.emit("cinema-room-error", {
+						message:
+							"Watch party room not found or host has ended the session.",
 					});
 				}
-
-				broadcastCinemaUsers(roomId);
 			}
 		});
 
@@ -537,7 +546,7 @@ export const setupSocket = (server: HTTPServer) => {
 				const user = activeUsers.get(socket.id);
 				if (!user || user.cinemaRoomId !== data.roomId) return;
 
-				io.to(data.roomId).emit("video-reaction-received", {
+				socket.to(data.roomId).emit("video-reaction-received", {
 					emoji: data.emoji,
 					name: user.name,
 				});
@@ -884,30 +893,53 @@ export const setupSocket = (server: HTTPServer) => {
 			}
 			inputBuffers.delete(socket.id);
 			const user = activeUsers.get(socket.id);
-			if (user && user.pasteId) {
-				const pasteId = user.pasteId;
-				activeUsers.delete(socket.id);
-				broadcastRoomUsers(pasteId);
+			if (user) {
+				if (user.pasteId) {
+					const pasteId = user.pasteId;
+					activeUsers.delete(socket.id);
+					broadcastRoomUsers(pasteId);
 
-				const mState = sharedMusicState.get(pasteId);
-				if (mState && mState.initiatorSocketId === socket.id) {
-					sharedMusicState.delete(pasteId);
-					io.to(pasteId).emit("music:share-state", {
-						enabled: false,
+					const mState = sharedMusicState.get(pasteId);
+					if (mState && mState.initiatorSocketId === socket.id) {
+						sharedMusicState.delete(pasteId);
+						io.to(pasteId).emit("music:share-state", {
+							enabled: false,
+						});
+					}
+
+					const roomUsers = Array.from(activeUsers.values()).filter(
+						(u) => u.pasteId === pasteId,
+					);
+
+					// Notify remaining room peers for WebRTC cleanup
+					socket.to(pasteId).emit("user-disconnected", {
+						socketId: socket.id,
 					});
-				}
 
-				const roomUsers = Array.from(activeUsers.values()).filter(
-					(u) => u.pasteId === pasteId,
-				);
+					if (roomUsers.length === 0) {
+						sharedVideoState.delete(pasteId);
+					}
+				} else if (user.cinemaRoomId) {
+					const cinemaRoomId = user.cinemaRoomId;
+					const roomState = cinemaRooms.get(cinemaRoomId);
+					if (roomState && roomState.hostSocketId === socket.id) {
+						cinemaRooms.delete(cinemaRoomId);
+						sharedVideoState.delete(cinemaRoomId);
+						io.to(cinemaRoomId).emit("cinema-host-disconnected");
+					}
 
-				// Notify remaining room peers for WebRTC cleanup
-				socket.to(pasteId).emit("user-disconnected", {
-					socketId: socket.id,
-				});
+					activeUsers.delete(socket.id);
+					broadcastCinemaUsers(cinemaRoomId);
 
-				if (roomUsers.length === 0) {
-					sharedVideoState.delete(pasteId);
+					const roomUsers = Array.from(activeUsers.values()).filter(
+						(u) => u.cinemaRoomId === cinemaRoomId,
+					);
+					if (roomUsers.length === 0) {
+						cinemaRooms.delete(cinemaRoomId);
+						sharedVideoState.delete(cinemaRoomId);
+					}
+				} else {
+					activeUsers.delete(socket.id);
 				}
 			} else {
 				activeUsers.delete(socket.id);

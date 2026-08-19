@@ -30,6 +30,13 @@ export default function CinemaPage() {
 	// Join Room State
 	const [joinUrl, setJoinUrl] = useState("");
 
+	const formatUrl = (url: string) => {
+		const trimmed = url.trim();
+		if (!trimmed) return "";
+		if (/^https?:\/\//i.test(trimmed)) return trimmed;
+		return `https://${trimmed}`;
+	};
+
 	const isValidUrl = (url: string) => {
 		try {
 			new URL(url);
@@ -51,7 +58,8 @@ export default function CinemaPage() {
 			return;
 		}
 
-		if (!isP2p && !isValidUrl(videoUrl)) {
+		const formattedUrl = formatUrl(videoUrl);
+		if (!isP2p && !isValidUrl(formattedUrl)) {
 			toast.add({
 				title: t(
 					"tools.cinema.invalid_url",
@@ -68,7 +76,7 @@ export default function CinemaPage() {
 
 			navigate(`/tools/cinema/${roomId}`, {
 				state: {
-					videoUrl: isP2p ? "p2p://local-stream" : videoUrl,
+					videoUrl: isP2p ? "p2p://local-stream" : formattedUrl,
 					isP2p,
 					isHost: true,
 					localVideoFile: isP2p ? localFile : null,
@@ -88,6 +96,9 @@ export default function CinemaPage() {
 		let roomId = joinUrl.trim();
 		if (isValidUrl(roomId)) {
 			const url = new URL(roomId);
+			roomId = url.pathname.split("/").filter(Boolean).pop() || roomId;
+		} else if (isValidUrl(formatUrl(roomId))) {
+			const url = new URL(formatUrl(roomId));
 			roomId = url.pathname.split("/").filter(Boolean).pop() || roomId;
 		}
 

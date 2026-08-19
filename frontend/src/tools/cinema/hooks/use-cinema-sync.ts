@@ -34,6 +34,7 @@ export function useCinemaSync({
 	setCommentsList,
 }: UseCinemaSyncOptions) {
 	const isIncomingEvent = useRef(false);
+	const lastRemoteSyncTime = useRef(0);
 
 	useEffect(() => {
 		if (!socket) return;
@@ -46,6 +47,7 @@ export function useCinemaSync({
 		}) => {
 			if (!videoRef.current) return;
 			isIncomingEvent.current = true;
+			lastRemoteSyncTime.current = Date.now();
 
 			if (data.duration && !isHost) {
 				setDuration(data.duration);
@@ -57,7 +59,7 @@ export function useCinemaSync({
 					const drift = Math.abs(
 						videoRef.current.currentTime - data.timestamp,
 					);
-					if (drift > 1.5) {
+					if (drift > 1.0) {
 						videoRef.current.currentTime = data.timestamp;
 					}
 				}
@@ -96,7 +98,7 @@ export function useCinemaSync({
 
 			setTimeout(() => {
 				isIncomingEvent.current = false;
-			}, 150);
+			}, 300);
 		};
 
 		// Listen for live chat comments
@@ -118,6 +120,14 @@ export function useCinemaSync({
 			if (data.duration) {
 				setDuration(data.duration);
 			}
+			if (!isP2pMode && videoRef.current && isPlaying) {
+				const drift = Math.abs(
+					videoRef.current.currentTime - data.timestamp,
+				);
+				if (drift > 2.5) {
+					videoRef.current.currentTime = data.timestamp;
+				}
+			}
 		};
 
 		socket.on("video-sync-state", handleSyncState);
@@ -134,15 +144,16 @@ export function useCinemaSync({
 		isHost,
 		isP2pMode,
 		videoRef,
+		isPlaying,
 		setCurrentTime,
 		setDuration,
 		setIsPlaying,
 		setCommentsList,
 	]);
 
-	// Periodically send current playhead position to let friends see status
+	// Periodically send current playhead position to let friends see status (host authoritative)
 	useEffect(() => {
-		if (!socket || !isPlaying || !videoRef.current) return;
+		if (!socket || !isPlaying || !videoRef.current || !isHost) return;
 
 		const interval = setInterval(() => {
 			if (videoRef.current && roomId) {
@@ -155,7 +166,7 @@ export function useCinemaSync({
 		}, 3000);
 
 		return () => clearInterval(interval);
-	}, [socket, isPlaying, roomId, videoRef]);
+	}, [socket, isPlaying, roomId, videoRef, isHost]);
 
 	// Smooth playhead estimation for watchers in P2P mode
 	useEffect(() => {
@@ -175,7 +186,14 @@ export function useCinemaSync({
 		action: "play" | "pause" | "seek",
 		time: number,
 	) => {
-		if (!socket || isIncomingEvent.current || !roomId) return;
+		if (
+			!socket ||
+			isIncomingEvent.current ||
+			!roomId ||
+			Date.now() - lastRemoteSyncTime.current < 600
+		)
+			return;
+
 		socket.emit("video-sync-action", {
 			roomId,
 			action,

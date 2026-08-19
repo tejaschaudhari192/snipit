@@ -45,7 +45,7 @@ export const ProfileInfo = ({
 			<div className="p-3 rounded-2xl bg-card/60 border border-border/50 backdrop-blur-md transition-all">
 				<div className="flex items-center justify-between gap-2">
 					<div className="flex items-center gap-2.5 min-w-0 flex-1">
-						<Avatar className="h-10 w-10 rounded-xl ring-2 ring-primary/20 shrink-0 bg-gradient-to-br from-primary/20 via-primary/10 to-accent/20">
+						<Avatar className="h-10 w-10 rounded-xl ring-2 ring-primary/20 shrink-0 bg-linear-to-br from-primary/20 via-primary/10 to-accent/20">
 							<AvatarImage src="" />
 							<AvatarFallback className="rounded-xl font-black text-primary text-sm bg-primary/10">
 								{initials}

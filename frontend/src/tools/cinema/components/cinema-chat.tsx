@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { type ActiveUser } from "@/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -18,6 +18,7 @@ interface CinemaChatProps {
 	chatInput: string;
 	setChatInput: (val: string) => void;
 	sendChatMessage: () => void;
+	currentSocketId?: string;
 }
 
 export const CinemaChat = ({
@@ -26,8 +27,14 @@ export const CinemaChat = ({
 	chatInput,
 	setChatInput,
 	sendChatMessage,
+	currentSocketId,
 }: CinemaChatProps) => {
 	const [isSending, setIsSending] = useState(false);
+	const chatBottomRef = useRef<HTMLDivElement | null>(null);
+
+	useEffect(() => {
+		chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
+	}, [commentsList]);
 
 	const handleSend = () => {
 		if (isSending || !chatInput.trim()) return;
@@ -37,11 +44,11 @@ export const CinemaChat = ({
 
 		setTimeout(() => {
 			setIsSending(false);
-		}, 500);
+		}, 300);
 	};
 
 	return (
-		<div className="w-full md:w-64 border-t md:border-t-0 md:border-l border-border bg-card/95 flex flex-col shrink-0 p-4 min-h-87.5 md:min-h-0 backdrop-blur-md">
+		<div className="w-full md:w-72 border-t md:border-t-0 md:border-l border-border bg-card/95 flex flex-col shrink-0 p-4 min-h-87.5 md:min-h-0 backdrop-blur-md">
 			{/* Top Section: Active Watchers */}
 			<div className="flex flex-col gap-2 min-h-0 border-b border-border pb-3">
 				<div className="flex items-center gap-2">
@@ -51,26 +58,36 @@ export const CinemaChat = ({
 					</span>
 				</div>
 				{/* Compact Watcher avatars */}
-				<div className="flex flex-wrap gap-1.5 mt-1">
-					{activeUsers.map((friend) => (
-						<div
-							key={friend.socketId}
-							title={`${friend.name} (${friend.isEditing ? "Editing" : "Watching"})`}
-							className="relative"
-						>
-							<Avatar className="w-7 h-7 rounded-full border border-border shrink-0">
-								<AvatarFallback
-									style={{ backgroundColor: friend.color }}
-									className="text-primary-foreground font-bold text-[10px] flex items-center justify-center w-full h-full"
-								>
-									{friend.name.substring(0, 2).toUpperCase()}
-								</AvatarFallback>
-							</Avatar>
-							{friend.isMe && (
-								<div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-primary rounded-full border border-background" />
-							)}
-						</div>
-					))}
+				<div className="flex flex-wrap gap-1.5 mt-1 max-h-24 overflow-y-auto">
+					{activeUsers.map((friend) => {
+						const isMe =
+							friend.isMe ||
+							(currentSocketId &&
+								friend.socketId === currentSocketId);
+						return (
+							<div
+								key={friend.socketId}
+								title={`${friend.name} ${isMe ? "(You)" : ""}`}
+								className="relative"
+							>
+								<Avatar className="w-7 h-7 rounded-full border border-border shrink-0">
+									<AvatarFallback
+										style={{
+											backgroundColor: friend.color,
+										}}
+										className="text-primary-foreground font-bold text-[10px] flex items-center justify-center w-full h-full"
+									>
+										{friend.name
+											.substring(0, 2)
+											.toUpperCase()}
+									</AvatarFallback>
+								</Avatar>
+								{isMe && (
+									<div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-primary rounded-full border-2 border-background" />
+								)}
+							</div>
+						);
+					})}
 				</div>
 			</div>
 
@@ -103,12 +120,13 @@ export const CinemaChat = ({
 								</div>
 							))
 						)}
+						<div ref={chatBottomRef} />
 					</div>
 				</ScrollArea>
 			</div>
 
 			{/* Bottom Section: Chat Input */}
-			<div className="pt-3 border-t border-border flex gap-1 bg-transparent">
+			<div className="pt-3 border-t border-border flex gap-1.5 bg-transparent">
 				<Input
 					placeholder="Send message..."
 					value={chatInput}
@@ -123,7 +141,7 @@ export const CinemaChat = ({
 				/>
 				<Button
 					size="icon"
-					disabled={isSending}
+					disabled={isSending || !chatInput.trim()}
 					onClick={handleSend}
 					className="h-9 w-9 shrink-0 bg-primary hover:bg-primary/95 text-primary-foreground disabled:opacity-50"
 				>

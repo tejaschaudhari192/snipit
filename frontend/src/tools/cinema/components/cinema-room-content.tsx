@@ -17,6 +17,7 @@ export interface VideoDisplayProps {
 	videoSrc: string;
 	isP2pMode: boolean;
 	isHost: boolean;
+	isHostDisconnected?: boolean;
 	localFile: File | null;
 	setLocalFile: (file: File | null) => void;
 	contentRef: (node: HTMLElement | null) => void;
@@ -29,6 +30,7 @@ export const CinemaRoomContent = ({
 	videoSrc,
 	isP2pMode,
 	isHost,
+	isHostDisconnected = false,
 	localFile,
 	setLocalFile,
 	contentRef,
@@ -90,7 +92,8 @@ export const CinemaRoomContent = ({
 
 	const isConnectingActual =
 		isP2pMode && !isHost && (!remoteMediaStream || !hostParticipant);
-	const isHostDisconnectedActual = isP2pMode && !isHost && !hostParticipant;
+	const isHostDisconnectedActual =
+		isHostDisconnected || (isP2pMode && !isHost && !hostParticipant);
 
 	// Custom hook for flying emojis
 	const { reactions, handleSendReaction } = useFloatingReactions(
@@ -164,6 +167,7 @@ export const CinemaRoomContent = ({
 				chatInput={chatInput}
 				setChatInput={setChatInput}
 				sendChatMessage={sendChatMessage}
+				currentSocketId={socket?.id}
 			/>
 		</div>
 	);
