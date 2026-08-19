@@ -226,7 +226,7 @@ const ProfilePage = () => {
 				>
 					<SheetContent
 						side="left"
-						className="w-[310px] p-4 flex flex-col h-full bg-sidebar/95 backdrop-blur-2xl border-r border-border/60"
+						className="w-77.5 p-4 flex flex-col h-full bg-sidebar/95 backdrop-blur-2xl border-r border-border/60"
 					>
 						<SheetHeader className="p-0 mb-2">
 							<SheetTitle className="sr-only">
@@ -275,7 +275,7 @@ const ProfilePage = () => {
 
 						<div className="flex items-center gap-3">
 							{/* Contextual Snippet Search Input */}
-							<div className="relative group min-w-[200px] sm:min-w-[240px]">
+							<div className="relative group min-w-50 sm:min-w-60">
 								<div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors">
 									<Tag className="h-4 w-4" />
 								</div>
