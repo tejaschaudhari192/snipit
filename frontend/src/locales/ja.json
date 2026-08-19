@@ -839,7 +839,7 @@
 		"loading": "読み込み中...",
 		"overview": "概要",
 		"title": "について",
-		"subtitle": "コード共有をシンプルかつ美しくすることを信じる2人の開発者による情熱的なプロジェクト。",
+		"subtitle": "コード共有をシンプルかつ美しくすることを信じる1人の開発者による情熱的なプロジェクト。",
 		"features_title": "強力な機能",
 		"features_subtitle": "シームレスなコード共有に必要なすべて",
 		"features": {
@@ -941,16 +941,14 @@
 		"team": {
 			"title": "チームに会う",
 			"roles": {
-				"developer": "開発者",
-				"quality_engineer": "品質エンジニア"
+				"developer": "開発者"
 			}
 		},
 		"contribute": {
 			"title": "お問い合わせ",
 			"desc": "皆様のご意見をお待ちしております。ご質問、フィードバック、または単なるご挨拶でも、以下のチャネルからお気軽にお問い合わせください。",
-			"gitlab_button": "GitLab",
 			"contact_button": "連絡する",
-			"telegram_button": "Telegram"
+			"reach_us_button": "Telegramでお問い合わせ"
 		},
 		"faq": {
 			"title": "よくある質問",
@@ -979,7 +977,7 @@
 		"privacy": "プライバシーポリシー",
 		"terms": "利用規約",
 		"contact": "お問い合わせ",
-		"made_by": "Durgesh & Tejas によって ❤️ で作られました"
+		"made_by": "Tejas によって ❤️ で作られました"
 	},
 	"splash": {
 		"system_failure": "システム障害が検出されました",

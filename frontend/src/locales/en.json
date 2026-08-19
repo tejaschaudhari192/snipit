@@ -896,7 +896,7 @@
 		"loading": "Loading...",
 		"overview": "Overview",
 		"title": "About",
-		"subtitle": "A passion project built by two developers who believe in making code sharing simple and beautiful.",
+		"subtitle": "A passion project built by a developer who believes in making code sharing simple and beautiful.",
 		"features_title": "Powerful Features",
 		"features_subtitle": "Everything you need for seamless code sharing",
 		"features": {
@@ -998,16 +998,14 @@
 		"team": {
 			"title": "Meet the Team",
 			"roles": {
-				"developer": "Developer",
-				"quality_engineer": "Quality Engineer"
+				"developer": "Developer"
 			}
 		},
 		"contribute": {
 			"title": "Get in Touch",
 			"desc": "We would love to hear from you! Whether you have questions, feedback, or just want to say hello, feel free to reach out to us through any of the channels below.",
-			"gitlab_button": "View on GitLab",
 			"contact_button": "Get in Touch",
-			"telegram_button": "Join Telegram"
+			"reach_us_button": "Reach us on Telegram"
 		},
 		"faq": {
 			"title": "Frequently Asked Questions",

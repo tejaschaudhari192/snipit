@@ -868,7 +868,7 @@
 		"loading": "Laden...",
 		"overview": "Übersicht",
 		"title": "Über",
-		"subtitle": "Ein Projekt zweier Entwickler, die Code-Sharing einfach und schön machen wollen.",
+		"subtitle": "Ein Projekt eines Entwicklers, der Code-Sharing einfach und schön machen will.",
 		"features_title": "Leistungsstarke Funktionen",
 		"features_subtitle": "Alles, was Sie für nahtloses Code-Sharing brauchen",
 		"features": {
@@ -970,16 +970,14 @@
 		"team": {
 			"title": "Das Team",
 			"roles": {
-				"developer": "Entwickler",
-				"quality_engineer": "Qualitätsingenieur"
+				"developer": "Entwickler"
 			}
 		},
 		"contribute": {
 			"title": "Mitmachen?",
 			"desc": "Snipit ist Open Source und wir freuen uns über Beiträge aus der Community. Ob Fehlerbehebung, neue Funktionen oder Verbesserungen der Dokumentation – jeder Beitrag zählt.",
-			"gitlab_button": "GitLab",
 			"contact_button": "Kontakt aufnehmen",
-			"telegram_button": "Telegram"
+			"reach_us_button": "Erreichen Sie uns auf Telegram"
 		},
 		"faq": {
 			"title": "Häufig gestellte Fragen (FAQ)",
@@ -1008,7 +1006,7 @@
 		"privacy": "Datenschutz",
 		"terms": "Nutzungsbedingungen",
 		"contact": "Kontakt",
-		"made_by": "Gemacht mit ❤️ von Durgesh & Tejas"
+		"made_by": "Gemacht mit ❤️ von Tejas"
 	},
 	"splash": {
 		"system_failure": "Systemfehler erkannt",
