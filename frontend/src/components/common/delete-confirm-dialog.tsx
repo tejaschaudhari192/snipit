@@ -57,12 +57,12 @@ export const DeleteConfirmDialog = ({
 					</AlertDialogCancel>
 					<AlertDialogAction
 						variant="destructive"
-						onClick={(e) => {
-							e.preventDefault();
+						onClick={() => {
+							onOpenChange(false);
 							onConfirm();
 						}}
 						disabled={isDeleting}
-						className="font-bold min-w-25 gap-2 flex items-center justify-center"
+						className="font-bold min-w-25 gap-2 flex items-center justify-center cursor-pointer"
 					>
 						{isDeleting ? (
 							<>

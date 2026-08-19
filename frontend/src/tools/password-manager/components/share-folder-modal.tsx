@@ -44,7 +44,6 @@ export default function ShareFolderModal({
 
 	const dispatch = useAppDispatch();
 	const vault = useAppSelector(selectVault);
-	const [isSharing, setIsSharing] = useState(false);
 
 	useEffect(() => {
 		if (isOpen) {
@@ -54,46 +53,50 @@ export default function ShareFolderModal({
 		}
 	}, [isOpen, folderId]);
 
-	const handleShare = async (e: React.FormEvent) => {
+	const handleShare = (e: React.FormEvent) => {
 		e.preventDefault();
 		const finalFolderId = folderId || selectedFolderId;
 		if (!email || !finalFolderId) return;
 
-		setIsSharing(true);
-		try {
-			const finalFolderName =
-				folderName ||
-				vault?.folders?.find((f) => f.id === finalFolderId)?.name ||
-				"Folder";
-			await dispatch(
-				shareFolder({
-					targetEmail: email,
-					role,
-					folderId: finalFolderId,
-					folderName: finalFolderName,
-				}),
-			).unwrap();
+		const targetEmail = email;
+		const finalFolderName =
+			folderName ||
+			vault?.folders?.find((f) => f.id === finalFolderId)?.name ||
+			"Folder";
 
-			toast.add({
-				title: t(
-					"tools.password_manager.share.folder_securely_shared_with",
-					{ email },
-				),
-				type: "success",
+		onClose();
+		setEmail("");
+
+		dispatch(
+			shareFolder({
+				targetEmail,
+				role,
+				folderId: finalFolderId,
+				folderName: finalFolderName,
+			}),
+		)
+			.unwrap()
+			.then(() => {
+				toast.add({
+					title: t(
+						"tools.password_manager.share.folder_securely_shared_with",
+						{ email: targetEmail },
+					),
+					type: "success",
+				});
+			})
+			.catch((error: unknown) => {
+				const msg =
+					error instanceof Error ? error.message : String(error);
+				toast.add({
+					title:
+						msg ||
+						t(
+							"tools.password_manager.share.failed_to_share_folder",
+						),
+					type: "error",
+				});
 			});
-			setEmail("");
-			onClose();
-		} catch (error: unknown) {
-			const msg = error instanceof Error ? error.message : String(error);
-			toast.add({
-				title:
-					msg ||
-					t("tools.password_manager.share.failed_to_share_folder"),
-				type: "error",
-			});
-		} finally {
-			setIsSharing(false);
-		}
 	};
 
 	return (
@@ -232,16 +235,10 @@ export default function ShareFolderModal({
 						<Button
 							type="submit"
 							disabled={
-								!email ||
-								(!folderId && !selectedFolderId) ||
-								isSharing
+								!email || (!folderId && !selectedFolderId)
 							}
 						>
-							{isSharing
-								? t("tools.password_manager.share.sharing")
-								: t(
-										"tools.password_manager.share.share_securely",
-									)}
+							{t("tools.password_manager.share.share_securely")}
 						</Button>
 					</div>
 				</form>

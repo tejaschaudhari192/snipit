@@ -30,7 +30,6 @@ export const CreateFolderDialog: React.FC<CreateFolderDialogProps> = ({
 	const { createFolder, renameFolder } = useFolders();
 	const [name, setName] = useState("");
 	const [selectedColor, setSelectedColor] = useState("");
-	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		if (open) {
@@ -44,28 +43,17 @@ export const CreateFolderDialog: React.FC<CreateFolderDialogProps> = ({
 		}
 	}, [open, folderToEdit]);
 
-	const handleSubmit = async (e: React.FormEvent) => {
+	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		if (!name.trim()) return;
+		const folderName = name.trim();
+		if (!folderName) return;
 
-		setLoading(true);
-		try {
-			if (folderToEdit) {
-				await renameFolder(
-					folderToEdit._id,
-					name.trim(),
-					selectedColor || null,
-				);
-			} else {
-				await createFolder(
-					name.trim(),
-					parentId,
-					selectedColor || null,
-				);
-			}
-			onOpenChange(false);
-		} finally {
-			setLoading(false);
+		onOpenChange(false);
+
+		if (folderToEdit) {
+			renameFolder(folderToEdit._id, folderName, selectedColor || null);
+		} else {
+			createFolder(folderName, parentId, selectedColor || null);
 		}
 	};
 
@@ -131,19 +119,11 @@ export const CreateFolderDialog: React.FC<CreateFolderDialogProps> = ({
 							type="button"
 							variant="outline"
 							onClick={() => onOpenChange(false)}
-							disabled={loading}
 						>
 							Cancel
 						</Button>
-						<Button
-							type="submit"
-							disabled={loading || !name.trim()}
-						>
-							{loading
-								? "Saving..."
-								: folderToEdit
-									? "Save"
-									: "Create"}
+						<Button type="submit" disabled={!name.trim()}>
+							{folderToEdit ? "Save" : "Create"}
 						</Button>
 					</DialogFooter>
 				</form>

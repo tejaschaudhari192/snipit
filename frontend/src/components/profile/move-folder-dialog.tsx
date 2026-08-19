@@ -33,33 +33,31 @@ export const MoveFolderDialog: React.FC<MoveFolderDialogProps> = ({
 	const [targetFolderId, setTargetFolderId] = useState<string | null>(
 		currentParentId,
 	);
-	const [loading, setLoading] = useState(false);
 
-	const handleMove = async () => {
-		setLoading(true);
-		try {
-			if (itemType === "folder") {
-				await moveFolder(itemId, targetFolderId);
-			} else {
-				// Moving a snippet
-				await updatePaste(itemId, { folderId: targetFolderId });
-				toast.add({
-					title:
-						t("folders.snippet_moved_success") ||
-						"Snippet moved successfully",
-					type: "success",
+	const handleMove = () => {
+		onOpenChange(false);
+		if (itemType === "folder") {
+			moveFolder(itemId, targetFolderId);
+		} else {
+			// Moving a snippet
+			updatePaste(itemId, { folderId: targetFolderId })
+				.then(() => {
+					toast.add({
+						title:
+							t("folders.snippet_moved_success") ||
+							"Snippet moved successfully",
+						type: "success",
+					});
+					loadFolderContents(activeFolderId);
+				})
+				.catch((error) => {
+					console.error("Error moving snippet:", error);
+					toast.add({
+						title:
+							t("folders.move_failed") || "Failed to move item",
+						type: "error",
+					});
 				});
-				await loadFolderContents(activeFolderId);
-			}
-			onOpenChange(false);
-		} catch (error: unknown) {
-			console.error("Error moving item:", error);
-			toast.add({
-				title: t("folders.move_failed") || "Failed to move item",
-				type: "error",
-			});
-		} finally {
-			setLoading(false);
 		}
 	};
 
@@ -95,16 +93,15 @@ export const MoveFolderDialog: React.FC<MoveFolderDialogProps> = ({
 						type="button"
 						variant="outline"
 						onClick={() => onOpenChange(false)}
-						disabled={loading}
 					>
 						{t("common.actions.cancel")}
 					</Button>
 					<Button
 						type="button"
 						onClick={handleMove}
-						disabled={loading || targetFolderId === currentParentId}
+						disabled={targetFolderId === currentParentId}
 					>
-						{loading ? t("folders.moving") : t("folders.move_here")}
+						{t("folders.move_here")}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

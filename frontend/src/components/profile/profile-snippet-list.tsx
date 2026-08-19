@@ -71,7 +71,9 @@ export const ProfileSnippetList = ({
 			) : (
 				<div
 					className={
-						viewMode === "grid" ? "grid gap-4" : "space-y-2.5"
+						viewMode === "grid"
+							? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+							: "space-y-2.5"
 					}
 				>
 					{pastes.map((paste, idx) => (

@@ -19,7 +19,6 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/toast";
-import { Spinner } from "@/components/ui/spinner";
 import { useAuth } from "@/context/AuthContext";
 import { submitFeedback } from "@/lib/api/feedback";
 import { FEEDBACK_OPTIONS } from "@/constants";
@@ -37,9 +36,8 @@ export function FeedbackDialog({ isOpen, onClose }: FeedbackDialogProps) {
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
 	const [email, setEmail] = useState("");
-	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const handleSubmit = async (e: React.FormEvent) => {
+	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
 		if (!title.trim() || !description.trim()) {
@@ -50,37 +48,33 @@ export function FeedbackDialog({ isOpen, onClose }: FeedbackDialogProps) {
 			return;
 		}
 
-		setIsSubmitting(true);
+		const payload = {
+			type,
+			title,
+			description,
+			userEmail: user?.email || email || undefined,
+		};
 
-		try {
-			const payload = {
-				type,
-				title,
-				description,
-				userEmail: user?.email || email || undefined,
-			};
+		onClose();
+		setTitle("");
+		setDescription("");
+		setEmail("");
+		setType("general");
 
-			await submitFeedback(payload);
-
-			toast.add({
-				title: t("feedback.success"),
-				type: "success",
+		submitFeedback(payload)
+			.then(() => {
+				toast.add({
+					title: t("feedback.success"),
+					type: "success",
+				});
+			})
+			.catch((error) => {
+				console.error("Failed to submit feedback:", error);
+				toast.add({
+					title: t("feedback.err_failed"),
+					type: "error",
+				});
 			});
-
-			setTitle("");
-			setDescription("");
-			setEmail("");
-			setType("general");
-			onClose();
-		} catch (error) {
-			console.error("Failed to submit feedback:", error);
-			toast.add({
-				title: t("feedback.err_failed"),
-				type: "error",
-			});
-		} finally {
-			setIsSubmitting(false);
-		}
 	};
 
 	return (
@@ -170,26 +164,14 @@ export function FeedbackDialog({ isOpen, onClose }: FeedbackDialogProps) {
 							type="button"
 							variant="outline"
 							onClick={onClose}
-							disabled={isSubmitting}
 						>
 							{t("feedback.cancel")}
 						</Button>
 						<Button
 							type="submit"
-							disabled={
-								isSubmitting ||
-								!title.trim() ||
-								!description.trim()
-							}
+							disabled={!title.trim() || !description.trim()}
 						>
-							{isSubmitting ? (
-								<>
-									<Spinner className="mr-2 h-4 w-4 animate-spin" />
-									{t("feedback.submitting")}
-								</>
-							) : (
-								t("feedback.submit")
-							)}
+							{t("feedback.submit")}
 						</Button>
 					</div>
 				</form>

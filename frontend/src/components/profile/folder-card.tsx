@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Folder, MoreVertical, Edit2, Move, Trash2 } from "lucide-react";
 import type { FolderData } from "@/types";
 import {
@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { CreateFolderDialog } from "./create-folder-dialog";
 import { MoveFolderDialog } from "./move-folder-dialog";
-import { useFolders } from "@/context/FolderContext";
+import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
+import { useFolderActions } from "@/hooks/use-folder-actions";
 
 interface FolderCardProps {
 	folder: FolderData;
@@ -18,36 +19,65 @@ interface FolderCardProps {
 }
 
 export const FolderCard: React.FC<FolderCardProps> = ({ folder, index }) => {
-	const { deleteFolder, setActiveFolderId } = useFolders();
-	const [renameOpen, setRenameOpen] = useState(false);
-	const [moveOpen, setMoveOpen] = useState(false);
+	const {
+		setActiveFolderId,
+		isRenameOpen,
+		openRenameDialog,
+		closeRenameDialog,
+		isMoveOpen,
+		openMoveDialog,
+		closeMoveDialog,
+		isFolderDeleteDialogOpen,
+		folderDeleteTitle,
+		folderDeleteDescription,
+		confirmDeleteFolder,
+		executeDeleteFolder,
+		cancelDeleteFolder,
+	} = useFolderActions();
 
 	const handleDelete = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		deleteFolder(folder._id);
+		confirmDeleteFolder(folder._id);
 	};
 
 	return (
 		<div
-			className="min-w-0 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both relative group"
-			style={{ animationDelay: `${index * 40}ms` }}
+			className="min-w-0 animate-in fade-in slide-in-from-bottom-3 duration-300 fill-mode-both relative group"
+			style={{ animationDelay: `${index * 30}ms` }}
 		>
 			<div
 				onClick={() => setActiveFolderId(folder._id)}
-				className="w-full flex items-center justify-between p-4 rounded-2xl glass-card border border-border/45 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 cursor-pointer hover:-translate-y-0.5"
+				className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-card/60 border border-border/50 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200 cursor-pointer hover:-translate-y-0.5 relative overflow-hidden"
 			>
-				<div className="flex items-center gap-3 min-w-0 flex-1">
-					<div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary shrink-0 transition-colors group-hover:bg-primary/10">
+				{/* Color Accent Indicator Strip */}
+				<div
+					className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-2xl transition-opacity"
+					style={{
+						backgroundColor: folder.color || "var(--color-primary)",
+					}}
+				/>
+
+				<div className="flex items-center gap-3 min-w-0 flex-1 pl-1.5">
+					<div
+						className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105"
+						style={{
+							backgroundColor: folder.color
+								? `${folder.color}15`
+								: "var(--color-primary-10)",
+						}}
+					>
 						<Folder
-							className="w-5 h-5 shrink-0"
-							style={{ color: folder.color || undefined }}
+							className="w-4.5 h-4.5 shrink-0"
+							style={{
+								color: folder.color || "var(--color-primary)",
+							}}
 						/>
 					</div>
 					<div className="min-w-0 flex-1">
-						<h4 className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors">
+						<h4 className="text-xs font-bold text-foreground truncate group-hover:text-primary transition-colors">
 							{folder.name}
 						</h4>
-						<span className="text-[10px] font-medium text-muted-foreground">
+						<span className="text-[10px] font-semibold text-muted-foreground/80">
 							Folder
 						</span>
 					</div>
@@ -64,24 +94,30 @@ export const FolderCard: React.FC<FolderCardProps> = ({ folder, index }) => {
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end" className="w-40">
 							<DropdownMenuItem
-								onClick={() => setRenameOpen(true)}
-								className="gap-2 cursor-pointer"
+								onClick={() => openRenameDialog(folder)}
+								className="gap-2 cursor-pointer text-xs"
 							>
 								<Edit2 className="w-3.5 h-3.5" />
 								<span>Rename</span>
 							</DropdownMenuItem>
 							<DropdownMenuItem
-								onClick={() => setMoveOpen(true)}
-								className="gap-2 cursor-pointer"
+								onClick={() =>
+									openMoveDialog(
+										folder._id,
+										"folder",
+										folder.parentId,
+									)
+								}
+								className="gap-2 cursor-pointer text-xs"
 							>
 								<Move className="w-3.5 h-3.5" />
-								<span>Move To</span>
+								<span>Move</span>
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem
 								onClick={handleDelete}
 								variant="destructive"
-								className="gap-2 cursor-pointer"
+								className="gap-2 cursor-pointer text-xs font-bold"
 							>
 								<Trash2 className="w-3.5 h-3.5" />
 								<span>Delete</span>
@@ -92,17 +128,25 @@ export const FolderCard: React.FC<FolderCardProps> = ({ folder, index }) => {
 			</div>
 
 			<CreateFolderDialog
-				open={renameOpen}
-				onOpenChange={setRenameOpen}
+				open={isRenameOpen}
+				onOpenChange={(open) => !open && closeRenameDialog()}
 				folderToEdit={folder}
 			/>
 
 			<MoveFolderDialog
-				open={moveOpen}
-				onOpenChange={setMoveOpen}
+				open={isMoveOpen}
+				onOpenChange={(open) => !open && closeMoveDialog()}
 				itemId={folder._id}
 				itemType="folder"
 				currentParentId={folder.parentId}
+			/>
+
+			<DeleteConfirmDialog
+				isOpen={isFolderDeleteDialogOpen}
+				onOpenChange={(open) => !open && cancelDeleteFolder()}
+				onConfirm={executeDeleteFolder}
+				title={folderDeleteTitle}
+				description={folderDeleteDescription}
 			/>
 		</div>
 	);

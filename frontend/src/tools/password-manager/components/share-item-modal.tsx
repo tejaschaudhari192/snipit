@@ -39,39 +39,44 @@ export default function ShareItemModal({
 	const [role, setRole] = useState<"viewer" | "editor">("viewer");
 
 	const dispatch = useAppDispatch();
-	const [isSharing, setIsSharing] = useState(false);
 
-	const handleShare = async (e: React.FormEvent) => {
+	const handleShare = (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!email) return;
 
-		setIsSharing(true);
-		try {
-			await dispatch(
-				shareItem({
-					targetEmail: email,
-					role,
-					item,
-				}),
-			).unwrap();
+		const targetEmail = email;
+		onClose();
+		setEmail("");
 
-			toast.add({
-				title: t("tools.password_manager.share.securely_shared_with", {
-					email,
-				}),
-				type: "success",
+		dispatch(
+			shareItem({
+				targetEmail,
+				role,
+				item,
+			}),
+		)
+			.unwrap()
+			.then(() => {
+				toast.add({
+					title: t(
+						"tools.password_manager.share.securely_shared_with",
+						{
+							email: targetEmail,
+						},
+					),
+					type: "success",
+				});
+			})
+			.catch((error: unknown) => {
+				const msg =
+					error instanceof Error ? error.message : String(error);
+				toast.add({
+					title:
+						msg ||
+						t("tools.password_manager.share.failed_to_share"),
+					type: "error",
+				});
 			});
-			setEmail("");
-			onClose();
-		} catch (error: unknown) {
-			const msg = error instanceof Error ? error.message : String(error);
-			toast.add({
-				title: msg || t("tools.password_manager.share.failed_to_share"),
-				type: "error",
-			});
-		} finally {
-			setIsSharing(false);
-		}
 	};
 
 	return (
@@ -156,12 +161,8 @@ export default function ShareItemModal({
 						>
 							Cancel
 						</Button>
-						<Button type="submit" disabled={!email || isSharing}>
-							{isSharing
-								? t("tools.password_manager.share.sharing")
-								: t(
-										"tools.password_manager.share.share_securely",
-									)}
+						<Button type="submit" disabled={!email}>
+							{t("tools.password_manager.share.share_securely")}
 						</Button>
 					</div>
 				</form>

@@ -4,7 +4,13 @@ import { useAuth } from "@/context/AuthContext";
 import { updateMe } from "@/lib/api/auth";
 import { toast } from "@/components/ui/toast";
 import { Link } from "react-router-dom";
-import { User, Tag, FilterX } from "lucide-react";
+import {
+	User,
+	Tag,
+	FilterX,
+	PanelLeftClose,
+	PanelLeftOpen,
+} from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +21,12 @@ import { useSnippets } from "@/context/SnippetContext";
 import { useFolders } from "@/context/FolderContext";
 import { usePageTitle } from "@/hooks/use-page-title";
 import type { User as UserType } from "@/types";
+import {
+	Sheet,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+} from "@/components/ui/sheet";
 
 const ProfileInfo = lazy(() =>
 	import("@/components/profile/profile-info").then((m) => ({
@@ -45,8 +57,6 @@ const ProfilePage = () => {
 		loadProfile,
 		loadFilteredPastes,
 		clearFilter,
-		stats,
-		loadStats,
 	} = useSnippets();
 
 	const { allLabels } = useLabels();
@@ -58,6 +68,8 @@ const ProfilePage = () => {
 		isLoadingMore,
 	} = profile;
 
+	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+	const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 	const [isEditingName, setIsEditingName] = useState(false);
 	const [newName, setNewName] = useState("");
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -70,12 +82,11 @@ const ProfilePage = () => {
 		if (user) {
 			setNewName(user.username);
 			if (pastes.length === 0) loadProfile(true);
-			loadStats();
 		} else {
 			setNewName("Guest");
 			if (pastes.length === 0) loadProfile(true);
 		}
-	}, [user, loadProfile, loadStats, pastes.length]);
+	}, [user, loadProfile, pastes.length]);
 
 	const handleLabelClick = (label: string) => {
 		if (activeLabel === label) {
@@ -146,118 +157,158 @@ const ProfilePage = () => {
 		: pastes;
 	const displayLoading = loadingPastes;
 
+	const SidebarContent = (
+		<div className="flex flex-col h-full gap-4">
+			{/* Top Header */}
+			<div className="flex items-center justify-between px-1 pt-1 shrink-0">
+				<div className="flex items-center gap-2.5">
+					<div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+						<User className="h-4 w-4" />
+					</div>
+					<h2 className="text-xl font-black tracking-tight text-foreground">
+						{t("profile.overview")}
+					</h2>
+				</div>
+				<button
+					onClick={() => setIsSidebarOpen(false)}
+					className="hidden lg:flex p-1.5 rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+					title="Hide Sidebar"
+				>
+					<PanelLeftClose className="h-4 w-4" />
+				</button>
+			</div>
+
+			{/* Folder Explorer Tree Container */}
+			<div className="flex-1 overflow-y-auto pr-1 min-h-0">
+				<FolderTree />
+			</div>
+
+			{/* Account Footer Info Widget */}
+			<div className="pt-3 border-t border-border/40 shrink-0">
+				<Suspense
+					fallback={<ShimmerSection type="card" className="h-16" />}
+				>
+					<ProfileInfo
+						user={
+							user ||
+							({
+								username: "Guest",
+								email: "Guest User",
+							} as UserType)
+						}
+						isEditingName={isEditingName}
+						setIsEditingName={setIsEditingName}
+						newName={newName}
+						setNewName={setNewName}
+						handleUpdateName={handleUpdateName}
+						isUpdating={isUpdating}
+						onLogout={() => setIsLogoutDialogOpen(true)}
+					/>
+				</Suspense>
+			</div>
+		</div>
+	);
+
 	return (
 		<div className="relative min-h-dvh bg-background w-full">
-			<div className="flex w-full gap-6 p-4 md:p-6">
-				{/* Left Sidebar Section */}
-				<aside className="w-full lg:w-80 shrink-0 border border-border/60 bg-sidebar/50 backdrop-blur-xl rounded-2xl p-4 flex flex-col h-fit sticky top-4 shadow-sm">
-					{/* Header */}
-					<div className="space-y-3.5 mb-3">
-						<div className="flex items-center gap-3 px-1">
-							<div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-								<User className="h-5 w-5" />
-							</div>
-							<h2 className="text-2xl font-bold tracking-tight truncate">
+			<div className="flex w-full gap-6 p-4 md:p-6 transition-all duration-300">
+				{/* Desktop Left Sidebar Section */}
+				{isSidebarOpen && (
+					<aside className="hidden lg:flex w-80 shrink-0 border border-border/60 bg-sidebar/50 backdrop-blur-xl rounded-3xl p-4 flex-col sticky top-4 h-[calc(100vh-2rem)] shadow-sm animate-in fade-in slide-in-from-left-4 duration-300">
+						{SidebarContent}
+					</aside>
+				)}
+
+				{/* Mobile Sheet / Drawer Sidebar */}
+				<Sheet
+					open={isMobileSidebarOpen}
+					onOpenChange={setIsMobileSidebarOpen}
+				>
+					<SheetContent
+						side="left"
+						className="w-[310px] p-4 flex flex-col h-full bg-sidebar/95 backdrop-blur-2xl border-r border-border/60"
+					>
+						<SheetHeader className="p-0 mb-2">
+							<SheetTitle className="sr-only">
 								{t("profile.overview")}
-							</h2>
-						</div>
-
-						<div className="relative group">
-							<div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors">
-								<Tag className="h-4 w-4" />
-							</div>
-							<Input
-								type="text"
-								placeholder="Search snippets..."
-								value={searchQuery}
-								onChange={(e) => setSearchQuery(e.target.value)}
-								className="pl-9.5 pr-8 h-10 text-sm rounded-xl bg-background/50"
-							/>
-							{searchQuery && (
-								<Button
-									variant="ghost"
-									size="icon"
-									onClick={() => setSearchQuery("")}
-									className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground hover:text-foreground rounded-full"
-								>
-									<FilterX className="h-3.5 w-3.5" />
-								</Button>
-							)}
-						</div>
-					</div>
-
-					{/* Folder Explorer */}
-					<div className="flex-1 py-1">
-						<FolderTree />
-					</div>
-
-					{/* Profile / Account Footer */}
-					<div className="pt-3 mt-3 border-t border-border/50">
-						<Suspense
-							fallback={
-								<ShimmerSection type="card" className="h-16" />
-							}
-						>
-							<ProfileInfo
-								user={
-									user ||
-									({
-										username: "Guest",
-										email: "Guest User",
-									} as UserType)
-								}
-								isEditingName={isEditingName}
-								setIsEditingName={setIsEditingName}
-								newName={newName}
-								setNewName={setNewName}
-								handleUpdateName={handleUpdateName}
-								isUpdating={isUpdating}
-								pastes={displayPastes}
-								onLogout={() => setIsLogoutDialogOpen(true)}
-								stats={stats}
-							/>
-						</Suspense>
-					</div>
-				</aside>
+							</SheetTitle>
+						</SheetHeader>
+						{SidebarContent}
+					</SheetContent>
+				</Sheet>
 
 				{/* Right Content Section */}
-				<main className="flex-1 min-w-0 bg-transparent p-0 space-y-4">
-					<div className="flex items-center justify-between gap-4 mb-3 px-1">
-						<div className="flex items-center gap-2.5">
-							<div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-								<User className="h-4.5 w-4.5" />
+				<main className="flex-1 min-w-0 bg-transparent p-0 space-y-5">
+					{/* Main Header & Actions */}
+					<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
+						<div className="flex items-center gap-3">
+							{/* Desktop Toggle Button */}
+							{!isSidebarOpen && (
+								<button
+									onClick={() => setIsSidebarOpen(true)}
+									className="hidden lg:flex p-2 rounded-2xl bg-sidebar/80 border border-border/60 text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer shadow-xs shrink-0"
+									title="Show Sidebar"
+								>
+									<PanelLeftOpen className="h-5 w-5 text-primary" />
+								</button>
+							)}
+							{/* Mobile Open Sidebar Drawer Button */}
+							<button
+								onClick={() => setIsMobileSidebarOpen(true)}
+								className="lg:hidden flex p-2 rounded-2xl bg-sidebar/80 border border-border/60 text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer shadow-xs shrink-0"
+								title="Open Sidebar"
+							>
+								<PanelLeftOpen className="h-5 w-5 text-primary" />
+							</button>
+							<div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shrink-0 shadow-xs">
+								<User className="h-5 w-5" />
 							</div>
-							<h2 className="text-2xl font-black tracking-tight italic">
-								{t("profile.your_snippets")}
-							</h2>
+							<div>
+								<h2 className="text-2xl font-black tracking-tight text-foreground">
+									{t("profile.your_snippets")}
+								</h2>
+								<p className="text-xs text-muted-foreground font-medium">
+									Manage and organize your saved code snippets
+								</p>
+							</div>
 						</div>
 
-						{allLabels.length > 0 && (
-							<div className="hidden sm:flex items-center gap-1 overflow-x-auto max-w-md custom-scrollbar py-1">
-								{allLabels.slice(0, 6).map((lbl) => (
-									<button
-										key={lbl}
-										onClick={() => handleLabelClick(lbl)}
-										className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-colors cursor-pointer shrink-0 ${
-											activeLabel === lbl
-												? "bg-primary text-primary-foreground"
-												: "bg-muted/50 hover:bg-muted text-muted-foreground"
-										}`}
+						<div className="flex items-center gap-3">
+							{/* Contextual Snippet Search Input */}
+							<div className="relative group min-w-[200px] sm:min-w-[240px]">
+								<div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors">
+									<Tag className="h-4 w-4" />
+								</div>
+								<Input
+									type="text"
+									placeholder="Search snippets..."
+									value={searchQuery}
+									onChange={(e) =>
+										setSearchQuery(e.target.value)
+									}
+									className="pl-9 pr-8 h-9 text-xs rounded-xl bg-card/60 border-border/50 focus:bg-background transition-all"
+								/>
+								{searchQuery && (
+									<Button
+										variant="ghost"
+										size="icon"
+										onClick={() => setSearchQuery("")}
+										className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground hover:text-foreground rounded-full"
 									>
-										{lbl}
-									</button>
-								))}
+										<FilterX className="h-3 w-3" />
+									</Button>
+								)}
 							</div>
-						)}
 
-						<Link to="/">
-							<Button
-								size="sm"
-								className="gap-2 font-black rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all px-6 w-full sm:w-auto"
-							>
-								{t("header.new_snippet")}
-							</Button>
-						</Link>
+							<Link to="/">
+								<Button
+									size="sm"
+									className="h-9 gap-2 font-bold rounded-xl shadow-md shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all px-5"
+								>
+									{t("header.new_snippet")}
+								</Button>
+							</Link>
+						</div>
 					</div>
 
 					{/* Labels Filter Bar */}

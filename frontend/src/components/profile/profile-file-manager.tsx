@@ -33,9 +33,9 @@ export const ProfileFileManager: React.FC<ProfileFileManagerProps> = ({
 	}, [externalSubfolders, folders, activeFolderId]);
 
 	return (
-		<div className="space-y-4 mb-6 select-none">
+		<div className="space-y-3 mb-5 select-none">
 			{/* Controls Bar: Breadcrumbs & View Toggle */}
-			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card/40 border border-border/40 backdrop-blur-xl rounded-2xl p-3 px-4">
+			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card/60 border border-border/40 backdrop-blur-xl rounded-2xl p-2.5 px-4 shadow-xs">
 				{/* Breadcrumb Navigation */}
 				<FolderBreadcrumb
 					activeFolderId={activeFolderId}
@@ -49,13 +49,15 @@ export const ProfileFileManager: React.FC<ProfileFileManagerProps> = ({
 						variant="outline"
 						size="sm"
 						onClick={() => setCreateOpen(true)}
-						className="h-8 gap-1.5 rounded-xl text-xs font-medium border-border/50 hover:bg-primary/10 hover:text-primary transition-all cursor-pointer"
+						className="h-8 gap-1.5 rounded-xl text-xs font-bold border-border/50 bg-background/50 hover:bg-primary/10 hover:text-primary transition-all cursor-pointer"
 					>
 						<Plus className="w-3.5 h-3.5" />
-						<span>{t("folders.create_subfolder")}</span>
+						<span className="hidden xs:inline">
+							{t("folders.create_subfolder")}
+						</span>
 					</Button>
 
-					<div className="flex items-center bg-muted/40 p-0.5 rounded-xl border border-border/30">
+					<div className="flex items-center bg-muted/50 p-1 rounded-xl border border-border/30">
 						<button
 							onClick={() => onViewModeChange("grid")}
 							className={`p-1.5 rounded-lg transition-all cursor-pointer ${
@@ -85,7 +87,7 @@ export const ProfileFileManager: React.FC<ProfileFileManagerProps> = ({
 			{/* Subfolders Grid / List Cards */}
 			{currentSubfolders.length > 0 && (
 				<div className="space-y-2">
-					<span className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-widest px-1">
+					<span className="text-[10px] font-extrabold text-muted-foreground/80 uppercase tracking-widest px-1">
 						{t("folders.subfolders")} ({currentSubfolders.length})
 					</span>
 					<div

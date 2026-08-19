@@ -58,6 +58,7 @@ export function FolderModal({
 	}, [open, initialFolderName, initialFolderColor, initialFolderIcon]);
 
 	const handleSave = () => {
+		onOpenChange(false);
 		if (mode === "delete") {
 			onDelete(deletePasswords);
 		} else {
