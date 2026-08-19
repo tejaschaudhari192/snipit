@@ -48,7 +48,11 @@ import type {
 	SelectionRange,
 	SocketUpdateData,
 } from "@/types";
-import { Skeleton } from "@/components/ui/skeleton";
+import {
+	PasswordGateSkeleton,
+	EditControlsSkeleton,
+	DisplayWorkspaceSkeleton,
+} from "@/components/common/skeletons";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ShortenedResultCard } from "@/components/home/shortened-result-card";
 import { CONFIG } from "@/configurations";
@@ -514,20 +518,7 @@ const DisplayPage = () => {
 
 	if (paste && paste.isPasswordProtected && !paste.content) {
 		return (
-			<Suspense
-				fallback={
-					<div className="max-w-md mx-auto mt-20 p-8 glass-card space-y-6 animate-pulse">
-						<div className="flex flex-col items-center gap-4">
-							<Skeleton className="h-12 w-12 rounded-xl" />
-							<Skeleton className="h-8 w-40" />
-						</div>
-						<div className="space-y-3">
-							<Skeleton className="h-10 w-full rounded-lg" />
-							<Skeleton className="h-10 w-full rounded-lg" />
-						</div>
-					</div>
-				}
-			>
+			<Suspense fallback={<PasswordGateSkeleton />}>
 				<PasswordGate
 					passwordInput={passwordInput}
 					setPasswordInput={setPasswordInput}
@@ -725,15 +716,7 @@ const DisplayPage = () => {
 							!isWindowFullscreen && (
 								<div className="mb-1 sm:mb-2 shrink-0 px-1">
 									<Suspense
-										fallback={
-											<div className="h-10 w-full flex items-center gap-4 px-2 animate-pulse">
-												<Skeleton className="h-8 w-32 rounded-lg" />
-												<Skeleton className="h-8 w-24 rounded-lg" />
-												<Skeleton className="h-8 w-24 rounded-lg" />
-												<div className="flex-1" />
-												<Skeleton className="h-8 w-8 rounded-lg" />
-											</div>
-										}
+										fallback={<EditControlsSkeleton />}
 									>
 										<EditControls
 											pasteId={id}
@@ -805,18 +788,7 @@ const DisplayPage = () => {
 								</div>
 							)}
 
-						<Suspense
-							fallback={
-								<div className="flex-1 flex flex-col p-6 space-y-4 animate-pulse bg-background/50 rounded-xl">
-									<div className="space-y-2">
-										<Skeleton className="h-4 w-[80%]" />
-										<Skeleton className="h-4 w-[60%]" />
-										<Skeleton className="h-4 w-[70%]" />
-									</div>
-									<div className="flex-1 bg-muted/5 rounded-lg border border-border/50" />
-								</div>
-							}
-						>
+						<Suspense fallback={<DisplayWorkspaceSkeleton />}>
 							<DisplayWorkspace
 								id={id ?? ""}
 								isEdit={isEdit}

@@ -2,12 +2,12 @@ import { RefreshCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/utils";
 import { useTranslation } from "react-i18next";
 import { IdAvailabilityIndicator } from "./availability-indicator";
 import { useSemanticGenerator } from "@/hooks/paste-id/use-semantic-generator";
 import { useIdAvailability } from "@/hooks/paste-id/use-id-availability";
+import { BadgeSkeleton } from "@/components/common/skeletons/common-skeletons";
 
 interface Props {
 	customId: string;
@@ -66,9 +66,9 @@ export const SemanticIdTab = ({
 				))}
 				{categories.length === 0 && (
 					<div className="flex gap-1">
-						<Skeleton className="h-5 w-12 bg-muted/40" />
-						<Skeleton className="h-5 w-16 bg-muted/40" />
-						<Skeleton className="h-5 w-10 bg-muted/40" />
+						<BadgeSkeleton className="w-12 bg-muted/40" />
+						<BadgeSkeleton className="w-16 bg-muted/40" />
+						<BadgeSkeleton className="w-10 bg-muted/40" />
 					</div>
 				)}
 			</div>

@@ -27,7 +27,11 @@ const ActionUrlBar = lazy(() =>
 		default: m.ActionUrlBar,
 	})),
 );
-import { Skeleton } from "@/components/ui/skeleton";
+import { TextSkeleton } from "@/components/common/skeletons";
+import {
+	LanguageSelectorSkeleton,
+	ToolbarButtonSkeleton,
+} from "@/components/common/skeletons";
 import { useAuth } from "@/context/AuthContext";
 
 const LanguageSwitcher = lazy(() =>
@@ -138,7 +142,7 @@ const Header = ({ className }: HeaderProps) => {
 		>
 			<div className="flex items-center h-full gap-4 md:gap-8 min-w-0">
 				<Suspense
-					fallback={<Skeleton className="h-8 w-24 rounded-lg" />}
+					fallback={<TextSkeleton className="h-8 w-24 rounded-lg" />}
 				>
 					<BrandLogo
 						textClassName={
@@ -149,7 +153,7 @@ const Header = ({ className }: HeaderProps) => {
 				{id && id.length > 1 && (
 					<Suspense
 						fallback={
-							<Skeleton className="h-8 w-48 rounded-lg hidden sm:block" />
+							<TextSkeleton className="h-8 w-48 rounded-lg hidden sm:block" />
 						}
 					>
 						<ActionUrlBar url={url} className="ml-1 sm:ml-0" />
@@ -200,7 +204,7 @@ const Header = ({ className }: HeaderProps) => {
 				</nav>
 
 				<Suspense
-					fallback={<div className="w-35 h-9 skeleton rounded-lg" />}
+					fallback={<LanguageSelectorSkeleton className="w-35 h-9" />}
 				>
 					<LanguageSwitcher className="w-35 h-9" />
 				</Suspense>
@@ -239,7 +243,12 @@ const Header = ({ className }: HeaderProps) => {
 				</Button>
 				<div className="w-px h-4 bg-border mx-1" />
 				<Suspense
-					fallback={<Skeleton className="h-8 w-8 rounded-full" />}
+					fallback={
+						<ToolbarButtonSkeleton
+							variant="icon"
+							className="h-8 w-8 rounded-full"
+						/>
+					}
 				>
 					<ThemeToggle />
 				</Suspense>
@@ -386,7 +395,10 @@ const Header = ({ className }: HeaderProps) => {
 								</span>
 								<Suspense
 									fallback={
-										<Skeleton className="h-8 w-8 rounded-full" />
+										<ToolbarButtonSkeleton
+											variant="icon"
+											className="h-8 w-8 rounded-full"
+										/>
 									}
 								>
 									<ThemeToggle />
@@ -398,7 +410,7 @@ const Header = ({ className }: HeaderProps) => {
 								</span>
 								<Suspense
 									fallback={
-										<div className="w-full h-9 skeleton rounded-lg" />
+										<LanguageSelectorSkeleton className="w-full h-9" />
 									}
 								>
 									<LanguageSwitcher className="w-full h-9" />

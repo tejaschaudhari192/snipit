@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/popover";
 import { FolderTreeList } from "@/components/common/folder-tree-list";
 import { PasswordInput } from "@/components/common/password-input";
-import { Skeleton } from "@/components/ui/skeleton";
+import { CardSkeleton, TextSkeleton } from "@/components/common/skeletons";
 import { IdTypeTabs } from "@/components/home/paste-dialog/id-type-tabs";
 import { LabelManager } from "@/components/common/label-manager";
 import { Button } from "@/components/ui/button";
@@ -92,26 +92,26 @@ export interface AdvancedConfigGridProps {
 export const AdvancedConfigSkeleton = () => (
 	<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 		<div className="space-y-1">
-			<div className="h-4 w-24 bg-muted animate-pulse rounded" />
-			<Skeleton className="h-35 w-full rounded-xl" />
+			<TextSkeleton className="h-4 w-24" />
+			<CardSkeleton className="h-35" />
 			<div>
-				<Skeleton className="h-11.5 w-full rounded-xl" />
+				<CardSkeleton className="h-11.5" />
 			</div>
 		</div>
 		<div className="space-y-6">
-			<div className="h-4 w-24 bg-muted animate-pulse rounded" />
+			<TextSkeleton className="h-4 w-24" />
 			<div className="space-y-4">
-				<Skeleton className="h-15.5 w-full rounded-xl" />
+				<CardSkeleton className="h-15.5" />
 			</div>
-			<div className="h-4 w-24 bg-muted animate-pulse rounded mt-6" />
-			<Skeleton className="h-15.5 w-full rounded-xl" />
+			<TextSkeleton className="h-4 w-24 mt-6" />
+			<CardSkeleton className="h-15.5" />
 		</div>
 		<div className="space-y-6">
-			<div className="h-4 w-24 bg-muted animate-pulse rounded" />
+			<TextSkeleton className="h-4 w-24" />
 			<div className="space-y-4">
-				<Skeleton className="h-15.5 w-full rounded-xl" />
+				<CardSkeleton className="h-15.5" />
 				<div className="pt-4 border-t border-border/10">
-					<Skeleton className="h-11.5 w-full rounded-xl" />
+					<CardSkeleton className="h-11.5" />
 				</div>
 			</div>
 		</div>
@@ -463,9 +463,7 @@ export const AdvancedConfigGrid = ({
 				) : (
 					<div className="space-y-4">
 						<Suspense
-							fallback={
-								<Skeleton className="h-15.5 w-full rounded-xl" />
-							}
+							fallback={<CardSkeleton className="h-15.5" />}
 						>
 							<VisibilitySelector
 								visibility={visibility}
@@ -480,9 +478,7 @@ export const AdvancedConfigGrid = ({
 
 						<div className="pt-4 border-t border-border/10">
 							<Suspense
-								fallback={
-									<Skeleton className="h-11.5 w-full rounded-xl" />
-								}
+								fallback={<CardSkeleton className="h-11.5" />}
 							>
 								<CollaboratorsManager
 									pasteId={pasteId}

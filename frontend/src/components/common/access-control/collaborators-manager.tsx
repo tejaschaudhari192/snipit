@@ -16,7 +16,7 @@ import { cn } from "@/utils";
 import type { ShareRole } from "@/types";
 import { addCollaborator, removeCollaborator } from "@/lib/api/collaborators";
 import { toast } from "@/components/ui/toast";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SelectSkeleton, ButtonSkeleton } from "@/components/common/skeletons";
 
 interface ShareItem {
 	email: string;
@@ -293,14 +293,12 @@ export const CollaboratorsManager = ({
 								{updatingEmails.includes(item.email) ? (
 									<div className="flex items-center gap-2 h-8">
 										{/* Shimmer Select trigger skeleton */}
-										<Skeleton className="flex-1 min-[440px]:w-25 h-8 rounded-lg bg-muted/60 border border-input/20 flex items-center justify-between px-3">
-											<Skeleton className="h-2 w-10 bg-muted-foreground/20 rounded" />
-											<Skeleton className="h-3 w-3 bg-muted-foreground/20 rounded-sm" />
-										</Skeleton>
+										<SelectSkeleton className="flex-1 min-[440px]:w-25" />
 										{/* Shimmer Delete icon button skeleton */}
-										<Skeleton className="h-8 w-8 rounded-lg bg-muted/60 border border-input/20 flex items-center justify-center">
-											<Skeleton className="h-3 w-3 bg-muted-foreground/20 rounded-full" />
-										</Skeleton>
+										<ButtonSkeleton
+											size="icon"
+											className="h-8 w-8"
+										/>
 									</div>
 								) : (
 									<>

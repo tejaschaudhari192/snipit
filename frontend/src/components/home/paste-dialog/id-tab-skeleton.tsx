@@ -1,4 +1,8 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import {
+	InputSkeleton,
+	ButtonSkeleton,
+	TextSkeleton,
+} from "@/components/common/skeletons";
 import { cn } from "@/utils";
 
 interface IdTabSkeletonProps {
@@ -16,14 +20,14 @@ export const IdTabSkeleton = ({ rows = 1, className }: IdTabSkeletonProps) => {
 		>
 			{/* Input & Button Skeleton */}
 			<div className="flex gap-2">
-				<Skeleton className="h-10 w-full bg-muted/40" />
-				<Skeleton className="h-10 w-10 shrink-0 bg-muted/40" />
+				<InputSkeleton className="h-10 w-full bg-muted/40" />
+				<ButtonSkeleton className="h-10 w-10 shrink-0 bg-muted/40" />
 			</div>
 
 			{/* Content Skeletons */}
 			<div className="space-y-2">
 				{Array.from({ length: rows }).map((_, i) => (
-					<Skeleton
+					<TextSkeleton
 						key={i}
 						className="h-4 bg-muted/20"
 						style={{ width: `${Math.random() * 40 + 60}%` }}

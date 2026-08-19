@@ -11,8 +11,13 @@ import type { editor } from "monaco-editor";
 import { useTranslation } from "react-i18next";
 import { Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "@/components/ui/toast";
+import {
+	LanguageSelectorSkeleton,
+	AiButtonSkeleton,
+	MainToolbarSkeleton,
+} from "@/components/common/skeletons";
 
 import { cn, playErrorSound } from "@/utils";
 import { defineMonacoThemes } from "@/lib/monaco";
@@ -95,11 +100,6 @@ const AiEnhanceDialog = lazy(() =>
 const AiWriterDialog = lazy(() =>
 	import("@/components/editor/ai-writer-dialog").then((m) => ({
 		default: m.AiWriterDialog,
-	})),
-);
-const MonacoPlaintextToggle = lazy(() =>
-	import("@/components/editor/monaco-plaintext-toggle").then((m) => ({
-		default: m.MonacoPlaintextToggle,
 	})),
 );
 
@@ -239,14 +239,6 @@ const HomePage = () => {
 	const [isAiAutocompleteEnabled, setIsAiAutocompleteEnabled] = useState(() =>
 		storage.get(CONFIG.storageKeys.aiAutocomplete, false),
 	);
-
-	const [isMonacoPlaintext, setIsMonacoPlaintext] = useState<boolean>(() =>
-		storage.get(CONFIG.storageKeys.plaintextEditorMode, false),
-	);
-
-	useEffect(() => {
-		storage.set(CONFIG.storageKeys.plaintextEditorMode, isMonacoPlaintext);
-	}, [isMonacoPlaintext]);
 
 	const { setupAutocomplete } = useAiAutocomplete({
 		language,
@@ -391,11 +383,7 @@ const HomePage = () => {
 	return (
 		<div className="relative flex-1 flex flex-col bg-background overflow-hidden">
 			<div className="relative z-10 flex flex-col gap-1.5 my-1 mx-2 md:my-1.5 md:mx-4 shrink-0">
-				<Suspense
-					fallback={
-						<div className="h-16 w-full animate-pulse bg-muted/20 border-b border-border/50 rounded-xl" />
-					}
-				>
+				<Suspense fallback={<MainToolbarSkeleton />}>
 					<MainToolbar
 						contentType={contentType}
 						setContentType={onContentTypeChange}
@@ -418,10 +406,7 @@ const HomePage = () => {
 						{(isDetecting || contentType === "code") && (
 							<Suspense
 								fallback={
-									<div className="flex items-center gap-2">
-										<Skeleton className="w-24 h-9 rounded-lg" />
-										<Skeleton className="w-9 h-9 rounded-lg" />
-									</div>
+									<LanguageSelectorSkeleton className="flex items-center gap-2" />
 								}
 							>
 								<div className="flex items-center gap-2">
@@ -455,7 +440,7 @@ const HomePage = () => {
 						{contentType === "draw" && (
 							<Suspense
 								fallback={
-									<Skeleton className="h-9 w-24 rounded-lg shrink-0" />
+									<AiButtonSkeleton className="h-9 w-24 rounded-lg shrink-0" />
 								}
 							>
 								<AiDrawButton
@@ -467,13 +452,7 @@ const HomePage = () => {
 						{["text", "code", "docs"].includes(contentType) && (
 							<Suspense
 								fallback={
-									<div className="flex items-center gap-2">
-										<Skeleton className="h-9 w-9 rounded-lg" />
-										<Skeleton className="h-9 w-32 rounded-lg" />
-										<div className="w-px h-6 bg-border/20 mx-1" />
-										<Skeleton className="h-9 w-9 rounded-lg" />
-										<Skeleton className="h-9 w-20 rounded-lg" />
-									</div>
+									<AiButtonSkeleton className="flex items-center gap-2" />
 								}
 							>
 								<div className="flex items-center gap-2">
@@ -522,13 +501,6 @@ const HomePage = () => {
 										enabled={isAiAutocompleteEnabled}
 										onToggle={setIsAiAutocompleteEnabled}
 									/>
-
-									{contentType === "text" && (
-										<MonacoPlaintextToggle
-											enabled={isMonacoPlaintext}
-											onToggle={setIsMonacoPlaintext}
-										/>
-									)}
 
 									<div className="w-px h-6 bg-border/40 mx-1" />
 
@@ -613,7 +585,6 @@ const HomePage = () => {
 									drawRevision={drawRevision}
 									transliteration={transliteration}
 									onEditorInstance={handleTiptapMount}
-									isMonacoPlaintext={isMonacoPlaintext}
 								/>
 							</Suspense>
 						</div>
@@ -622,7 +593,9 @@ const HomePage = () => {
 					const terminalPanel = (
 						<Suspense
 							fallback={
-								<div className="m-2 md:mx-4 h-40 skeleton rounded-xl opacity-50" />
+								<div className="m-2 md:mx-4 h-40">
+									<Skeleton className="h-full w-full rounded-xl" />
+								</div>
 							}
 						>
 							<TerminalContainer

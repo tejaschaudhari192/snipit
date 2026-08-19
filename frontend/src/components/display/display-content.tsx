@@ -7,6 +7,13 @@ const EditorToolbar = lazy(() =>
 	})),
 );
 import { EditorToolbarSkeleton } from "@/components/common/editor-toolbar-skeleton";
+import {
+	DisplayContentSkeleton,
+	FileDisplaySkeleton,
+	LinkDisplaySkeleton,
+	DocsDisplaySkeleton,
+	MonacoDisplaySkeleton,
+} from "@/components/common/skeletons/display-skeletons";
 import type {
 	PasteData,
 	ContentMode,
@@ -68,7 +75,6 @@ const TiptapEditor = lazy(() =>
 );
 
 import { Editor } from "@tiptap/core";
-import { Skeleton } from "@/components/ui/skeleton";
 import type { useTransliteration } from "@/hooks/use-transliteration";
 
 interface DisplayContentProps {
@@ -195,9 +201,7 @@ export const DisplayContent = memo(
 		const renderContent = () => {
 			if (contentType === "docs") {
 				return (
-					<Suspense
-						fallback={<Skeleton className="flex-1 w-full h-full" />}
-					>
+					<Suspense fallback={<DisplayContentSkeleton mode="docs" />}>
 						<TiptapEditor
 							value={content}
 							onChange={onContentChange}
@@ -212,20 +216,7 @@ export const DisplayContent = memo(
 			if (contentType === "file") {
 				if (isEdit) {
 					return (
-						<Suspense
-							fallback={
-								<div className="h-full w-full flex items-center justify-center p-10">
-									<div className="w-full max-w-xl space-y-6">
-										<div className="flex flex-col items-center gap-4">
-											<Skeleton className="h-12 w-12 rounded-xl" />
-											<Skeleton className="h-8 w-48" />
-											<Skeleton className="h-4 w-64" />
-										</div>
-										<Skeleton className="h-75 w-full rounded-2xl border-2 border-dashed" />
-									</div>
-								</div>
-							}
-						>
+						<Suspense fallback={<FileDisplaySkeleton />}>
 							<FileEditView
 								paste={paste || null}
 								previewUrl={previewUrl}
@@ -252,20 +243,8 @@ export const DisplayContent = memo(
 					);
 				}
 				return (
-					<Suspense
-						fallback={
-							<div className="h-full w-full flex items-center justify-center p-10">
-								<div className="w-full max-w-xl space-y-6">
-									<div className="flex flex-col items-center gap-4">
-										<Skeleton className="h-12 w-12 rounded-xl" />
-										<Skeleton className="h-8 w-48" />
-										<Skeleton className="h-4 w-64" />
-									</div>
-								</div>
-							</div>
-						}
-					>
-						<FileDisplay paste={paste} contentRef={contentRef} />
+					<Suspense fallback={<FileDisplaySkeleton />}>
+						<FileDisplay paste={paste!} contentRef={contentRef} />
 					</Suspense>
 				);
 			}
@@ -274,9 +253,7 @@ export const DisplayContent = memo(
 				return (
 					<div className="h-full w-full">
 						<Suspense
-							fallback={
-								<Skeleton className="w-full h-full rounded-xl" />
-							}
+							fallback={<DisplayContentSkeleton mode="draw" />}
 						>
 							<CollabDraw
 								id={id}
@@ -294,26 +271,13 @@ export const DisplayContent = memo(
 
 			if (contentType === "link") {
 				return (
-					<Suspense
-						fallback={
-							<div className="h-full w-full flex items-center justify-center p-6">
-								<div className="w-full max-w-xl space-y-8">
-									<div className="flex flex-col items-center gap-4">
-										<Skeleton className="h-14 w-14 rounded-xl" />
-										<Skeleton className="h-8 w-40" />
-										<Skeleton className="h-4 w-60" />
-									</div>
-									<Skeleton className="h-12 w-full rounded-xl" />
-								</div>
-							</div>
-						}
-					>
+					<Suspense fallback={<LinkDisplaySkeleton />}>
 						<LinkView
-							isEdit={isEdit}
 							content={content}
 							onContentChange={onContentChange}
 							contentRef={contentRef}
 							isAdmin={isAdmin}
+							isEdit={isEdit}
 							redirectionType={
 								redirectionType ?? paste?.redirectionType
 							}
@@ -326,11 +290,7 @@ export const DisplayContent = memo(
 			if (language === "markdown" || language === "html") {
 				if (isEdit) {
 					return (
-						<Suspense
-							fallback={
-								<div className="h-full w-full animate-pulse bg-muted/50 rounded-2xl" />
-							}
-						>
+						<Suspense fallback={<MonacoDisplaySkeleton />}>
 							<ResizableSplitPane
 								className="flex-1"
 								showHint={true}
@@ -339,9 +299,7 @@ export const DisplayContent = memo(
 								storageKey={`display-preview-split-${language}`}
 								left={
 									<Suspense
-										fallback={
-											<div className="h-full w-full animate-pulse bg-muted/50 rounded-2xl" />
-										}
+										fallback={<MonacoDisplaySkeleton />}
 									>
 										<CodeEditorView
 											isEdit={isEdit}
@@ -364,15 +322,7 @@ export const DisplayContent = memo(
 								right={
 									<div className="h-full overflow-y-auto bg-background/30">
 										<Suspense
-											fallback={
-												<div className="flex-1 p-6 space-y-4 w-full h-full bg-background/30">
-													<div className="animate-pulse space-y-4">
-														<Skeleton className="w-3/4 h-4 rounded opacity-40 bg-muted-foreground/30" />
-														<Skeleton className="w-1/2 h-4 rounded opacity-40 bg-muted-foreground/30" />
-														<Skeleton className="w-5/6 h-4 rounded opacity-40 bg-muted-foreground/30" />
-													</div>
-												</div>
-											}
+											fallback={<DocsDisplaySkeleton />}
 										>
 											{language === "markdown" ? (
 												<MarkdownDisplay
@@ -395,17 +345,7 @@ export const DisplayContent = memo(
 				return (
 					<div className="h-full overflow-y-auto flex flex-col items-center">
 						<div className="my-auto w-full flex flex-col items-center h-full max-h-full">
-							<Suspense
-								fallback={
-									<div className="flex-1 p-6 space-y-4 w-full h-full bg-background/30">
-										<div className="animate-pulse space-y-4">
-											<Skeleton className="w-3/4 h-4 rounded opacity-40 bg-muted-foreground/30" />
-											<Skeleton className="w-1/2 h-4 rounded opacity-40 bg-muted-foreground/30" />
-											<Skeleton className="w-5/6 h-4 rounded opacity-40 bg-muted-foreground/30" />
-										</div>
-									</div>
-								}
-							>
+							<Suspense fallback={<DocsDisplaySkeleton />}>
 								{language === "markdown" ? (
 									<MarkdownDisplay
 										content={content}
@@ -422,11 +362,7 @@ export const DisplayContent = memo(
 			}
 
 			return (
-				<Suspense
-					fallback={
-						<div className="h-full w-full animate-pulse bg-muted/50 rounded-2xl" />
-					}
-				>
+				<Suspense fallback={<MonacoDisplaySkeleton />}>
 					<CodeEditorView
 						isEdit={isEdit}
 						contentType={contentType}

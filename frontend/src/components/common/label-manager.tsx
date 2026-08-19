@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Tag as TagIcon } from "lucide-react";
 import { usePaste } from "@/context/PasteContext";
 import { useState, useEffect, useCallback, lazy, Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { TextSkeleton } from "@/components/common/skeletons";
 
 const LabelsDisplay = lazy(() =>
 	import("./labels-display").then((m) => ({ default: m.LabelsDisplay })),
@@ -74,9 +74,9 @@ export const LabelManager = ({
 	if (isLoading && !isCreationMode) {
 		return (
 			<div className="flex items-center gap-2 animate-in fade-in duration-500">
-				<Skeleton className="h-7 w-20" />
-				<Skeleton className="h-7 w-24" />
-				<Skeleton className="h-7 w-16" />
+				<TextSkeleton className="h-7 w-20" />
+				<TextSkeleton className="h-7 w-24" />
+				<TextSkeleton className="h-7 w-16" />
 			</div>
 		);
 	}
@@ -91,7 +91,7 @@ export const LabelManager = ({
 			)}
 
 			<div className="flex flex-wrap items-center gap-2">
-				<Suspense fallback={<Skeleton className="h-7 w-24" />}>
+				<Suspense fallback={<TextSkeleton className="h-7 w-24" />}>
 					<LabelsDisplay
 						labels={currentLabels}
 						onRemove={

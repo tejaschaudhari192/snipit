@@ -100,7 +100,6 @@ interface EditorContentProps {
 	drawRevision?: number;
 	transliteration?: ReturnType<typeof useTransliteration>;
 	onEditorInstance?: (editor: TiptapEditorInstance | null) => void;
-	isMonacoPlaintext?: boolean;
 }
 
 export const EditorContent = memo(
@@ -121,7 +120,6 @@ export const EditorContent = memo(
 		drawRevision = 0,
 		transliteration,
 		onEditorInstance,
-		isMonacoPlaintext = false,
 	}: EditorContentProps) => {
 		const {
 			contentType,
@@ -225,7 +223,7 @@ export const EditorContent = memo(
 								/>
 							</Suspense>
 						) : contentType === "text" ? (
-							transliteration?.enabled || isMonacoPlaintext ? (
+							transliteration?.enabled ? (
 								<Suspense fallback={<EditorContentSkeleton />}>
 									<MonacoConfig />
 									<MonacoEditor

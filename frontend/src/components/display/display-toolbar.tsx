@@ -27,7 +27,10 @@ import type {
 } from "@/types";
 import { cn } from "@/utils";
 import { ShimmerSection } from "@/components/common/shimmer-section";
-import { Skeleton } from "@/components/ui/skeleton";
+import {
+	ToolbarButtonSkeleton,
+	ToolbarSelectorSkeleton,
+} from "../common/skeletons";
 
 // Lazy Loaded Components
 const FontSizeControls = lazy(() =>
@@ -84,14 +87,6 @@ const ToolbarActionButtons = lazy(() =>
 	import("./shared/toolbar-action-buttons").then((m) => ({
 		default: m.ToolbarActionButtons,
 	})),
-);
-
-// Fallback Skeletons
-const ButtonSkeleton = () => (
-	<Skeleton className="h-9 w-9 rounded-lg shrink-0" />
-);
-const SelectorSkeleton = () => (
-	<Skeleton className="h-9 w-32 rounded-lg shrink-0" />
 );
 
 interface DisplayToolbarProps {
@@ -265,7 +260,9 @@ export const DisplayToolbar = memo(
 						setLanguage &&
 						setContentType && (
 							<div className="flex items-center gap-2 animate-in fade-in zoom-in-95 duration-200 shrink-0">
-								<Suspense fallback={<SelectorSkeleton />}>
+								<Suspense
+									fallback={<ToolbarSelectorSkeleton />}
+								>
 									<LanguageSelector
 										value={language}
 										onValueChange={(val) => {
@@ -338,7 +335,7 @@ export const DisplayToolbar = memo(
 						setIsAiAutocompleteEnabled &&
 						contentType !== "file" &&
 						contentType !== "draw" && (
-							<Suspense fallback={<ButtonSkeleton />}>
+							<Suspense fallback={<ToolbarButtonSkeleton />}>
 								<AiAutocompleteToggle
 									enabled={isAiAutocompleteEnabled}
 									onToggle={setIsAiAutocompleteEnabled}
@@ -352,7 +349,11 @@ export const DisplayToolbar = memo(
 						expiresTime &&
 						setExpiresTime &&
 						setIsCustomExpiryDialogOpen && (
-							<Suspense fallback={<SelectorSkeleton />}>
+							<Suspense
+								fallback={
+									<ToolbarSelectorSkeleton width="min-w-30" />
+								}
+							>
 								<ExpirySelector
 									expiresTime={expiresTime}
 									setExpiresTime={setExpiresTime}
@@ -368,7 +369,7 @@ export const DisplayToolbar = memo(
 						onAiWriterClick &&
 						contentType !== "file" &&
 						contentType !== "draw" && (
-							<Suspense fallback={<ButtonSkeleton />}>
+							<Suspense fallback={<ToolbarButtonSkeleton />}>
 								<AiWriterButton onClick={onAiWriterClick} />
 							</Suspense>
 						)}
@@ -379,7 +380,7 @@ export const DisplayToolbar = memo(
 						onTransliterationToggle &&
 						transliterationLanguage &&
 						onTransliterationLanguageChange && (
-							<Suspense fallback={<ButtonSkeleton />}>
+							<Suspense fallback={<ToolbarButtonSkeleton />}>
 								<TransliterationToggle
 									enabled={transliterationEnabled}
 									onToggle={onTransliterationToggle}
@@ -395,7 +396,7 @@ export const DisplayToolbar = memo(
 						onContentChange &&
 						contentType !== "file" &&
 						contentType !== "draw" && (
-							<Suspense fallback={<ButtonSkeleton />}>
+							<Suspense fallback={<ToolbarButtonSkeleton />}>
 								<VoiceInputButton
 									value={content}
 									setTextValue={onContentChange}
@@ -446,7 +447,7 @@ export const DisplayToolbar = memo(
 					)}
 					{showFontControls && (
 						<div className="shrink-0 flex items-center">
-							<Suspense fallback={<ButtonSkeleton />}>
+							<Suspense fallback={<ToolbarButtonSkeleton />}>
 								<FontSizeControls
 									fontSize={fontSize}
 									setFontSize={setFontSize}
