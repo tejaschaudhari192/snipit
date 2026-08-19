@@ -64,9 +64,12 @@ export const CinemaRoomContent = ({
 	});
 
 	// Use React components for receiving tracks
-	const videoTracks = useTracks([Track.Source.Camera], {
-		onlySubscribed: true,
-	});
+	const videoTracks = useTracks(
+		[Track.Source.ScreenShare, Track.Source.Camera],
+		{
+			onlySubscribed: true,
+		},
+	);
 	const audioTracks = useTracks([Track.Source.Microphone], {
 		onlySubscribed: true,
 	});
@@ -103,19 +106,20 @@ export const CinemaRoomContent = ({
 	);
 
 	// Custom hook for all video sync events and timeline pings
-	const { emitVideoState } = useCinemaSync({
-		socket,
-		roomId,
-		isHost,
-		isP2pMode,
-		videoRef,
-		isPlaying,
-		duration,
-		setCurrentTime,
-		setDuration,
-		setIsPlaying,
-		setCommentsList,
-	});
+	const { emitVideoState, applyPendingSync, needsUnmute, handleUnmute } =
+		useCinemaSync({
+			socket,
+			roomId,
+			isHost,
+			isP2pMode,
+			videoRef,
+			isPlaying,
+			duration,
+			setCurrentTime,
+			setDuration,
+			setIsPlaying,
+			setCommentsList,
+		});
 
 	const sendChatMessage = () => {
 		if (!socket || !chatInput.trim()) return;
@@ -156,6 +160,9 @@ export const CinemaRoomContent = ({
 				setVideoError={setVideoError}
 				setLocalFile={setLocalFile}
 				emitVideoState={emitVideoState}
+				applyPendingSync={applyPendingSync}
+				needsUnmute={needsUnmute}
+				handleUnmute={handleUnmute}
 				replaceHostTracks={replaceHostTracks}
 				socket={socket}
 			/>

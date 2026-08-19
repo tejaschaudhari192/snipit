@@ -20,6 +20,7 @@ import {
 	CinemaHostBroadcastOverlay,
 	CinemaHostDisconnectedOverlay,
 	CinemaErrorOverlay,
+	CinemaUnmuteOverlay,
 } from "./cinema-overlays";
 
 export interface CinemaPlayerProps {
@@ -50,6 +51,9 @@ export interface CinemaPlayerProps {
 	setLocalFile: (file: File | null) => void;
 
 	emitVideoState: (action: "play" | "pause" | "seek", time: number) => void;
+	applyPendingSync?: () => void;
+	needsUnmute?: boolean;
+	handleUnmute?: () => void;
 	replaceHostTracks: () => void;
 	handleSendReaction: (emoji: string) => void;
 	socket: Socket | null | undefined;
@@ -113,6 +117,9 @@ export const CinemaPlayer = (props: CinemaPlayerProps) => {
 		if (!props.isP2pMode || props.isHost) {
 			props.setDuration(dur);
 		}
+		if (!props.isHost && props.applyPendingSync) {
+			props.applyPendingSync();
+		}
 		if (props.isP2pMode && props.isHost) {
 			props.replaceHostTracks();
 			if (props.socket) {
@@ -123,6 +130,12 @@ export const CinemaPlayer = (props: CinemaPlayerProps) => {
 					duration: dur,
 				});
 			}
+		}
+	};
+
+	const handleCanPlay = () => {
+		if (!props.isHost && props.applyPendingSync) {
+			props.applyPendingSync();
 		}
 	};
 
@@ -336,6 +349,11 @@ export const CinemaPlayer = (props: CinemaPlayerProps) => {
 				videoSrc={props.videoSrc}
 			/>
 
+			<CinemaUnmuteOverlay
+				isVisible={!!props.needsUnmute}
+				onUnmute={props.handleUnmute || (() => {})}
+			/>
+
 			{/* Floating reaction rendering */}
 			<div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
 				{props.reactions.map((react) => (
@@ -381,6 +399,7 @@ export const CinemaPlayer = (props: CinemaPlayerProps) => {
 						onPause={handleVideoPause}
 						onSeeked={handleVideoSeeked}
 						onLoadedMetadata={handleLoadedMetadata}
+						onCanPlay={handleCanPlay}
 						onError={() =>
 							props.setVideoError(
 								"An error occurred loading the media stream.",

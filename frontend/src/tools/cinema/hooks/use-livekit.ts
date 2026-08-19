@@ -56,14 +56,16 @@ export const useLiveKitHost = ({ isHost, videoRef }: UseLiveKitHostProps) => {
 			let captureStream: MediaStream | null = null;
 			if ("captureStream" in video) {
 				captureStream = (
-					video as unknown as { captureStream: () => MediaStream }
-				).captureStream();
+					video as unknown as {
+						captureStream: (fps?: number) => MediaStream;
+					}
+				).captureStream(60);
 			} else if ("mozCaptureStream" in video) {
 				captureStream = (
 					video as unknown as {
-						mozCaptureStream: () => MediaStream;
+						mozCaptureStream: (fps?: number) => MediaStream;
 					}
-				).mozCaptureStream();
+				).mozCaptureStream(60);
 			} else {
 				console.error(
 					"Browser does not support captureStream on video elements",
@@ -79,10 +81,18 @@ export const useLiveKitHost = ({ isHost, videoRef }: UseLiveKitHostProps) => {
 			if (videoTrack) {
 				const lkVideoTrack = new LocalVideoTrack(videoTrack);
 				await localParticipant.publishTrack(lkVideoTrack, {
-					source: Track.Source.Camera,
+					source: Track.Source.ScreenShare,
+					videoEncoding: {
+						maxBitrate: 4_500_000,
+						maxFramerate: 60,
+					},
+					videoCodec: "h264",
+					simulcast: false,
 				});
 				publishedVideoTrackRef.current = lkVideoTrack;
-				console.log("LiveKit Host: Published video track");
+				console.log(
+					"LiveKit Host: Published high-definition video track",
+				);
 			}
 			if (audioTrack) {
 				const lkAudioTrack = new LocalAudioTrack(audioTrack);
@@ -113,12 +123,16 @@ export const useLiveKitHost = ({ isHost, videoRef }: UseLiveKitHostProps) => {
 			let captureStream: MediaStream | null = null;
 			if ("captureStream" in video) {
 				captureStream = (
-					video as unknown as { captureStream: () => MediaStream }
-				).captureStream();
+					video as unknown as {
+						captureStream: (fps?: number) => MediaStream;
+					}
+				).captureStream(60);
 			} else if ("mozCaptureStream" in video) {
 				captureStream = (
-					video as unknown as { mozCaptureStream: () => MediaStream }
-				).mozCaptureStream();
+					video as unknown as {
+						mozCaptureStream: (fps?: number) => MediaStream;
+					}
+				).mozCaptureStream(60);
 			} else {
 				return;
 			}
@@ -148,11 +162,17 @@ export const useLiveKitHost = ({ isHost, videoRef }: UseLiveKitHostProps) => {
 			if (newVideoTrack) {
 				const lkVideoTrack = new LocalVideoTrack(newVideoTrack);
 				await localParticipant.publishTrack(lkVideoTrack, {
-					source: Track.Source.Camera,
+					source: Track.Source.ScreenShare,
+					videoEncoding: {
+						maxBitrate: 4_500_000,
+						maxFramerate: 60,
+					},
+					videoCodec: "h264",
+					simulcast: false,
 				});
 				publishedVideoTrackRef.current = lkVideoTrack;
 				console.log(
-					"LiveKit Host: Hot-swapped and republished video track",
+					"LiveKit Host: Hot-swapped and republished HD video track",
 				);
 			}
 			if (newAudioTrack) {

@@ -35,11 +35,9 @@ const handleRequest = async (
 export const createFolder = (req: AuthRequest, res: Response) => {
 	const parsed = createFolderSchema.safeParse(req.body);
 	if (!parsed.success) {
-		return res
-			.status(400)
-			.json({
-				error: parsed.error?.issues[0]?.message || "Validation error",
-			});
+		return res.status(400).json({
+			error: parsed.error?.issues[0]?.message || "Validation error",
+		});
 	}
 	return handleRequest(req, res, (userId) =>
 		FolderService.createFolder(userId, parsed.data!),
@@ -49,11 +47,9 @@ export const createFolder = (req: AuthRequest, res: Response) => {
 export const updateFolder = (req: AuthRequest, res: Response) => {
 	const parsed = updateFolderSchema.safeParse(req.body);
 	if (!parsed.success) {
-		return res
-			.status(400)
-			.json({
-				error: parsed.error?.issues[0]?.message || "Validation error",
-			});
+		return res.status(400).json({
+			error: parsed.error?.issues[0]?.message || "Validation error",
+		});
 	}
 	return handleRequest(req, res, (userId) =>
 		FolderService.updateFolder(
@@ -67,11 +63,9 @@ export const updateFolder = (req: AuthRequest, res: Response) => {
 export const moveFolder = (req: AuthRequest, res: Response) => {
 	const parsed = moveFolderSchema.safeParse(req.body);
 	if (!parsed.success) {
-		return res
-			.status(400)
-			.json({
-				error: parsed.error?.issues[0]?.message || "Validation error",
-			});
+		return res.status(400).json({
+			error: parsed.error?.issues[0]?.message || "Validation error",
+		});
 	}
 	return handleRequest(req, res, (userId) =>
 		FolderService.moveFolder(

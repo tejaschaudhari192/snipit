@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { type Socket } from "socket.io-client";
 import type { MediaPlayerInstance } from "@vidstack/react";
 
@@ -26,7 +26,6 @@ export function useCinemaSync({
 	isHost,
 	isP2pMode,
 	videoRef,
-	isPlaying,
 	duration,
 	setCurrentTime,
 	setDuration,
@@ -35,6 +34,82 @@ export function useCinemaSync({
 }: UseCinemaSyncOptions) {
 	const isIncomingEvent = useRef(false);
 	const lastRemoteSyncTime = useRef(0);
+	const pendingSyncRef = useRef<{
+		action: "play" | "pause" | "seek";
+		timestamp: number;
+		duration?: number;
+	} | null>(null);
+
+	const [needsUnmute, setNeedsUnmute] = useState(false);
+
+	const attemptPlay = useCallback(() => {
+		if (!videoRef.current) return;
+		try {
+			videoRef.current.play().catch((err) => {
+				if (err.name !== "AbortError") {
+					console.warn(
+						"Cinema: Autoplay unmuted was blocked. Muting to autoplay...",
+						err,
+					);
+					if (videoRef.current) {
+						videoRef.current.muted = true;
+						videoRef.current
+							.play()
+							.then(() => {
+								setNeedsUnmute(true);
+							})
+							.catch((e) => {
+								console.error(
+									"Cinema: Muted autoplay also failed:",
+									e,
+								);
+							});
+					}
+				}
+			});
+		} catch (err) {
+			console.warn("Cinema: Synchronized play attempt error:", err);
+		}
+	}, [videoRef]);
+
+	const handleUnmute = useCallback(() => {
+		if (videoRef.current) {
+			videoRef.current.muted = false;
+			setNeedsUnmute(false);
+		}
+	}, [videoRef]);
+
+	const applyPendingSync = useCallback(() => {
+		if (!videoRef.current || !pendingSyncRef.current) return;
+		const data = pendingSyncRef.current;
+		isIncomingEvent.current = true;
+		lastRemoteSyncTime.current = Date.now();
+
+		if (data.timestamp !== undefined) {
+			videoRef.current.currentTime = data.timestamp;
+			setCurrentTime(data.timestamp);
+		}
+		if (data.duration) {
+			setDuration(data.duration);
+		}
+		if (data.action === "play") {
+			setIsPlaying(true);
+			attemptPlay();
+		} else {
+			setIsPlaying(false);
+			try {
+				videoRef.current.pause();
+			} catch {
+				console.warn(
+					"Cinema: Failed to pause media during pending sync",
+				);
+			}
+		}
+
+		setTimeout(() => {
+			isIncomingEvent.current = false;
+		}, 400);
+	}, [videoRef, setCurrentTime, setDuration, setIsPlaying, attemptPlay]);
 
 	useEffect(() => {
 		if (!socket) return;
@@ -45,6 +120,8 @@ export function useCinemaSync({
 			timestamp: number;
 			duration?: number;
 		}) => {
+			pendingSyncRef.current = data;
+
 			if (!videoRef.current) return;
 			isIncomingEvent.current = true;
 			lastRemoteSyncTime.current = Date.now();
@@ -59,23 +136,12 @@ export function useCinemaSync({
 					const drift = Math.abs(
 						videoRef.current.currentTime - data.timestamp,
 					);
-					if (drift > 1.0) {
+					if (drift > 0.8) {
 						videoRef.current.currentTime = data.timestamp;
 					}
 				}
-				try {
-					videoRef.current.play().catch((err) => {
-						if (err.name !== "AbortError") {
-							console.error("Cinema: Sync play failed:", err);
-						}
-						setIsPlaying(false);
-					});
-				} catch {
-					console.warn(
-						"Cinema: Ignored sync play, media not ready yet",
-					);
-				}
 				setIsPlaying(true);
+				attemptPlay();
 			} else if (data.action === "pause") {
 				setCurrentTime(data.timestamp);
 				try {
@@ -98,7 +164,7 @@ export function useCinemaSync({
 
 			setTimeout(() => {
 				isIncomingEvent.current = false;
-			}, 300);
+			}, 400);
 		};
 
 		// Listen for live chat comments
@@ -120,11 +186,11 @@ export function useCinemaSync({
 			if (data.duration) {
 				setDuration(data.duration);
 			}
-			if (!isP2pMode && videoRef.current && isPlaying) {
+			if (!isP2pMode && videoRef.current) {
 				const drift = Math.abs(
 					videoRef.current.currentTime - data.timestamp,
 				);
-				if (drift > 2.5) {
+				if (drift > 1.0) {
 					videoRef.current.currentTime = data.timestamp;
 				}
 			}
@@ -144,33 +210,33 @@ export function useCinemaSync({
 		isHost,
 		isP2pMode,
 		videoRef,
-		isPlaying,
 		setCurrentTime,
 		setDuration,
 		setIsPlaying,
 		setCommentsList,
+		attemptPlay,
 	]);
 
 	// Periodically send current playhead position to let friends see status (host authoritative)
 	useEffect(() => {
-		if (!socket || !isPlaying || !videoRef.current || !isHost) return;
+		if (!socket || !roomId || !isHost) return;
 
 		const interval = setInterval(() => {
-			if (videoRef.current && roomId) {
+			if (videoRef.current) {
 				socket.emit("video-timeline-ping", {
 					roomId,
-					timestamp: videoRef.current.currentTime,
+					timestamp: videoRef.current.currentTime || 0,
 					duration: videoRef.current.duration || undefined,
 				});
 			}
-		}, 3000);
+		}, 2000);
 
 		return () => clearInterval(interval);
-	}, [socket, isPlaying, roomId, videoRef, isHost]);
+	}, [socket, roomId, videoRef, isHost]);
 
 	// Smooth playhead estimation for watchers in P2P mode
 	useEffect(() => {
-		if (!isP2pMode || isHost || !isPlaying) return;
+		if (!isP2pMode || isHost) return;
 
 		const interval = setInterval(() => {
 			setCurrentTime((prev) => {
@@ -180,7 +246,7 @@ export function useCinemaSync({
 		}, 100);
 
 		return () => clearInterval(interval);
-	}, [isP2pMode, isHost, isPlaying, duration, setCurrentTime]);
+	}, [isP2pMode, isHost, duration, setCurrentTime]);
 
 	const emitVideoState = (
 		action: "play" | "pause" | "seek",
@@ -190,7 +256,7 @@ export function useCinemaSync({
 			!socket ||
 			isIncomingEvent.current ||
 			!roomId ||
-			Date.now() - lastRemoteSyncTime.current < 600
+			Date.now() - lastRemoteSyncTime.current < 400
 		)
 			return;
 
@@ -204,5 +270,8 @@ export function useCinemaSync({
 
 	return {
 		emitVideoState,
+		applyPendingSync,
+		needsUnmute,
+		handleUnmute,
 	};
 }
