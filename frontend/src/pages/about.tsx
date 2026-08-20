@@ -109,15 +109,15 @@ const AboutPage = () => {
 					<h2 className="text-2xl md:text-4xl font-bold mb-12 text-center text-foreground">
 						{t("about_page.team.title")}
 					</h2>
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+					<div className="flex flex-col items-center justify-center">
 						{app.team.map((member) => (
 							<div
 								key={member.name}
-								className="p-6 md:p-8 rounded-3xl bg-background/60 backdrop-blur-xl border border-border/50 shadow-2xl ring-1 ring-white/5 hover:border-primary/30 transition-all duration-300 group"
+								className="w-full max-w-md p-6 md:p-8 rounded-3xl bg-background/60 backdrop-blur-xl border border-border/50 shadow-2xl ring-1 ring-white/5 hover:border-primary/30 transition-all duration-300 group"
 							>
-								<div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-6">
+								<div className="flex flex-col items-center text-center gap-6">
 									<div className="relative shrink-0">
-										<div className="w-20 h-20 rounded-2xl overflow-hidden ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all duration-300">
+										<div className="w-24 h-24 rounded-2xl overflow-hidden ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all duration-300">
 											<img
 												src={member.avatar}
 												alt={member.name}
@@ -130,7 +130,7 @@ const AboutPage = () => {
 										</div>
 									</div>
 
-									<div className="flex-1 space-y-1">
+									<div className="space-y-1">
 										<h3 className="text-xl font-bold tracking-tight text-foreground">
 											{member.name}
 										</h3>
@@ -139,7 +139,7 @@ const AboutPage = () => {
 												t(member.roleKey)}
 										</p>
 
-										<div className="flex items-center justify-center sm:justify-start gap-2 pt-2">
+										<div className="flex items-center justify-center gap-2 pt-2">
 											<a
 												href={`mailto:${member.email}`}
 												className="p-2.5 rounded-xl bg-secondary/50 hover:bg-[#EA4335] hover:text-white transition-all duration-300"
