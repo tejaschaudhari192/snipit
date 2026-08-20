@@ -1,11 +1,11 @@
 import Footer from "@/components/footer/footer";
-import { Hero } from "@/components/about/Hero";
-import { AppScreenshot } from "@/components/about/AppScreenshot";
-import { Features } from "@/components/about/Features";
-import { Story } from "@/components/about/Story";
-import { TeamSection } from "@/components/about/TeamSection";
-import { FAQSection } from "@/components/about/FAQSection";
-import { ContributeSection } from "@/components/about/ContributeSection";
+import { Hero } from "@/components/about/hero-section";
+import { AppScreenshot } from "@/components/about/app-screenshot";
+import { Features } from "@/components/about/features-section";
+import { Story } from "@/components/about/story-section";
+import { TeamSection } from "@/components/about/team-section";
+import { FAQSection } from "@/components/about/faq-section";
+import { ContributeSection } from "@/components/about/contribute-section";
 
 const AboutPage = () => {
 	return (
