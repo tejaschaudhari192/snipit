@@ -28,6 +28,10 @@ const userSchema = new Schema<IUser>(
 			unique: true,
 			sparse: true,
 		},
+		avatar: {
+			type: String,
+			required: false,
+		},
 		createdAt: {
 			type: Date,
 			default: Date.now,

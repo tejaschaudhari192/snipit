@@ -12,9 +12,18 @@ import {
 import { type RefObject, useEffect, useRef, useState } from "react";
 import { type Socket } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
-import { Tv, ArrowLeft, Copy, Check, Radio } from "lucide-react";
+import { Tv, Check, Film } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogDescription,
+	DialogFooter,
+} from "@/components/ui/dialog";
 import {
 	CinemaP2pConnectingOverlay,
 	CinemaHostBroadcastOverlay,
@@ -22,6 +31,11 @@ import {
 	CinemaErrorOverlay,
 	CinemaUnmuteOverlay,
 } from "./cinema-overlays";
+import {
+	CinemaTopBar,
+	CinemaFloatingReactions,
+	CinemaReactionBar,
+} from "./cinema-player-controls";
 
 export interface CinemaPlayerProps {
 	roomId: string;
@@ -59,16 +73,35 @@ export interface CinemaPlayerProps {
 	socket: Socket | null | undefined;
 }
 
-const EMOJI_LIST = ["🔥", "❤️", "🤣", "👏", "🍿", "😮", "🎉"];
-
 export const CinemaPlayer = (props: CinemaPlayerProps) => {
 	const navigate = useNavigate();
 	const [copied, setCopied] = useState(false);
+	const [isChangeVideoOpen, setIsChangeVideoOpen] = useState(false);
+	const [newVideoUrl, setNewVideoUrl] = useState("");
 
-	// For non-guest-P2P: figure out what src to pass to Vidstack
+	const handleChangeVideoSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!newVideoUrl.trim() || !props.socket) return;
+		let formattedUrl = newVideoUrl.trim();
+		if (!/^https?:\/\//i.test(formattedUrl)) {
+			formattedUrl = `https://${formattedUrl}`;
+		}
+		props.socket.emit("cinema-change-video", {
+			roomId: props.roomId,
+			videoUrl: formattedUrl,
+		});
+		setIsChangeVideoOpen(false);
+		setNewVideoUrl("");
+		toast.add({
+			title: "Video changed!",
+			description: "Switched video stream for all watchers in the room.",
+			type: "success",
+		});
+	};
+
 	const finalSrc =
 		props.isP2pMode && !props.isHost
-			? null // Guest in P2P mode: use native video element, not Vidstack
+			? null
 			: props.isP2pMode && props.isHost
 				? props.localUrl
 					? { src: props.localUrl, type: "video/mp4" as const }
@@ -139,40 +172,34 @@ export const CinemaPlayer = (props: CinemaPlayerProps) => {
 		}
 	};
 
-	const handleCopyInvite = async () => {
-		const url = `${window.location.origin}/tools/cinema/${props.roomId}`;
-		try {
-			await navigator.clipboard.writeText(url);
-			setCopied(true);
-			toast.add({
-				title: "Invite Link Copied!",
-				type: "success",
-			});
-			setTimeout(() => setCopied(false), 2000);
-		} catch {
-			toast.add({
-				title: "Failed to copy link",
-				type: "error",
-			});
-		}
+	const handleCopyInvite = () => {
+		const inviteLink = `${window.location.origin}/tools/cinema/${props.roomId}`;
+		navigator.clipboard.writeText(inviteLink);
+		setCopied(true);
+		toast.add({
+			title: "Room link copied!",
+			description: "Share this link with your friends to watch together.",
+			type: "success",
+		});
+		setTimeout(() => setCopied(false), 2000);
 	};
 
-	// Native video ref for guest P2P stream (srcObject-based)
 	const nativeVideoRef = useRef<HTMLVideoElement | null>(null);
-	useEffect(() => {
-		const vid = nativeVideoRef.current;
-		if (!vid) return;
-		if (props.remoteMediaStream) {
-			vid.srcObject = props.remoteMediaStream;
-			vid.play().catch(() => {
-				// Autoplay blocked — user must click play
-			});
-		} else {
-			vid.srcObject = null;
-		}
-	}, [props.remoteMediaStream]);
 
-	// Guest P2P: render native <video> with srcObject for WebRTC stream
+	useEffect(() => {
+		if (
+			props.isP2pMode &&
+			!props.isHost &&
+			nativeVideoRef.current &&
+			props.remoteMediaStream
+		) {
+			nativeVideoRef.current.srcObject = props.remoteMediaStream;
+			nativeVideoRef.current.play().catch((err) => {
+				console.warn("Autoplay failed for remote stream:", err);
+			});
+		}
+	}, [props.isP2pMode, props.isHost, props.remoteMediaStream]);
+
 	if (props.isP2pMode && !props.isHost) {
 		return (
 			<div
@@ -184,39 +211,13 @@ export const CinemaPlayer = (props: CinemaPlayerProps) => {
 					} as React.CSSProperties
 				}
 			>
-				{/* Top Control Bar */}
-				<div className="absolute top-0 left-0 right-0 z-30 p-3 bg-linear-to-b from-black/80 via-black/40 to-transparent flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto">
-					<div className="flex items-center gap-2">
-						<Button
-							variant="ghost"
-							size="sm"
-							onClick={() => navigate("/tools/cinema")}
-							className="h-8 px-2.5 text-white/90 hover:text-white hover:bg-white/20 rounded-lg gap-1.5"
-						>
-							<ArrowLeft className="w-4 h-4" />
-							<span className="text-xs font-semibold">Leave</span>
-						</Button>
-						<div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 text-white/90 text-xs font-medium">
-							<Radio className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-							<span>P2P Stream</span>
-						</div>
-					</div>
-					<div className="flex items-center gap-2">
-						<Button
-							variant="secondary"
-							size="sm"
-							onClick={handleCopyInvite}
-							className="h-8 px-3 text-xs font-semibold rounded-lg gap-1.5 bg-white/20 hover:bg-white/30 text-white border-0 backdrop-blur-md"
-						>
-							{copied ? (
-								<Check className="w-3.5 h-3.5 text-emerald-400" />
-							) : (
-								<Copy className="w-3.5 h-3.5" />
-							)}
-							{copied ? "Copied" : "Copy Invite"}
-						</Button>
-					</div>
-				</div>
+				<CinemaTopBar
+					onLeave={() => navigate("/tools/cinema")}
+					isHost={false}
+					isP2pMode={true}
+					copied={copied}
+					onCopyInvite={handleCopyInvite}
+				/>
 
 				<CinemaP2pConnectingOverlay
 					isConnecting={props.isConnectingActual}
@@ -225,39 +226,12 @@ export const CinemaPlayer = (props: CinemaPlayerProps) => {
 					isVisible={!!props.isHostDisconnectedActual}
 				/>
 
-				{/* Floating reactions */}
-				<div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
-					{props.reactions.map((react) => (
-						<div
-							key={react.id}
-							style={{ left: `${react.left}%` }}
-							className="absolute bottom-24 animate-float-emoji flex flex-col items-center gap-1 bg-background/25 backdrop-blur-md px-2.5 py-1 rounded-full border border-border/50 shadow-lg"
-						>
-							<span className="text-3xl filter drop-shadow-md">
-								{react.emoji}
-							</span>
-							<span className="text-[10px] text-foreground/80 font-bold whitespace-nowrap drop-shadow-md">
-								{react.name}
-							</span>
-						</div>
-					))}
-				</div>
+				<CinemaFloatingReactions reactions={props.reactions} />
+				<CinemaReactionBar
+					onSendReaction={props.handleSendReaction}
+					bottomClass="bottom-6"
+				/>
 
-				{/* Interactive Reaction Bar */}
-				<div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 p-1.5 bg-black/60 backdrop-blur-md rounded-full border border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-					{EMOJI_LIST.map((emoji) => (
-						<button
-							key={emoji}
-							onClick={() => props.handleSendReaction(emoji)}
-							className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 hover:scale-125 active:scale-95 transition-all text-lg cursor-pointer"
-							title={`React ${emoji}`}
-						>
-							{emoji}
-						</button>
-					))}
-				</div>
-
-				{/* Native video element for WebRTC stream */}
 				<div className="flex-1 flex items-center justify-center min-h-0 w-full relative z-10">
 					{props.remoteMediaStream ? (
 						<video
@@ -290,39 +264,18 @@ export const CinemaPlayer = (props: CinemaPlayerProps) => {
 				} as React.CSSProperties
 			}
 		>
-			{/* Top Control Bar */}
-			<div className="absolute top-0 left-0 right-0 z-30 p-3 bg-linear-to-b from-black/80 via-black/40 to-transparent flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto">
-				<div className="flex items-center gap-2">
-					<Button
-						variant="ghost"
-						size="sm"
-						onClick={() => navigate("/tools/cinema")}
-						className="h-8 px-2.5 text-white/90 hover:text-white hover:bg-white/20 rounded-lg gap-1.5"
-					>
-						<ArrowLeft className="w-4 h-4" />
-						<span className="text-xs font-semibold">Leave</span>
-					</Button>
-					<div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 text-white/90 text-xs font-medium">
-						<span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-						<span>{props.isHost ? "Host" : "Synced"}</span>
-					</div>
-				</div>
-				<div className="flex items-center gap-2">
-					<Button
-						variant="secondary"
-						size="sm"
-						onClick={handleCopyInvite}
-						className="h-8 px-3 text-xs font-semibold rounded-lg gap-1.5 bg-white/20 hover:bg-white/30 text-white border-0 backdrop-blur-md"
-					>
-						{copied ? (
-							<Check className="w-3.5 h-3.5 text-emerald-400" />
-						) : (
-							<Copy className="w-3.5 h-3.5" />
-						)}
-						{copied ? "Copied" : "Copy Invite"}
-					</Button>
-				</div>
-			</div>
+			<CinemaTopBar
+				onLeave={() => navigate("/tools/cinema")}
+				isHost={props.isHost}
+				isP2pMode={props.isP2pMode}
+				copied={copied}
+				onCopyInvite={handleCopyInvite}
+				onChangeVideo={
+					props.isHost && !props.isP2pMode
+						? () => setIsChangeVideoOpen(true)
+						: undefined
+				}
+			/>
 
 			<CinemaP2pConnectingOverlay
 				isConnecting={props.isConnectingActual}
@@ -354,39 +307,12 @@ export const CinemaPlayer = (props: CinemaPlayerProps) => {
 				onUnmute={props.handleUnmute || (() => {})}
 			/>
 
-			{/* Floating reaction rendering */}
-			<div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
-				{props.reactions.map((react) => (
-					<div
-						key={react.id}
-						style={{ left: `${react.left}%` }}
-						className="absolute bottom-24 animate-float-emoji flex flex-col items-center gap-1 bg-background/25 backdrop-blur-md px-2.5 py-1 rounded-full border border-border/50 shadow-lg"
-					>
-						<span className="text-3xl filter drop-shadow-md">
-							{react.emoji}
-						</span>
-						<span className="text-[10px] text-foreground/80 font-bold whitespace-nowrap drop-shadow-md">
-							{react.name}
-						</span>
-					</div>
-				))}
-			</div>
+			<CinemaFloatingReactions reactions={props.reactions} />
+			<CinemaReactionBar
+				onSendReaction={props.handleSendReaction}
+				bottomClass="bottom-20"
+			/>
 
-			{/* Interactive Reaction Bar */}
-			<div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 p-1.5 bg-black/60 backdrop-blur-md rounded-full border border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-				{EMOJI_LIST.map((emoji) => (
-					<button
-						key={emoji}
-						onClick={() => props.handleSendReaction(emoji)}
-						className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 hover:scale-125 active:scale-95 transition-all text-lg cursor-pointer"
-						title={`React ${emoji}`}
-					>
-						{emoji}
-					</button>
-				))}
-			</div>
-
-			{/* Main synchronized video player */}
 			<div className="flex-1 flex items-center justify-center min-h-0 w-full relative z-10">
 				{finalSrc || !props.isHost ? (
 					<MediaPlayer
@@ -419,6 +345,56 @@ export const CinemaPlayer = (props: CinemaPlayerProps) => {
 					</div>
 				)}
 			</div>
+
+			{/* Change Video Stream Dialog for Host */}
+			<Dialog
+				open={isChangeVideoOpen}
+				onOpenChange={setIsChangeVideoOpen}
+			>
+				<DialogContent className="sm:max-w-md bg-card border border-border shadow-2xl p-6 rounded-2xl">
+					<DialogHeader className="gap-1.5">
+						<DialogTitle className="text-lg font-bold flex items-center gap-2">
+							<Film className="w-5 h-5 text-primary" />
+							Change Video Stream
+						</DialogTitle>
+						<DialogDescription className="text-xs text-muted-foreground">
+							Enter a new YouTube URL or direct MP4/video link to
+							switch the video for everyone in the room.
+						</DialogDescription>
+					</DialogHeader>
+					<form
+						onSubmit={handleChangeVideoSubmit}
+						className="space-y-4 pt-2"
+					>
+						<Input
+							placeholder="https://www.youtube.com/watch?v=..."
+							value={newVideoUrl}
+							onChange={(e) => setNewVideoUrl(e.target.value)}
+							className="bg-background text-foreground border-border text-xs h-10"
+							autoFocus
+						/>
+						<DialogFooter className="gap-2 sm:justify-end">
+							<Button
+								type="button"
+								variant="outline"
+								size="sm"
+								onClick={() => setIsChangeVideoOpen(false)}
+							>
+								Cancel
+							</Button>
+							<Button
+								type="submit"
+								size="sm"
+								disabled={!newVideoUrl.trim()}
+								className="gap-1.5 font-semibold bg-primary hover:bg-primary/95 text-primary-foreground"
+							>
+								<Check className="w-4 h-4" />
+								Switch Video
+							</Button>
+						</DialogFooter>
+					</form>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 };

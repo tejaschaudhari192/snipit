@@ -396,7 +396,25 @@
 			"approve": "स्वीकृत करें",
 			"approve_all": "सभी स्वीकृत करें",
 			"more": "अधिक",
-			"import_action": "आयात करें"
+			"import_action": "आयात करें",
+			"delete_folder_confirm": "क्या आप वाकई यह फ़ोल्डर हटाना चाहते हैं",
+			"delete_passwords_inside": "इस फ़ोल्डर के अंदर सभी पासवर्ड हटाएं",
+			"action_cannot_be_undone": "इस क्रिया को पूर्ववत नहीं किया जा सकता।",
+			"folder_name": "फ़ोल्डर का नाम",
+			"folder_color": "फ़ोल्डर का रंग",
+			"folder_icon": "फ़ोल्डर आइकन",
+			"edit_folder": "फ़ोल्डर संपादित करें",
+			"delete_folder": "फ़ोल्डर हटाएं",
+			"items_selected": "{{count}} चयनित",
+			"move": "स्थानांतरित करें",
+			"remove_from_folder": "फ़ोल्डर से हटाएं",
+			"select_limit_to_share": "साझा करने के लिए अधिकतम {{limit}} आइटम चुनें",
+			"delete_n_items": "{{count}} आइटम हटाएं?",
+			"delete_bulk_confirm": "यह सभी {{count}} चयनित आइटम हमेशा के लिए हटा देगा। यह क्रिया पूर्ववत नहीं की जा सकती।",
+			"failed_to_move_items": "{{count}} आइटम स्थानांतरित करने में विफल।",
+			"moved_n_items": "{{count}} आइटम {{folder}} में स्थानांतरित किए गए",
+			"failed_to_delete_items": "{{count}} आइटम हटाने में विफल।",
+			"deleted_n_items": "{{count}} आइटम सफलतापूर्वक हटाए गए"
 		},
 		"password_generator": {
 			"title": "पासवर्ड जेनरेटर",
@@ -446,26 +464,30 @@
 			"no_status": "कोई यात्री स्थिति उपलब्ध नहीं"
 		},
 		"cinema": {
-			"title": "सिनेमा - पार्टियां देखें",
-			"description": "सिंक्रोनाइज़्ड प्लेबैक, लाइव चैट और फ्लोटिंग इमोजी। अपने दोस्तों के साथ सही समन्वय में वीडियो का आनंद लें।",
-			"hero_title": "एक साथ देखें",
-			"hero_subtitle": "सिंक्रोनाइज़्ड प्लेबैक, लाइव चैट और फ्लोटिंग इमोजी। अपने दोस्तों के साथ सही समन्वय में वीडियो का आनंद लें।",
-			"create_tab": "जगह बनाना",
-			"join_tab": "रूम में शामिल हों",
-			"url_label": "वीडियो यूआरएल",
+			"title": "सिनेमा - वॉच पार्टीज़",
+			"description": "सिंक किया हुआ प्लेबैक, लाइव चैट और फ्लोटिंग इमोजी। दोस्तों के साथ एक साथ वीडियो का आनंद लें।",
+			"hero_title": "साथ मिलकर देखें",
+			"hero_subtitle": "सिंक किया हुआ प्लेबैक, लाइव चैट और फ्लोटिंग इमोजी। दोस्तों के साथ एक साथ वीडियो का आनंद लें।",
+			"create_tab": "कमरा बनाएं",
+			"join_tab": "कमरे में शामिल हों",
+			"url_label": "वीडियो URL",
 			"url_placeholder": "https://example.com/video.mp4",
-			"local_file_toggle": "स्थानीय फ़ाइल स्ट्रीम (पी2पी)",
+			"local_file_toggle": "लोकल फ़ाइल स्ट्रीम (P2P)",
 			"select_file": "वीडियो फ़ाइल चुनें",
-			"start_btn": "वॉच पार्टी प्रारंभ करें",
-			"creating": "कक्ष बनाया जा रहा है...",
-			"join_label": "रूम लिंक या आईडी",
-			"join_placeholder": "यहां वॉच पार्टी लिंक पेस्ट करें",
-			"join_btn": "रूम में शामिल हों",
-			"auth_required": "वॉच पार्टियों की मेजबानी के लिए लॉगिन आवश्यक है।",
-			"invalid_url": "कृपया एक मान्य वीडियो URL दर्ज करें.",
-			"features_sync": "बिल्कुल सही सिंक",
+			"start_btn": "वॉच पार्टी शुरू करें",
+			"creating": "कमरा बनाया जा रहा है...",
+			"join_label": "रूम लिंक या ID",
+			"join_placeholder": "यहाँ वॉच पार्टी लिंक पेस्ट करें",
+			"join_btn": "कमरे में शामिल हों",
+			"auth_required": "वॉच पार्टी होस्ट करने के लिए लॉगिन आवश्यक है।",
+			"invalid_url": "कृपया एक मान्य वीडियो URL दर्ज करें।",
+			"features_sync": "परफेक्ट सिंक",
 			"features_chat": "लाइव चैट और इमोजी",
-			"features_p2p": "सीधी पी2पी स्ट्रीमिंग"
+			"features_p2p": "डायरेक्ट P2P स्ट्रीमिंग",
+			"loading_room": "वॉच पार्टी लोड हो रही है...",
+			"room_not_found": "वॉच पार्टी नहीं मिली",
+			"return_btn": "सिनेमा पर वापस जाएं",
+			"create_failed": "वॉच पार्टी बनाने में विफल"
 		}
 	},
 	"errors": {
@@ -637,7 +659,8 @@
 		"snippets": "स्निपेट्स",
 		"grid_view": "ग्रिड व्यू",
 		"list_view": "सूची दृश्य",
-		"items_count": "{{count}} आइटम"
+		"items_count": "{{count}} आइटम",
+		"snippet_moved_success": "स्निपेट सफलतापूर्वक स्थानांतरित किया गया"
 	},
 	"profile": {
 		"loading": "लोड हो रहा है...",
@@ -668,7 +691,28 @@
 		},
 		"avg_views": "दक्षता",
 		"loading_failed": "प्रोफ़ाइल लोड करने में विफल",
-		"update_failed": "प्रोफ़ाइल अपडेट करने में विफल"
+		"update_failed": "प्रोफ़ाइल अपडेट करने में विफल",
+		"avatar": {
+			"title": "प्रोफ़ाइल फ़ोटो चुनें",
+			"description": "एक मॉक अवतार चुनें या अपने डिवाइस से अपनी छवि अपलोड करें।",
+			"change": "प्रोफ़ाइल फ़ोटो बदलें",
+			"tab_mocks": "मॉक अवतार",
+			"tab_upload": "फ़ाइल अपलोड करें",
+			"drop_prompt": "अपलोड करने के लिए क्लिक करें या खींचें और छोड़ें",
+			"file_limits": "PNG, JPG, WebP, GIF (अधिकतम 5MB)",
+			"custom_selected": "कस्टम फ़ोटो चुनी गई",
+			"default_initials": "डिफ़ॉल्ट आद्याक्षर उपयोग किए जा रहे हैं",
+			"updated": "प्रोफ़ाइल फ़ोटो सफलतापूर्वक अपडेट की गई",
+			"update_failed": "प्रोफ़ाइल फ़ोटो अपडेट करने में विफल",
+			"invalid_image": "छवि संसाधित करने में विफल"
+		},
+		"folder_empty": "Folder is Empty",
+		"folder_empty_desc": "There are no snippets stored inside this folder yet.",
+		"create_snippet": "Create Snippet",
+		"root_no_folder": "Root (No Folder)",
+		"enter_folder_name": "Enter folder name:",
+		"enter_subfolder_name": "Enter subfolder name inside \"{{name}}\":",
+		"edit_name": "नाम संपादित करें"
 	},
 	"home": {
 		"loading": "लोड हो रहा है...",
@@ -832,7 +876,9 @@
 		"sync_failed": "आपके खाता स्निपेट सिंक करने में विफल"
 	},
 	"messages": {
-		"loading": "लोड हो रहा है...",
+		"loading": {
+			"deleting": "स्निपेट हटाया जा रहा है..."
+		},
 		"overview": "अवलोकन",
 		"detected_language": "पहचानी गई भाषा: {{language}}",
 		"success": {

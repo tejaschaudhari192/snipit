@@ -201,6 +201,32 @@ export const setupSocket = (server: HTTPServer) => {
 			}
 		});
 
+		socket.on(
+			"cinema-change-video",
+			({ roomId, videoUrl }: { roomId: string; videoUrl: string }) => {
+				if (
+					typeof roomId !== "string" ||
+					typeof videoUrl !== "string" ||
+					!roomId.trim() ||
+					!videoUrl.trim() ||
+					roomId.length > 100 ||
+					videoUrl.length > 2048
+				) {
+					return;
+				}
+
+				const room = cinemaRooms.get(roomId);
+				if (!room || room.hostSocketId !== socket.id) return;
+				room.url = videoUrl;
+				sharedVideoState.set(roomId, {
+					isPlaying: false,
+					currentTime: 0,
+					lastSyncedAt: Date.now(),
+				});
+				io.to(roomId).emit("cinema-video-changed", { videoUrl });
+			},
+		);
+
 		socket.on("join-paste", async ({ pasteId, userName }) => {
 			const userId = getSocketUserId(socket);
 			const allowed = await canUserView(pasteId, userId);

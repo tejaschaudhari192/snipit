@@ -70,6 +70,7 @@ export type UserData = {
 	email: string;
 	password?: string | undefined;
 	googleId?: string | undefined;
+	avatar?: string | undefined;
 	createdAt: Date;
 	resetPasswordToken?: string | undefined;
 	resetPasswordExpires?: Date | undefined;

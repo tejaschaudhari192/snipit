@@ -396,7 +396,25 @@
 			"approve": "அங்கீகரி",
 			"approve_all": "அனைத்தையும் அங்கீகரி",
 			"more": "மேலும்",
-			"import_action": "இறக்குமதி செய்"
+			"import_action": "இறக்குமதி செய்",
+			"delete_folder_confirm": "இந்த கோப்புறையை நிச்சயமாக நீக்க விரும்புகிறீர்களா",
+			"delete_passwords_inside": "இந்த கோப்புறையிலுள்ள அனைத்து கடவுச்சொற்களையும் நீக்கவும்",
+			"action_cannot_be_undone": "இந்த செயலை மாற்ற முடியாது.",
+			"folder_name": "கோப்புறை பெயர்",
+			"folder_color": "கோப்புறை நிறம்",
+			"folder_icon": "கோப்புறை ஐகான்",
+			"edit_folder": "கோப்புறையைத் திருத்து",
+			"delete_folder": "கோப்புறையை நீக்கு",
+			"items_selected": "{{count}} தேர்ந்தெடுக்கப்பட்டது",
+			"move": "நகர்த்து",
+			"remove_from_folder": "கோப்புறையிலிருந்து அகற்று",
+			"select_limit_to_share": "பகிர அதிகபட்சம் {{limit}} உருப்படிகளைத் தேர்ந்தெடுக்கவும்",
+			"delete_n_items": "{{count}} உருப்படிகளை நீக்கவா?",
+			"delete_bulk_confirm": "இது தேர்ந்தெடுக்கப்பட்ட அனைத்து {{count}} உருப்படிகளையும் நிரந்தரமாக நீக்கும். இந்த செயலை மாற்ற முடியாது.",
+			"failed_to_move_items": "{{count}} உருப்படிகளை நகர்த்த முடியவில்லை.",
+			"moved_n_items": "{{count}} உருப்படிகள் {{folder}}க்கு நகர்த்தப்பட்டன",
+			"failed_to_delete_items": "{{count}} உருப்படிகளை நீக்க முடியவில்லை.",
+			"deleted_n_items": "{{count}} உருப்படிகள் வெற்றிகரமாக நீக்கப்பட்டன"
 		},
 		"password_generator": {
 			"title": "கடவுச்சொல் ஜெனரேட்டர்",
@@ -446,26 +464,30 @@
 			"no_status": "பயணி நிலை எதுவும் இல்லை"
 		},
 		"cinema": {
-			"title": "சினிமா - பார்ட்டி பார்ட்டி",
-			"description": "ஒத்திசைக்கப்பட்ட பிளேபேக், நேரலை அரட்டை மற்றும் மிதக்கும் ஈமோஜிகள். உங்கள் நண்பர்களுடன் சரியான ஒத்திசைவில் வீடியோக்களை அனுபவிக்கவும்.",
-			"hero_title": "ஒன்றாக பார்க்கவும்",
-			"hero_subtitle": "ஒத்திசைக்கப்பட்ட பிளேபேக், நேரலை அரட்டை மற்றும் மிதக்கும் ஈமோஜிகள். உங்கள் நண்பர்களுடன் சரியான ஒத்திசைவில் வீடியோக்களை அனுபவிக்கவும்.",
-			"create_tab": "அறையை உருவாக்கவும்",
-			"join_tab": "அறையில் சேரவும்",
+			"title": "சினிமா - வாட்ச் பார்ட்டிகள்",
+			"description": "ஒத்திசைக்கப்பட்ட பின்னணி, நேரலை அரட்டை மற்றும் மிதக்கும் எமோஜிகள். நண்பர்களுடன் சேர்ந்து வீடியோக்களை கண்டு மகிழுங்கள்.",
+			"hero_title": "ஒன்றாகப் பாருங்கள்",
+			"hero_subtitle": "ஒத்திசைக்கப்பட்ட பின்னணி, நேரலை அரட்டை மற்றும் மிதக்கும் எமோஜிகள். நண்பர்களுடன் சேர்ந்து வீடியோக்களை கண்டு மகிழுங்கள்.",
+			"create_tab": "அறையை உருவாக்கு",
+			"join_tab": "அறையில் இணை",
 			"url_label": "வீடியோ URL",
 			"url_placeholder": "https://example.com/video.mp4",
 			"local_file_toggle": "உள்ளூர் கோப்பு ஸ்ட்ரீம் (P2P)",
 			"select_file": "வீடியோ கோப்பைத் தேர்ந்தெடுக்கவும்",
-			"start_btn": "வாட்ச் பார்ட்டியைத் தொடங்குங்கள்",
-			"creating": "அறையை உருவாக்குகிறது...",
-			"join_label": "அறை இணைப்பு அல்லது ஐடி",
-			"join_placeholder": "பார்ட்டி பார்ட்டி இணைப்பை இங்கே ஒட்டவும்",
-			"join_btn": "அறையில் சேரவும்",
-			"auth_required": "வாட்ச் பார்ட்டிகளை நடத்த உள்நுழைய வேண்டும்.",
-			"invalid_url": "சரியான வீடியோ URL ஐ உள்ளிடவும்.",
+			"start_btn": "வாட்ச் பார்ட்டியைத் தொடங்கு",
+			"creating": "அறை உருவாக்கப்படுகிறது...",
+			"join_label": "அறை இணைப்பு அல்லது ID",
+			"join_placeholder": "வாட்ச் பார்ட்டி இணைப்பை இங்கே ஒட்டவும்",
+			"join_btn": "அறையில் இணை",
+			"auth_required": "வாட்ச் பார்ட்டிகளை நடத்த உள்நுழைவு தேவை.",
+			"invalid_url": "சரியான வீடியோ URL-ஐ உள்ளிடவும்.",
 			"features_sync": "சரியான ஒத்திசைவு",
-			"features_chat": "நேரடி அரட்டை & எமோஜிகள்",
-			"features_p2p": "நேரடி P2P ஸ்ட்ரீமிங்"
+			"features_chat": "நேரலை அரட்டை & எமோஜிகள்",
+			"features_p2p": "நேரடி P2P ஸ்ட்ரீமிங்",
+			"loading_room": "வாட்ச் பார்ட்டி ஏற்றப்படுகிறது...",
+			"room_not_found": "வாட்ச் பார்ட்டி கிடைக்கவில்லை",
+			"return_btn": "சினிமாவிற்குத் திரும்பு",
+			"create_failed": "வாட்ச் பார்ட்டியை உருவாக்க முடியவில்லை"
 		}
 	},
 	"errors": {
@@ -637,7 +659,28 @@
 		},
 		"avg_views": "செயல்திறன்",
 		"loading_failed": "சுயவிவரத்தை ஏற்ற முடியவில்லை",
-		"update_failed": "புதுப்பிக்க முடியவில்லை"
+		"update_failed": "புதுப்பிக்க முடியவில்லை",
+		"folder_empty": "Folder is Empty",
+		"folder_empty_desc": "There are no snippets stored inside this folder yet.",
+		"create_snippet": "Create Snippet",
+		"root_no_folder": "Root (No Folder)",
+		"enter_folder_name": "Enter folder name:",
+		"enter_subfolder_name": "Enter subfolder name inside \"{{name}}\":",
+		"avatar": {
+			"title": "Choose Profile Photo",
+			"description": "Select a mock avatar or upload your own image from your device.",
+			"change": "Change Profile Photo",
+			"tab_mocks": "Mock Avatars",
+			"tab_upload": "Upload File",
+			"drop_prompt": "Click to upload or drag & drop",
+			"file_limits": "PNG, JPG, WebP, GIF (Max 5MB)",
+			"custom_selected": "Custom photo selected",
+			"default_initials": "Using default initials",
+			"updated": "Profile photo updated successfully",
+			"update_failed": "Failed to update profile photo",
+			"invalid_image": "படத்தைச் செயலாக்க முடியவில்லை"
+		},
+		"edit_name": "பெயரைத் திருத்து"
 	},
 	"home": {
 		"loading": "ஏற்றப்படுகிறது...",
@@ -801,7 +844,9 @@
 		"sync_failed": "ஒத்திசைக்க முடியவில்லை"
 	},
 	"messages": {
-		"loading": "ஏற்றப்படுகிறது...",
+		"loading": {
+			"deleting": "துணுக்கு நீக்கப்படுகிறது..."
+		},
 		"overview": "மேலோட்டம்",
 		"detected_language": "கண்டறியப்பட்ட மொழி: {{language}}",
 		"success": {
@@ -1225,6 +1270,7 @@
 		"snippets": "Snippets",
 		"grid_view": "Grid View",
 		"list_view": "List View",
-		"items_count": "{{count}} items"
+		"items_count": "{{count}} items",
+		"snippet_moved_success": "துணுக்கு வெற்றிகரமாக நகர்த்தப்பட்டது"
 	}
 }

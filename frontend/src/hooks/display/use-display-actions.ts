@@ -358,7 +358,7 @@ export const useDisplayActions = ({
 		playRemoveSound();
 
 		const toastId = toast.add({
-			title: t("messages.loading.deleting", "Deleting snippet..."),
+			title: t("messages.loading.deleting"),
 			type: "loading",
 		});
 

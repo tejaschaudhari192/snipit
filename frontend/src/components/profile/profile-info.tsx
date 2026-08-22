@@ -1,4 +1,4 @@
-import { Edit2, Check, X, LogOut, MoreHorizontal } from "lucide-react";
+import { Edit2, Check, X, LogOut, MoreHorizontal, Camera } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,7 @@ interface ProfileInfoProps {
 	handleUpdateName: () => void;
 	isUpdating: boolean;
 	onLogout: () => void;
+	onOpenAvatarPicker?: () => void;
 }
 
 export const ProfileInfo = ({
@@ -33,6 +34,7 @@ export const ProfileInfo = ({
 	handleUpdateName,
 	isUpdating,
 	onLogout,
+	onOpenAvatarPicker,
 }: ProfileInfoProps) => {
 	const { t } = useTranslation();
 
@@ -45,12 +47,29 @@ export const ProfileInfo = ({
 			<div className="p-3 rounded-2xl bg-card/60 border border-border/50 backdrop-blur-md transition-all">
 				<div className="flex items-center justify-between gap-2">
 					<div className="flex items-center gap-2.5 min-w-0 flex-1">
-						<Avatar className="h-10 w-10 rounded-xl ring-2 ring-primary/20 shrink-0 bg-linear-to-br from-primary/20 via-primary/10 to-accent/20">
-							<AvatarImage src="" />
-							<AvatarFallback className="rounded-xl font-black text-primary text-sm bg-primary/10">
-								{initials}
-							</AvatarFallback>
-						</Avatar>
+						<div
+							onClick={!isGuest ? onOpenAvatarPicker : undefined}
+							className={`relative group shrink-0 ${
+								!isGuest ? "cursor-pointer" : ""
+							}`}
+							title={
+								!isGuest
+									? t("profile.avatar.change")
+									: undefined
+							}
+						>
+							<Avatar className="h-10 w-10 rounded-xl ring-2 ring-primary/20 bg-linear-to-br from-primary/20 via-primary/10 to-accent/20 transition-transform group-hover:scale-105">
+								<AvatarImage src={user.avatar} />
+								<AvatarFallback className="rounded-xl font-black text-primary text-sm bg-primary/10">
+									{initials}
+								</AvatarFallback>
+							</Avatar>
+							{!isGuest && (
+								<div className="absolute inset-0 rounded-xl bg-black/40 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[1px]">
+									<Camera className="w-3.5 h-3.5" />
+								</div>
+							)}
+						</div>
 
 						<div className="flex flex-col min-w-0 flex-1">
 							{isEditingName && !isGuest ? (
@@ -127,13 +146,24 @@ export const ProfileInfo = ({
 							className="w-48 p-1 rounded-xl shadow-xl border-border/60 bg-background/95 backdrop-blur-xl text-xs"
 						>
 							{!isGuest && (
-								<DropdownMenuItem
-									onClick={() => setIsEditingName(true)}
-									className="gap-2 cursor-pointer"
-								>
-									<Edit2 className="h-3.5 w-3.5" />
-									<span>{t("profile.edit_name")}</span>
-								</DropdownMenuItem>
+								<>
+									<DropdownMenuItem
+										onClick={onOpenAvatarPicker}
+										className="gap-2 cursor-pointer"
+									>
+										<Camera className="h-3.5 w-3.5" />
+										<span>
+											{t("profile.avatar.change")}
+										</span>
+									</DropdownMenuItem>
+									<DropdownMenuItem
+										onClick={() => setIsEditingName(true)}
+										className="gap-2 cursor-pointer"
+									>
+										<Edit2 className="h-3.5 w-3.5" />
+										<span>{t("profile.edit_name")}</span>
+									</DropdownMenuItem>
+								</>
 							)}
 							{!isGuest && <DropdownMenuSeparator />}
 							{isGuest ? (

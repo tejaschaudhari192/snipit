@@ -396,7 +396,25 @@
 			"approve": "അംഗീകരിക്കുക",
 			"approve_all": "എല്ലാം അംഗീകരിക്കുക",
 			"more": "കൂടുതൽ",
-			"import_action": "ഇറക്കുമതി ചെയ്യുക"
+			"import_action": "ഇറക്കുമതി ചെയ്യുക",
+			"delete_folder_confirm": "ഈ ഫോൾഡർ ഇല്ലാതാക്കണമെന്ന് ഉറപ്പാണോ",
+			"delete_passwords_inside": "ഈ ഫോൾഡറിലെ എല്ലാ പാസ്‌വേഡുകളും ഇല്ലാതാക്കുക",
+			"action_cannot_be_undone": "ഈ പ്രവർത്തനം പഴയപടിയാക്കാൻ കഴിയില്ല.",
+			"folder_name": "ഫോൾഡർ പേര്",
+			"folder_color": "ഫോൾഡർ നിറം",
+			"folder_icon": "ഫോൾഡർ ഐക്കൺ",
+			"edit_folder": "ഫോൾഡർ എഡിറ്റ് ചെയ്യുക",
+			"delete_folder": "ഫോൾഡർ ഇല്ലാതാക്കുക",
+			"items_selected": "{{count}} തിരഞ്ഞെടുത്തു",
+			"move": "മാറ്റുക",
+			"remove_from_folder": "ഫോൾഡറിൽ നിന്ന് നീക്കം ചെയ്യുക",
+			"select_limit_to_share": "പങ്കിടാൻ പരമാവധി {{limit}} ഇനങ്ങൾ തിരഞ്ഞെടുക്കുക",
+			"delete_n_items": "{{count}} ഇനങ്ങൾ ഇല്ലാതാക്കണോ?",
+			"delete_bulk_confirm": "തിരഞ്ഞെടുത്ത {{count}} ഇനങ്ങളും ശാശ്വതമായി ഇല്ലാതാക്കും. ഈ പ്രവർത്തനം പഴയപടിയാക്കാൻ കഴിയില്ല.",
+			"failed_to_move_items": "{{count}} ഇനങ്ങൾ മാറ്റുന്നതിൽ പരാജയപ്പെട്ടു.",
+			"moved_n_items": "{{count}} ഇനങ്ങൾ {{folder}}-ലേക്ക് മാറ്റി",
+			"failed_to_delete_items": "{{count}} ഇനങ്ങൾ ഇല്ലാതാക്കുന്നതിൽ പരാജയപ്പെട്ടു.",
+			"deleted_n_items": "{{count}} ഇനങ്ങൾ വിജയകരമായി ഇല്ലാതാക്കി"
 		},
 		"password_generator": {
 			"title": "പാസ്‌വേഡ് ജനറേറ്റർ",
@@ -446,26 +464,30 @@
 			"no_status": "യാത്രക്കാരുടെ നില ലഭ്യമല്ല"
 		},
 		"cinema": {
-			"title": "സിനിമ - പാർട്ടികൾ കാണുക",
-			"description": "സമന്വയിപ്പിച്ച പ്ലേബാക്ക്, തത്സമയ ചാറ്റ്, ഫ്ലോട്ടിംഗ് ഇമോജികൾ. നിങ്ങളുടെ സുഹൃത്തുക്കളുമായി സമന്വയിപ്പിച്ച് വീഡിയോകൾ ആസ്വദിക്കൂ.",
+			"title": "സിനിമ - വാച്ച് പാർട്ടികൾ",
+			"description": "സിൻക്രണൈസ് ചെയ്ത പ്ലേബാക്ക്, ലൈവ് ചാറ്റ്, ഇമോജികൾ. സുഹൃത്തുക്കളോടൊപ്പം വീഡിയോകൾ ആസ്വദിക്കൂ.",
 			"hero_title": "ഒരുമിച്ച് കാണുക",
-			"hero_subtitle": "സമന്വയിപ്പിച്ച പ്ലേബാക്ക്, തത്സമയ ചാറ്റ്, ഫ്ലോട്ടിംഗ് ഇമോജികൾ. നിങ്ങളുടെ സുഹൃത്തുക്കളുമായി സമന്വയിപ്പിച്ച് വീഡിയോകൾ ആസ്വദിക്കൂ.",
-			"create_tab": "റൂം സൃഷ്ടിക്കുക",
+			"hero_subtitle": "സിൻക്രണൈസ് ചെയ്ത പ്ലേബാക്ക്, ലൈവ് ചാറ്റ്, ഇമോജികൾ. സുഹൃത്തുക്കളോടൊപ്പം വീഡിയോകൾ ആസ്വദിക്കൂ.",
+			"create_tab": "മുറി സൃഷ്ടിക്കുക",
 			"join_tab": "മുറിയിൽ ചേരുക",
 			"url_label": "വീഡിയോ URL",
 			"url_placeholder": "https://example.com/video.mp4",
-			"local_file_toggle": "പ്രാദേശിക ഫയൽ സ്ട്രീം (P2P)",
+			"local_file_toggle": "ലോക്കൽ ഫയൽ സ്ട്രീം (P2P)",
 			"select_file": "വീഡിയോ ഫയൽ തിരഞ്ഞെടുക്കുക",
 			"start_btn": "വാച്ച് പാർട്ടി ആരംഭിക്കുക",
-			"creating": "റൂം സൃഷ്ടിക്കുന്നു...",
-			"join_label": "റൂം ലിങ്ക് അല്ലെങ്കിൽ ഐഡി",
-			"join_placeholder": "പാർട്ടി കാണാനുള്ള ലിങ്ക് ഇവിടെ ഒട്ടിക്കുക",
+			"creating": "മുറി സൃഷ്ടിക്കുന്നു...",
+			"join_label": "റൂം ലിങ്ക് അല്ലെങ്കിൽ ID",
+			"join_placeholder": "വാച്ച് പാർട്ടി ലിങ്ക് ഇവിടെ ഒട്ടിക്കുക",
 			"join_btn": "മുറിയിൽ ചേരുക",
-			"auth_required": "വാച്ച് പാർട്ടികൾ ഹോസ്റ്റ് ചെയ്യുന്നതിന് ലോഗിൻ ചെയ്യേണ്ടതുണ്ട്.",
+			"auth_required": "വാച്ച് പാർട്ടികൾ ഹോസ്റ്റ് ചെയ്യാൻ ലോഗിൻ ആവശ്യമാണ്.",
 			"invalid_url": "സാധുവായ ഒരു വീഡിയോ URL നൽകുക.",
-			"features_sync": "തികഞ്ഞ സമന്വയം",
-			"features_chat": "തത്സമയ ചാറ്റും ഇമോജികളും",
-			"features_p2p": "നേരിട്ടുള്ള P2P സ്ട്രീമിംഗ്"
+			"features_sync": "മികച്ച സിങ്ക്",
+			"features_chat": "ലൈവ് ചാറ്റും ഇമോജികളും",
+			"features_p2p": "നേരിട്ടുള്ള P2P സ്ട്രീമിംഗ്",
+			"loading_room": "വാച്ച് പാർട്ടി ലോഡ് ചെയ്യുന്നു...",
+			"room_not_found": "വാച്ച് പാർട്ടി കണ്ടെത്തിയില്ല",
+			"return_btn": "സിനിമയിലേക്ക് മടങ്ങുക",
+			"create_failed": "വാച്ച് പാർട്ടി സൃഷ്ടിക്കുന്നതിൽ പരാജയപ്പെട്ടു"
 		}
 	},
 	"errors": {
@@ -637,7 +659,28 @@
 		},
 		"avg_views": "കാര്യക്ഷമത",
 		"loading_failed": "പ്രൊഫൈൽ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു",
-		"update_failed": "അപ്ഡേറ്റ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു"
+		"update_failed": "അപ്ഡേറ്റ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു",
+		"folder_empty": "Folder is Empty",
+		"folder_empty_desc": "There are no snippets stored inside this folder yet.",
+		"create_snippet": "Create Snippet",
+		"root_no_folder": "Root (No Folder)",
+		"enter_folder_name": "Enter folder name:",
+		"enter_subfolder_name": "Enter subfolder name inside \"{{name}}\":",
+		"avatar": {
+			"title": "Choose Profile Photo",
+			"description": "Select a mock avatar or upload your own image from your device.",
+			"change": "Change Profile Photo",
+			"tab_mocks": "Mock Avatars",
+			"tab_upload": "Upload File",
+			"drop_prompt": "Click to upload or drag & drop",
+			"file_limits": "PNG, JPG, WebP, GIF (Max 5MB)",
+			"custom_selected": "Custom photo selected",
+			"default_initials": "Using default initials",
+			"updated": "Profile photo updated successfully",
+			"update_failed": "Failed to update profile photo",
+			"invalid_image": "ചിത്രം പ്രോസസ്സ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു"
+		},
+		"edit_name": "പേര് എഡിറ്റ് ചെയ്യുക"
 	},
 	"home": {
 		"loading": "ശേഖരിക്കുന്നു...",
@@ -801,7 +844,9 @@
 		"sync_failed": "സമന്വയിപ്പിക്കാൻ സാധിച്ചില്ല"
 	},
 	"messages": {
-		"loading": "ശേഖരിക്കുന്നു...",
+		"loading": {
+			"deleting": "സ്നിപ്പെറ്റ് ഇല്ലാതാക്കുന്നു..."
+		},
 		"overview": "അവലോകനം",
 		"detected_language": "കണ്ടെത്തിയ ഭാഷ: {{language}}",
 		"success": {
@@ -1225,6 +1270,7 @@
 		"snippets": "Snippets",
 		"grid_view": "Grid View",
 		"list_view": "List View",
-		"items_count": "{{count}} items"
+		"items_count": "{{count}} items",
+		"snippet_moved_success": "സ്നിപ്പെറ്റ് വിജയകരമായി മാറ്റി"
 	}
 }

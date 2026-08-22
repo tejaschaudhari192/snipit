@@ -90,6 +90,7 @@ class AuthController {
 			_id: user._id,
 			username: user.username,
 			email: user.email,
+			avatar: user.avatar,
 		});
 	}
 
@@ -97,27 +98,33 @@ class AuthController {
 		const user = (req as AuthRequest).user;
 		if (!user) return res.status(401).json({ message: "Not authorized" });
 
-		const { username } = req.body;
-		if (username) {
-			const userExists = await User.findOne({ username });
-			if (
-				userExists &&
-				userExists._id.toString() !== user._id.toString()
-			) {
+		try {
+			const { username, avatar } = req.body;
+			const updatedUser = await this.authService.updateUserProfile(
+				user._id as string,
+				{ username, avatar },
+			);
+
+			res.status(200).json({
+				_id: updatedUser._id,
+				username: updatedUser.username,
+				email: updatedUser.email,
+				avatar: updatedUser.avatar,
+				message: "Profile updated successfully",
+			});
+		} catch (error: unknown) {
+			const message =
+				error instanceof Error ? error.message : String(error);
+			if (message === "USERNAME_ALREADY_EXISTS") {
 				return res
 					.status(400)
 					.json({ message: "Username already exists" });
 			}
-			user.username = username;
+			if (message === "USER_NOT_FOUND") {
+				return res.status(404).json({ message: "User not found" });
+			}
+			res.status(500).json({ message });
 		}
-
-		await user.save();
-		res.status(200).json({
-			_id: user._id,
-			username: user.username,
-			email: user.email,
-			message: "Profile updated successfully",
-		});
 	}
 
 	async forgotPassword(req: Request, res: Response) {

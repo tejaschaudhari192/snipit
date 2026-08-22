@@ -42,12 +42,12 @@ export const FolderCard: React.FC<FolderCardProps> = ({ folder, index }) => {
 
 	return (
 		<div
-			className="min-w-0 animate-in fade-in slide-in-from-bottom-3 duration-300 fill-mode-both relative group"
+			className="min-w-0 h-full animate-in fade-in slide-in-from-bottom-3 duration-300 fill-mode-both relative group"
 			style={{ animationDelay: `${index * 30}ms` }}
 		>
 			<div
 				onClick={() => setActiveFolderId(folder._id)}
-				className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-card/60 border border-border/50 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200 cursor-pointer hover:-translate-y-0.5 relative overflow-hidden"
+				className="w-full h-full flex items-center justify-between p-3.5 rounded-2xl bg-card/60 border border-border/50 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200 cursor-pointer hover:-translate-y-0.5 relative overflow-hidden"
 			>
 				{/* Color Accent Indicator Strip */}
 				<div

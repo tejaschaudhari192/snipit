@@ -396,7 +396,25 @@
 			"approve": "منظور کریں",
 			"approve_all": "سب منظور کریں",
 			"more": "مزید",
-			"import_action": "درآمد کریں"
+			"import_action": "درآمد کریں",
+			"delete_folder_confirm": "کیا آپ واقعی یہ فولڈر حذف کرنا چاہتے ہیں",
+			"delete_passwords_inside": "اس فولڈر کے تمام پاس ورڈز حذف کریں",
+			"action_cannot_be_undone": "یہ عمل واپس نہیں لیا جا سکتا۔",
+			"folder_name": "فولڈر کا نام",
+			"folder_color": "فولڈر کا رنگ",
+			"folder_icon": "فولڈر آئیکن",
+			"edit_folder": "فولڈر میں ترمیم کریں",
+			"delete_folder": "فولڈر حذف کریں",
+			"items_selected": "{{count}} منتخب کیے گئے",
+			"move": "منتقل کریں",
+			"remove_from_folder": "فولڈر سے ہٹائیں",
+			"select_limit_to_share": "شیئر کرنے کے لیے زیادہ سے زیادہ {{limit}} آئٹمز منتخب کریں",
+			"delete_n_items": "{{count}} آئٹمز حذف کریں؟",
+			"delete_bulk_confirm": "یہ تمام منتخب کردہ {{count}} آئٹمز مستقل طور پر حذف کر دے گا۔ یہ عمل واپس نہیں ہو سکتا۔",
+			"failed_to_move_items": "{{count}} آئٹمز منتقل کرنے میں ناکام۔",
+			"moved_n_items": "{{count}} آئٹمز {{folder}} میں منتقل کر دیے گئے",
+			"failed_to_delete_items": "{{count}} آئٹمز حذف کرنے میں ناکام۔",
+			"deleted_n_items": "{{count}} آئٹمز کامیابی سے حذف کر دیے گئے"
 		},
 		"password_generator": {
 			"title": "پاس ورڈ جنریٹر",
@@ -447,25 +465,29 @@
 		},
 		"cinema": {
 			"title": "سنیما - واچ پارٹیاں",
-			"description": "مطابقت پذیر پلے بیک، لائیو چیٹ، اور فلوٹنگ ایموجیز۔ اپنے دوستوں کے ساتھ کامل مطابقت پذیری میں ویڈیوز کا لطف اٹھائیں۔",
+			"description": "ہم آہنگ پلے بیک، لائیو چیٹ اور تیرتے ہوئے ایموجیز۔ دوستوں کے ساتھ ویڈیو کا لطف اٹھائیں۔",
 			"hero_title": "ایک ساتھ دیکھیں",
-			"hero_subtitle": "مطابقت پذیر پلے بیک، لائیو چیٹ، اور فلوٹنگ ایموجیز۔ اپنے دوستوں کے ساتھ کامل مطابقت پذیری میں ویڈیوز کا لطف اٹھائیں۔",
+			"hero_subtitle": "ہم آہنگ پلے بیک، لائیو چیٹ اور تیرتے ہوئے ایموجیز۔ دوستوں کے ساتھ ویڈیو کا لطف اٹھائیں۔",
 			"create_tab": "کمرہ بنائیں",
-			"join_tab": "کمرے میں شامل ہوں۔",
+			"join_tab": "کمرے میں شامل ہوں",
 			"url_label": "ویڈیو URL",
 			"url_placeholder": "https://example.com/video.mp4",
 			"local_file_toggle": "مقامی فائل اسٹریم (P2P)",
-			"select_file": "ویڈیو فائل کو منتخب کریں۔",
-			"start_btn": "واچ پارٹی شروع کریں۔",
-			"creating": "کمرہ بنایا جا رہا ہے...",
-			"join_label": "کمرے کا لنک یا ID",
-			"join_placeholder": "واچ پارٹی کا لنک یہاں چسپاں کریں۔",
-			"join_btn": "کمرے میں شامل ہوں۔",
+			"select_file": "ویڈیو فائل منتخب کریں",
+			"start_btn": "واچ پارٹی شروع کریں",
+			"creating": "کمرہ بن رہا ہے...",
+			"join_label": "روم لنک یا ID",
+			"join_placeholder": "یہاں واچ پارٹی لنک چسپاں کریں",
+			"join_btn": "کمرے میں شامل ہوں",
 			"auth_required": "واچ پارٹیوں کی میزبانی کے لیے لاگ ان درکار ہے۔",
-			"invalid_url": "براہ کرم ایک درست ویڈیو URL درج کریں۔",
-			"features_sync": "کامل مطابقت پذیری۔",
+			"invalid_url": "براہ کرم درست ویڈیو URL درج کریں۔",
+			"features_sync": "مکمل ہم آہنگی",
 			"features_chat": "لائیو چیٹ اور ایموجیز",
-			"features_p2p": "براہ راست P2P سٹریمنگ"
+			"features_p2p": "براہ راست P2P اسٹریمنگ",
+			"loading_room": "واچ پارٹی لوڈ ہو رہی ہے...",
+			"room_not_found": "واچ پارٹی نہیں ملی",
+			"return_btn": "سنیما پر واپس جائیں",
+			"create_failed": "واچ پارٹی بنانے میں ناکام"
 		}
 	},
 	"errors": {
@@ -637,7 +659,28 @@
 		},
 		"avg_views": "کارکردگی",
 		"loading_failed": "پروفائل لوڈ کرنے میں ناکام",
-		"update_failed": "اپ ڈیٹ کرنے میں ناکام"
+		"update_failed": "اپ ڈیٹ کرنے میں ناکام",
+		"folder_empty": "Folder is Empty",
+		"folder_empty_desc": "There are no snippets stored inside this folder yet.",
+		"create_snippet": "Create Snippet",
+		"root_no_folder": "Root (No Folder)",
+		"enter_folder_name": "Enter folder name:",
+		"enter_subfolder_name": "Enter subfolder name inside \"{{name}}\":",
+		"avatar": {
+			"title": "Choose Profile Photo",
+			"description": "Select a mock avatar or upload your own image from your device.",
+			"change": "Change Profile Photo",
+			"tab_mocks": "Mock Avatars",
+			"tab_upload": "Upload File",
+			"drop_prompt": "Click to upload or drag & drop",
+			"file_limits": "PNG, JPG, WebP, GIF (Max 5MB)",
+			"custom_selected": "Custom photo selected",
+			"default_initials": "Using default initials",
+			"updated": "Profile photo updated successfully",
+			"update_failed": "Failed to update profile photo",
+			"invalid_image": "تصویر پر کارروائی کرنے میں ناکام"
+		},
+		"edit_name": "نام میں ترمیم کریں"
 	},
 	"home": {
 		"loading": "لوڈ ہو رہا ہے...",
@@ -801,7 +844,9 @@
 		"sync_failed": "ہم آہنگی ناکام ہو گئی"
 	},
 	"messages": {
-		"loading": "لوڈ ہو رہا ہے...",
+		"loading": {
+			"deleting": "سنیپٹ حذف ہو رہا ہے..."
+		},
 		"overview": "جائزہ",
 		"detected_language": "شناخت شدہ زبان: {{language}}",
 		"success": {
@@ -1225,6 +1270,7 @@
 		"snippets": "Snippets",
 		"grid_view": "Grid View",
 		"list_view": "List View",
-		"items_count": "{{count}} items"
+		"items_count": "{{count}} items",
+		"snippet_moved_success": "سنیپٹ کامیابی سے منتقل کر دیا گیا"
 	}
 }

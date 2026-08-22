@@ -7,3 +7,5 @@ export * from "./file";
 export * from "./name";
 export * from "./text";
 export * from "./tts-helpers";
+export * from "./image-utils";
+export * from "./date-utils";

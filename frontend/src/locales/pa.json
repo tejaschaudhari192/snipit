@@ -396,7 +396,25 @@
 			"approve": "ਮਨਜ਼ੂਰ ਕਰੋ",
 			"approve_all": "ਸਭ ਮਨਜ਼ੂਰ ਕਰੋ",
 			"more": "ਹੋਰ",
-			"import_action": "ਆਯਾਤ ਕਰੋ"
+			"import_action": "ਆਯਾਤ ਕਰੋ",
+			"delete_folder_confirm": "ਕੀ ਤੁਸੀਂ ਯਕੀਨੀ ਤੌਰ 'ਤੇ ਇਹ ਫੋਲਡਰ ਮਿਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ",
+			"delete_passwords_inside": "ਇਸ ਫੋਲਡਰ ਦੇ ਅੰਦਰਲੇ ਸਾਰੇ ਪਾਸਵਰਡ ਮਿਟਾਓ",
+			"action_cannot_be_undone": "ਇਹ ਕਾਰਵਾਈ ਵਾਪਸ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ।",
+			"folder_name": "ਫੋਲਡਰ ਦਾ ਨਾਮ",
+			"folder_color": "ਫੋਲਡਰ ਦਾ ਰੰਗ",
+			"folder_icon": "ਫੋਲਡਰ ਆਈਕਨ",
+			"edit_folder": "ਫੋਲਡਰ ਸੰਪਾਦਿਤ ਕਰੋ",
+			"delete_folder": "ਫੋਲਡਰ ਮਿਟਾਓ",
+			"items_selected": "{{count}} ਚੁਣੇ ਗਏ",
+			"move": "ਤਬਦੀਲ ਕਰੋ",
+			"remove_from_folder": "ਫੋਲਡਰ ਵਿੱਚੋਂ ਹਟਾਓ",
+			"select_limit_to_share": "ਸਾਂਝਾ ਕਰਨ ਲਈ ਵੱਧ ਤੋਂ ਵੱਧ {{limit}} ਆਈਟਮਾਂ ਚੁਣੋ",
+			"delete_n_items": "{{count}} ਆਈਟਮਾਂ ਮਿਟਾਓ?",
+			"delete_bulk_confirm": "ਇਹ ਸਾਰੀਆਂ {{count}} ਚੁਣੀਆਂ ਗਈਆਂ ਆਈਟਮਾਂ ਨੂੰ ਪੱਕੇ ਤੌਰ 'ਤੇ ਮਿਟਾ ਦੇਵੇਗਾ। ਇਹ ਕਾਰਵਾਈ ਵਾਪਸ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ।",
+			"failed_to_move_items": "{{count}} ਆਈਟਮਾਂ ਤਬਦੀਲ ਕਰਨ ਵਿੱਚ ਅਸਫਲ।",
+			"moved_n_items": "{{count}} ਆਈਟਮਾਂ {{folder}} ਵਿੱਚ ਤਬਦੀਲ ਕੀਤੀਆਂ ਗਈਆਂ",
+			"failed_to_delete_items": "{{count}} ਆਈਟਮਾਂ ਮਿਟਾਉਣ ਵਿੱਚ ਅਸਫਲ।",
+			"deleted_n_items": "{{count}} ਆਈਟਮਾਂ ਸਫਲਤਾਪੂਰਵਕ ਮਿਟਾਈਆਂ ਗਈਆਂ"
 		},
 		"password_generator": {
 			"title": "ਪਾਸਵਰਡ ਜਨਰੇਟਰ",
@@ -446,26 +464,30 @@
 			"no_status": "ਕੋਈ ਯਾਤਰੀ ਸਥਿਤੀ ਉਪਲਬਧ ਨਹੀਂ"
 		},
 		"cinema": {
-			"title": "ਸਿਨੇਮਾ - ਦੇਖਣ ਪਾਰਟੀਆਂ",
-			"description": "ਸਮਕਾਲੀ ਪਲੇਬੈਕ, ਲਾਈਵ ਚੈਟ, ਅਤੇ ਫਲੋਟਿੰਗ ਇਮੋਜੀ। ਆਪਣੇ ਦੋਸਤਾਂ ਨਾਲ ਸੰਪੂਰਨ ਸਮਕਾਲੀ ਵਿਡੀਓਜ਼ ਦਾ ਆਨੰਦ ਲਓ।",
+			"title": "ਸਿਨੇਮਾ - ਵਾਚ ਪਾਰਟੀਆਂ",
+			"description": "ਸਮਕਾਲੀ ਪਲੇਬੈਕ, ਲਾਈਵ ਚੈਟ ਅਤੇ ਇਮੋਜੀ। ਦੋਸਤਾਂ ਨਾਲ ਮਿਲ ਕੇ ਵੀਡੀਓ ਦਾ ਆਨੰਦ ਲਓ।",
 			"hero_title": "ਇਕੱਠੇ ਦੇਖੋ",
-			"hero_subtitle": "ਸਮਕਾਲੀ ਪਲੇਬੈਕ, ਲਾਈਵ ਚੈਟ, ਅਤੇ ਫਲੋਟਿੰਗ ਇਮੋਜੀ। ਆਪਣੇ ਦੋਸਤਾਂ ਨਾਲ ਸੰਪੂਰਨ ਸਮਕਾਲੀ ਵਿਡੀਓਜ਼ ਦਾ ਆਨੰਦ ਲਓ।",
+			"hero_subtitle": "ਸਮਕਾਲੀ ਪਲੇਬੈਕ, ਲਾਈਵ ਚੈਟ ਅਤੇ ਇਮੋਜੀ। ਦੋਸਤਾਂ ਨਾਲ ਮਿਲ ਕੇ ਵੀਡੀਓ ਦਾ ਆਨੰਦ ਲਓ।",
 			"create_tab": "ਕਮਰਾ ਬਣਾਓ",
-			"join_tab": "ਰੂਮ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ",
+			"join_tab": "ਕਮਰੇ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ",
 			"url_label": "ਵੀਡੀਓ URL",
 			"url_placeholder": "https://example.com/video.mp4",
-			"local_file_toggle": "ਸਥਾਨਕ ਫਾਈਲ ਸਟ੍ਰੀਮ (P2P)",
-			"select_file": "ਵੀਡੀਓ ਫਾਈਲ ਚੁਣੋ",
+			"local_file_toggle": "ਲੋਕਲ ਫ਼ਾਈਲ ਸਟ੍ਰੀਮ (P2P)",
+			"select_file": "ਵੀਡੀਓ ਫ਼ਾਈਲ ਚੁਣੋ",
 			"start_btn": "ਵਾਚ ਪਾਰਟੀ ਸ਼ੁਰੂ ਕਰੋ",
 			"creating": "ਕਮਰਾ ਬਣਾਇਆ ਜਾ ਰਿਹਾ ਹੈ...",
-			"join_label": "ਰੂਮ ਲਿੰਕ ਜਾਂ ਆਈ.ਡੀ",
-			"join_placeholder": "ਪਾਰਟੀ ਦੇਖਣ ਦਾ ਲਿੰਕ ਇੱਥੇ ਪੇਸਟ ਕਰੋ",
-			"join_btn": "ਰੂਮ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ",
+			"join_label": "ਰੂਮ ਲਿੰਕ ਜਾਂ ID",
+			"join_placeholder": "ਇੱਥੇ ਵਾਚ ਪਾਰਟੀ ਲਿੰਕ ਪੇਸਟ ਕਰੋ",
+			"join_btn": "ਕਮਰੇ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ",
 			"auth_required": "ਵਾਚ ਪਾਰਟੀਆਂ ਦੀ ਮੇਜ਼ਬਾਨੀ ਕਰਨ ਲਈ ਲੌਗਇਨ ਲੋੜੀਂਦਾ ਹੈ।",
-			"invalid_url": "ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਵੈਧ ਵੀਡੀਓ URL ਦਾਖਲ ਕਰੋ।",
-			"features_sync": "ਪਰਫੈਕਟ ਸਿੰਕ",
+			"invalid_url": "ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਵੈਧ ਵੀਡੀਓ URL ਦਰਜ ਕਰੋ।",
+			"features_sync": "ਬਿਲਕੁਲ ਸਹੀ ਸਿੰਕ",
 			"features_chat": "ਲਾਈਵ ਚੈਟ ਅਤੇ ਇਮੋਜੀ",
-			"features_p2p": "ਸਿੱਧੀ P2P ਸਟ੍ਰੀਮਿੰਗ"
+			"features_p2p": "ਸਿੱਧੀ P2P ਸਟ੍ਰੀਮਿੰਗ",
+			"loading_room": "ਵਾਚ ਪਾਰਟੀ ਲੋਡ ਹੋ ਰਹੀ ਹੈ...",
+			"room_not_found": "ਵਾਚ ਪਾਰਟੀ ਨਹੀਂ ਮਿਲੀ",
+			"return_btn": "ਸਿਨੇਮਾ 'ਤੇ ਵਾਪਸ ਜਾਓ",
+			"create_failed": "ਵਾਚ ਪਾਰਟੀ ਬਣਾਉਣ ਵਿੱਚ ਅਸਫਲ"
 		}
 	},
 	"errors": {
@@ -637,7 +659,28 @@
 		},
 		"avg_views": "ਕੁਸ਼ਲਤਾ",
 		"loading_failed": "ਪ੍ਰੋਫਾਈਲ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
-		"update_failed": "ਅੱਪਡੇਟ ਕਰਨ ਵਿੱਚ ਅਸਫਲ"
+		"update_failed": "ਅੱਪਡੇਟ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
+		"folder_empty": "Folder is Empty",
+		"folder_empty_desc": "There are no snippets stored inside this folder yet.",
+		"create_snippet": "Create Snippet",
+		"root_no_folder": "Root (No Folder)",
+		"enter_folder_name": "Enter folder name:",
+		"enter_subfolder_name": "Enter subfolder name inside \"{{name}}\":",
+		"avatar": {
+			"title": "Choose Profile Photo",
+			"description": "Select a mock avatar or upload your own image from your device.",
+			"change": "Change Profile Photo",
+			"tab_mocks": "Mock Avatars",
+			"tab_upload": "Upload File",
+			"drop_prompt": "Click to upload or drag & drop",
+			"file_limits": "PNG, JPG, WebP, GIF (Max 5MB)",
+			"custom_selected": "Custom photo selected",
+			"default_initials": "Using default initials",
+			"updated": "Profile photo updated successfully",
+			"update_failed": "Failed to update profile photo",
+			"invalid_image": "ਚਿੱਤਰ ਦੀ ਪ੍ਰਕਿਰਿਆ ਕਰਨ ਵਿੱਚ ਅਸਫਲ"
+		},
+		"edit_name": "ਨਾਮ ਸੰਪਾਦਿਤ ਕਰੋ"
 	},
 	"home": {
 		"loading": "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
@@ -801,7 +844,9 @@
 		"sync_failed": "ਤੁਹਾਡੇ ਖਾਤੇ ਦੇ ਸਨਿੱਪਟ ਸਿੰਕ ਕਰਨ ਵਿੱਚ ਅਸਫਲ"
 	},
 	"messages": {
-		"loading": "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
+		"loading": {
+			"deleting": "ਸਨਿੱਪੇਟ ਮਿਟਾਇਆ ਜਾ ਰਿਹਾ ਹੈ..."
+		},
 		"overview": "ਸੰਖੇਪ",
 		"detected_language": "ਪਛਾਣੀ ਗਈ ਭਾਸ਼ਾ: {{language}}",
 		"success": {
@@ -1225,6 +1270,7 @@
 		"snippets": "Snippets",
 		"grid_view": "Grid View",
 		"list_view": "List View",
-		"items_count": "{{count}} items"
+		"items_count": "{{count}} items",
+		"snippet_moved_success": "ਸਨਿੱਪੇਟ ਸਫਲਤਾਪੂਰਵਕ ਤਬਦੀਲ ਕੀਤਾ ਗਿਆ"
 	}
 }

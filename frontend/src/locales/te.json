@@ -396,7 +396,25 @@
 			"approve": "ఆమోదించు",
 			"approve_all": "అన్నింటినీ ఆమోదించు",
 			"more": "మరింత",
-			"import_action": "దిగుమతి చేయండి"
+			"import_action": "దిగుమతి చేయండి",
+			"delete_folder_confirm": "మీరు ఖచ్చితంగా ఈ ఫోల్డర్‌ను తొలగించాలనుకుంటున్నారా",
+			"delete_passwords_inside": "ఈ ఫోల్డర్‌లోని అన్ని పాస్‌వర్డ్‌లను తొలగించండి",
+			"action_cannot_be_undone": "ఈ చర్యను రద్దు చేయడం సాధ్యం కాదు.",
+			"folder_name": "ఫోల్డర్ పేరు",
+			"folder_color": "ఫోల్డర్ రంగు",
+			"folder_icon": "ఫోల్డర్ ఐకాన్",
+			"edit_folder": "ఫోల్డర్‌ను సవరించండి",
+			"delete_folder": "ఫోల్డర్‌ను తొలగించండి",
+			"items_selected": "{{count}} ఎంచుకోబడ్డాయి",
+			"move": "తరలించండి",
+			"remove_from_folder": "ఫోల్డర్ నుండి తొలగించండి",
+			"select_limit_to_share": "భాగస్వామ్యం చేయడానికి గరిష్టంగా {{limit}} అంశాలను ఎంచుకోండి",
+			"delete_n_items": "{{count}} అంశాలను తొలగించాలా?",
+			"delete_bulk_confirm": "ఇది ఎంచుకున్న అన్ని {{count}} అంశాలను శాశ్వతంగా తొలగిస్తుంది. ఈ చర్యను రద్దు చేయడం సాధ్యం కాదు.",
+			"failed_to_move_items": "{{count}} అంశాలను తరలించడంలో విఫలమైంది.",
+			"moved_n_items": "{{count}} అంశాలను {{folder}}కు తరలించబడ్డాయి",
+			"failed_to_delete_items": "{{count}} అంశాలను తొలగించడంలో విఫలమైంది.",
+			"deleted_n_items": "{{count}} అంశాలు విజయవంతంగా తొలగించబడ్డాయి"
 		},
 		"password_generator": {
 			"title": "పాస్‌వర్డ్ జెనరేటర్",
@@ -446,26 +464,30 @@
 			"no_status": "ప్రయాణీకుల స్థితి అందుబాటులో లేదు"
 		},
 		"cinema": {
-			"title": "సినిమా - పార్టీలు చూడండి",
-			"description": "సమకాలీకరించబడిన ప్లేబ్యాక్, లైవ్ చాట్ మరియు ఫ్లోటింగ్ ఎమోజీలు. మీ స్నేహితులతో సంపూర్ణ సమకాలీకరణలో వీడియోలను ఆస్వాదించండి.",
+			"title": "సినిమా - వాచ్ పార్టీలు",
+			"description": "సింక్రొనైజ్డ్ ప్లేబ్యాక్, లైవ్ చాట్ మరియు ఫ్లోటింగ్ ఎమోజీలు. మీ స్నేహితులతో కలిసి వీడియోలను ఆస్వాదించండి.",
 			"hero_title": "కలిసి చూడండి",
-			"hero_subtitle": "సమకాలీకరించబడిన ప్లేబ్యాక్, లైవ్ చాట్ మరియు ఫ్లోటింగ్ ఎమోజీలు. మీ స్నేహితులతో సంపూర్ణ సమకాలీకరణలో వీడియోలను ఆస్వాదించండి.",
+			"hero_subtitle": "సింక్రొనైజ్డ్ ప్లేబ్యాక్, లైవ్ చాట్ మరియు ఫ్లోటింగ్ ఎమోజీలు. మీ స్నేహితులతో కలిసి వీడియోలను ఆస్వాదించండి.",
 			"create_tab": "గదిని సృష్టించండి",
 			"join_tab": "గదిలో చేరండి",
 			"url_label": "వీడియో URL",
 			"url_placeholder": "https://example.com/video.mp4",
-			"local_file_toggle": "స్థానిక ఫైల్ స్ట్రీమ్ (P2P)",
-			"select_file": "వీడియో ఫైల్‌ని ఎంచుకోండి",
+			"local_file_toggle": "లోకల్ ఫైల్ స్ట్రీమ్ (P2P)",
+			"select_file": "వీడియో ఫైల్‌ను ఎంచుకోండి",
 			"start_btn": "వాచ్ పార్టీని ప్రారంభించండి",
 			"creating": "గదిని సృష్టిస్తోంది...",
-			"join_label": "గది లింక్ లేదా ID",
-			"join_placeholder": "వీక్షణ పార్టీ లింక్‌ను ఇక్కడ అతికించండి",
+			"join_label": "రూమ్ లింక్ లేదా ID",
+			"join_placeholder": "ఇక్కడ వాచ్ పార్టీ లింక్‌ను పేస్ట్ చేయండి",
 			"join_btn": "గదిలో చేరండి",
 			"auth_required": "వాచ్ పార్టీలను హోస్ట్ చేయడానికి లాగిన్ అవసరం.",
-			"invalid_url": "దయచేసి చెల్లుబాటు అయ్యే వీడియో URLని నమోదు చేయండి.",
+			"invalid_url": "దయచేసి సరైన వీడియో URLని నమోదు చేయండి.",
 			"features_sync": "పర్ఫెక్ట్ సింక్",
-			"features_chat": "ప్రత్యక్ష చాట్ & ఎమోజీలు",
-			"features_p2p": "డైరెక్ట్ P2P స్ట్రీమింగ్"
+			"features_chat": "లైవ్ చాట్ & ఎమోజీలు",
+			"features_p2p": "డైరెక్ట్ P2P స్ట్రీమింగ్",
+			"loading_room": "వాచ్ పార్టీ లోడ్ అవుతోంది...",
+			"room_not_found": "వాచ్ పార్టీ కనుగొనబడలేదు",
+			"return_btn": "సినిమాకు తిరిగి వెళ్లండి",
+			"create_failed": "వాచ్ పార్టీని సృష్టించడంలో విఫలమైంది"
 		}
 	},
 	"errors": {
@@ -637,7 +659,28 @@
 		},
 		"avg_views": "సామర్థ్యం",
 		"loading_failed": "ప్రొఫైల్ లోడ్ చేయడం విఫలమైంది",
-		"update_failed": "నవీకరించడం విఫలమైంది"
+		"update_failed": "నవీకరించడం విఫలమైంది",
+		"folder_empty": "Folder is Empty",
+		"folder_empty_desc": "There are no snippets stored inside this folder yet.",
+		"create_snippet": "Create Snippet",
+		"root_no_folder": "Root (No Folder)",
+		"enter_folder_name": "Enter folder name:",
+		"enter_subfolder_name": "Enter subfolder name inside \"{{name}}\":",
+		"avatar": {
+			"title": "Choose Profile Photo",
+			"description": "Select a mock avatar or upload your own image from your device.",
+			"change": "Change Profile Photo",
+			"tab_mocks": "Mock Avatars",
+			"tab_upload": "Upload File",
+			"drop_prompt": "Click to upload or drag & drop",
+			"file_limits": "PNG, JPG, WebP, GIF (Max 5MB)",
+			"custom_selected": "Custom photo selected",
+			"default_initials": "Using default initials",
+			"updated": "Profile photo updated successfully",
+			"update_failed": "Failed to update profile photo",
+			"invalid_image": "చిత్రాన్ని ప్రాసెస్ చేయడంలో విఫలమైంది"
+		},
+		"edit_name": "పేరును సవరించండి"
 	},
 	"home": {
 		"loading": "లోడ్ అవుతోంది...",
@@ -801,7 +844,9 @@
 		"sync_failed": "సమకాలీకరించడం విఫలమైంది"
 	},
 	"messages": {
-		"loading": "లోడ్ అవుతోంది...",
+		"loading": {
+			"deleting": "స్నిప్పెట్ తొలగించబడుతోంది..."
+		},
 		"overview": "అవలోకనం",
 		"detected_language": "గుర్తించబడిన భాష: {{language}}",
 		"success": {
@@ -1225,6 +1270,7 @@
 		"snippets": "Snippets",
 		"grid_view": "Grid View",
 		"list_view": "List View",
-		"items_count": "{{count}} items"
+		"items_count": "{{count}} items",
+		"snippet_moved_success": "స్నిప్పెట్ విజయవంతంగా తరలించబడింది"
 	}
 }

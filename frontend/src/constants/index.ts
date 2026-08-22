@@ -538,3 +538,6 @@ export const FEEDBACK_OPTIONS = [
 	{ value: "feature", labelKey: "feedback.type_feature" },
 	{ value: "general", labelKey: "feedback.type_general" },
 ] as const;
+
+export * from "./avatars";
+export * from "./cinema";
