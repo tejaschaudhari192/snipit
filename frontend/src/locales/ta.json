@@ -186,10 +186,10 @@
 				"has_key": "மீட்பு விசை அமைக்கப்பட்டுள்ளது",
 				"download": "பதிவிறக்கவும்",
 				"file_too_large": "கோப்பு மிகவும் பெரியது",
-				"file_read_success": "கோப்பு வாசிப்பு வெற்றி",
-				"file_read_error": "கோப்பு வாசிப்பு பிழை",
+				"file_read_success": "மீட்பு விசை ஏற்றப்பட்டது",
+				"file_read_error": "கோப்பைப் படிக்க முடியவில்லை",
 				"upload": "பதிவேற்றவும்",
-				"downloaded": "பதிவிறக்கம் செய்யப்பட்டது"
+				"downloaded": "மீட்பு விசை பதிவிறக்கப்பட்டது"
 			},
 			"no_folder": "கோப்புறை இல்லை",
 			"table_company": "நிறுவனம்",
@@ -1100,7 +1100,7 @@
 		"reset_password_mismatch_toast": "கடவுச்சொற்கள் பொருந்தவில்லை",
 		"reset_password_min_length_toast": "கடவுச்சொல் குறைந்தது 6 எழுத்துகள் இருக்க வேண்டும்",
 		"reset_password_invalid_token_toast": "தவறான டோக்கன்",
-		"reset_password_weak_toast": "கடவுச்சொல் பலவீனமான டோஸ்டை மீட்டமைக்கவும்"
+		"reset_password_weak_toast": "கடவுச்சொல் தேவைகளைப் பூர்த்தி செய்யவில்லை"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI உடன் மேம்படுத்தவும்...",

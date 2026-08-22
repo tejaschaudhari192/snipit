@@ -185,11 +185,11 @@
 				"copied": "کاپی ہو گیا!",
 				"has_key": "ریکوری کی سیٹ اپ ہے",
 				"download": "ڈاؤن لوڈ کریں۔",
-				"file_too_large": "فائل بہت بڑی ہے۔",
-				"file_read_success": "فائل پڑھنے میں کامیابی",
-				"file_read_error": "فائل پڑھنے میں خرابی۔",
+				"file_too_large": "فائل بہت بڑی ہے",
+				"file_read_success": "ریکوری کلید لوڈ ہوگئی",
+				"file_read_error": "فائل پڑھنے میں ناکام",
 				"upload": "اپ لوڈ کریں۔",
-				"downloaded": "ڈاؤن لوڈ کیا گیا۔"
+				"downloaded": "ریکوری کلید ڈاؤن لوڈ کی گئی"
 			},
 			"no_folder": "کوئی فولڈر نہیں",
 			"table_company": "کمپنی",
@@ -1100,7 +1100,7 @@
 		"reset_password_mismatch_toast": "پاس ورڈ مماثل نہیں ہیں",
 		"reset_password_min_length_toast": "پاس ورڈ کم از کم 6 حروف کا ہونا چاہیے",
 		"reset_password_invalid_token_toast": "ٹوکن غیر درست ہے",
-		"reset_password_weak_toast": "کمزور ٹوسٹ پاس ورڈ کو دوبارہ ترتیب دیں۔"
+		"reset_password_weak_toast": "پاس ورڈ ضروریات کو پورا نہیں کرتا ہے"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI کے ساتھ بہتر بنائیں...",

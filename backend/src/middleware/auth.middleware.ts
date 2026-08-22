@@ -92,7 +92,7 @@ export const optionalAuth = async (
 		}
 
 		next();
-	} catch (error) {
+	} catch {
 		// Even on error, we proceed as anonymous
 		next();
 	}

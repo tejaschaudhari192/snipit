@@ -147,11 +147,10 @@ export function FieldCleanerWizard({
 						<h3 className="text-lg font-semibold">
 							{t("tools.password_manager.fields_cleaned")}
 						</h3>
-						<p className="text-sm text-muted-foreground max-w-[280px]">
+						<p className="text-sm text-muted-foreground max-w-70">
 							{fixedCount > 0
 								? t("tools.password_manager.fixed_count", {
 										count: fixedCount,
-										defaultValue: `Successfully fixed ${fixedCount} items.`,
 									})
 								: t("tools.password_manager.no_issues_found")}
 						</p>

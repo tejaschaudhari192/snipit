@@ -264,11 +264,11 @@
 				"copied": "Copied!",
 				"has_key": "Recovery key is set up",
 				"download": "Download",
-				"file_too_large": "File Too Large",
-				"file_read_success": "File Read Success",
-				"file_read_error": "File Read Error",
+				"file_too_large": "File is too large",
+				"file_read_success": "Recovery key loaded",
+				"file_read_error": "Failed to read file",
 				"upload": "Upload",
-				"downloaded": "Downloaded"
+				"downloaded": "Downloaded recovery key"
 			},
 			"danger_zone": "Danger Zone",
 			"delete_vault": {
@@ -1132,7 +1132,7 @@
 		"reset_password_mismatch_toast": "Passwords do not match",
 		"reset_password_min_length_toast": "Password must be at least 6 characters",
 		"reset_password_invalid_token_toast": "Invalid token",
-		"reset_password_weak_toast": "Reset Password Weak Toast"
+		"reset_password_weak_toast": "Password does not meet the requirements"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI Enhance Selection...",

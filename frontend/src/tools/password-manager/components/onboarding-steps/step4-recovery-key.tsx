@@ -63,10 +63,7 @@ export default function Step4RecoveryKey({
 								onClick={onDownload}
 							>
 								<Download className="mr-2 h-4 w-4" />
-								{t(
-									"tools.password_manager.recovery.download",
-									"Download",
-								)}
+								{t("tools.password_manager.recovery.download")}
 							</Button>
 						</div>
 					</CardContent>

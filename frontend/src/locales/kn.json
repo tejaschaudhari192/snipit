@@ -186,10 +186,10 @@
 				"has_key": "ರಿಕವರಿ ಕೀ ಹೊಂದಿಸಲಾಗಿದೆ",
 				"download": "ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ",
 				"file_too_large": "ಫೈಲ್ ತುಂಬಾ ದೊಡ್ಡದಾಗಿದೆ",
-				"file_read_success": "ಫೈಲ್ ಓದುವಿಕೆ ಯಶಸ್ವಿಯಾಗಿದೆ",
-				"file_read_error": "ಫೈಲ್ ಓದುವಿಕೆ ದೋಷ",
+				"file_read_success": "ಚೇತರಿಕೆ ಕೀಲಿಯನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಿದೆ",
+				"file_read_error": "ಫೈಲ್ ಓದಲು ವಿಫಲವಾಗಿದೆ",
 				"upload": "ಅಪ್ಲೋಡ್ ಮಾಡಿ",
-				"downloaded": "ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗಿದೆ"
+				"downloaded": "ಚೇತರಿಕೆ ಕೀಲಿಯನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗಿದೆ"
 			},
 			"no_folder": "ಯಾವುದೇ ಫೋಲ್ಡರ್ ಇಲ್ಲ",
 			"table_company": "ಕಂಪನಿ",
@@ -1100,7 +1100,7 @@
 		"reset_password_mismatch_toast": "ಪಾಸ್‌ವರ್ಡ್‌ಗಳು ಹೊಂದಿಕೆಯಾಗುತ್ತಿಲ್ಲ",
 		"reset_password_min_length_toast": "ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ 6 ಅಕ್ಷರಗಳಿರಬೇಕು",
 		"reset_password_invalid_token_toast": "ಅಮಾನ್ಯ ಟೋಕನ್",
-		"reset_password_weak_toast": "ಪಾಸ್ವರ್ಡ್ ದುರ್ಬಲ ಟೋಸ್ಟ್ ಅನ್ನು ಮರುಹೊಂದಿಸಿ"
+		"reset_password_weak_toast": "ಪಾಸ್ವರ್ಡ್ ಅವಶ್ಯಕತೆಗಳನ್ನು ಪೂರೈಸುವುದಿಲ್ಲ"
 	},
 	"editor": {
 		"ai_enhance": "✨ AIನೊಂದಿಗೆ ಸುಧಾರಿಸಿ...",

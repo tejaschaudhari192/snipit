@@ -6,7 +6,6 @@ import {
 	setAuthCookie,
 	clearAuthCookie,
 } from "@/lib/auth.utils.js";
-import User from "@/models/User.js";
 import EmailService from "@/services/email.service.js";
 import logger from "@/config/logger.js";
 

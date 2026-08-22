@@ -81,10 +81,7 @@ export default function PasswordSetupForm({
 				/>
 				{confirmPassword && password !== confirmPassword && (
 					<p className="text-xs text-destructive font-medium mt-1.5 animate-in fade-in">
-						{t(
-							"auth.reset_password_mismatch_toast",
-							"Passwords do not match",
-						)}
+						{t("auth.reset_password_mismatch_toast")}
 					</p>
 				)}
 			</div>

@@ -185,10 +185,10 @@
 				"has_key": "リカバリキーが設定されています",
 				"download": "ダウンロード",
 				"file_too_large": "ファイルが大きすぎます",
-				"file_read_success": "ファイルの読み取り成功",
-				"file_read_error": "ファイル読み取りエラー",
+				"file_read_success": "リカバリキーが読み込まれました",
+				"file_read_error": "ファイルの読み取りに失敗しました",
 				"upload": "アップロード",
-				"downloaded": "ダウンロード済み"
+				"downloaded": "リカバリキーをダウンロードしました"
 			},
 			"no_folder": "フォルダーなし",
 			"table_company": "会社",
@@ -1100,7 +1100,7 @@
 		"reset_password_mismatch_toast": "パスワードが一致しません",
 		"reset_password_min_length_toast": "パスワードは6文字以上である必要があります",
 		"reset_password_invalid_token_toast": "無効なトークン",
-		"reset_password_weak_toast": "パスワードをリセット 弱いトースト"
+		"reset_password_weak_toast": "パスワードが必要条件を満たしていません"
 	},
 	"editor": {
 		"ai_enhance": "✨ AIで選択範囲を強化...",

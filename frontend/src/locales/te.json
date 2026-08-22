@@ -185,11 +185,11 @@
 				"copied": "నకలు చేయబడింది!",
 				"has_key": "రికవరీ కీ అమర్చబడింది",
 				"download": "డౌన్‌లోడ్ చేయండి",
-				"file_too_large": "ఫైల్ చాలా పెద్దది",
-				"file_read_success": "ఫైల్ రీడ్ సక్సెస్",
-				"file_read_error": "ఫైల్ రీడ్ ఎర్రర్",
+				"file_too_large": "ఫైల్ చాలా పెద్దదిగా ఉంది",
+				"file_read_success": "రికవరీ కీ లోడ్ చేయబడింది",
+				"file_read_error": "ఫైల్‌ను చదవడంలో విఫలమైంది",
 				"upload": "అప్‌లోడ్ చేయండి",
-				"downloaded": "డౌన్‌లోడ్ చేయబడింది"
+				"downloaded": "రికవరీ కీ డౌన్‌లోడ్ చేయబడింది"
 			},
 			"no_folder": "ఫోల్డర్ లేదు",
 			"table_company": "కంపెనీ",
@@ -1100,7 +1100,7 @@
 		"reset_password_mismatch_toast": "పాస్‌వర్డ్‌లు సరిపోలలేదు",
 		"reset_password_min_length_toast": "పాస్‌వర్డ్ కనీసం 6 అక్షరాలు ఉండాలి",
 		"reset_password_invalid_token_toast": "చెల్లని టోకెన్",
-		"reset_password_weak_toast": "పాస్‌వర్డ్ బలహీనమైన టోస్ట్‌ని రీసెట్ చేయండి"
+		"reset_password_weak_toast": "పాస్‌వర్డ్ అవసరాలకు అనుగుణంగా లేదు"
 	},
 	"editor": {
 		"ai_enhance": "✨ AIతో మెరుగుపరచండి...",

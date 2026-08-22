@@ -179,11 +179,11 @@
 				"copied": "Kopiert!",
 				"has_key": "Wiederherstellungsschlüssel ist eingerichtet",
 				"download": "Herunterladen",
-				"file_too_large": "Datei zu groß",
-				"file_read_success": "Erfolgreiches Lesen der Datei",
-				"file_read_error": "Fehler beim Lesen der Datei",
+				"file_too_large": "Datei ist zu groß",
+				"file_read_success": "Wiederherstellungsschlüssel geladen",
+				"file_read_error": "Datei konnte nicht gelesen werden",
 				"upload": "Hochladen",
-				"downloaded": "Heruntergeladen"
+				"downloaded": "Wiederherstellungsschlüssel heruntergeladen"
 			},
 			"no_folder": "Kein Ordner",
 			"type_logins": "Anmeldungen",
@@ -1132,7 +1132,7 @@
 		"reset_password_mismatch_toast": "Passwörter stimmen nicht überein",
 		"reset_password_min_length_toast": "Passwort muss mindestens 6 Zeichen lang sein",
 		"reset_password_invalid_token_toast": "Ungültiger Token",
-		"reset_password_weak_toast": "Passwort zurücksetzen Weak Toast"
+		"reset_password_weak_toast": "Passwort entspricht nicht den Anforderungen"
 	},
 	"editor": {
 		"ai_enhance": "✨ KI-Auswahl verbessern...",

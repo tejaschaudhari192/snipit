@@ -186,10 +186,10 @@
 				"has_key": "રિકવરી કી સેટ થઈ ગઈ છે",
 				"download": "ડાઉનલોડ કરો",
 				"file_too_large": "ફાઇલ ખૂબ મોટી છે",
-				"file_read_success": "ફાઇલ વાંચવામાં સફળતા",
-				"file_read_error": "ફાઇલ વાંચવામાં ભૂલ",
+				"file_read_success": "પુનઃપ્રાપ્તિ કી લોડ થઈ",
+				"file_read_error": "ફાઇલ વાંચવામાં નિષ્ફળ",
 				"upload": "અપલોડ કરો",
-				"downloaded": "ડાઉનલોડ કરેલ"
+				"downloaded": "પુનઃપ્રાપ્તિ કી ડાઉનલોડ થઈ"
 			},
 			"no_folder": "કોઈ ફોલ્ડર નથી",
 			"table_company": "કંપની",
@@ -1100,7 +1100,7 @@
 		"reset_password_mismatch_toast": "પાસવર્ડ મેળ ખાતા નથી",
 		"reset_password_min_length_toast": "પાસવર્ડ ઓછામાં ઓછો 6 અક્ષરનો હોવો જોઈએ",
 		"reset_password_invalid_token_toast": "અમાન્ય ટોકન",
-		"reset_password_weak_toast": "પાસવર્ડ નબળા ટોસ્ટ રીસેટ કરો"
+		"reset_password_weak_toast": "પાસવર્ડ આવશ્યકતાઓને પૂર્ણ કરતો નથી"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI વડે સુધારો...",

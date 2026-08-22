@@ -185,11 +185,11 @@
 				"copied": "ਕਾਪੀ ਕੀਤਾ ਗਿਆ!",
 				"has_key": "ਰਿਕਵਰੀ ਕੁੰਜੀ ਸੈੱਟ ਅੱਪ ਹੈ",
 				"download": "ਡਾਊਨਲੋਡ ਕਰੋ",
-				"file_too_large": "ਫ਼ਾਈਲ ਬਹੁਤ ਵੱਡੀ ਹੈ",
-				"file_read_success": "ਫਾਈਲ ਪੜ੍ਹਨ ਦੀ ਸਫਲਤਾ",
-				"file_read_error": "ਫਾਈਲ ਰੀਡ ਐਰਰ",
+				"file_too_large": "ਫਾਈਲ ਬਹੁਤ ਵੱਡੀ ਹੈ",
+				"file_read_success": "ਰਿਕਵਰੀ ਕੁੰਜੀ ਲੋਡ ਹੋਈ",
+				"file_read_error": "ਫਾਈਲ ਪੜ੍ਹਨ ਵਿੱਚ ਅਸਫਲ",
 				"upload": "ਅੱਪਲੋਡ ਕਰੋ",
-				"downloaded": "ਡਾਊਨਲੋਡ ਕੀਤਾ"
+				"downloaded": "ਰਿਕਵਰੀ ਕੁੰਜੀ ਡਾਊਨਲੋਡ ਕੀਤੀ ਗਈ"
 			},
 			"no_folder": "ਕੋਈ ਫੋਲਡਰ ਨਹੀਂ",
 			"table_company": "ਕੰਪਨੀ",
@@ -1100,7 +1100,7 @@
 		"reset_password_mismatch_toast": "ਪਾਸਵਰਡ ਮੇਲ ਨਹੀਂ ਖਾਂਦੇ",
 		"reset_password_min_length_toast": "ਪਾਸਵਰਡ ਘੱਟੋ-ਘੱਟ 6 ਅੱਖਰਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ",
 		"reset_password_invalid_token_toast": "ਅਵੈਧ ਟੋਕਨ",
-		"reset_password_weak_toast": "ਪਾਸਵਰਡ ਕਮਜ਼ੋਰ ਟੋਸਟ ਰੀਸੈਟ ਕਰੋ"
+		"reset_password_weak_toast": "ਪਾਸਵਰਡ ਲੋੜਾਂ ਪੂਰੀਆਂ ਨਹੀਂ ਕਰਦਾ"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI ਨਾਲ ਸੁਧਾਰੋ...",

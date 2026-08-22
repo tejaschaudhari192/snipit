@@ -45,10 +45,7 @@ const ResetPasswordPage = () => {
 
 		if (!isStrongEnough) {
 			toast.add({
-				title: t(
-					"auth.reset_password_weak_toast",
-					"Password does not meet the requirements",
-				),
+				title: t("auth.reset_password_weak_toast"),
 				type: "error",
 			});
 			return;
@@ -175,7 +172,6 @@ const ResetPasswordPage = () => {
 										<p className="text-xs text-destructive font-medium mt-1 animate-in fade-in">
 											{t(
 												"auth.reset_password_mismatch_toast",
-												"Passwords do not match",
 											)}
 										</p>
 									)}

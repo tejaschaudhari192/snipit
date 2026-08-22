@@ -186,10 +186,10 @@
 				"has_key": "रिकवरी कुंजी सेट है",
 				"download": "डाउनलोड करना",
 				"file_too_large": "फ़ाइल बहुत बड़ी है",
-				"file_read_success": "फ़ाइल पढ़ें सफलता",
-				"file_read_error": "फ़ाइल पढ़ने में त्रुटि",
+				"file_read_success": "रिकवरी कुंजी लोड हो गई",
+				"file_read_error": "फ़ाइल पढ़ने में विफल",
 				"upload": "अपलोड करें",
-				"downloaded": "डाउनलोड"
+				"downloaded": "रिकवरी कुंजी डाउनलोड की गई"
 			},
 			"no_folder": "कोई फ़ोल्डर नहीं",
 			"table_company": "कंपनी",
@@ -1132,7 +1132,7 @@
 		"reset_password_mismatch_toast": "पासवर्ड मेल नहीं खाते",
 		"reset_password_min_length_toast": "पासवर्ड कम से कम 6 अक्षरों का होना चाहिए",
 		"reset_password_invalid_token_toast": "अमान्य टोकन",
-		"reset_password_weak_toast": "पासवर्ड कमजोर टोस्ट रीसेट करें"
+		"reset_password_weak_toast": "पासवर्ड आवश्यकताओं को पूरा नहीं करता है"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI के साथ बेहतर बनाएं...",

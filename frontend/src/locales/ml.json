@@ -186,10 +186,10 @@
 				"has_key": "വീണ്ടെടുക്കൽ കീ സജ്ജമാണ്",
 				"download": "ഡൗൺലോഡ് ചെയ്യുക",
 				"file_too_large": "ഫയൽ വളരെ വലുതാണ്",
-				"file_read_success": "ഫയൽ വായന വിജയിച്ചു",
-				"file_read_error": "ഫയൽ വായിക്കുന്നതിൽ പിശക്",
+				"file_read_success": "വീണ്ടെടുക്കൽ കീ ലോഡ് ചെയ്തു",
+				"file_read_error": "ഫയൽ വായിക്കുന്നതിൽ പരാജയപ്പെട്ടു",
 				"upload": "അപ്‌ലോഡ് ചെയ്യുക",
-				"downloaded": "ഡൗൺലോഡ് ചെയ്തു"
+				"downloaded": "വീണ്ടെടുക്കൽ കീ ഡൗൺലോഡ് ചെയ്തു"
 			},
 			"no_folder": "ഫോൾഡർ ഇല്ല",
 			"table_company": "കമ്പനി",
@@ -1100,7 +1100,7 @@
 		"reset_password_mismatch_toast": "പാസ്‌വേഡുകൾ ഒരുപോലെയല്ല",
 		"reset_password_min_length_toast": "കുറഞ്ഞത് 6 അക്ഷരങ്ങൾ വേണം",
 		"reset_password_invalid_token_toast": "തെറ്റായ ടോക്കൻ",
-		"reset_password_weak_toast": "പാസ്‌വേഡ് വീക്ക് ടോസ്റ്റ് പുനഃസജ്ജമാക്കുക"
+		"reset_password_weak_toast": "പാസ്‌വേഡ് ആവശ്യകതകൾ പാലിക്കുന്നില്ല"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI ഉപയോഗിച്ച് മെച്ചപ്പെടുത്തുക...",

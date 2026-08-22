@@ -104,7 +104,11 @@ export function decryptSymmetric(
 	}
 
 	const base64Decoded = naclUtil.encodeUTF8(decrypted);
-	return JSON.parse(base64Decoded);
+	try {
+		return JSON.parse(base64Decoded);
+	} catch {
+		return base64Decoded;
+	}
 }
 
 export const decryptWithMEK = decryptSymmetric;
