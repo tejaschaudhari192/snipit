@@ -15,7 +15,8 @@ import { dateConverter, uniqueIdGenerator } from "@/lib/utils.js";
 import bcrypt from "bcryptjs";
 import type EmailService from "./email.service.js";
 import configurations from "@/config/configurations.js";
-import { deleteFileFromStorage } from "@/lib/supabase.js";
+import { deletePasteStorageFiles } from "@/lib/supabase.js";
+import { expirationScheduler } from "./expiration-scheduler.service.js";
 
 class PasteService {
 	constructor(private readonly emailService?: EmailService) {}
@@ -38,35 +39,35 @@ class PasteService {
 		let expiresAt = expiresTime
 			? dateConverter(expiresTime)
 			: dateConverter("1d");
-		let finalBurnAfterRead = !!burnAfterRead;
 
 		if (expiresTime === "one-time") {
 			expiresAt = dateConverter("1d");
-			finalBurnAfterRead = true;
+		} else if (expiresTime === "never") {
+			expiresAt = null;
 		}
 
-		if (!expiresAt && expiresTime !== "never") {
-			expiresAt = dateConverter("1d");
+		let hashedPassword = undefined;
+		if (password) {
+			const salt = await bcrypt.genSalt(10);
+			hashedPassword = await bcrypt.hash(password, salt);
 		}
 
 		const pasteId = customId || uniqueIdGenerator();
-		const pasteData: PasteData = {
-			...rest,
-			id: pasteId,
-			expiresAt: expiresAt,
-			burnAfterRead: finalBurnAfterRead,
-			expiresTime: expiresTime || "1d",
-			owner: ownerId || undefined,
-			createdAt: new Date(),
-		};
-
-		if (password) {
-			const salt = await bcrypt.genSalt(10);
-			pasteData.password = await bcrypt.hash(password, salt);
-		}
 
 		try {
-			const paste = await pasteModel.create(pasteData);
+			const paste = await pasteModel.create({
+				...rest,
+				id: pasteId,
+				owner: ownerId,
+				expiresAt,
+				burnAfterRead: burnAfterRead || expiresTime === "one-time",
+				expiresTime: expiresTime || "1d",
+				password: hashedPassword,
+			});
+
+			if (paste.expiresAt) {
+				expirationScheduler.schedule(paste.id, paste.expiresAt);
+			}
 
 			if (finalCollaborators && finalCollaborators.length > 0) {
 				await this.addCollaborators(paste.id, finalCollaborators);
@@ -102,7 +103,19 @@ class PasteService {
 	}
 
 	async getPasteById(id: string) {
-		return await pasteModel.findOne({ id });
+		const paste = await pasteModel.findOne({ id });
+		if (!paste) return null;
+
+		// Lazy On-Access Expiration Purge
+		if (
+			paste.expiresAt &&
+			new Date(paste.expiresAt).getTime() <= Date.now()
+		) {
+			await this.deletePaste(id);
+			return null;
+		}
+
+		return paste;
 	}
 
 	async incrementViews(id: string) {
@@ -116,15 +129,10 @@ class PasteService {
 	async deletePaste(
 		id: string,
 	): Promise<{ acknowledged: boolean; deletedCount: number }> {
-		const paste = await this.getPasteById(id);
-		if (paste?.fileUrl) {
-			await deleteFileFromStorage(paste.fileUrl);
-		}
-		if (paste?.files && paste.files.length > 0) {
-			const deletePromises = paste.files.map((file) =>
-				deleteFileFromStorage(file.url),
-			);
-			await Promise.all(deletePromises);
+		expirationScheduler.cancel(id);
+		const paste = await pasteModel.findOne({ id });
+		if (paste) {
+			await deletePasteStorageFiles(paste);
 		}
 		await collaboratorModel.deleteMany({ pasteId: id });
 		return await pasteModel.deleteOne({ id });
@@ -151,6 +159,7 @@ class PasteService {
 			else if (expiresTime === "never") expiresAt = null;
 			paste.expiresAt = expiresAt;
 			paste.expiresTime = expiresTime;
+			expirationScheduler.schedule(paste.id, expiresAt);
 		}
 
 		if (password === null) {
