@@ -115,17 +115,6 @@ export const ProfileInfo = ({
 										<span className="font-extrabold text-sm text-foreground truncate">
 											{user.username}
 										</span>
-										{!isGuest && (
-											<button
-												onClick={() =>
-													setIsEditingName(true)
-												}
-												className="p-1 text-muted-foreground/60 hover:text-primary transition-colors cursor-pointer rounded-md hover:bg-muted"
-												title="Edit Username"
-											>
-												<Edit2 className="h-3 w-3" />
-											</button>
-										)}
 									</div>
 									<span className="text-[11px] text-muted-foreground truncate">
 										{user.email}
