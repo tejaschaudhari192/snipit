@@ -92,7 +92,35 @@ export function TiptapToolbar({
 		filesize?: string,
 	) => {
 		if (mediaModal.type === "image") {
-			editor.chain().focus().setImage({ src: url }).run();
+			const chain = editor.chain().focus();
+			if (
+				typeof (
+					chain as unknown as {
+						setImage?: (opt: { src: string }) => {
+							run: () => boolean;
+						};
+					}
+				).setImage === "function"
+			) {
+				(
+					chain as unknown as {
+						setImage: (opt: { src: string }) => {
+							run: () => boolean;
+						};
+					}
+				)
+					.setImage({ src: url })
+					.run();
+			} else {
+				editor
+					.chain()
+					.focus()
+					.insertContent({
+						type: "image",
+						attrs: { src: url },
+					})
+					.run();
+			}
 		} else if (mediaModal.type === "video") {
 			if (url.includes("youtube.com") || url.includes("youtu.be")) {
 				editor.chain().focus().setYoutubeVideo({ src: url }).run();
@@ -179,6 +207,7 @@ export function TiptapToolbar({
 				<IndentControls editor={editor} />
 
 				<TableSelector
+					editor={editor}
 					onSelect={(r, c) =>
 						editor
 							.chain()

@@ -45,8 +45,10 @@ export const Transliteration = Extension.create({
 									);
 								if (suggestions && suggestions.length > 0) {
 									const transliterated = suggestions[0];
-									const startPos =
-										$from.pos - lastWord.length;
+									const startPos = Math.max(
+										0,
+										$from.pos - lastWord.length,
+									);
 									const endPos = $from.pos;
 
 									const transaction = state.tr.insertText(

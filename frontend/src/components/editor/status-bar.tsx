@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 interface StatusBarProps {
 	stats: {
 		words: number;
@@ -6,7 +8,7 @@ interface StatusBarProps {
 	};
 }
 
-export function StatusBar({ stats }: StatusBarProps) {
+export const StatusBar = memo(function StatusBar({ stats }: StatusBarProps) {
 	return (
 		<div className="flex items-center justify-between px-4 py-2 border-t border-border/30 bg-muted/20 text-[11px] text-muted-foreground select-none font-medium z-10 shrink-0">
 			<div className="flex items-center gap-4">
@@ -31,6 +33,7 @@ export function StatusBar({ stats }: StatusBarProps) {
 						strokeWidth="2"
 						strokeLinecap="round"
 						strokeLinejoin="round"
+						aria-hidden="true"
 					>
 						<circle cx="12" cy="12" r="10" />
 						<polyline points="12 6 12 12 16 14" />
@@ -43,4 +46,4 @@ export function StatusBar({ stats }: StatusBarProps) {
 			</div>
 		</div>
 	);
-}
+});

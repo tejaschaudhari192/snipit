@@ -303,7 +303,42 @@ export const CustomImage = Node.create({
 		return ["img", mergeAttributes(HTMLAttributes)];
 	},
 
+	addCommands() {
+		return {
+			setImage:
+				(options: {
+					src: string;
+					alt?: string;
+					title?: string;
+					width?: string;
+					align?: string;
+					layout?: string;
+				}) =>
+				({ commands }) => {
+					return commands.insertContent({
+						type: this.name,
+						attrs: options,
+					});
+				},
+		};
+	},
+
 	addNodeView() {
 		return ReactNodeViewRenderer(ImageNodeView);
 	},
 });
+
+declare module "@tiptap/core" {
+	interface Commands<ReturnType> {
+		customImage: {
+			setImage: (options: {
+				src: string;
+				alt?: string;
+				title?: string;
+				width?: string;
+				align?: string;
+				layout?: string;
+			}) => ReturnType;
+		};
+	}
+}
