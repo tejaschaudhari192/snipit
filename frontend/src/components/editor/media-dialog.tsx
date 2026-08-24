@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { FileService } from "@/lib/file-service";
+import { isSupabaseConfigured } from "@/lib/supabase";
 import { toast } from "@/components/ui/toast";
 import {
 	Dialog,
@@ -42,19 +43,34 @@ export function MediaDialog({
 		if (!selectedFile) return;
 		try {
 			setIsUploading(true);
-			const { url, error } = await FileService.upload(selectedFile);
-			if (error) {
-				toast.add({ title: error, type: "error" });
-				return;
+			let targetUrl: string | null = null;
+
+			// Try cloud storage if configured
+			if (isSupabaseConfigured) {
+				const { url } = await FileService.upload(selectedFile);
+				if (url) {
+					targetUrl = url;
+				}
 			}
-			if (url) {
+
+			// Fallback to client Data URL for seamless local embedding
+			if (!targetUrl) {
+				targetUrl = await new Promise<string>((resolve, reject) => {
+					const reader = new FileReader();
+					reader.onload = () => resolve(reader.result as string);
+					reader.onerror = reject;
+					reader.readAsDataURL(selectedFile);
+				});
+			}
+
+			if (targetUrl) {
 				const sizeStr =
 					selectedFile.size > 1024 * 1024
 						? `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB`
 						: `${(selectedFile.size / 1024).toFixed(1)} KB`;
-				onInsert(url, selectedFile.name, sizeStr);
+				onInsert(targetUrl, selectedFile.name, sizeStr);
 				toast.add({
-					title: "Uploaded and embedded successfully!",
+					title: "Embedded successfully!",
 					type: "success",
 				});
 				handleClose();

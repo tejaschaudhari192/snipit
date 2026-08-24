@@ -185,11 +185,11 @@
 				"copied": "কপি হয়েছে!",
 				"has_key": "রিকভারি কী সেট আপ হয়েছে",
 				"download": "ডাউনলোড করুন",
-				"file_too_large": "ফাইল খুব বড়",
-				"file_read_success": "ফাইল পড়া সফল",
-				"file_read_error": "ফাইল পড়ার ত্রুটি",
+				"file_too_large": "ফাইলটি খুব বড়",
+				"file_read_success": "পুনরুদ্ধার কী লোড হয়েছে",
+				"file_read_error": "ফাইল পড়তে ব্যর্থ হয়েছে",
 				"upload": "আপলোড করুন",
-				"downloaded": "ডাউনলোড করা হয়েছে"
+				"downloaded": "পুনরুদ্ধার কী ডাউনলোড করা হয়েছে"
 			},
 			"no_folder": "কোনো ফোল্ডার নেই",
 			"table_company": "কোম্পানি",
@@ -396,7 +396,25 @@
 			"approve": "অনুমোদন করুন",
 			"approve_all": "সব অনুমোদন করুন",
 			"more": "আরও",
-			"import_action": "ইমপোর্ট"
+			"import_action": "ইমপোর্ট",
+			"delete_folder_confirm": "আপনি কি নিশ্চিতভাবে এই ফোল্ডারটি মুছতে চান",
+			"delete_passwords_inside": "এই ফোল্ডারের ভিতরের সমস্ত পাসওয়ার্ড মুছুন",
+			"action_cannot_be_undone": "এই পদক্ষেপটি পূর্বাবস্থায় ফিরিয়ে আনা যাবে না।",
+			"folder_name": "ফোল্ডারের নাম",
+			"folder_color": "ফোল্ডারের রঙ",
+			"folder_icon": "ফোল্ডার আইকন",
+			"edit_folder": "ফোল্ডার সম্পাদনা করুন",
+			"delete_folder": "ফোল্ডার মুছুন",
+			"items_selected": "{{count}}টি নির্বাচিত",
+			"move": "স্থানান্তর করুন",
+			"remove_from_folder": "ফোল্ডার থেকে সরান",
+			"select_limit_to_share": "ভাগ করতে সর্বোচ্চ {{limit}}টি আইটেম নির্বাচন করুন",
+			"delete_n_items": "{{count}}টি আইটেম মুছবেন?",
+			"delete_bulk_confirm": "এটি নির্বাচিত সমস্ত {{count}}টি আইটেম স্থায়ীভাবে মুছে ফেলবে। এই পদক্ষেপটি পূর্বাবস্থায় ফিরিয়ে আনা যাবে না।",
+			"failed_to_move_items": "{{count}}টি আইটেম স্থানান্তর করতে ব্যর্থ হয়েছে।",
+			"moved_n_items": "{{count}}টি আইটেম {{folder}}-এ স্থানান্তরিত হয়েছে",
+			"failed_to_delete_items": "{{count}}টি আইটেম মুছতে ব্যর্থ হয়েছে।",
+			"deleted_n_items": "{{count}}টি আইটেম সফলভাবে মুছে ফেলা হয়েছে"
 		},
 		"password_generator": {
 			"title": "পাসওয়ার্ড জেনারেটর",
@@ -447,25 +465,29 @@
 		},
 		"cinema": {
 			"title": "সিনেমা - ওয়াচ পার্টি",
-			"description": "সিঙ্ক্রোনাইজড প্লেব্যাক, লাইভ চ্যাট এবং ভাসমান ইমোজি। আপনার বন্ধুদের সাথে নিখুঁত সিঙ্ক ভিডিও উপভোগ করুন.",
+			"description": "সিঙ্ক্রোনাইজড প্লেব্যাক, লাইভ চ্যাট এবং ভাসমান ইমোজি। বন্ধুদের সাথে একসাথে ভিডিও উপভোগ করুন।",
 			"hero_title": "একসাথে দেখুন",
-			"hero_subtitle": "সিঙ্ক্রোনাইজড প্লেব্যাক, লাইভ চ্যাট এবং ভাসমান ইমোজি। আপনার বন্ধুদের সাথে নিখুঁত সিঙ্ক ভিডিও উপভোগ করুন.",
+			"hero_subtitle": "সিঙ্ক্রোনাইজড প্লেব্যাক, লাইভ চ্যাট এবং ভাসমান ইমোজি। বন্ধুদের সাথে একসাথে ভিডিও উপভোগ করুন।",
 			"create_tab": "রুম তৈরি করুন",
 			"join_tab": "রুমে যোগ দিন",
 			"url_label": "ভিডিও URL",
 			"url_placeholder": "https://example.com/video.mp4",
-			"local_file_toggle": "স্থানীয় ফাইল স্ট্রীম (P2P)",
+			"local_file_toggle": "স্থানীয় ফাইল স্ট্রিম (P2P)",
 			"select_file": "ভিডিও ফাইল নির্বাচন করুন",
 			"start_btn": "ওয়াচ পার্টি শুরু করুন",
-			"creating": "রুম তৈরি করা হচ্ছে...",
-			"join_label": "রুম লিঙ্ক বা আইডি",
-			"join_placeholder": "এখানে ওয়াচ পার্টি লিঙ্ক আটকান",
+			"creating": "রুম তৈরি হচ্ছে...",
+			"join_label": "রুম লিঙ্ক বা ID",
+			"join_placeholder": "এখানে ওয়াচ পার্টি লিঙ্ক পেস্ট করুন",
 			"join_btn": "রুমে যোগ দিন",
-			"auth_required": "ঘড়ি পার্টি হোস্ট করতে লগইন প্রয়োজন.",
-			"invalid_url": "একটি বৈধ ভিডিও URL লিখুন.",
-			"features_sync": "পারফেক্ট সিঙ্ক",
-			"features_chat": "লাইভ চ্যাট এবং ইমোজিস",
-			"features_p2p": "সরাসরি P2P স্ট্রিমিং"
+			"auth_required": "ওয়াচ পার্টি হোস্ট করার জন্য লগইন প্রয়োজন।",
+			"invalid_url": "দয়া করে একটি বৈধ ভিডিও URL লিখুন।",
+			"features_sync": "নিখুঁত সিঙ্ক",
+			"features_chat": "লাইভ চ্যাট এবং ইমোজি",
+			"features_p2p": "সরাসরি P2P স্ট্রিমিং",
+			"loading_room": "ওয়াচ পার্টি লোড হচ্ছে...",
+			"room_not_found": "ওয়াচ পার্টি পাওয়া যায়নি",
+			"return_btn": "সিনেমায় ফিরে যান",
+			"create_failed": "ওয়াচ পার্টি তৈরি করতে ব্যর্থ হয়েছে"
 		}
 	},
 	"errors": {
@@ -637,7 +659,28 @@
 		},
 		"avg_views": "দক্ষতা",
 		"loading_failed": "প্রোফাইল লোড করতে ব্যর্থ",
-		"update_failed": "আপডেট করতে ব্যর্থ"
+		"update_failed": "আপডেট করতে ব্যর্থ",
+		"folder_empty": "Folder is Empty",
+		"folder_empty_desc": "There are no snippets stored inside this folder yet.",
+		"create_snippet": "Create Snippet",
+		"root_no_folder": "Root (No Folder)",
+		"enter_folder_name": "Enter folder name:",
+		"enter_subfolder_name": "Enter subfolder name inside \"{{name}}\":",
+		"avatar": {
+			"title": "Choose Profile Photo",
+			"description": "Select a mock avatar or upload your own image from your device.",
+			"change": "Change Profile Photo",
+			"tab_mocks": "Mock Avatars",
+			"tab_upload": "Upload File",
+			"drop_prompt": "Click to upload or drag & drop",
+			"file_limits": "PNG, JPG, WebP, GIF (Max 5MB)",
+			"custom_selected": "Custom photo selected",
+			"default_initials": "Using default initials",
+			"updated": "Profile photo updated successfully",
+			"update_failed": "Failed to update profile photo",
+			"invalid_image": "ছবি প্রক্রিয়া করতে ব্যর্থ হয়েছে"
+		},
+		"edit_name": "নাম সম্পাদনা করুন"
 	},
 	"home": {
 		"loading": "লোড হচ্ছে...",
@@ -801,7 +844,9 @@
 		"sync_failed": "সিঙ্ক করতে ব্যর্থ হয়েছে"
 	},
 	"messages": {
-		"loading": "লোড হচ্ছে...",
+		"loading": {
+			"deleting": "স্নিপেট মুছে ফেলা হচ্ছে..."
+		},
 		"overview": "ওভারভিউ",
 		"detected_language": "সনাক্ত করা ভাষা: {{language}}",
 		"success": {
@@ -1055,7 +1100,7 @@
 		"reset_password_mismatch_toast": "পাসওয়ার্ড মেলেনি",
 		"reset_password_min_length_toast": "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে",
 		"reset_password_invalid_token_toast": "অকার্যকর টোকেন",
-		"reset_password_weak_toast": "পাসওয়ার্ড দুর্বল টোস্ট রিসেট করুন"
+		"reset_password_weak_toast": "পাসওয়ার্ড প্রয়োজনীয়তা পূরণ করে না"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI দিয়ে উন্নত করুন...",
@@ -1225,6 +1270,7 @@
 		"snippets": "Snippets",
 		"grid_view": "Grid View",
 		"list_view": "List View",
-		"items_count": "{{count}} items"
+		"items_count": "{{count}} items",
+		"snippet_moved_success": "সফলভাবে স্নিপেট সরানো হয়েছে"
 	}
 }

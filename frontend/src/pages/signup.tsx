@@ -48,10 +48,7 @@ const SignupPage = () => {
 
 		if (password !== confirmPassword) {
 			toast.add({
-				title: t(
-					"auth.reset_password_mismatch_toast",
-					"Passwords do not match",
-				),
+				title: t("auth.reset_password_mismatch_toast"),
 				type: "error",
 			});
 			return;
@@ -59,10 +56,7 @@ const SignupPage = () => {
 
 		if (!isStrongEnough) {
 			toast.add({
-				title: t(
-					"auth.reset_password_weak_toast",
-					"Password does not meet the requirements",
-				),
+				title: t("auth.reset_password_weak_toast"),
 				type: "error",
 			});
 			return;
@@ -246,7 +240,6 @@ const SignupPage = () => {
 								>
 									{t(
 										"auth.reset_password_confirm_password_label",
-										"Confirm Password",
 									)}
 								</Label>
 								<div className="relative group">
@@ -276,7 +269,6 @@ const SignupPage = () => {
 										<p className="text-xs text-destructive font-medium ml-1 mt-1 animate-in fade-in">
 											{t(
 												"auth.reset_password_mismatch_toast",
-												"Passwords do not match",
 											)}
 										</p>
 									)}

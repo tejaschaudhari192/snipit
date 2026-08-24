@@ -49,10 +49,7 @@ export default function CinemaPage() {
 	const handleCreateRoom = async () => {
 		if (!user) {
 			toast.add({
-				title: t(
-					"tools.cinema.auth_required",
-					"Login required to host watch parties.",
-				),
+				title: t("tools.cinema.auth_required"),
 				type: "error",
 			});
 			return;
@@ -61,10 +58,7 @@ export default function CinemaPage() {
 		const formattedUrl = formatUrl(videoUrl);
 		if (!isP2p && !isValidUrl(formattedUrl)) {
 			toast.add({
-				title: t(
-					"tools.cinema.invalid_url",
-					"Please enter a valid video URL.",
-				),
+				title: t("tools.cinema.invalid_url"),
 				type: "error",
 			});
 			return;
@@ -108,8 +102,8 @@ export default function CinemaPage() {
 	return (
 		<div className="min-h-dvh bg-background text-foreground flex flex-col items-center justify-center p-6 relative overflow-hidden">
 			{/* Background gradients */}
-			<div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] -z-10" />
-			<div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-violet-500/20 rounded-full blur-[100px] -z-10" />
+			<div className="absolute top-1/4 left-1/4 w-125 h-125 bg-primary/20 rounded-full blur-[120px] -z-10" />
+			<div className="absolute bottom-1/4 right-1/4 w-100 h-100 bg-violet-500/20 rounded-full blur-[100px] -z-10" />
 
 			<div className="w-full max-w-2xl space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
 				<div className="text-center space-y-4">
@@ -120,10 +114,7 @@ export default function CinemaPage() {
 						{t("tools.cinema.hero_title")}
 					</h1>
 					<p className="text-lg text-muted-foreground max-w-lg mx-auto">
-						{t(
-							"tools.cinema.hero_subtitle",
-							"Synchronized playback, live chat, and floating emojis. Enjoy videos in perfect sync with your friends.",
-						)}
+						{t("tools.cinema.hero_subtitle")}
 					</p>
 				</div>
 
@@ -137,19 +128,13 @@ export default function CinemaPage() {
 					<div className="bg-card border border-border rounded-xl p-4 flex flex-col items-center text-center gap-2">
 						<Users className="w-6 h-6 text-blue-500" />
 						<span className="text-sm font-bold">
-							{t(
-								"tools.cinema.features_chat",
-								"Live Chat & Emojis",
-							)}
+							{t("tools.cinema.features_chat")}
 						</span>
 					</div>
 					<div className="bg-card border border-border rounded-xl p-4 flex flex-col items-center text-center gap-2">
 						<MonitorPlay className="w-6 h-6 text-emerald-500" />
 						<span className="text-sm font-bold">
-							{t(
-								"tools.cinema.features_p2p",
-								"Direct P2P Streaming",
-							)}
+							{t("tools.cinema.features_p2p")}
 						</span>
 					</div>
 				</div>
@@ -182,7 +167,6 @@ export default function CinemaPage() {
 								<Input
 									placeholder={t(
 										"tools.cinema.url_placeholder",
-										"https://example.com/video.mp4",
 									)}
 									value={videoUrl}
 									onChange={(e) =>
@@ -196,10 +180,7 @@ export default function CinemaPage() {
 						<div className="flex items-center justify-between p-4 bg-muted/50 rounded-xl border border-border/50">
 							<div className="space-y-0.5">
 								<Label>
-									{t(
-										"tools.cinema.local_file_toggle",
-										"Local File Stream (P2P)",
-									)}
+									{t("tools.cinema.local_file_toggle")}
 								</Label>
 								<p className="text-xs text-muted-foreground">
 									Stream a video directly from your computer
@@ -215,10 +196,7 @@ export default function CinemaPage() {
 						{isP2p && (
 							<div className="space-y-2 animate-in fade-in zoom-in-95 duration-200">
 								<Label className="text-foreground/80">
-									{t(
-										"tools.cinema.select_file",
-										"Select Video File",
-									)}
+									{t("tools.cinema.select_file")}
 								</Label>
 								<Input
 									type="file"
@@ -244,10 +222,7 @@ export default function CinemaPage() {
 							<Play className="w-5 h-5 mr-2" />
 							{isCreating
 								? t("tools.cinema.creating")
-								: t(
-										"tools.cinema.start_btn",
-										"Start Watch Party",
-									)}
+								: t("tools.cinema.start_btn")}
 						</Button>
 					</TabsContent>
 
@@ -257,17 +232,13 @@ export default function CinemaPage() {
 					>
 						<div className="space-y-2">
 							<Label className="text-foreground/80">
-								{t(
-									"tools.cinema.join_label",
-									"Room Link or ID",
-								)}
+								{t("tools.cinema.join_label")}
 							</Label>
 							<div className="relative">
 								<LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
 								<Input
 									placeholder={t(
 										"tools.cinema.join_placeholder",
-										"Paste watch party link here",
 									)}
 									value={joinUrl}
 									onChange={(e) => setJoinUrl(e.target.value)}

@@ -1,22 +1,18 @@
 import { localStore } from "@/utils/storage";
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import type {
-	MusicTrack,
-	SharedMusicState,
-	MusicSyncUpdate,
-	MusicPlayPauseUpdate,
-	MusicSeekUpdate,
-	MusicTrackUpdate,
-} from "@/types";
+import type { MusicTrack } from "@/types";
 import type { Socket } from "socket.io-client";
 import { CONFIG } from "@/configurations";
 import { toast } from "@/components/ui/toast";
-import { decodeHtml } from "@/utils";
-import { downloadTrack } from "@/utils/music";
+import {
+	fetchMusicTrackDetails,
+	searchYouTubeMusic,
+} from "@/lib/api/music-api";
+import { useMusicSocketSync } from "@/hooks/use-music-socket-sync";
 import { MusicContext } from "./use-music";
-import { GlobalClock, calculateTargetSeek } from "@/utils/latency-sync";
 import { useYouTubePlayer } from "@/hooks/use-youtube-player";
 import { usePlaylistManager } from "@/hooks/use-playlist-manager";
+import { downloadTrack } from "@/utils/music";
 
 export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
@@ -33,12 +29,6 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 	const currentTrackRef = useRef<MusicTrack | null>(null);
 	const lastTrackIdRef = useRef<string | null>(null);
 	const isPlayingRef = useRef(false);
-	const lastRemoteStateRef = useRef<{
-		timestamp: number;
-		currentTime: number;
-		isPlaying: boolean;
-	} | null>(null);
-	const globalClockRef = useRef<GlobalClock | null>(null);
 	const currentTimeRef = useRef(0);
 	const durationRef = useRef(240);
 	const lastSavedTimeRef = useRef(-CONFIG.defaults.musicSaveInterval);
@@ -103,25 +93,6 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				setIsPlaying(true);
 				if (playerRef.current) {
 					setDuration(playerRef.current.getDuration());
-					if (
-						isShared &&
-						!isInitiator &&
-						lastRemoteStateRef.current
-					) {
-						const globalTime = globalClockRef.current
-							? globalClockRef.current.getGlobalTime()
-							: Date.now();
-						const targetTime = calculateTargetSeek(
-							lastRemoteStateRef.current.timestamp,
-							lastRemoteStateRef.current.currentTime,
-							lastRemoteStateRef.current.isPlaying,
-							globalTime,
-						);
-						const currentPos = playerRef.current.getCurrentTime();
-						if (Math.abs(currentPos - targetTime) > 0.15) {
-							ytSeekTo(targetTime);
-						}
-					}
 				}
 			} else if (state === YT.PlayerState.PAUSED) {
 				setIsPlaying(false);
@@ -178,22 +149,6 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 	const region = "default";
 
 	useEffect(() => {
-		if (socket) {
-			if (!globalClockRef.current) {
-				globalClockRef.current = new GlobalClock(socket);
-			} else {
-				globalClockRef.current.initialize(socket);
-			}
-		}
-		return () => {
-			if (globalClockRef.current) {
-				globalClockRef.current.destroy();
-				globalClockRef.current = null;
-			}
-		};
-	}, [isPlayerOpen, socket]);
-
-	useEffect(() => {
 		const player = playerRef.current;
 		return () => {
 			if (player) {
@@ -216,28 +171,9 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const fetchTrackDetails = useCallback(
 		async (videoIds: string[]): Promise<MusicTrack[]> => {
-			if (videoIds.length === 0) return [];
 			setIsLoading(true);
 			try {
-				const response = await fetch(
-					`${CONFIG.apiBaseUrl}/music/details?ids=${encodeURIComponent(
-						videoIds.join(","),
-					)}`,
-				);
-				if (!response.ok)
-					throw new Error("Failed to fetch track details");
-				const data = await response.json();
-
-				const decodedTracks = data.tracks.map((track: MusicTrack) => ({
-					...track,
-					title: decodeHtml(track.title),
-					channel: decodeHtml(track.channel),
-				}));
-
-				return decodedTracks;
-			} catch (error) {
-				console.error("Music fetch details error:", error);
-				return [];
+				return await fetchMusicTrackDetails(videoIds);
 			} finally {
 				setIsLoading(false);
 			}
@@ -380,6 +316,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		socket,
 		pasteId,
 		currentTime,
+		isRemoteActionRef,
 	]);
 
 	const handlePause = useCallback(() => {
@@ -390,7 +327,16 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				socket.emit("music:pause", { pasteId, currentTime });
 			}
 		}
-	}, [isReady, playerRef, pauseYt, isShared, socket, pasteId, currentTime]);
+	}, [
+		isReady,
+		playerRef,
+		pauseYt,
+		isShared,
+		socket,
+		pasteId,
+		currentTime,
+		isRemoteActionRef,
+	]);
 
 	const handleSeek = useCallback(
 		(seconds: number) => {
@@ -417,7 +363,16 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				}
 			}
 		},
-		[isReady, playerRef, ytSeekTo, duration, isShared, socket, pasteId],
+		[
+			isReady,
+			playerRef,
+			ytSeekTo,
+			duration,
+			isShared,
+			socket,
+			pasteId,
+			isRemoteActionRef,
+		],
 	);
 
 	const handleSetVolume = useCallback(
@@ -432,7 +387,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				socket.emit("music:volume", { pasteId, volume: vol });
 			}
 		},
-		[isShared, socket, pasteId, playerRef],
+		[isShared, socket, pasteId, playerRef, isRemoteActionRef],
 	);
 
 	const handleChangeQuality = useCallback(
@@ -490,21 +445,11 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		if (!query.trim()) return;
 		setIsLoading(true);
 		try {
-			const response = await fetch(
-				`${CONFIG.apiBaseUrl}/music/search?q=${encodeURIComponent(query)}`,
-			);
-			if (!response.ok) throw new Error("Search failed");
-			const data = await response.json();
-
-			if (data.tracks && data.tracks.length > 0) {
-				const decodedTracks = data.tracks.map((track: MusicTrack) => ({
-					...track,
-					title: decodeHtml(track.title),
-					channel: decodeHtml(track.channel),
-				}));
-				setSearchResults(decodedTracks);
+			const tracks = await searchYouTubeMusic(query);
+			if (tracks.length > 0) {
+				setSearchResults(tracks);
 				toast.add({
-					title: `Found ${decodedTracks.length} tracks for "${query}"`,
+					title: `Found ${tracks.length} tracks for "${query}"`,
 					type: "success",
 				});
 			} else {
@@ -529,27 +474,13 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 
 			setIsLoading(true);
 			try {
-				const response = await fetch(
-					`${CONFIG.apiBaseUrl}/music/search?q=${encodeURIComponent(track.channel)}`,
-				);
-				if (response.ok) {
-					const data = await response.json();
-					if (data.tracks && data.tracks.length > 0) {
-						const decodedTracks = data.tracks.map(
-							(t: MusicTrack) => ({
-								...t,
-								title: decodeHtml(t.title),
-								channel: decodeHtml(t.channel),
-							}),
-						);
-						const filteredTracks = decodedTracks
-							.filter(
-								(t: MusicTrack) => t.videoId !== track.videoId,
-							)
-							.slice(0, 5);
-						setPlaylist([track, ...filteredTracks]);
-						setCurrentIndex(0);
-					}
+				const decodedTracks = await searchYouTubeMusic(track.channel);
+				if (decodedTracks.length > 0) {
+					const filteredTracks = decodedTracks
+						.filter((t: MusicTrack) => t.videoId !== track.videoId)
+						.slice(0, 5);
+					setPlaylist([track, ...filteredTracks]);
+					setCurrentIndex(0);
 				}
 			} catch (error) {
 				console.error(
@@ -874,349 +805,35 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		[],
 	);
 
-	useEffect(() => {
-		if (isShared && isInitiator && socket && pasteId && isPlaying) {
-			const syncInterval = setInterval(() => {
-				if (isRemoteActionRef.current) return;
-				socket.emit("music:sync", {
-					pasteId,
-					track: currentTrack,
-					isPlaying,
-					currentTime,
-					playlist,
-					region,
-					shuffle,
-					repeat,
-				});
-			}, 3000);
-			return () => clearInterval(syncInterval);
-		}
-	}, [
-		isShared,
-		isInitiator,
+	useMusicSocketSync({
 		socket,
 		pasteId,
-		isPlaying,
+		isShared,
+		setIsShared,
+		isInitiator,
+		setIsInitiator,
+		setSharedByUser,
 		currentTrack,
-		currentTime,
 		playlist,
-		region,
+		isPlaying,
+		currentTime,
 		shuffle,
 		repeat,
-	]);
-
-	useEffect(() => {
-		if (!socket || !pasteId) {
-			setIsShared(false);
-			setIsInitiator(false);
-			setSharedByUser(null);
-			return;
-		}
-
-		const handleShareState = (data: SharedMusicState) => {
-			isRemoteActionRef.current = true;
-			if (data.enabled) {
-				setIsShared(true);
-				const initiator = data.initiatorSocketId === socket.id;
-				setIsInitiator(initiator);
-
-				setSharedByUser(initiator ? "You" : "DJ");
-
-				if (!initiator) {
-					// Cache remote state for late-loading players
-					lastRemoteStateRef.current = {
-						timestamp: data.lastSyncedAt,
-						currentTime: data.currentTime,
-						isPlaying: data.isPlaying,
-					};
-
-					if (data.track) {
-						if (
-							currentTrackRef.current?.videoId !==
-							data.track.videoId
-						) {
-							playTrack(data.track);
-						}
-
-						const globalTime = globalClockRef.current
-							? globalClockRef.current.getGlobalTime()
-							: Date.now();
-						const targetTime = calculateTargetSeek(
-							data.lastSyncedAt,
-							data.currentTime,
-							data.isPlaying,
-							globalTime,
-						);
-
-						if (data.isPlaying) {
-							playYt();
-							setIsPlaying(true);
-						} else {
-							pauseYt();
-							setIsPlaying(false);
-						}
-
-						if (targetTime > 0) {
-							handleSeek(targetTime);
-						}
-					}
-					if (data.playlist) setPlaylist(data.playlist);
-					if (data.shuffle !== undefined) setShuffle(data.shuffle);
-					if (data.repeat) setRepeat(data.repeat);
-
-					// Sync volume state from share session
-					if (data.volume !== undefined) {
-						handleSetVolume(data.volume);
-					}
-				}
-			} else {
-				setIsShared(false);
-				setIsInitiator(false);
-				setSharedByUser(null);
-				lastRemoteStateRef.current = null;
-			}
-			isRemoteActionRef.current = false;
-		};
-
-		const handleSyncUpdate = (
-			data: MusicSyncUpdate & { volume?: number },
-		) => {
-			isRemoteActionRef.current = true;
-			if (data.playlist) setPlaylist(data.playlist);
-			if (data.shuffle !== undefined) setShuffle(data.shuffle);
-			if (data.repeat) setRepeat(data.repeat);
-
-			// Cache remote state for late-loading players
-			lastRemoteStateRef.current = {
-				timestamp: data.timestamp,
-				currentTime: data.currentTime,
-				isPlaying: data.isPlaying,
-			};
-
-			if (
-				data.track &&
-				currentTrackRef.current?.videoId !== data.track.videoId
-			) {
-				playTrack(data.track);
-			}
-
-			if (data.isPlaying && !isPlayingRef.current) {
-				playYt();
-				setIsPlaying(true);
-			} else if (!data.isPlaying && isPlayingRef.current) {
-				pauseYt();
-				setIsPlaying(false);
-			}
-
-			const globalTime = globalClockRef.current
-				? globalClockRef.current.getGlobalTime()
-				: Date.now();
-			const targetTime = calculateTargetSeek(
-				data.timestamp,
-				data.currentTime,
-				data.isPlaying,
-				globalTime,
-			);
-
-			if (Math.abs(currentTimeRef.current - targetTime) > 0.15) {
-				handleSeek(targetTime);
-			}
-
-			if (data.volume !== undefined) {
-				handleSetVolume(data.volume);
-			}
-
-			isRemoteActionRef.current = false;
-		};
-
-		const handlePlayUpdate = (data: MusicPlayPauseUpdate) => {
-			isRemoteActionRef.current = true;
-			playYt();
-			setIsPlaying(true);
-			if (data.currentTime !== undefined) {
-				lastRemoteStateRef.current = {
-					timestamp: Date.now(),
-					currentTime: data.currentTime,
-					isPlaying: true,
-				};
-
-				const globalTime = globalClockRef.current
-					? globalClockRef.current.getGlobalTime()
-					: Date.now();
-				const targetTime = calculateTargetSeek(
-					Date.now(),
-					data.currentTime,
-					true,
-					globalTime,
-				);
-
-				if (Math.abs(currentTimeRef.current - targetTime) > 0.15) {
-					handleSeek(targetTime);
-				}
-			}
-			isRemoteActionRef.current = false;
-		};
-
-		const handlePauseUpdate = (data: MusicPlayPauseUpdate) => {
-			isRemoteActionRef.current = true;
-			playerRef.current?.pauseVideo();
-			setIsPlaying(false);
-			if (data.currentTime !== undefined) {
-				lastRemoteStateRef.current = {
-					timestamp: Date.now(),
-					currentTime: data.currentTime,
-					isPlaying: false,
-				};
-
-				if (
-					Math.abs(currentTimeRef.current - data.currentTime) > 0.15
-				) {
-					handleSeek(data.currentTime);
-				}
-			}
-			isRemoteActionRef.current = false;
-		};
-
-		const handleSeekUpdate = (data: MusicSeekUpdate) => {
-			isRemoteActionRef.current = true;
-			lastRemoteStateRef.current = {
-				timestamp: Date.now(),
-				currentTime: data.currentTime,
-				isPlaying: isPlayingRef.current,
-			};
-
-			if (Math.abs(currentTimeRef.current - data.currentTime) > 0.15) {
-				handleSeek(data.currentTime);
-			}
-			isRemoteActionRef.current = false;
-		};
-
-		const handleTrackUpdate = (data: MusicTrackUpdate) => {
-			isRemoteActionRef.current = true;
-			if (data.track) {
-				playTrack(data.track);
-			}
-			isRemoteActionRef.current = false;
-		};
-
-		const handleVolumeUpdate = (data: { volume: number }) => {
-			isRemoteActionRef.current = true;
-			handleSetVolume(data.volume);
-			isRemoteActionRef.current = false;
-		};
-
-		socket.on("music:share-state", handleShareState);
-		socket.on("music:sync-update", handleSyncUpdate);
-		socket.on("music:play-update", handlePlayUpdate);
-		socket.on("music:pause-update", handlePauseUpdate);
-		socket.on("music:seek-update", handleSeekUpdate);
-		socket.on("music:track-update", handleTrackUpdate);
-		socket.on("music:volume-update", handleVolumeUpdate);
-
-		// Request state when joining
-		socket.emit("music:request-state", { pasteId });
-
-		return () => {
-			socket.off("music:share-state", handleShareState);
-			socket.off("music:sync-update", handleSyncUpdate);
-			socket.off("music:play-update", handlePlayUpdate);
-			socket.off("music:pause-update", handlePauseUpdate);
-			socket.off("music:seek-update", handleSeekUpdate);
-			socket.off("music:track-update", handleTrackUpdate);
-			socket.off("music:volume-update", handleVolumeUpdate);
-		};
-	}, [
-		socket,
-		pasteId,
+		volume,
 		playTrack,
+		playYt,
+		pauseYt,
 		handleSeek,
 		handleSetVolume,
-		pauseYt,
-		playYt,
 		setPlaylist,
-		setRepeat,
 		setShuffle,
+		setRepeat,
+		setIsPlaying,
 		playerRef,
-	]);
-
-	useEffect(() => {
-		if (!isMounted || !isShared || isInitiator) return;
-
-		const syncCheckInterval = setInterval(() => {
-			if (
-				!playerRef.current ||
-				typeof playerRef.current.getPlayerState !== "function" ||
-				typeof playerRef.current.getCurrentTime !== "function" ||
-				typeof playerRef.current.setPlaybackRate !== "function"
-			) {
-				return;
-			}
-
-			const remoteState = lastRemoteStateRef.current;
-			if (!remoteState || !remoteState.isPlaying) {
-				// Reset speed to normal if not playing
-				playerRef.current.setPlaybackRate(1.0);
-				return;
-			}
-
-			const YT = window.YT;
-			const localState = playerRef.current.getPlayerState();
-
-			// Autoplay/Unstarted recovery: force play if DJ is playing but we are paused/cued
-			if (localState !== YT.PlayerState.PLAYING) {
-				playerRef.current.playVideo();
-
-				// Show non-intrusive gesture prompt if cued
-				if (localState === YT.PlayerState.CUED) {
-					toast.add({
-						title: "Shared DJ session active. Tap anywhere on the page to start listening!",
-						timeout: 4000,
-						type: "info",
-					});
-				}
-				return;
-			}
-
-			// Dynamic rate scaling sync:
-			const globalTime = globalClockRef.current
-				? globalClockRef.current.getGlobalTime()
-				: Date.now();
-			const targetTime = calculateTargetSeek(
-				remoteState.timestamp,
-				remoteState.currentTime,
-				remoteState.isPlaying,
-				globalTime,
-			);
-			const currentPos = playerRef.current.getCurrentTime();
-			const deviation = targetTime - currentPos;
-
-			if (Math.abs(deviation) > 1.5) {
-				// Large deviation: perform a hard seek to align instantly
-				playerRef.current.seekTo(targetTime, true);
-				playerRef.current.setPlaybackRate(1.0);
-			} else if (deviation > 0.1) {
-				// Slightly behind: play 25% faster to catch up seamlessly without buffering
-				playerRef.current.setPlaybackRate(1.25);
-			} else if (deviation < -0.1) {
-				// Slightly ahead: play 25% slower to let the stream align seamlessly
-				playerRef.current.setPlaybackRate(0.75);
-			} else {
-				// Perfectly aligned: maintain normal speed
-				playerRef.current.setPlaybackRate(1.0);
-			}
-		}, 1000);
-
-		const playerSnapshot = playerRef.current;
-		return () => {
-			clearInterval(syncCheckInterval);
-			if (
-				playerSnapshot &&
-				typeof playerSnapshot.setPlaybackRate === "function"
-			) {
-				playerSnapshot.setPlaybackRate(1.0);
-			}
-		};
-	}, [isMounted, isShared, isInitiator, playerRef]);
+		isPlayerOpen,
+		isMounted,
+		isRemoteActionRef,
+	});
 
 	return (
 		<MusicContext.Provider

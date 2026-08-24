@@ -38,7 +38,10 @@ export const registerUser = async (payload: RegisterPayload) => {
 	return response.data;
 };
 
-export const updateMe = async (data: { username: string }) => {
+export const updateMe = async (data: {
+	username?: string;
+	avatar?: string;
+}) => {
 	const response = await api.put("/auth/me", data);
 	return response.data;
 };

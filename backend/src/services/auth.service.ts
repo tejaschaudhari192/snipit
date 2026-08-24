@@ -118,6 +118,30 @@ class AuthService {
 
 		return user;
 	}
+
+	async updateUserProfile(
+		userId: string,
+		data: { username?: string; avatar?: string },
+	) {
+		const user = await User.findById(userId);
+		if (!user) throw new Error("USER_NOT_FOUND");
+
+		if (data.username) {
+			const existing = await User.findOne({
+				username: data.username,
+				_id: { $ne: userId },
+			});
+			if (existing) throw new Error("USERNAME_ALREADY_EXISTS");
+			user.username = data.username;
+		}
+
+		if (data.avatar !== undefined) {
+			user.avatar = data.avatar;
+		}
+
+		await user.save();
+		return user;
+	}
 }
 
 export default AuthService;

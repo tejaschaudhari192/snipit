@@ -236,18 +236,11 @@ export default function PasswordGenerator({
 						<div className="flex items-center justify-between">
 							<div className="flex flex-col">
 								<span className="text-sm font-medium">
-									{t(
-										"tools.password_generator.words",
-										"Words",
-									)}
+									{t("tools.password_generator.words")}
 								</span>
 								<span className="text-xs text-muted-foreground">
-									(
-									{t(
-										"tools.password_generator.length",
-										"Length",
-									)}{" "}
-									- {password.length})
+									({t("tools.password_generator.length")} -{" "}
+									{password.length})
 								</span>
 							</div>
 							<div className="flex items-center gap-4">
@@ -302,10 +295,7 @@ export default function PasswordGenerator({
 
 				<div className="flex items-center justify-between">
 					<span className="text-sm font-medium">
-						{t(
-							"tools.password_generator.pronounceable",
-							"Pronounceable",
-						)}
+						{t("tools.password_generator.pronounceable")}
 					</span>
 					<Switch
 						checked={pronounceable}
@@ -323,10 +313,7 @@ export default function PasswordGenerator({
 
 					<div className="flex items-center justify-between">
 						<span className="text-sm">
-							{t(
-								"tools.password_generator.uppercase",
-								"Uppercase",
-							)}
+							{t("tools.password_generator.uppercase")}
 						</span>
 						<Switch
 							checked={useUpper}
@@ -350,10 +337,7 @@ export default function PasswordGenerator({
 						<div className="h-px bg-border" />
 						<div className="flex items-center justify-between">
 							<span className="text-sm font-medium">
-								{t(
-									"tools.password_generator.separated_by",
-									"Separated By",
-								)}
+								{t("tools.password_generator.separated_by")}
 							</span>
 							<Select
 								value={separator}
@@ -364,60 +348,46 @@ export default function PasswordGenerator({
 										{separator === "none"
 											? t(
 													"tools.password_generator.sep_none",
-													"None",
 												)
 											: separator === "hash"
 												? t(
 														"tools.password_generator.sep_hash",
-														"Hash (#)",
 													)
 												: separator === "hyphen"
 													? t(
 															"tools.password_generator.sep_hyphen",
-															"Hyphen (-)",
 														)
 													: separator === "space"
 														? t(
 																"tools.password_generator.sep_space",
-																"Space",
 															)
 														: separator === "comma"
 															? t(
 																	"tools.password_generator.sep_comma",
-																	"Comma (,)",
 																)
 															: undefined}
 									</SelectValue>
 								</SelectTrigger>
 								<SelectContent>
 									<SelectItem value="none">
-										{t(
-											"tools.password_generator.sep_none",
-											"None",
-										)}
+										{t("tools.password_generator.sep_none")}
 									</SelectItem>
 									<SelectItem value="hash">
-										{t(
-											"tools.password_generator.sep_hash",
-											"Hash (#)",
-										)}
+										{t("tools.password_generator.sep_hash")}
 									</SelectItem>
 									<SelectItem value="hyphen">
 										{t(
 											"tools.password_generator.sep_hyphen",
-											"Hyphen (-)",
 										)}
 									</SelectItem>
 									<SelectItem value="space">
 										{t(
 											"tools.password_generator.sep_space",
-											"Space",
 										)}
 									</SelectItem>
 									<SelectItem value="comma">
 										{t(
 											"tools.password_generator.sep_comma",
-											"Comma (,)",
 										)}
 									</SelectItem>
 								</SelectContent>

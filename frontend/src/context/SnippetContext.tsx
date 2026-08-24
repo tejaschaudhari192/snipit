@@ -371,8 +371,8 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 	const deleteSnippet = useCallback(
 		async (id: string) => {
 			const toastId = toast.add({
-				title: t("messages.loading.deleting", "Deleting snippet..."),
-				type: "loading",
+				title: t("messages.loading.deleting"),
+				type: "info",
 			});
 			try {
 				const itemInHistory = historyStateRef.current.items.find(

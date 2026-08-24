@@ -66,10 +66,7 @@ export default function VaultOnboarding({
 		document.body.removeChild(a);
 		URL.revokeObjectURL(url);
 		toast.add({
-			title: t(
-				"tools.password_manager.recovery.downloaded",
-				"Downloaded recovery key",
-			),
+			title: t("tools.password_manager.recovery.downloaded"),
 			type: "success",
 		});
 	}, [recoveryMnemonic, t]);

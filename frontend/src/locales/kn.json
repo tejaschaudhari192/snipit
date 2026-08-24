@@ -186,10 +186,10 @@
 				"has_key": "ರಿಕವರಿ ಕೀ ಹೊಂದಿಸಲಾಗಿದೆ",
 				"download": "ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ",
 				"file_too_large": "ಫೈಲ್ ತುಂಬಾ ದೊಡ್ಡದಾಗಿದೆ",
-				"file_read_success": "ಫೈಲ್ ಓದುವಿಕೆ ಯಶಸ್ವಿಯಾಗಿದೆ",
-				"file_read_error": "ಫೈಲ್ ಓದುವಿಕೆ ದೋಷ",
+				"file_read_success": "ಚೇತರಿಕೆ ಕೀಲಿಯನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಿದೆ",
+				"file_read_error": "ಫೈಲ್ ಓದಲು ವಿಫಲವಾಗಿದೆ",
 				"upload": "ಅಪ್ಲೋಡ್ ಮಾಡಿ",
-				"downloaded": "ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗಿದೆ"
+				"downloaded": "ಚೇತರಿಕೆ ಕೀಲಿಯನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗಿದೆ"
 			},
 			"no_folder": "ಯಾವುದೇ ಫೋಲ್ಡರ್ ಇಲ್ಲ",
 			"table_company": "ಕಂಪನಿ",
@@ -396,7 +396,25 @@
 			"approve": "ಅನುಮೋದಿಸಿ",
 			"approve_all": "ಎಲ್ಲವನ್ನೂ ಅನುಮೋದಿಸಿ",
 			"more": "ಹೆಚ್ಚು",
-			"import_action": "ಆಮದು"
+			"import_action": "ಆಮದು",
+			"delete_folder_confirm": "ನೀವು ಖಚಿತವಾಗಿ ಈ ಫೋಲ್ಡರ್ ಅಳಿಸಲು ಬಯಸುವಿರಾ",
+			"delete_passwords_inside": "ಈ ಫೋಲ್ಡರ್ ಒಳಗಿನ ಎಲ್ಲಾ ಪಾಸ್‌ವರ್ಡ್‌ಗಳನ್ನು ಅಳಿಸಿ",
+			"action_cannot_be_undone": "ಈ ಕ್ರಿಯೆಯನ್ನು ರದ್ದುಗೊಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.",
+			"folder_name": "ಫೋಲ್ಡರ್ ಹೆಸರು",
+			"folder_color": "ಫೋಲ್ಡರ್ ಬಣ್ಣ",
+			"folder_icon": "ಫೋಲ್ಡರ್ ಐಕಾನ್",
+			"edit_folder": "ಫೋಲ್ಡರ್ ಸಂಪಾದಿಸಿ",
+			"delete_folder": "ಫೋಲ್ಡರ್ ಅಳಿಸಿ",
+			"items_selected": "{{count}} ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ",
+			"move": "ವರ್ಗಾಯಿಸಿ",
+			"remove_from_folder": "ಫೋಲ್ಡರ್‌ನಿಂದ ತೆಗೆದುಹಾಕಿ",
+			"select_limit_to_share": "ಹಂಚಿಕೊಳ್ಳಲು ಗರಿಷ್ಠ {{limit}} ಐಟಂಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+			"delete_n_items": "{{count}} ಐಟಂಗಳನ್ನು ಅಳಿಸುವುದೇ?",
+			"delete_bulk_confirm": "ಇದು ಆಯ್ಕೆಮಾಡಿದ ಎಲ್ಲಾ {{count}} ಐಟಂಗಳನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸುತ್ತದೆ. ಈ ಕ್ರಿಯೆಯನ್ನು ರದ್ದುಗೊಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.",
+			"failed_to_move_items": "{{count}} ಐಟಂಗಳನ್ನು ವರ್ಗಾಯಿಸಲು ವಿಫಲವಾಗಿದೆ.",
+			"moved_n_items": "{{count}} ಐಟಂಗಳನ್ನು {{folder}}ಗೆ ವರ್ಗಾಯಿಸಲಾಗಿದೆ",
+			"failed_to_delete_items": "{{count}} ಐಟಂಗಳನ್ನು ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ.",
+			"deleted_n_items": "{{count}} ಐಟಂಗಳನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ"
 		},
 		"password_generator": {
 			"title": "ಪಾಸ್ವರ್ಡ್ ಜನರೇಟರ್",
@@ -446,26 +464,30 @@
 			"no_status": "ಯಾವುದೇ ಪ್ರಯಾಣಿಕ ಸ್ಥಿತಿ ಲಭ್ಯವಿಲ್ಲ"
 		},
 		"cinema": {
-			"title": "ಸಿನಿಮಾ - ಪಾರ್ಟಿಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
-			"description": "ಸಿಂಕ್ರೊನೈಸ್ ಮಾಡಿದ ಪ್ಲೇಬ್ಯಾಕ್, ಲೈವ್ ಚಾಟ್ ಮತ್ತು ಫ್ಲೋಟಿಂಗ್ ಎಮೋಜಿಗಳು. ನಿಮ್ಮ ಸ್ನೇಹಿತರೊಂದಿಗೆ ಪರಿಪೂರ್ಣ ಸಿಂಕ್‌ನಲ್ಲಿ ವೀಡಿಯೊಗಳನ್ನು ಆನಂದಿಸಿ.",
-			"hero_title": "ಒಟ್ಟಿಗೆ ವೀಕ್ಷಿಸಿ",
-			"hero_subtitle": "ಸಿಂಕ್ರೊನೈಸ್ ಮಾಡಿದ ಪ್ಲೇಬ್ಯಾಕ್, ಲೈವ್ ಚಾಟ್ ಮತ್ತು ಫ್ಲೋಟಿಂಗ್ ಎಮೋಜಿಗಳು. ನಿಮ್ಮ ಸ್ನೇಹಿತರೊಂದಿಗೆ ಪರಿಪೂರ್ಣ ಸಿಂಕ್‌ನಲ್ಲಿ ವೀಡಿಯೊಗಳನ್ನು ಆನಂದಿಸಿ.",
+			"title": "ಸಿನಿಮಾ - ವಾಚ್ ಪಾರ್ಟಿಗಳು",
+			"description": "ಸಿಂಕ್ ಮಾಡಿದ ಪ್ಲೇಬ್ಯಾಕ್, ಲೈವ್ ಚಾಟ್ ಮತ್ತು ಫ್ಲೋಟಿಂಗ್ ಎಮೋಜಿಗಳು. ಸ್ನೇಹಿತರೊಂದಿಗೆ ವೀಡಿಯೊಗಳನ್ನು ಆನಂದಿಸಿ.",
+			"hero_title": "ಜೊತೆಯಾಗಿ ವೀಕ್ಷಿಸಿ",
+			"hero_subtitle": "ಸಿಂಕ್ ಮಾಡಿದ ಪ್ಲೇಬ್ಯಾಕ್, ಲೈವ್ ಚಾಟ್ ಮತ್ತು ಫ್ಲೋಟಿಂಗ್ ಎಮೋಜಿಗಳು. ಸ್ನೇಹಿತರೊಂದಿಗೆ ವೀಡಿಯೊಗಳನ್ನು ಆನಂದಿಸಿ.",
 			"create_tab": "ಕೊಠಡಿ ರಚಿಸಿ",
-			"join_tab": "ರೂಮ್ ಸೇರಿರಿ",
+			"join_tab": "ಕೊಠಡಿಗೆ ಸೇರಿ",
 			"url_label": "ವೀಡಿಯೊ URL",
 			"url_placeholder": "https://example.com/video.mp4",
 			"local_file_toggle": "ಸ್ಥಳೀಯ ಫೈಲ್ ಸ್ಟ್ರೀಮ್ (P2P)",
 			"select_file": "ವೀಡಿಯೊ ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ",
-			"start_btn": "ವಾಚ್ ಪಾರ್ಟಿಯನ್ನು ಪ್ರಾರಂಭಿಸಿ",
-			"creating": "ಕೊಠಡಿಯನ್ನು ರಚಿಸಲಾಗುತ್ತಿದೆ...",
-			"join_label": "ರೂಮ್ ಲಿಂಕ್ ಅಥವಾ ಐಡಿ",
-			"join_placeholder": "ಪಾರ್ಟಿ ವೀಕ್ಷಣೆಯ ಲಿಂಕ್ ಅನ್ನು ಇಲ್ಲಿ ಅಂಟಿಸಿ",
-			"join_btn": "ರೂಮ್ ಸೇರಿರಿ",
+			"start_btn": "ವಾಚ್ ಪಾರ್ಟಿ ಪ್ರಾರಂಭಿಸಿ",
+			"creating": "ಕೊಠಡಿ ರಚಿಸಲಾಗುತ್ತಿದೆ...",
+			"join_label": "ರೂಮ್ ಲಿಂಕ್ ಅಥವಾ ID",
+			"join_placeholder": "ಇಲ್ಲಿ ವಾಚ್ ಪಾರ್ಟಿ ಲಿಂಕ್ ಅಂಟಿಸಿ",
+			"join_btn": "ಕೊಠಡಿಗೆ ಸೇರಿ",
 			"auth_required": "ವಾಚ್ ಪಾರ್ಟಿಗಳನ್ನು ಹೋಸ್ಟ್ ಮಾಡಲು ಲಾಗಿನ್ ಅಗತ್ಯವಿದೆ.",
-			"invalid_url": "ದಯವಿಟ್ಟು ಮಾನ್ಯವಾದ ವೀಡಿಯೊ URL ಅನ್ನು ನಮೂದಿಸಿ.",
-			"features_sync": "ಪರಿಪೂರ್ಣ ಸಿಂಕ್",
-			"features_chat": "ಲೈವ್ ಚಾಟ್ ಮತ್ತು ಎಮೋಜಿಗಳು",
-			"features_p2p": "ನೇರ P2P ಸ್ಟ್ರೀಮಿಂಗ್"
+			"invalid_url": "ದಯವಿಟ್ಟು ಮಾನ್ಯ ವೀಡಿಯೊ URL ನಮೂದಿಸಿ.",
+			"features_sync": "ಪರ್ಫೆಕ್ಟ್ ಸಿಂಕ್",
+			"features_chat": "ಲೈವ್ ಚಾಟ್ & ಎಮೋಜಿಗಳು",
+			"features_p2p": "ನೇರ P2P ಸ್ಟ್ರೀಮಿಂಗ್",
+			"loading_room": "ವಾಚ್ ಪಾರ್ಟಿ ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+			"room_not_found": "ವಾಚ್ ಪಾರ್ಟಿ ಕಂಡುಬಂದಿಲ್ಲ",
+			"return_btn": "ಸಿನಿಮಾಗೆ ಹಿಂತಿರುಗಿ",
+			"create_failed": "ವಾಚ್ ಪಾರ್ಟಿ ರಚಿಸಲು ವಿಫಲವಾಗಿದೆ"
 		}
 	},
 	"errors": {
@@ -637,7 +659,28 @@
 		},
 		"avg_views": "ದಕ್ಷತೆ",
 		"loading_failed": "ಪ್ರೊಫೈಲ್ ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ",
-		"update_failed": "ನವೀಕರಿಸಲು ವಿಫಲವಾಗಿದೆ"
+		"update_failed": "ನವೀಕರಿಸಲು ವಿಫಲವಾಗಿದೆ",
+		"folder_empty": "Folder is Empty",
+		"folder_empty_desc": "There are no snippets stored inside this folder yet.",
+		"create_snippet": "Create Snippet",
+		"root_no_folder": "Root (No Folder)",
+		"enter_folder_name": "Enter folder name:",
+		"enter_subfolder_name": "Enter subfolder name inside \"{{name}}\":",
+		"avatar": {
+			"title": "Choose Profile Photo",
+			"description": "Select a mock avatar or upload your own image from your device.",
+			"change": "Change Profile Photo",
+			"tab_mocks": "Mock Avatars",
+			"tab_upload": "Upload File",
+			"drop_prompt": "Click to upload or drag & drop",
+			"file_limits": "PNG, JPG, WebP, GIF (Max 5MB)",
+			"custom_selected": "Custom photo selected",
+			"default_initials": "Using default initials",
+			"updated": "Profile photo updated successfully",
+			"update_failed": "Failed to update profile photo",
+			"invalid_image": "ಚಿತ್ರವನ್ನು ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲು ವಿಫಲವಾಗಿದೆ"
+		},
+		"edit_name": "ಹೆಸರನ್ನು ಸಂಪಾದಿಸಿ"
 	},
 	"home": {
 		"loading": "ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
@@ -801,7 +844,9 @@
 		"sync_failed": "ಸಿಂಕ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ"
 	},
 	"messages": {
-		"loading": "ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+		"loading": {
+			"deleting": "ಸ್ನಿಪ್ಪೆಟ್ ಅಳಿಸಲಾಗುತ್ತಿದೆ..."
+		},
 		"overview": "ಅವಲೋಕನ",
 		"detected_language": "ಪತ್ತೆಯಾದ ಭಾಷೆ: {{language}}",
 		"success": {
@@ -1055,7 +1100,7 @@
 		"reset_password_mismatch_toast": "ಪಾಸ್‌ವರ್ಡ್‌ಗಳು ಹೊಂದಿಕೆಯಾಗುತ್ತಿಲ್ಲ",
 		"reset_password_min_length_toast": "ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ 6 ಅಕ್ಷರಗಳಿರಬೇಕು",
 		"reset_password_invalid_token_toast": "ಅಮಾನ್ಯ ಟೋಕನ್",
-		"reset_password_weak_toast": "ಪಾಸ್ವರ್ಡ್ ದುರ್ಬಲ ಟೋಸ್ಟ್ ಅನ್ನು ಮರುಹೊಂದಿಸಿ"
+		"reset_password_weak_toast": "ಪಾಸ್ವರ್ಡ್ ಅವಶ್ಯಕತೆಗಳನ್ನು ಪೂರೈಸುವುದಿಲ್ಲ"
 	},
 	"editor": {
 		"ai_enhance": "✨ AIನೊಂದಿಗೆ ಸುಧಾರಿಸಿ...",
@@ -1225,6 +1270,7 @@
 		"snippets": "Snippets",
 		"grid_view": "Grid View",
 		"list_view": "List View",
-		"items_count": "{{count}} items"
+		"items_count": "{{count}} items",
+		"snippet_moved_success": "ಸ್ನಿಪ್ಪೆಟ್ ಯಶಸ್ವಿಯಾಗಿ ವರ್ಗಾಯಿಸಲಾಗಿದೆ"
 	}
 }

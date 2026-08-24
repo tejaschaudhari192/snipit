@@ -179,11 +179,11 @@
 				"copied": "Kopiert!",
 				"has_key": "Wiederherstellungsschlüssel ist eingerichtet",
 				"download": "Herunterladen",
-				"file_too_large": "Datei zu groß",
-				"file_read_success": "Erfolgreiches Lesen der Datei",
-				"file_read_error": "Fehler beim Lesen der Datei",
+				"file_too_large": "Datei ist zu groß",
+				"file_read_success": "Wiederherstellungsschlüssel geladen",
+				"file_read_error": "Datei konnte nicht gelesen werden",
 				"upload": "Hochladen",
-				"downloaded": "Heruntergeladen"
+				"downloaded": "Wiederherstellungsschlüssel heruntergeladen"
 			},
 			"no_folder": "Kein Ordner",
 			"type_logins": "Anmeldungen",
@@ -395,7 +395,25 @@
 			"approve": "Genehmigen",
 			"approve_all": "Alle genehmigen",
 			"more": "Mehr",
-			"import_action": "Importieren"
+			"import_action": "Importieren",
+			"delete_folder_confirm": "Möchten Sie diesen Ordner wirklich löschen",
+			"delete_passwords_inside": "Alle Passwörter in diesem Ordner löschen",
+			"action_cannot_be_undone": "Diese Aktion kann nicht rückgängig gemacht werden.",
+			"folder_name": "Ordnername",
+			"folder_color": "Ordnerfarbe",
+			"folder_icon": "Ordnersymbol",
+			"edit_folder": "Ordner bearbeiten",
+			"delete_folder": "Ordner löschen",
+			"items_selected": "{{count}} ausgewählt",
+			"move": "Verschieben",
+			"remove_from_folder": "Aus Ordner entfernen",
+			"select_limit_to_share": "Wählen Sie maximal {{limit}} Elemente zum Teilen aus",
+			"delete_n_items": "{{count}} Element(e) löschen?",
+			"delete_bulk_confirm": "Dadurch werden alle {{count}} ausgewählten Elemente dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
+			"failed_to_move_items": "Fehler beim Verschieben von {{count}} Element(en).",
+			"moved_n_items": "{{count}} Element(e) nach {{folder}} verschoben",
+			"failed_to_delete_items": "Fehler beim Löschen von {{count}} Element(en).",
+			"deleted_n_items": "{{count}} Element(e) erfolgreich gelöscht"
 		},
 		"password_generator": {
 			"title": "Passwort-Generator",
@@ -446,26 +464,30 @@
 		},
 		"cryptoSafe_title": "CryptoSafe",
 		"cinema": {
-			"title": "Kino – Partys ansehen",
-			"description": "Synchronisierte Wiedergabe, Live-Chat und schwebende Emojis. Genießen Sie Videos in perfekter Synchronisierung mit Ihren Freunden.",
-			"hero_title": "Gemeinsam ansehen",
-			"hero_subtitle": "Synchronisierte Wiedergabe, Live-Chat und schwebende Emojis. Genießen Sie Videos in perfekter Synchronisierung mit Ihren Freunden.",
-			"create_tab": "Raum schaffen",
-			"join_tab": "Treten Sie dem Raum bei",
+			"title": "Kino - Watch Partys",
+			"description": "Synchrone Wiedergabe, Live-Chat und schwebende Emojis. Genießen Sie Videos perfekt synchron mit Freunden.",
+			"hero_title": "Zusammen schauen",
+			"hero_subtitle": "Synchrone Wiedergabe, Live-Chat und schwebende Emojis. Genießen Sie Videos perfekt synchron mit Freunden.",
+			"create_tab": "Raum erstellen",
+			"join_tab": "Raum beitreten",
 			"url_label": "Video-URL",
 			"url_placeholder": "https://example.com/video.mp4",
-			"local_file_toggle": "Lokaler Dateistream (P2P)",
-			"select_file": "Wählen Sie Videodatei",
+			"local_file_toggle": "Lokaler Datei-Stream (P2P)",
+			"select_file": "Videodatei auswählen",
 			"start_btn": "Watch Party starten",
-			"creating": "Raum schaffen...",
-			"join_label": "Raumlink oder ID",
-			"join_placeholder": "Hier den Watch-Party-Link einfügen",
-			"join_btn": "Treten Sie dem Raum bei",
-			"auth_required": "Für die Ausrichtung von Uhrenpartys ist eine Anmeldung erforderlich.",
+			"creating": "Raum wird erstellt...",
+			"join_label": "Raum-Link oder ID",
+			"join_placeholder": "Watch Party-Link hier einfügen",
+			"join_btn": "Raum beitreten",
+			"auth_required": "Anmeldung erforderlich, um Watch Partys zu hosten.",
 			"invalid_url": "Bitte geben Sie eine gültige Video-URL ein.",
-			"features_sync": "Perfekte Synchronisierung",
-			"features_chat": "Live-Chat und Emojis",
-			"features_p2p": "Direktes P2P-Streaming"
+			"features_sync": "Perfekter Sync",
+			"features_chat": "Live-Chat & Emojis",
+			"features_p2p": "Direktes P2P-Streaming",
+			"loading_room": "Watch Party wird geladen...",
+			"room_not_found": "Watch Party nicht gefunden",
+			"return_btn": "Zurück zum Kino",
+			"create_failed": "Watch Party konnte nicht erstellt werden"
 		}
 	},
 	"errors": {
@@ -669,7 +691,28 @@
 		"avg_views": "Effizienz",
 		"loading_failed": "Profil konnte nicht geladen werden",
 		"update_failed": "Aktualisierung fehlgeschlagen",
-		"snippets_count": "Ausschnitte"
+		"snippets_count": "Ausschnitte",
+		"folder_empty": "Folder is Empty",
+		"folder_empty_desc": "There are no snippets stored inside this folder yet.",
+		"create_snippet": "Create Snippet",
+		"root_no_folder": "Root (No Folder)",
+		"enter_folder_name": "Enter folder name:",
+		"enter_subfolder_name": "Enter subfolder name inside \"{{name}}\":",
+		"avatar": {
+			"title": "Choose Profile Photo",
+			"description": "Select a mock avatar or upload your own image from your device.",
+			"change": "Change Profile Photo",
+			"tab_mocks": "Mock Avatars",
+			"tab_upload": "Upload File",
+			"drop_prompt": "Click to upload or drag & drop",
+			"file_limits": "PNG, JPG, WebP, GIF (Max 5MB)",
+			"custom_selected": "Custom photo selected",
+			"default_initials": "Using default initials",
+			"updated": "Profile photo updated successfully",
+			"update_failed": "Failed to update profile photo",
+			"invalid_image": "Bild konnte nicht verarbeitet werden"
+		},
+		"edit_name": "Name bearbeiten"
 	},
 	"home": {
 		"loading": "Laden...",
@@ -833,7 +876,9 @@
 		"sync_failed": "Synchronisierung Ihrer Konto-Snippets fehlgeschlagen"
 	},
 	"messages": {
-		"loading": "Laden...",
+		"loading": {
+			"deleting": "Snippet wird gelöscht..."
+		},
 		"overview": "Übersicht",
 		"detected_language": "Erkannte Sprache: {{language}}",
 		"success": {
@@ -1087,7 +1132,7 @@
 		"reset_password_mismatch_toast": "Passwörter stimmen nicht überein",
 		"reset_password_min_length_toast": "Passwort muss mindestens 6 Zeichen lang sein",
 		"reset_password_invalid_token_toast": "Ungültiger Token",
-		"reset_password_weak_toast": "Passwort zurücksetzen Weak Toast"
+		"reset_password_weak_toast": "Passwort entspricht nicht den Anforderungen"
 	},
 	"editor": {
 		"ai_enhance": "✨ KI-Auswahl verbessern...",

@@ -172,13 +172,12 @@ export function FindDuplicatesWizard({
 						<h3 className="text-lg font-semibold">
 							{t("tools.password_manager.duplicates_resolved")}
 						</h3>
-						<p className="text-sm text-muted-foreground max-w-[280px]">
+						<p className="text-sm text-muted-foreground max-w-70">
 							{autoMergedCount > 0
 								? t(
 										"tools.password_manager.auto_merged_count",
 										{
 											count: autoMergedCount,
-											defaultValue: `Successfully auto-merged ${autoMergedCount} identical items.`,
 										},
 									)
 								: t(

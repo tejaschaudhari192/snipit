@@ -40,10 +40,7 @@ export default function UnlockRecovery({
 		if (file.size > 102400) {
 			// 100KB limit
 			toast.add({
-				title: t(
-					"tools.password_manager.recovery.file_too_large",
-					"File is too large",
-				),
+				title: t("tools.password_manager.recovery.file_too_large"),
 				type: "error",
 			});
 			return;
@@ -57,7 +54,6 @@ export default function UnlockRecovery({
 				toast.add({
 					title: t(
 						"tools.password_manager.recovery.file_read_success",
-						"Recovery key loaded",
 					),
 					type: "success",
 				});
@@ -65,10 +61,7 @@ export default function UnlockRecovery({
 		};
 		reader.onerror = () => {
 			toast.add({
-				title: t(
-					"tools.password_manager.recovery.file_read_error",
-					"Failed to read file",
-				),
+				title: t("tools.password_manager.recovery.file_read_error"),
 				type: "error",
 			});
 		};

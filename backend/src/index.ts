@@ -21,14 +21,22 @@ server.listen(port, "0.0.0.0", () => {
 	logger.info(`🌍 Environment: ${configurations.node_env}`);
 });
 
+import PasteService from "@/services/paste.service.js";
+import { expirationScheduler } from "@/services/expiration-scheduler.service.js";
+
 // Connect to Database in background
-connectDB().catch((err) => {
-	logger.error(
-		"Initial DB connection failed. Requests will retry on arrival.",
-		{
-			error: err instanceof Error ? err.message : err,
-		},
-	);
-});
+connectDB()
+	.then(() => {
+		const pasteService = new PasteService();
+		expirationScheduler.init(pasteService);
+	})
+	.catch((err) => {
+		logger.error(
+			"Initial DB connection failed. Requests will retry on arrival.",
+			{
+				error: err instanceof Error ? err.message : err,
+			},
+		);
+	});
 
 export default app;

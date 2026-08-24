@@ -186,10 +186,10 @@
 				"has_key": "रिकवरी की सेट केली आहे",
 				"download": "डाउनलोड करा",
 				"file_too_large": "फाइल खूप मोठी आहे",
-				"file_read_success": "फाइल वाचण्यात यश आले",
-				"file_read_error": "फाइल वाचण्यात त्रुटी",
+				"file_read_success": "रिकव्हरी की लोड केली",
+				"file_read_error": "फाइल वाचण्यात अयशस्वी",
 				"upload": "अपलोड करा",
-				"downloaded": "डाउनलोड केले"
+				"downloaded": "रिकव्हरी की डाउनलोड केली"
 			},
 			"no_folder": "कोणतेही फोल्डर नाही",
 			"table_company": "कंपनी",
@@ -396,7 +396,25 @@
 			"approve": "मंजूर करा",
 			"approve_all": "सर्व मंजूर करा",
 			"more": "अधिक",
-			"import_action": "आयात करा"
+			"import_action": "आयात करा",
+			"delete_folder_confirm": "तुम्हाला नक्की हे फोल्डर हटवायचे आहे का",
+			"delete_passwords_inside": "या फोल्डरमधील सर्व पासवर्ड हटवा",
+			"action_cannot_be_undone": "ही कृती पूर्ववत करता येणार नाही.",
+			"folder_name": "फोल्डरचे नाव",
+			"folder_color": "फोल्डरचा रंग",
+			"folder_icon": "फोल्डर आयकॉन",
+			"edit_folder": "फोल्डर संपादित करा",
+			"delete_folder": "फोल्डर हटवा",
+			"items_selected": "{{count}} निवडले",
+			"move": "हलवा",
+			"remove_from_folder": "फोल्डरमधून काढा",
+			"select_limit_to_share": "शेअर करण्यासाठी कमाल {{limit}} आयटम निवडा",
+			"delete_n_items": "{{count}} आयटम हटवायचे?",
+			"delete_bulk_confirm": "हे सर्व {{count}} निवडलेले आयटम कायमचे हटवेल. ही कृती पूर्ववत करता येणार नाही.",
+			"failed_to_move_items": "{{count}} आयटम हलवण्यात अयशस्वी.",
+			"moved_n_items": "{{count}} आयटम {{folder}} मध्ये हलवले",
+			"failed_to_delete_items": "{{count}} आयटम हटवण्यात अयशस्वी.",
+			"deleted_n_items": "{{count}} आयटम यशस्वीरित्या हटवले"
 		},
 		"password_generator": {
 			"title": "पासवर्ड जनरेटर",
@@ -446,26 +464,30 @@
 			"no_status": "कोणतीही प्रवासी स्थिती उपलब्ध नाही"
 		},
 		"cinema": {
-			"title": "सिनेमा - पार्ट्या पहा",
-			"description": "सिंक्रोनाइझ केलेले प्लेबॅक, लाइव्ह चॅट आणि फ्लोटिंग इमोजी. तुमच्या मित्रांसह परिपूर्ण समक्रमित व्हिडिओंचा आनंद घ्या.",
+			"title": "सिनेमा - वॉच पार्टीज",
+			"description": "सिंक प्लेबॅक, लाइव्ह चॅट आणि इमोजी. मित्रांसोबत एकत्रित व्हिडिओचा आनंद घ्या.",
 			"hero_title": "एकत्र पहा",
-			"hero_subtitle": "सिंक्रोनाइझ केलेले प्लेबॅक, लाइव्ह चॅट आणि फ्लोटिंग इमोजी. तुमच्या मित्रांसह परिपूर्ण समक्रमित व्हिडिओंचा आनंद घ्या.",
-			"create_tab": "खोली तयार करा",
-			"join_tab": "खोलीत सामील व्हा",
+			"hero_subtitle": "सिंक प्लेबॅक, लाइव्ह चॅट आणि इमोजी. मित्रांसोबत एकत्रित व्हिडिओचा आनंद घ्या.",
+			"create_tab": "रूम तयार करा",
+			"join_tab": "रूममध्ये सामील व्हा",
 			"url_label": "व्हिडिओ URL",
 			"url_placeholder": "https://example.com/video.mp4",
-			"local_file_toggle": "स्थानिक फाइल प्रवाह (P2P)",
+			"local_file_toggle": "लोकल फाइल स्ट्रीम (P2P)",
 			"select_file": "व्हिडिओ फाइल निवडा",
 			"start_btn": "वॉच पार्टी सुरू करा",
-			"creating": "खोली तयार करत आहे...",
-			"join_label": "रूम लिंक किंवा आयडी",
-			"join_placeholder": "वॉच पार्टी लिंक येथे पेस्ट करा",
-			"join_btn": "खोलीत सामील व्हा",
+			"creating": "रूम तयार होत आहे...",
+			"join_label": "रूम लिंक किंवा ID",
+			"join_placeholder": "येथे वॉच पार्टी लिंक पेस्ट करा",
+			"join_btn": "रूममध्ये सामील व्हा",
 			"auth_required": "वॉच पार्टी होस्ट करण्यासाठी लॉगिन आवश्यक आहे.",
-			"invalid_url": "कृपया एक वैध व्हिडिओ URL प्रविष्ट करा.",
+			"invalid_url": "कृपया वैध व्हिडिओ URL प्रविष्ट करा.",
 			"features_sync": "परफेक्ट सिंक",
-			"features_chat": "थेट चॅट आणि इमोजी",
-			"features_p2p": "थेट P2P प्रवाह"
+			"features_chat": "लाइव्ह चॅट आणि इमोजी",
+			"features_p2p": "डायरेक्ट P2P स्ट्रीमिंग",
+			"loading_room": "वॉच पार्टी लोड होत आहे...",
+			"room_not_found": "वॉच पार्टी सापडली नाही",
+			"return_btn": "सिनेमावर परत जा",
+			"create_failed": "वॉच पार्टी तयार करण्यात अयशस्वी"
 		}
 	},
 	"errors": {
@@ -637,7 +659,28 @@
 		},
 		"avg_views": "कार्यक्षमता",
 		"loading_failed": "प्रोफाइल लोड करण्यात अयशस्वी",
-		"update_failed": "प्रोफाइल अपडेट करण्यात अयशस्वी"
+		"update_failed": "प्रोफाइल अपडेट करण्यात अयशस्वी",
+		"folder_empty": "Folder is Empty",
+		"folder_empty_desc": "There are no snippets stored inside this folder yet.",
+		"create_snippet": "Create Snippet",
+		"root_no_folder": "Root (No Folder)",
+		"enter_folder_name": "Enter folder name:",
+		"enter_subfolder_name": "Enter subfolder name inside \"{{name}}\":",
+		"avatar": {
+			"title": "Choose Profile Photo",
+			"description": "Select a mock avatar or upload your own image from your device.",
+			"change": "Change Profile Photo",
+			"tab_mocks": "Mock Avatars",
+			"tab_upload": "Upload File",
+			"drop_prompt": "Click to upload or drag & drop",
+			"file_limits": "PNG, JPG, WebP, GIF (Max 5MB)",
+			"custom_selected": "Custom photo selected",
+			"default_initials": "Using default initials",
+			"updated": "Profile photo updated successfully",
+			"update_failed": "Failed to update profile photo",
+			"invalid_image": "प्रतिमा प्रक्रिया अयशस्वी"
+		},
+		"edit_name": "नाव संपादित करा"
 	},
 	"home": {
 		"loading": "लोड होत आहे...",
@@ -801,7 +844,9 @@
 		"sync_failed": "तुमचे खाते स्निपेट्स सिंक करण्यात अयशस्वी"
 	},
 	"messages": {
-		"loading": "लोड होत आहे...",
+		"loading": {
+			"deleting": "स्निपेट हटवले जात आहे..."
+		},
 		"overview": "आढावा",
 		"detected_language": "ओळखलेली भाषा: {{language}}",
 		"success": {
@@ -1055,7 +1100,7 @@
 		"reset_password_mismatch_toast": "पासवर्ड जुळत नाहीत",
 		"reset_password_min_length_toast": "पासवर्ड किमान 6 वर्णांचा असावा",
 		"reset_password_invalid_token_toast": "अवैध टोकन",
-		"reset_password_weak_toast": "पासवर्ड कमकुवत टोस्ट रीसेट करा"
+		"reset_password_weak_toast": "पासवर्ड आवश्यकतांची पूर्तता करत नाही"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI द्वारे सुधारा...",
@@ -1225,6 +1270,7 @@
 		"snippets": "Snippets",
 		"grid_view": "Grid View",
 		"list_view": "List View",
-		"items_count": "{{count}} items"
+		"items_count": "{{count}} items",
+		"snippet_moved_success": "स्निपेट यशस्वीरित्या हलवले"
 	}
 }

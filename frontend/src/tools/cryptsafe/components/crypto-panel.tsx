@@ -35,71 +35,9 @@ import {
 	FileDown,
 } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
+import { getFilesFromDragEvent, formatBytes } from "../utils/file-system-utils";
 
 type ProcessState = "idle" | "processing" | "done" | "error";
-
-async function getFilesFromDragEvent(
-	e: DragEvent<HTMLDivElement>,
-): Promise<File[]> {
-	const items = Array.from(e.dataTransfer.items);
-	const filesPromises = items.map(async (item) => {
-		if (item.kind !== "file") return [];
-		if (typeof item.webkitGetAsEntry === "function") {
-			const entry = item.webkitGetAsEntry();
-			if (entry) {
-				return readEntry(entry);
-			}
-		}
-		const file = item.getAsFile();
-		return file ? [file] : [];
-	});
-	const results = await Promise.all(filesPromises);
-	return results.flat();
-}
-
-async function readEntry(entry: FileSystemEntry, path = ""): Promise<File[]> {
-	if (entry.isFile) {
-		const fileEntry = entry as FileSystemFileEntry;
-		return new Promise((resolve) => {
-			fileEntry.file((file: File) => {
-				const relPath = path ? `${path}/${file.name}` : file.name;
-				const patchedFile = new File([file], file.name, {
-					type: file.type,
-				});
-				Object.defineProperty(patchedFile, "webkitRelativePath", {
-					value: relPath,
-					writable: false,
-				});
-				resolve([patchedFile]);
-			});
-		});
-	} else if (entry.isDirectory) {
-		const dirEntry = entry as FileSystemDirectoryEntry;
-		const reader = dirEntry.createReader();
-		const entries = await new Promise<FileSystemEntry[]>((resolve) => {
-			reader.readEntries(resolve);
-		});
-		const files: File[] = [];
-		for (const child of entries) {
-			const childFiles = await readEntry(
-				child,
-				path ? `${path}/${entry.name}` : entry.name,
-			);
-			files.push(...childFiles);
-		}
-		return files;
-	}
-	return [];
-}
-
-function formatBytes(bytes: number, decimals = 2): string {
-	if (bytes === 0) return "0 Bytes";
-	const k = 1024;
-	const dm = decimals < 0 ? 0 : decimals;
-	const sizes = ["Bytes", "KB", "MB", "GB"];
-	const i = Math.floor(Math.log(bytes) / Math.log(k));
-	return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-}
 
 export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 	const { t } = useTranslation();
@@ -392,9 +330,6 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 								isEncrypt
 									? "tools.drag_drop_prompt"
 									: "tools.drag_drop_decrypt_prompt",
-								isEncrypt
-									? "Drag & drop files here"
-									: "Drag & drop encrypted files here",
 							)}
 						</p>
 						<p className="text-xs text-muted-foreground text-center mb-4">

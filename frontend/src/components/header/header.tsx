@@ -93,9 +93,17 @@ const UserMenu = () => {
 					size="sm"
 					className="h-9 px-3 gap-2.5 transition-all hover:bg-primary/5 rounded-full"
 				>
-					<div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-						<User className="h-3.5 w-3.5" />
-					</div>
+					{user.avatar ? (
+						<img
+							src={user.avatar}
+							className="w-6 h-6 rounded-full object-cover border border-primary/20 shrink-0"
+							alt={user.username}
+						/>
+					) : (
+						<div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+							<User className="h-3.5 w-3.5" />
+						</div>
+					)}
 					<span className="text-sm font-bold hidden sm:inline-block">
 						{user.username}
 					</span>
@@ -300,9 +308,17 @@ const Header = ({ className }: HeaderProps) => {
 								to="/profile"
 								className="flex items-center gap-3 w-full p-3 bg-primary/5 rounded-xl border border-primary/10"
 							>
-								<div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
-									<User className="h-5 w-5" />
-								</div>
+								{user.avatar ? (
+									<img
+										src={user.avatar}
+										className="w-10 h-10 rounded-full object-cover shrink-0 border border-primary/20"
+										alt={user.username}
+									/>
+								) : (
+									<div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+										<User className="h-5 w-5" />
+									</div>
+								)}
 								<div className="flex flex-col min-w-0">
 									<p className="text-sm font-black truncate text-primary leading-tight">
 										{user.username}

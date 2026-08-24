@@ -185,10 +185,10 @@
 				"has_key": "リカバリキーが設定されています",
 				"download": "ダウンロード",
 				"file_too_large": "ファイルが大きすぎます",
-				"file_read_success": "ファイルの読み取り成功",
-				"file_read_error": "ファイル読み取りエラー",
+				"file_read_success": "リカバリキーが読み込まれました",
+				"file_read_error": "ファイルの読み取りに失敗しました",
 				"upload": "アップロード",
-				"downloaded": "ダウンロード済み"
+				"downloaded": "リカバリキーをダウンロードしました"
 			},
 			"no_folder": "フォルダーなし",
 			"table_company": "会社",
@@ -395,7 +395,25 @@
 			"approve": "承認",
 			"approve_all": "すべて承認",
 			"more": "詳細",
-			"import_action": "インポート"
+			"import_action": "インポート",
+			"delete_folder_confirm": "このフォルダーを本当に削除しますか",
+			"delete_passwords_inside": "このフォルダー内のすべてのパスワードを削除",
+			"action_cannot_be_undone": "この操作は元に戻せません。",
+			"folder_name": "フォルダー名",
+			"folder_color": "フォルダーの色",
+			"folder_icon": "フォルダーアイコン",
+			"edit_folder": "フォルダーを編集",
+			"delete_folder": "フォルダーを削除",
+			"items_selected": "{{count}} 件選択中",
+			"move": "移動",
+			"remove_from_folder": "フォルダーから削除",
+			"select_limit_to_share": "共有するアイテムを {{limit}} 件以内で選択してください",
+			"delete_n_items": "{{count}} 件のアイテムを削除しますか？",
+			"delete_bulk_confirm": "選択した {{count}} 件のアイテムが完全に削除されます。この操作は元に戻せません。",
+			"failed_to_move_items": "{{count}} 件のアイテムの移動に失敗しました。",
+			"moved_n_items": "{{count}} 件のアイテムを {{folder}} に移動しました",
+			"failed_to_delete_items": "{{count}} 件のアイテムの削除に失敗しました。",
+			"deleted_n_items": "{{count}} 件のアイテムを削除しました"
 		},
 		"password_generator": {
 			"title": "パスワードジェネレーター",
@@ -446,26 +464,30 @@
 		},
 		"cryptoSafe_title": "クリプトセーフ",
 		"cinema": {
-			"title": "映画 - 鑑賞パーティー",
-			"description": "同期再生、ライブチャット、フローティング絵文字。友達と完璧に同期してビデオを楽しみましょう。",
+			"title": "シネマ - ウォッチパーティー",
+			"description": "同期再生、ライブチャット、フローティング絵文字。友達と完璧に同期して動画を楽しめます。",
 			"hero_title": "一緒に見る",
-			"hero_subtitle": "同期再生、ライブチャット、フローティング絵文字。友達と完璧に同期してビデオを楽しみましょう。",
-			"create_tab": "ルームの作成",
-			"join_tab": "ルームに参加する",
-			"url_label": "動画のURL",
+			"hero_subtitle": "同期再生、ライブチャット、フローティング絵文字。友達と完璧に同期して動画を楽しめます。",
+			"create_tab": "ルームを作成",
+			"join_tab": "ルームに参加",
+			"url_label": "動画 URL",
 			"url_placeholder": "https://example.com/video.mp4",
-			"local_file_toggle": "ローカル ファイル ストリーム (P2P)",
-			"select_file": "ビデオファイルの選択",
-			"start_btn": "ウォッチパーティーを開始する",
-			"creating": "ルームを作成しています...",
-			"join_label": "ルームリンクまたはID",
-			"join_placeholder": "ウォッチ パーティーのリンクをここに貼り付けます",
-			"join_btn": "ルームに参加する",
-			"auth_required": "ウォッチパーティーを主催するにはログインが必要です。",
-			"invalid_url": "有効なビデオ URL を入力してください。",
-			"features_sync": "完璧な同期",
-			"features_chat": "ライブチャットと絵文字",
-			"features_p2p": "直接 P2P ストリーミング"
+			"local_file_toggle": "ローカルファイル配信 (P2P)",
+			"select_file": "動画ファイルを選択",
+			"start_btn": "ウォッチパーティーを開始",
+			"creating": "ルームを作成中...",
+			"join_label": "ルームリンクまたは ID",
+			"join_placeholder": "ここにウォッチパーティーリンクを貼り付け",
+			"join_btn": "ルームに参加",
+			"auth_required": "ウォッチパーティーをホストするにはログインが必要です。",
+			"invalid_url": "有効な動画 URL を入力してください。",
+			"features_sync": "完全同期",
+			"features_chat": "ライブチャット & 絵文字",
+			"features_p2p": "ダイレクト P2P 配信",
+			"loading_room": "ウォッチパーティーを読み込み中...",
+			"room_not_found": "ウォッチパーティーが見つかりません",
+			"return_btn": "シネマに戻る",
+			"create_failed": "ウォッチパーティーの作成に失敗しました"
 		}
 	},
 	"errors": {
@@ -637,7 +659,28 @@
 		},
 		"avg_views": "効率",
 		"loading_failed": "プロファイルの読み込みに失敗しました",
-		"update_failed": "更新に失敗しました"
+		"update_failed": "更新に失敗しました",
+		"folder_empty": "Folder is Empty",
+		"folder_empty_desc": "There are no snippets stored inside this folder yet.",
+		"create_snippet": "Create Snippet",
+		"root_no_folder": "Root (No Folder)",
+		"enter_folder_name": "Enter folder name:",
+		"enter_subfolder_name": "Enter subfolder name inside \"{{name}}\":",
+		"avatar": {
+			"title": "Choose Profile Photo",
+			"description": "Select a mock avatar or upload your own image from your device.",
+			"change": "Change Profile Photo",
+			"tab_mocks": "Mock Avatars",
+			"tab_upload": "Upload File",
+			"drop_prompt": "Click to upload or drag & drop",
+			"file_limits": "PNG, JPG, WebP, GIF (Max 5MB)",
+			"custom_selected": "Custom photo selected",
+			"default_initials": "Using default initials",
+			"updated": "Profile photo updated successfully",
+			"update_failed": "Failed to update profile photo",
+			"invalid_image": "画像の処理に失敗しました"
+		},
+		"edit_name": "名前を編集"
 	},
 	"home": {
 		"loading": "読み込み中...",
@@ -801,7 +844,9 @@
 		"sync_failed": "アカウントのスニペットの同期に失敗しました"
 	},
 	"messages": {
-		"loading": "読み込み中...",
+		"loading": {
+			"deleting": "スニペットを削除中..."
+		},
 		"overview": "概要",
 		"detected_language": "検出された言語: {{language}}",
 		"success": {
@@ -1055,7 +1100,7 @@
 		"reset_password_mismatch_toast": "パスワードが一致しません",
 		"reset_password_min_length_toast": "パスワードは6文字以上である必要があります",
 		"reset_password_invalid_token_toast": "無効なトークン",
-		"reset_password_weak_toast": "パスワードをリセット 弱いトースト"
+		"reset_password_weak_toast": "パスワードが必要条件を満たしていません"
 	},
 	"editor": {
 		"ai_enhance": "✨ AIで選択範囲を強化...",
@@ -1225,6 +1270,7 @@
 		"snippets": "Snippets",
 		"grid_view": "Grid View",
 		"list_view": "List View",
-		"items_count": "{{count}} items"
+		"items_count": "{{count}} items",
+		"snippet_moved_success": "スニペットを移動しました"
 	}
 }

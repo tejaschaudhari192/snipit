@@ -264,11 +264,11 @@
 				"copied": "Copied!",
 				"has_key": "Recovery key is set up",
 				"download": "Download",
-				"file_too_large": "File Too Large",
-				"file_read_success": "File Read Success",
-				"file_read_error": "File Read Error",
+				"file_too_large": "File is too large",
+				"file_read_success": "Recovery key loaded",
+				"file_read_error": "Failed to read file",
 				"upload": "Upload",
-				"downloaded": "Downloaded"
+				"downloaded": "Downloaded recovery key"
 			},
 			"danger_zone": "Danger Zone",
 			"delete_vault": {
@@ -659,7 +659,8 @@
 		"snippets": "Snippets",
 		"grid_view": "Grid View",
 		"list_view": "List View",
-		"items_count": "{{count}} items"
+		"items_count": "{{count}} items",
+		"snippet_moved_success": "Snippet moved successfully"
 	},
 	"profile": {
 		"loading": "Loading...",
@@ -696,7 +697,22 @@
 		},
 		"avg_views": "Efficiency",
 		"loading_failed": "Failed to load profile",
-		"update_failed": "Failed to update profile"
+		"update_failed": "Failed to update profile",
+		"avatar": {
+			"title": "Choose Profile Photo",
+			"description": "Select a mock avatar or upload your own image from your device.",
+			"change": "Change Profile Photo",
+			"tab_mocks": "Mock Avatars",
+			"tab_upload": "Upload File",
+			"drop_prompt": "Click to upload or drag & drop",
+			"file_limits": "PNG, JPG, WebP, GIF (Max 5MB)",
+			"custom_selected": "Custom photo selected",
+			"default_initials": "Using default initials",
+			"updated": "Profile photo updated successfully",
+			"update_failed": "Failed to update profile photo",
+			"invalid_image": "Failed to process image"
+		},
+		"edit_name": "Edit name"
 	},
 	"home": {
 		"loading": "Loading...",
@@ -860,7 +876,9 @@
 		"sync_failed": "Failed to sync your account snippets"
 	},
 	"messages": {
-		"loading": "Loading...",
+		"loading": {
+			"deleting": "Deleting snippet..."
+		},
 		"overview": "Overview",
 		"detected_language": "Detected language: {{language}}",
 		"success": {
@@ -1114,7 +1132,7 @@
 		"reset_password_mismatch_toast": "Passwords do not match",
 		"reset_password_min_length_toast": "Password must be at least 6 characters",
 		"reset_password_invalid_token_toast": "Invalid token",
-		"reset_password_weak_toast": "Reset Password Weak Toast"
+		"reset_password_weak_toast": "Password does not meet the requirements"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI Enhance Selection...",

@@ -97,6 +97,10 @@ export default function CinemaRoomPage() {
 			},
 		);
 
+		socket.on("cinema-video-changed", (data: { videoUrl: string }) => {
+			setVideoSrc(data.videoUrl);
+		});
+
 		socket.on("cinema-room-error", (data: { message?: string }) => {
 			clearTimeout(timeoutId);
 			setError(

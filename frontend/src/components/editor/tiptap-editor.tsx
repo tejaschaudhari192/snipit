@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo, useState } from "react";
+import { useEffect, useRef, useMemo, useState, useCallback } from "react";
 import {
 	EditorRoot,
 	EditorContent,
@@ -25,7 +25,7 @@ import {
 	EditorCommandList,
 } from "novel";
 import "katex/dist/katex.min.css";
-import { Editor } from "@tiptap/core";
+import { Editor, type JSONContent } from "@tiptap/core";
 import type { AnyExtension } from "@tiptap/core";
 import { cn } from "@/utils";
 import { Image as ImageIcon } from "lucide-react";
@@ -55,6 +55,9 @@ import { TiptapToolbar } from "./tiptap-toolbar";
 import { mentionSuggestion } from "./extensions/mention-suggestion";
 import { FindReplace } from "./find-replace";
 import { StatusBar } from "./status-bar";
+import { FileService } from "@/lib/file-service";
+import { isSupabaseConfigured } from "@/lib/supabase";
+import { scanAndLoadFontsFromContent } from "./utils/fonts";
 
 interface TiptapEditorProps {
 	value: string;
@@ -72,21 +75,36 @@ interface TiptapEditorProps {
 function EditorSync({
 	value,
 	readOnly,
+	lastEmittedHtmlRef,
 	onEditorInstance,
 	onEditorChange,
 }: {
 	value: string;
 	readOnly: boolean;
+	lastEmittedHtmlRef: React.MutableRefObject<string>;
 	onEditorInstance?: (editor: Editor | null) => void;
 	onEditorChange?: (editor: Editor | null) => void;
 }) {
 	const { editor } = useEditor();
+	const isInitializedRef = useRef(false);
 
 	useEffect(() => {
-		if (editor && value && editor.getHTML() !== value) {
+		if (!editor) return;
+
+		// Skip expensive getHTML() comparison if the incoming value is what we just emitted
+		if (value === lastEmittedHtmlRef.current) return;
+
+		if (!isInitializedRef.current) {
+			if (value && editor.getHTML() !== value) {
+				scanAndLoadFontsFromContent(value);
+				editor.commands.setContent(value);
+			}
+			isInitializedRef.current = true;
+		} else if (value && !editor.isFocused && editor.getHTML() !== value) {
+			scanAndLoadFontsFromContent(value);
 			editor.commands.setContent(value);
 		}
-	}, [editor, value]);
+	}, [editor, value, lastEmittedHtmlRef]);
 
 	useEffect(() => {
 		if (editor) {
@@ -122,11 +140,29 @@ export function TiptapEditor({
 	const [replaceText, setReplaceText] = useState("");
 	const [isDragging, setIsDragging] = useState(false);
 	const dragCounter = useRef(0);
+	const lastEmittedHtmlRef = useRef<string>(value || "");
+	const statsDebounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 	const [stats, setStats] = useState({
 		words: 0,
 		characters: 0,
 		readTime: 0,
 	});
+
+	const initialJsonContent = useMemo<JSONContent | undefined>(() => {
+		if (!value) return undefined;
+		if (
+			typeof value === "string" &&
+			(value.trim().startsWith("{") || value.trim().startsWith("["))
+		) {
+			try {
+				return JSON.parse(value) as JSONContent;
+			} catch {
+				return undefined;
+			}
+		}
+		return undefined;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const transliterationRef = useRef({
 		enabled: transliteration?.enabled ?? false,
@@ -140,23 +176,37 @@ export function TiptapEditor({
 		};
 	}, [transliteration?.enabled, transliteration?.targetLanguage]);
 
-	const updateStats = (editorInstance: Editor | null) => {
-		if (!editorInstance) return;
-		const text = editorInstance.getText();
-		const charCount = text.length;
-		const wordCount =
-			text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
-		const readingTime = Math.ceil(wordCount / 200);
-		setStats({
-			words: wordCount,
-			characters: charCount,
-			readTime: readingTime,
-		});
-	};
+	const updateStatsDebounced = useCallback(
+		(editorInstance: Editor | null) => {
+			if (!editorInstance) return;
+			if (statsDebounceTimerRef.current) {
+				clearTimeout(statsDebounceTimerRef.current);
+			}
+			statsDebounceTimerRef.current = setTimeout(() => {
+				if (!editorInstance || editorInstance.isDestroyed) return;
+				const text = editorInstance.getText();
+				const charCount = text.length;
+				const wordCount =
+					text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
+				const readingTime = Math.ceil(wordCount / 200);
+				setStats({
+					words: wordCount,
+					characters: charCount,
+					readTime: readingTime,
+				});
+			}, 150);
+		},
+		[],
+	);
 
 	useEffect(() => {
-		updateStats(activeEditor);
-	}, [activeEditor]);
+		updateStatsDebounced(activeEditor);
+		return () => {
+			if (statsDebounceTimerRef.current) {
+				clearTimeout(statsDebounceTimerRef.current);
+			}
+		};
+	}, [activeEditor, updateStatsDebounced]);
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
@@ -209,11 +259,11 @@ export function TiptapEditor({
 			const tr = state.tr.insertText(replaceText, from, to);
 			view.dispatch(tr);
 		}
-		updateStats(activeEditor);
+		updateStatsDebounced(activeEditor);
 	};
 
-	const getMatchCount = () => {
-		if (!activeEditor || !findText) return 0;
+	const matchCount = useMemo(() => {
+		if (!showFindReplace || !activeEditor || !findText.trim()) return 0;
 		let count = 0;
 		activeEditor.state.doc.descendants((node) => {
 			if (node.isText && node.text) {
@@ -227,7 +277,7 @@ export function TiptapEditor({
 			}
 		});
 		return count;
-	};
+	}, [showFindReplace, activeEditor, findText, stats.characters]);
 
 	const handleDragEnter = (e: React.DragEvent) => {
 		e.preventDefault();
@@ -245,10 +295,46 @@ export function TiptapEditor({
 		}
 	};
 
-	const handleDrop = (e: React.DragEvent) => {
+	const handleDrop = async (e: React.DragEvent) => {
 		e.preventDefault();
 		dragCounter.current = 0;
 		setIsDragging(false);
+
+		if (!activeEditor || readOnly) return;
+		const files = Array.from(e.dataTransfer.files);
+		if (files.length === 0) return;
+
+		for (const file of files) {
+			if (file.type.startsWith("image/")) {
+				try {
+					let targetUrl: string | null = null;
+					if (isSupabaseConfigured) {
+						const { url } = await FileService.upload(file);
+						if (url) targetUrl = url;
+					}
+					if (!targetUrl) {
+						targetUrl = await new Promise<string>(
+							(resolve, reject) => {
+								const reader = new FileReader();
+								reader.onload = () =>
+									resolve(reader.result as string);
+								reader.onerror = reject;
+								reader.readAsDataURL(file);
+							},
+						);
+					}
+					if (targetUrl) {
+						activeEditor
+							.chain()
+							.focus()
+							.setImage({ src: targetUrl })
+							.run();
+					}
+				} catch (err) {
+					console.error("Failed to insert dropped image:", err);
+				}
+			}
+		}
 	};
 
 	const slashCommand = useMemo(() => {
@@ -388,7 +474,7 @@ export function TiptapEditor({
 						replaceText={replaceText}
 						setReplaceText={setReplaceText}
 						onReplace={handleReplace}
-						matchCount={getMatchCount()}
+						matchCount={matchCount}
 						onClose={() => setShowFindReplace(false)}
 					/>
 				)}
@@ -396,23 +482,21 @@ export function TiptapEditor({
 				<EditorContent
 					className={cn(
 						"flex-1 overflow-y-auto min-h-0 custom-scrollbar p-4 sm:p-8 transition-colors",
-						isZenMode
-							? "bg-background p-6 sm:p-12"
-							: "bg-[#f0f4f9] dark:bg-[#0b0c10]",
+						isZenMode ? "bg-background p-6 sm:p-12" : "bg-muted/30",
 					)}
-					initialContent={
-						value ? JSON.parse(JSON.stringify(value)) : undefined
-					}
+					initialContent={initialJsonContent}
 					onUpdate={({ editor }) => {
-						onChange(editor.getHTML());
-						updateStats(editor);
+						const html = editor.getHTML();
+						lastEmittedHtmlRef.current = html;
+						onChange(html);
+						updateStatsDebounced(editor);
 					}}
 					extensions={extensions as AnyExtension[]}
 					editorProps={{
 						attributes: {
 							id: "tiptap-editor-container",
 							class: cn(
-								"prose prose-sm sm:prose-base dark:prose-invert focus:outline-none max-w-4xl mx-auto w-full min-h-dvh outline-none px-6 sm:px-10 py-8 bg-background border border-border/40 shadow-sm rounded-lg transition-all",
+								"prose prose-sm sm:prose-base dark:prose-invert focus:outline-none max-w-4xl mx-auto w-full min-h-dvh outline-none px-6 sm:px-10 py-8 bg-card text-foreground border border-border/40 shadow-sm rounded-lg transition-all",
 								isZenMode &&
 									"shadow-none border-none bg-muted/20 max-w-3xl",
 							),
@@ -422,6 +506,7 @@ export function TiptapEditor({
 					<EditorSync
 						value={value}
 						readOnly={readOnly}
+						lastEmittedHtmlRef={lastEmittedHtmlRef}
 						onEditorInstance={onEditorInstance}
 						onEditorChange={setActiveEditor}
 					/>

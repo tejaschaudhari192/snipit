@@ -129,3 +129,8 @@ export const PASSWORD_CHARS = {
 	numbers: "0123456789",
 	symbols: "!@#$%^&*()_+-=[]{}|;:,.<>?",
 };
+
+export const PASSWORD_MANAGER_CONFIG = {
+	PASSWORD_EXPIRY_WARNING_DAYS: 90,
+	MS_PER_DAY: 24 * 60 * 60 * 1000,
+};

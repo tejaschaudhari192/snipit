@@ -18,7 +18,7 @@ import {
 	TooltipContent,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { FONTS } from "../utils/fonts";
+import { FONTS, loadFontOnDemand } from "../utils/fonts";
 
 export function HeadingDropdown({ editor }: { editor: Editor }) {
 	const currentHeading = editor.isActive("heading", { level: 1 })
@@ -85,13 +85,12 @@ export function HeadingDropdown({ editor }: { editor: Editor }) {
 }
 
 export function FontDropdown({ editor }: { editor: Editor }) {
-	const currentFont =
-		editor.getAttributes("textStyle").fontFamily || "Default";
+	const currentFont = editor.getAttributes("textStyle").fontFamily || "";
 	const currentFontName =
 		FONTS.find(
 			(f) =>
 				f.value === currentFont ||
-				(f.value === "" && currentFont === "Default"),
+				(currentFont !== "" && f.value.startsWith(currentFont)),
 		)?.name || "Default";
 
 	return (
@@ -138,6 +137,7 @@ export function FontDropdown({ editor }: { editor: Editor }) {
 						style={{ fontFamily: font.value || "inherit" }}
 						onSelect={() => {
 							if (font.value) {
+								loadFontOnDemand(font.value);
 								editor
 									.chain()
 									.focus()

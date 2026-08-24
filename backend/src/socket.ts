@@ -22,6 +22,11 @@ import fs from "fs";
 import path from "path";
 import crypto from "crypto";
 
+import {
+	registerCinemaHandlers,
+	broadcastCinemaUsers,
+} from "./socket/cinema.handler.js";
+
 const pasteService = new PasteService();
 const permissionService = new PermissionService();
 const activeUsers = new Map<
@@ -113,93 +118,13 @@ export const setupSocket = (server: HTTPServer) => {
 			io.to(pasteId).emit("room-users", roomUsers);
 		};
 
-		const broadcastCinemaUsers = (roomId: string) => {
-			const roomUsers = Array.from(activeUsers.values()).filter(
-				(u) => u.cinemaRoomId === roomId,
-			);
-			io.to(roomId).emit("cinema-room-users", roomUsers);
-		};
-
-		socket.on(
-			"create-cinema-room",
-			({ roomId, videoUrl, isP2pMode, userName }) => {
-				const user = activeUsers.get(socket.id);
-				if (user) {
-					user.cinemaRoomId = roomId;
-					if (userName) user.name = userName;
-					socket.join(roomId);
-					cinemaRooms.set(roomId, {
-						hostSocketId: socket.id,
-						url: videoUrl,
-						isP2pMode,
-					});
-					broadcastCinemaUsers(roomId);
-				}
-			},
+		registerCinemaHandlers(
+			io,
+			socket,
+			activeUsers,
+			cinemaRooms,
+			sharedVideoState,
 		);
-
-		socket.on("join-cinema-room", ({ roomId, userName }) => {
-			const user = activeUsers.get(socket.id);
-			if (user) {
-				user.cinemaRoomId = roomId;
-				if (userName) user.name = userName;
-				socket.join(roomId);
-
-				const roomState = cinemaRooms.get(roomId);
-				if (roomState) {
-					socket.emit("cinema-room-state", {
-						videoUrl: roomState.url,
-						isP2pMode: roomState.isP2pMode,
-						hostSocketId: roomState.hostSocketId,
-					});
-
-					const vState = sharedVideoState.get(roomId);
-					if (vState) {
-						let currentPos = vState.currentTime;
-						if (vState.isPlaying) {
-							const elapsed =
-								(Date.now() - vState.lastSyncedAt) / 1000;
-							currentPos += elapsed;
-						}
-						socket.emit("video-sync-state", {
-							action: vState.isPlaying ? "play" : "pause",
-							timestamp: currentPos,
-							duration: vState.duration,
-						});
-					}
-
-					broadcastCinemaUsers(roomId);
-				} else {
-					socket.emit("cinema-room-error", {
-						message:
-							"Watch party room not found or host has ended the session.",
-					});
-				}
-			}
-		});
-
-		socket.on("leave-cinema-room", (roomId) => {
-			const user = activeUsers.get(socket.id);
-			if (user && user.cinemaRoomId === roomId) {
-				user.cinemaRoomId = "";
-				socket.leave(roomId);
-				broadcastCinemaUsers(roomId);
-
-				const roomState = cinemaRooms.get(roomId);
-				if (roomState && roomState.hostSocketId === socket.id) {
-					cinemaRooms.delete(roomId);
-					sharedVideoState.delete(roomId);
-					io.to(roomId).emit("cinema-host-disconnected");
-				}
-
-				const roomUsers = Array.from(activeUsers.values()).filter(
-					(u) => u.cinemaRoomId === roomId,
-				);
-				if (roomUsers.length === 0) {
-					sharedVideoState.delete(roomId);
-				}
-			}
-		});
 
 		socket.on("join-paste", async ({ pasteId, userName }) => {
 			const userId = getSocketUserId(socket);
@@ -929,7 +854,7 @@ export const setupSocket = (server: HTTPServer) => {
 					}
 
 					activeUsers.delete(socket.id);
-					broadcastCinemaUsers(cinemaRoomId);
+					broadcastCinemaUsers(io, activeUsers, cinemaRoomId);
 
 					const roomUsers = Array.from(activeUsers.values()).filter(
 						(u) => u.cinemaRoomId === cinemaRoomId,
