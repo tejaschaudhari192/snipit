@@ -3,6 +3,8 @@
 @import "tw-fade";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant data-horizontal (&:is([data-orientation="horizontal"] *), &:is([data-orientation="horizontal"]), &:is([data-horizontal] *), &:is([data-horizontal]));
+@custom-variant data-vertical (&:is([data-orientation="vertical"] *), &:is([data-orientation="vertical"]), &:is([data-vertical] *), &:is([data-vertical]));
 
 @theme inline {
 	--radius-sm: calc(var(--radius) - 4px);
@@ -813,4 +815,15 @@ body.is-404 .action-url-bar {
 
 .tab-text-short {
 	@apply min-[440px]:hidden whitespace-nowrap;
+}
+
+/* Base-UI Slider Track & Range */
+[data-slot="slider-track"] {
+	background-color: var(--muted);
+	min-height: 0.25rem;
+}
+
+[data-slot="slider-range"] {
+	background-color: var(--primary);
+	min-height: 100%;
 }
