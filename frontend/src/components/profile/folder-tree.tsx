@@ -23,6 +23,7 @@ export const FolderTree: React.FC = () => {
 		foldersTree,
 		activeFolderId,
 		setActiveFolderId,
+		loadingTree,
 		moveFolder,
 		renameFolder,
 	} = useFolders();
@@ -101,7 +102,14 @@ export const FolderTree: React.FC = () => {
 				</button>
 			</div>
 
-			{foldersTree.length === 0 ? (
+			{loadingTree ? (
+				<div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+					<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4" />
+					<p className="text-xs font-medium">
+						{t("folders.loading")}
+					</p>
+				</div>
+			) : foldersTree.length === 0 ? (
 				<div className="text-center py-6 px-4 border border-dashed rounded-2xl border-border/60 bg-muted/10 transition-all hover:bg-muted/20">
 					<FolderPlus className="w-8 h-8 mx-auto text-muted-foreground/40 mb-2" />
 					<p className="text-xs text-muted-foreground font-medium mb-2">
