@@ -632,7 +632,7 @@
 	},
 	"profile": {
 		"loading": "読み込み中...",
-		"overview": "プロフィール概要",
+		"overview": "概要",
 		"title": "ユーザープロフィール",
 		"username": "ユーザー名",
 		"email": "メールアドレス",
