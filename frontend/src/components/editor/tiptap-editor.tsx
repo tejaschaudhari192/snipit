@@ -286,7 +286,7 @@ export function TiptapEditor({
 			}
 		});
 		return count;
-	}, [showFindReplace, activeEditor, findText, stats.characters]);
+	}, [showFindReplace, activeEditor, findText]);
 
 	const handleDragEnter = (e: React.DragEvent) => {
 		e.preventDefault();

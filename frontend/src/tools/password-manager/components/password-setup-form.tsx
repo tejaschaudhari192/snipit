@@ -48,7 +48,7 @@ export default function PasswordSetupForm({
 						size="icon"
 						type="button"
 						onClick={() => setShowPassword(!showPassword)}
-						className="absolute right-1 top-1/2 -translate-y-1/2 h-10 w-10 text-muted-foreground"
+						className="absolute right-1 top-1/2 -translate-y-1/2 active:-translate-y-1/2 h-10 w-10 text-muted-foreground"
 					>
 						{showPassword ? (
 							<EyeOff className="h-4 w-4" />

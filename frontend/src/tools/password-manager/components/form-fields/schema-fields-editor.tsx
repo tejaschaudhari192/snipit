@@ -39,6 +39,78 @@ interface SchemaFieldsEditorProps {
 	updateMetadata: (key: string, value: string) => void;
 }
 
+interface PasswordFieldProps {
+	placeholder?: string;
+	pwdVal: string;
+	showPassword: boolean;
+	onToggleShowPassword: () => void;
+	onUpdate: (val: string) => void;
+}
+
+function PasswordField({
+	placeholder,
+	pwdVal,
+	showPassword,
+	onToggleShowPassword,
+	onUpdate,
+}: PasswordFieldProps) {
+	const { t } = useTranslation();
+	const { score, details } = usePasswordStrength(pwdVal);
+
+	return (
+		<div className="space-y-1">
+			<div className="relative flex items-center">
+				<Input
+					type={showPassword ? "text" : "password"}
+					value={pwdVal}
+					onChange={(e) => onUpdate(e.target.value)}
+					placeholder={placeholder}
+					autoComplete="new-password"
+					className="bg-background rounded-xl border border-border font-mono pr-10"
+				/>
+				<button
+					type="button"
+					tabIndex={-1}
+					onMouseDown={(e) => e.preventDefault()}
+					onClick={(e) => {
+						e.preventDefault();
+						e.stopPropagation();
+						onToggleShowPassword();
+					}}
+					className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer rounded-lg focus:outline-none flex items-center justify-center"
+					aria-label={
+						showPassword ? "Hide password" : "Show password"
+					}
+				>
+					{showPassword ? (
+						<EyeOff className="h-4 w-4 shrink-0" />
+					) : (
+						<Eye className="h-4 w-4 shrink-0" />
+					)}
+				</button>
+			</div>
+			{pwdVal && (
+				<div className="pt-1 flex items-center justify-between">
+					<div className="h-1 flex-1 rounded-full bg-muted overflow-hidden">
+						<div
+							className={`h-full ${details.color} transition-all duration-300`}
+							style={{
+								width: `${score <= 1 ? 33 : score === 2 ? 66 : 100}%`,
+							}}
+						/>
+					</div>
+					<span
+						className={`text-[10px] font-medium ml-2 ${details.textColor}`}
+					>
+						{t("tools.password_manager.strength_label")}{" "}
+						{t(details.label)}
+					</span>
+				</div>
+			)}
+		</div>
+	);
+}
+
 export function SchemaFieldsEditor({
 	schemaFields,
 	metadata,
@@ -51,69 +123,6 @@ export function SchemaFieldsEditor({
 	const [showPasswordFor, setShowPasswordFor] = useState<
 		Record<string, boolean>
 	>({});
-
-	// A wrapper component to cleanly use the hook per password field
-	const PasswordField = ({
-		field,
-		pwdVal,
-	}: {
-		field: SchemaField;
-		pwdVal: string;
-	}) => {
-		const { score, details } = usePasswordStrength(pwdVal);
-
-		return (
-			<div className="space-y-1">
-				<div className="relative">
-					<Input
-						type={showPasswordFor[field.key] ? "text" : "password"}
-						value={pwdVal}
-						onChange={(e) =>
-							updateMetadata(field.key, e.target.value)
-						}
-						autoComplete="new-password"
-						className="bg-background rounded-xl border border-border font-mono pr-10"
-					/>
-					<Button
-						variant="ghost"
-						size="icon"
-						type="button"
-						onClick={() =>
-							setShowPasswordFor((prev) => ({
-								...prev,
-								[field.key]: !prev[field.key],
-							}))
-						}
-						className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground transition-colors"
-					>
-						{showPasswordFor[field.key] ? (
-							<EyeOff className="h-4 w-4" />
-						) : (
-							<Eye className="h-4 w-4" />
-						)}
-					</Button>
-				</div>
-				{pwdVal && (
-					<div className="pt-1 flex items-center justify-between">
-						<div className="h-1 flex-1 rounded-full bg-muted overflow-hidden">
-							<div
-								className={`h-full ${details.color} transition-all duration-300`}
-								style={{
-									width: `${score <= 1 ? 33 : score === 2 ? 66 : 100}%`,
-								}}
-							/>
-						</div>
-						<span
-							className={`text-[10px] font-medium ml-2 ${details.textColor}`}
-						>
-							{t("tools.password_manager.strength_label")}{" "}
-							{t(details.label)}
-						</span>
-					</div>
-				)}
-			</div>
-		);
-	};
 
 	return (
 		<>
@@ -206,7 +215,20 @@ export function SchemaFieldsEditor({
 								className="bg-background rounded-xl border border-border min-h-25 font-mono text-sm"
 							/>
 						) : field.type === "password" ? (
-							<PasswordField field={field} pwdVal={val} />
+							<PasswordField
+								placeholder={field.placeholder}
+								pwdVal={val}
+								showPassword={!!showPasswordFor[field.key]}
+								onToggleShowPassword={() =>
+									setShowPasswordFor((prev) => ({
+										...prev,
+										[field.key]: !prev[field.key],
+									}))
+								}
+								onUpdate={(newVal) =>
+									updateMetadata(field.key, newVal)
+								}
+							/>
 						) : (
 							<Input
 								type={field.type}
