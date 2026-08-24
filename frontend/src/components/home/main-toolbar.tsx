@@ -75,13 +75,13 @@ export const MainToolbar = memo(
 					{/* Left: Type Selector */}
 					<div
 						ref={leftRef}
-						className="min-h-fit order-1 w-full sm:w-auto max-w-full"
+						className="min-h-fit order-1 w-full sm:w-auto max-w-full min-w-0"
 					>
 						{!hideTypeSelector && (
 							<ContentTypeSelector
 								value={contentType}
 								onValueChange={setContentType}
-								className="w-full sm:w-auto"
+								className="w-full sm:w-auto max-w-full"
 							/>
 						)}
 						{hideTypeSelector && (
