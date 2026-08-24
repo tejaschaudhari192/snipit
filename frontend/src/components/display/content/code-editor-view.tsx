@@ -3,6 +3,8 @@ import { useState, useRef, useEffect, lazy, Suspense } from "react";
 import type { ContentMode, EditorChange } from "@/types";
 import { ZenModeToggle } from "@/components/common/zen-mode-toggle";
 import { MonacoConfig } from "@/hooks/use-monaco-config";
+import { useEditorEngine, type EditorEngine } from "@/hooks/use-editor-engine";
+import { PlainTextEditor } from "@/components/common/plain-text-editor";
 
 interface CodeEditorViewProps {
 	isEdit: boolean;
@@ -20,6 +22,7 @@ interface CodeEditorViewProps {
 	contentRef: (node: HTMLElement | null) => void;
 	onMount?: OnMount;
 	hideFullscreen?: boolean;
+	editorEngine?: EditorEngine;
 }
 
 const MonacoEditor = lazy(() =>
@@ -41,7 +44,10 @@ export const CodeEditorView = ({
 	contentRef,
 	onMount,
 	hideFullscreen = false,
+	editorEngine,
 }: CodeEditorViewProps) => {
+	const { editorEngine: defaultEngine } = useEditorEngine();
+	const currentEngine = editorEngine ?? defaultEngine;
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [isFullscreen, setIsFullscreen] = useState(false);
 	const [isWindowFullscreen, setIsWindowFullscreen] = useState(false);
@@ -72,7 +78,38 @@ export const CodeEditorView = ({
 		setIsFullscreen(!isFullscreen);
 	};
 
-	// ── Code & Plaintext: use Monaco editor for all text/code editing ──
+	// ── Native / Simple Editor mode ──
+	if (currentEngine === "native") {
+		return (
+			<div
+				ref={(node) => {
+					containerRef.current = node;
+					if (typeof contentRef === "function") contentRef(node);
+				}}
+				className={`glass-card rounded-2xl animate-in fade-in duration-300 flex flex-col flex-1 h-full min-h-0 relative ${isFullscreen || isWindowFullscreen ? "fixed inset-0 m-0 z-50 rounded-none h-dvh border-none" : ""}`}
+			>
+				{!hideFullscreen && (
+					<ZenModeToggle
+						isFullscreen={isFullscreen}
+						isWindowFullscreen={isWindowFullscreen}
+						onToggle={toggleFullscreen}
+						onWindowToggle={toggleWindowFullscreen}
+						className="absolute top-4 right-4 z-10"
+					/>
+				)}
+				<PlainTextEditor
+					content={content}
+					onContentChange={onContentChange}
+					isEdit={isEdit}
+					fontSize={fontSize}
+					showLineNumbers={true}
+					className="border-none rounded-2xl"
+				/>
+			</div>
+		);
+	}
+
+	// ── Desktop Monaco editor ──
 	if (contentType === "code" || contentType === "text") {
 		return (
 			<div

@@ -10,6 +10,8 @@ import {
 import { useTranslation } from "react-i18next";
 import type { ContentMode } from "@/types";
 import { TtsButton } from "@/components/editor/tts-button";
+import { EditorEngineToggle } from "@/components/common/editor-engine-toggle";
+import type { EditorEngine } from "@/hooks/use-editor-engine";
 
 interface EditorToolbarProps {
 	contentType: ContentMode;
@@ -22,6 +24,8 @@ interface EditorToolbarProps {
 	mdLayoutMode: "split" | "preview" | "editor";
 	onMdLayoutModeChange: (mode: "split" | "preview" | "editor") => void;
 	showMarkdownToggles?: boolean;
+	editorEngine?: EditorEngine;
+	onToggleEditorEngine?: () => void;
 }
 
 export const EditorToolbar = ({
@@ -35,6 +39,8 @@ export const EditorToolbar = ({
 	mdLayoutMode,
 	onMdLayoutModeChange,
 	showMarkdownToggles = true,
+	editorEngine = "monaco",
+	onToggleEditorEngine,
 }: EditorToolbarProps) => {
 	const { t } = useTranslation();
 
@@ -64,6 +70,14 @@ export const EditorToolbar = ({
 				{["code", "text", "docs"].includes(contentType) && (
 					<TtsButton content={content} contentType={contentType} />
 				)}
+
+				{onToggleEditorEngine &&
+					(contentType === "code" || contentType === "text") && (
+						<EditorEngineToggle
+							engine={editorEngine}
+							onToggle={onToggleEditorEngine}
+						/>
+					)}
 
 				{showMarkdownToggles &&
 					(language === "markdown" || language === "html") && (

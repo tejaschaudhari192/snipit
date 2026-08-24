@@ -26,6 +26,7 @@ const ResizableSplitPane = lazy(() =>
 	})),
 );
 import { useMarkdownLayout } from "@/hooks/use-markdown-layout";
+import { useEditorEngine } from "@/hooks/use-editor-engine";
 
 import type { Socket } from "socket.io-client";
 import type { ActiveUser } from "@/types";
@@ -159,6 +160,7 @@ export const DisplayContent = memo(
 	}: DisplayContentProps) => {
 		const containerRef = useRef<HTMLDivElement>(null);
 		const [mdLayoutMode, setMdLayoutMode] = useMarkdownLayout();
+		const { editorEngine, toggleEditorEngine } = useEditorEngine();
 		const handleMount: OnMount = (ed, monaco) => {
 			if (onMount) onMount(ed, monaco);
 			if (transliteration) {
@@ -316,6 +318,7 @@ export const DisplayContent = memo(
 											contentRef={contentRef}
 											onMount={handleMount}
 											hideFullscreen={true}
+											editorEngine={editorEngine}
 										/>
 									</Suspense>
 								}
@@ -376,6 +379,7 @@ export const DisplayContent = memo(
 						contentRef={contentRef}
 						onMount={handleMount}
 						hideFullscreen={true}
+						editorEngine={editorEngine}
 					/>
 				</Suspense>
 			);
@@ -401,6 +405,8 @@ export const DisplayContent = memo(
 						mdLayoutMode={mdLayoutMode}
 						onMdLayoutModeChange={setMdLayoutMode}
 						showMarkdownToggles={isEdit}
+						editorEngine={editorEngine}
+						onToggleEditorEngine={toggleEditorEngine}
 					/>
 				</Suspense>
 

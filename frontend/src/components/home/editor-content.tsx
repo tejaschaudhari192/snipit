@@ -17,10 +17,11 @@ import { useFileDrop } from "@/hooks/use-file-drop";
 import type { PasteData } from "@/types";
 import { Textarea } from "@/components/ui/textarea";
 import { useEditorLayout } from "@/hooks/use-editor-layout";
-import { cn } from "@/utils";
 import type { useTransliteration } from "@/hooks/use-transliteration";
 import type { Editor as TiptapEditorInstance } from "@tiptap/core";
 import { MonacoConfig } from "@/hooks/use-monaco-config";
+import { useEditorEngine } from "@/hooks/use-editor-engine";
+import { PlainTextEditor } from "@/components/common/plain-text-editor";
 import {
 	EditorSkeleton,
 	EditorToolbarSkeleton,
@@ -31,6 +32,7 @@ import {
 	LinkResultSkeleton,
 	TiptapEditorSkeleton,
 } from "@/components/common/editor-skeleton";
+import { cn } from "@/utils";
 
 const EditorToolbar = lazy(() =>
 	import("@/components/common/editor-toolbar").then((m) => ({
@@ -133,6 +135,7 @@ export const EditorContent = memo(
 		} = usePaste();
 		const { theme } = useTheme();
 		const { t } = useTranslation();
+		const { editorEngine, toggleEditorEngine } = useEditorEngine();
 		const containerRef = useRef<HTMLDivElement>(null);
 
 		const {
@@ -208,6 +211,8 @@ export const EditorContent = memo(
 							onToggleWindowFullscreen={toggleWindowFullscreen}
 							mdLayoutMode={mdLayoutMode}
 							onMdLayoutModeChange={setMdLayoutMode}
+							editorEngine={editorEngine}
+							onToggleEditorEngine={toggleEditorEngine}
 						/>
 					</Suspense>
 
@@ -223,7 +228,14 @@ export const EditorContent = memo(
 								/>
 							</Suspense>
 						) : contentType === "text" ? (
-							transliteration?.enabled ? (
+							editorEngine === "native" ? (
+								<PlainTextEditor
+									content={textValue}
+									onContentChange={setTextValue}
+									fontSize={fontSize}
+									showLineNumbers={true}
+								/>
+							) : transliteration?.enabled ? (
 								<Suspense fallback={<EditorContentSkeleton />}>
 									<MonacoConfig />
 									<MonacoEditor
@@ -283,7 +295,15 @@ export const EditorContent = memo(
 								</Suspense>
 							)
 						) : contentType === "code" ? (
-							language === "markdown" || language === "html" ? (
+							editorEngine === "native" ? (
+								<PlainTextEditor
+									content={textValue}
+									onContentChange={setTextValue}
+									fontSize={fontSize}
+									showLineNumbers={true}
+								/>
+							) : language === "markdown" ||
+							  language === "html" ? (
 								<Suspense fallback={<EditorContentSkeleton />}>
 									<MonacoConfig />
 									<ResizableSplitPane
