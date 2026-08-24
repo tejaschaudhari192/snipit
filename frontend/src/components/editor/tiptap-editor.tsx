@@ -81,7 +81,7 @@ function EditorSync({
 }: {
 	value: string;
 	readOnly: boolean;
-	lastEmittedHtmlRef: React.MutableRefObject<string>;
+	lastEmittedHtmlRef: React.MutableRefObject<string | null>;
 	onEditorInstance?: (editor: Editor | null) => void;
 	onEditorChange?: (editor: Editor | null) => void;
 }) {
@@ -91,16 +91,25 @@ function EditorSync({
 	useEffect(() => {
 		if (!editor) return;
 
-		// Skip expensive getHTML() comparison if the incoming value is what we just emitted
-		if (value === lastEmittedHtmlRef.current) return;
+		// Skip if incoming value matches what this editor instance just emitted internally
+		if (
+			lastEmittedHtmlRef.current !== null &&
+			value === lastEmittedHtmlRef.current
+		) {
+			return;
+		}
 
 		if (!isInitializedRef.current) {
-			if (value && editor.getHTML() !== value) {
+			if (value) {
 				scanAndLoadFontsFromContent(value);
 				editor.commands.setContent(value);
 			}
 			isInitializedRef.current = true;
-		} else if (value && !editor.isFocused && editor.getHTML() !== value) {
+		} else if (
+			value !== undefined &&
+			!editor.isFocused &&
+			editor.getHTML() !== value
+		) {
 			scanAndLoadFontsFromContent(value);
 			editor.commands.setContent(value);
 		}
@@ -140,7 +149,7 @@ export function TiptapEditor({
 	const [replaceText, setReplaceText] = useState("");
 	const [isDragging, setIsDragging] = useState(false);
 	const dragCounter = useRef(0);
-	const lastEmittedHtmlRef = useRef<string>(value || "");
+	const lastEmittedHtmlRef = useRef<string | null>(null);
 	const statsDebounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 	const [stats, setStats] = useState({
 		words: 0,
