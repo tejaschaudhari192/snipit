@@ -68,7 +68,6 @@ export interface PasteData {
 	role?: ShareRole;
 	allowComments?: boolean;
 	comments?: CommentData[];
-	labels?: string[];
 	files?: FileAttachment[];
 	folderId?: string | null;
 }

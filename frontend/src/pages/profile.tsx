@@ -14,7 +14,6 @@ import {
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useLabels } from "@/hooks/use-labels";
 import { FolderTree } from "@/components/profile/folder-tree";
 import { ProfileFileManager } from "@/components/profile/profile-file-manager";
 import { useSnippets } from "@/context/SnippetContext";
@@ -54,18 +53,10 @@ const ProfilePage = () => {
 	const { t } = useTranslation();
 	usePageTitle("profile.title");
 	const { user, loading: authLoading, setUser } = useAuth();
-	const { activeFolderId, currentFolderContents, loadingContents } =
+	const { folders, activeFolderId, currentFolderContents, loadingContents } =
 		useFolders();
 
-	const {
-		profile,
-		filteredPastes,
-		loadProfile,
-		loadFilteredPastes,
-		clearFilter,
-	} = useSnippets();
-
-	const { allLabels } = useLabels();
+	const { profile, loadProfile } = useSnippets();
 
 	const {
 		items: pastes,
@@ -81,12 +72,11 @@ const ProfilePage = () => {
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 	const [isAvatarPickerOpen, setIsAvatarPickerOpen] = useState(false);
-	const [activeLabel, setActiveLabel] = useState<string | null>(null);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
 	const snippetCount = pastes.length;
-	const folderCount = allLabels?.length;
+	const folderCount = folders.length;
 
 	useEffect(() => {
 		if (user) {
@@ -97,16 +87,6 @@ const ProfilePage = () => {
 			if (pastes.length === 0) loadProfile(true);
 		}
 	}, [user, loadProfile, pastes.length]);
-
-	const handleLabelClick = (label: string) => {
-		if (activeLabel === label) {
-			setActiveLabel(null);
-			clearFilter();
-		} else {
-			setActiveLabel(label);
-			loadFilteredPastes(label);
-		}
-	};
 
 	const handleUpdateAvatar = async (avatar: string | undefined) => {
 		try {
@@ -342,124 +322,51 @@ const ProfilePage = () => {
 							</div>
 						</div>
 
-						{/* Labels Filter Bar */}
-						{allLabels && allLabels.length > 0 && (
-							<div className="flex items-center gap-2 mb-4 px-2 overflow-x-auto no-scrollbar pb-2">
-								<div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground tracking-wider mr-2 shrink-0">
-									<Tag className="w-3 h-3" />
-									Filters
-								</div>
-								{allLabels.map((label) => (
-									<Button
-										key={label}
-										variant={
-											activeLabel === label
-												? "default"
-												: "outline"
-										}
-										size="sm"
-										onClick={() => handleLabelClick(label)}
-										className={`rounded-full text-xs font-bold transition-all shrink-0 ${
-											activeLabel === label
-												? "shadow-md scale-105"
-												: "text-muted-foreground"
-										}`}
-									>
-										{label}
-									</Button>
-								))}
-								{activeLabel && (
-									<Button
-										variant="ghost"
-										size="icon"
-										onClick={() => {
-											setActiveLabel(null);
-											clearFilter();
-										}}
-										className="h-8 w-8 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 shrink-0"
-										title="Clear filter"
-									>
-										<FilterX className="w-4 h-4" />
-									</Button>
-								)}
-							</div>
-						)}
-
 						{/* Content Area */}
-						{activeLabel ? (
-							<div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
-								<div className="flex items-center gap-2 px-2 mb-4 text-sm text-muted-foreground">
-									<span>Showing results for</span>
-									<span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary font-bold">
-										{activeLabel}
-									</span>
-								</div>
-								<Suspense
-									fallback={
-										<ShimmerSection type="card" lines={3} />
-									}
-								>
-									<ProfileSnippetList
-										pastes={filteredPastes || []}
-										loading={filteredPastes === null}
-										loadMore={() => {}}
-										hasMore={false}
-										isLoadingMore={false}
-										viewMode={viewMode}
-									/>
-								</Suspense>
-							</div>
-						) : (
-							<>
-								<ProfileFileManager
-									viewMode={viewMode}
-									onViewModeChange={setViewMode}
-									subfolders={
-										activeFolderId !== null
-											? currentFolderContents.subfolders
-											: undefined
-									}
-								/>
+						<ProfileFileManager
+							viewMode={viewMode}
+							onViewModeChange={setViewMode}
+							subfolders={
+								activeFolderId !== null
+									? currentFolderContents.subfolders
+									: undefined
+							}
+						/>
 
-								<Suspense
-									fallback={<ShimmerSection type="card" />}
-								>
-									<ProfileSnippetList
-										pastes={
-											activeFolderId !== null
-												? currentFolderContents.snippets
-												: displayPastes
-										}
-										loading={
-											activeFolderId !== null
-												? loadingContents
-												: displayLoading
-										}
-										loadMore={() =>
-											user &&
-											activeFolderId === null &&
-											loadProfile(false)
-										}
-										hasMore={
-											user && activeFolderId === null
-												? hasMore
-												: false
-										}
-										isLoadingMore={
-											user && activeFolderId === null
-												? isLoadingMore
-												: false
-										}
-										isFolderEmpty={
-											activeFolderId !== null &&
-											currentFolderContents.snippets
-												.length === 0
-										}
-										viewMode={viewMode}
-									/>
-								</Suspense>
-							</>
-						)}
+						<Suspense fallback={<ShimmerSection type="card" />}>
+							<ProfileSnippetList
+								pastes={
+									activeFolderId !== null
+										? currentFolderContents.snippets
+										: displayPastes
+								}
+								loading={
+									activeFolderId !== null
+										? loadingContents
+										: displayLoading
+								}
+								loadMore={() =>
+									user &&
+									activeFolderId === null &&
+									loadProfile(false)
+								}
+								hasMore={
+									user && activeFolderId === null
+										? hasMore
+										: false
+								}
+								isLoadingMore={
+									user && activeFolderId === null
+										? isLoadingMore
+										: false
+								}
+								isFolderEmpty={
+									activeFolderId !== null &&
+									currentFolderContents.snippets.length === 0
+								}
+								viewMode={viewMode}
+							/>
+						</Suspense>
 					</div>
 				</main>
 			</div>

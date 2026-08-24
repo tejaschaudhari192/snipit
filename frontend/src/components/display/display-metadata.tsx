@@ -1,4 +1,3 @@
-import { LabelManager } from "@/components/common/label-manager";
 import { Clock, ShieldCheck, Folder } from "lucide-react";
 import { LanguageIcon } from "@/components/snippets/language-icon";
 import { getTimeRemaining } from "@/utils";
@@ -97,12 +96,6 @@ export const DisplayMetadata = ({ paste, loading }: DisplayMetadataProps) => {
 							</div>
 						</>
 					)}
-				</div>
-
-				<div className="flex items-center gap-2 w-full sm:w-auto">
-					<div className="w-full sm:w-auto">
-						<LabelManager pasteId={paste.id} compact={true} />
-					</div>
 				</div>
 			</div>
 

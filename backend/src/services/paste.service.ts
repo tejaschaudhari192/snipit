@@ -277,49 +277,11 @@ class PasteService {
 			],
 		};
 
-		const pastes = await pasteModel.aggregate([
-			{ $match: matchQuery },
-			{ $sort: { createdAt: -1 } },
-			{ $skip: skip },
-			{ $limit: limit },
-			{
-				$lookup: {
-					from: "labels",
-					let: { paste_id: "$id" },
-					pipeline: [
-						{
-							$match: {
-								$expr: {
-									$and: [
-										{ $eq: ["$pasteId", "$$paste_id"] },
-										{
-											$eq: [
-												"$userId",
-												new mongoose.Types.ObjectId(
-													userId,
-												),
-											],
-										},
-									],
-								},
-							},
-						},
-					],
-					as: "labelData",
-				},
-			},
-			{
-				$addFields: {
-					labels: {
-						$ifNull: [
-							{ $arrayElemAt: ["$labelData.labels", 0] },
-							[],
-						],
-					},
-				},
-			},
-			{ $project: { labelData: 0 } },
-		]);
+		const pastes = await pasteModel
+			.find(matchQuery)
+			.sort({ createdAt: -1 })
+			.skip(skip)
+			.limit(limit);
 
 		const total = await pasteModel.countDocuments(matchQuery);
 

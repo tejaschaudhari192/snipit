@@ -69,8 +69,6 @@ interface PasteContextType {
 	setCustomId: (v: string) => void;
 	setIdTypeTab: (v: IdTypeTab) => void;
 	setIsSubmitting: (v: boolean) => void;
-	labels: string[];
-	setLabels: (v: string[]) => void;
 	folderId: string | null;
 	setFolderId: (v: string | null) => void;
 
@@ -125,7 +123,6 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 	const [customId, setCustomId] = useState("");
 	const [idTypeTab, setIdTypeTab] = useState<IdTypeTab>("system");
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [labels, setLabels] = useState<string[]>([]);
 	const [redirectionType, setRedirectionType] =
 		useState<RedirectionType>("click");
 	const [folderId, setFolderId] = useState<string | null>(null);
@@ -238,7 +235,6 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 		setPassword("");
 		setCustomId("");
 		setIdTypeTab("system");
-		setLabels([]);
 		setRedirectionType("click");
 		setFolderId(null);
 	}, [setTextValue]);
@@ -284,8 +280,6 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			setIsSubmitting,
 			redirectionType,
 			setRedirectionType,
-			labels,
-			setLabels,
 			files,
 			isUploading,
 			uploadProgress,
@@ -338,8 +332,6 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({
 			setIsSubmitting,
 			redirectionType,
 			setRedirectionType,
-			labels,
-			setLabels,
 			files,
 			isUploading,
 			uploadProgress,

@@ -22,7 +22,6 @@ import { FolderTreeList } from "@/components/common/folder-tree-list";
 import { PasswordInput } from "@/components/common/password-input";
 import { CardSkeleton, TextSkeleton } from "@/components/common/skeletons";
 import { IdTypeTabs } from "@/components/home/paste-dialog/id-type-tabs";
-import { LabelManager } from "@/components/common/label-manager";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { useFolders } from "@/context/FolderContext";
@@ -254,10 +253,6 @@ export const AdvancedConfigGrid = ({
 							/>
 						</PopoverContent>
 					</Popover>
-				</div>
-
-				<div>
-					<LabelManager pasteId={pasteId} />
 				</div>
 			</div>
 

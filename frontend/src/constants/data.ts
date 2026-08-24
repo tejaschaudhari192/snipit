@@ -17,7 +17,6 @@ import {
 	FileDown,
 	Palette,
 	Music,
-	Tag,
 	KeyRound,
 	FolderLock,
 	Train,
@@ -109,11 +108,6 @@ const app = {
 			icon: Languages,
 			key: "multi_language",
 			gradient: "from-emerald-500 to-teal-500",
-		},
-		{
-			icon: Tag,
-			key: "labels",
-			gradient: "from-pink-500 to-purple-500",
 		},
 		{
 			icon: Music,

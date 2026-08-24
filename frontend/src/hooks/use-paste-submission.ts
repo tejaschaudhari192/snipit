@@ -3,7 +3,6 @@ import { toast } from "@/components/ui/toast";
 import { useTranslation } from "react-i18next";
 import { AxiosError } from "axios";
 import { submitPaste } from "@/lib/api/pastes";
-import { updateLabels } from "@/lib/api/labels";
 import { useAuth } from "@/context/AuthContext";
 import { usePaste } from "@/context/PasteContext";
 import { clearDrafts, dateConverter } from "@/utils";
@@ -50,7 +49,6 @@ export const usePasteSubmission = () => {
 		hasPending,
 		setIsSubmitting,
 		uploadFiles,
-		labels,
 		redirectionType,
 		folderId,
 	} = usePaste();
@@ -130,14 +128,6 @@ export const usePasteSubmission = () => {
 					contentType === "link" ? redirectionType : undefined,
 				folderId: user ? folderId : undefined,
 			});
-
-			if (user && labels.length > 0) {
-				try {
-					await updateLabels(data.id, labels);
-				} catch (err) {
-					console.error("Failed to save labels during creation", err);
-				}
-			}
 
 			toast.add({
 				title: t("messages.success.snippet_created", {
