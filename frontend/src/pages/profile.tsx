@@ -27,6 +27,7 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from "@/components/ui/sheet";
+import { SidebarHeader } from "@/components/profile/sidebar-header";
 
 const ProfileInfo = lazy(() =>
 	import("@/components/profile/profile-info").then((m) => ({
@@ -77,6 +78,9 @@ const ProfilePage = () => {
 	const [activeLabel, setActiveLabel] = useState<string | null>(null);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
+	const snippetCount = pastes.length;
+	const folderCount = allLabels?.length;
 
 	useEffect(() => {
 		if (user) {
@@ -161,14 +165,10 @@ const ProfilePage = () => {
 		<div className="flex flex-col h-full gap-4">
 			{/* Top Header */}
 			<div className="flex items-center justify-between px-1 pt-1 shrink-0">
-				<div className="flex items-center gap-2.5">
-					<div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-						<User className="h-4 w-4" />
-					</div>
-					<h2 className="text-xl font-black tracking-tight text-foreground">
-						{t("profile.overview")}
-					</h2>
-				</div>
+				<SidebarHeader
+					snippetCount={snippetCount}
+					folderCount={folderCount}
+				/>
 				<button
 					onClick={() => setIsSidebarOpen(false)}
 					className="hidden lg:flex p-1.5 rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"

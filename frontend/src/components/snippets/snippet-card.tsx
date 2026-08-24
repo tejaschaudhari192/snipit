@@ -97,7 +97,7 @@ export const SnippetCard = ({
 									/{item.id}
 								</span>
 								{folderPath && (
-									<span className="text-[10px] text-muted-foreground/80 bg-muted/40 px-1.5 py-0.5 rounded font-mono truncate max-w-[150px]">
+									<span className="text-[10px] text-muted-foreground/80 bg-muted/40 px-1.5 py-0.5 rounded font-mono truncate max-w-37.5">
 										{folderPath}
 									</span>
 								)}
@@ -224,7 +224,7 @@ export const SnippetCard = ({
 							/{item.id}
 						</span>
 						{folderPath && (
-							<span className="text-[10px] text-muted-foreground/80 bg-muted/40 px-2 py-0.5 rounded font-mono truncate max-w-[120px]">
+							<span className="text-[10px] text-muted-foreground/80 bg-muted/40 px-2 py-0.5 rounded font-mono truncate max-w-30">
 								{folderPath}
 							</span>
 						)}
