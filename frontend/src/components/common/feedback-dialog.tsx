@@ -79,7 +79,7 @@ export function FeedbackDialog({ isOpen, onClose }: FeedbackDialogProps) {
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="sm:max-w-[425px]">
+			<DialogContent className="sm:max-w-106.25">
 				<DialogHeader>
 					<DialogTitle>{t("feedback.title")}</DialogTitle>
 					<DialogDescription>
@@ -154,7 +154,7 @@ export function FeedbackDialog({ isOpen, onClose }: FeedbackDialogProps) {
 							placeholder={t("feedback.desc_placeholder")}
 							value={description}
 							onChange={(e) => setDescription(e.target.value)}
-							className="min-h-[120px] resize-y"
+							className="min-h-30 resize-y"
 							required
 						/>
 					</div>
