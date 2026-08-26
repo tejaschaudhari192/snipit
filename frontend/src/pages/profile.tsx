@@ -53,7 +53,7 @@ const ProfilePage = () => {
 	const { t } = useTranslation();
 	usePageTitle("profile.title");
 	const { user, loading: authLoading, setUser } = useAuth();
-	const { folders, activeFolderId, currentFolderContents, loadingContents } =
+	const { activeFolderId, currentFolderContents, loadingContents } =
 		useFolders();
 
 	const { profile, loadProfile } = useSnippets();
@@ -74,9 +74,6 @@ const ProfilePage = () => {
 	const [isAvatarPickerOpen, setIsAvatarPickerOpen] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-
-	const snippetCount = pastes.length;
-	const folderCount = folders.length;
 
 	useEffect(() => {
 		if (user) {
@@ -173,10 +170,7 @@ const ProfilePage = () => {
 		<div className="flex flex-col flex-1 w-full min-h-0 gap-4">
 			{/* Top Header */}
 			<div className="flex items-center justify-between px-1 pt-1 shrink-0">
-				<SidebarHeader
-					snippetCount={snippetCount}
-					folderCount={folderCount}
-				/>
+				<SidebarHeader />
 				<button
 					onClick={() => setIsSidebarOpen(false)}
 					className="hidden lg:flex p-1.5 rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
