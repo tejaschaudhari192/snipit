@@ -50,8 +50,8 @@ export const ShortenedResultCard = ({
 	};
 
 	return (
-		<div className="w-full max-w-xl animate-in zoom-in-95 duration-500">
-			<div className="glass-card p-8 flex flex-col items-center gap-6 text-center border-primary/20 bg-primary/5">
+		<div className="w-full max-w-xl animate-in fade-in duration-300">
+			<div className="glass-card rounded-2xl p-8 flex flex-col items-center gap-6 text-center">
 				<div className="p-4 rounded-2xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shadow-lg shadow-emerald-500/10">
 					<CheckCircle2 className="h-10 w-10" />
 				</div>
@@ -67,7 +67,7 @@ export const ShortenedResultCard = ({
 
 				<div className="flex flex-col items-center group/qr relative">
 					<div className="absolute -inset-4 bg-primary/10 blur-2xl rounded-full opacity-0 group-hover/qr:opacity-100 transition-opacity duration-500" />
-					<div className="p-3 bg-white rounded-2xl shadow-xl shadow-primary/10 border border-primary/10 relative z-10 transition-transform hover:scale-105 duration-300">
+					<div className="p-3 bg-card rounded-2xl shadow-xl shadow-primary/10 border border-border/20 relative z-10 transition-transform hover:scale-105 duration-300">
 						<QRCodeCanvas
 							id="short-url-qr"
 							value={shortenedResult.url}
@@ -90,7 +90,7 @@ export const ShortenedResultCard = ({
 				<div className="w-full space-y-4">
 					<div className="relative group/link">
 						<div className="absolute -inset-0.5 bg-linear-to-r from-primary/50 to-emerald-500/50 rounded-xl blur opacity-20 group-hover/link:opacity-40 transition duration-500" />
-						<div className="relative flex items-center gap-2 p-1 pl-4 bg-background border border-border/50 rounded-xl">
+						<div className="relative flex items-center gap-2 p-1 pl-4 bg-card border border-border/20 rounded-xl">
 							<span className="flex-1 text-sm font-bold truncate text-left text-foreground/90">
 								{shortenedResult.url}
 							</span>
