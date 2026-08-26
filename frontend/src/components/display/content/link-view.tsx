@@ -223,52 +223,52 @@ export const LinkView = ({
 		return (
 			<div
 				ref={contentRef}
-				className="flex flex-col items-center justify-center p-6 sm:p-10 bg-background/60 backdrop-blur-xl rounded-3xl border border-border/50 shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-700 max-w-160 mx-auto mt-6 w-full gap-6"
+				className="flex flex-col items-center justify-center p-4 sm:p-6 bg-background/60 backdrop-blur-xl rounded-3xl border border-border/50 shadow-2xl ring-1 ring-white/5 relative z-10 animate-in fade-in zoom-in-95 duration-700 max-w-160 mx-auto mt-4 w-full gap-4"
 			>
 				{/* Admin Warning Banner */}
-				<div className="w-full flex items-start gap-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 backdrop-blur-md shadow-lg shadow-amber-500/5">
-					<div className="p-2 rounded-xl bg-amber-500/20 text-amber-500 mt-0.5 shrink-0">
-						<AlertCircle className="w-5 h-5 animate-pulse" />
+				<div className="w-full flex items-start gap-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 backdrop-blur-md shadow-lg shadow-amber-500/5">
+					<div className="p-1.5 rounded-lg bg-amber-500/20 text-amber-500 shrink-0">
+						<AlertCircle className="w-4 h-4 animate-pulse" />
 					</div>
-					<div className="flex-1 flex flex-col gap-1">
-						<h4 className="text-sm font-bold text-amber-500 leading-tight">
+					<div className="flex-1 flex flex-col gap-0.5">
+						<h4 className="text-xs sm:text-sm font-bold text-amber-500 leading-tight">
 							{t("common.redirect.admin_preview_banner")}
 						</h4>
-						<p className="text-xs text-muted-foreground/80 font-medium">
+						<p className="text-[10px] sm:text-xs text-muted-foreground/80 font-medium">
 							To test the live auto-redirection flow, open this
 							link in an Incognito window or access it as a guest.
 						</p>
 					</div>
 				</div>
 
-				<div className="w-full flex flex-col items-center py-6 px-4 bg-muted/20 rounded-2xl border border-border/30 relative overflow-hidden">
-					<div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 shadow-xl shadow-primary/5">
-						<LinkIcon className="w-8 h-8 text-primary" />
+				<div className="w-full flex flex-col items-center py-4 px-3 bg-muted/20 rounded-2xl border border-border/30 relative overflow-hidden">
+					<div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 shadow-xl shadow-primary/5">
+						<LinkIcon className="w-6 h-6 text-primary" />
 					</div>
 
 					<div className="flex items-center gap-2 mb-2">
-						<h3 className="text-xl font-bold">
+						<h3 className="text-lg sm:text-xl font-bold">
 							{t("common.redirect.ready")}
 						</h3>
 						<span
-							className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${mode.color} shadow-sm`}
+							className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${mode.color} shadow-sm`}
 						>
 							{mode.icon}
 							{mode.title}
 						</span>
 					</div>
 
-					<p className="text-xs text-muted-foreground text-center font-semibold mb-4 bg-muted/40 px-3 py-1 rounded-md border border-border/20 break-all max-w-full">
+					<p className="text-xs text-muted-foreground text-center font-semibold mb-3 bg-muted/40 px-2.5 py-1 rounded-md border border-border/20 break-all max-w-full">
 						{getDestinationUrl(content)}
 					</p>
 
-					<p className="text-muted-foreground mb-6 text-center max-w-md text-sm font-medium">
+					<p className="text-muted-foreground mb-4 text-center max-w-md text-sm font-medium">
 						{t("common.redirect.desc")}
 					</p>
 
 					<Button
 						size="lg"
-						className="group relative px-8 h-12 font-bold rounded-xl shadow-xl shadow-primary/20 text-sm"
+						className="group relative px-6 h-11 font-bold rounded-xl shadow-xl shadow-primary/20 text-sm"
 						render={
 							<a
 								href={getDestinationUrl(content)}

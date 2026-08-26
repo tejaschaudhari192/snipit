@@ -863,7 +863,7 @@ const DisplayPage = () => {
 				open={showLinkSuccessModal}
 				onOpenChange={setShowLinkSuccessModal}
 			>
-				<DialogContent className="max-w-2xl bg-transparent border-none shadow-none p-0 flex justify-center [&>button]:hidden max-h-[calc(100vh-2rem)] overflow-y-auto">
+				<DialogContent className="max-w-2xl bg-transparent border-none shadow-none p-0 flex justify-center [&>button]:hidden">
 					{paste && (
 						<ShortenedResultCard
 							shortenedResult={{
