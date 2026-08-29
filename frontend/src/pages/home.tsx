@@ -201,16 +201,10 @@ const HomePage = () => {
 		setupAiAction,
 		applyEnhancedText,
 		applyWriterText,
-		setNativeTextareaRef,
+		nativeTextareaRef,
 	} = useAiEnhance();
 
 	const { editorEngine } = useEditorEngine();
-	const nativeTextareaRef = useRef<HTMLTextAreaElement>(null);
-
-	// Set the native textarea ref for AI writer
-	useEffect(() => {
-		setNativeTextareaRef(nativeTextareaRef.current);
-	}, [setNativeTextareaRef]);
 
 	const tiptapEditorRef = useRef<Editor | null>(null);
 	const handleTiptapMount = useCallback((editor: Editor | null) => {
@@ -227,9 +221,9 @@ const HomePage = () => {
 					.run();
 				return;
 			}
-			applyEnhancedText(newText);
+			applyEnhancedText(newText, editorEngine, setTextValue);
 		},
-		[applyEnhancedText, contentType],
+		[applyEnhancedText, contentType, editorEngine, setTextValue],
 	);
 
 	const handleApplyWriterText = useCallback(
@@ -242,9 +236,9 @@ const HomePage = () => {
 					.run();
 				return;
 			}
-			applyWriterText(newText, editorEngine);
+			applyWriterText(newText, editorEngine, setTextValue);
 		},
-		[applyWriterText, contentType, editorEngine],
+		[applyWriterText, contentType, editorEngine, setTextValue],
 	);
 
 	const [isAiAutocompleteEnabled, setIsAiAutocompleteEnabled] = useState(() =>
@@ -483,6 +477,24 @@ const HomePage = () => {
 														" ",
 													);
 												setSelectedText(text);
+											} else if (
+												editorEngine === "native" &&
+												nativeTextareaRef.current
+											) {
+												const ta =
+													nativeTextareaRef.current;
+												const start = ta.selectionStart;
+												const end = ta.selectionEnd;
+												if (start !== end) {
+													setSelectedText(
+														ta.value.substring(
+															start,
+															end,
+														),
+													);
+												} else {
+													setSelectedText("");
+												}
 											} else if (
 												editorInstanceRef.current
 											) {

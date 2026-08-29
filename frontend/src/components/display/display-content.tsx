@@ -158,9 +158,11 @@ export const DisplayContent = memo(
 		onEditorInstance,
 		redirectionType,
 		setRedirectionType,
+		textareaRef,
 	}: DisplayContentProps) => {
 		const containerRef = useRef<HTMLDivElement>(null);
-		const nativeTextareaRef = useRef<HTMLTextAreaElement | null>(null);
+		const internalTextareaRef = useRef<HTMLTextAreaElement | null>(null);
+		const activeTextareaRef = textareaRef ?? internalTextareaRef;
 		const [mdLayoutMode, setMdLayoutMode] = useMarkdownLayout();
 		const { editorEngine, toggleEditorEngine } = useEditorEngine();
 		const handleMount: OnMount = (ed, monaco) => {
@@ -323,7 +325,7 @@ export const DisplayContent = memo(
 											editorEngine={editorEngine}
 											textareaRef={
 												editorEngine === "native"
-													? nativeTextareaRef
+													? activeTextareaRef
 													: undefined
 											}
 										/>
@@ -389,7 +391,7 @@ export const DisplayContent = memo(
 						editorEngine={editorEngine}
 						textareaRef={
 							editorEngine === "native"
-								? nativeTextareaRef
+								? activeTextareaRef
 								: undefined
 						}
 					/>

@@ -392,9 +392,6 @@ const DisplayPage = () => {
 			));
 	const handleEditorWillMount: BeforeMount = (m) => defineMonacoThemes(m);
 
-	const { editorEngine } = useEditorEngine();
-	const nativeTextareaRef = useRef<HTMLTextAreaElement | null>(null);
-
 	const {
 		isAiDialogOpen,
 		setIsAiDialogOpen,
@@ -406,13 +403,10 @@ const DisplayPage = () => {
 		setupAiAction,
 		applyEnhancedText,
 		applyWriterText,
-		setNativeTextareaRef,
+		nativeTextareaRef,
 	} = useAiEnhance();
 
-	// Set the native textarea ref for AI writer
-	useEffect(() => {
-		setNativeTextareaRef(nativeTextareaRef.current);
-	}, [setNativeTextareaRef]);
+	const { editorEngine } = useEditorEngine();
 
 	const tiptapEditorRef = useRef<TiptapEditorInstance | null>(null);
 	const handleTiptapMount = useCallback(
@@ -432,9 +426,9 @@ const DisplayPage = () => {
 					.run();
 				return;
 			}
-			applyEnhancedText(newText);
+			applyEnhancedText(newText, editorEngine, onContentChange);
 		},
-		[applyEnhancedText, contentType],
+		[applyEnhancedText, contentType, editorEngine, onContentChange],
 	);
 
 	const handleApplyWriterText = useCallback(
@@ -447,9 +441,9 @@ const DisplayPage = () => {
 					.run();
 				return;
 			}
-			applyWriterText(newText, editorEngine);
+			applyWriterText(newText, editorEngine, onContentChange);
 		},
-		[applyWriterText, contentType, editorEngine],
+		[applyWriterText, contentType, editorEngine, onContentChange],
 	);
 
 	useAutosave({
@@ -677,7 +671,21 @@ const DisplayPage = () => {
 							}
 							onContentChange={onContentChange}
 							onAiWriterClick={() => {
-								if (editorInstanceRef.current) {
+								if (
+									editorEngine === "native" &&
+									nativeTextareaRef.current
+								) {
+									const ta = nativeTextareaRef.current;
+									const start = ta.selectionStart;
+									const end = ta.selectionEnd;
+									if (start !== end) {
+										setSelectedText(
+											ta.value.substring(start, end),
+										);
+									} else {
+										setSelectedText("");
+									}
+								} else if (editorInstanceRef.current) {
 									const selection =
 										editorInstanceRef.current.getSelection();
 									if (selection && !selection.isEmpty()) {
