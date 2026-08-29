@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import type { Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 import { useTranslation } from "react-i18next";
@@ -10,7 +10,6 @@ export const useAiEnhance = () => {
 	const [selectedText, setSelectedText] = useState("");
 	const [editorInstance, setEditorInstance] =
 		useState<editor.IStandaloneCodeEditor | null>(null);
-	const nativeTextareaRef = useRef<HTMLTextAreaElement | null>(null);
 
 	const [prefillInstruction, setPrefillInstruction] = useState("");
 
@@ -76,61 +75,9 @@ export const useAiEnhance = () => {
 		[t],
 	);
 
-	const applyEnhancedTextNative = useCallback(
-		(newText: string, onContentChange?: (val: string) => void) => {
-			const textarea = nativeTextareaRef.current;
-			if (!textarea) {
-				if (onContentChange) onContentChange(newText);
-				return;
-			}
-
-			const start = textarea.selectionStart ?? 0;
-			const end = textarea.selectionEnd ?? textarea.value.length;
-			const currentValue = textarea.value;
-
-			const newValue =
-				currentValue.slice(0, start) +
-				newText +
-				currentValue.slice(end);
-
-			if (onContentChange) {
-				onContentChange(newValue);
-			} else {
-				const nativeSetter = Object.getOwnPropertyDescriptor(
-					window.HTMLTextAreaElement.prototype,
-					"value",
-				)?.set;
-				if (nativeSetter) {
-					nativeSetter.call(textarea, newValue);
-				} else {
-					textarea.value = newValue;
-				}
-				textarea.dispatchEvent(new Event("input", { bubbles: true }));
-			}
-
-			requestAnimationFrame(() => {
-				textarea.focus();
-				const nextPos = start + newText.length;
-				textarea.setSelectionRange(nextPos, nextPos);
-			});
-		},
-		[],
-	);
-
 	const applyEnhancedText = useCallback(
-		(
-			newText: string,
-			editorEngine?: "monaco" | "native",
-			onContentChange?: (val: string) => void,
-		) => {
-			if (editorEngine === "native") {
-				applyEnhancedTextNative(newText, onContentChange);
-				return;
-			}
-			if (!editorInstance) {
-				if (onContentChange) onContentChange(newText);
-				return;
-			}
+		(newText: string) => {
+			if (!editorInstance) return;
 			const selection = editorInstance.getSelection();
 			if (selection) {
 				editorInstance.executeEdits("ai-enhance", [
@@ -143,64 +90,12 @@ export const useAiEnhance = () => {
 				editorInstance.focus();
 			}
 		},
-		[editorInstance, applyEnhancedTextNative],
-	);
-
-	const applyWriterTextNative = useCallback(
-		(newText: string, onContentChange?: (val: string) => void) => {
-			const textarea = nativeTextareaRef.current;
-			if (!textarea) {
-				if (onContentChange) onContentChange(newText);
-				return;
-			}
-
-			const start = textarea.selectionStart ?? textarea.value.length;
-			const end = textarea.selectionEnd ?? textarea.value.length;
-			const currentValue = textarea.value;
-
-			const newValue =
-				currentValue.slice(0, start) +
-				newText +
-				currentValue.slice(end);
-
-			if (onContentChange) {
-				onContentChange(newValue);
-			} else {
-				const nativeSetter = Object.getOwnPropertyDescriptor(
-					window.HTMLTextAreaElement.prototype,
-					"value",
-				)?.set;
-				if (nativeSetter) {
-					nativeSetter.call(textarea, newValue);
-				} else {
-					textarea.value = newValue;
-				}
-				textarea.dispatchEvent(new Event("input", { bubbles: true }));
-			}
-
-			requestAnimationFrame(() => {
-				textarea.focus();
-				const nextPos = start + newText.length;
-				textarea.setSelectionRange(nextPos, nextPos);
-			});
-		},
-		[],
+		[editorInstance],
 	);
 
 	const applyWriterText = useCallback(
-		(
-			newText: string,
-			editorEngine?: "monaco" | "native",
-			onContentChange?: (val: string) => void,
-		) => {
-			if (editorEngine === "native") {
-				applyWriterTextNative(newText, onContentChange);
-				return;
-			}
-			if (!editorInstance) {
-				if (onContentChange) onContentChange(newText);
-				return;
-			}
+		(newText: string) => {
+			if (!editorInstance) return;
 			const position = editorInstance.getPosition();
 			if (position) {
 				editorInstance.executeEdits("ai-writer", [
@@ -218,14 +113,7 @@ export const useAiEnhance = () => {
 				editorInstance.focus();
 			}
 		},
-		[editorInstance, applyWriterTextNative],
-	);
-
-	const setNativeTextareaRef = useCallback(
-		(ref: HTMLTextAreaElement | null) => {
-			nativeTextareaRef.current = ref;
-		},
-		[],
+		[editorInstance],
 	);
 
 	return {
@@ -239,7 +127,5 @@ export const useAiEnhance = () => {
 		setupAiAction,
 		applyEnhancedText,
 		applyWriterText,
-		nativeTextareaRef,
-		setNativeTextareaRef,
 	};
 };

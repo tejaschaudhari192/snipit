@@ -27,7 +27,6 @@ import { CONFIG } from "@/configurations";
 import { Editor } from "@tiptap/core";
 import { usePaste } from "@/context/PasteContext";
 import { useAiEnhance } from "@/hooks/use-ai-enhance";
-import { useEditorEngine } from "@/hooks/use-editor-engine";
 import { useHomeUrlSync } from "@/hooks/use-home-url-sync";
 import { usePasteSubmission } from "@/hooks/use-paste-submission";
 import { useSnippets } from "@/context/SnippetContext";
@@ -201,10 +200,7 @@ const HomePage = () => {
 		setupAiAction,
 		applyEnhancedText,
 		applyWriterText,
-		nativeTextareaRef,
 	} = useAiEnhance();
-
-	const { editorEngine } = useEditorEngine();
 
 	const tiptapEditorRef = useRef<Editor | null>(null);
 	const handleTiptapMount = useCallback((editor: Editor | null) => {
@@ -221,9 +217,9 @@ const HomePage = () => {
 					.run();
 				return;
 			}
-			applyEnhancedText(newText, editorEngine, setTextValue);
+			applyEnhancedText(newText);
 		},
-		[applyEnhancedText, contentType, editorEngine, setTextValue],
+		[applyEnhancedText, contentType],
 	);
 
 	const handleApplyWriterText = useCallback(
@@ -236,9 +232,9 @@ const HomePage = () => {
 					.run();
 				return;
 			}
-			applyWriterText(newText, editorEngine, setTextValue);
+			applyWriterText(newText);
 		},
-		[applyWriterText, contentType, editorEngine, setTextValue],
+		[applyWriterText, contentType],
 	);
 
 	const [isAiAutocompleteEnabled, setIsAiAutocompleteEnabled] = useState(() =>
@@ -478,24 +474,6 @@ const HomePage = () => {
 													);
 												setSelectedText(text);
 											} else if (
-												editorEngine === "native" &&
-												nativeTextareaRef.current
-											) {
-												const ta =
-													nativeTextareaRef.current;
-												const start = ta.selectionStart;
-												const end = ta.selectionEnd;
-												if (start !== end) {
-													setSelectedText(
-														ta.value.substring(
-															start,
-															end,
-														),
-													);
-												} else {
-													setSelectedText("");
-												}
-											} else if (
 												editorInstanceRef.current
 											) {
 												const selection =
@@ -608,7 +586,6 @@ const HomePage = () => {
 									drawRevision={drawRevision}
 									transliteration={transliteration}
 									onEditorInstance={handleTiptapMount}
-									textareaRef={nativeTextareaRef}
 								/>
 							</Suspense>
 						</div>

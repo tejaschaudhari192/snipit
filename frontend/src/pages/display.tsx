@@ -19,7 +19,6 @@ import { useMusic } from "@/context/use-music";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { useFileUpload } from "@/hooks/use-file-upload";
 import { useAiEnhance } from "@/hooks/use-ai-enhance";
-import { useEditorEngine } from "@/hooks/use-editor-engine";
 import { useLanguageDetection } from "@/hooks/use-language-detection";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { useTerminalLayout } from "@/hooks/use-terminal-layout";
@@ -403,10 +402,7 @@ const DisplayPage = () => {
 		setupAiAction,
 		applyEnhancedText,
 		applyWriterText,
-		nativeTextareaRef,
 	} = useAiEnhance();
-
-	const { editorEngine } = useEditorEngine();
 
 	const tiptapEditorRef = useRef<TiptapEditorInstance | null>(null);
 	const handleTiptapMount = useCallback(
@@ -426,9 +422,9 @@ const DisplayPage = () => {
 					.run();
 				return;
 			}
-			applyEnhancedText(newText, editorEngine, onContentChange);
+			applyEnhancedText(newText);
 		},
-		[applyEnhancedText, contentType, editorEngine, onContentChange],
+		[applyEnhancedText, contentType],
 	);
 
 	const handleApplyWriterText = useCallback(
@@ -441,9 +437,9 @@ const DisplayPage = () => {
 					.run();
 				return;
 			}
-			applyWriterText(newText, editorEngine, onContentChange);
+			applyWriterText(newText);
 		},
-		[applyWriterText, contentType, editorEngine, onContentChange],
+		[applyWriterText, contentType],
 	);
 
 	useAutosave({
@@ -671,21 +667,7 @@ const DisplayPage = () => {
 							}
 							onContentChange={onContentChange}
 							onAiWriterClick={() => {
-								if (
-									editorEngine === "native" &&
-									nativeTextareaRef.current
-								) {
-									const ta = nativeTextareaRef.current;
-									const start = ta.selectionStart;
-									const end = ta.selectionEnd;
-									if (start !== end) {
-										setSelectedText(
-											ta.value.substring(start, end),
-										);
-									} else {
-										setSelectedText("");
-									}
-								} else if (editorInstanceRef.current) {
+								if (editorInstanceRef.current) {
 									const selection =
 										editorInstanceRef.current.getSelection();
 									if (selection && !selection.isEmpty()) {
@@ -871,7 +853,6 @@ const DisplayPage = () => {
 								onEditorInstance={handleTiptapMount}
 								redirectionType={state.redirectionType}
 								setRedirectionType={state.setRedirectionType}
-								textareaRef={nativeTextareaRef}
 							/>
 						</Suspense>
 					</div>
