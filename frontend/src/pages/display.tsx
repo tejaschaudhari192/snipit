@@ -422,9 +422,10 @@ const DisplayPage = () => {
 					.run();
 				return;
 			}
-			applyEnhancedText(newText);
+			if (editorInstanceRef.current) applyEnhancedText(newText);
+			else onContentChange(newText);
 		},
-		[applyEnhancedText, contentType],
+		[applyEnhancedText, contentType, onContentChange],
 	);
 
 	const handleApplyWriterText = useCallback(
@@ -437,9 +438,29 @@ const DisplayPage = () => {
 					.run();
 				return;
 			}
-			applyWriterText(newText);
+			if (editorInstanceRef.current) {
+				applyWriterText(newText);
+			} else {
+				const current =
+					updatedContent !== undefined
+						? updatedContent
+						: paste?.content || "";
+				onContentChange(
+					current
+						? current +
+								(current.endsWith("\n") ? "" : "\n") +
+								newText
+						: newText,
+				);
+			}
 		},
-		[applyWriterText, contentType],
+		[
+			applyWriterText,
+			contentType,
+			onContentChange,
+			paste?.content,
+			updatedContent,
+		],
 	);
 
 	useAutosave({
@@ -678,6 +699,11 @@ const DisplayPage = () => {
 									} else {
 										setSelectedText("");
 									}
+								} else {
+									const winSel = window
+										.getSelection()
+										?.toString();
+									setSelectedText(winSel || "");
 								}
 								setIsAiWriterDialogOpen(true);
 							}}

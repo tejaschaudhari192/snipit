@@ -217,9 +217,10 @@ const HomePage = () => {
 					.run();
 				return;
 			}
-			applyEnhancedText(newText);
+			if (editorInstanceRef.current) applyEnhancedText(newText);
+			else setTextValue(newText);
 		},
-		[applyEnhancedText, contentType],
+		[applyEnhancedText, contentType, setTextValue],
 	);
 
 	const handleApplyWriterText = useCallback(
@@ -232,9 +233,19 @@ const HomePage = () => {
 					.run();
 				return;
 			}
-			applyWriterText(newText);
+			if (editorInstanceRef.current) {
+				applyWriterText(newText);
+			} else {
+				setTextValue(
+					textValue
+						? textValue +
+								(textValue.endsWith("\n") ? "" : "\n") +
+								newText
+						: newText,
+				);
+			}
 		},
-		[applyWriterText, contentType],
+		[applyWriterText, contentType, setTextValue, textValue],
 	);
 
 	const [isAiAutocompleteEnabled, setIsAiAutocompleteEnabled] = useState(() =>
@@ -493,6 +504,11 @@ const HomePage = () => {
 												} else {
 													setSelectedText("");
 												}
+											} else {
+												const winSel = window
+													.getSelection()
+													?.toString();
+												setSelectedText(winSel || "");
 											}
 											setIsAiWriterDialogOpen(true);
 										}}
