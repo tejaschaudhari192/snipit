@@ -805,6 +805,19 @@ body.is-404 .action-url-bar {
 	background-color: var(--muted-foreground);
 }
 
+.no-scrollbar,
+.scrollbar-none {
+	scrollbar-width: none !important;
+	-ms-overflow-style: none !important;
+}
+
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+	display: none !important;
+	width: 0 !important;
+	height: 0 !important;
+}
+
 .tab-trigger-base {
 	@apply flex-none sm:flex-1 shrink-0 flex items-center justify-center p-3 h-8;
 }

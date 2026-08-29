@@ -32,7 +32,7 @@ export const ContentTypeSelector = memo(
 			>
 				<TabsList
 					className={cn(
-						"min-h-fit max-w-full w-full sm:w-auto flex items-center justify-start sm:justify-center overflow-x-auto no-scrollbar scroll-smooth",
+						"h-9 min-h-9 max-w-full w-full sm:w-auto flex items-center justify-start sm:justify-center overflow-x-auto sm:overflow-visible no-scrollbar scrollbar-none scroll-smooth",
 					)}
 				>
 					{TABS_CONFIG.map((tab) => {
