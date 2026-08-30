@@ -1,6 +1,7 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import { localStore } from "@/utils/storage";
+import { CONFIG } from "@/configurations";
 import en from "@/locales/en.json";
 import mr from "@/locales/mr.json";
 import hi from "@/locales/hi.json";
@@ -31,7 +32,7 @@ i18n.use(initReactI18next).init({
 		pa: { translation: pa },
 		ur: { translation: ur },
 	},
-	lng: localStore.getItem("lang") ?? "en",
+	lng: localStore.getItem(CONFIG.storageKeys.appLanguage) ?? "en",
 	fallbackLng: "en",
 	parseMissingKeyHandler: (key) => {
 		console.error(`Missing translation key: ${key}`);

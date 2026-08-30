@@ -259,9 +259,9 @@ const HomePage = () => {
 
 	const { isAiDrawDialogOpen, setIsAiDrawDialogOpen, handleAiDrawApply } =
 		useAiDraw({
-			drawRevision,
 			setDrawRevision,
 			setTextValue,
+			textValue,
 		});
 
 	const {

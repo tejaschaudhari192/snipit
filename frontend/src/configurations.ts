@@ -47,6 +47,19 @@ export const CONFIG = {
 		musicPlaytime: "snipit-music-playtime",
 		autosave: "snipit-autosave",
 		plaintextEditorMode: "snipit-plaintext-editor-mode",
+		editorEngine: "snipit_editor_engine",
+		transliterationEnabled: "transliteration-enabled",
+		transliterationLang: "transliteration-lang",
+		markdownLayoutMode: "markdown-layout-mode",
+		linkHistoryVisible: "link-history-visible",
+		musicBubbleVisible: "music-bubble-visible",
+		appLanguage: "lang",
+	},
+
+	// Custom Event Names
+	events: {
+		editorEngineChange: "snipit_editor_engine_change",
+		transliterationChange: "snipit_transliteration_change",
 	},
 
 	// Default Values

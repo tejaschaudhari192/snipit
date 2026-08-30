@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import { CONFIG } from "@/configurations";
 
 const MusicBubble: React.FC = () => {
 	const {
@@ -25,7 +26,10 @@ const MusicBubble: React.FC = () => {
 	const [mounted, setMounted] = useState(false);
 	const [isVisible, setIsVisible] = useState(() => {
 		if (typeof window !== "undefined") {
-			return localStore.getItem("music-bubble-visible") !== "false";
+			return (
+				localStore.getItem(CONFIG.storageKeys.musicBubbleVisible) !==
+				"false"
+			);
 		}
 		return true;
 	});
@@ -37,7 +41,7 @@ const MusicBubble: React.FC = () => {
 	useEffect(() => {
 		if ((isPlaying && currentTrack) || isPlayerOpen) {
 			setIsVisible(true);
-			localStore.setItem("music-bubble-visible", "true");
+			localStore.setItem(CONFIG.storageKeys.musicBubbleVisible, "true");
 		}
 	}, [isPlaying, currentTrack, isPlayerOpen]);
 
@@ -121,7 +125,10 @@ const MusicBubble: React.FC = () => {
 					onClick={(e) => {
 						e.stopPropagation();
 						setIsVisible(false);
-						localStore.setItem("music-bubble-visible", "false");
+						localStore.setItem(
+							CONFIG.storageKeys.musicBubbleVisible,
+							"false",
+						);
 					}}
 					className="h-5 w-5 p-0 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer shrink-0"
 					aria-label="Hide Music Player"
@@ -174,7 +181,10 @@ const MusicBubble: React.FC = () => {
 				onClick={(e) => {
 					e.stopPropagation();
 					setIsVisible(false);
-					localStore.setItem("music-bubble-visible", "false");
+					localStore.setItem(
+						CONFIG.storageKeys.musicBubbleVisible,
+						"false",
+					);
 				}}
 				className="absolute -top-1 -left-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-muted-foreground hover:text-foreground shadow cursor-pointer z-60"
 				aria-label="Hide Music Player"

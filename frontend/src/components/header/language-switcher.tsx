@@ -9,6 +9,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { UI_LANGUAGES } from "@/constants";
+import { CONFIG } from "@/configurations";
 
 interface LanguageSwitcherProps {
 	className?: string;
@@ -18,7 +19,9 @@ export const LanguageSwitcher = ({ className }: LanguageSwitcherProps) => {
 	const { i18n } = useTranslation();
 	// Initialize from i18n or localStore to ensure sync
 	const [language, setLanguage] = useState(
-		localStore.getItem("lang") || i18n.language || "en",
+		localStore.getItem(CONFIG.storageKeys.appLanguage) ||
+			i18n.language ||
+			"en",
 	);
 
 	useEffect(() => {
@@ -32,7 +35,7 @@ export const LanguageSwitcher = ({ className }: LanguageSwitcherProps) => {
 		if (!value) return;
 		setLanguage(value);
 		i18n.changeLanguage(value);
-		localStore.setItem("lang", value);
+		localStore.setItem(CONFIG.storageKeys.appLanguage, value);
 	};
 
 	const isValidLanguage = UI_LANGUAGES.some((l) => l.value === language);

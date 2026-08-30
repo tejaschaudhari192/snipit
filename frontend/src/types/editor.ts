@@ -1,5 +1,9 @@
 import type { PasteData } from "./pastes";
 
+export type EditorEngine = "monaco" | "native";
+export type MarkdownLayoutMode = "split" | "editor" | "preview";
+export type SaveStatus = "idle" | "saving" | "saved" | "error";
+
 export interface SelectionRange {
 	startLineNumber: number;
 	startColumn: number;

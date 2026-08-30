@@ -9,6 +9,11 @@ export interface User {
 export type ShareRole = "viewer" | "editor" | "admin" | "commenter";
 export type PublicRole = "viewer" | "editor" | "commenter";
 
+export interface ShareEntry {
+	email: string;
+	role: ShareRole;
+}
+
 export interface ActiveUser {
 	socketId: string;
 	name: string;

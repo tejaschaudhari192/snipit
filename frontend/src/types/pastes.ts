@@ -8,7 +8,6 @@ export type RedirectionType = "click" | "timer" | "direct";
 export type IdTypeTab = "system" | "dynamic" | "semantic";
 
 export type IdType = (typeof ID_TYPES)[number];
-export type SaveStatus = "idle" | "saving" | "saved" | "error";
 
 export interface CommentData {
 	id: string;

@@ -3,19 +3,25 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import type { editor } from "monaco-editor";
 import { getTransliteratedSuggestions } from "@/utils/transliteration-utils";
 import { toast } from "@/components/ui/toast";
-
-export const TRANSLITERATION_CHANGE_EVENT = "snipit_transliteration_change";
+import { CONFIG } from "@/configurations";
 
 export function useTransliteration() {
 	const [enabled, setEnabled] = useState(() => {
 		if (typeof window !== "undefined") {
-			return localStore.getItem("transliteration-enabled") === "true";
+			return (
+				localStore.getItem(
+					CONFIG.storageKeys.transliterationEnabled,
+				) === "true"
+			);
 		}
 		return false;
 	});
 	const [targetLanguage, setTargetLanguage] = useState(() => {
 		if (typeof window !== "undefined") {
-			return localStore.getItem("transliteration-lang") || "hi";
+			return (
+				localStore.getItem(CONFIG.storageKeys.transliterationLang) ||
+				"hi"
+			);
 		}
 		return "hi";
 	});
@@ -26,8 +32,14 @@ export function useTransliteration() {
 	const monacoRef = useRef<typeof import("monaco-editor") | null>(null);
 
 	useEffect(() => {
-		localStore.setItem("transliteration-enabled", enabled.toString());
-		localStore.setItem("transliteration-lang", targetLanguage);
+		localStore.setItem(
+			CONFIG.storageKeys.transliterationEnabled,
+			enabled.toString(),
+		);
+		localStore.setItem(
+			CONFIG.storageKeys.transliterationLang,
+			targetLanguage,
+		);
 	}, [enabled, targetLanguage]);
 
 	// Synchronize transliteration state across all component hook instances
@@ -40,21 +52,24 @@ export function useTransliteration() {
 		};
 
 		const handleStorage = (e: StorageEvent) => {
-			if (e.key === "transliteration-enabled") {
+			if (e.key === CONFIG.storageKeys.transliterationEnabled) {
 				setEnabled(e.newValue === "true");
-			} else if (e.key === "transliteration-lang" && e.newValue) {
+			} else if (
+				e.key === CONFIG.storageKeys.transliterationLang &&
+				e.newValue
+			) {
 				setTargetLanguage(e.newValue);
 			}
 		};
 
 		window.addEventListener(
-			TRANSLITERATION_CHANGE_EVENT,
+			CONFIG.events.transliterationChange,
 			handleTransliterationChange,
 		);
 		window.addEventListener("storage", handleStorage);
 		return () => {
 			window.removeEventListener(
-				TRANSLITERATION_CHANGE_EVENT,
+				CONFIG.events.transliterationChange,
 				handleTransliterationChange,
 			);
 			window.removeEventListener("storage", handleStorage);
@@ -211,21 +226,27 @@ export function useTransliteration() {
 		setEnabled((prev) => {
 			const next = !prev;
 			if (typeof window !== "undefined") {
-				localStore.setItem("transliteration-enabled", next.toString());
+				localStore.setItem(
+					CONFIG.storageKeys.transliterationEnabled,
+					next.toString(),
+				);
 				window.dispatchEvent(
-					new CustomEvent(TRANSLITERATION_CHANGE_EVENT, {
+					new CustomEvent(CONFIG.events.transliterationChange, {
 						detail: next,
 					}),
 				);
 
 				if (next) {
 					const currentEngine = localStore.getItem(
-						"snipit_editor_engine",
+						CONFIG.storageKeys.editorEngine,
 					);
 					if (currentEngine === "native") {
-						localStore.setItem("snipit_editor_engine", "monaco");
+						localStore.setItem(
+							CONFIG.storageKeys.editorEngine,
+							"monaco",
+						);
 						window.dispatchEvent(
-							new CustomEvent("snipit_editor_engine_change", {
+							new CustomEvent(CONFIG.events.editorEngineChange, {
 								detail: "monaco",
 							}),
 						);

@@ -1,19 +1,18 @@
-import { localStore } from "@/utils/storage";
 import { useState, useCallback } from "react";
 import { toast } from "@/components/ui/toast";
 import { useTranslation } from "react-i18next";
 import { isSnipitDrawing } from "@/utils";
 
 interface UseAiDrawProps {
-	drawRevision: number;
 	setDrawRevision: (val: number | ((p: number) => number)) => void;
 	setTextValue: (val: string) => void;
+	textValue?: string;
 }
 
 export const useAiDraw = ({
-	drawRevision,
 	setDrawRevision,
 	setTextValue,
+	textValue = "",
 }: UseAiDrawProps) => {
 	const { t } = useTranslation();
 	const [isAiDrawDialogOpen, setIsAiDrawDialogOpen] = useState(false);
@@ -53,8 +52,7 @@ export const useAiDraw = ({
 					setTextValue(drawingStr);
 				} else {
 					// Merge with existing if it's a drawing
-					const currentText =
-						localStore.getItem("snipit_text_value") || "";
+					const currentText = textValue;
 					if (isSnipitDrawing(currentText)) {
 						try {
 							const currentDrawing = JSON.parse(currentText);
@@ -76,14 +74,21 @@ export const useAiDraw = ({
 					}
 				}
 
-				// Increment revision to force CollabDraw to re-render
-				setDrawRevision(drawRevision + 1);
+				setDrawRevision((prev) => prev + 1);
+				setIsAiDrawDialogOpen(false);
+				toast.add({
+					title: t("common.success"),
+					type: "success",
+				});
 			} catch (error) {
 				console.error("Failed to apply AI drawing:", error);
-				toast.add({ title: t("ai.draw_apply_error"), type: "error" });
+				toast.add({
+					title: t("common.error"),
+					type: "error",
+				});
 			}
 		},
-		[drawRevision, setDrawRevision, setTextValue, t],
+		[setDrawRevision, setTextValue, textValue, t],
 	);
 
 	return {

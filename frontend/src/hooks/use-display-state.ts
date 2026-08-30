@@ -7,17 +7,13 @@ import type {
 	Visibility,
 	EditPermission,
 	PublicRole,
-	ShareRole,
 	RedirectionType,
 	IdTypeTab,
+	ShareEntry,
+	SaveStatus,
 } from "@/types";
 
-export interface ShareEntry {
-	email: string;
-	role: ShareRole;
-}
-
-export type SaveStatus = "idle" | "saving" | "saved" | "error";
+export type { ShareEntry, SaveStatus };
 
 export const useDisplayState = () => {
 	const [isEdit, setIsEdit] = useState(false);

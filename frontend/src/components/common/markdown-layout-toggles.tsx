@@ -2,8 +2,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/utils";
 import { useTranslation } from "react-i18next";
 import { MARKDOWN_LAYOUT_MODES } from "@/constants";
-
-export type MarkdownLayoutMode = "split" | "editor" | "preview";
+import type { MarkdownLayoutMode } from "@/types";
 
 interface MarkdownLayoutTogglesProps {
 	mode: MarkdownLayoutMode;

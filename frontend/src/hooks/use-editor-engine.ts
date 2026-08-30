@@ -2,18 +2,16 @@ import { useState, useEffect, useCallback } from "react";
 import { localStore } from "@/utils/storage";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "@/components/ui/toast";
-import { TRANSLITERATION_CHANGE_EVENT } from "@/hooks/use-transliteration";
+import { CONFIG } from "@/configurations";
+import type { EditorEngine } from "@/types";
 
-export type EditorEngine = "monaco" | "native";
-
-const STORAGE_KEY = "snipit_editor_engine";
-const CHANGE_EVENT = "snipit_editor_engine_change";
+export type { EditorEngine };
 
 export function useEditorEngine() {
 	const isMobile = useIsMobile();
 	const [editorEngine, setEngineState] = useState<EditorEngine>(() => {
 		if (typeof window !== "undefined") {
-			const saved = localStore.getItem(STORAGE_KEY);
+			const saved = localStore.getItem(CONFIG.storageKeys.editorEngine);
 			if (saved === "monaco" || saved === "native") {
 				return saved;
 			}
@@ -23,7 +21,7 @@ export function useEditorEngine() {
 
 	// If no explicit preference stored, track mobile breakpoint changes
 	useEffect(() => {
-		const saved = localStore.getItem(STORAGE_KEY);
+		const saved = localStore.getItem(CONFIG.storageKeys.editorEngine);
 		if (!saved) {
 			setEngineState(isMobile ? "native" : "monaco");
 		}
@@ -40,34 +38,45 @@ export function useEditorEngine() {
 
 		const handleStorage = (e: StorageEvent) => {
 			if (
-				e.key === STORAGE_KEY &&
+				e.key === CONFIG.storageKeys.editorEngine &&
 				(e.newValue === "monaco" || e.newValue === "native")
 			) {
 				setEngineState(e.newValue);
 			}
 		};
 
-		window.addEventListener(CHANGE_EVENT, handleCustomChange);
+		window.addEventListener(
+			CONFIG.events.editorEngineChange,
+			handleCustomChange,
+		);
 		window.addEventListener("storage", handleStorage);
 		return () => {
-			window.removeEventListener(CHANGE_EVENT, handleCustomChange);
+			window.removeEventListener(
+				CONFIG.events.editorEngineChange,
+				handleCustomChange,
+			);
 			window.removeEventListener("storage", handleStorage);
 		};
 	}, []);
 
 	const setEditorEngine = useCallback((newEngine: EditorEngine) => {
 		setEngineState(newEngine);
-		localStore.setItem(STORAGE_KEY, newEngine);
+		localStore.setItem(CONFIG.storageKeys.editorEngine, newEngine);
 
 		if (typeof window !== "undefined") {
 			// If switching to native editor while transliteration is active, disable transliteration
 			if (newEngine === "native") {
 				const isTransliterationEnabled =
-					localStore.getItem("transliteration-enabled") === "true";
+					localStore.getItem(
+						CONFIG.storageKeys.transliterationEnabled,
+					) === "true";
 				if (isTransliterationEnabled) {
-					localStore.setItem("transliteration-enabled", "false");
+					localStore.setItem(
+						CONFIG.storageKeys.transliterationEnabled,
+						"false",
+					);
 					window.dispatchEvent(
-						new CustomEvent(TRANSLITERATION_CHANGE_EVENT, {
+						new CustomEvent(CONFIG.events.transliterationChange, {
 							detail: false,
 						}),
 					);
@@ -79,9 +88,12 @@ export function useEditorEngine() {
 			}
 
 			window.dispatchEvent(
-				new CustomEvent<EditorEngine>(CHANGE_EVENT, {
-					detail: newEngine,
-				}),
+				new CustomEvent<EditorEngine>(
+					CONFIG.events.editorEngineChange,
+					{
+						detail: newEngine,
+					},
+				),
 			);
 		}
 	}, []);

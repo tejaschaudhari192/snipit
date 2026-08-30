@@ -2,8 +2,7 @@ import { Cloud, AlertCircle, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { StatusBadge } from "./status-badge";
 import { Spinner } from "@/components/ui/spinner";
-
-type SaveStatus = "idle" | "saving" | "saved" | "error";
+import type { SaveStatus } from "@/types";
 
 interface AutosaveStatusProps {
 	status: SaveStatus;
