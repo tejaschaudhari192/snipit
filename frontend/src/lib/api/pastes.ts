@@ -57,9 +57,18 @@ export const checkIdAvailability = async (
 export const generateWordId = async (
 	count: number,
 	categories: string[],
+	includeNumber: boolean = false,
+	style: "lowerCase" | "capital" = "lowerCase",
+	separator: string = "-",
 ): Promise<{ id: string }> => {
 	const response = await api.get("/pastes/generate-word-id", {
-		params: { count, categories: categories.join(",") },
+		params: {
+			count,
+			categories: categories.join(","),
+			includeNumber,
+			style,
+			separator,
+		},
 	});
 	return response.data;
 };

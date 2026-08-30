@@ -777,7 +777,7 @@
 		"id_generation": {
 			"custom": "ダイナミックIDで貼り付け",
 			"automatic": "自動",
-			"automatic_desc": "安全な5文字の英数字IDを生成します (例: a1b2c)",
+			"automatic_desc": "覚えやすい単語と2桁の数字を生成します (例: fox42)",
 			"suggest_ai": "AIを使用してIDを提案",
 			"ai_suggested": "コンテンツに基づいてAIがIDを提案しました！",
 			"semantic_tab": "単語",

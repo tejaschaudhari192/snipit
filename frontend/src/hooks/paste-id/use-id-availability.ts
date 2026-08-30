@@ -9,14 +9,20 @@ export const useIdAvailability = (
 	const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
 	const [isChecking, setIsChecking] = useState(false);
 
+	const isCurrentId = Boolean(
+		originalId && customId.trim() && customId.trim() === originalId.trim(),
+	);
+
 	useEffect(() => {
 		const id = customId.trim();
-		if (
-			!id ||
-			(idTypeTab !== "dynamic" && idTypeTab !== "semantic") ||
-			(originalId && id === originalId.trim())
-		) {
+		if (!id || (idTypeTab !== "dynamic" && idTypeTab !== "semantic")) {
 			setIsAvailable(null);
+			return;
+		}
+
+		if (originalId && id === originalId.trim()) {
+			setIsAvailable(true);
+			setIsChecking(false);
 			return;
 		}
 
@@ -36,5 +42,5 @@ export const useIdAvailability = (
 		return () => clearTimeout(timer);
 	}, [customId, idTypeTab, originalId]);
 
-	return { isAvailable, isChecking };
+	return { isAvailable, isChecking, isCurrentId };
 };

@@ -341,11 +341,13 @@ const HomePage = () => {
 			});
 			return;
 		}
-		const result = await handleSubmit(
-			idTypeTab,
-			idTypeTab === "dynamic" ? customId.trim() : undefined,
-			{},
-		);
+		const effectiveCustomId =
+			(idTypeTab === "dynamic" || idTypeTab === "semantic") &&
+			customId.trim()
+				? customId.trim()
+				: undefined;
+
+		const result = await handleSubmit(idTypeTab, effectiveCustomId, {});
 		if (result !== true)
 			toast.add({ title: result as string, type: "error" });
 	};
@@ -369,16 +371,18 @@ const HomePage = () => {
 			});
 			return;
 		}
-		const result = await handleSubmit(
-			idTypeTab,
-			idTypeTab === "dynamic" ? customId.trim() : undefined,
-			{
-				visibility: "public",
-				editPermission: "public",
-				publicRole: "editor",
-				isCollaborative: true,
-			},
-		);
+		const effectiveCustomId =
+			(idTypeTab === "dynamic" || idTypeTab === "semantic") &&
+			customId.trim()
+				? customId.trim()
+				: undefined;
+
+		const result = await handleSubmit(idTypeTab, effectiveCustomId, {
+			visibility: "public",
+			editPermission: "public",
+			publicRole: "editor",
+			isCollaborative: true,
+		});
 		if (result !== true)
 			toast.add({ title: result as string, type: "error" });
 	};

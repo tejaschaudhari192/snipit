@@ -202,6 +202,7 @@ export const AdvancedConfigGrid = ({
 							textValue={textValue}
 							files={files}
 							disabled={isIdDisabled}
+							pasteId={pasteId}
 						/>
 					</LockedSettingWrapper>
 				</div>

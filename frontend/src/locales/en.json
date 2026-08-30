@@ -809,7 +809,7 @@
 		"id_generation": {
 			"custom": "Custom ID",
 			"automatic": "Automatic",
-			"automatic_desc": "Generates a secure 5-character alphanumeric ID (e.g., a1b2c)",
+			"automatic_desc": "Generates a memorable word and 2-digit number (e.g., fox42)",
 			"suggest_ai": "Suggest ID using AI",
 			"ai_suggested": "AI Suggested an ID based on content!",
 			"semantic_tab": "Words",

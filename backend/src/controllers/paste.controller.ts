@@ -393,8 +393,17 @@ class PasteController {
 		const categories = (req.query.categories as string)?.split(
 			",",
 		) as WordCategory[];
+		const includeNumber = req.query.includeNumber === "true";
+		const style = req.query.style === "capital" ? "capital" : "lowerCase";
+		const separator = (req.query.separator as string) ?? "-";
 
-		const id = generateWordId(count, categories);
+		const id = generateWordId(
+			count,
+			categories,
+			includeNumber,
+			style,
+			separator,
+		);
 		res.json({ id });
 	}
 

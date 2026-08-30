@@ -34,7 +34,7 @@ export const CustomIdTab = ({
 	const effectiveTextValue = textValue ?? pasteContext.textValue;
 	const effectiveFiles = files ?? pasteContext.files;
 
-	const { isAvailable, isChecking } = useIdAvailability(
+	const { isAvailable, isChecking, isCurrentId } = useIdAvailability(
 		customId,
 		"dynamic",
 		pasteId,
@@ -76,6 +76,7 @@ export const CustomIdTab = ({
 				isChecking={isChecking}
 				isAvailable={isAvailable}
 				customId={customId}
+				isCurrentId={isCurrentId}
 			/>
 		</div>
 	);

@@ -1,251 +1,96 @@
-/**
- * Semantic word-based ID generator
- */
+import {
+	uniqueNamesGenerator,
+	adjectives,
+	animals,
+	colors,
+	countries,
+	names,
+	starWars,
+	languages,
+	NumberDictionary,
+} from "unique-names-generator";
 
-const WORDS = {
-	animals: [
-		"bear",
-		"bird",
-		"cat",
-		"deer",
-		"dog",
-		"duck",
-		"eagle",
-		"fish",
-		"fox",
-		"frog",
-		"goat",
-		"goose",
-		"hawk",
-		"horse",
-		"lion",
-		"lynx",
-		"mole",
-		"mouse",
-		"mule",
-		"owl",
-		"panda",
-		"pig",
-		"pike",
-		"puma",
-		"rat",
-		"seal",
-		"shark",
-		"sheep",
-		"snake",
-		"swan",
-		"tiger",
-		"toad",
-		"wolf",
-		"zebra",
-		"crane",
-		"koala",
-		"otter",
-		"rhino",
-		"sloth",
-		"whale",
-	],
-	food: [
-		"pizza",
-		"burger",
-		"taco",
-		"sushi",
-		"pasta",
-		"bread",
-		"cheese",
-		"honey",
-		"steak",
-		"soup",
-		"cake",
-		"cookie",
-		"donut",
-		"pie",
-		"tart",
-		"rice",
-		"curry",
-		"noodle",
-		"toast",
-		"jam",
-	],
-	fruits: [
-		"apple",
-		"mango",
-		"berry",
-		"grape",
-		"lemon",
-		"lime",
-		"peach",
-		"pear",
-		"plum",
-		"kiwi",
-		"melon",
-		"olive",
-		"cherry",
-		"date",
-		"fig",
-		"guava",
-		"papaya",
-		"banana",
-		"orange",
-		"pine",
-	],
-	colors: [
-		"red",
-		"blue",
-		"green",
-		"gold",
-		"gray",
-		"pink",
-		"rose",
-		"cyan",
-		"lime",
-		"jade",
-		"ruby",
-		"teal",
-		"navy",
-		"aqua",
-		"plum",
-		"pear",
-		"mint",
-		"sage",
-		"coal",
-		"sand",
-	],
-	space: [
-		"star",
-		"moon",
-		"sun",
-		"mars",
-		"nova",
-		"void",
-		"orb",
-		"dust",
-		"beam",
-		"glow",
-		"dark",
-		"light",
-		"comet",
-		"orbit",
-		"space",
-		"venus",
-		"pluto",
-		"terra",
-		"luna",
-		"apex",
-	],
-	tech: [
-		"code",
-		"data",
-		"byte",
-		"bit",
-		"node",
-		"link",
-		"web",
-		"app",
-		"cloud",
-		"core",
-		"base",
-		"disk",
-		"file",
-		"grid",
-		"hash",
-		"host",
-		"hub",
-		"key",
-		"log",
-		"net",
-		"page",
-		"port",
-		"root",
-		"scan",
-		"site",
-		"stack",
-		"sync",
-		"task",
-		"tool",
-		"unit",
-	],
-	adjectives: [
-		"swift",
-		"brave",
-		"bright",
-		"calm",
-		"cool",
-		"deep",
-		"easy",
-		"fair",
-		"fast",
-		"fine",
-		"free",
-		"glad",
-		"good",
-		"great",
-		"hard",
-		"high",
-		"kind",
-		"last",
-		"light",
-		"long",
-		"loud",
-		"low",
-		"near",
-		"nice",
-		"old",
-		"poor",
-		"pure",
-		"quick",
-		"rare",
-		"rich",
-		"safe",
-		"sharp",
-		"short",
-		"slow",
-		"small",
-		"soft",
-		"strong",
-		"sweet",
-		"tall",
-		"thin",
-		"warm",
-		"wise",
-		"young",
-		"bold",
-		"crisp",
-		"sleek",
-		"vivid",
-		"silent",
-		"gentle",
-		"fierce",
-	],
+/**
+ * Tokenizes dictionary entries into individual single words (splits multi-words like "anakin skywalker" -> "anakin", "skywalker")
+ */
+const sanitizeDictionary = (list: string[]): string[] => {
+	const words = new Set<string>();
+	for (const item of list) {
+		const tokens = item
+			.toLowerCase()
+			.replace(/[^a-zA-Z0-9\s-_]/g, "")
+			.split(/[\s_-]+/)
+			.map((w) => w.trim())
+			.filter((w) => w.length >= 2);
+
+		for (const token of tokens) {
+			words.add(token);
+		}
+	}
+	return Array.from(words);
 };
 
-export type WordCategory = keyof typeof WORDS;
+const CATEGORY_DICTIONARIES: Record<string, string[]> = {
+	animals: sanitizeDictionary(animals),
+	colors: sanitizeDictionary(colors),
+	adjectives: sanitizeDictionary(adjectives),
+	countries: sanitizeDictionary(countries),
+	names: sanitizeDictionary(names),
+	starWars: sanitizeDictionary(starWars),
+	languages: sanitizeDictionary(languages),
+};
+
+export type WordCategory = keyof typeof CATEGORY_DICTIONARIES;
+
+export const WORD_CATEGORIES = Object.keys(
+	CATEGORY_DICTIONARIES,
+) as WordCategory[];
 
 /**
- * Generates a combination of words from selected categories
+ * Generates a combination of words from selected categories using unique-names-generator
  */
 export function generateWordId(
 	count: number = 2,
 	categories: WordCategory[] = ["animals", "colors"],
+	includeNumber: boolean = false,
+	style: "lowerCase" | "capital" = "lowerCase",
+	separator: string = "-",
 ): string {
-	const selectedWords: string[] = [];
-
-	// Ensure at least one category is selected, otherwise default to animals
 	const activeCategories =
-		categories.length > 0 ? categories : (["animals"] as WordCategory[]);
+		categories && categories.length > 0
+			? categories.filter((c) => CATEGORY_DICTIONARIES[c])
+			: (["animals", "colors"] as WordCategory[]);
+
+	const validCategories =
+		activeCategories.length > 0
+			? activeCategories
+			: (["animals"] as WordCategory[]);
+
+	const fallbackDict = CATEGORY_DICTIONARIES.animals ?? [];
+	const selectedDictionaries: string[][] = [];
 
 	for (let i = 0; i < count; i++) {
-		const category =
-			activeCategories[
-				Math.floor(Math.random() * activeCategories.length)
-			];
-		if (!category) continue;
-		const list = WORDS[category];
-		const word = list[Math.floor(Math.random() * list.length)];
-		if (word) selectedWords.push(word);
+		const cat = validCategories[i % validCategories.length];
+		const dict = cat ? CATEGORY_DICTIONARIES[cat] : fallbackDict;
+		selectedDictionaries.push(dict ?? fallbackDict);
 	}
 
-	return selectedWords.join("-");
-}
+	if (includeNumber) {
+		selectedDictionaries.push(
+			NumberDictionary.generate({ min: 10, max: 999 }),
+		);
+	}
 
-export const WORD_CATEGORIES = Object.keys(WORDS) as WordCategory[];
+	const generated = uniqueNamesGenerator({
+		dictionaries: selectedDictionaries,
+		separator,
+		style,
+	});
+
+	// Robust URL-safe cleanup: normalize all spaces/underscores/consecutive separators
+	const sepPattern = separator.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+	return generated
+		.replace(/[\s_]+/g, separator)
+		.replace(new RegExp(`${sepPattern}+`, "g"), separator)
+		.trim();
+}

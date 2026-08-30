@@ -6,12 +6,14 @@ interface Props {
 	isChecking: boolean;
 	isAvailable: boolean | null;
 	customId: string;
+	isCurrentId?: boolean;
 }
 
 export const IdAvailabilityIndicator = ({
 	isChecking,
 	isAvailable,
 	customId,
+	isCurrentId,
 }: Props) => {
 	const { t } = useTranslation();
 
@@ -25,6 +27,11 @@ export const IdAvailabilityIndicator = ({
 			</span>
 			{isChecking ? (
 				<Spinner className="h-3 w-3 animate-spin ml-2 text-muted-foreground" />
+			) : isCurrentId ? (
+				<span className="flex items-center gap-1 ml-2 text-[11px] text-primary font-medium animate-in zoom-in-50 duration-300">
+					<CheckCircle2 className="h-3 w-3 text-primary" />
+					Current ID
+				</span>
 			) : isAvailable === true ? (
 				<span className="flex items-center gap-1 ml-2 text-[11px] text-emerald-500 animate-in zoom-in-50 duration-300">
 					<CheckCircle2 className="h-3 w-3" />

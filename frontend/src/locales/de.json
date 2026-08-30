@@ -809,7 +809,7 @@
 		"id_generation": {
 			"custom": "Eigene ID",
 			"automatic": "Automatische ID",
-			"automatic_desc": "ID wird automatisch generiert",
+			"automatic_desc": "Erstellt ein einprägsames Wort mit einer 2-stelligen Zahl (z. B. fox42)",
 			"suggest_ai": "ID mit KI vorschlagen",
 			"ai_suggested": "KI hat eine ID basierend auf dem Inhalt vorgeschlagen!",
 			"semantic_tab": "Wörter",
