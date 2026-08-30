@@ -82,11 +82,19 @@ class PasteService {
 				const err = error as { code: number };
 				if (err.code === 11000) {
 					if (customId) {
-						const expired = await this.isPasteExpired(pasteId);
-						if (expired) {
-							await this.deletePaste(pasteId);
+						// Atomically verify and remove expired paste in a single step to prevent race conditions
+						const expiredPaste = await pasteModel.findOneAndDelete({
+							id: pasteId,
+							expiresAt: { $ne: null, $lte: new Date() },
+						});
+
+						if (expiredPaste) {
+							expirationScheduler.cancel(pasteId);
+							await deletePasteStorageFiles(expiredPaste);
+							await collaboratorModel.deleteMany({ pasteId });
 							return this.createPaste(data, ownerId);
 						}
+
 						throw new Error("ID_ALREADY_EXISTS", {
 							cause: error,
 						});
@@ -149,7 +157,19 @@ class PasteService {
 
 		if (newId && newId !== id) {
 			const existing = await pasteModel.findOne({ id: newId });
-			if (existing) throw new Error("ID_ALREADY_EXISTS");
+			if (existing) {
+				const expired = await pasteModel.findOneAndDelete({
+					id: newId,
+					expiresAt: { $ne: null, $lte: new Date() },
+				});
+				if (expired) {
+					expirationScheduler.cancel(newId);
+					await deletePasteStorageFiles(expired);
+					await collaboratorModel.deleteMany({ pasteId: newId });
+				} else {
+					throw new Error("ID_ALREADY_EXISTS");
+				}
+			}
 			paste.id = newId;
 		}
 
