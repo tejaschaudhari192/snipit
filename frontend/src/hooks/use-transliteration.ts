@@ -2,6 +2,9 @@ import { localStore } from "@/utils/storage";
 import { useState, useRef, useEffect, useCallback } from "react";
 import type { editor } from "monaco-editor";
 import { getTransliteratedSuggestions } from "@/utils/transliteration-utils";
+import { toast } from "@/components/ui/toast";
+
+export const TRANSLITERATION_CHANGE_EVENT = "snipit_transliteration_change";
 
 export function useTransliteration() {
 	const [enabled, setEnabled] = useState(() => {
@@ -26,6 +29,37 @@ export function useTransliteration() {
 		localStore.setItem("transliteration-enabled", enabled.toString());
 		localStore.setItem("transliteration-lang", targetLanguage);
 	}, [enabled, targetLanguage]);
+
+	// Synchronize transliteration state across all component hook instances
+	useEffect(() => {
+		const handleTransliterationChange = (e: Event) => {
+			const detail = (e as CustomEvent<boolean>).detail;
+			if (typeof detail === "boolean") {
+				setEnabled(detail);
+			}
+		};
+
+		const handleStorage = (e: StorageEvent) => {
+			if (e.key === "transliteration-enabled") {
+				setEnabled(e.newValue === "true");
+			} else if (e.key === "transliteration-lang" && e.newValue) {
+				setTargetLanguage(e.newValue);
+			}
+		};
+
+		window.addEventListener(
+			TRANSLITERATION_CHANGE_EVENT,
+			handleTransliterationChange,
+		);
+		window.addEventListener("storage", handleStorage);
+		return () => {
+			window.removeEventListener(
+				TRANSLITERATION_CHANGE_EVENT,
+				handleTransliterationChange,
+			);
+			window.removeEventListener("storage", handleStorage);
+		};
+	}, []);
 
 	const setupEditor = useCallback(
 		(
@@ -176,13 +210,31 @@ export function useTransliteration() {
 	const toggle = useCallback(() => {
 		setEnabled((prev) => {
 			const next = !prev;
-			if (next && typeof window !== "undefined") {
-				localStore.setItem("snipit_editor_engine", "monaco");
+			if (typeof window !== "undefined") {
+				localStore.setItem("transliteration-enabled", next.toString());
 				window.dispatchEvent(
-					new CustomEvent("snipit_editor_engine_change", {
-						detail: "monaco",
+					new CustomEvent(TRANSLITERATION_CHANGE_EVENT, {
+						detail: next,
 					}),
 				);
+
+				if (next) {
+					const currentEngine = localStore.getItem(
+						"snipit_editor_engine",
+					);
+					if (currentEngine === "native") {
+						localStore.setItem("snipit_editor_engine", "monaco");
+						window.dispatchEvent(
+							new CustomEvent("snipit_editor_engine_change", {
+								detail: "monaco",
+							}),
+						);
+						toast.add({
+							title: "Switched to Monaco editor for Multilingual typing",
+							type: "info",
+						});
+					}
+				}
 			}
 			return next;
 		});

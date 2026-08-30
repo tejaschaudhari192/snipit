@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { localStore } from "@/utils/storage";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { toast } from "@/components/ui/toast";
+import { TRANSLITERATION_CHANGE_EVENT } from "@/hooks/use-transliteration";
 
 export type EditorEngine = "monaco" | "native";
 
@@ -56,7 +58,26 @@ export function useEditorEngine() {
 	const setEditorEngine = useCallback((newEngine: EditorEngine) => {
 		setEngineState(newEngine);
 		localStore.setItem(STORAGE_KEY, newEngine);
+
 		if (typeof window !== "undefined") {
+			// If switching to native editor while transliteration is active, disable transliteration
+			if (newEngine === "native") {
+				const isTransliterationEnabled =
+					localStore.getItem("transliteration-enabled") === "true";
+				if (isTransliterationEnabled) {
+					localStore.setItem("transliteration-enabled", "false");
+					window.dispatchEvent(
+						new CustomEvent(TRANSLITERATION_CHANGE_EVENT, {
+							detail: false,
+						}),
+					);
+					toast.add({
+						title: "Switched to Simple editor (Multilingual keyboard disabled)",
+						type: "info",
+					});
+				}
+			}
+
 			window.dispatchEvent(
 				new CustomEvent<EditorEngine>(CHANGE_EVENT, {
 					detail: newEngine,
