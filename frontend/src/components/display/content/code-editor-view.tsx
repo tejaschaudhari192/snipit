@@ -5,6 +5,7 @@ import { ZenModeToggle } from "@/components/common/zen-mode-toggle";
 import { MonacoConfig } from "@/hooks/use-monaco-config";
 import { useEditorEngine, type EditorEngine } from "@/hooks/use-editor-engine";
 import { PlainTextEditor } from "@/components/common/plain-text-editor";
+import type { useTransliteration } from "@/hooks/use-transliteration";
 
 interface CodeEditorViewProps {
 	isEdit: boolean;
@@ -24,6 +25,7 @@ interface CodeEditorViewProps {
 	hideFullscreen?: boolean;
 	editorEngine?: EditorEngine;
 	textareaRef?: React.RefObject<HTMLTextAreaElement | null>;
+	transliteration?: ReturnType<typeof useTransliteration>;
 }
 
 const MonacoEditor = lazy(() =>
@@ -47,6 +49,7 @@ export const CodeEditorView = ({
 	hideFullscreen = false,
 	editorEngine,
 	textareaRef,
+	transliteration,
 }: CodeEditorViewProps) => {
 	const { editorEngine: defaultEngine } = useEditorEngine();
 	const currentEngine = editorEngine ?? defaultEngine;
@@ -81,7 +84,7 @@ export const CodeEditorView = ({
 	};
 
 	// ── Native / Simple Editor mode ──
-	if (currentEngine === "native") {
+	if (currentEngine === "native" && !transliteration?.enabled) {
 		return (
 			<div
 				ref={(node) => {

@@ -230,7 +230,8 @@ export const EditorContent = memo(
 								/>
 							</Suspense>
 						) : contentType === "text" ? (
-							editorEngine === "native" ? (
+							editorEngine === "native" &&
+							!transliteration?.enabled ? (
 								<PlainTextEditor
 									content={textValue}
 									onContentChange={setTextValue}
@@ -238,35 +239,6 @@ export const EditorContent = memo(
 									showLineNumbers={true}
 									textareaRef={textareaRef}
 								/>
-							) : transliteration?.enabled ? (
-								<Suspense fallback={<EditorContentSkeleton />}>
-									<MonacoConfig />
-									<MonacoEditor
-										height="100%"
-										language="plaintext"
-										value={textValue}
-										onChange={(value) =>
-											setTextValue(value || "")
-										}
-										theme={
-											theme === "dark"
-												? "snipit-dark"
-												: "snipit-light"
-										}
-										className="flex-1"
-										beforeMount={handleEditorWillMount}
-										onMount={onMount}
-										loading={<EditorSkeleton />}
-										options={{
-											minimap: { enabled: false },
-											fontSize: fontSize,
-											padding: { top: 16 },
-											mouseWheelZoom: true,
-											wordWrap: "on",
-											automaticLayout: true,
-										}}
-									/>
-								</Suspense>
 							) : (
 								<Suspense fallback={<EditorContentSkeleton />}>
 									<MonacoConfig />
@@ -298,7 +270,8 @@ export const EditorContent = memo(
 								</Suspense>
 							)
 						) : contentType === "code" ? (
-							editorEngine === "native" ? (
+							editorEngine === "native" &&
+							!transliteration?.enabled ? (
 								<PlainTextEditor
 									content={textValue}
 									onContentChange={setTextValue}

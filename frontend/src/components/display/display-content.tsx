@@ -328,6 +328,7 @@ export const DisplayContent = memo(
 													? activeTextareaRef
 													: undefined
 											}
+											transliteration={transliteration}
 										/>
 									</Suspense>
 								}
@@ -394,6 +395,7 @@ export const DisplayContent = memo(
 								? activeTextareaRef
 								: undefined
 						}
+						transliteration={transliteration}
 					/>
 				</Suspense>
 			);

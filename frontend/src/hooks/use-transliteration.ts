@@ -174,7 +174,18 @@ export function useTransliteration() {
 	}, []);
 
 	const toggle = useCallback(() => {
-		setEnabled((prev) => !prev);
+		setEnabled((prev) => {
+			const next = !prev;
+			if (next && typeof window !== "undefined") {
+				localStore.setItem("snipit_editor_engine", "monaco");
+				window.dispatchEvent(
+					new CustomEvent("snipit_editor_engine_change", {
+						detail: "monaco",
+					}),
+				);
+			}
+			return next;
+		});
 	}, []);
 
 	return {
