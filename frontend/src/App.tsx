@@ -17,6 +17,7 @@ import { AppSkeleton as PasswordAppSkeleton } from "@/tools/password-manager/com
 import { CryptoSafeSkeleton } from "@/tools/cryptsafe/components/skeletons";
 import { PnrCheckerSkeleton } from "@/tools/pnr-checker/components/skeletons";
 import { CinemaPageSkeleton } from "@/tools/cinema/components/skeletons";
+import { CompanionPageSkeleton } from "@/tools/companion/components/skeletons";
 import {
 	ToolsPageSkeleton,
 	HistoryPageSkeleton,
@@ -29,6 +30,7 @@ const DisplayPage = lazy(() => import("@/pages/display"));
 const HistoryPage = lazy(() => import("@/pages/history"));
 const AboutPage = lazy(() => import("@/pages/about"));
 const ToolsPage = lazy(() => import("@/pages/tools"));
+const CompanionPage = lazy(() => import("@/tools/companion/companion-page"));
 const PasswordManagerPage = lazy(
 	() => import("@/tools/password-manager/password-manager-page"),
 );
@@ -229,6 +231,18 @@ const App = () => {
 																		}
 																	>
 																		<ToolsPage />
+																	</Suspense>
+																}
+															/>
+															<Route
+																path="/tools/companion"
+																element={
+																	<Suspense
+																		fallback={
+																			<CompanionPageSkeleton />
+																		}
+																	>
+																		<CompanionPage />
 																	</Suspense>
 																}
 															/>

@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import type { AuthRequest } from "../middleware/auth.middleware.js";
 import FeedbackModel from "../models/Feedback.js";
 import EmailService from "../services/email.service.js";
 import configurations from "../config/configurations.js";
@@ -14,7 +15,7 @@ export const submitFeedback = async (
 		const { type, title, description, userEmail } = req.body;
 
 		// Optional: Extract userId if the user is authenticated
-		const userId = (req as any).user?._id;
+		const userId = (req as AuthRequest).user?._id;
 
 		if (!type || !title || !description) {
 			res.status(400).json({

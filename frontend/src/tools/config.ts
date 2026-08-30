@@ -1,4 +1,11 @@
-import { Shield, Lock, Train, Film, type LucideIcon } from "lucide-react";
+import {
+	Shield,
+	Lock,
+	Train,
+	Film,
+	Sparkles,
+	type LucideIcon,
+} from "lucide-react";
 
 export interface ToolConfig {
 	id: string;
@@ -9,6 +16,13 @@ export interface ToolConfig {
 }
 
 export const TOOLS_CONFIG: ToolConfig[] = [
+	{
+		id: "companion",
+		titleKey: "tools.companion.title",
+		descriptionKey: "tools.companion.description",
+		icon: Sparkles,
+		link: "/tools/companion",
+	},
 	{
 		id: "cinema",
 		titleKey: "tools.cinema.title",

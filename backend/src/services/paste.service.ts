@@ -4,7 +4,6 @@ import commentModel from "@/models/Comment.js";
 import collaboratorModel from "@/models/Collaborator.js";
 import User from "@/models/User.js";
 import type {
-	PasteData,
 	CommentData,
 	UpdatePasteData,
 	CreatePasteData,

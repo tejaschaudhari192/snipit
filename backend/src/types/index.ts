@@ -1,4 +1,4 @@
-import type { Document } from "mongoose";
+import type { Document, Types } from "mongoose";
 
 export type ContentMode =
 	| "text"
@@ -111,8 +111,8 @@ export type CollaboratorData = {
 export interface FolderData {
 	_id: string;
 	name: string;
-	owner: any;
-	parentId: any;
+	owner: Types.ObjectId | string;
+	parentId?: Types.ObjectId | string | null;
 	path: string;
 	color?: string | null;
 	icon?: string | null;

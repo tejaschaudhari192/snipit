@@ -14,7 +14,24 @@ interface PuterInstance {
 			text: string,
 			options?: PuterTxt2SpeechOptions,
 		) => Promise<HTMLAudioElement>;
+		chat?: (
+			prompt: string | Array<{ role: string; content: string }>,
+			options?: {
+				model?: string;
+				stream?: boolean;
+				temperature?: number;
+			},
+		) => Promise<
+			| AsyncIterable<{ text?: string }>
+			| { message?: { content?: string } }
+		>;
+		models?: () => Promise<Array<string | { id?: string; name?: string }>>;
+		listModels?: () => Promise<
+			Array<string | { id?: string; name?: string }>
+		>;
+		[key: string]: unknown;
 	};
+	[key: string]: unknown;
 }
 
 declare global {
@@ -26,7 +43,7 @@ declare global {
 let puterJsLoaded = false;
 let puterJsPromise: Promise<void> | null = null;
 
-const loadPuterJs = (): Promise<void> => {
+export const loadPuterJs = (): Promise<void> => {
 	if (puterJsLoaded && window.puter) return Promise.resolve();
 	if (puterJsPromise) return puterJsPromise;
 

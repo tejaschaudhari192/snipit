@@ -25,6 +25,10 @@
 	"tools": {
 		"badge": "🔐 Sichere Tools",
 		"title": "Sichere Tools & Dienstprogramme",
+		"companion": {
+			"title": "KI-Gefährte",
+			"description": "Ein sich entwickelndes intuitives Bewusstsein, das sich erinnert und sich mit Ihnen verbindet."
+		},
 		"cryptoSafe_description": "Ordnerverschlüsselung und -entschlüsselung (nur clientseitig)",
 		"subtitle": "Eine Sammlung sicherer, clientseitiger Tools, die Ihre sensiblen Daten schützen. Ihre Daten verlassen niemals Ihr Gerät.",
 		"encrypt_tab": "Verschlüsseln",

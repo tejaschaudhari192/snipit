@@ -25,6 +25,10 @@
 	"tools": {
 		"badge": "🔐 Secure Tools",
 		"title": "Secure Tools & Utilities",
+		"companion": {
+			"title": "AI Companion",
+			"description": "An evolving intuitive consciousness that remembers and connects with you."
+		},
 		"cryptoSafe_title": "CryptoSafe",
 		"cryptoSafe_description": "Folder encryptor & decrypter (client-side only)",
 		"subtitle": "A collection of secure, client-side tools designed to keep your sensitive data protected. Your data never leaves your device.",

@@ -464,7 +464,9 @@ class EmailService {
 			);
 
 			if (!response.ok) {
-				const errorData = (await response.json()) as any;
+				const errorData = (await response.json()) as {
+					message?: string;
+				};
 				throw new Error(
 					errorData.message ||
 						"Failed to send feedback email via Brevo",
