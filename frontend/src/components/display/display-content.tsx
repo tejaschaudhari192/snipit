@@ -1,6 +1,7 @@
 import type { BeforeMount, OnMount } from "@monaco-editor/react";
-import { useRef, useEffect, memo, lazy, Suspense } from "react";
+import { useRef, useEffect, useCallback, memo, lazy, Suspense } from "react";
 import { cn } from "@/utils";
+import { toast } from "@/components/ui/toast";
 const EditorToolbar = lazy(() =>
 	import("@/components/common/editor-toolbar").then((m) => ({
 		default: m.EditorToolbar,
@@ -165,6 +166,25 @@ export const DisplayContent = memo(
 		const activeTextareaRef = textareaRef ?? internalTextareaRef;
 		const [mdLayoutMode, setMdLayoutMode] = useMarkdownLayout();
 		const { editorEngine, toggleEditorEngine } = useEditorEngine();
+
+		const isCollaborativeSession = Boolean(
+			paste?.isCollaborative || (activeUsers && activeUsers.length > 1),
+		);
+		const effectiveEngine = isCollaborativeSession
+			? "monaco"
+			: editorEngine;
+
+		const handleToggleEngine = useCallback(() => {
+			if (isCollaborativeSession) {
+				toast.add({
+					title: "Real-time collaboration is only supported in Monaco Editor",
+					type: "info",
+				});
+				return;
+			}
+			toggleEditorEngine();
+		}, [isCollaborativeSession, toggleEditorEngine]);
+
 		const handleMount: OnMount = (ed, monaco) => {
 			if (onMount) onMount(ed, monaco);
 			if (transliteration) {
@@ -322,9 +342,9 @@ export const DisplayContent = memo(
 											contentRef={contentRef}
 											onMount={handleMount}
 											hideFullscreen={true}
-											editorEngine={editorEngine}
+											editorEngine={effectiveEngine}
 											textareaRef={
-												editorEngine === "native"
+												effectiveEngine === "native"
 													? activeTextareaRef
 													: undefined
 											}
@@ -389,9 +409,9 @@ export const DisplayContent = memo(
 						contentRef={contentRef}
 						onMount={handleMount}
 						hideFullscreen={true}
-						editorEngine={editorEngine}
+						editorEngine={effectiveEngine}
 						textareaRef={
-							editorEngine === "native"
+							effectiveEngine === "native"
 								? activeTextareaRef
 								: undefined
 						}
@@ -421,8 +441,9 @@ export const DisplayContent = memo(
 						mdLayoutMode={mdLayoutMode}
 						onMdLayoutModeChange={setMdLayoutMode}
 						showMarkdownToggles={isEdit}
-						editorEngine={editorEngine}
-						onToggleEditorEngine={toggleEditorEngine}
+						editorEngine={effectiveEngine}
+						onToggleEditorEngine={handleToggleEngine}
+						isCollaborative={isCollaborativeSession}
 					/>
 				</Suspense>
 

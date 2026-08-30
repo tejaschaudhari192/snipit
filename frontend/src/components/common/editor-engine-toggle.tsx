@@ -12,10 +12,18 @@ interface EditorEngineToggleProps {
 	engine: EditorEngine;
 	onToggle: () => void;
 	className?: string;
+	disabled?: boolean;
+	tooltipText?: string;
 }
 
 export const EditorEngineToggle = memo(
-	({ engine, onToggle, className }: EditorEngineToggleProps) => {
+	({
+		engine,
+		onToggle,
+		className,
+		disabled = false,
+		tooltipText,
+	}: EditorEngineToggleProps) => {
 		const isNative = engine === "native";
 
 		return (
@@ -24,15 +32,19 @@ export const EditorEngineToggle = memo(
 					render={
 						<button
 							type="button"
-							onClick={onToggle}
+							onClick={disabled ? undefined : onToggle}
+							disabled={disabled}
 							className={cn(
 								"flex items-center gap-1.5 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl border border-border/50 bg-background/80 hover:bg-muted text-xs font-medium text-muted-foreground hover:text-foreground transition-all cursor-pointer shadow-xs shrink-0 select-none",
+								disabled &&
+									"opacity-60 cursor-not-allowed hover:bg-background/80 hover:text-muted-foreground",
 								className,
 							)}
 							aria-label={
-								isNative
+								tooltipText ||
+								(isNative
 									? "Switch to Monaco Pro Editor"
-									: "Switch to Simple / Native Editor"
+									: "Switch to Simple / Native Editor")
 							}
 						>
 							{isNative ? (
@@ -55,9 +67,10 @@ export const EditorEngineToggle = memo(
 				/>
 				<TooltipContent side="left">
 					<p>
-						{isNative
-							? "Switch to Monaco Pro Editor"
-							: "Switch to Simple / Native Editor"}
+						{tooltipText ||
+							(isNative
+								? "Switch to Monaco Pro Editor"
+								: "Switch to Simple / Native Editor")}
 					</p>
 				</TooltipContent>
 			</Tooltip>

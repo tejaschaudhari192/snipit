@@ -69,6 +69,7 @@ export interface PasteData {
 	comments?: CommentData[];
 	files?: FileAttachment[];
 	folderId?: string | null;
+	isCollaborative?: boolean;
 }
 
 export interface CreatePasteData {

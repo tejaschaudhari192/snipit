@@ -26,6 +26,7 @@ interface EditorToolbarProps {
 	showMarkdownToggles?: boolean;
 	editorEngine?: EditorEngine;
 	onToggleEditorEngine?: () => void;
+	isCollaborative?: boolean;
 }
 
 export const EditorToolbar = ({
@@ -41,6 +42,7 @@ export const EditorToolbar = ({
 	showMarkdownToggles = true,
 	editorEngine = "monaco",
 	onToggleEditorEngine,
+	isCollaborative = false,
 }: EditorToolbarProps) => {
 	const { t } = useTranslation();
 
@@ -76,6 +78,12 @@ export const EditorToolbar = ({
 						<EditorEngineToggle
 							engine={editorEngine}
 							onToggle={onToggleEditorEngine}
+							disabled={isCollaborative}
+							tooltipText={
+								isCollaborative
+									? "Real-time collaboration is only supported in Monaco Editor"
+									: undefined
+							}
 						/>
 					)}
 
