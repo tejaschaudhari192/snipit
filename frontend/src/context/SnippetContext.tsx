@@ -98,9 +98,10 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 
 				if (user) {
 					// Use current state for page number
+					const limit = isFirstLoad ? 20 : 10;
 					const backendData = await getUserPastes(
 						isFirstLoad ? 1 : historyStateRef.current.page,
-						10,
+						limit,
 					);
 					fetchedPastes = backendData.pastes;
 					hasMore = backendData.hasMore;
@@ -203,9 +204,10 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 
 			try {
 				if (user) {
+					const limit = isFirstLoad ? 20 : 10;
 					const data = await getUserPastes(
 						isFirstLoad ? 1 : profileStateRef.current.page,
-						10,
+						limit,
 					);
 
 					setProfile((prev) => ({
@@ -323,10 +325,15 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 		[user, t],
 	);
 
-	// Clear states when user changes/logs out
+	// Load history and stats when user changes or on mount
 	useEffect(() => {
 		clearHistoryState();
-	}, [user, clearHistoryState]);
+		loadHistory(true);
+		if (user) {
+			loadProfile(true);
+			loadStats();
+		}
+	}, [user, clearHistoryState, loadHistory, loadProfile, loadStats]);
 
 	return (
 		<SnippetContext.Provider

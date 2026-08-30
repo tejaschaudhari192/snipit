@@ -189,7 +189,7 @@ export const EditorContent = memo(
 		);
 
 		const linkHistory = (historyItems || []).filter(
-			(item) => item.contentMode === "link",
+			(item) => item.contentMode === "link" || Boolean(item.redirectUrl),
 		);
 
 		return (
