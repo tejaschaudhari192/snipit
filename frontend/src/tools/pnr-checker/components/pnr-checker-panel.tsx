@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -6,8 +6,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
-import { Train, Search, MapPin, Clock, Users } from "lucide-react";
+import { Train, Search, MapPin, Clock, Users, FileText } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
+
+interface Passenger {
+	number: number;
+	name?: string;
+	status: string;
+	bookingStatus?: string;
+}
 
 interface PnrData {
 	pnr: string;
@@ -17,16 +24,15 @@ interface PnrData {
 	to: string;
 	departure: string;
 	arrival: string;
-	status1: string;
-	status2: string;
-	status3: string;
-	status4: string;
+	chartStatus?: string;
+	passengers: Passenger[];
+	error?: string;
 }
 
 const PNR_API_BASE =
-	"https://script.google.com/macros/s/AKfycbyMKD4_ctvENrS1PBfJLcnZHJOM_SrA9bFyAdUPyQL1Oanx7OedKwjUXjYyI1ymhpNa/exec";
+	"https://script.google.com/macros/s/AKfycbx_pF93QSYWt6XJJQ5XGX5slYaa-k-iRXexeUizZJYPPJukioV_cpwlopb2ugVXCE_Y/exec";
 
-export const PnrCheckerPanel = () => {
+export const PnrCheckerPanel: React.FC = () => {
 	const { t } = useTranslation();
 	const [pnrInput, setPnrInput] = useState("");
 	const [loading, setLoading] = useState(false);
@@ -36,12 +42,12 @@ export const PnrCheckerPanel = () => {
 	const checkPNR = useCallback(async () => {
 		const pnr = pnrInput.trim();
 		if (!pnr) {
-			setError(t("tools.pnr_checker.enter_pnr"));
+			setError(t("tools.pnr_checker.enter_pnr", "Please enter a PNR number."));
 			return;
 		}
 
 		if (!/^\d{10}$/.test(pnr)) {
-			setError(t("tools.pnr_checker.invalid_pnr"));
+			setError(t("tools.pnr_checker.invalid_pnr", "PNR must be exactly 10 digits."));
 			return;
 		}
 
@@ -53,12 +59,12 @@ export const PnrCheckerPanel = () => {
 			const url = `${PNR_API_BASE}?pnr=${encodeURIComponent(pnr)}`;
 			const response = await fetch(url);
 			if (!response.ok) {
-				throw new Error(t("tools.pnr_checker.api_error"));
+				throw new Error(t("tools.pnr_checker.api_error", "Failed to communicate with service."));
 			}
 			const result: PnrData = await response.json();
 
-			if ("error" in result && result.error) {
-				setError(result.error as unknown as string);
+			if (result.error) {
+				setError(result.error);
 				return;
 			}
 
@@ -67,48 +73,25 @@ export const PnrCheckerPanel = () => {
 			setError(
 				err instanceof Error
 					? err.message
-					: t("tools.pnr_checker.api_error"),
+					: t("tools.pnr_checker.api_error", "An unexpected error occurred."),
 			);
 		} finally {
 			setLoading(false);
 		}
 	}, [pnrInput, t]);
 
-	const handleKeyDown = (e: React.KeyboardEvent) => {
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === "Enter") {
 			checkPNR();
 		}
 	};
 
-	const renderPassengerStatus = (num: number, status: string) => {
-		if (!status) return null;
-
-		const isConfirmed =
-			status.toLowerCase().includes("confirm") ||
-			status.toLowerCase().includes("cnf");
-		const isRac = status.toLowerCase().includes("rac");
-		const isWl = status.toLowerCase().includes("wl");
-
-		let variant: "default" | "secondary" | "destructive" | "outline" =
-			"default";
-		if (isConfirmed) variant = "default";
-		else if (isRac) variant = "secondary";
-		else if (isWl) variant = "destructive";
-		else variant = "outline";
-
-		return (
-			<div
-				key={`passenger-${num}`}
-				className="flex justify-between items-center py-2"
-			>
-				<span className="text-sm font-medium text-muted-foreground">
-					{t("tools.pnr_checker.passenger", { number: num })}
-				</span>
-				<Badge variant={variant} className="text-xs font-semibold">
-					{status}
-				</Badge>
-			</div>
-		);
+	const getStatusVariant = (status: string): "default" | "secondary" | "destructive" | "outline" => {
+		const s = status.toLowerCase();
+		if (s.includes("confirm") || s.includes("cnf")) return "default";
+		if (s.includes("rac")) return "secondary";
+		if (s.includes("wl") || s.includes("waiting")) return "destructive";
+		return "outline";
 	};
 
 	return (
@@ -117,11 +100,8 @@ export const PnrCheckerPanel = () => {
 			<Card className="border-border/50 bg-background/60 backdrop-blur-xl shadow-xl">
 				<CardContent className="p-6 space-y-4">
 					<div className="space-y-2">
-						<Label
-							htmlFor="pnr-input"
-							className="text-sm font-semibold"
-						>
-							{t("tools.pnr_checker.label")}
+						<Label htmlFor="pnr-input" className="text-sm font-semibold">
+							{t("tools.pnr_checker.label", "Enter 10-digit PNR Number")}
 						</Label>
 						<div className="flex gap-2">
 							<Input
@@ -130,20 +110,16 @@ export const PnrCheckerPanel = () => {
 								inputMode="numeric"
 								pattern="\d*"
 								maxLength={10}
-								placeholder={t("tools.pnr_checker.placeholder")}
+								placeholder={t("tools.pnr_checker.placeholder", "e.g. 4556055697")}
 								value={pnrInput}
-								onChange={(e) =>
-									setPnrInput(
-										e.target.value.replace(/\D/g, ""),
-									)
-								}
+								onChange={(e) => setPnrInput(e.target.value.replace(/\D/g, ""))}
 								onKeyDown={handleKeyDown}
 								disabled={loading}
-								className="flex-1 h-11 text-base"
+								className="flex-1 h-11 text-base font-mono tracking-wider"
 							/>
 							<Button
 								onClick={checkPNR}
-								disabled={loading || !pnrInput.trim()}
+								disabled={loading || pnrInput.trim().length !== 10}
 								className="h-11 px-6 gap-2"
 							>
 								{loading ? (
@@ -151,14 +127,14 @@ export const PnrCheckerPanel = () => {
 								) : (
 									<Search className="h-4 w-4" />
 								)}
-								{t("tools.pnr_checker.check")}
+								{t("tools.pnr_checker.check", "Check Status")}
 							</Button>
 						</div>
 					</div>
 				</CardContent>
 			</Card>
 
-			{/* Error */}
+			{/* Error State */}
 			{error && (
 				<Card className="border-destructive/30 bg-destructive/5 backdrop-blur-xl">
 					<CardContent className="p-4 text-destructive text-sm font-medium">
@@ -167,79 +143,108 @@ export const PnrCheckerPanel = () => {
 				</Card>
 			)}
 
-			{/* Result */}
+			{/* Result Section */}
 			{data && (
 				<Card className="border-border/50 bg-background/60 backdrop-blur-xl shadow-xl overflow-hidden">
 					<CardContent className="p-6 space-y-5">
-						{/* Train Info */}
-						<div className="space-y-1">
-							<div className="flex items-center gap-2">
-								<Train className="h-5 w-5 text-primary shrink-0" />
-								<h2 className="text-xl font-bold text-foreground">
-									{data.train}
-								</h2>
+						{/* Train Info & Badges */}
+						<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+							<div className="space-y-1">
+								<div className="flex items-center gap-2">
+									<Train className="h-5 w-5 text-primary shrink-0" />
+									<h2 className="text-lg sm:text-xl font-bold text-foreground">
+										{data.train}
+									</h2>
+								</div>
+								<div className="flex flex-wrap items-center gap-2 ml-7">
+									<Badge variant="secondary" className="text-xs">
+										{data.class}
+									</Badge>
+									<Badge variant="outline" className="text-xs font-mono">
+										PNR: {data.pnr}
+									</Badge>
+								</div>
 							</div>
-							<div className="flex items-center gap-2 ml-7">
-								<Badge variant="secondary" className="text-xs">
-									{data.class}
-								</Badge>
-								<Badge
-									variant="outline"
-									className="text-xs font-mono"
-								>
-									PNR: {data.pnr}
-								</Badge>
-							</div>
+
+							{data.chartStatus && (
+								<div className="flex items-center gap-1.5 self-start sm:self-center ml-7 sm:ml-0 text-xs font-medium text-muted-foreground">
+									<FileText className="h-3.5 w-3.5 text-primary" />
+									<span>{data.chartStatus}</span>
+								</div>
+							)}
 						</div>
 
 						<Separator />
 
-						{/* Route */}
+						{/* Route & Times */}
 						<div className="flex justify-between items-center gap-4">
 							<div className="flex-1 text-left">
-								<div className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
-									<Clock className="h-3.5 w-3.5 text-primary" />
-									{data.departure}
+								<div className="flex items-center gap-1.5 text-base font-semibold text-foreground">
+									<Clock className="h-4 w-4 text-primary" />
+									{data.departure || "--:--"}
 								</div>
-								<div className="flex items-center gap-1.5 text-sm text-muted-foreground mt-1">
+								<div className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground mt-1">
 									<MapPin className="h-3.5 w-3.5" />
-									{data.from}
+									{data.from || "Origin"}
 								</div>
 							</div>
 
-							<div className="text-muted-foreground text-lg font-light px-2">
+							<div className="text-muted-foreground text-xl font-light px-2">
 								→
 							</div>
 
 							<div className="flex-1 text-right">
-								<div className="flex items-center justify-end gap-1.5 text-sm font-semibold text-foreground">
-									<Clock className="h-3.5 w-3.5 text-primary" />
-									{data.arrival}
+								<div className="flex items-center justify-end gap-1.5 text-base font-semibold text-foreground">
+									<Clock className="h-4 w-4 text-primary" />
+									{data.arrival || "--:--"}
 								</div>
-								<div className="flex items-center justify-end gap-1.5 text-sm text-muted-foreground mt-1">
+								<div className="flex items-center justify-end gap-1.5 text-xs sm:text-sm text-muted-foreground mt-1">
 									<MapPin className="h-3.5 w-3.5" />
-									{data.to}
+									{data.to || "Destination"}
 								</div>
 							</div>
 						</div>
 
 						<Separator />
 
-						{/* Passenger Status */}
-						<div className="space-y-1">
-							<div className="flex items-center gap-2 mb-3">
+						{/* Passenger Statuses */}
+						<div className="space-y-3">
+							<div className="flex items-center gap-2">
 								<Users className="h-4 w-4 text-primary" />
 								<span className="text-sm font-semibold text-foreground">
-									{t("tools.pnr_checker.booking_status")}
+									{t("tools.pnr_checker.booking_status", "Passenger Status")}
 								</span>
 							</div>
-							{renderPassengerStatus(1, data.status1)}
-							{renderPassengerStatus(2, data.status2)}
-							{renderPassengerStatus(3, data.status3)}
-							{renderPassengerStatus(4, data.status4)}
-							{!data.status1 && (
+
+							{data.passengers && data.passengers.length > 0 ? (
+								<div className="divide-y divide-border/40">
+									{data.passengers.map((pax) => (
+										<div
+											key={`pax-${pax.number}`}
+											className="flex justify-between items-center py-2.5"
+										>
+											<div className="flex flex-col">
+												<span className="text-sm font-medium text-foreground">
+													{pax.name || `Passenger ${pax.number}`}
+												</span>
+												{pax.bookingStatus && (
+													<span className="text-xs text-muted-foreground">
+														Booking: {pax.bookingStatus}
+													</span>
+												)}
+											</div>
+											<Badge
+												variant={getStatusVariant(pax.status)}
+												className="text-xs font-semibold px-2.5 py-1"
+											>
+												{pax.status}
+											</Badge>
+										</div>
+									))}
+								</div>
+							) : (
 								<p className="text-sm text-muted-foreground italic">
-									{t("tools.pnr_checker.no_status")}
+									{t("tools.pnr_checker.no_status", "No passenger status available.")}
 								</p>
 							)}
 						</div>
