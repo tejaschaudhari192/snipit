@@ -10,27 +10,25 @@ import { Train, Search, MapPin, Clock, Users, FileText } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 
 interface Passenger {
-	number: number;
-	name?: string;
-	status: string;
-	bookingStatus?: string;
+  number: number;
+  name: string;
+  status: string;
 }
 
 interface PnrData {
-	pnr: string;
-	train: string;
-	class: string;
-	from: string;
-	to: string;
-	departure: string;
-	arrival: string;
-	chartStatus?: string;
-	passengers: Passenger[];
-	error?: string;
+  pnr: string;
+  train: string;
+  class: string;
+  from: string;
+  to: string;
+  departure: string;
+  arrival: string;
+  chartStatus?: string;
+  passengers: Passenger[];
 }
 
 const PNR_API_BASE =
-	"https://script.google.com/macros/s/AKfycbx_pF93QSYWt6XJJQ5XGX5slYaa-k-iRXexeUizZJYPPJukioV_cpwlopb2ugVXCE_Y/exec";
+	"https://script.google.com/macros/s/AKfycbweY_lbIP6YKNTI8KS5viPFShBsE5eVBmK_Wb2W-3YEqIGX2WdRseJQtdQ5YorQs_Am/exec";
 
 export const PnrCheckerPanel: React.FC = () => {
 	const { t } = useTranslation();
@@ -207,46 +205,42 @@ export const PnrCheckerPanel: React.FC = () => {
 
 						<Separator />
 
-						{/* Passenger Statuses */}
-						<div className="space-y-3">
-							<div className="flex items-center gap-2">
-								<Users className="h-4 w-4 text-primary" />
-								<span className="text-sm font-semibold text-foreground">
-									{t("tools.pnr_checker.booking_status", "Passenger Status")}
-								</span>
-							</div>
-
-							{data.passengers && data.passengers.length > 0 ? (
-								<div className="divide-y divide-border/40">
-									{data.passengers.map((pax) => (
-										<div
-											key={`pax-${pax.number}`}
-											className="flex justify-between items-center py-2.5"
-										>
-											<div className="flex flex-col">
-												<span className="text-sm font-medium text-foreground">
-													{pax.name || `Passenger ${pax.number}`}
-												</span>
-												{pax.bookingStatus && (
-													<span className="text-xs text-muted-foreground">
-														Booking: {pax.bookingStatus}
-													</span>
-												)}
-											</div>
-											<Badge
-												variant={getStatusVariant(pax.status)}
-												className="text-xs font-semibold px-2.5 py-1"
-											>
-												{pax.status}
-											</Badge>
-										</div>
-									))}
-								</div>
-							) : (
-								<p className="text-sm text-muted-foreground italic">
-									{t("tools.pnr_checker.no_status", "No passenger status available.")}
-								</p>
-							)}
+						{/* Passenger Status */}
+						<div className="space-y-2">
+						  <div className="flex items-center gap-2 mb-3">
+						    <Users className="h-4 w-4 text-primary" />
+						    <span className="text-sm font-semibold text-foreground">
+						      {t("tools.pnr_checker.booking_status")}
+						    </span>
+						  </div>
+						
+						  {data.passengers && data.passengers.length > 0 ? (
+						    data.passengers.map((pax) => {
+						      const isConfirmed = pax.status.toLowerCase().includes("cnf") || pax.status.toLowerCase().includes("confirm");
+						      const isRac = pax.status.toLowerCase().includes("rac");
+						      const isWl = pax.status.toLowerCase().includes("wl");
+						
+						      let variant: "default" | "secondary" | "destructive" | "outline" = "outline";
+						      if (isConfirmed) variant = "default";
+						      else if (isRac) variant = "secondary";
+						      else if (isWl) variant = "destructive";
+						
+						      return (
+						        <div key={`pax-${pax.number}`} className="flex justify-between items-center py-2 border-b border-border/30 last:border-0">
+						          <span className="text-sm font-medium text-muted-foreground">
+						            {pax.name}
+						          </span>
+						          <Badge variant={variant} className="text-xs font-semibold">
+						            {pax.status}
+						          </Badge>
+						        </div>
+						      );
+						    })
+						  ) : (
+						    <p className="text-sm text-muted-foreground italic">
+						      {t("tools.pnr_checker.no_status")}
+						    </p>
+						  )}
 						</div>
 					</CardContent>
 				</Card>
