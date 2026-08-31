@@ -30,7 +30,7 @@ interface PnrData {
 }
 
 const PNR_API_BASE =
-	"https://script.google.com/macros/s/AKfycbweY_lbIP6YKNTI8KS5viPFShBsE5eVBmK_Wb2W-3YEqIGX2WdRseJQtdQ5YorQs_Am/exec";
+	"https://script.google.com/macros/s/AKfycbxUYR4y9Jj9W6k_xqYTIRVewXQPcxfdP-jvj3TWrLWUqU9smyrfaAMEGkaHGQdRdFsh/exec";
 
 export const PnrCheckerPanel: React.FC = () => {
 	const { t } = useTranslation();
