@@ -40,8 +40,10 @@ export const CustomExpiryDialog = ({
 						</DialogTitle>
 					</div>
 					<p className="text-sm text-muted-foreground">
-						Choose a specific date and time for this snippet to
-						expire.
+						{t(
+							"home.expire_options.custom_desc",
+							"Choose a specific date and time for this snippet to expire.",
+						)}
 					</p>
 				</DialogHeader>
 
@@ -65,7 +67,7 @@ export const CustomExpiryDialog = ({
 						disabled={!customExpiryDate}
 						className="px-8 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all font-bold"
 					>
-						Set Expiry
+						{t("home.expire_options.set_expiry", "Set Expiry")}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { useFolders } from "@/context/FolderContext";
 import { Folder } from "lucide-react";
 import { FOLDER_COLORS } from "@/constants";
-
+import { useTranslation } from "react-i18next";
 import { type FolderData } from "@/types/pastes";
 
 interface CreateFolderDialogProps {
@@ -27,6 +27,7 @@ export const CreateFolderDialog: React.FC<CreateFolderDialogProps> = ({
 	parentId = null,
 	folderToEdit,
 }) => {
+	const { t } = useTranslation();
 	const { createFolder, renameFolder } = useFolders();
 	const [name, setName] = useState("");
 	const [selectedColor, setSelectedColor] = useState("");
@@ -63,7 +64,9 @@ export const CreateFolderDialog: React.FC<CreateFolderDialogProps> = ({
 				<form onSubmit={handleSubmit} className="space-y-4">
 					<DialogHeader>
 						<DialogTitle>
-							{folderToEdit ? "Rename Folder" : "New Folder"}
+							{folderToEdit
+								? t("folders.rename")
+								: t("folders.create_new")}
 						</DialogTitle>
 					</DialogHeader>
 
@@ -75,7 +78,7 @@ export const CreateFolderDialog: React.FC<CreateFolderDialogProps> = ({
 							/>
 							<Input
 								type="text"
-								placeholder="Folder name"
+								placeholder={t("profile.enter_folder_name")}
 								value={name}
 								onChange={(e) => setName(e.target.value)}
 								className="h-10"
@@ -87,7 +90,7 @@ export const CreateFolderDialog: React.FC<CreateFolderDialogProps> = ({
 						{/* Color Picker */}
 						<div className="space-y-1.5">
 							<span className="text-xs font-semibold text-muted-foreground tracking-wider uppercase">
-								Color Tag
+								{t("profile.color_tag", "Color Tag")}
 							</span>
 							<div className="flex flex-wrap gap-2">
 								{FOLDER_COLORS.map((color) => (
@@ -120,10 +123,12 @@ export const CreateFolderDialog: React.FC<CreateFolderDialogProps> = ({
 							variant="outline"
 							onClick={() => onOpenChange(false)}
 						>
-							Cancel
+							{t("common.actions.cancel")}
 						</Button>
 						<Button type="submit" disabled={!name.trim()}>
-							{folderToEdit ? "Save" : "Create"}
+							{folderToEdit
+								? t("common.actions.save")
+								: t("common.actions.create")}
 						</Button>
 					</DialogFooter>
 				</form>

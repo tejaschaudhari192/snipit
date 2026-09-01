@@ -113,11 +113,15 @@ export const ProfileInfo = ({
 								<>
 									<div className="flex items-center gap-1.5 min-w-0">
 										<span className="font-extrabold text-sm text-foreground truncate">
-											{user.username}
+											{isGuest
+												? t("header.guest")
+												: user.username}
 										</span>
 									</div>
 									<span className="text-[11px] text-muted-foreground truncate">
-										{user.email}
+										{isGuest
+											? t("header.guest_user")
+											: user.email}
 									</span>
 								</>
 							)}

@@ -152,7 +152,11 @@ export const SnippetCard = React.memo(
 													className="gap-2 cursor-pointer"
 												>
 													<FolderInput className="w-3.5 h-3.5" />
-													<span>Move to Folder</span>
+													<span>
+														{t(
+															"folders.move_snippet",
+														)}
+													</span>
 												</DropdownMenuItem>
 												<DropdownMenuSeparator />
 												<DropdownMenuItem
@@ -167,7 +171,11 @@ export const SnippetCard = React.memo(
 													className="gap-2 cursor-pointer"
 												>
 													<Trash2 className="w-3.5 h-3.5" />
-													<span>Delete</span>
+													<span>
+														{t(
+															"display.actions.delete",
+														)}
+													</span>
 												</DropdownMenuItem>
 											</DropdownMenuContent>
 										</DropdownMenu>
@@ -258,7 +266,11 @@ export const SnippetCard = React.memo(
 													className="gap-2 cursor-pointer text-xs"
 												>
 													<FolderInput className="w-3.5 h-3.5" />
-													<span>Move to Folder</span>
+													<span>
+														{t(
+															"folders.move_snippet",
+														)}
+													</span>
 												</DropdownMenuItem>
 												<DropdownMenuSeparator />
 												<DropdownMenuItem
@@ -273,7 +285,11 @@ export const SnippetCard = React.memo(
 													className="gap-2 cursor-pointer text-xs"
 												>
 													<Trash2 className="w-3.5 h-3.5" />
-													<span>Delete</span>
+													<span>
+														{t(
+															"display.actions.delete",
+														)}
+													</span>
 												</DropdownMenuItem>
 											</DropdownMenuContent>
 										</DropdownMenu>
@@ -309,7 +325,7 @@ export const SnippetCard = React.memo(
 								</div>
 								<div className="min-w-0 flex-1">
 									<span className="text-[9px] uppercase font-bold text-blue-500 tracking-wider">
-										Link Redirect
+										{t("editor.shorten_link")}
 									</span>
 									<p className="text-[11px] text-foreground/80 truncate font-mono mt-0.5 leading-tight">
 										{item.content}
@@ -326,7 +342,7 @@ export const SnippetCard = React.memo(
 										{t("common.drawing")}
 									</p>
 									<p className="text-[9px] text-muted-foreground font-mono mt-0.5">
-										Interactive Canvas
+										{t("editor.drawing")}
 									</p>
 								</div>
 							</div>

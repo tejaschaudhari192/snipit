@@ -699,7 +699,7 @@
 		"avatar": {
 			"title": "प्रोफ़ाइल फ़ोटो चुनें",
 			"description": "एक मॉक अवतार चुनें या अपने डिवाइस से अपनी छवि अपलोड करें।",
-			"change": "प्रोफ़ाइल फ़ोटो बदलें",
+			"change": "फ़ोटो बदलें",
 			"tab_mocks": "मॉक अवतार",
 			"tab_upload": "फ़ाइल अपलोड करें",
 			"drop_prompt": "अपलोड करने के लिए क्लिक करें या खींचें और छोड़ें",
@@ -708,14 +708,19 @@
 			"default_initials": "डिफ़ॉल्ट आद्याक्षर उपयोग किए जा रहे हैं",
 			"updated": "प्रोफ़ाइल फ़ोटो सफलतापूर्वक अपडेट की गई",
 			"update_failed": "प्रोफ़ाइल फ़ोटो अपडेट करने में विफल",
-			"invalid_image": "छवि संसाधित करने में विफल"
+			"invalid_image": "छवि संसाधित करने में विफल",
+			"updating": "फ़ोटो अपडेट हो रही है...",
+			"updated_success": "प्रोफ़ाइल फ़ोटो अपडेट हो गई",
+			"updated_failed": "प्रोफ़ाइल फ़ोटो अपडेट करने में विफल",
+			"cancel": "रद्द करें",
+			"save": "फ़ोटो सहेजें"
 		},
-		"folder_empty": "Folder is Empty",
-		"folder_empty_desc": "There are no snippets stored inside this folder yet.",
-		"create_snippet": "Create Snippet",
-		"root_no_folder": "Root (No Folder)",
-		"enter_folder_name": "Enter folder name:",
-		"enter_subfolder_name": "Enter subfolder name inside \"{{name}}\":",
+		"folder_empty": "फ़ोल्डर खाली है",
+		"folder_empty_desc": "इस फ़ोल्डर में अभी तक कोई स्निपेट संग्रहीत नहीं है।",
+		"create_snippet": "स्निपेट बनाएं",
+		"root_no_folder": "रूट (कोई फ़ोल्डर नहीं)",
+		"enter_folder_name": "फ़ोल्डर का नाम दर्ज करें:",
+		"enter_subfolder_name": "\"{{name}}\" के अंदर सबफ़ोल्डर का नाम दर्ज करें:",
 		"edit_name": "नाम संपादित करें"
 	},
 	"home": {
@@ -820,7 +825,10 @@
 			"semantic_placeholder": "आपकी सिमेंटिक आईडी...",
 			"semantic_generate": "शब्द उत्पन्न करें",
 			"semantic_words": "शब्द",
-			"custom_id_required": "कस्टम आईडी आवश्यक है"
+			"custom_id_required": "कस्टम आईडी आवश्यक है",
+			"current_id": "वर्तमान आईडी",
+			"available": "उपलब्ध",
+			"taken": "अनुपलब्ध"
 		},
 		"misc": {
 			"advanced_config": "उन्नत कॉन्फ़िगरेशन",

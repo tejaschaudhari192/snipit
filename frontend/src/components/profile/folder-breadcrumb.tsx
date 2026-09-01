@@ -1,6 +1,7 @@
 import React from "react";
 import { Home, Folder } from "lucide-react";
 import type { FolderData } from "@/types";
+import { useTranslation } from "react-i18next";
 import {
 	Breadcrumb,
 	BreadcrumbList,
@@ -21,6 +22,7 @@ export const FolderBreadcrumb: React.FC<FolderBreadcrumbProps> = ({
 	folders,
 	onNavigate,
 }) => {
+	const { t } = useTranslation();
 	// Build breadcrumb path
 	const getPath = (): FolderData[] => {
 		if (!activeFolderId) return [];
@@ -52,7 +54,7 @@ export const FolderBreadcrumb: React.FC<FolderBreadcrumbProps> = ({
 					{activeFolderId === null ? (
 						<BreadcrumbPage className="flex items-center gap-1 font-bold text-primary">
 							<Home className="w-3.5 h-3.5" />
-							<span>Root</span>
+							<span>{t("folders.root")}</span>
 						</BreadcrumbPage>
 					) : (
 						<BreadcrumbLink
@@ -60,7 +62,7 @@ export const FolderBreadcrumb: React.FC<FolderBreadcrumbProps> = ({
 							className="flex items-center gap-1 font-bold hover:text-primary transition-colors cursor-pointer"
 						>
 							<Home className="w-3.5 h-3.5" />
-							<span>Root</span>
+							<span>{t("folders.root")}</span>
 						</BreadcrumbLink>
 					)}
 				</BreadcrumbItem>
@@ -80,7 +82,7 @@ export const FolderBreadcrumb: React.FC<FolderBreadcrumbProps> = ({
 													folder.color || undefined,
 											}}
 										/>
-										<span className="truncate max-w-[140px]">
+										<span className="truncate max-w-35">
 											{folder.name}
 										</span>
 									</BreadcrumbPage>
@@ -96,7 +98,7 @@ export const FolderBreadcrumb: React.FC<FolderBreadcrumbProps> = ({
 													folder.color || undefined,
 											}}
 										/>
-										<span className="truncate max-w-[140px]">
+										<span className="truncate max-w-35">
 											{folder.name}
 										</span>
 									</BreadcrumbLink>

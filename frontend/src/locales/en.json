@@ -820,7 +820,10 @@
 			"semantic_placeholder": "Your semantic ID...",
 			"semantic_generate": "Generate Words",
 			"semantic_words": "Words",
-			"custom_id_required": "Custom ID is required"
+			"custom_id_required": "Custom ID is required",
+			"current_id": "Current ID",
+			"available": "Available",
+			"taken": "Taken"
 		},
 		"misc": {
 			"advanced_config": "Advanced Configuration",

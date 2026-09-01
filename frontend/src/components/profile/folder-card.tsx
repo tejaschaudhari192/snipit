@@ -1,6 +1,7 @@
 import React from "react";
 import { Folder, MoreVertical, Edit2, Move, Trash2 } from "lucide-react";
 import type { FolderData } from "@/types";
+import { useTranslation } from "react-i18next";
 import {
 	DropdownMenu,
 	DropdownMenuTrigger,
@@ -19,6 +20,7 @@ interface FolderCardProps {
 }
 
 export const FolderCard: React.FC<FolderCardProps> = ({ folder, index }) => {
+	const { t } = useTranslation();
 	const {
 		setActiveFolderId,
 		isRenameOpen,
@@ -78,7 +80,7 @@ export const FolderCard: React.FC<FolderCardProps> = ({ folder, index }) => {
 							{folder.name}
 						</h4>
 						<span className="text-[10px] font-semibold text-muted-foreground/80">
-							Folder
+							{t("folders.subfolders", "Folder")}
 						</span>
 					</div>
 				</div>
@@ -98,7 +100,7 @@ export const FolderCard: React.FC<FolderCardProps> = ({ folder, index }) => {
 								className="gap-2 cursor-pointer text-xs"
 							>
 								<Edit2 className="w-3.5 h-3.5" />
-								<span>Rename</span>
+								<span>{t("folders.rename")}</span>
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() =>
@@ -111,7 +113,7 @@ export const FolderCard: React.FC<FolderCardProps> = ({ folder, index }) => {
 								className="gap-2 cursor-pointer text-xs"
 							>
 								<Move className="w-3.5 h-3.5" />
-								<span>Move</span>
+								<span>{t("folders.move_folder")}</span>
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem
@@ -120,7 +122,7 @@ export const FolderCard: React.FC<FolderCardProps> = ({ folder, index }) => {
 								className="gap-2 cursor-pointer text-xs font-bold"
 							>
 								<Trash2 className="w-3.5 h-3.5" />
-								<span>Delete</span>
+								<span>{t("folders.delete")}</span>
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
