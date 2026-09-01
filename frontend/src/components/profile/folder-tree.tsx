@@ -1,19 +1,14 @@
 import React from "react";
-import { Tree, NodeApi } from "react-arborist";
-import {
-	Plus,
-	Edit,
-	Trash2,
-	Folder,
-	FolderOpen,
-	ChevronRight,
-	ChevronDown,
-	FolderPlus,
-} from "lucide-react";
+import { Tree } from "react-arborist";
+import { Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { useFolders, type FolderTreeNode } from "@/context/FolderContext";
+import { useFolders } from "@/context/FolderContext";
+import { useAuth } from "@/context/AuthContext";
 import { CreateFolderDialog } from "./create-folder-dialog";
 import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
+import { GuestFolderPrompt } from "./guest-folder-prompt";
+import { EmptyFolderTree } from "./empty-folder-tree";
+import { FolderTreeNodeRow } from "./folder-tree-node-row";
 import { useFolderActions } from "@/hooks/use-folder-actions";
 
 export const FolderTree: React.FC = () => {
@@ -63,6 +58,8 @@ export const FolderTree: React.FC = () => {
 	const containerRef = React.useRef<HTMLDivElement>(null);
 	const [dimensions, setDimensions] = React.useState({ width: 0, height: 0 });
 
+	const { user } = useAuth();
+
 	React.useLayoutEffect(() => {
 		if (!containerRef.current) return;
 		const updateSize = () => {
@@ -78,6 +75,10 @@ export const FolderTree: React.FC = () => {
 		observer.observe(containerRef.current);
 		return () => observer.disconnect();
 	}, []);
+
+	if (!user) {
+		return <GuestFolderPrompt />;
+	}
 
 	return (
 		<div className="w-full h-full flex flex-col min-h-0 gap-3">
@@ -110,19 +111,7 @@ export const FolderTree: React.FC = () => {
 					</p>
 				</div>
 			) : foldersTree.length === 0 ? (
-				<div className="text-center py-6 px-4 border border-dashed rounded-2xl border-border/60 bg-muted/10 transition-all hover:bg-muted/20">
-					<FolderPlus className="w-8 h-8 mx-auto text-muted-foreground/40 mb-2" />
-					<p className="text-xs text-muted-foreground font-medium mb-2">
-						{t("folders.empty_hint")}
-					</p>
-					<button
-						onClick={() => openCreateDialog(null)}
-						className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline cursor-pointer"
-					>
-						<Plus className="w-4 h-4" />
-						<span>{t("folders.create_new")}</span>
-					</button>
-				</div>
+				<EmptyFolderTree onCreate={() => openCreateDialog(null)} />
 			) : (
 				<div
 					ref={containerRef}
@@ -139,149 +128,17 @@ export const FolderTree: React.FC = () => {
 							onMove={onMove}
 							onRename={onRename}
 						>
-							{({
-								node,
-								style,
-								dragHandle,
-							}: {
-								node: NodeApi<FolderTreeNode>;
-								style: React.CSSProperties;
-								dragHandle?: (
-									el: HTMLDivElement | null,
-								) => void;
-							}) => {
-								const isSelected = activeFolderId === node.id;
-								const hasChildren =
-									node.children && node.children.length > 0;
-
-								return (
-									<div
-										style={style}
-										ref={dragHandle}
-										onClick={() =>
-											setActiveFolderId(node.id)
-										}
-										className={`group flex items-center justify-between px-2.5 py-1.5 rounded-xl cursor-pointer transition-all ${
-											isSelected
-												? "bg-primary/15 text-primary font-extrabold shadow-xs"
-												: "hover:bg-muted/60 text-foreground/85"
-										}`}
-									>
-										<div className="flex items-center gap-2 min-w-0 flex-1">
-											{/* Expand / Collapse Indicator */}
-											{hasChildren ? (
-												<button
-													onClick={(e) => {
-														e.stopPropagation();
-														node.toggle();
-													}}
-													className="p-1 text-muted-foreground hover:text-foreground rounded-md"
-												>
-													{node.isOpen ? (
-														<ChevronDown className="w-4 h-4 shrink-0" />
-													) : (
-														<ChevronRight className="w-4 h-4 shrink-0" />
-													)}
-												</button>
-											) : (
-												<span className="w-5 shrink-0" />
-											)}
-
-											{/* Folder Icon */}
-											{node.isOpen ? (
-												<FolderOpen
-													className="w-4.5 h-4.5 shrink-0 text-primary transition-transform group-hover:scale-105"
-													style={{
-														color:
-															node.data.color ||
-															undefined,
-													}}
-												/>
-											) : (
-												<Folder
-													className="w-4.5 h-4.5 shrink-0 text-primary/80 transition-transform group-hover:scale-105"
-													style={{
-														color:
-															node.data.color ||
-															undefined,
-													}}
-												/>
-											)}
-
-											{/* Folder Name */}
-											{node.isEditing ? (
-												<input
-													type="text"
-													defaultValue={
-														node.data.name
-													}
-													onFocus={(e) =>
-														e.target.select()
-													}
-													onBlur={(e) =>
-														node.submit(
-															e.target.value,
-														)
-													}
-													onKeyDown={(e) => {
-														if (e.key === "Enter")
-															node.submit(
-																e.currentTarget
-																	.value,
-															);
-														if (e.key === "Escape")
-															node.reset();
-													}}
-													autoFocus
-													className="bg-background border border-primary text-xs px-2 py-0.5 rounded-md w-full outline-none font-medium"
-												/>
-											) : (
-												<span className="truncate text-xs font-semibold">
-													{node.data.name}
-												</span>
-											)}
-										</div>
-
-										{/* Action buttons on hover */}
-										<div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity shrink-0">
-											<button
-												onClick={(e) => {
-													e.stopPropagation();
-													openCreateDialog(node.id);
-												}}
-												className="p-1 text-muted-foreground hover:text-primary hover:bg-muted/80 rounded-md transition-colors"
-												title={t(
-													"folders.create_subfolder",
-												)}
-											>
-												<Plus className="w-3.5 h-3.5" />
-											</button>
-											<button
-												onClick={(e) => {
-													e.stopPropagation();
-													node.edit();
-												}}
-												className="p-1 text-muted-foreground hover:text-primary hover:bg-muted/80 rounded-md transition-colors"
-												title={t("folders.rename")}
-											>
-												<Edit className="w-3.5 h-3.5" />
-											</button>
-											<button
-												onClick={(e) => {
-													e.stopPropagation();
-													confirmDeleteFolder(
-														node.id,
-													);
-												}}
-												className="p-1 text-muted-foreground hover:text-destructive hover:bg-muted/80 rounded-md transition-colors"
-												title={t("folders.delete")}
-											>
-												<Trash2 className="w-3.5 h-3.5" />
-											</button>
-										</div>
-									</div>
-								);
-							}}
+							{({ node, style, dragHandle }) => (
+								<FolderTreeNodeRow
+									node={node}
+									style={style}
+									dragHandle={dragHandle}
+									isSelected={activeFolderId === node.id}
+									onSelect={setActiveFolderId}
+									onCreateSubfolder={openCreateDialog}
+									onDelete={confirmDeleteFolder}
+								/>
+							)}
 						</Tree>
 					)}
 				</div>

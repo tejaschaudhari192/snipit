@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Grid, List, Plus } from "lucide-react";
 import { useFolders } from "@/context/FolderContext";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { CreateFolderDialog } from "./create-folder-dialog";
 import { FolderCard } from "./folder-card";
@@ -20,42 +21,52 @@ export const ProfileFileManager: React.FC<ProfileFileManagerProps> = ({
 	subfolders: externalSubfolders,
 }) => {
 	const { t } = useTranslation();
+	const { user } = useAuth();
 	const { folders, activeFolderId, setActiveFolderId } = useFolders();
 
 	const [createOpen, setCreateOpen] = useState(false);
 
 	// Subfolders for the current active folder (Root or specific parent)
 	const currentSubfolders = React.useMemo(() => {
+		if (!user) return [];
 		return (
 			externalSubfolders ||
 			folders.filter((f) => f.parentId === activeFolderId)
 		);
-	}, [externalSubfolders, folders, activeFolderId]);
+	}, [user, externalSubfolders, folders, activeFolderId]);
 
 	return (
 		<div className="space-y-3 mb-5 select-none">
 			{/* Controls Bar: Breadcrumbs & View Toggle */}
 			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card/60 border border-border/40 backdrop-blur-xl rounded-2xl p-2.5 px-4 shadow-xs">
 				{/* Breadcrumb Navigation */}
-				<FolderBreadcrumb
-					activeFolderId={activeFolderId}
-					folders={folders}
-					onNavigate={setActiveFolderId}
-				/>
+				{user ? (
+					<FolderBreadcrumb
+						activeFolderId={activeFolderId}
+						folders={folders}
+						onNavigate={setActiveFolderId}
+					/>
+				) : (
+					<div className="text-xs font-semibold text-muted-foreground">
+						{t("profile.your_snippets")}
+					</div>
+				)}
 
 				{/* Right Actions: Create Subfolder & View Mode Toggle */}
 				<div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => setCreateOpen(true)}
-						className="h-8 gap-1.5 rounded-xl text-xs font-bold border-border/50 bg-background/50 hover:bg-primary/10 hover:text-primary transition-all cursor-pointer"
-					>
-						<Plus className="w-3.5 h-3.5" />
-						<span className="hidden xs:inline">
-							{t("folders.create_subfolder")}
-						</span>
-					</Button>
+					{user && (
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={() => setCreateOpen(true)}
+							className="h-8 gap-1.5 rounded-xl text-xs font-bold border-border/50 bg-background/50 hover:bg-primary/10 hover:text-primary transition-all cursor-pointer"
+						>
+							<Plus className="w-3.5 h-3.5" />
+							<span className="hidden xs:inline">
+								{t("folders.create_subfolder")}
+							</span>
+						</Button>
+					)}
 
 					<div className="flex items-center bg-muted/50 p-1 rounded-xl border border-border/30">
 						<button
