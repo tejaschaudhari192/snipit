@@ -313,7 +313,7 @@ class AiService {
 					max_tokens: isText ? 64 : 128,
 					stop: isText ? ["\n", "\n\n"] : ["\n\n", "```"],
 				},
-				{ preferredModel: configurations.groq_smart_model },
+				{ preferredModel: configurations.groq_dumb_model },
 			);
 
 			return chatCompletion.choices[0]?.message?.content?.trim() || "";
