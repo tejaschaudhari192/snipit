@@ -72,7 +72,7 @@ function PasswordManagerInner() {
 	const [isImportOpen, setIsImportOpen] = useState(false);
 	const isMobile = useIsMobile();
 	const dispatch = useAppDispatch();
-	const { user } = useAuth();
+	const { user, loading: authLoading } = useAuth();
 	const loading = useAppSelector(selectVaultLoading);
 	const error = useAppSelector(selectVaultError);
 	const hasExistingVault = useAppSelector(selectHasExistingVault);
@@ -90,12 +90,17 @@ function PasswordManagerInner() {
 	const { saveItem } = useItemMutations();
 
 	useEffect(() => {
+		if (authLoading) return;
+
 		if (user?._id) {
 			dispatch(setUserId(user._id));
 			dispatch(initializeVault());
 			dispatch(checkRecoveryKey());
+		} else {
+			dispatch(setUserId("guest"));
+			dispatch(setCloudVaultStatus("not_found"));
 		}
-	}, [user?._id, dispatch]);
+	}, [user?._id, authLoading, dispatch]);
 
 	if (hasExistingVault === null || cloudVaultStatus === "checking") {
 		return <InitialLoader />;
@@ -247,7 +252,7 @@ function PasswordManagerInner() {
 							}}
 							swipeDirection="right"
 						>
-							<DrawerContent className="sm:!w-[42rem] sm:!max-w-[42rem] p-0 border-l border-pm-border shadow-2xl h-full rounded-none">
+							<DrawerContent className="sm:w-2xl! sm:max-w-2xl! p-0 border-l border-pm-border shadow-2xl h-full rounded-none">
 								<Suspense fallback={<DetailSkeleton />}>
 									<PasswordDetail
 										item={activeItem}
