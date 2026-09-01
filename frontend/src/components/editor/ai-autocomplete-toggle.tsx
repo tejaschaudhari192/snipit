@@ -2,6 +2,7 @@ import { Switch } from "@/components/ui/switch";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/utils";
 import { AiCursorIcon } from "@/components/icons/ai-cursor-icon";
+import { useEditorEngine } from "@/hooks/use-editor-engine";
 import {
 	Tooltip,
 	TooltipContent,
@@ -21,6 +22,14 @@ export const AiAutocompleteToggle = ({
 	className,
 }: AiAutocompleteToggleProps) => {
 	const { t } = useTranslation();
+	const { editorEngine, setEditorEngine } = useEditorEngine();
+
+	const handleToggle = (nextVal: boolean) => {
+		if (nextVal && editorEngine === "native") {
+			setEditorEngine("monaco");
+		}
+		onToggle(nextVal);
+	};
 
 	return (
 		<TooltipProvider>
@@ -28,7 +37,7 @@ export const AiAutocompleteToggle = ({
 				<TooltipTrigger
 					render={
 						<div
-							onClick={() => onToggle(!enabled)}
+							onClick={() => handleToggle(!enabled)}
 							className={cn(
 								"flex items-center gap-2.5 px-2.5 h-9 rounded-md border transition-all duration-300 shadow-sm select-none cursor-pointer active:scale-95 group",
 								enabled
@@ -47,7 +56,7 @@ export const AiAutocompleteToggle = ({
 							/>
 							<Switch
 								checked={enabled}
-								onCheckedChange={onToggle}
+								onCheckedChange={handleToggle}
 								className={cn(
 									"scale-[0.8] transition-all duration-300",
 									"data-:bg-violet-500 data-:bg-foreground/20",

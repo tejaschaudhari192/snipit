@@ -20,6 +20,7 @@ export const useAiAutocomplete = ({
 }: UseAiAutocompleteOptions) => {
 	const providerRef = useRef<{ dispose: () => void } | null>(null);
 	const abortRef = useRef<AbortController | null>(null);
+	const cacheRef = useRef<Map<string, string>>(new Map());
 
 	const setupAutocomplete = useCallback(
 		(_editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
@@ -40,19 +41,6 @@ export const useAiAutocomplete = ({
 						_ctx: languages.InlineCompletionContext,
 						token: CancellationToken,
 					) => {
-						// Cancel previous in-flight request
-						abortRef.current?.abort();
-						abortRef.current = new AbortController();
-
-						// Debounce: wait 500ms after last keystroke
-						await new Promise<void>((resolve, reject) => {
-							const timeout = setTimeout(resolve, 500);
-							token.onCancellationRequested(() => {
-								clearTimeout(timeout);
-								reject(new Error("cancelled"));
-							});
-						});
-
 						const { prefix, suffix } = getMonacoContext(
 							model,
 							position,
@@ -62,14 +50,64 @@ export const useAiAutocomplete = ({
 							return { items: [] };
 						}
 
+						// Check local cache key: language + last 200 chars of prefix
+						const cacheKey = `${language}::${prefix.slice(-200)}`;
+						if (cacheRef.current.has(cacheKey)) {
+							const cached = cacheRef.current.get(cacheKey)!;
+							if (cached) {
+								return {
+									items: [
+										{
+											insertText: cached,
+											range: {
+												startLineNumber:
+													position.lineNumber,
+												startColumn: position.column,
+												endLineNumber:
+													position.lineNumber,
+												endColumn: position.column,
+											},
+										},
+									],
+								};
+							}
+						}
+
+						// Cancel previous in-flight request
+						abortRef.current?.abort();
+						const abortController = new AbortController();
+						abortRef.current = abortController;
+
+						// Snappy Debounce: wait 250ms after last keystroke
+						await new Promise<void>((resolve, reject) => {
+							const timeout = setTimeout(resolve, 250);
+							token.onCancellationRequested(() => {
+								clearTimeout(timeout);
+								abortController.abort();
+								reject(new Error("cancelled"));
+							});
+						});
+
+						if (
+							token.isCancellationRequested ||
+							abortController.signal.aborted
+						) {
+							return { items: [] };
+						}
+
 						try {
 							const { completion } = await getAutocomplete(
 								language,
 								prefix,
 								suffix,
+								abortController.signal,
 							);
 
-							if (!completion || token.isCancellationRequested) {
+							if (
+								!completion ||
+								token.isCancellationRequested ||
+								abortController.signal.aborted
+							) {
 								return { items: [] };
 							}
 
@@ -79,6 +117,15 @@ export const useAiAutocomplete = ({
 							);
 
 							if (!processed) return { items: [] };
+
+							// Save to cache (limit size to 100 entries)
+							if (cacheRef.current.size > 100) {
+								const firstKey = cacheRef.current
+									.keys()
+									.next().value;
+								if (firstKey) cacheRef.current.delete(firstKey);
+							}
+							cacheRef.current.set(cacheKey, processed);
 
 							return {
 								items: [

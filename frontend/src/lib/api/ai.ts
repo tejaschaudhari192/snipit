@@ -39,12 +39,17 @@ export const getAutocomplete = async (
 	language: string,
 	prefix: string,
 	suffix: string,
+	signal?: AbortSignal,
 ): Promise<{ completion: string }> => {
-	const response = await api.post("/ai/autocomplete", {
-		language,
-		prefix: prefix.slice(-1500),
-		suffix: suffix.slice(0, 500),
-	});
+	const response = await api.post(
+		"/ai/autocomplete",
+		{
+			language,
+			prefix: prefix.slice(-1200),
+			suffix: suffix.slice(0, 400),
+		},
+		{ signal },
+	);
 	return response.data;
 };
 

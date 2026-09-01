@@ -60,6 +60,7 @@ export const CONFIG = {
 	events: {
 		editorEngineChange: "snipit_editor_engine_change",
 		transliterationChange: "snipit_transliteration_change",
+		aiAutocompleteChange: "snipit_ai_autocomplete_change",
 	},
 
 	// Default Values

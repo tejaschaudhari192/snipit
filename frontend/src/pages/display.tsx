@@ -213,6 +213,24 @@ const DisplayPage = () => {
 	}, [contentType]);
 
 	useEffect(() => {
+		const handleEventChange = (e: Event) => {
+			const detail = (e as CustomEvent<boolean>).detail;
+			setIsAiAutocompleteEnabled(Boolean(detail));
+		};
+
+		window.addEventListener(
+			CONFIG.events.aiAutocompleteChange,
+			handleEventChange,
+		);
+		return () => {
+			window.removeEventListener(
+				CONFIG.events.aiAutocompleteChange,
+				handleEventChange,
+			);
+		};
+	}, []);
+
+	useEffect(() => {
 		storage.set(CONFIG.storageKeys.aiAutocomplete, isAiAutocompleteEnabled);
 		if (editorInstanceRef.current && monacoInstanceRef.current) {
 			setupAutocomplete(

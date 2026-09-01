@@ -85,6 +85,25 @@ export function useEditorEngine() {
 						type: "info",
 					});
 				}
+
+				const isAiAutocompleteEnabled =
+					localStore.getItem(CONFIG.storageKeys.aiAutocomplete) ===
+					"true";
+				if (isAiAutocompleteEnabled) {
+					localStore.setItem(
+						CONFIG.storageKeys.aiAutocomplete,
+						"false",
+					);
+					window.dispatchEvent(
+						new CustomEvent(CONFIG.events.aiAutocompleteChange, {
+							detail: false,
+						}),
+					);
+					toast.add({
+						title: "Switched to Simple editor (AI Autocomplete disabled)",
+						type: "info",
+					});
+				}
 			}
 
 			window.dispatchEvent(
