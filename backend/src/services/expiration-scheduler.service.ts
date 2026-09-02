@@ -1,5 +1,6 @@
 import logger from "@/config/logger.js";
 import pasteModel from "@/models/Paste.js";
+import expiredPasteModel from "@/models/ExpiredPaste.js";
 import type PasteService from "./paste.service.js";
 
 // Maximum 32-bit signed integer for setTimeout (~24.8 days)
@@ -56,6 +57,38 @@ class ExpirationSchedulerService {
 	}
 
 	/**
+	 * Archives expired paste to expired_pastes collection before deletion
+	 */
+	private async archiveExpiredPaste(pasteId: string) {
+		const paste = await pasteModel.findOne({ id: pasteId }).lean();
+		if (!paste) {
+			logger.warn(`Paste ${pasteId} not found for archiving`);
+			return false;
+		}
+
+		try {
+			await expiredPasteModel.create({
+				id: paste.id,
+				content: paste.content,
+				contentMode: paste.contentMode || "text",
+				originalExpiresAt: paste.expiresAt,
+				originalCreatedAt: paste.createdAt,
+				archivedAt: new Date(),
+				owner: paste.owner,
+				visibility: paste.visibility,
+				language: paste.language,
+			});
+			logger.info(
+				`✅ Archived expired paste ${pasteId} to expired_pastes collection`,
+			);
+			return true;
+		} catch (error) {
+			logger.error(`Failed to archive expired paste ${pasteId}:`, error);
+			return false;
+		}
+	}
+
+	/**
 	 * Triggers document deletion and Supabase file cleanup
 	 */
 	private async triggerDeletion(pasteId: string) {
@@ -70,6 +103,11 @@ class ExpirationSchedulerService {
 			logger.info(
 				`⏰ Cron-less real-time expiration triggered for snippet ${pasteId}`,
 			);
+
+			// Archive the expired paste before deletion
+			await this.archiveExpiredPaste(pasteId);
+
+			// Then delete the paste
 			await this.pasteService.deletePaste(pasteId);
 		} catch (error) {
 			logger.error(`Failed to auto-expire snippet ${pasteId}:`, error);

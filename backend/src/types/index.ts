@@ -211,3 +211,17 @@ export type IPaste = Document & {
 	files?: FileAttachment[] | undefined;
 	folderId?: string | null | undefined;
 };
+
+export type ExpiredPasteData = {
+	id: string;
+	content: string;
+	contentMode: string;
+	originalExpiresAt: Date;
+	originalCreatedAt: Date;
+	archivedAt: Date;
+	owner?: string | undefined;
+	visibility?: string | undefined;
+	language?: string | undefined;
+};
+
+export type IExpiredPaste = Document & ExpiredPasteData;

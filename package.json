@@ -7,11 +7,14 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "prepare": "husky",
+        "i:frontend": "cd frontend && pnpm i",
+        "i:backend": "cd backend && pnpm i",
         "dev:frontend": "cd frontend && pnpm dev",
         "dev:backend": "cd backend && pnpm dev",
         "format:frontend": "cd frontend && pnpm format",
         "format:backend": "cd backend && pnpm format",
         "format": "pnpm format:frontend && pnpm format:backend",
+        "i": "concurrently \"pnpm i:frontend\" \"pnpm i:backend\"",
         "dev": "concurrently \"pnpm dev:frontend\" \"pnpm dev:backend\""
     },
     "keywords": [],
