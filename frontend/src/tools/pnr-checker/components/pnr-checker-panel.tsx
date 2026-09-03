@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import { CONFIG } from "@/configurations";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ interface PnrData {
 	pnr: string;
 	train: string;
 	class: string;
+	date: string;
 	from: string;
 	to: string;
 	departure: string;
@@ -29,8 +31,7 @@ interface PnrData {
 	error?: string;
 }
 
-const PNR_API_BASE =
-	"https://script.google.com/macros/s/AKfycbxUYR4y9Jj9W6k_xqYTIRVewXQPcxfdP-jvj3TWrLWUqU9smyrfaAMEGkaHGQdRdFsh/exec";
+const PNR_API_BASE = CONFIG.pnrApiBaseUrl;
 
 export const PnrCheckerPanel: React.FC = () => {
 	const { t } = useTranslation();
@@ -42,12 +43,19 @@ export const PnrCheckerPanel: React.FC = () => {
 	const checkPNR = useCallback(async () => {
 		const pnr = pnrInput.trim();
 		if (!pnr) {
-			setError(t("tools.pnr_checker.enter_pnr", "Please enter a PNR number"));
+			setError(
+				t("tools.pnr_checker.enter_pnr", "Please enter a PNR number"),
+			);
 			return;
 		}
 
 		if (!/^\d{10}$/.test(pnr)) {
-			setError(t("tools.pnr_checker.invalid_pnr", "PNR must be exactly 10 digits"));
+			setError(
+				t(
+					"tools.pnr_checker.invalid_pnr",
+					"PNR must be exactly 10 digits",
+				),
+			);
 			return;
 		}
 
@@ -59,7 +67,12 @@ export const PnrCheckerPanel: React.FC = () => {
 			const url = `${PNR_API_BASE}?pnr=${encodeURIComponent(pnr)}`;
 			const response = await fetch(url);
 			if (!response.ok) {
-				throw new Error(t("tools.pnr_checker.api_error", "Failed to communicate with service"));
+				throw new Error(
+					t(
+						"tools.pnr_checker.api_error",
+						"Failed to communicate with service",
+					),
+				);
 			}
 
 			const result: PnrData = await response.json();
@@ -74,7 +87,10 @@ export const PnrCheckerPanel: React.FC = () => {
 			setError(
 				err instanceof Error
 					? err.message
-					: t("tools.pnr_checker.api_error", "Failed to fetch PNR status"),
+					: t(
+							"tools.pnr_checker.api_error",
+							"Failed to fetch PNR status",
+						),
 			);
 		} finally {
 			setLoading(false);
@@ -87,12 +103,25 @@ export const PnrCheckerPanel: React.FC = () => {
 		}
 	};
 
-	const getStatusVariant = (status: string): "default" | "secondary" | "destructive" | "outline" => {
+	const getStatusVariant = (
+		status: string,
+	): "default" | "secondary" | "destructive" | "outline" => {
 		const s = status.toLowerCase();
 		if (s.includes("confirm") || s.includes("cnf")) return "default";
 		if (s.includes("rac")) return "secondary";
 		if (s.includes("wl") || s.includes("wait")) return "destructive";
 		return "outline";
+	};
+
+	const formatJourneyDate = (date: string) => {
+		const parsedDate = new Date(`${date}T00:00:00`);
+		return Number.isNaN(parsedDate.getTime())
+			? date
+			: parsedDate.toLocaleDateString(undefined, {
+					day: "2-digit",
+					month: "short",
+					year: "numeric",
+				});
 	};
 
 	return (
@@ -101,8 +130,14 @@ export const PnrCheckerPanel: React.FC = () => {
 			<Card className="border-border/50 bg-background/60 backdrop-blur-xl shadow-xl">
 				<CardContent className="p-6 space-y-4">
 					<div className="space-y-2">
-						<Label htmlFor="pnr-input" className="text-sm font-semibold">
-							{t("tools.pnr_checker.label", "Enter 10-digit PNR Number")}
+						<Label
+							htmlFor="pnr-input"
+							className="text-sm font-semibold"
+						>
+							{t(
+								"tools.pnr_checker.label",
+								"Enter 10-digit PNR Number",
+							)}
 						</Label>
 						<div className="flex gap-2">
 							<Input
@@ -111,16 +146,25 @@ export const PnrCheckerPanel: React.FC = () => {
 								inputMode="numeric"
 								pattern="\d*"
 								maxLength={10}
-								placeholder={t("tools.pnr_checker.placeholder", "e.g. 4556055697")}
+								placeholder={t(
+									"tools.pnr_checker.placeholder",
+									"e.g. 4556055697",
+								)}
 								value={pnrInput}
-								onChange={(e) => setPnrInput(e.target.value.replace(/\D/g, ""))}
+								onChange={(e) =>
+									setPnrInput(
+										e.target.value.replace(/\D/g, ""),
+									)
+								}
 								onKeyDown={handleKeyDown}
 								disabled={loading}
 								className="flex-1 h-11 text-base font-mono tracking-wider"
 							/>
 							<Button
 								onClick={checkPNR}
-								disabled={loading || pnrInput.trim().length !== 10}
+								disabled={
+									loading || pnrInput.trim().length !== 10
+								}
 								className="h-11 px-6 gap-2"
 							>
 								{loading ? (
@@ -158,11 +202,23 @@ export const PnrCheckerPanel: React.FC = () => {
 									</h2>
 								</div>
 								<div className="flex flex-wrap items-center gap-2 ml-7">
-									<Badge variant="secondary" className="text-xs">
+									<Badge
+										variant="secondary"
+										className="text-xs"
+									>
 										{data.class}
 									</Badge>
-									<Badge variant="outline" className="text-xs font-mono">
+									<Badge
+										variant="outline"
+										className="text-xs font-mono"
+									>
 										PNR: {data.pnr}
+									</Badge>
+									<Badge
+										variant="outline"
+										className="text-xs"
+									>
+										{formatJourneyDate(data.date)}
 									</Badge>
 								</div>
 							</div>
@@ -213,7 +269,10 @@ export const PnrCheckerPanel: React.FC = () => {
 							<div className="flex items-center gap-2 mb-2">
 								<Users className="h-4 w-4 text-primary" />
 								<span className="text-sm font-semibold text-foreground">
-									{t("tools.pnr_checker.booking_status", "Passenger Status")}
+									{t(
+										"tools.pnr_checker.booking_status",
+										"Passenger Status",
+									)}
 								</span>
 							</div>
 
@@ -227,19 +286,27 @@ export const PnrCheckerPanel: React.FC = () => {
 											<div className="flex flex-col">
 												<span className="text-sm font-medium text-foreground">
 													{passenger.name ||
-														t("tools.pnr_checker.passenger", {
-															number: passenger.number,
-															defaultValue: `Passenger ${passenger.number}`,
-														})}
+														t(
+															"tools.pnr_checker.passenger",
+															{
+																number: passenger.number,
+																defaultValue: `Passenger ${passenger.number}`,
+															},
+														)}
 												</span>
 												{passenger.bookingStatus && (
 													<span className="text-xs text-muted-foreground">
-														Booking: {passenger.bookingStatus}
+														Booking:{" "}
+														{
+															passenger.bookingStatus
+														}
 													</span>
 												)}
 											</div>
 											<Badge
-												variant={getStatusVariant(passenger.status)}
+												variant={getStatusVariant(
+													passenger.status,
+												)}
 												className="text-xs font-semibold px-2.5 py-1"
 											>
 												{passenger.status}
@@ -249,7 +316,10 @@ export const PnrCheckerPanel: React.FC = () => {
 								</div>
 							) : (
 								<p className="text-sm text-muted-foreground italic">
-									{t("tools.pnr_checker.no_status", "No passenger status details available")}
+									{t(
+										"tools.pnr_checker.no_status",
+										"No passenger status details available",
+									)}
 								</p>
 							)}
 						</div>
