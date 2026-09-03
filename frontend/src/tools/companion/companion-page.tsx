@@ -158,7 +158,7 @@ export const CompanionPage: React.FC = () => {
 				activeAudioRef.current.pause();
 			}
 		};
-	}, []);
+	}, [selectedModel]);
 
 	// Auto scroll to bottom
 	const scrollToBottom = () => {

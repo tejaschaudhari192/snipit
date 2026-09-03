@@ -3,6 +3,17 @@ export interface Passenger {
 	name: string;
 	status: string;
 	bookingStatus?: string | undefined;
+	prediction?: string | undefined;
+	confirmTktStatus?: string | undefined;
+	coach?: string | undefined;
+	berth?: string | number | undefined;
+}
+
+export interface PnrIntelligenceBenefit {
+	type?: string | undefined;
+	text?: string | undefined;
+	unlockedText?: string | undefined;
+	color?: string | undefined;
 }
 
 export interface PnrData {
@@ -22,6 +33,18 @@ export interface PnrData {
 	duration?: string | undefined;
 	chartStatus?: string | undefined;
 	passengers: Passenger[];
+	coachPosition?: string | undefined;
+	expectedPlatformNo?: string | undefined;
+	ticketFare?: string | number | undefined;
+	ratings?:
+		| {
+				overall?: number | undefined;
+				cleanliness?: number | undefined;
+				punctuality?: number | undefined;
+				food?: number | undefined;
+		  }
+		| undefined;
+	benefits?: PnrIntelligenceBenefit[] | undefined;
 	error?: string | undefined;
 }
 
@@ -200,5 +223,236 @@ export interface PaytmLiveStatusApiResponse {
 		};
 	};
 	body?: PaytmLiveStatusBody;
+	code?: number;
+}
+
+// Paytm Search Trains Between Stations API Types
+export interface PaytmTrainAvailabilityClass {
+	code: string;
+	name: string;
+	status: string;
+	status_shortform?: string;
+	available_flag: boolean | string;
+	fare: number | string;
+	time_of_availability?: string;
+	colour?: string;
+	quota?: string;
+	pnr_prediction?: {
+		value?: number;
+		color?: string;
+	};
+}
+
+export interface PaytmSearchTrainItem {
+	departure: string;
+	arrival: string;
+	trainName: string;
+	trainNumber: string;
+	source: string;
+	destination: string;
+	source_name: string;
+	destination_name: string;
+	duration: string;
+	classes: string[];
+	runs_on?: {
+		text?: string;
+		color?: string;
+	};
+	availability?: PaytmTrainAvailabilityClass[];
+	least_price?: number | string;
+	max_price?: number | string;
+}
+
+export interface PaytmSearchTrainsBody {
+	trains: PaytmSearchTrainItem[];
+	search_source?: string;
+	search_destination?: string;
+	search_source_name?: string;
+	search_destination_name?: string;
+}
+
+export interface PaytmSearchTrainsApiResponse {
+	error?: string | null;
+	status?: {
+		result?: string;
+		message?: {
+			title?: string;
+			message?: string;
+		};
+	};
+	body?: PaytmSearchTrainsBody;
+	code?: number;
+}
+
+export interface TrainSearchResultItem {
+	departure: string;
+	arrival: string;
+	trainName: string;
+	trainNumber: string;
+	source: string;
+	destination: string;
+	sourceName: string;
+	destinationName: string;
+	duration: string;
+	classes: string[];
+	runsOnText?: string | undefined;
+	availability?: {
+		code: string;
+		name: string;
+		status: string;
+		statusShortform?: string | undefined;
+		availableFlag: boolean;
+		fare?: number | undefined;
+		timeOfAvailability?: string | undefined;
+	}[];
+	leastPrice?: number | undefined;
+}
+
+export interface SearchTrainsResponse {
+	source: string;
+	destination: string;
+	sourceName: string;
+	destinationName: string;
+	trains: TrainSearchResultItem[];
+}
+
+export interface PaytmFareBreakup {
+	base_fare?: string | number;
+	cateringCharge?: string | number;
+	reservationCharge?: string | number;
+	serviceTax?: string | number;
+	superfastCharge?: string | number;
+	dynamicFare?: string | number;
+}
+
+export interface PaytmFareDetailsItem {
+	key: number;
+	displayName: {
+		text: string;
+		alignment?: string;
+		text_type?: string;
+	}[];
+	value: {
+		text: string;
+		alignment?: string;
+		text_type?: string;
+		amount?: boolean;
+	}[];
+	type: string;
+	visibility: boolean;
+}
+
+export interface PaytmFareCalculateApiResponse {
+	error?: string | null;
+	status?: {
+		result?: string;
+		message?: {
+			title?: string;
+			message?: string;
+		};
+	};
+	body?: {
+		train_details?: {
+			fare?: {
+				total_fare: string;
+				fare_breakup?: PaytmFareBreakup;
+			};
+			trainName?: string;
+			trainNumber?: string;
+			source?: string;
+			destination?: string;
+			timeStamp?: string;
+		};
+		available_classes?: {
+			name: string;
+			code: string;
+			default: boolean;
+		}[];
+		available_quotas?: {
+			name: string;
+			code: string;
+			default: boolean;
+		}[];
+		fare_details?: PaytmFareDetailsItem[];
+	};
+	meta?: {
+		train_number?: string;
+		train_name?: string;
+		from?: string;
+		to?: string;
+		quota?: string;
+		class?: string;
+		category?: string;
+		total_fare?: number;
+		timestamp?: string;
+	};
+	code?: number;
+}
+
+export interface TrainFareResponse {
+	trainNumber: string;
+	trainName: string;
+	from: string;
+	to: string;
+	classCode: string;
+	quota: string;
+	totalFare: number;
+	fareBreakup?:
+		| {
+				baseFare?: number | undefined;
+				cateringCharge?: number | undefined;
+				reservationCharge?: number | undefined;
+				serviceTax?: number | undefined;
+				superfastCharge?: number | undefined;
+				dynamicFare?: number | undefined;
+		  }
+		| undefined;
+	availableClasses?:
+		| {
+				code: string;
+				name: string;
+				default?: boolean | undefined;
+		  }[]
+		| undefined;
+	fareDetails?: PaytmFareDetailsItem[] | undefined;
+}
+
+export interface StationSuggestion {
+	code: string;
+	name: string;
+	displayName: string;
+	state?: string | undefined;
+}
+
+export interface PaytmStationData {
+	code?: string;
+	name?: string;
+	display_name?: string;
+	display_location?: string;
+	name_hi?: string;
+	display_name_hi?: string;
+}
+
+export interface PaytmStationResultItem {
+	data?: PaytmStationData;
+	type?: string;
+}
+
+export interface PaytmStationCategory {
+	title?: string;
+	stations?: PaytmStationResultItem[];
+	queryText?: string;
+}
+
+export interface PaytmStationApiResponse {
+	body?: PaytmStationCategory[];
+	error?: string | null;
+	status?: {
+		result?: string;
+		message?: {
+			title?: string;
+			message?: string;
+		};
+	};
 	code?: number;
 }

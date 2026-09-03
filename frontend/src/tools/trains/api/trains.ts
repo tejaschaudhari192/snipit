@@ -49,3 +49,51 @@ export const getTrainLiveStatus = async (
 	>(`/tools/trains/live-status?${params.toString()}`);
 	return response.data;
 };
+
+export const searchTrainsBetweenStations = async (
+	source: string,
+	destination: string,
+	departureDate: string,
+): Promise<import("../types/trains").SearchTrainsResponse> => {
+	const params = new URLSearchParams({
+		source,
+		destination,
+		departureDate,
+	});
+	const response = await api.get<
+		import("../types/trains").SearchTrainsResponse
+	>(`/tools/trains/search-between-stations?${params.toString()}`);
+	return response.data;
+};
+
+export const getTrainFareCalculation = async (
+	trainNumber: string,
+	from: string,
+	to: string,
+	classCode: string = "SL",
+	quota: string = "GN",
+	category: string = "Adult",
+): Promise<import("../types/trains").TrainFareResponse> => {
+	const params = new URLSearchParams({
+		trainNumber,
+		from,
+		to,
+		class: classCode,
+		quota,
+		category,
+	});
+	const response = await api.get<import("../types/trains").TrainFareResponse>(
+		`/tools/trains/fare?${params.toString()}`,
+	);
+	return response.data;
+};
+
+export const searchStations = async (
+	query: string,
+): Promise<import("../types/trains").StationSuggestion[]> => {
+	const params = new URLSearchParams({ query });
+	const response = await api.get<
+		import("../types/trains").StationSuggestion[]
+	>(`/tools/trains/stations?${params.toString()}`);
+	return response.data;
+};
