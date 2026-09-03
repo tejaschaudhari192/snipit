@@ -1,18 +1,22 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { updateVault } from "@/lib/api/password-manager";
-import { keyStore } from "../key-store";
+import { updateVault } from "@/tools/password-manager/api/password-manager";
+import { keyStore } from "@/tools/password-manager/store/key-store";
 import {
 	getRecoveryRecord,
 	setRecoveryRecord,
 	setKeyRecord,
-} from "../../utils/indexed-db";
+} from "@/tools/password-manager/utils/indexed-db";
 import {
 	generateRecoveryMnemonic,
 	encryptMasterPassword,
 	decryptMasterPassword,
-} from "../../utils/recovery";
-import { deriveMEK, encryptWithMEK, encodeBase64 } from "../../utils/crypto";
-import type { PasswordManagerState } from "../../types";
+} from "@/tools/password-manager/utils/recovery";
+import {
+	deriveMEK,
+	encryptWithMEK,
+	encodeBase64,
+} from "@/tools/password-manager/utils/crypto";
+import type { PasswordManagerState } from "@/tools/password-manager/types";
 
 export const checkRecoveryKey = createAsyncThunk(
 	"passwordManager/checkRecoveryKey",

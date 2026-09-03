@@ -1,19 +1,19 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
-	getVaultCollections,
-	deleteVaultCollection,
+	revokeVaultAccess,
 	lookupShareUser,
 	shareVaultItem,
 	shareVaultFolder,
-	revokeVaultAccess,
-} from "@/lib/api/password-manager";
-import { keyStore } from "../key-store";
+	getVaultCollections,
+	deleteVaultCollection,
+} from "@/tools/password-manager/api/password-manager";
+import { keyStore } from "@/tools/password-manager/store/key-store";
 import {
 	generateSymmetricKey,
 	encryptCollectionKeyForUser,
 	decryptCollectionKey,
 	encryptPayload,
-} from "../../utils/crypto";
+} from "@/tools/password-manager/utils/crypto";
 import { logger } from "@/utils/logger";
 import type {
 	PasswordManagerState,
@@ -23,7 +23,7 @@ import type {
 	LookupShareUserResponse,
 	ShareVaultItemResponse,
 	ShareVaultFolderResponse,
-} from "../../types";
+} from "@/tools/password-manager/types";
 
 import { persistFolders } from "./folders";
 

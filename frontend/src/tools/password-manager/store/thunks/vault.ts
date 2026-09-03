@@ -3,8 +3,8 @@ import {
 	getVault,
 	updateVault,
 	getVaultItems,
-} from "@/lib/api/password-manager";
-import { keyStore } from "../key-store";
+} from "@/tools/password-manager/api/password-manager";
+import { keyStore } from "@/tools/password-manager/store/key-store";
 import {
 	deriveMEK,
 	generateKeyPair,
@@ -17,8 +17,11 @@ import {
 	decodeBase64,
 	runMigrations,
 	getPublicKeyFromPrivateKey,
-} from "../../utils/crypto";
-import { getKeyRecord, setKeyRecord } from "../../utils/indexed-db";
+} from "@/tools/password-manager/utils/crypto";
+import {
+	getKeyRecord,
+	setKeyRecord,
+} from "@/tools/password-manager/utils/indexed-db";
 import { logger } from "@/utils/logger";
 import type {
 	PasswordManagerState,
@@ -26,7 +29,7 @@ import type {
 	Folder,
 	ServerVaultData,
 	ServerEncryptedItem,
-} from "../../types";
+} from "@/tools/password-manager/types";
 import { setCloudVaultStatus } from "../password-slice";
 import { fetchSharedCollections } from "./sharing";
 

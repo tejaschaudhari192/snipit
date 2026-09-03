@@ -49,6 +49,6 @@ export const TOOLS_CONFIG: ToolConfig[] = [
 		titleKey: "tools.pnr_checker.title",
 		descriptionKey: "tools.pnr_checker.description",
 		icon: Train,
-		link: "/tools/pnr-checker",
+		link: "/tools/trains",
 	},
 ];

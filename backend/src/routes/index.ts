@@ -7,10 +7,9 @@ import commentRouter from "./comment.route.js";
 import collaboratorRouter from "./collaborator.route.js";
 import musicRouter from "./music.route.js";
 import livekitRouter from "./livekit.routes.js";
-import vaultRouter from "../tools/password-manager/routes/vault.route.js";
 import feedbackRouter from "./feedback.routes.js";
 import folderRouter from "./folder.route.js";
-import companionRouter from "./companion.route.js";
+import toolsRouter from "../tools/index.js";
 
 const router: Router = Router();
 
@@ -23,8 +22,7 @@ router.use("/comments", commentRouter);
 router.use("/collaborators", collaboratorRouter);
 router.use("/music", musicRouter);
 router.use("/livekit", livekitRouter);
-router.use("/tools/password-manager/vault", vaultRouter);
-router.use("/tools/companion", companionRouter);
+router.use("/tools", toolsRouter);
 router.use("/feedback", feedbackRouter);
 router.use("/folders", folderRouter);
 

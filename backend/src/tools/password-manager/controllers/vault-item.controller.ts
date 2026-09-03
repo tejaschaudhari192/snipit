@@ -1,9 +1,7 @@
 import type { Response, NextFunction } from "express";
-import VaultItem from "../models/VaultItem.js";
-import CollectionAccess from "../models/CollectionAccess.js";
 import { AppError } from "@/lib/errors.js";
 import type { AuthRequest } from "@/middleware/auth.middleware.js";
-import mongoose from "mongoose";
+import { passwordManagerService } from "../services/password-manager.service.js";
 
 /**
  * Get all vault items for the user (personal + shared)
@@ -19,51 +17,13 @@ export const getVaultItems = async (
 			return next(new AppError("User not authenticated", 401));
 		}
 
-		const userId = new mongoose.Types.ObjectId(req.user._id.toString());
-		// Use aggregation pipeline to get items the user owns OR has access to via collections
-		const items = await VaultItem.aggregate([
-			{
-				$lookup: {
-					from: "collectionaccesses",
-					let: { collectionId: "$collectionId" },
-					pipeline: [
-						{
-							$match: {
-								$expr: {
-									$and: [
-										{
-											$eq: [
-												"$collectionId",
-												"$$collectionId",
-											],
-										},
-										{ $eq: ["$userId", userId] },
-									],
-								},
-							},
-						},
-					],
-					as: "access",
-				},
-			},
-			{
-				$match: {
-					$or: [
-						{ userId: userId },
-						{ "access.0": { $exists: true } },
-					],
-				},
-			},
-		]);
+		const items = await passwordManagerService.getItemsForUser(
+			req.user._id.toString(),
+		);
 
 		res.status(200).json({
 			success: true,
-			data: items.map((item) => ({
-				id: item.id,
-				collectionId: item.collectionId,
-				encryptedPayload: item.encryptedPayload,
-				updatedAt: item.updatedAt,
-			})),
+			data: items,
 		});
 	} catch (error) {
 		next(error);
@@ -71,7 +31,7 @@ export const getVaultItems = async (
 };
 
 /**
- * Create a new encrypted vault item
+ * Create a single vault item
  * @route POST /api/tools/password-manager/vault/items
  */
 export const createVaultItem = async (
@@ -84,40 +44,14 @@ export const createVaultItem = async (
 			return next(new AppError("User not authenticated", 401));
 		}
 
-		const { id, collectionId, encryptedPayload } = req.body;
-
-		if (!id || !encryptedPayload) {
-			return next(
-				new AppError("id and encryptedPayload are required", 400),
-			);
-		}
-
-		// Check if user has access to collection if provided
-		if (collectionId) {
-			const access = await CollectionAccess.findOne({
-				collectionId,
-				userId: req.user._id,
-			});
-			if (!access || access.role === "viewer") {
-				return next(
-					new AppError(
-						"Not authorized to create items in this collection",
-						403,
-					),
-				);
-			}
-		}
-
-		const item = await VaultItem.create({
-			id,
-			userId: req.user._id,
-			collectionId: collectionId || null,
-			encryptedPayload,
-		});
+		const item = await passwordManagerService.createItem(
+			req.user._id.toString(),
+			req.body,
+		);
 
 		res.status(201).json({
 			success: true,
-			data: { id: item.id, updatedAt: item.updatedAt },
+			data: item,
 		});
 	} catch (error) {
 		next(error);
@@ -125,7 +59,7 @@ export const createVaultItem = async (
 };
 
 /**
- * Update a vault item
+ * Update a single vault item
  * @route PUT /api/tools/password-manager/vault/items/:id
  */
 export const updateVaultItem = async (
@@ -139,92 +73,53 @@ export const updateVaultItem = async (
 		}
 
 		const { id } = req.params;
-		const { encryptedPayload, collectionId } = req.body;
-
-		if (!encryptedPayload) {
-			return next(new AppError("encryptedPayload is required", 400));
+		if (!id || typeof id !== "string") {
+			return next(new AppError("Invalid or missing item ID", 400));
 		}
 
-		const userId = new mongoose.Types.ObjectId(req.user._id.toString());
-		const [itemData] = await VaultItem.aggregate([
-			{ $match: { id } },
-			{
-				$lookup: {
-					from: "collectionaccesses",
-					let: { collectionId: "$collectionId" },
-					pipeline: [
-						{
-							$match: {
-								$expr: {
-									$and: [
-										{
-											$eq: [
-												"$collectionId",
-												"$$collectionId",
-											],
-										},
-										{ $eq: ["$userId", userId] },
-									],
-								},
-							},
-						},
-					],
-					as: "access",
-				},
-			},
-		]);
-
-		if (!itemData) {
-			return next(new AppError("Item not found", 404));
-		}
-
-		// Verify permissions
-		const isOwner = itemData.userId.toString() === req.user._id.toString();
-		const hasAccess = itemData.access && itemData.access.length > 0;
-		const accessRole = hasAccess ? itemData.access[0].role : null;
-
-		if (!isOwner) {
-			if (!hasAccess || accessRole === "viewer") {
-				return next(
-					new AppError("Not authorized to edit this item", 403),
-				);
-			}
-		}
-
-		const item = await VaultItem.findOne({ id });
-		if (!item) return next(new AppError("Item not found", 404)); // should not happen
-
-		// If moving to a new collection, verify they have permission to that destination collection
-		if (
-			collectionId !== undefined &&
-			collectionId !==
-				(item.collectionId ? item.collectionId.toString() : null)
-		) {
-			if (collectionId) {
-				const destAccess = await CollectionAccess.findOne({
-					collectionId,
-					userId: req.user._id,
-				});
-				if (!destAccess || destAccess.role === "viewer") {
-					return next(
-						new AppError(
-							"Not authorized to move items into this collection",
-							403,
-						),
-					);
-				}
-				item.collectionId = collectionId;
-			} else {
-				item.collectionId = null;
-			}
-		}
-
-		item.encryptedPayload = encryptedPayload;
-		await item.save();
+		const updated = await passwordManagerService.syncItems(
+			req.user._id.toString(),
+			[{ ...req.body, _id: id }],
+		);
 
 		res.status(200).json({
 			success: true,
-			data: { id: item.id, updatedAt: item.updatedAt },
+			data: updated,
+			message: "Item updated successfully",
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+/**
+ * Batch sync vault items
+ * @route POST /api/tools/password-manager/vault/items/sync
+ */
+export const syncVaultItems = async (
+	req: AuthRequest,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		if (!req.user || !req.user._id) {
+			return next(new AppError("User not authenticated", 401));
+		}
+
+		const { items } = req.body;
+		if (!Array.isArray(items)) {
+			return next(new AppError("Items array is required", 400));
+		}
+
+		const syncedIds = await passwordManagerService.syncItems(
+			req.user._id.toString(),
+			items,
+		);
+
+		res.status(200).json({
+			success: true,
+			data: syncedIds,
+			message: "Items synced successfully",
 		});
 	} catch (error) {
 		next(error);
@@ -246,57 +141,22 @@ export const deleteVaultItem = async (
 		}
 
 		const { id } = req.params;
-
-		const [itemData] = await VaultItem.aggregate([
-			{ $match: { id } },
-			{
-				$lookup: {
-					from: "collectionaccesses",
-					let: { collectionId: "$collectionId" },
-					pipeline: [
-						{
-							$match: {
-								$expr: {
-									$and: [
-										{
-											$eq: [
-												"$collectionId",
-												"$$collectionId",
-											],
-										},
-										{ $eq: ["$userId", req.user._id] },
-									],
-								},
-							},
-						},
-					],
-					as: "access",
-				},
-			},
-		]);
-
-		if (!itemData) {
-			return next(new AppError("Item not found", 404));
+		if (!id || typeof id !== "string") {
+			return next(new AppError("Invalid or missing item ID", 400));
 		}
 
-		// Verify permissions
-		const isOwner = itemData.userId.toString() === req.user._id.toString();
-		const hasAccess = itemData.access && itemData.access.length > 0;
-		const accessRole = hasAccess ? itemData.access[0].role : null;
+		const deleted = await passwordManagerService.deleteItem(
+			req.user._id.toString(),
+			id,
+		);
 
-		if (!isOwner) {
-			if (!hasAccess || accessRole === "viewer") {
-				return next(
-					new AppError("Not authorized to delete this item", 403),
-				);
-			}
+		if (!deleted) {
+			return next(new AppError("Item not found or unauthorized", 404));
 		}
-
-		await VaultItem.deleteOne({ id });
 
 		res.status(200).json({
 			success: true,
-			data: {},
+			message: "Item deleted successfully",
 		});
 	} catch (error) {
 		next(error);

@@ -1,5 +1,5 @@
 import express from "express";
-import companionController from "@/controllers/companion.controller.js";
+import companionController from "../controllers/companion.controller.js";
 import { optionalProtect, protect } from "@/middleware/auth.middleware.js";
 import { catchAsync } from "@/lib/errors.js";
 

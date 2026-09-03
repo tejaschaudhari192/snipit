@@ -4,10 +4,14 @@ import {
 	updateVaultItem,
 	deleteVaultCollection,
 	updateVault,
-} from "@/lib/api/password-manager";
-import { keyStore } from "../key-store";
-import { encryptPayload } from "../../utils/crypto";
-import type { PasswordManagerState, PasswordItem, Folder } from "../../types";
+} from "@/tools/password-manager/api/password-manager";
+import { keyStore } from "@/tools/password-manager/store/key-store";
+import { encryptPayload } from "@/tools/password-manager/utils/crypto";
+import type {
+	PasswordManagerState,
+	PasswordItem,
+	Folder,
+} from "@/tools/password-manager/types";
 
 import { fetchVaultData } from "./vault";
 import { setVault, setActiveFilter } from "../password-slice";

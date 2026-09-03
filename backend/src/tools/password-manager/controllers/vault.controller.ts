@@ -1,11 +1,9 @@
 import type { Response, NextFunction } from "express";
-import Vault, { type IVault } from "../models/Vault.js";
-import User from "@/models/User.js";
 import { AppError } from "@/lib/errors.js";
 import type { AuthRequest } from "@/middleware/auth.middleware.js";
-import VaultItem from "../models/VaultItem.js";
-import Collection from "../models/Collection.js";
-import CollectionAccess from "../models/CollectionAccess.js";
+import { vaultService } from "../services/vault.service.js";
+import User from "@/models/User.js";
+import Vault from "../models/Vault.js";
 
 /**
  * Get the current user's encrypted vault
@@ -22,12 +20,9 @@ export const getVault = async (
 			return next(new AppError("User not authenticated", 401));
 		}
 
-		const vault = await Vault.findOne({ userId: req.user._id });
+		const vaultData = await vaultService.getUserVault(String(req.user._id));
 
-		// We also want to return the user's public and encrypted private key
-		const user = await User.findById(req.user._id);
-
-		if (!vault) {
+		if (!vaultData) {
 			return res.status(200).json({
 				success: true,
 				data: null,
@@ -37,15 +32,7 @@ export const getVault = async (
 
 		res.status(200).json({
 			success: true,
-			data: {
-				encryptedPersonalKey: vault.encryptedPersonalKey,
-				encryptedSettings: vault.encryptedSettings,
-				updatedAt: vault.updatedAt,
-				version: vault.version,
-				salt: vault.salt,
-				publicKey: user?.publicKey,
-				encryptedPrivateKey: user?.encryptedPrivateKey,
-			},
+			data: vaultData,
 		});
 	} catch (error) {
 		next(error);
@@ -75,26 +62,19 @@ export const updateVault = async (
 			salt,
 		} = req.body;
 
-		const updateData: Partial<IVault> = {
-			updatedAt: new Date(),
-		};
-		if (encryptedPersonalKey) {
+		const updateData: any = { updatedAt: new Date() };
+		if (encryptedPersonalKey)
 			updateData.encryptedPersonalKey = encryptedPersonalKey;
-		}
-		if (salt) {
-			updateData.salt = salt;
-		}
-		if (encryptedSettings !== undefined) {
+		if (salt) updateData.salt = salt;
+		if (encryptedSettings !== undefined)
 			updateData.encryptedSettings = encryptedSettings;
-		}
 
 		const vault = await Vault.findOneAndUpdate(
 			{ userId: req.user._id },
 			updateData,
-			{ new: true, upsert: true }, // Create if it doesn't exist
+			{ new: true, upsert: true },
 		);
 
-		// If public/private keys are provided (initial setup), update user
 		if (publicKey && encryptedPrivateKey) {
 			await User.findByIdAndUpdate(req.user._id, {
 				publicKey,
@@ -130,24 +110,7 @@ export const deleteVault = async (
 			return next(new AppError("User not authenticated", 401));
 		}
 
-		const userId = req.user._id;
-
-		// 1. Delete all vault items
-		await VaultItem.deleteMany({ userId });
-
-		// 2. Delete all collections created by the user
-		await Collection.deleteMany({ createdBy: userId });
-
-		// 3. Delete all collection accesses for the user
-		await CollectionAccess.deleteMany({ userId });
-
-		// 4. Delete the vault itself
-		await Vault.deleteOne({ userId });
-
-		// 5. Unset the user's public and private keys
-		await User.findByIdAndUpdate(userId, {
-			$unset: { publicKey: "", encryptedPrivateKey: "" },
-		});
+		await vaultService.resetUserVault(String(req.user._id));
 
 		res.status(200).json({
 			success: true,

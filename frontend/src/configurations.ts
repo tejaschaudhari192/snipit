@@ -15,7 +15,6 @@ export const CONFIG = {
 	// API Configuration
 	apiBaseUrl: import.meta.env.VITE_API_BASE_URL,
 	giphyApiKey: import.meta.env.VITE_GIPHY_API_KEY,
-	pnrApiBaseUrl: import.meta.env.VITE_PNR_API_BASE_URL,
 
 	// Supabase Configuration
 	supabaseUrl: import.meta.env.VITE_SUPABASE_URL,

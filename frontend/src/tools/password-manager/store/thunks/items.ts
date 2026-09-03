@@ -3,10 +3,13 @@ import {
 	createVaultItem,
 	updateVaultItem,
 	deleteVaultItem,
-} from "@/lib/api/password-manager";
-import { keyStore } from "../key-store";
-import { encryptPayload } from "../../utils/crypto";
-import type { PasswordManagerState, PasswordItem } from "../../types";
+} from "@/tools/password-manager/api/password-manager";
+import { keyStore } from "@/tools/password-manager/store/key-store";
+import { encryptPayload } from "@/tools/password-manager/utils/crypto";
+import type {
+	PasswordManagerState,
+	PasswordItem,
+} from "@/tools/password-manager/types";
 
 // Import temporarily from slice
 import { fetchVaultData } from "./vault";

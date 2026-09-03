@@ -15,7 +15,7 @@ import { TtsMiniPlayer } from "@/components/common/tts-mini-player";
 import { FolderProvider } from "@/context/FolderContext";
 import { AppSkeleton as PasswordAppSkeleton } from "@/tools/password-manager/components/skeletons";
 import { CryptoSafeSkeleton } from "@/tools/cryptsafe/components/skeletons";
-import { PnrCheckerSkeleton } from "@/tools/pnr-checker/components/skeletons";
+import { TrainsPageSkeleton } from "@/tools/trains/components/skeletons";
 import { CinemaPageSkeleton } from "@/tools/cinema/components/skeletons";
 import { CompanionPageSkeleton } from "@/tools/companion/components/skeletons";
 import {
@@ -37,9 +37,7 @@ const PasswordManagerPage = lazy(
 const CryptoSafePage = lazy(
 	() => import("@/tools/cryptsafe/encrypt-safe-page"),
 );
-const PnrCheckerPage = lazy(
-	() => import("@/tools/pnr-checker/pnr-checker-page"),
-);
+const TrainsPage = lazy(() => import("@/tools/trains/trains-page"));
 
 const CinemaPage = lazy(() => import("@/tools/cinema/cinema-page"));
 const CinemaRoomPage = lazy(() => import("@/tools/cinema/cinema-room-page"));
@@ -199,18 +197,6 @@ const App = () => {
 																}
 															/>
 															<Route
-																path="/:id"
-																element={
-																	<Suspense
-																		fallback={
-																			<DisplayLoading />
-																		}
-																	>
-																		<DisplayPage />
-																	</Suspense>
-																}
-															/>
-															<Route
 																path="/about"
 																element={
 																	<Suspense
@@ -295,14 +281,14 @@ const App = () => {
 																}
 															/>
 															<Route
-																path="/tools/pnr-checker"
+																path="/tools/trains"
 																element={
 																	<Suspense
 																		fallback={
-																			<PnrCheckerSkeleton />
+																			<TrainsPageSkeleton />
 																		}
 																	>
-																		<PnrCheckerPage />
+																		<TrainsPage />
 																	</Suspense>
 																}
 															/>
@@ -315,6 +301,18 @@ const App = () => {
 																		}
 																	>
 																		<HistoryPage />
+																	</Suspense>
+																}
+															/>
+															<Route
+																path="/:id"
+																element={
+																	<Suspense
+																		fallback={
+																			<DisplayLoading />
+																		}
+																	>
+																		<DisplayPage />
 																	</Suspense>
 																}
 															/>

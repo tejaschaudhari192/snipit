@@ -1,4 +1,4 @@
-import api from "../api";
+import api from "@/lib/api";
 
 export const getVault = async <T = unknown>(): Promise<T> => {
 	const response = await api.get("/tools/password-manager/vault");

@@ -15,6 +15,7 @@ import { Wand2 } from "lucide-react";
 import { AxiosError } from "axios";
 import { useTranslation } from "react-i18next";
 import { Spinner } from "@/components/ui/spinner";
+import { GifLoader } from "@/components/common/gif-loader";
 
 export interface AiWriterDialogProps {
 	isOpen: boolean;
@@ -161,7 +162,19 @@ export const AiWriterDialog = ({
 						/>
 					</div>
 
-					{result && (
+					{isLoading && (
+						<div className="p-6 bg-muted/20 rounded-lg border border-border/50 flex flex-col items-center justify-center">
+							<GifLoader
+								size="md"
+								label={t(
+									"ai_dialog.generating",
+									"Generating AI magic...",
+								)}
+							/>
+						</div>
+					)}
+
+					{result && !isLoading && (
 						<div className="flex flex-col gap-2 mt-2">
 							<span className="text-xs font-semibold text-muted-foreground tracking-wider">
 								{t("ai_dialog.preview")}

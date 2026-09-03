@@ -32,7 +32,13 @@ export const connectDB = async () => {
 			serverSelectionTimeoutMS: 10000,
 		};
 
-		const dbUri = `mongodb+srv://${configurations.database.user}:${configurations.database.password}@jaybalaji.s5azwy2.mongodb.net/${configurations.database.name}?retryWrites=true&w=majority&serverSelectionTimeoutMS=10000`;
+		const user = configurations.database.user;
+		const pass = configurations.database.password;
+		const dbName = configurations.database.name;
+
+		const dbUri =
+			process.env.MONGODB_URI ||
+			`mongodb+srv://${user}:${pass}@jaybalaji.s5azwy2.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 
 		cached!.promise = mongoose
 			.connect(dbUri, opts)
