@@ -543,7 +543,34 @@
 			"class_breakdown": "Class {{classCode}} Breakdown",
 			"detailed_fare_breakdown_class": "Detailed Fare Breakup for Class {{classCode}}",
 			"loading_fare_breakdown": "Loading detailed fare breakdown...",
-			"failed_calculate_fare": "Failed to calculate fare."
+			"failed_calculate_fare": "Failed to calculate fare.",
+			"tracker": {
+				"title": "Hourly PNR Status Alerts",
+				"badge_free": "Free",
+				"guest_desc": "Sign in to automatically monitor RAC/WL promotions, berth confirmation, and chart preparation via email.",
+				"sign_in_btn": "Sign in to Track",
+				"active_title": "Tracking Active",
+				"badge_live": "Live Hourly Sync",
+				"active_desc": "Sending updates to {{email}} whenever chart or passenger status changes.",
+				"next_check": "Next scheduled check: {{time}}",
+				"stop_tracking_btn": "Stop Tracking",
+				"cta_title": "Track PNR Status Automatically",
+				"badge_hourly": "Hourly",
+				"cta_desc": "We’ll periodically check IRCTC servers every hour and instantly email {{email}} when your status updates (WL → RAC → CNF, coach/berth, chart preparation).",
+				"enable_alerts_btn": "Enable Alerts",
+				"success_enabled": "Hourly email alerts enabled for this PNR!",
+				"success_stopped": "Tracking stopped. You will not receive hourly updates.",
+				"err_subscribe": "Failed to subscribe to PNR tracking.",
+				"err_unsubscribe": "Failed to stop tracking."
+			},
+			"route_modal": {
+				"default_title": "Train Schedule",
+				"fetching": "Fetching train schedule...",
+				"close": "Close",
+				"day_distance": "Day {{day}} • Distance: {{km}} km",
+				"arr": "Arr",
+				"dep": "Dep"
+			}
 		},
 		"cinema": {
 			"title": "Cinema - Watch Parties",

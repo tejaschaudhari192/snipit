@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Train, FileText, Calendar, Radio, Search } from "lucide-react";
+import { FileText, Calendar, Radio, Search } from "lucide-react";
 import { PnrCheckerPanel } from "./components/pnr-checker-panel";
 import { TrainSchedulePanel } from "./components/train-schedule-panel";
 import { TrainLiveStatusPanel } from "./components/train-live-status-panel";
@@ -17,10 +17,6 @@ const TrainsPage = () => {
 			<section className="relative pt-6 pb-4 px-4 sm:px-6 lg:px-8 overflow-hidden">
 				<div className="max-w-4xl mx-auto text-center relative z-10 w-full animate-in fade-in slide-in-from-bottom-8 duration-700">
 					<div className="flex flex-col items-center justify-center w-full">
-						<div className="glow-badge mb-2.5 text-xs sm:text-sm">
-							<Train className="w-4 h-4 fill-current" />
-							{t("tools.badge")}
-						</div>
 						<h1 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-2 tracking-tight leading-tight bg-clip-text text-transparent bg-linear-to-r from-foreground via-foreground/95 to-foreground/80">
 							{t("tools.pnr_checker.title")}
 						</h1>

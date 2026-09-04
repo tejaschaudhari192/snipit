@@ -481,6 +481,78 @@ class EmailService {
 			);
 		}
 	}
+
+	async sendPnrStatusUpdateEmail(
+		toEmail: string,
+		details: {
+			pnr: string;
+			trainName: string;
+			trainNumber: string;
+			from: string;
+			to: string;
+			departureDate?: string;
+			changes: string[];
+			isConfirmed?: boolean;
+			isChartPrepared?: boolean;
+			pnrUrl: string;
+		},
+	) {
+		try {
+			logger.info(
+				`Attempting to send PNR status update email via Brevo to: ${toEmail} for PNR: ${details.pnr}`,
+			);
+			const fromAddress = this.getFromAddress();
+			const subject = details.isConfirmed
+				? `🎉 Ticket Confirmed! PNR: ${details.pnr} (${details.trainName})`
+				: details.isChartPrepared
+					? `📋 Chart Prepared: PNR ${details.pnr} (${details.trainName})`
+					: `🚆 PNR Status Update: ${details.pnr} (${details.trainName})`;
+
+			const text = `PNR Status Update for ${details.pnr} (${details.trainName} #${details.trainNumber})\n\nRoute: ${details.from} to ${details.to}\n\nChanges Detected:\n${details.changes.map((c) => `• ${c}`).join("\n")}\n\nView live status: ${details.pnrUrl}`;
+			const html = EMAIL_TEMPLATES.PNR_STATUS_UPDATE(details);
+
+			const response = await fetch(
+				"https://api.brevo.com/v3/smtp/email",
+				{
+					method: "POST",
+					headers: {
+						accept: "application/json",
+						"content-type": "application/json",
+						"api-key": configurations.brevo.apiKey,
+					},
+					body: JSON.stringify({
+						sender: {
+							name: "Snipit Trains",
+							email: fromAddress,
+						},
+						to: [{ email: toEmail }],
+						subject,
+						htmlContent: html,
+						textContent: text,
+					}),
+				},
+			);
+
+			if (!response.ok) {
+				const errorData = (await response.json()) as {
+					message?: string;
+				};
+				throw new Error(
+					errorData.message ||
+						"Failed to send PNR status update email via Brevo",
+				);
+			}
+
+			logger.info(
+				`PNR status update email sent via Brevo to ${toEmail} for PNR ${details.pnr}`,
+			);
+		} catch (error) {
+			logger.error(
+				`Error sending PNR status update email to ${toEmail} via Brevo:`,
+				error,
+			);
+		}
+	}
 }
 
 export default EmailService;

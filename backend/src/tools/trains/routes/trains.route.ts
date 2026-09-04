@@ -9,8 +9,11 @@ import {
 	getStationSuggestions,
 } from "../controllers/trains.controller.js";
 import { catchAsync } from "@/lib/errors.js";
+import trackingRouter from "./pnr-tracking.route.js";
 
 const router: Router = Router();
+
+router.use("/tracking", trackingRouter);
 
 router.get("/status", catchAsync(getPnrStatus));
 router.get("/schedule", catchAsync(getTrainSchedule));

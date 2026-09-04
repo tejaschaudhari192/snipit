@@ -97,3 +97,43 @@ export const searchStations = async (
 	>(`/tools/trains/stations?${params.toString()}`);
 	return response.data;
 };
+
+export const subscribePnrTracking = async (
+	pnr: string,
+): Promise<{
+	success: boolean;
+	message: string;
+	tracking: import("../types/trains").PnrTrackingItem;
+}> => {
+	const response = await api.post(`/tools/trains/tracking/subscribe`, {
+		pnr,
+	});
+	return response.data;
+};
+
+export const unsubscribePnrTracking = async (
+	pnr: string,
+): Promise<{ success: boolean; message: string }> => {
+	const response = await api.post(`/tools/trains/tracking/unsubscribe`, {
+		pnr,
+	});
+	return response.data;
+};
+
+export const getPnrTrackingStatus = async (
+	pnr: string,
+): Promise<import("../types/trains").PnrTrackingStatusResponse> => {
+	const response = await api.get<
+		import("../types/trains").PnrTrackingStatusResponse
+	>(`/tools/trains/tracking/status/${encodeURIComponent(pnr)}`);
+	return response.data;
+};
+
+export const getMyPnrTrackings = async (): Promise<{
+	success: boolean;
+	count: number;
+	trackings: import("../types/trains").PnrTrackingItem[];
+}> => {
+	const response = await api.get(`/tools/trains/tracking/my-trackings`);
+	return response.data;
+};

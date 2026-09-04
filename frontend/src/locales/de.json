@@ -542,7 +542,34 @@
 			"catering_charge": "Verpflegungsgebühr",
 			"service_tax": "Mehrwertsteuer (GST)",
 			"dynamic_fare": "Dynamischer Fahrpreis",
-			"total_amount": "Gesamtbetrag"
+			"total_amount": "Gesamtbetrag",
+			"tracker": {
+				"title": "Stündliche PNR-Statusbenachrichtigungen",
+				"badge_free": "Kostenlos",
+				"guest_desc": "Melden Sie sich an, um RAC/WL-Änderungen, Bestätigungen und Chart-Vorbereitungen per E-Mail zu verfolgen.",
+				"sign_in_btn": "Anmelden zum Verfolgen",
+				"active_title": "Tracking Aktiv",
+				"badge_live": "Live-Stündliche Synchronisierung",
+				"active_desc": "Aktualisierungen werden an {{email}} gesendet, sobald sich der Status ändert.",
+				"next_check": "Nächste geplante Prüfung: {{time}}",
+				"stop_tracking_btn": "Tracking beenden",
+				"cta_title": "PNR-Status automatisch verfolgen",
+				"badge_hourly": "Stündlich",
+				"cta_desc": "Wir prüfen stündlich die IRCTC-Server und senden sofort eine E-Mail an {{email}}, wenn sich Ihr Status ändert.",
+				"enable_alerts_btn": "Benachrichtigungen aktivieren",
+				"success_enabled": "Stündliche E-Mail-Benachrichtigungen für diese PNR aktiviert!",
+				"success_stopped": "Tracking beendet. Sie erhalten keine weiteren Aktualisierungen.",
+				"err_subscribe": "Aktivierung des PNR-Trackings fehlgeschlagen.",
+				"err_unsubscribe": "Beenden des Trackings fehlgeschlagen."
+			},
+			"route_modal": {
+				"default_title": "Fahrplan",
+				"fetching": "Fahrplan wird geladen...",
+				"close": "Schließen",
+				"day_distance": "Tag {{day}} • Entfernung: {{km}} km",
+				"arr": "Ankunft",
+				"dep": "Abfahrt"
+			}
 		},
 		"cryptoSafe_title": "CryptoSafe",
 		"cinema": {

@@ -189,3 +189,28 @@ export interface StationSuggestion {
 	displayName: string;
 	state?: string;
 }
+
+export interface PnrTrackingItem {
+	_id: string;
+	pnr: string;
+	trainNumber: string;
+	trainName: string;
+	from: string;
+	to: string;
+	departureDate: string;
+	isActive: boolean;
+	notifyEmail: boolean;
+	lastCheckedAt?: string;
+	nextCheckAt: string;
+	createdAt: string;
+	statusHistory?: {
+		timestamp: string;
+		changeSummary: string;
+		changes: string[];
+	}[];
+}
+
+export interface PnrTrackingStatusResponse {
+	isTracking: boolean;
+	tracking?: PnrTrackingItem;
+}

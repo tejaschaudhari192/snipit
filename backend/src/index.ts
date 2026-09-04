@@ -23,12 +23,14 @@ server.listen(port, "0.0.0.0", () => {
 
 import PasteService from "@/services/paste.service.js";
 import { expirationScheduler } from "@/services/expiration-scheduler.service.js";
+import { trackerScheduler } from "@/tools/trains/scheduler/tracker-scheduler.service.js";
 
 // Connect to Database in background
 connectDB()
 	.then(() => {
 		const pasteService = new PasteService();
 		expirationScheduler.init(pasteService);
+		trackerScheduler.init();
 	})
 	.catch((err) => {
 		logger.error(

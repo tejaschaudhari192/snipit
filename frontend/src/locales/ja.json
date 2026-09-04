@@ -542,7 +542,34 @@
 			"catering_charge": "飲食料金",
 			"service_tax": "税金 (GST)",
 			"dynamic_fare": "変動運賃",
-			"total_amount": "総額"
+			"total_amount": "総額",
+			"tracker": {
+				"title": "1時間ごとのPNRステータス通知",
+				"badge_free": "無料",
+				"guest_desc": "メールでRAC/WLの昇格、座席確定、運行チャート準備を自動追跡するにはログインしてください。",
+				"sign_in_btn": "ログインして追跡",
+				"active_title": "追跡中",
+				"badge_live": "ライブ1時間同調",
+				"active_desc": "ステータスに変更があった場合、{{email}} に更新情報が送信されます。",
+				"next_check": "次の確認予定: {{time}}",
+				"stop_tracking_btn": "追跡を停止",
+				"cta_title": "PNRステータスを自動追跡",
+				"badge_hourly": "毎時",
+				"cta_desc": "毎時IRCTCサーバーを確認し、ステータス変更時に直ちに {{email}} にメールを送信します。",
+				"enable_alerts_btn": "通知を有効にする",
+				"success_enabled": "このPNRの毎時メール通知が有効になりました！",
+				"success_stopped": "追跡を停止しました。毎時の更新は送信されません。",
+				"err_subscribe": "PNR追跡の登録に失敗しました。",
+				"err_unsubscribe": "追跡の停止に失敗しました。"
+			},
+			"route_modal": {
+				"default_title": "運行スケジュール",
+				"fetching": "スケジュールを取得中...",
+				"close": "閉じる",
+				"day_distance": "{{day}}日目 • 距離: {{km}} km",
+				"arr": "到着",
+				"dep": "出発"
+			}
 		},
 		"cryptoSafe_title": "クリプトセーフ",
 		"cinema": {
