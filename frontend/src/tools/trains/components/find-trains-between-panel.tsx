@@ -38,8 +38,10 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 	const { t } = useTranslation();
 
 	// Search parameters
-	const [source, setSource] = useState("MAS");
-	const [destination, setDestination] = useState("BSL");
+	const [source, setSource] = useState("");
+	const [destination, setDestination] = useState("");
+	const [sourceCode, setSourceCode] = useState("");
+	const [destCode, setDestCode] = useState("");
 	const dateOptions = useMemo(() => generateDateOptions(), []);
 
 	// Station Autocomplete State
@@ -57,9 +59,20 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 	const sourceContainerRef = useRef<HTMLDivElement>(null);
 	const destContainerRef = useRef<HTMLDivElement>(null);
 
+	// Helper to extract clean station code from string like "MAS - Chennai" or "MAS"
+	const extractCode = (str: string): string => {
+		const trimmed = str.trim();
+		if (!trimmed) return "";
+		if (trimmed.includes(" - ")) {
+			return trimmed.split(" - ")[0].trim().toUpperCase();
+		}
+		const parts = trimmed.split(/\s+/);
+		return parts[0].toUpperCase();
+	};
+
 	// Debounced station search for source
 	useEffect(() => {
-		const query = source.trim();
+		const query = extractCode(source);
 		if (!query || query.length < 2) {
 			setSourceSuggestions([]);
 			return;
@@ -82,7 +95,7 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 
 	// Debounced station search for destination
 	useEffect(() => {
-		const query = destination.trim();
+		const query = extractCode(destination);
 		if (!query || query.length < 2) {
 			setDestSuggestions([]);
 			return;
@@ -151,14 +164,19 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 	const [fareCache, setFareCache] = useState<Record<string, number>>({});
 
 	const handleSwap = () => {
-		const temp = source;
+		const tempSource = source;
+		const tempCode = sourceCode;
 		setSource(destination);
-		setDestination(temp);
+		setSourceCode(destCode);
+		setDestination(tempSource);
+		setDestCode(tempCode);
 	};
 
 	const handleSearch = async (e?: React.FormEvent) => {
 		if (e) e.preventDefault();
-		if (!source.trim() || !destination.trim()) {
+		const cleanSrc = sourceCode || extractCode(source);
+		const cleanDest = destCode || extractCode(destination);
+		if (!cleanSrc || !cleanDest) {
 			setError("Please enter both source and destination station codes.");
 			return;
 		}
@@ -170,8 +188,8 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 		setFareCache({});
 		try {
 			const res = await searchTrainsBetweenStations(
-				source.trim(),
-				destination.trim(),
+				cleanSrc,
+				cleanDest,
 				selectedDate,
 			);
 			setSearchResult(res);
@@ -203,98 +221,126 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 					]),
 				);
 
-				for (const code of allClasses) {
-					if (!availMap.has(code)) {
+				for (const cls of allClasses) {
+					if (!availMap.has(cls)) {
 						pendingItems.push({
 							trainNumber: train.trainNumber,
-							classCode: code,
+							classCode: cls,
 						});
 					}
 				}
 			}
 			setFareCache(initialCache);
 
-			// 2. Background lazy load pending class fares sequentially in batches
+			// 2. Fetch missing fares asynchronously in parallel
 			if (pendingItems.length > 0) {
-				(async () => {
-					// Process with small concurrency so we don't spam the API
-					const batchSize = 3;
-					for (let i = 0; i < pendingItems.length; i += batchSize) {
-						const batch = pendingItems.slice(i, i + batchSize);
-						await Promise.allSettled(
-							batch.map(async (item) => {
-								try {
-									const fare = await getTrainFareCalculation(
-										item.trainNumber,
-										source.trim(),
-										destination.trim(),
-										item.classCode,
-									);
-									if (fare?.totalFare) {
-										setFareCache((prev) => ({
-											...prev,
-											[`${item.trainNumber}-${item.classCode}`]:
-												fare.totalFare,
-										}));
-									}
-								} catch {
-									// Silently continue for background load
-								}
-							}),
-						);
-					}
-				})();
+				Promise.allSettled(
+					pendingItems.map(async ({ trainNumber, classCode }) => {
+						try {
+							const fareRes = await getTrainFareCalculation(
+								trainNumber,
+								cleanSrc,
+								cleanDest,
+								classCode,
+								selectedDate,
+							);
+							if (
+								fareRes &&
+								typeof fareRes.totalFare === "number"
+							) {
+								setFareCache((prev) => ({
+									...prev,
+									[`${trainNumber}-${classCode}`]:
+										fareRes.totalFare,
+								}));
+							}
+						} catch {
+							// Ignore individual fare calculation failures
+						}
+					}),
+				);
 			}
 		} catch (err: unknown) {
-			const message = err instanceof Error ? err.message : String(err);
-			setError(message || t("tools.pnr_checker.api_error"));
-			setSearchResult(null);
+			const axiosErr = err as {
+				response?: { data?: { error?: string } };
+				message?: string;
+			};
+			setError(
+				axiosErr?.response?.data?.error ||
+					axiosErr?.message ||
+					"Failed to search trains. Please try again.",
+			);
 		} finally {
 			setLoading(false);
 		}
 	};
 
-	const handleToggleClassFare = async (
-		tr: TrainSearchResultItem,
+	const handleClassClick = async (
+		trainNumber: string,
 		classCode: string,
+		e: React.MouseEvent,
 	) => {
-		const normalizedClass = classCode.toUpperCase().trim();
-		const key = `${tr.trainNumber}-${normalizedClass}`;
+		e.stopPropagation();
+		setSelectedClass(classCode);
+		const cleanSrc = sourceCode || extractCode(source);
+		const cleanDest = destCode || extractCode(destination);
 
-		// If this class is already expanded, collapse it
+		// If this train is already expanded with this class, collapse it
 		if (
-			expandedTrainNumber === tr.trainNumber &&
-			selectedClass === normalizedClass
+			expandedTrainNumber === trainNumber &&
+			selectedClass === classCode
 		) {
 			setExpandedTrainNumber(null);
 			return;
 		}
 
-		setExpandedTrainNumber(tr.trainNumber);
-		setSelectedClass(normalizedClass);
-		setFareLoadingKey(key);
+		setExpandedTrainNumber(trainNumber);
+		setFareLoadingKey(`${trainNumber}-${classCode}`);
 		setFareError(null);
-		setFareData(null);
 
 		try {
-			const fare = await getTrainFareCalculation(
-				tr.trainNumber,
-				tr.source || source,
-				tr.destination || destination,
-				normalizedClass,
+			const res = await getTrainFareCalculation(
+				trainNumber,
+				cleanSrc,
+				cleanDest,
+				classCode,
+				selectedDate,
 			);
-			setFareData(fare);
-			if (fare?.totalFare) {
+			setFareData(res);
+			if (res && typeof res.totalFare === "number") {
 				setFareCache((prev) => ({
 					...prev,
-					[key]: fare.totalFare,
+					[`${trainNumber}-${classCode}`]: res.totalFare,
 				}));
 			}
 		} catch (err: unknown) {
-			const message = err instanceof Error ? err.message : String(err);
-			setFareError(message || "Failed to calculate fare.");
+			const axiosErr = err as {
+				response?: { data?: { error?: string } };
+				message?: string;
+			};
+			setFareError(
+				axiosErr?.response?.data?.error ||
+					axiosErr?.message ||
+					t("tools.pnr_checker.failed_calculate_fare"),
+			);
 		} finally {
 			setFareLoadingKey(null);
+		}
+	};
+
+	const formatIsoDate = (isoString?: string) => {
+		if (!isoString) return "";
+		try {
+			const date = new Date(isoString);
+			if (isNaN(date.getTime())) return "";
+			return date.toLocaleDateString(undefined, {
+				weekday: "short",
+				month: "short",
+				day: "numeric",
+				year: "numeric",
+			});
+		} catch {
+			return "";
 		}
 	};
 
@@ -314,9 +360,9 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 	};
 
 	return (
-		<div className="w-full max-w-6xl mx-auto space-y-6">
-			{/* Search Controls Card */}
-			<Card className="border-border/60 shadow-lg bg-card/50 backdrop-blur-xs">
+		<div className="w-full space-y-6">
+			{/* Search Card */}
+			<Card className="border-border/50 bg-background/60 backdrop-blur-xl shadow-xl overflow-hidden">
 				<CardHeader className="pb-3 border-b border-border/40">
 					<CardTitle className="text-base font-bold flex items-center gap-2">
 						<Search className="w-4 h-4 text-primary" />
@@ -339,16 +385,15 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 									<Input
 										value={source}
 										onChange={(e) => {
-											setSource(
-												e.target.value.toUpperCase(),
-											);
+											setSource(e.target.value);
+											setSourceCode("");
 											setShowSourceDropdown(true);
 										}}
 										onFocus={() =>
 											setShowSourceDropdown(true)
 										}
 										placeholder="Station code or name (e.g. MAS, Chennai)"
-										className="pl-9 text-sm font-bold uppercase"
+										className="pl-9 text-sm font-semibold"
 									/>
 								</div>
 								{showSourceDropdown && (
@@ -356,7 +401,10 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 										suggestions={sourceSuggestions}
 										loading={sourceLoading}
 										onSelect={(stn) => {
-											setSource(stn.code);
+											setSource(
+												`${stn.code} - ${stn.name}`,
+											);
+											setSourceCode(stn.code);
 											setShowSourceDropdown(false);
 										}}
 									/>
@@ -390,16 +438,15 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 									<Input
 										value={destination}
 										onChange={(e) => {
-											setDestination(
-												e.target.value.toUpperCase(),
-											);
+											setDestination(e.target.value);
+											setDestCode("");
 											setShowDestDropdown(true);
 										}}
 										onFocus={() =>
 											setShowDestDropdown(true)
 										}
 										placeholder="Station code or name (e.g. BSL, Bhusaval)"
-										className="pl-9 text-sm font-bold uppercase"
+										className="pl-9 text-sm font-semibold"
 									/>
 								</div>
 								{showDestDropdown && (
@@ -407,7 +454,10 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 										suggestions={destSuggestions}
 										loading={destLoading}
 										onSelect={(stn) => {
-											setDestination(stn.code);
+											setDestination(
+												`${stn.code} - ${stn.name}`,
+											);
+											setDestCode(stn.code);
 											setShowDestDropdown(false);
 										}}
 									/>
@@ -655,6 +705,15 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 																tr.departure,
 															)}
 														</div>
+														{formatIsoDate(
+															tr.departure,
+														) && (
+															<div className="text-[11px] font-medium text-foreground/80">
+																{formatIsoDate(
+																	tr.departure,
+																)}
+															</div>
+														)}
 														<div
 															className="text-xs font-semibold text-muted-foreground truncate"
 															title={
@@ -689,6 +748,15 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 																tr.arrival,
 															)}
 														</div>
+														{formatIsoDate(
+															tr.arrival,
+														) && (
+															<div className="text-[11px] font-medium text-foreground/80">
+																{formatIsoDate(
+																	tr.arrival,
+																)}
+															</div>
+														)}
 														<div
 															className="text-xs font-semibold text-muted-foreground truncate"
 															title={
@@ -751,10 +819,13 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 																				code
 																			}
 																			type="button"
-																			onClick={() =>
-																				handleToggleClassFare(
-																					tr,
+																			onClick={(
+																				e,
+																			) =>
+																				handleClassClick(
+																					tr.trainNumber,
 																					code,
+																					e,
 																				)
 																			}
 																			className={`p-2.5 rounded-xl border flex flex-col justify-between text-left transition-all cursor-pointer relative shadow-xs ${

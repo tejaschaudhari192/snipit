@@ -224,7 +224,9 @@ export const PnrCheckerPanel: React.FC = () => {
 									onClick={fetchSchedule}
 								>
 									<Train className="h-3.5 w-3.5 text-primary" />
-									<span>Train Route</span>
+									<span>
+										{t("tools.pnr_checker.train_route")}
+									</span>
 								</Button>
 							</div>
 						</div>
@@ -369,7 +371,9 @@ export const PnrCheckerPanel: React.FC = () => {
 									<div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
 										<Sparkles className="w-3.5 h-3.5 text-primary" />
 										<span>
-											Confirmation & Travel Intelligence
+											{t(
+												"tools.pnr_checker.confirmation_intelligence",
+											)}
 										</span>
 									</div>
 									<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
@@ -422,21 +426,26 @@ export const PnrCheckerPanel: React.FC = () => {
 										{data.expectedPlatformNo && (
 											<div className="flex items-center gap-1.5">
 												<span className="font-semibold text-foreground">
-													Expected Platform:
+													{t(
+														"tools.pnr_checker.expected_platform",
+													)}
+													:
 												</span>
 												<Badge
 													variant="secondary"
 													className="font-mono text-xs"
 												>
-													Platform #
-													{data.expectedPlatformNo}
+													#{data.expectedPlatformNo}
 												</Badge>
 											</div>
 										)}
 										{data.ticketFare && (
 											<div className="flex items-center gap-1">
 												<span className="font-semibold text-foreground">
-													Fare:
+													{t(
+														"tools.pnr_checker.total_amount",
+													)}
+													:
 												</span>
 												<span className="text-emerald-600 dark:text-emerald-400 font-mono font-bold flex items-center">
 													<IndianRupee className="w-3 h-3 inline" />
@@ -456,8 +465,12 @@ export const PnrCheckerPanel: React.FC = () => {
 											</div>
 											{data.ratings.cleanliness && (
 												<span className="text-[11px]">
-													(Cleanliness:{" "}
-													{data.ratings.cleanliness})
+													(
+													{t(
+														"tools.pnr_checker.cleanliness_rating",
+													)}
+													: {data.ratings.cleanliness}
+													)
 												</span>
 											)}
 										</div>
@@ -522,7 +535,7 @@ export const PnrCheckerPanel: React.FC = () => {
 															: "bg-muted/20 border-border/40 hover:bg-muted/40"
 													}`}
 												>
-													<div className="absolute -left-[21px] w-3 h-3 rounded-full border-2 border-background bg-primary" />
+													<div className="absolute -left-5.25 w-3 h-3 rounded-full border-2 border-background bg-primary" />
 													<div>
 														<div className="font-bold text-sm text-foreground">
 															{stn.stationName}{" "}

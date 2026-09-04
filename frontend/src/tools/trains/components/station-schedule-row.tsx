@@ -44,7 +44,7 @@ export const StationScheduleRow: React.FC<StationScheduleRowProps> = ({
 				{/* 2. Middle Column: Railway Ladder Track with Amber Station Node & Info */}
 				<div className="col-span-6 flex items-center gap-3 min-w-0">
 					{/* Realistic Railway Track with Sleepers */}
-					<div className="relative flex items-center justify-center shrink-0 w-8 self-stretch my-[-14px]">
+					<div className="relative flex items-center justify-center shrink-0 w-8 self-stretch -my-3.5">
 						{/* Two parallel steel rails with ladder cross-ties/sleepers */}
 						<div
 							className="absolute top-0 bottom-0 w-4.5 flex justify-between"

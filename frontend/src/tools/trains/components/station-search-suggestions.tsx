@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { MapPin } from "lucide-react";
 import type { StationSuggestion } from "../types/trains";
 
@@ -11,6 +12,8 @@ interface StationSearchSuggestionsProps {
 export const StationSearchSuggestions: React.FC<
 	StationSearchSuggestionsProps
 > = ({ suggestions, loading, onSelect }) => {
+	const { t } = useTranslation();
+
 	if (!loading && suggestions.length === 0) {
 		return null;
 	}
@@ -20,7 +23,7 @@ export const StationSearchSuggestions: React.FC<
 			{loading && (
 				<div className="p-3 text-xs text-muted-foreground animate-pulse text-center flex items-center justify-center gap-2">
 					<span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
-					<span>Searching stations...</span>
+					<span>{t("tools.pnr_checker.searching_stations")}</span>
 				</div>
 			)}
 			{suggestions.map((station) => (
