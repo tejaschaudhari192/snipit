@@ -148,40 +148,205 @@ export class PnrService {
 	}
 
 	/**
-	 * Fetch PNR data, prediction, coach position & intelligence from ConfirmTkt
+	 * Fetch data-driven confirmation probability, risk factors & advice from RailTC
 	 */
-	public async fetchConfirmTktPnr(pnr: string): Promise<{
-		pnrResponse?: Record<string, any>;
-		ctProResponse?: Record<string, any>;
-	} | null> {
+	public async fetchRailTcPnrPrediction(
+		pnr: string,
+	): Promise<import("../types/trains.types.js").RailTcPrediction | null> {
 		try {
-			const url = `https://cttrainsapi.confirmtkt.com/api/v2/ctpro/mweb/${encodeURIComponent(pnr)}?querysource=ct-web&locale=en&getHighChanceText=false&livePnr=false`;
+			const cleanPnr = pnr.trim();
+			const url = `https://api.railtc.in/api/v1/predict?pnr=${encodeURIComponent(cleanPnr)}`;
 			const response = await fetch(url, {
 				method: "POST",
 				headers: {
 					"User-Agent":
-						"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:132.0) Gecko/20100101 Firefox/132.0",
-					Accept: "*/*",
+						"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+					Accept: "application/json, text/plain, */*",
 					"Content-Type": "application/json",
-					Referer: "https://www.confirmtkt.com/",
+					Referer: "https://railtc.in/",
+					Origin: "https://railtc.in",
 				},
-				body: JSON.stringify({ proPlanName: "DEFAULT" }),
 			});
 
 			if (!response.ok) return null;
-			const json = await response.json();
-			return json?.data || null;
+			const json: import("../types/trains.types.js").RailTcApiPredictResponse =
+				await response.json();
+			const pred = json?.prediction;
+			if (!pred) return null;
+
+			const factorsRaw = pred.factors;
+			const passengerPredictionsRaw = pred.passenger_predictions;
+
+			const passengerPredictions: import("../types/trains.types.js").RailTcPassengerPrediction[] =
+				Array.isArray(passengerPredictionsRaw)
+					? passengerPredictionsRaw.map(
+							(
+								pp: import("../types/trains.types.js").RailTcApiPassengerPredictionRaw,
+							) => ({
+								passengerNumber: pp.passenger_number,
+								status: pp.status,
+								probability: pp.probability,
+								riskLevel: pp.risk_level,
+								message: pp.message,
+								breakdown: pp.breakdown
+									? {
+											baseScore: pp.breakdown.base_score,
+											wlPenalty: pp.breakdown.wl_penalty,
+											quotaPenalty:
+												pp.breakdown.quota_penalty,
+											classPenalty:
+												pp.breakdown.class_penalty,
+											daysAdjustment:
+												pp.breakdown.days_adjustment,
+											routeAdjustment:
+												pp.breakdown.route_adjustment,
+										}
+									: undefined,
+							}),
+						)
+					: [];
+
+			const firstPaxBreakdown = passengerPredictions[0]?.breakdown;
+
+			const mlLiveRaw = json?.details?.ml_live;
+			const mlLive = mlLiveRaw
+				? {
+						modelName: mlLiveRaw.model_name,
+						modelTarget: mlLiveRaw.model_target,
+						probability: mlLiveRaw.probability,
+						bucket: mlLiveRaw.bucket,
+						safeThreshold: mlLiveRaw.thresholds?.safe,
+						riskyThreshold: mlLiveRaw.thresholds?.risky,
+					}
+				: undefined;
+
+			// Fetch dynamic wl-trend-insights from RailTC if train and class/quota info is present
+			let routeStats:
+				| import("../types/trains.types.js").RailTcRouteStats
+				| undefined = undefined;
+			try {
+				const trainNoMatch = (json?.train || "").match(/\b(\d{4,5})\b/);
+				const trainNo = trainNoMatch ? trainNoMatch[1] : "";
+				const travelClass =
+					json?.details?.class || factorsRaw.class || "";
+				const quota = json?.details?.quota || factorsRaw.quota || "GN";
+				const fromStation = json?.details?.boarding || "";
+				const toStation = json?.details?.upto || "";
+				const wlNumber =
+					factorsRaw.wl_number !== undefined
+						? Number(factorsRaw.wl_number)
+						: 0;
+				const journeyDate = json?.date || "";
+
+				if (trainNo && travelClass) {
+					const trendParams = new URLSearchParams({
+						train_number: trainNo,
+						travel_class: travelClass,
+						quota: quota,
+						lookback_days: "5",
+						from_station: fromStation,
+						to_station: toStation,
+						waitlist_number: String(wlNumber),
+					});
+					if (journeyDate) {
+						trendParams.set("journey_date", journeyDate);
+					}
+
+					const trendResp = await fetch(
+						`https://api.railtc.in/api/v1/accuracy/wl-trend-insights?${trendParams.toString()}`,
+						{
+							headers: {
+								"User-Agent":
+									"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+								Accept: "application/json, text/plain, */*",
+								Referer: "https://railtc.in/",
+								Origin: "https://railtc.in",
+							},
+						},
+					);
+
+					if (trendResp.ok) {
+						const trendJson: import("../types/trains.types.js").RailTcApiTrendResponse =
+							await trendResp.json();
+						const insights = trendJson?.insights;
+						const timing = trendJson?.confirmation_timing;
+						const dailyTrendRaw = trendJson?.daily_trend;
+
+						if (insights) {
+							routeStats = {
+								dataScopeLabel:
+									trendJson.context.data_scope_label,
+								recentConfirmedCount:
+									insights.confirmed_tickets_last_period,
+								daysSampled:
+									trendJson.context.analysis_window_days || 5,
+								wlToCnfRate: insights.wl_to_cnf_probability,
+								wlToRacRate: insights.wl_to_rac_probability,
+								racToCnfRate: insights.rac_to_cnf_probability,
+								typicalClearWindow: timing.message,
+								practicalRangeMax:
+									insights.suggested_wl_confirmation_upto,
+								maxObservedWl:
+									insights.max_observed_wl_confirmed,
+								dailyTrend: Array.isArray(dailyTrendRaw)
+									? dailyTrendRaw.map(
+											(
+												d: import("../types/trains.types.js").RailTcDailyTrendRaw,
+											) => ({
+												date: d.date,
+												wlChecked: d.wl_checked,
+												wlToRac: d.wl_to_rac,
+												wlToCnf: d.wl_to_cnf,
+												confirmedTotal:
+													d.confirmed_total,
+											}),
+										)
+									: undefined,
+							};
+						}
+					}
+				}
+			} catch {
+				// Non-fatal if trend insights fail
+			}
+
+			return {
+				probability: pred.probability,
+				riskLevel: pred.risk_level,
+				message: pred.message,
+				predictionBucket: pred.prediction_bucket,
+				bucketDisplay: pred.bucket_display,
+				mediumHint: pred.medium_hint ?? undefined,
+				factors: {
+					currentStatus: factorsRaw.current_status,
+					wlNumber: factorsRaw.wl_number,
+					daysLeft: factorsRaw.days_left,
+					quota: factorsRaw.quota,
+					class: factorsRaw.class,
+					chartStatus: factorsRaw.chart_status,
+					routeAdjustment: factorsRaw.route_adjustment,
+					routeMessage: factorsRaw.route_message,
+					decisionSource: factorsRaw.decision_source,
+				},
+				passengerPredictions,
+				breakdown: firstPaxBreakdown,
+				predictionSource:
+					json?.details?.prediction_source ||
+					factorsRaw.decision_source,
+				mlLive,
+				routeStats,
+			};
 		} catch {
 			return null;
 		}
 	}
 
 	/**
-	 * Fetch and parse live PNR status from provider, enriched with ConfirmTkt prediction
+	 * Fetch and parse live PNR status from Paytm, enriched with RailTC predictions
 	 */
 	public async fetchPnrStatus(pnr: string): Promise<PnrData> {
-		// Run ConfirmTkt prediction in parallel with Paytm PNR fetch
-		const confirmTktPromise = this.fetchConfirmTktPnr(pnr);
+		// Run RailTC prediction in parallel with Paytm PNR fetch
+		const railtcPromise = this.fetchRailTcPnrPrediction(pnr);
 
 		let paytmData: PnrData | null = null;
 		let paytmError: Error | null = null;
@@ -332,128 +497,27 @@ export class PnrService {
 			paytmError = err instanceof Error ? err : new Error(String(err));
 		}
 
-		// Await ConfirmTkt intelligence response
-		const ctData = await confirmTktPromise;
-		const ctPnr = ctData?.pnrResponse;
-		const ctPro = ctData?.ctProResponse;
+		// Await RailTC prediction response
+		const railtcData = await railtcPromise;
 
-		// Extract benefits from ConfirmTkt ctPro
-		const benefits: import("../types/trains.types.js").PnrIntelligenceBenefit[] =
-			[];
-		if (Array.isArray(ctPro?.proBenefits)) {
-			for (const bGroup of ctPro.proBenefits) {
-				for (const item of bGroup.benefitItems || []) {
-					benefits.push({
-						type: item.featureType || item.type,
-						text: (item.text || "").replace(/\n/g, " "),
-						unlockedText: (item.unlockedText?.text || "").replace(
-							/\n/g,
-							" ",
-						),
-						color: item.unlockedText?.color,
-					});
-				}
-			}
-		}
-
-		// If Paytm succeeded, merge ConfirmTkt intelligence (predictions, coach layout, ratings)
 		if (paytmData) {
-			const ctPaxList = ctPnr?.passengerStatus || [];
-			paytmData.passengers = paytmData.passengers.map((pax, idx) => {
-				const ctPax =
-					ctPaxList[idx] ||
-					ctPaxList.find((p: any) => p.number === pax.number);
-				return {
-					...pax,
-					prediction: ctPax?.prediction || undefined,
-					confirmTktStatus: ctPax?.confirmTktStatus || undefined,
-					coach: ctPax?.coach || ctPax?.currentCoachId || undefined,
-					berth: ctPax?.berth || ctPax?.currentBerthNo || undefined,
-				};
-			});
-
-			if (ctPnr?.coachPosition) {
-				paytmData.coachPosition = ctPnr.coachPosition;
-			}
-			if (ctPnr?.expectedPlatformNo) {
-				paytmData.expectedPlatformNo = ctPnr.expectedPlatformNo;
-			}
-			if (ctPnr?.ticketFare || ctPnr?.bookingFare) {
-				paytmData.ticketFare = ctPnr.ticketFare || ctPnr.bookingFare;
-			}
-			if (ctPnr?.rating) {
-				paytmData.ratings = {
-					overall: ctPnr.rating,
-					cleanliness: ctPnr.cleanlinessRating,
-					punctuality: ctPnr.punctualityRating,
-					food: ctPnr.foodRating,
-				};
-			}
-			if (benefits.length > 0) {
-				paytmData.benefits = benefits;
+			if (railtcData) {
+				paytmData.railtcPrediction = railtcData;
+				paytmData.passengers = paytmData.passengers.map((pax) => {
+					const rPax = railtcData.passengerPredictions?.find(
+						(rp) => rp.passengerNumber === pax.number,
+					);
+					return {
+						...pax,
+						prediction:
+							rPax?.probability !== undefined
+								? `${Math.round(rPax.probability)}%`
+								: undefined,
+					};
+				});
 			}
 
 			return paytmData;
-		}
-
-		// Fallback: If Paytm was blocked or failed, use ConfirmTkt as the primary provider
-		if (ctPnr && !ctPnr.error) {
-			const ctPassengers: Passenger[] = (ctPnr.passengerStatus || []).map(
-				(pax: any, idx: number) => ({
-					number: pax.number || idx + 1,
-					name: `Passenger ${pax.number || idx + 1}`,
-					status:
-						pax.currentStatus || pax.bookingStatus || "No Status",
-					bookingStatus: pax.bookingStatus || undefined,
-					prediction: pax.prediction || undefined,
-					confirmTktStatus: pax.confirmTktStatus || undefined,
-					coach: pax.coach || pax.currentCoachId || undefined,
-					berth: pax.berth || pax.currentBerthNo || undefined,
-				}),
-			);
-
-			return {
-				pnr: ctPnr.pnr || pnr,
-				trainNumber: ctPnr.trainNo || "",
-				train: ctPnr.trainNo
-					? `${ctPnr.trainName || "Train"} (${ctPnr.trainNo})`
-					: ctPnr.trainName || "Train",
-				class: ctPnr.class || "",
-				date: ctPnr.doj || "",
-				from:
-					ctPnr.boardingStationName ||
-					ctPnr.sourceName ||
-					ctPnr.from ||
-					"",
-				fromCode: ctPnr.from || "",
-				to:
-					ctPnr.reservationUptoName ||
-					ctPnr.destinationName ||
-					ctPnr.to ||
-					"",
-				toCode: ctPnr.to || "",
-				departure: ctPnr.departureTime || "",
-				departureDate: ctPnr.sourceDoj || ctPnr.doj || "",
-				arrival: ctPnr.arrivalTime || "",
-				arrivalDate: ctPnr.destinationDoj || ctPnr.doj || "",
-				duration: ctPnr.duration || "",
-				chartStatus: ctPnr.chartPrepared
-					? "Chart Prepared"
-					: "Chart not prepared",
-				passengers: ctPassengers,
-				coachPosition: ctPnr.coachPosition || undefined,
-				expectedPlatformNo: ctPnr.expectedPlatformNo || undefined,
-				ticketFare: ctPnr.ticketFare || ctPnr.bookingFare || undefined,
-				ratings: ctPnr.rating
-					? {
-							overall: ctPnr.rating,
-							cleanliness: ctPnr.cleanlinessRating,
-							punctuality: ctPnr.punctualityRating,
-							food: ctPnr.foodRating,
-						}
-					: undefined,
-				benefits: benefits.length > 0 ? benefits : undefined,
-			};
 		}
 
 		if (paytmError) {
@@ -506,8 +570,7 @@ export class PnrService {
 		const body: PaytmScheduleBody | undefined = Array.isArray(rawData.body)
 			? rawData.body[0]
 			: rawData.body;
-		const rawStations: PaytmRawStation[] =
-			body?.stationList || body?.stations || body?.schedule || [];
+		const rawStations: PaytmRawStation[] = body?.stationList || [];
 
 		// Try fetching live platform numbers from Paytm platform locate API
 		const platformMap = new Map<string, string>();
@@ -564,8 +627,10 @@ export class PnrService {
 			trainNumber: body?.trainNumber || trainNumber,
 			trainName: body?.trainName || "",
 			stations,
-			origin: body?.origin || body?.stationFrom || undefined,
-			destination: body?.destination || body?.stationTo || undefined,
+			origin: body?.origin || body?.stationFrom || "",
+			destination: body?.destination || body?.stationTo || "",
+			runningOn: body?.runningOn || "",
+			journeyClasses: body?.journeyClasses || undefined,
 		};
 	}
 
