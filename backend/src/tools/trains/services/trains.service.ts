@@ -342,12 +342,9 @@ export class PnrService {
 	}
 
 	/**
-	 * Fetch and parse live PNR status from Paytm, enriched with RailTC predictions
+	 * Fetch and parse live PNR status from Paytm immediately without blocking on ML predictions
 	 */
 	public async fetchPnrStatus(pnr: string): Promise<PnrData> {
-		// Run RailTC prediction in parallel with Paytm PNR fetch
-		const railtcPromise = this.fetchRailTcPnrPrediction(pnr);
-
 		let paytmData: PnrData | null = null;
 		let paytmError: Error | null = null;
 
@@ -497,26 +494,7 @@ export class PnrService {
 			paytmError = err instanceof Error ? err : new Error(String(err));
 		}
 
-		// Await RailTC prediction response
-		const railtcData = await railtcPromise;
-
 		if (paytmData) {
-			if (railtcData) {
-				paytmData.railtcPrediction = railtcData;
-				paytmData.passengers = paytmData.passengers.map((pax) => {
-					const rPax = railtcData.passengerPredictions?.find(
-						(rp) => rp.passengerNumber === pax.number,
-					);
-					return {
-						...pax,
-						prediction:
-							rPax?.probability !== undefined
-								? `${Math.round(rPax.probability)}%`
-								: undefined,
-					};
-				});
-			}
-
 			return paytmData;
 		}
 

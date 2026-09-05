@@ -19,11 +19,13 @@ import type { RailTcPrediction } from "../types/trains";
 interface PnrPredictionGaugeProps {
 	prediction?: RailTcPrediction;
 	isAllConfirmed?: boolean;
+	loading?: boolean;
 }
 
 export const PnrPredictionGauge: React.FC<PnrPredictionGaugeProps> = ({
 	prediction,
 	isAllConfirmed = false,
+	loading = false,
 }) => {
 	const { t, i18n } = useTranslation();
 	const [showBreakdown, setShowBreakdown] = React.useState(false);
@@ -50,6 +52,50 @@ export const PnrPredictionGauge: React.FC<PnrPredictionGaugeProps> = ({
 							{t("tools.pnr_checker.prediction.confirmed_desc")}
 						</p>
 					</div>
+				</div>
+			</div>
+		);
+	}
+
+	if (loading && !prediction) {
+		return (
+			<div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-background/50 backdrop-blur-md p-6 shadow-sm animate-pulse">
+				<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+					<div className="flex items-center gap-3">
+						<div className="h-10 w-10 rounded-xl bg-primary/15 flex items-center justify-center text-primary animate-spin">
+							<Sparkles className="h-5 w-5" />
+						</div>
+						<div className="space-y-1.5">
+							<div className="flex items-center gap-2">
+								<h3 className="text-sm font-semibold text-foreground">
+									{t("tools.pnr_checker.prediction.title")}
+								</h3>
+								<Badge
+									variant="outline"
+									className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 border-primary/30 text-primary"
+								>
+									{t("tools.pnr_checker.prediction.badge")}
+								</Badge>
+							</div>
+							<p className="text-xs text-muted-foreground">
+								{t("tools.pnr_checker.loading_prediction")}
+							</p>
+						</div>
+					</div>
+					<div className="flex items-center gap-2 text-xs font-medium text-muted-foreground bg-muted/40 px-3 py-1.5 rounded-lg border border-border/40">
+						<Clock className="h-3.5 w-3.5 animate-spin text-primary" />
+						<span>
+							{t("tools.pnr_checker.analyzing_route_insights")}
+						</span>
+					</div>
+				</div>
+				<div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+					{[1, 2, 3, 4].map((i) => (
+						<div
+							key={i}
+							className="h-16 rounded-xl bg-muted/30 border border-border/30 animate-pulse"
+						/>
+					))}
 				</div>
 			</div>
 		);

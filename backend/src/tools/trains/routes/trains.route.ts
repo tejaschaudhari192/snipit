@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
 	getPnrStatus,
+	getPnrPrediction,
 	getTrainSchedule,
 	searchTrainSuggestions,
 	getTrainLiveStatus,
@@ -16,6 +17,7 @@ const router: Router = Router();
 router.use("/tracking", trackingRouter);
 
 router.get("/status", catchAsync(getPnrStatus));
+router.get("/prediction", catchAsync(getPnrPrediction));
 router.get("/schedule", catchAsync(getTrainSchedule));
 router.get("/search", catchAsync(searchTrainSuggestions));
 router.get("/stations", catchAsync(getStationSuggestions));

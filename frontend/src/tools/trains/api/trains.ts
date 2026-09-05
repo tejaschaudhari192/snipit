@@ -1,12 +1,22 @@
 import api from "@/lib/api";
 import type {
 	PnrData,
+	RailTcPrediction,
 	TrainScheduleResponse,
 	TrainSearchResult,
 } from "../types/trains";
 
 export const getPnrStatus = async (pnr: string): Promise<PnrData> => {
 	const response = await api.get<PnrData>(`/tools/trains/status?pnr=${pnr}`);
+	return response.data;
+};
+
+export const getPnrPrediction = async (
+	pnr: string,
+): Promise<RailTcPrediction | null> => {
+	const response = await api.get<RailTcPrediction | null>(
+		`/tools/trains/prediction?pnr=${pnr}`,
+	);
 	return response.data;
 };
 

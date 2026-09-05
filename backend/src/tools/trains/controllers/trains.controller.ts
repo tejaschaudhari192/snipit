@@ -27,6 +27,31 @@ export async function getPnrStatus(req: Request, res: Response): Promise<void> {
 	}
 }
 
+export async function getPnrPrediction(
+	req: Request,
+	res: Response,
+): Promise<void> {
+	const pnr = req.query.pnr ? String(req.query.pnr).trim() : "";
+
+	if (!pnr) {
+		res.status(400).json({ error: "Missing ?pnr= parameter" });
+		return;
+	}
+
+	if (!/^\d{10}$/.test(pnr)) {
+		res.status(400).json({ error: "PNR must be exactly 10 digits" });
+		return;
+	}
+
+	try {
+		const prediction = await pnrService.fetchRailTcPnrPrediction(pnr);
+		res.json(prediction);
+	} catch (err: unknown) {
+		const message = err instanceof Error ? err.message : String(err);
+		res.status(500).json({ error: message });
+	}
+}
+
 export async function getTrainSchedule(
 	req: Request,
 	res: Response,

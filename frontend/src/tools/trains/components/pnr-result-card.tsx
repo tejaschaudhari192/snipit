@@ -11,11 +11,13 @@ import { PnrFooterMetaSection } from "./pnr-footer-meta-section";
 interface PnrResultCardProps {
 	data: PnrData;
 	onViewRoute: () => void;
+	predictionLoading?: boolean;
 }
 
 export const PnrResultCard: React.FC<PnrResultCardProps> = ({
 	data,
 	onViewRoute,
+	predictionLoading = false,
 }) => {
 	const isAllConfirmed = React.useMemo(() => {
 		if (!data.passengers || data.passengers.length === 0) return false;
@@ -41,12 +43,15 @@ export const PnrResultCard: React.FC<PnrResultCardProps> = ({
 				<PnrTicketCard data={data} onViewRoute={onViewRoute} />
 
 				{/* AI Confirmation Intelligence & Risk Gauge */}
-				{(data.railtcPrediction || isAllConfirmed) && (
+				{(data.railtcPrediction ||
+					isAllConfirmed ||
+					predictionLoading) && (
 					<>
 						<Separator />
 						<PnrPredictionGauge
 							prediction={data.railtcPrediction}
 							isAllConfirmed={isAllConfirmed}
+							loading={predictionLoading}
 						/>
 					</>
 				)}

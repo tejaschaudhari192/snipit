@@ -7,7 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Train, Search, Loader2 } from "lucide-react";
 import { GifLoader } from "@/components/common/gif-loader";
 
-import { getPnrStatus, getTrainSchedule } from "../api/trains";
+import {
+	getPnrStatus,
+	getPnrPrediction,
+	getTrainSchedule,
+} from "../api/trains";
 import type { PnrData, TrainScheduleResponse } from "../types/trains";
 import { PnrTrackerCard } from "./pnr-tracker-card";
 import { PnrResultCard } from "./pnr-result-card";
@@ -17,6 +21,7 @@ export const PnrCheckerPanel: React.FC = () => {
 	const { t } = useTranslation();
 	const [pnrInput, setPnrInput] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [predictionLoading, setPredictionLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [data, setData] = useState<PnrData | null>(null);
 	const [scheduleLoading, setScheduleLoading] = useState(false);
@@ -55,12 +60,70 @@ export const PnrCheckerPanel: React.FC = () => {
 		}
 
 		setLoading(true);
+		setPredictionLoading(false);
 		setError(null);
 		setData(null);
 
 		try {
+			// 1. Fetch immediate live PNR ticket and passenger data (~200ms)
 			const result = await getPnrStatus(pnr);
 			setData(result);
+			setLoading(false);
+
+			// Check if all passengers are already confirmed
+			const isAllConfirmed =
+				result.passengers &&
+				result.passengers.length > 0 &&
+				result.passengers.every((p) => {
+					const s = (p.status || "").toLowerCase();
+					return (
+						s.includes("cnf") ||
+						s.includes("confirm") ||
+						Boolean(p.coach && p.berth)
+					);
+				});
+
+			// 2. Fetch RailTC ML prediction asynchronously in background if not already confirmed
+			if (!isAllConfirmed && !result.railtcPrediction) {
+				setPredictionLoading(true);
+				getPnrPrediction(pnr)
+					.then((prediction) => {
+						if (prediction) {
+							setData((prev) => {
+								if (!prev || prev.pnr !== result.pnr)
+									return prev;
+								const updatedPassengers = prev.passengers.map(
+									(pax) => {
+										const rPax =
+											prediction.passengerPredictions?.find(
+												(rp) =>
+													rp.passengerNumber ===
+													pax.number,
+											);
+										return {
+											...pax,
+											prediction:
+												rPax?.probability !== undefined
+													? `${Math.round(rPax.probability)}%`
+													: pax.prediction,
+										};
+									},
+								);
+								return {
+									...prev,
+									railtcPrediction: prediction,
+									passengers: updatedPassengers,
+								};
+							});
+						}
+					})
+					.catch((err) => {
+						console.error("Failed to fetch ML prediction:", err);
+					})
+					.finally(() => {
+						setPredictionLoading(false);
+					});
+			}
 		} catch (err: unknown) {
 			const axiosErr = err as {
 				response?: { data?: { error?: string } };
@@ -71,7 +134,6 @@ export const PnrCheckerPanel: React.FC = () => {
 				axiosErr?.message ||
 				t("tools.pnr_checker.api_error");
 			setError(message);
-		} finally {
 			setLoading(false);
 		}
 	}, [pnrInput, t]);
@@ -158,7 +220,11 @@ export const PnrCheckerPanel: React.FC = () => {
 			{!loading && data && (
 				<div className="space-y-6 animate-in fade-in-50 duration-300">
 					<PnrTrackerCard pnr={data.pnr} />
-					<PnrResultCard data={data} onViewRoute={fetchSchedule} />
+					<PnrResultCard
+						data={data}
+						onViewRoute={fetchSchedule}
+						predictionLoading={predictionLoading}
+					/>
 				</div>
 			)}
 
