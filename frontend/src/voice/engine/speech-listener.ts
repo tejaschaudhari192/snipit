@@ -1,3 +1,5 @@
+import { TIMING_CONFIG } from "../constants/timing";
+
 interface SpeechRecognitionAlternativeLike {
 	transcript: string;
 	confidence: number;
@@ -184,7 +186,7 @@ export class SpeechListenerEngine {
 				}
 			}
 		} else {
-			// 400ms acoustic dampening cooldown
+			// Acoustic dampening cooldown
 			if (this.unmutedCooldownTimeout)
 				clearTimeout(this.unmutedCooldownTimeout);
 			this.unmutedCooldownTimeout = setTimeout(() => {
@@ -195,7 +197,7 @@ export class SpeechListenerEngine {
 						// ignore
 					}
 				}
-			}, 400);
+			}, TIMING_CONFIG.ACOUSTIC_COOLDOWN_MS);
 		}
 	}
 

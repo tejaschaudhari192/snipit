@@ -5,6 +5,7 @@ import type {
 	VoiceActionPayload,
 } from "../types/voice.types";
 import { buildSystemPrompt } from "../knowledge/prompt-builder";
+import { cleanAndParseJson } from "../utils/json-sanitizer.utils";
 
 export class VoiceBrain {
 	public static async decide(
@@ -117,31 +118,9 @@ export class VoiceBrain {
 	}
 
 	private static cleanAndParseJSON(raw: string): BrainDecision | null {
-		try {
-			// Remove code fences
-			const cleaned = raw
-				.replace(/```json/gi, "")
-				.replace(/```/g, "")
-				.trim();
-			const firstBrace = cleaned.indexOf("{");
-			const lastBrace = cleaned.lastIndexOf("}");
-
-			if (firstBrace !== -1 && lastBrace !== -1) {
-				const jsonSubstring = cleaned.substring(
-					firstBrace,
-					lastBrace + 1,
-				);
-				const parsed = JSON.parse(jsonSubstring);
-				if (
-					parsed &&
-					typeof parsed.speech === "string" &&
-					parsed.action
-				) {
-					return parsed as BrainDecision;
-				}
-			}
-		} catch {
-			// Failed parse
+		const parsed = cleanAndParseJson<BrainDecision>(raw);
+		if (parsed && typeof parsed.speech === "string" && parsed.action) {
+			return parsed;
 		}
 		return null;
 	}

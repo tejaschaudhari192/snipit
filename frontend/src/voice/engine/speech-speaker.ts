@@ -1,4 +1,6 @@
 import { generatePuterSpeech } from "@/lib/puter-tts";
+import { TTS_CONFIG } from "../config/tts-config";
+import { TIMING_CONFIG } from "../constants/timing";
 
 export class SpeechSpeakerEngine {
 	private currentAudio: HTMLAudioElement | null = null;
@@ -22,13 +24,13 @@ export class SpeechSpeakerEngine {
 			if (typeof window !== "undefined" && window.puter?.ai?.txt2speech) {
 				audio = await Promise.race([
 					window.puter.ai.txt2speech(text, {
-						provider: "openai",
-						voice: "shimmer", // 'shimmer' is soft, cute, and gentle
+						provider: TTS_CONFIG.provider,
+						voice: TTS_CONFIG.voice,
 					}),
 					new Promise<never>((_, reject) =>
 						setTimeout(
 							() => reject(new Error("Puter TTS timeout")),
-							4000,
+							TIMING_CONFIG.TTS_TIMEOUT_MS,
 						),
 					),
 				]);
@@ -38,7 +40,7 @@ export class SpeechSpeakerEngine {
 					new Promise<never>((_, reject) =>
 						setTimeout(
 							() => reject(new Error("Puter TTS timeout")),
-							4000,
+							TIMING_CONFIG.TTS_TIMEOUT_MS,
 						),
 					),
 				]);
