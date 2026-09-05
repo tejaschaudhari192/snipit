@@ -6,6 +6,8 @@ import { Train } from "lucide-react";
 import { GifLoader } from "@/components/common/gif-loader";
 import type { TrainScheduleResponse, ScheduleStation } from "../types/trains";
 
+import { TrainRunningDaysBadge } from "./train-running-days-badge";
+
 interface TrainRouteScheduleModalProps {
 	isOpen: boolean;
 	onClose: () => void;
@@ -39,8 +41,8 @@ export const TrainRouteScheduleModal: React.FC<
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
 			<Card className="w-full max-w-2xl max-h-[85vh] flex flex-col bg-background border-border shadow-2xl overflow-hidden">
 				<div className="p-4 border-b border-border flex items-center justify-between bg-muted/30">
-					<div className="flex items-center gap-2">
-						<Train className="h-5 w-5 text-primary" />
+					<div className="flex items-start gap-2.5">
+						<Train className="h-5 w-5 text-primary mt-0.5" />
 						<div>
 							<h3 className="font-bold text-base text-foreground">
 								{trainTitle ||
@@ -48,9 +50,16 @@ export const TrainRouteScheduleModal: React.FC<
 										"tools.pnr_checker.route_modal.default_title",
 									)}
 							</h3>
-							<p className="text-xs text-muted-foreground">
-								{from} → {to}
-							</p>
+							<div className="flex flex-wrap items-center gap-3 mt-0.5">
+								<p className="text-xs text-muted-foreground">
+									{from} → {to}
+								</p>
+								{scheduleData?.runningOn && (
+									<TrainRunningDaysBadge
+										runningOn={scheduleData.runningOn}
+									/>
+								)}
+							</div>
 						</div>
 					</div>
 					<Button

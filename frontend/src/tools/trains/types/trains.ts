@@ -16,6 +16,81 @@ export interface PnrIntelligenceBenefit {
 	color?: string;
 }
 
+export interface RailTcPredictionFactors {
+	currentStatus: string;
+	wlNumber: number;
+	daysLeft: number;
+	quota: string;
+	class: string;
+	chartStatus: string;
+	routeAdjustment: number;
+	routeMessage?: string | null;
+	decisionSource: string;
+}
+
+export interface RailTcScoreBreakdown {
+	baseScore: number;
+	wlPenalty: number;
+	quotaPenalty: number;
+	classPenalty: number;
+	daysAdjustment: number;
+	routeAdjustment: number;
+}
+
+export interface RailTcPassengerPrediction {
+	passengerNumber: number;
+	status: string;
+	probability: number;
+	riskLevel: string;
+	message: string;
+	breakdown?: RailTcScoreBreakdown;
+}
+
+export interface RailTcDailyTrend {
+	date: string;
+	wlChecked: number;
+	wlToRac: number;
+	wlToCnf: number;
+	confirmedTotal: number;
+}
+
+export interface RailTcRouteStats {
+	dataScopeLabel: string;
+	recentConfirmedCount: number;
+	daysSampled: number;
+	wlToCnfRate: number;
+	wlToRacRate: number;
+	racToCnfRate: number;
+	typicalClearWindow: string;
+	practicalRangeMax: number;
+	maxObservedWl: number;
+	dailyTrend?: RailTcDailyTrend[];
+}
+
+export interface RailTcMlModelInfo {
+	modelName: string;
+	modelTarget: string;
+	probability: number;
+	bucket: string;
+	safeThreshold?: number;
+	riskyThreshold?: number;
+}
+
+export interface RailTcPrediction {
+	probability: number;
+	riskLevel: string;
+	message: string;
+	predictionBucket: string;
+	bucketDisplay: string;
+	mediumHint?: string;
+	factors: RailTcPredictionFactors;
+	passengerPredictions: RailTcPassengerPrediction[];
+	breakdown?: RailTcScoreBreakdown;
+	predictionSource: string;
+	mlLive?: RailTcMlModelInfo;
+	routeStats?: RailTcRouteStats;
+}
+
 export interface PnrData {
 	pnr: string;
 	trainNumber?: string;
@@ -43,6 +118,7 @@ export interface PnrData {
 		food?: number;
 	};
 	benefits?: PnrIntelligenceBenefit[];
+	railtcPrediction?: RailTcPrediction;
 	error?: string;
 }
 
@@ -62,9 +138,9 @@ export interface TrainScheduleResponse {
 	trainNumber: string;
 	trainName: string;
 	stations: ScheduleStation[];
-	origin?: string;
-	destination?: string;
-	runningOn?: string;
+	origin: string;
+	destination: string;
+	runningOn: string;
 	journeyClasses?: string[];
 }
 

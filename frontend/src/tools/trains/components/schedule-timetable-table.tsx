@@ -6,6 +6,8 @@ import { Train } from "lucide-react";
 import type { TrainScheduleResponse, ScheduleStation } from "../types/trains";
 import { StationScheduleRow } from "./station-schedule-row";
 
+import { TrainRunningDaysBadge } from "./train-running-days-badge";
+
 interface ScheduleTimetableTableProps {
 	scheduleData: TrainScheduleResponse;
 }
@@ -39,23 +41,32 @@ export const ScheduleTimetableTable: React.FC<ScheduleTimetableTableProps> = ({
 								scheduleData.destination &&
 								` • ${scheduleData.origin} → ${scheduleData.destination}`}
 						</p>
-						{scheduleData.journeyClasses &&
-							scheduleData.journeyClasses.length > 0 && (
-								<div className="flex items-center gap-1.5 mt-2 flex-wrap text-xs">
-									<span className="text-muted-foreground font-medium text-[11px]">
-										{t("tools.pnr_checker.classes")}:
-									</span>
-									{scheduleData.journeyClasses.map((cls) => (
-										<Badge
-											key={cls}
-											variant="outline"
-											className="font-mono text-[10px] py-0 px-1.5"
-										>
-											{cls}
-										</Badge>
-									))}
-								</div>
+						<div className="flex flex-wrap items-center gap-4 mt-2">
+							{scheduleData.runningOn && (
+								<TrainRunningDaysBadge
+									runningOn={scheduleData.runningOn}
+								/>
 							)}
+							{scheduleData.journeyClasses &&
+								scheduleData.journeyClasses.length > 0 && (
+									<div className="flex items-center gap-1.5 flex-wrap text-xs">
+										<span className="text-muted-foreground font-medium text-[11px]">
+											{t("tools.pnr_checker.classes")}:
+										</span>
+										{scheduleData.journeyClasses.map(
+											(cls) => (
+												<Badge
+													key={cls}
+													variant="outline"
+													className="font-mono text-[10px] py-0 px-1.5"
+												>
+													{cls}
+												</Badge>
+											),
+										)}
+									</div>
+								)}
+						</div>
 					</div>
 				</div>
 				<Badge variant="outline" className="text-xs font-mono shrink-0">
