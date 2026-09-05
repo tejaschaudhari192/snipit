@@ -28,7 +28,8 @@ export const GifLoader: React.FC<GifLoaderProps> = ({
 	return (
 		<div
 			className={cn(
-				"flex flex-col items-center justify-center space-y-3 text-center leading-none p-4",
+				"flex flex-col items-center justify-center text-center leading-none p-0 m-0",
+				label ? "gap-2" : "",
 				className,
 			)}
 		>
@@ -36,7 +37,7 @@ export const GifLoader: React.FC<GifLoaderProps> = ({
 				src={loadingGif}
 				alt="Loading..."
 				className={cn(
-					"object-contain select-none pointer-events-none shrink-0 max-w-full",
+					"object-contain select-none pointer-events-none shrink-0 max-w-full block p-0 m-0",
 					sizeClasses[size],
 					imageClassName,
 				)}

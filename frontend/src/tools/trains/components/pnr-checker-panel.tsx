@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Train, Search } from "lucide-react";
+import { Train, Search, Loader2 } from "lucide-react";
 import { GifLoader } from "@/components/common/gif-loader";
 
 import { getPnrStatus, getTrainSchedule } from "../api/trains";
@@ -118,7 +118,12 @@ export const PnrCheckerPanel: React.FC = () => {
 								className="h-11 px-6 font-semibold shadow-md gap-2 cursor-pointer"
 							>
 								{loading ? (
-									<GifLoader />
+									<>
+										<Loader2 className="h-4 w-4 animate-spin" />
+										<span>
+											{t("tools.pnr_checker.submit")}
+										</span>
+									</>
 								) : (
 									<>
 										<Search className="h-4 w-4" />
@@ -139,8 +144,18 @@ export const PnrCheckerPanel: React.FC = () => {
 				</CardContent>
 			</Card>
 
+			{/* Large Loading State Below Search Card */}
+			{loading && (
+				<div className="flex flex-col items-center justify-center p-8 rounded-2xl border border-border/50 bg-background/50 backdrop-blur-md shadow-sm animate-in fade-in-50 duration-300">
+					<GifLoader
+						size="lg"
+						label={t("tools.pnr_checker.checking_status")}
+					/>
+				</div>
+			)}
+
 			{/* Results View */}
-			{data && (
+			{!loading && data && (
 				<div className="space-y-6 animate-in fade-in-50 duration-300">
 					<PnrTrackerCard pnr={data.pnr} />
 					<PnrResultCard data={data} onViewRoute={fetchSchedule} />
