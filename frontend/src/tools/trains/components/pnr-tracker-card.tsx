@@ -28,7 +28,7 @@ interface PnrTrackerCardProps {
 
 export const PnrTrackerCard: React.FC<PnrTrackerCardProps> = ({ pnr }) => {
 	const { t } = useTranslation();
-	const { user } = useAuth();
+	const { user, loading: authLoading } = useAuth();
 
 	const [isTracking, setIsTracking] = useState(false);
 	const [trackingData, setTrackingData] = useState<PnrTrackingItem | null>(
@@ -46,7 +46,8 @@ export const PnrTrackerCard: React.FC<PnrTrackerCardProps> = ({ pnr }) => {
 		setStatusLoading(true);
 		try {
 			const res = await getPnrTrackingStatus(pnr);
-			setIsTracking(res.isTracking);
+			const active = Boolean(res.isTracking ?? res.isTracked);
+			setIsTracking(active);
 			setTrackingData(res.tracking || null);
 		} catch (err) {
 			console.error("Failed to check PNR tracking status:", err);
@@ -56,8 +57,10 @@ export const PnrTrackerCard: React.FC<PnrTrackerCardProps> = ({ pnr }) => {
 	}, [user, pnr]);
 
 	useEffect(() => {
-		fetchStatus();
-	}, [fetchStatus]);
+		if (!authLoading && user) {
+			fetchStatus();
+		}
+	}, [authLoading, user, fetchStatus]);
 
 	const handleSubscribe = async () => {
 		if (!user) return;
@@ -113,7 +116,28 @@ export const PnrTrackerCard: React.FC<PnrTrackerCardProps> = ({ pnr }) => {
 		}
 	};
 
-	// 1. Unauthenticated / Guest view
+	// 1. Loading state (auth resolving or initial status check)
+	if (
+		authLoading ||
+		(user && statusLoading && !trackingData && !isTracking)
+	) {
+		return (
+			<div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card/60 p-4 sm:p-5 shadow-sm animate-pulse">
+				<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+					<div className="flex items-start gap-3.5 w-full max-w-sm">
+						<div className="h-10 w-10 rounded-xl bg-muted shrink-0" />
+						<div className="space-y-2 w-full">
+							<div className="h-4 bg-muted rounded w-1/2" />
+							<div className="h-3 bg-muted/60 rounded w-3/4" />
+						</div>
+					</div>
+					<div className="h-9 w-28 bg-muted rounded-xl shrink-0 self-end sm:self-center" />
+				</div>
+			</div>
+		);
+	}
+
+	// 2. Unauthenticated / Guest view
 	if (!user) {
 		return (
 			<div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-linear-to-r from-primary/5 via-primary/10 to-primary/5 p-4 sm:p-5 shadow-sm">
@@ -160,7 +184,7 @@ export const PnrTrackerCard: React.FC<PnrTrackerCardProps> = ({ pnr }) => {
 		);
 	}
 
-	// 2. Active tracking view
+	// 3. Active tracking view
 	if (isTracking) {
 		return (
 			<div className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-linear-to-r from-emerald-500/10 via-emerald-500/5 to-teal-500/10 p-4 sm:p-5 shadow-sm transition-all">

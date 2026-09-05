@@ -77,37 +77,54 @@ export class PnrTrackingService {
 			return { tracking: existing, isNew: false };
 		}
 
-		const newTracking = await PnrTracking.create({
-			userId,
-			userEmail,
-			pnr: cleanPnr,
-			trainNumber: currentStatus.trainNumber || "",
-			trainName: currentStatus.train || "Train",
-			from: currentStatus.from || "",
-			fromCode: currentStatus.fromCode,
-			to: currentStatus.to || "",
-			toCode: currentStatus.toCode,
-			departureDate:
-				currentStatus.departureDate || currentStatus.date || "",
-			lastStatus: snapshot,
-			statusHistory: [
-				{
-					timestamp: new Date(),
-					changeSummary: "Tracking started",
-					changes: ["Subscription activated"],
-					newStatus: snapshot,
-				},
-			],
-			isActive: true,
-			notifyEmail: true,
-			lastCheckedAt: new Date(),
-			nextCheckAt,
-		});
+		try {
+			const newTracking = await PnrTracking.create({
+				userId,
+				userEmail,
+				pnr: cleanPnr,
+				trainNumber: currentStatus.trainNumber || "",
+				trainName: currentStatus.train || "Train",
+				from: currentStatus.from || "",
+				fromCode: currentStatus.fromCode,
+				to: currentStatus.to || "",
+				toCode: currentStatus.toCode,
+				departureDate:
+					currentStatus.departureDate || currentStatus.date || "",
+				lastStatus: snapshot,
+				statusHistory: [
+					{
+						timestamp: new Date(),
+						changeSummary: "Tracking started",
+						changes: ["Subscription activated"],
+						newStatus: snapshot,
+					},
+				],
+				isActive: true,
+				notifyEmail: true,
+				lastCheckedAt: new Date(),
+				nextCheckAt,
+			});
 
-		logger.info(
-			`Created new PNR tracking for user ${userEmail}, PNR: ${cleanPnr}`,
-		);
-		return { tracking: newTracking, isNew: true };
+			logger.info(
+				`Created new PNR tracking for user ${userEmail}, PNR: ${cleanPnr}`,
+			);
+			return { tracking: newTracking, isNew: true };
+		} catch (err: unknown) {
+			// Handle duplicate key race condition gracefully
+			const mongoErr = err as { code?: number };
+			if (mongoErr && mongoErr.code === 11000) {
+				const fallback = await PnrTracking.findOne({
+					userId,
+					pnr: cleanPnr,
+				});
+				if (fallback) {
+					fallback.isActive = true;
+					await fallback.save();
+					return { tracking: fallback, isNew: false };
+				}
+			}
+			throw err;
+		}
 	}
 
 	/**
@@ -132,7 +149,11 @@ export class PnrTrackingService {
 	public async getTrackingStatus(
 		userId: Types.ObjectId | string,
 		pnr: string,
-	): Promise<{ isTracked: boolean; tracking: IPnrTracking | null }> {
+	): Promise<{
+		isTracked: boolean;
+		isTracking: boolean;
+		tracking: IPnrTracking | null;
+	}> {
 		const cleanPnr = pnr.trim();
 		const tracking = await PnrTracking.findOne({
 			userId,
@@ -140,8 +161,10 @@ export class PnrTrackingService {
 			isActive: true,
 		}).lean<IPnrTracking>();
 
+		const isTracked = Boolean(tracking);
 		return {
-			isTracked: Boolean(tracking),
+			isTracked,
+			isTracking: isTracked,
 			tracking: tracking || null,
 		};
 	}

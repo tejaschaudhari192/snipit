@@ -211,6 +211,7 @@ export interface PnrTrackingItem {
 }
 
 export interface PnrTrackingStatusResponse {
-	isTracking: boolean;
-	tracking?: PnrTrackingItem;
+	isTracked?: boolean;
+	isTracking?: boolean;
+	tracking?: PnrTrackingItem | null;
 }
