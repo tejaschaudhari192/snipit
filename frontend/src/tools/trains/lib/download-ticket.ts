@@ -134,30 +134,64 @@ const buildTicketHtml = (data: PnrData): string => {
 
 /**
  * Downloads the exact HTML-styled ticket as a high-resolution PNG image.
+ * Uses an isolated hidden iframe to isolate the ticket markup completely from
+ * document-level Tailwind CSS variables and unsupported modern color formats like `oklch`.
  */
 export const downloadPnrTicketPng = async (data: PnrData): Promise<void> => {
 	const ticketHtml = buildTicketHtml(data);
-	const wrapper = document.createElement("div");
-	wrapper.id = "snipit-ticket-export-container";
-	wrapper.style.position = "fixed";
-	wrapper.style.left = "0px";
-	wrapper.style.top = "0px";
-	wrapper.style.width = "800px";
-	wrapper.style.opacity = "0.01"; // Non-zero opacity avoids browsers skipping rendering tree
-	wrapper.style.pointerEvents = "none";
-	wrapper.style.zIndex = "-99999";
-	wrapper.style.backgroundColor = "#ffffff";
-	wrapper.innerHTML = ticketHtml;
-	document.body.appendChild(wrapper);
+
+	// Create an isolated iframe to completely detach from parent document styles/CSS variables (oklch)
+	const iframe = document.createElement("iframe");
+	iframe.style.position = "fixed";
+	iframe.style.left = "0";
+	iframe.style.top = "0";
+	iframe.style.width = "850px";
+	iframe.style.height = "1200px";
+	iframe.style.opacity = "0.01";
+	iframe.style.pointerEvents = "none";
+	iframe.style.zIndex = "-99999";
+	iframe.style.border = "none";
+	document.body.appendChild(iframe);
 
 	try {
-		// Wait a browser tick for DOM layout and styling calculation
-		await new Promise((r) => setTimeout(r, 60));
+		const iframeDoc =
+			iframe.contentDocument || iframe.contentWindow?.document;
+		if (!iframeDoc) {
+			throw new Error("Unable to access ticket render iframe");
+		}
+
+		iframeDoc.open();
+		iframeDoc.write(`
+			<!DOCTYPE html>
+			<html>
+			<head>
+				<meta charset="utf-8" />
+				<style>
+					*, *::before, *::after {
+						box-sizing: border-box;
+					}
+					html, body {
+						margin: 0;
+						padding: 10px;
+						background-color: #ffffff;
+						color: #0f172a;
+						font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+					}
+				</style>
+			</head>
+			<body>
+				${ticketHtml}
+			</body>
+			</html>
+		`);
+		iframeDoc.close();
+
+		// Wait for iframe rendering
+		await new Promise((r) => setTimeout(r, 100));
 
 		const ticketEl =
-			(wrapper.querySelector("#pnr-ticket-root") as HTMLElement) ||
-			(wrapper.firstElementChild as HTMLElement) ||
-			wrapper;
+			(iframeDoc.querySelector("#pnr-ticket-root") as HTMLElement) ||
+			iframeDoc.body;
 
 		const canvas = await html2canvas(ticketEl, {
 			scale: 2,
@@ -165,10 +199,8 @@ export const downloadPnrTicketPng = async (data: PnrData): Promise<void> => {
 			allowTaint: true,
 			backgroundColor: "#ffffff",
 			logging: false,
-			windowWidth: 1024,
 		});
 
-		// Trigger PNG download using DataURL or Blob
 		const triggerDownload = (url: string) => {
 			const a = document.createElement("a");
 			a.href = url;
@@ -197,8 +229,8 @@ export const downloadPnrTicketPng = async (data: PnrData): Promise<void> => {
 			triggerDownload(canvas.toDataURL("image/png"));
 		}
 	} finally {
-		if (document.body.contains(wrapper)) {
-			document.body.removeChild(wrapper);
+		if (document.body.contains(iframe)) {
+			document.body.removeChild(iframe);
 		}
 	}
 };
