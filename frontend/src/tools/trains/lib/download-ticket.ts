@@ -1,3 +1,4 @@
+import html2canvas from "html2canvas";
 import type { PnrData } from "../types/trains";
 
 /**
@@ -137,69 +138,68 @@ const buildTicketHtml = (data: PnrData): string => {
 export const downloadPnrTicketPng = async (data: PnrData): Promise<void> => {
 	const ticketHtml = buildTicketHtml(data);
 	const wrapper = document.createElement("div");
+	wrapper.id = "snipit-ticket-export-container";
 	wrapper.style.position = "fixed";
-	wrapper.style.left = "-9999px";
-	wrapper.style.top = "0";
-	wrapper.style.width = "820px";
-	wrapper.style.padding = "10px";
-	wrapper.style.background = "#ffffff";
+	wrapper.style.left = "0px";
+	wrapper.style.top = "0px";
+	wrapper.style.width = "800px";
+	wrapper.style.opacity = "0.01"; // Non-zero opacity avoids browsers skipping rendering tree
+	wrapper.style.pointerEvents = "none";
+	wrapper.style.zIndex = "-99999";
+	wrapper.style.backgroundColor = "#ffffff";
 	wrapper.innerHTML = ticketHtml;
 	document.body.appendChild(wrapper);
 
 	try {
-		const ticketEl = wrapper.firstElementChild as HTMLElement;
-		const rect = ticketEl.getBoundingClientRect();
-		const width = Math.ceil(rect.width);
-		const height = Math.ceil(rect.height);
+		// Wait a browser tick for DOM layout and styling calculation
+		await new Promise((r) => setTimeout(r, 60));
 
-		// Encode HTML content into an SVG foreignObject for canvas rendering
-		const svgString = `
-			<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
-				<foreignObject width="100%" height="100%">
-					<div xmlns="http://www.w3.org/1999/xhtml">
-						${ticketEl.outerHTML}
-					</div>
-				</foreignObject>
-			</svg>
-		`;
+		const ticketEl =
+			(wrapper.querySelector("#pnr-ticket-root") as HTMLElement) ||
+			(wrapper.firstElementChild as HTMLElement) ||
+			wrapper;
 
-		const svgBlob = new Blob([svgString], {
-			type: "image/svg+xml;charset=utf-8",
-		});
-		const URL_API = window.URL || window.webkitURL || window;
-		const svgUrl = URL_API.createObjectURL(svgBlob);
-
-		const img = new Image();
-		await new Promise<void>((resolve, reject) => {
-			img.onload = () => resolve();
-			img.onerror = () =>
-				reject(new Error("Failed to load SVG for PNG export"));
-			img.src = svgUrl;
+		const canvas = await html2canvas(ticketEl, {
+			scale: 2,
+			useCORS: true,
+			allowTaint: true,
+			backgroundColor: "#ffffff",
+			logging: false,
+			windowWidth: 1024,
 		});
 
-		const scale = 2; // High-resolution export (2x DPR)
-		const canvas = document.createElement("canvas");
-		canvas.width = width * scale;
-		canvas.height = height * scale;
-		const ctx = canvas.getContext("2d");
-		if (ctx) {
-			ctx.scale(scale, scale);
-			ctx.drawImage(img, 0, 0);
-			canvas.toBlob((blob) => {
-				if (!blob) return;
-				const pngUrl = URL_API.createObjectURL(blob);
-				const a = document.createElement("a");
-				a.href = pngUrl;
-				a.download = `PNR_${data.pnr}_Ticket.png`;
-				document.body.appendChild(a);
-				a.click();
-				document.body.removeChild(a);
-				URL_API.revokeObjectURL(pngUrl);
-			}, "image/png");
+		// Trigger PNG download using DataURL or Blob
+		const triggerDownload = (url: string) => {
+			const a = document.createElement("a");
+			a.href = url;
+			a.download = `PNR_${data.pnr}_Ticket.png`;
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+		};
+
+		if (canvas.toBlob) {
+			await new Promise<void>((resolve) => {
+				canvas.toBlob((blob) => {
+					if (blob) {
+						const URL_API =
+							window.URL || window.webkitURL || window;
+						const url = URL_API.createObjectURL(blob);
+						triggerDownload(url);
+						setTimeout(() => URL_API.revokeObjectURL(url), 2000);
+					} else {
+						triggerDownload(canvas.toDataURL("image/png"));
+					}
+					resolve();
+				}, "image/png");
+			});
+		} else {
+			triggerDownload(canvas.toDataURL("image/png"));
 		}
-		URL_API.revokeObjectURL(svgUrl);
 	} finally {
-		document.body.removeChild(wrapper);
+		if (document.body.contains(wrapper)) {
+			document.body.removeChild(wrapper);
+		}
 	}
 };
 

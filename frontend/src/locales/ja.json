@@ -645,7 +645,7 @@
 				"bucket_medium_leans_confirm": "中程度（確定寄り）",
 				"bucket_risky": "リスクあり"
 			},
-			"checking_status": "リアルタイムPNRステータスとRailTCインテリジェンスを取得中...",
+			"checking_status": "リアルタイムのチケットおよび予約詳細を取得中...",
 			"origin_departure": "出発駅 / 出発時刻",
 			"destination_arrival": "到着駅 / 到着時刻",
 			"direct_route": "直通ルート",
@@ -653,7 +653,9 @@
 			"berth_label": "座席/寝台 {{berth}}",
 			"passengers_count": "{{count}} 名の乗客",
 			"booking_label": "予約状況: {{status}}",
-			"class_label_prefix": "クラス:"
+			"class_label_prefix": "クラス:",
+			"loading_prediction": "RailTC MLを使用して予約確定確率とルート傾向を分析中...",
+			"analyzing_route_insights": "キャンセル待ち確定確率と過去のチャート統計を算出中..."
 		},
 		"cryptoSafe_title": "クリプトセーフ",
 		"cinema": {

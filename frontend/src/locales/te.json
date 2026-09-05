@@ -646,7 +646,7 @@
 				"bucket_medium_leans_confirm": "మధ్యస్థం (కన్ఫర్మ్ దిశగా)",
 				"bucket_risky": "ప్రమాదకరం"
 			},
-			"checking_status": "లైవ్ PNR స్థితి & RailTC ఇంటెలిజెన్స్ తీసుకువస్తోంది...",
+			"checking_status": "ప్రత్యక్ష టిక్కెట్ మరియు బుకింగ్ వివరాలను పొందుతోంది...",
 			"origin_departure": "బయలుదేరు స్టేషన్ / సమయం",
 			"destination_arrival": "గమ్యస్థానం / సమయం",
 			"direct_route": "ప్రత్యక్ష మార్గం",
@@ -654,7 +654,9 @@
 			"berth_label": "బెర్త్ {{berth}}",
 			"passengers_count": "{{count}} ప్రయాణికులు",
 			"booking_label": "బుకింగ్: {{status}}",
-			"class_label_prefix": "తరగతి:"
+			"class_label_prefix": "తరగతి:",
+			"loading_prediction": "RailTC ML తో కన్ఫర్మేషన్ సంభావ్యత మరియు మార్గం పోకడలను విశ్లేషిస్తోంది...",
+			"analyzing_route_insights": "వెయిట్‌లిస్ట్ క్లియరింగ్ సంభావ్యత మరియు చారిత్రక చార్ట్ అంతర్దృష్టులను లెక్కిస్తోంది..."
 		},
 		"cinema": {
 			"title": "సినిమా - వాచ్ పార్టీలు",

@@ -646,7 +646,7 @@
 				"bucket_medium_leans_confirm": "મધ્યમ (કન્ફર્મ તરફ)",
 				"bucket_risky": "જોખમી"
 			},
-			"checking_status": "લાઇવ PNR સ્થિતિ અને RailTC ઇન્ટેલિજન્સ મેળવી રહ્યાં છીએ...",
+			"checking_status": "લાઇવ ટિકિટ અને બુકિંગ વિગતો મેળવી રહ્યું છે...",
 			"origin_departure": "પ્રસ્થાન સ્ટેશન / સમય",
 			"destination_arrival": "ગંતવ્ય સ્ટેશન / સમય",
 			"direct_route": "સીધો માર્ગ",
@@ -654,7 +654,9 @@
 			"berth_label": "બર્થ {{berth}}",
 			"passengers_count": "{{count}} મુસાફર(ઓ)",
 			"booking_label": "બુકિંગ: {{status}}",
-			"class_label_prefix": "વર્ગ:"
+			"class_label_prefix": "વર્ગ:",
+			"loading_prediction": "RailTC ML સાથે કન્ફર્મેશન સંભાવના અને રૂટ ટ્રેન્ડ્સનું વિશ્લેષણ થઈ રહ્યું છે...",
+			"analyzing_route_insights": "વેઇટલિસ્ટ ક્લિયરિંગ સંભાવના અને ઐતિહાસિક ચાર્ટ ઇનસાઇટ્સની ગણતરી કરી રહ્યું છે..."
 		},
 		"cinema": {
 			"title": "સિનેમા - વૉચ પાર્ટીઝ",

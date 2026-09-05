@@ -49,6 +49,7 @@
 		"date-fns": "^4.4.0",
 		"diceware-generator": "^3.0.1",
 		"diceware-wordlist-en": "^1.0.0",
+		"html2canvas": "^1.4.1",
 		"i18next": "^25.10.10",
 		"input-otp": "^1.4.2",
 		"jspdf": "^4.2.1",

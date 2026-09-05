@@ -646,7 +646,7 @@
 				"bucket_medium_leans_confirm": "معتدل (کنفرم کی طرف)",
 				"bucket_risky": "خطرناک"
 			},
-			"checking_status": "براہ راست PNR اسٹیٹس اور RailTC انٹیلی جنس حاصل کی جا رہی ہے...",
+			"checking_status": "براہ راست ٹکٹ اور بکنگ کی تفصیلات حاصل کی جا رہی ہیں...",
 			"origin_departure": "روانگی اسٹیشن / وقت",
 			"destination_arrival": "منزل اسٹیشن / وقت",
 			"direct_route": "براہ راست راستہ",
@@ -654,7 +654,9 @@
 			"berth_label": "برتھ {{berth}}",
 			"passengers_count": "{{count}} مسافر",
 			"booking_label": "بکنگ: {{status}}",
-			"class_label_prefix": "کلاس:"
+			"class_label_prefix": "کلاس:",
+			"loading_prediction": "RailTC ML کے ساتھ تصدیق کے امکانات اور روٹ کے رجحانات کا تجزیہ کیا جا رہا ہے...",
+			"analyzing_route_insights": "ویٹنگ لسٹ کلیئرنگ کے امکانات اور تاریخی چارٹ کی بصیرت کا حساب لگایا جا رہا ہے..."
 		},
 		"cinema": {
 			"title": "سنیما - واچ پارٹیاں",

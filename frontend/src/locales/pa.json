@@ -646,7 +646,7 @@
 				"bucket_medium_leans_confirm": "ਦਰਮਿਆਨਾ (ਪੁਸ਼ਟੀ ਵੱਲ)",
 				"bucket_risky": "ਖਤਰਨਾਕ"
 			},
-			"checking_status": "ਲਾਈਵ PNR ਸਥਿਤੀ ਅਤੇ RailTC ਇੰਟੈਲੀਜੈਂਸ ਪ੍ਰਾਪਤ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ...",
+			"checking_status": "ਲਾਈਵ ਟਿਕਟ ਅਤੇ ਬੁਕਿੰਗ ਵੇਰਵੇ ਪ੍ਰਾਪਤ ਕੀਤੇ ਜਾ ਰਹੇ ਹਨ...",
 			"origin_departure": "ਰਵਾਨਗੀ ਸਟੇਸ਼ਨ / ਸਮਾਂ",
 			"destination_arrival": "ਮੰਜ਼ਿਲ ਸਟੇਸ਼ਨ / ਸਮਾਂ",
 			"direct_route": "ਸਿੱਧਾ ਰਸਤਾ",
@@ -654,7 +654,9 @@
 			"berth_label": "ਬਰਥ {{berth}}",
 			"passengers_count": "{{count}} ਯਾਤਰੀ",
 			"booking_label": "ਬੁਕਿੰਗ: {{status}}",
-			"class_label_prefix": "ਸ਼੍ਰੇਣੀ:"
+			"class_label_prefix": "ਸ਼੍ਰੇਣੀ:",
+			"loading_prediction": "RailTC ML ਨਾਲ ਪੁਸ਼ਟੀਕਰਨ ਸੰਭਾਵਨਾ ਅਤੇ ਰੂਟ ਰੁਝਾਨਾਂ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+			"analyzing_route_insights": "ਵੇਟਲਿਸਟ ਕਲੀਅਰਿੰਗ ਸੰਭਾਵਨਾ ਅਤੇ ਇਤਿਹਾਸਕ ਚਾਰਟ ਸੂਝ ਦੀ ਗਣਨਾ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ..."
 		},
 		"cinema": {
 			"title": "ਸਿਨੇਮਾ - ਵਾਚ ਪਾਰਟੀਆਂ",

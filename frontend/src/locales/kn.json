@@ -646,7 +646,7 @@
 				"bucket_medium_leans_confirm": "ಮಧ್ಯಮ (ದೃಢೀಕರಣದತ್ತ)",
 				"bucket_risky": "ಅಪಾಯಕಾರಿ"
 			},
-			"checking_status": "ಲೈವ್ PNR ಸ್ಥಿತಿ ಮತ್ತು RailTC ಬುದ್ಧಿವಂತಿಕೆಯನ್ನು ಪಡೆಯಲಾಗುತ್ತಿದೆ...",
+			"checking_status": "ಲೈವ್ ಟಿಕೆಟ್ ಮತ್ತು ಬುಕಿಂಗ್ ವಿವರಗಳನ್ನು ಪಡೆಯಲಾಗುತ್ತಿದೆ...",
 			"origin_departure": "ಹೊರಡುವ ನಿಲ್ದಾಣ / ಸಮಯ",
 			"destination_arrival": "ತಲುಪುವ ನಿಲ್ದಾಣ / ಸಮಯ",
 			"direct_route": "ನೇರ ಮಾರ್ಗ",
@@ -654,7 +654,9 @@
 			"berth_label": "ಬರ್ತ್ {{berth}}",
 			"passengers_count": "{{count}} ಪ್ರಯಾಣಿಕರು",
 			"booking_label": "ಬುಕಿಂಗ್: {{status}}",
-			"class_label_prefix": "ವರ್ಗ:"
+			"class_label_prefix": "ವರ್ಗ:",
+			"loading_prediction": "RailTC ML ನೊಂದಿಗೆ ದೃಢೀಕರಣ ಸಂಭವನೀಯತೆ ಮತ್ತು ಮಾರ್ಗದ ಪ್ರವೃತ್ತಿಗಳನ್ನು ವಿಶ್ಲೇಷಿಸಲಾಗುತ್ತಿದೆ...",
+			"analyzing_route_insights": "ವೇಟಿಂಗ್ ಲಿಸ್ಟ್ ಕ್ಲಿಯರೆನ್ಸ್ ಸಂಭವನೀಯತೆ ಮತ್ತು ಐತಿಹಾಸಿಕ ಚಾರ್ಟ್ ಒಳನೋಟಗಳನ್ನು ಲೆಕ್ಕಹಾಕಲಾಗುತ್ತಿದೆ..."
 		},
 		"cinema": {
 			"title": "ಸಿನಿಮಾ - ವಾಚ್ ಪಾರ್ಟಿಗಳು",

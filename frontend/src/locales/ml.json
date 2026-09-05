@@ -646,7 +646,7 @@
 				"bucket_medium_leans_confirm": "മിതമായത് (സ്ഥിരീകരണത്തിലേക്ക്)",
 				"bucket_risky": "റിസ്ക് ഉള്ളത്"
 			},
-			"checking_status": "തത്സമയ PNR സ്റ്റാറ്റസും RailTC ഇന്റലിജൻസും ലഭ്യമാക്കുന്നു...",
+			"checking_status": "തത്സമയ ടിക്കറ്റും ബുക്കിംഗ് വിവരങ്ങളും ലഭ്യമാക്കുന്നു...",
 			"origin_departure": "പുറപ്പെടുന്ന സ്റ്റേഷൻ / സമയം",
 			"destination_arrival": "എത്തിച്ചേരുന്ന സ്റ്റേഷൻ / സമയം",
 			"direct_route": "നേരിട്ടുള്ള റൂട്ട്",
@@ -654,7 +654,9 @@
 			"berth_label": "ബർത്ത് {{berth}}",
 			"passengers_count": "{{count}} യാത്രക്കാർ",
 			"booking_label": "ബുക്കിംഗ്: {{status}}",
-			"class_label_prefix": "ക്ലാസ്:"
+			"class_label_prefix": "ക്ലാസ്:",
+			"loading_prediction": "RailTC ML ഉപയോഗിച്ച് സ്ഥിരീകരണ സാധ്യതയും റൂട്ട് ട്രെൻഡുകളും വിശകലനം ചെയ്യുന്നു...",
+			"analyzing_route_insights": "വെയ്റ്റ്‌ലിസ്റ്റ് ക്ലിയറിംഗ് സാധ്യതയും ചരിത്രപരമായ ചാർട്ട് ഉൾക്കാഴ്ചകളും കണക്കാക്കുന്നു..."
 		},
 		"cinema": {
 			"title": "സിനിമ - വാച്ച് പാർട്ടികൾ",

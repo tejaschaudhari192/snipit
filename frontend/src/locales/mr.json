@@ -646,7 +646,7 @@
 				"bucket_medium_leans_confirm": "मध्यम (कन्फर्म होण्याकडे)",
 				"bucket_risky": "धोकादायक"
 			},
-			"checking_status": "थेट PNR स्थिती आणि RailTC इंटेलिजन्स मिळवत आहे...",
+			"checking_status": "थेट तिकीट आणि बुकिंग तपशील मिळवत आहे...",
 			"origin_departure": "प्रस्थान स्थानक / वेळ",
 			"destination_arrival": "गंतव्य स्थानक / वेळ",
 			"direct_route": "थेट मार्ग",
@@ -654,7 +654,9 @@
 			"berth_label": "बर्थ {{berth}}",
 			"passengers_count": "{{count}} प्रवासी",
 			"booking_label": "बुकिंग: {{status}}",
-			"class_label_prefix": "श्रेणी:"
+			"class_label_prefix": "श्रेणी:",
+			"loading_prediction": "RailTC ML सह कन्फर्मेशन संभाव्यता आणि मार्ग ट्रेंडचे विश्लेषण करत आहे...",
+			"analyzing_route_insights": "प्रतीक्षा यादी क्लिअरिंग संभाव्यता आणि ऐतिहासिक चार्ट अंतर्दृष्टी मोजत आहे..."
 		},
 		"cinema": {
 			"title": "सिनेमा - वॉच पार्टीज",

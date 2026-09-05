@@ -31,7 +31,8 @@ export const PnrTicketCard: React.FC<PnrTicketCardProps> = ({
 				title: t("tools.pnr_checker.ticket_downloaded"),
 				type: "success",
 			});
-		} catch {
+		} catch (err: unknown) {
+			console.error("Ticket download error:", err);
 			toast.add({
 				title: t("tools.pnr_checker.ticket_download_failed"),
 				type: "error",

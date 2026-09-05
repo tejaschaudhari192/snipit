@@ -645,7 +645,7 @@
 				"bucket_medium_leans_confirm": "Mittel (tendiert zu bestätigt)",
 				"bucket_risky": "Riskant"
 			},
-			"checking_status": "Live-PNR-Status & RailTC-Intelligenz werden abgerufen...",
+			"checking_status": "Live-Ticket- und Buchungsdaten werden abgerufen...",
 			"origin_departure": "Abfahrt / Startbahnhof",
 			"destination_arrival": "Ankunft / Zielbahnhof",
 			"direct_route": "Direkte Verbindung",
@@ -653,7 +653,9 @@
 			"berth_label": "Liegeplatz {{berth}}",
 			"passengers_count": "{{count}} Fahrgast/Fahrgäste",
 			"booking_label": "Buchung: {{status}}",
-			"class_label_prefix": "Klasse:"
+			"class_label_prefix": "Klasse:",
+			"loading_prediction": "Bestätigungswahrscheinlichkeit & Routentrends werden mit RailTC ML analysiert...",
+			"analyzing_route_insights": "Wartelisten-Klärungswahrscheinlichkeit und historische Diagrammeinblicke werden berechnet..."
 		},
 		"cryptoSafe_title": "CryptoSafe",
 		"cinema": {

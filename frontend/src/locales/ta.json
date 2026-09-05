@@ -646,7 +646,7 @@
 				"bucket_medium_leans_confirm": "நடுத்தரமானது (உறுதியை நோக்கிய)",
 				"bucket_risky": "ஆபத்தானது"
 			},
-			"checking_status": "நேரலை PNR நிலை மற்றும் RailTC நுண்ணறிவைப் பெறுகிறது...",
+			"checking_status": "நேரடி டிக்கெட் மற்றும் முன்பதிவு விவரங்களை பெறுகிறது...",
 			"origin_departure": "புறப்படும் இடம் / நேரம்",
 			"destination_arrival": "சேருமிடம் / நேரம்",
 			"direct_route": "நேரடி வழித்தடம்",
@@ -654,7 +654,9 @@
 			"berth_label": "படுக்கை {{berth}}",
 			"passengers_count": "{{count}} பயணி(கள்)",
 			"booking_label": "முன்பதிவு: {{status}}",
-			"class_label_prefix": "வகுப்பு:"
+			"class_label_prefix": "வகுப்பு:",
+			"loading_prediction": "RailTC ML மூலம் உறுதிப்படுத்தல் நிகழ்தகவு மற்றும் வழித்தட போக்குகளை பகுப்பாய்வு செய்கிறது...",
+			"analyzing_route_insights": "காத்திருப்புப் பட்டியல் தீர்வு நிகழ்தகவு மற்றும் வரலாற்று சார்ட் விவரங்களைக் கணக்கிடுகிறது..."
 		},
 		"cinema": {
 			"title": "சினிமா - வாட்ச் பார்ட்டிகள்",

@@ -646,7 +646,7 @@
 				"bucket_medium_leans_confirm": "মাঝারি (নিশ্চিতের দিকে)",
 				"bucket_risky": "ঝুঁকিপূর্ণ"
 			},
-			"checking_status": "লাইভ PNR স্ট্যাটাস এবং RailTC ইন্টেলিজেন্স আনা হচ্ছে...",
+			"checking_status": "লাইভ টিকিট এবং বুকিং বিবরণ আনা হচ্ছে...",
 			"origin_departure": "উৎস / প্রস্থান",
 			"destination_arrival": "গন্তব্য / আগমন",
 			"direct_route": "সরাসরি রুট",
@@ -654,7 +654,9 @@
 			"berth_label": "বার্থ {{berth}}",
 			"passengers_count": "{{count}} যাত্রী",
 			"booking_label": "বুকিং: {{status}}",
-			"class_label_prefix": "শ্রেণি:"
+			"class_label_prefix": "শ্রেণি:",
+			"loading_prediction": "RailTC ML সহ নিশ্চিতকরণ সম্ভাবনা এবং রুট প্রবণতা বিশ্লেষণ করা হচ্ছে...",
+			"analyzing_route_insights": "ওয়েটিংলিস্ট ক্লিয়ারিং সম্ভাবনা এবং ঐতিহাসিক চার্ট অন্তর্দৃষ্টি গণনা করা হচ্ছে..."
 		},
 		"cinema": {
 			"title": "সিনেমা - ওয়াচ পার্টি",
