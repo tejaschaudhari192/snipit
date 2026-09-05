@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,9 @@ import { TrainRouteScheduleModal } from "./train-route-schedule-modal";
 
 export const PnrCheckerPanel: React.FC = () => {
 	const { t } = useTranslation();
-	const [pnrInput, setPnrInput] = useState("");
+	const [searchParams] = useSearchParams();
+	const initialPnr = searchParams.get("pnr") || "";
+	const [pnrInput, setPnrInput] = useState(initialPnr);
 	const [loading, setLoading] = useState(false);
 	const [predictionLoading, setPredictionLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -137,6 +140,18 @@ export const PnrCheckerPanel: React.FC = () => {
 			setLoading(false);
 		}
 	}, [pnrInput, t]);
+
+	useEffect(() => {
+		const paramPnr = searchParams.get("pnr");
+		if (paramPnr && /^\d{10}$/.test(paramPnr)) {
+			setPnrInput(paramPnr);
+			// Auto check if input matches param
+			const timer = setTimeout(() => {
+				checkPNR();
+			}, 100);
+			return () => clearTimeout(timer);
+		}
+	}, [searchParams, checkPNR]);
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === "Enter") {

@@ -20,7 +20,8 @@
 		"account": "Konto",
 		"guest": "Gast",
 		"tools": "Werkzeuge",
-		"send_feedback": "Feedback senden"
+		"send_feedback": "Feedback senden",
+		"guest_user": "Gastbenutzer"
 	},
 	"tools": {
 		"badge": "🔐 Sichere Tools",
@@ -758,7 +759,8 @@
 			"set": "Einstellen",
 			"open": "Offen",
 			"add": "Hinzufügen",
-			"remove": "Entfernen"
+			"remove": "Entfernen",
+			"create": "Erstellen"
 		},
 		"states": {
 			"loading": "Wird geladen...",
@@ -823,7 +825,9 @@
 			"admin_preview_banner": "Administrator-Vorschau: Die automatische Weiterleitung ist für Ersteller und Administratoren deaktiviert, um Konfigurationen zu ermöglichen.",
 			"skip_countdown": "Jetzt weiterleiten"
 		},
-		"layout": "Layout"
+		"layout": "Layout",
+		"success": "Erfolg",
+		"error": "Fehler"
 	},
 	"folders": {
 		"explorer": "Ordner-Explorer",
@@ -855,7 +859,8 @@
 		"snippets": "Snippets",
 		"grid_view": "Rasteransicht",
 		"list_view": "Listenansicht",
-		"items_count": "{{count}} Elemente"
+		"items_count": "{{count}} Elemente",
+		"loading": "Ordner werden geladen..."
 	},
 	"profile": {
 		"loading": "Laden...",
@@ -912,7 +917,8 @@
 			"cancel": "Abbrechen",
 			"save": "Foto speichern"
 		},
-		"edit_name": "Name bearbeiten"
+		"edit_name": "Name bearbeiten",
+		"color_tag": "Farb-Tag"
 	},
 	"home": {
 		"loading": "Laden...",
@@ -926,7 +932,9 @@
 			"expire_in_1_week": "1 Woche",
 			"expire_in_1_month": "1 Monat",
 			"expire_in_1_year": "1 Jahr",
-			"custom": "Eigenes"
+			"custom": "Eigenes",
+			"custom_desc": "Wählen Sie ein bestimmtes Datum und eine Uhrzeit für den Ablauf dieses Snippets.",
+			"set_expiry": "Ablauf festlegen"
 		},
 		"video": {
 			"setup_party": "Kino-Watchparty einrichten",
@@ -1228,7 +1236,9 @@
 			"title": "Mitmachen?",
 			"desc": "Snipit ist Open Source und wir freuen uns über Beiträge aus der Community. Ob Fehlerbehebung, neue Funktionen oder Verbesserungen der Dokumentation – jeder Beitrag zählt.",
 			"contact_button": "Kontakt aufnehmen",
-			"reach_us_button": "Erreichen Sie uns auf Telegram"
+			"reach_us_button": "Erreichen Sie uns auf Telegram",
+			"email": "E-Mail senden",
+			"telegram": "Telegram"
 		},
 		"faq": {
 			"title": "Häufig gestellte Fragen (FAQ)",
@@ -1335,7 +1345,9 @@
 		"reset_password_mismatch_toast": "Passwörter stimmen nicht überein",
 		"reset_password_min_length_toast": "Passwort muss mindestens 6 Zeichen lang sein",
 		"reset_password_invalid_token_toast": "Ungültiger Token",
-		"reset_password_weak_toast": "Passwort entspricht nicht den Anforderungen"
+		"reset_password_weak_toast": "Passwort entspricht nicht den Anforderungen",
+		"login": "Anmelden",
+		"signup": "Registrieren"
 	},
 	"editor": {
 		"ai_enhance": "✨ KI-Auswahl verbessern...",
@@ -1394,7 +1406,8 @@
 			"grammar": "Grammatik und Rechtschreibung korrigieren",
 			"summarize": "Text zusammenfassen",
 			"comments": "Code-Kommentare hinzufügen"
-		}
+		},
+		"generating": "Wird generiert..."
 	},
 	"ai": {
 		"draw_title": "AI-Diagramm-Generator",
@@ -1475,5 +1488,25 @@
 	},
 	"title": "Titel",
 	"common_back": "Gemeinsamer Rücken",
-	"remove": "Entfernen"
+	"remove": "Entfernen",
+	"voice": {
+		"title": "Snipit Copilot",
+		"speaking": "Sprachausgabe",
+		"listening": "Hört zu... Sprechen Sie Ihren Befehl",
+		"listening_or_type": "Hört zu... Sprechen oder unten eingeben",
+		"thinking": "Plant Aktionen...",
+		"operating": "Arbeitet auf der Seite...",
+		"reading_screen": "Liest Bildschirmergebnisse...",
+		"responding": "Antwortet...",
+		"error": "Konnte nicht verstanden werden oder Zeitüberschreitung. Klicken Sie auf das Mikrofon, um es erneut zu versuchen.",
+		"input_hint": "Tippen oder sprechen (z. B. „PNR 2419283741 prüfen“, „Fokusmusik abspielen“)",
+		"input_placeholder": "Snipit fragen oder befehlen...",
+		"stop_listening": "Zuhören beenden",
+		"start_listening": "Sprachbefehl sprechen",
+		"send": "Senden",
+		"open_keyboard": "Tastatureingabe öffnen",
+		"talk_tooltip": "Mit Snipit Voice Copilot sprechen",
+		"cancel_tooltip": "Stopp / Abbrechen",
+		"close_panel": "Bedienfeld schließen"
+	}
 }

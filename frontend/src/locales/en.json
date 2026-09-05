@@ -20,7 +20,8 @@
 		"account": "Account",
 		"guest": "Guest",
 		"tools": "Tools",
-		"send_feedback": "Send Feedback"
+		"send_feedback": "Send Feedback",
+		"guest_user": "Guest User"
 	},
 	"tools": {
 		"badge": "🔐 Secure Tools",
@@ -758,7 +759,8 @@
 			"set": "Set",
 			"open": "Open",
 			"add": "Add",
-			"remove": "Remove"
+			"remove": "Remove",
+			"create": "Create"
 		},
 		"states": {
 			"loading": "Loading...",
@@ -823,7 +825,9 @@
 			"admin_preview_banner": "Admin Preview: Automatic redirection is disabled for creators and admins to allow configuration.",
 			"skip_countdown": "Redirect Now"
 		},
-		"layout": "Layout"
+		"layout": "Layout",
+		"success": "Success",
+		"error": "Error"
 	},
 	"folders": {
 		"explorer": "Folders Explorer",
@@ -855,7 +859,8 @@
 		"grid_view": "Grid View",
 		"list_view": "List View",
 		"items_count": "{{count}} items",
-		"snippet_moved_success": "Snippet moved successfully"
+		"snippet_moved_success": "Snippet moved successfully",
+		"loading": "Loading folders..."
 	},
 	"profile": {
 		"loading": "Loading...",
@@ -907,7 +912,8 @@
 			"update_failed": "Failed to update profile photo",
 			"invalid_image": "Failed to process image"
 		},
-		"edit_name": "Edit name"
+		"edit_name": "Edit name",
+		"color_tag": "Color Tag"
 	},
 	"home": {
 		"loading": "Loading...",
@@ -921,7 +927,9 @@
 			"expire_in_1_week": "1 Week",
 			"expire_in_1_month": "1 Month",
 			"expire_in_1_year": "1 Year",
-			"custom": "Custom"
+			"custom": "Custom",
+			"custom_desc": "Choose a specific date and time for this snippet to expire.",
+			"set_expiry": "Set Expiration"
 		},
 		"video": {
 			"setup_party": "Setup cinema watch party",
@@ -1223,7 +1231,9 @@
 			"title": "Get in Touch",
 			"desc": "We would love to hear from you! Whether you have questions, feedback, or just want to say hello, feel free to reach out to us through any of the channels below.",
 			"contact_button": "Get in Touch",
-			"reach_us_button": "Reach us on Telegram"
+			"reach_us_button": "Reach us on Telegram",
+			"email": "Email Us",
+			"telegram": "Telegram"
 		},
 		"faq": {
 			"title": "Frequently Asked Questions",
@@ -1330,7 +1340,9 @@
 		"reset_password_mismatch_toast": "Passwords do not match",
 		"reset_password_min_length_toast": "Password must be at least 6 characters",
 		"reset_password_invalid_token_toast": "Invalid token",
-		"reset_password_weak_toast": "Password does not meet the requirements"
+		"reset_password_weak_toast": "Password does not meet the requirements",
+		"login": "Login",
+		"signup": "Sign Up"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI Enhance Selection...",
@@ -1389,7 +1401,8 @@
 			"grammar": "Fix grammar and spelling",
 			"summarize": "Summarize the text",
 			"comments": "Add code comments"
-		}
+		},
+		"generating": "Generating..."
 	},
 	"ai": {
 		"draw_title": "AI Diagram Generator",
@@ -1470,5 +1483,25 @@
 	},
 	"title": "Title",
 	"common_back": "Common Back",
-	"remove": "Remove"
+	"remove": "Remove",
+	"voice": {
+		"title": "Snipit Copilot",
+		"speaking": "Speaking",
+		"listening": "Listening... Speak your command",
+		"listening_or_type": "Listening... Speak or type below",
+		"thinking": "Planning actions...",
+		"operating": "Operating on page...",
+		"reading_screen": "Reading results from screen...",
+		"responding": "Responding...",
+		"error": "Could not understand or network timed out. Click mic to try again.",
+		"input_hint": "Type or speak (e.g. \"Check PNR 2419283741\", \"Play focus music\")",
+		"input_placeholder": "Ask or command Snipit...",
+		"stop_listening": "Stop listening",
+		"start_listening": "Speak voice command",
+		"send": "Send",
+		"open_keyboard": "Open keyboard input",
+		"talk_tooltip": "Talk to Snipit Voice Copilot",
+		"cancel_tooltip": "Stop / Cancel",
+		"close_panel": "Close panel"
+	}
 }

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FileText, Calendar, Radio, Search } from "lucide-react";
 import { PnrCheckerPanel } from "./components/pnr-checker-panel";
@@ -8,9 +9,23 @@ import { FindTrainsBetweenPanel } from "./components/find-trains-between-panel";
 
 const TrainsPage = () => {
 	const { t } = useTranslation();
+	const [searchParams] = useSearchParams();
+	const tabFromUrl = searchParams.get("tab") as
+		| "search"
+		| "pnr"
+		| "schedule"
+		| "live"
+		| null;
+
 	const [activeTab, setActiveTab] = useState<
 		"search" | "pnr" | "schedule" | "live"
-	>("search");
+	>(tabFromUrl || "search");
+
+	useEffect(() => {
+		if (tabFromUrl && tabFromUrl !== activeTab) {
+			setActiveTab(tabFromUrl);
+		}
+	}, [tabFromUrl, activeTab]);
 
 	return (
 		<div className="min-h-full bg-background text-foreground transition-colors duration-300">

@@ -20,7 +20,8 @@
 		"account": "アカウント",
 		"guest": "ゲスト",
 		"tools": "ツール",
-		"send_feedback": "フィードバックを送信"
+		"send_feedback": "フィードバックを送信",
+		"guest_user": "ゲストユーザー"
 	},
 	"tools": {
 		"badge": "🔐 セキュアツール",
@@ -758,7 +759,8 @@
 			"set": "設定",
 			"open": "開ける",
 			"add": "追加",
-			"remove": "削除"
+			"remove": "削除",
+			"create": "作成"
 		},
 		"states": {
 			"loading": "読み込み中...",
@@ -823,7 +825,9 @@
 			"admin_preview_banner": "管理者プレビュー: 設定を変更できるようにするため、作成者および管理者に対する自動リダイレクトは無効化されています。",
 			"skip_countdown": "今すぐリダイレクト"
 		},
-		"layout": "レイアウト"
+		"layout": "レイアウト",
+		"success": "成功",
+		"error": "エラー"
 	},
 	"profile": {
 		"loading": "読み込み中...",
@@ -880,7 +884,8 @@
 			"cancel": "キャンセル",
 			"save": "写真を保存"
 		},
-		"edit_name": "名前を編集"
+		"edit_name": "名前を編集",
+		"color_tag": "カラータグ"
 	},
 	"home": {
 		"loading": "読み込み中...",
@@ -894,7 +899,9 @@
 			"expire_in_1_week": "1週間",
 			"expire_in_1_month": "1ヶ月",
 			"expire_in_1_year": "1年",
-			"custom": "カスタム"
+			"custom": "カスタム",
+			"custom_desc": "このスニペットの有効期限となる特定の日時を選択します。",
+			"set_expiry": "有効期限を設定"
 		},
 		"video": {
 			"setup_party": "シネマウォッチパーティーを設定する",
@@ -1196,7 +1203,9 @@
 			"title": "お問い合わせ",
 			"desc": "皆様のご意見をお待ちしております。ご質問、フィードバック、または単なるご挨拶でも、以下のチャネルからお気軽にお問い合わせください。",
 			"contact_button": "連絡する",
-			"reach_us_button": "Telegramでお問い合わせ"
+			"reach_us_button": "Telegramでお問い合わせ",
+			"email": "メールを送る",
+			"telegram": "Telegram"
 		},
 		"faq": {
 			"title": "よくある質問",
@@ -1303,7 +1312,9 @@
 		"reset_password_mismatch_toast": "パスワードが一致しません",
 		"reset_password_min_length_toast": "パスワードは6文字以上である必要があります",
 		"reset_password_invalid_token_toast": "無効なトークン",
-		"reset_password_weak_toast": "パスワードが必要条件を満たしていません"
+		"reset_password_weak_toast": "パスワードが必要条件を満たしていません",
+		"login": "ログイン",
+		"signup": "新規登録"
 	},
 	"editor": {
 		"ai_enhance": "✨ AIで選択範囲を強化...",
@@ -1362,7 +1373,8 @@
 			"grammar": "文法と綴りの間違いを修正する",
 			"summarize": "テキストを要約する",
 			"comments": "コードコメントを追加する"
-		}
+		},
+		"generating": "生成中..."
 	},
 	"ai": {
 		"draw_title": "AIダイアグラムジェネレーター",
@@ -1474,6 +1486,27 @@
 		"grid_view": "グリッド表示",
 		"list_view": "リスト表示",
 		"items_count": "{{count}} 件のアイテム",
-		"snippet_moved_success": "スニペットを移動しました"
+		"snippet_moved_success": "スニペットを移動しました",
+		"loading": "フォルダーを読み込み中..."
+	},
+	"voice": {
+		"title": "Snipit Copilot",
+		"speaking": "話しています",
+		"listening": "聞き取り中... コマンドをお話しください",
+		"listening_or_type": "聞き取り中... 話すか、下に入力してください",
+		"thinking": "アクションを計画中...",
+		"operating": "ページ上で操作中...",
+		"reading_screen": "画面から結果を読み取り中...",
+		"responding": "応答中...",
+		"error": "聞き取れなかったか、タイムアウトしました。マイクをクリックして再試行してください。",
+		"input_hint": "入力または音声（例：「PNR 2419283741を確認」「集中音楽を再生」）",
+		"input_placeholder": "Snipitに質問または指示を入力...",
+		"stop_listening": "聞き取り停止",
+		"start_listening": "音声コマンドを話す",
+		"send": "送信",
+		"open_keyboard": "キーボード入力を開く",
+		"talk_tooltip": "Snipit Voice Copilotと話す",
+		"cancel_tooltip": "停止 / キャンセル",
+		"close_panel": "パネルを閉じる"
 	}
 }
