@@ -47,5 +47,13 @@ router.post(
 	"/suggest-id",
 	catchAsync(aiController.suggestId.bind(aiController)),
 );
+router.post(
+	"/voice/decide",
+	catchAsync(aiController.voiceDecide.bind(aiController)),
+);
+router.post(
+	"/voice/summarize",
+	catchAsync(aiController.voiceSummarize.bind(aiController)),
+);
 
 export default router;

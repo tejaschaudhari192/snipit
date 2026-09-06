@@ -408,20 +408,43 @@ class AiService {
 	): Promise<string> {
 		const extension = originalName.split(".").pop() || "webm";
 		const filePathWithExt = `${filePath}.${extension}`;
+		fs.renameSync(filePath, filePathWithExt);
+
+		const audioModels = [
+			configurations.groq_audio_model,
+			...configurations.groq_audio_models,
+		].filter((m, i, self) => m && self.indexOf(m) === i);
+
+		let lastError;
 
 		try {
-			// Rename file to include extension so Groq can detect format
-			fs.renameSync(filePath, filePathWithExt);
+			for (const model of audioModels) {
+				try {
+					logger.debug(
+						`Attempting audio transcription with model: ${model}`,
+					);
+					const transcription =
+						await this.groq.audio.transcriptions.create({
+							file: fs.createReadStream(filePathWithExt),
+							model,
+							response_format: "json",
+						});
 
-			const transcription = await this.groq.audio.transcriptions.create({
-				file: fs.createReadStream(filePathWithExt),
-				model: configurations.groq_audio_model,
-				response_format: "json",
-			});
+					return transcription.text;
+				} catch (err) {
+					logger.warn(
+						`Transcription failed with model ${model}, trying fallback:`,
+						err,
+					);
+					lastError = err;
+				}
+			}
 
-			return transcription.text;
+			throw (
+				lastError || new Error("All audio transcription models failed")
+			);
 		} catch (error) {
-			logger.error("Error transcribing audio:", error);
+			logger.error("Error transcribing audio with all models:", error);
 			throw error;
 		} finally {
 			// Clean up the temporary files
@@ -440,8 +463,133 @@ class AiService {
 	}
 
 	/**
+	 * Checks user input for jailbreaks or prompt injections using meta-llama/llama-prompt-guard-2-86m.
+	 * Returns true if safe (< 0.85), false if injection/jailbreak detected.
+	 */
+	async checkPromptSafety(
+		text: string,
+	): Promise<{ isSafe: boolean; score: number }> {
+		try {
+			const res = await this.groq.chat.completions.create({
+				model: configurations.groq_guard_model,
+				messages: [{ role: "user", content: text }],
+				temperature: 0,
+			});
+
+			const content = res.choices[0]?.message?.content?.trim() || "0";
+			const score = parseFloat(content);
+			const numScore = isNaN(score) ? 0 : score;
+			return {
+				isSafe: numScore < 0.85,
+				score: numScore,
+			};
+		} catch (error) {
+			logger.warn(
+				"Prompt guard check failed, failing open safely:",
+				error,
+			);
+			return { isSafe: true, score: 0 };
+		}
+	}
+
+	/**
+	 * Hybrid Voice & Agent Brain Decision Engine
+	 * Tier 1: Uses llama-prompt-guard-2-86m to filter adversarial queries and save rate-limits
+	 * Tier 2: Uses qwen/qwen3.8-27b with JSON mode to plan structured voice actions and speech
+	 */
+	async voiceDecide(
+		systemPrompt: string,
+		userMessage: string,
+		conversationHistory: Array<{
+			role: "system" | "user" | "assistant";
+			content: string;
+		}> = [],
+	): Promise<Record<string, unknown>> {
+		// Tier 1: Security Shield
+		const guard = await this.checkPromptSafety(userMessage);
+		if (!guard.isSafe) {
+			logger.warn(
+				`Rejected adversarial voice utterance with score: ${guard.score}`,
+			);
+			return {
+				speech: "I cannot perform that request for security reasons. How else can I help you?",
+				action: { type: "NONE" },
+			};
+		}
+
+		// Tier 2: Agent Reasoning via qwen/qwen3.8-27b with fallback chain
+		const messages: Array<{
+			role: "system" | "user" | "assistant";
+			content: string;
+		}> = [
+			{ role: "system", content: systemPrompt },
+			...conversationHistory,
+			{ role: "user", content: userMessage },
+		];
+
+		const chatCompletion = await this.requestWithFallback(
+			{
+				messages,
+				temperature: 0.2,
+				response_format: { type: "json_object" },
+			},
+			{
+				preferredModel: configurations.groq_voice_model,
+				modelList: configurations.groq_voice_models,
+			},
+		);
+
+		const raw = chatCompletion.choices[0]?.message?.content?.trim() || "{}";
+		try {
+			return JSON.parse(raw);
+		} catch {
+			const match = raw.match(/\{[\s\S]*\}/);
+			if (match) {
+				try {
+					return JSON.parse(match[0]);
+				} catch {
+					// pass
+				}
+			}
+			return {
+				speech: "I processed your request.",
+				action: { type: "NONE" },
+			};
+		}
+	}
+
+	/**
+	 * Spoken Result Summarization via dedicated voice models
+	 */
+	async voiceSummarize(prompt: string): Promise<string> {
+		try {
+			const chatCompletion = await this.requestWithFallback(
+				{
+					messages: [{ role: "user", content: prompt }],
+					temperature: 0.3,
+					max_tokens: 120,
+				},
+				{
+					preferredModel: configurations.groq_voice_model,
+					modelList: configurations.groq_voice_models,
+				},
+			);
+
+			const text =
+				chatCompletion.choices[0]?.message?.content?.trim() || "";
+			return text
+				.replace(/[*_#`]/g, "")
+				.replace(/\n+/g, " ")
+				.trim();
+		} catch (error) {
+			logger.error("Error summarizing voice result:", error);
+			return "";
+		}
+	}
+
+	/**
 	 * Executes a Groq completion request with automatic model fallback and optional validation.
-	 * Prioritizes the preferred model if provided, then falls through the GROQ_MODELS list.
+	 * Prioritizes the preferred model if provided, then falls through the GROQ_MODELS (or custom modelList).
 	 */
 	private async requestWithFallback<T = Groq.Chat.ChatCompletion>(
 		params: Omit<
@@ -450,11 +598,13 @@ class AiService {
 		>,
 		options: {
 			preferredModel?: string;
+			modelList?: readonly string[] | string[];
 			validator?: (completion: Groq.Chat.ChatCompletion) => T | null;
 		} = {},
 	): Promise<T> {
-		const { preferredModel, validator } = options;
-		const models = [preferredModel, ...GROQ_MODELS].filter(
+		const { preferredModel, modelList, validator } = options;
+		const fallbackList = modelList || GROQ_MODELS;
+		const models = [preferredModel, ...fallbackList].filter(
 			(m, i, self) => m && self.indexOf(m) === i,
 		) as string[];
 

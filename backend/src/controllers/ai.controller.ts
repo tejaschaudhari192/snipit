@@ -166,6 +166,48 @@ class AiController {
 			res.status(500).json({ error: message });
 		}
 	}
+
+	async voiceDecide(req: Request, res: Response) {
+		try {
+			const { systemPrompt, userMessage, history } = req.body;
+			if (!userMessage) {
+				return res
+					.status(400)
+					.json({ error: "userMessage is required" });
+			}
+
+			const decision = await this.aiService.voiceDecide(
+				systemPrompt || "",
+				userMessage,
+				history || [],
+			);
+			res.json(decision);
+		} catch (error: unknown) {
+			const message =
+				error instanceof Error
+					? error.message
+					: "Voice decision failed";
+			res.status(500).json({ error: message });
+		}
+	}
+
+	async voiceSummarize(req: Request, res: Response) {
+		try {
+			const { prompt } = req.body;
+			if (!prompt) {
+				return res.status(400).json({ error: "prompt is required" });
+			}
+
+			const text = await this.aiService.voiceSummarize(prompt);
+			res.json({ text });
+		} catch (error: unknown) {
+			const message =
+				error instanceof Error
+					? error.message
+					: "Voice summarize failed";
+			res.status(500).json({ error: message });
+		}
+	}
 }
 
 export default AiController;

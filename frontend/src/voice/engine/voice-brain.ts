@@ -1,11 +1,10 @@
-import { loadPuterJs } from "@/lib/puter-tts";
+import api from "@/lib/api";
 import type {
 	BrainDecision,
 	SessionMemoryData,
 	VoiceActionPayload,
 } from "../types/voice.types";
 import { buildSystemPrompt } from "../knowledge/prompt-builder";
-import { cleanAndParseJson } from "../utils/json-sanitizer.utils";
 
 export class VoiceBrain {
 	public static async decide(
@@ -56,73 +55,43 @@ export class VoiceBrain {
 			}
 		}
 
-		// 2. Direct Instant Regex Matchers (Fast zero-latency path)
+		// 2. Direct Instant Regex Matchers (Fast zero-latency path - 0 tokens)
 		const instantDecision = this.matchInstantRegex(text);
 		if (instantDecision) {
 			return instantDecision;
 		}
 
-		// 3. Puter AI LLM inference
+		// 3. Backend Hybrid Groq Pipeline:
+		// Tier 1: meta-llama/llama-prompt-guard-2-86m (security & injection shield)
+		// Tier 2: qwen/qwen3.8-27b (accurate JSON action planning & speech)
 		try {
-			await loadPuterJs();
+			const systemPrompt = buildSystemPrompt(memory, lang);
+			const history = memory.history.map((h) => ({
+				role: h.role,
+				content: h.content,
+			}));
 
-			if (typeof window !== "undefined" && window.puter?.ai?.chat) {
-				const systemPrompt = buildSystemPrompt(memory, lang);
+			const res = await api.post("/ai/voice/decide", {
+				systemPrompt,
+				userMessage: text,
+				history,
+			});
 
-				const chatMessages = [
-					{ role: "system", content: systemPrompt },
-					...memory.history.map((h) => ({
-						role: h.role,
-						content: h.content,
-					})),
-					{ role: "user", content: text },
-				];
-
-				const response = await window.puter.ai.chat(chatMessages, {
-					model: "gpt-4o-mini",
-					temperature: 0.8,
-				});
-
-				const resObj =
-					response && typeof response === "object"
-						? (response as Record<string, unknown>)
-						: null;
-				const msgObj =
-					resObj?.message && typeof resObj.message === "object"
-						? (resObj.message as Record<string, unknown>)
-						: null;
-				const msgContent =
-					typeof msgObj?.content === "string" ? msgObj.content : "";
-				const resText =
-					typeof resObj?.text === "string" ? resObj.text : "";
-
-				const rawContent =
-					typeof response === "string"
-						? response
-						: msgContent || resText;
-
-				const parsed = this.cleanAndParseJSON(rawContent);
-				if (parsed) {
-					return parsed;
+			if (res.data && typeof res.data === "object") {
+				const data = res.data as Record<string, unknown>;
+				if (typeof data.speech === "string" && data.action) {
+					return data as unknown as BrainDecision;
 				}
 			}
 		} catch (err) {
 			console.warn(
-				"Puter AI reasoning failed, falling back to local heuristic:",
+				"Groq hybrid voice decision failed, using local fallback:",
 				err,
 			);
 		}
 
 		// 4. Ultimate Fallback Heuristic
 		return this.fallbackHeuristic(text);
-	}
-
-	private static cleanAndParseJSON(raw: string): BrainDecision | null {
-		const parsed = cleanAndParseJson<BrainDecision>(raw);
-		if (parsed && typeof parsed.speech === "string" && parsed.action) {
-			return parsed;
-		}
-		return null;
 	}
 
 	private static matchInstantRegex(text: string): BrainDecision | null {

@@ -12,10 +12,14 @@ const envSchema = z.object({
 	DB_NAME: z.string(),
 	GOOGLE_CLIENT_ID: z.string(),
 	GROQ_API_KEY: z.string(),
-	GROQ_DUMB_MODEL: z.string(),
-	GROQ_SMART_MODEL: z.string(),
-	GROQ_AUDIO_MODEL: z.string(),
-	GROQ_MODELS: z.string(),
+	GROQ_DUMB_MODEL: z.string().optional(),
+	GROQ_SMART_MODEL: z.string().optional(),
+	GROQ_VOICE_MODEL: z.string().optional(),
+	GROQ_GUARD_MODEL: z.string().optional(),
+	GROQ_AUDIO_MODEL: z.string().optional(),
+	GROQ_AUDIO_MODELS: z.string().optional(),
+	GROQ_MODELS: z.string().optional(),
+	GROQ_VOICE_MODELS: z.string().optional(),
 	JWT_SECRET: z.string(),
 	JOB_SECRET: z.string(),
 	SUPABASE_URL: z.string().url(),
@@ -41,6 +45,8 @@ if (!parsedEnv.success) {
 
 const env = parsedEnv.data;
 
+import { GROQ_CONFIG } from "./groq.config.js";
+
 const configurations = {
 	node_env: env.NODE_ENV,
 	port: parseInt(env.PORT, 10),
@@ -52,16 +58,20 @@ const configurations = {
 	},
 	google_client_id: env.GOOGLE_CLIENT_ID,
 	groq_api_key: env.GROQ_API_KEY,
-	groq_dumb_model: env.GROQ_DUMB_MODEL,
-	groq_smart_model: env.GROQ_SMART_MODEL,
-	groq_audio_model: env.GROQ_AUDIO_MODEL,
-	groq_models: env.GROQ_MODELS.split(",").map((m) => m.trim()),
+	groq_dumb_model: GROQ_CONFIG.models.dumb,
+	groq_smart_model: GROQ_CONFIG.models.smart,
+	groq_voice_model: GROQ_CONFIG.voice.primary,
+	groq_guard_model: GROQ_CONFIG.voice.guard,
+	groq_audio_model: GROQ_CONFIG.audio.primary,
+	groq_audio_models: GROQ_CONFIG.audio.fallbackList,
+	groq_models: GROQ_CONFIG.models.generalList,
+	groq_voice_models: GROQ_CONFIG.voice.fallbackList,
 	jwt: {
 		secret: env.JWT_SECRET,
 		expiry: "30d",
 	},
 	cookie: {
-		maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+		maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 	},
 	cors: {
 		origins: [

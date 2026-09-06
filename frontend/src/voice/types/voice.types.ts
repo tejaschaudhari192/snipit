@@ -127,3 +127,13 @@ export interface BrainDecision {
 	updatedEntities?: Partial<ActiveEntityState>;
 	pendingSlot?: PendingSlotState | null;
 }
+
+// 7. Execution Step for Real-Time Execution Inspector / Activity Log
+export interface ExecutionStep {
+	id: string;
+	stage: "guard" | "thinking" | "action" | "screen" | "speech";
+	label: string;
+	detail?: string;
+	status: "pending" | "running" | "done" | "skipped" | "error";
+	timestamp: number;
+}

@@ -13,7 +13,7 @@ export const TIMING_CONFIG = {
 	SCREEN_SETTLEMENT_TIMEOUT_MS: 7000,
 
 	/**
-	 * Timeout for cloud TTS synthesis before falling back to browser speech synthesis
+	 * Timeout for cloud TTS synthesis before instantly falling back to browser speech synthesis
 	 */
-	TTS_TIMEOUT_MS: 4000,
+	TTS_TIMEOUT_MS: 1500,
 } as const;

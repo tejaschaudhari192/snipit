@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import type { VoiceAgentStatus } from "../types/voice.types";
+import type { VoiceAgentStatus, ExecutionStep } from "../types/voice.types";
 
 export interface VoiceAgentContextValue {
 	status: VoiceAgentStatus;
@@ -7,6 +7,9 @@ export interface VoiceAgentContextValue {
 	isListening: boolean;
 	isSpeaking: boolean;
 	activeActionDescription: string | null;
+	executionSteps: ExecutionStep[];
+	showExecutionDetails: boolean;
+	toggleExecutionDetails: () => void;
 	startListening: () => void;
 	stopListening: () => void;
 	cancel: () => void;

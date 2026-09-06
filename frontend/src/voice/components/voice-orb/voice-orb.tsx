@@ -11,6 +11,7 @@ export const VoiceOrb: React.FC = () => {
 		status,
 		transcript,
 		activeActionDescription,
+		executionSteps,
 		startListening,
 		stopListening,
 		cancel,
@@ -49,6 +50,7 @@ export const VoiceOrb: React.FC = () => {
 					status={status}
 					transcript={transcript}
 					activeAction={activeActionDescription}
+					executionSteps={executionSteps}
 					onCancel={cancel}
 				/>
 			)}
@@ -65,6 +67,7 @@ export const VoiceOrb: React.FC = () => {
 						transcript={transcript}
 						activeActionDescription={activeActionDescription}
 						isListening={isListening}
+						executionSteps={executionSteps}
 						onStartListening={startListening}
 						onStopListening={stopListening}
 						onSubmitText={sendTextMessage}

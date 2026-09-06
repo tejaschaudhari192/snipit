@@ -1,4 +1,4 @@
-import { loadPuterJs } from "@/lib/puter-tts";
+import api from "@/lib/api";
 
 export interface ResultSummaryRequest {
 	userQuery: string;
@@ -9,7 +9,8 @@ export interface ResultSummaryRequest {
 
 export class ResultSummarizer {
 	/**
-	 * Generates a concise, natural, 1-2 sentence spoken summary of screen results.
+	 * Generates a concise, natural, 1-2 sentence spoken summary of screen results
+	 * using Groq qwen/qwen3.8-27b via the backend service.
 	 */
 	public static async summarize(req: ResultSummaryRequest): Promise<string> {
 		const { userQuery, actionType, screenText, lang = "en" } = req;
@@ -19,10 +20,7 @@ export class ResultSummarizer {
 		}
 
 		try {
-			await loadPuterJs();
-
-			if (typeof window !== "undefined" && window.puter?.ai?.chat) {
-				const prompt = `You are the voice of Snipit Copilot.
+			const prompt = `You are the voice of Snipit Copilot.
 The user requested: "${userQuery}".
 The application executed the action "${actionType}" and the screen now shows the following output:
 """
@@ -37,55 +35,31 @@ Rules for your verbal response:
 5. If there is an error on the screen (e.g., "invalid PNR", "not found", "server error"), state it clearly and politely in "${lang}".
 6. Do NOT use markdown, bullet points, asterisks, or symbols. Output ONLY plain, warm, conversational text suitable for speech synthesis.`;
 
-				const response = await window.puter.ai.chat(
-					[{ role: "user", content: prompt }],
-					{
-						model: "gpt-4o-mini",
-						temperature: 0.5,
-					},
-				);
-
-				const resObj =
-					response && typeof response === "object"
-						? (response as Record<string, unknown>)
-						: null;
-				const msgObj =
-					resObj?.message && typeof resObj.message === "object"
-						? (resObj.message as Record<string, unknown>)
-						: null;
-				const summary =
-					typeof response === "string"
-						? response
-						: (typeof msgObj?.content === "string"
-								? msgObj.content
-								: "") ||
-							(typeof resObj?.text === "string"
-								? resObj.text
-								: "");
-
-				const cleanSummary = summary
-					.replace(/[*_#`]/g, "")
-					.replace(/\n+/g, " ")
-					.trim();
-
-				if (cleanSummary) {
-					return cleanSummary;
-				}
+			const res = await api.post<{ text: string }>(
+				"/ai/voice/summarize",
+				{ prompt },
+			);
+			if (res.data?.text) {
+				return res.data.text;
 			}
 		} catch (err) {
 			console.warn(
-				"ResultSummarizer failed, using generic fallback:",
+				"Groq ResultSummarizer failed, using generic fallback:",
 				err,
 			);
 		}
 
-		// Generic heuristic fallback if LLM is unavailable
-		if (/confirmed|cnf|berth|coach/i.test(screenText)) {
-			return "Your booking details are displayed on the screen.";
+		// Fallback generic voice response based on action type
+		if (actionType === "CHECK_PNR") {
+			return "I have fetched your PNR status on the screen.";
 		}
-		if (/error|invalid|not found/i.test(screenText)) {
-			return "It looks like there was an issue retrieving the details. Please check the screen.";
+		if (actionType === "SEARCH_TRAINS") {
+			return "Here are the available train routes based on your search.";
 		}
-		return "Here are the results you requested.";
+		if (actionType === "TRAIN_LIVE_STATUS") {
+			return "The live train running status is now displayed on your screen.";
+		}
+
+		return "The requested information is now displayed on your screen.";
 	}
 }
