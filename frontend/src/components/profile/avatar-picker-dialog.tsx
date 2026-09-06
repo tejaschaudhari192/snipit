@@ -17,8 +17,8 @@ import {
 	Sparkles,
 	Trash2,
 	Check,
-	RefreshCw,
 } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { MOCK_AVATARS } from "@/constants";
 import { compressImageFile } from "@/utils";
 import { toast } from "@/components/ui/toast";
@@ -253,7 +253,7 @@ export const AvatarPickerDialog: React.FC<AvatarPickerDialogProps> = ({
 					>
 						{isSaving ? (
 							<>
-								<RefreshCw className="w-3.5 h-3.5 animate-spin" />
+								<Spinner className="w-3.5 h-3.5" />
 								<span>{t("common.states.saving")}</span>
 							</>
 						) : (

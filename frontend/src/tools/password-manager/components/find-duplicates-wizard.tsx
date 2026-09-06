@@ -9,7 +9,8 @@ import {
 	DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { CopyX, CheckCircle, Merge, RefreshCw } from "lucide-react";
+import { CopyX, CheckCircle, Merge } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import type { PasswordItem } from "@/tools/password-manager/types";
 import { useAppDispatch } from "@/tools/password-manager/store";
 import { MergeItemsModal } from "./merge-items-modal";
@@ -154,7 +155,7 @@ export function FindDuplicatesWizard({
 		if (isAnalyzing) {
 			return (
 				<div className="flex flex-col items-center justify-center py-12 gap-4">
-					<RefreshCw className="w-8 h-8 animate-spin text-primary" />
+					<Spinner className="w-8 h-8 text-primary" />
 					<p className="text-muted-foreground">
 						{t("tools.password_manager.analyzing_duplicates")}
 					</p>

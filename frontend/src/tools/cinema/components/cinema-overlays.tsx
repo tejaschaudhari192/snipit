@@ -1,4 +1,4 @@
-import { RefreshCw, Tv, AlertCircle, VolumeX } from "lucide-react";
+import { Tv, AlertCircle, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -16,7 +16,7 @@ export const CinemaUnmuteOverlay = ({
 	return (
 		<div
 			onClick={onUnmute}
-			className="absolute inset-0 bg-background/70 flex flex-col items-center justify-center gap-3 z-30 cursor-pointer hover:bg-background/60 transition-all duration-300 animate-in fade-in duration-200"
+			className="absolute inset-0 bg-background/70 flex flex-col items-center justify-center gap-3 z-30 cursor-pointer hover:bg-background/60 transition-all duration-300 animate-in fade-in"
 		>
 			<div className="w-14 h-14 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center animate-bounce shadow-lg shadow-primary/20">
 				<VolumeX className="w-7 h-7 text-primary" />
@@ -46,7 +46,7 @@ export const CinemaBufferOverlay = ({
 
 	return (
 		<div className="absolute inset-0 z-30 flex flex-col gap-3 items-center justify-center bg-background/60 backdrop-blur-sm">
-			<RefreshCw className="w-12 h-12 text-primary animate-spin" />
+			<Spinner className="w-12 h-12 text-primary animate-spin" />
 			<span className="text-sm font-bold text-foreground tracking-wider animate-pulse">
 				Buffering... {bufferPercent}%
 			</span>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { RefreshCw, Hash, SlidersHorizontal } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -153,12 +154,11 @@ export const SemanticIdTab = ({
 					disabled={disabled || isGenerating}
 					title={t("home.id_generation.semantic_generate")}
 				>
-					<RefreshCw
-						className={cn(
-							"h-4 w-4 transition-transform duration-500",
-							isGenerating && "animate-spin",
-						)}
-					/>
+					{isGenerating ? (
+						<Spinner className="h-4 w-4 text-primary" />
+					) : (
+						<RefreshCw className="h-4 w-4 transition-transform duration-500" />
+					)}
 				</Button>
 			</div>
 

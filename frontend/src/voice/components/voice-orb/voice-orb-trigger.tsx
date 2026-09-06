@@ -37,9 +37,9 @@ export const VoiceOrbTrigger: React.FC<VoiceOrbTriggerProps> = ({
 					: isListening
 						? "bg-rose-600 text-white ring-4 ring-rose-500/40 animate-pulse scale-110"
 						: isThinking
-							? "bg-gradient-to-tr from-amber-600 to-indigo-600 text-white ring-4 ring-cyan-400/40 animate-pulse scale-105"
+							? "bg-linear-to-tr from-amber-600 to-indigo-600 text-white ring-4 ring-cyan-400/40 animate-pulse scale-105"
 							: isExecuting
-								? "bg-gradient-to-tr from-cyan-600 to-blue-600 text-white ring-4 ring-cyan-400/40 scale-105"
+								? "bg-linear-to-tr from-cyan-600 to-blue-600 text-white ring-4 ring-cyan-400/40 scale-105"
 								: isSpeaking
 									? "bg-blue-600 text-white ring-4 ring-blue-400/50 scale-105"
 									: "bg-neutral-800 text-white"

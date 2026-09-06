@@ -13,6 +13,7 @@ import {
 	Layers,
 	ChevronDown,
 	BarChart3,
+	Loader2,
 } from "lucide-react";
 import type { RailTcPrediction } from "../types/trains";
 
@@ -62,8 +63,8 @@ export const PnrPredictionGauge: React.FC<PnrPredictionGaugeProps> = ({
 			<div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-background/50 backdrop-blur-md p-6 shadow-sm animate-pulse">
 				<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
 					<div className="flex items-center gap-3">
-						<div className="h-10 w-10 rounded-xl bg-primary/15 flex items-center justify-center text-primary animate-spin">
-							<Sparkles className="h-5 w-5" />
+						<div className="h-10 w-10 rounded-xl bg-primary/15 flex items-center justify-center text-primary">
+							<Sparkles className="h-5 w-5 animate-pulse" />
 						</div>
 						<div className="space-y-1.5">
 							<div className="flex items-center gap-2">
@@ -83,7 +84,7 @@ export const PnrPredictionGauge: React.FC<PnrPredictionGaugeProps> = ({
 						</div>
 					</div>
 					<div className="flex items-center gap-2 text-xs font-medium text-muted-foreground bg-muted/40 px-3 py-1.5 rounded-lg border border-border/40">
-						<Clock className="h-3.5 w-3.5 animate-spin text-primary" />
+						<Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
 						<span>
 							{t("tools.pnr_checker.analyzing_route_insights")}
 						</span>

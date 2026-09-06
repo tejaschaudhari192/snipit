@@ -13,6 +13,7 @@ import {
 	Radio,
 	Clock,
 	RotateCcw,
+	Loader2,
 } from "lucide-react";
 import { GifLoader } from "@/components/common/gif-loader";
 
@@ -499,9 +500,11 @@ export const TrainLiveStatusPanel: React.FC = () => {
 							disabled={isAnimating}
 							className="shrink-0 gap-1.5 text-xs font-semibold hover:bg-primary/10 hover:text-primary transition-all self-start sm:self-center"
 						>
-							<RotateCcw
-								className={`w-3.5 h-3.5 ${isAnimating ? "animate-spin" : ""}`}
-							/>
+							{isAnimating ? (
+								<Loader2 className="w-3.5 h-3.5 animate-spin" />
+							) : (
+								<RotateCcw className="w-3.5 h-3.5" />
+							)}
 							<span>
 								{isAnimating
 									? "Tracking Train..."
