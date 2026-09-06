@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import type { VoiceAgentStatus, ExecutionStep } from "../types/voice.types";
+import type {
+	VoiceAgentStatus,
+	ExecutionStep,
+	ChatMessage,
+} from "../types/voice.types";
 import { VoiceAgentContext } from "./VoiceAgentContext";
 import { SessionMemory } from "../memory/session-memory";
 import { SpeechListenerEngine } from "../engine/speech-listener";
@@ -29,9 +33,83 @@ export const VoiceAgentProvider: React.FC<{ children: React.ReactNode }> = ({
 	>(null);
 	const [executionSteps, setExecutionSteps] = useState<ExecutionStep[]>([]);
 	const [showExecutionDetails, setShowExecutionDetails] = useState(false);
+	const [messages, setMessages] = useState<ChatMessage[]>(() => {
+		if (typeof window !== "undefined") {
+			try {
+				const saved = sessionStorage.getItem(
+					"snipit:voice_chat_messages",
+				);
+				if (saved) return JSON.parse(saved);
+			} catch {
+				// ignore parse error
+			}
+		}
+		return [
+			{
+				id: "welcome-msg",
+				role: "assistant",
+				content:
+					"Hello! I am your SnipIt Copilot. You can speak commands, generate snippets, search trains, control music, or ask anything about your workspace.",
+				timestamp: Date.now(),
+				status: "done",
+			},
+		];
+	});
+
+	const [isMascotVisible, setIsMascotVisibleState] = useState<boolean>(() => {
+		if (typeof window !== "undefined") {
+			const saved = localStorage.getItem("snipit:voice_mascot_visible");
+			return saved !== "false";
+		}
+		return true;
+	});
+
+	const setIsMascotVisible = useCallback((visible: boolean) => {
+		setIsMascotVisibleState(visible);
+		if (typeof window !== "undefined") {
+			localStorage.setItem(
+				"snipit:voice_mascot_visible",
+				visible ? "true" : "false",
+			);
+		}
+	}, []);
+
+	const toggleMascot = useCallback(() => {
+		setIsMascotVisible(!isMascotVisible);
+	}, [isMascotVisible, setIsMascotVisible]);
+
+	const clearMessages = useCallback(() => {
+		setMessages([
+			{
+				id: "welcome-msg",
+				role: "assistant",
+				content:
+					"Conversation cleared. How can I assist you with SnipIt today?",
+				timestamp: Date.now(),
+				status: "done",
+			},
+		]);
+		if (typeof window !== "undefined") {
+			sessionStorage.removeItem("snipit:voice_chat_messages");
+		}
+	}, []);
+
+	useEffect(() => {
+		if (typeof window !== "undefined" && messages.length > 0) {
+			try {
+				sessionStorage.setItem(
+					"snipit:voice_chat_messages",
+					JSON.stringify(messages.slice(-30)),
+				);
+			} catch {
+				// ignore storage quota
+			}
+		}
+	}, [messages]);
 
 	const navigate = useNavigate();
 	const location = useLocation();
+
 	const music = useMusic();
 
 	const memoryRef = useRef(new SessionMemory());
@@ -79,9 +157,18 @@ export const VoiceAgentProvider: React.FC<{ children: React.ReactNode }> = ({
 		async (text: string) => {
 			if (!text.trim()) return;
 
-			setStatus("thinking");
-			setTranscript(text);
-			setExecutionSteps([
+			const userMsgId = `user-${Date.now()}`;
+			const assistantMsgId = `asst-${Date.now()}`;
+
+			const userMsg: ChatMessage = {
+				id: userMsgId,
+				role: "user",
+				content: text,
+				timestamp: Date.now(),
+				status: "done",
+			};
+
+			const initialSteps: ExecutionStep[] = [
 				{
 					id: "thinking",
 					stage: "thinking",
@@ -90,8 +177,33 @@ export const VoiceAgentProvider: React.FC<{ children: React.ReactNode }> = ({
 					status: "running",
 					timestamp: Date.now(),
 				},
-			]);
+			];
+
+			const assistantMsg: ChatMessage = {
+				id: assistantMsgId,
+				role: "assistant",
+				content: "",
+				timestamp: Date.now(),
+				status: "streaming",
+				executionSteps: initialSteps,
+			};
+
+			setMessages((prev) => [...prev, userMsg, assistantMsg]);
+			setStatus("thinking");
+			setTranscript(text);
+			setExecutionSteps(initialSteps);
 			memoryRef.current.addTurn("user", text);
+
+			// Helper to patch current assistant message in React state
+			const patchAssistantMsg = (updates: Partial<ChatMessage>) => {
+				setMessages((prev) =>
+					prev.map((msg) =>
+						msg.id === assistantMsgId
+							? { ...msg, ...updates }
+							: msg,
+					),
+				);
+			};
 
 			// Mute microphone listener during processing & TTS
 			listenerRef.current?.setMuted(true);
@@ -103,9 +215,29 @@ export const VoiceAgentProvider: React.FC<{ children: React.ReactNode }> = ({
 					currentLangCode,
 				);
 
+				const stepDoneDetail = `Intent mapped: ${decision.action?.type || "DIRECT_SPEECH"}`;
 				updateStep("thinking", {
 					status: "done",
-					detail: `Intent mapped: ${decision.action?.type || "DIRECT_SPEECH"}`,
+					detail: stepDoneDetail,
+				});
+
+				const hasAction =
+					decision.action && decision.action.type !== "NONE";
+				const needsObservation =
+					hasAction && isPerceptiveAction(decision.action.type);
+
+				let accumulatedSteps: ExecutionStep[] = [
+					{
+						...initialSteps[0],
+						status: "done",
+						detail: stepDoneDetail,
+					},
+				];
+
+				patchAssistantMsg({
+					action: decision.action,
+					content: decision.speech || "",
+					executionSteps: accumulatedSteps,
 				});
 
 				if (decision.updatedEntities) {
@@ -113,25 +245,33 @@ export const VoiceAgentProvider: React.FC<{ children: React.ReactNode }> = ({
 				}
 				memoryRef.current.setPendingSlot(decision.pendingSlot || null);
 
-				const hasAction =
-					decision.action && decision.action.type !== "NONE";
-				const needsObservation =
-					hasAction && isPerceptiveAction(decision.action.type);
-
 				// Phase 1: Speak initial intent or direct response
 				if (decision.speech) {
 					setStatus("speaking");
-					addStep({
+					const speechStep: ExecutionStep = {
 						id: "speech-1",
 						stage: "speech",
 						label: "Synthesizing Speech",
 						detail: decision.speech,
 						status: "running",
 						timestamp: Date.now(),
+					};
+					addStep(speechStep);
+					accumulatedSteps = [...accumulatedSteps, speechStep];
+					patchAssistantMsg({
+						content: decision.speech,
+						executionSteps: accumulatedSteps,
 					});
+
 					memoryRef.current.addTurn("assistant", decision.speech);
 					await speakerRef.current?.speak(decision.speech);
 					updateStep("speech-1", { status: "done" });
+					accumulatedSteps = accumulatedSteps.map((s) =>
+						s.id === "speech-1"
+							? { ...s, status: "done" as const }
+							: s,
+					);
+					patchAssistantMsg({ executionSteps: accumulatedSteps });
 				}
 
 				// Execute Action
@@ -142,31 +282,51 @@ export const VoiceAgentProvider: React.FC<{ children: React.ReactNode }> = ({
 						decision.action.params || {},
 					);
 					setActiveActionDescription(`Executing: ${actionName}`);
-					addStep({
+					const actionStep: ExecutionStep = {
 						id: "action-exec",
 						stage: "action",
 						label: `Execute ${actionName}`,
 						detail: actionDetail,
 						status: "running",
 						timestamp: Date.now(),
+					};
+					addStep(actionStep);
+					accumulatedSteps = [...accumulatedSteps, actionStep];
+					patchAssistantMsg({
+						executionSteps: accumulatedSteps,
 					});
 
 					await dispatcherRef.current?.dispatch(decision.action);
 					updateStep("action-exec", { status: "done" });
+					accumulatedSteps = accumulatedSteps.map((s) =>
+						s.id === "action-exec"
+							? { ...s, status: "done" as const }
+							: s,
+					);
+					patchAssistantMsg({
+						executionSteps: accumulatedSteps,
+						actionResult: {
+							success: true,
+							message: `Executed ${actionName}`,
+						},
+					});
 				}
 
 				// Phase 2: If this action generates on-screen results, observe & summarize
 				if (needsObservation) {
 					setStatus("observing");
 					setActiveActionDescription("Observing screen results...");
-					addStep({
+					const screenStep: ExecutionStep = {
 						id: "screen-perceive",
 						stage: "screen",
 						label: "Screen Perception & DOM Settlement",
 						detail: "Waiting for loaders to clear...",
 						status: "running",
 						timestamp: Date.now(),
-					});
+					};
+					addStep(screenStep);
+					accumulatedSteps = [...accumulatedSteps, screenStep];
+					patchAssistantMsg({ executionSteps: accumulatedSteps });
 
 					// Wait for loaders to disappear and DOM to settle
 					await ScreenPerceiver.waitForSettlement(
@@ -175,22 +335,37 @@ export const VoiceAgentProvider: React.FC<{ children: React.ReactNode }> = ({
 
 					// Extract semantic text from active main content
 					const screenText = ScreenPerceiver.extractSemanticText();
+					const screenDetail = screenText
+						? `Observed ${screenText.slice(0, 80)}...`
+						: "DOM settled";
+
 					updateStep("screen-perceive", {
 						status: "done",
-						detail: screenText
-							? `Observed ${screenText.slice(0, 80)}...`
-							: "DOM settled",
+						detail: screenDetail,
 					});
+					accumulatedSteps = accumulatedSteps.map((s) =>
+						s.id === "screen-perceive"
+							? {
+									...s,
+									status: "done" as const,
+									detail: screenDetail,
+								}
+							: s,
+					);
+					patchAssistantMsg({ executionSteps: accumulatedSteps });
 
 					if (screenText) {
 						setStatus("thinking");
-						addStep({
+						const sumStep: ExecutionStep = {
 							id: "summarize",
 							stage: "thinking",
 							label: "Generating Spoken Summary",
 							status: "running",
 							timestamp: Date.now(),
-						});
+						};
+						addStep(sumStep);
+						accumulatedSteps = [...accumulatedSteps, sumStep];
+						patchAssistantMsg({ executionSteps: accumulatedSteps });
 
 						const spokenResult = await ResultSummarizer.summarize({
 							userQuery: text,
@@ -199,33 +374,74 @@ export const VoiceAgentProvider: React.FC<{ children: React.ReactNode }> = ({
 							lang: currentLangCode,
 						});
 
+						const sumDoneDetail =
+							spokenResult || "Summary generated";
 						updateStep("summarize", {
 							status: "done",
-							detail: spokenResult || "Summary generated",
+							detail: sumDoneDetail,
 						});
+						accumulatedSteps = accumulatedSteps.map((s) =>
+							s.id === "summarize"
+								? {
+										...s,
+										status: "done" as const,
+										detail: sumDoneDetail,
+									}
+								: s,
+						);
 
 						if (spokenResult) {
 							setStatus("speaking");
-							addStep({
+							const spokenStep: ExecutionStep = {
 								id: "speech-2",
 								stage: "speech",
 								label: "Spoken Result",
 								detail: spokenResult,
 								status: "running",
 								timestamp: Date.now(),
+							};
+							addStep(spokenStep);
+							accumulatedSteps = [
+								...accumulatedSteps,
+								spokenStep,
+							];
+
+							const combinedContent = decision.speech
+								? `${decision.speech}\n\n${spokenResult}`
+								: spokenResult;
+
+							patchAssistantMsg({
+								content: combinedContent,
+								executionSteps: accumulatedSteps,
 							});
+
 							memoryRef.current.addTurn(
 								"assistant",
 								spokenResult,
 							);
 							await speakerRef.current?.speak(spokenResult);
 							updateStep("speech-2", { status: "done" });
+							accumulatedSteps = accumulatedSteps.map((s) =>
+								s.id === "speech-2"
+									? { ...s, status: "done" as const }
+									: s,
+							);
+							patchAssistantMsg({
+								executionSteps: accumulatedSteps,
+							});
 						}
 					}
 				}
+
+				patchAssistantMsg({ status: "done" });
 			} catch (err) {
 				console.error("Error processing voice utterance:", err);
 				setStatus("error");
+				patchAssistantMsg({
+					status: "error",
+					content:
+						"Sorry, I encountered an issue processing your request. Please try again.",
+				});
 			} finally {
 				setStatus("idle");
 				setActiveActionDescription(null);
@@ -323,6 +539,11 @@ export const VoiceAgentProvider: React.FC<{ children: React.ReactNode }> = ({
 				stopListening,
 				cancel,
 				sendTextMessage,
+				isMascotVisible,
+				setIsMascotVisible,
+				toggleMascot,
+				messages,
+				clearMessages,
 			}}
 		>
 			{children}

@@ -30,7 +30,7 @@ export function buildSystemPrompt(
 			const optional = a.optionalParams
 				? `Optional params: [${a.optionalParams.join(", ")}]`
 				: "";
-			return `* Action: "${a.name}"\n  Triggers: ${a.intentTriggers.slice(0, 4).join(", ")}\n  ${params} ${optional}`;
+			return `* Action: "${a.name}" (${a.description})\n  Triggers: ${a.intentTriggers.join(", ")}\n  ${params} ${optional}`;
 		})
 		.join("\n");
 
@@ -70,6 +70,7 @@ ${slotStr}
   "updatedEntities": { "pnr": "...", "trainNo": "..." },
   "pendingSlot": null or { "actionType": "...", "missingParam": "...", "promptQuestion": "...", "collectedParams": {} }
 }
+Note for CREATE_SNIPPET: When the user asks to write, code, or generate any code or text (e.g., "write python code for even odd", "write a hello world script in javascript"), ALWAYS set "action.type": "CREATE_SNIPPET", specify "mode": "code" (or "text" / "docs"), "language": "python" (or "javascript", "html", etc.), and put the complete code in the "content" parameter! The app will automatically open the editor and write your code into it.
 
 2. If a user asks to perform an action but is missing required parameters (e.g., they say "Check train status" without a train number, or "Check PNR" without a 10-digit PNR):
    - Set "action.type" to "NONE".

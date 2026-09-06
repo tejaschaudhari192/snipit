@@ -109,12 +109,36 @@ export class ActionDispatcher {
 			}
 
 			case "CREATE_SNIPPET": {
-				this.deps.navigate("/");
+				const { mode, language, content, title } = action.params || {};
+
+				if (
+					typeof window !== "undefined" &&
+					(content || language || mode || title)
+				) {
+					sessionStorage.setItem(
+						"snipit:pending_snippet",
+						JSON.stringify({ mode, language, content, title }),
+					);
+					window.dispatchEvent(
+						new CustomEvent("snipit:apply_snippet", {
+							detail: { mode, language, content, title },
+						}),
+					);
+				}
+
+				const modeParam = mode || (language ? "code" : undefined);
+				if (modeParam) {
+					this.deps.navigate(
+						`/?tab=${encodeURIComponent(modeParam)}`,
+					);
+				} else {
+					this.deps.navigate("/");
+				}
 				return true;
 			}
 
 			case "GENERATE_PASSWORD": {
-				this.deps.navigate("/tools/password-manager");
+				this.deps.navigate("/tools/passwords");
 				return true;
 			}
 

@@ -42,7 +42,12 @@ export type VoiceActionPayload =
 	  }
 	| {
 			type: "CREATE_SNIPPET";
-			params: { title?: string; language?: string; content?: string };
+			params: {
+				title?: string;
+				language?: string;
+				content?: string;
+				mode?: "text" | "code" | "docs" | "draw" | "link" | "file";
+			};
 	  }
 	| {
 			type: "GENERATE_PASSWORD";
@@ -136,4 +141,20 @@ export interface ExecutionStep {
 	detail?: string;
 	status: "pending" | "running" | "done" | "skipped" | "error";
 	timestamp: number;
+}
+
+// 8. Chat Message Model for Shadcn Conversational Stream
+export interface ChatMessage {
+	id: string;
+	role: "user" | "assistant" | "system";
+	content: string;
+	timestamp: number;
+	status?: "streaming" | "done" | "error";
+	action?: VoiceActionPayload;
+	actionResult?: {
+		success: boolean;
+		message?: string;
+	};
+	executionSteps?: ExecutionStep[];
+	reasoning?: string;
 }

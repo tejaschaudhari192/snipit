@@ -26,6 +26,8 @@ import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { CONFIG } from "@/configurations";
 import { Editor } from "@tiptap/core";
 import { usePaste } from "@/context/PasteContext";
+import type { ContentMode } from "@/types";
+
 import { useAiEnhance } from "@/hooks/use-ai-enhance";
 import { useHomeUrlSync } from "@/hooks/use-home-url-sync";
 import { usePasteSubmission } from "@/hooks/use-paste-submission";
@@ -330,6 +332,62 @@ const HomePage = () => {
 		onContentTypeChange,
 		setIsFullscreen,
 	});
+
+	// Voice Agent snippet injection
+	useEffect(() => {
+		const applyPendingSnippet = (data: {
+			mode?: string;
+			language?: string;
+			content?: string;
+			title?: string;
+		}) => {
+			if (!data) return;
+			if (data.mode) {
+				onContentTypeChange(data.mode as ContentMode);
+			}
+			if (data.language) {
+				setLanguage(data.language.toLowerCase());
+			}
+			if (data.content) {
+				setTextValue(data.content);
+				toast.add({
+					title: t(
+						"voice.snippet_applied",
+						"Code written into editor 🦊",
+					),
+					type: "success",
+				});
+			}
+		};
+
+		// 1. Check if there's a pending snippet stored in sessionStorage (from navigation)
+		const pendingRaw = sessionStorage.getItem("snipit:pending_snippet");
+		if (pendingRaw) {
+			try {
+				const parsed = JSON.parse(pendingRaw);
+				sessionStorage.removeItem("snipit:pending_snippet");
+				applyPendingSnippet(parsed);
+			} catch {
+				// Ignore malformed pending snippet JSON
+			}
+		}
+
+		// 2. Listen for real-time snippet events if already on home page
+		const handleSnippetEvent = (e: Event) => {
+			const customEvent = e as CustomEvent;
+			if (customEvent.detail) {
+				applyPendingSnippet(customEvent.detail);
+			}
+		};
+
+		window.addEventListener("snipit:apply_snippet", handleSnippetEvent);
+		return () => {
+			window.removeEventListener(
+				"snipit:apply_snippet",
+				handleSnippetEvent,
+			);
+		};
+	}, [onContentTypeChange, setLanguage, setTextValue, t]);
 
 	useEffect(() => {
 		if (contextPreviewUrl) {

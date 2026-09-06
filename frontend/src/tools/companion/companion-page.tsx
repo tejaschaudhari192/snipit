@@ -160,6 +160,23 @@ export const CompanionPage: React.FC = () => {
 		};
 	}, [selectedModel]);
 
+	// Voice Agent direct action integration
+	useEffect(() => {
+		const handleVoiceAction = (e: Event) => {
+			const customEvent = e as CustomEvent;
+			const detail = customEvent.detail;
+			if (detail && detail.type === "DOM_INPUT" && detail.params?.value) {
+				setInputPrompt(detail.params.value);
+			}
+		};
+		window.addEventListener("snipit:voice:action", handleVoiceAction);
+		return () =>
+			window.removeEventListener(
+				"snipit:voice:action",
+				handleVoiceAction,
+			);
+	}, []);
+
 	// Auto scroll to bottom
 	const scrollToBottom = () => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -804,6 +821,7 @@ export const CompanionPage: React.FC = () => {
 								}
 							}}
 							rows={1}
+							data-voice="companion-input"
 							placeholder={
 								hasChosenName
 									? `Talk with ${displayName}...`
@@ -816,6 +834,7 @@ export const CompanionPage: React.FC = () => {
 
 					<Button
 						type="submit"
+						data-voice="companion-submit"
 						disabled={!inputPrompt.trim() || isStreaming}
 						className="h-11 w-11 rounded-2xl shrink-0 transition-transform active:scale-95 shadow-md flex items-center justify-center bg-primary text-primary-foreground hover:bg-primary/90"
 					>

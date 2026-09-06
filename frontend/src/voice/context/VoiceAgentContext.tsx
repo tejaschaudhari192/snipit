@@ -1,5 +1,9 @@
 import { createContext } from "react";
-import type { VoiceAgentStatus, ExecutionStep } from "../types/voice.types";
+import type {
+	VoiceAgentStatus,
+	ExecutionStep,
+	ChatMessage,
+} from "../types/voice.types";
 
 export interface VoiceAgentContextValue {
 	status: VoiceAgentStatus;
@@ -14,6 +18,11 @@ export interface VoiceAgentContextValue {
 	stopListening: () => void;
 	cancel: () => void;
 	sendTextMessage: (text: string) => Promise<void>;
+	isMascotVisible: boolean;
+	setIsMascotVisible: (visible: boolean) => void;
+	toggleMascot: () => void;
+	messages: ChatMessage[];
+	clearMessages: () => void;
 }
 
 export const VoiceAgentContext = createContext<VoiceAgentContextValue | null>(

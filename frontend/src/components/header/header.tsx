@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Menu, Search, User, Music, MessageSquare } from "lucide-react";
 import { useMusic } from "@/context/use-music";
+import { useVoiceAgent } from "@/voice";
 
 const ThemeToggle = lazy(() =>
 	import("@/components/header/theme-toggle").then((m) => ({
@@ -124,6 +125,8 @@ const Header = ({ className }: HeaderProps) => {
 	const location = useLocation();
 	const path = location.pathname;
 	const { openPlayer } = useMusic();
+	const { isMascotVisible, toggleMascot } = useVoiceAgent();
+
 	const nonShareablePaths = [
 		"history",
 		"about",
@@ -239,6 +242,33 @@ const Header = ({ className }: HeaderProps) => {
 				>
 					<Music className="h-4 w-4" />
 				</Button>
+				<div className="w-px h-4 bg-border mx-1" />
+				<Button
+					variant="ghost"
+					size="icon"
+					className={cn(
+						"h-9 w-9 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer",
+						isMascotVisible &&
+							"text-amber-500 hover:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 shadow-[0_0_12px_rgba(245,158,11,0.25)]",
+					)}
+					onClick={toggleMascot}
+					title={
+						isMascotVisible
+							? t(
+									"voice.hide_assistant",
+									"Hide AI Voice Assistant (Nick)",
+								)
+							: t(
+									"voice.show_assistant",
+									"Enable AI Voice Assistant (Nick)",
+								)
+					}
+				>
+					<span className="text-base leading-none select-none">
+						🦊
+					</span>
+				</Button>
+
 				<div className="w-px h-4 bg-border mx-1" />
 				<Button
 					variant="ghost"
@@ -373,6 +403,26 @@ const Header = ({ className }: HeaderProps) => {
 								</span>
 							</div>
 						</DropdownMenuItem>
+						<DropdownMenuItem
+							className="rounded-lg cursor-pointer"
+							onClick={toggleMascot}
+						>
+							<div className="flex items-center gap-2 py-2">
+								<span className="text-base">🦊</span>
+								<span>
+									{isMascotVisible
+										? t(
+												"voice.hide_assistant",
+												"Hide AI Voice (Nick)",
+											)
+										: t(
+												"voice.show_assistant",
+												"Enable AI Voice (Nick)",
+											)}
+								</span>
+							</div>
+						</DropdownMenuItem>
+
 						<DropdownMenuItem
 							className="rounded-lg"
 							onClick={() => setIsJumpToDialogOpen(true)}

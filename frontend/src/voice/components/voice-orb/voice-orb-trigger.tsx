@@ -1,74 +1,43 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
-import { Mic, Sparkles } from "lucide-react";
 import type { VoiceAgentStatus } from "../../types/voice.types";
+import { AiMascot } from "../mascot";
+
+import { X } from "lucide-react";
 
 interface VoiceOrbTriggerProps {
 	status: VoiceAgentStatus;
 	onClick: () => void;
+	onClose?: () => void;
 }
 
 export const VoiceOrbTrigger: React.FC<VoiceOrbTriggerProps> = ({
 	status,
 	onClick,
+	onClose,
 }) => {
-	const { t } = useTranslation();
-
-	const isIdle = status === "idle";
-	const isListening = status === "listening";
-	const isThinking = status === "thinking";
-	const isExecuting = status === "executing";
-	const isSpeaking = status === "speaking";
-
 	return (
-		<button
-			onClick={onClick}
-			aria-label={t("voice.talk_tooltip")}
-			title={
-				isIdle
-					? t("voice.talk_tooltip")
-					: isListening
-						? t("voice.stop_listening")
-						: t("voice.cancel_tooltip")
-			}
-			className={`relative group w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 cursor-pointer ${
-				isIdle
-					? "bg-neutral-900 text-white hover:scale-105 border border-white/20 shadow-neutral-950/50"
-					: isListening
-						? "bg-rose-600 text-white ring-4 ring-rose-500/40 animate-pulse scale-110"
-						: isThinking
-							? "bg-linear-to-tr from-amber-600 to-indigo-600 text-white ring-4 ring-cyan-400/40 animate-pulse scale-105"
-							: isExecuting
-								? "bg-linear-to-tr from-cyan-600 to-blue-600 text-white ring-4 ring-cyan-400/40 scale-105"
-								: isSpeaking
-									? "bg-blue-600 text-white ring-4 ring-blue-400/50 scale-105"
-									: "bg-neutral-800 text-white"
-			}`}
-		>
-			{isListening ? (
-				<Mic className="w-6 h-6" />
-			) : isSpeaking ? (
-				<Sparkles className="w-6 h-6 animate-pulse" />
-			) : isThinking ? (
-				<Sparkles className="w-6 h-6 animate-pulse text-cyan-200" />
-			) : isExecuting ? (
-				<Sparkles className="w-6 h-6 text-cyan-100 animate-pulse" />
-			) : (
-				<Mic className="w-6 h-6 group-hover:scale-110 transition-transform" />
+		<div className="relative group/trigger flex items-center justify-center">
+			{onClose && (
+				<button
+					type="button"
+					onClick={(e) => {
+						e.stopPropagation();
+						onClose();
+					}}
+					title="Dismiss AI Assistant"
+					className="absolute -top-1 -right-1 z-30 opacity-0 group-hover/trigger:opacity-100 p-1 rounded-full bg-neutral-900/95 hover:bg-neutral-800 border border-white/20 text-neutral-400 hover:text-white shadow-xl transition-all hover:scale-110 cursor-pointer"
+					aria-label="Close AI Assistant"
+				>
+					<X className="w-3 h-3" />
+				</button>
 			)}
 
-			{/* Glow ambient background ring */}
-			<span
-				className={`absolute -inset-1 rounded-full blur-sm opacity-50 transition duration-500 ${
-					isListening
-						? "bg-rose-500"
-						: isThinking
-							? "bg-amber-400"
-							: isSpeaking
-								? "bg-blue-500"
-								: "bg-primary/30 group-hover:opacity-75"
-				}`}
+			<AiMascot
+				status={status}
+				onClick={onClick}
+				size={120}
+				className="hover:scale-105 transition-transform drop-shadow-xl"
 			/>
-		</button>
+		</div>
 	);
 };

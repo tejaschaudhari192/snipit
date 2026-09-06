@@ -134,6 +134,24 @@ export class VoiceBrain {
 			};
 		}
 
+		// Click Paste / Save Snippet
+		if (
+			/click paste|press paste|hit paste|submit paste|save snippet|publish paste|paste it/i.test(
+				text,
+			)
+		) {
+			return {
+				speech: "Clicking Paste to save your snippet.",
+				action: {
+					type: "DOM_CLICK",
+					params: {
+						selector: "#quick-paste-button",
+						description: "Click Paste button",
+					},
+				},
+			};
+		}
+
 		// Quick navigation
 		if (/go to (trains?|pnr)/i.test(text)) {
 			return {
@@ -147,13 +165,76 @@ export class VoiceBrain {
 				action: { type: "NAVIGATE", params: { path: "/tools/cinema" } },
 			};
 		}
-		if (/go to password/i.test(text)) {
+		if (/go to (passwords?|vault)/i.test(text)) {
 			return {
 				speech: "Opening password manager.",
 				action: {
 					type: "NAVIGATE",
-					params: { path: "/tools/password-manager" },
+					params: { path: "/tools/passwords" },
 				},
+			};
+		}
+		if (/go to (companion|buddy|ai companion)/i.test(text)) {
+			return {
+				speech: "Opening AI companion.",
+				action: {
+					type: "NAVIGATE",
+					params: { path: "/tools/companion" },
+				},
+			};
+		}
+		if (/go to (cryptsafe|crypto safe|encryption)/i.test(text)) {
+			return {
+				speech: "Opening CryptoSafe encryption vault.",
+				action: {
+					type: "NAVIGATE",
+					params: { path: "/tools/cryptoSafe" },
+				},
+			};
+		}
+
+		// Quick paste creation modes (only if simple navigation request, not a code generation request)
+		const trimmed = text.trim();
+		if (/^(open |start )?(whiteboard|canvas|sketch)$/i.test(trimmed)) {
+			return {
+				speech: "Opening whiteboard canvas.",
+				action: { type: "CREATE_SNIPPET", params: { mode: "draw" } },
+			};
+		}
+		if (
+			/^(open |start )?(document editor|docs view|rich text)$/i.test(
+				trimmed,
+			)
+		) {
+			return {
+				speech: "Opening document editor.",
+				action: { type: "CREATE_SNIPPET", params: { mode: "docs" } },
+			};
+		}
+		if (/^(open )?(url shortener|shorten link)$/i.test(trimmed)) {
+			return {
+				speech: "Opening URL shortener.",
+				action: { type: "CREATE_SNIPPET", params: { mode: "link" } },
+			};
+		}
+		if (/^(open )?(file upload|share file)$/i.test(trimmed)) {
+			return {
+				speech: "Opening file upload view.",
+				action: { type: "CREATE_SNIPPET", params: { mode: "file" } },
+			};
+		}
+		if (
+			/^(open |new )?(code editor|code view|empty code)$/i.test(trimmed)
+		) {
+			return {
+				speech: "Opening code editor.",
+				action: { type: "CREATE_SNIPPET", params: { mode: "code" } },
+			};
+		}
+		if (/^(open |new )?(text editor|plain text editor)$/i.test(trimmed)) {
+			return {
+				speech: "Opening text editor.",
+				action: { type: "CREATE_SNIPPET", params: { mode: "text" } },
 			};
 		}
 

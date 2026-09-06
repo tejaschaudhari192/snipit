@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useVoiceAgent } from "../../hooks/use-voice-agent";
 import { VoiceHUD } from "../voice-hud";
-import { VoicePanelHeader } from "./voice-panel-header";
-import { VoiceInputPanel } from "./voice-input-panel";
 import { VoiceKeyboardToggle } from "./voice-keyboard-toggle";
 import { VoiceOrbTrigger } from "./voice-orb-trigger";
+import { VoiceChatPanel } from "../chat";
 
 export const VoiceOrb: React.FC = () => {
 	const {
@@ -16,9 +15,27 @@ export const VoiceOrb: React.FC = () => {
 		stopListening,
 		cancel,
 		sendTextMessage,
+		isMascotVisible,
+		setIsMascotVisible,
+		messages,
+		clearMessages,
 	} = useVoiceAgent();
 
 	const [isPanelOpen, setIsPanelOpen] = useState(false);
+
+	// Global keyboard shortcut: Ctrl+J or Cmd+J toggles chat panel
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "j") {
+				e.preventDefault();
+				setIsPanelOpen((prev) => !prev);
+			}
+		};
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, []);
+
+	if (!isMascotVisible) return null;
 
 	const isListening = status === "listening";
 	const isThinking = status === "thinking";
@@ -44,45 +61,47 @@ export const VoiceOrb: React.FC = () => {
 
 	return (
 		<div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
-			{/* HUD feedback for ongoing operations */}
-			{(isThinking || isExecuting || isObserving || isSpeaking) && (
-				<VoiceHUD
-					status={status}
-					transcript={transcript}
-					activeAction={activeActionDescription}
-					executionSteps={executionSteps}
-					onCancel={cancel}
-				/>
-			)}
-
-			{/* Floating Prompt Pill & Transcript Container */}
-			{isPanelOpen && (
-				<div className="mb-3 w-84 sm:w-96 rounded-3xl bg-neutral-900/95 border border-white/15 backdrop-blur-2xl shadow-2xl text-white p-3.5 animate-in fade-in slide-in-from-bottom-4 duration-300">
-					<VoicePanelHeader
-						isSpeaking={isSpeaking}
-						onClose={handleClosePanel}
-					/>
-					<VoiceInputPanel
+			{/* Minimal HUD feedback when panel is closed and agent is active */}
+			{!isPanelOpen &&
+				(isThinking || isExecuting || isObserving || isSpeaking) && (
+					<VoiceHUD
 						status={status}
 						transcript={transcript}
-						activeActionDescription={activeActionDescription}
-						isListening={isListening}
+						activeAction={activeActionDescription}
 						executionSteps={executionSteps}
+						onCancel={cancel}
+					/>
+				)}
+
+			{/* Shadcn AI Conversational Chat Panel */}
+			{isPanelOpen && (
+				<div className="mb-3">
+					<VoiceChatPanel
+						status={status}
+						messages={messages}
+						isListening={isListening}
+						isSpeaking={isSpeaking}
+						isMascotVisible={isMascotVisible}
 						onStartListening={startListening}
 						onStopListening={stopListening}
-						onSubmitText={sendTextMessage}
+						onSendMessage={sendTextMessage}
+						onClearMessages={clearMessages}
 						onClose={handleClosePanel}
 					/>
 				</div>
 			)}
 
-			{/* Action Bubble Group */}
-			<div className="flex items-center gap-2">
-				{!isPanelOpen && (
+			{/* Floating Trigger Controls (Visible when panel is closed) */}
+			{!isPanelOpen && (
+				<div className="flex items-end gap-2">
 					<VoiceKeyboardToggle onClick={() => setIsPanelOpen(true)} />
-				)}
-				<VoiceOrbTrigger status={status} onClick={handleOrbClick} />
-			</div>
+					<VoiceOrbTrigger
+						status={status}
+						onClick={handleOrbClick}
+						onClose={() => setIsMascotVisible(false)}
+					/>
+				</div>
+			)}
 		</div>
 	);
 };

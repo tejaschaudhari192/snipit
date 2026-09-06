@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Shield, Lock, Unlock } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,9 +7,17 @@ import { CryptoPanel } from "@/tools/cryptsafe/components/crypto-panel";
 
 const EncryptSafePage = () => {
 	const { t } = useTranslation();
+	const [searchParams] = useSearchParams();
+	const tabFromUrl = searchParams.get("tab") as "encrypt" | "decrypt" | null;
 	const [activeTab, setActiveTab] = useState<"encrypt" | "decrypt">(
-		"encrypt",
+		tabFromUrl || "encrypt",
 	);
+
+	useEffect(() => {
+		if (tabFromUrl && tabFromUrl !== activeTab) {
+			setActiveTab(tabFromUrl);
+		}
+	}, [tabFromUrl, activeTab]);
 
 	return (
 		<div className="min-h-full bg-background text-foreground transition-colors duration-300">

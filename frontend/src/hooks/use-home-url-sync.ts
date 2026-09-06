@@ -29,7 +29,10 @@ export const useHomeUrlSync = ({
 		const tab = params.get("tab");
 		const fs = params.get("fullscreen");
 
-		if (tab && ["text", "code", "draw", "link", "file"].includes(tab)) {
+		if (
+			tab &&
+			["text", "docs", "code", "draw", "link", "file"].includes(tab)
+		) {
 			onContentTypeChangeRef.current(tab as ContentMode);
 		}
 

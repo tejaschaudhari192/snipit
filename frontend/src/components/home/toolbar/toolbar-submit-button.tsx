@@ -62,6 +62,7 @@ export function ToolbarSubmitButton({
 	return (
 		<ButtonGroup className="shadow-lg shadow-primary/20 overflow-visible shrink-0 h-9">
 			<Button
+				id="quick-paste-button"
 				disabled={isSubmitting}
 				size="lg"
 				className="px-4 h-9 font-bold rounded-r-none border-r-0 hover:bg-primary/90 transition-colors min-w-25"
