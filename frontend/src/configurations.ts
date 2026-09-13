@@ -54,6 +54,15 @@ export const CONFIG = {
 		linkHistoryVisible: "link-history-visible",
 		musicBubbleVisible: "music-bubble-visible",
 		appLanguage: "lang",
+		githubRepoData: "snipit-github-repo-data",
+	},
+
+	// GitHub Configuration
+	github: {
+		owner: "tejaschaudhari192",
+		repo: "snipit",
+		repoUrl: "https://github.com/tejaschaudhari192/snipit",
+		cacheDurationMs: 3 * 60 * 60 * 1000, // 3 hours cache
 	},
 
 	// Custom Event Names

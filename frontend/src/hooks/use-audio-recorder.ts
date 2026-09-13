@@ -51,10 +51,7 @@ export const useAudioRecorder = () => {
 
 					// Only update waveform history every N frames to control speed
 					frameCounterRef.current++;
-					if (
-						frameCounterRef.current >=
-						(CONFIG.ui.waveformSpeed || 1)
-					) {
+					if (frameCounterRef.current >= CONFIG.ui.waveformSpeed) {
 						frameCounterRef.current = 0;
 
 						const rawAmplitude = calculateRMS(dataArray);

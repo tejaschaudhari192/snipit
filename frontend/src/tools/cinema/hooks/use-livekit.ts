@@ -8,7 +8,7 @@ export const fetchLiveKitToken = async (
 	identity: string,
 	isHost: boolean,
 ) => {
-	const apiBaseUrl = CONFIG.apiBaseUrl || "/api/v1";
+	const apiBaseUrl = CONFIG.apiBaseUrl;
 	const tokenUrl = apiBaseUrl.endsWith("/api/v1")
 		? `${apiBaseUrl}/livekit/token`
 		: `${apiBaseUrl}/api/v1/livekit/token`;
