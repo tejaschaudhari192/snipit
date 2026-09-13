@@ -13,7 +13,7 @@ import {
 	Music,
 	Terminal,
 } from "lucide-react";
-import type { ChatMessage } from "../../types/voice.types";
+import type { ChatMessage } from "@/voice/types/voice.types";
 import { VoiceChatTrace } from "./voice-chat-trace";
 
 interface VoiceChatMessageProps {

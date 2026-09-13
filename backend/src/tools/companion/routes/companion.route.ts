@@ -35,6 +35,12 @@ router.post(
 	catchAsync(companionController.resetSession.bind(companionController)),
 );
 
+router.post(
+	"/chat",
+	optionalProtect,
+	catchAsync(companionController.chat.bind(companionController)),
+);
+
 router.delete(
 	"/memory/:memoryId",
 	protect,

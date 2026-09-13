@@ -83,15 +83,12 @@ export class VoiceBrain {
 					return data as unknown as BrainDecision;
 				}
 			}
-		} catch (err) {
-			console.warn(
-				"Groq hybrid voice decision failed, using local fallback:",
-				err,
-			);
-		}
 
-		// 4. Ultimate Fallback Heuristic
-		return this.fallbackHeuristic(text);
+			throw new Error("Invalid response received from Groq AI service");
+		} catch (err) {
+			console.error("Groq hybrid voice decision failed:", err);
+			throw err;
+		}
 	}
 
 	private static matchInstantRegex(text: string): BrainDecision | null {
@@ -239,25 +236,5 @@ export class VoiceBrain {
 		}
 
 		return null;
-	}
-
-	private static fallbackHeuristic(text: string): BrainDecision {
-		if (/train|pnr/i.test(text)) {
-			return {
-				speech: "Opening the trains tool for you.",
-				action: { type: "NAVIGATE", params: { path: "/tools/trains" } },
-			};
-		}
-		if (/hello|hi|hey/i.test(text)) {
-			return {
-				speech: "Hello! I am your Snipit voice copilot. What can I do for you today?",
-				action: { type: "NONE" },
-			};
-		}
-
-		return {
-			speech: "I heard you, but I wasn't sure which action to take. Could you rephrase?",
-			action: { type: "NONE" },
-		};
 	}
 }

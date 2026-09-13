@@ -42,24 +42,11 @@ Rules for your verbal response:
 			if (res.data?.text) {
 				return res.data.text;
 			}
+
+			throw new Error("Empty summary returned by Groq voice service");
 		} catch (err) {
-			console.warn(
-				"Groq ResultSummarizer failed, using generic fallback:",
-				err,
-			);
+			console.error("Groq ResultSummarizer failed:", err);
+			throw err;
 		}
-
-		// Fallback generic voice response based on action type
-		if (actionType === "CHECK_PNR") {
-			return "I have fetched your PNR status on the screen.";
-		}
-		if (actionType === "SEARCH_TRAINS") {
-			return "Here are the available train routes based on your search.";
-		}
-		if (actionType === "TRAIN_LIVE_STATUS") {
-			return "The live train running status is now displayed on your screen.";
-		}
-
-		return "The requested information is now displayed on your screen.";
 	}
 }

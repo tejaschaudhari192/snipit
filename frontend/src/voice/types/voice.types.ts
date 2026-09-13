@@ -2,7 +2,7 @@
 export type VoiceAgentStatus =
 	| "idle" // Inactive, waiting for click or wake word
 	| "listening" // User mic is active, capturing speech
-	| "thinking" // Processing utterance via Puter AI / intent matcher
+	| "thinking" // Processing utterance via Groq AI / intent matcher
 	| "executing" // Performing UI navigation, DOM click, or product API call
 	| "observing" // Waiting for data load and reading screen results
 	| "speaking" // Synthesizing & playing voice response via TTS

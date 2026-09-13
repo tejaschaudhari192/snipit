@@ -61,9 +61,7 @@ Respond with ONLY a JSON array of extracted memories matching this format, or an
 
 			const completion = await groq.chat.completions.create({
 				messages: [{ role: "user", content: prompt }],
-				model:
-					configurations.groq_smart_model ||
-					"llama-3.3-70b-versatile",
+				model: configurations.groq_smart_model,
 				temperature: 0.1,
 				max_tokens: 300,
 				response_format: { type: "json_object" },
@@ -252,6 +250,44 @@ Respond with ONLY a JSON array of extracted memories matching this format, or an
 			success: true,
 			session,
 		});
+	}
+
+	/**
+	 * Companion AI Chat using Groq
+	 */
+	async chat(req: AuthRequest, res: Response): Promise<void> {
+		const { messages, model } = req.body;
+
+		if (!Array.isArray(messages) || messages.length === 0) {
+			res.status(400).json({
+				success: false,
+				error: "messages array is required",
+			});
+			return;
+		}
+
+		try {
+			const selectedModel = model || configurations.groq_smart_model;
+
+			const completion = await groq.chat.completions.create({
+				messages,
+				model: selectedModel,
+				temperature: 0.85,
+			});
+
+			const reply = completion.choices[0]?.message?.content?.trim() || "";
+
+			res.status(200).json({
+				success: true,
+				reply,
+			});
+		} catch (error) {
+			logger.error("Companion chat error:", error);
+			res.status(500).json({
+				success: false,
+				error: error instanceof Error ? error.message : "Chat failed",
+			});
+		}
 	}
 }
 

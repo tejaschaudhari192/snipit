@@ -1,9 +1,6 @@
-import { generatePuterSpeech } from "@/lib/puter-tts";
-import { TTS_CONFIG } from "../config/tts-config";
-import { TIMING_CONFIG } from "../constants/timing";
+import { TTS_CONFIG } from "@/voice/config/tts-config";
 
 export class SpeechSpeakerEngine {
-	private currentAudio: HTMLAudioElement | null = null;
 	private isSpeaking = false;
 	private onSpeakingChange?: (speaking: boolean) => void;
 
@@ -19,99 +16,49 @@ export class SpeechSpeakerEngine {
 		this.setSpeaking(true);
 
 		try {
-			// Primary: Puter TTS using OpenAI's softest, cutest female voice ('shimmer' or 'nova')
-			let audio: HTMLAudioElement;
-			if (typeof window !== "undefined" && window.puter?.ai?.txt2speech) {
-				audio = await Promise.race([
-					window.puter.ai.txt2speech(text, {
-						provider: TTS_CONFIG.provider,
-						voice: TTS_CONFIG.voice,
-					}),
-					new Promise<never>((_, reject) =>
-						setTimeout(
-							() => reject(new Error("Puter TTS timeout")),
-							TIMING_CONFIG.TTS_TIMEOUT_MS,
-						),
-					),
-				]);
-			} else {
-				audio = await Promise.race([
-					generatePuterSpeech(text),
-					new Promise<never>((_, reject) =>
-						setTimeout(
-							() => reject(new Error("Puter TTS timeout")),
-							TIMING_CONFIG.TTS_TIMEOUT_MS,
-						),
-					),
-				]);
-			}
-
-			this.currentAudio = audio;
-
 			await new Promise<void>((resolve) => {
-				audio.onended = () => {
-					this.currentAudio = null;
+				if (
+					typeof window === "undefined" ||
+					!("speechSynthesis" in window)
+				) {
 					resolve();
-				};
-				audio.onerror = () => {
-					this.currentAudio = null;
-					resolve();
-				};
-				audio.play().catch(() => resolve());
+					return;
+				}
+
+				window.speechSynthesis.cancel();
+				const utterance = new SpeechSynthesisUtterance(text);
+
+				// Select best female/natural voice from available system voices
+				const voices = window.speechSynthesis.getVoices();
+				const patternRegex = new RegExp(
+					TTS_CONFIG.preferredVoicePatterns.join("|"),
+					"i",
+				);
+				const matchedVoice = voices.find(
+					(v) => patternRegex.test(v.name) && v.lang.startsWith("en"),
+				);
+
+				if (matchedVoice) {
+					utterance.voice = matchedVoice;
+				}
+
+				// Tuned for a soft, pleasant cadence
+				utterance.rate = TTS_CONFIG.rate;
+				utterance.pitch = TTS_CONFIG.pitch;
+
+				utterance.onend = () => resolve();
+				utterance.onerror = () => resolve();
+
+				window.speechSynthesis.speak(utterance);
 			});
 		} catch (err) {
-			console.warn("Puter TTS fallback to browser SpeechSynthesis:", err);
-			// Secondary Fallback: Browser Web SpeechSynthesis
-			await this.speakBrowserFallback(text);
+			console.error("Web SpeechSynthesis error:", err);
 		} finally {
 			this.setSpeaking(false);
 		}
 	}
 
-	private speakBrowserFallback(text: string): Promise<void> {
-		return new Promise((resolve) => {
-			if (
-				typeof window === "undefined" ||
-				!("speechSynthesis" in window)
-			) {
-				resolve();
-				return;
-			}
-
-			window.speechSynthesis.cancel();
-			const utterance = new SpeechSynthesisUtterance(text);
-
-			// Select best soft female voice from available system voices
-			const voices = window.speechSynthesis.getVoices();
-			const femaleVoice = voices.find(
-				(v) =>
-					/female|zira|samantha|victoria|karen|moira|tessa|natural|google us english/i.test(
-						v.name,
-					) && v.lang.startsWith("en"),
-			);
-
-			if (femaleVoice) {
-				utterance.voice = femaleVoice;
-			}
-
-			// Tuned for a soft, pleasant, youthful cadence
-			utterance.rate = 1.02;
-			utterance.pitch = 1.25; // Gentle, cute higher pitch
-
-			utterance.onend = () => resolve();
-			utterance.onerror = () => resolve();
-
-			window.speechSynthesis.speak(utterance);
-		});
-	}
-
 	public stop() {
-		if (this.currentAudio) {
-			this.currentAudio.pause();
-			this.currentAudio.currentTime = 0;
-			this.currentAudio = null;
-		}
-
 		if (typeof window !== "undefined" && "speechSynthesis" in window) {
 			window.speechSynthesis.cancel();
 		}

@@ -1,6 +1,12 @@
 export const TTS_CONFIG = {
-	provider: "openai" as const,
-	voice: "shimmer" as const, // Soft and gentle female voice
-	fallbackVoice: "nova" as const,
-	timeoutMs: 4000,
+	rate: 1.02,
+	pitch: 1.25,
+	preferredVoicePatterns: [
+		"natural",
+		"google us english",
+		"samantha",
+		"zira",
+		"victoria",
+		"female",
+	],
 };

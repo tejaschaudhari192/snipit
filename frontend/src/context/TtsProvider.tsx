@@ -2,7 +2,6 @@ import React, { useState, useRef, useCallback, useEffect } from "react";
 import { prepareSpeech, detectSpeechLanguage } from "@/lib/api/ai";
 import { toast } from "@/components/ui/toast";
 import { TtsContext } from "./TtsContext";
-import { generatePuterSpeech } from "@/lib/puter-tts";
 
 export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
@@ -19,22 +18,18 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 	const [currentTime, setCurrentTime] = useState(0);
 	const [duration, setDuration] = useState(0);
 
-	const audioRef = useRef<HTMLAudioElement | null>(null);
-	const objectUrlRef = useRef<string | null>(null);
 	const isStoppedRef = useRef(false);
+	const timerRef = useRef<NodeJS.Timeout | null>(null);
 
 	const stop = useCallback(() => {
-		window.speechSynthesis.cancel();
+		if (typeof window !== "undefined" && "speechSynthesis" in window) {
+			window.speechSynthesis.cancel();
+		}
 		isStoppedRef.current = true;
 
-		if (audioRef.current) {
-			audioRef.current.pause();
-			audioRef.current = null;
-		}
-
-		if (objectUrlRef.current) {
-			URL.revokeObjectURL(objectUrlRef.current);
-			objectUrlRef.current = null;
+		if (timerRef.current) {
+			clearInterval(timerRef.current);
+			timerRef.current = null;
 		}
 
 		setIsPlaying(false);
@@ -47,31 +42,21 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 	}, []);
 
 	const pause = useCallback(() => {
-		if (audioRef.current) {
-			audioRef.current.pause();
-		} else {
+		if (typeof window !== "undefined" && "speechSynthesis" in window) {
 			window.speechSynthesis.pause();
 		}
 		setIsPaused(true);
 	}, []);
 
 	const resume = useCallback(() => {
-		if (audioRef.current) {
-			audioRef.current.play().catch((err) => {
-				console.error("Failed to resume playback:", err);
-				stop();
-			});
-		} else {
+		if (typeof window !== "undefined" && "speechSynthesis" in window) {
 			window.speechSynthesis.resume();
 		}
 		setIsPaused(false);
-	}, [stop]);
+	}, []);
 
 	const seek = useCallback((time: number) => {
-		if (audioRef.current) {
-			audioRef.current.currentTime = time;
-			setCurrentTime(time);
-		}
+		setCurrentTime(time);
 	}, []);
 
 	const speak = useCallback(
@@ -127,43 +112,79 @@ export const TtsProvider: React.FC<{ children: React.ReactNode }> = ({
 
 				if (isStoppedRef.current) return;
 
-				try {
-					const audio = await generatePuterSpeech(textToSpeak);
-					audioRef.current = audio;
-
-					audio.ontimeupdate = () =>
-						setCurrentTime(audio.currentTime);
-					audio.ondurationchange = () => setDuration(audio.duration);
-
-					setCurrentVoice("Nova (OpenAI)");
-					setCurrentLanguage(detectedLang);
-					setCurrentEngine("Puter.js (Cloud TTS)");
-
-					audio.onplay = () => {
-						setIsPlaying(true);
-						setIsPreparing(false);
-						toast.add({
-							title: "Playing text-to-speech",
-							description: `Language: ${detectedLang} | Voice: Nova | Engine: Puter.js`,
-							timeout: 4000,
-							type: "info",
-						});
-					};
-
-					audio.onended = () => {
-						stop();
-					};
-
-					audio.onerror = (e) => {
-						console.error("Audio playback error", e);
-						stop();
-					};
-
-					await audio.play();
-				} catch (puterError) {
-					console.error("Puter.js TTS failed:", puterError);
-					stop();
+				if (
+					typeof window === "undefined" ||
+					!("speechSynthesis" in window)
+				) {
+					setIsPreparing(false);
+					toast.add({
+						title: "Speech not supported",
+						description:
+							"Your browser does not support speech synthesis.",
+						type: "error",
+					});
+					return;
 				}
+
+				window.speechSynthesis.cancel();
+				const utterance = new SpeechSynthesisUtterance(textToSpeak);
+
+				const voices = window.speechSynthesis.getVoices();
+				const voiceMatch =
+					voices.find(
+						(v) =>
+							/natural|google us english|samantha|zira|victoria|female/i.test(
+								v.name,
+							) && v.lang.startsWith("en"),
+					) || voices[0];
+
+				if (voiceMatch) {
+					utterance.voice = voiceMatch;
+					setCurrentVoice(voiceMatch.name);
+				} else {
+					setCurrentVoice("Default System Voice");
+				}
+
+				setCurrentLanguage(detectedLang);
+				setCurrentEngine("Web SpeechSynthesis");
+
+				// Estimate approximate duration (150 words per min)
+				const wordCount = textToSpeak.trim().split(/\s+/).length;
+				const estimatedDuration = Math.max(
+					3,
+					Math.round((wordCount / 150) * 60),
+				);
+				setDuration(estimatedDuration);
+
+				utterance.onstart = () => {
+					setIsPlaying(true);
+					setIsPreparing(false);
+					toast.add({
+						title: "Playing text-to-speech",
+						description: `Language: ${detectedLang} | Engine: Web SpeechSynthesis`,
+						timeout: 3000,
+						type: "info",
+					});
+
+					const startTime = Date.now();
+					timerRef.current = setInterval(() => {
+						const elapsed = Math.round(
+							(Date.now() - startTime) / 1000,
+						);
+						setCurrentTime(elapsed);
+					}, 250);
+				};
+
+				utterance.onend = () => {
+					stop();
+				};
+
+				utterance.onerror = (e) => {
+					console.error("Speech synthesis error", e);
+					stop();
+				};
+
+				window.speechSynthesis.speak(utterance);
 			} catch (error) {
 				console.error("TTS failed:", error);
 				stop();

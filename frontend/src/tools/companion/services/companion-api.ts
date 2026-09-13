@@ -124,25 +124,20 @@ export const syncCompanionSession = async (
 	}
 };
 
-/**
- * Call backend AI for companion chat completion if Puter client is unavailable
- */
 export const sendBackendCompanionChat = async (
 	messages: Array<{ role: string; content: string }>,
 	model?: string,
 ): Promise<string> => {
-	try {
-		const response = await api.post("/tools/companion/chat", {
-			messages,
-			model,
-		});
-		if (response.data?.success && response.data?.reply) {
-			return response.data.reply;
-		}
-	} catch (err) {
-		console.warn("Backend companion chat fallback error:", err);
+	const response = await api.post("/tools/companion/chat", {
+		messages,
+		model,
+	});
+	if (response.data?.success && response.data?.reply) {
+		return response.data.reply;
 	}
-	return "";
+	throw new Error(
+		response.data?.message || "Failed to get reply from companion AI",
+	);
 };
 
 /**
