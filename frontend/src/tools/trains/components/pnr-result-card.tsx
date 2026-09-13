@@ -2,6 +2,10 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { PnrData } from "../types/trains";
+import {
+	checkIsAllConfirmed,
+	getEffectiveCoachAndBerth,
+} from "../utils/pnr-helpers";
 import { CoachPositionVisualizer } from "./coach-position-visualizer";
 import { PnrPredictionGauge } from "./pnr-prediction-gauge";
 import { PnrTicketCard } from "./pnr-ticket-card";
@@ -20,15 +24,7 @@ export const PnrResultCard: React.FC<PnrResultCardProps> = ({
 	predictionLoading = false,
 }) => {
 	const isAllConfirmed = React.useMemo(() => {
-		if (!data.passengers || data.passengers.length === 0) return false;
-		return data.passengers.every((p) => {
-			const s = (p.status || "").toLowerCase();
-			return (
-				s.includes("cnf") ||
-				s.includes("confirm") ||
-				Boolean(p.coach && p.berth)
-			);
-		});
+		return checkIsAllConfirmed(data.passengers);
 	}, [data.passengers]);
 
 	const hasBenefits = Boolean(data.benefits && data.benefits.length > 0);
@@ -70,7 +66,11 @@ export const PnrResultCard: React.FC<PnrResultCardProps> = ({
 						<Separator />
 						<CoachPositionVisualizer
 							coachPosition={data.coachPosition}
-							userCoach={data.passengers?.[0]?.coach}
+							userCoach={
+								data.passengers?.[0]?.coach ||
+								getEffectiveCoachAndBerth(data.passengers?.[0])
+									?.coach
+							}
 							trainName={data.train}
 							trainNumber={data.trainNumber}
 						/>

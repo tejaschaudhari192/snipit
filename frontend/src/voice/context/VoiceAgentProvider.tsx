@@ -59,9 +59,9 @@ export const VoiceAgentProvider: React.FC<{ children: React.ReactNode }> = ({
 	const [isMascotVisible, setIsMascotVisibleState] = useState<boolean>(() => {
 		if (typeof window !== "undefined") {
 			const saved = localStorage.getItem("snipit:voice_mascot_visible");
-			return saved !== "false";
+			return saved === "true";
 		}
-		return true;
+		return false;
 	});
 
 	const setIsMascotVisible = useCallback((visible: boolean) => {

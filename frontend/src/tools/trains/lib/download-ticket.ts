@@ -1,5 +1,6 @@
 import html2canvas from "html2canvas";
 import type { PnrData } from "../types/trains";
+import { getEffectiveCoachAndBerth } from "../utils/pnr-helpers";
 
 /**
  * Builds the exact HTML string for the ticket with all styles and content.
@@ -22,24 +23,26 @@ const buildTicketHtml = (data: PnrData): string => {
 	};
 
 	const passengerRows = (data.passengers || [])
-		.map(
-			(p) => `
+		.map((p) => {
+			const { coach, berth, cleanStatus } = getEffectiveCoachAndBerth(p);
+			const displayStatus = cleanStatus || p.status;
+			const isCnf =
+				(displayStatus || "").toLowerCase().includes("cnf") ||
+				(displayStatus || "").toLowerCase().includes("confirm");
+			const isRac = (displayStatus || "").toLowerCase().includes("rac");
+
+			return `
 			<tr style="border-bottom: 1px solid #e2e8f0;">
 				<td style="padding: 10px 14px; font-weight: 600;">#${p.number} ${p.name || `Passenger ${p.number}`}</td>
 				<td style="padding: 10px 14px; font-family: monospace; color: #475569;">${p.bookingStatus || "--"}</td>
 				<td style="padding: 10px 14px; font-weight: 700; color: ${
-					(p.status || "").toLowerCase().includes("cnf") ||
-					(p.status || "").toLowerCase().includes("confirm")
-						? "#15803d"
-						: (p.status || "").toLowerCase().includes("rac")
-							? "#d97706"
-							: "#b91c1c"
-				};">${p.status}</td>
-				<td style="padding: 10px 14px; font-family: monospace;">${p.coach ? `Coach ${p.coach}` : "--"}</td>
-				<td style="padding: 10px 14px; font-family: monospace;">${p.berth ? `Berth ${p.berth}` : "--"}</td>
+					isCnf ? "#15803d" : isRac ? "#d97706" : "#b91c1c"
+				};">${displayStatus}</td>
+				<td style="padding: 10px 14px; font-family: monospace;">${coach ? `Coach ${coach}` : "--"}</td>
+				<td style="padding: 10px 14px; font-family: monospace;">${berth ? `Berth ${berth}` : "--"}</td>
 			</tr>
-		`,
-		)
+		`;
+		})
 		.join("");
 
 	return `

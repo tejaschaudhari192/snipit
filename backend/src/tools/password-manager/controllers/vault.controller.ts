@@ -62,7 +62,7 @@ export const updateVault = async (
 			salt,
 		} = req.body;
 
-		const updateData: any = { updatedAt: new Date() };
+		const updateData: Record<string, unknown> = { updatedAt: new Date() };
 		if (encryptedPersonalKey)
 			updateData.encryptedPersonalKey = encryptedPersonalKey;
 		if (salt) updateData.salt = salt;

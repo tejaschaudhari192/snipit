@@ -9,12 +9,12 @@ import type {
 	PaytmScheduleBody,
 	TrainSearchResult,
 	PaytmTrainsSearchResponse,
-	PaytmTrainSearchItem,
 	LiveStatusStation,
 	TrainLiveStatusResponse,
 	PaytmLiveStatusApiResponse,
 	PaytmLiveStatusStation,
 } from "../types/trains.types.js";
+import { parsePassengerDetails } from "../utils/pnr-parser.util.js";
 
 export class PnrService {
 	private static PNR_URL = (pnr: string) =>
@@ -419,29 +419,13 @@ export class PnrService {
 											(
 												pax: PaytmRawPassenger,
 												idx: number,
-											) => {
-												const status =
-													pax.currentStatusDisplayText ||
-													pax.currentStatus ||
-													pax.bookingStatus ||
-													"No Status";
-												const booking =
-													pax.bookingStatus
-														? `${pax.bookingStatus}${
-																pax.bookingBerthNo
-																	? ` / ${pax.bookingBerthNo}`
-																	: ""
-															}`
-														: "";
-												return {
-													number: idx + 1,
-													name:
-														pax.passengerName ||
-														`Passenger ${idx + 1}`,
-													status,
-													bookingStatus: booking,
-												};
-											},
+											) =>
+												parsePassengerDetails(
+													pax,
+													idx,
+													meta.berths ||
+														meta.berths_h5,
+												),
 										)
 									: [];
 
@@ -483,6 +467,10 @@ export class PnrService {
 									chartStatus: body.chart_prepared
 										? "Chart Prepared"
 										: "Chart not prepared",
+									coachPosition:
+										body.coach_position ||
+										body.coachPosition ||
+										undefined,
 									passengers,
 								};
 							}

@@ -4,7 +4,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { ThemeToggleButton } from "@/components/ui/shadcn-io/theme-toggle-button";
 import { useThemeTransition } from "@/hooks/use-theme-transition";
 const ThemeTogglePositionsDemo = () => {
-	const { theme, setTheme } = useTheme();
+	const { theme, resolvedTheme, setTheme } = useTheme();
 	const { startTransition } = useThemeTransition();
 	const [mounted, setMounted] = useState(false);
 	useEffect(() => {
@@ -12,14 +12,22 @@ const ThemeTogglePositionsDemo = () => {
 	}, []);
 	const handleThemeToggle = useCallback(
 		(e: React.MouseEvent) => {
-			const newTheme = theme === "dark" ? "light" : "dark";
+			const isDark = document.documentElement.classList.contains("dark");
+			const newTheme = isDark ? "light" : "dark";
 			startTransition(() => {
 				setTheme(newTheme);
 			}, e);
 		},
-		[theme, setTheme, startTransition],
+		[setTheme, startTransition],
 	);
-	const currentTheme = theme;
+	const currentTheme =
+		theme === "system"
+			? resolvedTheme ||
+				(typeof window !== "undefined" &&
+				window.matchMedia("(prefers-color-scheme: dark)").matches
+					? "dark"
+					: "light")
+			: theme;
 	if (!mounted) {
 		return null;
 	}

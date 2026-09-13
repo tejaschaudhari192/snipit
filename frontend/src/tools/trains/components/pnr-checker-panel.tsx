@@ -14,6 +14,7 @@ import {
 	getTrainSchedule,
 } from "../api/trains";
 import type { PnrData, TrainScheduleResponse } from "../types/trains";
+import { checkIsAllConfirmed } from "../utils/pnr-helpers";
 import { PnrTrackerCard } from "./pnr-tracker-card";
 import { PnrResultCard } from "./pnr-result-card";
 import { TrainRouteScheduleModal } from "./train-route-schedule-modal";
@@ -232,16 +233,26 @@ export const PnrCheckerPanel: React.FC = () => {
 			)}
 
 			{/* Results View */}
-			{!loading && data && (
-				<div className="space-y-6 animate-in fade-in-50 duration-300">
-					<PnrTrackerCard pnr={data.pnr} />
-					<PnrResultCard
-						data={data}
-						onViewRoute={fetchSchedule}
-						predictionLoading={predictionLoading}
-					/>
-				</div>
-			)}
+			{!loading &&
+				data &&
+				(() => {
+					const isAllConfirmed = checkIsAllConfirmed(data.passengers);
+					return (
+						<div className="space-y-6 animate-in fade-in-50 duration-300">
+							{!isAllConfirmed && (
+								<PnrTrackerCard
+									pnr={data.pnr}
+									isAllConfirmed={isAllConfirmed}
+								/>
+							)}
+							<PnrResultCard
+								data={data}
+								onViewRoute={fetchSchedule}
+								predictionLoading={predictionLoading}
+							/>
+						</div>
+					);
+				})()}
 
 			{/* Train Route Schedule Modal */}
 			<TrainRouteScheduleModal

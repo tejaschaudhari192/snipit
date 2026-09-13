@@ -24,9 +24,13 @@ import type { PnrTrackingItem } from "../types/trains";
 
 interface PnrTrackerCardProps {
 	pnr: string;
+	isAllConfirmed?: boolean;
 }
 
-export const PnrTrackerCard: React.FC<PnrTrackerCardProps> = ({ pnr }) => {
+export const PnrTrackerCard: React.FC<PnrTrackerCardProps> = ({
+	pnr,
+	isAllConfirmed = false,
+}) => {
 	const { t } = useTranslation();
 	const { user, loading: authLoading } = useAuth();
 
@@ -116,11 +120,18 @@ export const PnrTrackerCard: React.FC<PnrTrackerCardProps> = ({ pnr }) => {
 		}
 	};
 
+	// If all passengers on ticket are confirmed and not currently tracking, don't show get notifications
+	if (isAllConfirmed && !isTracking) {
+		return null;
+	}
+
 	// 1. Loading state (auth resolving or initial status check)
 	if (
 		authLoading ||
 		(user && statusLoading && !trackingData && !isTracking)
 	) {
+		// Do not show pulse skeleton if confirmed and likely not tracked
+		if (isAllConfirmed) return null;
 		return (
 			<div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card/60 p-4 sm:p-5 shadow-sm animate-pulse">
 				<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

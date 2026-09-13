@@ -136,7 +136,9 @@ export const EditorContent = memo(
 			removeFile,
 			uploadError,
 		} = usePaste();
-		const { theme } = useTheme();
+		const { theme, resolvedTheme } = useTheme();
+		const monacoTheme =
+			resolvedTheme === "dark" ? "snipit-dark" : "snipit-light";
 		const { t } = useTranslation();
 		const { editorEngine, toggleEditorEngine } = useEditorEngine();
 		const containerRef = useRef<HTMLDivElement>(null);
@@ -252,11 +254,7 @@ export const EditorContent = memo(
 										onChange={(value) =>
 											setTextValue(value || "")
 										}
-										theme={
-											theme === "dark"
-												? "snipit-dark"
-												: "snipit-light"
-										}
+										theme={monacoTheme}
 										className="flex-1"
 										beforeMount={handleEditorWillMount}
 										onMount={onMount}
@@ -307,11 +305,7 @@ export const EditorContent = memo(
 															value || "",
 														)
 													}
-													theme={
-														theme === "dark"
-															? "snipit-dark"
-															: "snipit-light"
-													}
+													theme={monacoTheme}
 													beforeMount={
 														handleEditorWillMount
 													}
@@ -363,11 +357,7 @@ export const EditorContent = memo(
 										onChange={(value) =>
 											setTextValue(value || "")
 										}
-										theme={
-											theme === "dark"
-												? "snipit-dark"
-												: "snipit-light"
-										}
+										theme={monacoTheme}
 										className="flex-1"
 										beforeMount={handleEditorWillMount}
 										onMount={onMount}

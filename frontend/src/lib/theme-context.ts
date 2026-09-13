@@ -4,6 +4,7 @@ export type Theme = "dark" | "light" | "system";
 
 export type ThemeProviderState = {
 	theme: Theme;
+	resolvedTheme: "dark" | "light";
 	setTheme: (theme: Theme) => void;
 };
 

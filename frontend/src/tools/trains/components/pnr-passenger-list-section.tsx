@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp } from "lucide-react";
 import type { Passenger } from "../types/trains";
+import { getEffectiveCoachAndBerth } from "../utils/pnr-helpers";
 
 interface PnrPassengerListSectionProps {
 	passengers?: Passenger[];
@@ -31,69 +32,84 @@ export const PnrPassengerListSection: React.FC<
 
 			{passengers && passengers.length > 0 ? (
 				<div className="divide-y divide-border/40">
-					{passengers.map((passenger) => (
-						<div
-							key={`pax-${passenger.number}`}
-							className="flex flex-col sm:flex-row sm:items-center justify-between py-3 gap-2"
-						>
-							<div className="flex flex-col">
-								<div className="flex items-center gap-2">
-									<span className="text-sm font-bold text-foreground">
-										{passenger.name ||
-											t("tools.pnr_checker.passenger", {
-												number: passenger.number,
-											})}
-									</span>
-									{passenger.coach && (
-										<Badge
-											variant="outline"
-											className="text-[11px] font-mono py-0"
-										>
-											{t(
-												"tools.pnr_checker.coach_label",
-												{
-													coach: passenger.coach,
-												},
-											)}
-											{passenger.berth
-												? ` • ${t(
+					{passengers.map((passenger) => {
+						const { coach, berth, cleanStatus } =
+							getEffectiveCoachAndBerth(passenger);
+						const displayStatus = cleanStatus || passenger.status;
+
+						return (
+							<div
+								key={`pax-${passenger.number}`}
+								className="flex flex-col sm:flex-row sm:items-center justify-between py-3 gap-2"
+							>
+								<div className="flex flex-col">
+									<div className="flex items-center gap-2 flex-wrap">
+										<span className="text-sm font-bold text-foreground">
+											{passenger.name ||
+												t(
+													"tools.pnr_checker.passenger",
+													{
+														number: passenger.number,
+													},
+												)}
+										</span>
+										{(coach || berth) && (
+											<Badge
+												variant="outline"
+												className="text-[11px] font-mono py-0 border-primary/30 text-primary font-semibold"
+											>
+												{coach &&
+													t(
+														"tools.pnr_checker.coach_label",
+														{
+															coach,
+														},
+													)}
+												{coach && berth && " • "}
+												{berth &&
+													t(
 														"tools.pnr_checker.berth_label",
 														{
-															berth: passenger.berth,
+															berth,
 														},
-													)}`
-												: ""}
-										</Badge>
+													)}
+											</Badge>
+										)}
+									</div>
+									{passenger.bookingStatus && (
+										<span className="text-xs text-muted-foreground mt-0.5">
+											{t(
+												"tools.pnr_checker.booking_label",
+												{
+													status: passenger.bookingStatus,
+												},
+											)}
+										</span>
 									)}
 								</div>
-								{passenger.bookingStatus && (
-									<span className="text-xs text-muted-foreground mt-0.5">
-										{t("tools.pnr_checker.booking_label", {
-											status: passenger.bookingStatus,
-										})}
-									</span>
-								)}
-							</div>
 
-							<div className="flex items-center gap-2 shrink-0">
-								{passenger.prediction && (
+								<div className="flex items-center gap-2 shrink-0">
+									{passenger.prediction && (
+										<Badge
+											variant="outline"
+											className="text-xs font-bold border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 flex items-center gap-1"
+										>
+											<TrendingUp className="w-3 h-3" />
+											<span>{passenger.prediction}</span>
+										</Badge>
+									)}
 									<Badge
-										variant="outline"
-										className="text-xs font-bold border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 flex items-center gap-1"
+										variant={getStatusVariant(
+											displayStatus,
+										)}
+										className="text-xs font-semibold px-2.5 py-1"
 									>
-										<TrendingUp className="w-3 h-3" />
-										<span>{passenger.prediction}</span>
+										{displayStatus}
 									</Badge>
-								)}
-								<Badge
-									variant={getStatusVariant(passenger.status)}
-									className="text-xs font-semibold px-2.5 py-1"
-								>
-									{passenger.status}
-								</Badge>
+								</div>
 							</div>
-						</div>
-					))}
+						);
+					})}
 				</div>
 			) : (
 				<p className="text-sm text-muted-foreground italic">

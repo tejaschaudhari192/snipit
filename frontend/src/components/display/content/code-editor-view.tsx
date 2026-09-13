@@ -160,6 +160,10 @@ export const CodeEditorView = ({
 							onMount={onMount}
 							beforeMount={handleEditorWillMount}
 							theme={
+								(typeof document !== "undefined" &&
+									document.documentElement.classList.contains(
+										"dark",
+									)) ||
 								theme === "dark"
 									? "snipit-dark"
 									: "snipit-light"

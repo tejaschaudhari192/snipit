@@ -1,6 +1,4 @@
 import VaultItem from "../models/VaultItem.js";
-import CollectionAccess from "../models/CollectionAccess.js";
-import Collection from "../models/Collection.js";
 import mongoose from "mongoose";
 
 export class PasswordManagerService {
@@ -48,7 +46,7 @@ export class PasswordManagerService {
 	/**
 	 * Create single vault item
 	 */
-	async createItem(userId: string, data: any) {
+	async createItem(userId: string, data: Record<string, unknown>) {
 		return await VaultItem.create({
 			userId,
 			...data,
@@ -58,7 +56,7 @@ export class PasswordManagerService {
 	/**
 	 * Batch upsert items (Sync local to cloud)
 	 */
-	async syncItems(userId: string, items: any[]) {
+	async syncItems(userId: string, items: Record<string, unknown>[]) {
 		const syncedIds: string[] = [];
 
 		for (const item of items) {

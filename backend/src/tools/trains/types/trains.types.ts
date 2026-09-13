@@ -147,11 +147,32 @@ export interface TrainScheduleResponse {
 }
 
 export interface PaytmRawPassenger {
+	passengerSerialNumber?: string | number;
 	passengerName?: string;
 	currentStatusDisplayText?: string;
 	currentStatus?: string;
 	bookingStatus?: string;
 	bookingBerthNo?: string | number;
+	bookingCoachId?: string;
+	bookingCoach?: string;
+	currentCoachId?: string;
+	currentCoach?: string;
+	currentBerthNo?: string | number;
+	coachId?: string;
+	coach?: string;
+	coachNo?: string;
+	allocatedCoach?: string;
+	berthNo?: string | number;
+	berth?: string | number;
+	allocatedBerth?: string | number;
+	seatNo?: string | number;
+	seat?: string | number;
+	currentBerthCode?: string;
+	bookingBerthCode?: string;
+	berthCode?: string;
+	berthType?: string;
+	berthPreference?: string;
+	[key: string]: unknown;
 }
 
 export interface PaytmRawStation {
