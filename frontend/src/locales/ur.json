@@ -1195,8 +1195,29 @@
 		},
 		"team": {
 			"title": "ڈویلپر کے بارے میں",
+			"subtitle": "محنت اور لگن سے تخلیق کردہ اور اوپن سورس کمیونٹی کے تعاون سے چلنے والا",
 			"roles": {
-				"developer": "ڈویلپر"
+				"developer": "تخلیق کار اور لیڈ ڈویلپر",
+				"contributor": "اوپن سورس معاون"
+			},
+			"repo_stats": {
+				"title": "ریپوزٹری معلومات",
+				"stars": "ستارے",
+				"forks": "فورکس",
+				"contributors": "معاونین",
+				"issues": "کھلے مسائل",
+				"view_repo": "ریپوزٹری دیکھیں",
+				"star_repo": "GitHub پر اسٹار کریں"
+			},
+			"contributors": {
+				"title": "پروجیکٹ معاونین",
+				"subtitle": "ان بہترین ڈویلپرز سے ملیں جو Snipit کو بہتر بنانے میں اپنا حصہ ڈالتے ہیں۔",
+				"contributions": "تعاون",
+				"view_profile": "GitHub پروفائل",
+				"view_contributions": "تعاون دیکھیں",
+				"become_contributor": "معاون بنیں",
+				"become_contributor_desc": "کیا آپ Snipit کو بہتر بنانا چاہتے ہیں؟ ہماری اوپن سورس کمیونٹی میں شامل ہوں اور کوڈ یا فیچرز میں حصہ ڈالیں۔",
+				"contribute_btn": "GitHub پر حصہ ڈالیں"
 			}
 		},
 		"contribute": {

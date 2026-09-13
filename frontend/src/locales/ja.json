@@ -1194,9 +1194,30 @@
 			"p3": "モダンなウェブ技術とユーザーエクスペリエンスに焦点を当てて構築されたSnipitは、開発者コミュニティでのコード共有のための最適なプラットフォームを目指しています。"
 		},
 		"team": {
-			"title": "開発者を知る",
+			"title": "開発者について",
+			"subtitle": "情熱を持って作られ、活発なオープンソースコミュニティに支えられています",
 			"roles": {
-				"developer": "開発者"
+				"developer": "作成者・リード開発者",
+				"contributor": "オープンソース貢献者"
+			},
+			"repo_stats": {
+				"title": "リポジトリ情報",
+				"stars": "スター",
+				"forks": "フォーク",
+				"contributors": "貢献者",
+				"issues": "オープンイシュー",
+				"view_repo": "リポジトリを見る",
+				"star_repo": "GitHubでスターを付ける"
+			},
+			"contributors": {
+				"title": "プロジェクト貢献者",
+				"subtitle": "Snipitの機能向上に貢献してくれている素晴らしい開発者たちを紹介します。",
+				"contributions": "コントリビューション",
+				"view_profile": "GitHubプロフィール",
+				"view_contributions": "コントリビューションを見る",
+				"become_contributor": "貢献者になる",
+				"become_contributor_desc": "Snipitの改善に参加しませんか？コードや機能、バグ修正に貢献しましょう。",
+				"contribute_btn": "GitHubで貢献する"
 			}
 		},
 		"contribute": {

@@ -1223,8 +1223,29 @@
 		},
 		"team": {
 			"title": "About the Developer",
+			"subtitle": "Created with passion and backed by our vibrant open-source community",
 			"roles": {
-				"developer": "Developer"
+				"developer": "Creator & Lead Developer",
+				"contributor": "Open Source Contributor"
+			},
+			"repo_stats": {
+				"title": "Repository Information",
+				"stars": "Stars",
+				"forks": "Forks",
+				"contributors": "Contributors",
+				"issues": "Open Issues",
+				"view_repo": "View Repository",
+				"star_repo": "Star on GitHub"
+			},
+			"contributors": {
+				"title": "Project Contributors",
+				"subtitle": "Meet the amazing developers who help shape and improve Snipit.",
+				"contributions": "contributions",
+				"view_profile": "GitHub Profile",
+				"view_contributions": "View Contributions",
+				"become_contributor": "Become a Contributor",
+				"become_contributor_desc": "Want to improve Snipit? Join our open-source community and contribute code, features, or bug fixes.",
+				"contribute_btn": "Contribute on GitHub"
 			}
 		},
 		"contribute": {

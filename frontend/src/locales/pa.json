@@ -1195,8 +1195,29 @@
 		},
 		"team": {
 			"title": "ਡਿਵੈਲਪਰ ਬਾਰੇ",
+			"subtitle": "ਲਗਨ ਨਾਲ ਬਣਾਇਆ ਗਿਆ ਅਤੇ ਸਾਡੇ ਓਪਨ-ਸੋਰਸ ਭਾਈਚਾਰੇ ਦੁਆਰਾ ਸਮਰਥਿਤ",
 			"roles": {
-				"developer": "ਡਿਵੈਲਪਰ"
+				"developer": "ਨਿਰਮਾਤਾ ਅਤੇ ਮੁੱਖ ਡਿਵੈਲਪਰ",
+				"contributor": "ਓਪਨ ਸੋਰਸ ਯੋਗਦਾਨੀ"
+			},
+			"repo_stats": {
+				"title": "ਰਿਪੋਜ਼ਟਰੀ ਜਾਣਕਾਰੀ",
+				"stars": "ਸਿਤਾਰੇ",
+				"forks": "ਫੋਰਕਸ",
+				"contributors": "ਯੋਗਦਾਨੀ",
+				"issues": "ਖੁੱਲ੍ਹੇ ਮੁੱਦੇ",
+				"view_repo": "ਰਿਪੋਜ਼ਟਰੀ ਵੇਖੋ",
+				"star_repo": "GitHub 'ਤੇ ਸਟਾਰ ਕਰੋ"
+			},
+			"contributors": {
+				"title": "ਪ੍ਰੋਜੈਕਟ ਯੋਗਦਾਨੀ",
+				"subtitle": "Snipit ਨੂੰ ਬਿਹਤਰ ਬਣਾਉਣ ਵਿੱਚ ਮਦਦ ਕਰਨ ਵਾਲੇ ਸ਼ਾਨਦਾਰ ਡਿਵੈਲਪਰਾਂ ਨੂੰ ਮਿਲੋ।",
+				"contributions": "ਯੋਗਦਾਨ",
+				"view_profile": "GitHub ਪ੍ਰੋਫਾਈਲ",
+				"view_contributions": "ਯੋਗਦਾਨ ਵੇਖੋ",
+				"become_contributor": "ਯੋਗਦਾਨੀ ਬਣੋ",
+				"become_contributor_desc": "Snipit ਨੂੰ ਬਿਹਤਰ ਬਣਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ? ਸਾਡੇ ਓਪਨ-ਸੋਰਸ ਭਾਈਚਾਰੇ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ ਅਤੇ ਕੋਡ ਜਾਂ ਬੱਗ ਠੀਕ ਕਰਨ ਵਿੱਚ ਯੋਗਦਾਨ ਪਾਓ।",
+				"contribute_btn": "GitHub 'ਤੇ ਯੋਗਦਾਨ ਪਾਓ"
 			}
 		},
 		"contribute": {

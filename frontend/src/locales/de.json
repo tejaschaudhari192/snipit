@@ -1228,8 +1228,29 @@
 		},
 		"team": {
 			"title": "Über den Entwickler",
+			"subtitle": "Mit Leidenschaft entwickelt und von unserer Open-Source-Community unterstützt",
 			"roles": {
-				"developer": "Entwickler"
+				"developer": "Schöpfer & Hauptentwickler",
+				"contributor": "Open-Source-Mitwirkender"
+			},
+			"repo_stats": {
+				"title": "Repository-Informationen",
+				"stars": "Sterne",
+				"forks": "Forks",
+				"contributors": "Mitwirkende",
+				"issues": "Offene Issues",
+				"view_repo": "Repository ansehen",
+				"star_repo": "Auf GitHub mit Stern markieren"
+			},
+			"contributors": {
+				"title": "Projekt-Mitwirkende",
+				"subtitle": "Lernen Sie die großartigen Entwickler kennen, die Snipit stetig verbessern.",
+				"contributions": "Beiträge",
+				"view_profile": "GitHub-Profil",
+				"view_contributions": "Beiträge ansehen",
+				"become_contributor": "Mitwirkender werden",
+				"become_contributor_desc": "Möchten Sie Snipit verbessern? Werden Sie Teil unserer Community und tragen Sie Code oder Fehlerbehebungen bei.",
+				"contribute_btn": "Auf GitHub beitragen"
 			}
 		},
 		"contribute": {
