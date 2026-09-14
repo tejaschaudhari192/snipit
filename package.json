@@ -18,8 +18,8 @@
         "dev": "concurrently \"pnpm dev:frontend\" \"pnpm dev:backend\""
     },
     "keywords": [],
-    "author": "",
-    "license": "ISC",
+    "author": "Tejas Chaudhari <jaybalaji192@gmail.com> (https://github.com/tejaschaudhari192)",
+    "license": "MIT",
     "dependencies": {
         "groq-sdk": "^0.37.0"
     },

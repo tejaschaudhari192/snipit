@@ -198,6 +198,12 @@ Snipit is a passion project built for developers, creators, and everyday interne
 
 ---
 
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+
 <p align="center">
   Built with ❤️ for a simpler, more beautiful web.
 </p>

@@ -11,8 +11,8 @@
 		"lint": "eslint .",
 		"format": "prettier --write ."
 	},
-	"author": "",
-	"license": "ISC",
+	"author": "Tejas Chaudhari <jaybalaji192@gmail.com> (https://github.com/tejaschaudhari192)",
+	"license": "MIT",
 	"type": "module",
 	"dependencies": {
 		"@supabase/supabase-js": "^2.105.0",
