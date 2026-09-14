@@ -1251,7 +1251,12 @@
 				"become_contributor": "योगदानकर्ता बनें",
 				"become_contributor_desc": "स्निपिट को बेहतर बनाना चाहते हैं? हमारे ओपन-सोर्स समुदाय से जुड़ें और कोड, फ़ीचर या बग फिक्स में योगदान दें।",
 				"contribute_btn": "GitHub पर योगदान दें"
-			}
+			},
+			"shipping_status": "स्निपिट v2.0 जारी कर रहे हैं",
+			"copy_clone": "क्लोन URL कॉपी करें",
+			"clone_copied": "क्लोन कमांड कॉपी हो गया!",
+			"tech_stack_title": "मूल आर्किटेक्चर और टेक स्टैक",
+			"open_source_badge": "100% ओपन सोर्स"
 		},
 		"contribute": {
 			"title": "संपर्क करें",

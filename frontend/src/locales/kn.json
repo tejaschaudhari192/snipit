@@ -1218,7 +1218,12 @@
 				"become_contributor": "ಕೊಡುಗೆದಾರರಾಗಿ",
 				"become_contributor_desc": "Snipit ಸುಧಾರಿಸಲು ಬಯಸುವಿರಾ? ನಮ್ಮ ಸಮುದಾಯಕ್ಕೆ ಸೇರಿ ಕೋಡ್ ಅಥವಾ ದೋಷ ತಿದ್ದುಪಡಿಗಳಲ್ಲಿ ಕೊಡುಗೆ ನೀಡಿ.",
 				"contribute_btn": "GitHub ನಲ್ಲಿ ಕೊಡುಗೆ ನೀಡಿ"
-			}
+			},
+			"shipping_status": "ಸ್ನಿಪಿಟ್ v2.0 ಬಿಡುಗಡೆಯಾಗುತ್ತಿದೆ",
+			"copy_clone": "ಕ್ಲೋನ್ URL ನಕಲಿಸಿ",
+			"clone_copied": "ಕ್ಲೋನ್ ಕಮಾಂಡ್ ನಕಲಿಸಲಾಗಿದೆ!",
+			"tech_stack_title": "ಕೋರ್ ಆರ್ಕಿಟೆಕ್ಚರ್ ಮತ್ತು ಟೆಕ್ ಸ್ಟಾಕ್",
+			"open_source_badge": "100% ಓಪನ್ ಸೋರ್ಸ್"
 		},
 		"contribute": {
 			"title": "ಸಂಪರ್ಕಿಸಿ",

@@ -1218,7 +1218,12 @@
 				"become_contributor": "പങ്കാളിയാകൂ",
 				"become_contributor_desc": "Snipit മെച്ചപ്പെടുത്താൻ ആഗ്രഹിക്കുന്നുവോ? കോഡോ പുതിയ ഫീച്ചറുകളോ സംഭാവന ചെയ്യാൻ ഞങ്ങളോടൊപ്പം ചേരൂ.",
 				"contribute_btn": "GitHub-ൽ സംഭാവന ചെയ്യുക"
-			}
+			},
+			"shipping_status": "സ്നിപിറ്റ് v2.0 പുറത്തിറങ്ങുന്നു",
+			"copy_clone": "ക്ലോൺ URL പകർത്തുക",
+			"clone_copied": "ക്ലോൺ കമാൻഡ് പകർത്തി!",
+			"tech_stack_title": "പ്രധാന ആർക്കിടെക്ചറും ടെക് സ്റ്റാക്കും",
+			"open_source_badge": "100% ഓപ്പൺ സോഴ്സ്"
 		},
 		"contribute": {
 			"title": "ബന്ധപ്പെടുക",

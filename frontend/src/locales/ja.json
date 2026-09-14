@@ -1218,7 +1218,12 @@
 				"become_contributor": "貢献者になる",
 				"become_contributor_desc": "Snipitの改善に参加しませんか？コードや機能、バグ修正に貢献しましょう。",
 				"contribute_btn": "GitHubで貢献する"
-			}
+			},
+			"shipping_status": "Snipit v2.0 をリリース中",
+			"copy_clone": "クローンURLをコピー",
+			"clone_copied": "クローンコマンドをコピーしました！",
+			"tech_stack_title": "コアアーキテクチャ & 技術スタック",
+			"open_source_badge": "100% オープンソース"
 		},
 		"contribute": {
 			"title": "お問い合わせ",

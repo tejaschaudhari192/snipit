@@ -1218,7 +1218,12 @@
 				"become_contributor": "অবদানকারী হোন",
 				"become_contributor_desc": "Snipit উন্নত করতে চান? আমাদের ওপেন-সোর্স সম্প্রদায়ে যোগ দিন এবং কোড বা নতুন বৈশিষ্ট্যে অবদান রাখুন।",
 				"contribute_btn": "GitHub-এ অবদান রাখুন"
-			}
+			},
+			"shipping_status": "স্নীপিট v2.0 রিলিজ হচ্ছে",
+			"copy_clone": "ক্লোন URL কপি করুন",
+			"clone_copied": "ক্লোন কমান্ড কপি করা হয়েছে!",
+			"tech_stack_title": "কোর আর্কিটেকচার এবং টেক স্ট্যাক",
+			"open_source_badge": "১০০% ওপেন সোর্স"
 		},
 		"contribute": {
 			"title": "যোগাযোগ করুন",

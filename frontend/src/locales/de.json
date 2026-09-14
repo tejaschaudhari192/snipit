@@ -1251,7 +1251,12 @@
 				"become_contributor": "Mitwirkender werden",
 				"become_contributor_desc": "Möchten Sie Snipit verbessern? Werden Sie Teil unserer Community und tragen Sie Code oder Fehlerbehebungen bei.",
 				"contribute_btn": "Auf GitHub beitragen"
-			}
+			},
+			"shipping_status": "Snipit v2.0 wird ausgeliefert",
+			"copy_clone": "Klon-URL kopieren",
+			"clone_copied": "Klon-Befehl kopiert!",
+			"tech_stack_title": "Kernarchitektur & Tech-Stack",
+			"open_source_badge": "100% Open Source"
 		},
 		"contribute": {
 			"title": "Mitmachen?",

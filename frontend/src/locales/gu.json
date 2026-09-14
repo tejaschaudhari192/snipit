@@ -1218,7 +1218,12 @@
 				"become_contributor": "યોગદાનકર્તા બનો",
 				"become_contributor_desc": "સ્નિપિટ સુધારવા માંગો છો? અમારા ઓપન-સોર્સ સમુદાયમાં જોડાઓ અને કોડ અથવા બગ ફિક્સમાં યોગદાન આપો.",
 				"contribute_btn": "GitHub પર યોગદાન આપો"
-			}
+			},
+			"shipping_status": "સ્નિપિટ v2.0 રિલીઝ થઈ રહ્યું છે",
+			"copy_clone": "ક્લોન URL કૉપિ કરો",
+			"clone_copied": "ક્લોન કમાન્ડ કૉપિ થઈ ગયું!",
+			"tech_stack_title": "કોર આર્કિટેક્ચર અને ટેક સ્ટેક",
+			"open_source_badge": "૧૦૦% ઓપન સોર્સ"
 		},
 		"contribute": {
 			"title": "સંપર્ક કરો",

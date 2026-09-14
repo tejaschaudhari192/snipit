@@ -1218,7 +1218,12 @@
 				"become_contributor": "సహకారిగా మారండి",
 				"become_contributor_desc": "Snipit ని మెరుగుపరచాలనుకుంటున్నారా? మా ఓపెన్ సోర్స్ కమ్యూనిటీలో చేరి కోడ్ లేదా బగ్ పరిష్కారాలకు సహకరించండి.",
 				"contribute_btn": "GitHub లో సహకరించండి"
-			}
+			},
+			"shipping_status": "స్నిపిట్ v2.0 విడుదల అవుతోంది",
+			"copy_clone": "క్లోన్ URL కాపీ చేయండి",
+			"clone_copied": "క్లోన్ కమాండ్ కాపీ చేయబడింది!",
+			"tech_stack_title": "కోర్ ఆర్కిటెక్చర్ & టెక్ స్టాక్",
+			"open_source_badge": "100% ఓపెన్ సోర్స్"
 		},
 		"contribute": {
 			"title": "సంప్రదించండి",

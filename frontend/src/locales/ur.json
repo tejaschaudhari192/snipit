@@ -1218,7 +1218,12 @@
 				"become_contributor": "معاون بنیں",
 				"become_contributor_desc": "کیا آپ Snipit کو بہتر بنانا چاہتے ہیں؟ ہماری اوپن سورس کمیونٹی میں شامل ہوں اور کوڈ یا فیچرز میں حصہ ڈالیں۔",
 				"contribute_btn": "GitHub پر حصہ ڈالیں"
-			}
+			},
+			"shipping_status": "سنیپٹ v2.0 جاری کیا جا رہا ہے",
+			"copy_clone": "کلون URL کاپی کریں",
+			"clone_copied": "کلون کمانڈ کاپی ہوگئی!",
+			"tech_stack_title": "بنیادی فن تعمیر اور ٹیک اسٹیک",
+			"open_source_badge": "100% اوپن سورس"
 		},
 		"contribute": {
 			"title": "شامل ہوں",

@@ -1228,6 +1228,11 @@
 				"developer": "Creator & Lead Developer",
 				"contributor": "Open Source Contributor"
 			},
+			"shipping_status": "Shipping Snipit v2.0",
+			"copy_clone": "Copy Clone URL",
+			"clone_copied": "Clone command copied!",
+			"tech_stack_title": "Core Architecture & Tech Stack",
+			"open_source_badge": "100% Open Source",
 			"repo_stats": {
 				"title": "Repository Information",
 				"stars": "Stars",

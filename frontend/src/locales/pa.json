@@ -1218,7 +1218,12 @@
 				"become_contributor": "ਯੋਗਦਾਨੀ ਬਣੋ",
 				"become_contributor_desc": "Snipit ਨੂੰ ਬਿਹਤਰ ਬਣਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ? ਸਾਡੇ ਓਪਨ-ਸੋਰਸ ਭਾਈਚਾਰੇ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ ਅਤੇ ਕੋਡ ਜਾਂ ਬੱਗ ਠੀਕ ਕਰਨ ਵਿੱਚ ਯੋਗਦਾਨ ਪਾਓ।",
 				"contribute_btn": "GitHub 'ਤੇ ਯੋਗਦਾਨ ਪਾਓ"
-			}
+			},
+			"shipping_status": "ਸਨਿੱਪਿਟ v2.0 ਜਾਰੀ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ",
+			"copy_clone": "ਕਲੋਨ URL ਕਾਪੀ ਕਰੋ",
+			"clone_copied": "ਕਲੋਨ ਕਮਾਂਡ ਕਾਪੀ ਹੋ ਗਈ!",
+			"tech_stack_title": "ਕੋਰ ਆਰਕੀਟੈਕਚਰ ਅਤੇ ਤਕਨੀਕੀ ਸਟੈਕ",
+			"open_source_badge": "100% ਓਪਨ ਸੋਰਸ"
 		},
 		"contribute": {
 			"title": "ਸੰਪਰਕ ਕਰੋ",

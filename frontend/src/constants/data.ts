@@ -133,11 +133,14 @@ const app = {
 	team: [
 		{
 			name: "Tejas Chaudhari",
+			handle: "tejaschaudhari192",
 			email: "jaybalaji192@gmail.com",
 			github: "https://github.com/tejaschaudhari192",
 			linkedin: "https://www.linkedin.com/in/tejaschaudhari192/",
 			avatar: "https://avatars.githubusercontent.com/u/104405128?s=400&u=1285d0293657159a9e85e0709ee549c37198667e&v=4",
 			roleKey: "about_page.team.roles.developer",
+			bio: "Full-stack engineer passionate about building high-performance developer tooling, zero-knowledge privacy vaults, and real-time web applications.",
+			quote: "Building tools that make code sharing, zero-knowledge encryption, and developer workflows fast, private, and effortless.",
 		},
 	],
 	faq: [
