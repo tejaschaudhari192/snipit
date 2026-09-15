@@ -249,6 +249,35 @@
 		@apply bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)];
 	}
 
+	.input-glass {
+		@apply h-11 bg-background/50 border-border/50 focus-within:border-primary/50 focus-within:ring-4 focus-within:ring-primary/10 rounded-xl transition-all;
+	}
+
+	.input-glass [data-slot="input-group-control"] {
+		height: 100% !important;
+		padding-top: 0 !important;
+		padding-bottom: 0 !important;
+	}
+
+	.btn-primary-bounce {
+		width: 100% !important;
+		height: 2.75rem !important;
+		border-radius: 0.75rem !important;
+		font-weight: 600 !important;
+		display: inline-flex !important;
+		align-items: center !important;
+		justify-content: center !important;
+		transition: all 0.2s ease !important;
+	}
+
+	.btn-primary-bounce:hover {
+		box-shadow: 0 10px 25px -5px rgba(var(--primary), 0.3) !important;
+	}
+
+	.btn-primary-bounce:active {
+		transform: scale(0.98) !important;
+	}
+
 	/* Custom Scrollbar Utility */
 	.custom-scrollbar::-webkit-scrollbar {
 		width: 6px;
