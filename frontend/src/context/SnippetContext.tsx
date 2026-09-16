@@ -325,15 +325,10 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 		[user, t],
 	);
 
-	// Load history and stats when user changes or on mount
+	// Clear cached state when user changes/logs out
 	useEffect(() => {
 		clearHistoryState();
-		loadHistory(true);
-		if (user) {
-			loadProfile(true);
-			loadStats();
-		}
-	}, [user, clearHistoryState, loadHistory, loadProfile, loadStats]);
+	}, [user, clearHistoryState]);
 
 	return (
 		<SnippetContext.Provider

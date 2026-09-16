@@ -885,7 +885,43 @@
 			"save": "ছবি সংরক্ষণ করুন"
 		},
 		"edit_name": "নাম সম্পাদনা করুন",
-		"color_tag": "রঙের ট্যাগ"
+		"color_tag": "রঙের ট্যাগ",
+		"tabs": {
+			"snippets": "My Snippets",
+			"devices": "Devices & Sessions"
+		},
+		"devices": {
+			"title": "Active Sessions & Devices",
+			"subtitle": "Manage devices and browsers where you are currently signed in to your Snipit account.",
+			"this_device": "This Device",
+			"active_now": "Active Now",
+			"other_devices": "Other Active Devices",
+			"no_other_devices": "No other devices are currently signed in to your account.",
+			"session_expires": "15-Day Session • Expires {{date}}",
+			"signed_in": "Signed in {{time}}",
+			"ip_address": "IP Address",
+			"revoke_session": "Revoke Session",
+			"revoke_session_desc": "Are you sure you want to revoke this session? The device will be logged out immediately.",
+			"revoke_all_others": "Log Out All Other Devices",
+			"revoke_all_others_desc": "This will revoke all active sessions except your current device. You will need to log in again on other devices.",
+			"revoked_success": "Session revoked successfully",
+			"revoked_all_success": "Logged out of all other devices successfully",
+			"revoking": "Revoking...",
+			"loading_sessions": "Loading active devices...",
+			"guest_warning_title": "Sign in to manage devices",
+			"guest_warning_desc": "Session and device management is available for registered users.",
+			"refresh": "রিফ্রেশ",
+			"revoke": "বাতিল করুন",
+			"cancel": "বাতিল",
+			"active": "সক্রিয়",
+			"last_active": "সর্বশেষ সক্রিয়: {{time}}",
+			"expires_at": "মেয়াদ শেষ: {{date}}",
+			"time_just_now": "এইমাত্র",
+			"time_mins_ago": "{{count}} মিনিট আগে",
+			"time_hours_ago": "{{count}} ঘণ্টা আগে",
+			"time_days_ago": "{{count}} দিন আগে",
+			"time_recently": "সম্প্রতি"
+		}
 	},
 	"home": {
 		"loading": "লোড হচ্ছে...",
@@ -1238,19 +1274,19 @@
 			"items": {
 				"free": {
 					"question": "Snipit কি বিনামূল্যে ব্যবহার করা যায়?",
-					"answer": "হ্যাঁ! Snipit সম্পূর্ণ বিনামূল্যে ব্যবহার করা যায়।"
+					"answer": "হ্যাঁ! Snipit ১০০% বিনামূল্যে এবং ওপেন সোর্স। ব্যক্তিগত বা ব্যবসায়িক কাজের জন্য কোড, ডক্স, হোয়াইটবোর্ড ডায়াগ্রাম এবং ফাইল সম্পূর্ণ বিনামূল্যে তৈরি ও শেয়ার করতে পারেন।"
 				},
 				"expiration": {
-					"question": "স্নিপেটগুলি কতক্ষণ থাকে?",
-					"answer": "আপনি প্রতিটি স্নিপেটের জন্য ১ ঘণ্টা থেকে ১ বছর পর্যন্ত মেয়াদ চয়ন করতে পারেন।"
+					"question": "স্নিপেটগুলি কতক্ষণ স্থায়ী হয়?",
+					"answer": "আপনার সম্পূর্ণ নিয়ন্ত্রণ রয়েছে: ১ ঘণ্টা থেকে ১ বছর পর্যন্ত প্রিসেট সময়সীমা, কাস্টম তারিখ ও সময়, 'বার্ন-আফটার-রিড' (একবার দেখার পর মুছে যাওয়া) অথবা 'কখনই মেয়াদ শেষ না হওয়া' (Never expire) বেছে নিতে পারেন।"
 				},
 				"secure": {
-					"question": "আমার কোড কি নিরাপদ?",
-					"answer": "আমরা নিরাপত্তাকে গুরুত্ব সহকারে নিই। সমস্ত স্নিপেট এনক্রিপ্ট করা হয়।"
+					"question": "আমার ডেটা এবং কোড কি সুরক্ষিত?",
+					"answer": "হ্যাঁ। Snipit ট্রানজিটে সম্পূর্ণ TLS এনক্রিপশন এবং argon2/bcrypt পাসওয়ার্ড হ্যাশিং ব্যবহার করে। এছাড়াও গোপনীয় নোটের জন্য CryptoSafe ও পাসওয়ার্ড ভল্ট ক্লায়েন্ট-সাইড জিরো-নলেজ AES-GCM এনক্রিপশন প্রদান করে।"
 				},
 				"edit": {
 					"question": "আমি কি পরে আমার স্নিপেট সম্পাদনা করতে পারি?",
-					"answer": "হ্যাঁ, আপনি লগইন থাকলে আপনার ড্যাশবোর্ড থেকে সম্পাদনা করতে পারেন।"
+					"answer": "হ্যাঁ। লগইন করা অবস্থায় আপনি যেকোনো সময় ড্যাশবোর্ড থেকে স্নিপেট পরিচালনা, সম্পাদনা বা মুছে ফেলতে পারেন। এছাড়াও ভূমিকা-ভিত্তিক অ্যাক্সেস নিয়ন্ত্রণের মাধ্যমে রিয়েল-টাইমে একসাথে কাজ করতে পারেন।"
 				}
 			}
 		}

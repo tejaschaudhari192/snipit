@@ -885,7 +885,43 @@
 			"save": "ഫോട്ടോ സേവ് ചെയ്യുക"
 		},
 		"edit_name": "പേര് എഡിറ്റ് ചെയ്യുക",
-		"color_tag": "വർണ്ണ ടാഗ്"
+		"color_tag": "വർണ്ണ ടാഗ്",
+		"tabs": {
+			"snippets": "My Snippets",
+			"devices": "Devices & Sessions"
+		},
+		"devices": {
+			"title": "Active Sessions & Devices",
+			"subtitle": "Manage devices and browsers where you are currently signed in to your Snipit account.",
+			"this_device": "This Device",
+			"active_now": "Active Now",
+			"other_devices": "Other Active Devices",
+			"no_other_devices": "No other devices are currently signed in to your account.",
+			"session_expires": "15-Day Session • Expires {{date}}",
+			"signed_in": "Signed in {{time}}",
+			"ip_address": "IP Address",
+			"revoke_session": "Revoke Session",
+			"revoke_session_desc": "Are you sure you want to revoke this session? The device will be logged out immediately.",
+			"revoke_all_others": "Log Out All Other Devices",
+			"revoke_all_others_desc": "This will revoke all active sessions except your current device. You will need to log in again on other devices.",
+			"revoked_success": "Session revoked successfully",
+			"revoked_all_success": "Logged out of all other devices successfully",
+			"revoking": "Revoking...",
+			"loading_sessions": "Loading active devices...",
+			"guest_warning_title": "Sign in to manage devices",
+			"guest_warning_desc": "Session and device management is available for registered users.",
+			"refresh": "പുതുക്കുക",
+			"revoke": "റദ്ദാക്കുക",
+			"cancel": "റദ്ദാക്കുക",
+			"active": "സജീവം",
+			"last_active": "അവസാനം സജീവം: {{time}}",
+			"expires_at": "കാലഹരണപ്പെടുന്നത്: {{date}}",
+			"time_just_now": "ഇപ്പോൾ മാത്രം",
+			"time_mins_ago": "{{count}} മിനിറ്റ് മുൻപ്",
+			"time_hours_ago": "{{count}} മണിക്കൂർ മുൻപ്",
+			"time_days_ago": "{{count}} ദിവസം മുൻപ്",
+			"time_recently": "അടുത്തിടെ"
+		}
 	},
 	"home": {
 		"loading": "ശേഖരിക്കുന്നു...",
@@ -1238,19 +1274,19 @@
 			"items": {
 				"free": {
 					"question": "Snipit ഉപയോഗം സൌജന്യമാണോ?",
-					"answer": "അതെ! സ്നിപിറ്റ് പൂർണ്ണമായും സൗജന്യമാണ്. നിങ്ങൾക്ക് യാതൊരു ചെലവുമില്ലാതെ വ്യക്തിപരമോ വാണിജ്യപരമോ ആയ പ്രോജക്റ്റുകൾക്കായി ഇത് ഉപയോഗിക്കാം."
+					"answer": "അതെ! Snipit 100% സൗജന്യവും ഓപ്പൺ സോഴ്‌സുമാണ്. വ്യക്തിപരമോ വാണിജ്യപരമോ ആയ ആവശ്യങ്ങൾക്ക് കോഡ്, ഡോക്സ്, വൈറ്റ്‌ബോർഡ് ഡയഗ്രാമുകൾ, ഫയലുകൾ എന്നിവ യാതൊരു ചെലവുമില്ലാതെ സൃഷ്‌ടിക്കാനും പങ്കിടാനും സാധിക്കും."
 				},
 				"expiration": {
 					"question": "സ്നിപ്പെറ്റുകൾ എത്രകാലം നിലനിൽക്കും?",
-					"answer": "നിങ്ങൾക്ക് 1 മണിക്കൂർ മുതൽ 1 വർഷം വരെയുള്ള സമയം തിരഞ്ഞെടുക്കാം."
+					"answer": "സ്നിപ്പെറ്റിന്റെ കാലാവധി പൂർണ്ണമായും നിങ്ങളുടെ നിയന്ത്രണത്തിലാണ്: 1 മണിക്കൂർ മുതൽ 1 വർഷം വരെയുള്ള പ്രീസെറ്റുകൾ, കസ്റ്റം തീയതിയും സമയവും, 'ബേൺ-ആഫ്റ്റർ-റീഡ്' (ഒരു തവണ കണ്ടാൽ സ്വയം നശിക്കുന്നത്), അല്ലെങ്കിൽ 'ഒരിക്കലും കാലാവധി തീരാത്തത്' (Never expire) എന്നിവ തിരഞ്ഞെടുക്കാം."
 				},
 				"secure": {
-					"question": "കോഡ് സുരക്ഷിതമാണോ?",
-					"answer": "ഞങ്ങൾ സുരക്ഷയെ ഗൗരവമായി കാണുന്നു. എല്ലാ സ്നിപ്പെറ്റുകളും ട്രാൻസിറ്റിലും റെസ്റ്റിലും എൻക്രിപ്റ്റ് ചെയ്തിരിക്കുന്നു. പാസ്‌വേഡ് പരിരക്ഷിത സ്നിപ്പെറ്റുകൾ സുരക്ഷയുടെ ഒരു അധിക പാളി നൽകുന്നു."
+					"question": "എന്റെ വിവരങ്ങളും കോഡും സുരക്ഷിതമാണോ?",
+					"answer": "അതെ. Snipit ട്രാൻസിറ്റിൽ പൂർണ്ണ TLS എൻക്രിപ്ഷനും argon2/bcrypt പാസ്‌വേഡ് ഹാഷിംഗും ഉപയോഗിക്കുന്നു. രഹസ്യ വിവരങ്ങൾക്കായി CryptoSafe, പാസ്‌വേഡ് വോൾട്ട് എന്നിവ ക്ലയന്റ്-സൈഡ് സീറോ-നോളജ് AES-GCM എൻക്രിപ്ഷൻ നൽകുന്നു."
 				},
 				"edit": {
-					"question": "എനിക്ക് പിന്നീട് മാറ്റങ്ങൾ വരുത്താമോ?",
-					"answer": "അതെ, അക്കൗണ്ട് ഉണ്ടെങ്കിൽ മാറ്റങ്ങൾ വരുത്താം."
+					"question": "എനിക്ക് പിന്നീട് സ്നിപ്പെറ്റുകൾ എഡിറ്റ് ചെയ്യാൻ കഴിയുമോ?",
+					"answer": "അതെ. ലോഗിൻ ചെയ്‌തിരിക്കുമ്പോൾ ഡാഷ്‌ബോർഡിൽ നിന്ന് എപ്പോൾ വേണമെങ്കിലും മാറ്റങ്ങൾ വരുത്താനും ഇല്ലാതാക്കാനും സാധിക്കും. റോൾ അടിസ്ഥാനമാക്കിയുള്ള ആക്‌സസ് കൺട്രോളിലൂടെ തത്സമയം സഹകരിച്ച് പ്രവർത്തിക്കാനും സാധിക്കും."
 				}
 			}
 		}

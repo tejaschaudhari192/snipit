@@ -34,8 +34,14 @@ export const extractTokenFromRequest = (req: {
 	return null;
 };
 
-export const generateToken = (id: string) => {
-	return jwt.sign({ id }, configurations.jwt.secret, {
+export interface TokenPayload {
+	id: string;
+	sessionId: string;
+}
+
+export const generateToken = (id: string, sessionId: string): string => {
+	const payload: TokenPayload = { id, sessionId };
+	return jwt.sign(payload, configurations.jwt.secret, {
 		expiresIn: configurations.jwt.expiry as
 			| `${number}d`
 			| `${number}h`
@@ -68,13 +74,22 @@ export const clearAuthCookie = (res: Response) => {
 	});
 };
 
-export const getUserIdFromToken = (token: string): string | null => {
+export const verifyTokenPayload = (token: string): TokenPayload | null => {
 	try {
-		const decoded = jwt.verify(token, configurations.jwt.secret) as {
-			id: string;
-		};
-		return decoded.id;
+		const decoded = jwt.verify(
+			token,
+			configurations.jwt.secret,
+		) as Partial<TokenPayload>;
+		if (!decoded.id || !decoded.sessionId) {
+			return null;
+		}
+		return { id: decoded.id, sessionId: decoded.sessionId };
 	} catch {
 		return null;
 	}
+};
+
+export const getUserIdFromToken = (token: string): string | null => {
+	const payload = verifyTokenPayload(token);
+	return payload?.id ?? null;
 };

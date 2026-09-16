@@ -885,7 +885,43 @@
 			"save": "ਫੋਟੋ ਸੰਭਾਲੋ"
 		},
 		"edit_name": "ਨਾਮ ਸੰਪਾਦਿਤ ਕਰੋ",
-		"color_tag": "ਰੰਗ ਟੈਗ"
+		"color_tag": "ਰੰਗ ਟੈਗ",
+		"tabs": {
+			"snippets": "My Snippets",
+			"devices": "Devices & Sessions"
+		},
+		"devices": {
+			"title": "Active Sessions & Devices",
+			"subtitle": "Manage devices and browsers where you are currently signed in to your Snipit account.",
+			"this_device": "This Device",
+			"active_now": "Active Now",
+			"other_devices": "Other Active Devices",
+			"no_other_devices": "No other devices are currently signed in to your account.",
+			"session_expires": "15-Day Session • Expires {{date}}",
+			"signed_in": "Signed in {{time}}",
+			"ip_address": "IP Address",
+			"revoke_session": "Revoke Session",
+			"revoke_session_desc": "Are you sure you want to revoke this session? The device will be logged out immediately.",
+			"revoke_all_others": "Log Out All Other Devices",
+			"revoke_all_others_desc": "This will revoke all active sessions except your current device. You will need to log in again on other devices.",
+			"revoked_success": "Session revoked successfully",
+			"revoked_all_success": "Logged out of all other devices successfully",
+			"revoking": "Revoking...",
+			"loading_sessions": "Loading active devices...",
+			"guest_warning_title": "Sign in to manage devices",
+			"guest_warning_desc": "Session and device management is available for registered users.",
+			"refresh": "ਤਾਜ਼ਾ ਕਰੋ",
+			"revoke": "ਰੱਦ ਕਰੋ",
+			"cancel": "ਰੱਦ ਕਰੋ",
+			"active": "ਸਰਗਰਮ",
+			"last_active": "ਆਖਰੀ ਸਰਗਰਮ: {{time}}",
+			"expires_at": "ਮਿਆਦ ਪੁੱਗਣ: {{date}}",
+			"time_just_now": "ਹੁਣੇ ਹੀ",
+			"time_mins_ago": "{{count}} ਮਿੰਟ ਪਹਿਲਾਂ",
+			"time_hours_ago": "{{count}} ਘੰਟੇ ਪਹਿਲਾਂ",
+			"time_days_ago": "{{count}} ਦਿਨ ਪਹਿਲਾਂ",
+			"time_recently": "ਹਾਲ ਹੀ ਵਿੱਚ"
+		}
 	},
 	"home": {
 		"loading": "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
@@ -1237,20 +1273,20 @@
 			"title": "ਅਕਸਰ ਪੁੱਛੇ ਜਾਣ ਵਾਲੇ ਸਵਾਲ",
 			"items": {
 				"free": {
-					"question": "ਕੀ Snipit ਮੁਫ਼ਤ ਹੈ?",
-					"answer": "ਹਾਂ! ਸਨਿੱਪਿਟ ਵਰਤਣ ਲਈ ਪੂਰੀ ਤਰ੍ਹਾਂ ਮੁਫ਼ਤ ਹੈ। ਤੁਸੀਂ ਇਸਨੂੰ ਬਿਨਾਂ ਕਿਸੇ ਕੀਮਤ ਦੇ ਨਿੱਜੀ ਜਾਂ ਵਪਾਰਕ ਪ੍ਰੋਜੈਕਟਾਂ ਲਈ ਵਰਤ ਸਕਦੇ ਹੋ।"
+					"question": "ਕੀ Snipit ਵਰਤਣ ਲਈ ਮੁਫ਼ਤ ਹੈ?",
+					"answer": "ਹਾਂ! Snipit 100% ਮੁਫ਼ਤ ਅਤੇ ਓਪਨ-ਸੋਰਸ ਹੈ। ਤੁਸੀਂ ਨਿੱਜੀ ਜਾਂ ਵਪਾਰਕ ਵਰਤੋਂ ਲਈ ਕੋਡ, ਡੌਕਸ, ਵ੍ਹਾਈਟਬੋਰਡ ਡਾਇਗ੍ਰਾਮ ਅਤੇ ਫਾਈਲਾਂ ਮੁਫ਼ਤ ਬਣਾ ਅਤੇ ਸਾਂਝੀਆਂ ਕਰ ਸਕਦੇ ਹੋ।"
 				},
 				"expiration": {
-					"question": "ਸਨਿੱਪਟ ਕਿੰਨੀ ਦੇਰ ਰਹਿੰਦੇ ਹਨ?",
-					"answer": "ਤੁਸੀਂ ਹਰੇਕ ਸਨਿੱਪਟ ਲਈ 1 ਘੰਟੇ ਤੋਂ 1 ਸਾਲ ਤੱਕ ਦਾ ਸਮਾਂ ਚੁਣ ਸਕਦੇ ਹੋ।"
+					"question": "ਸਨਿੱਪਟ ਕਿੰਨੀ ਦੇਰ ਤੱਕ ਰਹਿੰਦੇ ਹਨ?",
+					"answer": "ਤੁਹਾਡੇ ਕੋਲ ਪੂਰਾ ਨਿਯੰਤਰਣ ਹੈ: 1 ਘੰਟੇ ਤੋਂ 1 ਸਾਲ ਤੱਕ ਦੇ ਪ੍ਰੀਸੈੱਟ ਚੁਣੋ, ਕਸਟਮ ਮਿਤੀ ਅਤੇ ਸਮਾਂ ਸੈੱਟ ਕਰੋ, 'ਬਰਨ-ਆਫਟਰ-ਰੀਡ' (ਇੱਕ ਵਾਰ ਦੇਖਣ 'ਤੇ ਨਸ਼ਟ) ਜਾਂ 'ਕਦੇ ਵੀ ਸਮਾਪਤ ਨਾ ਹੋਣ ਵਾਲਾ' (Never expire) ਚੁਣੋ।"
 				},
 				"secure": {
-					"question": "ਕੀ ਮੇਰਾ ਕੋਡ ਸੁਰੱਖਿਅਤ ਹੈ?",
-					"answer": "ਅਸੀਂ ਸੁਰੱਖਿਆ ਨੂੰ ਗੰਭੀਰਤਾ ਨਾਲ ਲੈਂਦੇ ਹਾਂ। ਸਾਰੇ ਸਨਿੱਪਟ ਐਨਕ੍ਰਿਪਟ ਕੀਤੇ ਜਾਂਦੇ ਹਨ।"
+					"question": "ਕੀ ਮੇਰਾ ਡਾਟਾ ਅਤੇ ਕੋਡ ਸੁਰੱਖਿਅਤ ਹੈ?",
+					"answer": "ਹਾਂ। Snipit ਪੂਰੀ TLS ਐਨਕ੍ਰਿਪਸ਼ਨ ਅਤੇ argon2/bcrypt ਪਾਸਵਰਡ ਹੈਸ਼ਿੰਗ ਵਰਤਦਾ ਹੈ। ਸੰਵੇਦਨਸ਼ੀਲ ਨੋਟਸ ਲਈ CryptoSafe ਅਤੇ ਪਾਸਵਰਡ ਵਾਲਟ ਕਲਾਇੰਟ-ਸਾਈਡ ਜ਼ੀਰੋ-ਨੌਲੇਜ AES-GCM ਐਨਕ੍ਰਿਪਸ਼ਨ ਪ੍ਰਦਾਨ ਕਰਦੇ ਹਨ।"
 				},
 				"edit": {
 					"question": "ਕੀ ਮੈਂ ਆਪਣੇ ਸਨਿੱਪਟ ਬਾਅਦ ਵਿੱਚ ਸੋਧ ਸਕਦਾ ਹਾਂ?",
-					"answer": "ਹਾਂ, ਜੇਕਰ ਤੁਸੀਂ ਲੌਗਇਨ ਹੋ ਤਾਂ ਆਪਣੇ ਡੈਸ਼ਬੋਰਡ ਤੋਂ ਸੋਧ ਸਕਦੇ ਹੋ।"
+					"answer": "ਹਾਂ। ਲੌਗਇਨ ਹੋਣ 'ਤੇ ਤੁਸੀਂ ਆਪਣੇ ਡੈਸ਼ਬੋਰਡ ਤੋਂ ਕਿਸੇ ਵੀ ਸਮੇਂ ਸਨਿੱਪਟ ਸੋਧ ਜਾਂ ਮਿਟਾ ਸਕਦੇ ਹੋ। ਰੋਲ-ਅਧਾਰਿਤ ਐਕਸੈਸ ਕੰਟਰੋਲ ਨਾਲ ਰੀਅਲ-ਟਾਈਮ ਵਿੱਚ ਮਿਲ ਕੇ ਕੰਮ ਵੀ ਕਰ ਸਕਦੇ ਹੋ।"
 				}
 			}
 		}

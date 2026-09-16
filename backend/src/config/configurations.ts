@@ -68,10 +68,10 @@ const configurations = {
 	groq_voice_models: GROQ_CONFIG.voice.fallbackList,
 	jwt: {
 		secret: env.JWT_SECRET,
-		expiry: "30d",
+		expiry: "15d",
 	},
 	cookie: {
-		maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+		maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
 	},
 	cors: {
 		origins: [

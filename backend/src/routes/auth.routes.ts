@@ -58,5 +58,20 @@ router.put(
 	validate(resetPasswordSchema),
 	catchAsync(authController.resetPassword.bind(authController)),
 );
+router.get(
+	"/sessions",
+	protect,
+	catchAsync(authController.getSessions.bind(authController)),
+);
+router.delete(
+	"/sessions/:id",
+	protect,
+	catchAsync(authController.revokeSession.bind(authController)),
+);
+router.delete(
+	"/sessions",
+	protect,
+	catchAsync(authController.revokeAllOtherSessions.bind(authController)),
+);
 
 export default router;

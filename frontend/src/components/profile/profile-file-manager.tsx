@@ -4,10 +4,16 @@ import { Grid, List, Plus } from "lucide-react";
 import { useFolders } from "@/context/FolderContext";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
-import { CreateFolderDialog } from "./create-folder-dialog";
+import { ButtonGroup } from "@/components/ui/button-group";
 import { FolderCard } from "./folder-card";
 import { FolderBreadcrumb } from "./folder-breadcrumb";
 import type { FolderData } from "@/types";
+
+const CreateFolderDialog = React.lazy(() =>
+	import("./create-folder-dialog").then((m) => ({
+		default: m.CreateFolderDialog,
+	})),
+);
 
 interface ProfileFileManagerProps {
 	viewMode: "grid" | "list";
@@ -68,10 +74,17 @@ export const ProfileFileManager: React.FC<ProfileFileManagerProps> = ({
 						</Button>
 					)}
 
-					<div className="flex items-center bg-muted/50 p-1 rounded-xl border border-border/30">
-						<button
+					<ButtonGroup
+						orientation="horizontal"
+						className="bg-muted/40 p-0.5 rounded-xl border border-border/40 shrink-0"
+					>
+						<Button
+							variant={
+								viewMode === "grid" ? "secondary" : "ghost"
+							}
+							size="icon-xs"
 							onClick={() => onViewModeChange("grid")}
-							className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+							className={`rounded-lg cursor-pointer ${
 								viewMode === "grid"
 									? "bg-background text-primary shadow-xs font-bold"
 									: "text-muted-foreground hover:text-foreground"
@@ -79,10 +92,14 @@ export const ProfileFileManager: React.FC<ProfileFileManagerProps> = ({
 							title={t("folders.grid_view")}
 						>
 							<Grid className="w-3.5 h-3.5" />
-						</button>
-						<button
+						</Button>
+						<Button
+							variant={
+								viewMode === "list" ? "secondary" : "ghost"
+							}
+							size="icon-xs"
 							onClick={() => onViewModeChange("list")}
-							className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+							className={`rounded-lg cursor-pointer ${
 								viewMode === "list"
 									? "bg-background text-primary shadow-xs font-bold"
 									: "text-muted-foreground hover:text-foreground"
@@ -90,8 +107,8 @@ export const ProfileFileManager: React.FC<ProfileFileManagerProps> = ({
 							title={t("folders.list_view")}
 						>
 							<List className="w-3.5 h-3.5" />
-						</button>
-					</div>
+						</Button>
+					</ButtonGroup>
 				</div>
 			</div>
 
@@ -119,11 +136,13 @@ export const ProfileFileManager: React.FC<ProfileFileManagerProps> = ({
 				</div>
 			)}
 
-			<CreateFolderDialog
-				open={createOpen}
-				onOpenChange={setCreateOpen}
-				parentId={activeFolderId}
-			/>
+			<React.Suspense fallback={null}>
+				<CreateFolderDialog
+					open={createOpen}
+					onOpenChange={setCreateOpen}
+					parentId={activeFolderId}
+				/>
+			</React.Suspense>
 		</div>
 	);
 };

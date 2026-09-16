@@ -2,7 +2,7 @@ import api from "../api";
 
 export interface LoginPayload {
 	email: string;
-	password?: string;
+	password: string;
 }
 
 export interface RegisterPayload extends LoginPayload {
@@ -10,7 +10,7 @@ export interface RegisterPayload extends LoginPayload {
 }
 
 export interface GoogleLoginPayload {
-	idToken: string | undefined;
+	idToken: string;
 }
 
 export const getMe = async () => {
@@ -55,5 +55,45 @@ export const resetPassword = async (token: string, password: string) => {
 	const response = await api.put(`/auth/resetpassword/${token}`, {
 		password,
 	});
+	return response.data;
+};
+
+export interface ActiveSession {
+	_id: string;
+	deviceName: string;
+	browser: string;
+	os: string;
+	deviceType: "desktop" | "mobile" | "tablet";
+	ipAddress: string;
+	lastActive: string;
+	expiresAt: string;
+	createdAt: string;
+	isCurrent: boolean;
+}
+
+export const getActiveSessions = async (): Promise<ActiveSession[]> => {
+	const response = await api.get<{ sessions: ActiveSession[] }>(
+		"/auth/sessions",
+	);
+	return response.data.sessions;
+};
+
+export const revokeSession = async (
+	sessionId: string,
+): Promise<{ message: string; isCurrent: boolean }> => {
+	const response = await api.delete<{ message: string; isCurrent: boolean }>(
+		`/auth/sessions/${sessionId}`,
+	);
+	return response.data;
+};
+
+export const revokeAllOtherSessions = async (): Promise<{
+	message: string;
+	revokedCount: number;
+}> => {
+	const response = await api.delete<{
+		message: string;
+		revokedCount: number;
+	}>("/auth/sessions");
 	return response.data;
 };

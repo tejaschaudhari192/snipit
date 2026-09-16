@@ -107,21 +107,14 @@ export const FolderProvider: React.FC<{ children: React.ReactNode }> = ({
 		[user],
 	);
 
+	// Reset folder state when user logs out
 	useEffect(() => {
-		if (user) {
-			loadTree();
-		} else {
+		if (!user) {
 			setFolders([]);
 			setCurrentFolderContents({ subfolders: [], snippets: [] });
 			setActiveFolderId(null);
 		}
-	}, [user, loadTree]);
-
-	useEffect(() => {
-		if (user) {
-			loadFolderContents(activeFolderId);
-		}
-	}, [user, activeFolderId, loadFolderContents]);
+	}, [user]);
 
 	const foldersTree = React.useMemo(() => {
 		const map = new Map<string, FolderTreeNode>();

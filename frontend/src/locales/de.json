@@ -918,7 +918,43 @@
 			"save": "Foto speichern"
 		},
 		"edit_name": "Name bearbeiten",
-		"color_tag": "Farb-Tag"
+		"color_tag": "Farb-Tag",
+		"tabs": {
+			"snippets": "Meine Snippets",
+			"devices": "Geräte & Sitzungen"
+		},
+		"devices": {
+			"title": "Aktive Sitzungen & Geräte",
+			"subtitle": "Verwalten Sie Geräte und Browser, bei denen Sie derzeit in Ihrem Snipit-Konto angemeldet sind.",
+			"this_device": "Dieses Gerät",
+			"active_now": "Jetzt aktiv",
+			"other_devices": "Andere aktive Geräte",
+			"no_other_devices": "Derzeit sind keine anderen Geräte bei Ihrem Konto angemeldet.",
+			"session_expires": "15-Tage-Sitzung • Läuft ab am {{date}}",
+			"signed_in": "Angemeldet {{time}}",
+			"ip_address": "IP-Adresse",
+			"revoke_session": "Sitzung widerrufen",
+			"revoke_session_desc": "Möchten Sie diese Sitzung wirklich widerrufen? Das Gerät wird sofort abgemeldet.",
+			"revoke_all_others": "Alle anderen Geräte abmelden",
+			"revoke_all_others_desc": "Dadurch werden alle aktiven Sitzungen mit Ausnahme Ihres aktuellen Geräts beendet.",
+			"revoked_success": "Sitzung erfolgreich widerrufen",
+			"revoked_all_success": "Erfolgreich von allen anderen Geräten abgemeldet",
+			"revoking": "Widerrufen...",
+			"loading_sessions": "Aktive Geräte werden geladen...",
+			"guest_warning_title": "Anmelden zur Geräteverwaltung",
+			"guest_warning_desc": "Sitzungs- und Geräteverwaltung steht registrierten Benutzern zur Verfügung.",
+			"refresh": "Aktualisieren",
+			"revoke": "Widerrufen",
+			"cancel": "Abbrechen",
+			"active": "Aktiv",
+			"last_active": "Zuletzt aktiv: {{time}}",
+			"expires_at": "Gültig bis: {{date}}",
+			"time_just_now": "Gerade eben",
+			"time_mins_ago": "vor {{count}} Min.",
+			"time_hours_ago": "vor {{count}} Std.",
+			"time_days_ago": "vor {{count}} Tag(en)",
+			"time_recently": "Kürzlich"
+		}
 	},
 	"home": {
 		"loading": "Laden...",
@@ -1271,19 +1307,19 @@
 			"items": {
 				"free": {
 					"question": "Ist Snipit kostenlos?",
-					"answer": "Ja! Snipit ist komplett kostenlos. Sie können es ohne Kosten für persönliche oder kommerzielle Projekte nutzen."
+					"answer": "Ja! Snipit ist zu 100% kostenlos und quelloffen. Sie können Code, Dokumente, Whiteboard-Diagramme und Dateien ohne Kosten für persönliche oder kommerzielle Projekte erstellen, teilen und gemeinsam bearbeiten."
 				},
 				"expiration": {
 					"question": "Wie lange bleiben Snippets erhalten?",
-					"answer": "Sie können die Ablaufzeit für jedes Snippet zwischen 1 Stunde und 1 Jahr wählen. Sie können auch Snippets erstellen, die nie ablaufen."
+					"answer": "Sie haben die volle Kontrolle: Wählen Sie vordefinierte Dauern (1 Stunde bis 1 Jahr), ein benutzerdefiniertes Ablaufdatum, die selbstzerstörende Option 'Nach dem Lesen löschen' (Einmalansicht) oder 'Nie ablaufen'."
 				},
 				"secure": {
-					"question": "Ist mein Code sicher?",
-					"answer": "Wir nehmen Sicherheit ernst. Alle Snippets werden während der Übertragung und im Ruhezustand verschlüsselt. Passwortgeschützte Snippets bieten eine zusätzliche Sicherheitsebene."
+					"question": "Sind meine Daten und mein Code sicher?",
+					"answer": "Ja. Snipit verwendet eine lückenlose TLS-Verschlüsselung bei der Übertragung und Argon2/Bcrypt-Passworthashing. Für sensible Notizen und Zugangsdaten bieten Tools wie CryptoSafe und der Passwort-Manager eine clientseitige Zero-Knowledge-AES-GCM-Verschlüsselung."
 				},
 				"edit": {
 					"question": "Kann ich meine Snippets später bearbeiten?",
-					"answer": "Ja, wenn Sie beim Erstellen eines Snippets angemeldet sind, können Sie es später über Ihr Dashboard bearbeiten oder löschen."
+					"answer": "Ja. Wenn Sie angemeldet sind, können Sie Snippets jederzeit über Ihr Dashboard bearbeiten oder löschen. Außerdem können Sie in Echtzeit mit rollenbasierter Zugriffskontrolle (Admin, Bearbeiter, Betrachter, Kommentator) zusammenarbeiten."
 				}
 			}
 		}

@@ -161,11 +161,10 @@ const HomePage = () => {
 	const { history, deleteSnippet, loadHistory } = useSnippets();
 
 	useEffect(() => {
-		if (history.items.length === 0) {
+		if (contentType === "link" && history.items.length === 0) {
 			loadHistory(true);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [contentType, history.items.length, loadHistory]);
 
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [isCustomExpiryDialogOpen, setIsCustomExpiryDialogOpen] =

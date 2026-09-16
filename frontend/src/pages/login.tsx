@@ -62,6 +62,13 @@ const LoginPage = () => {
 	const handleGoogleSuccess = async (
 		credentialResponse: CredentialResponse,
 	) => {
+		if (!credentialResponse.credential) {
+			toast.add({
+				title: t("auth.login_failed"),
+				type: "error",
+			});
+			return;
+		}
 		setIsLoading(true);
 		try {
 			const data = await loginGoogle({

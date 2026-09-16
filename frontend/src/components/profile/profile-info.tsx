@@ -1,4 +1,12 @@
-import { Edit2, Check, X, LogOut, MoreHorizontal, Camera } from "lucide-react";
+import {
+	Edit2,
+	Check,
+	X,
+	LogOut,
+	MoreHorizontal,
+	Camera,
+	Laptop,
+} from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +31,7 @@ interface ProfileInfoProps {
 	isUpdating: boolean;
 	onLogout: () => void;
 	onOpenAvatarPicker?: () => void;
+	onOpenDevices?: () => void;
 }
 
 export const ProfileInfo = ({
@@ -35,6 +44,7 @@ export const ProfileInfo = ({
 	isUpdating,
 	onLogout,
 	onOpenAvatarPicker,
+	onOpenDevices,
 }: ProfileInfoProps) => {
 	const { t } = useTranslation();
 
@@ -140,6 +150,18 @@ export const ProfileInfo = ({
 						>
 							{!isGuest && (
 								<>
+									{onOpenDevices && (
+										<DropdownMenuItem
+											onClick={onOpenDevices}
+											className="gap-2 cursor-pointer font-medium"
+										>
+											<Laptop className="h-3.5 w-3.5 text-primary" />
+											<span>
+												{t("profile.tabs.devices") ||
+													"Devices & Sessions"}
+											</span>
+										</DropdownMenuItem>
+									)}
 									<DropdownMenuItem
 										onClick={onOpenAvatarPicker}
 										className="gap-2 cursor-pointer"

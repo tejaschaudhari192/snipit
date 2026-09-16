@@ -885,7 +885,43 @@
 			"save": "ఫోటోను సేవ్ చేయి"
 		},
 		"edit_name": "పేరును సవరించండి",
-		"color_tag": "రంగు ట్యాగ్"
+		"color_tag": "రంగు ట్యాగ్",
+		"tabs": {
+			"snippets": "My Snippets",
+			"devices": "Devices & Sessions"
+		},
+		"devices": {
+			"title": "Active Sessions & Devices",
+			"subtitle": "Manage devices and browsers where you are currently signed in to your Snipit account.",
+			"this_device": "This Device",
+			"active_now": "Active Now",
+			"other_devices": "Other Active Devices",
+			"no_other_devices": "No other devices are currently signed in to your account.",
+			"session_expires": "15-Day Session • Expires {{date}}",
+			"signed_in": "Signed in {{time}}",
+			"ip_address": "IP Address",
+			"revoke_session": "Revoke Session",
+			"revoke_session_desc": "Are you sure you want to revoke this session? The device will be logged out immediately.",
+			"revoke_all_others": "Log Out All Other Devices",
+			"revoke_all_others_desc": "This will revoke all active sessions except your current device. You will need to log in again on other devices.",
+			"revoked_success": "Session revoked successfully",
+			"revoked_all_success": "Logged out of all other devices successfully",
+			"revoking": "Revoking...",
+			"loading_sessions": "Loading active devices...",
+			"guest_warning_title": "Sign in to manage devices",
+			"guest_warning_desc": "Session and device management is available for registered users.",
+			"refresh": "రిఫ్రెష్",
+			"revoke": "రద్దు చేయి",
+			"cancel": "రద్దు",
+			"active": "క్రియాశీలం",
+			"last_active": "చివరి కార్యాచరణ: {{time}}",
+			"expires_at": "గడువు ముగింపు: {{date}}",
+			"time_just_now": "ఇప్పుడే",
+			"time_mins_ago": "{{count}} నిమిషాల క్రితం",
+			"time_hours_ago": "{{count}} గంటల క్రితం",
+			"time_days_ago": "{{count}} రోజుల క్రితం",
+			"time_recently": "ఇటీవల"
+		}
 	},
 	"home": {
 		"loading": "లోడ్ అవుతోంది...",
@@ -1238,19 +1274,19 @@
 			"items": {
 				"free": {
 					"question": "Snipit ఉపయోగించడం ఉచితమేనా?",
-					"answer": "అవును! స్నిపిట్ ఉపయోగించడానికి పూర్తిగా ఉచితం. మీరు ఎటువంటి ఖర్చు లేకుండా వ్యక్తిగత లేదా వాణిజ్య ప్రాజెక్టుల కోసం దీన్ని ఉపయోగించవచ్చు."
+					"answer": "అవును! Snipit 100% ఉచితం మరియు ఓపెన్ సోర్స్. వ్యక్తిగత లేదా వాణిజ్య ప్రాజెక్టుల కోసం కోడ్, డాక్యుమెంట్లు, వైట్‌బోర్డ్ రేఖాచిత్రాలు మరియు ఫైల్‌లను ఉచితంగా సృష్టించవచ్చు మరియు పంచుకోవచ్చు."
 				},
 				"expiration": {
 					"question": "స్నిప్పెట్‌లు ఎంతకాలం ఉంటాయి?",
-					"answer": "మీరు ప్రతి స్నిప్పెట్‌కు 1 గంట నుండి 1 సంవత్సరం వరకు గడువు సమయాన్ని ఎంచుకోవచ్చు."
+					"answer": "మీకు పూర్తి నియంత్రణ ఉంది: 1 గంట నుండి 1 సంవత్సరం వరకు వ్యవధి, కస్టమ్ తేదీ & సమయం, 'బర్న్-ఆఫ్టర్-రీడ్' (ఒక్కసారి చూశాక నాశనమయ్యేది) లేదా 'ఎప్పటికీ ముగియనిది' (Never expire) ఎంచుకోవచ్చు."
 				},
 				"secure": {
-					"question": "నా కోడ్ సురక్షితమేనా?",
-					"answer": "మేము భద్రతను తీవ్రంగా పరిగణిస్తాము. అన్ని స్నిప్పెట్‌లు ఎన్‌క్రిప్ట్ చేయబడతాయి."
+					"question": "నా డేటా మరియు కోడ్ సురక్షితమేనా?",
+					"answer": "అవును. Snipit పూర్తి TLS ఎన్‌క్రిప్షన్ మరియు argon2/bcrypt పాస్‌వర్డ్ హ్యాషింగ్‌ను ఉపయోగిస్తుంది. గోప్యమైన సమాచారం కోసం CryptoSafe మరియు పాస్‌వర్డ్ వాల్ట్ క్లయింట్-సైడ్ జీరో-నాలెడ్జ్ AES-GCM ఎన్‌క్రిప్షన్‌ను అందిస్తాయి."
 				},
 				"edit": {
 					"question": "నేను నా స్నిప్పెట్‌లను తర్వాత సవరించవచ్చా?",
-					"answer": "అవును, మీరు లాగిన్ అయి ఉంటే మీ డ్యాష్‌బోర్డ్ నుండి సవరించవచ్చు."
+					"answer": "అవును. లాగిన్ అయినప్పుడు మీ డ్యాష్‌బోర్డ్ నుండి ఎప్పుడైనా స్నిప్పెట్‌లను సవరించవచ్చు లేదా తొలగించవచ్చు. పాత్ర-ఆధారిత యాక్సెస్ నియంత్రణతో రియల్-టైమ్‌లో కలిసి పని చేయవచ్చు."
 				}
 			}
 		}

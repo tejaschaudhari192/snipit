@@ -7,6 +7,7 @@ import {
 	clearAuthCookie,
 } from "@/lib/auth.utils.js";
 import EmailService from "@/services/email.service.js";
+import sessionService from "@/services/session.service.js";
 import logger from "@/config/logger.js";
 
 class AuthController {
@@ -35,7 +36,14 @@ class AuthController {
 	async loginUser(req: Request, res: Response) {
 		try {
 			const user = await this.authService.loginUser(req.body);
-			const token = generateToken(user._id as string);
+			const session = await sessionService.createSession(
+				user._id as string,
+				req,
+			);
+			const token = generateToken(
+				user._id as string,
+				session._id.toString(),
+			);
 			setAuthCookie(res, token);
 
 			// Trigger non-blocking login security notification email
@@ -77,9 +85,90 @@ class AuthController {
 		}
 	}
 
-	async logoutUser(_req: Request, res: Response) {
+	async logoutUser(req: Request, res: Response) {
+		const authReq = req as AuthRequest;
+		if (authReq.sessionId && authReq.user?._id) {
+			await sessionService
+				.revokeSession(authReq.user._id as string, authReq.sessionId)
+				.catch(() => {});
+		}
 		clearAuthCookie(res);
 		res.status(200).json({ message: "Logged out successfully" });
+	}
+
+	async getSessions(req: Request, res: Response) {
+		const authReq = req as AuthRequest;
+		if (!authReq.user || !authReq.sessionId) {
+			return res.status(401).json({ message: "Not authorized" });
+		}
+		try {
+			const sessions = await sessionService.getUserSessions(
+				authReq.user._id as string,
+				authReq.sessionId,
+			);
+			res.status(200).json({ sessions });
+		} catch (error: unknown) {
+			const message =
+				error instanceof Error ? error.message : String(error);
+			res.status(500).json({ message });
+		}
+	}
+
+	async revokeSession(req: Request, res: Response) {
+		const authReq = req as AuthRequest;
+		if (!authReq.user || !authReq.sessionId) {
+			return res.status(401).json({ message: "Not authorized" });
+		}
+		const sessionId = req.params.id as string;
+		if (!sessionId) {
+			return res.status(400).json({ message: "Session ID required" });
+		}
+
+		try {
+			const success = await sessionService.revokeSession(
+				authReq.user._id as string,
+				sessionId,
+			);
+			if (!success) {
+				return res.status(404).json({ message: "Session not found" });
+			}
+
+			// If revoking own current session, clear cookie
+			if (authReq.sessionId === sessionId) {
+				clearAuthCookie(res);
+			}
+
+			res.status(200).json({
+				message: "Session revoked successfully",
+				isCurrent: authReq.sessionId === sessionId,
+			});
+		} catch (error: unknown) {
+			const message =
+				error instanceof Error ? error.message : String(error);
+			res.status(500).json({ message });
+		}
+	}
+
+	async revokeAllOtherSessions(req: Request, res: Response) {
+		const authReq = req as AuthRequest;
+		if (!authReq.user || !authReq.sessionId) {
+			return res.status(401).json({ message: "Not authorized" });
+		}
+
+		try {
+			const count = await sessionService.revokeAllOtherSessions(
+				authReq.user._id as string,
+				authReq.sessionId,
+			);
+			res.status(200).json({
+				message: `Logged out of ${count} other sessions successfully`,
+				revokedCount: count,
+			});
+		} catch (error: unknown) {
+			const message =
+				error instanceof Error ? error.message : String(error);
+			res.status(500).json({ message });
+		}
 	}
 
 	async getMe(req: Request, res: Response) {
@@ -144,7 +233,14 @@ class AuthController {
 				req.params.token as string,
 				req.body.password,
 			);
-			const authToken = generateToken(user._id as string);
+			const session = await sessionService.createSession(
+				user._id as string,
+				req,
+			);
+			const authToken = generateToken(
+				user._id as string,
+				session._id.toString(),
+			);
 			setAuthCookie(res, authToken);
 
 			res.status(200).json({
@@ -164,7 +260,14 @@ class AuthController {
 	async googleLogin(req: Request, res: Response) {
 		try {
 			const user = await this.authService.googleLogin(req.body.idToken);
-			const token = generateToken(user._id as string);
+			const session = await sessionService.createSession(
+				user._id as string,
+				req,
+			);
+			const token = generateToken(
+				user._id as string,
+				session._id.toString(),
+			);
 			setAuthCookie(res, token);
 
 			// Trigger non-blocking login security notification email

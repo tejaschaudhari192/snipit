@@ -885,7 +885,43 @@
 			"save": "ಫೋಟೋ ಉಳಿಸಿ"
 		},
 		"edit_name": "ಹೆಸರನ್ನು ಸಂಪಾದಿಸಿ",
-		"color_tag": "ಬಣ್ಣ ಟ್ಯಾಗ್"
+		"color_tag": "ಬಣ್ಣ ಟ್ಯಾಗ್",
+		"tabs": {
+			"snippets": "My Snippets",
+			"devices": "Devices & Sessions"
+		},
+		"devices": {
+			"title": "Active Sessions & Devices",
+			"subtitle": "Manage devices and browsers where you are currently signed in to your Snipit account.",
+			"this_device": "This Device",
+			"active_now": "Active Now",
+			"other_devices": "Other Active Devices",
+			"no_other_devices": "No other devices are currently signed in to your account.",
+			"session_expires": "15-Day Session • Expires {{date}}",
+			"signed_in": "Signed in {{time}}",
+			"ip_address": "IP Address",
+			"revoke_session": "Revoke Session",
+			"revoke_session_desc": "Are you sure you want to revoke this session? The device will be logged out immediately.",
+			"revoke_all_others": "Log Out All Other Devices",
+			"revoke_all_others_desc": "This will revoke all active sessions except your current device. You will need to log in again on other devices.",
+			"revoked_success": "Session revoked successfully",
+			"revoked_all_success": "Logged out of all other devices successfully",
+			"revoking": "Revoking...",
+			"loading_sessions": "Loading active devices...",
+			"guest_warning_title": "Sign in to manage devices",
+			"guest_warning_desc": "Session and device management is available for registered users.",
+			"refresh": "ರಿಫ್ರೆಶ್",
+			"revoke": "ರದ್ದುಮಾಡಿ",
+			"cancel": "ರದ್ದುಮಾಡಿ",
+			"active": "ಸಕ್ರಿಯ",
+			"last_active": "ಕೊನೆಯದಾಗಿ ಸಕ್ರಿಯ: {{time}}",
+			"expires_at": "ಅವಧಿ ಮುಕ್ತಾಯ: {{date}}",
+			"time_just_now": "ಈಗಷ್ಟೇ",
+			"time_mins_ago": "{{count}} ನಿಮಿಷಗಳ ಹಿಂದೆ",
+			"time_hours_ago": "{{count}} ಗಂಟೆಗಳ ಹಿಂದೆ",
+			"time_days_ago": "{{count}} ದಿನಗಳ ಹಿಂದೆ",
+			"time_recently": "ಇತ್ತೀಚೆಗೆ"
+		}
 	},
 	"home": {
 		"loading": "ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
@@ -1238,19 +1274,19 @@
 			"items": {
 				"free": {
 					"question": "Snipit ಬಳಸುವುದು ಉಚಿತವೇ?",
-					"answer": "ಹೌದು! ಸ್ನಿಪಿಟ್ ಬಳಸಲು ಸಂಪೂರ್ಣವಾಗಿ ಉಚಿತವಾಗಿದೆ. ಯಾವುದೇ ವೆಚ್ಚವಿಲ್ಲದೆ ನೀವು ಇದನ್ನು ವೈಯಕ್ತಿಕ ಅಥವಾ ವಾಣಿಜ್ಯ ಯೋಜನೆಗಳಿಗೆ ಬಳಸಬಹುದು."
+					"answer": "ಹೌದು! Snipit 100% ಉಚಿತ ಮತ್ತು ಮುಕ್ತ ಮೂಲ (Open Source) ಆಗಿದೆ. ವೈಯಕ್ತಿಕ ಅಥವಾ ವಾಣಿಜ್ಯ ಬಳಕೆಗಾಗಿ ಕೋಡ್, ಡಾಕ್ಸ್, ವೈಟ್‌ಬೋರ್ಡ್ ರೇಖಾಚಿತ್ರಗಳು ಮತ್ತು ಫೈಲ್‌ಗಳನ್ನು ಯಾವುದೇ ಶುಲ್ಕವಿಲ್ಲದೆ ನೀವು ರಚಿಸಬಹುದು ಮತ್ತು ಹಂಚಿಕೊಳ್ಳಬಹುದು."
 				},
 				"expiration": {
-					"question": "ಸ್ನಿಪ್ಪೆಟ್‌ಗಳು ಎಷ್ಟು ದಿನ ಇರುತ್ತವೆ?",
-					"answer": "ನೀವು ಪ್ರತಿ ಸ್ನಿಪ್ಪೆಟ್‌ಗೆ 1 ಗಂಟೆಯಿಂದ 1 ವರ್ಷದವರೆಗೆ ಅವಧಿ ಮುಕ್ತಾಯದ ಸಮಯವನ್ನು ಆಯ್ಕೆ ಮಾಡಬಹುದು."
+					"question": "ಸ್ನಿಪ್ಪೆಟ್‌ಗಳು ಎಷ್ಟು ಸಮಯ ಇರುತ್ತವೆ?",
+					"answer": "ನಿಮ್ಮ ಬಳಿ ಸಂಪೂರ್ಣ ನಿಯಂತ್ರಣವಿದೆ: 1 ಗಂಟೆಯಿಂದ 1 ವರ್ಷದವರೆಗಿನ ಆಯ್ಕೆಗಳು, ಕಸ್ಟಮ್ ದಿನಾಂಕ ಮತ್ತು ಸಮಯ, 'ಬರ್ನ್-ಆಫ್ಟರ್-ರೀಡ್' (ಒಮ್ಮೆ ವೀಕ್ಷಿಸಿದ ನಂತರ ಅಳಿಸಿಹೋಗುವುದು) ಅಥವಾ 'ಯಾವತ್ತೂ ಮುಕ್ತಾಯವಾಗದ' (Never expire) ಆಯ್ಕೆ ಮಾಡಬಹುದು."
 				},
 				"secure": {
-					"question": "ನನ್ನ ಕೋಡ್ ಸುರಕ್ಷಿತವಾಗಿದೆಯೇ?",
-					"answer": "ನಾವು ಭದ್ರತೆಯನ್ನು ಗಂಭೀರವಾಗಿ ಪರಿಗಣಿಸುತ್ತೇವೆ. ಎಲ್ಲಾ ಸ್ನಿಪ್ಪೆಟ್‌ಗಳನ್ನು ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಲಾಗುತ್ತದೆ."
+					"question": "ನನ್ನ ಡೇಟಾ ಮತ್ತು ಕೋಡ್ ಸುರಕ್ಷಿತವಾಗಿದೆಯೇ?",
+					"answer": "ಹೌದು. Snipit ಸಂಪೂರ್ಣ TLS ಎನ್‌ಕ್ರಿಪ್ಶನ್ ಮತ್ತು argon2/bcrypt ಪಾಸ್‌ವರ್ಡ್ ಹ್ಯಾಶಿಂಗ್ ಬಳಸುತ್ತದೆ. ಸೂಕ್ಷ್ಮ ಟಿಪ್ಪಣಿಗಳು ಮತ್ತು ರುಜುವಾತುಗಳಿಗಾಗಿ CryptoSafe ಮತ್ತು ಪಾಸ್‌ವರ್ಡ್ ವಾಲ್ಟ್ ಕ್ಲೈಂಟ್-ಸೈಡ್ ಝೀರೋ-ನಾಲೆಡ್ಜ್ AES-GCM ಎನ್‌ಕ್ರಿಪ್ಶನ್ ಒದಗಿಸುತ್ತವೆ."
 				},
 				"edit": {
 					"question": "ನಾನು ನನ್ನ ಸ್ನಿಪ್ಪೆಟ್‌ಗಳನ್ನು ನಂತರ ಸಂಪಾದಿಸಬಹುದೇ?",
-					"answer": "ಹೌದು, ನೀವು ಲಾಗಿನ್ ಆಗಿದ್ದರೆ ನಿಮ್ಮ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ನಿಂದ ಸಂಪಾದಿಸಬಹುದು."
+					"answer": "ಹೌದು. ಲಾಗಿನ್ ಆಗಿದ್ದಾಗ ನಿಮ್ಮ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ನಿಂದ ಯಾವಾಗ ಬೇಕಾದರೂ ಸ್ನಿಪ್ಪೆಟ್‌ಗಳನ್ನು ನಿರ್ವಹಿಸಬಹುದು, ಸಂಪಾದಿಸಬಹುದು ಅಥವಾ ಅಳಿಸಬಹುದು. ಜೊತೆಗೆ ಪಾತ್ರ-ಆಧಾರಿತ ಪ್ರವೇಶ ನಿಯಂತ್ರಣದೊಂದಿಗೆ ನೈಜ ಸಮಯದಲ್ಲಿ ಒಟ್ಟಾಗಿ ಕೆಲಸ ಮಾಡಬಹುದು."
 				}
 			}
 		}

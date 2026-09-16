@@ -4,12 +4,22 @@ import { Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useFolders } from "@/context/FolderContext";
 import { useAuth } from "@/context/AuthContext";
-import { CreateFolderDialog } from "./create-folder-dialog";
-import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
 import { GuestFolderPrompt } from "./guest-folder-prompt";
 import { EmptyFolderTree } from "./empty-folder-tree";
 import { FolderTreeNodeRow } from "./folder-tree-node-row";
 import { useFolderActions } from "@/hooks/use-folder-actions";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const CreateFolderDialog = React.lazy(() =>
+	import("./create-folder-dialog").then((m) => ({
+		default: m.CreateFolderDialog,
+	})),
+);
+const DeleteConfirmDialog = React.lazy(() =>
+	import("@/components/common/delete-confirm-dialog").then((m) => ({
+		default: m.DeleteConfirmDialog,
+	})),
+);
 
 export const FolderTree: React.FC = () => {
 	const { t } = useTranslation();
@@ -104,11 +114,27 @@ export const FolderTree: React.FC = () => {
 			</div>
 
 			{loadingTree ? (
-				<div className="flex flex-col items-center justify-center h-full text-muted-foreground">
-					<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4" />
-					<p className="text-xs font-medium">
-						{t("folders.loading")}
-					</p>
+				<div className="flex-1 w-full p-2 space-y-2.5">
+					<div className="flex items-center gap-2">
+						<Skeleton className="h-4 w-4 rounded-xs" />
+						<Skeleton className="h-4 w-28 rounded-md" />
+					</div>
+					<div className="flex items-center gap-2 pl-4">
+						<Skeleton className="h-4 w-4 rounded-xs" />
+						<Skeleton className="h-4 w-20 rounded-md" />
+					</div>
+					<div className="flex items-center gap-2 pl-4">
+						<Skeleton className="h-4 w-4 rounded-xs" />
+						<Skeleton className="h-4 w-24 rounded-md" />
+					</div>
+					<div className="flex items-center gap-2">
+						<Skeleton className="h-4 w-4 rounded-xs" />
+						<Skeleton className="h-4 w-32 rounded-md" />
+					</div>
+					<div className="flex items-center gap-2 pl-4">
+						<Skeleton className="h-4 w-4 rounded-xs" />
+						<Skeleton className="h-4 w-16 rounded-md" />
+					</div>
 				</div>
 			) : foldersTree.length === 0 ? (
 				<EmptyFolderTree onCreate={() => openCreateDialog(null)} />
@@ -144,19 +170,21 @@ export const FolderTree: React.FC = () => {
 				</div>
 			)}
 
-			<CreateFolderDialog
-				open={isCreateOpen}
-				onOpenChange={(open) => !open && closeCreateDialog()}
-				parentId={createParentId}
-			/>
+			<React.Suspense fallback={null}>
+				<CreateFolderDialog
+					open={isCreateOpen}
+					onOpenChange={(open) => !open && closeCreateDialog()}
+					parentId={createParentId}
+				/>
 
-			<DeleteConfirmDialog
-				isOpen={isFolderDeleteDialogOpen}
-				onOpenChange={(open) => !open && cancelDeleteFolder()}
-				onConfirm={executeDeleteFolder}
-				title={folderDeleteTitle}
-				description={folderDeleteDescription}
-			/>
+				<DeleteConfirmDialog
+					isOpen={isFolderDeleteDialogOpen}
+					onOpenChange={(open) => !open && cancelDeleteFolder()}
+					onConfirm={executeDeleteFolder}
+					title={folderDeleteTitle}
+					description={folderDeleteDescription}
+				/>
+			</React.Suspense>
 		</div>
 	);
 };

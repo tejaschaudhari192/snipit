@@ -885,7 +885,43 @@
 			"save": "تصویر محفوظ کریں"
 		},
 		"edit_name": "نام میں ترمیم کریں",
-		"color_tag": "رنگین ٹیگ"
+		"color_tag": "رنگین ٹیگ",
+		"tabs": {
+			"snippets": "My Snippets",
+			"devices": "Devices & Sessions"
+		},
+		"devices": {
+			"title": "Active Sessions & Devices",
+			"subtitle": "Manage devices and browsers where you are currently signed in to your Snipit account.",
+			"this_device": "This Device",
+			"active_now": "Active Now",
+			"other_devices": "Other Active Devices",
+			"no_other_devices": "No other devices are currently signed in to your account.",
+			"session_expires": "15-Day Session • Expires {{date}}",
+			"signed_in": "Signed in {{time}}",
+			"ip_address": "IP Address",
+			"revoke_session": "Revoke Session",
+			"revoke_session_desc": "Are you sure you want to revoke this session? The device will be logged out immediately.",
+			"revoke_all_others": "Log Out All Other Devices",
+			"revoke_all_others_desc": "This will revoke all active sessions except your current device. You will need to log in again on other devices.",
+			"revoked_success": "Session revoked successfully",
+			"revoked_all_success": "Logged out of all other devices successfully",
+			"revoking": "Revoking...",
+			"loading_sessions": "Loading active devices...",
+			"guest_warning_title": "Sign in to manage devices",
+			"guest_warning_desc": "Session and device management is available for registered users.",
+			"refresh": "تازہ کریں",
+			"revoke": "منسوخ کریں",
+			"cancel": "منسوخ",
+			"active": "فعال",
+			"last_active": "آخری بار فعال: {{time}}",
+			"expires_at": "میعاد ختم: {{date}}",
+			"time_just_now": "ابھی ابھی",
+			"time_mins_ago": "{{count}} منٹ پہلے",
+			"time_hours_ago": "{{count}} گھنٹے پہلے",
+			"time_days_ago": "{{count}} دن پہلے",
+			"time_recently": "حال ہی میں"
+		}
 	},
 	"home": {
 		"loading": "لوڈ ہو رہا ہے...",
@@ -1238,19 +1274,19 @@
 			"items": {
 				"free": {
 					"question": "کیا اسنیپٹ مفت ہے؟",
-					"answer": "جی ہاں! اسنیپٹ استعمال کرنے کے لئے بالکل مفت ہے۔ آپ اسے بغیر کسی قیمت کے ذاتی یا تجارتی پروجیکٹس کے لئے استعمال کر سکتے ہیں۔"
+					"answer": "جی ہاں! Snipit 100% مفت اور اوپن سورس ہے۔ آپ ذاتی یا تجارتی استعمال کے لیے کوڈ، ڈاکیومنٹس، وائٹ بورڈ ڈایاگرام اور فائلیں بغیر کسی قیمت کے بنا اور شیئر کر سکتے ہیں۔"
 				},
 				"expiration": {
 					"question": "اسنیپٹس کب تک رہتے ہیں؟",
-					"answer": "آپ 1 گھنٹے سے لے کر 1 سال تک کی میعاد منتخب کر سکتے ہیں۔"
+					"answer": "آپ کے پاس مکمل کنٹرول ہے: 1 گھنٹے سے لے کر 1 سال تک، اپنی مرضی کی تاریخ اور وقت، 'برن-آفٹر-ریڈ' (ایک بار دیکھنے پر خود بخود ختم)، یا 'کبھی ختم نہ ہونے والا' (Never expire) منتخب کریں۔"
 				},
 				"secure": {
-					"question": "کیا میرا کوڈ محفوظ ہے؟",
-					"answer": "ہم سیکیورٹی کو سنجیدگی سے لیتے ہیں۔ تمام معلومات خفیہ رکھی جاتی ہیں۔"
+					"question": "کیا میرا ڈیٹا اور کوڈ محفوظ ہے؟",
+					"answer": "جی ہاں۔ Snipit مکمل TLS انکرپشن اور argon2/bcrypt پاس ورڈ ہیشنگ استعمال کرتا ہے۔ حساس ڈیٹا کے لیے CryptoSafe اور پاس ورڈ والٹ کلائنٹ سائیڈ زیرو نالج AES-GCM انکرپشن فراہم کرتے ہیں۔"
 				},
 				"edit": {
 					"question": "کیا میں بعد میں اسنیپٹس میں ترمیم کر سکتا ہوں؟",
-					"answer": "جی ہاں، اگر لاگ ان ہیں تو اپنے ڈیش بورڈ سے ترمیم کر سکتے ہیں۔"
+					"answer": "جی ہاں۔ لاگ ان ہونے پر آپ اپنے ڈیش بورڈ سے کسی بھی وقت اسنیپٹس میں ترمیم یا حذف کر سکتے ہیں۔ کردار پر مبنی رسائی (Admin, Editor, Viewer, Commenter) کے ساتھ مل کر کام بھی کر سکتے ہیں۔"
 				}
 			}
 		}

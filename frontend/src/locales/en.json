@@ -913,7 +913,43 @@
 			"invalid_image": "Failed to process image"
 		},
 		"edit_name": "Edit name",
-		"color_tag": "Color Tag"
+		"color_tag": "Color Tag",
+		"tabs": {
+			"snippets": "My Snippets",
+			"devices": "Devices & Sessions"
+		},
+		"devices": {
+			"title": "Active Sessions & Devices",
+			"subtitle": "Manage devices and browsers where you are currently signed in to your Snipit account.",
+			"this_device": "This Device",
+			"active_now": "Active Now",
+			"other_devices": "Other Active Devices",
+			"no_other_devices": "No other devices are currently signed in to your account.",
+			"session_expires": "15-Day Session • Expires {{date}}",
+			"signed_in": "Signed in {{time}}",
+			"ip_address": "IP Address",
+			"revoke_session": "Revoke Session",
+			"revoke_session_desc": "Are you sure you want to revoke this session? The device will be logged out immediately.",
+			"revoke_all_others": "Log Out All Other Devices",
+			"revoke_all_others_desc": "This will revoke all active sessions except your current device. You will need to log in again on other devices.",
+			"revoked_success": "Session revoked successfully",
+			"revoked_all_success": "Logged out of all other devices successfully",
+			"revoking": "Revoking...",
+			"loading_sessions": "Loading active devices...",
+			"guest_warning_title": "Sign in to manage devices",
+			"guest_warning_desc": "Session and device management is available for registered users.",
+			"refresh": "Refresh",
+			"revoke": "Revoke",
+			"cancel": "Cancel",
+			"active": "Active",
+			"last_active": "Last active: {{time}}",
+			"expires_at": "Expires: {{date}}",
+			"time_just_now": "Just now",
+			"time_mins_ago": "{{count}} mins ago",
+			"time_hours_ago": "{{count}} hour(s) ago",
+			"time_days_ago": "{{count}} day(s) ago",
+			"time_recently": "Recently"
+		}
 	},
 	"home": {
 		"loading": "Loading...",
@@ -1266,19 +1302,19 @@
 			"items": {
 				"free": {
 					"question": "Is Snipit free to use?",
-					"answer": "Yes! Snipit is completely free to use. You can use it for personal or commercial projects without any cost."
+					"answer": "Yes! Snipit is 100% free and open-source. You can create, share, and collaborate on code, docs, whiteboard diagrams, and files for personal or commercial use without cost."
 				},
 				"expiration": {
 					"question": "How long do snippets last?",
-					"answer": "You can choose the expiration time for each snippet, ranging from 1 hour to 1 year. You can also create snippets that never expire."
+					"answer": "You have complete control over snippet lifetime: choose preset durations (1 hour, 1 day, 1 week, 1 month, 1 year), pick a custom expiration date & time, set self-destructing 'Burn-after-read' (one-time view), or keep them forever ('Never expire')."
 				},
 				"secure": {
-					"question": "Is my code secure?",
-					"answer": "We take security seriously. All snippets are encrypted in transit and at rest. Password-protected snippets add an extra layer of security."
+					"question": "Is my data and code secure?",
+					"answer": "Yes. Snipit uses end-to-end TLS encryption in transit and argon2/bcrypt password hashing. For sensitive notes and credentials, tools like CryptoSafe and Password Vault offer client-side zero-knowledge AES-GCM encryption, meaning only you hold the decryption key."
 				},
 				"edit": {
 					"question": "Can I edit my snippets later?",
-					"answer": "Yes, if you are logged in when you create a snippet, you can edit or delete it later from your dashboard."
+					"answer": "Yes. When logged in, you can manage, edit, or delete snippets anytime from your dashboard. You can also collaborate in real-time with role-based access control (Admin, Editor, Viewer, Commenter) or enable public edit permissions."
 				}
 			}
 		}
