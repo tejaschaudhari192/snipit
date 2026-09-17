@@ -97,15 +97,36 @@ export const PnrTicketPassengerList: React.FC<PnrTicketPassengerListProps> = ({
 								</div>
 
 								<div className="flex items-center gap-2 shrink-0">
-									{passenger.prediction && (
-										<Badge
-											variant="outline"
-											className="text-xs font-bold border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 flex items-center gap-1"
-										>
-											<TrendingUp className="w-3 h-3" />
-											<span>{passenger.prediction}</span>
-										</Badge>
-									)}
+									{passenger.prediction &&
+										(() => {
+											const probNum = parseInt(
+												passenger.prediction,
+											);
+											const isHigh = !isNaN(probNum)
+												? probNum >= 75
+												: passenger.prediction.includes(
+														"100",
+													);
+											const isMedium =
+												!isNaN(probNum) &&
+												probNum >= 50;
+											const badgeClass = isHigh
+												? "border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10"
+												: isMedium
+													? "border-cyan-500/40 text-cyan-600 dark:text-cyan-400 bg-cyan-500/10"
+													: "border-rose-500/40 text-rose-600 dark:text-rose-400 bg-rose-500/10";
+											return (
+												<Badge
+													variant="outline"
+													className={`text-xs font-bold flex items-center gap-1 ${badgeClass}`}
+												>
+													<TrendingUp className="w-3 h-3" />
+													<span>
+														{passenger.prediction}
+													</span>
+												</Badge>
+											);
+										})()}
 									<Badge
 										variant={getStatusVariant(
 											displayStatus,

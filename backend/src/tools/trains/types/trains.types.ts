@@ -16,6 +16,30 @@ export interface PnrIntelligenceBenefit {
 	color?: string | undefined;
 }
 
+export interface RailTcExplanationDriver {
+	key: string;
+	label: string;
+	effect: "helps" | "hurts";
+	points: number;
+	detail: string;
+}
+
+export interface RailTcExplanation {
+	action: string;
+	drivers: RailTcExplanationDriver[];
+}
+
+export interface RailTcCalibration {
+	applied: boolean;
+	anchorPct: number;
+	anchorSample: number;
+	band: string;
+	kind: string;
+	situationalDelta: number;
+	rawProbability: number;
+	sourceDate: string;
+}
+
 export interface RailTcPredictionFactors {
 	currentStatus: string;
 	wlNumber: number;
@@ -25,16 +49,22 @@ export interface RailTcPredictionFactors {
 	chartStatus: string;
 	routeAdjustment: number;
 	routeMessage?: string | null | undefined;
-	decisionSource: string;
+	decisionSource: "rule_engine" | "ml_live" | string;
+	mlLiveSkippedReason?: string | null | undefined;
+	mlModelName?: string | undefined;
+	mlBucket?: string | undefined;
+	mlThresholdSource?: string | undefined;
 }
 
 export interface RailTcScoreBreakdown {
 	baseScore: number;
 	wlPenalty: number;
 	quotaPenalty: number;
+	effectiveQuota: string;
 	classPenalty: number;
 	daysAdjustment: number;
 	routeAdjustment: number;
+	calibration?: RailTcCalibration | undefined;
 }
 
 export interface RailTcPassengerPrediction {
@@ -70,10 +100,14 @@ export interface RailTcRouteStats {
 export interface RailTcMlModelInfo {
 	modelName: string;
 	modelTarget: string;
+	modelRole: string;
 	probability: number;
+	probabilityRaw?: number | undefined;
 	bucket: string;
 	safeThreshold?: number | undefined;
 	riskyThreshold?: number | undefined;
+	thresholdSource?: string | undefined;
+	generatedAt?: string | undefined;
 }
 
 export interface RailTcPrediction {
@@ -82,12 +116,16 @@ export interface RailTcPrediction {
 	message: string;
 	predictionBucket: string;
 	bucketDisplay: string;
-	mediumHint?: string | undefined;
+	mediumHint?: string | null | undefined;
 	factors: RailTcPredictionFactors;
 	passengerPredictions: RailTcPassengerPrediction[];
+	predictionSource: "rule_engine" | "ml_live" | string;
+	predictionSourceReason: string;
+	rulePrediction: { probability: number; riskLevel: string };
+	explanation: RailTcExplanation;
 	breakdown?: RailTcScoreBreakdown | undefined;
-	predictionSource: string;
-	mlLive?: RailTcMlModelInfo | undefined;
+	mlLive?: RailTcMlModelInfo | null | undefined;
+	mlShadow?: RailTcMlModelInfo | null | undefined;
 	routeStats?: RailTcRouteStats | undefined;
 }
 
@@ -217,9 +255,20 @@ export interface RailTcApiPassengerPredictionRaw {
 		base_score: number;
 		wl_penalty: number;
 		quota_penalty: number;
+		effective_quota?: string;
 		class_penalty: number;
 		days_adjustment: number;
 		route_adjustment: number;
+		calibration?: {
+			applied: boolean;
+			anchor_pct: number;
+			anchor_sample: number;
+			band: string;
+			kind: string;
+			situational_delta: number;
+			raw_probability: number;
+			source_date?: string;
+		};
 	};
 }
 
@@ -246,8 +295,22 @@ export interface RailTcApiPredictResponse {
 			route_adjustment: number;
 			route_message?: string | null;
 			decision_source: string;
+			ml_live_skipped_reason?: string | null;
+			ml_model_name?: string;
+			ml_bucket?: string;
+			ml_threshold_source?: string;
 		};
 		passenger_predictions: RailTcApiPassengerPredictionRaw[];
+	};
+	explanation: {
+		action: string;
+		drivers: Array<{
+			key: string;
+			label: string;
+			effect: "helps" | "hurts";
+			points: number;
+			detail: string;
+		}>;
 	};
 	details: {
 		boarding: string;
@@ -256,21 +319,42 @@ export interface RailTcApiPredictResponse {
 		quota: string;
 		fare: number;
 		chart: string;
-		prediction_source: string;
-		prediction_source_reason?: string;
+		prediction_source: "rule_engine" | "ml_live" | string;
+		prediction_source_reason: string;
+		rule_prediction: {
+			probability: number;
+			risk_level: string;
+		};
 		ml_live?: {
 			enabled: boolean;
 			model_name: string;
 			model_target: string;
 			model_role: string;
 			probability: number;
+			probability_raw?: number;
 			bucket: string;
 			thresholds?: {
 				safe?: number;
 				risky?: number;
 				source?: string;
 			};
-		};
+			generated_at?: string;
+		} | null;
+		ml_shadow?: {
+			enabled: boolean;
+			model_name: string;
+			model_target: string;
+			model_role: string;
+			probability: number;
+			probability_raw?: number;
+			bucket: string;
+			thresholds?: {
+				safe?: number;
+				risky?: number;
+				source?: string;
+			};
+			generated_at?: string;
+		} | null;
 	};
 }
 

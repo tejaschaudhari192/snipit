@@ -16,6 +16,30 @@ export interface PnrIntelligenceBenefit {
 	color?: string;
 }
 
+export interface RailTcExplanationDriver {
+	key: string;
+	label: string;
+	effect: "helps" | "hurts";
+	points: number;
+	detail: string;
+}
+
+export interface RailTcExplanation {
+	action: string;
+	drivers: RailTcExplanationDriver[];
+}
+
+export interface RailTcCalibration {
+	applied: boolean;
+	anchorPct: number;
+	anchorSample: number;
+	band: string;
+	kind: string;
+	situationalDelta: number;
+	rawProbability: number;
+	sourceDate: string;
+}
+
 export interface RailTcPredictionFactors {
 	currentStatus: string;
 	wlNumber: number;
@@ -25,16 +49,22 @@ export interface RailTcPredictionFactors {
 	chartStatus: string;
 	routeAdjustment: number;
 	routeMessage?: string | null;
-	decisionSource: string;
+	decisionSource: "rule_engine" | "ml_live" | string;
+	mlLiveSkippedReason?: string | null;
+	mlModelName?: string;
+	mlBucket?: string;
+	mlThresholdSource?: string;
 }
 
 export interface RailTcScoreBreakdown {
 	baseScore: number;
 	wlPenalty: number;
 	quotaPenalty: number;
+	effectiveQuota: string;
 	classPenalty: number;
 	daysAdjustment: number;
 	routeAdjustment: number;
+	calibration?: RailTcCalibration;
 }
 
 export interface RailTcPassengerPrediction {
@@ -70,10 +100,14 @@ export interface RailTcRouteStats {
 export interface RailTcMlModelInfo {
 	modelName: string;
 	modelTarget: string;
+	modelRole: string;
 	probability: number;
+	probabilityRaw?: number;
 	bucket: string;
 	safeThreshold?: number;
 	riskyThreshold?: number;
+	thresholdSource?: string;
+	generatedAt?: string;
 }
 
 export interface RailTcPrediction {
@@ -82,12 +116,16 @@ export interface RailTcPrediction {
 	message: string;
 	predictionBucket: string;
 	bucketDisplay: string;
-	mediumHint?: string;
+	mediumHint?: string | null;
 	factors: RailTcPredictionFactors;
 	passengerPredictions: RailTcPassengerPrediction[];
+	predictionSource: "rule_engine" | "ml_live" | string;
+	predictionSourceReason: string;
+	rulePrediction: { probability: number; riskLevel: string };
+	explanation: RailTcExplanation;
 	breakdown?: RailTcScoreBreakdown;
-	predictionSource: string;
-	mlLive?: RailTcMlModelInfo;
+	mlLive?: RailTcMlModelInfo | null;
+	mlShadow?: RailTcMlModelInfo | null;
 	routeStats?: RailTcRouteStats;
 }
 

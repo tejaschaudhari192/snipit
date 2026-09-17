@@ -194,12 +194,50 @@ export class PnrService {
 											wlPenalty: pp.breakdown.wl_penalty,
 											quotaPenalty:
 												pp.breakdown.quota_penalty,
+											effectiveQuota:
+												pp.breakdown.effective_quota ||
+												factorsRaw.quota ||
+												"GN",
 											classPenalty:
 												pp.breakdown.class_penalty,
 											daysAdjustment:
 												pp.breakdown.days_adjustment,
 											routeAdjustment:
 												pp.breakdown.route_adjustment,
+											calibration: pp.breakdown
+												.calibration
+												? {
+														applied:
+															pp.breakdown
+																.calibration
+																.applied,
+														anchorPct:
+															pp.breakdown
+																.calibration
+																.anchor_pct,
+														anchorSample:
+															pp.breakdown
+																.calibration
+																.anchor_sample,
+														band: pp.breakdown
+															.calibration.band,
+														kind: pp.breakdown
+															.calibration.kind,
+														situationalDelta:
+															pp.breakdown
+																.calibration
+																.situational_delta,
+														rawProbability:
+															pp.breakdown
+																.calibration
+																.raw_probability,
+														sourceDate:
+															pp.breakdown
+																.calibration
+																.source_date ||
+															"",
+													}
+												: undefined,
 										}
 									: undefined,
 							}),
@@ -213,12 +251,48 @@ export class PnrService {
 				? {
 						modelName: mlLiveRaw.model_name,
 						modelTarget: mlLiveRaw.model_target,
+						modelRole: mlLiveRaw.model_role,
 						probability: mlLiveRaw.probability,
+						probabilityRaw: mlLiveRaw.probability_raw,
 						bucket: mlLiveRaw.bucket,
 						safeThreshold: mlLiveRaw.thresholds?.safe,
 						riskyThreshold: mlLiveRaw.thresholds?.risky,
+						thresholdSource: mlLiveRaw.thresholds?.source,
+						generatedAt: mlLiveRaw.generated_at,
 					}
 				: undefined;
+
+			const mlShadowRaw = json?.details?.ml_shadow;
+			const mlShadow = mlShadowRaw
+				? {
+						modelName: mlShadowRaw.model_name,
+						modelTarget: mlShadowRaw.model_target,
+						modelRole: mlShadowRaw.model_role,
+						probability: mlShadowRaw.probability,
+						probabilityRaw: mlShadowRaw.probability_raw,
+						bucket: mlShadowRaw.bucket,
+						safeThreshold: mlShadowRaw.thresholds?.safe,
+						riskyThreshold: mlShadowRaw.thresholds?.risky,
+						thresholdSource: mlShadowRaw.thresholds?.source,
+						generatedAt: mlShadowRaw.generated_at,
+					}
+				: undefined;
+
+			const explanationRaw = json?.explanation;
+			const explanation: import("../types/trains.types.js").RailTcExplanation =
+				{
+					action: explanationRaw?.action || pred.message || "",
+					drivers: Array.isArray(explanationRaw?.drivers)
+						? explanationRaw.drivers.map((d) => ({
+								key: d.key,
+								label: d.label,
+								effect:
+									d.effect === "hurts" ? "hurts" : "helps",
+								points: Number(d.points) || 0,
+								detail: d.detail || "",
+							}))
+						: [],
+				};
 
 			// Fetch dynamic wl-trend-insights from RailTC if train and class/quota info is present
 			let routeStats:
@@ -327,13 +401,31 @@ export class PnrService {
 					routeAdjustment: factorsRaw.route_adjustment,
 					routeMessage: factorsRaw.route_message,
 					decisionSource: factorsRaw.decision_source,
+					mlLiveSkippedReason: factorsRaw.ml_live_skipped_reason,
+					mlModelName: factorsRaw.ml_model_name,
+					mlBucket: factorsRaw.ml_bucket,
+					mlThresholdSource: factorsRaw.ml_threshold_source,
 				},
 				passengerPredictions,
 				breakdown: firstPaxBreakdown,
 				predictionSource:
 					json?.details?.prediction_source ||
 					factorsRaw.decision_source,
+				predictionSourceReason:
+					json?.details?.prediction_source_reason || "default",
+				rulePrediction: json?.details?.rule_prediction
+					? {
+							probability:
+								json.details.rule_prediction.probability,
+							riskLevel: json.details.rule_prediction.risk_level,
+						}
+					: {
+							probability: pred.probability,
+							riskLevel: pred.risk_level,
+						},
+				explanation,
 				mlLive,
+				mlShadow,
 				routeStats,
 			};
 		} catch {

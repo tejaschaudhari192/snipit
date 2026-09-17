@@ -14,6 +14,11 @@ import {
 	ChevronDown,
 	BarChart3,
 	Loader2,
+	Lightbulb,
+	ThumbsUp,
+	ThumbsDown,
+	Cpu,
+	Users,
 } from "lucide-react";
 import type { RailTcPrediction } from "../types/trains";
 
@@ -38,8 +43,8 @@ export const PnrPredictionGauge: React.FC<PnrPredictionGaugeProps> = ({
 					<div className="rounded-xl bg-emerald-500/20 p-3 text-emerald-600 dark:text-emerald-400 shrink-0">
 						<ShieldCheck className="h-7 w-7" />
 					</div>
-					<div>
-						<div className="flex items-center gap-2">
+					<div className="space-y-1">
+						<div className="flex items-center gap-2 flex-wrap">
 							<h3 className="text-base font-bold text-foreground">
 								{t(
 									"tools.pnr_checker.prediction.confirmed_ticket",
@@ -48,10 +53,27 @@ export const PnrPredictionGauge: React.FC<PnrPredictionGaugeProps> = ({
 							<Badge className="bg-emerald-600 text-white hover:bg-emerald-600 text-[10px] px-2 py-0.5 font-semibold">
 								100% CNF
 							</Badge>
+							{prediction?.factors?.mlLiveSkippedReason ===
+								"terminal_status_guardrail" && (
+								<Badge
+									variant="outline"
+									className="text-[10px] font-mono text-emerald-700 dark:text-emerald-300 border-emerald-500/30"
+								>
+									{t(
+										"tools.pnr_checker.prediction.terminal_status_reason",
+									)}
+								</Badge>
+							)}
 						</div>
-						<p className="text-xs text-muted-foreground mt-1 max-w-xl leading-relaxed">
+						<p className="text-xs text-muted-foreground max-w-xl leading-relaxed">
 							{t("tools.pnr_checker.prediction.confirmed_desc")}
 						</p>
+						{prediction?.explanation?.action && (
+							<div className="mt-2.5 flex items-start gap-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 text-xs text-foreground/90 font-medium">
+								<Lightbulb className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+								<span>{prediction.explanation.action}</span>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>
@@ -281,9 +303,36 @@ export const PnrPredictionGauge: React.FC<PnrPredictionGaugeProps> = ({
 								{prediction.predictionSource && (
 									<Badge
 										variant="outline"
-										className="text-[10px] font-normal text-muted-foreground"
+										className="text-[10px] font-medium text-muted-foreground gap-1"
 									>
-										{prediction.predictionSource}
+										<Cpu className="h-3 w-3 text-primary" />
+										<span>
+											{prediction.predictionSource ===
+											"ml_live"
+												? t(
+														"tools.pnr_checker.prediction.ml_live_source",
+													)
+												: t(
+														"tools.pnr_checker.prediction.rule_engine_source",
+													)}
+										</span>
+									</Badge>
+								)}
+								{prediction.mlShadow?.probability !==
+									undefined && (
+									<Badge
+										variant="outline"
+										className="text-[10px] font-mono text-muted-foreground"
+									>
+										{t(
+											"tools.pnr_checker.prediction.ml_confidence_agreement",
+											{
+												prob: Math.round(
+													prediction.mlShadow
+														.probability,
+												),
+											},
+										)}
 									</Badge>
 								)}
 							</div>
@@ -325,6 +374,22 @@ export const PnrPredictionGauge: React.FC<PnrPredictionGaugeProps> = ({
 							{factors?.routeMessage && (
 								<div className="pt-0.5 flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
 									<span>{factors.routeMessage}</span>
+								</div>
+							)}
+
+							{prediction.explanation.action && (
+								<div className="flex items-start gap-2.5 rounded-xl bg-primary/10 border border-primary/25 p-3.5 mt-2 shadow-2xs">
+									<Lightbulb className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+									<div className="space-y-0.5 min-w-0">
+										<span className="text-[10px] font-bold uppercase tracking-wider text-primary block">
+											{t(
+												"tools.pnr_checker.prediction.ai_action_title",
+											)}
+										</span>
+										<p className="text-xs sm:text-sm font-medium text-foreground leading-relaxed">
+											{prediction.explanation.action}
+										</p>
+									</div>
 								</div>
 							)}
 						</div>
@@ -409,9 +474,9 @@ export const PnrPredictionGauge: React.FC<PnrPredictionGaugeProps> = ({
 					)}
 				</div>
 
-				{/* Score Breakdown Toggle */}
-				{breakdown && (
-					<div className="mt-4 pt-3 border-t border-border/40">
+				{/* Key Drivers, Empirical Calibration & Score Breakdown Toggle */}
+				{(breakdown || prediction.explanation.drivers.length > 0) && (
+					<div className="mt-4 pt-3 border-t border-border/40 space-y-3">
 						<button
 							type="button"
 							onClick={() => setShowBreakdown((prev) => !prev)}
@@ -419,9 +484,13 @@ export const PnrPredictionGauge: React.FC<PnrPredictionGaugeProps> = ({
 						>
 							<Info className="h-3.5 w-3.5 text-primary" />
 							<span>
-								{t(
-									"tools.pnr_checker.prediction.breakdown_title",
-								)}
+								{prediction.explanation.drivers.length > 0
+									? t(
+											"tools.pnr_checker.prediction.key_drivers_title",
+										)
+									: t(
+											"tools.pnr_checker.prediction.breakdown_title",
+										)}
 							</span>
 							<ChevronDown
 								className={`h-3 w-3 transition-transform duration-200 ${
@@ -430,74 +499,162 @@ export const PnrPredictionGauge: React.FC<PnrPredictionGaugeProps> = ({
 							/>
 						</button>
 
+						{/* Empirical Calibration Pill (visible even when collapsed for trust) */}
+						{breakdown?.calibration?.applied && (
+							<div className="flex flex-wrap items-center gap-2 rounded-xl bg-background/60 border border-border/50 px-3 py-2 text-xs text-muted-foreground">
+								<Cpu className="h-3.5 w-3.5 text-primary shrink-0" />
+								<span>
+									{t(
+										"tools.pnr_checker.prediction.historical_calibration_badge",
+										{
+											sample: breakdown.calibration.anchorSample.toLocaleString(),
+											band: breakdown.calibration.band,
+										},
+									)}
+								</span>
+								<Badge
+									variant="secondary"
+									className="text-[10px] font-mono ml-auto bg-muted/60"
+								>
+									{breakdown.calibration.anchorPct}% base
+								</Badge>
+							</div>
+						)}
+
 						{showBreakdown && (
-							<div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs bg-background/50 rounded-xl p-3 border border-border/50 animate-in fade-in-50 duration-200">
-								{breakdown.baseScore !== undefined && (
-									<div>
-										<span className="text-muted-foreground text-[10px] block">
-											{t(
-												"tools.pnr_checker.prediction.base_score",
-											)}
-										</span>
-										<span className="font-semibold text-foreground">
-											+{breakdown.baseScore}
-										</span>
+							<div className="space-y-3 animate-in fade-in-50 duration-200">
+								{/* Qualitative Key Drivers from RailTC */}
+								{prediction.explanation.drivers.length > 0 && (
+									<div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-1">
+										{prediction.explanation.drivers.map(
+											(driver) => {
+												const isHelps =
+													driver.effect === "helps";
+												return (
+													<div
+														key={driver.key}
+														className={`flex items-start gap-2.5 rounded-xl p-3 border transition-colors ${
+															isHelps
+																? "bg-emerald-500/10 border-emerald-500/25"
+																: "bg-rose-500/10 border-rose-500/25"
+														}`}
+													>
+														<div className="shrink-0 mt-0.5">
+															{isHelps ? (
+																<ThumbsUp className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+															) : (
+																<ThumbsDown className="h-4 w-4 text-rose-600 dark:text-rose-400" />
+															)}
+														</div>
+														<div className="space-y-1 min-w-0">
+															<div className="flex items-center gap-2 flex-wrap">
+																<span className="text-xs font-bold text-foreground">
+																	{
+																		driver.label
+																	}
+																</span>
+																<Badge
+																	variant="outline"
+																	className={`text-[10px] font-mono font-bold px-1.5 py-0 ${
+																		isHelps
+																			? "border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10"
+																			: "border-rose-500/40 text-rose-600 dark:text-rose-400 bg-rose-500/10"
+																	}`}
+																>
+																	{driver.points >
+																	0
+																		? `+${driver.points}`
+																		: driver.points}{" "}
+																	pts
+																</Badge>
+															</div>
+															<p className="text-[11px] text-muted-foreground leading-relaxed">
+																{driver.detail}
+															</p>
+														</div>
+													</div>
+												);
+											},
+										)}
 									</div>
 								)}
-								{breakdown.wlPenalty !== undefined && (
-									<div>
-										<span className="text-muted-foreground text-[10px] block">
-											{t(
-												"tools.pnr_checker.prediction.wl_penalty",
-											)}
-										</span>
-										<span
-											className={`font-semibold ${
-												breakdown.wlPenalty < 0
-													? "text-rose-500"
-													: "text-foreground"
-											}`}
-										>
-											{breakdown.wlPenalty}
-										</span>
-									</div>
-								)}
-								{breakdown.quotaPenalty !== undefined && (
-									<div>
-										<span className="text-muted-foreground text-[10px] block">
-											{t(
-												"tools.pnr_checker.prediction.quota_penalty",
-											)}
-										</span>
-										<span
-											className={`font-semibold ${
-												breakdown.quotaPenalty < 0
-													? "text-rose-500"
-													: "text-foreground"
-											}`}
-										>
-											{breakdown.quotaPenalty}
-										</span>
-									</div>
-								)}
-								{breakdown.daysAdjustment !== undefined && (
-									<div>
-										<span className="text-muted-foreground text-[10px] block">
-											{t(
-												"tools.pnr_checker.prediction.days_adjustment",
-											)}
-										</span>
-										<span
-											className={`font-semibold ${
-												breakdown.daysAdjustment >= 0
-													? "text-emerald-500"
-													: "text-rose-500"
-											}`}
-										>
-											{breakdown.daysAdjustment > 0
-												? `+${breakdown.daysAdjustment}`
-												: breakdown.daysAdjustment}
-										</span>
+
+								{/* Quantitative Point Breakdown */}
+								{breakdown && (
+									<div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs bg-background/50 rounded-xl p-3 border border-border/50">
+										{breakdown.baseScore !== undefined && (
+											<div>
+												<span className="text-muted-foreground text-[10px] block">
+													{t(
+														"tools.pnr_checker.prediction.base_score",
+													)}
+												</span>
+												<span className="font-semibold text-foreground">
+													+{breakdown.baseScore}
+												</span>
+											</div>
+										)}
+										{breakdown.wlPenalty !== undefined && (
+											<div>
+												<span className="text-muted-foreground text-[10px] block">
+													{t(
+														"tools.pnr_checker.prediction.wl_penalty",
+													)}
+												</span>
+												<span
+													className={`font-semibold ${
+														breakdown.wlPenalty < 0
+															? "text-rose-500"
+															: "text-foreground"
+													}`}
+												>
+													{breakdown.wlPenalty}
+												</span>
+											</div>
+										)}
+										{breakdown.quotaPenalty !==
+											undefined && (
+											<div>
+												<span className="text-muted-foreground text-[10px] block">
+													{t(
+														"tools.pnr_checker.prediction.quota_penalty",
+													)}
+												</span>
+												<span
+													className={`font-semibold ${
+														breakdown.quotaPenalty <
+														0
+															? "text-rose-500"
+															: "text-foreground"
+													}`}
+												>
+													{breakdown.quotaPenalty}
+												</span>
+											</div>
+										)}
+										{breakdown.daysAdjustment !==
+											undefined && (
+											<div>
+												<span className="text-muted-foreground text-[10px] block">
+													{t(
+														"tools.pnr_checker.prediction.days_adjustment",
+													)}
+												</span>
+												<span
+													className={`font-semibold ${
+														breakdown.daysAdjustment >=
+														0
+															? "text-emerald-500"
+															: "text-rose-500"
+													}`}
+												>
+													{breakdown.daysAdjustment >
+													0
+														? `+${breakdown.daysAdjustment}`
+														: breakdown.daysAdjustment}
+												</span>
+											</div>
+										)}
 									</div>
 								)}
 							</div>
@@ -505,6 +662,74 @@ export const PnrPredictionGauge: React.FC<PnrPredictionGaugeProps> = ({
 					</div>
 				)}
 			</div>
+
+			{/* Multi-Passenger Confirmation Matrix (when booking has multiple passengers) */}
+			{prediction.passengerPredictions &&
+				prediction.passengerPredictions.length > 1 && (
+					<div className="rounded-2xl border border-border/70 bg-card p-4 sm:p-5 space-y-3 shadow-xs">
+						<div className="flex items-center justify-between">
+							<h4 className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-2">
+								<Users className="h-4 w-4 text-primary" />
+								<span>
+									{t(
+										"tools.pnr_checker.prediction.passenger_matrix_title",
+									)}
+								</span>
+							</h4>
+							<span className="text-[11px] text-muted-foreground font-mono">
+								{prediction.passengerPredictions.length}{" "}
+								passengers
+							</span>
+						</div>
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+							{prediction.passengerPredictions.map((pax) => {
+								const paxProb = Math.min(
+									100,
+									Math.max(0, Math.round(pax.probability)),
+								);
+								const isPaxCnf =
+									paxProb >= 80 ||
+									pax.status.toLowerCase().includes("cnf");
+								return (
+									<div
+										key={pax.passengerNumber}
+										className="flex flex-col justify-between rounded-xl border border-border/60 bg-muted/20 p-3 space-y-2 hover:bg-muted/30 transition-colors"
+									>
+										<div className="flex items-center justify-between gap-2">
+											<div className="flex items-center gap-1.5 min-w-0">
+												<Badge
+													variant="outline"
+													className="text-[10px] font-mono px-1.5 py-0 font-semibold shrink-0"
+												>
+													Pax {pax.passengerNumber}
+												</Badge>
+												<span className="text-xs font-bold text-foreground truncate">
+													{pax.status}
+												</span>
+											</div>
+											<Badge
+												className={`text-[10px] font-bold shrink-0 ${
+													isPaxCnf
+														? "bg-emerald-600 text-white"
+														: paxProb >= 50
+															? "bg-cyan-600 text-white"
+															: "bg-rose-600 text-white"
+												}`}
+											>
+												{paxProb}% CNF
+											</Badge>
+										</div>
+										{pax.message && (
+											<p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
+												{pax.message}
+											</p>
+										)}
+									</div>
+								);
+							})}
+						</div>
+					</div>
+				)}
 
 			{/* Dynamic Previous Trend Analysis (Last 5 Days) & Confirmation Timing */}
 			{routeStats && (
