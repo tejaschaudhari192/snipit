@@ -51,7 +51,10 @@ export const CodeEditorView = ({
 	textareaRef,
 	transliteration,
 }: CodeEditorViewProps) => {
-	const { editorEngine: defaultEngine } = useEditorEngine();
+	const { editorEngine: defaultEngine } = useEditorEngine({
+		contentType,
+		isEdit,
+	});
 	const currentEngine = editorEngine ?? defaultEngine;
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [isFullscreen, setIsFullscreen] = useState(false);

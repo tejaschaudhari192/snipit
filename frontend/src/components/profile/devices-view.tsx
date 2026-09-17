@@ -22,16 +22,6 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-	Item,
-	ItemGroup,
-	ItemMedia,
-	ItemContent,
-	ItemTitle,
-	ItemDescription,
-	ItemActions,
-	ItemFooter,
-} from "@/components/ui/item";
 import { toast } from "@/components/ui/toast";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import {
@@ -373,64 +363,61 @@ export function DevicesView() {
 								<p>{t("profile.devices.no_other_devices")}</p>
 							</div>
 						) : (
-							<ItemGroup className="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 								{otherSessions.map((session) => (
-									<Item
+									<div
 										key={session._id}
-										variant="outline"
-										className="p-5 rounded-2xl border-border/50 bg-background/60 backdrop-blur-xl shadow-md ring-1 ring-white/5 hover:border-primary/40 transition-all duration-300 flex flex-col justify-between gap-3"
+										className="p-5 md:p-6 rounded-2xl border border-border/50 bg-background/60 backdrop-blur-xl shadow-md ring-1 ring-white/5 hover:border-primary/40 transition-all duration-300 flex flex-col justify-between gap-4"
 									>
-										<div className="flex items-start justify-between gap-3 w-full">
-											<ItemMedia
-												variant="default"
-												className="w-10 h-10 rounded-xl bg-secondary/80 text-foreground border border-border/50 flex items-center justify-center shrink-0"
+										<div className="flex items-start justify-between gap-3">
+											<div className="flex items-start gap-3.5 min-w-0">
+												<div className="w-11 h-11 rounded-xl bg-secondary/80 text-foreground border border-border/50 flex items-center justify-center shrink-0 shadow-xs">
+													{getDeviceIcon(
+														session.deviceType,
+														"w-5 h-5",
+													)}
+												</div>
+
+												<div className="space-y-1 min-w-0">
+													<h4 className="font-bold text-sm md:text-base text-foreground truncate">
+														{session.deviceName}
+													</h4>
+													<p className="text-xs text-muted-foreground font-medium truncate">
+														{session.browser} on{" "}
+														{session.os}
+													</p>
+													<p className="text-[11px] font-mono text-muted-foreground/80 flex items-center gap-1.5 pt-0.5">
+														<Globe className="w-3 h-3 text-primary/70" />
+														<span>
+															{session.ipAddress}
+														</span>
+													</p>
+												</div>
+											</div>
+
+											<Button
+												variant="ghost"
+												size="sm"
+												disabled={
+													revokingId === session._id
+												}
+												onClick={() =>
+													setSessionToRevoke(session)
+												}
+												className="h-8 px-2.5 rounded-xl text-xs font-bold text-destructive hover:bg-destructive/10 hover:text-destructive shrink-0 cursor-pointer"
 											>
-												{getDeviceIcon(
-													session.deviceType,
-													"w-5 h-5",
-												)}
-											</ItemMedia>
-
-											<ItemContent className="min-w-0 space-y-0.5">
-												<ItemTitle className="font-bold text-sm text-foreground truncate">
-													{session.deviceName}
-												</ItemTitle>
-												<ItemDescription className="text-xs text-muted-foreground font-medium truncate">
-													{session.browser} on{" "}
-													{session.os}
-												</ItemDescription>
-												<p className="text-[11px] font-mono text-muted-foreground/80">
-													IP: {session.ipAddress}
-												</p>
-											</ItemContent>
-
-											<ItemActions>
-												<Button
-													variant="ghost"
-													size="sm"
-													disabled={
-														revokingId ===
-														session._id
-													}
-													onClick={() =>
-														setSessionToRevoke(
-															session,
-														)
-													}
-													className="h-8 px-3 rounded-xl text-xs font-bold text-destructive hover:bg-destructive/10 hover:text-destructive shrink-0 cursor-pointer"
-												>
-													<LogOut className="w-3.5 h-3.5 mr-1" />
-													<span>
-														{t(
-															"profile.devices.revoke",
-														)}
-													</span>
-												</Button>
-											</ItemActions>
+												<LogOut className="w-3.5 h-3.5 mr-1" />
+												<span>
+													{t(
+														"profile.devices.revoke",
+													)}
+												</span>
+											</Button>
 										</div>
 
-										<ItemFooter className="w-full pt-2 border-t border-border/40 flex items-center justify-between text-[11px] text-muted-foreground">
-											<span>
+										<div className="w-full pt-3 border-t border-border/40 flex items-center justify-between text-xs text-muted-foreground">
+											<span className="flex items-center gap-1.5">
+												<Clock className="w-3 h-3 text-muted-foreground/70" />
 												{t(
 													"profile.devices.last_active",
 													{
@@ -450,10 +437,10 @@ export function DevicesView() {
 													},
 												)}
 											</span>
-										</ItemFooter>
-									</Item>
+										</div>
+									</div>
 								))}
-							</ItemGroup>
+							</div>
 						)}
 					</div>
 				</>

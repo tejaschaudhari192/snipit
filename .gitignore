@@ -6,3 +6,4 @@ backend/.env.prod
 .vscode/settings.json
 .aider*
 .agent
+.scratch

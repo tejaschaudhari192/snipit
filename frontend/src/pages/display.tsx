@@ -204,13 +204,13 @@ const DisplayPage = () => {
 	});
 
 	useEffect(() => {
-		// Preload Monaco Editor only if the content type is code or text
-		if (contentType === "code" || contentType === "text") {
+		// Only preload Monaco Editor for code mode or when editing on display screen
+		if (contentType === "code" || (contentType === "text" && isEdit)) {
 			import("@monaco-editor/react").then((m) => {
 				m.loader.init();
 			});
 		}
-	}, [contentType]);
+	}, [contentType, isEdit]);
 
 	useEffect(() => {
 		const handleEventChange = (e: Event) => {

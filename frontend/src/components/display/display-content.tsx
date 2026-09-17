@@ -165,7 +165,10 @@ export const DisplayContent = memo(
 		const internalTextareaRef = useRef<HTMLTextAreaElement | null>(null);
 		const activeTextareaRef = textareaRef ?? internalTextareaRef;
 		const [mdLayoutMode, setMdLayoutMode] = useMarkdownLayout();
-		const { editorEngine, toggleEditorEngine } = useEditorEngine();
+		const { editorEngine, toggleEditorEngine } = useEditorEngine({
+			contentType,
+			isEdit,
+		});
 
 		const isCollaborativeSession = Boolean(
 			paste?.isCollaborative || (activeUsers && activeUsers.length > 1),

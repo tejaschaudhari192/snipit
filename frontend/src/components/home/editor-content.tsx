@@ -140,7 +140,10 @@ export const EditorContent = memo(
 		const monacoTheme =
 			resolvedTheme === "dark" ? "snipit-dark" : "snipit-light";
 		const { t } = useTranslation();
-		const { editorEngine, toggleEditorEngine } = useEditorEngine();
+		const { editorEngine, toggleEditorEngine } = useEditorEngine({
+			contentType,
+			isEdit: false,
+		});
 		const containerRef = useRef<HTMLDivElement>(null);
 
 		const {
@@ -243,6 +246,9 @@ export const EditorContent = memo(
 									fontSize={fontSize}
 									showLineNumbers={true}
 									textareaRef={textareaRef}
+									placeholder={t(
+										"home.inputs.snippet_placeholder",
+									)}
 								/>
 							) : (
 								<Suspense fallback={<EditorContentSkeleton />}>
