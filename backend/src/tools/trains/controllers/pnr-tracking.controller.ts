@@ -114,7 +114,11 @@ export async function getMyTrackings(
 			req.user._id,
 		);
 
-		res.json(trackings);
+		res.json({
+			success: true,
+			count: trackings.length,
+			trackings,
+		});
 	} catch (err) {
 		next(err);
 	}

@@ -2,7 +2,8 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Train } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Train, Radio } from "lucide-react";
 import type { TrainScheduleResponse, ScheduleStation } from "../types/trains";
 import { StationScheduleRow } from "./station-schedule-row";
 
@@ -10,10 +11,12 @@ import { TrainRunningDaysBadge } from "./train-running-days-badge";
 
 interface ScheduleTimetableTableProps {
 	scheduleData: TrainScheduleResponse;
+	onTrackLive?: () => void;
 }
 
 export const ScheduleTimetableTable: React.FC<ScheduleTimetableTableProps> = ({
 	scheduleData,
+	onTrackLive,
 }) => {
 	const { t } = useTranslation();
 
@@ -69,9 +72,30 @@ export const ScheduleTimetableTable: React.FC<ScheduleTimetableTableProps> = ({
 						</div>
 					</div>
 				</div>
-				<Badge variant="outline" className="text-xs font-mono shrink-0">
-					{t("tools.pnr_checker.schedule_live_timetable")}
-				</Badge>
+				<div className="flex items-center gap-2 self-start sm:self-center shrink-0">
+					{onTrackLive && (
+						<Button
+							variant="outline"
+							size="sm"
+							className="text-xs h-8 gap-1.5 rounded-xl border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-500/60 font-semibold shadow-xs cursor-pointer"
+							onClick={onTrackLive}
+						>
+							<Radio className="h-3.5 w-3.5 text-emerald-500 animate-pulse" />
+							<span>
+								{t(
+									"tools.pnr_checker.live_status_tab",
+									"Live Status",
+								)}
+							</span>
+						</Button>
+					)}
+					<Badge
+						variant="outline"
+						className="text-xs font-mono shrink-0"
+					>
+						{t("tools.pnr_checker.schedule_live_timetable")}
+					</Badge>
+				</div>
 			</div>
 
 			<CardContent className="p-0">

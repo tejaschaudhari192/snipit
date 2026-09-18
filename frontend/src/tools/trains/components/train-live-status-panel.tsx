@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ import {
 	Clock,
 	RotateCcw,
 	Loader2,
+	History,
 } from "lucide-react";
 import { GifLoader } from "@/components/common/gif-loader";
 
@@ -35,9 +37,18 @@ import {
 	calculateOriginDepartureDate,
 	generateDateOptions,
 } from "../utils/train-date-calculations";
+import {
+	loadTrainSearchHistory,
+	saveTrainSearchToHistory,
+	getActiveUpcomingPnrJourneys,
+	formatTrainDateToYYYYMMDD,
+	type TrainSearchHistoryItem,
+	type PnrSearchHistoryItem,
+} from "../utils/trains-storage";
 
 export const TrainLiveStatusPanel: React.FC = () => {
 	const { t } = useTranslation();
+	const [searchParams] = useSearchParams();
 
 	// Train Search State (Only selectable from suggestions)
 	const [trainSearchInput, setTrainSearchInput] = useState("");
@@ -74,8 +85,21 @@ export const TrainLiveStatusPanel: React.FC = () => {
 	const [liveStatus, setLiveStatus] =
 		useState<TrainLiveStatusResponse | null>(null);
 
+	const [trainHistory, setTrainHistory] = useState<TrainSearchHistoryItem[]>(
+		[],
+	);
+	const [upcomingPnrJourneys, setUpcomingPnrJourneys] = useState<
+		PnrSearchHistoryItem[]
+	>([]);
+	const autoLoadedTrainRef = useRef<string | null>(null);
+
 	const containerRef = useRef<HTMLDivElement>(null);
 	const tableContainerRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		setTrainHistory(loadTrainSearchHistory());
+		setUpcomingPnrJourneys(getActiveUpcomingPnrJourneys());
+	}, []);
 
 	// Componentized UX Animation Hook: Smooth bird's-eye train tracking on track
 	const { trainPos, animatedStationIdx, isAnimating, replayJourney } =
@@ -187,6 +211,88 @@ export const TrainLiveStatusPanel: React.FC = () => {
 		}
 	};
 
+	const handleQuickSelectTrain = async (
+		trainNo: string,
+		dateStr?: string,
+	) => {
+		let targetDate = selectedDate;
+		if (dateStr) {
+			targetDate = formatTrainDateToYYYYMMDD(dateStr);
+			setSelectedDate(targetDate);
+		}
+
+		setLoading(true);
+		setError(null);
+		setLiveStatus(null);
+
+		try {
+			const results = await searchTrains(trainNo);
+			let match =
+				results.find((t) => t.trainNumber === trainNo) || results[0];
+			if (!match) {
+				const sch = await getTrainSchedule(trainNo);
+				match = {
+					trainNumber: sch.trainNumber,
+					trainName: sch.trainName,
+					origin: sch.origin || "",
+					destination: sch.destination || "",
+					stationFrom: sch.origin || "",
+					stationTo: sch.destination || "",
+					runningOn: sch.runningOn || "",
+					journeyClasses: sch.journeyClasses || [],
+					schedule: sch.stations,
+				};
+			}
+
+			if (match) {
+				setSelectedTrain(match);
+				setTrainSearchInput(
+					`${match.trainName} (${match.trainNumber})`,
+				);
+				if (match.schedule && match.schedule.length > 0) {
+					setAvailableStations(match.schedule);
+				} else {
+					const sch = await getTrainSchedule(match.trainNumber);
+					setAvailableStations(sch.stations || []);
+				}
+
+				const res = await getTrainLiveStatus(
+					match.trainNumber,
+					targetDate,
+				);
+				setLiveStatus(res);
+				saveTrainSearchToHistory(match.trainNumber, match.trainName);
+				setTrainHistory(loadTrainSearchHistory());
+			}
+		} catch (err: unknown) {
+			const axiosErr = err as {
+				response?: { data?: { error?: string } };
+				message?: string;
+			};
+			setError(
+				axiosErr?.response?.data?.error ||
+					axiosErr?.message ||
+					t("tools.pnr_checker.api_error"),
+			);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	// Auto load from URL searchParams
+	useEffect(() => {
+		const paramTrain =
+			searchParams.get("trainNumber") || searchParams.get("train");
+		const paramDate = searchParams.get("date");
+		if (
+			paramTrain &&
+			autoLoadedTrainRef.current !== `${paramTrain}_${paramDate}`
+		) {
+			autoLoadedTrainRef.current = `${paramTrain}_${paramDate}`;
+			handleQuickSelectTrain(paramTrain, paramDate || undefined);
+		}
+	}, [searchParams]);
+
 	// Fetch live running status
 	const handleCheckStatus = async () => {
 		if (!selectedTrain) {
@@ -213,6 +319,13 @@ export const TrainLiveStatusPanel: React.FC = () => {
 				queryDepartureDate,
 			);
 			setLiveStatus(res);
+			saveTrainSearchToHistory(
+				selectedTrain.trainNumber,
+				selectedTrain.trainName,
+				availableStations[0]?.stationName,
+				availableStations[availableStations.length - 1]?.stationName,
+			);
+			setTrainHistory(loadTrainSearchHistory());
 		} catch (err: unknown) {
 			const axiosErr = err as {
 				response?: { data?: { error?: string } };
@@ -230,6 +343,52 @@ export const TrainLiveStatusPanel: React.FC = () => {
 
 	return (
 		<div className="w-full space-y-6">
+			{/* Active & Upcoming Journeys Banner from PNR */}
+			{upcomingPnrJourneys.length > 0 && (
+				<div className="p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 backdrop-blur-xl space-y-2.5 shadow-sm animate-in fade-in-50">
+					<div className="flex items-center justify-between flex-wrap gap-2">
+						<span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5 uppercase tracking-wider">
+							<span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
+							Active & Upcoming Journeys (From Your PNR)
+						</span>
+						<Badge
+							variant="outline"
+							className="text-[10px] border-emerald-500/40 text-emerald-700 dark:text-emerald-300"
+						>
+							1-Click Live Track
+						</Badge>
+					</div>
+					<div className="flex flex-wrap gap-2">
+						{upcomingPnrJourneys.map((j) => (
+							<button
+								key={j.pnr}
+								type="button"
+								onClick={() =>
+									handleQuickSelectTrain(
+										j.trainNumber,
+										j.departureDate,
+									)
+								}
+								className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold bg-background/80 hover:bg-background border border-emerald-500/30 text-foreground shadow-xs hover:border-emerald-500 hover:shadow-md transition-all cursor-pointer group"
+							>
+								<Train className="h-3.5 w-3.5 text-emerald-500 group-hover:scale-110 transition-transform" />
+								<span>
+									Train {j.trainNumber} •{" "}
+									{j.trainName || "Express"}
+								</span>
+								<span className="text-[10px] text-muted-foreground font-mono">
+									({j.fromCode || j.from} → {j.toCode || j.to}
+									)
+								</span>
+								<Badge className="bg-emerald-600 text-white text-[9px] px-1.5 py-0 font-bold ml-1">
+									Track Live
+								</Badge>
+							</button>
+						))}
+					</div>
+				</div>
+			)}
+
 			{/* Input Form Card */}
 			<Card className="border-border/50 bg-background/60 backdrop-blur-xl shadow-xl overflow-visible">
 				<CardContent className="p-6 space-y-5">
@@ -271,6 +430,32 @@ export const TrainLiveStatusPanel: React.FC = () => {
 									loading={suggestionsLoading}
 									onSelect={handleSelectTrain}
 								/>
+							)}
+
+							{/* Recent Train Searches Chips */}
+							{trainHistory.length > 0 && (
+								<div className="flex items-center gap-1.5 flex-wrap pt-1">
+									<span className="text-[11px] text-muted-foreground font-medium flex items-center gap-1">
+										<History className="h-3 w-3" /> Recent:
+									</span>
+									{trainHistory.slice(0, 5).map((tItem) => (
+										<button
+											key={tItem.trainNumber}
+											type="button"
+											onClick={() =>
+												handleQuickSelectTrain(
+													tItem.trainNumber,
+												)
+											}
+											className="text-[11px] font-mono font-medium px-2 py-0.5 rounded-md bg-muted/60 hover:bg-muted border border-border/60 hover:border-primary/50 text-foreground transition-all cursor-pointer"
+										>
+											{tItem.trainNumber}{" "}
+											{tItem.trainName
+												? `(${tItem.trainName.slice(0, 14)})`
+												: ""}
+										</button>
+									))}
+								</div>
 							)}
 						</div>
 
@@ -388,10 +573,15 @@ export const TrainLiveStatusPanel: React.FC = () => {
 						<Button
 							onClick={handleCheckStatus}
 							disabled={loading || !selectedTrain}
-							className="h-11 px-6 font-semibold shadow-md gap-2 shrink-0"
+							className="h-11 px-6 font-semibold shadow-md gap-2 shrink-0 cursor-pointer"
 						>
 							{loading ? (
-								<GifLoader />
+								<>
+									<Loader2 className="h-4 w-4 animate-spin" />
+									<span>
+										{t("tools.pnr_checker.checking_status")}
+									</span>
+								</>
 							) : (
 								<>
 									<Activity className="h-4 w-4" />
@@ -413,8 +603,18 @@ export const TrainLiveStatusPanel: React.FC = () => {
 				</CardContent>
 			</Card>
 
+			{/* Large Loading State Below Search Card */}
+			{loading && (
+				<div className="flex flex-col items-center justify-center p-8 rounded-2xl border border-border/50 bg-background/50 backdrop-blur-md shadow-sm animate-in fade-in-50 duration-300">
+					<GifLoader
+						size="lg"
+						label={t("tools.pnr_checker.checking_status")}
+					/>
+				</div>
+			)}
+
 			{/* Live Running Status Result Card */}
-			{liveStatus && (
+			{!loading && liveStatus && (
 				<Card className="border-border/50 bg-background/60 backdrop-blur-xl shadow-xl overflow-hidden animate-in fade-in-50 duration-300">
 					{/* Header with Live Status Pulse & Summary */}
 					<div className="p-5 border-b border-border/40 bg-muted/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">

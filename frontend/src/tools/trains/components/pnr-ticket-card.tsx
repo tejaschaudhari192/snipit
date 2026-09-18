@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { PnrData } from "../types/trains";
 import { downloadPnrTicketPng } from "../lib/download-ticket";
@@ -10,31 +10,42 @@ import { PnrTicketPassengerList } from "./pnr-ticket-passenger-list";
 interface PnrTicketCardProps {
 	data: PnrData;
 	onViewRoute?: () => void;
+	onCheckLiveStatus?: () => void;
 }
 
 export const PnrTicketCard: React.FC<PnrTicketCardProps> = ({
 	data,
 	onViewRoute,
+	onCheckLiveStatus,
 }) => {
 	const { t } = useTranslation();
-	const [downloading, setDownloading] = React.useState(false);
+	const [downloading, setDownloading] = useState(false);
 
 	const handleDownload = async () => {
 		try {
 			setDownloading(true);
 			toast.add({
-				title: t("tools.pnr_checker.ticket_downloading"),
+				title: t(
+					"tools.pnr_checker.ticket_downloading",
+					"Generating ticket image...",
+				),
 				type: "info",
 			});
 			await downloadPnrTicketPng(data);
 			toast.add({
-				title: t("tools.pnr_checker.ticket_downloaded"),
+				title: t(
+					"tools.pnr_checker.ticket_downloaded",
+					"Ticket downloaded successfully!",
+				),
 				type: "success",
 			});
 		} catch (err: unknown) {
 			console.error("Ticket download error:", err);
 			toast.add({
-				title: t("tools.pnr_checker.ticket_download_failed"),
+				title: t(
+					"tools.pnr_checker.ticket_download_failed",
+					"Failed to download ticket",
+				),
 				type: "error",
 			});
 		} finally {
@@ -52,6 +63,7 @@ export const PnrTicketCard: React.FC<PnrTicketCardProps> = ({
 				downloading={downloading}
 				onViewRoute={onViewRoute}
 				onDownload={handleDownload}
+				onCheckLiveStatus={onCheckLiveStatus}
 			/>
 
 			{/* Middle Journey Route with Notches */}
@@ -65,6 +77,8 @@ export const PnrTicketCard: React.FC<PnrTicketCardProps> = ({
 				arrivalDate={data.arrivalDate}
 				date={data.date}
 				duration={data.duration}
+				boardingDayCount={data.boardingDayCount}
+				arrivalDayCount={data.arrivalDayCount}
 			/>
 
 			{/* Perforated Divider Line */}

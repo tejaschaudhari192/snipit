@@ -14,7 +14,10 @@ import type {
 	PaytmLiveStatusApiResponse,
 	PaytmLiveStatusStation,
 } from "../types/trains.types.js";
-import { parsePassengerDetails } from "../utils/pnr-parser.util.js";
+import {
+	parsePassengerDetails,
+	calculateArrivalDate,
+} from "../utils/pnr-parser.util.js";
 
 export class PnrService {
 	private static PNR_URL = (pnr: string) =>
@@ -521,6 +524,32 @@ export class PnrService {
 										)
 									: [];
 
+								const depTime =
+									boarding.departure_time ||
+									boarding.time ||
+									"";
+								const depDate =
+									boarding.departure_date ||
+									boarding.date ||
+									body.date ||
+									"";
+								const arrTime =
+									dest.arrival_time || dest.time || "";
+
+								const {
+									arrivalDate: computedArrivalDate,
+									boardingDay,
+									destDay,
+								} = calculateArrivalDate({
+									departureDate: depDate,
+									boardingDayCount: boarding.day_count,
+									destDayCount: dest.day_count,
+									explicitArrivalDate: dest.arrival_date,
+									departureTime: depTime,
+									arrivalTime: arrTime,
+									duration: body.journey_duration,
+								});
+
 								paytmData = {
 									pnr: body.pnr_number || pnr,
 									trainNumber: trainNo,
@@ -539,22 +568,12 @@ export class PnrService {
 										dest.station_code ||
 										"",
 									toCode: dest.station_code || "",
-									departure:
-										boarding.departure_time ||
-										boarding.time ||
-										"",
-									departureDate:
-										boarding.departure_date ||
-										boarding.date ||
-										body.date ||
-										"",
-									arrival:
-										dest.arrival_time || dest.time || "",
-									arrivalDate:
-										dest.arrival_date ||
-										dest.date ||
-										body.date ||
-										"",
+									departure: depTime,
+									departureDate: depDate,
+									arrival: arrTime,
+									arrivalDate: computedArrivalDate,
+									boardingDayCount: boardingDay,
+									arrivalDayCount: destDay,
 									duration: body.journey_duration || "",
 									chartStatus: body.chart_prepared
 										? "Chart Prepared"

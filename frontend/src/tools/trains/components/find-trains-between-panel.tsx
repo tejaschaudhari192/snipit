@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
 	Search,
@@ -15,6 +16,8 @@ import {
 	ChevronUp,
 	Loader2,
 	Sparkles,
+	History,
+	Radio,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -31,18 +34,48 @@ import type {
 	TrainFareResponse,
 	StationSuggestion,
 } from "../types/trains";
-import { generateDateOptions } from "../utils/train-date-calculations";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 import { StationSearchSuggestions } from "./station-search-suggestions";
+import {
+	getTrainBookingRange,
+	formatReadableTrainDate,
+	formatYmdFromDate,
+	parseDateFromYmd,
+} from "../utils/train-date-calculations";
+import {
+	loadStationSearchHistory,
+	saveStationSearchToHistory,
+	type StationSearchHistoryItem,
+} from "../utils/trains-storage";
 
 export const FindTrainsBetweenPanel: React.FC = () => {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 
 	// Search parameters
 	const [source, setSource] = useState("");
 	const [destination, setDestination] = useState("");
 	const [sourceCode, setSourceCode] = useState("");
 	const [destCode, setDestCode] = useState("");
-	const dateOptions = useMemo(() => generateDateOptions(), []);
+	const [stationHistory, setStationHistory] = useState<
+		StationSearchHistoryItem[]
+	>([]);
+	const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
+	// 120-day IRCTC Advance Reservation Period & Today/Tomorrow shortcuts
+	const { minDate, maxDate, todayYmd, tomorrowYmd } = useMemo(
+		() => getTrainBookingRange(),
+		[],
+	);
+
+	useEffect(() => {
+		setStationHistory(loadStationSearchHistory());
+	}, []);
 
 	// Station Autocomplete State
 	const [sourceSuggestions, setSourceSuggestions] = useState<
@@ -163,6 +196,51 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 	// Cache calculated total fares map: `${trainNumber}-${classCode}` -> number
 	const [fareCache, setFareCache] = useState<Record<string, number>>({});
 
+	const handleQuickSelectStationSearch = (item: StationSearchHistoryItem) => {
+		setSource(item.source);
+		setSourceCode(item.sourceCode);
+		setDestination(item.destination);
+		setDestCode(item.destCode);
+		if (item.departureDate) {
+			setSelectedDate(item.departureDate);
+		}
+
+		setLoading(true);
+		setError(null);
+		setExpandedTrainNumber(null);
+		setFareData(null);
+		setFareCache({});
+
+		searchTrainsBetweenStations(
+			item.sourceCode,
+			item.destCode,
+			item.departureDate || selectedDate,
+		)
+			.then((res) => {
+				setSearchResult(res);
+				saveStationSearchToHistory(
+					item.source,
+					item.sourceCode,
+					item.destination,
+					item.destCode,
+					item.departureDate || selectedDate,
+				);
+				setStationHistory(loadStationSearchHistory());
+			})
+			.catch((err: unknown) => {
+				const axiosErr = err as {
+					response?: { data?: { error?: string } };
+					message?: string;
+				};
+				setError(
+					axiosErr?.response?.data?.error ||
+						axiosErr?.message ||
+						t("tools.pnr_checker.api_error"),
+				);
+			})
+			.finally(() => setLoading(false));
+	};
+
 	const handleSwap = () => {
 		const tempSource = source;
 		const tempCode = sourceCode;
@@ -193,6 +271,14 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 				selectedDate,
 			);
 			setSearchResult(res);
+			saveStationSearchToHistory(
+				source || cleanSrc,
+				cleanSrc,
+				destination || cleanDest,
+				cleanDest,
+				selectedDate,
+			);
+			setStationHistory(loadStationSearchHistory());
 
 			// 1. Populate cache with known fares from search result availability
 			const initialCache: Record<string, number> = {};
@@ -359,6 +445,11 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 		}
 	};
 
+	const formattedSelectedDate = useMemo(
+		() => formatReadableTrainDate(selectedDate),
+		[selectedDate],
+	);
+
 	return (
 		<div className="w-full space-y-6">
 			{/* Search Card */}
@@ -467,28 +558,144 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 
 						{/* Date Selection & Submit */}
 						<div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end pt-1">
-							<div className="sm:col-span-8">
-								<label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">
-									{t("tools.pnr_checker.departure_date")}
-								</label>
-								<div className="relative">
-									<CalendarIcon className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
-									<select
-										value={selectedDate}
-										onChange={(e) =>
-											setSelectedDate(e.target.value)
-										}
-										className="w-full h-9 rounded-md border border-input bg-background pl-9 pr-3 text-xs font-semibold text-foreground shadow-2xs focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring"
-									>
-										{dateOptions.map((opt) => (
-											<option
-												key={opt.value}
-												value={opt.value}
+							<div className="sm:col-span-8 space-y-1.5">
+								<div className="flex items-center justify-between">
+									<label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block">
+										{t("tools.pnr_checker.departure_date")}
+									</label>
+									{formattedSelectedDate && (
+										<span className="text-xs font-bold text-primary">
+											{formattedSelectedDate}
+										</span>
+									)}
+								</div>
+
+								{/* Shadcn Popover Calendar Picker */}
+								<Popover
+									open={isCalendarOpen}
+									onOpenChange={setIsCalendarOpen}
+								>
+									<PopoverTrigger
+										render={
+											<Button
+												type="button"
+												variant="outline"
+												className="w-full h-10 px-3 justify-start text-left font-semibold text-xs border-border/70 hover:border-primary/60 bg-background/50 hover:bg-background shadow-2xs gap-2.5 cursor-pointer"
 											>
-												{opt.label}
-											</option>
-										))}
-									</select>
+												<CalendarIcon className="w-4 h-4 text-primary shrink-0" />
+												<span className="font-mono font-bold text-foreground">
+													{formattedSelectedDate ||
+														t(
+															"tools.pnr_checker.select_departure_date",
+														)}
+												</span>
+											</Button>
+										}
+									/>
+									<PopoverContent
+										align="start"
+										className="w-auto p-0 border border-border/70 shadow-xl bg-card rounded-2xl overflow-hidden"
+									>
+										<div className="p-3 border-b border-border/40 flex items-center justify-between bg-muted/20">
+											<div className="flex items-center gap-1.5">
+												<button
+													type="button"
+													onClick={() => {
+														setSelectedDate(
+															todayYmd,
+														);
+														setIsCalendarOpen(
+															false,
+														);
+													}}
+													className={`text-xs font-semibold px-2.5 py-1 rounded-lg border transition-all cursor-pointer ${
+														selectedDate ===
+														todayYmd
+															? "bg-primary text-primary-foreground border-primary shadow-2xs"
+															: "bg-background hover:bg-muted text-foreground border-border/60"
+													}`}
+												>
+													{t(
+														"tools.pnr_checker.today",
+													)}
+												</button>
+												<button
+													type="button"
+													onClick={() => {
+														setSelectedDate(
+															tomorrowYmd,
+														);
+														setIsCalendarOpen(
+															false,
+														);
+													}}
+													className={`text-xs font-semibold px-2.5 py-1 rounded-lg border transition-all cursor-pointer ${
+														selectedDate ===
+														tomorrowYmd
+															? "bg-primary text-primary-foreground border-primary shadow-2xs"
+															: "bg-background hover:bg-muted text-foreground border-border/60"
+													}`}
+												>
+													{t(
+														"tools.pnr_checker.tomorrow",
+													)}
+												</button>
+											</div>
+											<span className="text-[11px] text-muted-foreground font-mono">
+												{t(
+													"tools.pnr_checker.up_to_days",
+													{ days: 120 },
+												)}
+											</span>
+										</div>
+										<Calendar
+											mode="single"
+											selected={parseDateFromYmd(
+												selectedDate,
+											)}
+											onSelect={(date) => {
+												if (date) {
+													setSelectedDate(
+														formatYmdFromDate(date),
+													);
+													setIsCalendarOpen(false);
+												}
+											}}
+											disabled={(date) =>
+												date < minDate || date > maxDate
+											}
+										/>
+									</PopoverContent>
+								</Popover>
+
+								{/* Today & Tomorrow Quick Pills */}
+								<div className="flex items-center gap-1.5 pt-0.5">
+									<button
+										type="button"
+										onClick={() =>
+											setSelectedDate(todayYmd)
+										}
+										className={`text-[11px] font-semibold px-3 py-0.5 rounded-md border transition-all cursor-pointer ${
+											selectedDate === todayYmd
+												? "bg-primary text-primary-foreground border-primary shadow-2xs"
+												: "bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground border-border/50"
+										}`}
+									>
+										{t("tools.pnr_checker.today")}
+									</button>
+									<button
+										type="button"
+										onClick={() =>
+											setSelectedDate(tomorrowYmd)
+										}
+										className={`text-[11px] font-semibold px-3 py-0.5 rounded-md border transition-all cursor-pointer ${
+											selectedDate === tomorrowYmd
+												? "bg-primary text-primary-foreground border-primary shadow-2xs"
+												: "bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground border-border/50"
+										}`}
+									>
+										{t("tools.pnr_checker.tomorrow")}
+									</button>
 								</div>
 							</div>
 
@@ -496,7 +703,7 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 								<Button
 									type="submit"
 									disabled={loading}
-									className="w-full font-bold gap-2 text-xs"
+									className="w-full h-9 font-bold gap-2 text-xs shadow-sm cursor-pointer"
 								>
 									{loading ? (
 										<span>
@@ -517,6 +724,31 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 								</Button>
 							</div>
 						</div>
+
+						{/* Recent Station Searches */}
+						{stationHistory.length > 0 && (
+							<div className="flex items-center gap-1.5 flex-wrap pt-2 border-t border-border/40">
+								<span className="text-[11px] text-muted-foreground font-medium flex items-center gap-1">
+									<History className="h-3 w-3" /> Recent:
+								</span>
+								{stationHistory.slice(0, 6).map((h) => (
+									<button
+										key={h.id}
+										type="button"
+										onClick={() =>
+											handleQuickSelectStationSearch(h)
+										}
+										className="text-[11px] font-mono font-medium px-2.5 py-1 rounded-lg bg-muted/60 hover:bg-muted border border-border/60 hover:border-primary/50 text-foreground transition-all cursor-pointer flex items-center gap-1.5"
+									>
+										<span>{h.sourceCode}</span>
+										<span className="text-muted-foreground">
+											→
+										</span>
+										<span>{h.destCode}</span>
+									</button>
+								))}
+							</div>
+						)}
 					</form>
 				</CardContent>
 			</Card>
@@ -677,23 +909,59 @@ export const FindTrainsBetweenPanel: React.FC = () => {
 														</div>
 													</div>
 
-													{tr.leastPrice && (
-														<div className="text-right bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/30 px-3 py-1.5 rounded-xl">
-															<div className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
-																{t(
-																	"tools.pnr_checker.starts_at",
-																)}
+													<div className="flex items-center gap-2 flex-wrap justify-end">
+														<Button
+															type="button"
+															variant="outline"
+															size="sm"
+															onClick={(e) => {
+																e.stopPropagation();
+																navigate(
+																	`/tools/trains?tab=live&trainNumber=${tr.trainNumber}&date=${selectedDate}`,
+																);
+															}}
+															className="h-8 px-2.5 text-xs font-semibold rounded-xl border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-500/60 shadow-xs cursor-pointer gap-1.5"
+														>
+															<Radio className="w-3.5 h-3.5 text-emerald-500 animate-pulse" />
+															<span>Live</span>
+														</Button>
+
+														<Button
+															type="button"
+															variant="outline"
+															size="sm"
+															onClick={(e) => {
+																e.stopPropagation();
+																navigate(
+																	`/tools/trains?tab=schedule&trainNumber=${tr.trainNumber}`,
+																);
+															}}
+															className="h-8 px-2.5 text-xs font-semibold rounded-xl border-border/70 hover:border-primary/50 shadow-xs cursor-pointer gap-1.5"
+														>
+															<Train className="w-3.5 h-3.5 text-primary" />
+															<span>
+																Schedule
+															</span>
+														</Button>
+
+														{tr.leastPrice && (
+															<div className="text-right bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/30 px-3 py-1.5 rounded-xl">
+																<div className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+																	{t(
+																		"tools.pnr_checker.starts_at",
+																	)}
+																</div>
+																<div className="text-base font-black text-emerald-600 dark:text-emerald-400 flex items-center justify-end">
+																	<IndianRupee className="w-4 h-4" />
+																	<span>
+																		{
+																			tr.leastPrice
+																		}
+																	</span>
+																</div>
 															</div>
-															<div className="text-base font-black text-emerald-600 dark:text-emerald-400 flex items-center justify-end">
-																<IndianRupee className="w-4 h-4" />
-																<span>
-																	{
-																		tr.leastPrice
-																	}
-																</span>
-															</div>
-														</div>
-													)}
+														)}
+													</div>
 												</div>
 
 												{/* Timing & Duration Split */}

@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Train, Download } from "lucide-react";
+import { Train, Download, Radio } from "lucide-react";
 
 interface PnrTicketHeaderBannerProps {
 	train: string;
@@ -11,6 +11,7 @@ interface PnrTicketHeaderBannerProps {
 	downloading: boolean;
 	onViewRoute?: () => void;
 	onDownload: () => void;
+	onCheckLiveStatus?: () => void;
 }
 
 export const PnrTicketHeaderBanner: React.FC<PnrTicketHeaderBannerProps> = ({
@@ -20,6 +21,7 @@ export const PnrTicketHeaderBanner: React.FC<PnrTicketHeaderBannerProps> = ({
 	downloading,
 	onViewRoute,
 	onDownload,
+	onCheckLiveStatus,
 }) => {
 	const { t } = useTranslation();
 
@@ -59,6 +61,22 @@ export const PnrTicketHeaderBanner: React.FC<PnrTicketHeaderBannerProps> = ({
 			</div>
 
 			<div className="flex items-center gap-2 self-start sm:self-center">
+				{onCheckLiveStatus && (
+					<Button
+						variant="outline"
+						size="sm"
+						className="text-xs h-8 gap-1.5 rounded-xl border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-500/60 transition-all font-semibold shadow-xs cursor-pointer"
+						onClick={onCheckLiveStatus}
+					>
+						<Radio className="h-3.5 w-3.5 text-emerald-500 animate-pulse" />
+						<span>
+							{t(
+								"tools.pnr_checker.live_status_tab",
+								"Live Status",
+							)}
+						</span>
+					</Button>
+				)}
 				{onViewRoute && (
 					<Button
 						variant="outline"

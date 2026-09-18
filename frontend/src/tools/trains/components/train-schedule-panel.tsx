@@ -1,29 +1,45 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Train, Search } from "lucide-react";
+import { Train, Search, History, Loader2 } from "lucide-react";
 import { GifLoader } from "@/components/common/gif-loader";
 
 import { getTrainSchedule, searchTrains } from "../api/trains";
 import type { TrainScheduleResponse, TrainSearchResult } from "../types/trains";
 import { TrainSearchSuggestions } from "./train-search-suggestions";
 import { ScheduleTimetableTable } from "./schedule-timetable-table";
+import {
+	loadTrainSearchHistory,
+	saveTrainSearchToHistory,
+	type TrainSearchHistoryItem,
+} from "../utils/trains-storage";
 
 export const TrainSchedulePanel: React.FC = () => {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
+	const [searchParams] = useSearchParams();
 	const [trainInput, setTrainInput] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [scheduleData, setScheduleData] =
 		useState<TrainScheduleResponse | null>(null);
+	const [trainHistory, setTrainHistory] = useState<TrainSearchHistoryItem[]>(
+		[],
+	);
+	const autoLoadedRef = useRef<string | null>(null);
 
 	const [suggestions, setSuggestions] = useState<TrainSearchResult[]>([]);
 	const [suggestionsLoading, setSuggestionsLoading] = useState(false);
 	const [showSuggestions, setShowSuggestions] = useState(false);
 	const containerRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		setTrainHistory(loadTrainSearchHistory());
+	}, []);
 
 	useEffect(() => {
 		const query = trainInput.trim();
@@ -63,6 +79,52 @@ export const TrainSchedulePanel: React.FC = () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 	}, []);
 
+	const handleQuickSelectTrain = useCallback(
+		async (trainNo: string) => {
+			setTrainInput(trainNo);
+			setShowSuggestions(false);
+			setLoading(true);
+			setError(null);
+			setScheduleData(null);
+
+			try {
+				const res = await getTrainSchedule(trainNo);
+				setScheduleData(res);
+				setTrainInput(`${res.trainName} (${res.trainNumber})`);
+				saveTrainSearchToHistory(
+					res.trainNumber,
+					res.trainName,
+					res.origin,
+					res.destination,
+				);
+				setTrainHistory(loadTrainSearchHistory());
+			} catch (err: unknown) {
+				const axiosErr = err as {
+					response?: { data?: { error?: string } };
+					message?: string;
+				};
+				setError(
+					axiosErr?.response?.data?.error ||
+						axiosErr?.message ||
+						t("tools.pnr_checker.api_error"),
+				);
+			} finally {
+				setLoading(false);
+			}
+		},
+		[t],
+	);
+
+	// Auto load from searchParams
+	useEffect(() => {
+		const paramTrain =
+			searchParams.get("trainNumber") || searchParams.get("train");
+		if (paramTrain && autoLoadedRef.current !== paramTrain) {
+			autoLoadedRef.current = paramTrain;
+			handleQuickSelectTrain(paramTrain);
+		}
+	}, [searchParams, handleQuickSelectTrain]);
+
 	const selectTrain = (train: TrainSearchResult) => {
 		const trainNo = train.trainNumber;
 		setTrainInput(`${train.trainName} (${trainNo})`);
@@ -72,7 +134,16 @@ export const TrainSchedulePanel: React.FC = () => {
 		setScheduleData(null);
 
 		getTrainSchedule(trainNo)
-			.then((res) => setScheduleData(res))
+			.then((res) => {
+				setScheduleData(res);
+				saveTrainSearchToHistory(
+					res.trainNumber,
+					res.trainName,
+					res.origin,
+					res.destination,
+				);
+				setTrainHistory(loadTrainSearchHistory());
+			})
 			.catch((err: unknown) => {
 				const axiosErr = err as {
 					response?: { data?: { error?: string } };
@@ -102,6 +173,13 @@ export const TrainSchedulePanel: React.FC = () => {
 		try {
 			const res = await getTrainSchedule(query);
 			setScheduleData(res);
+			saveTrainSearchToHistory(
+				res.trainNumber,
+				res.trainName,
+				res.origin,
+				res.destination,
+			);
+			setTrainHistory(loadTrainSearchHistory());
 		} catch (err: unknown) {
 			const axiosErr = err as {
 				response?: { data?: { error?: string } };
@@ -158,10 +236,17 @@ export const TrainSchedulePanel: React.FC = () => {
 							<Button
 								onClick={fetchSchedule}
 								disabled={loading}
-								className="h-11 px-6 font-semibold shadow-md gap-2"
+								className="h-11 px-6 font-semibold shadow-md gap-2 cursor-pointer"
 							>
 								{loading ? (
-									<GifLoader />
+									<>
+										<Loader2 className="h-4 w-4 animate-spin" />
+										<span>
+											{t(
+												"tools.pnr_checker.searching_trains",
+											)}
+										</span>
+									</>
 								) : (
 									<>
 										<Search className="h-4 w-4" />
@@ -183,6 +268,32 @@ export const TrainSchedulePanel: React.FC = () => {
 								onSelect={selectTrain}
 							/>
 						)}
+
+						{/* Recent Train Searches Chips */}
+						{trainHistory.length > 0 && (
+							<div className="flex items-center gap-1.5 flex-wrap pt-1">
+								<span className="text-[11px] text-muted-foreground font-medium flex items-center gap-1">
+									<History className="h-3 w-3" /> Recent:
+								</span>
+								{trainHistory.slice(0, 5).map((tItem) => (
+									<button
+										key={tItem.trainNumber}
+										type="button"
+										onClick={() =>
+											handleQuickSelectTrain(
+												tItem.trainNumber,
+											)
+										}
+										className="text-[11px] font-mono font-medium px-2 py-0.5 rounded-md bg-muted/60 hover:bg-muted border border-border/60 hover:border-primary/50 text-foreground transition-all cursor-pointer"
+									>
+										{tItem.trainNumber}{" "}
+										{tItem.trainName
+											? `(${tItem.trainName.slice(0, 14)})`
+											: ""}
+									</button>
+								))}
+							</div>
+						)}
 					</div>
 
 					{error && (
@@ -193,8 +304,25 @@ export const TrainSchedulePanel: React.FC = () => {
 				</CardContent>
 			</Card>
 
-			{scheduleData && scheduleData.stations && (
-				<ScheduleTimetableTable scheduleData={scheduleData} />
+			{/* Large Loading State Below Search Card */}
+			{loading && (
+				<div className="flex flex-col items-center justify-center p-8 rounded-2xl border border-border/50 bg-background/50 backdrop-blur-md shadow-sm animate-in fade-in-50 duration-300">
+					<GifLoader
+						size="lg"
+						label={t("tools.pnr_checker.searching_trains")}
+					/>
+				</div>
+			)}
+
+			{!loading && scheduleData && scheduleData.stations && (
+				<ScheduleTimetableTable
+					scheduleData={scheduleData}
+					onTrackLive={() =>
+						navigate(
+							`/tools/trains?tab=live&trainNumber=${scheduleData.trainNumber}`,
+						)
+					}
+				/>
 			)}
 		</div>
 	);

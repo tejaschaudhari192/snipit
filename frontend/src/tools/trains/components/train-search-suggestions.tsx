@@ -50,7 +50,7 @@ export const TrainSearchSuggestions: React.FC<TrainSearchSuggestionsProps> = ({
 						variant="secondary"
 						className="text-[10px] font-mono shrink-0"
 					>
-						{train.schedule.length} Stations
+						{train.schedule?.length ?? 0} Stations
 					</Badge>
 				</button>
 			))}

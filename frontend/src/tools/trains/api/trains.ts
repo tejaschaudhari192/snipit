@@ -139,11 +139,19 @@ export const getPnrTrackingStatus = async (
 	return response.data;
 };
 
-export const getMyPnrTrackings = async (): Promise<{
-	success: boolean;
-	count: number;
-	trackings: import("../types/trains").PnrTrackingItem[];
-}> => {
-	const response = await api.get(`/tools/trains/tracking/my-trackings`);
-	return response.data;
+export const getMyPnrTrackings = async (): Promise<
+	import("../types/trains").PnrTrackingItem[]
+> => {
+	const response = await api.get<
+		| import("../types/trains").PnrTrackingItem[]
+		| {
+				success: boolean;
+				count: number;
+				trackings: import("../types/trains").PnrTrackingItem[];
+		  }
+	>(`/tools/trains/tracking/my-trackings`);
+	if (Array.isArray(response.data)) {
+		return response.data;
+	}
+	return response.data?.trackings || [];
 };

@@ -143,6 +143,8 @@ export interface PnrData {
 	departureDate?: string;
 	arrival: string;
 	arrivalDate?: string;
+	boardingDayCount?: number;
+	arrivalDayCount?: number;
 	duration?: string;
 	chartStatus?: string;
 	passengers: Passenger[];
@@ -185,13 +187,13 @@ export interface TrainScheduleResponse {
 export interface TrainSearchResult {
 	trainNumber: string;
 	trainName: string;
-	origin: string;
-	destination: string;
-	stationFrom: string;
-	stationTo: string;
-	runningOn: string;
-	journeyClasses: string[];
-	schedule: ScheduleStation[];
+	origin?: string;
+	destination?: string;
+	stationFrom?: string;
+	stationTo?: string;
+	runningOn?: string;
+	journeyClasses?: string[];
+	schedule?: ScheduleStation[];
 }
 
 export interface LiveStatusStation {
@@ -310,7 +312,9 @@ export interface PnrTrackingItem {
 	trainNumber: string;
 	trainName: string;
 	from: string;
+	fromCode?: string;
 	to: string;
+	toCode?: string;
 	departureDate: string;
 	isActive: boolean;
 	notifyEmail: boolean;

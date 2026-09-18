@@ -231,3 +231,128 @@ export function parsePassengerDetails(
 		berth: finalBerth,
 	};
 }
+
+/**
+ * Shift an ISO YYYY-MM-DD date string by a number of calendar days using UTC date math.
+ */
+export function addDaysToDateString(dateStr: string, days: number): string {
+	if (!dateStr || days === 0) return dateStr;
+	const rawParts = dateStr.split("-");
+	if (rawParts.length === 3) {
+		const year = Number(rawParts[0]);
+		const month = Number(rawParts[1]);
+		const day = Number(rawParts[2]);
+		if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
+			const date = new Date(Date.UTC(year, month - 1, day));
+			date.setUTCDate(date.getUTCDate() + days);
+			const y = date.getUTCFullYear();
+			const m = String(date.getUTCMonth() + 1).padStart(2, "0");
+			const d = String(date.getUTCDate()).padStart(2, "0");
+			return `${y}-${m}-${d}`;
+		}
+	}
+	const d = new Date(dateStr);
+	if (!isNaN(d.getTime())) {
+		d.setDate(d.getDate() + days);
+		const iso = d.toISOString().split("T")[0];
+		return iso || dateStr;
+	}
+	return dateStr;
+}
+
+export interface CalculateArrivalDateOptions {
+	departureDate: string;
+	boardingDayCount?: string | number | undefined;
+	destDayCount?: string | number | undefined;
+	explicitArrivalDate?: string | undefined;
+	departureTime?: string | undefined;
+	arrivalTime?: string | undefined;
+	duration?: string | undefined;
+}
+
+/**
+ * Accurately calculate arrival date relying on official API day_count data.
+ */
+export function calculateArrivalDate({
+	departureDate,
+	boardingDayCount,
+	destDayCount,
+	explicitArrivalDate,
+	departureTime,
+	arrivalTime,
+	duration,
+}: CalculateArrivalDateOptions): {
+	arrivalDate: string;
+	boardingDay: number;
+	destDay: number;
+	dayOffset: number;
+} {
+	const boardingDay = Math.max(
+		1,
+		parseInt(String(boardingDayCount || 1), 10) || 1,
+	);
+	let destDay = Math.max(
+		1,
+		parseInt(String(destDayCount || boardingDay), 10) || boardingDay,
+	);
+
+	// Direct explicit arrival date from provider if present and valid
+	if (explicitArrivalDate && explicitArrivalDate !== departureDate) {
+		const dayOffset = Math.max(0, destDay - boardingDay);
+		return {
+			arrivalDate: explicitArrivalDate,
+			boardingDay,
+			destDay,
+			dayOffset,
+		};
+	}
+
+	// 1. Primary: Use API day_count offset
+	let dayOffset = destDay - boardingDay;
+
+	// 2. Fallback: If day_count is identical (e.g. both 1), but times/duration show overnight crossing
+	if (dayOffset <= 0 && departureTime && arrivalTime) {
+		const depParts = departureTime.split(":");
+		const arrParts = arrivalTime.split(":");
+		const depH = parseInt(depParts[0] || "", 10);
+		const depM = parseInt(depParts[1] || "0", 10);
+		const arrH = parseInt(arrParts[0] || "", 10);
+		const arrM = parseInt(arrParts[1] || "0", 10);
+
+		if (!isNaN(depH) && !isNaN(arrH)) {
+			const depMins = depH * 60 + (isNaN(depM) ? 0 : depM);
+			const arrMins = arrH * 60 + (isNaN(arrM) ? 0 : arrM);
+
+			let durationMins = 0;
+			if (duration) {
+				const hMatch = duration.match(/(\d+)\s*h/i);
+				const mMatch = duration.match(/(\d+)\s*m/i);
+				if (hMatch && hMatch[1])
+					durationMins += parseInt(hMatch[1], 10) * 60;
+				if (mMatch && mMatch[1])
+					durationMins += parseInt(mMatch[1], 10);
+			}
+
+			if (durationMins > 0) {
+				dayOffset = Math.floor((depMins + durationMins) / 1440);
+			} else if (arrMins < depMins) {
+				dayOffset = 1;
+			}
+			if (dayOffset > 0) {
+				destDay = boardingDay + dayOffset;
+			}
+		}
+	}
+
+	dayOffset = Math.max(0, dayOffset);
+	const arrivalDate = departureDate
+		? addDaysToDateString(departureDate, dayOffset)
+		: "";
+
+	return {
+		arrivalDate: arrivalDate || departureDate || "",
+		boardingDay,
+		destDay,
+		dayOffset,
+	};
+}

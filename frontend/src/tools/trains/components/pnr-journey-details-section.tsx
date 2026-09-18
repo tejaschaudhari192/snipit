@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Clock } from "lucide-react";
+import { getCrossDayOffset } from "../utils/train-date-calculations";
 
 interface PnrJourneyDetailsSectionProps {
 	from: string;
@@ -10,6 +11,8 @@ interface PnrJourneyDetailsSectionProps {
 	arrival: string;
 	arrivalDate?: string;
 	duration?: string;
+	boardingDayCount?: number;
+	arrivalDayCount?: number;
 }
 
 export const PnrJourneyDetailsSection: React.FC<
@@ -22,8 +25,17 @@ export const PnrJourneyDetailsSection: React.FC<
 	arrival,
 	arrivalDate,
 	duration,
+	boardingDayCount,
+	arrivalDayCount,
 }) => {
 	const { t, i18n } = useTranslation();
+
+	const crossDayOffset = getCrossDayOffset(
+		departureDate,
+		arrivalDate,
+		boardingDayCount,
+		arrivalDayCount,
+	);
 
 	const formatJourneyDate = (dateStr?: string) => {
 		if (!dateStr) return "";
@@ -75,9 +87,15 @@ export const PnrJourneyDetailsSection: React.FC<
 				</div>
 				<div className="flex flex-col items-end text-xs text-muted-foreground mt-0.5 space-y-0.5">
 					{arrivalDate && (
-						<span className="font-semibold text-foreground/90">
-							{formatJourneyDate(arrivalDate)}
-						</span>
+						<div className="flex items-center justify-end gap-1.5 font-semibold text-foreground/90">
+							<span>{formatJourneyDate(arrivalDate)}</span>
+							{crossDayOffset > 0 && (
+								<span className="text-[10px] font-extrabold px-1.5 py-0.2 rounded-sm bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30">
+									+{crossDayOffset} Day
+									{crossDayOffset > 1 ? "s" : ""}
+								</span>
+							)}
+						</div>
 					)}
 					<div className="flex items-center justify-end gap-1">
 						<Clock className="h-3 w-3 text-primary shrink-0" />

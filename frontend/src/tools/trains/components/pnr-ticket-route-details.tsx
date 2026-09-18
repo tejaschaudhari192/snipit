@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Train, Clock, Calendar } from "lucide-react";
+import { getCrossDayOffset } from "../utils/train-date-calculations";
 
 interface PnrTicketRouteDetailsProps {
 	from: string;
@@ -12,6 +13,8 @@ interface PnrTicketRouteDetailsProps {
 	arrivalDate?: string;
 	date?: string;
 	duration?: string;
+	boardingDayCount?: number;
+	arrivalDayCount?: number;
 }
 
 export const PnrTicketRouteDetails: React.FC<PnrTicketRouteDetailsProps> = ({
@@ -24,8 +27,17 @@ export const PnrTicketRouteDetails: React.FC<PnrTicketRouteDetailsProps> = ({
 	arrivalDate,
 	date,
 	duration,
+	boardingDayCount,
+	arrivalDayCount,
 }) => {
 	const { t, i18n } = useTranslation();
+
+	const crossDayOffset = getCrossDayOffset(
+		departureDate || date,
+		arrivalDate,
+		boardingDayCount,
+		arrivalDayCount,
+	);
 
 	const formatJourneyDate = (dateStr?: string) => {
 		if (!dateStr) return "";
@@ -105,6 +117,12 @@ export const PnrTicketRouteDetails: React.FC<PnrTicketRouteDetailsProps> = ({
 								<span>
 									{formatJourneyDate(arrivalDate || date)}
 								</span>
+								{crossDayOffset > 0 && (
+									<span className="text-[10px] font-extrabold px-1.5 py-0.2 rounded-sm bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30">
+										+{crossDayOffset} Day
+										{crossDayOffset > 1 ? "s" : ""}
+									</span>
+								)}
 							</div>
 						)}
 						<div className="flex items-center md:justify-end gap-1 font-mono text-sm font-bold text-primary">

@@ -9,7 +9,7 @@ import { FindTrainsBetweenPanel } from "./components/find-trains-between-panel";
 
 const TrainsPage = () => {
 	const { t } = useTranslation();
-	const [searchParams] = useSearchParams();
+	const [searchParams, setSearchParams] = useSearchParams();
 	const tabFromUrl = searchParams.get("tab") as
 		| "search"
 		| "pnr"
@@ -27,6 +27,15 @@ const TrainsPage = () => {
 		}
 	}, [tabFromUrl, activeTab]);
 
+	const handleTabChange = (tab: "search" | "pnr" | "schedule" | "live") => {
+		setActiveTab(tab);
+		setSearchParams((prev) => {
+			const next = new URLSearchParams(prev);
+			next.set("tab", tab);
+			return next;
+		});
+	};
+
 	return (
 		<div className="min-h-full bg-background text-foreground transition-colors duration-300">
 			<section className="relative pt-6 pb-4 px-4 sm:px-6 lg:px-8 overflow-hidden">
@@ -42,7 +51,7 @@ const TrainsPage = () => {
 						{/* Sub-navigation tabs */}
 						<div className="flex flex-wrap items-center justify-center gap-2.5 mt-6 p-1.5 rounded-2xl bg-muted/40 border border-border/50 shadow-xs">
 							<button
-								onClick={() => setActiveTab("search")}
+								onClick={() => handleTabChange("search")}
 								className={`flex items-center gap-2.5 px-5 py-2.5 text-sm font-bold rounded-xl transition-all cursor-pointer ${
 									activeTab === "search"
 										? "bg-background text-primary shadow-sm border border-border/60"
@@ -56,7 +65,7 @@ const TrainsPage = () => {
 							</button>
 
 							<button
-								onClick={() => setActiveTab("pnr")}
+								onClick={() => handleTabChange("pnr")}
 								className={`flex items-center gap-2.5 px-5 py-2.5 text-sm font-bold rounded-xl transition-all cursor-pointer ${
 									activeTab === "pnr"
 										? "bg-background text-foreground shadow-sm border border-border/60"
@@ -70,7 +79,7 @@ const TrainsPage = () => {
 							</button>
 
 							<button
-								onClick={() => setActiveTab("schedule")}
+								onClick={() => handleTabChange("schedule")}
 								className={`flex items-center gap-2.5 px-5 py-2.5 text-sm font-bold rounded-xl transition-all cursor-pointer ${
 									activeTab === "schedule"
 										? "bg-background text-foreground shadow-sm border border-border/60"
@@ -84,7 +93,7 @@ const TrainsPage = () => {
 							</button>
 
 							<button
-								onClick={() => setActiveTab("live")}
+								onClick={() => handleTabChange("live")}
 								className={`flex items-center gap-2.5 px-5 py-2.5 text-sm font-bold rounded-xl transition-all cursor-pointer ${
 									activeTab === "live"
 										? "bg-background text-primary shadow-sm border border-border/60"

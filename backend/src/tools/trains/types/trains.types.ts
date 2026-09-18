@@ -143,6 +143,8 @@ export interface PnrData {
 	departureDate?: string | undefined;
 	arrival: string;
 	arrivalDate?: string | undefined;
+	boardingDayCount?: number | undefined;
+	arrivalDayCount?: number | undefined;
 	duration?: string | undefined;
 	chartStatus?: string | undefined;
 	passengers: Passenger[];
