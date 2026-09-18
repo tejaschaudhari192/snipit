@@ -235,6 +235,7 @@ export const DisplayContent = memo(
 							value={content}
 							onChange={onContentChange}
 							readOnly={!isEdit}
+							fontSize={fontSize}
 							transliteration={transliteration}
 							onEditorInstance={onEditorInstance}
 						/>

@@ -411,6 +411,7 @@ export const EditorContent = memo(
 								<TiptapEditor
 									value={textValue}
 									onChange={setTextValue}
+									fontSize={fontSize}
 									transliteration={transliteration}
 									onEditorInstance={onEditorInstance}
 								/>
