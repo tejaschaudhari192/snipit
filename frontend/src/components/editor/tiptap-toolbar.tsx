@@ -28,6 +28,7 @@ import { ColorControls } from "./toolbar/color-controls";
 import {
 	HeadingDropdown,
 	FontDropdown,
+	FontSizeDropdown,
 	AlignmentDropdown,
 	LineHeightDropdown,
 } from "./toolbar/dropdowns";
@@ -193,6 +194,7 @@ export function TiptapToolbar({
 
 				<HeadingDropdown editor={editor} />
 				<FontDropdown editor={editor} />
+				<FontSizeDropdown editor={editor} />
 				<div className="divider-v" />
 
 				<FormattingControls editor={editor} />

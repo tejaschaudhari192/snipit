@@ -42,6 +42,7 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/utils";
 import { FONTS, loadFontOnDemand } from "./utils/fonts";
+import { FontSizeDropdown } from "./toolbar/dropdowns";
 
 export function BubbleMenuContent() {
 	const { editor } = useEditor();
@@ -258,44 +259,48 @@ export function BubbleMenuContent() {
 							</Button>
 						}
 					/>
-					<DropdownMenuContent align="start" className="w-32">
+					<DropdownMenuContent align="start" className="w-36">
 						<DropdownMenuItem
-							onSelect={() =>
+							onClick={() =>
 								editor.chain().focus().setParagraph().run()
 							}
+							className="cursor-pointer text-xs"
 						>
 							Normal Text
 						</DropdownMenuItem>
 						<DropdownMenuItem
-							onSelect={() =>
+							onClick={() =>
 								editor
 									.chain()
 									.focus()
 									.setHeading({ level: 1 })
 									.run()
 							}
+							className="cursor-pointer text-xs font-bold"
 						>
 							Heading 1
 						</DropdownMenuItem>
 						<DropdownMenuItem
-							onSelect={() =>
+							onClick={() =>
 								editor
 									.chain()
 									.focus()
 									.setHeading({ level: 2 })
 									.run()
 							}
+							className="cursor-pointer text-xs font-semibold"
 						>
 							Heading 2
 						</DropdownMenuItem>
 						<DropdownMenuItem
-							onSelect={() =>
+							onClick={() =>
 								editor
 									.chain()
 									.focus()
 									.setHeading({ level: 3 })
 									.run()
 							}
+							className="cursor-pointer text-xs font-medium"
 						>
 							Heading 3
 						</DropdownMenuItem>
@@ -339,7 +344,7 @@ export function BubbleMenuContent() {
 							<DropdownMenuItem
 								key={font.name}
 								style={{ fontFamily: font.value || "inherit" }}
-								onSelect={() => {
+								onClick={() => {
 									if (font.value) {
 										loadFontOnDemand(font.value);
 										editor
@@ -355,13 +360,22 @@ export function BubbleMenuContent() {
 											.run();
 									}
 								}}
-								className="text-xs"
+								className="text-xs cursor-pointer"
 							>
 								{font.name}
 							</DropdownMenuItem>
 						))}
 					</DropdownMenuContent>
 				</DropdownMenu>
+			</EditorBubbleItem>
+
+			<div className="w-px h-4 bg-border/80 self-center mx-0.5" />
+
+			<EditorBubbleItem
+				onSelect={() => {}}
+				className="flex items-center gap-0.5"
+			>
+				<FontSizeDropdown editor={editor} />
 			</EditorBubbleItem>
 
 			<div className="w-px h-4 bg-border/80 self-center mx-0.5" />
