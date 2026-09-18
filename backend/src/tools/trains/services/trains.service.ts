@@ -481,8 +481,23 @@ export class PnrService {
 								jsonString = jsonString.slice(0, -1).trim();
 							}
 							const appState = JSON.parse(jsonString);
-							const pnrData =
-								appState?.state?.TrainPnr?.pnrStatusData;
+							const trainPnrState = appState?.state?.TrainPnr;
+							const pnrData = trainPnrState?.pnrStatusData;
+
+							// Check if provider returned a specific maintenance or operational error
+							if (
+								!pnrData?.body &&
+								trainPnrState?.pnrStatusError
+							) {
+								const errObj = trainPnrState.pnrStatusError;
+								const detailedMsg =
+									errObj.status?.message?.message ||
+									errObj.status?.message?.title ||
+									errObj.error;
+								if (detailedMsg) {
+									paytmError = new Error(detailedMsg);
+								}
+							}
 
 							if (pnrData?.body) {
 								const body = pnrData.body;
