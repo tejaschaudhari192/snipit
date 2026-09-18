@@ -41,7 +41,11 @@ import Subscript from "@tiptap/extension-subscript";
 import Mention from "@tiptap/extension-mention";
 
 import TextAlign from "@tiptap/extension-text-align";
-import { Indent, LineHeight } from "./extensions/formatting-extensions";
+import {
+	Indent,
+	LineHeight,
+	FontSize,
+} from "./extensions/formatting-extensions";
 import FontFamily from "@tiptap/extension-font-family";
 
 // Extracted modules
@@ -63,6 +67,7 @@ interface TiptapEditorProps {
 	value: string;
 	onChange: (value: string) => void;
 	readOnly?: boolean;
+	fontSize?: number;
 	transliteration?: {
 		enabled: boolean;
 		targetLanguage: string;
@@ -139,6 +144,7 @@ export function TiptapEditor({
 	value,
 	onChange,
 	readOnly = false,
+	fontSize,
 	transliteration,
 	onEditorInstance,
 }: TiptapEditorProps) {
@@ -431,6 +437,7 @@ export function TiptapEditor({
 			}),
 			Indent,
 			LineHeight,
+			FontSize,
 		];
 	}, [slashCommand]);
 
@@ -509,6 +516,9 @@ export function TiptapEditor({
 								isZenMode &&
 									"shadow-none border-none bg-muted/20 max-w-3xl",
 							),
+							...(fontSize
+								? { style: `font-size: ${fontSize}px;` }
+								: {}),
 						},
 					}}
 				>
