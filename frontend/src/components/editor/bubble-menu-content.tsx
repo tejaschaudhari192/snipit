@@ -41,8 +41,11 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { cn } from "@/utils";
-import { FONTS, loadFontOnDemand } from "./utils/fonts";
-import { FontSizeDropdown } from "./toolbar/dropdowns";
+import {
+	HeadingDropdown,
+	FontDropdown,
+	FontSizeDropdown,
+} from "./toolbar/dropdowns";
 
 export function BubbleMenuContent() {
 	const { editor } = useEditor();
@@ -212,24 +215,8 @@ export function BubbleMenuContent() {
 		);
 	}
 
-	const currentHeading = editor.isActive("heading", { level: 1 })
-		? "Heading 1"
-		: editor.isActive("heading", { level: 2 })
-			? "Heading 2"
-			: editor.isActive("heading", { level: 3 })
-				? "Heading 3"
-				: "Normal Text";
-
 	const currentColor =
 		editor.getAttributes("textStyle").color || "currentColor";
-
-	const currentFont = editor.getAttributes("textStyle").fontFamily || "";
-	const currentFontName =
-		FONTS.find(
-			(f) =>
-				f.value === currentFont ||
-				(currentFont !== "" && f.value.startsWith(currentFont)),
-		)?.name || "Default";
 
 	return (
 		<>
@@ -246,66 +233,7 @@ export function BubbleMenuContent() {
 				onSelect={() => {}}
 				className="flex items-center gap-0.5"
 			>
-				<DropdownMenu>
-					<DropdownMenuTrigger
-						render={
-							<Button
-								variant="ghost"
-								size="sm"
-								className="h-7 px-2 rounded-sm text-xs font-medium border-0 gap-1"
-							>
-								<span>{currentHeading}</span>
-								<ChevronDown className="h-3 w-3 text-muted-foreground" />
-							</Button>
-						}
-					/>
-					<DropdownMenuContent align="start" className="w-36">
-						<DropdownMenuItem
-							onClick={() =>
-								editor.chain().focus().setParagraph().run()
-							}
-							className="cursor-pointer text-xs"
-						>
-							Normal Text
-						</DropdownMenuItem>
-						<DropdownMenuItem
-							onClick={() =>
-								editor
-									.chain()
-									.focus()
-									.setHeading({ level: 1 })
-									.run()
-							}
-							className="cursor-pointer text-xs font-bold"
-						>
-							Heading 1
-						</DropdownMenuItem>
-						<DropdownMenuItem
-							onClick={() =>
-								editor
-									.chain()
-									.focus()
-									.setHeading({ level: 2 })
-									.run()
-							}
-							className="cursor-pointer text-xs font-semibold"
-						>
-							Heading 2
-						</DropdownMenuItem>
-						<DropdownMenuItem
-							onClick={() =>
-								editor
-									.chain()
-									.focus()
-									.setHeading({ level: 3 })
-									.run()
-							}
-							className="cursor-pointer text-xs font-medium"
-						>
-							Heading 3
-						</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
+				<HeadingDropdown editor={editor} compact />
 			</EditorBubbleItem>
 
 			<div className="w-px h-4 bg-border/80 self-center mx-0.5" />
@@ -314,59 +242,7 @@ export function BubbleMenuContent() {
 				onSelect={() => {}}
 				className="flex items-center gap-0.5"
 			>
-				<DropdownMenu>
-					<DropdownMenuTrigger
-						render={
-							<Button
-								variant="ghost"
-								size="sm"
-								className="h-7 px-2 rounded-sm text-xs font-medium border-0 gap-1"
-							>
-								<span
-									style={{
-										fontFamily:
-											currentFont === "Default"
-												? "inherit"
-												: currentFont,
-									}}
-								>
-									{currentFontName}
-								</span>
-								<ChevronDown className="h-3 w-3 text-muted-foreground" />
-							</Button>
-						}
-					/>
-					<DropdownMenuContent
-						align="start"
-						className="w-52 max-h-60 overflow-y-auto custom-scrollbar"
-					>
-						{FONTS.map((font) => (
-							<DropdownMenuItem
-								key={font.name}
-								style={{ fontFamily: font.value || "inherit" }}
-								onClick={() => {
-									if (font.value) {
-										loadFontOnDemand(font.value);
-										editor
-											.chain()
-											.focus()
-											.setFontFamily(font.value)
-											.run();
-									} else {
-										editor
-											.chain()
-											.focus()
-											.unsetFontFamily()
-											.run();
-									}
-								}}
-								className="text-xs cursor-pointer"
-							>
-								{font.name}
-							</DropdownMenuItem>
-						))}
-					</DropdownMenuContent>
-				</DropdownMenu>
+				<FontDropdown editor={editor} compact />
 			</EditorBubbleItem>
 
 			<div className="w-px h-4 bg-border/80 self-center mx-0.5" />
@@ -375,7 +251,7 @@ export function BubbleMenuContent() {
 				onSelect={() => {}}
 				className="flex items-center gap-0.5"
 			>
-				<FontSizeDropdown editor={editor} />
+				<FontSizeDropdown editor={editor} compact />
 			</EditorBubbleItem>
 
 			<div className="w-px h-4 bg-border/80 self-center mx-0.5" />

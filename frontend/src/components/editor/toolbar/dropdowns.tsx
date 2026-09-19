@@ -42,7 +42,13 @@ const FONT_SIZES = [
 	"72px",
 ];
 
-export function HeadingDropdown({ editor }: { editor: Editor }) {
+export function HeadingDropdown({
+	editor,
+	compact = false,
+}: {
+	editor: Editor;
+	compact?: boolean;
+}) {
 	const currentHeading = editor.isActive("heading", { level: 1 })
 		? "Heading 1"
 		: editor.isActive("heading", { level: 2 })
@@ -65,9 +71,14 @@ export function HeadingDropdown({ editor }: { editor: Editor }) {
 						<DropdownMenuTrigger
 							render={
 								<Button
-									variant="outline"
+									variant={compact ? "ghost" : "outline"}
 									size="sm"
-									className="h-8 gap-1 px-2.5 text-xs font-semibold shadow-sm border-border/40 bg-background/50 min-w-24 justify-between"
+									className={cn(
+										"gap-1 font-medium border-0 transition-all",
+										compact
+											? "h-7 px-2 rounded-sm text-xs"
+											: "h-8 px-2.5 text-xs font-semibold shadow-sm border border-border/40 bg-background/50 min-w-24 justify-between",
+									)}
 								>
 									<span>{currentHeading}</span>
 									<ChevronDown className="h-3 w-3 text-muted-foreground" />
@@ -158,7 +169,13 @@ export function HeadingDropdown({ editor }: { editor: Editor }) {
 	);
 }
 
-export function FontSizeDropdown({ editor }: { editor: Editor }) {
+export function FontSizeDropdown({
+	editor,
+	compact,
+}: {
+	editor: Editor;
+	compact?: boolean;
+}) {
 	const currentFontSize =
 		(editor.getAttributes("textStyle").fontSize as string) || "16px";
 	const numericSize = parseInt(currentFontSize, 10) || 16;
@@ -184,7 +201,10 @@ export function FontSizeDropdown({ editor }: { editor: Editor }) {
 						<Button
 							variant="ghost"
 							size="icon"
-							className="h-8 w-7 px-0 text-muted-foreground hover:text-foreground"
+							className={cn(
+								"px-0 text-muted-foreground hover:text-foreground",
+								compact ? "h-7 w-6" : "h-8 w-7",
+							)}
 							onClick={() => stepSize(-1)}
 						>
 							<Minus className="h-3 w-3" />
@@ -205,9 +225,14 @@ export function FontSizeDropdown({ editor }: { editor: Editor }) {
 							<DropdownMenuTrigger
 								render={
 									<Button
-										variant="outline"
+										variant={compact ? "ghost" : "outline"}
 										size="sm"
-										className="h-8 gap-1 px-2 text-xs font-semibold shadow-sm border-border/40 bg-background/50 min-w-13 justify-between"
+										className={cn(
+											"gap-1 text-xs font-semibold justify-between",
+											compact
+												? "h-7 px-1.5 border-0 min-w-10"
+												: "h-8 px-2 shadow-sm border-border/40 bg-background/50 min-w-13",
+										)}
 									>
 										<span>
 											{currentFontSize.replace("px", "")}
@@ -255,7 +280,10 @@ export function FontSizeDropdown({ editor }: { editor: Editor }) {
 						<Button
 							variant="ghost"
 							size="icon"
-							className="h-8 w-7 px-0 text-muted-foreground hover:text-foreground"
+							className={cn(
+								"px-0 text-muted-foreground hover:text-foreground",
+								compact ? "h-7 w-6" : "h-8 w-7",
+							)}
 							onClick={() => stepSize(1)}
 						>
 							<Plus className="h-3 w-3" />
@@ -272,7 +300,13 @@ export function FontSizeDropdown({ editor }: { editor: Editor }) {
 	);
 }
 
-export function FontDropdown({ editor }: { editor: Editor }) {
+export function FontDropdown({
+	editor,
+	compact,
+}: {
+	editor: Editor;
+	compact?: boolean;
+}) {
 	const currentFont = editor.getAttributes("textStyle").fontFamily || "";
 	const currentFontName =
 		FONTS.find(
@@ -289,9 +323,14 @@ export function FontDropdown({ editor }: { editor: Editor }) {
 						<DropdownMenuTrigger
 							render={
 								<Button
-									variant="outline"
+									variant={compact ? "ghost" : "outline"}
 									size="sm"
-									className="h-8 gap-1 px-2.5 text-xs font-semibold shadow-sm border-border/40 bg-background/50 whitespace-nowrap"
+									className={cn(
+										"gap-1 text-xs font-semibold whitespace-nowrap",
+										compact
+											? "h-7 px-2 border-0"
+											: "h-8 px-2.5 shadow-sm border-border/40 bg-background/50",
+									)}
 								>
 									<span
 										style={{
