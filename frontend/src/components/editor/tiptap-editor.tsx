@@ -80,7 +80,7 @@ function EditorSync({
 	}, [value, editor, lastEmittedHtmlRef]);
 
 	useEffect(() => {
-		if (editor) {
+		if (editor && !editor.isDestroyed) {
 			editor.setEditable(!readOnly);
 		}
 	}, [readOnly, editor]);
@@ -171,8 +171,9 @@ export function TiptapEditor({
 		return createEditorExtensions({
 			slashCommand,
 			transliterationRef,
+			readOnly,
 		});
-	}, [slashCommand]);
+	}, [slashCommand, readOnly]);
 
 	return (
 		<div
@@ -229,12 +230,14 @@ export function TiptapEditor({
 				)}
 
 				<EditorContent
+					editable={!readOnly}
 					className={cn(
 						"flex-1 overflow-y-auto min-h-0 custom-scrollbar p-4 sm:p-8 transition-colors",
 						isZenMode ? "bg-background p-6 sm:p-12" : "bg-muted/30",
 					)}
 					initialContent={initialJsonContent}
 					onUpdate={({ editor }) => {
+						if (readOnly) return;
 						const html = editor.getHTML();
 						lastEmittedHtmlRef.current = html;
 						onChange(html);
@@ -242,12 +245,15 @@ export function TiptapEditor({
 					}}
 					extensions={extensions as AnyExtension[]}
 					editorProps={{
+						editable: () => !readOnly,
 						attributes: {
 							id: "tiptap-editor-container",
+							contenteditable: readOnly ? "false" : "true",
 							class: cn(
 								"prose prose-sm sm:prose-base dark:prose-invert focus:outline-none max-w-4xl mx-auto w-full min-h-dvh outline-none px-6 sm:px-10 py-8 bg-card text-foreground border border-border/40 shadow-sm rounded-lg transition-all",
 								isZenMode &&
 									"shadow-none border-none bg-muted/20 max-w-3xl",
+								readOnly && "cursor-default select-text",
 							),
 							...(fontSize
 								? { style: `font-size: ${fontSize}px;` }

@@ -38,12 +38,14 @@ import type { AnyExtension } from "@tiptap/core";
 export function createEditorExtensions({
 	slashCommand,
 	transliterationRef,
+	readOnly = false,
 }: {
 	slashCommand: AnyExtension;
 	transliterationRef: React.MutableRefObject<{
 		enabled: boolean;
 		targetLanguage: string;
 	}>;
+	readOnly?: boolean;
 }): AnyExtension[] {
 	return [
 		StarterKit.configure({
@@ -85,11 +87,15 @@ export function createEditorExtensions({
 				class: "rounded-lg border border-border shadow-sm max-w-full my-4",
 			},
 		}),
-		GlobalDragHandle.configure({
-			dragHandleWidth: 20,
-			scrollTreshold: 100,
-		}),
-		slashCommand,
+		...(!readOnly
+			? [
+					GlobalDragHandle.configure({
+						dragHandleWidth: 20,
+						scrollTreshold: 100,
+					}),
+					slashCommand,
+				]
+			: []),
 		Transliteration.configure({
 			transliterationRef,
 		}),
