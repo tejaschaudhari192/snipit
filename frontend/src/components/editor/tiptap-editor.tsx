@@ -171,9 +171,8 @@ export function TiptapEditor({
 		return createEditorExtensions({
 			slashCommand,
 			transliterationRef,
-			readOnly,
 		});
-	}, [slashCommand, readOnly]);
+	}, [slashCommand]);
 
 	return (
 		<div
@@ -245,10 +244,8 @@ export function TiptapEditor({
 					}}
 					extensions={extensions as AnyExtension[]}
 					editorProps={{
-						editable: () => !readOnly,
 						attributes: {
 							id: "tiptap-editor-container",
-							contenteditable: readOnly ? "false" : "true",
 							class: cn(
 								"prose prose-sm sm:prose-base dark:prose-invert focus:outline-none max-w-4xl mx-auto w-full min-h-dvh outline-none px-6 sm:px-10 py-8 bg-card text-foreground border border-border/40 shadow-sm rounded-lg transition-all",
 								isZenMode &&
