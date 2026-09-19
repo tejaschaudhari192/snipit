@@ -470,7 +470,7 @@ export function TiptapEditor({
 				{isDragging && !readOnly && (
 					<div className="absolute inset-0 z-9999 bg-background/85 backdrop-blur-md flex flex-col items-center justify-center border-2 border-dashed border-primary/50 m-3 rounded-lg pointer-events-none animate-in fade-in duration-200">
 						<div className="p-4 bg-muted rounded-full border border-border mb-3 shadow-md">
-							<ImageIcon className="h-7 w-7 text-primary animate-bounce" />
+							<ImageIcon className="h-7 w-7 text-primary transition-transform" />
 						</div>
 						<p className="font-semibold text-sm text-foreground">
 							Drop images or attachments here
