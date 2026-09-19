@@ -1,28 +1,11 @@
-import { useEffect, useRef, useMemo, useState, useCallback } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
 import {
 	EditorRoot,
 	EditorContent,
-	StarterKit,
-	Placeholder,
-	TextStyle,
-	Color,
-	TiptapUnderline,
-	TiptapLink,
-	HorizontalRule,
-	TaskList,
-	TaskItem,
 	Command,
 	renderItems,
 	useEditor,
 	EditorBubble,
-	Mathematics,
-	Twitter,
-	Youtube,
-	GlobalDragHandle,
-	EditorCommand,
-	EditorCommandEmpty,
-	EditorCommandItem,
-	EditorCommandList,
 } from "novel";
 import "katex/dist/katex.min.css";
 import { Editor, type JSONContent } from "@tiptap/core";
@@ -30,38 +13,17 @@ import type { AnyExtension } from "@tiptap/core";
 import { cn } from "@/utils";
 import { Image as ImageIcon } from "lucide-react";
 
-import { Table } from "@tiptap/extension-table";
-import { TableRow } from "@tiptap/extension-table-row";
-import { TableHeader } from "@tiptap/extension-table-header";
-import { TableCell } from "@tiptap/extension-table-cell";
-
-import Highlight from "@tiptap/extension-highlight";
-import Superscript from "@tiptap/extension-superscript";
-import Subscript from "@tiptap/extension-subscript";
-import Mention from "@tiptap/extension-mention";
-
-import TextAlign from "@tiptap/extension-text-align";
-import {
-	Indent,
-	LineHeight,
-	FontSize,
-} from "./extensions/formatting-extensions";
-import FontFamily from "@tiptap/extension-font-family";
-
-// Extracted modules
-import { Transliteration } from "./extensions/transliteration-extension";
 import { suggestionItems } from "./slash-command-items";
-import type { CustomSuggestionItem } from "./slash-command-items";
-import { CustomImage } from "./extensions/custom-image";
-import { Attachment } from "./extensions/attachment";
 import { BubbleMenuContent } from "./bubble-menu-content";
 import { TiptapToolbar } from "./tiptap-toolbar";
-import { mentionSuggestion } from "./extensions/mention-suggestion";
 import { FindReplace } from "./find-replace";
 import { StatusBar } from "./status-bar";
-import { FileService } from "@/lib/file-service";
-import { isSupabaseConfigured } from "@/lib/supabase";
-import { scanAndLoadFontsFromContent } from "./utils/fonts";
+import { SlashCommandMenu } from "./slash-command-menu";
+
+import { useEditorStats } from "./hooks/use-editor-stats";
+import { useEditorFindReplace } from "./hooks/use-editor-find-replace";
+import { useEditorDragDrop } from "./hooks/use-editor-drag-drop";
+import { createEditorExtensions } from "./utils/editor-extensions";
 
 interface TiptapEditorProps {
 	value: string;
@@ -96,44 +58,39 @@ function EditorSync({
 	useEffect(() => {
 		if (!editor) return;
 
-		// Skip if incoming value matches what this editor instance just emitted internally
 		if (
 			lastEmittedHtmlRef.current !== null &&
-			value === lastEmittedHtmlRef.current
+			lastEmittedHtmlRef.current === value
 		) {
 			return;
 		}
 
 		if (!isInitializedRef.current) {
+			isInitializedRef.current = true;
 			if (value) {
-				scanAndLoadFontsFromContent(value);
 				editor.commands.setContent(value);
 			}
-			isInitializedRef.current = true;
-		} else if (
-			value !== undefined &&
-			!editor.isFocused &&
-			editor.getHTML() !== value
-		) {
-			scanAndLoadFontsFromContent(value);
+			return;
+		}
+
+		const currentHtml = editor.getHTML();
+		if (value !== currentHtml) {
 			editor.commands.setContent(value);
 		}
-	}, [editor, value, lastEmittedHtmlRef]);
+	}, [value, editor, lastEmittedHtmlRef]);
 
 	useEffect(() => {
 		if (editor) {
 			editor.setEditable(!readOnly);
 		}
-	}, [editor, readOnly]);
+	}, [readOnly, editor]);
 
 	useEffect(() => {
-		if (editor) {
-			if (onEditorInstance) onEditorInstance(editor);
-			if (onEditorChange) onEditorChange(editor);
-		}
+		onEditorInstance?.(editor || null);
+		onEditorChange?.(editor || null);
 		return () => {
-			if (onEditorInstance) onEditorInstance(null);
-			if (onEditorChange) onEditorChange(null);
+			onEditorInstance?.(null);
+			onEditorChange?.(null);
 		};
 	}, [editor, onEditorInstance, onEditorChange]);
 
@@ -150,18 +107,7 @@ export function TiptapEditor({
 }: TiptapEditorProps) {
 	const [activeEditor, setActiveEditor] = useState<Editor | null>(null);
 	const [isZenMode, setIsZenMode] = useState(false);
-	const [showFindReplace, setShowFindReplace] = useState(false);
-	const [findText, setFindText] = useState("");
-	const [replaceText, setReplaceText] = useState("");
-	const [isDragging, setIsDragging] = useState(false);
-	const dragCounter = useRef(0);
 	const lastEmittedHtmlRef = useRef<string | null>(null);
-	const statsDebounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-	const [stats, setStats] = useState({
-		words: 0,
-		characters: 0,
-		readTime: 0,
-	});
 
 	const initialJsonContent = useMemo<JSONContent | undefined>(() => {
 		if (!value) return undefined;
@@ -191,166 +137,26 @@ export function TiptapEditor({
 		};
 	}, [transliteration?.enabled, transliteration?.targetLanguage]);
 
-	const updateStatsDebounced = useCallback(
-		(editorInstance: Editor | null) => {
-			if (!editorInstance) return;
-			if (statsDebounceTimerRef.current) {
-				clearTimeout(statsDebounceTimerRef.current);
-			}
-			statsDebounceTimerRef.current = setTimeout(() => {
-				if (!editorInstance || editorInstance.isDestroyed) return;
-				const text = editorInstance.getText();
-				const charCount = text.length;
-				const wordCount =
-					text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
-				const readingTime = Math.ceil(wordCount / 200);
-				setStats({
-					words: wordCount,
-					characters: charCount,
-					readTime: readingTime,
-				});
-			}, 150);
-		},
-		[],
+	const { stats, updateStatsDebounced } = useEditorStats(activeEditor);
+
+	const {
+		showFindReplace,
+		setShowFindReplace,
+		findText,
+		setFindText,
+		replaceText,
+		setReplaceText,
+		matchCount,
+		handleReplace,
+	} = useEditorFindReplace(
+		activeEditor,
+		isZenMode,
+		setIsZenMode,
+		updateStatsDebounced,
 	);
 
-	useEffect(() => {
-		updateStatsDebounced(activeEditor);
-		return () => {
-			if (statsDebounceTimerRef.current) {
-				clearTimeout(statsDebounceTimerRef.current);
-			}
-		};
-	}, [activeEditor, updateStatsDebounced]);
-
-	useEffect(() => {
-		const handleKeyDown = (e: KeyboardEvent) => {
-			if (e.key === "h" && (e.ctrlKey || e.metaKey)) {
-				e.preventDefault();
-				setShowFindReplace((prev) => !prev);
-			}
-			if (e.key === "Escape") {
-				if (showFindReplace) setShowFindReplace(false);
-				if (isZenMode) setIsZenMode(false);
-			}
-		};
-		window.addEventListener("keydown", handleKeyDown);
-		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [showFindReplace, isZenMode]);
-
-	const handleReplace = (all = false) => {
-		if (!activeEditor || !findText) return;
-
-		const { state, view } = activeEditor;
-		const { doc } = state;
-
-		const occurrences: { from: number; to: number }[] = [];
-		doc.descendants((node, pos) => {
-			if (node.isText && node.text) {
-				let index = 0;
-				while (true) {
-					index = node.text.indexOf(findText, index);
-					if (index === -1) break;
-					occurrences.push({
-						from: pos + index,
-						to: pos + index + findText.length,
-					});
-					index += findText.length;
-				}
-			}
-		});
-
-		if (occurrences.length === 0) return;
-
-		if (all) {
-			let tr = state.tr;
-			for (let i = occurrences.length - 1; i >= 0; i--) {
-				const { from, to } = occurrences[i];
-				tr = tr.insertText(replaceText, from, to);
-			}
-			view.dispatch(tr);
-		} else {
-			const { from, to } = occurrences[0];
-			const tr = state.tr.insertText(replaceText, from, to);
-			view.dispatch(tr);
-		}
-		updateStatsDebounced(activeEditor);
-	};
-
-	const matchCount = useMemo(() => {
-		if (!showFindReplace || !activeEditor || !findText.trim()) return 0;
-		let count = 0;
-		activeEditor.state.doc.descendants((node) => {
-			if (node.isText && node.text) {
-				let index = 0;
-				while (true) {
-					index = node.text.indexOf(findText, index);
-					if (index === -1) break;
-					count++;
-					index += findText.length;
-				}
-			}
-		});
-		return count;
-	}, [showFindReplace, activeEditor, findText]);
-
-	const handleDragEnter = (e: React.DragEvent) => {
-		e.preventDefault();
-		dragCounter.current++;
-		if (e.dataTransfer.types.includes("Files")) {
-			setIsDragging(true);
-		}
-	};
-
-	const handleDragLeave = (e: React.DragEvent) => {
-		e.preventDefault();
-		dragCounter.current--;
-		if (dragCounter.current === 0) {
-			setIsDragging(false);
-		}
-	};
-
-	const handleDrop = async (e: React.DragEvent) => {
-		e.preventDefault();
-		dragCounter.current = 0;
-		setIsDragging(false);
-
-		if (!activeEditor || readOnly) return;
-		const files = Array.from(e.dataTransfer.files);
-		if (files.length === 0) return;
-
-		for (const file of files) {
-			if (file.type.startsWith("image/")) {
-				try {
-					let targetUrl: string | null = null;
-					if (isSupabaseConfigured) {
-						const { url } = await FileService.upload(file);
-						if (url) targetUrl = url;
-					}
-					if (!targetUrl) {
-						targetUrl = await new Promise<string>(
-							(resolve, reject) => {
-								const reader = new FileReader();
-								reader.onload = () =>
-									resolve(reader.result as string);
-								reader.onerror = reject;
-								reader.readAsDataURL(file);
-							},
-						);
-					}
-					if (targetUrl) {
-						activeEditor
-							.chain()
-							.focus()
-							.setImage({ src: targetUrl })
-							.run();
-					}
-				} catch (err) {
-					console.error("Failed to insert dropped image:", err);
-				}
-			}
-		}
-	};
+	const { isDragging, handleDragEnter, handleDragLeave, handleDrop } =
+		useEditorDragDrop(activeEditor, readOnly);
 
 	const slashCommand = useMemo(() => {
 		return Command.configure({
@@ -362,83 +168,10 @@ export function TiptapEditor({
 	}, []);
 
 	const extensions = useMemo(() => {
-		return [
-			StarterKit.configure({
-				horizontalRule: false,
-			}),
-			Placeholder.configure({
-				placeholder: ({ node }) => {
-					if (node.type.name === "paragraph") {
-						return "Press '/' for commands...";
-					}
-					return "";
-				},
-			}),
-			TextStyle,
-			Color,
-			TiptapUnderline,
-			TiptapLink,
-			Highlight.configure({
-				multicolor: true,
-			}),
-			Superscript,
-			Subscript,
-			Mention.configure({
-				HTMLAttributes: {
-					class: "mention bg-primary/10 text-primary px-1.5 py-0.5 rounded font-medium border border-primary/20",
-				},
-				suggestion: mentionSuggestion,
-			}),
-			HorizontalRule,
-			TaskList,
-			TaskItem,
-			CustomImage,
-			Attachment,
-			FontFamily,
-			Mathematics,
-			Twitter,
-			Youtube.configure({
-				HTMLAttributes: {
-					class: "rounded-lg border border-border shadow-sm max-w-full my-4",
-				},
-			}),
-			GlobalDragHandle.configure({
-				dragHandleWidth: 20,
-				scrollTreshold: 100,
-			}),
+		return createEditorExtensions({
 			slashCommand,
-			Transliteration.configure({
-				transliterationRef,
-			}),
-			Table.configure({
-				resizable: true,
-				HTMLAttributes: {
-					class: "border-collapse border border-border w-full my-4",
-				},
-			}),
-			TableRow.configure({
-				HTMLAttributes: {
-					class: "border-b border-border/80",
-				},
-			}),
-			TableHeader.configure({
-				HTMLAttributes: {
-					class: "border border-border/85 bg-muted/30 px-3 py-2 text-left font-bold text-xs select-none",
-				},
-			}),
-			TableCell.configure({
-				HTMLAttributes: {
-					class: "border border-border/70 px-3 py-2 text-xs",
-				},
-			}),
-			TextAlign.configure({
-				types: ["heading", "paragraph"],
-				alignments: ["left", "center", "right", "justify"],
-			}),
-			Indent,
-			LineHeight,
-			FontSize,
-		];
+			transliterationRef,
+		});
 	}, [slashCommand]);
 
 	return (
@@ -531,61 +264,7 @@ export function TiptapEditor({
 					/>
 
 					{/* Slash Command Suggestion Menu */}
-					{!readOnly && (
-						<EditorCommand className="z-50 h-auto max-h-82.5 w-72 overflow-y-auto rounded-md border border-border bg-popover px-1 py-2 shadow-md transition-all custom-scrollbar">
-							<EditorCommandEmpty className="px-2 text-muted-foreground text-xs">
-								No results found
-							</EditorCommandEmpty>
-							<EditorCommandList>
-								{(() => {
-									let renderedInsertHeader = false;
-									return suggestionItems.map(
-										(item: CustomSuggestionItem) => {
-											const showHeader =
-												item.category === "INSERT" &&
-												!renderedInsertHeader;
-											if (showHeader) {
-												renderedInsertHeader = true;
-											}
-											return (
-												<div
-													key={item.title}
-													className="flex flex-col w-full"
-												>
-													{showHeader && (
-														<div className="px-2.5 py-1.5 text-[9px] font-bold text-muted-foreground/80 uppercase tracking-wider select-none border-t border-border/40 my-1 pt-2">
-															INSERT
-														</div>
-													)}
-													<EditorCommandItem
-														value={item.title}
-														onCommand={(val) =>
-															item.command(val)
-														}
-														className="flex w-full items-center space-x-2.5 rounded-md px-2 py-1.5 text-left text-xs hover:bg-accent aria-selected:bg-accent cursor-pointer text-foreground animate-in fade-in slide-in-from-bottom-1 duration-100"
-													>
-														<div className="flex h-7 w-7 items-center justify-center rounded border border-border bg-background shrink-0 text-foreground/80">
-															{item.icon}
-														</div>
-														<div className="flex flex-col min-w-0">
-															<p className="font-medium text-xs text-foreground/90">
-																{item.title}
-															</p>
-															<p className="text-[10px] text-muted-foreground/75 truncate max-w-50">
-																{
-																	item.description
-																}
-															</p>
-														</div>
-													</EditorCommandItem>
-												</div>
-											);
-										},
-									);
-								})()}
-							</EditorCommandList>
-						</EditorCommand>
-					)}
+					{!readOnly && <SlashCommandMenu />}
 
 					{/* Text Selection Bubble Menu */}
 					{!readOnly && (

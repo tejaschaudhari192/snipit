@@ -1,16 +1,8 @@
 import { useEditor } from "novel";
 import { Maximize2, Minimize2, Search } from "lucide-react";
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
 import { cn } from "@/utils";
 import { Editor } from "@tiptap/core";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import { MediaDialog } from "./media-dialog";
 import { GifPopover } from "./gif-popover";
@@ -32,6 +24,8 @@ import {
 	AlignmentDropdown,
 	LineHeightDropdown,
 } from "./toolbar/dropdowns";
+import { LinkDialog } from "./dialogs/link-dialog";
+import { LatexDialog } from "./dialogs/latex-dialog";
 
 export function TiptapToolbar({
 	editor: propEditor,
@@ -56,10 +50,7 @@ export function TiptapToolbar({
 	});
 
 	const [linkDialogOpen, setLinkDialogOpen] = useState(false);
-	const [linkInputUrl, setLinkInputUrl] = useState("");
-
 	const [latexDialogOpen, setLatexDialogOpen] = useState(false);
-	const [latexInputFormula, setLatexInputFormula] = useState("");
 
 	useEffect(() => {
 		const handleOpenMedia = (e: Event) => {
@@ -150,40 +141,23 @@ export function TiptapToolbar({
 		}
 	};
 
-	const handleOpenLinkDialog = () => {
-		const previousUrl = editor.getAttributes("link").href || "";
-		setLinkInputUrl(previousUrl);
-		setLinkDialogOpen(true);
-	};
-
-	const handleSaveLink = () => {
-		if (linkInputUrl === "") {
+	const handleSaveLink = (url: string) => {
+		if (url === "") {
 			editor.chain().focus().extendMarkRange("link").unsetLink().run();
 		} else {
 			editor
 				.chain()
 				.focus()
 				.extendMarkRange("link")
-				.setLink({ href: linkInputUrl })
+				.setLink({ href: url })
 				.run();
 		}
-		setLinkDialogOpen(false);
 	};
 
-	const handleOpenLatexDialog = () => {
-		setLatexInputFormula("");
-		setLatexDialogOpen(true);
-	};
-
-	const handleSaveLatex = () => {
-		if (latexInputFormula.trim()) {
-			editor
-				.chain()
-				.focus()
-				.setLatex({ latex: latexInputFormula.trim() })
-				.run();
+	const handleSaveLatex = (formula: string) => {
+		if (formula.trim()) {
+			editor.chain().focus().setLatex({ latex: formula.trim() }).run();
 		}
-		setLatexDialogOpen(false);
 	};
 
 	return (
@@ -226,8 +200,8 @@ export function TiptapToolbar({
 
 				<MediaControls
 					editor={editor}
-					onOpenLinkDialog={handleOpenLinkDialog}
-					onOpenLatexDialog={handleOpenLatexDialog}
+					onOpenLinkDialog={() => setLinkDialogOpen(true)}
+					onOpenLatexDialog={() => setLatexDialogOpen(true)}
 					onAddImage={addImage}
 					onAddVideo={addVideo}
 					onAddAttachment={() =>
@@ -286,85 +260,18 @@ export function TiptapToolbar({
 					onInsert={handleMediaInsert}
 				/>
 
-				{/* Link Modal */}
-				<Dialog open={linkDialogOpen} onOpenChange={setLinkDialogOpen}>
-					<DialogContent className="sm:max-w-md border border-border/50 bg-background shadow-2xl rounded-2xl p-6 flex flex-col gap-4">
-						<DialogHeader>
-							<DialogTitle className="text-base font-semibold text-foreground">
-								Insert Link
-							</DialogTitle>
-						</DialogHeader>
-						<div className="flex flex-col gap-2">
-							<label className="text-xs text-muted-foreground font-medium">
-								Link URL
-							</label>
-							<Input
-								type="text"
-								placeholder="https://example.com"
-								value={linkInputUrl}
-								onChange={(e) =>
-									setLinkInputUrl(e.target.value)
-								}
-								onKeyDown={(e) => {
-									if (e.key === "Enter") handleSaveLink();
-								}}
-								autoFocus
-							/>
-						</div>
-						<div className="flex justify-end gap-2 mt-2">
-							<Button
-								variant="ghost"
-								onClick={() => setLinkDialogOpen(false)}
-							>
-								Cancel
-							</Button>
-							<Button onClick={handleSaveLink}>Save Link</Button>
-						</div>
-					</DialogContent>
-				</Dialog>
+				<LinkDialog
+					isOpen={linkDialogOpen}
+					onClose={() => setLinkDialogOpen(false)}
+					initialUrl={editor.getAttributes("link").href || ""}
+					onSave={handleSaveLink}
+				/>
 
-				{/* LaTeX Modal */}
-				<Dialog
-					open={latexDialogOpen}
-					onOpenChange={setLatexDialogOpen}
-				>
-					<DialogContent className="sm:max-w-md border border-border/50 bg-background shadow-2xl rounded-2xl p-6 flex flex-col gap-4">
-						<DialogHeader>
-							<DialogTitle className="text-base font-semibold text-foreground">
-								Insert LaTeX Formula
-							</DialogTitle>
-						</DialogHeader>
-						<div className="flex flex-col gap-2">
-							<label className="text-xs text-muted-foreground font-medium">
-								LaTeX Code
-							</label>
-							<Input
-								type="text"
-								placeholder="e.g. E=mc^2"
-								value={latexInputFormula}
-								onChange={(e) =>
-									setLatexInputFormula(e.target.value)
-								}
-								className="font-mono"
-								onKeyDown={(e) => {
-									if (e.key === "Enter") handleSaveLatex();
-								}}
-								autoFocus
-							/>
-						</div>
-						<div className="flex justify-end gap-2 mt-2">
-							<Button
-								variant="ghost"
-								onClick={() => setLatexDialogOpen(false)}
-							>
-								Cancel
-							</Button>
-							<Button onClick={handleSaveLatex}>
-								Insert Formula
-							</Button>
-						</div>
-					</DialogContent>
-				</Dialog>
+				<LatexDialog
+					isOpen={latexDialogOpen}
+					onClose={() => setLatexDialogOpen(false)}
+					onSave={handleSaveLatex}
+				/>
 			</div>
 		</TooltipProvider>
 	);

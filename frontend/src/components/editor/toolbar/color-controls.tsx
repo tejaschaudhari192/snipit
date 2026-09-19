@@ -12,6 +12,7 @@ import {
 	TooltipContent,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import { TEXT_COLORS, HIGHLIGHT_COLORS } from "../constants/colors";
 
 export function ColorControls({ editor }: { editor: Editor }) {
 	const currentColor =
@@ -28,7 +29,7 @@ export function ColorControls({ editor }: { editor: Editor }) {
 								render={
 									<Button
 										variant="ghost"
-										className="h-8 w-9 px-0 border-transparent"
+										className="h-8 w-9 px-0 border-transparent cursor-pointer"
 									>
 										<span
 											className="underline decoration-2 text-sm font-bold"
@@ -50,52 +51,27 @@ export function ColorControls({ editor }: { editor: Editor }) {
 				</Tooltip>
 				<DropdownMenuContent align="end" className="w-32">
 					<DropdownMenuItem
-						onSelect={() =>
+						onClick={() =>
 							editor.chain().focus().unsetColor().run()
 						}
+						className="cursor-pointer"
 					>
 						Reset Color
 					</DropdownMenuItem>
-					<DropdownMenuItem
-						onSelect={() =>
-							editor.chain().focus().setColor("#9333ea").run()
-						}
-					>
-						<span className="w-3.5 h-3.5 rounded-full bg-purple-600 mr-2 border border-border" />{" "}
-						Purple
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						onSelect={() =>
-							editor.chain().focus().setColor("#ec4899").run()
-						}
-					>
-						<span className="w-3.5 h-3.5 rounded-full bg-pink-500 mr-2 border border-border" />{" "}
-						Pink
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						onSelect={() =>
-							editor.chain().focus().setColor("#2563eb").run()
-						}
-					>
-						<span className="w-3.5 h-3.5 rounded-full bg-blue-600 mr-2 border border-border" />{" "}
-						Blue
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						onSelect={() =>
-							editor.chain().focus().setColor("#16a34a").run()
-						}
-					>
-						<span className="w-3.5 h-3.5 rounded-full bg-green-600 mr-2 border border-border" />{" "}
-						Green
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						onSelect={() =>
-							editor.chain().focus().setColor("#dc2626").run()
-						}
-					>
-						<span className="w-3.5 h-3.5 rounded-full bg-red-600 mr-2 border border-border" />{" "}
-						Red
-					</DropdownMenuItem>
+					{TEXT_COLORS.map((c) => (
+						<DropdownMenuItem
+							key={c.color}
+							onClick={() =>
+								editor.chain().focus().setColor(c.color).run()
+							}
+							className="cursor-pointer"
+						>
+							<span
+								className={`w-3.5 h-3.5 rounded-full ${c.bgClass || ""} mr-2 border border-border`}
+							/>{" "}
+							{c.label}
+						</DropdownMenuItem>
+					))}
 				</DropdownMenuContent>
 			</DropdownMenu>
 
@@ -108,7 +84,7 @@ export function ColorControls({ editor }: { editor: Editor }) {
 								render={
 									<Button
 										variant="ghost"
-										className="h-8 w-9 px-0 border-transparent"
+										className="h-8 w-9 px-0 border-transparent cursor-pointer"
 									>
 										<Highlighter className="h-4 w-4" />
 										<ChevronDown className="h-2.5 w-2.5 text-muted-foreground ml-0.5" />
@@ -125,72 +101,31 @@ export function ColorControls({ editor }: { editor: Editor }) {
 				</Tooltip>
 				<DropdownMenuContent align="end" className="w-36">
 					<DropdownMenuItem
-						onSelect={() =>
+						onClick={() =>
 							editor.chain().focus().unsetHighlight().run()
 						}
+						className="cursor-pointer"
 					>
 						Reset Highlight
 					</DropdownMenuItem>
-					<DropdownMenuItem
-						onSelect={() =>
-							editor
-								.chain()
-								.focus()
-								.toggleHighlight({ color: "#fef08a" })
-								.run()
-						}
-					>
-						<span className="w-3.5 h-3.5 rounded bg-yellow-200 mr-2 border border-border" />{" "}
-						Yellow
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						onSelect={() =>
-							editor
-								.chain()
-								.focus()
-								.toggleHighlight({ color: "#bbf7d0" })
-								.run()
-						}
-					>
-						<span className="w-3.5 h-3.5 rounded bg-green-200 mr-2 border border-border" />{" "}
-						Green
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						onSelect={() =>
-							editor
-								.chain()
-								.focus()
-								.toggleHighlight({ color: "#bfdbfe" })
-								.run()
-						}
-					>
-						<span className="w-3.5 h-3.5 rounded bg-blue-200 mr-2 border border-border" />{" "}
-						Blue
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						onSelect={() =>
-							editor
-								.chain()
-								.focus()
-								.toggleHighlight({ color: "#fbcfe8" })
-								.run()
-						}
-					>
-						<span className="w-3.5 h-3.5 rounded bg-pink-200 mr-2 border border-border" />{" "}
-						Pink
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						onSelect={() =>
-							editor
-								.chain()
-								.focus()
-								.toggleHighlight({ color: "#ddd6fe" })
-								.run()
-						}
-					>
-						<span className="w-3.5 h-3.5 rounded bg-purple-200 mr-2 border border-border" />{" "}
-						Purple
-					</DropdownMenuItem>
+					{HIGHLIGHT_COLORS.map((c) => (
+						<DropdownMenuItem
+							key={c.color}
+							onClick={() =>
+								editor
+									.chain()
+									.focus()
+									.toggleHighlight({ color: c.color })
+									.run()
+							}
+							className="cursor-pointer"
+						>
+							<span
+								className={`w-3.5 h-3.5 rounded ${c.bgClass || ""} mr-2 border border-border`}
+							/>{" "}
+							{c.label}
+						</DropdownMenuItem>
+					))}
 				</DropdownMenuContent>
 			</DropdownMenu>
 		</>
