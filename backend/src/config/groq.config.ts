@@ -5,13 +5,12 @@
 export const GROQ_CONFIG = {
 	// General application tasks (language detection, autocomplete, title generation)
 	models: {
-		dumb: "groq/compound-mini",
 		smart: "openai/gpt-oss-120b",
+		dumb: "openai/gpt-oss-20b",
 		generalList: [
-			"groq/compound-mini",
-			"groq/compound",
-			"openai/gpt-oss-20b",
 			"openai/gpt-oss-120b",
+			"qwen/qwen3.8-27b",
+			"openai/gpt-oss-20b",
 		] as readonly string[],
 	},
 
@@ -21,7 +20,6 @@ export const GROQ_CONFIG = {
 		guard: "meta-llama/llama-prompt-guard-2-86m",
 		fallbackList: [
 			"qwen/qwen3.8-27b",
-			"qwen/qwen3.6-27b",
 			"openai/gpt-oss-20b",
 		] as readonly string[],
 	},

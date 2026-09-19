@@ -33,7 +33,7 @@ export const CompanionPage: React.FC = () => {
 	const [currentReply, setCurrentReply] = useState("");
 	const [voiceEnabled, setVoiceEnabled] = useState(false);
 	const [memoryDrawerOpen, setMemoryDrawerOpen] = useState(false);
-	const [selectedModel, setSelectedModel] = useState("groq/compound-mini");
+	const [selectedModel, setSelectedModel] = useState("openai/gpt-oss-120b");
 	const [isSpeaking, setIsSpeaking] = useState(false);
 
 	const messagesEndRef = useRef<HTMLDivElement>(null);
