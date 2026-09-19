@@ -39,8 +39,8 @@ export const buildTicketBodyHtml = (data: FormattedTicketData): string => {
 				</div>
 
 				<div style="text-align: right; flex-shrink: 0; margin-left: 12px; margin-top: 2px;">
-					<!-- Perfectly centered Class Box -->
-					<div style="display: inline-flex; align-items: center; justify-content: center; height: 26px; padding: 0 12px; background: rgba(249, 115, 22, 0.15); border: 1px solid rgba(249, 115, 22, 0.5); border-radius: 6px; font-size: 11px; font-weight: 800; color: #fb923c; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; line-height: 26px; text-align: center; box-sizing: border-box;">
+					<!-- Class Badge -->
+					<div style="display: inline-flex; align-items: center; justify-content: center; height: 26px; padding: 0 12px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 6px; font-size: 11px; font-weight: 700; color: #f1f5f9; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; line-height: 26px; text-align: center; box-sizing: border-box;">
 						${data.travelClass}
 					</div>
 				</div>
@@ -89,8 +89,8 @@ export const buildTicketBodyHtml = (data: FormattedTicketData): string => {
 							</span>
 							${
 								data.crossDayOffset > 0
-									? `<!-- Boxed +xd Badge -->
-									<span style="display: inline-flex; align-items: center; justify-content: center; height: 20px; padding: 0 7px; background: rgba(249, 115, 22, 0.2); border: 1px solid #f97316; border-radius: 4px; color: #fb923c; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 10px; font-weight: 800; line-height: 20px; text-align: center; box-sizing: border-box; white-space: nowrap;">+${data.crossDayOffset}d</span>`
+									? `<!-- Sleek +xd Badge -->
+									<span style="display: inline-flex; align-items: center; justify-content: center; height: 18px; padding: 0 6px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 4px; color: #38bdf8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 10px; font-weight: 800; line-height: 18px; text-align: center; box-sizing: border-box; white-space: nowrap;">+${data.crossDayOffset}d</span>`
 									: ""
 							}
 						</div>

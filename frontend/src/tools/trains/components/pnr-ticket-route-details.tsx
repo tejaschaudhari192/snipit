@@ -118,9 +118,8 @@ export const PnrTicketRouteDetails: React.FC<PnrTicketRouteDetailsProps> = ({
 									{formatJourneyDate(arrivalDate || date)}
 								</span>
 								{crossDayOffset > 0 && (
-									<span className="text-[10px] font-extrabold px-1.5 py-0.2 rounded-sm bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30">
-										+{crossDayOffset} Day
-										{crossDayOffset > 1 ? "s" : ""}
+									<span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-sm bg-primary/10 text-primary border border-primary/20">
+										+{crossDayOffset}d
 									</span>
 								)}
 							</div>
