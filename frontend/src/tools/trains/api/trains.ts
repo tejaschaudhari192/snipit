@@ -155,3 +155,41 @@ export const getMyPnrTrackings = async (): Promise<
 	}
 	return response.data?.trackings || [];
 };
+
+export const sharePnrTicket = async (
+	pnr: string,
+	payload: import("../types/trains").PnrSharePayload,
+): Promise<import("../types/trains").PnrShareResponse> => {
+	const response = await api.post<import("../types/trains").PnrShareResponse>(
+		`/tools/trains/tracking/share`,
+		{
+			pnr,
+			...payload,
+		},
+	);
+	return response.data;
+};
+
+export const getPnrAlertRecipients = async (
+	pnr: string,
+): Promise<import("../types/trains").PnrRecipientsResponse> => {
+	const response = await api.get<import("../types/trains").PnrRecipientsResponse>(
+		`/tools/trains/tracking/recipients/${encodeURIComponent(pnr)}`,
+	);
+	return response.data;
+};
+
+export const removePnrAlertRecipient = async (
+	pnr: string,
+	email: string,
+): Promise<{ success: boolean; message: string; alertRecipients: string[] }> => {
+	const response = await api.delete<{
+		success: boolean;
+		message: string;
+		alertRecipients: string[];
+	}>(`/tools/trains/tracking/recipients/${encodeURIComponent(pnr)}`, {
+		params: { email },
+	});
+	return response.data;
+};
+

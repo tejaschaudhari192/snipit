@@ -42,10 +42,38 @@ export interface IPnrTracking extends Document {
 	statusHistory: IStatusHistoryEntry[];
 	isActive: boolean;
 	notifyEmail: boolean;
+	alertRecipients: string[];
 	lastCheckedAt?: Date | undefined;
 	nextCheckAt: Date;
 	createdAt: Date;
 	updatedAt: Date;
+}
+
+export interface PnrTicketShareDetails {
+	pnr: string;
+	trainName: string;
+	trainNumber: string;
+	travelClass?: string;
+	from: string;
+	fromCode?: string;
+	to: string;
+	toCode?: string;
+	departureDate?: string;
+	departureTime?: string;
+	arrivalDate?: string;
+	arrivalTime?: string;
+	passengers?: Array<{
+		number: number;
+		name?: string;
+		coach?: string;
+		berth?: string | number;
+		status: string;
+	}>;
+	senderName?: string;
+	senderEmail?: string;
+	note?: string;
+	alertsSubscribed?: boolean;
+	pnrUrl: string;
 }
 
 export interface IPnrDiffResult {

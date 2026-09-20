@@ -318,6 +318,7 @@ export interface PnrTrackingItem {
 	departureDate: string;
 	isActive: boolean;
 	notifyEmail: boolean;
+	alertRecipients?: string[];
 	lastCheckedAt?: string;
 	nextCheckAt: string;
 	createdAt: string;
@@ -333,3 +334,26 @@ export interface PnrTrackingStatusResponse {
 	isTracking?: boolean;
 	tracking?: PnrTrackingItem | null;
 }
+
+export interface PnrSharePayload {
+	recipients: string[];
+	note?: string;
+	subscribeAlerts: boolean;
+	ticketData?: PnrData;
+}
+
+export interface PnrShareResponse {
+	success: boolean;
+	sentCount: number;
+	recipients: string[];
+	alertsSubscribed: boolean;
+	message: string;
+}
+
+export interface PnrRecipientsResponse {
+	success: boolean;
+	pnr: string;
+	isTrackingActive: boolean;
+	alertRecipients: string[];
+}
+

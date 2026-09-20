@@ -9,7 +9,7 @@ import type {
 	IPnrTracking,
 	IPnrStatusSnapshot,
 } from "../types/pnr-tracking.types.js";
-import type { Types } from "mongoose";
+import type { Types, HydratedDocument } from "mongoose";
 
 const emailService = new EmailService();
 
@@ -21,7 +21,7 @@ export class PnrTrackingService {
 		userId: Types.ObjectId | string,
 		userEmail: string,
 		pnr: string,
-	): Promise<{ tracking: IPnrTracking; isNew: boolean }> {
+	): Promise<{ tracking: HydratedDocument<IPnrTracking>; isNew: boolean }> {
 		const cleanPnr = pnr.trim();
 		if (!/^\d{10}$/.test(cleanPnr)) {
 			throw new Error("Invalid PNR number: must be exactly 10 digits");
@@ -279,23 +279,41 @@ export class PnrTrackingService {
 			// Update snapshot
 			tracking.lastStatus = newSnapshot;
 
-			// Send notification email
-			if (tracking.notifyEmail && tracking.userEmail) {
+			// Send notification email to user AND all subscribed alert recipients
+			if (tracking.notifyEmail) {
 				const pnrUrl = `${configurations.domain}/tools/trains?pnr=${tracking.pnr}`;
-				await emailService.sendPnrStatusUpdateEmail(
-					tracking.userEmail,
-					{
-						pnr: tracking.pnr,
-						trainName: tracking.trainName,
-						trainNumber: tracking.trainNumber,
-						from: tracking.from,
-						to: tracking.to,
-						departureDate: tracking.departureDate,
-						changes: diff.changes,
-						isConfirmed: diff.isConfirmed,
-						isChartPrepared: diff.isChartPrepared,
-						pnrUrl,
-					},
+				const recipientEmails = Array.from(
+					new Set([
+						tracking.userEmail,
+						...(tracking.alertRecipients || []),
+					]),
+				).filter(Boolean);
+
+				await Promise.allSettled(
+					recipientEmails.map(async (recipientEmail) => {
+						try {
+							await emailService.sendPnrStatusUpdateEmail(
+								recipientEmail,
+								{
+									pnr: tracking.pnr,
+									trainName: tracking.trainName,
+									trainNumber: tracking.trainNumber,
+									from: tracking.from,
+									to: tracking.to,
+									departureDate: tracking.departureDate,
+									changes: diff.changes,
+									isConfirmed: diff.isConfirmed,
+									isChartPrepared: diff.isChartPrepared,
+									pnrUrl,
+								},
+							);
+						} catch (emailErr) {
+							logger.error(
+								`Failed to send PNR status update to recipient ${recipientEmail} for PNR ${tracking.pnr}:`,
+								emailErr,
+							);
+						}
+					}),
 				);
 			}
 		}
@@ -329,6 +347,158 @@ export class PnrTrackingService {
 		await tracking.save();
 
 		return diff.hasChanged;
+	}
+
+	/**
+	 * Share PNR ticket via email with one or more recipients,
+	 * and optionally register them for automated status change alerts.
+	 */
+	public async shareTicket(
+		userId: Types.ObjectId | string | undefined,
+		senderEmail: string | undefined,
+		senderName: string | undefined,
+		pnr: string,
+		payload: {
+			recipients: string[];
+			note?: string | undefined;
+			subscribeAlerts: boolean;
+			ticketData?: any | undefined;
+		},
+	): Promise<{
+		success: boolean;
+		sentCount: number;
+		recipients: string[];
+		alertsSubscribed: boolean;
+	}> {
+		const cleanPnr = pnr.trim();
+		if (!/^\d{10}$/.test(cleanPnr)) {
+			throw new Error("Invalid PNR number: must be exactly 10 digits");
+		}
+
+		const cleanRecipients = Array.from(
+			new Set(
+				(payload.recipients || [])
+					.map((r) => r.trim().toLowerCase())
+					.filter((r) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r)),
+			),
+		);
+
+		if (cleanRecipients.length === 0) {
+			throw new Error("At least one valid recipient email is required");
+		}
+
+		// 1. Get or fetch ticket details for email
+		let ticket = payload.ticketData;
+		if (!ticket || !ticket.train) {
+			ticket = await pnrService.fetchPnrStatus(cleanPnr);
+		}
+
+		const pnrUrl = `${configurations.domain}/tools/trains?pnr=${cleanPnr}`;
+
+		// 2. Dispatch immediate ticket share emails via Brevo
+		const emailPromises = cleanRecipients.map((toEmail) =>
+			emailService.sendPnrTicketShareEmail(toEmail, {
+				pnr: cleanPnr,
+				trainName: ticket.train || "Train",
+				trainNumber: ticket.trainNumber || "",
+				travelClass: ticket.class || "",
+				from: ticket.from || "",
+				fromCode: ticket.fromCode,
+				to: ticket.to || "",
+				toCode: ticket.toCode,
+				departureDate: ticket.departureDate || ticket.date || "",
+				departureTime: ticket.departure || "",
+				arrivalDate: ticket.arrivalDate || ticket.date || "",
+				arrivalTime: ticket.arrival || "",
+				passengers: ticket.passengers || [],
+				senderName,
+				senderEmail,
+				note: payload.note,
+				alertsSubscribed: payload.subscribeAlerts,
+				pnrUrl,
+			}),
+		);
+
+		await Promise.allSettled(emailPromises);
+
+		// 3. If subscribeAlerts is enabled, associate with tracking
+		let alertsSubscribed = false;
+		if (payload.subscribeAlerts && (userId || senderEmail)) {
+			let tracking: HydratedDocument<IPnrTracking> | null = userId
+				? await PnrTracking.findOne({ userId, pnr: cleanPnr })
+				: null;
+
+			if (!tracking && userId && senderEmail) {
+				const subscribeRes = await this.subscribe(
+					userId,
+					senderEmail,
+					cleanPnr,
+				);
+				tracking = subscribeRes.tracking;
+			}
+
+			if (tracking) {
+				const existingRecipients = new Set(
+					tracking.alertRecipients || [],
+				);
+				for (const email of cleanRecipients) {
+					existingRecipients.add(email);
+				}
+				tracking.alertRecipients = Array.from(existingRecipients);
+				tracking.isActive = true;
+				tracking.notifyEmail = true;
+				await tracking.save();
+				alertsSubscribed = true;
+			}
+		}
+
+		return {
+			success: true,
+			sentCount: cleanRecipients.length,
+			recipients: cleanRecipients,
+			alertsSubscribed,
+		};
+	}
+
+	/**
+	 * Retrieve currently subscribed alert recipients for a PNR
+	 */
+	public async getTrackingRecipients(
+		userId: Types.ObjectId | string,
+		pnr: string,
+	): Promise<{ pnr: string; recipients: string[]; isTrackingActive: boolean }> {
+		const cleanPnr = pnr.trim();
+		const tracking = await PnrTracking.findOne({ userId, pnr: cleanPnr });
+		return {
+			pnr: cleanPnr,
+			recipients: tracking?.alertRecipients || [],
+			isTrackingActive: Boolean(tracking?.isActive),
+		};
+	}
+
+	/**
+	 * Remove a recipient from PNR tracking alerts
+	 */
+	public async removeTrackingRecipient(
+		userId: Types.ObjectId | string,
+		pnr: string,
+		emailToRemove: string,
+	): Promise<{ success: boolean; remainingRecipients: string[] }> {
+		const cleanPnr = pnr.trim();
+		const cleanEmail = emailToRemove.trim().toLowerCase();
+		const tracking = await PnrTracking.findOne({ userId, pnr: cleanPnr });
+		if (!tracking) {
+			return { success: false, remainingRecipients: [] };
+		}
+
+		tracking.alertRecipients = (tracking.alertRecipients || []).filter(
+			(e) => e.toLowerCase() !== cleanEmail,
+		);
+		await tracking.save();
+		return {
+			success: true,
+			remainingRecipients: tracking.alertRecipients,
+		};
 	}
 }
 

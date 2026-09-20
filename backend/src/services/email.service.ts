@@ -553,6 +553,89 @@ class EmailService {
 			);
 		}
 	}
+
+	async sendPnrTicketShareEmail(
+		toEmail: string,
+		details: {
+			pnr: string;
+			trainName: string;
+			trainNumber: string;
+			travelClass?: string | undefined;
+			from: string;
+			fromCode?: string | undefined;
+			to: string;
+			toCode?: string | undefined;
+			departureDate?: string | undefined;
+			departureTime?: string | undefined;
+			arrivalDate?: string | undefined;
+			arrivalTime?: string | undefined;
+			passengers?: Array<{
+				number: number;
+				name?: string | undefined;
+				coach?: string | undefined;
+				berth?: string | number | undefined;
+				status: string;
+			}> | undefined;
+			senderName?: string | undefined;
+			senderEmail?: string | undefined;
+			note?: string | undefined;
+			alertsSubscribed?: boolean | undefined;
+			pnrUrl: string;
+		},
+	) {
+		try {
+			logger.info(
+				`Attempting to send PNR ticket share email via Brevo to: ${toEmail} for PNR: ${details.pnr}`,
+			);
+			const fromAddress = this.getFromAddress();
+			const subject = `🎟️ Train Ticket: ${details.trainName} (PNR: ${details.pnr})`;
+
+			const text = `Train Ticket Shared for PNR ${details.pnr} (${details.trainName} #${details.trainNumber})\n\nRoute: ${details.from} to ${details.to}\nDeparture: ${details.departureDate || ""} ${details.departureTime || ""}\n\nView live status: ${details.pnrUrl}`;
+			const html = EMAIL_TEMPLATES.PNR_TICKET_SHARED(details);
+
+			const response = await fetch(
+				"https://api.brevo.com/v3/smtp/email",
+				{
+					method: "POST",
+					headers: {
+						accept: "application/json",
+						"content-type": "application/json",
+						"api-key": configurations.brevo.apiKey,
+					},
+					body: JSON.stringify({
+						sender: {
+							name: "Snipit Trains",
+							email: fromAddress,
+						},
+						to: [{ email: toEmail }],
+						subject,
+						htmlContent: html,
+						textContent: text,
+					}),
+				},
+			);
+
+			if (!response.ok) {
+				const errorData = (await response.json()) as {
+					message?: string;
+				};
+				throw new Error(
+					errorData.message ||
+						"Failed to send PNR ticket share email via Brevo",
+				);
+			}
+
+			logger.info(
+				`PNR ticket share email sent via Brevo to ${toEmail} for PNR ${details.pnr}`,
+			);
+		} catch (error) {
+			logger.error(
+				`Error sending PNR ticket share email to ${toEmail} via Brevo:`,
+				error,
+			);
+			throw error;
+		}
+	}
 }
 
 export default EmailService;

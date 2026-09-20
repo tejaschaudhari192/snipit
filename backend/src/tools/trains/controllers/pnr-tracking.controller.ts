@@ -157,3 +157,109 @@ export async function cronTriggerSweep(
 		next(err);
 	}
 }
+
+/**
+ * Share PNR ticket with recipient emails and optionally subscribe them to alerts
+ */
+export async function sharePnrTicket(
+	req: AuthRequest,
+	res: Response,
+	next: NextFunction,
+): Promise<void> {
+	try {
+		const { pnr, recipients, note, subscribeAlerts, ticketData } = req.body;
+		const cleanPnr = pnr ? String(pnr).trim() : "";
+
+		if (!cleanPnr || !/^\d{10}$/.test(cleanPnr)) {
+			res.status(400).json({ error: "Valid 10-digit PNR number is required" });
+			return;
+		}
+
+		if (!Array.isArray(recipients) || recipients.length === 0) {
+			res.status(400).json({ error: "At least one recipient email is required" });
+			return;
+		}
+
+		const result = await pnrTrackingService.shareTicket(
+			req.user?._id,
+			req.user?.email,
+			req.user?.username,
+			cleanPnr,
+			{
+				recipients,
+				note: note ? String(note).trim() : undefined,
+				subscribeAlerts: Boolean(subscribeAlerts),
+				ticketData,
+			},
+		);
+
+		res.json(result);
+	} catch (err) {
+		next(err);
+	}
+}
+
+/**
+ * Get currently subscribed alert recipients for a PNR
+ */
+export async function getPnrAlertRecipients(
+	req: AuthRequest,
+	res: Response,
+	next: NextFunction,
+): Promise<void> {
+	try {
+		if (!req.user || !req.user._id) {
+			res.status(401).json({ error: "User authentication required" });
+			return;
+		}
+
+		const pnr = req.params.pnr ? String(req.params.pnr).trim() : "";
+		if (!pnr) {
+			res.status(400).json({ error: "PNR number is required" });
+			return;
+		}
+
+		const data = await pnrTrackingService.getTrackingRecipients(
+			req.user._id,
+			pnr,
+		);
+
+		res.json(data);
+	} catch (err) {
+		next(err);
+	}
+}
+
+/**
+ * Remove a recipient from PNR tracking alerts
+ */
+export async function removePnrAlertRecipient(
+	req: AuthRequest,
+	res: Response,
+	next: NextFunction,
+): Promise<void> {
+	try {
+		if (!req.user || !req.user._id) {
+			res.status(401).json({ error: "User authentication required" });
+			return;
+		}
+
+		const pnr = req.params.pnr ? String(req.params.pnr).trim() : "";
+		const email = req.body?.email || req.query?.email;
+
+		if (!pnr || !email) {
+			res.status(400).json({ error: "PNR number and email to remove are required" });
+			return;
+		}
+
+		const result = await pnrTrackingService.removeTrackingRecipient(
+			req.user._id,
+			pnr,
+			String(email),
+		);
+
+		res.json(result);
+	} catch (err) {
+		next(err);
+	}
+}

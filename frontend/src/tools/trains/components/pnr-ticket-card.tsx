@@ -6,6 +6,7 @@ import { toast } from "@/components/ui/toast";
 import { PnrTicketHeaderBanner } from "./pnr-ticket-header-banner";
 import { PnrTicketRouteDetails } from "./pnr-ticket-route-details";
 import { PnrTicketPassengerList } from "./pnr-ticket-passenger-list";
+import { PnrShareModal } from "./pnr-share-modal";
 
 interface PnrTicketCardProps {
 	data: PnrData;
@@ -20,6 +21,7 @@ export const PnrTicketCard: React.FC<PnrTicketCardProps> = ({
 }) => {
 	const { t } = useTranslation();
 	const [downloading, setDownloading] = useState(false);
+	const [shareModalOpen, setShareModalOpen] = useState(false);
 
 	const handleDownload = async () => {
 		try {
@@ -64,6 +66,7 @@ export const PnrTicketCard: React.FC<PnrTicketCardProps> = ({
 				onViewRoute={onViewRoute}
 				onDownload={handleDownload}
 				onCheckLiveStatus={onCheckLiveStatus}
+				onShare={() => setShareModalOpen(true)}
 			/>
 
 			{/* Middle Journey Route with Notches */}
@@ -89,6 +92,13 @@ export const PnrTicketCard: React.FC<PnrTicketCardProps> = ({
 
 			{/* Passenger Boarding Details Stub */}
 			<PnrTicketPassengerList passengers={data.passengers} />
+
+			{/* Share Ticket Dialog Modal */}
+			<PnrShareModal
+				open={shareModalOpen}
+				onOpenChange={setShareModalOpen}
+				ticket={data}
+			/>
 		</div>
 	);
 };

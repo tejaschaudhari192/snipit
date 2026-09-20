@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Train, Download, Radio } from "lucide-react";
+import { Train, Download, Radio, Share2 } from "lucide-react";
 
 interface PnrTicketHeaderBannerProps {
 	train: string;
@@ -12,6 +12,7 @@ interface PnrTicketHeaderBannerProps {
 	onViewRoute?: () => void;
 	onDownload: () => void;
 	onCheckLiveStatus?: () => void;
+	onShare?: () => void;
 }
 
 export const PnrTicketHeaderBanner: React.FC<PnrTicketHeaderBannerProps> = ({
@@ -22,6 +23,7 @@ export const PnrTicketHeaderBanner: React.FC<PnrTicketHeaderBannerProps> = ({
 	onViewRoute,
 	onDownload,
 	onCheckLiveStatus,
+	onShare,
 }) => {
 	const { t } = useTranslation();
 
@@ -86,6 +88,17 @@ export const PnrTicketHeaderBanner: React.FC<PnrTicketHeaderBannerProps> = ({
 					>
 						<Train className="h-3.5 w-3.5 text-primary" />
 						<span>{t("tools.pnr_checker.train_route")}</span>
+					</Button>
+				)}
+				{onShare && (
+					<Button
+						variant="outline"
+						size="sm"
+						className="text-xs h-8 gap-1.5 rounded-xl border-border/70 hover:border-primary/40 hover:bg-primary/5 transition-all shadow-xs cursor-pointer"
+						onClick={onShare}
+					>
+						<Share2 className="h-3.5 w-3.5 text-primary" />
+						<span>{t("tools.pnr_checker.share", "Share")}</span>
 					</Button>
 				)}
 				<Button

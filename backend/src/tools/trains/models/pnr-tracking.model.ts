@@ -81,6 +81,20 @@ const PnrTrackingSchema = new Schema<IPnrTracking>(
 			type: Boolean,
 			default: true,
 		},
+		alertRecipients: {
+			type: [
+				{
+					type: String,
+					trim: true,
+					lowercase: true,
+					match: [
+						/^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+						"Invalid email address",
+					],
+				},
+			],
+			default: [],
+		},
 		lastCheckedAt: {
 			type: Date,
 		},
