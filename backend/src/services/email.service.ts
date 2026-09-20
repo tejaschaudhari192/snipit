@@ -1,6 +1,19 @@
 import configurations from "@/config/configurations.js";
 import logger from "@/config/logger.js";
 import { EMAIL_TEMPLATES } from "@/templates/email.templates.js";
+import { parseUserAgentDetails } from "@/utils/user-agent.util.js";
+import type { PnrTicketSharedEmailData } from "@/templates/trains/pnr-ticket-shared.template.js";
+
+interface SendBrevoEmailOptions {
+	toEmail: string;
+	toName?: string | undefined;
+	senderName?: string | undefined;
+	replyToEmail?: string | undefined;
+	subject: string;
+	htmlContent: string;
+	textContent?: string | undefined;
+	throwOnError?: boolean | undefined;
+}
 
 class EmailService {
 	private isVerified = true;
@@ -58,24 +71,44 @@ class EmailService {
 		return configurations.brevo.sender;
 	}
 
-	async sendAccessGrantedEmail(
-		toEmail: string,
-		role: "viewer" | "editor" | "commenter" | "admin",
-		pasteId: string,
-		pasteUrl: string,
-	) {
+	/**
+	 * Core dispatcher: executes HTTP POST to Brevo transactional email API
+	 */
+	private async sendViaBrevo(options: SendBrevoEmailOptions): Promise<void> {
+		const {
+			toEmail,
+			toName,
+			senderName = "Snipit",
+			replyToEmail,
+			subject,
+			htmlContent,
+			textContent,
+			throwOnError = false,
+		} = options;
+
 		try {
 			logger.info(
-				`Attempting to send access granted email via Brevo to: ${toEmail} with role: ${role}`,
+				`Attempting to send email via Brevo to: ${toEmail} | Subject: "${subject}"`,
 			);
 			const fromAddress = this.getFromAddress();
-			const subject = `You have been granted ${role} access to a snippet`;
-			const text = `You have been granted ${role} access to a snippet on Snipit.\n\nYou can access it here: ${pasteUrl}\nSnippet ID: ${pasteId}`;
-			const html = EMAIL_TEMPLATES.ACCESS_GRANTED(
-				role,
-				pasteId,
-				pasteUrl,
-			);
+
+			const payload: Record<string, unknown> = {
+				sender: {
+					name: senderName,
+					email: fromAddress,
+				},
+				to: [
+					{
+						email: toEmail,
+						...(toName ? { name: toName } : {}),
+					},
+				],
+				subject,
+				htmlContent,
+			};
+
+			if (textContent) payload.textContent = textContent;
+			if (replyToEmail) payload.replyTo = { email: replyToEmail };
 
 			const response = await fetch(
 				"https://api.brevo.com/v3/smtp/email",
@@ -86,20 +119,7 @@ class EmailService {
 						"content-type": "application/json",
 						"api-key": configurations.brevo.apiKey,
 					},
-					body: JSON.stringify({
-						sender: {
-							name: "Snipit",
-							email: fromAddress,
-						},
-						to: [
-							{
-								email: toEmail,
-							},
-						],
-						subject,
-						textContent: text,
-						htmlContent: html,
-					}),
+					body: JSON.stringify(payload),
 				},
 			);
 
@@ -112,13 +132,31 @@ class EmailService {
 				);
 			}
 
-			const data = await response.json();
 			logger.info(
-				`Access granted email sent via Brevo to ${toEmail}: ${JSON.stringify(data)}`,
+				`Email successfully dispatched via Brevo to: ${toEmail}`,
 			);
 		} catch (error) {
 			logger.error(`Error sending email to ${toEmail} via Brevo:`, error);
+			if (throwOnError) throw error;
 		}
+	}
+
+	async sendAccessGrantedEmail(
+		toEmail: string,
+		role: "viewer" | "editor" | "commenter" | "admin",
+		pasteId: string,
+		pasteUrl: string,
+	) {
+		const subject = `You have been granted ${role} access to a snippet`;
+		const text = `You have been granted ${role} access to a snippet on Snipit.\n\nYou can access it here: ${pasteUrl}\nSnippet ID: ${pasteId}`;
+		const html = EMAIL_TEMPLATES.ACCESS_GRANTED(role, pasteId, pasteUrl);
+
+		await this.sendViaBrevo({
+			toEmail,
+			subject,
+			htmlContent: html,
+			textContent: text,
+		});
 	}
 
 	async sendVaultAccessGrantedEmail(
@@ -127,119 +165,33 @@ class EmailService {
 		collectionName: string,
 		collectionUrl: string,
 	) {
-		try {
-			logger.info(
-				`Attempting to send vault access granted email via Brevo to: ${toEmail} with role: ${role}`,
-			);
-			const fromAddress = this.getFromAddress();
-			const subject = `You have been granted ${role} access to a password vault`;
-			const text = `You have been granted ${role} access to a password vault collection on Snipit.\n\nYou can access it here: ${collectionUrl}\nCollection: ${collectionName}`;
-			const html = EMAIL_TEMPLATES.VAULT_ACCESS_GRANTED(
-				role,
-				collectionName,
-				collectionUrl,
-			);
+		const subject = `You have been granted ${role} access to a vault collection`;
+		const text = `You have been granted ${role} access to vault collection "${collectionName}" on Snipit.\n\nYou can access it here: ${collectionUrl}`;
+		const html = EMAIL_TEMPLATES.VAULT_ACCESS_GRANTED(
+			role,
+			collectionName,
+			collectionUrl,
+		);
 
-			const response = await fetch(
-				"https://api.brevo.com/v3/smtp/email",
-				{
-					method: "POST",
-					headers: {
-						accept: "application/json",
-						"content-type": "application/json",
-						"api-key": configurations.brevo.apiKey,
-					},
-					body: JSON.stringify({
-						sender: {
-							name: "Snipit Vault",
-							email: fromAddress,
-						},
-						to: [
-							{
-								email: toEmail,
-							},
-						],
-						subject,
-						textContent: text,
-						htmlContent: html,
-					}),
-				},
-			);
-
-			if (!response.ok) {
-				const errorData = (await response.json()) as {
-					message?: string;
-				};
-				throw new Error(
-					errorData.message || "Failed to send email via Brevo",
-				);
-			}
-
-			const data = await response.json();
-			logger.info(
-				`Vault access granted email sent via Brevo to ${toEmail}: ${JSON.stringify(data)}`,
-			);
-		} catch (error) {
-			logger.error(`Error sending email to ${toEmail} via Brevo:`, error);
-		}
+		await this.sendViaBrevo({
+			toEmail,
+			subject,
+			htmlContent: html,
+			textContent: text,
+		});
 	}
 
 	async sendPasswordResetEmail(toEmail: string, resetUrl: string) {
-		try {
-			logger.info(
-				`Attempting to send password reset email via Brevo to: ${toEmail}`,
-			);
-			const fromAddress = this.getFromAddress();
-			const subject = "Password Reset Token";
-			const text = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
-			const html = EMAIL_TEMPLATES.PASSWORD_RESET(resetUrl);
+		const subject = "Reset your Snipit password";
+		const text = `Reset your Snipit password\n\nYou recently requested to reset your password. Click the link below to proceed:\n${resetUrl}\n\nThis link will expire in 10 minutes.\n\nIf you did not request a password reset, please ignore this email.`;
+		const html = EMAIL_TEMPLATES.PASSWORD_RESET(resetUrl);
 
-			const response = await fetch(
-				"https://api.brevo.com/v3/smtp/email",
-				{
-					method: "POST",
-					headers: {
-						accept: "application/json",
-						"content-type": "application/json",
-						"api-key": configurations.brevo.apiKey,
-					},
-					body: JSON.stringify({
-						sender: {
-							name: "Snipit",
-							email: fromAddress,
-						},
-						to: [
-							{
-								email: toEmail,
-							},
-						],
-						subject,
-						textContent: text,
-						htmlContent: html,
-					}),
-				},
-			);
-
-			if (!response.ok) {
-				const errorData = (await response.json()) as {
-					message?: string;
-				};
-				throw new Error(
-					errorData.message ||
-						"Failed to send password reset email via Brevo",
-				);
-			}
-
-			const data = await response.json();
-			logger.info(
-				`Password reset email sent via Brevo to ${toEmail}: ${JSON.stringify(data)}`,
-			);
-		} catch (error) {
-			logger.error(
-				`Error sending password reset email to ${toEmail} via Brevo:`,
-				error,
-			);
-		}
+		await this.sendViaBrevo({
+			toEmail,
+			subject,
+			htmlContent: html,
+			textContent: text,
+		});
 	}
 
 	async sendLoginNotificationEmail(
@@ -248,167 +200,28 @@ class EmailService {
 		userAgentHeader: string,
 		ipAddress: string,
 	) {
-		try {
-			logger.info(
-				`Attempting to send login notification email via Brevo to: ${toEmail}`,
-			);
-			const fromAddress = this.getFromAddress();
+		const info = await parseUserAgentDetails(userAgentHeader, ipAddress);
+		const subject = "Security Alert: New login detected for Snipit";
+		const text = `New login detected for your Snipit account: ${username}\nDevice: ${info.deviceName} (${info.os} • ${info.browser})\nLocation: ${info.location}\nIP: ${info.cleanIp}`;
 
-			// Parse User Agent
-			let deviceType: "desktop" | "mobile" | "tablet" = "desktop";
-			let browser = "Unknown Browser";
-			let os = "Unknown OS";
-			let deviceName = "Unknown Device";
+		const resetUrl = `${configurations.domain}/reset-password`;
+		const html = EMAIL_TEMPLATES.LOGIN_NOTIFICATION(
+			username,
+			info.deviceName,
+			info.browser,
+			info.os,
+			info.cleanIp,
+			info.location,
+			info.deviceType,
+			resetUrl,
+		);
 
-			const ua = userAgentHeader || "";
-			if (/ipad|tablet/i.test(ua)) {
-				deviceType = "tablet";
-				deviceName = "Tablet Device";
-			} else if (/mobi|iphone|android/i.test(ua)) {
-				deviceType = "mobile";
-				deviceName = /iphone/i.test(ua)
-					? "Apple iPhone"
-					: "Android Smartphone";
-			} else {
-				deviceType = "desktop";
-				deviceName = /macintosh|mac os x/i.test(ua)
-					? "Apple Mac PC"
-					: "Windows PC";
-			}
-
-			if (/chrome|crios/i.test(ua) && !/edge|edg/i.test(ua)) {
-				browser = "Google Chrome";
-			} else if (/safari/i.test(ua) && !/chrome|crios/i.test(ua)) {
-				browser = "Apple Safari";
-			} else if (/firefox|fxios/i.test(ua)) {
-				browser = "Mozilla Firefox";
-			} else if (/edge|edg/i.test(ua)) {
-				browser = "Microsoft Edge";
-			} else if (/opera|opr/i.test(ua)) {
-				browser = "Opera";
-			}
-
-			if (/windows/i.test(ua)) {
-				os = "Windows";
-			} else if (/macintosh|mac os x/i.test(ua)) {
-				os = "macOS";
-			} else if (/iphone|ipad|ipod/i.test(ua)) {
-				os = "iOS";
-			} else if (/android/i.test(ua)) {
-				os = "Android";
-			} else if (/linux/i.test(ua)) {
-				os = "Linux";
-			}
-
-			// Clean and resolve IP Location
-			let location = "Unknown Location";
-			const cleanIp =
-				ipAddress === "::1" || ipAddress === "127.0.0.1"
-					? "Localhost"
-					: ipAddress;
-
-			if (
-				cleanIp !== "Localhost" &&
-				!cleanIp.startsWith("192.168.") &&
-				!cleanIp.startsWith("10.")
-			) {
-				try {
-					const controller = new AbortController();
-					const timeoutId = setTimeout(
-						() => controller.abort(),
-						1500,
-					);
-
-					const response = await fetch(
-						`http://ip-api.com/json/${cleanIp}`,
-						{
-							signal: controller.signal,
-						},
-					);
-					clearTimeout(timeoutId);
-
-					if (response.ok) {
-						const ipData = (await response.json()) as {
-							city?: string;
-							country?: string;
-							status?: string;
-						};
-						if (ipData.status === "success") {
-							location = `${ipData.city || "Unknown City"}, ${ipData.country || "Unknown Country"}`;
-						}
-					}
-				} catch (err) {
-					logger.warn(
-						`Failed to resolve IP location for ${cleanIp}:`,
-						err,
-					);
-				}
-			} else {
-				location = "Localhost Network";
-			}
-
-			const subject = `Security Alert: New login detected for Snipit`;
-			const text = `New login detected for your Snipit account: ${username}\nDevice: ${deviceName} (${os} • ${browser})\nLocation: ${location}\nIP: ${cleanIp}`;
-
-			// Build password reset/security url
-			const resetUrl = `${configurations.domain}/reset-password`;
-			const html = EMAIL_TEMPLATES.LOGIN_NOTIFICATION(
-				username,
-				deviceName,
-				browser,
-				os,
-				cleanIp,
-				location,
-				deviceType,
-				resetUrl,
-			);
-
-			const response = await fetch(
-				"https://api.brevo.com/v3/smtp/email",
-				{
-					method: "POST",
-					headers: {
-						accept: "application/json",
-						"content-type": "application/json",
-						"api-key": configurations.brevo.apiKey,
-					},
-					body: JSON.stringify({
-						sender: {
-							name: "Snipit Security",
-							email: fromAddress,
-						},
-						to: [
-							{
-								email: toEmail,
-							},
-						],
-						subject,
-						textContent: text,
-						htmlContent: html,
-					}),
-				},
-			);
-
-			if (!response.ok) {
-				const errorData = (await response.json()) as {
-					message?: string;
-				};
-				throw new Error(
-					errorData.message ||
-						"Failed to send login notification email via Brevo",
-				);
-			}
-
-			const data = await response.json();
-			logger.info(
-				`Login notification email sent via Brevo to ${toEmail}: ${JSON.stringify(data)}`,
-			);
-		} catch (error) {
-			logger.error(
-				`Error sending login notification email to ${toEmail}:`,
-				error,
-			);
-		}
+		await this.sendViaBrevo({
+			toEmail,
+			subject,
+			htmlContent: html,
+			textContent: text,
+		});
 	}
 
 	async sendFeedbackEmail(
@@ -418,68 +231,24 @@ class EmailService {
 		description: string,
 		userEmail: string,
 	) {
-		try {
-			logger.info(
-				`Attempting to send feedback email via Brevo to: ${adminEmail}`,
-			);
-			const fromAddress = this.getFromAddress();
-			const subject = `[Snipit Feedback] ${type.toUpperCase()}: ${title}`;
+		const subject = `[Snipit Feedback] ${type.toUpperCase()}: ${title}`;
+		const text = `New Feedback Received\n\nType: ${type}\nFrom: ${userEmail}\n\nTitle: ${title}\nDescription: ${description}`;
+		const html = EMAIL_TEMPLATES.FEEDBACK_RECEIVED(
+			type,
+			title,
+			description,
+			userEmail,
+		);
 
-			// Fallback text
-			const text = `New Feedback Received\n\nType: ${type}\nFrom: ${userEmail}\n\nTitle: ${title}\nDescription: ${description}`;
-
-			const html = EMAIL_TEMPLATES.FEEDBACK_RECEIVED(
-				type,
-				title,
-				description,
-				userEmail,
-			);
-
-			const response = await fetch(
-				"https://api.brevo.com/v3/smtp/email",
-				{
-					method: "POST",
-					headers: {
-						accept: "application/json",
-						"api-key": configurations.brevo.apiKey,
-						"content-type": "application/json",
-					},
-					body: JSON.stringify({
-						sender: {
-							name: "Snipit Feedback",
-							email: fromAddress,
-						},
-						to: [
-							{
-								email: adminEmail,
-								name: "Snipit Admin",
-							},
-						],
-						replyTo: userEmail ? { email: userEmail } : undefined,
-						subject,
-						htmlContent: html,
-						textContent: text,
-					}),
-				},
-			);
-
-			if (!response.ok) {
-				const errorData = (await response.json()) as {
-					message?: string;
-				};
-				throw new Error(
-					errorData.message ||
-						"Failed to send feedback email via Brevo",
-				);
-			}
-
-			logger.info(`Successfully sent feedback email to ${adminEmail}`);
-		} catch (error) {
-			logger.error(
-				`Error sending feedback email to ${adminEmail}:`,
-				error,
-			);
-		}
+		await this.sendViaBrevo({
+			toEmail: adminEmail,
+			toName: "Snipit Admin",
+			senderName: "Snipit Feedback",
+			replyToEmail: userEmail || undefined,
+			subject,
+			htmlContent: html,
+			textContent: text,
+		});
 	}
 
 	async sendPnrStatusUpdateEmail(
@@ -497,144 +266,40 @@ class EmailService {
 			pnrUrl: string;
 		},
 	) {
-		try {
-			logger.info(
-				`Attempting to send PNR status update email via Brevo to: ${toEmail} for PNR: ${details.pnr}`,
-			);
-			const fromAddress = this.getFromAddress();
-			const subject = details.isConfirmed
-				? `🎉 Ticket Confirmed! PNR: ${details.pnr} (${details.trainName})`
-				: details.isChartPrepared
-					? `📋 Chart Prepared: PNR ${details.pnr} (${details.trainName})`
-					: `🚆 PNR Status Update: ${details.pnr} (${details.trainName})`;
+		const subject = details.isConfirmed
+			? `🎉 PNR Confirmed: ${details.trainName} (#${details.trainNumber})`
+			: details.isChartPrepared
+				? `📋 Chart Prepared: PNR ${details.pnr} (${details.trainName})`
+				: `🔔 PNR Status Update: ${details.trainName} (PNR: ${details.pnr})`;
 
-			const text = `PNR Status Update for ${details.pnr} (${details.trainName} #${details.trainNumber})\n\nRoute: ${details.from} to ${details.to}\n\nChanges Detected:\n${details.changes.map((c) => `• ${c}`).join("\n")}\n\nView live status: ${details.pnrUrl}`;
-			const html = EMAIL_TEMPLATES.PNR_STATUS_UPDATE(details);
+		const text = `PNR Status Update for ${details.pnr} (${details.trainName} #${details.trainNumber})\n\nChanges:\n${details.changes.map((c) => `- ${c}`).join("\n")}\n\nView live status: ${details.pnrUrl}`;
+		const html = EMAIL_TEMPLATES.PNR_STATUS_UPDATE(details);
 
-			const response = await fetch(
-				"https://api.brevo.com/v3/smtp/email",
-				{
-					method: "POST",
-					headers: {
-						accept: "application/json",
-						"content-type": "application/json",
-						"api-key": configurations.brevo.apiKey,
-					},
-					body: JSON.stringify({
-						sender: {
-							name: "Snipit Trains",
-							email: fromAddress,
-						},
-						to: [{ email: toEmail }],
-						subject,
-						htmlContent: html,
-						textContent: text,
-					}),
-				},
-			);
-
-			if (!response.ok) {
-				const errorData = (await response.json()) as {
-					message?: string;
-				};
-				throw new Error(
-					errorData.message ||
-						"Failed to send PNR status update email via Brevo",
-				);
-			}
-
-			logger.info(
-				`PNR status update email sent via Brevo to ${toEmail} for PNR ${details.pnr}`,
-			);
-		} catch (error) {
-			logger.error(
-				`Error sending PNR status update email to ${toEmail} via Brevo:`,
-				error,
-			);
-		}
+		await this.sendViaBrevo({
+			toEmail,
+			senderName: "Snipit Trains",
+			subject,
+			htmlContent: html,
+			textContent: text,
+		});
 	}
 
 	async sendPnrTicketShareEmail(
 		toEmail: string,
-		details: {
-			pnr: string;
-			trainName: string;
-			trainNumber: string;
-			travelClass?: string | undefined;
-			from: string;
-			fromCode?: string | undefined;
-			to: string;
-			toCode?: string | undefined;
-			departureDate?: string | undefined;
-			departureTime?: string | undefined;
-			arrivalDate?: string | undefined;
-			arrivalTime?: string | undefined;
-			passengers?: Array<{
-				number: number;
-				name?: string | undefined;
-				coach?: string | undefined;
-				berth?: string | number | undefined;
-				status: string;
-			}> | undefined;
-			senderName?: string | undefined;
-			senderEmail?: string | undefined;
-			note?: string | undefined;
-			alertsSubscribed?: boolean | undefined;
-			pnrUrl: string;
-		},
+		details: PnrTicketSharedEmailData,
 	) {
-		try {
-			logger.info(
-				`Attempting to send PNR ticket share email via Brevo to: ${toEmail} for PNR: ${details.pnr}`,
-			);
-			const fromAddress = this.getFromAddress();
-			const subject = `🎟️ Train Ticket: ${details.trainName} (PNR: ${details.pnr})`;
+		const subject = `🎟️ Train Ticket: ${details.trainName} (PNR: ${details.pnr})`;
+		const text = `Train Ticket Shared for PNR ${details.pnr} (${details.trainName} #${details.trainNumber})\n\nRoute: ${details.from} to ${details.to}\nDeparture: ${details.departureDate || ""} ${details.departureTime || ""}\n\nView live status: ${details.pnrUrl}`;
+		const html = EMAIL_TEMPLATES.PNR_TICKET_SHARED(details);
 
-			const text = `Train Ticket Shared for PNR ${details.pnr} (${details.trainName} #${details.trainNumber})\n\nRoute: ${details.from} to ${details.to}\nDeparture: ${details.departureDate || ""} ${details.departureTime || ""}\n\nView live status: ${details.pnrUrl}`;
-			const html = EMAIL_TEMPLATES.PNR_TICKET_SHARED(details);
-
-			const response = await fetch(
-				"https://api.brevo.com/v3/smtp/email",
-				{
-					method: "POST",
-					headers: {
-						accept: "application/json",
-						"content-type": "application/json",
-						"api-key": configurations.brevo.apiKey,
-					},
-					body: JSON.stringify({
-						sender: {
-							name: "Snipit Trains",
-							email: fromAddress,
-						},
-						to: [{ email: toEmail }],
-						subject,
-						htmlContent: html,
-						textContent: text,
-					}),
-				},
-			);
-
-			if (!response.ok) {
-				const errorData = (await response.json()) as {
-					message?: string;
-				};
-				throw new Error(
-					errorData.message ||
-						"Failed to send PNR ticket share email via Brevo",
-				);
-			}
-
-			logger.info(
-				`PNR ticket share email sent via Brevo to ${toEmail} for PNR ${details.pnr}`,
-			);
-		} catch (error) {
-			logger.error(
-				`Error sending PNR ticket share email to ${toEmail} via Brevo:`,
-				error,
-			);
-			throw error;
-		}
+		await this.sendViaBrevo({
+			toEmail,
+			senderName: "Snipit Trains",
+			subject,
+			htmlContent: html,
+			textContent: text,
+			throwOnError: true,
+		});
 	}
 }
 

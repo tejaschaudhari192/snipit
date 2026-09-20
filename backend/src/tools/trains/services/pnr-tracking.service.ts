@@ -9,6 +9,7 @@ import type {
 	IPnrTracking,
 	IPnrStatusSnapshot,
 } from "../types/pnr-tracking.types.js";
+import type { PnrData } from "../types/trains.types.js";
 import type { Types, HydratedDocument } from "mongoose";
 
 const emailService = new EmailService();
@@ -362,7 +363,7 @@ export class PnrTrackingService {
 			recipients: string[];
 			note?: string | undefined;
 			subscribeAlerts: boolean;
-			ticketData?: any | undefined;
+			ticketData?: PnrData | undefined;
 		},
 	): Promise<{
 		success: boolean;
@@ -388,9 +389,13 @@ export class PnrTrackingService {
 		}
 
 		// 1. Get or fetch ticket details for email
-		let ticket = payload.ticketData;
+		let ticket: PnrData | undefined = payload.ticketData;
 		if (!ticket || !ticket.train) {
 			ticket = await pnrService.fetchPnrStatus(cleanPnr);
+		}
+
+		if (!ticket) {
+			throw new Error("Unable to retrieve ticket details for sharing");
 		}
 
 		const pnrUrl = `${configurations.domain}/tools/trains?pnr=${cleanPnr}`;
@@ -466,7 +471,11 @@ export class PnrTrackingService {
 	public async getTrackingRecipients(
 		userId: Types.ObjectId | string,
 		pnr: string,
-	): Promise<{ pnr: string; recipients: string[]; isTrackingActive: boolean }> {
+	): Promise<{
+		pnr: string;
+		recipients: string[];
+		isTrackingActive: boolean;
+	}> {
 		const cleanPnr = pnr.trim();
 		const tracking = await PnrTracking.findOne({ userId, pnr: cleanPnr });
 		return {
