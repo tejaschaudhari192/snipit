@@ -313,7 +313,7 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-6">
-				{state === "idle" && (
+				{(state === "idle" || state === "error") && (
 					<div
 						onDragOver={handleDragOver}
 						onDragLeave={handleDragLeave}
@@ -436,7 +436,7 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 					</div>
 				)}
 
-				{files.length > 0 && state === "idle" && (
+				{files.length > 0 && (state === "idle" || state === "error") && (
 					<div className="space-y-3">
 						<div className="space-y-2">
 							<label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
