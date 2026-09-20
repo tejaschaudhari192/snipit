@@ -1,4 +1,4 @@
-# Snipit ⚡
+# Snipit - Cpaste⚡
 
 <p align="center">
   <strong>The Modern Workspace for Code, Documents, and Real-Time Collaboration</strong>
