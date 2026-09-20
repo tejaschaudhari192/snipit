@@ -171,12 +171,16 @@ export async function sharePnrTicket(
 		const cleanPnr = pnr ? String(pnr).trim() : "";
 
 		if (!cleanPnr || !/^\d{10}$/.test(cleanPnr)) {
-			res.status(400).json({ error: "Valid 10-digit PNR number is required" });
+			res.status(400).json({
+				error: "Valid 10-digit PNR number is required",
+			});
 			return;
 		}
 
 		if (!Array.isArray(recipients) || recipients.length === 0) {
-			res.status(400).json({ error: "At least one recipient email is required" });
+			res.status(400).json({
+				error: "At least one recipient email is required",
+			});
 			return;
 		}
 
@@ -248,7 +252,9 @@ export async function removePnrAlertRecipient(
 		const email = req.body?.email || req.query?.email;
 
 		if (!pnr || !email) {
-			res.status(400).json({ error: "PNR number and email to remove are required" });
+			res.status(400).json({
+				error: "PNR number and email to remove are required",
+			});
 			return;
 		}
 
