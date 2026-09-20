@@ -720,7 +720,11 @@
 			"shared_sent": "{{count}}件の宛先にチケットを送信しました。",
 			"share_failed": "チケットの共有に失敗しました",
 			"share_now": "チケットを共有",
-			"sharing": "共有中..."
+			"sharing": "共有中...",
+			"add": "追加",
+			"remove": "削除",
+			"cancel": "キャンセル",
+			"loading": "読み込み中..."
 		},
 		"cryptoSafe_title": "クリプトセーフ",
 		"cinema": {

@@ -113,7 +113,10 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 
 		for (const email of parts) {
 			if (EMAIL_REGEX.test(email)) {
-				if (!recipients.includes(email) && !existingRecipients.includes(email)) {
+				if (
+					!recipients.includes(email) &&
+					!existingRecipients.includes(email)
+				) {
 					validEmails.push(email);
 				}
 			} else {
@@ -123,7 +126,7 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 
 		if (invalidEmails.length > 0) {
 			toast.add({
-				title: t("tools.pnr_checker.invalid_email_title", "Invalid email address"),
+				title: t("tools.pnr_checker.invalid_email_title"),
 				description: invalidEmails.join(", "),
 				type: "error",
 			});
@@ -152,17 +155,14 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 			await navigator.clipboard.writeText(shareUrl);
 			setCopied(true);
 			toast.add({
-				title: t("tools.pnr_checker.link_copied_title", "Link Copied!"),
-				description: t(
-					"tools.pnr_checker.link_copied_desc",
-					"PNR status link copied to clipboard.",
-				),
+				title: t("tools.pnr_checker.link_copied_title"),
+				description: t("tools.pnr_checker.link_copied_desc"),
 				type: "success",
 			});
 			setTimeout(() => setCopied(false), 2000);
 		} catch {
 			toast.add({
-				title: t("tools.pnr_checker.copy_failed", "Failed to copy link"),
+				title: t("tools.pnr_checker.copy_failed"),
 				type: "error",
 			});
 		}
@@ -175,10 +175,7 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 			if (res.success) {
 				setExistingRecipients(res.alertRecipients);
 				toast.add({
-					title: t(
-						"tools.pnr_checker.recipient_removed",
-						"Recipient removed from alerts",
-					),
+					title: t("tools.pnr_checker.recipient_removed"),
 					type: "success",
 				});
 			}
@@ -200,7 +197,11 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 		// Include current input if user forgot to hit Enter/Add
 		const finalRecipients = [...recipients];
 		const pendingInput = emailInput.trim().toLowerCase();
-		if (pendingInput && EMAIL_REGEX.test(pendingInput) && !finalRecipients.includes(pendingInput)) {
+		if (
+			pendingInput &&
+			EMAIL_REGEX.test(pendingInput) &&
+			!finalRecipients.includes(pendingInput)
+		) {
 			finalRecipients.push(pendingInput);
 			setRecipients(finalRecipients);
 			setEmailInput("");
@@ -208,14 +209,8 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 
 		if (finalRecipients.length === 0) {
 			toast.add({
-				title: t(
-					"tools.pnr_checker.recipient_required",
-					"Recipient email required",
-				),
-				description: t(
-					"tools.pnr_checker.enter_recipient_email",
-					"Please add at least one recipient email address.",
-				),
+				title: t("tools.pnr_checker.recipient_required"),
+				description: t("tools.pnr_checker.enter_recipient_email"),
 				type: "error",
 			});
 			return;
@@ -232,20 +227,12 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 
 			if (res.success) {
 				toast.add({
-					title: t(
-						"tools.pnr_checker.ticket_shared_success",
-						"Ticket Shared Successfully!",
-					),
+					title: t("tools.pnr_checker.ticket_shared_success"),
 					description: res.alertsSubscribed
-						? t(
-								"tools.pnr_checker.shared_with_alerts",
-								"Emails sent. Recipients will also receive future status changes.",
-						  )
-						: t(
-								"tools.pnr_checker.shared_sent",
-								"Ticket emailed to {{count}} recipient(s).",
-								{ count: res.sentCount },
-						  ),
+						? t("tools.pnr_checker.shared_with_alerts")
+						: t("tools.pnr_checker.shared_sent", {
+								count: res.sentCount,
+							}),
 					type: "success",
 				});
 				onOpenChange(false);
@@ -256,10 +243,7 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 					? err.message
 					: "Failed to share ticket. Please try again.";
 			toast.add({
-				title: t(
-					"tools.pnr_checker.share_failed",
-					"Failed to share ticket",
-				),
+				title: t("tools.pnr_checker.share_failed"),
 				description: errorMsg,
 				type: "error",
 			});
@@ -279,13 +263,10 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 						</div>
 						<div>
 							<DialogTitle className="text-lg font-bold text-foreground tracking-tight flex items-center gap-2">
-								{t("tools.pnr_checker.share_ticket_title", "Share Ticket")}
+								{t("tools.pnr_checker.share_ticket_title")}
 							</DialogTitle>
 							<DialogDescription className="text-xs text-muted-foreground mt-0.5">
-								{t(
-									"tools.pnr_checker.share_ticket_subtitle",
-									"Share ticket details and keep companions updated on journey status.",
-								)}
+								{t("tools.pnr_checker.share_ticket_subtitle")}
 							</DialogDescription>
 						</div>
 					</div>
@@ -316,7 +297,9 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 										{ticket.toCode || ticket.to}
 									</span>
 									<span>•</span>
-									<span>{ticket.departureDate || ticket.date}</span>
+									<span>
+										{ticket.departureDate || ticket.date}
+									</span>
 								</div>
 							</div>
 						</div>
@@ -333,13 +316,10 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 						<label className="text-xs font-semibold text-foreground flex items-center justify-between">
 							<span className="flex items-center gap-1.5">
 								<Mail className="h-3.5 w-3.5 text-primary" />
-								{t(
-									"tools.pnr_checker.recipient_emails_label",
-									"Recipient Email Addresses",
-								)}
+								{t("tools.pnr_checker.recipient_emails_label")}
 							</span>
 							<span className="text-[11px] text-muted-foreground font-normal">
-								{t("tools.pnr_checker.press_enter_hint", "Press Enter or add")}
+								{t("tools.pnr_checker.press_enter_hint")}
 							</span>
 						</label>
 
@@ -361,7 +341,7 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 								className="h-9 px-3 rounded-xl gap-1 text-xs shrink-0 cursor-pointer"
 							>
 								<Plus className="h-3.5 w-3.5" />
-								{t("common.add", "Add")}
+								{t("tools.pnr_checker.add")}
 							</Button>
 						</div>
 
@@ -377,9 +357,13 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 										<span>{email}</span>
 										<button
 											type="button"
-											onClick={() => removeRecipient(email)}
+											onClick={() =>
+												removeRecipient(email)
+											}
 											className="hover:bg-primary/20 rounded-full p-0.5 transition-colors cursor-pointer"
-											title={t("common.remove", "Remove")}
+											title={t(
+												"tools.pnr_checker.remove",
+											)}
 										>
 											<X className="h-3 w-3" />
 										</button>
@@ -397,10 +381,7 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 						<div className="flex-1 space-y-1">
 							<div className="flex items-center justify-between gap-2">
 								<span className="text-xs font-semibold text-foreground">
-									{t(
-										"tools.pnr_checker.auto_alerts_title",
-										"Keep recipients updated on Status Changes",
-									)}
+									{t("tools.pnr_checker.auto_alerts_title")}
 								</span>
 								<Switch
 									checked={subscribeAlerts}
@@ -409,10 +390,7 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 								/>
 							</div>
 							<p className="text-[11px] leading-relaxed text-muted-foreground">
-								{t(
-									"tools.pnr_checker.auto_alerts_desc",
-									"Automatically send an alert email whenever passenger berth status changes (e.g., RAC → CNF) or the chart is prepared.",
-								)}
+								{t("tools.pnr_checker.auto_alerts_desc")}
 							</p>
 						</div>
 					</div>
@@ -420,12 +398,11 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 					{/* Optional Message / Note */}
 					<div className="space-y-1.5">
 						<label className="text-xs font-medium text-muted-foreground">
-							{t("tools.pnr_checker.optional_note_label", "Personal Note (Optional)")}
+							{t("tools.pnr_checker.optional_note_label")}
 						</label>
 						<Textarea
 							placeholder={t(
 								"tools.pnr_checker.optional_note_placeholder",
-								"e.g., Here are our ticket details. See you at the station!",
 							)}
 							value={note}
 							onChange={(e) => setNote(e.target.value)}
@@ -443,20 +420,22 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 									<Users className="h-3.5 w-3.5 text-muted-foreground" />
 									{t(
 										"tools.pnr_checker.active_alert_recipients",
-										"Active Alert Recipients",
 									)}
 								</span>
 								{loadingExisting ? (
 									<Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
 								) : (
-									<Badge variant="outline" className="text-[10px] h-4">
+									<Badge
+										variant="outline"
+										className="text-[10px] h-4"
+									>
 										{existingRecipients.length}
 									</Badge>
 								)}
 							</div>
 							{loadingExisting ? (
 								<div className="text-xs text-muted-foreground py-1">
-									{t("common.loading", "Loading...")}
+									{t("tools.pnr_checker.loading")}
 								</div>
 							) : (
 								<div className="flex flex-wrap gap-1.5">
@@ -469,12 +448,15 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 											<span>{email}</span>
 											<button
 												type="button"
-												onClick={() => handleRemoveExisting(email)}
-												disabled={removingEmail === email}
+												onClick={() =>
+													handleRemoveExisting(email)
+												}
+												disabled={
+													removingEmail === email
+												}
 												className="hover:text-destructive p-0.5 cursor-pointer disabled:opacity-50"
 												title={t(
 													"tools.pnr_checker.stop_alerts_for",
-													"Stop alerts for this email",
 												)}
 											>
 												{removingEmail === email ? (
@@ -507,8 +489,8 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 						)}
 						<span>
 							{copied
-								? t("tools.pnr_checker.copied", "Copied!")
-								: t("tools.pnr_checker.copy_link", "Copy Link")}
+								? t("tools.pnr_checker.copied")
+								: t("tools.pnr_checker.copy_link")}
 						</span>
 					</Button>
 
@@ -521,14 +503,17 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 							disabled={sending}
 							className="text-xs h-9 rounded-xl cursor-pointer"
 						>
-							{t("common.cancel", "Cancel")}
+							{t("tools.pnr_checker.cancel")}
 						</Button>
 						<Button
 							type="button"
 							variant="default"
 							size="sm"
 							onClick={handleSendShare}
-							disabled={sending || (recipients.length === 0 && !emailInput.trim())}
+							disabled={
+								sending ||
+								(recipients.length === 0 && !emailInput.trim())
+							}
 							className="w-full sm:w-auto text-xs h-9 rounded-xl gap-1.5 shadow-sm cursor-pointer"
 						>
 							{sending ? (
@@ -538,8 +523,8 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 							)}
 							<span>
 								{sending
-									? t("tools.pnr_checker.sharing", "Sharing...")
-									: t("tools.pnr_checker.share_now", "Share Ticket")}
+									? t("tools.pnr_checker.sharing")
+									: t("tools.pnr_checker.share_now")}
 							</span>
 						</Button>
 					</div>

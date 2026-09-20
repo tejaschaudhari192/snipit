@@ -356,4 +356,3 @@ export interface PnrRecipientsResponse {
 	isTrackingActive: boolean;
 	alertRecipients: string[];
 }
-

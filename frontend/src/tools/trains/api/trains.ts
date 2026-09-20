@@ -173,16 +173,20 @@ export const sharePnrTicket = async (
 export const getPnrAlertRecipients = async (
 	pnr: string,
 ): Promise<import("../types/trains").PnrRecipientsResponse> => {
-	const response = await api.get<import("../types/trains").PnrRecipientsResponse>(
-		`/tools/trains/tracking/recipients/${encodeURIComponent(pnr)}`,
-	);
+	const response = await api.get<
+		import("../types/trains").PnrRecipientsResponse
+	>(`/tools/trains/tracking/recipients/${encodeURIComponent(pnr)}`);
 	return response.data;
 };
 
 export const removePnrAlertRecipient = async (
 	pnr: string,
 	email: string,
-): Promise<{ success: boolean; message: string; alertRecipients: string[] }> => {
+): Promise<{
+	success: boolean;
+	message: string;
+	alertRecipients: string[];
+}> => {
 	const response = await api.delete<{
 		success: boolean;
 		message: string;
@@ -192,4 +196,3 @@ export const removePnrAlertRecipient = async (
 	});
 	return response.data;
 };
-

@@ -436,40 +436,45 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 					</div>
 				)}
 
-				{files.length > 0 && (state === "idle" || state === "error") && (
-					<div className="space-y-3">
-						<div className="space-y-2">
-							<label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-								<KeyRound className="h-3.5 w-3.5" />
-								{t("tools.password")}
-							</label>
-							<PasswordInput
-								autoComplete="new-password"
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								placeholder={t("tools.password_placeholder")}
-							/>
-						</div>
-						{isEncrypt && (
+				{files.length > 0 &&
+					(state === "idle" || state === "error") && (
+						<div className="space-y-3">
 							<div className="space-y-2">
 								<label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
 									<KeyRound className="h-3.5 w-3.5" />
-									{t("tools.confirm_password")}
+									{t("tools.password")}
 								</label>
 								<PasswordInput
 									autoComplete="new-password"
-									value={confirmPassword}
+									value={password}
 									onChange={(e) =>
-										setConfirmPassword(e.target.value)
+										setPassword(e.target.value)
 									}
 									placeholder={t(
-										"tools.confirm_password_placeholder",
+										"tools.password_placeholder",
 									)}
 								/>
 							</div>
-						)}
-					</div>
-				)}
+							{isEncrypt && (
+								<div className="space-y-2">
+									<label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+										<KeyRound className="h-3.5 w-3.5" />
+										{t("tools.confirm_password")}
+									</label>
+									<PasswordInput
+										autoComplete="new-password"
+										value={confirmPassword}
+										onChange={(e) =>
+											setConfirmPassword(e.target.value)
+										}
+										placeholder={t(
+											"tools.confirm_password_placeholder",
+										)}
+									/>
+								</div>
+							)}
+						</div>
+					)}
 
 				{state === "processing" && (
 					<div className="space-y-2">

@@ -721,7 +721,11 @@
 			"shared_sent": "Ticket emailed to {{count}} recipient(s).",
 			"share_failed": "Failed to share ticket",
 			"share_now": "Share Ticket",
-			"sharing": "Sharing..."
+			"sharing": "Sharing...",
+			"add": "Add",
+			"remove": "Remove",
+			"cancel": "Cancel",
+			"loading": "Loading..."
 		},
 		"cinema": {
 			"title": "Cinema - Watch Parties",

@@ -720,7 +720,11 @@
 			"shared_sent": "Ticket an {{count}} Empfänger per E-Mail gesendet.",
 			"share_failed": "Ticket konnte nicht geteilt werden",
 			"share_now": "Ticket teilen",
-			"sharing": "Wird geteilt..."
+			"sharing": "Wird geteilt...",
+			"add": "Hinzufügen",
+			"remove": "Entfernen",
+			"cancel": "Abbrechen",
+			"loading": "Wird geladen..."
 		},
 		"cryptoSafe_title": "CryptoSafe",
 		"cinema": {

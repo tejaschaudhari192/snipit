@@ -98,7 +98,7 @@ export const PnrTicketHeaderBanner: React.FC<PnrTicketHeaderBannerProps> = ({
 						onClick={onShare}
 					>
 						<Share2 className="h-3.5 w-3.5 text-primary" />
-						<span>{t("tools.pnr_checker.share", "Share")}</span>
+						<span>{t("tools.pnr_checker.share")}</span>
 					</Button>
 				)}
 				<Button
