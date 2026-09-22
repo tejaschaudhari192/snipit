@@ -7,12 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/utils";
 import { Button } from "@/components/ui/button";
-import {
-	useMediaUpload,
-	MediaDropzone,
-	MediaUploadProgress,
-	MediaLinkForm,
-} from "./media";
+import { useMediaUpload, MediaDropzone, MediaLinkForm } from "./media";
 
 interface MediaDialogProps {
 	isOpen: boolean;
@@ -108,19 +103,15 @@ export function MediaDialog({
 							onFileSelect={selectFile}
 						/>
 
-						{isUploading && (
-							<MediaUploadProgress progress={uploadProgress} />
+						{!isUploading && (
+							<Button
+								onClick={upload}
+								disabled={!selectedFile || isUploading}
+								className="w-full h-9 font-medium cursor-pointer"
+							>
+								Upload
+							</Button>
 						)}
-
-						<Button
-							onClick={upload}
-							disabled={!selectedFile || isUploading}
-							className="w-full h-9 font-medium cursor-pointer"
-						>
-							{isUploading
-								? `Uploading ${uploadProgress}%...`
-								: "Upload"}
-						</Button>
 					</div>
 				) : (
 					<MediaLinkForm type={type} onSubmit={handleEmbedLink} />
