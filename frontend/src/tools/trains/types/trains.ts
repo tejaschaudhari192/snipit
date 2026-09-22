@@ -350,9 +350,17 @@ export interface PnrShareResponse {
 	message: string;
 }
 
+export interface PnrShareRecord {
+	email: string;
+	sharedAt: string;
+	alertsSubscribed: boolean;
+	note?: string;
+}
+
 export interface PnrRecipientsResponse {
 	success: boolean;
 	pnr: string;
 	isTrackingActive: boolean;
 	alertRecipients: string[];
+	sharedWith?: PnrShareRecord[];
 }

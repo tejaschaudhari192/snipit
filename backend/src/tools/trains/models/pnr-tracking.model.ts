@@ -1,5 +1,8 @@
 import mongoose, { Schema } from "mongoose";
-import type { IPnrTracking } from "../types/pnr-tracking.types.js";
+import type {
+	IPnrTracking,
+	IPnrShareRecord,
+} from "../types/pnr-tracking.types.js";
 
 const PassengerSnapshotSchema = new Schema(
 	{
@@ -32,6 +35,32 @@ const StatusHistoryEntrySchema = new Schema(
 		changes: { type: [String], default: [] },
 		previousStatus: { type: Schema.Types.Mixed },
 		newStatus: { type: Schema.Types.Mixed },
+	},
+	{ _id: false },
+);
+
+const PnrShareRecordSchema = new Schema<IPnrShareRecord>(
+	{
+		email: {
+			type: String,
+			required: true,
+			trim: true,
+			lowercase: true,
+			match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email address"],
+		},
+		sharedAt: {
+			type: Date,
+			default: Date.now,
+		},
+		alertsSubscribed: {
+			type: Boolean,
+			default: false,
+		},
+		note: {
+			type: String,
+			trim: true,
+			maxlength: 250,
+		},
 	},
 	{ _id: false },
 );
@@ -93,6 +122,10 @@ const PnrTrackingSchema = new Schema<IPnrTracking>(
 					],
 				},
 			],
+			default: [],
+		},
+		sharedWith: {
+			type: [PnrShareRecordSchema],
 			default: [],
 		},
 		lastCheckedAt: {

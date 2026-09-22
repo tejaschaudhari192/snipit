@@ -724,7 +724,20 @@
 			"add": "Hinzufügen",
 			"remove": "Entfernen",
 			"cancel": "Abbrechen",
-			"loading": "Wird geladen..."
+			"loading": "Wird geladen...",
+			"tab_share": "Ticket teilen",
+			"tab_shared_with": "Geteilt mit ({{count}})",
+			"no_shares_yet": "Noch nicht geteilt",
+			"no_shares_desc": "Sie haben dieses Ticket noch mit niemandem geteilt. Wechseln Sie zum Teilen-Tab, um Ticketdetails an Ihre Mitreisenden zu senden.",
+			"shared_on": "Geteilt {{time}}",
+			"alerts_active": "Benachrichtigungen aktiv",
+			"ticket_sent": "Ticket gesendet",
+			"resend_ticket": "Erneut senden",
+			"resend_success": "Ticket erneut gesendet",
+			"resend_desc": "Ticketdetails wurden erneut an {{email}} gesendet.",
+			"stop_alerts": "Benachrichtigungen stoppen",
+			"switch_to_share": "Jetzt teilen",
+			"already_shared_badge": "Bereits mit {{count}} Empfänger(n) geteilt"
 		},
 		"cryptoSafe_title": "CryptoSafe",
 		"cinema": {

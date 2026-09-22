@@ -26,6 +26,13 @@ export interface IStatusHistoryEntry {
 	newStatus?: Partial<IPnrStatusSnapshot> | undefined;
 }
 
+export interface IPnrShareRecord {
+	email: string;
+	sharedAt: Date;
+	alertsSubscribed: boolean;
+	note?: string | undefined;
+}
+
 export interface IPnrTracking extends Document {
 	_id: Types.ObjectId;
 	userId: Types.ObjectId;
@@ -43,6 +50,7 @@ export interface IPnrTracking extends Document {
 	isActive: boolean;
 	notifyEmail: boolean;
 	alertRecipients: string[];
+	sharedWith?: IPnrShareRecord[] | undefined;
 	lastCheckedAt?: Date | undefined;
 	nextCheckAt: Date;
 	createdAt: Date;

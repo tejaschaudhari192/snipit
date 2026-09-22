@@ -186,11 +186,13 @@ export const removePnrAlertRecipient = async (
 	success: boolean;
 	message: string;
 	alertRecipients: string[];
+	sharedWith?: import("../types/trains").PnrShareRecord[];
 }> => {
 	const response = await api.delete<{
 		success: boolean;
 		message: string;
 		alertRecipients: string[];
+		sharedWith?: import("../types/trains").PnrShareRecord[];
 	}>(`/tools/trains/tracking/recipients/${encodeURIComponent(pnr)}`, {
 		params: { email },
 	});

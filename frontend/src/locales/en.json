@@ -725,7 +725,20 @@
 			"add": "Add",
 			"remove": "Remove",
 			"cancel": "Cancel",
-			"loading": "Loading..."
+			"loading": "Loading...",
+			"tab_share": "Share Ticket",
+			"tab_shared_with": "Shared With ({{count}})",
+			"no_shares_yet": "Not Shared Yet",
+			"no_shares_desc": "You haven't shared this ticket with anyone yet. Switch to the Share tab to email ticket details to your travel companions.",
+			"shared_on": "Shared {{time}}",
+			"alerts_active": "Alerts Active",
+			"ticket_sent": "Ticket Sent",
+			"resend_ticket": "Resend",
+			"resend_success": "Ticket Resent",
+			"resend_desc": "Ticket details resent to {{email}}.",
+			"stop_alerts": "Stop Alerts",
+			"switch_to_share": "Share Now",
+			"already_shared_badge": "Already shared with {{count}} recipient(s)"
 		},
 		"cinema": {
 			"title": "Cinema - Watch Parties",

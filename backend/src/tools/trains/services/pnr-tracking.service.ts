@@ -426,34 +426,119 @@ export class PnrTrackingService {
 
 		await Promise.allSettled(emailPromises);
 
-		// 3. If subscribeAlerts is enabled, associate with tracking
+		// 3. Associate with tracking and record share history if user is authenticated
 		let alertsSubscribed = false;
-		if (payload.subscribeAlerts && (userId || senderEmail)) {
+		if (userId || senderEmail) {
 			let tracking: HydratedDocument<IPnrTracking> | null = userId
 				? await PnrTracking.findOne({ userId, pnr: cleanPnr })
 				: null;
 
 			if (!tracking && userId && senderEmail) {
-				const subscribeRes = await this.subscribe(
-					userId,
-					senderEmail,
-					cleanPnr,
+				const snapshot: IPnrStatusSnapshot =
+					PnrDiffService.createSnapshot(ticket);
+				const nextCheckAt = new Date(
+					Date.now() + TRACKER_CONFIG.CHECK_INTERVAL_MS,
 				);
-				tracking = subscribeRes.tracking;
+
+				try {
+					tracking = await PnrTracking.create({
+						userId,
+						userEmail: senderEmail,
+						pnr: cleanPnr,
+						trainNumber: ticket.trainNumber || "",
+						trainName: ticket.train || "Train",
+						from: ticket.from || "",
+						fromCode: ticket.fromCode,
+						to: ticket.to || "",
+						toCode: ticket.toCode,
+						departureDate:
+							ticket.departureDate || ticket.date || "",
+						lastStatus: snapshot,
+						statusHistory: [
+							{
+								timestamp: new Date(),
+								changeSummary: payload.subscribeAlerts
+									? "Tracking and sharing started"
+									: "Ticket shared",
+								changes: [
+									payload.subscribeAlerts
+										? "Subscription activated via share"
+										: "Ticket details shared with companions",
+								],
+								newStatus: snapshot,
+							},
+						],
+						isActive: Boolean(payload.subscribeAlerts),
+						notifyEmail: Boolean(payload.subscribeAlerts),
+						alertRecipients: payload.subscribeAlerts
+							? cleanRecipients
+							: [],
+						sharedWith: [],
+						lastCheckedAt: new Date(),
+						nextCheckAt,
+					});
+				} catch (err: unknown) {
+					const mongoErr = err as { code?: number };
+					if (mongoErr && mongoErr.code === 11000) {
+						tracking = await PnrTracking.findOne({
+							userId,
+							pnr: cleanPnr,
+						});
+					} else {
+						logger.warn(
+							`Failed to create tracking record during share: ${err}`,
+						);
+					}
+				}
 			}
 
 			if (tracking) {
-				const existingRecipients = new Set(
-					tracking.alertRecipients || [],
-				);
+				// Record or update shared recipients history
+				const currentSharedWith = tracking.sharedWith || [];
+				const now = new Date();
+
 				for (const email of cleanRecipients) {
-					existingRecipients.add(email);
+					const existingIdx = currentSharedWith.findIndex(
+						(s) => s.email.toLowerCase() === email.toLowerCase(),
+					);
+					if (existingIdx >= 0) {
+						currentSharedWith[existingIdx] = {
+							email,
+							sharedAt: now,
+							alertsSubscribed: Boolean(
+								payload.subscribeAlerts ||
+								currentSharedWith[existingIdx]
+									?.alertsSubscribed,
+							),
+							note:
+								payload.note ||
+								currentSharedWith[existingIdx]?.note,
+						};
+					} else {
+						currentSharedWith.push({
+							email,
+							sharedAt: now,
+							alertsSubscribed: Boolean(payload.subscribeAlerts),
+							note: payload.note,
+						});
+					}
 				}
-				tracking.alertRecipients = Array.from(existingRecipients);
-				tracking.isActive = true;
-				tracking.notifyEmail = true;
+				tracking.sharedWith = currentSharedWith;
+
+				if (payload.subscribeAlerts) {
+					const existingRecipients = new Set(
+						tracking.alertRecipients || [],
+					);
+					for (const email of cleanRecipients) {
+						existingRecipients.add(email);
+					}
+					tracking.alertRecipients = Array.from(existingRecipients);
+					tracking.isActive = true;
+					tracking.notifyEmail = true;
+					alertsSubscribed = true;
+				}
+
 				await tracking.save();
-				alertsSubscribed = true;
 			}
 		}
 
@@ -466,7 +551,7 @@ export class PnrTrackingService {
 	}
 
 	/**
-	 * Retrieve currently subscribed alert recipients for a PNR
+	 * Retrieve currently subscribed alert recipients and share history for a PNR
 	 */
 	public async getTrackingRecipients(
 		userId: Types.ObjectId | string,
@@ -474,6 +559,12 @@ export class PnrTrackingService {
 	): Promise<{
 		pnr: string;
 		recipients: string[];
+		sharedWith: Array<{
+			email: string;
+			sharedAt: Date;
+			alertsSubscribed: boolean;
+			note?: string | undefined;
+		}>;
 		isTrackingActive: boolean;
 	}> {
 		const cleanPnr = pnr.trim();
@@ -481,6 +572,7 @@ export class PnrTrackingService {
 		return {
 			pnr: cleanPnr,
 			recipients: tracking?.alertRecipients || [],
+			sharedWith: tracking?.sharedWith || [],
 			isTrackingActive: Boolean(tracking?.isActive),
 		};
 	}
@@ -492,21 +584,46 @@ export class PnrTrackingService {
 		userId: Types.ObjectId | string,
 		pnr: string,
 		emailToRemove: string,
-	): Promise<{ success: boolean; remainingRecipients: string[] }> {
+	): Promise<{
+		success: boolean;
+		remainingRecipients: string[];
+		sharedWith: Array<{
+			email: string;
+			sharedAt: Date;
+			alertsSubscribed: boolean;
+			note?: string | undefined;
+		}>;
+	}> {
 		const cleanPnr = pnr.trim();
 		const cleanEmail = emailToRemove.trim().toLowerCase();
 		const tracking = await PnrTracking.findOne({ userId, pnr: cleanPnr });
 		if (!tracking) {
-			return { success: false, remainingRecipients: [] };
+			return { success: false, remainingRecipients: [], sharedWith: [] };
 		}
 
 		tracking.alertRecipients = (tracking.alertRecipients || []).filter(
 			(e) => e.toLowerCase() !== cleanEmail,
 		);
+
+		if (tracking.sharedWith) {
+			tracking.sharedWith = tracking.sharedWith.map((item) => {
+				if (item.email.toLowerCase() === cleanEmail) {
+					return {
+						email: item.email,
+						sharedAt: item.sharedAt,
+						alertsSubscribed: false,
+						note: item.note,
+					};
+				}
+				return item;
+			});
+		}
+
 		await tracking.save();
 		return {
 			success: true,
 			remainingRecipients: tracking.alertRecipients,
+			sharedWith: tracking.sharedWith || [],
 		};
 	}
 }

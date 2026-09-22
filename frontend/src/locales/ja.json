@@ -724,7 +724,20 @@
 			"add": "追加",
 			"remove": "削除",
 			"cancel": "キャンセル",
-			"loading": "読み込み中..."
+			"loading": "読み込み中...",
+			"tab_share": "チケットを共有",
+			"tab_shared_with": "共有先 ({{count}})",
+			"no_shares_yet": "まだ共有されていません",
+			"no_shares_desc": "まだ誰ともこのチケットを共有していません。共有タブに切り替えて、同行者にチケット詳細をメールで送信してください。",
+			"shared_on": "{{time}}に共有",
+			"alerts_active": "通知有効",
+			"ticket_sent": "チケット送信済み",
+			"resend_ticket": "再送信",
+			"resend_success": "チケットを再送信しました",
+			"resend_desc": "{{email}}にチケット詳細を再送信しました。",
+			"stop_alerts": "通知を停止",
+			"switch_to_share": "今すぐ共有",
+			"already_shared_badge": "すでに{{count}}件の宛先と共有済み"
 		},
 		"cryptoSafe_title": "クリプトセーフ",
 		"cinema": {
