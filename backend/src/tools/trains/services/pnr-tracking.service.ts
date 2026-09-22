@@ -569,37 +569,10 @@ export class PnrTrackingService {
 	}> {
 		const cleanPnr = pnr.trim();
 		const tracking = await PnrTracking.findOne({ userId, pnr: cleanPnr });
-		const recipients = tracking?.alertRecipients || [];
-		const sharedWith = [...(tracking?.sharedWith || [])];
-
-		// Backwards compatibility: If emails were saved in alertRecipients previously, ensure they appear in sharedWith
-		if (tracking && recipients.length > 0) {
-			let needsSave = false;
-			for (const email of recipients) {
-				const exists = sharedWith.some(
-					(s) => s.email.toLowerCase() === email.toLowerCase(),
-				);
-				if (!exists) {
-					const backfillRecord = {
-						email,
-						sharedAt: tracking.createdAt || new Date(),
-						alertsSubscribed: true,
-					};
-					sharedWith.push(backfillRecord);
-					if (!tracking.sharedWith) tracking.sharedWith = [];
-					tracking.sharedWith.push(backfillRecord);
-					needsSave = true;
-				}
-			}
-			if (needsSave) {
-				await tracking.save();
-			}
-		}
-
 		return {
 			pnr: cleanPnr,
-			recipients,
-			sharedWith,
+			recipients: tracking?.alertRecipients || [],
+			sharedWith: tracking?.sharedWith || [],
 			isTrackingActive: Boolean(tracking?.isActive),
 		};
 	}

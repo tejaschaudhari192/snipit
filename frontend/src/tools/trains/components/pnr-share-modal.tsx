@@ -131,21 +131,6 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 					});
 				}
 
-				// Also ensure any recipients from alertRecipients (saved previously) are present in the list
-				for (const email of res.alertRecipients || []) {
-					const clean = email.toLowerCase();
-					if (!map.has(clean)) {
-						map.set(clean, {
-							email,
-							sharedAt: new Date().toISOString(),
-							alertsSubscribed: true,
-						});
-					} else {
-						const current = map.get(clean);
-						if (current) current.alertsSubscribed = true;
-					}
-				}
-
 				const merged = Array.from(map.values()).sort(
 					(a, b) =>
 						new Date(b.sharedAt).getTime() -
