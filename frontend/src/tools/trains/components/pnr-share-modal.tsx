@@ -7,10 +7,8 @@ import {
 	DialogTitle,
 	DialogDescription,
 } from "@/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/toast";
@@ -35,7 +33,6 @@ import {
 	Users,
 	RotateCcw,
 	Clock,
-	Send,
 } from "lucide-react";
 
 interface PnrShareModalProps {
@@ -54,11 +51,9 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 	const { t, i18n } = useTranslation();
 	const { user } = useAuth();
 
-	const [activeTab, setActiveTab] = useState<string>("share");
 	const [emailInput, setEmailInput] = useState("");
 	const [recipients, setRecipients] = useState<string[]>([]);
 	const [subscribeAlerts, setSubscribeAlerts] = useState<boolean>(true);
-	const [note, setNote] = useState("");
 	const [sending, setSending] = useState(false);
 	const [copied, setCopied] = useState(false);
 
@@ -136,6 +131,21 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 					});
 				}
 
+				// Also ensure any recipients from alertRecipients (saved previously) are present in the list
+				for (const email of res.alertRecipients || []) {
+					const clean = email.toLowerCase();
+					if (!map.has(clean)) {
+						map.set(clean, {
+							email,
+							sharedAt: new Date().toISOString(),
+							alertsSubscribed: true,
+						});
+					} else {
+						const current = map.get(clean);
+						if (current) current.alertsSubscribed = true;
+					}
+				}
+
 				const merged = Array.from(map.values()).sort(
 					(a, b) =>
 						new Date(b.sharedAt).getTime() -
@@ -162,10 +172,8 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 		if (!open) {
 			setEmailInput("");
 			setRecipients([]);
-			setNote("");
 			setCopied(false);
 			setSending(false);
-			setActiveTab("share");
 		}
 	}, [open]);
 
@@ -276,7 +284,6 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 			setResendingEmail(record.email);
 			const res = await sharePnrTicket(ticket.pnr, {
 				recipients: [record.email],
-				note: record.note,
 				subscribeAlerts: record.alertsSubscribed,
 				ticketData: ticket,
 			});
@@ -338,7 +345,6 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 			setSending(true);
 			const res = await sharePnrTicket(ticket.pnr, {
 				recipients: finalRecipients,
-				note: note.trim() || undefined,
 				subscribeAlerts,
 				ticketData: ticket,
 			});
@@ -367,7 +373,6 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 						email,
 						sharedAt: nowIso,
 						alertsSubscribed: subscribeAlerts,
-						note: note.trim() || undefined,
 					});
 				}
 
@@ -388,8 +393,6 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 
 				setRecipients([]);
 				setEmailInput("");
-				setNote("");
-				setActiveTab("shared_with");
 			}
 		} catch (err: unknown) {
 			const errorMsg =
@@ -441,247 +444,148 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 					</div>
 				</DialogHeader>
 
-				<Tabs
-					value={activeTab}
-					onValueChange={setActiveTab}
-					className="w-full flex flex-col"
-				>
-					{/* Navigation Tabs Header */}
-					<div className="px-5 pt-3 border-b border-border/50 bg-muted/15 flex items-center justify-between">
-						<TabsList className="bg-muted/60 border border-border/40 p-1 rounded-xl h-9">
-							<TabsTrigger
-								value="share"
-								className="text-xs font-semibold px-3 py-1 gap-1.5 rounded-lg data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs cursor-pointer"
+				<div className="p-5 space-y-4 text-sm">
+					{/* Ticket Summary Pill */}
+					<div className="rounded-xl border border-border/60 bg-muted/30 p-3 flex items-center justify-between gap-3">
+						<div className="flex items-center gap-2.5 min-w-0">
+							<div className="h-8 w-8 rounded-lg bg-primary/15 text-primary flex items-center justify-center shrink-0">
+								<Train className="h-4 w-4" />
+							</div>
+							<div className="min-w-0">
+								<div className="font-semibold text-foreground text-xs truncate">
+									{ticket.train}{" "}
+									{ticket.trainNumber && (
+										<span className="text-muted-foreground font-mono">
+											(#{ticket.trainNumber})
+										</span>
+									)}
+								</div>
+								<div className="text-[11px] text-muted-foreground flex items-center gap-1.5 mt-0.5">
+									<span className="font-medium text-foreground/80">
+										{ticket.fromCode || ticket.from}
+									</span>
+									<span>➔</span>
+									<span className="font-medium text-foreground/80">
+										{ticket.toCode || ticket.to}
+									</span>
+									{ticket.class && (
+										<>
+											<span>•</span>
+											<span className="font-medium">
+												{ticket.class}
+											</span>
+										</>
+									)}
+								</div>
+							</div>
+						</div>
+						<Badge
+							variant="secondary"
+							className="font-mono text-xs shrink-0 font-bold"
+						>
+							{ticket.pnr}
+						</Badge>
+					</div>
+
+					{/* Recipient Input Section */}
+					<div className="space-y-2">
+						<label className="text-xs font-semibold text-foreground flex items-center justify-between">
+							<span className="flex items-center gap-1.5">
+								<Mail className="h-3.5 w-3.5 text-primary" />
+								{t("tools.pnr_checker.recipient_emails_label")}
+							</span>
+							<span className="text-[11px] text-muted-foreground font-normal">
+								{t("tools.pnr_checker.press_enter_hint")}
+							</span>
+						</label>
+
+						<div className="flex gap-2">
+							<Input
+								type="email"
+								placeholder="companion@gmail.com, family@outlook.com"
+								value={emailInput}
+								onChange={(e) => setEmailInput(e.target.value)}
+								onKeyDown={handleKeyDown}
+								className="text-xs h-9 rounded-xl"
+							/>
+							<Button
+								type="button"
+								onClick={addEmailFromInput}
+								variant="secondary"
+								size="sm"
+								className="h-9 px-3 rounded-xl gap-1 text-xs shrink-0 cursor-pointer"
 							>
-								<Send className="h-3.5 w-3.5" />
-								<span>{t("tools.pnr_checker.tab_share")}</span>
-							</TabsTrigger>
-							<TabsTrigger
-								value="shared_with"
-								className="text-xs font-semibold px-3 py-1 gap-1.5 rounded-lg data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs cursor-pointer"
-							>
-								<Users className="h-3.5 w-3.5" />
-								<span>
+								<Plus className="h-3.5 w-3.5" />
+								{t("tools.pnr_checker.add")}
+							</Button>
+						</div>
+
+						{/* Added Recipient Chips Waiting to be Sent */}
+						{recipients.length > 0 && (
+							<div className="flex flex-wrap gap-1.5 pt-1">
+								{recipients.map((email) => (
+									<Badge
+										key={email}
+										variant="secondary"
+										className="text-xs py-1 px-2.5 rounded-lg flex items-center gap-1.5 bg-primary/10 text-primary border-primary/20"
+									>
+										<span>{email}</span>
+										<button
+											type="button"
+											onClick={() =>
+												removeRecipient(email)
+											}
+											className="hover:bg-primary/20 rounded-full p-0.5 transition-colors cursor-pointer"
+											title={t(
+												"tools.pnr_checker.remove",
+											)}
+										>
+											<X className="h-3 w-3" />
+										</button>
+									</Badge>
+								))}
+							</div>
+						)}
+					</div>
+
+					{/* Automatic Status Change Alerts Switch */}
+					<div className="rounded-xl border border-primary/20 bg-primary/5 p-3.5 flex items-start gap-3 transition-colors">
+						<div className="mt-0.5">
+							<BellRing className="h-4 w-4 text-primary" />
+						</div>
+						<div className="flex-1 space-y-1">
+							<div className="flex items-center justify-between gap-2">
+								<span className="text-xs font-semibold text-foreground">
+									{t("tools.pnr_checker.auto_alerts_title")}
+								</span>
+								<Switch
+									checked={subscribeAlerts}
+									onCheckedChange={setSubscribeAlerts}
+									aria-label="Toggle status alerts"
+								/>
+							</div>
+							<p className="text-[11px] leading-relaxed text-muted-foreground">
+								{t("tools.pnr_checker.auto_alerts_desc")}
+							</p>
+						</div>
+					</div>
+
+					{/* Shared With List (Core Snipit Pattern) */}
+					{(loadingExisting || sharedHistory.length > 0) && (
+						<div className="space-y-2 pt-1 border-t border-border/50">
+							<div className="flex items-center justify-between text-xs font-semibold text-muted-foreground px-0.5">
+								<span className="flex items-center gap-1.5">
+									<Users className="h-3.5 w-3.5 text-primary" />
 									{t("tools.pnr_checker.tab_shared_with", {
 										count: sharedHistory.length,
 									})}
 								</span>
-							</TabsTrigger>
-						</TabsList>
-
-						{sharedHistory.length > 0 && activeTab === "share" && (
-							<button
-								type="button"
-								onClick={() => setActiveTab("shared_with")}
-								className="text-[11px] font-medium text-primary hover:underline flex items-center gap-1 cursor-pointer transition-colors"
-							>
-								<Users className="h-3 w-3" />
-								<span>
-									{t(
-										"tools.pnr_checker.already_shared_badge",
-										{
-											count: sharedHistory.length,
-										},
-									)}
-								</span>
-							</button>
-						)}
-					</div>
-
-					{/* Tab 1: Share Ticket Form */}
-					<TabsContent
-						value="share"
-						className="p-5 space-y-4 text-sm mt-0 outline-none"
-					>
-						{/* Ticket Summary Pill */}
-						<div className="rounded-xl border border-border/60 bg-muted/30 p-3 flex items-center justify-between gap-3">
-							<div className="flex items-center gap-2.5 min-w-0">
-								<div className="h-8 w-8 rounded-lg bg-primary/15 text-primary flex items-center justify-center shrink-0">
-									<Train className="h-4 w-4" />
-								</div>
-								<div className="min-w-0">
-									<div className="font-semibold text-foreground text-xs truncate">
-										{ticket.train}{" "}
-										{ticket.trainNumber && (
-											<span className="text-muted-foreground font-mono">
-												(#{ticket.trainNumber})
-											</span>
-										)}
-									</div>
-									<div className="text-[11px] text-muted-foreground flex items-center gap-1.5 mt-0.5">
-										<span className="font-medium text-foreground/80">
-											{ticket.fromCode || ticket.from}
-										</span>
-										<span>➔</span>
-										<span className="font-medium text-foreground/80">
-											{ticket.toCode || ticket.to}
-										</span>
-										{ticket.class && (
-											<>
-												<span>•</span>
-												<span className="font-medium">
-													{ticket.class}
-												</span>
-											</>
-										)}
-									</div>
-								</div>
-							</div>
-							<Badge
-								variant="secondary"
-								className="font-mono text-xs shrink-0 font-bold"
-							>
-								{ticket.pnr}
-							</Badge>
-						</div>
-
-						{/* Recipient Input Section */}
-						<div className="space-y-2">
-							<label className="text-xs font-semibold text-foreground flex items-center justify-between">
-								<span className="flex items-center gap-1.5">
-									<Mail className="h-3.5 w-3.5 text-primary" />
-									{t(
-										"tools.pnr_checker.recipient_emails_label",
-									)}
-								</span>
-								<span className="text-[11px] text-muted-foreground font-normal">
-									{t("tools.pnr_checker.press_enter_hint")}
-								</span>
-							</label>
-
-							<div className="flex gap-2">
-								<Input
-									type="email"
-									placeholder="companion@gmail.com, family@outlook.com"
-									value={emailInput}
-									onChange={(e) =>
-										setEmailInput(e.target.value)
-									}
-									onKeyDown={handleKeyDown}
-									className="text-xs h-9 rounded-xl"
-								/>
-								<Button
-									type="button"
-									onClick={addEmailFromInput}
-									variant="secondary"
-									size="sm"
-									className="h-9 px-3 rounded-xl gap-1 text-xs shrink-0 cursor-pointer"
-								>
-									<Plus className="h-3.5 w-3.5" />
-									{t("tools.pnr_checker.add")}
-								</Button>
-							</div>
-
-							{/* Added Recipient Chips */}
-							{recipients.length > 0 && (
-								<div className="flex flex-wrap gap-1.5 pt-1">
-									{recipients.map((email) => (
-										<Badge
-											key={email}
-											variant="secondary"
-											className="text-xs py-1 px-2.5 rounded-lg flex items-center gap-1.5 bg-primary/10 text-primary border-primary/20"
-										>
-											<span>{email}</span>
-											<button
-												type="button"
-												onClick={() =>
-													removeRecipient(email)
-												}
-												className="hover:bg-primary/20 rounded-full p-0.5 transition-colors cursor-pointer"
-												title={t(
-													"tools.pnr_checker.remove",
-												)}
-											>
-												<X className="h-3 w-3" />
-											</button>
-										</Badge>
-									))}
-								</div>
-							)}
-						</div>
-
-						{/* Automatic Status Change Alerts Switch */}
-						<div className="rounded-xl border border-primary/20 bg-primary/5 p-3.5 flex items-start gap-3 transition-colors">
-							<div className="mt-0.5">
-								<BellRing className="h-4 w-4 text-primary" />
-							</div>
-							<div className="flex-1 space-y-1">
-								<div className="flex items-center justify-between gap-2">
-									<span className="text-xs font-semibold text-foreground">
-										{t(
-											"tools.pnr_checker.auto_alerts_title",
-										)}
-									</span>
-									<Switch
-										checked={subscribeAlerts}
-										onCheckedChange={setSubscribeAlerts}
-										aria-label="Toggle status alerts"
-									/>
-								</div>
-								<p className="text-[11px] leading-relaxed text-muted-foreground">
-									{t("tools.pnr_checker.auto_alerts_desc")}
-								</p>
-							</div>
-						</div>
-
-						{/* Optional Message / Note */}
-						<div className="space-y-1.5">
-							<label className="text-xs font-medium text-muted-foreground">
-								{t("tools.pnr_checker.optional_note_label")}
-							</label>
-							<Textarea
-								placeholder={t(
-									"tools.pnr_checker.optional_note_placeholder",
+								{loadingExisting && (
+									<Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />
 								)}
-								value={note}
-								onChange={(e) => setNote(e.target.value)}
-								rows={2}
-								className="text-xs resize-none rounded-xl"
-								maxLength={250}
-							/>
-						</div>
-					</TabsContent>
+							</div>
 
-					{/* Tab 2: Shared With List */}
-					<TabsContent
-						value="shared_with"
-						className="p-5 space-y-3 text-sm mt-0 outline-none"
-					>
-						{loadingExisting ? (
-							<div className="py-12 flex flex-col items-center justify-center gap-2 text-muted-foreground">
-								<Loader2 className="h-6 w-6 animate-spin text-primary" />
-								<span className="text-xs">
-									{t("tools.pnr_checker.loading")}
-								</span>
-							</div>
-						) : sharedHistory.length === 0 ? (
-							<div className="py-10 px-4 rounded-2xl border border-dashed border-border/70 text-center flex flex-col items-center justify-center gap-3 bg-muted/10">
-								<div className="h-10 w-10 rounded-2xl bg-muted text-muted-foreground flex items-center justify-center">
-									<Users className="h-5 w-5" />
-								</div>
-								<div className="space-y-1 max-w-xs">
-									<div className="text-xs font-bold text-foreground">
-										{t("tools.pnr_checker.no_shares_yet")}
-									</div>
-									<div className="text-[11px] text-muted-foreground leading-relaxed">
-										{t("tools.pnr_checker.no_shares_desc")}
-									</div>
-								</div>
-								<Button
-									type="button"
-									variant="secondary"
-									size="sm"
-									onClick={() => setActiveTab("share")}
-									className="text-xs h-8 gap-1.5 rounded-xl cursor-pointer"
-								>
-									<Send className="h-3 w-3" />
-									<span>
-										{t("tools.pnr_checker.switch_to_share")}
-									</span>
-								</Button>
-							</div>
-						) : (
-							<div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+							<div className="flex flex-col gap-2 max-h-52 overflow-y-auto pr-1">
 								{sharedHistory.map((record) => {
 									const isSubscribed =
 										record.alertsSubscribed ||
@@ -694,79 +598,68 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 									return (
 										<div
 											key={record.email}
-											className="p-3 rounded-xl border border-border/60 bg-muted/20 hover:bg-muted/30 transition-colors flex flex-col gap-2"
+											className="flex items-center justify-between p-2.5 rounded-xl border border-border/60 bg-muted/20 hover:bg-muted/30 transition-colors gap-2"
 										>
-											<div className="flex items-center justify-between gap-2">
-												<div className="flex items-center gap-2 min-w-0">
-													<div className="h-7 w-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 text-xs font-bold">
-														{record.email
-															.charAt(0)
-															.toUpperCase()}
-													</div>
-													<div className="min-w-0">
-														<div className="text-xs font-semibold text-foreground truncate">
-															{record.email}
-														</div>
-														<div className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
-															<Clock className="h-2.5 w-2.5 shrink-0" />
-															<span>
-																{t(
-																	"tools.pnr_checker.shared_on",
-																	{
-																		time: formatTimestamp(
-																			record.sharedAt,
-																		),
-																	},
-																)}
-															</span>
-														</div>
-													</div>
+											<div className="flex items-center gap-2.5 min-w-0 flex-1">
+												<div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0 border border-primary/20">
+													{record.email[0].toUpperCase()}
 												</div>
-
-												{/* Status Badge */}
-												<div className="shrink-0">
-													{isSubscribed ? (
-														<Badge
-															variant="outline"
-															className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px] font-semibold gap-1 py-0.5 px-2"
-														>
-															<BellRing className="h-2.5 w-2.5" />
-															<span>
-																{t(
-																	"tools.pnr_checker.alerts_active",
-																)}
-															</span>
-														</Badge>
-													) : (
-														<Badge
-															variant="secondary"
-															className="text-[10px] text-muted-foreground gap-1 py-0.5 px-2"
-														>
-															<Check className="h-2.5 w-2.5 text-muted-foreground" />
-															<span>
-																{t(
-																	"tools.pnr_checker.ticket_sent",
-																)}
-															</span>
-														</Badge>
-													)}
+												<div className="min-w-0 flex-1">
+													<div
+														className="text-xs font-medium text-foreground truncate"
+														title={record.email}
+													>
+														{record.email}
+													</div>
+													<div className="text-[10px] text-muted-foreground flex items-center gap-1">
+														<Clock className="h-2.5 w-2.5 shrink-0" />
+														<span>
+															{t(
+																"tools.pnr_checker.shared_on",
+																{
+																	time: formatTimestamp(
+																		record.sharedAt,
+																	),
+																},
+															)}
+														</span>
+													</div>
 												</div>
 											</div>
 
-											{/* Note Preview if present */}
-											{record.note && (
-												<div className="text-[11px] text-muted-foreground bg-background/60 p-2 rounded-lg border border-border/40 italic line-clamp-2">
-													"{record.note}"
-												</div>
-											)}
+											{/* Status Badge & Actions */}
+											<div className="flex items-center gap-1.5 shrink-0">
+												{isSubscribed ? (
+													<Badge
+														variant="outline"
+														className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px] font-semibold gap-1 py-0.5 px-2"
+													>
+														<BellRing className="h-2.5 w-2.5" />
+														<span>
+															{t(
+																"tools.pnr_checker.alerts_active",
+															)}
+														</span>
+													</Badge>
+												) : (
+													<Badge
+														variant="secondary"
+														className="text-[10px] text-muted-foreground gap-1 py-0.5 px-2"
+													>
+														<Check className="h-2.5 w-2.5 text-muted-foreground" />
+														<span>
+															{t(
+																"tools.pnr_checker.ticket_sent",
+															)}
+														</span>
+													</Badge>
+												)}
 
-											{/* Item Action Controls */}
-											<div className="flex items-center justify-end gap-1.5 pt-1 border-t border-border/30">
 												{isSubscribed && (
 													<Button
 														type="button"
 														variant="ghost"
-														size="sm"
+														size="icon"
 														onClick={() =>
 															handleRemoveExisting(
 																record.email,
@@ -776,26 +669,24 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 															removingEmail ===
 															record.email
 														}
-														className="text-[11px] h-7 px-2 text-destructive hover:bg-destructive/10 gap-1 rounded-lg cursor-pointer"
+														className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg cursor-pointer"
+														title={t(
+															"tools.pnr_checker.stop_alerts",
+														)}
 													>
 														{removingEmail ===
 														record.email ? (
 															<Loader2 className="h-3 w-3 animate-spin" />
 														) : (
-															<BellOff className="h-3 w-3" />
+															<BellOff className="h-3.5 w-3.5" />
 														)}
-														<span>
-															{t(
-																"tools.pnr_checker.stop_alerts",
-															)}
-														</span>
 													</Button>
 												)}
 
 												<Button
 													type="button"
-													variant="outline"
-													size="sm"
+													variant="ghost"
+													size="icon"
 													onClick={() =>
 														handleResendTicket(
 															record,
@@ -805,28 +696,26 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 														resendingEmail ===
 														record.email
 													}
-													className="text-[11px] h-7 px-2.5 gap-1 rounded-lg border-border/70 hover:border-primary/40 hover:bg-primary/5 cursor-pointer"
+													className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg cursor-pointer"
+													title={t(
+														"tools.pnr_checker.resend_ticket",
+													)}
 												>
 													{resendingEmail ===
 													record.email ? (
 														<Loader2 className="h-3 w-3 animate-spin" />
 													) : (
-														<RotateCcw className="h-3 w-3 text-primary" />
+														<RotateCcw className="h-3.5 w-3.5" />
 													)}
-													<span>
-														{t(
-															"tools.pnr_checker.resend_ticket",
-														)}
-													</span>
 												</Button>
 											</div>
 										</div>
 									);
 								})}
 							</div>
-						)}
-					</TabsContent>
-				</Tabs>
+						</div>
+					)}
+				</div>
 
 				{/* Footer Controls */}
 				<div className="p-4 border-t border-border/50 bg-muted/20 flex flex-col-reverse sm:flex-row items-center justify-between gap-2.5">
@@ -861,42 +750,28 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 							{t("tools.pnr_checker.cancel")}
 						</Button>
 
-						{activeTab === "share" ? (
-							<Button
-								type="button"
-								variant="default"
-								size="sm"
-								onClick={handleSendShare}
-								disabled={
-									sending ||
-									(recipients.length === 0 &&
-										!emailInput.trim())
-								}
-								className="w-full sm:w-auto text-xs h-9 rounded-xl gap-1.5 shadow-sm cursor-pointer"
-							>
-								{sending ? (
-									<Loader2 className="h-3.5 w-3.5 animate-spin" />
-								) : (
-									<Share2 className="h-3.5 w-3.5" />
-								)}
-								<span>
-									{sending
-										? t("tools.pnr_checker.sharing")
-										: t("tools.pnr_checker.share_now")}
-								</span>
-							</Button>
-						) : (
-							<Button
-								type="button"
-								variant="default"
-								size="sm"
-								onClick={() => setActiveTab("share")}
-								className="w-full sm:w-auto text-xs h-9 rounded-xl gap-1.5 shadow-sm cursor-pointer"
-							>
-								<Plus className="h-3.5 w-3.5" />
-								<span>{t("tools.pnr_checker.tab_share")}</span>
-							</Button>
-						)}
+						<Button
+							type="button"
+							variant="default"
+							size="sm"
+							onClick={handleSendShare}
+							disabled={
+								sending ||
+								(recipients.length === 0 && !emailInput.trim())
+							}
+							className="w-full sm:w-auto text-xs h-9 rounded-xl gap-1.5 shadow-sm cursor-pointer"
+						>
+							{sending ? (
+								<Loader2 className="h-3.5 w-3.5 animate-spin" />
+							) : (
+								<Share2 className="h-3.5 w-3.5" />
+							)}
+							<span>
+								{sending
+									? t("tools.pnr_checker.sharing")
+									: t("tools.pnr_checker.share_now")}
+							</span>
+						</Button>
 					</div>
 				</div>
 			</DialogContent>
