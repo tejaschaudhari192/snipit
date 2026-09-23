@@ -31,31 +31,44 @@ export function MediaDropzone({
 					: "cursor-pointer",
 			)}
 		>
-			<div className="relative flex items-center justify-center w-[88px] h-[88px] rounded-full bg-muted border border-border/60 text-primary transition-transform">
+			<div className="relative flex items-center justify-center transition-transform">
 				{isUploading ? (
 					<MediaCircularProgress
 						progress={uploadProgress}
-						filename={selectedFile?.name}
-						size={80}
-						strokeWidth={5}
-						className="block"
+						size={76}
+						strokeWidth={6}
 					/>
 				) : uploadProgress === 100 ? (
-					<CheckCircle2 className="h-7 w-7 text-emerald-500" />
+					<div className="p-3 bg-emerald-500/10 rounded-full border border-emerald-500/20 text-emerald-500">
+						<CheckCircle2 className="h-7 w-7" />
+					</div>
 				) : (
-					<UploadCloud className="h-7 w-7 text-primary" />
+					<div className="p-3 bg-muted rounded-full border border-border/60 text-primary">
+						<UploadCloud className="h-7 w-7" />
+					</div>
 				)}
 			</div>
-			{!isUploading && (
-				<p className="text-xs font-medium text-foreground text-center">
+			{isUploading ? (
+				<div className="flex flex-col items-center gap-0.5 max-w-full px-2">
+					<p className="text-xs font-semibold text-foreground text-center truncate max-w-70">
+						{selectedFile?.name || "Uploading media..."}
+					</p>
+					<p className="text-[11px] text-muted-foreground text-center">
+						Uploading media, please wait...
+					</p>
+				</div>
+			) : (
+				<p className="text-xs font-medium text-foreground text-center max-w-70 truncate">
 					{selectedFile
 						? selectedFile.name
 						: `Drag & drop or click to upload ${type}`}
 				</p>
 			)}
-			<p className="text-[10px] text-muted-foreground text-center">
-				Max file size 50MB
-			</p>
+			{!isUploading && (
+				<p className="text-[10px] text-muted-foreground text-center">
+					Max file size 50MB
+				</p>
+			)}
 			<Input
 				type="file"
 				ref={fileInputRef}

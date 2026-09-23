@@ -9,7 +9,7 @@ export function MediaUploadProgress({ progress }: MediaUploadProgressProps) {
 		<div className="flex flex-col gap-1.5 w-full bg-muted/30 p-3 rounded-lg border border-border/40 animate-in fade-in duration-200">
 			<div className="flex items-center justify-between text-xs font-medium">
 				<span className="text-foreground flex items-center gap-1.5">
-					<span className="inline-block w-2 h-2 rounded-full bg-primary animate-ping" />
+					<span className="inline-block w-2 h-2 rounded-full bg-primary" />
 					Uploading media...
 				</span>
 				<span className="font-bold tabular-nums text-primary">

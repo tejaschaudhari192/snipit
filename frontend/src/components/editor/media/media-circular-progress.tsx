@@ -10,83 +10,62 @@ interface MediaCircularProgressProps {
 
 export function MediaCircularProgress({
 	progress,
-	filename,
 	size = 80,
-	strokeWidth = 5,
+	strokeWidth = 6,
 	className,
 }: MediaCircularProgressProps) {
+	const clampedProgress = Math.min(100, Math.max(0, progress));
 	const radius = (size - strokeWidth) / 2;
 	const circumference = 2 * Math.PI * radius;
-	const offset = circumference - (progress / 100) * circumference;
-
-	// Truncate filename if too long
-	const displayName = filename
-		? filename.length > 25
-			? filename.slice(0, 22) + "..."
-			: filename
-		: "";
+	const offset = circumference - (clampedProgress / 100) * circumference;
 
 	return (
-		<svg
-			className={cn("block transform -rotate-90", className)}
-			width={size}
-			height={size}
-			viewBox={`0 0 ${size} ${size}`}
-			preserveAspectRatio="xMidYMid meet"
-			aria-hidden="true"
-			role="img"
-			aria-label={`Upload progress: ${Math.round(progress)}%`}
+		<div
+			className={cn(
+				"relative flex items-center justify-center select-none",
+				className,
+			)}
+			style={{ width: size, height: size }}
+			role="progressbar"
+			aria-valuenow={Math.round(clampedProgress)}
+			aria-valuemin={0}
+			aria-valuemax={100}
 		>
-			{/* Background track */}
-			<circle
-				cx={size / 2}
-				cy={size / 2}
-				r={radius}
-				fill="none"
-				stroke="currentColor"
-				strokeWidth={strokeWidth}
-				strokeLinecap="round"
-				className="text-muted-foreground/30"
-			/>
-			{/* Progress ring */}
-			<circle
-				cx={size / 2}
-				cy={size / 2}
-				r={radius}
-				fill="none"
-				stroke="currentColor"
-				strokeWidth={strokeWidth}
-				strokeLinecap="round"
-				strokeDasharray={circumference}
-				strokeDashoffset={offset}
-				className="text-primary transition-all duration-300 ease-out"
-				style={{ transition: "stroke-dashoffset 0.3s ease-out" }}
-			/>
-			{/* Center content */}
-			<g textAnchor="middle" dominantBaseline="middle">
-				<text
-					x={size / 2}
-					y={size / 2 - (displayName ? 10 : 0)}
-					fontSize={size * 0.2}
-					fontWeight="700"
-					fill="currentColor"
-					className="text-foreground"
-				>
-					{Math.round(progress)}%
-				</text>
-				{displayName && (
-					<text
-						x={size / 2}
-						y={size / 2 + 18}
-						fontSize={size * 0.09}
-						fontWeight="500"
-						fill="currentColor"
-						className="text-muted-foreground"
-					>
-						{displayName}
-					</text>
-				)}
-			</g>
-		</svg>
+			<svg
+				className="w-full h-full -rotate-90 transform"
+				viewBox={`0 0 ${size} ${size}`}
+			>
+				{/* Background track */}
+				<circle
+					cx={size / 2}
+					cy={size / 2}
+					r={radius}
+					fill="none"
+					stroke="currentColor"
+					strokeWidth={strokeWidth}
+					className="text-muted/60 dark:text-muted/40"
+				/>
+				{/* Progress ring */}
+				<circle
+					cx={size / 2}
+					cy={size / 2}
+					r={radius}
+					fill="none"
+					stroke="currentColor"
+					strokeWidth={strokeWidth}
+					strokeLinecap="round"
+					strokeDasharray={circumference}
+					strokeDashoffset={offset}
+					className="text-primary transition-all duration-300 ease-out"
+				/>
+			</svg>
+
+			{/* Center text overlay */}
+			<div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+				<span className="text-sm font-bold tracking-tight text-foreground tabular-nums">
+					{Math.round(clampedProgress)}%
+				</span>
+			</div>
+		</div>
 	);
 }
