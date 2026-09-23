@@ -411,32 +411,32 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="sm:max-w-135 max-h-[90vh] overflow-y-auto p-0 gap-0 rounded-2xl border-border/70 shadow-2xl bg-card">
+			<DialogContent className="w-[95vw] max-w-[calc(100%-1rem)] sm:max-w-135 max-h-[92vh] sm:max-h-[85vh] overflow-y-auto p-0 gap-0 rounded-2xl border-border/70 shadow-2xl bg-card">
 				{/* Header */}
-				<DialogHeader className="p-5 pb-4 border-b border-border/50 bg-linear-to-r from-primary/10 via-primary/5 to-transparent">
+				<DialogHeader className="p-4 sm:p-5 pb-3 sm:pb-4 border-b border-border/50 bg-linear-to-r from-primary/10 via-primary/5 to-transparent">
 					<div className="flex items-center gap-2.5">
-						<div className="h-9 w-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shadow-xs">
+						<div className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shadow-xs shrink-0">
 							<Share2 className="h-4 w-4" />
 						</div>
-						<div>
-							<DialogTitle className="text-lg font-bold text-foreground tracking-tight flex items-center gap-2">
+						<div className="min-w-0">
+							<DialogTitle className="text-base sm:text-lg font-bold text-foreground tracking-tight flex items-center gap-2">
 								{t("tools.pnr_checker.share_ticket_title")}
 							</DialogTitle>
-							<DialogDescription className="text-xs text-muted-foreground mt-0.5">
+							<DialogDescription className="text-[11px] sm:text-xs text-muted-foreground mt-0.5 line-clamp-1 sm:line-clamp-none">
 								{t("tools.pnr_checker.share_ticket_subtitle")}
 							</DialogDescription>
 						</div>
 					</div>
 				</DialogHeader>
 
-				<div className="p-5 space-y-4 text-sm">
+				<div className="p-3.5 sm:p-5 space-y-3.5 sm:space-y-4 text-sm">
 					{/* Ticket Summary Pill */}
-					<div className="rounded-xl border border-border/60 bg-muted/30 p-3 flex items-center justify-between gap-3">
-						<div className="flex items-center gap-2.5 min-w-0">
-							<div className="h-8 w-8 rounded-lg bg-primary/15 text-primary flex items-center justify-center shrink-0">
-								<Train className="h-4 w-4" />
+					<div className="rounded-xl border border-border/60 bg-muted/30 p-2.5 sm:p-3 flex items-center justify-between gap-2.5">
+						<div className="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
+							<div className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg bg-primary/15 text-primary flex items-center justify-center shrink-0">
+								<Train className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
 							</div>
-							<div className="min-w-0">
+							<div className="min-w-0 flex-1">
 								<div className="font-semibold text-foreground text-xs truncate">
 									{ticket.train}{" "}
 									{ticket.trainNumber && (
@@ -445,18 +445,18 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 										</span>
 									)}
 								</div>
-								<div className="text-[11px] text-muted-foreground flex items-center gap-1.5 mt-0.5">
-									<span className="font-medium text-foreground/80">
+								<div className="text-[11px] text-muted-foreground flex items-center gap-1.5 mt-0.5 truncate">
+									<span className="font-medium text-foreground/80 truncate">
 										{ticket.fromCode || ticket.from}
 									</span>
-									<span>➔</span>
-									<span className="font-medium text-foreground/80">
+									<span className="shrink-0">➔</span>
+									<span className="font-medium text-foreground/80 truncate">
 										{ticket.toCode || ticket.to}
 									</span>
 									{ticket.class && (
 										<>
-											<span>•</span>
-											<span className="font-medium">
+											<span className="shrink-0">•</span>
+											<span className="font-medium shrink-0">
 												{ticket.class}
 											</span>
 										</>
@@ -466,7 +466,7 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 						</div>
 						<Badge
 							variant="secondary"
-							className="font-mono text-xs shrink-0 font-bold"
+							className="font-mono text-[11px] sm:text-xs shrink-0 font-bold"
 						>
 							{ticket.pnr}
 						</Badge>
@@ -491,7 +491,7 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 								value={emailInput}
 								onChange={(e) => setEmailInput(e.target.value)}
 								onKeyDown={handleKeyDown}
-								className="text-xs h-9 rounded-xl"
+								className="text-xs h-9 rounded-xl min-w-0 flex-1"
 							/>
 							<Button
 								type="button"
@@ -512,15 +512,17 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 									<Badge
 										key={email}
 										variant="secondary"
-										className="text-xs py-1 px-2.5 rounded-lg flex items-center gap-1.5 bg-primary/10 text-primary border-primary/20"
+										className="text-xs py-1 px-2.5 rounded-lg flex items-center gap-1.5 bg-primary/10 text-primary border-primary/20 max-w-full"
 									>
-										<span>{email}</span>
+										<span className="truncate max-w-50 sm:max-w-none">
+											{email}
+										</span>
 										<button
 											type="button"
 											onClick={() =>
 												removeRecipient(email)
 											}
-											className="hover:bg-primary/20 rounded-full p-0.5 transition-colors cursor-pointer"
+											className="hover:bg-primary/20 rounded-full p-0.5 transition-colors cursor-pointer shrink-0"
 											title={t(
 												"tools.pnr_checker.remove",
 											)}
@@ -534,19 +536,20 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 					</div>
 
 					{/* Automatic Status Change Alerts Switch */}
-					<div className="rounded-xl border border-primary/20 bg-primary/5 p-3.5 flex items-start gap-3 transition-colors">
-						<div className="mt-0.5">
+					<div className="rounded-xl border border-primary/20 bg-primary/5 p-3 sm:p-3.5 flex items-start gap-2.5 sm:gap-3 transition-colors">
+						<div className="mt-0.5 shrink-0">
 							<BellRing className="h-4 w-4 text-primary" />
 						</div>
-						<div className="flex-1 space-y-1">
+						<div className="flex-1 min-w-0 space-y-1">
 							<div className="flex items-center justify-between gap-2">
-								<span className="text-xs font-semibold text-foreground">
+								<span className="text-xs font-semibold text-foreground leading-tight">
 									{t("tools.pnr_checker.auto_alerts_title")}
 								</span>
 								<Switch
 									checked={subscribeAlerts}
 									onCheckedChange={setSubscribeAlerts}
 									aria-label="Toggle status alerts"
+									className="shrink-0"
 								/>
 							</div>
 							<p className="text-[11px] leading-relaxed text-muted-foreground">
@@ -583,8 +586,9 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 									return (
 										<div
 											key={record.email}
-											className="flex items-center justify-between p-2.5 rounded-xl border border-border/60 bg-muted/20 hover:bg-muted/30 transition-colors gap-2"
+											className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 sm:p-3 rounded-xl border border-border/60 bg-muted/20 hover:bg-muted/30 transition-colors gap-2 sm:gap-3"
 										>
+											{/* Top info: Avatar + Email + Timestamp */}
 											<div className="flex items-center gap-2.5 min-w-0 flex-1">
 												<div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0 border border-primary/20">
 													{record.email[0].toUpperCase()}
@@ -612,12 +616,12 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 												</div>
 											</div>
 
-											{/* Status Badge & Actions */}
-											<div className="flex items-center gap-1.5 shrink-0">
+											{/* Bottom row on mobile / right column on desktop: Status Badge & Actions */}
+											<div className="flex items-center justify-between sm:justify-end gap-1.5 shrink-0 pt-1.5 sm:pt-0 border-t sm:border-t-0 border-border/40 w-full sm:w-auto">
 												{isSubscribed ? (
 													<Badge
 														variant="outline"
-														className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px] font-semibold gap-1 py-0.5 px-2"
+														className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px] font-semibold gap-1 py-0.5 px-2 shrink-0"
 													>
 														<BellRing className="h-2.5 w-2.5" />
 														<span>
@@ -629,7 +633,7 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 												) : (
 													<Badge
 														variant="secondary"
-														className="text-[10px] text-muted-foreground gap-1 py-0.5 px-2"
+														className="text-[10px] text-muted-foreground gap-1 py-0.5 px-2 shrink-0"
 													>
 														<Check className="h-2.5 w-2.5 text-muted-foreground" />
 														<span>
@@ -640,59 +644,71 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 													</Badge>
 												)}
 
-												{isSubscribed && (
+												<div className="flex items-center gap-1">
+													{isSubscribed && (
+														<Button
+															type="button"
+															variant="ghost"
+															size="sm"
+															onClick={() =>
+																handleRemoveExisting(
+																	record.email,
+																)
+															}
+															disabled={
+																removingEmail ===
+																record.email
+															}
+															className="h-7 px-2 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg cursor-pointer gap-1"
+															title={t(
+																"tools.pnr_checker.stop_alerts",
+															)}
+														>
+															{removingEmail ===
+															record.email ? (
+																<Loader2 className="h-3 w-3 animate-spin" />
+															) : (
+																<BellOff className="h-3.5 w-3.5" />
+															)}
+															<span className="sm:hidden text-[10px]">
+																{t(
+																	"tools.pnr_checker.stop_alerts",
+																)}
+															</span>
+														</Button>
+													)}
+
 													<Button
 														type="button"
 														variant="ghost"
-														size="icon"
+														size="sm"
 														onClick={() =>
-															handleRemoveExisting(
-																record.email,
+															handleResendTicket(
+																record,
 															)
 														}
 														disabled={
-															removingEmail ===
+															resendingEmail ===
 															record.email
 														}
-														className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg cursor-pointer"
+														className="h-7 px-2 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg cursor-pointer gap-1"
 														title={t(
-															"tools.pnr_checker.stop_alerts",
+															"tools.pnr_checker.resend_ticket",
 														)}
 													>
-														{removingEmail ===
+														{resendingEmail ===
 														record.email ? (
 															<Loader2 className="h-3 w-3 animate-spin" />
 														) : (
-															<BellOff className="h-3.5 w-3.5" />
+															<RotateCcw className="h-3.5 w-3.5" />
 														)}
+														<span className="sm:hidden text-[10px]">
+															{t(
+																"tools.pnr_checker.resend_ticket",
+															)}
+														</span>
 													</Button>
-												)}
-
-												<Button
-													type="button"
-													variant="ghost"
-													size="icon"
-													onClick={() =>
-														handleResendTicket(
-															record,
-														)
-													}
-													disabled={
-														resendingEmail ===
-														record.email
-													}
-													className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg cursor-pointer"
-													title={t(
-														"tools.pnr_checker.resend_ticket",
-													)}
-												>
-													{resendingEmail ===
-													record.email ? (
-														<Loader2 className="h-3 w-3 animate-spin" />
-													) : (
-														<RotateCcw className="h-3.5 w-3.5" />
-													)}
-												</Button>
+												</div>
 											</div>
 										</div>
 									);
@@ -703,13 +719,13 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 				</div>
 
 				{/* Footer Controls */}
-				<div className="p-4 border-t border-border/50 bg-muted/20 flex flex-col-reverse sm:flex-row items-center justify-between gap-2.5">
+				<div className="p-3.5 sm:p-4 border-t border-border/50 bg-muted/20 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-2.5">
 					<Button
 						type="button"
 						variant="outline"
 						size="sm"
 						onClick={handleCopyLink}
-						className="w-full sm:w-auto text-xs h-9 rounded-xl gap-1.5 border-border/70 cursor-pointer"
+						className="w-full sm:w-auto text-xs h-9 rounded-xl gap-1.5 border-border/70 cursor-pointer order-2 sm:order-1"
 					>
 						{copied ? (
 							<Check className="h-3.5 w-3.5 text-emerald-500" />
@@ -723,14 +739,14 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 						</span>
 					</Button>
 
-					<div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+					<div className="flex items-center gap-2 w-full sm:w-auto justify-end order-1 sm:order-2">
 						<Button
 							type="button"
 							variant="ghost"
 							size="sm"
 							onClick={() => onOpenChange(false)}
 							disabled={sending}
-							className="text-xs h-9 rounded-xl cursor-pointer"
+							className="flex-1 sm:flex-initial text-xs h-9 rounded-xl cursor-pointer"
 						>
 							{t("tools.pnr_checker.cancel")}
 						</Button>
@@ -744,7 +760,7 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 								sending ||
 								(recipients.length === 0 && !emailInput.trim())
 							}
-							className="w-full sm:w-auto text-xs h-9 rounded-xl gap-1.5 shadow-sm cursor-pointer"
+							className="flex-1 sm:flex-initial text-xs h-9 rounded-xl gap-1.5 shadow-sm cursor-pointer"
 						>
 							{sending ? (
 								<Loader2 className="h-3.5 w-3.5 animate-spin" />
