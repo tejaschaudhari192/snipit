@@ -49,7 +49,11 @@ export const DeleteConfirmDialog = ({
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
-					<AlertDialogCancel variant="ghost" disabled={isDeleting} className="hover:bg-muted text-muted-foreground hover:text-foreground">
+					<AlertDialogCancel
+						variant="ghost"
+						disabled={isDeleting}
+						className="hover:bg-muted text-muted-foreground hover:text-foreground"
+					>
 						{t("history.cancel")}
 					</AlertDialogCancel>
 					<AlertDialogAction
