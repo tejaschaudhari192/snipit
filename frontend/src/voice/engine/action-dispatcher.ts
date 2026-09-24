@@ -1,6 +1,7 @@
 import type { NavigateFunction } from "react-router-dom";
 import type { VoiceActionPayload } from "../types/voice.types";
 import { DOMOperator } from "./dom-operator";
+import { deletePaste } from "@/lib/api/pastes";
 
 export interface ActionDispatcherDependencies {
 	navigate: NavigateFunction;
@@ -179,6 +180,58 @@ export class ActionDispatcher {
 					}
 					return true;
 				}
+				return false;
+			}
+
+			case "DELETE_PASTE": {
+				const idFromParams = action.params?.id;
+				const currentPath =
+					typeof window !== "undefined"
+						? window.location.pathname
+						: "";
+				const idFromPath =
+					currentPath !== "/" &&
+					!currentPath.startsWith("/tools") &&
+					!currentPath.startsWith("/login") &&
+					!currentPath.startsWith("/signup") &&
+					!currentPath.startsWith("/profile") &&
+					!currentPath.startsWith("/history") &&
+					!currentPath.startsWith("/about") &&
+					!currentPath.startsWith("/explore")
+						? currentPath.replace(/^\//, "").split("/")[0]
+						: null;
+				const targetId = idFromParams || idFromPath;
+
+				// 1. If Delete button is in the DOM, click it and confirm the dialog
+				const deleteBtn = document.querySelector(
+					"#delete-paste-button",
+				) as HTMLElement | null;
+
+				if (deleteBtn) {
+					DOMOperator.safeClick(deleteBtn);
+					const confirmBtn = await DOMOperator.waitForElement(
+						"#confirm-delete-button",
+						2000,
+					);
+					if (confirmBtn) {
+						DOMOperator.safeClick(confirmBtn);
+						return true;
+					}
+					return true;
+				}
+
+				// 2. Direct API delete fallback if target ID exists
+				if (targetId) {
+					try {
+						await deletePaste(targetId);
+						this.deps.navigate("/");
+						return true;
+					} catch (e) {
+						console.error("Direct API delete failed", e);
+						return false;
+					}
+				}
+
 				return false;
 			}
 

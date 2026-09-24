@@ -21,6 +21,7 @@ export type VoiceActionType =
 	| "CHANGE_THEME"
 	| "DOM_CLICK"
 	| "DOM_INPUT"
+	| "DELETE_PASTE"
 	| "NONE";
 
 // 3. Action Payloads (Discriminated Union)
@@ -62,6 +63,10 @@ export type VoiceActionPayload =
 				value: string;
 				submitSelector?: string;
 			};
+	  }
+	| {
+			type: "DELETE_PASTE";
+			params?: { id?: string; confirmed?: boolean };
 	  }
 	| { type: "NONE"; params?: Record<string, unknown> };
 

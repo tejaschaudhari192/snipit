@@ -57,6 +57,7 @@ export const DeleteConfirmDialog = ({
 						{t("history.cancel")}
 					</AlertDialogCancel>
 					<AlertDialogAction
+						id="confirm-delete-button"
 						variant="destructive"
 						onClick={() => {
 							onOpenChange(false);

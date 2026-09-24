@@ -582,13 +582,28 @@ export const SNIPIT_SITE_MANIFEST: ToolModuleKnowledge[] = [
 	// 7. SNIPPET VIEWER (Display Page /:id)
 	{
 		id: "display",
-		name: "Snippet Viewer",
+		name: "Snippet Viewer & Manager",
 		route: "/:id",
 		summary:
-			"Read-only snippet display page with syntax highlighting, sharing, and fork/save options.",
+			"View, explain, edit, or delete the currently opened code snippet or document.",
 		description:
-			"Shared snippet view accessed via unique paste ID. Supports code, markdown, rich text, diagrams, and file attachments.",
+			"Shared snippet view accessed via unique paste ID. Supports code, markdown, rich text, diagrams, and file attachments, with delete and edit capabilities.",
 		actions: [
+			{
+				name: "DELETE_PASTE",
+				description: "Delete the currently opened paste or snippet.",
+				intentTriggers: [
+					"delete paste",
+					"delete this paste",
+					"delete snippet",
+					"delete this snippet",
+					"remove paste",
+					"remove snippet",
+					"trash paste",
+				],
+				requiredParams: [],
+				optionalParams: ["id"],
+			},
 			{
 				name: "NAVIGATE",
 				description: "Open a specific snippet by its ID or short link.",

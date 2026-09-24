@@ -109,6 +109,7 @@ export const ToolbarActionButtons = ({
 					)}
 					{canDelete && (
 						<Button
+							id="delete-paste-button"
 							variant="outline"
 							size="sm"
 							onClick={onDelete}

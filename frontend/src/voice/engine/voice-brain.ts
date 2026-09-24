@@ -80,7 +80,16 @@ export class VoiceBrain {
 			if (res.data && typeof res.data === "object") {
 				const data = res.data as Record<string, unknown>;
 				if (typeof data.speech === "string" && data.action) {
-					return data as unknown as BrainDecision;
+					const decision = data as unknown as BrainDecision;
+					// Guard against hallucinated NAVIGATE when user asked about current paste/screen
+					if (
+						/paste|snippet|screen|code|opened/i.test(text) &&
+						!/go to|open history|navigate/i.test(text) &&
+						decision.action?.type === "NAVIGATE"
+					) {
+						decision.action = { type: "NONE" };
+					}
+					return decision;
 				}
 			}
 
@@ -147,6 +156,89 @@ export class VoiceBrain {
 					},
 				},
 			};
+		}
+
+		// Delete Paste / Snippet
+		if (
+			/^(delete|remove|trash|destroy) (this |the )?(paste|snippet|code|doc|document)$/i.test(
+				text,
+			) ||
+			/^delete (it|this)$/i.test(text) ||
+			/^delete paste$/i.test(text)
+		) {
+			return {
+				speech: "Deleting this snippet now.",
+				action: {
+					type: "DELETE_PASTE",
+					params: { confirmed: true },
+				},
+			};
+		}
+
+		// Confirm Delete Dialog
+		if (/^(confirm delete|yes delete|confirm)$/i.test(text)) {
+			const confirmBtn = document.querySelector("#confirm-delete-button");
+			if (confirmBtn) {
+				return {
+					speech: "Confirming deletion.",
+					action: {
+						type: "DOM_CLICK",
+						params: {
+							selector: "#confirm-delete-button",
+							description: "Confirm delete",
+						},
+					},
+				};
+			}
+		}
+
+		// Tell / Explain Opened Paste
+		if (
+			/^(tell|explain|summarize) (me )?(about )?(the |this )?(paste|snippet|code|document|screen)( is opened)?$/i.test(
+				text,
+			) ||
+			/^what is (this |the )?(paste|snippet|code|document|on my screen)( opened)?$/i.test(
+				text,
+			) ||
+			/^tell about the paste is opened$/i.test(text)
+		) {
+			const activePaste =
+				typeof window !== "undefined"
+					? (
+							window as unknown as {
+								__SNIPIT_ACTIVE_PASTE?: {
+									id?: string;
+									title?: string;
+									language?: string;
+									contentType?: string;
+									content?: string;
+								};
+							}
+						).__SNIPIT_ACTIVE_PASTE
+					: null;
+
+			if (activePaste) {
+				const titlePart = activePaste.title
+					? ` "${activePaste.title}"`
+					: "";
+				const lang =
+					activePaste.language || activePaste.contentType || "code";
+				const lineCount = activePaste.content
+					? activePaste.content.split("\n").length
+					: 0;
+				const preview = activePaste.content
+					? activePaste.content
+							.trim()
+							.slice(0, 100)
+							.replace(/\s+/g, " ")
+					: "";
+
+				const speech = `This is a ${lang} snippet${titlePart}${lineCount > 0 ? ` with ${lineCount} lines` : ""}.${preview ? ` Content starts with: ${preview}` : ""}`;
+				return {
+					speech,
+					action: { type: "NONE" },
+				};
+			}
 		}
 
 		// Quick navigation

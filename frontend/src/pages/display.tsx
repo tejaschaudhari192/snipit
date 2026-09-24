@@ -547,6 +547,41 @@ const DisplayPage = () => {
 		paste ? `/${paste.id} (${paste.language || "text"})` : `/${id}`,
 	);
 
+	useEffect(() => {
+		if (paste || id) {
+			(
+				window as unknown as {
+					__SNIPIT_ACTIVE_PASTE?: {
+						id?: string;
+						title?: string;
+						language?: string;
+						contentType?: string;
+						content?: string;
+					};
+				}
+			).__SNIPIT_ACTIVE_PASTE = {
+				id,
+				title:
+					paste?.fileName ||
+					(paste as unknown as { title?: string })?.title ||
+					id,
+				language: paste?.language || language,
+				contentType,
+				content:
+					updatedContent !== undefined
+						? updatedContent
+						: paste?.content,
+			};
+		}
+		return () => {
+			delete (
+				window as unknown as {
+					__SNIPIT_ACTIVE_PASTE?: unknown;
+				}
+			).__SNIPIT_ACTIVE_PASTE;
+		};
+	}, [id, paste, language, contentType, updatedContent]);
+
 	if (!loading && !paste) {
 		return (
 			<Suspense fallback={null}>
