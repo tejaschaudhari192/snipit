@@ -5,7 +5,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { useMediaUpload, MediaDropzone, MediaLinkForm } from "./media";
 

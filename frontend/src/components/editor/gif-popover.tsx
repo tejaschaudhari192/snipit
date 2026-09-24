@@ -5,7 +5,7 @@ import {
 	PopoverContent,
 } from "@/components/ui/popover";
 import { CONFIG } from "@/configurations";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import {
 	Tooltip,
 	TooltipTrigger,

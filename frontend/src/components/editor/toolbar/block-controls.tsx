@@ -1,7 +1,7 @@
 import { type Editor } from "@tiptap/core";
 import { TextQuote, Code2, Code, Minus } from "lucide-react";
 import { TooltipButton } from "./tooltip-button";
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 export function BlockControls({ editor }: { editor: Editor }) {
 	return (

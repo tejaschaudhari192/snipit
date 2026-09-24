@@ -1,6 +1,6 @@
 import { localStore } from "@/utils/storage";
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { GripHorizontal, GripVertical } from "lucide-react";
 import { useTranslation } from "react-i18next";
 

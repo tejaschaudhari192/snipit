@@ -9,7 +9,7 @@ import {
 	Superscript,
 	Subscript,
 } from "lucide-react";
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 interface BubbleMenuFormattingProps {
 	editor: Editor;

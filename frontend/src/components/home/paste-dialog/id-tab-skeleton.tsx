@@ -3,7 +3,7 @@ import {
 	ButtonSkeleton,
 	TextSkeleton,
 } from "@/components/common/skeletons";
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 interface IdTabSkeletonProps {
 	rows?: number;

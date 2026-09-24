@@ -10,7 +10,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Folder, ArrowDown, ArrowUp } from "lucide-react";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { ItemContent, ItemTitle, ItemDescription } from "@/components/ui/item";
 import {
 	Table,

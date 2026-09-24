@@ -3,7 +3,7 @@ import { Volume2, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTts } from "@/hooks/use-tts";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { Spinner } from "@/components/ui/spinner";
 import {
 	Tooltip,

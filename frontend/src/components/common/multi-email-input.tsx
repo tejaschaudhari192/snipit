@@ -2,7 +2,7 @@ import * as React from "react";
 import { X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 interface MultiEmailInputProps {
 	value: string[];

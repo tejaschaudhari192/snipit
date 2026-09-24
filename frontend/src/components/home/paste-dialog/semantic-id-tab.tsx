@@ -4,7 +4,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { useTranslation } from "react-i18next";
 import { IdAvailabilityIndicator } from "./availability-indicator";
 import {

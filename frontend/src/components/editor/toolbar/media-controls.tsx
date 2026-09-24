@@ -7,7 +7,7 @@ import {
 	Paperclip,
 } from "lucide-react";
 import { TooltipButton } from "./tooltip-button";
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 interface MediaControlsProps {
 	editor: Editor;

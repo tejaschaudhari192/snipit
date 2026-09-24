@@ -9,7 +9,7 @@ import {
 	Folder,
 	ChevronDown,
 } from "lucide-react";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { LockedSettingWrapper } from "@/components/common/locked-setting-wrapper";
 
 import { Switch } from "@/components/ui/switch";

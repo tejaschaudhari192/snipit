@@ -1,6 +1,6 @@
 import type { BeforeMount, OnMount } from "@monaco-editor/react";
 import { useRef, useEffect, useCallback, memo, lazy, Suspense } from "react";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { toast } from "@/components/ui/toast";
 const EditorToolbar = lazy(() =>
 	import("@/components/common/editor-toolbar").then((m) => ({

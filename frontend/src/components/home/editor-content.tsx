@@ -33,7 +33,7 @@ import {
 	LinkResultSkeleton,
 	TiptapEditorSkeleton,
 } from "@/components/common/editor-skeleton";
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 const EditorToolbar = lazy(() =>
 	import("@/components/common/editor-toolbar").then((m) => ({

@@ -1,5 +1,5 @@
 import { ShimmerSection } from "@/components/common/shimmer-section";
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 interface LoaderProps {
 	className?: string;

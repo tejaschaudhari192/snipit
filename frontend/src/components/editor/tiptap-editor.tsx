@@ -10,7 +10,7 @@ import {
 import "katex/dist/katex.min.css";
 import { Editor, type JSONContent } from "@tiptap/core";
 import type { AnyExtension } from "@tiptap/core";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { Image as ImageIcon } from "lucide-react";
 
 import { suggestionItems } from "./slash-command-items";

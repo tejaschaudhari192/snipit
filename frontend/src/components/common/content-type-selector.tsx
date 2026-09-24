@@ -1,6 +1,6 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import type { ContentMode } from "@/types";
 import { memo } from "react";
 import { TABS_CONFIG } from "@/constants";

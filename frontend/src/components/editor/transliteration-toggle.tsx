@@ -11,7 +11,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { TRANSLITERATION_LANGUAGES } from "@/constants";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import {
 	Tooltip,
 	TooltipContent,

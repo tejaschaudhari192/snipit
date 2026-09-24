@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Wand2, Fingerprint, Hash } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 import { IdTabSkeleton } from "./id-tab-skeleton";
 

@@ -8,7 +8,7 @@ import {
 	Smile,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import type { CompanionSessionData } from "../services/companion-api";
 
 interface CompanionHeaderProps {

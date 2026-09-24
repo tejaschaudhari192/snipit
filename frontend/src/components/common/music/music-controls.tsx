@@ -9,7 +9,7 @@ import {
 	Repeat1,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 interface MusicControlsProps {
 	isPlaying: boolean;

@@ -5,7 +5,7 @@ import {
 	getInitials,
 } from "@/tools/password-manager/utils/formatters";
 import type { PasswordItem } from "@/tools/password-manager/types";
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 interface ItemAvatarProps {
 	item: PasswordItem;

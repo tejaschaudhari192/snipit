@@ -1,4 +1,4 @@
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 

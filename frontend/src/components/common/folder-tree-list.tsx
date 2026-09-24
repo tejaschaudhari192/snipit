@@ -3,7 +3,7 @@ import { Folder, ChevronRight, ChevronDown, Plus, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useFolders } from "@/context/FolderContext";
 import { CreateFolderDialog } from "@/components/profile/create-folder-dialog";
-import { cn } from "@/utils/index";
+import { cn } from "cn";
 
 export interface FolderTreeListProps {
 	folderId?: string | null;

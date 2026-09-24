@@ -1,6 +1,6 @@
 import React, { type RefObject } from "react";
 import { Sparkles } from "lucide-react";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import type { CompanionMessage } from "../services/companion-api";
 
 interface CompanionChatFeedProps {

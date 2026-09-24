@@ -6,6 +6,7 @@ import {
 	MoreHorizontal,
 	Camera,
 	Laptop,
+	KeyRound,
 } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ interface ProfileInfoProps {
 	onLogout: () => void;
 	onOpenAvatarPicker?: () => void;
 	onOpenDevices?: () => void;
+	onOpenResetPassword?: () => void;
 }
 
 export const ProfileInfo = ({
@@ -45,6 +47,7 @@ export const ProfileInfo = ({
 	onLogout,
 	onOpenAvatarPicker,
 	onOpenDevices,
+	onOpenResetPassword,
 }: ProfileInfoProps) => {
 	const { t } = useTranslation();
 
@@ -178,6 +181,20 @@ export const ProfileInfo = ({
 										<Edit2 className="h-3.5 w-3.5" />
 										<span>{t("profile.edit_name")}</span>
 									</DropdownMenuItem>
+									{onOpenResetPassword && (
+										<DropdownMenuItem
+											onClick={onOpenResetPassword}
+											className="gap-2 cursor-pointer font-medium"
+										>
+											<KeyRound className="h-3.5 w-3.5 text-primary" />
+											<span>
+												{t("profile.reset_password") ||
+													t(
+														"auth.reset_password_button",
+													)}
+											</span>
+										</DropdownMenuItem>
+									)}
 								</>
 							)}
 							{!isGuest && <DropdownMenuSeparator />}

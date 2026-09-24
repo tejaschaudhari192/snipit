@@ -1,4 +1,4 @@
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 interface MediaCircularProgressProps {
 	progress: number;

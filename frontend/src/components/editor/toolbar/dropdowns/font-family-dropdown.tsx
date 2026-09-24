@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { FONTS, loadFontOnDemand } from "../../utils/fonts";
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 export function FontDropdown({
 	editor,

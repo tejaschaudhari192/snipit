@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
-import { ChevronDown } from "lucide-react";
-import { cn } from "@/utils";
+import { MultiStateButton } from "@/components/ui/multi-state-button";
+import { ShinyText } from "@/components/ui/shiny-text";
+import { ChevronDown, Send } from "lucide-react";
+import { cn } from "cn";
 import { useTranslation } from "react-i18next";
 import type { ContentMode } from "@/types";
+import React from "react";
 
 interface ToolbarSubmitButtonProps {
 	isSubmitting: boolean;
@@ -12,7 +15,7 @@ interface ToolbarSubmitButtonProps {
 	contentType: ContentMode;
 	isOptionsOpen: boolean;
 	setIsOptionsOpen: (val: boolean) => void;
-	handleQuickPaste: () => void;
+	handleQuickPaste: () => Promise<boolean | void> | void;
 }
 
 export function ToolbarSubmitButton({
@@ -25,31 +28,9 @@ export function ToolbarSubmitButton({
 	handleQuickPaste,
 }: ToolbarSubmitButtonProps) {
 	const { t } = useTranslation();
+	const [isSuccess, setIsSuccess] = React.useState(false);
 
-	const renderButtonText = () => {
-		if (isSubmitting || isUploading) {
-			return (
-				<div className="flex items-center gap-2">
-					<div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
-					<span
-						style={
-							{
-								"--highlight-color": "var(--foreground)",
-								"--base-color": "var(--muted-foreground)",
-								"--spread": "20px",
-								"--duration": "2s",
-							} as React.CSSProperties
-						}
-						className="shimmer font-medium"
-					>
-						{isUploading
-							? `${t("home.file_upload.uploading")} ${Math.round(uploadProgress)}%`
-							: t("common.states.submitting")}
-					</span>
-				</div>
-			);
-		}
-
+	const getIdleLabel = () => {
 		if (contentType === "file") {
 			return t("home.actions.upload");
 		}
@@ -59,26 +40,70 @@ export function ToolbarSubmitButton({
 		return t("home.actions.paste");
 	};
 
+	const getSuccessLabel = () => {
+		if (contentType === "file") {
+			return t("home.actions.uploaded");
+		}
+		if (contentType === "link") {
+			return t("home.actions.shortened");
+		}
+		return t("home.actions.pasted");
+	};
+
+	const getLoadingLabel = () => {
+		if (isUploading) {
+			return (
+				<ShinyText className="text-white dark:text-white font-medium">
+					{`${t("home.file_upload.uploading")} ${Math.round(uploadProgress)}%`}
+				</ShinyText>
+			);
+		}
+		return (
+			<ShinyText className="text-white dark:text-white font-medium">
+				{t("common.states.submitting")}
+			</ShinyText>
+		);
+	};
+
+	const isLoading = isSubmitting || isUploading;
+	const currentStatus = isSuccess
+		? "success"
+		: isLoading
+			? "loading"
+			: "idle";
+
+	const handleClick = async () => {
+		setIsOptionsOpen(false);
+		const result = await handleQuickPaste();
+		if (result !== false) {
+			setIsSuccess(true);
+			setTimeout(() => {
+				setIsSuccess(false);
+			}, 2500);
+		}
+	};
+
 	return (
 		<ButtonGroup className="shadow-lg shadow-primary/20 overflow-visible shrink-0 h-9">
-			<Button
+			<MultiStateButton
 				id="quick-paste-button"
-				disabled={isSubmitting}
-				size="lg"
-				className="px-4 h-9 font-bold rounded-r-none border-r-0 hover:bg-primary/90 transition-colors min-w-25"
-				onClick={() => {
-					setIsOptionsOpen(false);
-					handleQuickPaste();
-				}}
-			>
-				{renderButtonText()}
-			</Button>
+				status={currentStatus}
+				disabled={isLoading}
+				idleLabel={getIdleLabel()}
+				loadingLabel={getLoadingLabel()}
+				successLabel={getSuccessLabel()}
+				idleIcon={
+					<Send className="size-3.5 text-primary-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+				}
+				className="px-4 h-9 font-bold rounded-l-lg rounded-r-none border-r-0 hover:bg-primary/90 transition-colors min-w-25"
+				onClick={handleClick}
+			/>
 			<div className="w-px bg-primary-foreground/20 self-stretch my-2" />
 			<Button
-				disabled={isSubmitting}
+				disabled={isLoading}
 				size="icon"
 				className={cn(
-					"h-9 w-10 shrink-0 rounded-l-none border-l-0 hover:bg-primary/90 transition-all",
+					"h-9 w-10 shrink-0 rounded-r-lg rounded-l-none border-l-0 hover:bg-primary/90 transition-all",
 					isOptionsOpen && "bg-primary/80",
 				)}
 				onClick={() => setIsOptionsOpen(!isOptionsOpen)}

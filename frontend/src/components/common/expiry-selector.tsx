@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/select";
 import { Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { memo } from "react";
 import { EXPIRY_OPTIONS } from "@/constants";
 import { OptionDisplay } from "@/components/common/option-display";

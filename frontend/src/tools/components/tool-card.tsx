@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import type { ToolConfig } from "@/tools/config";
 
 interface ToolCardProps {

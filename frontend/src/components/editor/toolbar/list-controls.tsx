@@ -1,7 +1,7 @@
 import { type Editor } from "@tiptap/core";
 import { List, ListOrdered, ListTodo } from "lucide-react";
 import { TooltipButton } from "./tooltip-button";
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 export function ListControls({ editor }: { editor: Editor }) {
 	return (

@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { lazy, Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {

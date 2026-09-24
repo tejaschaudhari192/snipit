@@ -12,7 +12,7 @@ import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ROLE_OPTIONS } from "@/constants";
 import { OptionDisplay } from "@/components/common/option-display";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import type { ShareRole } from "@/types";
 import { addCollaborator, removeCollaborator } from "@/lib/api/collaborators";
 import { toast } from "@/components/ui/toast";

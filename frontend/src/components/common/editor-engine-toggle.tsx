@@ -5,7 +5,7 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import type { EditorEngine } from "@/hooks/use-editor-engine";
 
 interface EditorEngineToggleProps {

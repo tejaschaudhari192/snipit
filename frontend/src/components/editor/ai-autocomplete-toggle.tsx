@@ -1,6 +1,6 @@
 import { Switch } from "@/components/ui/switch";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { AiCursorIcon } from "@/components/icons/ai-cursor-icon";
 import { useEditorEngine } from "@/hooks/use-editor-engine";
 import {

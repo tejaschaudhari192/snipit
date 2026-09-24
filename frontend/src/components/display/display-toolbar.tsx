@@ -25,7 +25,7 @@ import type {
 	CommentData,
 	ContentMode,
 } from "@/types";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import {
 	ToolbarButtonSkeleton,

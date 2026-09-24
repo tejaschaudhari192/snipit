@@ -5,7 +5,7 @@ import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { transcribeAudio } from "@/lib/api/ai";
 import { usePaste } from "@/context/PasteContext";
 import { toast } from "../ui/toast";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { useTranslation } from "react-i18next";
 import { formatAudioDuration } from "@/utils/audio";
 import { VoiceWaveform } from "./voice-waveform";

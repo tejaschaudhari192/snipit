@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { usePasswordStrength } from "@/hooks/use-password-strength";
 
 interface PasswordStrengthMeterProps {

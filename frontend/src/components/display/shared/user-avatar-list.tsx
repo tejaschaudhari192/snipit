@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { ActiveUser } from "@/types";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import {
 	Tooltip,
 	TooltipContent,

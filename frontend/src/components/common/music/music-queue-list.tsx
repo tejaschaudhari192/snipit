@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMusic } from "@/context/use-music";
 import TrackItem from "./track-item";
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 export const MusicQueueList: React.FC = () => {
 	const { t } = useTranslation();

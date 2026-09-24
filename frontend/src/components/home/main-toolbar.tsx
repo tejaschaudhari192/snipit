@@ -6,7 +6,7 @@ import { ContentTypeSelector } from "@/components/common/content-type-selector";
 import { ExpirySelector } from "@/components/common/expiry-selector";
 import { useTranslation } from "react-i18next";
 
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { useState, useEffect } from "react";
 import { SUPPORTED_RUN_LANGUAGES } from "@/constants";
 import { useToolbarWrap } from "@/hooks/use-toolbar-wrap";

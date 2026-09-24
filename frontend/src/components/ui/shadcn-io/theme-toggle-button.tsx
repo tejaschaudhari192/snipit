@@ -1,7 +1,7 @@
 "use client";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 export interface ThemeToggleButtonProps {
 	theme?: "light" | "dark" | "system";

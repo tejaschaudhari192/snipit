@@ -1,7 +1,7 @@
 "use client";
 
 import { User } from "lucide-react";
-import { cn } from "@/utils/index";
+import { cn } from "cn";
 import { useTranslation } from "react-i18next";
 
 interface SidebarHeaderProps {

@@ -2,7 +2,7 @@ import { Link, History, MousePointerClick, Timer, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import type { PasteData, RedirectionType } from "@/types";
 import { QRDialog } from "@/components/common/qr-dialog";
 import { useState } from "react";

@@ -14,7 +14,7 @@ import {
 	Split,
 	Heading1,
 } from "lucide-react";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import {
 	Tooltip,
 	TooltipTrigger,

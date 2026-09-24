@@ -2,7 +2,7 @@ import { Node, mergeAttributes } from "@tiptap/core";
 import { ReactNodeViewRenderer, NodeViewWrapper } from "@tiptap/react";
 import type { NodeViewProps } from "@tiptap/react";
 import { FileText, Download, Trash2 } from "lucide-react";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 
 const AttachmentNodeView = (props: NodeViewProps) => {

@@ -1,5 +1,5 @@
 import { GlassBadge } from "@/components/common/core/glass-badge";
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 interface StatusBadgeProps {
 	icon: React.ReactNode;

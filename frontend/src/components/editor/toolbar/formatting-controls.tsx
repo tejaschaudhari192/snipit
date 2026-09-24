@@ -8,7 +8,7 @@ import {
 	Subscript,
 } from "lucide-react";
 import { TooltipButton } from "./tooltip-button";
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 export function FormattingControls({ editor }: { editor: Editor }) {
 	return (

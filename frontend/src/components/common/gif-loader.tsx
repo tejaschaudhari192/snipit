@@ -1,6 +1,6 @@
 import React from "react";
 import loadingGif from "@/assets/icons/loading/loading.gif";
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 interface GifLoaderProps {
 	label?: string;

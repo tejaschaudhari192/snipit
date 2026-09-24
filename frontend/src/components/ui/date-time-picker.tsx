@@ -4,7 +4,7 @@
 import * as React from "react";
 import { CalendarIcon, ChevronUp, ChevronDown, Clock } from "lucide-react";
 
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {

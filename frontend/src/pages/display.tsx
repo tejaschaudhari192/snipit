@@ -23,7 +23,7 @@ import { useLanguageDetection } from "@/hooks/use-language-detection";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { useTerminalLayout } from "@/hooks/use-terminal-layout";
 import { defineMonacoThemes } from "@/lib/monaco";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { storage } from "@/utils/storage";
 import { useAiAutocomplete } from "@/hooks/use-ai-autocomplete";
 

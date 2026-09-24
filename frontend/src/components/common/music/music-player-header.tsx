@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Share2, Eraser } from "lucide-react";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { useMusic } from "@/context/use-music";
 import {
 	DialogHeader,

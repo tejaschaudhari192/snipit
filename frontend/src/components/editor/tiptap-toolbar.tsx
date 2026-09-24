@@ -1,6 +1,6 @@
 import { useEditor } from "novel";
 import { Maximize2, Minimize2, Search } from "lucide-react";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { Editor } from "@tiptap/core";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useState, useEffect } from "react";

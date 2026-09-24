@@ -1,4 +1,4 @@
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { FileAudio } from "lucide-react";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useTheme } from "@/hooks/use-theme";

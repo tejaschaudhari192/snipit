@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { UploadCloud, CheckCircle2 } from "lucide-react";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { Input } from "@/components/ui/input";
 import { MediaCircularProgress } from "./media-circular-progress";
 

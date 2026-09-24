@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { ArrowDown, Check, Copy, Code2, Eye } from "lucide-react";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 

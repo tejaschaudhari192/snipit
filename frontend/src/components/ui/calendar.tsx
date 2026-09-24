@@ -6,7 +6,7 @@ import {
 	type Locale,
 } from "react-day-picker";
 
-import { cn } from "@/utils/index";
+import { cn } from "cn";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
 	ChevronLeftIcon,

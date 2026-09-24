@@ -7,7 +7,7 @@ import {
 	PanelRight,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { SUPPORTED_RUN_LANGUAGES } from "@/constants";
 import { Button } from "@/components/ui/button";
 

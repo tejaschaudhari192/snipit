@@ -10,7 +10,7 @@ import {
 	WrapText,
 	FileText,
 } from "lucide-react";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 
 const ImageNodeView = (props: NodeViewProps) => {

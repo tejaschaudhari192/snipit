@@ -12,7 +12,7 @@ import {
 	TooltipContent,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/utils";
+import { cn } from "cn";
 
 const FONT_SIZES = [
 	"10px",

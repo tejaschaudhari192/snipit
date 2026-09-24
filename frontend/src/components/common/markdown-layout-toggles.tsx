@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { cn } from "@/utils";
+import { cn } from "cn";
 import { useTranslation } from "react-i18next";
 import { MARKDOWN_LAYOUT_MODES } from "@/constants";
 import type { MarkdownLayoutMode } from "@/types";
