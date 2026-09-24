@@ -43,7 +43,7 @@ const MusicProgress: React.FC<MusicProgressProps> = ({
 	return (
 		<div className="w-full space-y-1">
 			<Slider
-				value={[seekValue]}
+				value={[Math.min(Math.max(0, seekValue), duration || 100)]}
 				min={0}
 				max={duration || 100}
 				step={1}

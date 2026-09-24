@@ -28,7 +28,7 @@ interface UseMusicSocketSyncParams {
 	shuffle: boolean;
 	repeat: "off" | "one" | "all";
 	volume: number;
-	playTrack: (track: MusicTrack) => void;
+	playTrack: (track: MusicTrack, startSeconds?: number) => void;
 	playYt: () => void;
 	pauseYt: () => void;
 	handleSeek: (seconds: number) => void;
@@ -120,9 +120,9 @@ export function useMusicSocketSync({
 				if (isRemoteActionRef.current) return;
 				socket.emit("music:sync", {
 					pasteId,
-					track: currentTrack,
-					isPlaying,
-					currentTime,
+					track: currentTrackRef.current,
+					isPlaying: isPlayingRef.current,
+					currentTime: currentTimeRef.current,
 					playlist,
 					region: "default",
 					shuffle,
@@ -138,8 +138,6 @@ export function useMusicSocketSync({
 		socket,
 		pasteId,
 		isPlaying,
-		currentTrack,
-		currentTime,
 		playlist,
 		shuffle,
 		repeat,
@@ -172,12 +170,9 @@ export function useMusicSocketSync({
 					};
 
 					if (data.track) {
-						if (
+						const isNewTrack =
 							currentTrackRef.current?.videoId !==
-							data.track.videoId
-						) {
-							playTrack(data.track);
-						}
+							data.track.videoId;
 
 						const globalTime = globalClockRef.current
 							? globalClockRef.current.getGlobalTime()
@@ -189,16 +184,21 @@ export function useMusicSocketSync({
 							globalTime,
 						);
 
+						if (isNewTrack) {
+							playTrack(data.track, targetTime);
+						} else if (
+							targetTime > 0 &&
+							Math.abs(currentTimeRef.current - targetTime) > 1.5
+						) {
+							handleSeek(targetTime);
+						}
+
 						if (data.isPlaying) {
 							playYt();
 							setIsPlaying(true);
 						} else {
 							pauseYt();
 							setIsPlaying(false);
-						}
-
-						if (targetTime > 0) {
-							handleSeek(targetTime);
 						}
 					}
 					if (data.playlist) setPlaylist(data.playlist);
@@ -229,21 +229,6 @@ export function useMusicSocketSync({
 				isPlaying: data.isPlaying,
 			};
 
-			if (
-				data.track &&
-				currentTrackRef.current?.videoId !== data.track.videoId
-			) {
-				playTrack(data.track);
-			}
-
-			if (data.isPlaying && !isPlayingRef.current) {
-				playYt();
-				setIsPlaying(true);
-			} else if (!data.isPlaying && isPlayingRef.current) {
-				pauseYt();
-				setIsPlaying(false);
-			}
-
 			const globalTime = globalClockRef.current
 				? globalClockRef.current.getGlobalTime()
 				: Date.now();
@@ -254,8 +239,22 @@ export function useMusicSocketSync({
 				globalTime,
 			);
 
-			if (Math.abs(currentTimeRef.current - targetTime) > 0.15) {
+			const isNewTrack =
+				data.track &&
+				currentTrackRef.current?.videoId !== data.track.videoId;
+
+			if (isNewTrack && data.track) {
+				playTrack(data.track, targetTime);
+			} else if (Math.abs(currentTimeRef.current - targetTime) > 1.5) {
 				handleSeek(targetTime);
+			}
+
+			if (data.isPlaying && !isPlayingRef.current) {
+				playYt();
+				setIsPlaying(true);
+			} else if (!data.isPlaying && isPlayingRef.current) {
+				pauseYt();
+				setIsPlaying(false);
 			}
 
 			if (data.volume !== undefined) {
@@ -286,7 +285,7 @@ export function useMusicSocketSync({
 					globalTime,
 				);
 
-				if (Math.abs(currentTimeRef.current - targetTime) > 0.15) {
+				if (Math.abs(currentTimeRef.current - targetTime) > 1.5) {
 					handleSeek(targetTime);
 				}
 			}
@@ -304,9 +303,7 @@ export function useMusicSocketSync({
 					isPlaying: false,
 				};
 
-				if (
-					Math.abs(currentTimeRef.current - data.currentTime) > 0.15
-				) {
+				if (Math.abs(currentTimeRef.current - data.currentTime) > 0.5) {
 					handleSeek(data.currentTime);
 				}
 			}
@@ -321,7 +318,7 @@ export function useMusicSocketSync({
 				isPlaying: isPlayingRef.current,
 			};
 
-			if (Math.abs(currentTimeRef.current - data.currentTime) > 0.15) {
+			if (Math.abs(currentTimeRef.current - data.currentTime) > 0.3) {
 				handleSeek(data.currentTime);
 			}
 			isRemoteActionRef.current = false;
@@ -426,13 +423,18 @@ export function useMusicSocketSync({
 			const currentPos = playerRef.current.getCurrentTime();
 			const deviation = targetTime - currentPos;
 
+			// Smooth drift compensation with deadband:
+			// - If deviation > 1.5s: hard seek to catch up
+			// - If deviation between 0.35s and 1.5s: gentle 5% speed-up (1.05x)
+			// - If deviation between -0.35s and -1.5s: gentle 5% slow-down (0.95x)
+			// - Within [-0.35s, 0.35s]: keep 1.0x (deadband prevents audio pitch warping)
 			if (Math.abs(deviation) > 1.5) {
 				playerRef.current.seekTo(targetTime, true);
 				playerRef.current.setPlaybackRate(1.0);
-			} else if (deviation > 0.1) {
-				playerRef.current.setPlaybackRate(1.25);
-			} else if (deviation < -0.1) {
-				playerRef.current.setPlaybackRate(0.75);
+			} else if (deviation > 0.35) {
+				playerRef.current.setPlaybackRate(1.05);
+			} else if (deviation < -0.35) {
+				playerRef.current.setPlaybackRate(0.95);
 			} else {
 				playerRef.current.setPlaybackRate(1.0);
 			}

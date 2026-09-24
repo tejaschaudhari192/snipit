@@ -4,7 +4,7 @@ import { type MusicTrack } from "@/types";
 import { CONFIG } from "@/configurations";
 
 interface UsePlaylistManagerProps {
-	onTrackChange?: (track: MusicTrack) => void;
+	onTrackChange?: (track: MusicTrack, startSeconds?: number) => void;
 }
 
 export function usePlaylistManager({
@@ -55,9 +55,9 @@ export function usePlaylistManager({
 	}, [currentTrack, isMounted]);
 
 	const playTrack = useCallback(
-		(track: MusicTrack) => {
+		(track: MusicTrack, startSeconds: number = 0) => {
 			setCurrentTrack(track);
-			onTrackChange?.(track);
+			onTrackChange?.(track, startSeconds);
 
 			// Find track in playlist to update index if exists
 			const index = playlist.findIndex(

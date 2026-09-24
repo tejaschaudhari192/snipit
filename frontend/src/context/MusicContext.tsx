@@ -123,12 +123,21 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 		handlePrevious,
 		clearQueue,
 	} = usePlaylistManager({
-		onTrackChange: (track) => {
+		onTrackChange: (track, startSeconds = 0) => {
 			if (playerRef.current && isReady) {
 				try {
-					loadVideoById(track.videoId);
+					loadVideoById(track.videoId, startSeconds);
 					playYt();
 					setIsPlaying(true);
+					if (startSeconds > 0) {
+						setCurrentTime(startSeconds);
+						currentTimeRef.current = startSeconds;
+						if (durationRef.current > 0) {
+							setProgress(
+								(startSeconds / durationRef.current) * 100,
+							);
+						}
+					}
 
 					if (
 						isShared &&
@@ -706,14 +715,27 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 			progressInterval.current = setInterval(() => {
 				let ytTime = -1;
 				let ytDur = -1;
+				let isYtPlaying = false;
 
 				try {
 					if (
 						playerRef.current &&
+						typeof playerRef.current.getPlayerState ===
+							"function" &&
 						typeof playerRef.current.getCurrentTime === "function"
 					) {
-						ytTime = playerRef.current.getCurrentTime();
-						ytDur = playerRef.current.getDuration();
+						const playerState = playerRef.current.getPlayerState();
+						isYtPlaying =
+							playerState ===
+							(window.YT?.PlayerState?.PLAYING ?? 1);
+						if (isYtPlaying) {
+							ytTime = playerRef.current.getCurrentTime();
+						}
+						if (
+							typeof playerRef.current.getDuration === "function"
+						) {
+							ytDur = playerRef.current.getDuration();
+						}
 					}
 				} catch (e) {
 					console.warn(
@@ -723,9 +745,10 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 				}
 
 				let nextTime = currentTimeRef.current;
-				if (ytTime >= 0) {
+				if (isYtPlaying && ytTime >= 0) {
 					nextTime = ytTime;
-				} else {
+				} else if (isPlayingRef.current) {
+					// While buffering or initializing, smoothly extrapolate rather than collapsing to 0:00
 					nextTime = currentTimeRef.current + 0.2;
 				}
 
@@ -735,14 +758,20 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
 					nextDur = ytDur;
 				}
 
-				if (nextTime > nextDur) {
+				if (
+					durationRef.current > 0 &&
+					nextTime > nextDur &&
+					isYtPlaying
+				) {
 					nextTime = 0;
 					setTimeout(() => handleNextRef.current(), 0);
 				}
 
 				setCurrentTime(nextTime);
 				setDuration(nextDur);
-				setProgress((nextTime / nextDur) * 100);
+				if (nextDur > 0) {
+					setProgress((nextTime / nextDur) * 100);
+				}
 
 				if (
 					Math.floor(nextTime) % CONFIG.defaults.musicSaveInterval ===

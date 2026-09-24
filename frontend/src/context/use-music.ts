@@ -50,8 +50,10 @@ declare global {
 		YT: {
 			Player: new (id: string, options: YTPlayerOptions) => YTPlayer;
 			PlayerState: {
+				UNSTARTED: number;
 				PLAYING: number;
 				PAUSED: number;
+				BUFFERING: number;
 				ENDED: number;
 				CUED: number;
 			};
