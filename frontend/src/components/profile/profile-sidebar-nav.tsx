@@ -1,6 +1,6 @@
 "use client";
 
-import { Code2, Laptop } from "lucide-react";
+import { Code2, Laptop, User } from "lucide-react";
 import { cn } from "cn";
 import { useTranslation } from "react-i18next";
 import {
@@ -12,8 +12,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 interface ProfileSidebarNavProps {
-	activeTab: "snippets" | "devices";
-	onTabChange: (tab: "snippets" | "devices") => void;
+	activeTab: "snippets" | "devices" | "profile";
+	onTabChange: (tab: "snippets" | "devices" | "profile") => void;
 	snippetsCount?: number;
 	className?: string;
 }
@@ -87,6 +87,25 @@ export function ProfileSidebarNav({
 							<span>{t("profile.devices.active")}</span>
 						</span>
 					</SidebarMenuBadge>
+				</SidebarMenuItem>
+
+				{/* Profile & Account Tab */}
+				<SidebarMenuItem>
+					<SidebarMenuButton
+						isActive={activeTab === "profile"}
+						onClick={() => onTabChange("profile")}
+						className={cn(
+							"h-10 px-3.5 rounded-2xl text-xs font-bold transition-all cursor-pointer",
+							activeTab === "profile"
+								? "bg-primary/10 text-primary border border-primary/25 shadow-xs"
+								: "text-muted-foreground hover:text-foreground hover:bg-muted/60 border border-transparent",
+						)}
+					>
+						<User className="w-4 h-4 shrink-0 text-primary" />
+						<span className="truncate">
+							{t("profile.tabs.profile") || "Profile & Account"}
+						</span>
+					</SidebarMenuButton>
 				</SidebarMenuItem>
 			</SidebarMenu>
 		</nav>

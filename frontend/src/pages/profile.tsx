@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import { updateMe } from "@/lib/api/auth";
 import { toast } from "@/components/ui/toast";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
 	User,
 	Tag,
@@ -24,8 +24,6 @@ import { ProfileFileManager } from "@/components/profile/profile-file-manager";
 import { useSnippets } from "@/context/SnippetContext";
 import { useFolders } from "@/context/FolderContext";
 import { usePageTitle } from "@/hooks/use-page-title";
-import type { User as UserType } from "@/types";
-import { useSearchParams } from "react-router-dom";
 import {
 	Sheet,
 	SheetContent,
@@ -40,9 +38,9 @@ const FolderTree = lazy(() =>
 		default: m.FolderTree,
 	})),
 );
-const ProfileInfo = lazy(() =>
-	import("@/components/profile/profile-info").then((m) => ({
-		default: m.ProfileInfo,
+const ProfileView = lazy(() =>
+	import("@/components/profile/profile-view").then((m) => ({
+		default: m.ProfileView,
 	})),
 );
 const ProfileSnippetList = lazy(() =>
@@ -88,12 +86,15 @@ const ProfilePage = () => {
 	} = profile;
 
 	const [searchParams, setSearchParams] = useSearchParams();
-	const activeTab = (
-		searchParams.get("tab") === "devices" ? "devices" : "snippets"
-	) as "snippets" | "devices";
+	const activeTab = (() => {
+		const tab = searchParams.get("tab");
+		if (tab === "devices") return "devices";
+		if (tab === "profile") return "profile";
+		return "snippets";
+	})() as "snippets" | "devices" | "profile";
 
-	const handleTabChange = (tab: "snippets" | "devices") => {
-		setSearchParams(tab === "devices" ? { tab: "devices" } : {});
+	const handleTabChange = (tab: "snippets" | "devices" | "profile") => {
+		setSearchParams(tab === "snippets" ? {} : { tab });
 	};
 
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -207,7 +208,7 @@ const ProfilePage = () => {
 
 	const SidebarContent = (
 		<div className="flex flex-col flex-1 w-full min-h-0 gap-3">
-			{/* Top Header */}
+			{/* Top Header with Profile Section */}
 			<div className="flex items-center justify-between px-1 pt-1 shrink-0">
 				<SidebarHeader />
 				<button
@@ -254,7 +255,7 @@ const ProfilePage = () => {
 					>
 						<FolderTree />
 					</Suspense>
-				) : (
+				) : activeTab === "devices" ? (
 					<div className="h-full rounded-2xl border border-dashed border-border/60 p-4 flex flex-col items-center justify-center text-center space-y-2 text-muted-foreground bg-card/20">
 						<Laptop className="w-8 h-8 text-primary/60 mb-1" />
 						<p className="text-xs font-semibold text-foreground">
@@ -264,33 +265,19 @@ const ProfilePage = () => {
 							{t("profile.devices.subtitle")}
 						</p>
 					</div>
+				) : (
+					<div className="h-full rounded-2xl border border-dashed border-border/60 p-4 flex flex-col items-center justify-center text-center space-y-2 text-muted-foreground bg-card/20">
+						<User className="w-8 h-8 text-primary/60 mb-1" />
+						<p className="text-xs font-semibold text-foreground">
+							{t("profile.account_settings.title") ||
+								"Account & Profile Settings"}
+						</p>
+						<p className="text-[11px] leading-relaxed">
+							{t("profile.account_settings.subtitle") ||
+								"Manage your identity, personal information, and authentication credentials."}
+						</p>
+					</div>
 				)}
-			</div>
-
-			{/* Account Footer Info Widget */}
-			<div className="pt-3 border-t border-border/40 shrink-0">
-				<Suspense
-					fallback={<ShimmerSection type="card" className="h-16" />}
-				>
-					<ProfileInfo
-						user={
-							user ||
-							({
-								username: "Guest",
-								email: "Guest User",
-							} as UserType)
-						}
-						isEditingName={isEditingName}
-						setIsEditingName={setIsEditingName}
-						newName={newName}
-						setNewName={setNewName}
-						handleUpdateName={handleUpdateName}
-						isUpdating={isUpdating}
-						onLogout={() => setIsLogoutDialogOpen(true)}
-						onOpenAvatarPicker={() => setIsAvatarPickerOpen(true)}
-						onOpenDevices={() => handleTabChange("devices")}
-					/>
-				</Suspense>
 			</div>
 		</div>
 	);
@@ -358,6 +345,53 @@ const ProfilePage = () => {
 								}
 							>
 								<DevicesView />
+							</Suspense>
+						</div>
+					) : activeTab === "profile" ? (
+						<div className="space-y-5 pb-6">
+							{/* Profile View Header controls */}
+							<div className="flex items-center gap-3 px-1">
+								{/* Desktop Toggle Button */}
+								{!isSidebarOpen && (
+									<button
+										onClick={() => setIsSidebarOpen(true)}
+										className="hidden lg:flex p-2 rounded-2xl bg-sidebar/80 border border-border/60 text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer shadow-xs shrink-0"
+										title="Show Sidebar"
+									>
+										<PanelLeftOpen className="h-5 w-5 text-primary" />
+									</button>
+								)}
+								{/* Mobile Open Sidebar Drawer Button */}
+								<button
+									onClick={() => setIsMobileSidebarOpen(true)}
+									className="lg:hidden flex p-2 rounded-2xl bg-sidebar/80 border border-border/60 text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer shadow-xs shrink-0"
+									title="Open Sidebar"
+								>
+									<PanelLeftOpen className="h-5 w-5 text-primary" />
+								</button>
+							</div>
+
+							<Suspense
+								fallback={
+									<ShimmerSection
+										type="card"
+										className="h-96"
+									/>
+								}
+							>
+								<ProfileView
+									user={user}
+									isEditingName={isEditingName}
+									setIsEditingName={setIsEditingName}
+									newName={newName}
+									setNewName={setNewName}
+									handleUpdateName={handleUpdateName}
+									isUpdating={isUpdating}
+									onLogout={() => setIsLogoutDialogOpen(true)}
+									onOpenAvatarPicker={() =>
+										setIsAvatarPickerOpen(true)
+									}
+								/>
 							</Suspense>
 						</div>
 					) : (

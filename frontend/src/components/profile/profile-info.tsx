@@ -34,6 +34,8 @@ interface ProfileInfoProps {
 	onOpenAvatarPicker?: () => void;
 	onOpenDevices?: () => void;
 	onOpenResetPassword?: () => void;
+	className?: string;
+	menuSide?: "top" | "bottom" | "left" | "right";
 }
 
 export const ProfileInfo = ({
@@ -48,6 +50,8 @@ export const ProfileInfo = ({
 	onOpenAvatarPicker,
 	onOpenDevices,
 	onOpenResetPassword,
+	className,
+	menuSide = "bottom",
 }: ProfileInfoProps) => {
 	const { t } = useTranslation();
 
@@ -55,7 +59,7 @@ export const ProfileInfo = ({
 	const initials = (user.username || "G").charAt(0).toUpperCase();
 
 	return (
-		<div className="w-full">
+		<div className={className || "w-full"}>
 			{/* Account Summary Header */}
 			<div className="p-3 rounded-2xl bg-card/60 border border-border/50 backdrop-blur-md transition-all">
 				<div className="flex items-center justify-between gap-2">
@@ -147,7 +151,7 @@ export const ProfileInfo = ({
 							<MoreHorizontal className="h-4 w-4" />
 						</DropdownMenuTrigger>
 						<DropdownMenuContent
-							side="top"
+							side={menuSide}
 							align="end"
 							className="w-48 p-1 rounded-xl shadow-xl border-border/60 bg-background/95 backdrop-blur-xl text-xs"
 						>
