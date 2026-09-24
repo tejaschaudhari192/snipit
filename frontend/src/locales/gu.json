@@ -1489,6 +1489,21 @@
 		"monaco_toggle": {
 			"tooltip_enable": "અદ્યતન સંપાદક પર સ્વિચ કરો (Monaco)",
 			"tooltip_disable": "મૂળ સંપાદક પર સ્વિચ કરો"
+		},
+		"media": {
+			"title_image": "છબી એમ્બેડ અથવા અપલોડ કરો",
+			"title_video": "વિડિઓ એમ્બેડ અથવા અપલોડ કરો",
+			"title_attachment": "જોડાણ એમ્બેડ અથવા અપલોડ કરો",
+			"tab_upload": "અપલોડ",
+			"tab_link": "લિંક",
+			"upload_button": "અપલોડ કરો",
+			"embed_link_button": "લિંક એમ્બેડ કરો",
+			"uploading_wait": "મીડિયા અપલોડ થઈ રહ્યું છે, કૃપા કરીને પ્રતીક્ષા કરો...",
+			"uploading_title": "મીડિયા અપલોડ થઈ રહ્યું છે...",
+			"drag_drop": "{{type}} અપલોડ કરવા માટે ખેંચો અને મૂકો અથવા ક્લિક કરો",
+			"max_size": "મહત્તમ ફાઇલ કદ 50MB",
+			"embedded_success": "સફળતાપૂર્વક એમ્બેડ થયું!",
+			"upload_error": "અપલોડ દરમિયાન ભૂલ આવી"
 		}
 	},
 	"ai_dialog": {

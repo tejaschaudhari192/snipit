@@ -8,6 +8,8 @@ import { uniqueIdGenerator } from "@/lib/utils.js";
 import type { AuthRequest } from "@/middleware/auth.middleware.js";
 import type { IPaste } from "@/types/index.js";
 import { generateWordId, type WordCategory } from "@/lib/word-generator.js";
+import configurations from "@/config/configurations.js";
+import { expirationScheduler } from "@/services/expiration-scheduler.service.js";
 
 class PasteController {
 	constructor(
@@ -410,6 +412,40 @@ class PasteController {
 	async getWordCategories(_req: Request, res: Response) {
 		const { WORD_CATEGORIES } = await import("@/lib/word-generator.js");
 		res.json({ categories: WORD_CATEGORIES });
+	}
+
+	/**
+	 * Render Cron / External Webhook to trigger daily expired paste & storage cleanup
+	 * Authorized via secret token in query (?secret=...), header (x-job-secret), or Bearer token
+	 */
+	async cronCleanup(req: Request, res: Response, next: NextFunction) {
+		try {
+			const providedSecret =
+				(req.query.secret as string) ||
+				(req.headers["x-job-secret"] as string) ||
+				(req.headers.authorization
+					? req.headers.authorization.replace(/^Bearer\s+/i, "")
+					: "");
+
+			if (
+				!providedSecret ||
+				providedSecret !== configurations.job_secret
+			) {
+				return res
+					.status(403)
+					.json({ error: "Unauthorized: Invalid job secret" });
+			}
+
+			const sweepResult =
+				await expirationScheduler.triggerDailyCleanupSweep();
+			return res.json({
+				success: true,
+				timestamp: new Date().toISOString(),
+				sweepResult,
+			});
+		} catch (error) {
+			next(error);
+		}
 	}
 }
 

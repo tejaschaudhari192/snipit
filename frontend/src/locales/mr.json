@@ -1489,6 +1489,21 @@
 		"monaco_toggle": {
 			"tooltip_enable": "प्रगत संपादकावर जा (Monaco)",
 			"tooltip_disable": "मूळ संपादकावर जा"
+		},
+		"media": {
+			"title_image": "प्रतिमा एम्बेड किंवा अपलोड करा",
+			"title_video": "व्हिडिओ एम्बेड किंवा अपलोड करा",
+			"title_attachment": "संलग्नक एम्बेड किंवा अपलोड करा",
+			"tab_upload": "अपलोड",
+			"tab_link": "लिंक",
+			"upload_button": "अपलोड करा",
+			"embed_link_button": "लिंक एम्बेड करा",
+			"uploading_wait": "मीडिया अपलोड होत आहे, कृपया प्रतीक्षा करा...",
+			"uploading_title": "मीडिया अपलोड होत आहे...",
+			"drag_drop": "{{type}} अपलोड करण्यासाठी ड्रॅग आणि ड्रॉप करा किंवा क्लिक करा",
+			"max_size": "कमाल फाइल आकार 50MB",
+			"embedded_success": "यशस्वीरित्या एम्बेड केले!",
+			"upload_error": "अपलोड दरम्यान त्रुटी आली"
 		}
 	},
 	"ai_dialog": {

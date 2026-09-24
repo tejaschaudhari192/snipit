@@ -1489,6 +1489,21 @@
 		"monaco_toggle": {
 			"tooltip_enable": "ਐਡਵਾਂਸਡ ਸੰਪਾਦਕ 'ਤੇ ਜਾਓ (Monaco)",
 			"tooltip_disable": "ਮੂਲ ਸੰਪਾਦਕ 'ਤੇ ਜਾਓ"
+		},
+		"media": {
+			"title_image": "ਚਿੱਤਰ ਏਮਬੇਡ ਜਾਂ ਅੱਪਲੋਡ ਕਰੋ",
+			"title_video": "ਵੀਡੀਓ ਏਮਬੇਡ ਜਾਂ ਅੱਪਲੋਡ ਕਰੋ",
+			"title_attachment": "ਅਟੈਚਮੈਂਟ ਏਮਬੇਡ ਜਾਂ ਅੱਪਲੋਡ ਕਰੋ",
+			"tab_upload": "ਅੱਪਲੋਡ",
+			"tab_link": "ਲਿੰਕ",
+			"upload_button": "ਅੱਪਲੋਡ ਕਰੋ",
+			"embed_link_button": "ਲਿੰਕ ਏਮਬੇਡ ਕਰੋ",
+			"uploading_wait": "ਮੀਡੀਆ ਅੱਪਲੋਡ ਹੋ ਰਿਹਾ ਹੈ, ਕਿਰਪਾ ਕਰਕੇ ਉਡੀਕ ਕਰੋ...",
+			"uploading_title": "ਮੀਡੀਆ ਅੱਪਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
+			"drag_drop": "{{type}} ਅੱਪਲੋਡ ਕਰਨ ਲਈ ਖਿੱਚੋ ਅਤੇ ਛੱਡੋ ਜਾਂ ਕਲਿੱਕ ਕਰੋ",
+			"max_size": "ਵੱਧ ਤੋਂ ਵੱਧ ਫਾਈਲ ਦਾ ਆਕਾਰ 50MB",
+			"embedded_success": "ਸਫਲਤਾਪੂਰਵਕ ਏਮਬੇਡ ਕੀਤਾ ਗਿਆ!",
+			"upload_error": "ਅੱਪਲੋਡ ਦੌਰਾਨ ਇੱਕ ਗਲਤੀ ਆਈ"
 		}
 	},
 	"ai_dialog": {

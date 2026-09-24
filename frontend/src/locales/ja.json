@@ -1489,6 +1489,21 @@
 		"monaco_toggle": {
 			"tooltip_enable": "高度なエディタに切り替える (Monaco)",
 			"tooltip_disable": "ネイティブエディタに切り替える"
+		},
+		"media": {
+			"title_image": "画像を埋め込むかアップロード",
+			"title_video": "動画を埋め込むかアップロード",
+			"title_attachment": "添付ファイルを埋め込むかアップロード",
+			"tab_upload": "アップロード",
+			"tab_link": "リンク",
+			"upload_button": "アップロード",
+			"embed_link_button": "リンクを埋め込む",
+			"uploading_wait": "メディアをアップロード中、しばらくお待ちください...",
+			"uploading_title": "メディアをアップロード中...",
+			"drag_drop": "ドラッグ＆ドロップまたはクリックして{{type}}をアップロード",
+			"max_size": "最大ファイルサイズ 50MB",
+			"embedded_success": "正常に埋め込まれました！",
+			"upload_error": "アップロード中にエラーが発生しました"
 		}
 	},
 	"ai_dialog": {

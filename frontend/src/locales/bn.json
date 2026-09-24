@@ -1489,6 +1489,21 @@
 		"monaco_toggle": {
 			"tooltip_enable": "উন্নত সম্পাদকে যান (Monaco)",
 			"tooltip_disable": "নেটিভ সম্পাদকে যান"
+		},
+		"media": {
+			"title_image": "ছবি এম্বেড বা আপলোড করুন",
+			"title_video": "ভিডিও এম্বেড বা আপলোড করুন",
+			"title_attachment": "সংযুক্তি এম্বেড বা আপলোড করুন",
+			"tab_upload": "আপলোড",
+			"tab_link": "লিঙ্ক",
+			"upload_button": "আপলোড করুন",
+			"embed_link_button": "লিঙ্ক এম্বেড করুন",
+			"uploading_wait": "মিডিয়া আপলোড হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...",
+			"uploading_title": "মিডিয়া আপলোড হচ্ছে...",
+			"drag_drop": "{{type}} আপলোড করতে টেনে আনুন এবং ড্রপ করুন বা ক্লিক করুন",
+			"max_size": "সর্বোচ্চ ফাইলের আকার ৫০MB",
+			"embedded_success": "সফলভাবে এম্বেড হয়েছে!",
+			"upload_error": "আপলোডের সময় একটি ত্রুটি ঘটেছে"
 		}
 	},
 	"ai_dialog": {

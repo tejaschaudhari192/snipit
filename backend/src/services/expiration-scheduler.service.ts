@@ -1,14 +1,17 @@
 import logger from "@/config/logger.js";
 import pasteModel from "@/models/Paste.js";
-import expiredPasteModel from "@/models/ExpiredPaste.js";
 import type PasteService from "./paste.service.js";
 
 // Maximum 32-bit signed integer for setTimeout (~24.8 days)
 const MAX_TIMEOUT_MS = 2147483647;
+// 24 hours in milliseconds for daily cleanup interval
+const DAILY_INTERVAL_MS = 24 * 60 * 60 * 1000;
 
 class ExpirationSchedulerService {
 	private timers = new Map<string, NodeJS.Timeout>();
+	private dailyTimer: NodeJS.Timeout | null = null;
 	private pasteService: PasteService | null = null;
+	private isCleaning = false;
 
 	/**
 	 * Sets the PasteService reference for execution
@@ -57,38 +60,6 @@ class ExpirationSchedulerService {
 	}
 
 	/**
-	 * Archives expired paste to expired_pastes collection before deletion
-	 */
-	private async archiveExpiredPaste(pasteId: string) {
-		const paste = await pasteModel.findOne({ id: pasteId }).lean();
-		if (!paste) {
-			logger.warn(`Paste ${pasteId} not found for archiving`);
-			return false;
-		}
-
-		try {
-			await expiredPasteModel.create({
-				id: paste.id,
-				content: paste.content,
-				contentMode: paste.contentMode || "text",
-				originalExpiresAt: paste.expiresAt,
-				originalCreatedAt: paste.createdAt,
-				archivedAt: new Date(),
-				owner: paste.owner,
-				visibility: paste.visibility,
-				language: paste.language,
-			});
-			logger.info(
-				`✅ Archived expired paste ${pasteId} to expired_pastes collection`,
-			);
-			return true;
-		} catch (error) {
-			logger.error(`Failed to archive expired paste ${pasteId}:`, error);
-			return false;
-		}
-	}
-
-	/**
 	 * Triggers document deletion and Supabase file cleanup
 	 */
 	private async triggerDeletion(pasteId: string) {
@@ -101,13 +72,8 @@ class ExpirationSchedulerService {
 
 		try {
 			logger.info(
-				`⏰ Cron-less real-time expiration triggered for snippet ${pasteId}`,
+				`⏰ Real-time expiration triggered for snippet ${pasteId}`,
 			);
-
-			// Archive the expired paste before deletion
-			await this.archiveExpiredPaste(pasteId);
-
-			// Then delete the paste
 			await this.pasteService.deletePaste(pasteId);
 		} catch (error) {
 			logger.error(`Failed to auto-expire snippet ${pasteId}:`, error);
@@ -115,16 +81,93 @@ class ExpirationSchedulerService {
 	}
 
 	/**
-	 * Initializes the scheduler on server startup by queuing all near-term expiring pastes
+	 * Independent cleanup sweep: finds all expired pastes and purges them
+	 * along with their storage files and collaborators.
+	 */
+	async triggerDailyCleanupSweep(): Promise<{
+		processed: number;
+		errors: number;
+	}> {
+		if (this.isCleaning) {
+			logger.info(
+				"Daily cleanup sweep already in progress. Skipping duplicate run.",
+			);
+			return { processed: 0, errors: 0 };
+		}
+
+		if (!this.pasteService) {
+			logger.warn("Daily cleanup sweep skipped: PasteService not set");
+			return { processed: 0, errors: 0 };
+		}
+
+		this.isCleaning = true;
+		let processed = 0;
+		let errors = 0;
+
+		try {
+			const now = new Date();
+			// Find all pastes where expiresAt is non-null and <= now
+			const expiredPastes = await pasteModel
+				.find({
+					expiresAt: { $ne: null, $lte: now },
+				})
+				.select("id")
+				.lean()
+				.exec();
+
+			if (expiredPastes.length > 0) {
+				logger.info(
+					`🧹 Found ${expiredPastes.length} expired pastes to clean up in daily sweep`,
+				);
+
+				for (const paste of expiredPastes) {
+					try {
+						this.cancel(paste.id);
+						await this.pasteService.deletePaste(paste.id);
+						processed++;
+					} catch (err) {
+						logger.error(
+							`Error deleting expired paste ${paste.id} during daily sweep:`,
+							err,
+						);
+						errors++;
+					}
+				}
+			}
+
+			logger.info(
+				`✅ Daily cleanup sweep completed: ${processed} purged, ${errors} errors`,
+			);
+			return { processed, errors };
+		} catch (error) {
+			logger.error("Error during daily cleanup sweep:", error);
+			return { processed, errors: errors + 1 };
+		} finally {
+			this.isCleaning = false;
+		}
+	}
+
+	/**
+	 * Initializes the scheduler on server startup:
+	 * 1. Sets PasteService
+	 * 2. Queues near-term active timers (expiring in next 24h)
+	 * 3. Schedules initial catch-up sweep 3 seconds after boot
+	 * 4. Starts periodic 24-hour background cleanup interval
 	 */
 	async init(service: PasteService) {
 		this.setPasteService(service);
 
+		// Stop any existing daily timer
+		if (this.dailyTimer) {
+			clearInterval(this.dailyTimer);
+			this.dailyTimer = null;
+		}
+
 		try {
 			const now = new Date();
-			// Look for active snippets expiring in the next 24 hours
 			const horizon = new Date(now.getTime() + 24 * 60 * 60 * 1000);
 
+			// Look for active snippets expiring in the next 24 hours
 			const expiringPastes = await pasteModel
 				.find({
 					expiresAt: { $gt: now, $lte: horizon },
@@ -142,7 +185,50 @@ class ExpirationSchedulerService {
 				`✅ Expiration scheduler initialized: ${expiringPastes.length} active timers queued`,
 			);
 		} catch (error) {
-			logger.error("Failed to initialize expiration scheduler:", error);
+			logger.error(
+				"Failed to initialize expiration scheduler timers:",
+				error,
+			);
+		}
+
+		// Initial catch-up sweep 3 seconds after startup to purge any overdue items
+		setTimeout(() => {
+			this.triggerDailyCleanupSweep().catch((err) => {
+				logger.error(
+					"Error during startup expired paste catch-up sweep:",
+					err,
+				);
+			});
+		}, 3000);
+
+		// Periodic daily cleanup interval loop (24 hours)
+		this.dailyTimer = setInterval(() => {
+			this.triggerDailyCleanupSweep().catch((err) => {
+				logger.error(
+					"Error during scheduled daily cleanup sweep:",
+					err,
+				);
+			});
+		}, DAILY_INTERVAL_MS);
+
+		// Unref so this timer doesn't prevent Node process from exiting if needed
+		if (this.dailyTimer && typeof this.dailyTimer.unref === "function") {
+			this.dailyTimer.unref();
+		}
+	}
+
+	/**
+	 * Stops all active timers (for graceful shutdown or tests)
+	 */
+	stop() {
+		for (const timer of this.timers.values()) {
+			clearTimeout(timer);
+		}
+		this.timers.clear();
+
+		if (this.dailyTimer) {
+			clearInterval(this.dailyTimer);
+			this.dailyTimer = null;
 		}
 	}
 }

@@ -57,6 +57,12 @@ router.get(
 	catchAsync(pasteController.getWordCategories.bind(pasteController)),
 );
 
+// Render Cron / External Webhook to trigger daily expired paste & storage cleanup
+router.get(
+	"/cron-cleanup",
+	catchAsync(pasteController.cronCleanup.bind(pasteController)),
+);
+
 router.get(
 	"/:id",
 	optionalProtect,

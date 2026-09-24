@@ -1522,6 +1522,21 @@
 		"monaco_toggle": {
 			"tooltip_enable": "Zum erweiterten Editor wechseln (Monaco)",
 			"tooltip_disable": "Zum nativen Editor wechseln"
+		},
+		"media": {
+			"title_image": "Bild einbetten oder hochladen",
+			"title_video": "Video einbetten oder hochladen",
+			"title_attachment": "Anhang einbetten oder hochladen",
+			"tab_upload": "Hochladen",
+			"tab_link": "Link",
+			"upload_button": "Hochladen",
+			"embed_link_button": "Link einbetten",
+			"uploading_wait": "Medien werden hochgeladen, bitte warten...",
+			"uploading_title": "Medien werden hochgeladen...",
+			"drag_drop": "Ziehen & ablegen oder klicken, um {{type}} hochzuladen",
+			"max_size": "Maximale Dateigröße 50MB",
+			"embedded_success": "Erfolgreich eingebettet!",
+			"upload_error": "Beim Hochladen ist ein Fehler aufgetreten"
 		}
 	},
 	"ai_dialog": {

@@ -14,7 +14,11 @@ import { dateConverter, uniqueIdGenerator } from "@/lib/utils.js";
 import bcrypt from "bcryptjs";
 import type EmailService from "./email.service.js";
 import configurations from "@/config/configurations.js";
-import { deletePasteStorageFiles } from "@/lib/supabase.js";
+import {
+	deletePasteStorageFiles,
+	deleteFilesFromStorage,
+	extractStorageUrlsFromContent,
+} from "@/lib/supabase.js";
 import { expirationScheduler } from "./expiration-scheduler.service.js";
 
 class PasteService {
@@ -194,6 +198,49 @@ class PasteService {
 			oldShareMap.set(col.email, col.role);
 		}
 
+		// Track existing storage URLs to detect and clean up removed files/images on update
+		const oldUrls = new Set<string>();
+		if (paste.fileUrl) oldUrls.add(paste.fileUrl);
+		if (paste.files && paste.files.length > 0) {
+			for (const f of paste.files) {
+				if (f?.url) oldUrls.add(f.url);
+			}
+		}
+		if (paste.content) {
+			for (const u of extractStorageUrlsFromContent(paste.content)) {
+				oldUrls.add(u);
+			}
+		}
+
+		// Compute candidate new URLs based on updates
+		const newUrls = new Set<string>();
+		const nextFileUrl =
+			updates.fileUrl !== undefined ? updates.fileUrl : paste.fileUrl;
+		if (nextFileUrl) newUrls.add(nextFileUrl);
+
+		const nextFiles =
+			updates.files !== undefined ? updates.files : paste.files;
+		if (nextFiles && nextFiles.length > 0) {
+			for (const f of nextFiles) {
+				if (f?.url) newUrls.add(f.url);
+			}
+		}
+
+		const nextContent =
+			updates.content !== undefined ? updates.content : paste.content;
+		if (nextContent) {
+			for (const u of extractStorageUrlsFromContent(nextContent)) {
+				newUrls.add(u);
+			}
+		}
+
+		const removedUrls: string[] = [];
+		for (const url of oldUrls) {
+			if (!newUrls.has(url)) {
+				removedUrls.push(url);
+			}
+		}
+
 		paste.set(updates);
 
 		if (updates.files) {
@@ -217,6 +264,11 @@ class PasteService {
 		}
 
 		const updatedPaste = await paste.save();
+
+		// Clean up any files or embedded document images that were removed during editing
+		if (removedUrls.length > 0) {
+			await deleteFilesFromStorage(removedUrls);
+		}
 
 		if (finalCollaborators) {
 			await collaboratorModel.deleteMany({ pasteId: id });

@@ -1489,6 +1489,21 @@
 		"monaco_toggle": {
 			"tooltip_enable": "ایڈوانسڈ ایڈیٹر پر جائیں (Monaco)",
 			"tooltip_disable": "آبائی ایڈیٹر پر جائیں"
+		},
+		"media": {
+			"title_image": "تصویر ایمبیڈ یا اپ لوڈ کریں",
+			"title_video": "ویڈیو ایمبیڈ یا اپ لوڈ کریں",
+			"title_attachment": "منسلکہ ایمبیڈ یا اپ لوڈ کریں",
+			"tab_upload": "اپ لوڈ",
+			"tab_link": "لنک",
+			"upload_button": "اپ لوڈ کریں",
+			"embed_link_button": "لنک ایمبیڈ کریں",
+			"uploading_wait": "میڈیا اپ لوڈ ہو رہا ہے، براہ کرم انتظار کریں...",
+			"uploading_title": "میڈیا اپ لوڈ ہو رہا ہے...",
+			"drag_drop": "{{type}} اپ لوڈ کرنے کے لیے ڈریگ اور ڈراپ کریں یا کلک کریں",
+			"max_size": "زیادہ سے زیادہ فائل سائز 50MB",
+			"embedded_success": "کامیابی سے ایمبیڈ ہو گیا!",
+			"upload_error": "اپ لوڈ کے دوران خرابی پیش آ گئی"
 		}
 	},
 	"ai_dialog": {
