@@ -557,8 +557,10 @@ export class PnrTrackingService {
 		userId: Types.ObjectId | string,
 		pnr: string,
 	): Promise<{
+		success: boolean;
 		pnr: string;
 		recipients: string[];
+		alertRecipients: string[];
 		sharedWith: Array<{
 			email: string;
 			sharedAt: Date;
@@ -569,9 +571,12 @@ export class PnrTrackingService {
 	}> {
 		const cleanPnr = pnr.trim();
 		const tracking = await PnrTracking.findOne({ userId, pnr: cleanPnr });
+		const recipients = tracking?.alertRecipients || [];
 		return {
+			success: true,
 			pnr: cleanPnr,
-			recipients: tracking?.alertRecipients || [],
+			recipients,
+			alertRecipients: recipients,
 			sharedWith: tracking?.sharedWith || [],
 			isTrackingActive: Boolean(tracking?.isActive),
 		};
@@ -587,6 +592,7 @@ export class PnrTrackingService {
 	): Promise<{
 		success: boolean;
 		remainingRecipients: string[];
+		alertRecipients: string[];
 		sharedWith: Array<{
 			email: string;
 			sharedAt: Date;
@@ -598,7 +604,12 @@ export class PnrTrackingService {
 		const cleanEmail = emailToRemove.trim().toLowerCase();
 		const tracking = await PnrTracking.findOne({ userId, pnr: cleanPnr });
 		if (!tracking) {
-			return { success: false, remainingRecipients: [], sharedWith: [] };
+			return {
+				success: false,
+				remainingRecipients: [],
+				alertRecipients: [],
+				sharedWith: [],
+			};
 		}
 
 		tracking.alertRecipients = (tracking.alertRecipients || []).filter(
@@ -623,6 +634,7 @@ export class PnrTrackingService {
 		return {
 			success: true,
 			remainingRecipients: tracking.alertRecipients,
+			alertRecipients: tracking.alertRecipients,
 			sharedWith: tracking.sharedWith || [],
 		};
 	}

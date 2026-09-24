@@ -362,5 +362,6 @@ export interface PnrRecipientsResponse {
 	pnr: string;
 	isTrackingActive: boolean;
 	alertRecipients: string[];
+	recipients?: string[];
 	sharedWith?: PnrShareRecord[];
 }

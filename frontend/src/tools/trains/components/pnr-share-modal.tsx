@@ -49,7 +49,7 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 	ticket,
 }) => {
 	const { t, i18n } = useTranslation();
-	const { user } = useAuth();
+	const { user, loading: authLoading } = useAuth();
 
 	const [emailInput, setEmailInput] = useState("");
 	const [recipients, setRecipients] = useState<string[]>([]);
@@ -94,15 +94,19 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 		const localList = getLocalShares();
 		setSharedHistory(localList);
 
+		if (authLoading) return;
 		if (!user) return;
 
 		const fetchServerData = async () => {
 			try {
 				setLoadingExisting(true);
 				const res = await getPnrAlertRecipients(ticket.pnr);
-				if (!isMounted || !res.success) return;
+				if (!isMounted) return;
+				if (!res || res.success === false) return;
 
-				setExistingRecipients(res.alertRecipients || []);
+				const alertRecipientsList =
+					res.alertRecipients || res.recipients || [];
+				setExistingRecipients(alertRecipientsList);
 
 				// Merge server sharedWith records with local records
 				const serverRecords = res.sharedWith || [];
@@ -121,7 +125,7 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 							new Date().toISOString(),
 						alertsSubscribed: Boolean(
 							item.alertsSubscribed ||
-							res.alertRecipients?.some(
+							alertRecipientsList.some(
 								(r) =>
 									r.toLowerCase() ===
 									item.email.toLowerCase(),
@@ -150,7 +154,7 @@ export const PnrShareModal: React.FC<PnrShareModalProps> = ({
 		return () => {
 			isMounted = false;
 		};
-	}, [open, ticket.pnr, user, getLocalShares, saveLocalShares]);
+	}, [open, ticket.pnr, user, authLoading, getLocalShares, saveLocalShares]);
 
 	// Reset form state when closed
 	useEffect(() => {
