@@ -20,6 +20,7 @@
 	},
 	"registries": {
 		"@react-bits": "https://reactbits.dev/r/{name}.json",
-		"@abui": "https://abui.io/r/{name}.json"
+		"@abui": "https://abui.io/r/{name}.json",
+		"@shadcn-space": "https://shadcnspace.com/r/{name}.json"
 	}
 }
