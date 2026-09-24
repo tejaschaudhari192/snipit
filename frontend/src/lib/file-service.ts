@@ -14,6 +14,18 @@ export interface FileUploadStatus {
 	fileMimeType: string;
 }
 
+export interface UploadProgressEvent {
+	percentage: number;
+	loaded: number;
+	total: number;
+	stage: "uploading" | "processing";
+}
+
+export interface UploadOptions {
+	onProgress?: (progress: UploadProgressEvent) => void;
+	signal?: AbortSignal;
+}
+
 export const FileService = {
 	/**
 	 * Creates a status object for a file before/during upload
@@ -78,42 +90,106 @@ export const FileService = {
 	},
 
 	/**
-	 * Uploads a single file to Supabase storage
+	 * Uploads a single file to Supabase storage with real byte-level progress reporting
 	 */
 	upload: async (
 		file: File,
+		options?: UploadOptions,
 	): Promise<{ url: string | null; error: string | null }> => {
-		if (!supabase) {
-			return { url: null, error: "Cloud storage is not configured" };
-		}
-
 		try {
 			const sanitizedName = sanitizeFileName(file.name);
 			const filePath = `${Date.now()}-${sanitizedName}`;
+			const uploadUrl = `${CONFIG.supabaseUrl}/storage/v1/object/${CONFIG.supabaseStorageBucket}/${filePath}`;
 
-			// Supabase JS SDK doesn't have a native onProgress for storage.upload yet
-			// so we rely on the interval simulation in the hook for now,
-			// or we could use the underlying XHR if we needed real progress.
+			const formData = new FormData();
+			formData.append("cacheControl", "3600");
+			formData.append("", file);
 
-			const { error: uploadError } = await supabase.storage
-				.from(CONFIG.supabaseStorageBucket)
-				.upload(filePath, file, {
-					cacheControl: "3600",
-					upsert: true,
-					contentType: file.type || "application/octet-stream",
-				});
+			return await new Promise((resolve) => {
+				const xhr = new XMLHttpRequest();
+				xhr.open("POST", uploadUrl);
 
-			if (uploadError) {
-				return { url: null, error: uploadError.message };
-			}
+				xhr.setRequestHeader("apikey", CONFIG.supabaseAnonKey);
+				xhr.setRequestHeader(
+					"Authorization",
+					`Bearer ${CONFIG.supabaseAnonKey}`,
+				);
+				xhr.setRequestHeader("x-upsert", "true");
 
-			const {
-				data: { publicUrl },
-			} = supabase.storage
-				.from(CONFIG.supabaseStorageBucket)
-				.getPublicUrl(filePath);
+				if (options?.signal) {
+					if (options.signal.aborted) {
+						resolve({ url: null, error: "Upload cancelled" });
+						return;
+					}
+					options.signal.addEventListener(
+						"abort",
+						() => xhr.abort(),
+						{
+							once: true,
+						},
+					);
+				}
 
-			return { url: publicUrl, error: null };
+				xhr.upload.onprogress = (event) => {
+					if (event.lengthComputable && event.total > 0) {
+						const percentage = Math.round(
+							(event.loaded / event.total) * 100,
+						);
+						const stage =
+							percentage >= 100 ? "processing" : "uploading";
+						options?.onProgress?.({
+							percentage: Math.min(percentage, 99),
+							loaded: event.loaded,
+							total: event.total,
+							stage,
+						});
+					}
+				};
+
+				xhr.onload = () => {
+					if (xhr.status >= 200 && xhr.status < 300) {
+						options?.onProgress?.({
+							percentage: 100,
+							loaded: file.size,
+							total: file.size,
+							stage: "processing",
+						});
+
+						const {
+							data: { publicUrl },
+						} = supabase!.storage
+							.from(CONFIG.supabaseStorageBucket)
+							.getPublicUrl(filePath);
+
+						resolve({ url: publicUrl, error: null });
+					} else {
+						let errorMessage = `Upload failed (${xhr.status})`;
+						try {
+							const responseJson = JSON.parse(xhr.responseText);
+							errorMessage =
+								responseJson.message ||
+								responseJson.error ||
+								errorMessage;
+						} catch {
+							// Use default status error if not JSON
+						}
+						resolve({ url: null, error: errorMessage });
+					}
+				};
+
+				xhr.onerror = () => {
+					resolve({
+						url: null,
+						error: "Network error during upload",
+					});
+				};
+
+				xhr.onabort = () => {
+					resolve({ url: null, error: "Upload cancelled" });
+				};
+
+				xhr.send(formData);
+			});
 		} catch (err) {
 			return {
 				url: null,

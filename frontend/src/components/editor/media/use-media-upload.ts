@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { FileService } from "@/lib/file-service";
 import { isSupabaseConfigured } from "@/lib/supabase";
 import { toast } from "@/components/ui/toast";
@@ -11,25 +11,12 @@ export function useMediaUpload({ onSuccess }: UseMediaUploadOptions = {}) {
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [isUploading, setIsUploading] = useState(false);
 	const [uploadProgress, setUploadProgress] = useState(0);
-	const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
-
-	const clearProgressInterval = useCallback(() => {
-		if (progressIntervalRef.current) {
-			clearInterval(progressIntervalRef.current);
-			progressIntervalRef.current = null;
-		}
-	}, []);
-
-	useEffect(() => {
-		return () => clearProgressInterval();
-	}, [clearProgressInterval]);
 
 	const reset = useCallback(() => {
-		clearProgressInterval();
 		setSelectedFile(null);
 		setIsUploading(false);
 		setUploadProgress(0);
-	}, [clearProgressInterval]);
+	}, []);
 
 	const selectFile = useCallback((file: File | null) => {
 		setSelectedFile(file);
@@ -40,23 +27,20 @@ export function useMediaUpload({ onSuccess }: UseMediaUploadOptions = {}) {
 		if (!selectedFile) return;
 		try {
 			setIsUploading(true);
-			setUploadProgress(5);
-
-			clearProgressInterval();
-			progressIntervalRef.current = setInterval(() => {
-				setUploadProgress((prev) => {
-					if (prev >= 90) return prev;
-					const remaining = 90 - prev;
-					const step = Math.max(1, Math.round(remaining / 6));
-					return Math.min(90, prev + step);
-				});
-			}, 150);
+			setUploadProgress(0);
 
 			let targetUrl: string | null = null;
 
-			// Try cloud storage if configured
+			// Try cloud storage if configured with real byte-level progress
 			if (isSupabaseConfigured) {
-				const { url } = await FileService.upload(selectedFile);
+				const { url, error } = await FileService.upload(selectedFile, {
+					onProgress: (p) => {
+						setUploadProgress(p.percentage);
+					},
+				});
+				if (error) {
+					throw new Error(error);
+				}
 				if (url) {
 					targetUrl = url;
 				}
@@ -72,7 +56,6 @@ export function useMediaUpload({ onSuccess }: UseMediaUploadOptions = {}) {
 				});
 			}
 
-			clearProgressInterval();
 			setUploadProgress(100);
 
 			if (targetUrl) {
@@ -92,7 +75,6 @@ export function useMediaUpload({ onSuccess }: UseMediaUploadOptions = {}) {
 				reset();
 			}
 		} catch (err) {
-			clearProgressInterval();
 			console.error(err);
 			toast.add({
 				title: "An error occurred during upload",
@@ -101,7 +83,7 @@ export function useMediaUpload({ onSuccess }: UseMediaUploadOptions = {}) {
 			setIsUploading(false);
 			setUploadProgress(0);
 		}
-	}, [selectedFile, clearProgressInterval, onSuccess, reset]);
+	}, [selectedFile, onSuccess, reset]);
 
 	return {
 		selectedFile,

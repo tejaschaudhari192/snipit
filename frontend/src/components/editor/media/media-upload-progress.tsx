@@ -10,7 +10,9 @@ export function MediaUploadProgress({ progress }: MediaUploadProgressProps) {
 			<div className="flex items-center justify-between text-xs font-medium">
 				<span className="text-foreground flex items-center gap-1.5">
 					<span className="inline-block w-2 h-2 rounded-full bg-primary" />
-					Uploading media...
+					{progress >= 99
+						? "Processing media..."
+						: "Uploading media..."}
 				</span>
 				<span className="font-bold tabular-nums text-primary">
 					{progress}%

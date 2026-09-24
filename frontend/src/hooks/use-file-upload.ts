@@ -1,7 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { isSupabaseConfigured } from "@/lib/supabase";
 import { FileService, type FileUploadStatus } from "@/lib/file-service";
-import { CONFIG } from "@/configurations";
 import type { FileAttachment } from "@/types";
 
 export interface MultiUploadState {
@@ -65,19 +64,13 @@ export const useFileUpload = () => {
 				};
 			}
 
-			// Progress simulation
-			let progress = 0;
-			const interval = setInterval(() => {
-				progress = Math.min(
-					95,
-					progress + Math.max(1, (95 - progress) / 10),
-				);
-				updateFileStatus(id, { progress });
-			}, CONFIG.ui.uploadProgressInterval);
-
-			const { url, error } = await FileService.upload(file);
-
-			clearInterval(interval);
+			const { url, error } = await FileService.upload(file, {
+				onProgress: (p) => {
+					updateFileStatus(id, {
+						progress: p.percentage,
+					});
+				},
+			});
 
 			if (error) {
 				const errorStatus: Partial<FileUploadStatus> = {

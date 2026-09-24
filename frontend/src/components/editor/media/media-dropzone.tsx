@@ -54,7 +54,9 @@ export function MediaDropzone({
 						{selectedFile?.name || "Uploading media..."}
 					</p>
 					<p className="text-[11px] text-muted-foreground text-center">
-						Uploading media, please wait...
+						{uploadProgress >= 99
+							? "Processing file in cloud..."
+							: "Uploading media, please wait..."}
 					</p>
 				</div>
 			) : (

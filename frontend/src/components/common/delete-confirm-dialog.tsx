@@ -35,21 +35,21 @@ export const DeleteConfirmDialog = ({
 		<AlertDialog open={isOpen} onOpenChange={onOpenChange}>
 			<AlertDialogContent
 				size="sm"
-				className="border border-border/50 bg-background/60 backdrop-blur-2xl shadow-2xl rounded-2xl ring-1 ring-white/5 overflow-hidden"
+				className="border border-border/60 bg-background/95 backdrop-blur-2xl shadow-2xl rounded-2xl ring-1 ring-border/50 overflow-hidden"
 			>
 				<AlertDialogHeader>
-					<AlertDialogMedia className="bg-destructive/10 text-destructive">
+					<AlertDialogMedia className="bg-destructive/15 text-destructive dark:bg-destructive/20">
 						<Trash2 className="size-8" />
 					</AlertDialogMedia>
-					<AlertDialogTitle>
+					<AlertDialogTitle className="text-foreground font-semibold">
 						{title || t("display.actions.delete")}
 					</AlertDialogTitle>
-					<AlertDialogDescription>
+					<AlertDialogDescription className="text-muted-foreground/90 font-normal">
 						{description || t("messages.confirm.delete")}
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
-					<AlertDialogCancel variant="ghost" disabled={isDeleting}>
+					<AlertDialogCancel variant="ghost" disabled={isDeleting} className="hover:bg-muted text-muted-foreground hover:text-foreground">
 						{t("history.cancel")}
 					</AlertDialogCancel>
 					<AlertDialogAction
@@ -59,7 +59,7 @@ export const DeleteConfirmDialog = ({
 							onConfirm();
 						}}
 						disabled={isDeleting}
-						className="font-bold min-w-25 gap-2 flex items-center justify-center cursor-pointer"
+						className="font-bold min-w-25 gap-2 flex items-center justify-center cursor-pointer shadow-sm hover:opacity-90"
 					>
 						{isDeleting ? (
 							<>
