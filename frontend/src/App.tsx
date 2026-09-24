@@ -183,6 +183,12 @@ const App = () => {
 																	}
 																/>
 																<Route
+																	path="/reset-password/:token"
+																	element={
+																		<ResetPasswordPage />
+																	}
+																/>
+																<Route
 																	path="/profile"
 																	element={
 																		<Suspense

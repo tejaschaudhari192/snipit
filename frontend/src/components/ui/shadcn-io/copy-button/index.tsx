@@ -2,10 +2,33 @@
 
 import * as React from "react";
 import { CheckIcon, CopyIcon } from "lucide-react";
-import { cn } from "@/utils";
+import { motion, AnimatePresence, type Variants } from "motion/react";
+import { cn } from "cn";
 import { buttonVariants, type ButtonVariants } from "./variants";
 
-type CopyButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
+const MotionCopyIcon = motion.create(CopyIcon);
+const MotionCheckIcon = motion.create(CheckIcon);
+
+const copyIconVariants: Variants = {
+	initial: { rotate: 0, scale: 1, y: 0 },
+	hover: {
+		rotate: [0, -8, 8, -4, 0],
+		scale: 1.1,
+		y: -0.5,
+		transition: { duration: 0.4, ease: "easeInOut" },
+	},
+};
+
+const checkIconVariants: Variants = {
+	initial: { scale: 0, rotate: -30 },
+	animate: {
+		scale: [0, 1.3, 0.95, 1],
+		rotate: 0,
+		transition: { duration: 0.4, ease: "easeOut" },
+	},
+};
+
+export type CopyButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
 	ButtonVariants & {
 		content?: string;
 		delay?: number;
@@ -20,7 +43,7 @@ export function CopyButton({
 	className,
 	size,
 	variant,
-	delay = 3000,
+	delay = 2000,
 	onClick,
 	onCopy,
 	isCopied,
@@ -35,9 +58,9 @@ export function CopyButton({
 	}, [isCopied]);
 
 	const handleIsCopied = React.useCallback(
-		(isCopied: boolean) => {
-			setLocalIsCopied(isCopied);
-			onCopyChange?.(isCopied);
+		(copied: boolean) => {
+			setLocalIsCopied(copied);
+			onCopyChange?.(copied);
 		},
 		[onCopyChange],
 	);
@@ -61,34 +84,61 @@ export function CopyButton({
 	);
 
 	return (
-		<button
+		<motion.button
 			className={cn(
 				buttonVariants({ variant, size }),
-				"gap-2 transition-all active:scale-95 group",
+				"relative cursor-pointer overflow-hidden transition-all duration-200 select-none",
+				localIsCopied && "text-teal-500 dark:text-teal-400",
 				className,
 			)}
 			onClick={handleCopy}
-			{...props}
+			whileHover="hover"
+			whileTap="tap"
+			variants={{
+				hover: { scale: 1.03 },
+				tap: { scale: 0.97 },
+			}}
+			transition={{ type: "spring", stiffness: 400, damping: 25 }}
+			{...(props as any)}
 		>
-			<div className="relative w-4 h-4 flex items-center justify-center">
-				<CheckIcon
-					className={cn(
-						"absolute transition-all duration-200",
-						localIsCopied
-							? "scale-100 opacity-100"
-							: "scale-0 opacity-0",
-					)}
-				/>
-				<CopyIcon
-					className={cn(
-						"absolute transition-all duration-200",
-						localIsCopied
-							? "scale-0 opacity-0"
-							: "scale-100 opacity-100",
-					)}
-				/>
-			</div>
-			{children}
-		</button>
+			<AnimatePresence mode="wait" initial={false}>
+				{localIsCopied ? (
+					<motion.span
+						key="copied"
+						initial={{ opacity: 0, y: 5 }}
+						animate={{ opacity: 1, y: 0 }}
+						exit={{ opacity: 0, y: -5 }}
+						transition={{ duration: 0.15 }}
+						className="inline-flex items-center gap-1.5"
+					>
+						<MotionCheckIcon
+							className="size-3.5 stroke-teal-500 dark:stroke-teal-400"
+							variants={checkIconVariants}
+							initial="initial"
+							animate="animate"
+						/>
+						{children ? <span>Copied!</span> : null}
+					</motion.span>
+				) : (
+					<motion.span
+						key="copy"
+						initial={{ opacity: 0, y: -5 }}
+						animate={{ opacity: 1, y: 0 }}
+						exit={{ opacity: 0, y: 5 }}
+						transition={{ duration: 0.15 }}
+						className="inline-flex items-center gap-1.5"
+					>
+						<MotionCopyIcon
+							className="size-3.5"
+							variants={copyIconVariants}
+							initial="initial"
+						/>
+						{children}
+					</motion.span>
+				)}
+			</AnimatePresence>
+		</motion.button>
 	);
 }
+
+export default CopyButton;

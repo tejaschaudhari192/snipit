@@ -414,7 +414,7 @@ const HomePage = () => {
 				),
 				type: "warning",
 			});
-			return;
+			return false;
 		}
 		const effectiveCustomId =
 			(idTypeTab === "dynamic" || idTypeTab === "semantic") &&
@@ -423,8 +423,11 @@ const HomePage = () => {
 				: undefined;
 
 		const result = await handleSubmit(idTypeTab, effectiveCustomId, {});
-		if (result !== true)
+		if (result !== true) {
 			toast.add({ title: result as string, type: "error" });
+			return false;
+		}
+		return true;
 	};
 
 	const handleCollaborative = async () => {

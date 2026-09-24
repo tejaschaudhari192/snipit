@@ -2,6 +2,8 @@ import { useState, useRef } from "react";
 import type { DragEvent, ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import { EncryptButton } from "@/components/ui/encrypt-button";
+import { ShinyText } from "@/components/ui/shiny-text";
 import { PasswordInput } from "@/components/common/password-input";
 import { Input } from "@/components/ui/input";
 import {
@@ -618,42 +620,29 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 				)}
 
 				{state !== "done" && files.length > 0 && (
-					<Button
+					<EncryptButton
 						onClick={handleProcess}
 						disabled={
 							state === "processing" ||
 							files.length === 0 ||
 							!password
 						}
-						className="w-full gap-2"
+						isLocked={isEncrypt}
+						icon={
+							state === "processing" ? (
+								<Spinner className="h-4 w-4 animate-spin text-primary-foreground" />
+							) : undefined
+						}
+						className="w-full gap-2 h-10 rounded-xl"
 					>
 						{state === "processing" ? (
-							<Spinner className="h-4 w-4 animate-spin" />
-						) : isEncrypt ? (
-							<Lock className="h-4 w-4" />
-						) : (
-							<Unlock className="h-4 w-4" />
-						)}
-						{state === "processing" ? (
-							<span
-								style={
-									{
-										"--highlight-color":
-											"var(--foreground)",
-										"--base-color":
-											"var(--muted-foreground)",
-										"--spread": "20px",
-										"--duration": "2s",
-									} as React.CSSProperties
-								}
-								className="shimmer font-medium"
-							>
+							<ShinyText className="text-primary-foreground dark:text-primary-foreground font-mono">
 								{t(
 									isEncrypt
 										? "common.states.encrypting"
 										: "common.states.decrypting",
 								)}
-							</span>
+							</ShinyText>
 						) : (
 							t(
 								isEncrypt
@@ -661,7 +650,7 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 									: "tools.decrypt_button",
 							)
 						)}
-					</Button>
+					</EncryptButton>
 				)}
 			</CardContent>
 		</Card>

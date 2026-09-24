@@ -1,5 +1,4 @@
 import { Wand2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import {
 	Tooltip,
@@ -7,6 +6,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import AnimatedBorderButton from "../ui/animated-border-button";
 
 interface Props {
 	onClick: () => void;
@@ -20,14 +20,14 @@ export const AiWriterButton = ({ onClick }: Props) => {
 			<Tooltip>
 				<TooltipTrigger
 					render={
-						<Button
+						<AnimatedBorderButton
 							variant="outline"
 							size="icon-sm"
 							onClick={onClick}
 							className="h-9 w-9 shrink-0 bg-primary/5 border-primary/20 hover:bg-primary/10 text-primary shadow-lg shadow-primary/5 transition-all active:scale-95 group rounded-md"
 						>
 							<Wand2 className="h-4.5 w-4.5 group-hover:scale-110 transition-transform duration-300" />
-						</Button>
+						</AnimatedBorderButton>
 					}
 				/>
 				<TooltipContent side="top">

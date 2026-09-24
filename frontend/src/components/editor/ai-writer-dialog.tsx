@@ -11,11 +11,13 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { enhanceContent } from "@/lib/api/ai";
 import { toast } from "@/components/ui/toast";
-import { Wand2 } from "lucide-react";
+import { Sparkles, Wand2 } from "lucide-react";
 import { AxiosError } from "axios";
 import { useTranslation } from "react-i18next";
 import { Spinner } from "@/components/ui/spinner";
 import { GifLoader } from "@/components/common/gif-loader";
+import { AnimatedBorderButton } from "@/components/ui/animated-border-button";
+import { ShinyText } from "@/components/ui/shiny-text";
 
 export interface AiWriterDialogProps {
 	isOpen: boolean;
@@ -93,22 +95,16 @@ export const AiWriterDialog = ({
 
 	const predefinedActions = [
 		{
-			label: t("ai_writer.actions.write_code") || "Write Code",
-			tooltip:
-				t("ai_writer.tooltips.write_code") ||
-				"Write a high-quality code snippet based on my request.",
+			label: t("ai_writer.actions.write_code"),
+			tooltip: t("ai_writer.tooltips.write_code"),
 		},
 		{
-			label: t("ai_writer.actions.explain_write") || "Explain & Write",
-			tooltip:
-				t("ai_writer.tooltips.explain_write") ||
-				"Explain the logic and then write the code.",
+			label: t("ai_writer.actions.explain_write"),
+			tooltip: t("ai_writer.tooltips.explain_write"),
 		},
 		{
-			label: t("ai_writer.actions.refactor_ideas") || "Refactor Ideas",
-			tooltip:
-				t("ai_writer.tooltips.refactor_ideas") ||
-				"Suggest ways to refactor this idea into code.",
+			label: t("ai_writer.actions.refactor_ideas"),
+			tooltip: t("ai_writer.tooltips.refactor_ideas"),
 		},
 	];
 
@@ -118,11 +114,10 @@ export const AiWriterDialog = ({
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<Wand2 className="w-5 h-5 text-primary" />
-						{t("ai_writer.title") || "AI Writer"}
+						{t("ai_writer.title")}
 					</DialogTitle>
 					<DialogDescription>
-						{t("ai_writer.description") ||
-							"Describe what you want to write, and AI will generate it for you."}
+						{t("ai_writer.description")}
 					</DialogDescription>
 				</DialogHeader>
 
@@ -146,10 +141,7 @@ export const AiWriterDialog = ({
 							</div>
 						)}
 						<Textarea
-							placeholder={
-								t("ai_writer.placeholder") ||
-								"e.g. Write a React component for a login form..."
-							}
+							placeholder={t("ai_writer.placeholder")}
 							className="min-h-25 resize-none focus-visible:ring-1 focus-visible:ring-primary/50"
 							value={instruction}
 							onChange={(e) => setInstruction(e.target.value)}
@@ -166,10 +158,7 @@ export const AiWriterDialog = ({
 						<div className="p-6 bg-muted/20 rounded-lg border border-border/50 flex flex-col items-center justify-center">
 							<GifLoader
 								size="md"
-								label={t(
-									"ai_dialog.generating",
-									"Generating AI magic...",
-								)}
+								label={t("ai_dialog.generating")}
 							/>
 						</div>
 					)}
@@ -196,37 +185,28 @@ export const AiWriterDialog = ({
 					</Button>
 					{result ? (
 						<Button onClick={handleApply} disabled={isLoading}>
-							{t("ai_writer.apply") || "Insert Code"}
+							{t("ai_writer.apply")}
 						</Button>
 					) : (
-						<Button onClick={handleWrite} disabled={isLoading}>
+						<AnimatedBorderButton
+							onClick={handleWrite}
+							disabled={isLoading}
+							className="h-9 px-4 text-xs font-medium"
+						>
 							{isLoading ? (
 								<>
-									<Spinner className="mr-2 h-4 w-4 animate-spin" />
-									<span
-										style={
-											{
-												"--highlight-color":
-													"var(--foreground)",
-												"--base-color":
-													"var(--muted-foreground)",
-												"--spread": "20px",
-												"--duration": "2s",
-											} as React.CSSProperties
-										}
-										className="shimmer font-medium"
-									>
-										{t("ai_writer.generating") ||
-											"Generating..."}
-									</span>
+									<Spinner className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+									<ShinyText>
+										{t("ai_writer.generating")}
+									</ShinyText>
 								</>
 							) : (
 								<>
-									<Wand2 className="mr-2 h-4 w-4" />
-									{t("ai_writer.run") || "Generate"}
+									<Sparkles className="mr-1.5 h-3.5 w-3.5 text-primary" />
+									<span>{t("ai_writer.run")}</span>
 								</>
 							)}
-						</Button>
+						</AnimatedBorderButton>
 					)}
 				</DialogFooter>
 			</DialogContent>

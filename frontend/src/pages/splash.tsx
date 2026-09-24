@@ -20,6 +20,7 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 
 import type { ElementType } from "react";
+import ShinyText from "@/components/ui/shiny-text";
 
 const ICON_MAP: Record<string, ElementType<{ className?: string }>> = {
 	database: Database,
@@ -105,21 +106,7 @@ const SplashPage = ({ healthData }: SplashPageProps) => {
 								{isError ? (
 									t("splash.system_failure")
 								) : (
-									<span
-										style={
-											{
-												"--highlight-color":
-													"var(--foreground)",
-												"--base-color":
-													"var(--muted-foreground)",
-												"--spread": "20px",
-												"--duration": "2s",
-											} as React.CSSProperties
-										}
-										className="shimmer font-medium opacity-90"
-									>
-										{currentLabel}
-									</span>
+									<ShinyText>{currentLabel}</ShinyText>
 								)}
 							</span>
 						</span>
