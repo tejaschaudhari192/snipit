@@ -296,20 +296,41 @@ export const VoiceAgentProvider: React.FC<{ children: React.ReactNode }> = ({
 						executionSteps: accumulatedSteps,
 					});
 
-					await dispatcherRef.current?.dispatch(decision.action);
-					updateStep("action-exec", { status: "done" });
+					const actionSuccess = await dispatcherRef.current?.dispatch(
+						decision.action,
+					);
+					const stepStatus =
+						actionSuccess !== false ? "done" : "error";
+					const detailMsg =
+						actionSuccess !== false
+							? `Executed ${actionName}`
+							: `Failed to execute ${actionName}`;
+
+					updateStep("action-exec", {
+						status: stepStatus,
+						detail: detailMsg,
+					});
 					accumulatedSteps = accumulatedSteps.map((s) =>
 						s.id === "action-exec"
-							? { ...s, status: "done" as const }
+							? { ...s, status: stepStatus as "done" | "error" }
 							: s,
 					);
 					patchAssistantMsg({
 						executionSteps: accumulatedSteps,
 						actionResult: {
-							success: true,
-							message: `Executed ${actionName}`,
+							success: actionSuccess !== false,
+							message: detailMsg,
 						},
 					});
+
+					if (actionSuccess === false) {
+						const failureMsg =
+							actionName === "DELETE_PASTE"
+								? "I could not delete that snippet. Please verify the snippet exists and you have permission."
+								: `I was unable to complete ${actionName}.`;
+						memoryRef.current.addTurn("assistant", failureMsg);
+						await speakerRef.current?.speak(failureMsg);
+					}
 				}
 
 				// Phase 2: If this action generates on-screen results, observe & summarize

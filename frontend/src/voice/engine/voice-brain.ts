@@ -158,16 +158,38 @@ export class VoiceBrain {
 			};
 		}
 
-		// Delete Paste / Snippet
+		// Delete Named Paste / Snippet (e.g. "delete paste snipit-awake", "delete snippet test-123")
+		const namedDeleteMatch = text.match(
+			/^(?:delete|remove|trash|destroy)\s+(?:the\s+)?(?:paste|snippet)\s+(?:named\s+|called\s+)?([a-zA-Z0-9_.-]+)\b/i,
+		);
 		if (
-			/^(delete|remove|trash|destroy) (this |the )?(paste|snippet|code|doc|document)$/i.test(
+			namedDeleteMatch &&
+			namedDeleteMatch[1] &&
+			!["this", "the", "it", "on", "current", "screen"].includes(
+				namedDeleteMatch[1].toLowerCase(),
+			)
+		) {
+			const targetId = namedDeleteMatch[1].trim();
+			return {
+				speech: `Deleting snippet ${targetId} now.`,
+				action: {
+					type: "DELETE_PASTE",
+					params: { id: targetId, confirmed: true },
+				},
+			};
+		}
+
+		// Delete Current / On-Screen Paste
+		if (
+			/^(delete|remove|trash|destroy) (this |the )?(paste|snippet|code|doc|document)( on screen)?$/i.test(
 				text,
 			) ||
 			/^delete (it|this)$/i.test(text) ||
-			/^delete paste$/i.test(text)
+			/^delete paste( on screen)?$/i.test(text) ||
+			/^delete on screen$/i.test(text)
 		) {
 			return {
-				speech: "Deleting this snippet now.",
+				speech: "Deleting the paste currently on your screen.",
 				action: {
 					type: "DELETE_PASTE",
 					params: { confirmed: true },

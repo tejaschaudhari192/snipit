@@ -202,12 +202,18 @@ export class ActionDispatcher {
 						: null;
 				const targetId = idFromParams || idFromPath;
 
-				// 1. If Delete button is in the DOM, click it and confirm the dialog
+				const isCurrentScreen =
+					!idFromParams ||
+					(idFromPath &&
+						idFromParams.toLowerCase() ===
+							idFromPath.toLowerCase());
+
+				// 1. If targeting current screen, click the Delete button on the page
 				const deleteBtn = document.querySelector(
 					"#delete-paste-button",
 				) as HTMLElement | null;
 
-				if (deleteBtn) {
+				if (isCurrentScreen && deleteBtn) {
 					DOMOperator.safeClick(deleteBtn);
 					const confirmBtn = await DOMOperator.waitForElement(
 						"#confirm-delete-button",
@@ -217,14 +223,16 @@ export class ActionDispatcher {
 						DOMOperator.safeClick(confirmBtn);
 						return true;
 					}
-					return true;
+					// If dialog button was not detected, fall through to direct API
 				}
 
-				// 2. Direct API delete fallback if target ID exists
+				// 2. Direct API delete for specified target ID
 				if (targetId) {
 					try {
 						await deletePaste(targetId);
-						this.deps.navigate("/");
+						if (isCurrentScreen) {
+							this.deps.navigate("/");
+						}
 						return true;
 					} catch (e) {
 						console.error("Direct API delete failed", e);

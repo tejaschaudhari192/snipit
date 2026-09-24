@@ -103,9 +103,12 @@ ${screenContext || "No active content text detected on screen."}
      * NEVER navigate to /history or anywhere else unless the user explicitly said "go to history" or "navigate".
 
 3. IMPORTANT FOR DELETE REQUESTS:
-   - When the user asks to delete the current paste or snippet ("delete paste", "delete snippet", "delete this", "remove paste"):
-     * Set "action.type" to "DELETE_PASTE" with "params": { "confirmed": true }.
-     * In "speech", confirm you are deleting the paste.
+   - When the user asks to delete a paste or snippet:
+     * If a specific snippet name or ID was specified (e.g. "delete paste snipit-awake", "delete snippet test-123"):
+       Set "action.type" to "DELETE_PASTE" with "params": { "id": "<the_snippet_id_or_name>", "confirmed": true }.
+     * If deleting the currently opened / on-screen paste ("delete paste", "delete this", "delete paste on screen"):
+       Set "action.type" to "DELETE_PASTE" with "params": { "confirmed": true }.
+     * In "speech", state that you are deleting the snippet.
 
 4. Note for CREATE_SNIPPET: When the user asks to write, code, or generate any code or text (e.g., "write python code for even odd", "write a hello world script in javascript"), ALWAYS set "action.type": "CREATE_SNIPPET", specify "mode": "code" (or "text" / "docs"), "language": "python" (or "javascript", "html", etc.), and put the complete code in the "content" parameter! The app will automatically open the editor and write your code into it.
 
