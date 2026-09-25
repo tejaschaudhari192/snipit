@@ -18,21 +18,29 @@ const SplashPage = ({ healthData, onComplete }: SplashPageProps) => {
 	const isError = healthData?.status === "down";
 
 	const [displayProgress, setDisplayProgress] = useState(0);
+	const [activeLabel, setActiveLabel] = useState(currentLabel);
 
-	// Smoothly interpolate progress toward targetProgress
+	// Update activeLabel when incoming currentLabel changes and not complete
+	useEffect(() => {
+		if (currentLabel && displayProgress < 100) {
+			setActiveLabel(currentLabel);
+		}
+	}, [currentLabel, displayProgress]);
+
+	// Smoothly interpolate progress toward targetProgress with natural pacing
 	useEffect(() => {
 		if (isError) return;
 
 		const interval = setInterval(() => {
 			setDisplayProgress((prev) => {
 				if (prev >= targetProgress) return prev;
-				// Smooth step: minimum 2% per tick so it doesn't stall, proportional when far
+				// Smooth realistic step so steps don't instantly jump to 100%
 				const diff = targetProgress - prev;
-				const step = Math.max(2, Math.ceil(diff * 0.1));
+				const step = Math.min(Math.max(1, Math.round(diff * 0.08)), 4);
 				const next = Math.min(prev + step, targetProgress);
 				return next;
 			});
-		}, 20);
+		}, 25);
 
 		return () => clearInterval(interval);
 	}, [targetProgress, isError]);
@@ -42,7 +50,7 @@ const SplashPage = ({ healthData, onComplete }: SplashPageProps) => {
 		if (displayProgress >= 100 && onComplete) {
 			const timer = setTimeout(() => {
 				onComplete();
-			}, 700); // 700ms hold on 100% & "complete" message so user clearly sees the filled UI
+			}, 900); // 900ms hold on 100% & "complete" message so user clearly sees the filled UI
 			return () => clearTimeout(timer);
 		}
 	}, [displayProgress, onComplete]);
@@ -51,7 +59,7 @@ const SplashPage = ({ healthData, onComplete }: SplashPageProps) => {
 
 	return (
 		<div className="relative h-dvh w-screen overflow-hidden bg-background text-foreground transition-colors duration-300 flex flex-col items-center justify-center pointer-events-none">
-			<div className="relative z-10 flex flex-col items-center justify-center animate-in fade-in zoom-in duration-700">
+			<div className="relative z-10 flex flex-col items-center justify-center animate-in fade-in zoom-in duration-700 w-full max-w-md px-6">
 				<div className="flex flex-col items-center justify-center mb-6">
 					<div className="relative flex items-center justify-center w-32 h-32 mb-8">
 						<img
@@ -67,7 +75,7 @@ const SplashPage = ({ healthData, onComplete }: SplashPageProps) => {
 				</div>
 
 				{/* progress-04 inspired sleek progress section */}
-				<div className="w-full max-w-sm flex flex-col items-center justify-center space-y-6 mt-8">
+				<div className="w-full flex flex-col items-center justify-center space-y-6 mt-6">
 					{/* Centered Animated Text */}
 					<div className="relative h-8 flex items-center justify-center w-full">
 						<AnimatePresence mode="wait">
@@ -77,7 +85,7 @@ const SplashPage = ({ healthData, onComplete }: SplashPageProps) => {
 										? "error"
 										: isCompleted
 											? "completed"
-											: currentLabel
+											: activeLabel
 								}
 								initial={{ opacity: 0, scale: 1.4, y: -5 }}
 								animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -100,13 +108,13 @@ const SplashPage = ({ healthData, onComplete }: SplashPageProps) => {
 									? t("splash.system_failure")
 									: isCompleted
 										? "complete"
-										: currentLabel}
+										: activeLabel}
 							</motion.p>
 						</AnimatePresence>
 					</div>
 
 					{/* Sleek Progress Bar matching progress-04 visual spec */}
-					<div className="w-full relative px-2">
+					<div className="w-full relative px-1">
 						<div className="h-3 w-full bg-muted/30 overflow-hidden rounded-full relative">
 							{/* Indicator */}
 							<div
