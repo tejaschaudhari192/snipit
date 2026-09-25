@@ -969,7 +969,8 @@
 		"color_tag": "カラータグ",
 		"tabs": {
 			"snippets": "マイスニペット",
-			"devices": "デバイスとセッション"
+			"devices": "デバイスとセッション",
+			"profile": "プロフィールとアカウント"
 		},
 		"devices": {
 			"title": "アクティブなセッションとデバイス",
@@ -1002,6 +1003,19 @@
 			"time_hours_ago": "{{count}} 時間前",
 			"time_days_ago": "{{count}} 日前",
 			"time_recently": "最近"
+		},
+		"reset_password": "パスワードのリセット",
+		"account_settings": {
+			"title": "アカウントとプロフィールの設定",
+			"subtitle": "ID、個人情報、認証情報を管理します。",
+			"personal_info": "個人情報",
+			"personal_info_desc": "アプリ全体に表示される公開ユーザー名とアバター。",
+			"email_address": "メールアドレス",
+			"email_address_desc": "ログイン、通知、セキュリティアラートに使用されます。",
+			"security": "セキュリティと資格情報",
+			"security_desc": "パスワードを更新するか、安全なリセットメールをリクエストします。",
+			"danger_zone": "アカウント操作",
+			"sign_out_desc": "現在のセッションからログアウトします。"
 		}
 	},
 	"home": {
@@ -1081,7 +1095,10 @@
 			"paste": "貼り付け",
 			"shorten": "短縮する",
 			"upload": "アップロード",
-			"start_collaboration": "共同編集を開始"
+			"start_collaboration": "共同編集を開始",
+			"pasted": "貼り付け完了!",
+			"shortened": "短縮完了!",
+			"uploaded": "アップロード完了!"
 		},
 		"inputs": {
 			"snippet_placeholder": "ここにスニペットを入力...",
@@ -1457,7 +1474,11 @@
 		"reset_password_invalid_token_toast": "無効なトークン",
 		"reset_password_weak_toast": "パスワードが必要条件を満たしていません",
 		"login": "ログイン",
-		"signup": "新規登録"
+		"signup": "新規登録",
+		"resend_link": "リセットリンクを再送する",
+		"back_to_profile": "プロフィールに戻る",
+		"send_reset_link_title": "パスワードを再設定する",
+		"send_reset_link_subtitle": "メールアドレスに安全なパスワード再設定リンクをお送りします"
 	},
 	"editor": {
 		"ai_enhance": "✨ AIで選択範囲を強化...",

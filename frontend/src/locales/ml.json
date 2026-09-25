@@ -969,7 +969,8 @@
 		"color_tag": "വർണ്ണ ടാഗ്",
 		"tabs": {
 			"snippets": "My Snippets",
-			"devices": "Devices & Sessions"
+			"devices": "Devices & Sessions",
+			"profile": "പ്രൊഫൈലും അക്കൗണ്ടും"
 		},
 		"devices": {
 			"title": "Active Sessions & Devices",
@@ -1002,6 +1003,19 @@
 			"time_hours_ago": "{{count}} മണിക്കൂർ മുൻപ്",
 			"time_days_ago": "{{count}} ദിവസം മുൻപ്",
 			"time_recently": "അടുത്തിടെ"
+		},
+		"reset_password": "പാസ്‌വേഡ് മാറ്റുക",
+		"account_settings": {
+			"title": "അക്കൗണ്ട് & പ്രൊഫൈൽ ക്രമീകരണങ്ങൾ",
+			"subtitle": "നിങ്ങളുടെ വിവരങ്ങളും സുരക്ഷാ ക്രെഡൻഷ്യലുകളും നിയന്ത്രിക്കുക.",
+			"personal_info": "വ്യക്തിഗത വിവരങ്ങൾ",
+			"personal_info_desc": "ആപ്പിൽ പ്രദർശിപ്പിക്കുന്ന നിങ്ങളുടെ ഉപയോക്തൃനാമവും അവതാറും.",
+			"email_address": "ഇമെയിൽ വിലാസം",
+			"email_address_desc": "സൈൻ ഇൻ, അറിയിപ്പുകൾ, സുരക്ഷാ അലേർട്ടുകൾ എന്നിവയ്ക്കായി ഉപയോഗിക്കുന്നു.",
+			"security": "സുരക്ഷയും ക്രെഡൻഷ്യലുകളും",
+			"security_desc": "നിങ്ങളുടെ പാസ്‌വേഡ് അപ്‌ഡേറ്റ് ചെയ്യുക അല്ലെങ്കിൽ പാസ്‌വേഡ് റീസെറ്റ് ഇമെയിൽ അഭ്യർത്ഥിക്കുക.",
+			"danger_zone": "അക്കൗണ്ട് പ്രവർത്തനങ്ങൾ",
+			"sign_out_desc": "നിലവിലെ സെഷനിൽ നിന്ന് ലോഗ് ഔട്ട് ചെയ്യുക."
 		}
 	},
 	"home": {
@@ -1081,7 +1095,10 @@
 			"paste": "ഒട്ടിക്കുക",
 			"shorten": "ചെറുതാക്കുക",
 			"upload": "അപ്‌ലോഡ് ചെയ്യുക",
-			"start_collaboration": "സഹകരണം ആരംഭിക്കുക"
+			"start_collaboration": "സഹകരണം ആരംഭിക്കുക",
+			"pasted": "ഒട്ടിച്ചു!",
+			"shortened": "ചെറുതാക്കി!",
+			"uploaded": "അപ്‌ലോഡ് ചെയ്തു!"
 		},
 		"inputs": {
 			"snippet_placeholder": "നിങ്ങളുടെ വിവരങ്ങൾ ഇവിടെ നൽകുക...",
@@ -1457,7 +1474,11 @@
 		"reset_password_invalid_token_toast": "തെറ്റായ ടോക്കൻ",
 		"reset_password_weak_toast": "പാസ്‌വേഡ് ആവശ്യകതകൾ പാലിക്കുന്നില്ല",
 		"login": "ലോഗിൻ",
-		"signup": "സൈൻ അപ്പ്"
+		"signup": "സൈൻ അപ്പ്",
+		"resend_link": "റീസെറ്റ് ലിങ്ക് വീണ്ടും അയയ്ക്കുക",
+		"back_to_profile": "പ്രൊഫൈലിലേക്ക് മടങ്ങുക",
+		"send_reset_link_title": "പാസ്‌വേഡ് പുനഃസജ്ജമാക്കുക",
+		"send_reset_link_subtitle": "നിങ്ങളുടെ ഇമെയിൽ വിലാസത്തിലേക്ക് ഞങ്ങൾ സുരക്ഷിതമായ പാസ്‌വേഡ് റീസെറ്റ് ലിങ്ക് അയയ്ക്കും"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI ഉപയോഗിച്ച് മെച്ചപ്പെടുത്തുക...",

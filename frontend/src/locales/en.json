@@ -999,10 +999,12 @@
 			"save": "Save Photo"
 		},
 		"edit_name": "Edit name",
+		"reset_password": "Reset Password",
 		"color_tag": "Color Tag",
 		"tabs": {
 			"snippets": "My Snippets",
-			"devices": "Devices & Sessions"
+			"devices": "Devices & Sessions",
+			"profile": "Profile & Account"
 		},
 		"devices": {
 			"title": "Active Sessions & Devices",
@@ -1035,6 +1037,18 @@
 			"time_hours_ago": "{{count}} hour(s) ago",
 			"time_days_ago": "{{count}} day(s) ago",
 			"time_recently": "Recently"
+		},
+		"account_settings": {
+			"title": "Account & Profile Settings",
+			"subtitle": "Manage your identity, personal information, and authentication credentials.",
+			"personal_info": "Personal Information",
+			"personal_info_desc": "Your public username and avatar displayed across the app.",
+			"email_address": "Email Address",
+			"email_address_desc": "Used for sign in, notifications, and security alerts.",
+			"security": "Security & Credentials",
+			"security_desc": "Update your password or request a secure reset email.",
+			"danger_zone": "Account Actions",
+			"sign_out_desc": "Log out from your current device session."
 		}
 	},
 	"home": {
@@ -1112,8 +1126,11 @@
 		},
 		"actions": {
 			"paste": "Paste",
+			"pasted": "Pasted!",
 			"shorten": "Shorten",
+			"shortened": "Shortened!",
 			"upload": "Upload",
+			"uploaded": "Uploaded!",
 			"start_collaboration": "Start Collaboration"
 		},
 		"inputs": {
@@ -1474,7 +1491,11 @@
 		"forgot_password_success_message": "We've sent a password reset link to",
 		"forgot_password_success_check_inbox": "Please check your inbox and follow the instructions.",
 		"forgot_password_try_another": "Try another email",
+		"resend_link": "Resend reset link",
 		"back_to_login": "Back to Login",
+		"back_to_profile": "Back to Profile",
+		"send_reset_link_title": "Reset Your Password",
+		"send_reset_link_subtitle": "We'll send a secure password reset link to your email address",
 		"forgot_password_success_toast": "Reset link sent to your email",
 		"forgot_password_failed_toast": "Failed to send reset link",
 		"reset_password_title": "Reset Password",

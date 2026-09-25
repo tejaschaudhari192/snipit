@@ -1002,7 +1002,8 @@
 		"color_tag": "Farb-Tag",
 		"tabs": {
 			"snippets": "Meine Snippets",
-			"devices": "Geräte & Sitzungen"
+			"devices": "Geräte & Sitzungen",
+			"profile": "Profil & Konto"
 		},
 		"devices": {
 			"title": "Aktive Sitzungen & Geräte",
@@ -1035,6 +1036,19 @@
 			"time_hours_ago": "vor {{count}} Std.",
 			"time_days_ago": "vor {{count}} Tag(en)",
 			"time_recently": "Kürzlich"
+		},
+		"reset_password": "Passwort zurücksetzen",
+		"account_settings": {
+			"title": "Konto- & Profileinstellungen",
+			"subtitle": "Verwalten Sie Ihre Identität, persönliche Daten und Anmeldeinformationen.",
+			"personal_info": "Persönliche Daten",
+			"personal_info_desc": "Ihr öffentlicher Benutzername und Avatar.",
+			"email_address": "E-Mail-Adresse",
+			"email_address_desc": "Verwendet für Anmeldung, Benachrichtigungen und Sicherheitswarnungen.",
+			"security": "Sicherheit & Zugangsdaten",
+			"security_desc": "Aktualisieren Sie Ihr Passwort oder fordern Sie eine E-Mail zum Zurücksetzen an.",
+			"danger_zone": "Kontoaktionen",
+			"sign_out_desc": "Von dieser aktuellen Sitzung abmelden."
 		}
 	},
 	"home": {
@@ -1114,7 +1128,10 @@
 			"paste": "Einfügen",
 			"shorten": "Kürzen",
 			"upload": "Hochladen",
-			"start_collaboration": "Zusammenarbeit starten"
+			"start_collaboration": "Zusammenarbeit starten",
+			"pasted": "Eingefügt!",
+			"shortened": "Gekürzt!",
+			"uploaded": "Hochgeladen!"
 		},
 		"inputs": {
 			"snippet_placeholder": "Geben Sie Ihren Snippet hier ein...",
@@ -1490,7 +1507,11 @@
 		"reset_password_invalid_token_toast": "Ungültiger Token",
 		"reset_password_weak_toast": "Passwort entspricht nicht den Anforderungen",
 		"login": "Anmelden",
-		"signup": "Registrieren"
+		"signup": "Registrieren",
+		"resend_link": "Link erneut senden",
+		"back_to_profile": "Zurück zum Profil",
+		"send_reset_link_title": "Passwort zurücksetzen",
+		"send_reset_link_subtitle": "Wir senden Ihnen einen sicheren Link zum Zurücksetzen Ihres Passworts per E-Mail"
 	},
 	"editor": {
 		"ai_enhance": "✨ KI-Auswahl verbessern...",

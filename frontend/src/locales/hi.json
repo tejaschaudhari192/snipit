@@ -1002,7 +1002,8 @@
 		"color_tag": "रंग टैग",
 		"tabs": {
 			"snippets": "मेरे स्निपेट्स",
-			"devices": "डिवाइस और सत्र"
+			"devices": "डिवाइस और सत्र",
+			"profile": "प्रोफ़ाइल और खाता"
 		},
 		"devices": {
 			"title": "सक्रिय सत्र और डिवाइस",
@@ -1035,6 +1036,19 @@
 			"time_hours_ago": "{{count}} घंटे पहले",
 			"time_days_ago": "{{count}} दिन पहले",
 			"time_recently": "हाल ही में"
+		},
+		"reset_password": "पासवर्ड रीसेट करें",
+		"account_settings": {
+			"title": "खाता और प्रोफ़ाइल सेटिंग्स",
+			"subtitle": "अपनी पहचान, व्यक्तिगत जानकारी और सुरक्षा क्रेडेंशियल्स प्रबंधित करें।",
+			"personal_info": "व्यक्तिगत जानकारी",
+			"personal_info_desc": "ऐप पर प्रदर्शित आपका सार्वजनिक उपयोगकर्ता नाम और अवतार।",
+			"email_address": "ईमेल पता",
+			"email_address_desc": "साइन इन, सूचनाओं और सुरक्षा अलर्ट के लिए उपयोग किया जाता है।",
+			"security": "सुरक्षा और क्रेडेंशियल",
+			"security_desc": "अपना पासवर्ड अपडेट करें या पासवर्ड रीसेट ईमेल का अनुरोध करें।",
+			"danger_zone": "खाता क्रियाएं",
+			"sign_out_desc": "अपने वर्तमान सत्र से लॉग आउट करें।"
 		}
 	},
 	"home": {
@@ -1114,7 +1128,10 @@
 			"paste": "पेष्ट करें",
 			"shorten": "छोटा करें",
 			"upload": "अपलोड करें",
-			"start_collaboration": "सहयोग शुरू करें"
+			"start_collaboration": "सहयोग शुरू करें",
+			"pasted": "पेस्ट किया गया!",
+			"shortened": "छोटा किया गया!",
+			"uploaded": "अपलोड किया गया!"
 		},
 		"inputs": {
 			"snippet_placeholder": "अपना स्निपेट यहाँ दर्ज करें...",
@@ -1490,7 +1507,11 @@
 		"reset_password_invalid_token_toast": "अमान्य टोकन",
 		"reset_password_weak_toast": "पासवर्ड आवश्यकताओं को पूरा नहीं करता है",
 		"login": "लॉग इन",
-		"signup": "साइन अप"
+		"signup": "साइन अप",
+		"resend_link": "रीसेट लिंक फिर से भेजें",
+		"back_to_profile": "प्रोफ़ाइल पर वापस जाएं",
+		"send_reset_link_title": "अपना पासवर्ड रीसेट करें",
+		"send_reset_link_subtitle": "हम आपके ईमेल पते पर एक सुरक्षित पासवर्ड रीसेट लिंक भेजेंगे"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI के साथ बेहतर बनाएं...",

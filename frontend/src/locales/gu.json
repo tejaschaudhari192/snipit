@@ -969,7 +969,8 @@
 		"color_tag": "રંગ ટૅગ",
 		"tabs": {
 			"snippets": "My Snippets",
-			"devices": "Devices & Sessions"
+			"devices": "Devices & Sessions",
+			"profile": "પ્રોફાઇલ અને એકાઉન્ટ"
 		},
 		"devices": {
 			"title": "Active Sessions & Devices",
@@ -1002,6 +1003,19 @@
 			"time_hours_ago": "{{count}} કલાક પહેલાં",
 			"time_days_ago": "{{count}} દિવસ પહેલાં",
 			"time_recently": "તાજેતરમાં"
+		},
+		"reset_password": "પાસવર્ડ રીસેટ કરો",
+		"account_settings": {
+			"title": "એકાઉન્ટ અને પ્રોફાઇલ સેટિંગ્સ",
+			"subtitle": "તમારી ઓળખ, વ્યક્તિગત માહિતી અને સુરક્ષા ઓળખપત્રો મેનેજ કરો.",
+			"personal_info": "વ્યક્તિગત માહિતી",
+			"personal_info_desc": "એપમાં દર્શાવવામાં આવેલ તમારું સાર્વજનિક વપરાશકર્તા નામ અને અવતાર.",
+			"email_address": "ઇમેઇલ સરનામું",
+			"email_address_desc": "સાઇન ઇન, સૂચનાઓ અને સુરક્ષા ચેતવણીઓ માટે વપરાય છે.",
+			"security": "સુરક્ષા અને ઓળખપત્રો",
+			"security_desc": "તમારો પાસવર્ડ અપડેટ કરો અથવા પાસવર્ડ રીસેટ ઇમેઇલની વિનંતી કરો.",
+			"danger_zone": "એકાઉન્ટ ક્રિયાઓ",
+			"sign_out_desc": "તમારા વર્તમાન સત્રમાંથી લૉગ આઉટ કરો."
 		}
 	},
 	"home": {
@@ -1081,7 +1095,10 @@
 			"paste": "પેસ્ટ કરો",
 			"shorten": "નાનું કરો",
 			"upload": "અપલોડ",
-			"start_collaboration": "સહયોગ શરૂ કરો"
+			"start_collaboration": "સહયોગ શરૂ કરો",
+			"pasted": "પેસ્ટ કર્યું!",
+			"shortened": "નાનું કર્યું!",
+			"uploaded": "અપલોડ કર્યું!"
 		},
 		"inputs": {
 			"snippet_placeholder": "તમારું સ્નિપેટ અહીં દાખલ કરો...",
@@ -1457,7 +1474,11 @@
 		"reset_password_invalid_token_toast": "અમાન્ય ટોકન",
 		"reset_password_weak_toast": "પાસવર્ડ આવશ્યકતાઓને પૂર્ણ કરતો નથી",
 		"login": "લૉગિન",
-		"signup": "સાઇન અપ"
+		"signup": "સાઇન અપ",
+		"resend_link": "રીસેટ લિંક ફરી મોકલો",
+		"back_to_profile": "પ્રોફાઇલ પર પાછા જાઓ",
+		"send_reset_link_title": "તમારો પાસવર્ડ રીસેટ કરો",
+		"send_reset_link_subtitle": "અમે તમારા ઇમેઇલ સરનામાં પર સુરક્ષિત પાસવર્ડ રીસેટ લિંક મોકલીશું"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI વડે સુધારો...",

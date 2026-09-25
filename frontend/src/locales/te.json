@@ -969,7 +969,8 @@
 		"color_tag": "రంగు ట్యాగ్",
 		"tabs": {
 			"snippets": "My Snippets",
-			"devices": "Devices & Sessions"
+			"devices": "Devices & Sessions",
+			"profile": "ప్రొఫైల్ & ఖాతా"
 		},
 		"devices": {
 			"title": "Active Sessions & Devices",
@@ -1002,6 +1003,19 @@
 			"time_hours_ago": "{{count}} గంటల క్రితం",
 			"time_days_ago": "{{count}} రోజుల క్రితం",
 			"time_recently": "ఇటీవల"
+		},
+		"reset_password": "పాస్‌వర్డ్ రీసెట్ చేయండి",
+		"account_settings": {
+			"title": "ఖాతా మరియు ప్రొఫైల్ సెట్టింగ్‌లు",
+			"subtitle": "మీ గుర్తింపు, వ్యక్తిగత సమాచారం మరియు భద్రతా ఆధారాలను నిర్వహించండి.",
+			"personal_info": "వ్యక్తిగత సమాచారం",
+			"personal_info_desc": "యాప్‌లో ప్రదర్శించబడే మీ పబ్లిక్ వినియోగదారు పేరు మరియు అవతార్.",
+			"email_address": "ఇమెయిల్ చిరునామా",
+			"email_address_desc": "సైన్ ఇన్, నోటిఫికేషన్‌లు మరియు భద్రతా హెచ్చరికల కోసం ఉపయోగించబడుతుంది.",
+			"security": "భద్రత & ఆధారాలు",
+			"security_desc": "మీ పాస్‌వర్డ్‌ను అప్‌డేట్ చేయండి లేదా పాస్‌వర్డ్ రీసెట్ ఇమెయిల్‌ను అభ్యర్థించండి.",
+			"danger_zone": "ఖాతా చర్యలు",
+			"sign_out_desc": "మీ ప్రస్తుత సెషన్ నుండి లాగ్ అవుట్ అవ్వండి."
 		}
 	},
 	"home": {
@@ -1081,7 +1095,10 @@
 			"paste": "పేస్ట్",
 			"shorten": "కుదించు",
 			"upload": "అప్‌లోడ్",
-			"start_collaboration": "సహకారాన్ని ప్రారంభించండి"
+			"start_collaboration": "సహకారాన్ని ప్రారంభించండి",
+			"pasted": "పేస్ట్ చేయబడింది!",
+			"shortened": "కుదించబడింది!",
+			"uploaded": "అప్‌లోడ్ చేయబడింది!"
 		},
 		"inputs": {
 			"snippet_placeholder": "మీ స్నిప్పెట్‌ను ఇక్కడ నమోదు చేయండి...",
@@ -1457,7 +1474,11 @@
 		"reset_password_invalid_token_toast": "చెల్లని టోకెన్",
 		"reset_password_weak_toast": "పాస్‌వర్డ్ అవసరాలకు అనుగుణంగా లేదు",
 		"login": "లాగిన్",
-		"signup": "సైన్ అప్"
+		"signup": "సైన్ అప్",
+		"resend_link": "రీసెట్ లింక్‌ను మళ్లీ పంపండి",
+		"back_to_profile": "ప్రొఫైల్‌కు తిరిగి వెళ్ళు",
+		"send_reset_link_title": "మీ పాస్‌వర్డ్‌ను రీసెట్ చేయండి",
+		"send_reset_link_subtitle": "మీ ఇమెయిల్ చిరునామాకు మేము సురక్షితమైన పాస్‌వర్డ్ రీసెట్ లింక్‌ను పంపుతాము"
 	},
 	"editor": {
 		"ai_enhance": "✨ AIతో మెరుగుపరచండి...",

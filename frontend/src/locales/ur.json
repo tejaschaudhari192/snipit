@@ -969,7 +969,8 @@
 		"color_tag": "رنگین ٹیگ",
 		"tabs": {
 			"snippets": "My Snippets",
-			"devices": "Devices & Sessions"
+			"devices": "Devices & Sessions",
+			"profile": "پروفائل اور اکاؤنٹ"
 		},
 		"devices": {
 			"title": "Active Sessions & Devices",
@@ -1002,6 +1003,19 @@
 			"time_hours_ago": "{{count}} گھنٹے پہلے",
 			"time_days_ago": "{{count}} دن پہلے",
 			"time_recently": "حال ہی میں"
+		},
+		"reset_password": "پاس ورڈ تبدیل کریں",
+		"account_settings": {
+			"title": "اکاؤنٹ اور پروفائل کی ترتیبات",
+			"subtitle": "اپنی شناخت، ذاتی معلومات اور سیکیورٹی کی اسناد کا انتظام کریں۔",
+			"personal_info": "ذاتی معلومات",
+			"personal_info_desc": "ایپ پر نظر آنے والا آپ کا عوامی صارف نام اور اوتار۔",
+			"email_address": "ای میل ایڈریس",
+			"email_address_desc": "سائن ان، اطلاعات اور سیکیورٹی الرٹس کے لیے استعمال ہوتا ہے۔",
+			"security": "سیکیورٹی اور اسناد",
+			"security_desc": "اپنا پاس ورڈ اپ ڈیٹ کریں یا پاس ورڈ ری سیٹ ای میل کی درخواست کریں۔",
+			"danger_zone": "اکاؤنٹ کی کارروائیاں",
+			"sign_out_desc": "اپنے موجودہ سیشن سے لاگ آؤٹ کریں۔"
 		}
 	},
 	"home": {
@@ -1081,7 +1095,10 @@
 			"paste": "پیسٹ کریں",
 			"shorten": "چھوٹا کریں",
 			"upload": "اپ لوڈ",
-			"start_collaboration": "تعاون شروع کریں"
+			"start_collaboration": "تعاون شروع کریں",
+			"pasted": "پیسٹ ہو گیا!",
+			"shortened": "مختصر ہو گیا!",
+			"uploaded": "اپ لوڈ ہو گیا!"
 		},
 		"inputs": {
 			"snippet_placeholder": "اپنا اسنیپٹ یہاں درج کریں...",
@@ -1457,7 +1474,11 @@
 		"reset_password_invalid_token_toast": "ٹوکن غیر درست ہے",
 		"reset_password_weak_toast": "پاس ورڈ ضروریات کو پورا نہیں کرتا ہے",
 		"login": "لاگ ان",
-		"signup": "سائن اپ"
+		"signup": "سائن اپ",
+		"resend_link": "ری سیٹ لنک دوبارہ بھیجیں",
+		"back_to_profile": "پروفائل پر واپس جائیں",
+		"send_reset_link_title": "اپنا پاس ورڈ ری سیٹ کریں",
+		"send_reset_link_subtitle": "ہم آپ کے ای میل ایڈریس پر ایک محفوظ پاس ورڈ ری سیٹ لنک بھیجیں گے"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI کے ساتھ بہتر بنائیں...",

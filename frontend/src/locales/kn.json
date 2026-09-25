@@ -969,7 +969,8 @@
 		"color_tag": "ಬಣ್ಣ ಟ್ಯಾಗ್",
 		"tabs": {
 			"snippets": "My Snippets",
-			"devices": "Devices & Sessions"
+			"devices": "Devices & Sessions",
+			"profile": "ಪ್ರೊಫೈಲ್ ಮತ್ತು ಖಾತೆ"
 		},
 		"devices": {
 			"title": "Active Sessions & Devices",
@@ -1002,6 +1003,19 @@
 			"time_hours_ago": "{{count}} ಗಂಟೆಗಳ ಹಿಂದೆ",
 			"time_days_ago": "{{count}} ದಿನಗಳ ಹಿಂದೆ",
 			"time_recently": "ಇತ್ತೀಚೆಗೆ"
+		},
+		"reset_password": "ಪಾಸ್‌ವರ್ಡ್ ಮರುಹೊಂದಿಸಿ",
+		"account_settings": {
+			"title": "ಖಾತೆ ಮತ್ತು ಪ್ರೊಫೈಲ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+			"subtitle": "ನಿಮ್ಮ ಗುರುತು, ವೈಯಕ್ತಿಕ ಮಾಹಿತಿ ಮತ್ತು ಸುರಕ್ಷತಾ ವಿವರಗಳನ್ನು ನಿರ್ವಹಿಸಿ.",
+			"personal_info": "ವೈಯಕ್ತಿಕ ಮಾಹಿತಿ",
+			"personal_info_desc": "ಅಪ್ಲಿಕೇಶನ್‌ನಲ್ಲಿ ಪ್ರದರ್ಶಿಸಲಾಗುವ ನಿಮ್ಮ ಸಾರ್ವಜನಿಕ ಬಳಕೆದಾರ ಹೆಸರು ಮತ್ತು ಅವತಾರ.",
+			"email_address": "ಇಮೇಲ್ ವಿಳಾಸ",
+			"email_address_desc": "ಸೈನ್ ಇನ್, ಅಧಿಸೂಚನೆಗಳು ಮತ್ತು ಸುರಕ್ಷತಾ ಎಚ್ಚರಿಕೆಗಳಿಗೆ ಬಳಸಲಾಗುತ್ತದೆ.",
+			"security": "ಸುರಕ್ಷತೆ ಮತ್ತು ರುಜುವಾತುಗಳು",
+			"security_desc": "ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ನವೀಕರಿಸಿ ಅಥವಾ ಪಾಸ್‌ವರ್ಡ್ ಮರುಹೊಂದಿಸುವ ಇಮೇಲ್ ಕೋರಿ.",
+			"danger_zone": "ಖಾತೆಯ ಕ್ರಿಯೆಗಳು",
+			"sign_out_desc": "ನಿಮ್ಮ ಪ್ರಸ್ತುತ ಸೆಷನ್‌ನಿಂದ ಲಾಗ್ ಔಟ್ ಮಾಡಿ."
 		}
 	},
 	"home": {
@@ -1081,7 +1095,10 @@
 			"paste": "ಅಂಟಿಸು",
 			"shorten": "ಕುಗ್ಗಿಸು",
 			"upload": "ಅಪ್‌ಲೋಡ್",
-			"start_collaboration": "ಸಹಯೋಗವನ್ನು ಪ್ರಾರಂಭಿಸಿ"
+			"start_collaboration": "ಸಹಯೋಗವನ್ನು ಪ್ರಾರಂಭಿಸಿ",
+			"pasted": "ಅಂಟಿಸಲಾಗಿದೆ!",
+			"shortened": "ಕುಗ್ಗಿಸಲಾಗಿದೆ!",
+			"uploaded": "ಅಪ್‌ಲೋಡ್ ಮಾಡಲಾಗಿದೆ!"
 		},
 		"inputs": {
 			"snippet_placeholder": "ನಿಮ್ಮ ಸ್ನಿಪ್ಪೆಟ್ ಅನ್ನು ಇಲ್ಲಿ ನಮೂದಿಸಿ...",
@@ -1457,7 +1474,11 @@
 		"reset_password_invalid_token_toast": "ಅಮಾನ್ಯ ಟೋಕನ್",
 		"reset_password_weak_toast": "ಪಾಸ್ವರ್ಡ್ ಅವಶ್ಯಕತೆಗಳನ್ನು ಪೂರೈಸುವುದಿಲ್ಲ",
 		"login": "ಲಾಗಿನ್",
-		"signup": "ಸೈನ್ ಅಪ್"
+		"signup": "ಸೈನ್ ಅಪ್",
+		"resend_link": "ಮರುಹೊಂದಿಸುವ ಲಿಂಕ್ ಅನ್ನು ಪುನಃ ಕಳುಹಿಸಿ",
+		"back_to_profile": "ಪ್ರೊಫೈಲ್‌ಗೆ ಹಿಂತಿರುಗಿ",
+		"send_reset_link_title": "ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಮರುಹೊಂದಿಸಿ",
+		"send_reset_link_subtitle": "ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸಕ್ಕೆ ನಾವು ಸುರಕ್ಷಿತ ಪಾಸ್‌ವರ್ಡ್ ಮರುಹೊಂದಿಸುವ ಲಿಂಕ್ ಕಳುಹಿಸುತ್ತೇವೆ"
 	},
 	"editor": {
 		"ai_enhance": "✨ AIನೊಂದಿಗೆ ಸುಧಾರಿಸಿ...",

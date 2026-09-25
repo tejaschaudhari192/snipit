@@ -969,7 +969,8 @@
 		"color_tag": "রঙের ট্যাগ",
 		"tabs": {
 			"snippets": "My Snippets",
-			"devices": "Devices & Sessions"
+			"devices": "Devices & Sessions",
+			"profile": "প্রোফাইল ও অ্যাকাউন্ট"
 		},
 		"devices": {
 			"title": "Active Sessions & Devices",
@@ -1002,6 +1003,19 @@
 			"time_hours_ago": "{{count}} ঘণ্টা আগে",
 			"time_days_ago": "{{count}} দিন আগে",
 			"time_recently": "সম্প্রতি"
+		},
+		"reset_password": "পাসওয়ার্ড রিসেট করুন",
+		"account_settings": {
+			"title": "অ্যাকাউন্ট এবং প্রোফাইল সেটিংস",
+			"subtitle": "আপনার পরিচয়, ব্যক্তিগত তথ্য এবং নিরাপত্তা শংসাপত্র পরিচালনা করুন।",
+			"personal_info": "ব্যক্তিগত তথ্য",
+			"personal_info_desc": "অ্যাপে প্রদর্শিত আপনার সার্বজনীন ব্যবহারকারীর নাম এবং অবতার।",
+			"email_address": "ইমেল ঠিকানা",
+			"email_address_desc": "সাইন ইন, বিজ্ঞপ্তি এবং সুরক্ষা সতর্কতার জন্য ব্যবহৃত হয়।",
+			"security": "নিরাপত্তা এবং শংসাপত্র",
+			"security_desc": "আপনার পাসওয়ার্ড আপডেট করুন বা পাসওয়ার্ড রিসেট ইমেলের জন্য অনুরোধ করুন।",
+			"danger_zone": "অ্যাকাউন্টের কার্যক্রম",
+			"sign_out_desc": "আপনার বর্তমান সেশন থেকে লগ আউট করুন।"
 		}
 	},
 	"home": {
@@ -1081,7 +1095,10 @@
 			"paste": "পেস্ট করুন",
 			"shorten": "ছোট করুন",
 			"upload": "আপলোড করুন",
-			"start_collaboration": "সহযোগিতা শুরু করুন"
+			"start_collaboration": "সহযোগিতা শুরু করুন",
+			"pasted": "পেস্ট করা হয়েছে!",
+			"shortened": "ছোট করা হয়েছে!",
+			"uploaded": "আপলোড করা হয়েছে!"
 		},
 		"inputs": {
 			"snippet_placeholder": "আপনার স্নিপেট এখানে লিখুন...",
@@ -1457,7 +1474,11 @@
 		"reset_password_invalid_token_toast": "অকার্যকর টোকেন",
 		"reset_password_weak_toast": "পাসওয়ার্ড প্রয়োজনীয়তা পূরণ করে না",
 		"login": "লগইন",
-		"signup": "সাইন আপ"
+		"signup": "সাইন আপ",
+		"resend_link": "রিসেট লিঙ্ক পুনরায় পাঠান",
+		"back_to_profile": "প্রোফাইলে ফিরে যান",
+		"send_reset_link_title": "আপনার পাসওয়ার্ড রিসেট করুন",
+		"send_reset_link_subtitle": "আমরা আপনার ইমেল ঠিকানায় একটি নিরাপদ পাসওয়ার্ড রিসেট লিঙ্ক পাঠাব"
 	},
 	"editor": {
 		"ai_enhance": "✨ AI দিয়ে উন্নত করুন...",
