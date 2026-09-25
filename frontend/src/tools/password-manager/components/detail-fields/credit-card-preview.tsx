@@ -1,119 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { cn } from "cn";
 import { Wifi, Eye, EyeOff, Copy, Check } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
-const ChipSVG = () => (
-	<svg
-		width="44"
-		height="34"
-		viewBox="0 0 44 34"
-		fill="none"
-		aria-hidden="true"
-	>
-		<rect width="44" height="34" rx="5" fill="#C9963A" />
-		<rect x="14" width="16" height="34" fill="#B8852A" />
-		<rect y="11" width="44" height="12" fill="#B8852A" />
-		<rect x="14" y="11" width="16" height="12" fill="#E0B060" />
-		<line
-			x1="14"
-			y1="0"
-			x2="14"
-			y2="11"
-			stroke="#9A6E1A"
-			strokeWidth="0.6"
-		/>
-		<line
-			x1="30"
-			y1="0"
-			x2="30"
-			y2="11"
-			stroke="#9A6E1A"
-			strokeWidth="0.6"
-		/>
-		<line
-			x1="14"
-			y1="23"
-			x2="14"
-			y2="34"
-			stroke="#9A6E1A"
-			strokeWidth="0.6"
-		/>
-		<line
-			x1="30"
-			y1="23"
-			x2="30"
-			y2="34"
-			stroke="#9A6E1A"
-			strokeWidth="0.6"
-		/>
-		<line
-			x1="0"
-			y1="11"
-			x2="14"
-			y2="11"
-			stroke="#9A6E1A"
-			strokeWidth="0.6"
-		/>
-		<line
-			x1="0"
-			y1="23"
-			x2="14"
-			y2="23"
-			stroke="#9A6E1A"
-			strokeWidth="0.6"
-		/>
-		<line
-			x1="30"
-			y1="11"
-			x2="44"
-			y2="11"
-			stroke="#9A6E1A"
-			strokeWidth="0.6"
-		/>
-		<line
-			x1="30"
-			y1="23"
-			x2="44"
-			y2="23"
-			stroke="#9A6E1A"
-			strokeWidth="0.6"
-		/>
-	</svg>
-);
-
-const CardNetworkLogo = ({ cardNumber = "" }: { cardNumber?: string }) => {
-	const clean = cardNumber.replace(/\s+/g, "");
-	const isVisa = clean.startsWith("4");
-	const isAmex = clean.startsWith("34") || clean.startsWith("37");
-
-	if (isVisa) {
-		return (
-			<span className="text-white font-black italic tracking-widest text-lg font-serif">
-				VISA
-			</span>
-		);
-	}
-
-	if (isAmex) {
-		return (
-			<span className="text-white font-extrabold tracking-tighter text-xs border border-white/60 px-1.5 py-0.5 rounded">
-				AMEX
-			</span>
-		);
-	}
-
-	// Default Mastercard logo
-	return (
-		<div className="flex items-center" aria-label="Mastercard">
-			<div className="w-7 h-7 rounded-full bg-red-500/90" />
-			<div className="w-7 h-7 rounded-full bg-amber-400/90 -ml-3" />
-		</div>
-	);
-};
+import { ChipSVG, CardNetworkLogo } from "./card-visuals";
 
 export interface CreditCardPreviewProps {
 	cardholderName?: string;
@@ -138,6 +31,7 @@ export function CreditCardPreview({
 	onFlipChange,
 	defaultShowSensitives = false,
 }: CreditCardPreviewProps) {
+	const { t } = useTranslation();
 	const [internalFlipped, setInternalFlipped] = useState(false);
 	const [showSensitives, setShowSensitives] = useState(defaultShowSensitives);
 	const [copied, setCopied] = useState(false);
@@ -184,7 +78,11 @@ export function CreditCardPreview({
 				style={{ perspective: "1200px" }}
 				onClick={handleFlipToggle}
 				role="button"
-				aria-label={isFlipped ? "Show card front" : "Show card back"}
+				aria-label={
+					isFlipped
+						? t("tools.password_manager.card_preview.card_front")
+						: t("tools.password_manager.card_preview.card_back")
+				}
 			>
 				<div
 					className="relative w-full h-full transition-transform duration-700 ease-in-out"
@@ -209,7 +107,10 @@ export function CreditCardPreview({
 							{/* Row 1: bank name | show/hide toggle */}
 							<div className="flex items-start justify-between">
 								<span className="text-white font-bold text-lg tracking-wider uppercase drop-shadow-sm">
-									{bankName || "Snipit Vault"}
+									{bankName ||
+										t(
+											"tools.password_manager.card_preview.default_bank",
+										)}
 								</span>
 								<div className="flex items-center gap-1.5">
 									{cleanNumber && (
@@ -220,8 +121,12 @@ export function CreditCardPreview({
 											className="h-7 w-7 text-white/80 hover:text-white hover:bg-black/30! transition-colors rounded-full cursor-pointer"
 											title={
 												copied
-													? "Copied"
-													: "Copy card number"
+													? t(
+															"tools.password_manager.card_preview.copied",
+														)
+													: t(
+															"tools.password_manager.card_preview.copy_number",
+														)
 											}
 										>
 											{copied ? (
@@ -241,13 +146,21 @@ export function CreditCardPreview({
 										className="h-7 w-7 text-white/80 hover:text-white hover:bg-black/30! transition-colors rounded-full cursor-pointer"
 										aria-label={
 											showSensitives
-												? "Mask card details"
-												: "Show card details"
+												? t(
+														"tools.password_manager.card_preview.mask_details",
+													)
+												: t(
+														"tools.password_manager.card_preview.show_details",
+													)
 										}
 										title={
 											showSensitives
-												? "Mask card details"
-												: "Show card details"
+												? t(
+														"tools.password_manager.card_preview.mask_details",
+													)
+												: t(
+														"tools.password_manager.card_preview.show_details",
+													)
 										}
 									>
 										{showSensitives ? (
@@ -276,15 +189,22 @@ export function CreditCardPreview({
 							<div className="flex items-end justify-between">
 								<div className="min-w-0 max-w-[50%]">
 									<p className="text-white/70 text-[10px] uppercase tracking-wider">
-										Card Holder
+										{t(
+											"tools.password_manager.card_preview.card_holder",
+										)}
 									</p>
 									<p className="text-white text-sm font-semibold tracking-wider mt-0.5 uppercase truncate drop-shadow-sm font-mono">
-										{cardholderName || "YOUR NAME"}
+										{cardholderName ||
+											t(
+												"tools.password_manager.card_preview.default_holder",
+											)}
 									</p>
 								</div>
 								<div>
 									<p className="text-white/70 text-[10px] uppercase tracking-wider">
-										Expires
+										{t(
+											"tools.password_manager.card_preview.expires",
+										)}
 									</p>
 									<p className="text-white text-sm font-semibold tracking-widest mt-0.5 drop-shadow-sm font-mono">
 										{expiration || "MM/YY"}
@@ -328,7 +248,9 @@ export function CreditCardPreview({
 									</div>
 									<div className="flex flex-col items-center gap-0.5 shrink-0">
 										<span className="text-white/70 text-[10px] uppercase tracking-widest">
-											CVV
+											{t(
+												"tools.password_manager.card_preview.cvv",
+											)}
 										</span>
 										<div className="bg-white text-slate-900 font-mono font-bold text-sm px-3 py-1 rounded-sm w-12 text-center select-none shadow-inner">
 											{showSensitives
@@ -339,9 +261,9 @@ export function CreditCardPreview({
 								</div>
 								<div>
 									<p className="text-white/60 text-[11px] leading-relaxed">
-										Encrypted in Snipit Zero-Knowledge
-										Vault. Keep card credentials
-										confidential.
+										{t(
+											"tools.password_manager.card_preview.disclaimer",
+										)}
 									</p>
 								</div>
 							</CardContent>
@@ -350,7 +272,7 @@ export function CreditCardPreview({
 				</div>
 			</div>
 			<p className="text-[11px] text-muted-foreground">
-				Click card to flip
+				{t("tools.password_manager.card_preview.click_to_flip")}
 			</p>
 		</div>
 	);
