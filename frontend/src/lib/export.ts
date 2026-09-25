@@ -121,6 +121,34 @@ export const downloadFile = (
 };
 
 /**
+ * Downloads a remote file URL while enforcing the specified original fileName.
+ */
+export const downloadRemoteFile = async (
+	url: string,
+	preferredFileName: string,
+) => {
+	try {
+		const res = await fetch(url);
+		if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+		const blob = await res.blob();
+		const blobUrl = URL.createObjectURL(blob);
+		const a = document.createElement("a");
+		a.href = blobUrl;
+		a.download = preferredFileName;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(blobUrl);
+	} catch (err) {
+		console.warn(
+			"Blob download failed, falling back to direct URL open:",
+			err,
+		);
+		window.open(url, "_blank");
+	}
+};
+
+/**
  * Generates a formatted MS Word (DOCX/DOC) file using HTML-to-Word trick.
  */
 export const exportToDocx = (htmlContent: string, fileName: string) => {

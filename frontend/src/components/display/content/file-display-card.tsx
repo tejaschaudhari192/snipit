@@ -6,6 +6,7 @@ import type { FileAttachment } from "@/types";
 import { FileTypeIcon } from "@/components/common/file-type-icon";
 import FilePreview from "@/components/common/file-preview";
 import { cn, formatFileSize } from "@/utils";
+import { downloadRemoteFile } from "@/lib/export";
 
 export const FileDisplayCard = ({ file }: { file: FileAttachment }) => {
 	const { t } = useTranslation();
@@ -53,7 +54,7 @@ export const FileDisplayCard = ({ file }: { file: FileAttachment }) => {
 
 	const handleDownload = () => {
 		if (file.url) {
-			window.open(file.url, "_blank");
+			downloadRemoteFile(file.url, file.name || "downloaded-file");
 		}
 	};
 
