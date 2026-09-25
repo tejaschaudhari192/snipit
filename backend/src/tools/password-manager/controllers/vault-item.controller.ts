@@ -79,7 +79,7 @@ export const updateVaultItem = async (
 
 		const updated = await passwordManagerService.syncItems(
 			req.user._id.toString(),
-			[{ ...req.body, _id: id }],
+			[{ ...req.body, id }],
 		);
 
 		res.status(200).json({

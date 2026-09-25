@@ -60,20 +60,20 @@ export class PasswordManagerService {
 		const syncedIds: string[] = [];
 
 		for (const item of items) {
-			const filter = item._id
-				? { _id: item._id, userId }
-				: { itemId: item.itemId, userId };
+			const itemId = (item.id || item._id || item.itemId) as string;
+			const filter = { id: itemId, userId };
 
 			const updated = await VaultItem.findOneAndUpdate(
 				filter,
 				{
 					...item,
+					id: itemId,
 					userId,
 					updatedAt: new Date(),
 				},
 				{ upsert: true, new: true },
 			);
-			syncedIds.push(updated._id.toString());
+			syncedIds.push(updated.id);
 		}
 
 		return syncedIds;
@@ -83,7 +83,7 @@ export class PasswordManagerService {
 	 * Delete vault item
 	 */
 	async deleteItem(userId: string, itemId: string) {
-		const item = await VaultItem.findOne({ _id: itemId, userId });
+		const item = await VaultItem.findOne({ id: itemId, userId });
 		if (!item) return false;
 		await item.deleteOne();
 		return true;
