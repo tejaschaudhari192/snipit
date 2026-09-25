@@ -419,7 +419,22 @@
 			"failed_to_move_items": "{{count}} આઇટમ્સ ખસેડવામાં નિષ્ફળ.",
 			"moved_n_items": "{{count}} આઇટમ્સ {{folder}} માં ખસેડાઈ",
 			"failed_to_delete_items": "{{count}} આઇટમ્સ કાઢી નાખવામાં નિષ્ફળ.",
-			"deleted_n_items": "{{count}} આઇટમ્સ સફળતાપૂર્વક કાઢી નાખવામાં આવી"
+			"deleted_n_items": "{{count}} આઇટમ્સ સફળતાપૂર્વક કાઢી નાખવામાં આવી",
+			"card_preview": {
+				"copy_number": "કાર્ડ નંબર કૉપિ કરો",
+				"copied": "કૉપિ કર્યું",
+				"mask_details": "કાર્ડ વિગતો છુપાવો",
+				"show_details": "કાર્ડ વિગતો બતાવો",
+				"card_front": "કાર્ડનો આગળનો ભાગ બતાવો",
+				"card_back": "કાર્ડનો પાછળનો ભાગ બતાવો",
+				"card_holder": "કાર્ડ ધારક",
+				"expires": "સમાપ્તિ",
+				"cvv": "સીવીવી",
+				"default_bank": "Snipit વૉલ્ટ",
+				"default_holder": "તમારું નામ",
+				"disclaimer": "Snipit ઝીરો-નોલેજ વૉલ્ટમાં એન્ક્રિપ્ટ થયેલ છે. કાર્ડ વિગતો ગુપ્ત રાખો.",
+				"click_to_flip": "પલટાવવા માટે કાર્ડ પર ક્લિક કરો"
+			}
 		},
 		"password_generator": {
 			"title": "પાસવર્ડ જનરેટર",

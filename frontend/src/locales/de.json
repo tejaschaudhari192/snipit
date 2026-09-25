@@ -418,7 +418,22 @@
 			"failed_to_move_items": "Fehler beim Verschieben von {{count}} Element(en).",
 			"moved_n_items": "{{count}} Element(e) nach {{folder}} verschoben",
 			"failed_to_delete_items": "Fehler beim Löschen von {{count}} Element(en).",
-			"deleted_n_items": "{{count}} Element(e) erfolgreich gelöscht"
+			"deleted_n_items": "{{count}} Element(e) erfolgreich gelöscht",
+			"card_preview": {
+				"copy_number": "Kartennummer kopieren",
+				"copied": "Kopiert",
+				"mask_details": "Kartendetails verbergen",
+				"show_details": "Kartendetails anzeigen",
+				"card_front": "Kartenvorderseite anzeigen",
+				"card_back": "Kartenrückseite anzeigen",
+				"card_holder": "Karteninhaber",
+				"expires": "Gültig bis",
+				"cvv": "CVV",
+				"default_bank": "Snipit Tresor",
+				"default_holder": "IHR NAME",
+				"disclaimer": "Im Snipit Zero-Knowledge-Tresor verschlüsselt. Behandeln Sie die Kartendaten vertraulich.",
+				"click_to_flip": "Klicken zum Umdrehen"
+			}
 		},
 		"password_generator": {
 			"title": "Passwort-Generator",

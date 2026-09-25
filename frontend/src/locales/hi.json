@@ -419,7 +419,22 @@
 			"failed_to_move_items": "{{count}} आइटम स्थानांतरित करने में विफल।",
 			"moved_n_items": "{{count}} आइटम {{folder}} में स्थानांतरित किए गए",
 			"failed_to_delete_items": "{{count}} आइटम हटाने में विफल।",
-			"deleted_n_items": "{{count}} आइटम सफलतापूर्वक हटाए गए"
+			"deleted_n_items": "{{count}} आइटम सफलतापूर्वक हटाए गए",
+			"card_preview": {
+				"copy_number": "कार्ड नंबर कॉपी करें",
+				"copied": "कॉपी किया गया",
+				"mask_details": "कार्ड विवरण छुपाएं",
+				"show_details": "कार्ड विवरण दिखाएं",
+				"card_front": "कार्ड का अगला भाग दिखाएं",
+				"card_back": "कार्ड का पिछला भाग दिखाएं",
+				"card_holder": "कार्ड धारक",
+				"expires": "समाप्ति",
+				"cvv": "सीवीवी",
+				"default_bank": "Snipit वॉल्ट",
+				"default_holder": "आपका नाम",
+				"disclaimer": "Snipit ज़ीरो-नॉलेज वॉल्ट में एन्क्रिप्टेड। कार्ड क्रेडेंशियल गोपनीय रखें।",
+				"click_to_flip": "पलटने के लिए कार्ड पर क्लिक करें"
+			}
 		},
 		"password_generator": {
 			"title": "पासवर्ड जेनरेटर",

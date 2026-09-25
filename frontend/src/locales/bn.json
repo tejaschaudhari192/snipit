@@ -419,7 +419,22 @@
 			"failed_to_move_items": "{{count}}টি আইটেম স্থানান্তর করতে ব্যর্থ হয়েছে।",
 			"moved_n_items": "{{count}}টি আইটেম {{folder}}-এ স্থানান্তরিত হয়েছে",
 			"failed_to_delete_items": "{{count}}টি আইটেম মুছতে ব্যর্থ হয়েছে।",
-			"deleted_n_items": "{{count}}টি আইটেম সফলভাবে মুছে ফেলা হয়েছে"
+			"deleted_n_items": "{{count}}টি আইটেম সফলভাবে মুছে ফেলা হয়েছে",
+			"card_preview": {
+				"copy_number": "কার্ড নম্বর কপি করুন",
+				"copied": "কপি করা হয়েছে",
+				"mask_details": "কার্ডের বিবরণ লুকান",
+				"show_details": "কার্ডের বিবরণ দেখান",
+				"card_front": "কার্ডের সামনের দিক দেখান",
+				"card_back": "কার্ডের পিছনের দিক দেখান",
+				"card_holder": "কার্ডধারী",
+				"expires": "মেয়াদ শেষ",
+				"cvv": "সিভিভি",
+				"default_bank": "Snipit ভল্ট",
+				"default_holder": "আপনার নাম",
+				"disclaimer": "Snipit জিরো-নলেজ ভল্টে এনক্রিপ্ট করা হয়েছে। কার্ডের তথ্য গোপন রাখুন।",
+				"click_to_flip": "উল্টাতে কার্ডে ক্লিক করুন"
+			}
 		},
 		"password_generator": {
 			"title": "পাসওয়ার্ড জেনারেটর",

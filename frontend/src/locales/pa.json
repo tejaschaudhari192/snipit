@@ -419,7 +419,22 @@
 			"failed_to_move_items": "{{count}} ਆਈਟਮਾਂ ਤਬਦੀਲ ਕਰਨ ਵਿੱਚ ਅਸਫਲ।",
 			"moved_n_items": "{{count}} ਆਈਟਮਾਂ {{folder}} ਵਿੱਚ ਤਬਦੀਲ ਕੀਤੀਆਂ ਗਈਆਂ",
 			"failed_to_delete_items": "{{count}} ਆਈਟਮਾਂ ਮਿਟਾਉਣ ਵਿੱਚ ਅਸਫਲ।",
-			"deleted_n_items": "{{count}} ਆਈਟਮਾਂ ਸਫਲਤਾਪੂਰਵਕ ਮਿਟਾਈਆਂ ਗਈਆਂ"
+			"deleted_n_items": "{{count}} ਆਈਟਮਾਂ ਸਫਲਤਾਪੂਰਵਕ ਮਿਟਾਈਆਂ ਗਈਆਂ",
+			"card_preview": {
+				"copy_number": "ਕਾਰਡ ਨੰਬਰ ਕਾਪੀ ਕਰੋ",
+				"copied": "ਕਾਪੀ ਕੀਤਾ ਗਿਆ",
+				"mask_details": "ਕਾਰਡ ਦੇ ਵੇਰਵੇ ਲੁਕਾਓ",
+				"show_details": "ਕਾਰਡ ਦੇ ਵੇਰਵੇ ਦਿਖਾਓ",
+				"card_front": "ਕਾਰਡ ਦਾ ਅਗਲਾ ਹਿੱਸਾ ਦਿਖਾਓ",
+				"card_back": "ਕਾਰਡ ਦਾ ਪਿਛਲਾ ਹਿੱਸਾ ਦਿਖਾਓ",
+				"card_holder": "ਕਾਰਡ ਧਾਰਕ",
+				"expires": "ਮਿਆਦ ਪੁੱਗਣ",
+				"cvv": "ਸੀਵੀਵੀ",
+				"default_bank": "Snipit ਵਾਲਟ",
+				"default_holder": "ਤੁਹਾਡਾ ਨਾਮ",
+				"disclaimer": "Snipit ਜ਼ੀਰੋ-ਨੋਲਜ ਵਾਲਟ ਵਿੱਚ ਐਨਕ੍ਰਿਪਟ ਕੀਤਾ ਗਿਆ। ਕਾਰਡ ਪ੍ਰਮਾਣ ਪੱਤਰ ਗੁਪਤ ਰੱਖੋ।",
+				"click_to_flip": "ਉਲਟਾਉਣ ਲਈ ਕਾਰਡ ਤੇ ਕਲਿੱਕ ਕਰੋ"
+			}
 		},
 		"password_generator": {
 			"title": "ਪਾਸਵਰਡ ਜਨਰੇਟਰ",

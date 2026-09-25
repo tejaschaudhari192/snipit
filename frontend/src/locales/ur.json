@@ -419,7 +419,22 @@
 			"failed_to_move_items": "{{count}} آئٹمز منتقل کرنے میں ناکام۔",
 			"moved_n_items": "{{count}} آئٹمز {{folder}} میں منتقل کر دیے گئے",
 			"failed_to_delete_items": "{{count}} آئٹمز حذف کرنے میں ناکام۔",
-			"deleted_n_items": "{{count}} آئٹمز کامیابی سے حذف کر دیے گئے"
+			"deleted_n_items": "{{count}} آئٹمز کامیابی سے حذف کر دیے گئے",
+			"card_preview": {
+				"copy_number": "کارڈ نمبر کاپی کریں",
+				"copied": "کاپی ہو گیا",
+				"mask_details": "کارڈ کی تفصیلات چھپائیں",
+				"show_details": "کارڈ کی تفصیلات دکھائیں",
+				"card_front": "کارڈ کا سامنے کا رخ دکھائیں",
+				"card_back": "کارڈ کا پچھلا رخ دکھائیں",
+				"card_holder": "کارڈ ہولڈر",
+				"expires": "میعاد ختم",
+				"cvv": "سی وی وی",
+				"default_bank": "Snipit والٹ",
+				"default_holder": "آپ کا نام",
+				"disclaimer": "Snipit زیرو نالج والٹ میں محفوظ شدہ۔ کارڈ کی معلومات خفیہ رکھیں۔",
+				"click_to_flip": "پلٹنے کے لیے کارڈ پر کلک کریں"
+			}
 		},
 		"password_generator": {
 			"title": "پاس ورڈ جنریٹر",

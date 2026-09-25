@@ -418,7 +418,22 @@
 			"failed_to_move_items": "{{count}} 件のアイテムの移動に失敗しました。",
 			"moved_n_items": "{{count}} 件のアイテムを {{folder}} に移動しました",
 			"failed_to_delete_items": "{{count}} 件のアイテムの削除に失敗しました。",
-			"deleted_n_items": "{{count}} 件のアイテムを削除しました"
+			"deleted_n_items": "{{count}} 件のアイテムを削除しました",
+			"card_preview": {
+				"copy_number": "カード番号をコピー",
+				"copied": "コピー完了",
+				"mask_details": "カード詳細を隠す",
+				"show_details": "カード詳細を表示",
+				"card_front": "カードの表面を表示",
+				"card_back": "カードの裏面を表示",
+				"card_holder": "カード名義人",
+				"expires": "有効期限",
+				"cvv": "セキュリティコード",
+				"default_bank": "Snipit 保管庫",
+				"default_holder": "お名前",
+				"disclaimer": "Snipit ゼロナレッジ保管庫で暗号化されています。カード情報は厳重に管理してください。",
+				"click_to_flip": "クリックしてカードを裏返す"
+			}
 		},
 		"password_generator": {
 			"title": "パスワードジェネレーター",

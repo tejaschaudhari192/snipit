@@ -4,6 +4,7 @@ import { usePasswordStrength } from "@/hooks/use-password-strength";
 import UnlockStandard from "./unlock-steps/unlock-standard";
 import UnlockRecovery from "./unlock-steps/unlock-recovery";
 import UnlockReset from "./unlock-steps/unlock-reset";
+import { VaultProgressLoader } from "./vault-progress-loader";
 
 interface VaultUnlockProps {
 	onUnlock: (password: string) => void;
@@ -74,6 +75,15 @@ export default function VaultUnlock({
 
 	const newPwMatch =
 		newPassword === confirmNewPassword && newPassword.length > 0;
+
+	if (loading) {
+		return (
+			<VaultProgressLoader
+				label="Decrypting & Unlocking..."
+				sublabel="Verifying zero-knowledge keys"
+			/>
+		);
+	}
 
 	if (recoveryMode) {
 		return (
