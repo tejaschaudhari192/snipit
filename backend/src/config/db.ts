@@ -36,9 +36,7 @@ export const connectDB = async () => {
 		const pass = configurations.database.password;
 		const dbName = configurations.database.name;
 
-		const dbUri =
-			process.env.MONGODB_URI ||
-			`mongodb+srv://${user}:${pass}@jaybalaji.s5azwy2.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+		const dbUri = `mongodb+srv://${user}:${pass}@jaybalaji.s5azwy2.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 
 		cached!.promise = mongoose
 			.connect(dbUri, opts)

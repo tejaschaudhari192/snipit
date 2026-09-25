@@ -249,6 +249,7 @@ export const DisplayToolbar = memo(
 								language={language}
 								pasteId={paste?.id}
 								contentType={contentType}
+								paste={paste}
 							/>
 						</Suspense>
 					</div>

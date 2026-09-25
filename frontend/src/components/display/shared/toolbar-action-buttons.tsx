@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
-import { Edit, Trash2, Save, X, Play } from "lucide-react";
+import { Edit, Trash2, Save, X, Play, Download } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { SUPPORTED_RUN_LANGUAGES } from "@/constants";
 import { SaveAsButton } from "./save-as-button";
 import { Spinner } from "@/components/ui/spinner";
+import type { PasteData } from "@/types";
 
 interface ToolbarActionButtonsProps {
 	isEdit: boolean;
@@ -24,6 +25,7 @@ interface ToolbarActionButtonsProps {
 	language?: string;
 	pasteId?: string;
 	contentType?: string;
+	paste?: PasteData;
 }
 
 export const ToolbarActionButtons = ({
@@ -44,32 +46,64 @@ export const ToolbarActionButtons = ({
 	language = "text",
 	pasteId,
 	contentType,
+	paste,
 }: ToolbarActionButtonsProps) => {
 	const { t } = useTranslation();
+
+	const fileUrl =
+		paste?.files?.[0]?.url ||
+		paste?.fileUrl ||
+		(contentType === "file" && content?.startsWith("http")
+			? content
+			: undefined);
+
+	const handleDirectFileDownload = () => {
+		if (fileUrl) {
+			window.open(fileUrl, "_blank");
+		}
+	};
 
 	return (
 		<div className="flex items-center gap-2">
 			{!isEdit ? (
 				<div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5 px-0.5 max-w-[75vw] sm:max-w-none">
-					<CopyButton
-						variant="outline"
-						content={content}
-						className="gap-2 px-3 h-9 w-auto rounded-md text-sm font-medium shrink-0"
-					>
-						<span>{t("display.actions.copy")}</span>
-					</CopyButton>
+					{contentType === "file" ? (
+						fileUrl && (
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={handleDirectFileDownload}
+								className="gap-2 px-3 h-9 w-auto rounded-md text-sm font-medium shrink-0 cursor-pointer"
+							>
+								<Download className="h-4 w-4" />
+								<span>
+									{t("common.actions.download") || "Download"}
+								</span>
+							</Button>
+						)
+					) : (
+						<>
+							<CopyButton
+								variant="outline"
+								content={content}
+								className="gap-2 px-3 h-9 w-auto rounded-md text-sm font-medium shrink-0"
+							>
+								<span>{t("display.actions.copy")}</span>
+							</CopyButton>
 
-					{(isCode ||
-						language.toLowerCase() === "text" ||
-						contentType === "docs") && (
-						<SaveAsButton
-							content={content}
-							language={language}
-							pasteId={pasteId}
-							isCode={isCode}
-							contentType={contentType}
-							className="gap-2 h-9 shrink-0"
-						/>
+							{(isCode ||
+								language.toLowerCase() === "text" ||
+								contentType === "docs") && (
+								<SaveAsButton
+									content={content}
+									language={language}
+									pasteId={pasteId}
+									isCode={isCode}
+									contentType={contentType}
+									className="gap-2 h-9 shrink-0"
+								/>
+							)}
+						</>
 					)}
 
 					{isCode &&
