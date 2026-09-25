@@ -17,6 +17,7 @@ const PasswordGenerator = lazy(
 );
 import { Eye, EyeOff, RefreshCw } from "lucide-react";
 import { usePasswordStrength } from "@/hooks/use-password-strength";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export interface SchemaField {
 	key: string;
@@ -175,10 +176,15 @@ export function SchemaFieldsEditor({
 											<div className="mt-2">
 												<Suspense
 													fallback={
-														<div className="p-4 text-center text-sm text-muted-foreground">
-															{t(
-																"common.states.loading",
-															)}
+														<div className="p-4 space-y-4 animate-pulse">
+															<Skeleton className="h-10 w-full rounded-xl" />
+															<Skeleton className="h-4 w-3/4 rounded-md" />
+															<div className="space-y-2 pt-2">
+																<Skeleton className="h-8 w-full rounded-lg" />
+																<Skeleton className="h-8 w-full rounded-lg" />
+																<Skeleton className="h-8 w-full rounded-lg" />
+															</div>
+															<Skeleton className="h-10 w-full rounded-xl mt-4" />
 														</div>
 													}
 												>

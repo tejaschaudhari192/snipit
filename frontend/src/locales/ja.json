@@ -1478,7 +1478,14 @@
 		"resend_link": "リセットリンクを再送する",
 		"back_to_profile": "プロフィールに戻る",
 		"send_reset_link_title": "パスワードを再設定する",
-		"send_reset_link_subtitle": "メールアドレスに安全なパスワード再設定リンクをお送りします"
+		"send_reset_link_subtitle": "メールアドレスに安全なパスワード再設定リンクをお送りします",
+		"requirements": {
+			"min_length": "{{count}}文字以上",
+			"uppercase": "大文字1文字以上",
+			"number": "数字1文字以上",
+			"special": "特殊文字1文字以上",
+			"all_met": "パスワードはすべての要件を満たしています"
+		}
 	},
 	"editor": {
 		"ai_enhance": "✨ AIで選択範囲を強化...",

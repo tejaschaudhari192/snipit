@@ -6,6 +6,7 @@ import { SUPPORTED_RUN_LANGUAGES } from "@/constants";
 import { SaveAsButton } from "./save-as-button";
 import { Spinner } from "@/components/ui/spinner";
 import type { PasteData } from "@/types";
+import { downloadRemoteFile } from "@/lib/export";
 
 interface ToolbarActionButtonsProps {
 	isEdit: boolean;
@@ -50,6 +51,9 @@ export const ToolbarActionButtons = ({
 }: ToolbarActionButtonsProps) => {
 	const { t } = useTranslation();
 
+	const originalFileName =
+		paste?.files?.[0]?.name || paste?.fileName || "downloaded-file";
+
 	const fileUrl =
 		paste?.files?.[0]?.url ||
 		paste?.fileUrl ||
@@ -59,7 +63,7 @@ export const ToolbarActionButtons = ({
 
 	const handleDirectFileDownload = () => {
 		if (fileUrl) {
-			window.open(fileUrl, "_blank");
+			downloadRemoteFile(fileUrl, originalFileName);
 		}
 	};
 

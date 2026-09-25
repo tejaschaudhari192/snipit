@@ -1511,7 +1511,14 @@
 		"resend_link": "Link erneut senden",
 		"back_to_profile": "Zurück zum Profil",
 		"send_reset_link_title": "Passwort zurücksetzen",
-		"send_reset_link_subtitle": "Wir senden Ihnen einen sicheren Link zum Zurücksetzen Ihres Passworts per E-Mail"
+		"send_reset_link_subtitle": "Wir senden Ihnen einen sicheren Link zum Zurücksetzen Ihres Passworts per E-Mail",
+		"requirements": {
+			"min_length": "Mindestens {{count}} Zeichen",
+			"uppercase": "Mindestens 1 Großbuchstabe",
+			"number": "Mindestens 1 Zahl",
+			"special": "Mindestens 1 Sonderzeichen",
+			"all_met": "Passwort erfüllt alle Anforderungen"
+		}
 	},
 	"editor": {
 		"ai_enhance": "✨ KI-Auswahl verbessern...",

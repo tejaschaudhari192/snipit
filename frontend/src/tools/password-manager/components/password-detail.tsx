@@ -36,11 +36,15 @@ import {
 } from "@/tools/password-manager/utils/formatters";
 import { getFieldsForType } from "@/tools/password-manager/utils/item-types";
 import { ITEM_TYPE_OPTIONS } from "@/tools/password-manager/utils/constants";
-import type { PasswordItem } from "@/tools/password-manager/types";
+import {
+	type PasswordItem,
+	getCardMetadata,
+} from "@/tools/password-manager/types";
 import { ItemAvatar } from "./item-avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SchemaFieldRenderer } from "./detail-fields/schema-field-renderer";
 import { CustomFieldRenderer } from "./detail-fields/custom-field-renderer";
+import { CreditCardPreview } from "./detail-fields/credit-card-preview";
 import { useDeleteItem } from "@/tools/password-manager/hooks/use-delete-item";
 import { Label } from "@/components/ui/label";
 import type { SchemaField } from "./form-fields/schema-fields-editor";
@@ -375,6 +379,23 @@ export default function PasswordDetail({
 					)}
 
 					<div className="px-8 pt-6 pb-12 space-y-8 relative z-10">
+						{/* Interactive Credit Card Preview for card items */}
+						{item.itemType === "card" &&
+							(() => {
+								const card = getCardMetadata(item);
+								return (
+									<div className="flex justify-center pb-2">
+										<CreditCardPreview
+											cardholderName={card.cardholderName}
+											cardNumber={card.cardNumber}
+											expiration={card.expiration}
+											cvv={card.cvv}
+											bankName={item.title}
+										/>
+									</div>
+								);
+							})()}
+
 						{/* Details Section */}
 						<div className="bg-muted/20 border border-border/40 rounded-2xl p-6 shadow-xs space-y-6">
 							{/* Dynamic Schema Fields */}

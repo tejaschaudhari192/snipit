@@ -238,13 +238,12 @@ export const PasswordFlowCard = ({ mode }: PasswordFlowCardProps) => {
 									}
 								/>
 							</div>
-							{password && (
-								<div className="pt-1">
-									<PasswordStrengthMeter
-										password={password}
-									/>
-								</div>
-							)}
+							<div className="pt-1">
+								<PasswordStrengthMeter
+									password={password}
+									showRequirements={true}
+								/>
+							</div>
 						</div>
 
 						<div className="space-y-2">

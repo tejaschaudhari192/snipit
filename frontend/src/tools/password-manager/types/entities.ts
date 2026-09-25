@@ -41,6 +41,27 @@ export interface PasswordItem {
 	updatedAt?: string;
 }
 
+export interface CardMetadata {
+	cardholderName: string;
+	cardNumber: string;
+	expiration: string;
+	cvv: string;
+	pin: string;
+	zipCode: string;
+}
+
+export function getCardMetadata(item?: PasswordItem | null): CardMetadata {
+	const meta = item?.metadata || {};
+	return {
+		cardholderName: meta.cardholderName || "",
+		cardNumber: meta.cardNumber || "",
+		expiration: meta.expiration || "",
+		cvv: meta.cvv || "",
+		pin: meta.pin || "",
+		zipCode: meta.zipCode || "",
+	};
+}
+
 export interface Folder {
 	id: string;
 	name: string;

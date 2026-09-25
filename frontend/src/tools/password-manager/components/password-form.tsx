@@ -30,6 +30,7 @@ import {
 	type SchemaField,
 } from "./form-fields/schema-fields-editor";
 import { CustomFieldsEditor } from "./form-fields/custom-fields-editor";
+import { CreditCardFormEditor } from "./form-fields/credit-card-form-editor";
 
 export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 	const { t } = useTranslation();
@@ -351,12 +352,20 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 								</div>
 							</div>
 						)}
-						{/* Dynamic Schema Fields */}
-						<SchemaFieldsEditor
-							schemaFields={schemaFields as SchemaField[]}
-							metadata={metadata}
-							updateMetadata={updateMetadata}
-						/>
+						{/* Dynamic Schema Fields or Credit Card Editor */}
+						{itemType === "card" ? (
+							<CreditCardFormEditor
+								metadata={metadata}
+								updateMetadata={updateMetadata}
+								bankName={title}
+							/>
+						) : (
+							<SchemaFieldsEditor
+								schemaFields={schemaFields as SchemaField[]}
+								metadata={metadata}
+								updateMetadata={updateMetadata}
+							/>
+						)}
 
 						{/* Global Notes */}
 						<div className="space-y-1.5 pt-2">
