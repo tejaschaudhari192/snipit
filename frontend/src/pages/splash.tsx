@@ -1,83 +1,53 @@
 import icon from "@/assets/brand/icon.png";
 import { useTranslation } from "react-i18next";
 import type { HealthData } from "@/types";
-import {
-	Database,
-	HardDrive,
-	Mail,
-	Sparkles,
-	Check,
-	AlertCircle,
-	Cloud,
-	Cpu,
-	Activity,
-	Terminal,
-	Server,
-	Lock,
-	Shield,
-	RefreshCw,
-} from "lucide-react";
-import { Spinner } from "@/components/ui/spinner";
-
-import type { ElementType } from "react";
-import ShinyText from "@/components/ui/shiny-text";
-
-const ICON_MAP: Record<string, ElementType<{ className?: string }>> = {
-	database: Database,
-	"hard-drive": HardDrive,
-	cloud: Cloud,
-	mail: Mail,
-	sparkles: Sparkles,
-	check: Check,
-	loader: Spinner,
-	cpu: Cpu,
-	activity: Activity,
-	terminal: Terminal,
-	server: Server,
-	lock: Lock,
-	shield: Shield,
-	refresh: RefreshCw,
-	alert: AlertCircle,
-};
-
-const DynamicIcon = ({
-	name,
-	className,
-}: {
-	name?: string;
-	className?: string;
-}) => {
-	const IconComponent = ICON_MAP[name!] || Spinner;
-	return <IconComponent className={className} />;
-};
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { cn } from "@/utils/index";
 
 interface SplashPageProps {
 	healthData?: HealthData | null;
+	onComplete?: () => void;
 }
 
-const SplashPage = ({ healthData }: SplashPageProps) => {
+const SplashPage = ({ healthData, onComplete }: SplashPageProps) => {
 	const { t } = useTranslation();
 
-	const progress = healthData?.progress || 0;
+	const targetProgress = healthData?.progress || 0;
 	const currentLabel = healthData?.currentLabel || "Initializing...";
-	const backendIcon = healthData?.icon;
-
 	const isError = healthData?.status === "down";
 
-	const getStepIcon = () => {
-		if (isError)
-			return <AlertCircle className="w-4 h-4 text-destructive" />;
-		return (
-			<DynamicIcon
-				name={backendIcon}
-				className={`w-4 h-4 transition-all duration-300 ${
-					progress === 100
-						? "text-green-500"
-						: "text-primary animate-pulse"
-				} ${!backendIcon || backendIcon === "loader" ? "animate-spin" : ""}`}
-			/>
-		);
-	};
+	const [displayProgress, setDisplayProgress] = useState(0);
+
+	// Smoothly interpolate progress toward targetProgress
+	useEffect(() => {
+		if (isError) return;
+
+		const interval = setInterval(() => {
+			setDisplayProgress((prev) => {
+				if (prev >= targetProgress) return prev;
+				// Smooth step: minimum 2% per tick so it doesn't stall, proportional when far
+				const diff = targetProgress - prev;
+				const step = Math.max(2, Math.ceil(diff * 0.1));
+				const next = Math.min(prev + step, targetProgress);
+				return next;
+			});
+		}, 20);
+
+		return () => clearInterval(interval);
+	}, [targetProgress, isError]);
+
+	// When progress reaches 100%, show "complete" state and give user time to see the filled bar
+	useEffect(() => {
+		if (displayProgress >= 100 && onComplete) {
+			const timer = setTimeout(() => {
+				onComplete();
+			}, 700); // 700ms hold on 100% & "complete" message so user clearly sees the filled UI
+			return () => clearTimeout(timer);
+		}
+	}, [displayProgress, onComplete]);
+
+	const isCompleted = displayProgress >= 100;
 
 	return (
 		<div className="relative h-dvh w-screen overflow-hidden bg-background text-foreground transition-colors duration-300 flex flex-col items-center justify-center pointer-events-none">
@@ -96,28 +66,75 @@ const SplashPage = ({ healthData }: SplashPageProps) => {
 					</h1>
 				</div>
 
-				<div className="w-80 flex flex-col gap-4 mt-8">
-					<div className="flex w-full justify-between items-center text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] px-1 h-5">
-						<span className="flex items-center gap-3">
-							<div className="flex items-center justify-center w-6 h-6 rounded-lg bg-muted/40 border border-border/10">
-								{getStepIcon()}
-							</div>
-							<span className={isError ? "text-destructive" : ""}>
-								{isError ? (
-									t("splash.system_failure")
-								) : (
-									<ShinyText>{currentLabel}</ShinyText>
+				{/* progress-04 inspired sleek progress section */}
+				<div className="w-full max-w-sm flex flex-col items-center justify-center space-y-6 mt-8">
+					{/* Centered Animated Text */}
+					<div className="relative h-8 flex items-center justify-center w-full">
+						<AnimatePresence mode="wait">
+							<motion.p
+								key={
+									isError
+										? "error"
+										: isCompleted
+											? "completed"
+											: currentLabel
+								}
+								initial={{ opacity: 0, scale: 1.4, y: -5 }}
+								animate={{ opacity: 1, scale: 1, y: 0 }}
+								exit={{ opacity: 0, scale: 0.5, y: 5 }}
+								transition={{
+									type: "spring",
+									stiffness: 400,
+									damping: 18,
+								}}
+								className={cn(
+									"text-2xl font-medium tracking-tight",
+									isError
+										? "text-destructive font-semibold"
+										: isCompleted
+											? "text-blue-500 font-semibold"
+											: "text-muted-foreground/80",
 								)}
-							</span>
-						</span>
-						<span className="tabular-nums font-black text-foreground/80">
-							{Math.floor(progress)}%
-						</span>
+							>
+								{isError
+									? t("splash.system_failure")
+									: isCompleted
+										? "complete"
+										: currentLabel}
+							</motion.p>
+						</AnimatePresence>
 					</div>
-					<div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+
+					{/* Sleek Progress Bar matching progress-04 visual spec */}
+					<div className="w-full relative px-2">
+						<div className="h-3 w-full bg-muted/30 overflow-hidden rounded-full relative">
+							{/* Indicator */}
+							<div
+								className={cn(
+									"h-full rounded-full transition-all duration-300 relative overflow-hidden",
+									isError ? "bg-destructive" : "bg-blue-500",
+								)}
+								style={{
+									width: `${Math.min(Math.max(displayProgress, 0), 100)}%`,
+								}}
+							>
+								{/* Shimmer sweep effect - only while loading */}
+								{!isCompleted && !isError && (
+									<div className="absolute inset-0 bg-linear-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-shimmer" />
+								)}
+							</div>
+						</div>
+
+						{/* Glow tracks progress but fades on completion for a clean look */}
 						<div
-							className={`h-full transition-all duration-300 ease-out rounded-full shadow-[0_0_8px_rgba(99,102,241,0.5)] ${isError ? "bg-destructive" : "bg-primary"}`}
-							style={{ width: `${progress}%` }}
+							className={cn(
+								"absolute -bottom-1 left-0 h-0.5 blur-md transition-all duration-700",
+								isError ? "bg-destructive" : "bg-blue-500",
+								isCompleted ? "opacity-0" : "opacity-50",
+							)}
+							style={{
+								width: `${Math.min(Math.max(displayProgress, 0), 100)}%`,
+							}}
 						/>
 					</div>
 				</div>

@@ -56,7 +56,7 @@ import { useMusic } from "@/context/use-music";
 import MusicPlayerSkeleton from "@/components/common/music/music-player-skeleton";
 import { toast } from "@/components/ui/toast";
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const MusicBubble = lazy(
 	() => import("@/components/common/music/music-bubble"),
@@ -76,8 +76,11 @@ const MusicPlayerWrapper = () => {
 };
 
 const App = () => {
-	const { loading, healthData, error } = useHealthCheck();
+	const { healthData, error } = useHealthCheck();
+	const [splashFinished, setSplashFinished] = useState(false);
 	const { t } = useTranslation();
+
+	const showSplash = !splashFinished;
 
 	useEffect(() => {
 		const handleStorageError = (e: Event) => {
@@ -127,12 +130,17 @@ const App = () => {
 										<Router>
 											<VoiceAgentProvider>
 												<div className="relative h-dvh w-full m-0 p-0 box-border flex flex-col overflow-hidden bg-background text-foreground font-sans">
-													{/* Splash Overlay while health check loading */}
-													{loading && (
+													{/* Splash Overlay while health check loading & filling progress */}
+													{showSplash && (
 														<div className="fixed inset-0 z-50 bg-background">
 															<SplashPage
 																healthData={
 																	healthData
+																}
+																onComplete={() =>
+																	setSplashFinished(
+																		true,
+																	)
 																}
 															/>
 														</div>

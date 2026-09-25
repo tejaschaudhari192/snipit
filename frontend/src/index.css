@@ -57,9 +57,19 @@
 	--animate-collapsible-down: collapsible-down 300ms ease-out;
 	--animate-collapsible-up: collapsible-up 300ms ease-out;
 	--animate-shimmer-fast: shimmer-gradient 2s infinite linear;
+	--animate-shimmer: shimmer 2s infinite;
 	--animate-spin-slow: spin 3s linear infinite;
 	--animate-moving-border: moving-border 4s linear infinite;
 	--animate-float-emoji: float-emoji 3.5s ease-out forwards;
+}
+
+@keyframes shimmer {
+	0% {
+		transform: translateX(-100%);
+	}
+	100% {
+		transform: translateX(100%);
+	}
 }
 
 :root {
