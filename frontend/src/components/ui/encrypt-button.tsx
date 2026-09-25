@@ -3,6 +3,7 @@
 import * as React from "react";
 import { motion, type HTMLMotionProps, AnimatePresence } from "motion/react";
 import { Lock, Unlock, Terminal } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { cn } from "cn";
 
 const DEFAULT_TEXT = "Encrypt Data";
@@ -19,6 +20,7 @@ export interface EncryptButtonProps extends Omit<
 	icon?: React.ReactNode;
 	showIcon?: boolean;
 	isLocked?: boolean;
+	loading?: boolean;
 }
 
 export const EncryptButton = React.forwardRef<
@@ -33,6 +35,7 @@ export const EncryptButton = React.forwardRef<
 			icon,
 			showIcon = true,
 			isLocked = true,
+			loading = false,
 			onMouseEnter,
 			onMouseLeave,
 			disabled,
@@ -154,7 +157,9 @@ export const EncryptButton = React.forwardRef<
 				{/* High-Tech Icon Indicator */}
 				{showIcon && (
 					<span className="relative z-10 flex items-center justify-center">
-						{icon ? (
+						{loading ? (
+							<Spinner className="size-4 animate-spin text-primary-foreground" />
+						) : icon ? (
 							icon
 						) : (
 							<AnimatePresence mode="wait" initial={false}>

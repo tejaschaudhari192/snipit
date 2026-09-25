@@ -8,9 +8,9 @@ import {
 	CardTitle,
 	CardDescription,
 } from "@/components/ui/card";
-import { Shield, LockOpen } from "lucide-react";
+import { Shield } from "lucide-react";
 import ReadMoreDialog from "../ReadMoreDialog";
-import { Spinner } from "@/components/ui/spinner";
+import { EncryptButton } from "@/components/ui/encrypt-button";
 
 interface UnlockStandardProps {
 	password: string;
@@ -76,37 +76,18 @@ export default function UnlockStandard({
 							)}
 						</div>
 
-						<Button
+						<EncryptButton
 							type="submit"
-							className="w-full h-12 rounded-xl text-base font-semibold"
+							className="w-full h-12 rounded-xl text-sm font-semibold tracking-wider"
 							disabled={!password || loading}
-						>
-							{loading ? (
-								<>
-									<Spinner className="mr-2 h-5 w-5 animate-spin" />
-									<span
-										style={
-											{
-												"--highlight-color":
-													"var(--foreground)",
-												"--base-color":
-													"var(--muted-foreground)",
-												"--spread": "20px",
-												"--duration": "2s",
-											} as React.CSSProperties
-										}
-										className="shimmer font-medium"
-									>
-										{t("tools.password_manager.decrypting")}
-									</span>
-								</>
-							) : (
-								<>
-									<LockOpen className="mr-2 h-5 w-5" />
-									{t("tools.password_manager.unlock_vault")}
-								</>
-							)}
-						</Button>
+							loading={loading}
+							isLocked={!loading}
+							text={
+								loading
+									? t("tools.password_manager.decrypting")
+									: t("tools.password_manager.unlock_vault")
+							}
+						/>
 					</form>
 
 					<div className="mt-6 text-center space-y-2">
