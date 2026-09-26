@@ -35,6 +35,7 @@ import {
 	AlertCircle,
 	UploadCloud,
 	FileDown,
+	X,
 } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { getFilesFromDragEvent, formatBytes } from "../utils/file-system-utils";
@@ -315,105 +316,134 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-6">
-				{(state === "idle" || state === "error") && (
-					<div
-						onDragOver={handleDragOver}
-						onDragLeave={handleDragLeave}
-						onDrop={handleDrop}
-						className={`flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-8 transition-all ${
-							isDragging
-								? "border-primary bg-primary/5 scale-[0.99]"
-								: "border-border/60 hover:border-primary/55 bg-muted/10"
-						}`}
-					>
-						<UploadCloud className="h-10 w-10 text-muted-foreground mb-3" />
-						<p className="text-sm font-medium text-center mb-1 text-foreground/80">
-							{t(
-								isEncrypt
-									? "tools.drag_drop_prompt"
-									: "tools.drag_drop_decrypt_prompt",
-							)}
-						</p>
-						<p className="text-xs text-muted-foreground text-center mb-4">
-							{t("tools.or")}
-						</p>
-						<div className="flex flex-wrap gap-2 justify-center">
-							{showDirectoryPickerSupported ? (
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={handlePickFolder}
-									className="gap-2"
-								>
-									<FolderOpen className="h-4 w-4" />
-									{t("tools.pick_folder")}
-								</Button>
-							) : (
-								isEncrypt && (
+				{files.length === 0 &&
+					(state === "idle" || state === "error") && (
+						<div
+							onDragOver={handleDragOver}
+							onDragLeave={handleDragLeave}
+							onDrop={handleDrop}
+							className={`flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-6 sm:p-8 transition-all ${
+								isDragging
+									? "border-primary bg-primary/5 scale-[0.99]"
+									: "border-border/60 hover:border-primary/55 bg-muted/10"
+							}`}
+						>
+							<UploadCloud className="h-9 w-9 text-muted-foreground mb-2" />
+							<p className="text-sm font-medium text-center mb-1 text-foreground/80">
+								{t(
+									isEncrypt
+										? "tools.drag_drop_prompt"
+										: "tools.drag_drop_decrypt_prompt",
+								)}
+							</p>
+							<p className="text-xs text-muted-foreground text-center mb-3">
+								{t("tools.or")}
+							</p>
+							<div className="flex flex-wrap gap-2 justify-center">
+								{showDirectoryPickerSupported ? (
 									<Button
 										variant="outline"
 										size="sm"
-										onClick={() =>
-											folderInputRef.current?.click()
-										}
-										className="gap-2"
+										onClick={handlePickFolder}
+										className="gap-2 text-xs"
 									>
-										<FolderOpen className="h-4 w-4" />
-										{t("tools.choose_folder")}
+										<FolderOpen className="h-3.5 w-3.5" />
+										{t("tools.pick_folder")}
 									</Button>
-								)
-							)}
-							<Button
-								variant="outline"
-								size="sm"
-								onClick={() => fileInputRef.current?.click()}
-								className="gap-2"
-							>
-								<FileText className="h-4 w-4" />
-								{t("tools.choose_files")}
-							</Button>
+								) : (
+									isEncrypt && (
+										<Button
+											variant="outline"
+											size="sm"
+											onClick={() =>
+												folderInputRef.current?.click()
+											}
+											className="gap-2 text-xs"
+										>
+											<FolderOpen className="h-3.5 w-3.5" />
+											{t("tools.choose_folder")}
+										</Button>
+									)
+								)}
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={() =>
+										fileInputRef.current?.click()
+									}
+									className="gap-2 text-xs"
+								>
+									<FileText className="h-3.5 w-3.5" />
+									{t("tools.choose_files")}
+								</Button>
+							</div>
 						</div>
+					)}
 
-						<Input
-							ref={fileInputRef}
-							type="file"
-							multiple
-							className="hidden"
-							onChange={handleFileInputChange}
-						/>
-						{isEncrypt && (
-							<Input
-								ref={folderInputRef}
-								type="file"
-								multiple
-								// @ts-expect-error: webkitdirectory is non-standard but required for folder upload
-								webkitdirectory=""
-								directory=""
-								className="hidden"
-								onChange={handleFileInputChange}
-							/>
-						)}
-					</div>
+				<Input
+					ref={fileInputRef}
+					type="file"
+					multiple
+					className="hidden"
+					onChange={handleFileInputChange}
+				/>
+				{isEncrypt && (
+					<Input
+						ref={folderInputRef}
+						type="file"
+						multiple
+						// @ts-expect-error: webkitdirectory is non-standard but required for folder upload
+						webkitdirectory=""
+						directory=""
+						className="hidden"
+						onChange={handleFileInputChange}
+					/>
 				)}
 
 				{files.length > 0 && (
 					<div className="space-y-2">
-						<div className="flex items-center justify-between text-sm font-medium">
-							<span className="text-muted-foreground">
-								{t(
-									isEncrypt
-										? "tools.select_files"
-										: "tools.select_encrypted",
+						<div className="flex items-center justify-between p-2.5 px-3 rounded-lg border border-border/60 bg-muted/20">
+							<div className="flex items-center gap-2 min-w-0">
+								{dirName ? (
+									<FolderOpen className="h-4 w-4 text-primary shrink-0" />
+								) : (
+									<FileText className="h-4 w-4 text-primary shrink-0" />
 								)}
-							</span>
-							<span className="text-primary">
-								{dirName
-									? `Folder: ${dirName}`
-									: `${files.length} files`}
-							</span>
+								<div className="flex flex-col min-w-0">
+									<span className="text-xs font-semibold truncate text-foreground">
+										{dirName ||
+											`${files.length} ${t("tools.files_selected", "files selected")}`}
+									</span>
+									<span className="text-[11px] text-muted-foreground">
+										{dirName
+											? `${files.length} files • `
+											: ""}
+										{formatBytes(
+											files.reduce(
+												(acc, f) => acc + f.size,
+												0,
+											),
+										)}
+									</span>
+								</div>
+							</div>
+							{(state === "idle" || state === "error") && (
+								<div className="flex items-center gap-1 shrink-0">
+									<Button
+										type="button"
+										variant="ghost"
+										size="sm"
+										onClick={handleReset}
+										className="h-7 px-2 text-xs text-muted-foreground hover:text-destructive"
+									>
+										<X className="h-3.5 w-3.5 mr-1" />
+										{t("common.clear", "Clear")}
+									</Button>
+								</div>
+							)}
 						</div>
-						<ScrollArea className="h-32 rounded-lg border border-border/50 p-2 bg-muted/20">
-							<div className="space-y-1">
+						<ScrollArea className="h-24 rounded-lg border border-border/40 p-1.5 bg-muted/10">
+							<div className="space-y-0.5">
 								{files.map((f, i) => {
 									const relPath =
 										(
@@ -424,11 +454,19 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 									return (
 										<div
 											key={i}
-											className="flex items-center gap-2 text-xs text-muted-foreground px-2 py-1 rounded hover:bg-muted/50"
+											className="flex items-center justify-between gap-2 text-xs text-muted-foreground px-2 py-1 rounded hover:bg-muted/40"
 										>
-											<FileText className="h-3 w-3 shrink-0" />
-											<span className="truncate">
-												{relPath}
+											<div className="flex items-center gap-1.5 min-w-0">
+												<FileText className="h-3 w-3 shrink-0 text-muted-foreground/70" />
+												<span
+													className="truncate"
+													title={relPath}
+												>
+													{relPath}
+												</span>
+											</div>
+											<span className="shrink-0 font-mono text-[10px] text-muted-foreground/60">
+												{formatBytes(f.size)}
 											</span>
 										</div>
 									);
@@ -440,9 +478,9 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 
 				{files.length > 0 &&
 					(state === "idle" || state === "error") && (
-						<div className="space-y-3">
-							<div className="space-y-2">
-								<label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+						<div className="space-y-3 pt-1">
+							<div className="space-y-1.5">
+								<label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
 									<KeyRound className="h-3.5 w-3.5" />
 									{t("tools.password")}
 								</label>
@@ -458,8 +496,8 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 								/>
 							</div>
 							{isEncrypt && (
-								<div className="space-y-2">
-									<label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+								<div className="space-y-1.5">
+									<label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
 										<KeyRound className="h-3.5 w-3.5" />
 										{t("tools.confirm_password")}
 									</label>

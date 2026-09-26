@@ -21,24 +21,24 @@ const EncryptSafePage = () => {
 
 	return (
 		<div className="min-h-full bg-background text-foreground transition-colors duration-300">
-			<section className="relative py-12 md:py-16 px-4 overflow-hidden">
-				<div className="max-w-4xl mx-auto text-center relative z-10 w-full animate-in fade-in slide-in-from-bottom-8 duration-1000">
+			<section className="relative pt-4 pb-2 md:pt-6 md:pb-4 px-4 overflow-hidden">
+				<div className="max-w-3xl mx-auto text-center relative z-10 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
 					<div className="flex flex-col items-center justify-center w-full">
-						<div className="glow-badge">
-							<Shield className="w-4 h-4 fill-current" />
+						<div className="glow-badge mb-2">
+							<Shield className="w-3.5 h-3.5 fill-current" />
 							{t("tools.badge")}
 						</div>
-						<h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 tracking-tighter leading-[1.1] bg-clip-text text-transparent bg-linear-to-r from-foreground via-foreground/95 to-foreground/80">
+						<h1 className="text-2xl sm:text-3xl font-black mb-1.5 tracking-tight leading-tight bg-clip-text text-transparent bg-linear-to-r from-foreground via-foreground/95 to-foreground/80">
 							{t("tools.cryptoSafe_title")}
 						</h1>
-						<p className="text-base md:text-lg text-muted-foreground font-medium max-w-xl mx-auto leading-relaxed">
+						<p className="text-xs sm:text-sm text-muted-foreground font-medium max-w-lg mx-auto leading-relaxed">
 							{t("tools.subtitle")}
 						</p>
 					</div>
 				</div>
 			</section>
 
-			<section className="pb-16 px-4 md:px-8 max-w-2xl mx-auto">
+			<section className="pb-8 px-4 md:px-8 max-w-xl mx-auto">
 				<Tabs
 					value={activeTab}
 					onValueChange={(v) =>
@@ -46,28 +46,28 @@ const EncryptSafePage = () => {
 					}
 					className="w-full flex-col"
 				>
-					<TabsList className="grid grid-cols-2 w-full mb-8 bg-muted/50 p-1 rounded-xl h-auto">
+					<TabsList className="grid grid-cols-2 w-full mb-5 h-10 p-1 rounded-xl bg-muted/60 border border-border/40">
 						<TabsTrigger
 							value="encrypt"
-							className="flex items-center justify-center gap-2 py-2.5 rounded-lg transition-all"
+							className="flex items-center justify-center gap-2 h-full rounded-lg text-xs font-semibold cursor-pointer data-active:bg-background data-active:text-foreground data-active:shadow-xs transition-all"
 						>
-							<Lock className="h-4 w-4" />
+							<Lock className="h-3.5 w-3.5" />
 							{t("tools.encrypt_tab")}
 						</TabsTrigger>
 						<TabsTrigger
 							value="decrypt"
-							className="flex items-center justify-center gap-2 py-2.5 rounded-lg transition-all"
+							className="flex items-center justify-center gap-2 h-full rounded-lg text-xs font-semibold cursor-pointer data-active:bg-background data-active:text-foreground data-active:shadow-xs transition-all"
 						>
-							<Unlock className="h-4 w-4" />
+							<Unlock className="h-3.5 w-3.5" />
 							{t("tools.decrypt_tab")}
 						</TabsTrigger>
 					</TabsList>
 
-					<TabsContent value="encrypt" className="outline-none">
+					<TabsContent value="encrypt" className="outline-none mt-0">
 						<CryptoPanel mode="encrypt" />
 					</TabsContent>
 
-					<TabsContent value="decrypt" className="outline-none">
+					<TabsContent value="decrypt" className="outline-none mt-0">
 						<CryptoPanel mode="decrypt" />
 					</TabsContent>
 				</Tabs>
