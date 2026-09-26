@@ -17,14 +17,32 @@ const AUTO_ID_WORDS: string[] = Array.from(
 );
 
 /**
- * Generates an automatic ID composed of 1 word + a 2-digit number (10 to 99) with no separator
- * Examples: "fox42", "ruby18", "swift73"
+ * Returns a random word from the dictionary (e.g. "fox", "ruby", "swift")
  */
-export function uniqueIdGenerator(): string {
-	const word =
+export function getRandomWord(): string {
+	return (
 		AUTO_ID_WORDS[Math.floor(Math.random() * AUTO_ID_WORDS.length)] ||
-		"snip";
-	const number = Math.floor(10 + Math.random() * 90); // 10 to 99
+		"snip"
+	);
+}
+
+/**
+ * Generates an automatic ID.
+ * - attempt 0: Pure single word (e.g. "fox", "swift")
+ * - attempt > 0: Word + number (e.g. "fox2", "fox42")
+ */
+export function uniqueIdGenerator(attempt = 0, baseWord?: string): string {
+	const word = baseWord || getRandomWord();
+	if (attempt === 0) {
+		return word;
+	}
+	if (attempt === 1) {
+		// First fallback: small single digit (2 to 9)
+		const singleDigit = Math.floor(2 + Math.random() * 8);
+		return `${word}${singleDigit}`;
+	}
+	// Subsequent fallbacks: 2-digit number (10 to 99)
+	const number = Math.floor(10 + Math.random() * 90);
 	return `${word}${number}`;
 }
 

@@ -27,6 +27,8 @@ class PasteService {
 	async createPaste(
 		data: CreatePasteData,
 		ownerId: string | null,
+		attempt = 0,
+		baseWord?: string,
 	): Promise<IPaste> {
 		const {
 			expiresTime,
@@ -55,7 +57,11 @@ class PasteService {
 			hashedPassword = await bcrypt.hash(password, salt);
 		}
 
-		const pasteId = customId || uniqueIdGenerator();
+		// If no customId was provided, generate pure word for attempt 0, or append number if collided
+		const generatedId = customId || uniqueIdGenerator(attempt, baseWord);
+		const currentBaseWord =
+			baseWord || (customId ? undefined : generatedId);
+		const pasteId = generatedId;
 
 		try {
 			const paste = await pasteModel.create({
@@ -102,10 +108,12 @@ class PasteService {
 							cause: error,
 						});
 					}
-					// Retry with new ID if system generated
+					// Retry with number appended to the same base word (e.g. "fox" -> "fox2" -> "fox42")
 					return this.createPaste(
-						{ ...data, customId: uniqueIdGenerator() },
+						data,
 						ownerId,
+						attempt + 1,
+						currentBaseWord,
 					);
 				}
 			}
