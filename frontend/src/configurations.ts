@@ -55,6 +55,7 @@ export const CONFIG = {
 		musicBubbleVisible: "music-bubble-visible",
 		appLanguage: "lang",
 		githubRepoData: "snipit-github-repo-data",
+		localizationIssues: "snipit-localization-issues",
 	},
 
 	// GitHub Configuration

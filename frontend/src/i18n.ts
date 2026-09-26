@@ -35,7 +35,20 @@ i18n.use(initReactI18next).init({
 	lng: localStore.getItem(CONFIG.storageKeys.appLanguage) ?? "en",
 	fallbackLng: "en",
 	parseMissingKeyHandler: (key) => {
-		console.error(`Missing translation key: ${key}`);
+		try {
+			const storageKey = CONFIG.storageKeys.localizationIssues;
+			const raw = localStore.getItem(storageKey);
+			const issues: string[] = raw ? JSON.parse(raw) : [];
+			if (!issues.includes(key)) {
+				issues.push(key);
+				localStore.setItem(storageKey, JSON.stringify(issues));
+			}
+		} catch (e) {
+			console.warn(
+				"[i18n] Failed to record missing localization key:",
+				e,
+			);
+		}
 		return key;
 	},
 	interpolation: {
