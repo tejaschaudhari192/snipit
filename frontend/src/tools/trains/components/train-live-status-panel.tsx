@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, {
+	useState,
+	useEffect,
+	useRef,
+	useMemo,
+	useCallback,
+} from "react";
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/components/ui/card";
@@ -211,73 +217,77 @@ export const TrainLiveStatusPanel: React.FC = () => {
 		}
 	};
 
-	const handleQuickSelectTrain = async (
-		trainNo: string,
-		dateStr?: string,
-	) => {
-		let targetDate = selectedDate;
-		if (dateStr) {
-			targetDate = formatTrainDateToYYYYMMDD(dateStr);
-			setSelectedDate(targetDate);
-		}
-
-		setLoading(true);
-		setError(null);
-		setLiveStatus(null);
-
-		try {
-			const results = await searchTrains(trainNo);
-			let match =
-				results.find((t) => t.trainNumber === trainNo) || results[0];
-			if (!match) {
-				const sch = await getTrainSchedule(trainNo);
-				match = {
-					trainNumber: sch.trainNumber,
-					trainName: sch.trainName,
-					origin: sch.origin || "",
-					destination: sch.destination || "",
-					stationFrom: sch.origin || "",
-					stationTo: sch.destination || "",
-					runningOn: sch.runningOn || "",
-					journeyClasses: sch.journeyClasses || [],
-					schedule: sch.stations,
-				};
+	const handleQuickSelectTrain = useCallback(
+		async (trainNo: string, dateStr?: string) => {
+			let targetDate = selectedDate;
+			if (dateStr) {
+				targetDate = formatTrainDateToYYYYMMDD(dateStr);
+				setSelectedDate(targetDate);
 			}
 
-			if (match) {
-				setSelectedTrain(match);
-				setTrainSearchInput(
-					`${match.trainName} (${match.trainNumber})`,
-				);
-				if (match.schedule && match.schedule.length > 0) {
-					setAvailableStations(match.schedule);
-				} else {
-					const sch = await getTrainSchedule(match.trainNumber);
-					setAvailableStations(sch.stations || []);
+			setLoading(true);
+			setError(null);
+			setLiveStatus(null);
+
+			try {
+				const results = await searchTrains(trainNo);
+				let match =
+					results.find((t) => t.trainNumber === trainNo) ||
+					results[0];
+				if (!match) {
+					const sch = await getTrainSchedule(trainNo);
+					match = {
+						trainNumber: sch.trainNumber,
+						trainName: sch.trainName,
+						origin: sch.origin || "",
+						destination: sch.destination || "",
+						stationFrom: sch.origin || "",
+						stationTo: sch.destination || "",
+						runningOn: sch.runningOn || "",
+						journeyClasses: sch.journeyClasses || [],
+						schedule: sch.stations,
+					};
 				}
 
-				const res = await getTrainLiveStatus(
-					match.trainNumber,
-					targetDate,
+				if (match) {
+					setSelectedTrain(match);
+					setTrainSearchInput(
+						`${match.trainName} (${match.trainNumber})`,
+					);
+					if (match.schedule && match.schedule.length > 0) {
+						setAvailableStations(match.schedule);
+					} else {
+						const sch = await getTrainSchedule(match.trainNumber);
+						setAvailableStations(sch.stations || []);
+					}
+
+					const res = await getTrainLiveStatus(
+						match.trainNumber,
+						targetDate,
+					);
+					setLiveStatus(res);
+					saveTrainSearchToHistory(
+						match.trainNumber,
+						match.trainName,
+					);
+					setTrainHistory(loadTrainSearchHistory());
+				}
+			} catch (err: unknown) {
+				const axiosErr = err as {
+					response?: { data?: { error?: string } };
+					message?: string;
+				};
+				setError(
+					axiosErr?.response?.data?.error ||
+						axiosErr?.message ||
+						t("tools.pnr_checker.api_error"),
 				);
-				setLiveStatus(res);
-				saveTrainSearchToHistory(match.trainNumber, match.trainName);
-				setTrainHistory(loadTrainSearchHistory());
+			} finally {
+				setLoading(false);
 			}
-		} catch (err: unknown) {
-			const axiosErr = err as {
-				response?: { data?: { error?: string } };
-				message?: string;
-			};
-			setError(
-				axiosErr?.response?.data?.error ||
-					axiosErr?.message ||
-					t("tools.pnr_checker.api_error"),
-			);
-		} finally {
-			setLoading(false);
-		}
-	};
+		},
+		[selectedDate, t],
+	);
 
 	// Auto load from URL searchParams
 	useEffect(() => {
@@ -291,7 +301,7 @@ export const TrainLiveStatusPanel: React.FC = () => {
 			autoLoadedTrainRef.current = `${paramTrain}_${paramDate}`;
 			handleQuickSelectTrain(paramTrain, paramDate || undefined);
 		}
-	}, [searchParams]);
+	}, [searchParams, handleQuickSelectTrain]);
 
 	// Fetch live running status
 	const handleCheckStatus = async () => {
