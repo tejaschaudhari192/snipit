@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AxiosError } from "axios";
-import { registerUser, loginGoogle } from "@/lib/api/auth";
-import { Link, useNavigate } from "react-router-dom";
+import { registerUser } from "@/lib/api/auth";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
 	InputGroup,
@@ -9,23 +9,17 @@ import {
 	InputGroupAddon,
 } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-	CardFooter,
-} from "@/components/ui/card";
 import { toast } from "@/components/ui/toast";
 import { UserPlus, Mail, Lock, User, ArrowRight } from "lucide-react";
 import { ShimmerSection } from "@/components/common/shimmer-section";
 import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 import { PasswordInput } from "@/components/common/password-input";
 import { PasswordStrengthMeter } from "@/components/common/password-strength-meter";
 import { usePasswordStrength } from "@/hooks/use-password-strength";
+import { AuthCard } from "@/components/auth/auth-card";
+import { SocialAuthButtons } from "@/components/auth/social-auth-buttons";
+import { AuthFooterLink } from "@/components/auth/auth-footer-link";
 
 const SignupPage = () => {
 	const [username, setUsername] = useState("");
@@ -33,7 +27,7 @@ const SignupPage = () => {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	const { user, login } = useAuth();
+	const { user } = useAuth();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const { isStrongEnough } = usePasswordStrength(password);
@@ -84,276 +78,146 @@ const SignupPage = () => {
 		}
 	};
 
-	const handleGoogleSuccess = async (
-		credentialResponse: CredentialResponse,
-	) => {
-		if (!credentialResponse.credential) {
-			toast.add({
-				title: t("auth.login_failed"),
-				type: "error",
-			});
-			return;
-		}
-		setIsLoading(true);
-		try {
-			const data = await loginGoogle({
-				idToken: credentialResponse.credential,
-			});
-			login(data);
-			toast.add({ title: t("auth.login_success"), type: "success" });
-			navigate("/");
-		} catch (error) {
-			const axiosError = error as AxiosError<{ message: string }>;
-			toast.add({
-				title:
-					axiosError.response?.data?.message ||
-					t("auth.login_failed"),
-				type: "error",
-			});
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	const handleGoogleError = () => {
-		toast.add({ title: t("auth.google_login_failed"), type: "error" });
-	};
-
 	return (
-		<div className="flex-1 w-full flex flex-col items-center justify-center bg-background px-4 py-8 transition-colors duration-500">
-			{/* Dynamic Background Accents - Theme Aware */}
-			<div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-				<div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary/10 blur-[100px] animate-pulse-subtle" />
-				<div
-					className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/15 blur-[100px] animate-pulse-subtle"
-					style={{ animationDelay: "2s" }}
+		<AuthCard
+			icon={<UserPlus className="h-6 w-6" />}
+			title={t("auth.signup_title")}
+			subtitle={t("auth.signup_subtitle")}
+			footer={
+				<AuthFooterLink
+					dividerText={t("auth.or")}
+					promptText={t("auth.already_have_account")}
+					linkText={t("auth.login_here")}
+					linkTo="/login"
 				/>
-			</div>
+			}
+		>
+			<form onSubmit={handleSubmit} className="space-y-3.5">
+				<div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
+					<Label htmlFor="username" className="section-label">
+						{t("auth.username_label")}
+					</Label>
+					<InputGroup className="input-glass">
+						<InputGroupAddon align="inline-start">
+							<User className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within/input-group:text-primary ml-1" />
+						</InputGroupAddon>
+						<InputGroupInput
+							id="username"
+							type="text"
+							placeholder={t("auth.username_placeholder")}
+							required
+							className="font-medium"
+							value={username}
+							onChange={(e) => setUsername(e.target.value)}
+						/>
+					</InputGroup>
+				</div>
 
-			<div className="w-full max-w-100 relative z-10 animate-in fade-in slide-in-from-bottom-6 duration-700">
-				<Card className="glass-card border-border/40 overflow-hidden shadow-2xl rounded-3xl gap-0 py-0">
-					<div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-primary/40 to-transparent" />
+				<div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
+					<Label htmlFor="email" className="section-label">
+						{t("auth.email_label")}
+					</Label>
+					<InputGroup className="input-glass">
+						<InputGroupAddon align="inline-start">
+							<Mail className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within/input-group:text-primary ml-1" />
+						</InputGroupAddon>
+						<InputGroupInput
+							id="email"
+							type="email"
+							placeholder={t("auth.email_placeholder")}
+							required
+							className="font-medium"
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+						/>
+					</InputGroup>
+				</div>
 
-					<CardHeader className="space-y-1.5 pb-5 pt-7">
-						<div className="flex items-center justify-center mb-4">
-							<div className="relative group">
-								<div className="absolute -inset-2 bg-primary/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-								<div className="relative flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 text-primary transition-transform duration-500 group-hover:scale-105">
-									<UserPlus className="h-6 w-6" />
-								</div>
-							</div>
+				<div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
+					<Label htmlFor="password" className="section-label">
+						{t("auth.password_label")}
+					</Label>
+					<div className="relative group">
+						<div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
+							<Lock className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within:text-primary" />
 						</div>
-						<CardTitle className="text-2xl font-bold tracking-tight text-center">
-							{t("auth.signup_title")}
-						</CardTitle>
-						<CardDescription className="text-sm text-muted-foreground text-center font-medium">
-							{t("auth.signup_subtitle")}
-						</CardDescription>
-					</CardHeader>
+						<PasswordInput
+							id="password"
+							placeholder={t("auth.password_placeholder")}
+							required
+							className="pl-10.5 h-11 bg-background/50 border-border/50 focus:border-primary/40 focus:ring-4 focus:ring-primary/10 transition-all rounded-xl font-medium"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+						/>
+					</div>
+					<PasswordStrengthMeter password={password} />
+				</div>
 
-					<CardContent className="px-7">
-						<form onSubmit={handleSubmit} className="space-y-3.5">
-							<div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
-								<Label
-									htmlFor="username"
-									className="section-label"
-								>
-									{t("auth.username_label")}
-								</Label>
-								<InputGroup className="input-glass">
-									<InputGroupAddon align="inline-start">
-										<User className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within/input-group:text-primary ml-1" />
-									</InputGroupAddon>
-									<InputGroupInput
-										id="username"
-										type="text"
-										placeholder={t(
-											"auth.username_placeholder",
-										)}
-										required
-										className="font-medium"
-										value={username}
-										onChange={(e) =>
-											setUsername(e.target.value)
-										}
-									/>
-								</InputGroup>
-							</div>
-
-							<div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
-								<Label
-									htmlFor="email"
-									className="section-label"
-								>
-									{t("auth.email_label")}
-								</Label>
-								<InputGroup className="input-glass">
-									<InputGroupAddon align="inline-start">
-										<Mail className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within/input-group:text-primary ml-1" />
-									</InputGroupAddon>
-									<InputGroupInput
-										id="email"
-										type="email"
-										placeholder={t(
-											"auth.email_placeholder",
-										)}
-										required
-										className="font-medium"
-										value={email}
-										onChange={(e) =>
-											setEmail(e.target.value)
-										}
-									/>
-								</InputGroup>
-							</div>
-
-							<div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
-								<Label
-									htmlFor="password"
-									className="section-label"
-								>
-									{t("auth.password_label")}
-								</Label>
-								<div className="relative group">
-									<div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
-										<Lock className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within:text-primary" />
-									</div>
-									<PasswordInput
-										id="password"
-										placeholder={t(
-											"auth.password_placeholder",
-										)}
-										required
-										className="pl-10.5 h-11 bg-background/50 border-border/50 focus:border-primary/40 focus:ring-4 focus:ring-primary/10 transition-all rounded-xl font-medium"
-										value={password}
-										onChange={(e) =>
-											setPassword(e.target.value)
-										}
-									/>
-								</div>
-								{password && (
-									<div className="pt-1">
-										<PasswordStrengthMeter
-											password={password}
-										/>
-									</div>
-								)}
-							</div>
-
-							<div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
-								<Label
-									htmlFor="confirmPassword"
-									className="section-label"
-								>
-									{t(
-										"auth.reset_password_confirm_password_label",
-									)}
-								</Label>
-								<div className="relative group">
-									<div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
-										<Lock className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within:text-primary" />
-									</div>
-									<PasswordInput
-										id="confirmPassword"
-										placeholder={t(
-											"auth.password_placeholder",
-										)}
-										required
-										className={`pl-10.5 h-11 bg-background/50 border-border/50 focus:border-primary/40 focus:ring-4 focus:ring-primary/10 transition-all rounded-xl font-medium ${
-											confirmPassword &&
-											password !== confirmPassword
-												? "border-destructive/50 focus:border-destructive focus:ring-destructive/20"
-												: ""
-										}`}
-										value={confirmPassword}
-										onChange={(e) =>
-											setConfirmPassword(e.target.value)
-										}
-									/>
-								</div>
-								{confirmPassword &&
-									password !== confirmPassword && (
-										<p className="text-xs text-destructive font-medium ml-1 mt-1 animate-in fade-in">
-											{t(
-												"auth.reset_password_mismatch_toast",
-											)}
-										</p>
-									)}
-							</div>
-
-							<div className="pt-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-400">
-								<Button
-									className="btn-primary-bounce"
-									type="submit"
-									disabled={isLoading}
-								>
-									{isLoading ? (
-										<>
-											<ShimmerSection type="mini-loader" />
-											<span
-												style={
-													{
-														"--highlight-color":
-															"var(--foreground)",
-														"--base-color":
-															"var(--muted-foreground)",
-														"--spread": "20px",
-														"--duration": "2s",
-													} as React.CSSProperties
-												}
-												className="shimmer font-medium"
-											>
-												{t("auth.creating_account")}
-											</span>
-										</>
-									) : (
-										<>
-											{t("auth.signup_button")}
-											<ArrowRight className="h-4 w-4" />
-										</>
-									)}
-								</Button>
-							</div>
-
-							<div className="pt-1.5 w-full flex justify-center animate-in fade-in slide-in-from-bottom-4 duration-500 delay-500">
-								<GoogleLogin
-									onSuccess={handleGoogleSuccess}
-									onError={handleGoogleError}
-									useOneTap
-									theme="outline"
-									shape="rectangular"
-									width="346"
-								/>
-							</div>
-						</form>
-					</CardContent>
-
-					<CardFooter className="flex flex-col gap-4 pb-7 pt-5 px-7 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-700">
-						<div className="relative w-full">
-							<div className="absolute inset-0 flex items-center">
-								<div className="w-full border-t border-border/50"></div>
-							</div>
-							<div className="relative flex justify-center text-xs font-bold uppercase tracking-widest text-muted-foreground/60">
-								<span className="bg-background/80 backdrop-blur-sm px-4">
-									{t("auth.or")}
-								</span>
-							</div>
+				<div className="space-y-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-400">
+					<Label htmlFor="confirmPassword" className="section-label">
+						{t("auth.reset_password_confirm_password_label")}
+					</Label>
+					<div className="relative group">
+						<div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
+							<Lock className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within:text-primary" />
 						</div>
-
-						<p className="text-sm text-muted-foreground/80 text-center font-medium">
-							{t("auth.already_have_account")}{" "}
-							<Link
-								to="/login"
-								className="font-bold text-primary hover:text-primary/80 transition-colors inline-flex items-center gap-1 group"
-							>
-								{t("auth.login_here")}
-								<ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
-							</Link>
+						<PasswordInput
+							id="confirmPassword"
+							placeholder={t("auth.password_placeholder")}
+							required
+							className={`pl-10.5 h-11 bg-background/50 border-border/50 focus:border-primary/40 focus:ring-4 focus:ring-primary/10 transition-all rounded-xl font-medium ${
+								confirmPassword && password !== confirmPassword
+									? "border-destructive/50 focus:border-destructive focus:ring-destructive/20"
+									: ""
+							}`}
+							value={confirmPassword}
+							onChange={(e) => setConfirmPassword(e.target.value)}
+						/>
+					</div>
+					{confirmPassword && password !== confirmPassword && (
+						<p className="text-xs text-destructive font-medium ml-1 mt-1 animate-in fade-in">
+							{t("auth.reset_password_mismatch_toast")}
 						</p>
-					</CardFooter>
-				</Card>
-			</div>
-		</div>
+					)}
+				</div>
+
+				<div className="pt-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-400">
+					<Button
+						className="btn-primary-bounce"
+						type="submit"
+						disabled={isLoading}
+					>
+						{isLoading ? (
+							<>
+								<ShimmerSection type="mini-loader" />
+								<span
+									style={
+										{
+											"--highlight-color":
+												"var(--foreground)",
+											"--base-color":
+												"var(--muted-foreground)",
+											"--spread": "20px",
+											"--duration": "2s",
+										} as React.CSSProperties
+									}
+									className="shimmer font-medium"
+								>
+									{t("auth.creating_account")}
+								</span>
+							</>
+						) : (
+							<>
+								{t("auth.signup_button")}
+								<ArrowRight className="h-4 w-4" />
+							</>
+						)}
+					</Button>
+				</div>
+
+				<SocialAuthButtons disabled={isLoading} />
+			</form>
+		</AuthCard>
 	);
 };
 

@@ -1491,6 +1491,8 @@
 		"signup_success": "Account created successfully. Please login.",
 		"signup_failed": "Signup failed",
 		"google_login_failed": "Google login failed",
+		"github_login": "Continue with GitHub",
+		"github_login_failed": "GitHub login failed",
 		"show_password": "Show password",
 		"hide_password": "Hide password",
 		"logout_confirm": "Logged out successfully",

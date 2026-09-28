@@ -119,6 +119,129 @@ class AuthService {
 		return user;
 	}
 
+	async githubLogin(code: string) {
+		if (
+			!configurations.github_client_id ||
+			!configurations.github_client_secret
+		) {
+			throw new Error("GITHUB_AUTH_NOT_CONFIGURED");
+		}
+
+		// Exchange code for GitHub access token
+		const tokenResponse = await fetch(
+			"https://github.com/login/oauth/access_token",
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Accept: "application/json",
+				},
+				body: JSON.stringify({
+					client_id: configurations.github_client_id,
+					client_secret: configurations.github_client_secret,
+					code,
+				}),
+			},
+		);
+
+		const tokenData = (await tokenResponse.json()) as {
+			access_token?: string;
+			error?: string;
+			error_description?: string;
+		};
+
+		if (!tokenData.access_token) {
+			throw new Error(
+				tokenData.error_description || "GITHUB_AUTH_FAILED",
+			);
+		}
+
+		// Fetch user details from GitHub
+		const userResponse = await fetch("https://api.github.com/user", {
+			headers: {
+				Authorization: `Bearer ${tokenData.access_token}`,
+				"User-Agent": "Snipit-App",
+			},
+		});
+
+		if (!userResponse.ok) {
+			throw new Error("FAILED_TO_FETCH_GITHUB_USER");
+		}
+
+		const githubUser = (await userResponse.json()) as {
+			id: number;
+			login: string;
+			name?: string;
+			email?: string;
+			avatar_url?: string;
+		};
+
+		const githubId = String(githubUser.id);
+		let email = githubUser.email;
+
+		// If email is private in GitHub profile, fetch user primary email
+		if (!email) {
+			const emailsResponse = await fetch(
+				"https://api.github.com/user/emails",
+				{
+					headers: {
+						Authorization: `Bearer ${tokenData.access_token}`,
+						"User-Agent": "Snipit-App",
+					},
+				},
+			);
+			if (emailsResponse.ok) {
+				const emails = (await emailsResponse.json()) as Array<{
+					email: string;
+					primary: boolean;
+					verified: boolean;
+				}>;
+				const primaryEmail =
+					emails.find((e) => e.primary && e.verified) || emails[0];
+				if (primaryEmail) {
+					email = primaryEmail.email;
+				}
+			}
+		}
+
+		if (!email) {
+			throw new Error("EMAIL_NOT_PROVIDED");
+		}
+
+		let user = await User.findOne({ $or: [{ githubId }, { email }] });
+
+		if (!user) {
+			let username =
+				githubUser.login.toLowerCase().replace(/[^a-z0-9_-]/g, "") ||
+				email.split("@")[0];
+			const existingUsername = await User.findOne({ username });
+			if (existingUsername) {
+				username = `${username}${Math.floor(Math.random() * 1000)}`;
+			}
+			user = await User.create({
+				username,
+				email,
+				githubId,
+				avatar: githubUser.avatar_url,
+			});
+		} else {
+			let updated = false;
+			if (!user.githubId) {
+				user.githubId = githubId;
+				updated = true;
+			}
+			if (!user.avatar && githubUser.avatar_url) {
+				user.avatar = githubUser.avatar_url;
+				updated = true;
+			}
+			if (updated) {
+				await user.save();
+			}
+		}
+
+		return user;
+	}
+
 	async updateUserProfile(
 		userId: string,
 		data: { username?: string; avatar?: string },

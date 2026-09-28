@@ -13,6 +13,10 @@ export interface GoogleLoginPayload {
 	idToken: string;
 }
 
+export interface GithubLoginPayload {
+	code: string;
+}
+
 export const getMe = async () => {
 	const response = await api.get("/auth/me");
 	return response.data;
@@ -30,6 +34,11 @@ export const loginUser = async (payload: LoginPayload) => {
 
 export const loginGoogle = async (payload: GoogleLoginPayload) => {
 	const response = await api.post("/auth/google", payload);
+	return response.data;
+};
+
+export const loginGithub = async (payload: GithubLoginPayload) => {
+	const response = await api.post("/auth/github", payload);
 	return response.data;
 };
 

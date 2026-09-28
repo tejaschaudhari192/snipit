@@ -34,6 +34,10 @@ router.post(
 	catchAsync(authController.googleLogin.bind(authController)),
 );
 router.post(
+	"/github",
+	catchAsync(authController.githubLogin.bind(authController)),
+);
+router.post(
 	"/logout",
 	catchAsync(authController.logoutUser.bind(authController)),
 );

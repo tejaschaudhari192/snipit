@@ -24,6 +24,9 @@ export const CONFIG = {
 	// Google Auth Configuration
 	googleClientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
 
+	// GitHub Auth Configuration
+	githubClientId: import.meta.env.VITE_GITHUB_CLIENT_ID,
+
 	// LiveKit Configuration
 	livekit: {
 		mediaProvider: import.meta.env.VITE_MEDIA_PROVIDER,

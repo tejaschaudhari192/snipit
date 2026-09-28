@@ -303,6 +303,57 @@ class AuthController {
 			res.status(401).json({ message });
 		}
 	}
+
+	async githubLogin(req: Request, res: Response) {
+		try {
+			const { code } = req.body;
+			if (!code) {
+				return res.status(400).json({ message: "Code is required" });
+			}
+			const user = await this.authService.githubLogin(code);
+			const session = await sessionService.createSession(
+				user._id as string,
+				req,
+			);
+			const token = generateToken(
+				user._id as string,
+				session._id.toString(),
+			);
+			setAuthCookie(res, token);
+
+			// Trigger non-blocking login security notification email
+			const userAgent = req.headers["user-agent"] || "";
+			const ipAddress =
+				req.ip ||
+				req.headers["x-forwarded-for"] ||
+				req.socket.remoteAddress ||
+				"127.0.0.1";
+			this.emailService
+				.sendLoginNotificationEmail(
+					user.email,
+					user.username,
+					userAgent as string,
+					ipAddress as string,
+				)
+				.catch((err) =>
+					logger.error(
+						"Failed to send login notification email:",
+						err,
+					),
+				);
+
+			res.json({
+				_id: user._id,
+				username: user.username,
+				email: user.email,
+				token,
+			});
+		} catch (error: unknown) {
+			const message =
+				error instanceof Error ? error.message : String(error);
+			res.status(401).json({ message });
+		}
+	}
 }
 
 export default AuthController;

@@ -1533,7 +1533,9 @@
 			"number": "Mindestens 1 Zahl",
 			"special": "Mindestens 1 Sonderzeichen",
 			"all_met": "Passwort erfüllt alle Anforderungen"
-		}
+		},
+		"github_login": "Mit GitHub fortfahren",
+		"github_login_failed": "GitHub-Login fehlgeschlagen"
 	},
 	"editor": {
 		"ai_enhance": "✨ KI-Auswahl verbessern...",

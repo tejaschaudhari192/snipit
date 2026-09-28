@@ -1500,7 +1500,9 @@
 			"number": "数字1文字以上",
 			"special": "特殊文字1文字以上",
 			"all_met": "パスワードはすべての要件を満たしています"
-		}
+		},
+		"github_login": "GitHubで続行",
+		"github_login_failed": "GitHubログインに失敗しました"
 	},
 	"editor": {
 		"ai_enhance": "✨ AIで選択範囲を強化...",

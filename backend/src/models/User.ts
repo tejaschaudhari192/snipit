@@ -19,10 +19,16 @@ const userSchema = new Schema<IUser>(
 		password: {
 			type: String,
 			required: function (this: IUser) {
-				return !this.googleId;
+				return !this.googleId && !this.githubId;
 			},
 		},
 		googleId: {
+			type: String,
+			required: false,
+			unique: true,
+			sparse: true,
+		},
+		githubId: {
 			type: String,
 			required: false,
 			unique: true,
