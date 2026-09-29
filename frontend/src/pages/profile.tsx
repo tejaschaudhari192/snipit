@@ -89,12 +89,12 @@ const ProfilePage = () => {
 	const activeTab = (() => {
 		const tab = searchParams.get("tab");
 		if (tab === "devices") return "devices";
-		if (tab === "profile") return "profile";
-		return "snippets";
+		if (tab === "snippets") return "snippets";
+		return "profile";
 	})() as "snippets" | "devices" | "profile";
 
 	const handleTabChange = (tab: "snippets" | "devices" | "profile") => {
-		setSearchParams(tab === "snippets" ? {} : { tab });
+		setSearchParams(tab === "profile" ? {} : { tab });
 	};
 
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);

@@ -29,6 +29,25 @@ export function ProfileSidebarNav({
 	return (
 		<nav className={cn("w-full select-none", className)}>
 			<SidebarMenu className="gap-1.5">
+				{/* Profile & Account Tab */}
+				<SidebarMenuItem>
+					<SidebarMenuButton
+						isActive={activeTab === "profile"}
+						onClick={() => onTabChange("profile")}
+						className={cn(
+							"h-10 px-3.5 rounded-2xl text-xs font-bold transition-all cursor-pointer",
+							activeTab === "profile"
+								? "bg-primary/10 text-primary border border-primary/25 shadow-xs"
+								: "text-muted-foreground hover:text-foreground hover:bg-muted/60 border border-transparent",
+						)}
+					>
+						<User className="w-4 h-4 shrink-0 text-primary" />
+						<span className="truncate">
+							{t("profile.tabs.profile") || "Profile & Account"}
+						</span>
+					</SidebarMenuButton>
+				</SidebarMenuItem>
+
 				{/* My Snippets Tab */}
 				<SidebarMenuItem>
 					<SidebarMenuButton
@@ -87,25 +106,6 @@ export function ProfileSidebarNav({
 							<span>{t("profile.devices.active")}</span>
 						</span>
 					</SidebarMenuBadge>
-				</SidebarMenuItem>
-
-				{/* Profile & Account Tab */}
-				<SidebarMenuItem>
-					<SidebarMenuButton
-						isActive={activeTab === "profile"}
-						onClick={() => onTabChange("profile")}
-						className={cn(
-							"h-10 px-3.5 rounded-2xl text-xs font-bold transition-all cursor-pointer",
-							activeTab === "profile"
-								? "bg-primary/10 text-primary border border-primary/25 shadow-xs"
-								: "text-muted-foreground hover:text-foreground hover:bg-muted/60 border border-transparent",
-						)}
-					>
-						<User className="w-4 h-4 shrink-0 text-primary" />
-						<span className="truncate">
-							{t("profile.tabs.profile") || "Profile & Account"}
-						</span>
-					</SidebarMenuButton>
 				</SidebarMenuItem>
 			</SidebarMenu>
 		</nav>
