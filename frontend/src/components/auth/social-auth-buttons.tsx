@@ -101,22 +101,24 @@ export const SocialAuthButtons = ({
 	const isBusy = disabled || isGithubLoading || isGoogleLoading;
 
 	return (
-		<div className="pt-1.5 w-full flex flex-col gap-2.5 items-center justify-center animate-in fade-in slide-in-from-bottom-4 duration-500 delay-400">
-			<GoogleLogin
-				onSuccess={handleGoogleSuccess}
-				onError={handleGoogleError}
-				useOneTap
-				theme="outline"
-				shape="rectangular"
-				width="346"
-			/>
+		<div className="flex flex-col gap-2.5 w-full">
+			<div className="w-full flex justify-center">
+				<GoogleLogin
+					onSuccess={handleGoogleSuccess}
+					onError={handleGoogleError}
+					useOneTap
+					theme="outline"
+					shape="rectangular"
+					width="100%"
+				/>
+			</div>
 
 			<Button
 				type="button"
 				variant="outline"
 				onClick={handleGithubClick}
 				disabled={isBusy}
-				className="w-full max-w-86.5 h-10 rounded-lg flex items-center justify-center gap-2.5 border border-border/80 bg-background/80 hover:bg-muted font-medium text-sm transition-all"
+				className="w-full h-10 rounded-md flex items-center justify-center gap-2 border border-border/80 bg-background hover:bg-muted font-medium text-sm transition-all"
 			>
 				<svg
 					className="h-4 w-4 fill-current shrink-0"
