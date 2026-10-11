@@ -4,6 +4,7 @@ import type { HealthData } from "@/types";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/utils/index";
+import { ShimmerProgressBar } from "@/components/ui/shimmer-progress-bar";
 
 interface SplashPageProps {
 	healthData?: HealthData | null;
@@ -114,37 +115,11 @@ const SplashPage = ({ healthData, onComplete }: SplashPageProps) => {
 					</div>
 
 					{/* Sleek Progress Bar matching progress-04 visual spec */}
-					<div className="w-full relative px-1">
-						<div className="h-3 w-full bg-muted/30 overflow-hidden rounded-full relative">
-							{/* Indicator */}
-							<div
-								className={cn(
-									"h-full rounded-full transition-all duration-300 relative overflow-hidden",
-									isError ? "bg-destructive" : "bg-blue-500",
-								)}
-								style={{
-									width: `${Math.min(Math.max(displayProgress, 0), 100)}%`,
-								}}
-							>
-								{/* Shimmer sweep effect - only while loading */}
-								{!isCompleted && !isError && (
-									<div className="absolute inset-0 bg-linear-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-shimmer" />
-								)}
-							</div>
-						</div>
-
-						{/* Glow tracks progress but fades on completion for a clean look */}
-						<div
-							className={cn(
-								"absolute -bottom-1 left-0 h-0.5 blur-md transition-all duration-700",
-								isError ? "bg-destructive" : "bg-blue-500",
-								isCompleted ? "opacity-0" : "opacity-50",
-							)}
-							style={{
-								width: `${Math.min(Math.max(displayProgress, 0), 100)}%`,
-							}}
-						/>
-					</div>
+					<ShimmerProgressBar
+						progress={displayProgress}
+						isCompleted={isCompleted}
+						isError={isError}
+					/>
 				</div>
 			</div>
 		</div>
