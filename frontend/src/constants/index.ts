@@ -8,3 +8,4 @@ export * from "./emojis";
 export * from "./feedback";
 export * from "./avatars";
 export * from "./cinema";
+export * from "./testimonials";

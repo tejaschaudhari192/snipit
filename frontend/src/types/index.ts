@@ -3,3 +3,4 @@ export * from "./pastes";
 export * from "./editor";
 export * from "./api";
 export * from "./music";
+export * from "./testimonials";

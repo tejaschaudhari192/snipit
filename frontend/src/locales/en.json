@@ -1435,6 +1435,14 @@
 					"answer": "Yes. When logged in, you can manage, edit, or delete snippets anytime from your dashboard. You can also collaborate in real-time with role-based access control (Admin, Editor, Viewer, Commenter) or enable public edit permissions."
 				}
 			}
+		},
+		"testimonials": {
+			"badge": "Wall of Love",
+			"title": "Loved by developers & fast-moving teams",
+			"subtitle": "See how developers use Snipit to share snippets effortlessly with a smooth, intuitive experience.",
+			"rating_summary": "From verified community reviews",
+			"verified": "Verified",
+			"view_linkedin": "View {{name}}'s LinkedIn profile"
 		}
 	},
 	"footer": {

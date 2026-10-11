@@ -1435,6 +1435,14 @@
 					"answer": "Ja. Wenn Sie angemeldet sind, können Sie Snippets jederzeit über Ihr Dashboard bearbeiten oder löschen. Außerdem können Sie in Echtzeit mit rollenbasierter Zugriffskontrolle (Admin, Bearbeiter, Betrachter, Kommentator) zusammenarbeiten."
 				}
 			}
+		},
+		"testimonials": {
+			"badge": "Wand der Begeisterung",
+			"title": "Geschätzt von Entwicklern & schnellen Teams",
+			"subtitle": "Erfahren Sie, wie Entwickler Snipit nutzen, um Code-Snippets mühelos und intuitiv zu teilen.",
+			"rating_summary": "Aus verifizierten Community-Bewertungen",
+			"verified": "Verifiziert",
+			"view_linkedin": "LinkedIn-Profil von {{name}} ansehen"
 		}
 	},
 	"footer": {

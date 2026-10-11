@@ -60,7 +60,16 @@
 	--animate-shimmer: shimmer 2s infinite;
 	--animate-spin-slow: spin 3s linear infinite;
 	--animate-moving-border: moving-border 4s linear infinite;
-	--animate-float-emoji: float-emoji 3.5s ease-out forwards;
+	--animate-marquee: marquee 35s linear infinite;
+}
+
+@keyframes marquee {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(-50%);
+	}
 }
 
 @keyframes shimmer {
