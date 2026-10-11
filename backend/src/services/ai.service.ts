@@ -128,13 +128,18 @@ class AiService {
 						{ role: "user", content: userPrompt },
 					],
 					temperature: 0.1,
-					max_tokens: 10,
+					max_tokens: 30,
 				},
 				{ preferredModel: configurations.groq_dumb_model },
 			);
 
-			const rawResponse =
+			let rawResponse =
 				chatCompletion.choices[0]?.message?.content?.trim() || "text";
+
+			// Strip <think>...</think> if emitted by reasoning models
+			rawResponse = rawResponse
+				.replace(/<think>[\s\S]*?<\/think>/gi, "")
+				.trim();
 
 			// Clean the response: lowercase and remove any non-alphanumeric characters except # and + (for C++/C#)
 			let language = rawResponse
@@ -142,12 +147,27 @@ class AiService {
 				.replace(/[^a-z0-9#+]/g, "")
 				.trim();
 
-			// If the model returned a longer sentence, try to see if any valid language is contained within it
+			// If model returned 'code', map to 'other'
+			if (language === "code") {
+				language = "other";
+			}
+
+			// If the model returned a longer sentence or formatted block, find matching valid language
 			if (!VALID_LANGUAGES.includes(language)) {
-				const found = VALID_LANGUAGES.find((lang) =>
-					rawResponse.toLowerCase().includes(lang),
-				);
-				if (found) language = found;
+				const lowerRaw = rawResponse.toLowerCase();
+				if (/\b(bash|shell|sh)\b/.test(lowerRaw)) {
+					language = "shell";
+				} else if (/\b(cpp|c\+\+)\b/.test(lowerRaw)) {
+					language = "cpp";
+				} else if (/\b(c#|csharp)\b/.test(lowerRaw)) {
+					language = "csharp";
+				} else {
+					const found = VALID_LANGUAGES.find((lang) => {
+						const regex = new RegExp(`\\b${lang}\\b`, "i");
+						return regex.test(lowerRaw);
+					});
+					if (found) language = found;
+				}
 			}
 
 			return VALID_LANGUAGES.includes(language) ? language : "text";

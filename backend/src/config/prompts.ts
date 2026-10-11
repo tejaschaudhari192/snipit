@@ -9,9 +9,9 @@ Available languages:
 ${languages.join(", ")}
 
 Rules:
-- Respond ONLY with the language name from the list above.
-- Do NOT include any explanations, markdown backticks, or conversational filler.
-- If it is code but not in the list, return 'code'.
+- Respond ONLY with the single lowercase language name from the list above.
+- Do NOT include any explanations, markdown backticks, thinking tags, or conversational filler.
+- If it is code but not in the list, return 'other'.
 - If it is clearly plain text, return 'text'.
 `.trim(),
 		USER: (content: string) => {
