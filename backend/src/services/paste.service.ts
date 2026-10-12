@@ -20,6 +20,7 @@ import {
 	extractStorageUrlsFromContent,
 } from "@/lib/supabase.js";
 import { expirationScheduler } from "./expiration-scheduler.service.js";
+import logger from "@/config/logger.js";
 
 class PasteService {
 	constructor(private readonly emailService?: EmailService) {}
@@ -151,7 +152,13 @@ class PasteService {
 		expirationScheduler.cancel(id);
 		const paste = await pasteModel.findOne({ id });
 		if (paste) {
-			await deletePasteStorageFiles(paste);
+			// Clean up Supabase storage files in background without blocking client response
+			deletePasteStorageFiles(paste).catch((err) => {
+				logger.error(
+					`[PasteService] Failed to clean up storage files for paste ${id}:`,
+					err,
+				);
+			});
 		}
 		await collaboratorModel.deleteMany({ pasteId: id });
 		return await pasteModel.deleteOne({ id });
