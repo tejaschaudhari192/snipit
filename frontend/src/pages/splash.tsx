@@ -2,8 +2,6 @@ import icon from "@/assets/brand/icon.png";
 import { useTranslation } from "react-i18next";
 import type { HealthData } from "@/types";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { cn } from "@/utils/index";
 import { ShimmerProgressBar } from "@/components/ui/shimmer-progress-bar";
 
 interface SplashPageProps {
@@ -76,51 +74,19 @@ const SplashPage = ({ healthData, onComplete }: SplashPageProps) => {
 				</div>
 
 				{/* progress-04 inspired sleek progress section */}
-				<div className="w-full flex flex-col items-center justify-center space-y-6 mt-6">
-					{/* Centered Animated Text */}
-					<div className="relative h-8 flex items-center justify-center w-full">
-						<AnimatePresence mode="wait">
-							<motion.p
-								key={
-									isError
-										? "error"
-										: isCompleted
-											? "completed"
-											: activeLabel
-								}
-								initial={{ opacity: 0, scale: 1.4, y: -5 }}
-								animate={{ opacity: 1, scale: 1, y: 0 }}
-								exit={{ opacity: 0, scale: 0.5, y: 5 }}
-								transition={{
-									type: "spring",
-									stiffness: 400,
-									damping: 18,
-								}}
-								className={cn(
-									"text-2xl font-medium tracking-tight",
-									isError
-										? "text-destructive font-semibold"
-										: isCompleted
-											? "text-blue-500 font-semibold"
-											: "text-muted-foreground/80",
-								)}
-							>
-								{isError
-									? t("splash.system_failure")
-									: isCompleted
-										? "complete"
-										: activeLabel}
-							</motion.p>
-						</AnimatePresence>
-					</div>
-
-					{/* Sleek Progress Bar matching progress-04 visual spec */}
-					<ShimmerProgressBar
-						progress={displayProgress}
-						isCompleted={isCompleted}
-						isError={isError}
-					/>
-				</div>
+				<ShimmerProgressBar
+					className="mt-6"
+					progress={displayProgress}
+					label={
+						isError
+							? t("splash.system_failure")
+							: isCompleted
+								? "complete"
+								: activeLabel
+					}
+					isCompleted={isCompleted}
+					isError={isError}
+				/>
 			</div>
 		</div>
 	);
