@@ -150,8 +150,7 @@ class PasteService {
 		id: string,
 	): Promise<{ acknowledged: boolean; deletedCount: number }> {
 		expirationScheduler.cancel(id);
-		const paste = await pasteModel.findOne({ id });
-		if (paste) {
+		pasteModel.findOne({ id }).then((paste) => {
 			// Clean up Supabase storage files in background without blocking client response
 			deletePasteStorageFiles(paste).catch((err) => {
 				logger.error(
@@ -159,8 +158,9 @@ class PasteService {
 					err,
 				);
 			});
-		}
-		await collaboratorModel.deleteMany({ pasteId: id });
+		});
+
+		collaboratorModel.deleteMany({ pasteId: id });
 		return await pasteModel.deleteOne({ id });
 	}
 

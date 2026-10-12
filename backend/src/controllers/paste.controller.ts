@@ -53,30 +53,38 @@ class PasteController {
 	async getPaste(req: AuthRequest, res: Response, next: NextFunction) {
 		const id = req.params.id as string;
 		try {
-			const result = await this.pasteService.incrementViews(id);
-			if (!result)
+			const paste = await this.pasteService.getPasteById(id);
+			if (!paste)
 				return res.status(404).json({ error: "Paste not found" });
-
-			if (result.expiresAt && new Date() > result.expiresAt) {
-				await this.pasteService.deletePaste(id);
-				return res.status(404).json({ error: "Paste expired" });
-			}
-
-			if (result.burnAfterRead && result.views >= 1) {
-				await this.pasteService.deletePaste(id);
-				this.logger.info(`Paste burned after 1st public read: ${id}`);
-			}
 
 			const userId = this.getUserId(req);
 			const role = await this.permissionService.getUserRole(
 				userId,
-				result,
+				paste,
 			);
 
 			if (!role) {
 				return res.status(403).json({
 					error: "Access denied. Private or Shared snippet.",
 				});
+			}
+
+			const isOwner = role === "admin";
+
+			// Only increment views and burn if the viewer is not the owner/creator
+			let result = paste;
+			if (!isOwner) {
+				const updated = await this.pasteService.incrementViews(id);
+				if (updated) {
+					result = updated;
+				}
+
+				if (result.burnAfterRead && result.views >= 1) {
+					await this.pasteService.deletePaste(id);
+					this.logger.info(
+						`Paste burned after 1st public read: ${id}`,
+					);
+				}
 			}
 
 			const pasteObj = result.toObject();
