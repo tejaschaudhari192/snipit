@@ -1,4 +1,4 @@
-FROM node:22-bullseye-slim
+FROM node:22-bookworm
 
 # Install compilers & runtimes
 RUN apt-get update && apt-get install -y --no-install-recommends wget gpg ca-certificates apt-transport-https && \
@@ -22,9 +22,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget gpg ca-cer
     dotnet tool install -g dotnet-script
 
 ENV PATH="$PATH:/root/.dotnet/tools"
-
-# Symlink python3 to python
-RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # Create working directory
 WORKDIR /app
