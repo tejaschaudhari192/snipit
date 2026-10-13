@@ -1,23 +1,19 @@
 import path from "path";
 
-export interface LanguageCommandConfig {
-	cmd: string;
-	args: string[];
+export interface LanguageExecutionPlan {
+	compileCmd?: string;
+	compileArgs?: string[];
+	runCmd: string;
+	runArgs: string[];
+	fileName: string;
 	fileExt: string;
-	compileAndRun?: (fileName: string, exeName: string, code: string) => { cmd: string; args: string[] };
-	resolveFileName?: (tempId: string, ext: string, code: string) => string;
 }
 
 export const getLanguageConfig = (
 	language: string,
 	code: string,
 	tempId: string,
-): {
-	cmd: string;
-	args: string[];
-	fileName: string;
-	fileExt: string;
-} | null => {
+): LanguageExecutionPlan | null => {
 	const lang = language.toLowerCase();
 	const isWindows = process.platform === "win32";
 	const exeName = isWindows ? "out.exe" : "./out";
@@ -25,36 +21,36 @@ export const getLanguageConfig = (
 	switch (lang) {
 		case "javascript":
 			return {
-				cmd: "node",
-				args: [],
+				runCmd: "node",
+				runArgs: [`${tempId}.js`],
 				fileExt: ".js",
 				fileName: `${tempId}.js`,
 			};
 		case "python":
 			return {
-				cmd: "python",
-				args: ["-u"],
+				runCmd: "python",
+				runArgs: ["-u", `${tempId}.py`],
 				fileExt: ".py",
 				fileName: `${tempId}.py`,
 			};
 		case "typescript":
 			return {
-				cmd: "tsx",
-				args: [],
+				runCmd: "tsx",
+				runArgs: [`${tempId}.ts`],
 				fileExt: ".ts",
 				fileName: `${tempId}.ts`,
 			};
 		case "php":
 			return {
-				cmd: "php",
-				args: [],
+				runCmd: "php",
+				runArgs: [`${tempId}.php`],
 				fileExt: ".php",
 				fileName: `${tempId}.php`,
 			};
 		case "go":
 			return {
-				cmd: "go",
-				args: ["run"],
+				runCmd: "go",
+				runArgs: ["run", `${tempId}.go`],
 				fileExt: ".go",
 				fileName: `${tempId}.go`,
 			};
@@ -68,8 +64,10 @@ export const getLanguageConfig = (
 					: "Main";
 			const fileName = `${className}.java`;
 			return {
-				cmd: `javac ${fileName} && java ${className}`,
-				args: [],
+				compileCmd: "javac",
+				compileArgs: [fileName],
+				runCmd: "java",
+				runArgs: [className],
 				fileExt: ".java",
 				fileName,
 			};
@@ -77,8 +75,10 @@ export const getLanguageConfig = (
 		case "c": {
 			const fileName = `${tempId}.c`;
 			return {
-				cmd: `gcc ${fileName} -o ${exeName} && ${exeName}`,
-				args: [],
+				compileCmd: "gcc",
+				compileArgs: [fileName, "-o", exeName],
+				runCmd: exeName,
+				runArgs: [],
 				fileExt: ".c",
 				fileName,
 			};
@@ -86,8 +86,10 @@ export const getLanguageConfig = (
 		case "cpp": {
 			const fileName = `${tempId}.cpp`;
 			return {
-				cmd: `g++ ${fileName} -o ${exeName} && ${exeName}`,
-				args: [],
+				compileCmd: "g++",
+				compileArgs: [fileName, "-o", exeName],
+				runCmd: exeName,
+				runArgs: [],
 				fileExt: ".cpp",
 				fileName,
 			};
@@ -95,16 +97,18 @@ export const getLanguageConfig = (
 		case "rust": {
 			const fileName = `${tempId}.rs`;
 			return {
-				cmd: `rustc ${fileName} -o ${exeName} && ${exeName}`,
-				args: [],
+				compileCmd: "rustc",
+				compileArgs: [fileName, "-o", exeName],
+				runCmd: exeName,
+				runArgs: [],
 				fileExt: ".rs",
 				fileName,
 			};
 		}
 		case "csharp": {
 			return {
-				cmd: "dotnet-script",
-				args: [],
+				runCmd: "dotnet-script",
+				runArgs: ["Program.cs"],
 				fileExt: ".cs",
 				fileName: "Program.cs",
 			};
@@ -112,11 +116,11 @@ export const getLanguageConfig = (
 		case "shell":
 		case "bash": {
 			const fileExt = isWindows ? ".bat" : ".sh";
-			const cmd = isWindows ? "cmd" : "bash";
-			const args = isWindows ? ["/c"] : [];
+			const runCmd = isWindows ? "cmd" : "bash";
+			const runArgs = isWindows ? ["/c", `${tempId}${fileExt}`] : [`${tempId}${fileExt}`];
 			return {
-				cmd,
-				args,
+				runCmd,
+				runArgs,
 				fileExt,
 				fileName: `${tempId}${fileExt}`,
 			};

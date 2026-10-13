@@ -57,11 +57,6 @@ export class ProcessManager {
 			return false;
 		}
 
-		const proc = spawn(config.cmd, config.args, {
-			cwd: executionDirPath,
-			shell: true,
-		});
-
 		callbacks.onStatus("running");
 
 		const spinnerFrames = ["/", "-", " \\", "|"].map((f) => f.trim());
@@ -80,44 +75,90 @@ export class ProcessManager {
 			}
 		};
 
-		proc.stdout?.on("data", (data) => {
-			clearSpinner();
-			callbacks.onOutput(data.toString());
-		});
+		// Helper to spawn and manage the actual program process
+		const spawnProgram = () => {
+			const proc = spawn(config.runCmd, config.runArgs, {
+				cwd: executionDirPath,
+				shell: process.platform === "win32",
+			});
 
-		proc.stderr?.on("data", (data) => {
-			clearSpinner();
-			callbacks.onOutput(data.toString());
-		});
+			proc.stdout?.on("data", (data) => {
+				clearSpinner();
+				callbacks.onOutput(data.toString());
+			});
 
-		const timeoutTimer = setTimeout(() => {
-			clearSpinner();
-			callbacks.onOutput(`\r\n[Execution Timeout] Program exceeded ${this.defaultTimeoutMs / 1000}s limit.\r\n`);
-			this.stopExecution(sessionId);
-		}, this.defaultTimeoutMs);
+			proc.stderr?.on("data", (data) => {
+				clearSpinner();
+				callbacks.onOutput(data.toString());
+			});
 
-		proc.on("close", (code) => {
-			clearInterval(spinnerInterval);
-			clearTimeout(timeoutTimer);
-			callbacks.onOutput(`\r\nProcess finished with exit code ${code}\r\n`);
-			callbacks.onStatus("stopped", { exitCode: code });
-			this.cleanupSession(sessionId, executionDirPath);
-		});
+			const timeoutTimer = setTimeout(() => {
+				clearSpinner();
+				callbacks.onOutput(`\r\n[Execution Timeout] Program exceeded ${this.defaultTimeoutMs / 1000}s limit.\r\n`);
+				this.stopExecution(sessionId);
+			}, this.defaultTimeoutMs);
 
-		proc.on("error", (error: Error) => {
-			clearInterval(spinnerInterval);
-			clearTimeout(timeoutTimer);
-			callbacks.onOutput(`\r\n[Error] Process error: ${error.message}\r\n`);
-			callbacks.onStatus("stopped", { error: error.message });
-			this.cleanupSession(sessionId, executionDirPath);
-		});
+			proc.on("close", (code) => {
+				clearInterval(spinnerInterval);
+				clearTimeout(timeoutTimer);
+				callbacks.onOutput(`\r\nProcess finished with exit code ${code}\r\n`);
+				callbacks.onStatus("stopped", { exitCode: code });
+				this.cleanupSession(sessionId, executionDirPath);
+			});
 
-		this.sessions.set(sessionId, {
-			process: proc,
-			inputBuffer: "",
-			executionDirPath,
-			timeoutTimer,
-		});
+			proc.on("error", (error: Error) => {
+				clearInterval(spinnerInterval);
+				clearTimeout(timeoutTimer);
+				callbacks.onOutput(`\r\n[Error] Process error: ${error.message}\r\n`);
+				callbacks.onStatus("stopped", { error: error.message });
+				this.cleanupSession(sessionId, executionDirPath);
+			});
+
+			this.sessions.set(sessionId, {
+				process: proc,
+				inputBuffer: "",
+				executionDirPath,
+				timeoutTimer,
+			});
+		};
+
+		// If language requires compilation first (Java, C, C++, Rust)
+		if (config.compileCmd) {
+			const compileProc = spawn(config.compileCmd, config.compileArgs || [], {
+				cwd: executionDirPath,
+				shell: process.platform === "win32",
+			});
+
+			let compileErrors = "";
+			compileProc.stderr?.on("data", (data) => {
+				compileErrors += data.toString();
+			});
+			compileProc.stdout?.on("data", (data) => {
+				compileErrors += data.toString();
+			});
+
+			compileProc.on("close", (code) => {
+				if (code !== 0) {
+					clearInterval(spinnerInterval);
+					callbacks.onOutput(`\r\u001b[2K[Compilation Error]\r\n${compileErrors || `Compiler exited with code ${code}`}\r\n`);
+					callbacks.onStatus("stopped", { exitCode: code, error: "Compilation failed" });
+					this.cleanupSession(sessionId, executionDirPath);
+					return;
+				}
+				// Compilation succeeded; launch the runnable program directly
+				spawnProgram();
+			});
+
+			compileProc.on("error", (err) => {
+				clearInterval(spinnerInterval);
+				callbacks.onOutput(`\r\u001b[2K[Compilation Failed] ${err.message}\r\n`);
+				callbacks.onStatus("stopped", { error: err.message });
+				this.cleanupSession(sessionId, executionDirPath);
+			});
+		} else {
+			// Direct interpreted language (Python, Node, Go, PHP, etc.)
+			spawnProgram();
+		}
 
 		return true;
 	}
@@ -125,6 +166,11 @@ export class ProcessManager {
 	sendInput(sessionId: string, data: string, onEcho: (echo: string) => void): void {
 		const session = this.sessions.get(sessionId);
 		if (!session || !session.process.stdin || !session.process.stdin.writable) return;
+
+		// Refresh execution timeout when user enters data
+		if (session.timeoutTimer) {
+			session.timeoutTimer.refresh();
+		}
 
 		if (data === "\r") {
 			session.process.stdin.write(session.inputBuffer + "\n");
