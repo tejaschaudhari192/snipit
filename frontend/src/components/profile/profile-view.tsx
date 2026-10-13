@@ -269,10 +269,6 @@ export function ProfileView({
 								<p className="text-sm font-bold text-foreground truncate">
 									{user.email}
 								</p>
-								<p className="text-[10px] text-emerald-500 font-medium flex items-center gap-1">
-									<Check className="w-3 h-3" /> Verified
-									primary email
-								</p>
 							</div>
 						</div>
 					</div>

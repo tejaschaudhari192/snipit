@@ -236,8 +236,8 @@ export const TestimonialsGrid = ({
 						aria-hidden="true"
 					/>
 
-					<div className="group/marquee flex overflow-x-auto no-scrollbar py-4 mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-						<div className="flex shrink-0 items-stretch gap-6 pr-6 animate-marquee group-hover/marquee:[animation-play-state:paused]">
+					<div className="group/marquee flex overflow-hidden no-scrollbar py-4 mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+						<div className="flex shrink-0 items-stretch gap-6 animate-marquee group-hover/marquee:[animation-play-state:paused] min-w-full pr-6">
 							{testimonials.map((testimonial) => (
 								<TestimonialCard
 									key={testimonial.id}
@@ -247,7 +247,7 @@ export const TestimonialsGrid = ({
 							))}
 						</div>
 						<div
-							className="flex shrink-0 items-stretch gap-6 pr-6 animate-marquee group-hover/marquee:[animation-play-state:paused]"
+							className="flex shrink-0 items-stretch gap-6 animate-marquee group-hover/marquee:[animation-play-state:paused] min-w-full pr-6"
 							aria-hidden="true"
 						>
 							{testimonials.map((testimonial) => (
