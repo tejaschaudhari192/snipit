@@ -14,16 +14,6 @@ export const GROQ_CONFIG = {
 		] as readonly string[],
 	},
 
-	text: {
-		high: "meta-llama/llama-prompt-guard-2-86m",
-		low: "meta-llama/llama-prompt-guard-2-22m",
-		dumb: "openai/gpt-oss-20b",
-		generalList: [
-			"openai/gpt-oss-20b",
-			"qwen/qwen3.8-27b",
-		] as readonly string[],
-	},
-
 	// Dedicated Voice & Agent models (isolated quotas)
 	voice: {
 		primary: "qwen/qwen3.8-27b",
