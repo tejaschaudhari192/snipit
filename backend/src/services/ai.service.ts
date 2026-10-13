@@ -130,7 +130,7 @@ class AiService {
 					temperature: 0.1,
 					max_tokens: 30,
 				},
-				{ preferredModel: configurations.groq_dumb_model },
+				{ preferredModel: configurations.groq_text_low_model },
 			);
 
 			let rawResponse =
@@ -191,7 +191,7 @@ class AiService {
 					temperature: 0.1,
 					max_tokens: 10,
 				},
-				{ preferredModel: configurations.groq_dumb_model },
+				{ preferredModel: configurations.groq_text_low_model },
 			);
 
 			const language =
@@ -258,7 +258,7 @@ class AiService {
 						temperature: 0.5 + attempts * 0.2, // Increase variety on retries
 						max_tokens: 20,
 					},
-					{ preferredModel: configurations.groq_dumb_model },
+					{ preferredModel: configurations.groq_text_low_model },
 				);
 
 				let id =
@@ -333,7 +333,7 @@ class AiService {
 					max_tokens: isText ? 64 : 128,
 					stop: isText ? ["\n", "\n\n"] : ["\n\n", "```"],
 				},
-				{ preferredModel: configurations.groq_dumb_model },
+				{ preferredModel: configurations.groq_text_high_model },
 			);
 
 			return chatCompletion.choices[0]?.message?.content?.trim() || "";
@@ -403,7 +403,7 @@ class AiService {
 						],
 						temperature: 0,
 					},
-					{ preferredModel: configurations.groq_dumb_model },
+					{ preferredModel: configurations.groq_text_high_model },
 				);
 
 				return (

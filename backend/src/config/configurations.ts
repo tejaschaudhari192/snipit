@@ -56,6 +56,8 @@ const configurations = {
 	groq_api_key: env.GROQ_API_KEY,
 	groq_dumb_model: GROQ_CONFIG.models.dumb,
 	groq_smart_model: GROQ_CONFIG.models.smart,
+	groq_text_high_model: GROQ_CONFIG.text.high,
+	groq_text_low_model: GROQ_CONFIG.text.low,
 	groq_voice_model: GROQ_CONFIG.voice.primary,
 	groq_guard_model: GROQ_CONFIG.voice.guard,
 	groq_audio_model: GROQ_CONFIG.audio.primary,
