@@ -80,7 +80,7 @@ export const FolderCard: React.FC<FolderCardProps> = ({ folder, index }) => {
 							{folder.name}
 						</h4>
 						<span className="text-[10px] font-semibold text-muted-foreground/80">
-							{t("folders.subfolders", "Folder")}
+							{t("folders.subfolders")}
 						</span>
 					</div>
 				</div>

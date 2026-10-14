@@ -709,7 +709,8 @@
 				"sign_in": "உள்நுழைக",
 				"click_to_check": "நேரலை நிலையைச் சரிபார்க்க கிளிக் செய்யவும்",
 				"track_live_status": "ரயில் {{train}} நேரலை நிலையை கண்காணிக்கவும்",
-				"auto_cleaned_hint": "முடிவடைந்த பயணங்கள் தானாகவே நீக்கப்படும்"
+				"auto_cleaned_hint": "முடிவடைந்த பயணங்கள் தானாகவே நீக்கப்படும்",
+				"loading_alerts": "Loading active tracking alerts..."
 			},
 			"share": "பகிர்",
 			"share_ticket_title": "டிக்கெட்டைப் பகிரவும்",
@@ -923,7 +924,8 @@
 		},
 		"layout": "தளவமைப்பு",
 		"success": "வெற்றி",
-		"error": "பிழை"
+		"error": "பிழை",
+		"clear": "அனைத்தையும் அழிக்கவும்"
 	},
 	"profile": {
 		"loading": "ஏற்றப்படுகிறது...",
@@ -1568,7 +1570,10 @@
 			"simplify": "எளிமைப்படுத்து",
 			"grammar": "இலக்கணத்தை சரிசெய்",
 			"summarize": "சுருக்கு",
-			"comments": "கருத்துகளைச் சேர்"
+			"comments": "கருத்துகளைச் சேர்",
+			"refactor": "மாற்று யோசனைகள்",
+			"fix": "இலக்கணத்தை சரிசெய்",
+			"explain": "விளக்கி எழுது"
 		},
 		"tooltips": {
 			"professional": "தொழில்முறையாக மாற்றவும்",
@@ -1710,6 +1715,9 @@
 		"open_keyboard": "விசைப்பலகை உள்ளீட்டைத் திற",
 		"talk_tooltip": "ஸ்னிபிட் வாய்ஸ் கோபிலாட்டுடன் பேசுங்கள்",
 		"cancel_tooltip": "நிறுத்து / ரத்து செய்",
-		"close_panel": "பேனலை மூடு"
+		"close_panel": "பேனலை மூடு",
+		"hide_assistant": "Hide AI Voice Assistant",
+		"show_assistant": "Enable AI Voice Assistant",
+		"snippet_applied": "Code written into editor"
 	}
 }

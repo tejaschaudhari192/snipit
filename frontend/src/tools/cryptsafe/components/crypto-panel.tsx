@@ -412,7 +412,7 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 								<div className="flex flex-col min-w-0">
 									<span className="text-xs font-semibold truncate text-foreground">
 										{dirName ||
-											`${files.length} ${t("tools.files_selected", "files selected")}`}
+											`${files.length} ${t("tools.files_selected")}`}
 									</span>
 									<span className="text-[11px] text-muted-foreground">
 										{dirName
@@ -437,7 +437,7 @@ export function CryptoPanel({ mode }: { mode: "encrypt" | "decrypt" }) {
 										className="h-7 px-2 text-xs text-muted-foreground hover:text-destructive"
 									>
 										<X className="h-3.5 w-3.5 mr-1" />
-										{t("common.clear", "Clear")}
+										{t("common.clear")}
 									</Button>
 								</div>
 							)}

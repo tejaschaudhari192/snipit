@@ -120,7 +120,6 @@ export default function UnlockRecovery({
 									<span className="text-muted-foreground">
 										{t(
 											"tools.password_manager.recovery.upload",
-											"Upload Key File (.txt)",
 										)}
 									</span>
 								</Button>

@@ -709,7 +709,8 @@
 				"sign_in": "سائن ان کریں",
 				"click_to_check": "لائیو اسٹیٹس چیک کرنے کے لیے کلک کریں",
 				"track_live_status": "ٹرین {{train}} کا لائیو اسٹیٹس ٹریک کریں",
-				"auto_cleaned_hint": "میعاد ختم ہونے والے اسفار خود بخود ہٹا دیے جاتے ہیں"
+				"auto_cleaned_hint": "میعاد ختم ہونے والے اسفار خود بخود ہٹا دیے جاتے ہیں",
+				"loading_alerts": "Loading active tracking alerts..."
 			},
 			"share": "شیئر کریں",
 			"share_ticket_title": "ٹکٹ شیئر کریں",
@@ -923,7 +924,8 @@
 		},
 		"layout": "لے آؤٹ",
 		"success": "کامیابی",
-		"error": "خرابی"
+		"error": "خرابی",
+		"clear": "سب صاف کریں"
 	},
 	"profile": {
 		"loading": "لوڈ ہو رہا ہے...",
@@ -1568,7 +1570,10 @@
 			"simplify": "آسان بنائیں",
 			"grammar": "گرائمر درست کریں",
 			"summarize": "خلاصہ کریں",
-			"comments": "تبصرے شامل کریں"
+			"comments": "تبصرے شامل کریں",
+			"refactor": "بہتری کے طریقے",
+			"fix": "گرائمر درست کریں",
+			"explain": "وضاحت کریں اور لکھیں"
 		},
 		"tooltips": {
 			"professional": "پیشہ ورانہ بنائیں",
@@ -1710,6 +1715,9 @@
 		"open_keyboard": "کی بورڈ ان پٹ کھولیں",
 		"talk_tooltip": "سنیپٹ وائس کوپائلٹ سے بات کریں",
 		"cancel_tooltip": "روکیں / منسوخ کریں",
-		"close_panel": "پینل بند کریں"
+		"close_panel": "پینل بند کریں",
+		"hide_assistant": "Hide AI Voice Assistant",
+		"show_assistant": "Enable AI Voice Assistant",
+		"snippet_applied": "Code written into editor"
 	}
 }

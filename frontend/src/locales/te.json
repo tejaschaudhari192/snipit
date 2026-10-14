@@ -709,7 +709,8 @@
 				"sign_in": "సైన్ ఇన్ చేయండి",
 				"click_to_check": "లైవ్ స్థితిని తనిఖీ చేయడానికి క్లిక్ చేయండి",
 				"track_live_status": "రైలు {{train}} లైవ్ స్థితిని ట్రాక్ చేయండి",
-				"auto_cleaned_hint": "గడువు ముగిసిన ప్రయాణాలు స్వయంచాలకంగా తీసివేయబడతాయి"
+				"auto_cleaned_hint": "గడువు ముగిసిన ప్రయాణాలు స్వయంచాలకంగా తీసివేయబడతాయి",
+				"loading_alerts": "Loading active tracking alerts..."
 			},
 			"share": "షేర్ చేయండి",
 			"share_ticket_title": "టికెట్ షేర్ చేయండి",
@@ -923,7 +924,8 @@
 		},
 		"layout": "లేఅవుట్",
 		"success": "విజయం",
-		"error": "లోపం"
+		"error": "లోపం",
+		"clear": "అన్నీ క్లియర్ చేయి"
 	},
 	"profile": {
 		"loading": "లోడ్ అవుతోంది...",
@@ -1568,7 +1570,10 @@
 			"simplify": "సరళీకరించు",
 			"grammar": "వ్యాకరణం సరిచేయి",
 			"summarize": "కుదించు",
-			"comments": "వ్యాఖ్యలను జోడించు"
+			"comments": "వ్యాఖ్యలను జోడించు",
+			"refactor": "ప్రత్యామ్నాయ ఆలోచనలు",
+			"fix": "వ్యాకరణం సరిచేయి",
+			"explain": "వివరించి రాయండి"
 		},
 		"tooltips": {
 			"professional": "వృత్తిపరంగా మార్చండి",
@@ -1710,6 +1715,9 @@
 		"open_keyboard": "కీబోర్డ్ ఇన్‌పుట్ తెరవండి",
 		"talk_tooltip": "స్నిపిట్ వాయిస్ కోపైలట్‌తో మాట్లాడండి",
 		"cancel_tooltip": "ఆపు / రద్దు చేయి",
-		"close_panel": "ప్యానెల్ మూసివేయి"
+		"close_panel": "ప్యానెల్ మూసివేయి",
+		"hide_assistant": "Hide AI Voice Assistant",
+		"show_assistant": "Enable AI Voice Assistant",
+		"snippet_applied": "Code written into editor"
 	}
 }

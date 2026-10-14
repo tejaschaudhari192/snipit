@@ -709,7 +709,8 @@
 				"sign_in": "সাইন ইন করুন",
 				"click_to_check": "লাইভ স্ট্যাটাস দেখতে ক্লিক করুন",
 				"track_live_status": "ট্রেন {{train}}-এর লাইভ স্ট্যাটাস ট্র্যাক করুন",
-				"auto_cleaned_hint": "মেয়াদোত্তীর্ণ যাত্রাগুলি স্বয়ংক্রিয়ভাবে মুছে ফেলা হয়"
+				"auto_cleaned_hint": "মেয়াদোত্তীর্ণ যাত্রাগুলি স্বয়ংক্রিয়ভাবে মুছে ফেলা হয়",
+				"loading_alerts": "Loading active tracking alerts..."
 			},
 			"share": "শেয়ার করুন",
 			"share_ticket_title": "টিকিট শেয়ার করুন",
@@ -923,7 +924,8 @@
 		},
 		"layout": "লেআউট",
 		"success": "সফল",
-		"error": "ত্রুটি"
+		"error": "ত্রুটি",
+		"clear": "সব সাফ করুন"
 	},
 	"profile": {
 		"loading": "লোড হচ্ছে...",
@@ -1568,7 +1570,10 @@
 			"simplify": "সহজ করুন",
 			"grammar": "ব্যাকরণ ঠিক করুন",
 			"summarize": "সংক্ষিপ্ত করুন",
-			"comments": "মন্তব্য যোগ করুন"
+			"comments": "মন্তব্য যোগ করুন",
+			"refactor": "উন্নতির ধারণা",
+			"fix": "ব্যাকরণ ঠিক করুন",
+			"explain": "ব্যাখ্যা করুন ও লিখুন"
 		},
 		"tooltips": {
 			"professional": "পেশাদার করুন",
@@ -1710,6 +1715,9 @@
 		"open_keyboard": "কীবোর্ড ইনপুট খুলুন",
 		"talk_tooltip": "স্নিপিট ভয়েস কোপাইলটের সাথে কথা বলুন",
 		"cancel_tooltip": "থামুন / বাতিল করুন",
-		"close_panel": "প্যানেল বন্ধ করুন"
+		"close_panel": "প্যানেল বন্ধ করুন",
+		"hide_assistant": "Hide AI Voice Assistant",
+		"show_assistant": "Enable AI Voice Assistant",
+		"snippet_applied": "Code written into editor"
 	}
 }

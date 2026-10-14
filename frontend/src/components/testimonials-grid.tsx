@@ -52,10 +52,7 @@ export const TestimonialCard = ({
 						{verified && (
 							<span className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground/80 bg-muted/60 px-2.5 py-0.5 rounded-full border border-border/40">
 								<CheckCircle2 className="size-3 text-emerald-500" />
-								{t(
-									"about_page.testimonials.verified",
-									"Verified",
-								)}
+								{t("about_page.testimonials.verified")}
 							</span>
 						)}
 					</div>
@@ -140,20 +137,9 @@ export const TestimonialsGrid = ({
 }: TestimonialsGridProps) => {
 	const { t } = useTranslation();
 
-	const title =
-		customTitle ??
-		t(
-			"about_page.testimonials.title",
-			"Loved by developers & fast-moving teams",
-		);
-	const subtitle =
-		customSubtitle ??
-		t(
-			"about_page.testimonials.subtitle",
-			"See how developers use Snipit to share snippets effortlessly with a smooth, intuitive experience.",
-		);
-	const badgeText =
-		customBadgeText ?? t("about_page.testimonials.badge", "Wall of Love");
+	const title = customTitle ?? t("about_page.testimonials.title");
+	const subtitle = customSubtitle ?? t("about_page.testimonials.subtitle");
+	const badgeText = customBadgeText ?? t("about_page.testimonials.badge");
 
 	return (
 		<section
@@ -216,10 +202,7 @@ export const TestimonialsGrid = ({
 							})}
 						</div>
 						<span className="font-medium text-foreground">
-							{t(
-								"about_page.testimonials.rating_summary",
-								"From verified community reviews",
-							)}
+							{t("about_page.testimonials.rating_summary")}
 						</span>
 					</div>
 				</header>

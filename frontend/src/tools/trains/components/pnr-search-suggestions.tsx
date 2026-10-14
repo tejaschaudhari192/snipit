@@ -111,10 +111,7 @@ export const PnrSearchSuggestions: React.FC<PnrSearchSuggestionsProps> = ({
 					<div className="flex items-center gap-2">
 						<History className="h-3.5 w-3.5 text-primary" />
 						<span className="text-xs font-bold text-foreground">
-							{t(
-								"tools.pnr_checker.hub.recent_searches",
-								"Recent Searches",
-							)}
+							{t("tools.pnr_checker.hub.recent_searches")}
 						</span>
 						<Badge
 							variant="secondary"
@@ -130,12 +127,7 @@ export const PnrSearchSuggestions: React.FC<PnrSearchSuggestionsProps> = ({
 						className="h-6 px-2 text-[11px] text-muted-foreground hover:text-destructive hover:bg-destructive/10 gap-1 cursor-pointer"
 					>
 						<Trash2 className="h-3 w-3" />
-						<span>
-							{t(
-								"tools.pnr_checker.hub.clear_history",
-								"Clear all",
-							)}
-						</span>
+						<span>{t("tools.pnr_checker.hub.clear_history")}</span>
 					</Button>
 				</div>
 
@@ -202,7 +194,6 @@ export const PnrSearchSuggestions: React.FC<PnrSearchSuggestionsProps> = ({
 											{item.trainName ||
 												t(
 													"tools.pnr_checker.train_details",
-													"Train Details",
 												)}
 										</span>
 										<span>•</span>

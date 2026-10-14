@@ -1,78 +1,35 @@
 import { useState, useCallback } from "react";
 import type { Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
-import { useTranslation } from "react-i18next";
 
 export const useAiEnhance = () => {
-	const { t } = useTranslation();
-	const [isAiDialogOpen, setIsAiDialogOpen] = useState(false);
 	const [isAiWriterDialogOpen, setIsAiWriterDialogOpen] = useState(false);
 	const [selectedText, setSelectedText] = useState("");
 	const [editorInstance, setEditorInstance] =
 		useState<editor.IStandaloneCodeEditor | null>(null);
 
-	const [prefillInstruction, setPrefillInstruction] = useState("");
-
 	const setupAiAction = useCallback(
 		(ed: editor.IStandaloneCodeEditor, monaco: Monaco) => {
 			setEditorInstance(ed);
 
-			const registerAiAction = (
-				id: string,
-				label: string,
-				instruction: string,
-				keybinding?: number,
-			) => {
-				ed.addAction({
-					id,
-					label,
-					keybindings: keybinding ? [keybinding] : undefined,
-					contextMenuGroupId: "navigation",
-					contextMenuOrder: 1,
-					run: (editor: editor.IStandaloneCodeEditor) => {
-						const selection = editor.getSelection();
-						if (selection && !selection.isEmpty()) {
-							const text = editor
-								.getModel()
-								?.getValueInRange(selection);
-							if (text) {
-								setSelectedText(text);
-								setPrefillInstruction(instruction);
-								setIsAiDialogOpen(true);
-							}
-						}
-					},
-				});
-			};
-
-			registerAiAction(
-				"ai-enhance-action",
-				t("editor.ai_enhance"),
-				"",
+			// Clean shortcut: Cmd/Ctrl + Shift + E triggers the unified AI Assistant
+			ed.addCommand(
 				monaco.KeyMod.CtrlCmd |
 					monaco.KeyMod.Shift |
 					monaco.KeyCode.KeyE,
-			);
-
-			registerAiAction(
-				"ai-explain-action",
-				t("editor.ai_explain"),
-				"Explain this code logic simply but thoroughly.",
-			);
-
-			registerAiAction(
-				"ai-refactor-action",
-				t("editor.ai_refactor"),
-				"Refactor this code to be more clean, efficient, and readable.",
-			);
-
-			registerAiAction(
-				"ai-fix-action",
-				t("editor.ai_fix"),
-				"Identify and fix any potential bugs or edge cases in this code.",
+				() => {
+					const selection = ed.getSelection();
+					if (selection && !selection.isEmpty()) {
+						const text = ed.getModel()?.getValueInRange(selection);
+						setSelectedText(text || "");
+					} else {
+						setSelectedText("");
+					}
+					setIsAiWriterDialogOpen(true);
+				},
 			);
 		},
-		[t],
+		[],
 	);
 
 	const applyEnhancedText = useCallback(
@@ -80,7 +37,7 @@ export const useAiEnhance = () => {
 			if (!editorInstance) return;
 			const selection = editorInstance.getSelection();
 			if (selection) {
-				editorInstance.executeEdits("ai-enhance", [
+				editorInstance.executeEdits("ai-assistant", [
 					{
 						range: selection,
 						text: newText,
@@ -96,34 +53,42 @@ export const useAiEnhance = () => {
 	const applyWriterText = useCallback(
 		(newText: string) => {
 			if (!editorInstance) return;
-			const position = editorInstance.getPosition();
-			if (position) {
-				editorInstance.executeEdits("ai-writer", [
+			const selection = editorInstance.getSelection();
+			if (selection && !selection.isEmpty()) {
+				editorInstance.executeEdits("ai-assistant", [
 					{
-						range: {
-							startLineNumber: position.lineNumber,
-							startColumn: position.column,
-							endLineNumber: position.lineNumber,
-							endColumn: position.column,
-						},
+						range: selection,
 						text: newText,
 						forceMoveMarkers: true,
 					},
 				]);
-				editorInstance.focus();
+			} else {
+				const position = editorInstance.getPosition();
+				if (position) {
+					editorInstance.executeEdits("ai-assistant", [
+						{
+							range: {
+								startLineNumber: position.lineNumber,
+								startColumn: position.column,
+								endLineNumber: position.lineNumber,
+								endColumn: position.column,
+							},
+							text: newText,
+							forceMoveMarkers: true,
+						},
+					]);
+				}
 			}
+			editorInstance.focus();
 		},
 		[editorInstance],
 	);
 
 	return {
-		isAiDialogOpen,
-		setIsAiDialogOpen,
 		isAiWriterDialogOpen,
 		setIsAiWriterDialogOpen,
 		selectedText,
 		setSelectedText,
-		prefillInstruction,
 		setupAiAction,
 		applyEnhancedText,
 		applyWriterText,

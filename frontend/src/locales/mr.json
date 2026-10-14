@@ -709,7 +709,8 @@
 				"sign_in": "साइन इन करा",
 				"click_to_check": "थेट स्थिती पाहण्यासाठी क्लिक करा",
 				"track_live_status": "ट्रेन {{train}} ची थेट स्थिती ट्रॅक करा",
-				"auto_cleaned_hint": "कालबाह्य झालेले प्रवास आपोआप काढले जातात"
+				"auto_cleaned_hint": "कालबाह्य झालेले प्रवास आपोआप काढले जातात",
+				"loading_alerts": "Loading active tracking alerts..."
 			},
 			"share": "शेअर करा",
 			"share_ticket_title": "तिकीट शेअर करा",
@@ -923,7 +924,8 @@
 		},
 		"layout": "मांडणी",
 		"success": "यशस्वी",
-		"error": "त्रुटी"
+		"error": "त्रुटी",
+		"clear": "सर्व साफ करा"
 	},
 	"profile": {
 		"loading": "लोड होत आहे...",
@@ -1576,7 +1578,10 @@
 			"simplify": "सोपे करा",
 			"grammar": "व्याकरण सुधारा",
 			"summarize": "सारांश द्या",
-			"comments": "कमेंट्स जोडा"
+			"comments": "कमेंट्स जोडा",
+			"refactor": "रिफॅक्टर कल्पना",
+			"fix": "व्याकरण सुधारा",
+			"explain": "स्पष्ट करा आणि लिहा"
 		},
 		"tooltips": {
 			"professional": "व्यावसायिक बनवा",
@@ -1718,6 +1723,9 @@
 		"open_keyboard": "कीबोर्ड इनपुट उघडा",
 		"talk_tooltip": "स्निपिट व्हॉइस कोपायलटशी बोला",
 		"cancel_tooltip": "थांबवा / रद्द करा",
-		"close_panel": "पॅनेल बंद करा"
+		"close_panel": "पॅनेल बंद करा",
+		"hide_assistant": "Hide AI Voice Assistant",
+		"show_assistant": "Enable AI Voice Assistant",
+		"snippet_applied": "Code written into editor"
 	}
 }

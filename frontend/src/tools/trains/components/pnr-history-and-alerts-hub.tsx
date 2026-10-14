@@ -113,10 +113,7 @@ export const PnrHistoryAndAlertsHub: React.FC<PnrHistoryAndAlertsHubProps> = ({
 						</span>
 						<Bell className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
 						<span className="text-xs font-bold text-foreground">
-							{t(
-								"tools.pnr_checker.hub.tab_alerts",
-								"Active Tracking Alerts",
-							)}
+							{t("tools.pnr_checker.hub.tab_alerts")}
 						</span>
 						{hasAlerts && (
 							<Badge
@@ -134,12 +131,7 @@ export const PnrHistoryAndAlertsHub: React.FC<PnrHistoryAndAlertsHubProps> = ({
 							className="text-[10px] font-mono border-emerald-500/30 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 flex items-center gap-1 self-start sm:self-auto"
 						>
 							<span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-							<span>
-								{t(
-									"tools.pnr_checker.hub.live_sync",
-									"Hourly Live Sync",
-								)}
-							</span>
+							<span>{t("tools.pnr_checker.hub.live_sync")}</span>
 						</Badge>
 					)}
 				</div>
@@ -157,7 +149,6 @@ export const PnrHistoryAndAlertsHub: React.FC<PnrHistoryAndAlertsHubProps> = ({
 								<p className="text-xs font-semibold text-foreground">
 									{t(
 										"tools.pnr_checker.hub.login_to_view_alerts",
-										"Sign in to view hourly PNR alerts",
 									)}
 								</p>
 								<p className="text-[11px] text-muted-foreground">
@@ -171,10 +162,7 @@ export const PnrHistoryAndAlertsHub: React.FC<PnrHistoryAndAlertsHubProps> = ({
 							>
 								<LogIn className="h-3.5 w-3.5" />
 								<span>
-									{t(
-										"tools.pnr_checker.hub.sign_in",
-										"Sign in",
-									)}
+									{t("tools.pnr_checker.hub.sign_in")}
 								</span>
 							</Link>
 						</div>
@@ -230,7 +218,6 @@ export const PnrHistoryAndAlertsHub: React.FC<PnrHistoryAndAlertsHubProps> = ({
 													{tracking.trainName ||
 														t(
 															"tools.pnr_checker.train_details",
-															"Train Details",
 														)}
 												</p>
 											</div>
@@ -306,7 +293,6 @@ export const PnrHistoryAndAlertsHub: React.FC<PnrHistoryAndAlertsHubProps> = ({
 														<p className="text-xs">
 															{t(
 																"tools.pnr_checker.hub.stop_tracking",
-																"Stop Tracking",
 															)}
 														</p>
 													</TooltipContent>
@@ -349,12 +335,7 @@ export const PnrHistoryAndAlertsHub: React.FC<PnrHistoryAndAlertsHubProps> = ({
 					) : (
 						<div className="py-6 text-center text-xs text-muted-foreground">
 							<Bell className="h-6 w-6 mx-auto mb-2 text-muted-foreground/40" />
-							<p>
-								{t(
-									"tools.pnr_checker.hub.no_alerts",
-									"No active tracking alerts",
-								)}
-							</p>
+							<p>{t("tools.pnr_checker.hub.no_alerts")}</p>
 						</div>
 					)}
 				</div>

@@ -708,7 +708,8 @@
 				"sign_in": "Anmelden",
 				"click_to_check": "Klicken, um den Live-Status zu prüfen",
 				"track_live_status": "Live-Status von Zug {{train}} verfolgen",
-				"auto_cleaned_hint": "Abgelaufene Fahrten werden automatisch entfernt"
+				"auto_cleaned_hint": "Abgelaufene Fahrten werden automatisch entfernt",
+				"loading_alerts": "Loading active tracking alerts..."
 			},
 			"share": "Teilen",
 			"share_ticket_title": "Ticket teilen",
@@ -923,7 +924,8 @@
 		},
 		"layout": "Layout",
 		"success": "Erfolg",
-		"error": "Fehler"
+		"error": "Fehler",
+		"clear": "Alles löschen"
 	},
 	"folders": {
 		"explorer": "Ordner-Explorer",
@@ -1609,7 +1611,10 @@
 			"simplify": "vereinfachen",
 			"grammar": "Grammatik",
 			"summarize": "zusammenfassen",
-			"comments": "Kommentare"
+			"comments": "Kommentare",
+			"refactor": "Refactoring-Ideen",
+			"fix": "Grammatik",
+			"explain": "Erklären & Schreiben"
 		},
 		"tooltips": {
 			"professional": "Professionell gestalten",
@@ -1718,6 +1723,9 @@
 		"open_keyboard": "Tastatureingabe öffnen",
 		"talk_tooltip": "Mit Snipit Voice Copilot sprechen",
 		"cancel_tooltip": "Stopp / Abbrechen",
-		"close_panel": "Bedienfeld schließen"
+		"close_panel": "Bedienfeld schließen",
+		"hide_assistant": "Hide AI Voice Assistant",
+		"show_assistant": "Enable AI Voice Assistant",
+		"snippet_applied": "Code written into editor"
 	}
 }

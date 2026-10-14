@@ -27,27 +27,18 @@ export const PnrTicketCard: React.FC<PnrTicketCardProps> = ({
 		try {
 			setDownloading(true);
 			toast.add({
-				title: t(
-					"tools.pnr_checker.ticket_downloading",
-					"Generating ticket image...",
-				),
+				title: t("tools.pnr_checker.ticket_downloading"),
 				type: "info",
 			});
 			await downloadPnrTicketPng(data);
 			toast.add({
-				title: t(
-					"tools.pnr_checker.ticket_downloaded",
-					"Ticket downloaded successfully!",
-				),
+				title: t("tools.pnr_checker.ticket_downloaded"),
 				type: "success",
 			});
 		} catch (err: unknown) {
 			console.error("Ticket download error:", err);
 			toast.add({
-				title: t(
-					"tools.pnr_checker.ticket_download_failed",
-					"Failed to download ticket",
-				),
+				title: t("tools.pnr_checker.ticket_download_failed"),
 				type: "error",
 			});
 		} finally {

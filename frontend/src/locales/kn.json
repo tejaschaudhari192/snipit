@@ -709,7 +709,8 @@
 				"sign_in": "ಸೈನ್ ಇನ್ ಮಾಡಿ",
 				"click_to_check": "ಲೈವ್ ಸ್ಥಿತಿ ವೀಕ್ಷಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ",
 				"track_live_status": "ರೈಲು {{train}} ನ ಲೈವ್ ಸ್ಥಿತಿ ಟ್ರ್ಯಾಕ್ ಮಾಡಿ",
-				"auto_cleaned_hint": "ಮುಕ್ತಾಯಗೊಂಡ ಪ್ರಯಾಣಗಳು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ತೆರವಾಗುತ್ತವೆ"
+				"auto_cleaned_hint": "ಮುಕ್ತಾಯಗೊಂಡ ಪ್ರಯಾಣಗಳು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ತೆರವಾಗುತ್ತವೆ",
+				"loading_alerts": "Loading active tracking alerts..."
 			},
 			"share": "ಹಂಚಿಕೊಳ್ಳಿ",
 			"share_ticket_title": "ಟಿಕೆಟ್ ಹಂಚಿಕೊಳ್ಳಿ",
@@ -923,7 +924,8 @@
 		},
 		"layout": "ಲೇಔಟ್",
 		"success": "ಯಶಸ್ಸು",
-		"error": "ದೋಷ"
+		"error": "ದೋಷ",
+		"clear": "ಎಲ್ಲವನ್ನೂ ತೆರವುಗೊಳಿಸಿ"
 	},
 	"profile": {
 		"loading": "ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
@@ -1568,7 +1570,10 @@
 			"simplify": "ಸರಳೀಕರಿಸಿ",
 			"grammar": "ವ್ಯಾಕರಣ ಸರಿಪಡಿಸಿ",
 			"summarize": "ಸಂಕ್ಷೇಪಿಸಿ",
-			"comments": "ಕಾಮೆಂಟ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
+			"comments": "ಕಾಮೆಂಟ್‌ಗಳನ್ನು ಸೇರಿಸಿ",
+			"refactor": "ಸುಧಾರಣೆ ಸಲಹೆಗಳು",
+			"fix": "ವ್ಯಾಕರಣ ಸರಿಪಡಿಸಿ",
+			"explain": "ವಿವರಿಸಿ ಬರೆಯಿರಿ"
 		},
 		"tooltips": {
 			"professional": "ವೃತ್ತಿಪರಗೊಳಿಸಿ",
@@ -1710,6 +1715,9 @@
 		"open_keyboard": "ಕೀಬೋರ್ಡ್ ಇನ್‌ಪುಟ್ ತೆರೆಯಿರಿ",
 		"talk_tooltip": "ಸ್ನಿಪಿಟ್ ಧ್ವನಿ ಕೋಪೈಲಟ್ ಜೊತೆ ಮಾತನಾಡಿ",
 		"cancel_tooltip": "ನಿಲ್ಲಿಸಿ / ರದ್ದುಮಾಡಿ",
-		"close_panel": "ಫಲಕ ಮುಚ್ಚಿ"
+		"close_panel": "ಫಲಕ ಮುಚ್ಚಿ",
+		"hide_assistant": "Hide AI Voice Assistant",
+		"show_assistant": "Enable AI Voice Assistant",
+		"snippet_applied": "Code written into editor"
 	}
 }

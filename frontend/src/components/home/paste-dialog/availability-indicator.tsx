@@ -30,17 +30,17 @@ export const IdAvailabilityIndicator = ({
 			) : isCurrentId ? (
 				<span className="flex items-center gap-1 ml-2 text-[11px] text-primary font-medium animate-in zoom-in-50 duration-300">
 					<CheckCircle2 className="h-3 w-3 text-primary" />
-					{t("home.id_generation.current_id", "Current ID")}
+					{t("home.id_generation.current_id")}
 				</span>
 			) : isAvailable === true ? (
 				<span className="flex items-center gap-1 ml-2 text-[11px] text-emerald-500 animate-in zoom-in-50 duration-300">
 					<CheckCircle2 className="h-3 w-3" />
-					{t("home.id_generation.available", "Available")}
+					{t("home.id_generation.available")}
 				</span>
 			) : isAvailable === false ? (
 				<span className="flex items-center gap-1 ml-2 text-[11px] text-red-500 animate-in zoom-in-50 duration-300">
 					<XCircle className="h-3 w-3" />
-					{t("home.id_generation.taken", "Taken")}
+					{t("home.id_generation.taken")}
 				</span>
 			) : null}
 		</p>

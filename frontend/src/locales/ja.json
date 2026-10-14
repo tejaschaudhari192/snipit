@@ -708,7 +708,8 @@
 				"sign_in": "サインイン",
 				"click_to_check": "クリックして運行状況を確認",
 				"track_live_status": "列車 {{train}} の運行状況を追跡",
-				"auto_cleaned_hint": "終了した運行は自動的に削除されます"
+				"auto_cleaned_hint": "終了した運行は自動的に削除されます",
+				"loading_alerts": "Loading active tracking alerts..."
 			},
 			"share": "共有",
 			"share_ticket_title": "チケットを共有",
@@ -923,7 +924,8 @@
 		},
 		"layout": "レイアウト",
 		"success": "成功",
-		"error": "エラー"
+		"error": "エラー",
+		"clear": "すべてクリア"
 	},
 	"profile": {
 		"loading": "読み込み中...",
@@ -1568,7 +1570,10 @@
 			"simplify": "簡略化",
 			"grammar": "文法修正",
 			"summarize": "要約",
-			"comments": "コメント追加"
+			"comments": "コメント追加",
+			"refactor": "リファクタリング案",
+			"fix": "文法修正",
+			"explain": "説明して書く"
 		},
 		"tooltips": {
 			"professional": "プロフェッショナルな表現にする",
@@ -1710,6 +1715,9 @@
 		"open_keyboard": "キーボード入力を開く",
 		"talk_tooltip": "Snipit Voice Copilotと話す",
 		"cancel_tooltip": "停止 / キャンセル",
-		"close_panel": "パネルを閉じる"
+		"close_panel": "パネルを閉じる",
+		"hide_assistant": "Hide AI Voice Assistant",
+		"show_assistant": "Enable AI Voice Assistant",
+		"snippet_applied": "Code written into editor"
 	}
 }

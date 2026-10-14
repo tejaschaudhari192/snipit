@@ -701,7 +701,8 @@
 				"sign_in": "Sign In",
 				"click_to_check": "Click to check live status",
 				"track_live_status": "Track live status of Train {{train}}",
-				"auto_cleaned_hint": "Expired journeys are automatically cleared"
+				"auto_cleaned_hint": "Expired journeys are automatically cleared",
+				"loading_alerts": "Loading active tracking alerts..."
 			},
 			"origin_departure": "Origin / Departure",
 			"destination_arrival": "Destination / Arrival",
@@ -923,7 +924,8 @@
 		},
 		"layout": "Layout",
 		"success": "Success",
-		"error": "Error"
+		"error": "Error",
+		"clear": "Clear All"
 	},
 	"folders": {
 		"explorer": "Folders Explorer",
@@ -1609,7 +1611,10 @@
 			"simplify": "Simplify",
 			"grammar": "Fix Grammar",
 			"summarize": "Summarize",
-			"comments": "Add Comments"
+			"comments": "Add Comments",
+			"refactor": "Refactor Ideas",
+			"fix": "Fix Grammar",
+			"explain": "Explain & Write"
 		},
 		"tooltips": {
 			"professional": "Make it professional",
@@ -1718,6 +1723,9 @@
 		"open_keyboard": "Open keyboard input",
 		"talk_tooltip": "Talk to Snipit Voice Copilot",
 		"cancel_tooltip": "Stop / Cancel",
-		"close_panel": "Close panel"
+		"close_panel": "Close panel",
+		"hide_assistant": "Hide AI Voice Assistant",
+		"show_assistant": "Enable AI Voice Assistant",
+		"snippet_applied": "Code written into editor"
 	}
 }

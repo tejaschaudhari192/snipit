@@ -69,10 +69,7 @@ export const PnrAlertsSheet: React.FC<PnrAlertsSheetProps> = ({
 							<div>
 								<div className="flex items-center gap-2">
 									<SheetTitle className="text-base font-bold text-foreground">
-										{t(
-											"tools.pnr_checker.hub.tab_alerts",
-											"Active Tracking Alerts",
-										)}
+										{t("tools.pnr_checker.hub.tab_alerts")}
 									</SheetTitle>
 									{trackings.length > 0 && (
 										<Badge
@@ -84,14 +81,9 @@ export const PnrAlertsSheet: React.FC<PnrAlertsSheetProps> = ({
 									)}
 								</div>
 								<SheetDescription className="text-xs text-muted-foreground mt-0.5">
-									{t(
-										"tools.pnr_checker.hub.live_sync",
-										"Hourly Live Sync",
-									)}{" "}
-									•{" "}
+									{t("tools.pnr_checker.hub.live_sync")} •{" "}
 									{t(
 										"tools.pnr_checker.hub.email_notifications",
-										"Email notifications",
 									)}
 								</SheetDescription>
 							</div>
@@ -106,10 +98,7 @@ export const PnrAlertsSheet: React.FC<PnrAlertsSheetProps> = ({
 							<div className="py-12 flex flex-col items-center justify-center gap-2 text-xs text-muted-foreground">
 								<Loader2 className="h-5 w-5 animate-spin text-primary" />
 								<span>
-									{t(
-										"tools.pnr_checker.hub.loading_alerts",
-										"Loading active tracking alerts...",
-									)}
+									{t("tools.pnr_checker.hub.loading_alerts")}
 								</span>
 							</div>
 						) : !user ? (
@@ -119,14 +108,10 @@ export const PnrAlertsSheet: React.FC<PnrAlertsSheetProps> = ({
 									<p className="text-sm font-semibold text-foreground">
 										{t(
 											"tools.pnr_checker.hub.login_to_view_alerts",
-											"Sign in to view hourly PNR alerts",
 										)}
 									</p>
 									<p className="text-xs text-muted-foreground">
-										{t(
-											"tools.pnr_checker.hub.alerts_desc",
-											"Hourly email alerts notify you whenever your berth, RAC, or chart changes.",
-										)}
+										{t("tools.pnr_checker.hub.alerts_desc")}
 									</p>
 								</div>
 								<Link
@@ -136,10 +121,7 @@ export const PnrAlertsSheet: React.FC<PnrAlertsSheetProps> = ({
 								>
 									<LogIn className="h-3.5 w-3.5" />
 									<span>
-										{t(
-											"tools.pnr_checker.hub.sign_in",
-											"Sign in",
-										)}
+										{t("tools.pnr_checker.hub.sign_in")}
 									</span>
 								</Link>
 							</div>
@@ -192,7 +174,6 @@ export const PnrAlertsSheet: React.FC<PnrAlertsSheetProps> = ({
 															<span>
 																{t(
 																	"tools.pnr_checker.train_running",
-																	"Active",
 																)}
 															</span>
 														</Badge>
@@ -204,7 +185,6 @@ export const PnrAlertsSheet: React.FC<PnrAlertsSheetProps> = ({
 														{tracking.trainName ||
 															t(
 																"tools.pnr_checker.train_details",
-																"Train Details",
 															)}
 													</p>
 												</div>
@@ -235,7 +215,6 @@ export const PnrAlertsSheet: React.FC<PnrAlertsSheetProps> = ({
 																		<span>
 																			{t(
 																				"tools.pnr_checker.live_status",
-																				"Live",
 																			)}
 																		</span>
 																	</button>
@@ -288,7 +267,6 @@ export const PnrAlertsSheet: React.FC<PnrAlertsSheetProps> = ({
 															<p className="text-xs">
 																{t(
 																	"tools.pnr_checker.hub.stop_tracking",
-																	"Stop Tracking",
 																)}
 															</p>
 														</TooltipContent>
@@ -332,15 +310,11 @@ export const PnrAlertsSheet: React.FC<PnrAlertsSheetProps> = ({
 							<div className="py-12 text-center text-xs text-muted-foreground space-y-2">
 								<Bell className="h-8 w-8 mx-auto text-muted-foreground/30" />
 								<p className="font-medium text-foreground/80">
-									{t(
-										"tools.pnr_checker.hub.no_alerts",
-										"No active tracking alerts",
-									)}
+									{t("tools.pnr_checker.hub.no_alerts")}
 								</p>
 								<p className="text-[11px] text-muted-foreground max-w-xs mx-auto">
 									{t(
 										"tools.pnr_checker.hub.empty_tracking_hint",
-										'Search any PNR ticket and click "Enable Tracking" to receive hourly updates on your chart & confirmation status.',
 									)}
 								</p>
 							</div>

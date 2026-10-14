@@ -96,7 +96,6 @@ export const PnrResultCard: React.FC<PnrResultCardProps> = ({
 										<h4 className="text-sm sm:text-base font-bold text-foreground">
 											{t(
 												"tools.pnr_checker.prediction.predict_prompt_title",
-												"AI Confirmation Probability",
 											)}
 										</h4>
 										<Badge
@@ -105,14 +104,12 @@ export const PnrResultCard: React.FC<PnrResultCardProps> = ({
 										>
 											{t(
 												"tools.pnr_checker.prediction.badge",
-												"RailTC Engine",
 											)}
 										</Badge>
 									</div>
 									<p className="text-xs text-muted-foreground leading-relaxed">
 										{t(
 											"tools.pnr_checker.prediction.predict_prompt_desc",
-											"Analyze waitlist clearance chances and historical chart trends with the RailTC ML model.",
 										)}
 									</p>
 								</div>
@@ -134,7 +131,6 @@ export const PnrResultCard: React.FC<PnrResultCardProps> = ({
 											<span>
 												{t(
 													"tools.pnr_checker.prediction.predict_button",
-													"Predict Confirmation Chance",
 												)}
 											</span>
 										</>

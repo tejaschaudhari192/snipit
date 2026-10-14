@@ -82,10 +82,7 @@ export const ScheduleTimetableTable: React.FC<ScheduleTimetableTableProps> = ({
 						>
 							<Radio className="h-3.5 w-3.5 text-emerald-500 animate-pulse" />
 							<span>
-								{t(
-									"tools.pnr_checker.live_status_tab",
-									"Live Status",
-								)}
+								{t("tools.pnr_checker.live_status_tab")}
 							</span>
 						</Button>
 					)}

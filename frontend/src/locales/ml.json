@@ -709,7 +709,8 @@
 				"sign_in": "സൈൻ ഇൻ ചെയ്യുക",
 				"click_to_check": "തത്സമയ വിവരങ്ങൾ പരിശോധിക്കാൻ ക്ലിക്കുചെയ്യുക",
 				"track_live_status": "ട്രെയിൻ {{train}} തത്സമയ സ്റ്റാറ്റസ് ട്രാക്ക് ചെയ്യുക",
-				"auto_cleaned_hint": "കാലഹരണപ്പെട്ട യാത്രകൾ സ്വയമേവ നീക്കംചെയ്യപ്പെടും"
+				"auto_cleaned_hint": "കാലഹരണപ്പെട്ട യാത്രകൾ സ്വയമേവ നീക്കംചെയ്യപ്പെടും",
+				"loading_alerts": "Loading active tracking alerts..."
 			},
 			"share": "പങ്കിടുക",
 			"share_ticket_title": "ടിക്കറ്റ് പങ്കിടുക",
@@ -923,7 +924,8 @@
 		},
 		"layout": "ലേഔട്ട്",
 		"success": "വിജയം",
-		"error": "പിശക്"
+		"error": "പിശക്",
+		"clear": "എല്ലാം ഒഴിവാക്കുക"
 	},
 	"profile": {
 		"loading": "ശേഖരിക്കുന്നു...",
@@ -1568,7 +1570,10 @@
 			"simplify": "ലളിതമാക്കുക",
 			"grammar": "വ്യാകരണം തിരുത്തുക",
 			"summarize": "ചുരുക്കുക",
-			"comments": "കമന്റുകൾ ചേർക്കുക"
+			"comments": "കമന്റുകൾ ചേർക്കുക",
+			"refactor": "മെച്ചപ്പെടുത്തൽ നിർദ്ദേശങ്ങൾ",
+			"fix": "വ്യാകരണം തിരുത്തുക",
+			"explain": "വിശദീകരിച്ച് എഴുതുക"
 		},
 		"tooltips": {
 			"professional": "പ്രൊഫഷണൽ ആക്കുക",
@@ -1710,6 +1715,9 @@
 		"open_keyboard": "കീബോർഡ് ഇൻപുട്ട് തുറക്കുക",
 		"talk_tooltip": "സ്നിപിറ്റ് വോയ്സ് കോപൈലറ്റുമായി സംസാരിക്കുക",
 		"cancel_tooltip": "നിർത്തുക / റദ്ദാക്കുക",
-		"close_panel": "പാനൽ അടയ്ക്കുക"
+		"close_panel": "പാനൽ അടയ്ക്കുക",
+		"hide_assistant": "Hide AI Voice Assistant",
+		"show_assistant": "Enable AI Voice Assistant",
+		"snippet_applied": "Code written into editor"
 	}
 }

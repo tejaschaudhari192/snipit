@@ -276,10 +276,7 @@ export const PnrCheckerPanel: React.FC = () => {
 									</span>
 									<Bell className="h-3 w-3" />
 									<span>
-										{t(
-											"tools.pnr_checker.hub.tab_alerts",
-											"Active Alerts",
-										)}
+										{t("tools.pnr_checker.hub.tab_alerts")}
 									</span>
 									{activeTrackings.length > 0 && (
 										<Badge

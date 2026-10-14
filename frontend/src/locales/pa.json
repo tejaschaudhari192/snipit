@@ -709,7 +709,8 @@
 				"sign_in": "ਸਾਈਨ ਇਨ ਕਰੋ",
 				"click_to_check": "ਲਾਈਵ ਸਥਿਤੀ ਜਾਂਚਣ ਲਈ ਕਲਿੱਕ ਕਰੋ",
 				"track_live_status": "ਟ੍ਰੇਨ {{train}} ਦੀ ਲਾਈਵ ਸਥਿਤੀ ਟਰੈਕ ਕਰੋ",
-				"auto_cleaned_hint": "ਸਮਾਪਤ ਹੋ ਚੁੱਕੀਆਂ ਯਾਤਰਾਵਾਂ ਆਪਣੇ ਆਪ ਹਟ ਜਾਂਦੀਆਂ ਹਨ"
+				"auto_cleaned_hint": "ਸਮਾਪਤ ਹੋ ਚੁੱਕੀਆਂ ਯਾਤਰਾਵਾਂ ਆਪਣੇ ਆਪ ਹਟ ਜਾਂਦੀਆਂ ਹਨ",
+				"loading_alerts": "Loading active tracking alerts..."
 			},
 			"share": "ਸਾਂਝਾ ਕਰੋ",
 			"share_ticket_title": "ਟਿਕਟ ਸਾਂਝੀ ਕਰੋ",
@@ -923,7 +924,8 @@
 		},
 		"layout": "ਖਾਕਾ",
 		"success": "ਸਫਲਤਾ",
-		"error": "ਗਲਤੀ"
+		"error": "ਗਲਤੀ",
+		"clear": "ਸਭ ਸਾਫ਼ ਕਰੋ"
 	},
 	"profile": {
 		"loading": "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
@@ -1568,7 +1570,10 @@
 			"simplify": "ਸਰਲ ਬਣਾਓ",
 			"grammar": "ਵਿਆਕਰਨ ਠੀਕ ਕਰੋ",
 			"summarize": "ਸੰਖੇਪ ਕਰੋ",
-			"comments": "ਟਿੱਪਣੀਆਂ ਜੋੜੋ"
+			"comments": "ਟਿੱਪਣੀਆਂ ਜੋੜੋ",
+			"refactor": "ਸੁਧਾਰ ਦੇ ਵਿਚਾਰ",
+			"fix": "ਵਿਆਕਰਨ ਠੀਕ ਕਰੋ",
+			"explain": "ਸਮਝਾਓ ਅਤੇ ਲਿਖੋ"
 		},
 		"tooltips": {
 			"professional": "ਪੇਸ਼ੇਵਰ ਬਣਾਓ",
@@ -1710,6 +1715,9 @@
 		"open_keyboard": "ਕੀਬੋਰਡ ਇਨਪੁਟ ਖੋਲ੍ਹੋ",
 		"talk_tooltip": "ਸਨਿੱਪਿਟ ਵਾਇਸ ਕੋਪਾਇਲਟ ਨਾਲ ਗੱਲ ਕਰੋ",
 		"cancel_tooltip": "ਰੋਕੋ / ਰੱਦ ਕਰੋ",
-		"close_panel": "ਪੈਨਲ ਬੰਦ ਕਰੋ"
+		"close_panel": "ਪੈਨਲ ਬੰਦ ਕਰੋ",
+		"hide_assistant": "Hide AI Voice Assistant",
+		"show_assistant": "Enable AI Voice Assistant",
+		"snippet_applied": "Code written into editor"
 	}
 }

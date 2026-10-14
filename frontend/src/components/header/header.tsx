@@ -254,14 +254,8 @@ const Header = ({ className }: HeaderProps) => {
 					onClick={toggleMascot}
 					title={
 						isMascotVisible
-							? t(
-									"voice.hide_assistant",
-									"Hide AI Voice Assistant (Nick)",
-								)
-							: t(
-									"voice.show_assistant",
-									"Enable AI Voice Assistant (Nick)",
-								)
+							? t("voice.hide_assistant")
+							: t("voice.show_assistant")
 					}
 				>
 					<span className="text-base leading-none select-none">
@@ -411,14 +405,8 @@ const Header = ({ className }: HeaderProps) => {
 								<span className="text-base">🦊</span>
 								<span>
 									{isMascotVisible
-										? t(
-												"voice.hide_assistant",
-												"Hide AI Voice (Nick)",
-											)
-										: t(
-												"voice.show_assistant",
-												"Enable AI Voice (Nick)",
-											)}
+										? t("voice.hide_assistant")
+										: t("voice.show_assistant")}
 								</span>
 							</div>
 						</DropdownMenuItem>

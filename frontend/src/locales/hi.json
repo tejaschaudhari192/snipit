@@ -709,7 +709,8 @@
 				"sign_in": "साइन इन करें",
 				"click_to_check": "लाइव स्थिति जांचने के लिए क्लिक करें",
 				"track_live_status": "ट्रेन {{train}} की लाइव स्थिति ट्रैक करें",
-				"auto_cleaned_hint": "समाप्त हो चुकी यात्राएं अपने आप हट जाती हैं"
+				"auto_cleaned_hint": "समाप्त हो चुकी यात्राएं अपने आप हट जाती हैं",
+				"loading_alerts": "Loading active tracking alerts..."
 			},
 			"share": "शेयर करें",
 			"share_ticket_title": "टिकट शेयर करें",
@@ -923,7 +924,8 @@
 		},
 		"layout": "लेआउट",
 		"success": "सफल",
-		"error": "त्रुटि"
+		"error": "त्रुटि",
+		"clear": "सभी साफ़ करें"
 	},
 	"folders": {
 		"explorer": "फ़ोल्डर एक्सप्लोरर",
@@ -1609,7 +1611,10 @@
 			"simplify": "सरल बनाएं",
 			"grammar": "व्याकरण ठीक करें",
 			"summarize": "सारांश",
-			"comments": "कमेंट जोड़ें"
+			"comments": "कमेंट जोड़ें",
+			"refactor": "रिफैक्टर विचार",
+			"fix": "व्याकरण ठीक करें",
+			"explain": "समझाएं और लिखें"
 		},
 		"tooltips": {
 			"professional": "इसे प्रोफेशनल बनाएं",
@@ -1718,6 +1723,9 @@
 		"open_keyboard": "कीबोर्ड इनपुट खोलें",
 		"talk_tooltip": "स्निपिट वॉयस कोपायलट से बात करें",
 		"cancel_tooltip": "रोकें / रद्द करें",
-		"close_panel": "पैनल बंद करें"
+		"close_panel": "पैनल बंद करें",
+		"hide_assistant": "Hide AI Voice Assistant",
+		"show_assistant": "Enable AI Voice Assistant",
+		"snippet_applied": "Code written into editor"
 	}
 }

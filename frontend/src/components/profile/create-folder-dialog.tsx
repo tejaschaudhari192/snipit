@@ -90,7 +90,7 @@ export const CreateFolderDialog: React.FC<CreateFolderDialogProps> = ({
 						{/* Color Picker */}
 						<div className="space-y-1.5">
 							<span className="text-xs font-semibold text-muted-foreground tracking-wider uppercase">
-								{t("profile.color_tag", "Color Tag")}
+								{t("profile.color_tag")}
 							</span>
 							<div className="flex flex-wrap gap-2">
 								{FOLDER_COLORS.map((color) => (
