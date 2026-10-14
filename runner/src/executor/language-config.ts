@@ -83,7 +83,8 @@ export const getLanguageConfig = (
 				fileName,
 			};
 		}
-		case "cpp": {
+		case "cpp":
+		case "c++": {
 			const fileName = `${tempId}.cpp`;
 			return {
 				compileCmd: "g++",

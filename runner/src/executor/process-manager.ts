@@ -77,9 +77,14 @@ export class ProcessManager {
 
 		// Helper to spawn and manage the actual program process
 		const spawnProgram = () => {
-			const proc = spawn(config.runCmd, config.runArgs, {
+			const executable =
+				config.runCmd.startsWith("./") || config.runCmd.endsWith(".exe")
+					? path.resolve(executionDirPath, config.runCmd)
+					: config.runCmd;
+
+			const proc = spawn(executable, config.runArgs, {
 				cwd: executionDirPath,
-				shell: process.platform === "win32",
+				shell: true,
 			});
 
 			proc.stdout?.on("data", (data) => {
