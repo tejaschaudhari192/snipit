@@ -95,11 +95,6 @@ const TransliterationToggle = lazy(() =>
 	})),
 );
 import { useTransliteration } from "@/hooks/use-transliteration";
-const AiEnhanceDialog = lazy(() =>
-	import("@/components/editor/ai-enhance-dialog").then((m) => ({
-		default: m.AiEnhanceDialog,
-	})),
-);
 const AiWriterDialog = lazy(() =>
 	import("@/components/editor/ai-writer-dialog").then((m) => ({
 		default: m.AiWriterDialog,
@@ -191,15 +186,11 @@ const HomePage = () => {
 	const editorContainerRef = useRef<HTMLElement | null>(null);
 
 	const {
-		isAiDialogOpen,
-		setIsAiDialogOpen,
 		isAiWriterDialogOpen,
 		setIsAiWriterDialogOpen,
 		selectedText,
 		setSelectedText,
-		prefillInstruction,
 		setupAiAction,
-		applyEnhancedText,
 		applyWriterText,
 	} = useAiEnhance();
 
@@ -207,22 +198,6 @@ const HomePage = () => {
 	const handleTiptapMount = useCallback((editor: Editor | null) => {
 		tiptapEditorRef.current = editor;
 	}, []);
-
-	const handleApplyEnhancedText = useCallback(
-		(newText: string) => {
-			if (contentType === "docs" && tiptapEditorRef.current) {
-				tiptapEditorRef.current
-					.chain()
-					.focus()
-					.insertContent(newText)
-					.run();
-				return;
-			}
-			if (editorInstanceRef.current) applyEnhancedText(newText);
-			else setTextValue(newText);
-		},
-		[applyEnhancedText, contentType, setTextValue],
-	);
 
 	const handleApplyWriterText = useCallback(
 		(newText: string) => {
@@ -236,6 +211,34 @@ const HomePage = () => {
 			}
 			if (editorInstanceRef.current) {
 				applyWriterText(newText);
+			} else if (userInputRef.current) {
+				const ta = userInputRef.current;
+				const start = ta.selectionStart;
+				const end = ta.selectionEnd;
+				const curVal = ta.value;
+				if (start !== undefined && end !== undefined && start !== end) {
+					// Replace selected range
+					const nextVal =
+						curVal.slice(0, start) + newText + curVal.slice(end);
+					setTextValue(nextVal);
+					setTimeout(() => {
+						ta.focus();
+						ta.setSelectionRange(start, start + newText.length);
+					}, 0);
+				} else {
+					// Insert at caret or append
+					const pos = start ?? curVal.length;
+					const nextVal =
+						curVal.slice(0, pos) + newText + curVal.slice(pos);
+					setTextValue(nextVal);
+					setTimeout(() => {
+						ta.focus();
+						ta.setSelectionRange(
+							pos + newText.length,
+							pos + newText.length,
+						);
+					}, 0);
+				}
 			} else {
 				setTextValue(
 					textValue
@@ -350,10 +353,7 @@ const HomePage = () => {
 			if (data.content) {
 				setTextValue(data.content);
 				toast.add({
-					title: t(
-						"voice.snippet_applied",
-						"Code written into editor 🦊",
-					),
+					title: t("voice.snippet_applied"),
 					type: "success",
 				});
 			}
@@ -586,6 +586,24 @@ const HomePage = () => {
 												} else {
 													setSelectedText("");
 												}
+											} else if (userInputRef.current) {
+												const ta = userInputRef.current;
+												const start = ta.selectionStart;
+												const end = ta.selectionEnd;
+												if (
+													start !== undefined &&
+													end !== undefined &&
+													start !== end
+												) {
+													setSelectedText(
+														ta.value.slice(
+															start,
+															end,
+														),
+													);
+												} else {
+													setSelectedText("");
+												}
 											} else {
 												const winSel = window
 													.getSelection()
@@ -735,14 +753,6 @@ const HomePage = () => {
 			</div>
 
 			<Suspense fallback={null}>
-				<AiEnhanceDialog
-					isOpen={isAiDialogOpen}
-					onClose={() => setIsAiDialogOpen(false)}
-					selectedText={selectedText}
-					onApply={handleApplyEnhancedText}
-					initialInstruction={prefillInstruction}
-					contentType={contentType}
-				/>
 				<AiWriterDialog
 					isOpen={isAiWriterDialogOpen}
 					onClose={() => setIsAiWriterDialogOpen(false)}

@@ -197,6 +197,7 @@ const DisplayPage = () => {
 
 	const editorInstanceRef = useRef<editor.IStandaloneCodeEditor | null>(null);
 	const monacoInstanceRef = useRef<Monaco | null>(null);
+	const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
 	const { setupAutocomplete } = useAiAutocomplete({
 		language,
@@ -410,15 +411,11 @@ const DisplayPage = () => {
 	const handleEditorWillMount: BeforeMount = (m) => defineMonacoThemes(m);
 
 	const {
-		isAiDialogOpen,
-		setIsAiDialogOpen,
 		isAiWriterDialogOpen,
 		setIsAiWriterDialogOpen,
 		selectedText,
 		setSelectedText,
-		prefillInstruction,
 		setupAiAction,
-		applyEnhancedText,
 		applyWriterText,
 	} = useAiEnhance();
 
@@ -428,22 +425,6 @@ const DisplayPage = () => {
 			tiptapEditorRef.current = editor;
 		},
 		[],
-	);
-
-	const handleApplyEnhancedText = useCallback(
-		(newText: string) => {
-			if (contentType === "docs" && tiptapEditorRef.current) {
-				tiptapEditorRef.current
-					.chain()
-					.focus()
-					.insertContent(newText)
-					.run();
-				return;
-			}
-			if (editorInstanceRef.current) applyEnhancedText(newText);
-			else onContentChange(newText);
-		},
-		[applyEnhancedText, contentType, onContentChange],
 	);
 
 	const handleApplyWriterText = useCallback(
@@ -458,6 +439,32 @@ const DisplayPage = () => {
 			}
 			if (editorInstanceRef.current) {
 				applyWriterText(newText);
+			} else if (textareaRef.current) {
+				const ta = textareaRef.current;
+				const start = ta.selectionStart;
+				const end = ta.selectionEnd;
+				const curVal = ta.value;
+				if (start !== undefined && end !== undefined && start !== end) {
+					const nextVal =
+						curVal.slice(0, start) + newText + curVal.slice(end);
+					onContentChange(nextVal);
+					setTimeout(() => {
+						ta.focus();
+						ta.setSelectionRange(start, start + newText.length);
+					}, 0);
+				} else {
+					const pos = start ?? curVal.length;
+					const nextVal =
+						curVal.slice(0, pos) + newText + curVal.slice(pos);
+					onContentChange(nextVal);
+					setTimeout(() => {
+						ta.focus();
+						ta.setSelectionRange(
+							pos + newText.length,
+							pos + newText.length,
+						);
+					}, 0);
+				}
 			} else {
 				const current =
 					updatedContent !== undefined
@@ -741,7 +748,20 @@ const DisplayPage = () => {
 							}
 							onContentChange={onContentChange}
 							onAiWriterClick={() => {
-								if (editorInstanceRef.current) {
+								if (
+									contentType === "docs" &&
+									tiptapEditorRef.current
+								) {
+									const { from, to } =
+										tiptapEditorRef.current.state.selection;
+									const text =
+										tiptapEditorRef.current.state.doc.textBetween(
+											from,
+											to,
+											" ",
+										);
+									setSelectedText(text);
+								} else if (editorInstanceRef.current) {
 									const selection =
 										editorInstanceRef.current.getSelection();
 									if (selection && !selection.isEmpty()) {
@@ -749,6 +769,21 @@ const DisplayPage = () => {
 											.getModel()
 											?.getValueInRange(selection);
 										if (text) setSelectedText(text);
+									} else {
+										setSelectedText("");
+									}
+								} else if (textareaRef.current) {
+									const ta = textareaRef.current;
+									const start = ta.selectionStart;
+									const end = ta.selectionEnd;
+									if (
+										start !== undefined &&
+										end !== undefined &&
+										start !== end
+									) {
+										setSelectedText(
+											ta.value.slice(start, end),
+										);
 									} else {
 										setSelectedText("");
 									}
@@ -932,6 +967,7 @@ const DisplayPage = () => {
 								onEditorInstance={handleTiptapMount}
 								redirectionType={state.redirectionType}
 								setRedirectionType={state.setRedirectionType}
+								textareaRef={textareaRef}
 							/>
 						</Suspense>
 					</div>
@@ -968,12 +1004,6 @@ const DisplayPage = () => {
 				setIsDeleteDialogOpen={setIsDeleteDialogOpen}
 				onDeleteConfirm={onDeleteConfirm}
 				isDeleting={isDeleting}
-				isAiDialogOpen={isAiDialogOpen}
-				setIsAiDialogOpen={setIsAiDialogOpen}
-				selectedText={selectedText}
-				prefillInstruction={prefillInstruction}
-				applyEnhancedText={handleApplyEnhancedText}
-				contentType={contentType}
 			/>
 			<AiWriterDialog
 				isOpen={isAiWriterDialogOpen}
