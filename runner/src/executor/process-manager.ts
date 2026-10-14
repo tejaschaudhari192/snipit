@@ -50,6 +50,11 @@ export class ProcessManager {
 		try {
 			fs.mkdirSync(executionDirPath, { recursive: true });
 			fs.writeFileSync(filePath, normalizedCode, "utf8");
+			if (config.extraFiles && config.extraFiles.length > 0) {
+				for (const extra of config.extraFiles) {
+					fs.writeFileSync(path.join(executionDirPath, extra.name), extra.content, "utf8");
+				}
+			}
 		} catch (err: unknown) {
 			const msg = err instanceof Error ? err.message : String(err);
 			callbacks.onOutput(`[Error] Failed to initialize execution directory: ${msg}\r\n`);

@@ -7,6 +7,7 @@ export interface LanguageExecutionPlan {
 	runArgs: string[];
 	fileName: string;
 	fileExt: string;
+	extraFiles?: { name: string; content: string }[];
 }
 
 export const getLanguageConfig = (
@@ -107,11 +108,27 @@ export const getLanguageConfig = (
 			};
 		}
 		case "csharp": {
+			const projectCsproj = `<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+</Project>`;
 			return {
-				runCmd: "dotnet-script",
-				runArgs: ["Program.cs"],
+				compileCmd: "dotnet",
+				compileArgs: ["build", "-c", "Release", "-o", "./out", "--nologo", "-v", "q"],
+				runCmd: "dotnet",
+				runArgs: ["./out/project.dll"],
 				fileExt: ".cs",
 				fileName: "Program.cs",
+				extraFiles: [
+					{
+						name: "project.csproj",
+						content: projectCsproj,
+					},
+				],
 			};
 		}
 		case "shell":
