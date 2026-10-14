@@ -7,6 +7,7 @@ export const GROQ_CONFIG = {
 	models: {
 		smart: "openai/gpt-oss-120b",
 		dumb: "openai/gpt-oss-20b",
+		code: "qwen/qwen3.8-27b",
 		generalList: [
 			"openai/gpt-oss-120b",
 			"qwen/qwen3.8-27b",

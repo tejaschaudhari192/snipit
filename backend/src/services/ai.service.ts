@@ -130,7 +130,7 @@ class AiService {
 					temperature: 0.1,
 					max_tokens: 30,
 				},
-				{ preferredModel: configurations.groq_dumb_model },
+				{ preferredModel: configurations.groq_code_model },
 			);
 
 			let rawResponse =
