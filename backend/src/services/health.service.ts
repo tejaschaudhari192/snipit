@@ -26,6 +26,7 @@ export interface HealthResponse {
 		supabase: ServiceStatus;
 		smtp: ServiceStatus;
 		ai: ServiceStatus;
+		runner: ServiceStatus;
 	};
 }
 
@@ -81,11 +82,12 @@ class HealthService {
 				supabase: { status: "unknown" },
 				smtp: { status: "unknown" },
 				ai: { status: "unknown" },
+				runner: { status: "unknown" },
 			},
 		};
 
 		const updates: HealthStepUpdate[] = [];
-		const totalSteps = 4;
+		const totalSteps = 5;
 		let completedSteps = 0;
 
 		const addUpdate = (
@@ -240,6 +242,55 @@ class HealthService {
 				message: "Email background check failed",
 			};
 			addUpdate("Email Server", "Email Server Error", "mail", "error");
+		}
+
+		// 5. Code Runner Service Check
+		try {
+			const runnerUrl = `${configurations.runner_service_url.replace(/\/+$/, "")}/health`;
+			const controller = new AbortController();
+			const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+			const runnerRes = await fetch(runnerUrl, {
+				signal: controller.signal,
+			}).catch((err) => {
+				throw err;
+			});
+			clearTimeout(timeoutId);
+
+			if (runnerRes && runnerRes.ok) {
+				health.services.runner = {
+					status: "ok",
+					message: "Code Runner Engine Ready",
+				};
+				addUpdate("Code Runner", "Code Runner Ready", "terminal", "ok");
+			} else {
+				health.services.runner = {
+					status: "error",
+					message: `Runner responded with status ${runnerRes?.status ?? "unknown"}`,
+				};
+				addUpdate(
+					"Code Runner",
+					"Code Runner Offline",
+					"terminal",
+					"error",
+				);
+			}
+		} catch (error: unknown) {
+			const message =
+				error instanceof Error ? error.message : String(error);
+			logger.warn(
+				`[Health] Runner service check non-fatal warning: ${message}`,
+			);
+			health.services.runner = {
+				status: "error",
+				message: `Runner unavailable: ${message}`,
+			};
+			addUpdate(
+				"Code Runner",
+				"Code Runner Offline",
+				"terminal",
+				"error",
+			);
 		}
 
 		// Final Update
