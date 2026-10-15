@@ -274,39 +274,59 @@ export function DocsDisplaySkeleton({
 	...props
 }: React.ComponentProps<typeof Skeleton>) {
 	return (
-		<div className={cn("flex-1 flex flex-col space-y-4", className)}>
-			<div className="border border-border/50 rounded-xl p-6 space-y-4 bg-card">
-				<div className="flex items-center justify-between">
-					<div className="space-y-1">
-						<Skeleton className="h-6 w-48 rounded-md" {...props} />
-						<Skeleton className="h-4 w-64 rounded" {...props} />
-					</div>
-					<Skeleton className="h-9 w-24 rounded-md" {...props} />
-				</div>
-				<div className="flex items-center gap-2 flex-wrap">
-					<Skeleton className="h-6 w-20 rounded-full" {...props} />
-					<Skeleton className="h-6 w-24 rounded-full" {...props} />
-					<Skeleton className="h-6 w-28 rounded-full" {...props} />
-				</div>
-			</div>
-			<div className="flex-1 border border-border/50 rounded-xl p-4 space-y-3 overflow-auto prose">
-				<Skeleton className="h-8 w-48 rounded-md" {...props} />
-				{Array.from({ length: 12 }).map((_, i) => (
+		<div
+			className={cn(
+				"flex-1 overflow-y-auto min-h-0 custom-scrollbar p-4 sm:p-8 bg-muted/30 flex justify-center",
+				className,
+			)}
+		>
+			<div className="max-w-4xl mx-auto w-full min-h-full px-6 sm:px-10 py-8 bg-card border border-border/40 shadow-sm rounded-lg space-y-6">
+				{/* Document Title Skeleton */}
+				<div className="space-y-2 pb-4 border-b border-border/30">
 					<Skeleton
-						key={i}
-						className={cn(
-							"h-5 rounded",
-							i % 4 === 0
-								? "w-full"
-								: i % 4 === 1
-									? "w-3/4"
-									: i % 4 === 2
-										? "w-5/6"
-										: "w-1/2",
-						)}
+						className="h-9 w-2/3 max-w-md rounded-md"
 						{...props}
 					/>
-				))}
+					<Skeleton
+						className="h-4 w-1/3 max-w-xs rounded"
+						{...props}
+					/>
+				</div>
+
+				{/* Section 1 */}
+				<div className="space-y-3 pt-2">
+					<Skeleton className="h-6 w-44 rounded-md" {...props} />
+					<div className="space-y-2.5">
+						<Skeleton className="h-4 w-full rounded" {...props} />
+						<Skeleton className="h-4 w-11/12 rounded" {...props} />
+						<Skeleton className="h-4 w-4/5 rounded" {...props} />
+						<Skeleton className="h-4 w-2/3 rounded" {...props} />
+					</div>
+				</div>
+
+				{/* Section 2 */}
+				<div className="space-y-3 pt-4">
+					<Skeleton className="h-6 w-36 rounded-md" {...props} />
+					<div className="space-y-2.5">
+						<Skeleton className="h-4 w-full rounded" {...props} />
+						<Skeleton className="h-4 w-5/6 rounded" {...props} />
+						<Skeleton className="h-4 w-full rounded" {...props} />
+						<Skeleton className="h-4 w-3/4 rounded" {...props} />
+					</div>
+				</div>
+
+				{/* Quote / Callout block */}
+				<div className="pl-4 border-l-2 border-primary/40 space-y-2 py-1 my-4">
+					<Skeleton className="h-4 w-4/5 rounded" {...props} />
+					<Skeleton className="h-4 w-1/2 rounded" {...props} />
+				</div>
+
+				{/* Section 3 */}
+				<div className="space-y-2.5 pt-2">
+					<Skeleton className="h-4 w-full rounded" {...props} />
+					<Skeleton className="h-4 w-10/12 rounded" {...props} />
+					<Skeleton className="h-4 w-3/5 rounded" {...props} />
+				</div>
 			</div>
 		</div>
 	);
