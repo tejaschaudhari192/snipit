@@ -73,7 +73,7 @@ interface PasteContextType {
 	setFolderId: (v: string | null) => void;
 
 	// File Upload Actions
-	uploadFiles: () => Promise<FileUploadStatus[]>;
+	uploadFiles: (password?: string) => Promise<FileUploadStatus[]>;
 	addFiles: (files: File[]) => void;
 	removeFile: (id: string) => void;
 	resetFileUpload: () => void;

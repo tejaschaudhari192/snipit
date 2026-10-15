@@ -16,6 +16,7 @@ import type {
 	FileAttachment,
 } from "@/types";
 import { FileService } from "@/lib/file-service";
+import { encryptPayload } from "@/lib/crypto";
 
 interface SubmitOptions {
 	visibility?: Visibility;
@@ -71,9 +72,11 @@ export const usePasteSubmission = () => {
 				finalPublicRole = "editor";
 			}
 
+			const finalPassword = (options.password ?? password) || undefined;
+
 			let finalFiles = contentType === "file" ? readyAttachments : [];
 			if (contentType === "file" && hasPending) {
-				const results = await uploadFiles();
+				const results = await uploadFiles(finalPassword);
 				const errors = results.filter((r) => r.error);
 				if (errors.length > 0) {
 					throw new Error(errors[0].error || "Upload failed");
@@ -83,14 +86,19 @@ export const usePasteSubmission = () => {
 					.map(FileService.toAttachment)
 					.filter((a): a is FileAttachment => a !== null);
 			}
+			let rawContent =
+				contentType === "file" && finalFiles.length > 0
+					? finalFiles[0].url
+					: contentType === "draw" && !textValue.trim()
+						? JSON.stringify({ elements: [], appState: {} })
+						: textValue;
+
+			if (finalPassword && rawContent) {
+				rawContent = await encryptPayload(rawContent, finalPassword);
+			}
 
 			const data = await submitPaste({
-				content:
-					contentType === "file" && finalFiles.length > 0
-						? finalFiles[0].url
-						: contentType === "draw" && !textValue.trim()
-							? JSON.stringify({ elements: [], appState: {} })
-							: textValue,
+				content: rawContent,
 				expiresTime,
 				expiresAt: dateConverter(expiresTime),
 				idType: selectedIdType,
@@ -119,7 +127,7 @@ export const usePasteSubmission = () => {
 					finalEditPermission === "shared"
 						? (options.allowedUsers ?? allowedUsers)
 						: undefined,
-				password: (options.password ?? password) || undefined,
+				password: finalPassword,
 				editPermission: finalEditPermission,
 				collaborators: options.collaborators ?? collaborators,
 				publicRole: finalPublicRole,
@@ -139,7 +147,7 @@ export const usePasteSubmission = () => {
 
 			navigate("/" + data.id, {
 				state: {
-					pasteData: data,
+					pasteData: finalPassword ? undefined : data,
 					isCollaborative: options.isCollaborative,
 					showLinkSuccessModal: contentType === "link",
 				},

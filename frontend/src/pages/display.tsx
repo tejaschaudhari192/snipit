@@ -23,6 +23,7 @@ import { useLanguageDetection } from "@/hooks/use-language-detection";
 import { usePinchZoom } from "@/hooks/use-pinch-zoom";
 import { useTerminalLayout } from "@/hooks/use-terminal-layout";
 import { defineMonacoThemes } from "@/lib/monaco";
+import { decryptPayload, isEncryptedPayload } from "@/lib/crypto";
 import { cn } from "cn";
 import { storage } from "@/utils/storage";
 import { useAiAutocomplete } from "@/hooks/use-ai-autocomplete";
@@ -100,6 +101,9 @@ const DisplayPage = () => {
 	const [showLinkSuccessModal, setShowLinkSuccessModal] = useState(
 		() => location.state?.showLinkSuccessModal || false,
 	);
+	const [verifiedPassword, setVerifiedPassword] = useState<
+		string | undefined
+	>();
 
 	useEffect(() => {
 		if (location.state?.showLinkSuccessModal) {
@@ -363,6 +367,7 @@ const DisplayPage = () => {
 		hasPending,
 		uploadFiles: uploadAll,
 		resetFileUpload,
+		verifiedPassword,
 	});
 	useDisplayInit({ id, state, user });
 
@@ -597,37 +602,38 @@ const DisplayPage = () => {
 		);
 	}
 
-	if (paste && paste.isPasswordProtected && !paste.content) {
-		return (
-			<Suspense fallback={<PasswordGateSkeleton />}>
-				<PasswordGate
-					passwordInput={passwordInput}
-					setPasswordInput={setPasswordInput}
-					passwordError={passwordError}
-					setPasswordError={setPasswordError}
-					handleVerifyPassword={async () => {
-						setIsVerifyingPassword(true);
-						try {
-							const data = await verifyPassword(
-								id!,
-								passwordInput,
-							);
-							updateAllFromData(data);
-							if (data.redirectUrl && data.contentMode === "link")
-								window.location.href = data.content;
-						} catch {
-							setPasswordError(
-								t("messages.error.password_incorrect"),
-							);
-						} finally {
-							setIsVerifyingPassword(false);
-						}
-					}}
-					isVerifying={isVerifyingPassword}
-				/>
-			</Suspense>
-		);
-	}
+	const isLocked = Boolean(
+		paste &&
+		paste.isPasswordProtected &&
+		(!paste.content || isEncryptedPayload(paste.content)),
+	);
+
+	const onVerifyPassword = async () => {
+		setIsVerifyingPassword(true);
+		try {
+			const data = await verifyPassword(id!, passwordInput);
+			// If content is client-side encrypted, decrypt it locally with the password
+			if (data.content && isEncryptedPayload(data.content)) {
+				try {
+					data.content = await decryptPayload(
+						data.content,
+						passwordInput,
+					);
+				} catch {
+					setPasswordError(t("messages.error.password_incorrect"));
+					return;
+				}
+			}
+			updateAllFromData(data);
+			setVerifiedPassword(passwordInput);
+			if (data.redirectUrl && data.contentMode === "link")
+				window.location.href = data.content;
+		} catch {
+			setPasswordError(t("messages.error.password_incorrect"));
+		} finally {
+			setIsVerifyingPassword(false);
+		}
+	};
 
 	const visibleActiveUsers = syncUsers.map((u) => ({
 		...u,
@@ -902,74 +908,96 @@ const DisplayPage = () => {
 								</div>
 							)}
 
-						<Suspense fallback={<DisplayWorkspaceSkeleton />}>
-							<DisplayWorkspace
-								id={id ?? ""}
-								isEdit={isEdit}
-								isAdmin={isOwnerOrAdmin}
-								contentType={contentType}
-								language={language}
-								updatedContent={updatedContent}
-								paste={paste}
-								handleContentChange={(val) =>
-									handleContentChange(
-										val,
-										isRemoteUpdateRef,
-										editorInstance,
-										handleEditorChange,
-									)
-								}
-								handleEditorChange={handleEditorChange}
-								handleEditorMount={handleEditorMount}
-								handleEditorWillMount={handleEditorWillMount}
-								theme={theme}
-								fontSize={fontSize}
-								contentRef={contentRef}
-								sharedSocketRef={sharedSocketRef}
-								syncUsers={syncUsers}
-								isFullscreen={isFullscreen}
-								setIsFullscreen={setIsFullscreen}
-								isWindowFullscreen={isWindowFullscreen}
-								setIsWindowFullscreen={setIsWindowFullscreen}
-								isTerminalOpen={isTerminalOpen}
-								setIsTerminalOpen={setIsTerminalOpen}
-								terminalPosition={terminalPosition}
-								setTerminalPosition={setTerminalPosition}
-								socket={socket}
-								onFileSelect={(selectedFiles) => {
-									addFiles(selectedFiles);
-									setUpdatedContent(
-										paste?.content || "File Update",
-									);
-								}}
-								onClearFile={() => {
-									resetFileUpload();
-									setIsServerFileRemoved(true);
-								}}
-								isServerFileRemoved={isServerFileRemoved}
-								files={uploadedFiles}
-								isFileUploading={isFileUploading}
-								fileUploadError={fileUploadError}
-								onRemoveServerFile={(url) => {
-									removeServerFile(url);
-									setUpdatedContent(
-										paste?.content || "File Update",
-									);
-								}}
-								onRemovePendingFile={(fileId) => {
-									removePendingFile(fileId);
-									setUpdatedContent(
-										paste?.content || "File Update",
-									);
-								}}
-								removedServerFileUrls={removedServerFileUrls}
-								transliteration={transliteration}
-								onEditorInstance={handleTiptapMount}
-								redirectionType={state.redirectionType}
-								setRedirectionType={state.setRedirectionType}
-								textareaRef={textareaRef}
-							/>
-						</Suspense>
+						{isLocked ? (
+							<Suspense fallback={<PasswordGateSkeleton />}>
+								<PasswordGate
+									passwordInput={passwordInput}
+									setPasswordInput={setPasswordInput}
+									passwordError={passwordError}
+									setPasswordError={setPasswordError}
+									handleVerifyPassword={onVerifyPassword}
+									isVerifying={isVerifyingPassword}
+								/>
+							</Suspense>
+						) : (
+							<Suspense fallback={<DisplayWorkspaceSkeleton />}>
+								<DisplayWorkspace
+									id={id ?? ""}
+									isEdit={isEdit}
+									isAdmin={isOwnerOrAdmin}
+									contentType={contentType}
+									language={language}
+									updatedContent={updatedContent}
+									paste={paste}
+									handleContentChange={(val) =>
+										handleContentChange(
+											val,
+											isRemoteUpdateRef,
+											editorInstance,
+											handleEditorChange,
+										)
+									}
+									handleEditorChange={handleEditorChange}
+									handleEditorMount={handleEditorMount}
+									handleEditorWillMount={
+										handleEditorWillMount
+									}
+									theme={theme}
+									fontSize={fontSize}
+									contentRef={contentRef}
+									sharedSocketRef={sharedSocketRef}
+									syncUsers={syncUsers}
+									isFullscreen={isFullscreen}
+									setIsFullscreen={setIsFullscreen}
+									isWindowFullscreen={isWindowFullscreen}
+									setIsWindowFullscreen={
+										setIsWindowFullscreen
+									}
+									isTerminalOpen={isTerminalOpen}
+									setIsTerminalOpen={setIsTerminalOpen}
+									terminalPosition={terminalPosition}
+									setTerminalPosition={setTerminalPosition}
+									socket={socket}
+									onFileSelect={(selectedFiles) => {
+										addFiles(selectedFiles);
+										setUpdatedContent(
+											paste?.content || "File Update",
+										);
+									}}
+									onClearFile={() => {
+										resetFileUpload();
+										setIsServerFileRemoved(true);
+									}}
+									isServerFileRemoved={isServerFileRemoved}
+									files={uploadedFiles}
+									isFileUploading={isFileUploading}
+									fileUploadError={fileUploadError}
+									onRemoveServerFile={(url) => {
+										removeServerFile(url);
+										setUpdatedContent(
+											paste?.content || "File Update",
+										);
+									}}
+									onRemovePendingFile={(fileId) => {
+										removePendingFile(fileId);
+										setUpdatedContent(
+											paste?.content || "File Update",
+										);
+									}}
+									removedServerFileUrls={
+										removedServerFileUrls
+									}
+									transliteration={transliteration}
+									onEditorInstance={handleTiptapMount}
+									redirectionType={state.redirectionType}
+									setRedirectionType={
+										state.setRedirectionType
+									}
+									textareaRef={textareaRef}
+									password={verifiedPassword}
+								/>
+							</Suspense>
+						)}
 					</div>
 				</div>
 			</div>

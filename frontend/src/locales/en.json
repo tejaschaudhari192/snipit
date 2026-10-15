@@ -875,9 +875,11 @@
 			"password_placeholder": "Enter password...",
 			"auth_required": "Authentication Required",
 			"auth_required_desc": "Creating private or shared snippets requires an account to manage access control and ownership.",
-			"password_protected": "Password Protected",
-			"enter_password_desc": "This snippet is password protected. Please enter the password to view it.",
-			"unlock": "Unlock Snippet"
+			"password_protected": "End-to-End Encrypted",
+			"enter_password_desc": "This snippet is end-to-end encrypted. Enter the password to decrypt it.",
+			"unlock": "Unlock Snippet",
+			"encryption_desc": "End-to-end encrypted with AES-GCM 256-bit. Only password holders can decrypt.",
+			"zero_knowledge_badge": "Client-side Zero-Knowledge AES-GCM Decryption"
 		},
 		"access": {
 			"visibility": "Visibility",

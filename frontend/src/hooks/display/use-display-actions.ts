@@ -8,6 +8,7 @@ import { guestStorage } from "@/utils/guest-storage";
 import { clearDrafts, playRemoveSound } from "@/utils";
 import type { User, FileAttachment, UpdatePasteData } from "@/types";
 import { FileService, type FileUploadStatus } from "@/lib/file-service";
+import { encryptPayload } from "@/lib/crypto";
 import type { DisplayState } from "@/hooks/use-display-state";
 
 import type { editor } from "monaco-editor";
@@ -17,8 +18,9 @@ interface UseDisplayActionsProps {
 	state: DisplayState;
 	user: User | null;
 	hasPending: boolean;
-	uploadFiles: () => Promise<FileUploadStatus[]>;
+	uploadFiles: (password?: string) => Promise<FileUploadStatus[]>;
 	resetFileUpload?: () => void;
+	verifiedPassword?: string;
 }
 
 export const useDisplayActions = ({
@@ -28,6 +30,7 @@ export const useDisplayActions = ({
 	hasPending,
 	uploadFiles,
 	resetFileUpload,
+	verifiedPassword,
 }: UseDisplayActionsProps) => {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
@@ -136,9 +139,14 @@ export const useDisplayActions = ({
 						: []),
 				];
 
+				// Determine effective encryption password (user-entered new password or current verified session password)
+				const effectivePassword = isPasswordEnabled
+					? editPassword || verifiedPassword
+					: undefined;
+
 				// Handle pending file uploads
 				if (contentType === "file" && hasPending) {
-					const uploadResults = await uploadFiles();
+					const uploadResults = await uploadFiles(effectivePassword);
 					const errors = uploadResults.filter((r) => r.error);
 					if (errors.length > 0) throw new Error(errors[0].error!);
 
@@ -150,9 +158,11 @@ export const useDisplayActions = ({
 
 				const currentValues = {
 					content:
-						updatedContent !== undefined
-							? updatedContent
-							: paste?.content,
+						contentType === "file" && finalFiles.length > 0
+							? finalFiles[0].url
+							: updatedContent !== undefined
+								? updatedContent
+								: paste?.content,
 					language,
 					visibility,
 					editPermission,
@@ -233,6 +243,18 @@ export const useDisplayActions = ({
 					}
 				});
 
+				// Keep track of the unencrypted content for local display state
+				const unencryptedContent =
+					(currentValues.content as string) || "";
+
+				// If password protection is active and content changed or new password set, encrypt content
+				if (isPasswordEnabled && effectivePassword && updates.content) {
+					updates.content = await encryptPayload(
+						updates.content as string,
+						effectivePassword,
+					);
+				}
+
 				// If no changes have been made, skip request and succeed immediately
 				if (Object.keys(updates).length === 0) {
 					setSaveStatus("saved");
@@ -244,17 +266,23 @@ export const useDisplayActions = ({
 				const data = await updatePaste(id!, updates);
 
 				if (data) {
-					updateAllFromData(data);
+					// Ensure local state keeps the plaintext content rather than the encrypted string
+					const localData = {
+						...data,
+						content: unencryptedContent,
+					};
+					updateAllFromData(localData);
+
 					resetFileUpload?.();
 					setSaveStatus("saved");
 					setTimeout(() => setSaveStatus("idle"), 3000);
 					if (!user) {
-						guestStorage.addToHistory(data);
+						guestStorage.addToHistory(localData);
 						if (
 							data.id !== id ||
 							guestStorage.isCreated(id || data.id)
 						)
-							guestStorage.addCreated(data);
+							guestStorage.addCreated(localData);
 					}
 					if (data.id !== id)
 						navigate(`/${data.id}`, { replace: true });
@@ -307,6 +335,7 @@ export const useDisplayActions = ({
 			redirectionType,
 			resetFileUpload,
 			folderId,
+			verifiedPassword,
 		],
 	);
 

@@ -875,9 +875,11 @@
 			"password_placeholder": "Geben Sie Ihren Verschlüsselungsschlüssel ein...",
 			"auth_required": "Authentifizierung erforderlich",
 			"auth_required_desc": "Das Erstellen von privaten oder geteilten Snippets erfordert ein Konto, um den Zugriff und das Eigentum zu verwalten.",
-			"password_protected": "Passwortgeschützt",
-			"enter_password_desc": "Dieses Snippet ist passwortgeschützt. Bitte geben Sie das Passwort ein, um es anzuzeigen.",
-			"unlock": "Snippet entsperren"
+			"password_protected": "Ende-zu-Ende verschlüsselt",
+			"enter_password_desc": "Dieses Snippet ist Ende-zu-Ende verschlüsselt. Geben Sie das Passwort ein, um es zu entschlüsseln.",
+			"unlock": "Snippet entsperren",
+			"encryption_desc": "Ende-zu-Ende verschlüsselt mit AES-GCM 256-Bit. Nur Passwortinhaber können entschlüsseln.",
+			"zero_knowledge_badge": "Clientseitige Zero-Knowledge-AES-GCM-Entschlüsselung"
 		},
 		"access": {
 			"visibility": "Sichtbarkeit",

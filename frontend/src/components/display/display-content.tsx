@@ -120,6 +120,7 @@ interface DisplayContentProps {
 	redirectionType?: RedirectionType;
 	setRedirectionType?: (v: RedirectionType) => void;
 	textareaRef?: React.RefObject<HTMLTextAreaElement | null>;
+	password?: string;
 }
 
 export const DisplayContent = memo(
@@ -160,6 +161,7 @@ export const DisplayContent = memo(
 		redirectionType,
 		setRedirectionType,
 		textareaRef,
+		password,
 	}: DisplayContentProps) => {
 		const containerRef = useRef<HTMLDivElement>(null);
 		const internalTextareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -274,7 +276,11 @@ export const DisplayContent = memo(
 				}
 				return (
 					<Suspense fallback={<FileDisplaySkeleton />}>
-						<FileDisplay paste={paste!} contentRef={contentRef} />
+						<FileDisplay
+							paste={paste!}
+							contentRef={contentRef}
+							password={password}
+						/>
 					</Suspense>
 				);
 			}

@@ -7,8 +7,15 @@ import { FileTypeIcon } from "@/components/common/file-type-icon";
 import FilePreview from "@/components/common/file-preview";
 import { cn, formatFileSize } from "@/utils";
 import { downloadRemoteFile } from "@/lib/export";
+import { decryptFile } from "@/lib/crypto";
 
-export const FileDisplayCard = ({ file }: { file: FileAttachment }) => {
+export const FileDisplayCard = ({
+	file,
+	password,
+}: {
+	file: FileAttachment;
+	password?: string;
+}) => {
 	const { t } = useTranslation();
 	const isImage = file.mimeType?.startsWith("image/");
 	const isVideo = file.mimeType?.startsWith("video/");
@@ -49,13 +56,38 @@ export const FileDisplayCard = ({ file }: { file: FileAttachment }) => {
 	const isText =
 		file.mimeType?.startsWith("text/") || textExtensions.includes(ext);
 
+	const isEncrypted = Boolean(password || file.url?.endsWith(".enc"));
 	const hasPreview =
-		file.url && (isImage || isVideo || isAudio || isPdf || isText);
+		!isEncrypted &&
+		file.url &&
+		(isImage || isVideo || isAudio || isPdf || isText);
 
-	const handleDownload = () => {
-		if (file.url) {
-			downloadRemoteFile(file.url, file.name || "downloaded-file");
+	const handleDownload = async () => {
+		if (!file.url) return;
+		if (password) {
+			try {
+				const res = await fetch(file.url);
+				if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+				const blob = await res.blob();
+				const { file: decryptedFile } = await decryptFile(
+					blob,
+					password,
+					file.name || "downloaded-file",
+				);
+				const blobUrl = URL.createObjectURL(decryptedFile);
+				const a = document.createElement("a");
+				a.href = blobUrl;
+				a.download = file.name || decryptedFile.name;
+				document.body.appendChild(a);
+				a.click();
+				document.body.removeChild(a);
+				URL.revokeObjectURL(blobUrl);
+				return;
+			} catch (err) {
+				console.error("Failed to decrypt downloaded file:", err);
+			}
 		}
+		downloadRemoteFile(file.url, file.name || "downloaded-file");
 	};
 
 	const cardWidthClass =

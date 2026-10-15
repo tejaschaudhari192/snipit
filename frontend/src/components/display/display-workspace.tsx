@@ -92,6 +92,9 @@ export interface DisplayWorkspaceProps {
 	// Redirection
 	redirectionType?: RedirectionType;
 	setRedirectionType?: (v: RedirectionType) => void;
+
+	// Encryption
+	password?: string;
 }
 
 export const DisplayWorkspace = memo(
@@ -136,6 +139,7 @@ export const DisplayWorkspace = memo(
 		redirectionType,
 		setRedirectionType,
 		textareaRef,
+		password,
 	}: DisplayWorkspaceProps) => {
 		if (!paste) {
 			return <ShimmerSection type="editor" className="flex-1" />;
@@ -194,6 +198,7 @@ export const DisplayWorkspace = memo(
 						redirectionType={redirectionType}
 						setRedirectionType={setRedirectionType}
 						textareaRef={textareaRef}
+						password={password}
 					/>
 				</Suspense>
 			</div>

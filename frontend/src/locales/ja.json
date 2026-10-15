@@ -875,9 +875,11 @@
 			"password_placeholder": "暗号化キーを入力...",
 			"auth_required": "認証が必要です",
 			"auth_required_desc": "非公開または共有スニペットを作成するには、アクセス制御と所有権を管理するためのアカウントが必要です。",
-			"password_protected": "パスワード保護されています",
-			"enter_password_desc": "このスニペットはパスワードで保護されています。閲覧するにはパスワードを入力してください。",
-			"unlock": "スニペットのロック解除"
+			"password_protected": "エンドツーエンド暗号化",
+			"enter_password_desc": "このスニペットはエンドツーエンドで暗号化されています。復号するにはパスワードを入力してください。",
+			"unlock": "スニペットのロック解除",
+			"encryption_desc": "AES-GCM 256ビットでエンドツーエンド暗号化。パスワード保持者のみ復号可能。",
+			"zero_knowledge_badge": "クライアント側ゼロ知識AES-GCM復号"
 		},
 		"access": {
 			"visibility": "公開設定",

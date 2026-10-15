@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { AxiosError } from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -23,32 +23,35 @@ export const SocialAuthButtons = ({
 	const [isGithubLoading, setIsGithubLoading] = useState(false);
 	const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
+	const handleGithubCallback = useCallback(
+		async (code: string) => {
+			setIsGithubLoading(true);
+			try {
+				const data = await loginGithub({ code });
+				login(data);
+				toast.add({ title: t("auth.login_success"), type: "success" });
+				navigate("/");
+			} catch (error) {
+				const axiosError = error as AxiosError<{ message: string }>;
+				toast.add({
+					title:
+						axiosError.response?.data?.message ||
+						t("auth.github_login_failed"),
+					type: "error",
+				});
+			} finally {
+				setIsGithubLoading(false);
+			}
+		},
+		[login, navigate, t],
+	);
+
 	useEffect(() => {
 		const code = searchParams.get("code");
 		if (code) {
 			handleGithubCallback(code);
 		}
-	}, [searchParams]);
-
-	const handleGithubCallback = async (code: string) => {
-		setIsGithubLoading(true);
-		try {
-			const data = await loginGithub({ code });
-			login(data);
-			toast.add({ title: t("auth.login_success"), type: "success" });
-			navigate("/");
-		} catch (error) {
-			const axiosError = error as AxiosError<{ message: string }>;
-			toast.add({
-				title:
-					axiosError.response?.data?.message ||
-					t("auth.github_login_failed"),
-				type: "error",
-			});
-		} finally {
-			setIsGithubLoading(false);
-		}
-	};
+	}, [searchParams, handleGithubCallback]);
 
 	const handleGithubClick = () => {
 		if (!CONFIG.githubClientId) {

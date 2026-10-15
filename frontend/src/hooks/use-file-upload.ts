@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { isSupabaseConfigured } from "@/lib/supabase";
 import { FileService, type FileUploadStatus } from "@/lib/file-service";
+import { encryptFiles } from "@/lib/crypto";
 import type { FileAttachment } from "@/types";
 
 export interface MultiUploadState {
@@ -47,7 +48,11 @@ export const useFileUpload = () => {
 	);
 
 	const uploadSingleFile = useCallback(
-		async (id: string, file: File): Promise<FileUploadStatus | null> => {
+		async (
+			id: string,
+			file: File,
+			password?: string,
+		): Promise<FileUploadStatus | null> => {
 			updateFileStatus(id, { isUploading: true, error: null });
 
 			// Validation
@@ -64,7 +69,33 @@ export const useFileUpload = () => {
 				};
 			}
 
-			const { url, error } = await FileService.upload(file, {
+			let uploadTarget: File = file;
+			if (password) {
+				try {
+					const [encrypted] = await encryptFiles([file], password);
+					if (encrypted) {
+						uploadTarget = new File(
+							[encrypted.blob],
+							encrypted.outputName,
+							{
+								type: "application/octet-stream",
+							},
+						);
+					}
+				} catch (encErr) {
+					const errorStatus: Partial<FileUploadStatus> = {
+						isUploading: false,
+						error: (encErr as Error).message || "Encryption failed",
+					};
+					updateFileStatus(id, errorStatus);
+					return {
+						...state.files.find((f) => f.id === id)!,
+						...errorStatus,
+					};
+				}
+			}
+
+			const { url, error } = await FileService.upload(uploadTarget, {
 				onProgress: (p) => {
 					updateFileStatus(id, {
 						progress: p.percentage,
@@ -116,27 +147,34 @@ export const useFileUpload = () => {
 		}));
 	}, []);
 
-	const uploadAll = useCallback(async () => {
-		const pendingToUpload = Array.from(pendingFilesRef.current.entries());
-		if (pendingToUpload.length === 0) return state.files;
+	const uploadAll = useCallback(
+		async (password?: string) => {
+			const pendingToUpload = Array.from(
+				pendingFilesRef.current.entries(),
+			);
+			if (pendingToUpload.length === 0) return state.files;
 
-		setState((prev) => ({ ...prev, isUploading: true }));
+			setState((prev) => ({ ...prev, isUploading: true }));
 
-		const results = await Promise.all(
-			pendingToUpload.map(([id, file]) => uploadSingleFile(id, file)),
-		);
+			const results = await Promise.all(
+				pendingToUpload.map(([id, file]) =>
+					uploadSingleFile(id, file, password),
+				),
+			);
 
-		const updatedFiles = results.map((r) => r!).filter(Boolean);
+			const updatedFiles = results.map((r) => r!).filter(Boolean);
 
-		const hasError = updatedFiles.some((r) => r?.error !== null);
-		setState((prev) => ({
-			...prev,
-			isUploading: false,
-			error: hasError ? "Some uploads failed" : null,
-		}));
+			const hasError = updatedFiles.some((r) => r?.error !== null);
+			setState((prev) => ({
+				...prev,
+				isUploading: false,
+				error: hasError ? "Some uploads failed" : null,
+			}));
 
-		return updatedFiles;
-	}, [state.files, uploadSingleFile]);
+			return updatedFiles;
+		},
+		[state.files, uploadSingleFile],
+	);
 
 	const removeFile = useCallback((id: string) => {
 		pendingFilesRef.current.delete(id);

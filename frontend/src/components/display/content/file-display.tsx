@@ -4,9 +4,14 @@ import type { PasteData, FileAttachment } from "@/types";
 interface FileDisplayProps {
 	paste: PasteData;
 	contentRef: (node: HTMLElement | null) => void;
+	password?: string;
 }
 
-export const FileDisplay = ({ paste, contentRef }: FileDisplayProps) => {
+export const FileDisplay = ({
+	paste,
+	contentRef,
+	password,
+}: FileDisplayProps) => {
 	const files: FileAttachment[] =
 		paste.files && paste.files.length > 0
 			? paste.files
@@ -28,7 +33,11 @@ export const FileDisplay = ({ paste, contentRef }: FileDisplayProps) => {
 		>
 			<div className="w-full flex flex-row flex-wrap justify-center gap-8 max-w-7xl mx-auto">
 				{files.map((file, index) => (
-					<FileDisplayCard key={index} file={file} />
+					<FileDisplayCard
+						key={index}
+						file={file}
+						password={password}
+					/>
 				))}
 			</div>
 		</div>

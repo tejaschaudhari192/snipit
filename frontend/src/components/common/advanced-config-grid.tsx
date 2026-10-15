@@ -8,9 +8,16 @@ import {
 	Tag,
 	Folder,
 	ChevronDown,
+	HelpCircle,
 } from "lucide-react";
 import { cn } from "cn";
 import { LockedSettingWrapper } from "@/components/common/locked-setting-wrapper";
+import {
+	Tooltip,
+	TooltipTrigger,
+	TooltipContent,
+	TooltipProvider,
+} from "@/components/ui/tooltip";
 
 import { Switch } from "@/components/ui/switch";
 import {
@@ -386,6 +393,31 @@ export const AdvancedConfigGrid = ({
 												}
 												className="h-10 pl-10 text-sm bg-background/80"
 											/>
+										</div>
+										<div className="flex items-center gap-1.5 mt-1.5">
+											<span className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+												{t(
+													"common.auth.zero_knowledge_badge",
+												)}
+											</span>
+											<TooltipProvider delay={200}>
+												<Tooltip>
+													<TooltipTrigger>
+														<button
+															type="button"
+															className="cursor-pointer text-muted-foreground/70 hover:text-foreground transition-colors p-0.5 rounded-full inline-flex items-center"
+															aria-label="Info"
+														>
+															<HelpCircle className="h-3 w-3" />
+														</button>
+													</TooltipTrigger>
+													<TooltipContent className="max-w-xs text-xs">
+														{t(
+															"common.auth.encryption_desc",
+														)}
+													</TooltipContent>
+												</Tooltip>
+											</TooltipProvider>
 										</div>
 									</div>
 								)}

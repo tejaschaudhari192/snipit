@@ -765,3 +765,89 @@ function crc32(data: Uint8Array): number {
 	}
 	return (crc ^ 0xffffffff) >>> 0;
 }
+
+// ---- Client-Side Paste / Text Payload Encryption ----
+
+const ENC_MAGIC = "SNIPIT_ENC"; // Prefix to identify client-side encrypted payloads
+
+/**
+ * Checks if a string is a client-side encrypted payload.
+ */
+export function isEncryptedPayload(text: string): boolean {
+	return typeof text === "string" && text.startsWith(`${ENC_MAGIC}:`);
+}
+
+/**
+ * Encrypt a text or JSON payload using AES-GCM (256-bit) with PBKDF2 key derivation.
+ * Returns a self-contained string formatted as: `SNIPIT_ENC:<base64(salt + iv + ciphertext)>`.
+ */
+export async function encryptPayload(
+	plaintext: string,
+	password: string,
+): Promise<string> {
+	const salt = crypto.getRandomValues(new Uint8Array(16));
+	const iv = crypto.getRandomValues(new Uint8Array(12));
+	const key = await deriveKey(password, salt);
+
+	const encodedData = new TextEncoder().encode(plaintext);
+	const ciphertext = await crypto.subtle.encrypt(
+		{ name: ALGORITHM, iv: iv as unknown as ArrayBuffer },
+		key,
+		encodedData as unknown as ArrayBuffer,
+	);
+
+	// Pack: [salt (16B)][iv (12B)][ciphertext]
+	const cipherBytes = new Uint8Array(ciphertext);
+	const packed = new Uint8Array(salt.length + iv.length + cipherBytes.length);
+	packed.set(salt, 0);
+	packed.set(iv, salt.length);
+	packed.set(cipherBytes, salt.length + iv.length);
+
+	// Convert packed binary buffer to base64
+	let binary = "";
+	const len = packed.byteLength;
+	for (let i = 0; i < len; i++) {
+		binary += String.fromCharCode(packed[i]);
+	}
+	const b64 = btoa(binary);
+
+	return `${ENC_MAGIC}:${b64}`;
+}
+
+/**
+ * Decrypt a client-side encrypted payload using AES-GCM and the user password.
+ * Throws an error if decryption fails (e.g. wrong password or corrupt data).
+ */
+export async function decryptPayload(
+	payload: string,
+	password: string,
+): Promise<string> {
+	if (!isEncryptedPayload(payload)) {
+		return payload;
+	}
+
+	const b64 = payload.slice(ENC_MAGIC.length + 1);
+	const binary = atob(b64);
+	const packed = new Uint8Array(binary.length);
+	for (let i = 0; i < binary.length; i++) {
+		packed[i] = binary.charCodeAt(i);
+	}
+
+	if (packed.length < 28) {
+		throw new Error("Invalid encrypted payload size");
+	}
+
+	const salt = packed.slice(0, 16);
+	const iv = packed.slice(16, 28);
+	const cipherBytes = packed.slice(28);
+
+	const key = await deriveKey(password, salt);
+
+	const decrypted = await crypto.subtle.decrypt(
+		{ name: ALGORITHM, iv: iv as unknown as ArrayBuffer },
+		key,
+		cipherBytes as unknown as ArrayBuffer,
+	);
+
+	return new TextDecoder().decode(decrypted);
+}
