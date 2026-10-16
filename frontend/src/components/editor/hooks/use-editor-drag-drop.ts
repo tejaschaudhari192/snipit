@@ -64,6 +64,37 @@ export function useEditorDragDrop(
 				} catch (err) {
 					console.error("Failed to insert dropped image:", err);
 				}
+			} else if (file.type.startsWith("video/")) {
+				try {
+					let targetUrl: string | null = null;
+					if (isSupabaseConfigured) {
+						const { url } = await FileService.upload(file);
+						if (url) targetUrl = url;
+					}
+					if (!targetUrl) {
+						targetUrl = await new Promise<string>(
+							(resolve, reject) => {
+								const reader = new FileReader();
+								reader.onload = () =>
+									resolve(reader.result as string);
+								reader.onerror = reject;
+								reader.readAsDataURL(file);
+							},
+						);
+					}
+					if (targetUrl) {
+						activeEditor
+							.chain()
+							.focus()
+							.insertContent({
+								type: "video",
+								attrs: { src: targetUrl },
+							})
+							.run();
+					}
+				} catch (err) {
+					console.error("Failed to insert dropped video:", err);
+				}
 			}
 		}
 	};

@@ -31,6 +31,7 @@ import {
 } from "../extensions/formatting-extensions";
 import { Transliteration } from "../extensions/transliteration-extension";
 import { CustomImage } from "../extensions/custom-image";
+import { CustomVideo } from "../extensions/custom-video";
 import { Attachment } from "../extensions/attachment";
 import { mentionSuggestion } from "../extensions/mention-suggestion";
 import type { AnyExtension } from "@tiptap/core";
@@ -76,6 +77,7 @@ export function createEditorExtensions({
 		TaskList,
 		TaskItem,
 		CustomImage,
+		CustomVideo,
 		Attachment,
 		FontFamily,
 		Mathematics,

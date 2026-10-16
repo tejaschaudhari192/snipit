@@ -120,9 +120,10 @@ export function TiptapToolbar({
 				editor
 					.chain()
 					.focus()
-					.insertContent(
-						`<video src="${url}" controls class="rounded-lg border border-border shadow-sm max-w-full my-4"></video>`,
-					)
+					.insertContent({
+						type: "video",
+						attrs: { src: url },
+					})
 					.run();
 			}
 		} else if (mediaModal.type === "attachment") {
