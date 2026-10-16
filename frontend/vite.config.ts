@@ -11,4 +11,22 @@ export default defineConfig({
 			"@": path.resolve(__dirname, "./src"),
 		},
 	},
+	build: {
+		rollupOptions: {
+			output: {
+				manualChunks: {
+					tiptap: [
+						"@tiptap/core",
+						"@tiptap/react",
+						"@tiptap/starter-kit",
+						"@tiptap/extension-table",
+						"@tiptap/extension-table-row",
+						"@tiptap/extension-table-header",
+						"@tiptap/extension-table-cell",
+						"novel",
+					],
+				},
+			},
+		},
+	},
 });

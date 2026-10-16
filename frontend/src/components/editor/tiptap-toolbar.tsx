@@ -3,11 +3,24 @@ import { Maximize2, Minimize2, Search } from "lucide-react";
 import { cn } from "cn";
 import { Editor } from "@tiptap/core";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useState, useEffect } from "react";
-import { MediaDialog } from "./media-dialog";
-import { GifPopover } from "./gif-popover";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { TableSelector } from "./table-selector";
-import { EmojiPicker } from "./emoji-picker";
+
+const MediaDialog = lazy(() =>
+	import("./media-dialog").then((m) => ({ default: m.MediaDialog })),
+);
+const GifPopover = lazy(() =>
+	import("./gif-popover").then((m) => ({ default: m.GifPopover })),
+);
+const EmojiPicker = lazy(() =>
+	import("./emoji-picker").then((m) => ({ default: m.EmojiPicker })),
+);
+const LinkDialog = lazy(() =>
+	import("./dialogs/link-dialog").then((m) => ({ default: m.LinkDialog })),
+);
+const LatexDialog = lazy(() =>
+	import("./dialogs/latex-dialog").then((m) => ({ default: m.LatexDialog })),
+);
 
 import { TooltipButton } from "./toolbar/tooltip-button";
 import { HistoryControls } from "./toolbar/history-controls";
@@ -24,8 +37,6 @@ import {
 	AlignmentDropdown,
 	LineHeightDropdown,
 } from "./toolbar/dropdowns";
-import { LinkDialog } from "./dialogs/link-dialog";
-import { LatexDialog } from "./dialogs/latex-dialog";
 
 export function TiptapToolbar({
 	editor: propEditor,
@@ -210,17 +221,21 @@ export function TiptapToolbar({
 					}
 				/>
 
-				<GifPopover
-					onSelect={(url) =>
-						editor.chain().focus().setImage({ src: url }).run()
-					}
-				/>
+				<Suspense fallback={<div className="h-8 w-8" />}>
+					<GifPopover
+						onSelect={(url) =>
+							editor.chain().focus().setImage({ src: url }).run()
+						}
+					/>
+				</Suspense>
 				<div className="divider-v" />
 
 				<ColorControls editor={editor} />
 
 				{/* Emoji Picker Popover */}
-				<EmojiPicker editor={editor} />
+				<Suspense fallback={<div className="h-8 w-8" />}>
+					<EmojiPicker editor={editor} />
+				</Suspense>
 
 				<div className="divider-v" />
 
@@ -252,27 +267,38 @@ export function TiptapToolbar({
 					)}
 				</TooltipButton>
 
-				<MediaDialog
-					isOpen={mediaModal.isOpen}
-					onClose={() =>
-						setMediaModal((prev) => ({ ...prev, isOpen: false }))
-					}
-					type={mediaModal.type}
-					onInsert={handleMediaInsert}
-				/>
+				<Suspense fallback={null}>
+					{mediaModal.isOpen && (
+						<MediaDialog
+							isOpen={mediaModal.isOpen}
+							onClose={() =>
+								setMediaModal((prev) => ({
+									...prev,
+									isOpen: false,
+								}))
+							}
+							type={mediaModal.type}
+							onInsert={handleMediaInsert}
+						/>
+					)}
 
-				<LinkDialog
-					isOpen={linkDialogOpen}
-					onClose={() => setLinkDialogOpen(false)}
-					initialUrl={editor.getAttributes("link").href || ""}
-					onSave={handleSaveLink}
-				/>
+					{linkDialogOpen && (
+						<LinkDialog
+							isOpen={linkDialogOpen}
+							onClose={() => setLinkDialogOpen(false)}
+							initialUrl={editor.getAttributes("link").href || ""}
+							onSave={handleSaveLink}
+						/>
+					)}
 
-				<LatexDialog
-					isOpen={latexDialogOpen}
-					onClose={() => setLatexDialogOpen(false)}
-					onSave={handleSaveLatex}
-				/>
+					{latexDialogOpen && (
+						<LatexDialog
+							isOpen={latexDialogOpen}
+							onClose={() => setLatexDialogOpen(false)}
+							onSave={handleSaveLatex}
+						/>
+					)}
+				</Suspense>
 			</div>
 		</TooltipProvider>
 	);

@@ -1,7 +1,5 @@
 import { ReactRenderer } from "@tiptap/react";
-import tippy from "tippy.js";
 import type { Instance } from "tippy.js";
-import { MentionList } from "./mention-list";
 import type {
 	MentionItem,
 	MentionListRef,
@@ -31,7 +29,11 @@ export const mentionSuggestion = {
 		let popup: Instance[] | null = null;
 
 		return {
-			onStart: (props: SuggestionProps<MentionItem>) => {
+			onStart: async (props: SuggestionProps<MentionItem>) => {
+				const [{ MentionList }, { default: tippy }] = await Promise.all(
+					[import("./mention-list"), import("tippy.js")],
+				);
+
 				component = new ReactRenderer(MentionList, {
 					props: props as unknown as MentionListProps,
 					editor: props.editor,
