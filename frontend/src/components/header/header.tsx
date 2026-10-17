@@ -172,8 +172,8 @@ const Header = ({ className }: HeaderProps) => {
 				)}
 			</div>
 
-			<div className="hidden xl:flex items-center gap-3 min-w-0 shrink-0">
-				<nav className="flex items-center gap-1 bg-muted/30 p-1 rounded-lg mr-2">
+			<div className="hidden xl:flex items-center gap-2 min-w-0 shrink-0">
+				<nav className="flex items-center gap-1 bg-muted/30 p-1 rounded-lg">
 					<Link to={"/tools"}>
 						<Button
 							variant={path === "/tools" ? "secondary" : "ghost"}
@@ -232,59 +232,63 @@ const Header = ({ className }: HeaderProps) => {
 					</Link>
 				)}
 
-				<div className="w-px h-4 bg-border mx-1" />
-				<Button
-					variant="ghost"
-					size="icon"
-					className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted"
-					onClick={openPlayer}
-					title={t("music.open_player") || "Open Music Player"}
-				>
-					<Music className="h-4 w-4" />
-				</Button>
-				<div className="w-px h-4 bg-border mx-1" />
-				<Button
-					variant="ghost"
-					size="icon"
-					className={cn(
-						"h-9 w-9 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer",
-						isMascotVisible &&
-							"text-amber-500 hover:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 shadow-[0_0_12px_rgba(245,158,11,0.25)]",
-					)}
-					onClick={toggleMascot}
-					title={
-						isMascotVisible
-							? t("voice.hide_assistant")
-							: t("voice.show_assistant")
-					}
-				>
-					<span className="text-base leading-none select-none">
-						🦊
-					</span>
-				</Button>
+				<div className="w-px h-4 bg-border mx-0.5" />
 
-				<div className="w-px h-4 bg-border mx-1" />
-				<Button
-					variant="ghost"
-					size="icon"
-					className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted"
-					onClick={() => setIsFeedbackDialogOpen(true)}
-					title={t("header.send_feedback")}
-				>
-					<MessageSquare className="h-4 w-4" />
-				</Button>
-				<div className="w-px h-4 bg-border mx-1" />
-				<Suspense
-					fallback={
-						<ToolbarButtonSkeleton
-							variant="icon"
-							className="h-8 w-8 rounded-full"
-						/>
-					}
-				>
-					<ThemeToggle />
-				</Suspense>
-				<div className="w-px h-4 bg-border mx-1" />
+				{/* Utility Icons Cluster */}
+				<div className="flex items-center gap-1 bg-muted/20 px-1 py-0.5 rounded-full border border-border/40">
+					<Button
+						variant="ghost"
+						size="icon"
+						className="h-8 w-8 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted"
+						onClick={openPlayer}
+						title={t("music.open_player") || "Open Music Player"}
+					>
+						<Music className="h-4 w-4" />
+					</Button>
+
+					<Button
+						variant="ghost"
+						size="icon"
+						className={cn(
+							"h-8 w-8 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer",
+							isMascotVisible &&
+								"text-amber-500 hover:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 shadow-[0_0_12px_rgba(245,158,11,0.25)]",
+						)}
+						onClick={toggleMascot}
+						title={
+							isMascotVisible
+								? t("voice.hide_assistant")
+								: t("voice.show_assistant")
+						}
+					>
+						<span className="text-sm leading-none select-none">
+							🦊
+						</span>
+					</Button>
+
+					<Button
+						variant="ghost"
+						size="icon"
+						className="h-8 w-8 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted"
+						onClick={() => setIsFeedbackDialogOpen(true)}
+						title={t("header.send_feedback")}
+					>
+						<MessageSquare className="h-4 w-4" />
+					</Button>
+
+					<Suspense
+						fallback={
+							<ToolbarButtonSkeleton
+								variant="icon"
+								className="h-8 w-8 rounded-full"
+							/>
+						}
+					>
+						<ThemeToggle />
+					</Suspense>
+				</div>
+
+				<div className="w-px h-4 bg-border mx-0.5" />
 				<UserMenu />
 			</div>
 
