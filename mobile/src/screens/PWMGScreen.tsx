@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { StyleSheet, Text, View, Alert, SafeAreaView, BackHandler } from "react-native";
+import { StyleSheet, Text, View, Alert, SafeAreaView, BackHandler, Platform, StatusBar } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import { offlineVault, PasswordItem, Folder, UserSession } from "../core/vault-storage";
 import { IosBottomTabBar } from "../components/IosBottomTabBar";
@@ -692,6 +692,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
 	},
 	centerContainer: {
 		flex: 1,

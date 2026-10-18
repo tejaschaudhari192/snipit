@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, SafeAreaView, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, SafeAreaView, ActivityIndicator, Platform, StatusBar } from "react-native";
 import { ArrowLeft, Lock, Shield, KeyRound, Check, Copy, Download } from "lucide-react-native";
 import { UserSession } from "../core/vault-storage";
 import { useThemeVars } from "../config/theme";
@@ -283,7 +283,10 @@ export function VaultOnboardingScreen({
 }
 
 const styles = StyleSheet.create({
-	container: { flex: 1 },
+	container: {
+		flex: 1,
+		paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+	},
 	header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 0.5 },
 	headerTitle: { fontSize: 17, fontWeight: "600" },
 	iconBtn: { padding: 6 },

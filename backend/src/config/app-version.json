@@ -1,22 +1,16 @@
 {
-  "version": "1.0.1",
-  "buildNumber": 2,
-  "minSupportedVersion": "1.0.0",
-  "forceUpdate": false,
-  "downloadUrl": "http://cpaste.vercel.app/mobile",
-  "releaseDate": "2026-10-18",
-  "changelog": [
-    {
-      "version": "1.0.1",
-      "date": "2026-10-18",
-      "title": "✨ Notes Grid View, Decrypting Feedback & Passphrase Generator Fixes",
-      "changes": [
-        "Added 2-column Grid View and List View toggle for Notes with folder badges",
-        "Added visual loading state ('Decrypting Vault...') and spinner when unlocking the vault",
-        "Fixed wordlist import error in BIP39 passphrase generator",
-        "Added clear error alerts and retry states when checking for app updates",
-        "General performance and UI polish across account profile and vault cards"
-      ]
-    }
-  ]
+	"version": "1.0.2",
+	"buildNumber": 3,
+	"minSupportedVersion": "1.0.0",
+	"forceUpdate": false,
+	"downloadUrl": "https://cpaste.vercel.app/mobile",
+	"releaseDate": "2026-10-18",
+	"changelog": [
+		{
+			"version": "1.0.2",
+			"date": "2026-10-18",
+			"title": "status bar fit",
+			"changes": ["Fixed Android status bar header overlap across vault and unlock screens"]
+		}
+	]
 }
