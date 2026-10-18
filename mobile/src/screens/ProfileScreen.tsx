@@ -516,7 +516,7 @@ const styles = StyleSheet.create({
     },
     content: {
         padding: 16,
-        paddingBottom: 110,
+        paddingBottom: 135,
     },
     profileCard: {
         borderRadius: 16,

@@ -196,6 +196,7 @@ export function VaultOnboardingScreen({
 	onCopyMnemonic,
 	onFinish,
 	setStep,
+	isCreatingVault = false,
 }: AuthProps & {
 	step: number;
 	masterPassword: string;
@@ -212,6 +213,7 @@ export function VaultOnboardingScreen({
 	onCopyMnemonic: () => void;
 	onFinish: () => void;
 	setStep: (s: number) => void;
+	isCreatingVault?: boolean;
 }) {
 	const c = useThemeVars(theme);
 	const isLight = theme === "light";
@@ -340,10 +342,22 @@ export function VaultOnboardingScreen({
 							<Text style={{ color: c.textSecondary, fontSize: 13, flex: 1 }}>I have safely backed up my 12-word recovery key.</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
-							style={[styles.primaryBtn, { backgroundColor: isLight ? "#000000" : "#ffffff" }]}
+							style={[
+								styles.primaryBtn,
+								{ backgroundColor: isLight ? "#000000" : "#ffffff" },
+								isCreatingVault && { opacity: 0.7 },
+							]}
 							onPress={onFinish}
+							disabled={isCreatingVault}
 						>
-							<Text style={[styles.btnText, { color: isLight ? "#ffffff" : "#000000" }]}>Complete Setup & Unlock</Text>
+							{isCreatingVault ? (
+								<View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+									<ActivityIndicator size="small" color={isLight ? "#ffffff" : "#000000"} />
+									<Text style={[styles.btnText, { color: isLight ? "#ffffff" : "#000000" }]}>Creating Vault...</Text>
+								</View>
+							) : (
+								<Text style={[styles.btnText, { color: isLight ? "#ffffff" : "#000000" }]}>Complete Setup & Unlock</Text>
+							)}
 						</TouchableOpacity>
 					</>
 				)}

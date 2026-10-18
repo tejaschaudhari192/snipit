@@ -53,6 +53,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 	const [inputMnemonic, setInputMnemonic] = useState("");
 	const [isDecrypting, setIsDecrypting] = useState(false);
 	const [isRecovering, setIsRecovering] = useState(false);
+	const [isCreatingVault, setIsCreatingVault] = useState(false);
 
 	// Vault items & Folders state
 	const [items, setItems] = useState<PasswordItem[]>([]);
@@ -239,6 +240,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			showAlert("Confirm Key", "Please confirm that you have saved your 12-word recovery key.", "warning");
 			return;
 		}
+		setIsCreatingVault(true);
 		try {
 			await offlineVault.createVault(masterPassword, recoveryMnemonic || undefined);
 			setHasVault(true);
@@ -249,6 +251,8 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			loadData();
 		} catch (err: any) {
 			setError(err.message || "Failed to create vault.");
+		} finally {
+			setIsCreatingVault(false);
 		}
 	};
 
@@ -493,6 +497,7 @@ Generated on: ${new Date().toISOString()}
 				onCopyMnemonic={() => recoveryMnemonic && copyToClipboard(recoveryMnemonic, "mnemonic")}
 				onFinish={handleFinishOnboarding}
 				setStep={setOnboardingStep}
+				isCreatingVault={isCreatingVault}
 			/>
 		);
 	}
