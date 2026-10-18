@@ -1,11 +1,22 @@
 {
-	"version": "1.0.5",
-	"buildNumber": 6,
+	"version": "1.0.6",
+	"buildNumber": 7,
 	"minSupportedVersion": "1.0.0",
 	"forceUpdate": false,
 	"downloadUrl": "https://cpaste.vercel.app/mobile",
-	"releaseDate": "2026-10-18",
+	"releaseDate": "2026-10-19",
 	"changelog": [
+		{
+			"version": "1.0.6",
+			"date": "2026-10-19",
+			"title": "⚡ Instant Decryption, Keyboard Avoidance & Tailwind Refactor",
+			"changes": [
+				"Instant vault unlock with background cloud sync (<0.5s local access)",
+				"KeyboardAvoidingView on credential, folder, and avatar modal inputs",
+				"Modular Tailwind / NativeWind FormControls & HubScreen componentization",
+				"Automatic check for updates upon internet connectivity"
+			]
+		},
 		{
 			"version": "1.0.5",
 			"date": "2026-10-18",

@@ -322,7 +322,11 @@ export function ProfileScreen({
                 <View style={{ width: 40 }} />
             </View>
 
-            <ScrollView contentContainerStyle={styles.content}>
+            <ScrollView
+                contentContainerStyle={styles.content}
+                keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="interactive"
+            >
                 {/* Profile Card */}
                 <View style={[styles.profileCard, { backgroundColor: isLight ? "#ffffff" : "#131b2e", borderColor: isLight ? "#e2e8f0" : "#1e293b" }]}>
                     <TouchableOpacity

@@ -1,20 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-    StyleSheet,
     Text,
     View,
     TouchableOpacity,
-    TextInput,
-    ActivityIndicator,
     SafeAreaView,
     Platform,
     StatusBar,
     BackHandler,
+    ScrollView,
 } from "react-native";
-import { ArrowLeft, User, Lock, Mail, Globe, Eye, EyeOff } from "lucide-react-native";
+import { ArrowLeft, User, Globe } from "lucide-react-native";
 import { offlineVault } from "../core/vault-storage";
 import { CONFIG } from "../config/configuration";
 import { CustomAlertModal, CustomAlertConfig } from "../components/CustomAlertModal";
+import { FormInput, FormPasswordInput, PrimaryButton } from "../components/FormControls";
 
 interface Props {
     onBack: () => void;
@@ -38,7 +37,7 @@ export function AuthScreen({ onBack, onAuthSuccess }: Props) {
         title: "",
     });
 
-    React.useEffect(() => {
+    useEffect(() => {
         const handleHardwareBack = () => {
             onBack();
             return true;
@@ -150,97 +149,81 @@ export function AuthScreen({ onBack, onAuthSuccess }: Props) {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
+        <SafeAreaView
+            className="flex-1 bg-[#090d16]"
+            style={{ paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0 }}
+        >
+            {/* Header */}
+            <View className="flex-row items-center justify-between px-4 py-3 border-b border-slate-800">
                 <TouchableOpacity
                     onPress={onBack}
-                    style={styles.iconBtn}
+                    className="p-1.5"
                     hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
                     activeOpacity={0.7}
                 >
                     <ArrowLeft color="#fff" size={20} />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>
+                <Text className="text-lg font-bold text-slate-100">
                     {mode === "login" ? "Sign In to Snipit" : "Create Snipit Account"}
                 </Text>
-                <View style={{ width: 40 }} />
+                <View className="w-10" />
             </View>
 
-            <View style={styles.content}>
-                <View style={styles.userIconCircle}>
+            <ScrollView contentContainerStyle={{ padding: 24, alignItems: "center" }} keyboardShouldPersistTaps="handled">
+                {/* User Icon Circle */}
+                <View className="w-20 h-20 rounded-full bg-violet-600/15 justify-center items-center my-4">
                     <User color="#8b5cf6" size={40} />
                 </View>
 
-                <Text style={styles.title}>
+                <Text className="text-2xl font-bold text-white text-center mb-1.5">
                     {mode === "login" ? "Welcome Back" : "Get Started"}
                 </Text>
-                <Text style={styles.subText}>
+                <Text className="text-sm text-slate-400 text-center leading-5 mb-5 px-2">
                     Sign in to sync your encrypted vault and snippets across devices, or keep using offline.
                 </Text>
 
-                {error ? <Text style={styles.errorText}>{error}</Text> : null}
+                {error ? (
+                    <Text className="text-red-500 text-xs text-center mb-3 px-2">
+                        {error}
+                    </Text>
+                ) : null}
 
                 {mode === "register" && (
-                    <TextInput
-                        style={styles.input}
+                    <FormInput
                         placeholder="Username"
-                        placeholderTextColor="#6b7280"
                         value={username}
                         onChangeText={setUsername}
                         autoCapitalize="none"
                     />
                 )}
 
-                <TextInput
-                    style={styles.input}
+                <FormInput
                     placeholder={mode === "login" ? "Email or Username" : "Email address"}
-                    placeholderTextColor="#6b7280"
                     value={email}
                     onChangeText={setEmail}
                     autoCapitalize="none"
                 />
 
-                <View style={styles.passwordContainer}>
-                    <TextInput
-                        style={styles.passwordInput}
-                        placeholder="Account Password"
-                        placeholderTextColor="#6b7280"
-                        secureTextEntry={!showPassword}
-                        value={password}
-                        onChangeText={setPassword}
-                        autoCapitalize="none"
-                    />
-                    <TouchableOpacity
-                        style={styles.eyeBtn}
-                        onPress={() => setShowPassword(!showPassword)}
-                    >
-                        {showPassword ? (
-                            <EyeOff color="#9ca3af" size={20} />
-                        ) : (
-                            <Eye color="#9ca3af" size={20} />
-                        )}
-                    </TouchableOpacity>
-                </View>
+                <FormPasswordInput
+                    placeholder="Account Password"
+                    showPassword={showPassword}
+                    onToggleShowPassword={() => setShowPassword(!showPassword)}
+                    value={password}
+                    onChangeText={setPassword}
+                    autoCapitalize="none"
+                />
 
-                <TouchableOpacity
-                    style={styles.primaryBtn}
+                <PrimaryButton
+                    title={mode === "login" ? "Sign In" : "Register"}
+                    loading={loading}
                     onPress={handleSubmit}
-                    disabled={loading}
-                >
-                    {loading ? (
-                        <ActivityIndicator color="#fff" />
-                    ) : (
-                        <Text style={styles.btnText}>
-                            {mode === "login" ? "Sign In" : "Register"}
-                        </Text>
-                    )}
-                </TouchableOpacity>
+                />
 
                 <TouchableOpacity
-                    style={styles.toggleRow}
+                    className="mt-4 p-2"
                     onPress={() => setMode(mode === "login" ? "register" : "login")}
                 >
-                    <Text style={styles.toggleText}>
+                    <Text className="text-violet-400 text-sm font-semibold text-center">
                         {mode === "login"
                             ? "Don't have an account? Create one"
                             : "Already have an account? Sign In"}
@@ -249,169 +232,30 @@ export function AuthScreen({ onBack, onAuthSuccess }: Props) {
 
                 {/* Server URL Config Toggle */}
                 <TouchableOpacity
-                    style={styles.serverToggle}
+                    className="flex-row items-center gap-1.5 mt-8 py-2"
                     onPress={() => setShowServerConfig(!showServerConfig)}
                 >
                     <Globe color="#64748b" size={14} />
-                    <Text style={styles.serverToggleText}>
+                    <Text className="text-slate-500 text-xs">
                         {showServerConfig ? "Hide server endpoint" : "Configure API Server"}
                     </Text>
                 </TouchableOpacity>
 
                 {showServerConfig && (
-                    <View style={styles.serverBox}>
-                        <Text style={styles.serverLabel}>Backend Server URL</Text>
-                        <TextInput
-                            style={[styles.input, { marginBottom: 0 }]}
+                    <View className="w-full bg-slate-900 rounded-xl p-3.5 mt-2 border border-slate-800">
+                        <Text className="text-slate-400 text-xs font-semibold mb-2">Backend Server URL</Text>
+                        <FormInput
+                            containerClassName="mb-0"
                             placeholder="http://localhost:3000"
-                            placeholderTextColor="#6b7280"
                             value={apiUrl}
                             onChangeText={setApiUrl}
                         />
                     </View>
                 )}
-            </View>
+            </ScrollView>
 
             {/* Custom Theme-matched Alert Modal */}
             <CustomAlertModal config={alertConfig} theme="dark" />
         </SafeAreaView>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#090d16",
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    },
-    header: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        borderBottomWidth: 1,
-        borderBottomColor: "#1e293b",
-    },
-    headerTitle: {
-        fontSize: 18,
-        fontWeight: "700",
-        color: "#f8fafc",
-    },
-    iconBtn: {
-        padding: 8,
-        borderRadius: 20,
-        backgroundColor: "#1e293b",
-    },
-    content: {
-        padding: 24,
-        alignItems: "center",
-    },
-    userIconCircle: {
-        width: 72,
-        height: 72,
-        borderRadius: 36,
-        backgroundColor: "rgba(139, 92, 246, 0.15)",
-        justifyContent: "center",
-        alignItems: "center",
-        marginVertical: 16,
-    },
-    title: {
-        fontSize: 22,
-        fontWeight: "800",
-        color: "#f8fafc",
-        marginBottom: 6,
-    },
-    subText: {
-        fontSize: 13,
-        color: "#94a3b8",
-        textAlign: "center",
-        lineHeight: 18,
-        marginBottom: 20,
-        paddingHorizontal: 8,
-    },
-    input: {
-        width: "100%",
-        backgroundColor: "#131b2e",
-        borderRadius: 12,
-        padding: 14,
-        color: "#fff",
-        fontSize: 15,
-        marginBottom: 12,
-        borderWidth: 1,
-        borderColor: "#1e293b",
-    },
-    passwordContainer: {
-        width: "100%",
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: "#131b2e",
-        borderRadius: 12,
-        borderWidth: 1,
-        borderColor: "#1e293b",
-        marginBottom: 12,
-    },
-    passwordInput: {
-        flex: 1,
-        padding: 14,
-        color: "#fff",
-        fontSize: 15,
-    },
-    eyeBtn: {
-        paddingHorizontal: 14,
-        paddingVertical: 10,
-    },
-    primaryBtn: {
-        width: "100%",
-        backgroundColor: "#7c3aed",
-        paddingVertical: 14,
-        borderRadius: 12,
-        alignItems: "center",
-        marginTop: 8,
-    },
-    btnText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "700",
-    },
-    toggleRow: {
-        marginTop: 18,
-        padding: 8,
-    },
-    toggleText: {
-        color: "#a78bfa",
-        fontSize: 14,
-        fontWeight: "600",
-    },
-    errorText: {
-        color: "#ef4444",
-        fontSize: 13,
-        marginBottom: 12,
-        textAlign: "center",
-    },
-    serverToggle: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 6,
-        marginTop: 32,
-    },
-    serverToggleText: {
-        color: "#64748b",
-        fontSize: 12,
-    },
-    serverBox: {
-        width: "100%",
-        backgroundColor: "#0f172a",
-        borderRadius: 12,
-        padding: 14,
-        marginTop: 10,
-        borderWidth: 1,
-        borderColor: "#1e293b",
-    },
-    serverLabel: {
-        color: "#94a3b8",
-        fontSize: 12,
-        fontWeight: "600",
-        marginBottom: 8,
-    },
-});

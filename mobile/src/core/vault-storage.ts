@@ -266,8 +266,8 @@ export class OfflineVaultService {
                 if (personalKeyB64 && typeof personalKeyB64 === "string") {
                     this.activePersonalKey = naclUtil.decodeBase64(personalKeyB64);
                     this.activeMEK = mek;
-                    // Fetch and decrypt existing cloud credentials
-                    await this.syncFromCloud();
+                    // Trigger sync in background so unlocking does not block user on network latency
+                    this.syncFromCloud().catch((e) => console.log("Background cloud sync error:", e));
                     return true;
                 }
                 return false;

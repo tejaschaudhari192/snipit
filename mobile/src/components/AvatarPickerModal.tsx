@@ -7,6 +7,8 @@ import {
     TextInput,
     Modal,
     ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform,
 } from "react-native";
 import { Check } from "lucide-react-native";
 import { UserAvatar } from "./UserAvatar";
@@ -53,7 +55,10 @@ export function AvatarPickerModal({
 
     return (
         <Modal visible={visible} animationType="slide" transparent>
-            <View style={styles.modalOverlay}>
+            <KeyboardAvoidingView
+                style={styles.modalOverlay}
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+            >
                 <View style={[styles.modalContent, { backgroundColor: isLight ? "#ffffff" : "#131b2e" }]}>
                     <View style={styles.modalHeader}>
                         <Text style={[styles.modalTitle, { color: vars.text }]}>Profile Photo</Text>
@@ -140,7 +145,7 @@ export function AvatarPickerModal({
                         </TouchableOpacity>
                     </View>
                 </View>
-            </View>
+            </KeyboardAvoidingView>
         </Modal>
     );
 }

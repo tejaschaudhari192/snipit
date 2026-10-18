@@ -29,16 +29,7 @@ function getVersionConfig() {
 		}
 	}
 
-	return (
-		defaultVersionData || {
-			version: "1.0.5",
-			buildNumber: 6,
-			minSupportedVersion: "1.0.0",
-			forceUpdate: false,
-			downloadUrl: "https://cpaste.vercel.app/mobile",
-			changelog: [],
-		}
-	);
+	return defaultVersionData;
 }
 
 const router: Router = Router();

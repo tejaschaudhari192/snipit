@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput } from "react-native";
+import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { useThemeVars } from "../config/theme";
 
 interface Props {
@@ -29,7 +29,10 @@ export function CreateFolderModal({
 
 	return (
 		<Modal visible={visible} animationType="slide" transparent>
-			<View style={styles.modalOverlay}>
+			<KeyboardAvoidingView
+				style={styles.modalOverlay}
+				behavior={Platform.OS === "ios" ? "padding" : "height"}
+			>
 				<View style={[styles.modalContent, { backgroundColor: c.bgSecondary }]}>
 					<View style={styles.modalHeader}>
 						<Text style={[styles.modalTitle, { color: c.text }]}>New Folder</Text>
@@ -62,7 +65,7 @@ export function CreateFolderModal({
 						<Text style={styles.btnText}>Create Folder</Text>
 					</TouchableOpacity>
 				</View>
-			</View>
+			</KeyboardAvoidingView>
 		</Modal>
 	);
 }

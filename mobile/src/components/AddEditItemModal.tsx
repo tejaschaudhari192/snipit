@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView, TextInput } from "react-native";
+import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { Key, CreditCard, FileCode, StickyNote, User, ChevronDown, ChevronUp, RefreshCw, Tag, Plus, Trash2, Eye, EyeOff } from "lucide-react-native";
 import { PasswordItem, Folder, CustomField } from "../core/vault-storage";
 import { getCategoryItemLabel } from "./IosDetailInspectorModal";
@@ -130,7 +130,10 @@ export function AddEditItemModal({
 
 	return (
 		<Modal visible={visible} animationType="slide" transparent>
-			<View style={styles.modalOverlay}>
+			<KeyboardAvoidingView
+				style={styles.modalOverlay}
+				behavior={Platform.OS === "ios" ? "padding" : "height"}
+			>
 				<View style={[styles.modalContent, { backgroundColor: c.bgSecondary }]}>
 					{/* iOS Navigation Header */}
 					<View style={[styles.navHeader, { borderBottomColor: c.border }]}>
@@ -165,7 +168,12 @@ export function AddEditItemModal({
 						})}
 					</View>
 
-					<ScrollView style={{ maxHeight: 440 }} showsVerticalScrollIndicator={false}>
+					<ScrollView
+						style={{ maxHeight: 440 }}
+						showsVerticalScrollIndicator={false}
+						keyboardShouldPersistTaps="handled"
+						keyboardDismissMode="interactive"
+					>
 						{/* Folder Assignment */}
 						{folders.length > 0 && (
 							<View style={{ marginBottom: 14 }}>
@@ -511,7 +519,7 @@ export function AddEditItemModal({
 						</TouchableOpacity>
 					</ScrollView>
 				</View>
-			</View>
+			</KeyboardAvoidingView>
 		</Modal>
 	);
 }
