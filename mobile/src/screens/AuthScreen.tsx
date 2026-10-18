@@ -6,7 +6,6 @@ import {
     TouchableOpacity,
     TextInput,
     ActivityIndicator,
-    Alert,
     SafeAreaView,
     Platform,
     StatusBar,
@@ -15,6 +14,7 @@ import {
 import { ArrowLeft, User, Lock, Mail, Globe, Eye, EyeOff } from "lucide-react-native";
 import { offlineVault } from "../core/vault-storage";
 import { CONFIG } from "../config/configuration";
+import { CustomAlertModal, CustomAlertConfig } from "../components/CustomAlertModal";
 
 interface Props {
     onBack: () => void;
@@ -31,6 +31,12 @@ export function AuthScreen({ onBack, onAuthSuccess }: Props) {
     const [showServerConfig, setShowServerConfig] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    // Custom Alert State
+    const [alertConfig, setAlertConfig] = useState<CustomAlertConfig>({
+        visible: false,
+        title: "",
+    });
 
     React.useEffect(() => {
         const handleHardwareBack = () => {
@@ -120,8 +126,22 @@ export function AuthScreen({ onBack, onAuthSuccess }: Props) {
             };
 
             await offlineVault.saveUser(userData);
-            Alert.alert("Success", `Welcome, ${userData.username || "User"}!`);
-            onAuthSuccess();
+            setAlertConfig({
+                visible: true,
+                title: "Welcome Back",
+                message: `Logged in successfully as ${userData.username || "User"}!`,
+                type: "success",
+                buttons: [
+                    {
+                        text: "Continue",
+                        style: "default",
+                        onPress: () => {
+                            setAlertConfig((prev) => ({ ...prev, visible: false }));
+                            onAuthSuccess();
+                        },
+                    },
+                ],
+            });
         } catch (err: any) {
             setError(err.message || "Failed to reach Snipit server. Check server URL.");
         } finally {
@@ -251,6 +271,9 @@ export function AuthScreen({ onBack, onAuthSuccess }: Props) {
                     </View>
                 )}
             </View>
+
+            {/* Custom Theme-matched Alert Modal */}
+            <CustomAlertModal config={alertConfig} theme="dark" />
         </SafeAreaView>
     );
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { StyleSheet, Text, View, Alert, SafeAreaView, BackHandler, Platform, StatusBar } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, BackHandler, Platform, StatusBar, Share } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import { offlineVault, PasswordItem, Folder, UserSession } from "../core/vault-storage";
 import { IosBottomTabBar } from "../components/IosBottomTabBar";
@@ -8,6 +8,7 @@ import { generatePassword, generatePassphrase, SeparatorType } from "../core/cry
 import { generateRecoveryMnemonic, isValidMnemonic } from "../core/recovery";
 import { useThemeVars } from "../config/theme";
 import { useVaultItemForm } from "../hooks/useVaultItemForm";
+import { CustomAlertModal, CustomAlertConfig } from "../components/CustomAlertModal";
 
 // Modular views
 import { PWMGHeader } from "../components/PWMGHeader";
@@ -84,6 +85,28 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 	// Bottom Tab Bar
 	const [activeBottomTab, setActiveBottomTab] = useState<"passwords" | "folders" | "notes" | "settings">("passwords");
 	const [isNotesGridView, setIsNotesGridView] = useState(true);
+
+	// Custom Alert State
+	const [alertConfig, setAlertConfig] = useState<CustomAlertConfig>({
+		visible: false,
+		title: "",
+	});
+
+	const showAlert = (
+		title: string,
+		message?: string,
+		type: "info" | "success" | "warning" | "error" = "info",
+		buttons?: CustomAlertConfig["buttons"],
+	) => {
+		setAlertConfig({
+			visible: true,
+			title,
+			message,
+			type,
+			buttons,
+			onDismiss: () => setAlertConfig((prev) => ({ ...prev, visible: false })),
+		});
+	};
 
 	// Add/Edit Form State Hook
 	const form = useVaultItemForm();
@@ -213,7 +236,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 
 	const handleFinishOnboarding = async () => {
 		if (!recoveryConfirmed) {
-			Alert.alert("Confirm Key", "Please confirm that you have saved your 12-word recovery key.");
+			showAlert("Confirm Key", "Please confirm that you have saved your 12-word recovery key.", "warning");
 			return;
 		}
 		try {
@@ -244,7 +267,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 				setIsRecoveryMode(false);
 				setInputMnemonic("");
 				loadData();
-				Alert.alert("Vault Recovered", "Vault unlocked. You can now update your master password in Settings.");
+				showAlert("Vault Recovered", "Vault unlocked. You can now update your master password in Settings.", "success");
 			} else {
 				setError("Recovery failed. Key does not match this vault.");
 			}
@@ -274,28 +297,29 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		const typeLabel = targetItem ? getCategoryItemLabel(targetItem.category) : "Item";
 		const itemTitle = targetItem?.title ? ` "${targetItem.title}"` : "";
 
-		Alert.alert(
+		showAlert(
 			`Delete ${typeLabel}`,
 			`Are you sure you want to delete this ${typeLabel.toLowerCase()}${itemTitle}?`,
+			"warning",
 			[
-				{ text: "Cancel", style: "cancel" },
+				{ text: "Cancel", style: "cancel", onPress: () => setAlertConfig((prev) => ({ ...prev, visible: false })) },
 				{
 					text: "Delete",
 					style: "destructive",
 					onPress: async () => {
+						setAlertConfig((prev) => ({ ...prev, visible: false }));
 						await offlineVault.deleteItem(id);
 						if (selectedItem?.id === id) setSelectedItem(null);
 						loadData();
 					},
 				},
-			],
-			{ cancelable: true }
+			]
 		);
 	};
 
 	const handleSaveNewItem = async () => {
 		if (!form.newTitle.trim()) {
-			Alert.alert("Validation", "Title is required.");
+			showAlert("Validation", "Title is required.", "warning");
 			return;
 		}
 
@@ -329,7 +353,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 
 	const handleSaveFolder = async () => {
 		if (!newFolderName.trim()) {
-			Alert.alert("Validation", "Folder name is required.");
+			showAlert("Validation", "Folder name is required.", "warning");
 			return;
 		}
 		await offlineVault.saveFolder({ name: newFolderName.trim(), color: newFolderColor });
@@ -339,24 +363,74 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 	};
 
 	const handleDeleteFolder = (folderId: string, folderName: string) => {
-		Alert.alert("Delete Folder", `Are you sure you want to delete "${folderName}"? Items inside will remain in your vault.`, [
-			{ text: "Cancel", style: "cancel" },
-			{
-				text: "Delete",
-				style: "destructive",
-				onPress: async () => {
-					await offlineVault.deleteFolder(folderId);
-					if (selectedFolderId === folderId) setSelectedFolderId(null);
-					loadData();
+		showAlert(
+			"Delete Folder",
+			`Are you sure you want to delete "${folderName}"? Items inside will remain in your vault.`,
+			"warning",
+			[
+				{ text: "Cancel", style: "cancel", onPress: () => setAlertConfig((prev) => ({ ...prev, visible: false })) },
+				{
+					text: "Delete",
+					style: "destructive",
+					onPress: async () => {
+						setAlertConfig((prev) => ({ ...prev, visible: false }));
+						await offlineVault.deleteFolder(folderId);
+						if (selectedFolderId === folderId) setSelectedFolderId(null);
+						loadData();
+					},
 				},
-			},
-		]);
+			]
+		);
 	};
 
 	const copyToClipboard = async (text: string, field: string) => {
 		await Clipboard.setStringAsync(text);
 		setCopiedField(field);
 		setTimeout(() => setCopiedField(null), 2000);
+	};
+
+	const handleDownloadRecovery = async (mnemonic: string) => {
+		const backupContent = `========================================
+SNIPIT PASSWORD MANAGER - RECOVERY KEY
+========================================
+Vault Recovery Phrase (12 Words):
+${mnemonic}
+
+IMPORTANT INSTRUCTIONS:
+- Store this file or text in a safe, offline location.
+- Anyone with this phrase can restore your master password.
+- Snipit cannot recover your data if you lose this key.
+Generated on: ${new Date().toISOString()}
+========================================`;
+
+		if (Platform.OS === "web") {
+			try {
+				const blob = new Blob([backupContent], { type: "text/plain;charset=utf-8" });
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement("a");
+				a.href = url;
+				a.download = `snipit-vault-recovery-key-${Date.now()}.txt`;
+				document.body.appendChild(a);
+				a.click();
+				document.body.removeChild(a);
+				URL.revokeObjectURL(url);
+				showAlert("Backup Key Saved", "Your recovery key file has been downloaded successfully.", "success");
+			} catch (err: any) {
+				await Clipboard.setStringAsync(mnemonic);
+				showAlert("Recovery Key Copied", "Your recovery key has been copied to clipboard.", "info");
+			}
+			return;
+		}
+
+		try {
+			await Share.share({
+				title: "Snipit Vault Recovery Key",
+				message: backupContent,
+			});
+		} catch (err: any) {
+			await Clipboard.setStringAsync(mnemonic);
+			showAlert("Recovery Key Copied", "Share unavailable. Key has been copied to your clipboard.", "info");
+		}
 	};
 
 	const filteredItems = useMemo(() => {
@@ -415,7 +489,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 				setConfirmPassword={setConfirmPassword}
 				setRecoveryConfirmed={setRecoveryConfirmed}
 				onNextToRecovery={handleNextToRecovery}
-				onDownloadRecovery={() => recoveryMnemonic && copyToClipboard(recoveryMnemonic, "mnemonic")}
+				onDownloadRecovery={() => recoveryMnemonic && handleDownloadRecovery(recoveryMnemonic)}
 				onCopyMnemonic={() => recoveryMnemonic && copyToClipboard(recoveryMnemonic, "mnemonic")}
 				onFinish={handleFinishOnboarding}
 				setStep={setOnboardingStep}
@@ -685,6 +759,9 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 				setGenNumbers={setGenNumbers}
 				setGenSeparator={setGenSeparator}
 			/>
+
+			{/* Custom Theme-matched Alert Modal */}
+			<CustomAlertModal config={alertConfig} theme={theme} />
 		</SafeAreaView>
 	);
 }

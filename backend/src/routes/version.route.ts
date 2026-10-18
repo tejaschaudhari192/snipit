@@ -4,28 +4,41 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { supabase, STORAGE_BUCKET } from "../config/supabase.js";
+import defaultVersionData from "../config/app-version.json" with { type: "json" };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const configPath = path.resolve(__dirname, "../config/app-version.json");
 
 function getVersionConfig() {
-	try {
-		if (fs.existsSync(configPath)) {
-			const raw = fs.readFileSync(configPath, "utf-8");
-			return JSON.parse(raw);
+	// Candidate paths for both TypeScript dev (src/routes) and compiled production (dist/routes)
+	const candidatePaths = [
+		path.resolve(__dirname, "../config/app-version.json"),
+		path.resolve(process.cwd(), "src/config/app-version.json"),
+		path.resolve(process.cwd(), "dist/config/app-version.json"),
+		path.resolve(process.cwd(), "backend/src/config/app-version.json"),
+	];
+
+	for (const p of candidatePaths) {
+		try {
+			if (fs.existsSync(p)) {
+				const raw = fs.readFileSync(p, "utf-8");
+				return JSON.parse(raw);
+			}
+		} catch {
+			// Try next candidate path
 		}
-	} catch (err) {
-		console.error("Error reading app-version.json:", err);
 	}
-	return {
-		version: "1.0.0",
-		buildNumber: 1,
-		minSupportedVersion: "1.0.0",
-		forceUpdate: false,
-		downloadUrl: "",
-		changelog: [],
-	};
+
+	return (
+		defaultVersionData || {
+			version: "1.0.4",
+			buildNumber: 5,
+			minSupportedVersion: "1.0.0",
+			forceUpdate: false,
+			downloadUrl: "https://cpaste.vercel.app/mobile",
+			changelog: [],
+		}
+	);
 }
 
 const router: Router = Router();

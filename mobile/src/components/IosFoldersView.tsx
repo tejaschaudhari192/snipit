@@ -39,7 +39,7 @@ export function IosFoldersView({
 	return (
 		<ScrollView
 			style={{ flex: 1 }}
-			contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 110 }}
+			contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 125 }}
 			showsVerticalScrollIndicator={false}
 		>
 			<Text style={[styles.sectionHeader, { color: c.textSecondary }]}>TYPES</Text>

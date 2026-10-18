@@ -86,7 +86,7 @@ export function PWMGListView({
 					numColumns={2}
 					keyExtractor={(item) => item.id}
 					columnWrapperStyle={{ justifyContent: "space-between" }}
-					contentContainerStyle={{ paddingHorizontal: 10, paddingTop: 4, paddingBottom: 110 }}
+					contentContainerStyle={{ paddingHorizontal: 10, paddingTop: 4, paddingBottom: 125 }}
 					renderItem={({ item }) => (
 						<NoteGridCard
 							item={item}
@@ -102,7 +102,7 @@ export function PWMGListView({
 					key="items-list"
 					data={items}
 					keyExtractor={(item) => item.id}
-					contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 110 }}
+					contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 125 }}
 					renderItem={({ item, index }) => {
 						const isCard = item.category === "card";
 						const isNote = item.category === "note";

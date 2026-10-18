@@ -6,7 +6,6 @@ import {
     TouchableOpacity,
     TextInput,
     ScrollView,
-    Alert,
     SafeAreaView,
     ActivityIndicator,
     Platform,
@@ -22,6 +21,7 @@ import { CloudSyncCard, VaultSecurityCard, AppVersionCard } from "../components/
 import { useThemeVars } from "../config/theme";
 import { checkAppUpdate } from "../core/update-checker";
 import { UpdateInfoModal } from "../components/UpdateInfoModal";
+import { CustomAlertModal, CustomAlertConfig } from "../components/CustomAlertModal";
 
 interface Props {
     onBack: () => void;
@@ -68,6 +68,28 @@ export function ProfileScreen({
     const [updateResult, setUpdateResult] = useState<any>(null);
     const [updateError, setUpdateError] = useState<string | null>(null);
 
+    // Custom Alert State
+    const [alertConfig, setAlertConfig] = useState<CustomAlertConfig>({
+        visible: false,
+        title: "",
+    });
+
+    const showAlert = (
+        title: string,
+        message?: string,
+        type: "info" | "success" | "warning" | "error" = "info",
+        buttons?: CustomAlertConfig["buttons"],
+    ) => {
+        setAlertConfig({
+            visible: true,
+            title,
+            message,
+            type,
+            buttons,
+            onDismiss: () => setAlertConfig((prev) => ({ ...prev, visible: false })),
+        });
+    };
+
     useEffect(() => {
         loadProfileData();
     }, []);
@@ -82,11 +104,7 @@ export function ProfileScreen({
         } catch (err: any) {
             const errorMsg = err?.message || "Unable to reach server to check for updates.";
             setUpdateError(errorMsg);
-            if (Platform.OS === "web" && typeof window !== "undefined") {
-                window.alert(`Update Check Failed:\n${errorMsg}`);
-            } else {
-                Alert.alert("Update Check Failed", errorMsg);
-            }
+            showAlert("Update Check Failed", errorMsg, "error");
         } finally {
             setCheckingUpdate(false);
         }
@@ -158,7 +176,7 @@ export function ProfileScreen({
 
     const handleSyncNow = async () => {
         if (!user?.token) {
-            Alert.alert("Authentication", "Please sign in to sync with your Snipit cloud account.");
+            showAlert("Authentication", "Please sign in to sync with your Snipit cloud account.", "warning");
             return;
         }
 
@@ -171,10 +189,10 @@ export function ProfileScreen({
                 await offlineVault.syncFromCloud();
             }
             setSyncStatus("synced");
-            Alert.alert("Sync Complete", "Your vault and credentials are fully synchronized with the cloud.");
+            showAlert("Sync Complete", "Your vault and credentials are fully synchronized with the cloud.", "success");
         } catch {
             setSyncStatus("pending_offline");
-            Alert.alert("Sync Pending", "Unable to reach the server. Your changes are saved locally.");
+            showAlert("Sync Pending", "Unable to reach the server. Your changes are saved locally.", "warning");
         } finally {
             setIsSyncing(false);
         }
@@ -182,7 +200,7 @@ export function ProfileScreen({
 
     const handleUpdateUsername = async () => {
         if (!newUsername.trim()) {
-            Alert.alert("Validation", "Username cannot be empty.");
+            showAlert("Validation", "Username cannot be empty.", "warning");
             return;
         }
 
@@ -213,13 +231,13 @@ export function ProfileScreen({
                 await offlineVault.saveUser(updated);
                 setUser(updated);
                 setIsEditingUsername(false);
-                Alert.alert("Success", "Username updated successfully.");
+                showAlert("Success", "Username updated successfully.", "success");
             } else {
                 const data = await res.json().catch(() => ({}));
                 throw new Error(data.message || "Failed to update profile.");
             }
         } catch (err: any) {
-            Alert.alert("Error", err.message || "Failed to update username.");
+            showAlert("Error", err.message || "Failed to update username.", "error");
         } finally {
             setSavingName(false);
         }
@@ -248,9 +266,9 @@ export function ProfileScreen({
                 setUser(updated);
             }
             setIsAvatarModalOpen(false);
-            Alert.alert("Avatar Updated", "Your profile photo has been updated successfully.");
+            showAlert("Avatar Updated", "Your profile photo has been updated successfully.", "success");
         } catch (err: any) {
-            Alert.alert("Error", err.message || "Failed to update profile photo.");
+            showAlert("Error", err.message || "Failed to update profile photo.", "error");
         } finally {
             setSavingAvatar(false);
         }
@@ -272,24 +290,17 @@ export function ProfileScreen({
             ? "Are you sure you want to sign out? Your credentials remain encrypted on your device."
             : "Reset guest session?";
 
-        if (Platform.OS === "web") {
-            if (typeof window !== "undefined" && typeof window.confirm === "function") {
-                if (window.confirm(`${title}\n\n${msg}`)) performLogout();
-            } else {
-                performLogout();
-            }
-            return;
-        }
-
-        Alert.alert(
-            title,
-            msg,
-            [
-                { text: "Cancel", style: "cancel" },
-                { text: user?.token ? "Sign Out" : "Reset", style: "destructive", onPress: performLogout },
-            ],
-            { cancelable: true }
-        );
+        showAlert(title, msg, "warning", [
+            { text: "Cancel", style: "cancel", onPress: () => setAlertConfig((prev) => ({ ...prev, visible: false })) },
+            {
+                text: user?.token ? "Sign Out" : "Reset",
+                style: "destructive",
+                onPress: () => {
+                    setAlertConfig((prev) => ({ ...prev, visible: false }));
+                    performLogout();
+                },
+            },
+        ]);
     };
 
     return (
@@ -475,6 +486,9 @@ export function ProfileScreen({
                 theme={theme}
                 onClose={() => setUpdateModalVisible(false)}
             />
+
+            {/* Custom Theme-matched Alert Modal */}
+            <CustomAlertModal config={alertConfig} theme={theme} />
         </SafeAreaView>
     );
 }
@@ -502,7 +516,7 @@ const styles = StyleSheet.create({
     },
     content: {
         padding: 16,
-        paddingBottom: 60,
+        paddingBottom: 110,
     },
     profileCard: {
         borderRadius: 16,

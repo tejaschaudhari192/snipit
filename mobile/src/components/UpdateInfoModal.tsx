@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Modal, Linking, Alert } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Modal, Linking } from "react-native";
 import { Download, CheckCircle2 } from "lucide-react-native";
 import { CONFIG } from "../config/configuration";
 import { useThemeVars } from "../config/theme";
@@ -85,8 +85,8 @@ export function UpdateInfoModal({ visible, updateResult, theme = "dark", onClose
                             <TouchableOpacity
                                 style={[styles.modalPrimaryBtn, { backgroundColor: vars.purple }]}
                                 onPress={() => {
-                                    Linking.openURL(updateResult.downloadUrl).catch(() => {
-                                        Alert.alert("Error", "Could not open download link.");
+                                    Linking.openURL(updateResult.downloadUrl).catch((err) => {
+                                        console.warn("Could not open download link:", err);
                                     });
                                 }}
                             >

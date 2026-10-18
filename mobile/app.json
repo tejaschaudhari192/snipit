@@ -2,7 +2,7 @@
   "expo": {
     "name": "Snipit",
     "slug": "mobile",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -14,7 +14,7 @@
     },
     "android": {
       "package": "com.snipit.app",
-      "versionCode": 4,
+      "versionCode": 5,
       "adaptiveIcon": {
         "backgroundColor": "#090d16",
         "foregroundImage": "./assets/android-icon-foreground.png"

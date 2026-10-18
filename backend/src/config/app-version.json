@@ -1,11 +1,22 @@
 {
-	"version": "1.0.3",
-	"buildNumber": 4,
+	"version": "1.0.4",
+	"buildNumber": 5,
 	"minSupportedVersion": "1.0.0",
 	"forceUpdate": false,
 	"downloadUrl": "https://cpaste.vercel.app/mobile",
 	"releaseDate": "2026-10-18",
 	"changelog": [
+		{
+			"version": "1.0.4",
+			"date": "2026-10-18",
+			"title": "🛡️ Custom Alerts, Backup Key Sharing & Navigation Fixes",
+			"changes": [
+				"Replaced all OS system dialogs with sleek in-app theme-matched custom modals",
+				"Fixed Download Backup Key to reliably share and save 12-word recovery key across mobile and web",
+				"Fixed bottom tab navigation bar clipping and list insets on Android devices",
+				"Fixed backend application version endpoint detection for live updates"
+			]
+		},
 		{
 			"version": "1.0.3",
 			"date": "2026-10-18",
