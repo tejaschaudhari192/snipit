@@ -255,21 +255,40 @@ class AiService {
 							{ role: "system", content: systemPrompt },
 							{ role: "user", content: userPrompt },
 						],
-						temperature: 0.5 + attempts * 0.2, // Increase variety on retries
-						max_tokens: 20,
+						temperature: 0.2 + attempts * 0.2,
+						max_completion_tokens: 250,
+						reasoning_effort: "low",
 					},
 					{ preferredModel: configurations.groq_dumb_model },
 				);
 
-				let id =
-					chatCompletion.choices[0]?.message?.content?.trim() || "";
-				id = id
-					.toLowerCase()
-					.replace(/\s+/g, "-")
-					.replace(/[^a-z0-9-]/g, "")
-					.substring(0, 50);
+				const message = chatCompletion.choices[0]?.message;
+				let rawWord = (message?.content || "").trim();
 
-				if (!id) break;
+				// Strip reasoning or think tags
+				rawWord = rawWord
+					.replace(/<think>[\s\S]*?<\/think>/gi, "")
+					.replace(/[`"'\n\r\t]/g, " ")
+					.trim();
+
+				// If content was empty due to reasoning exhaustion, try extracting from reasoning
+				const reasoning = (message as unknown as { reasoning?: string })
+					?.reasoning;
+				if (!rawWord && reasoning) {
+					const reasoningMatch = reasoning.match(/"([a-zA-Z0-9]+)"/);
+					if (reasoningMatch?.[1]) {
+						rawWord = reasoningMatch[1];
+					}
+				}
+
+				// Take strictly the first single alphanumeric word
+				const match = rawWord.match(/[a-zA-Z0-9]+/);
+				const id = match ? match[0].toLowerCase().substring(0, 30) : "";
+
+				if (!id) {
+					attempts++;
+					continue;
+				}
 
 				const existing = await pasteModel.findOne({ id }).lean();
 				const isExpired =
@@ -615,7 +634,10 @@ class AiService {
 		params: Omit<
 			Parameters<typeof this.groq.chat.completions.create>[0],
 			"model" | "stream"
-		>,
+		> & {
+			reasoning_effort?: "low" | "medium" | "high";
+			max_completion_tokens?: number;
+		},
 		options: {
 			preferredModel?: string;
 			modelList?: readonly string[] | string[];

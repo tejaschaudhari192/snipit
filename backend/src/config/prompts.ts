@@ -165,36 +165,16 @@ Rules:
 		},
 	},
 	SUGGEST_ID: {
-		SYSTEM: `
-You are a specialized tool that generates short, descriptive, slug-like IDs for code snippets or text.
-Rules:
-- Your response must contain ONLY the ID itself.
-- Prefer a SINGLE descriptive word.
-- Maximum 2 words if necessary for clarity.
-- Use lowercase.
-- Use hyphens (-) if using 2 words.
-- Do not include any other text, explanations, or quotes.
-`.trim(),
+		SYSTEM: `Return exactly ONE lowercase word that best describes or relates to the content. No explanations, no punctuation, just one word.`.trim(),
 		USER: (
 			content: string,
 			files?: Array<{ name: string; type: string }>,
 		) => {
-			let prompt =
-				"Generate a very short, descriptive ID (prefer 1 word) for the following ";
-
 			if (files && files.length > 0) {
-				const fileDetails = files
-					.map((f) => `${f.name}${f.type ? ` (${f.type})` : ""}`)
-					.join(", ");
-				prompt += `files: ${fileDetails}.`;
-				if (content.trim()) {
-					prompt += `\n\nAdditional content context:\n${content.substring(0, 500)}`;
-				}
-			} else {
-				prompt += `content:\n\n${content.substring(0, 1000)}`;
+				const names = files.map((f) => f.name).join(", ");
+				return `Files: ${names}\nContent:\n${content.substring(0, 1000)}\n\nOne word summary:`;
 			}
-
-			return prompt;
+			return `Content:\n${content.substring(0, 1500)}\n\nOne word summary:`;
 		},
 	},
 };
