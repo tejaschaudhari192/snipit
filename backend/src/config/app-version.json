@@ -1,11 +1,21 @@
 {
-	"version": "1.0.4",
-	"buildNumber": 5,
+	"version": "1.0.5",
+	"buildNumber": 6,
 	"minSupportedVersion": "1.0.0",
 	"forceUpdate": false,
 	"downloadUrl": "https://cpaste.vercel.app/mobile",
 	"releaseDate": "2026-10-18",
 	"changelog": [
+		{
+			"version": "1.0.5",
+			"date": "2026-10-18",
+			"title": "⚡ VaultAuth Loading States & Android Navigation Bar Clearance",
+			"changes": [
+				"Added animated loading indicators and disabled states to Vault Setup & Complete button",
+				"Elevated bottom tab bar and increased padding for Android 3-button navigation bars",
+				"Enhanced profile scroll padding to ensure clean footer separation"
+			]
+		},
 		{
 			"version": "1.0.4",
 			"date": "2026-10-18",
