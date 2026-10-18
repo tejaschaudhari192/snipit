@@ -1,11 +1,21 @@
 {
-	"version": "1.0.2",
-	"buildNumber": 3,
+	"version": "1.0.3",
+	"buildNumber": 4,
 	"minSupportedVersion": "1.0.0",
 	"forceUpdate": false,
 	"downloadUrl": "https://cpaste.vercel.app/mobile",
 	"releaseDate": "2026-10-18",
 	"changelog": [
+		{
+			"version": "1.0.3",
+			"date": "2026-10-18",
+			"title": "👁️ Password Visibility Toggles & Sensitive Field Controls",
+			"changes": [
+				"Added eye visibility toggle buttons to master password fields in unlock and onboarding screens",
+				"Added visibility toggle buttons to login passwords, card CVV, card PIN, and API secrets",
+				"Added show/mask toggles for sensitive credential fields across inspector and card modals"
+			]
+		},
 		{
 			"version": "1.0.2",
 			"date": "2026-10-18",

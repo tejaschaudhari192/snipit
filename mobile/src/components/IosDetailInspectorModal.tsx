@@ -150,7 +150,7 @@ export function IosDetailInspectorModal({
 
 								{item.password && (
 									<DetailGroupedRow
-										label="Password"
+										label={item.category === "apikey" ? "API Secret Key" : "Password"}
 										value={showPassword ? item.password : "••••••••••••••••"}
 										theme={theme}
 										isDivider={!!item.username}

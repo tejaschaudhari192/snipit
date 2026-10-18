@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView, TextInput } from "react-native";
-import { Key, CreditCard, FileCode, StickyNote, User, ChevronDown, ChevronUp, RefreshCw, Tag, Plus, Trash2 } from "lucide-react-native";
+import { Key, CreditCard, FileCode, StickyNote, User, ChevronDown, ChevronUp, RefreshCw, Tag, Plus, Trash2, Eye, EyeOff } from "lucide-react-native";
 import { PasswordItem, Folder, CustomField } from "../core/vault-storage";
 import { getCategoryItemLabel } from "./IosDetailInspectorModal";
 import { useThemeVars } from "../config/theme";
@@ -114,6 +114,11 @@ export function AddEditItemModal({
 }: Props) {
 	if (!visible) return null;
 	const c = useThemeVars(theme);
+
+	const [showLoginPassword, setShowLoginPassword] = useState(false);
+	const [showCardCvv, setShowCardCvv] = useState(false);
+	const [showCardPin, setShowCardPin] = useState(false);
+	const [showApiSecret, setShowApiSecret] = useState(false);
 
 	const categories: Array<{ id: PasswordItem["category"]; label: string; icon: any }> = [
 		{ id: "login", label: "Login", icon: Key },
@@ -233,15 +238,30 @@ export function AddEditItemModal({
 									value={newUsername}
 									onChangeText={setNewUsername}
 								/>
-								<View style={{ flexDirection: "row", gap: 8 }}>
-									<TextInput
-										style={[styles.input, { flex: 1, backgroundColor: c.bgTertiary, color: c.text }]}
-										placeholder="Password"
-										placeholderTextColor={c.textSecondary}
-										value={newPassword}
-										onChangeText={setNewPassword}
-									/>
-									<TouchableOpacity style={[styles.genBtn, { backgroundColor: c.blue }]} onPress={() => onOpenGenerator("password")}>
+								<View style={{ flexDirection: "row", gap: 8, marginBottom: 10 }}>
+									<View style={[styles.inputWithIcon, { flex: 1, backgroundColor: c.bgTertiary }]}>
+										<TextInput
+											style={[styles.inputInside, { color: c.text }]}
+											placeholder="Password"
+											placeholderTextColor={c.textSecondary}
+											secureTextEntry={!showLoginPassword}
+											value={newPassword}
+											onChangeText={setNewPassword}
+											autoCapitalize="none"
+										/>
+										<TouchableOpacity
+											style={styles.inlineEyeBtn}
+											onPress={() => setShowLoginPassword(!showLoginPassword)}
+											hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+										>
+											{showLoginPassword ? (
+												<EyeOff size={18} color={c.textSecondary} />
+											) : (
+												<Eye size={18} color={c.textSecondary} />
+											)}
+										</TouchableOpacity>
+									</View>
+									<TouchableOpacity style={[styles.genBtn, { backgroundColor: c.blue, marginBottom: 0 }]} onPress={() => onOpenGenerator("password")}>
 										<RefreshCw color="#fff" size={18} />
 									</TouchableOpacity>
 								</View>
@@ -273,36 +293,62 @@ export function AddEditItemModal({
 									value={cardNumber}
 									onChangeText={setCardNumber}
 								/>
-								<View style={{ flexDirection: "row", gap: 8 }}>
+								<View style={{ flexDirection: "row", gap: 8, marginBottom: 10 }}>
 									<TextInput
-										style={[styles.input, { flex: 1, backgroundColor: c.bgTertiary, color: c.text }]}
+										style={[styles.input, { flex: 1, marginBottom: 0, backgroundColor: c.bgTertiary, color: c.text }]}
 										placeholder="Exp (MM/YY)"
 										placeholderTextColor={c.textSecondary}
 										value={cardExp}
 										onChangeText={setCardExp}
 									/>
-									<TextInput
-										style={[styles.input, { flex: 1, backgroundColor: c.bgTertiary, color: c.text }]}
-										placeholder="CVV"
-										placeholderTextColor={c.textSecondary}
-										keyboardType="numeric"
-										secureTextEntry
-										value={cardCvv}
-										onChangeText={setCardCvv}
-									/>
+									<View style={[styles.inputWithIcon, { flex: 1, backgroundColor: c.bgTertiary }]}>
+										<TextInput
+											style={[styles.inputInside, { color: c.text }]}
+											placeholder="CVV"
+											placeholderTextColor={c.textSecondary}
+											keyboardType="numeric"
+											secureTextEntry={!showCardCvv}
+											value={cardCvv}
+											onChangeText={setCardCvv}
+										/>
+										<TouchableOpacity
+											style={styles.inlineEyeBtn}
+											onPress={() => setShowCardCvv(!showCardCvv)}
+											hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+										>
+											{showCardCvv ? (
+												<EyeOff size={18} color={c.textSecondary} />
+											) : (
+												<Eye size={18} color={c.textSecondary} />
+											)}
+										</TouchableOpacity>
+									</View>
 								</View>
-								<View style={{ flexDirection: "row", gap: 8 }}>
+								<View style={{ flexDirection: "row", gap: 8, marginBottom: 10 }}>
+									<View style={[styles.inputWithIcon, { flex: 1, backgroundColor: c.bgTertiary }]}>
+										<TextInput
+											style={[styles.inputInside, { color: c.text }]}
+											placeholder="PIN (optional)"
+											placeholderTextColor={c.textSecondary}
+											keyboardType="numeric"
+											secureTextEntry={!showCardPin}
+											value={cardPin}
+											onChangeText={setCardPin}
+										/>
+										<TouchableOpacity
+											style={styles.inlineEyeBtn}
+											onPress={() => setShowCardPin(!showCardPin)}
+											hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+										>
+											{showCardPin ? (
+												<EyeOff size={18} color={c.textSecondary} />
+											) : (
+												<Eye size={18} color={c.textSecondary} />
+											)}
+										</TouchableOpacity>
+									</View>
 									<TextInput
-										style={[styles.input, { flex: 1, backgroundColor: c.bgTertiary, color: c.text }]}
-										placeholder="PIN (optional)"
-										placeholderTextColor={c.textSecondary}
-										keyboardType="numeric"
-										secureTextEntry
-										value={cardPin}
-										onChangeText={setCardPin}
-									/>
-									<TextInput
-										style={[styles.input, { flex: 1, backgroundColor: c.bgTertiary, color: c.text }]}
+										style={[styles.input, { flex: 1, marginBottom: 0, backgroundColor: c.bgTertiary, color: c.text }]}
 										placeholder="Billing Zip Code"
 										placeholderTextColor={c.textSecondary}
 										value={cardZip}
@@ -322,15 +368,30 @@ export function AddEditItemModal({
 									value={apiKeyId}
 									onChangeText={setApiKeyId}
 								/>
-								<View style={{ flexDirection: "row", gap: 8 }}>
-									<TextInput
-										style={[styles.input, { flex: 1, backgroundColor: c.bgTertiary, color: c.text }]}
-										placeholder="API Secret Key"
-										placeholderTextColor={c.textSecondary}
-										value={apiSecret}
-										onChangeText={setApiSecret}
-									/>
-									<TouchableOpacity style={[styles.genBtn, { backgroundColor: c.blue }]} onPress={() => onOpenGenerator("apikey")}>
+								<View style={{ flexDirection: "row", gap: 8, marginBottom: 10 }}>
+									<View style={[styles.inputWithIcon, { flex: 1, backgroundColor: c.bgTertiary }]}>
+										<TextInput
+											style={[styles.inputInside, { color: c.text }]}
+											placeholder="API Secret Key"
+											placeholderTextColor={c.textSecondary}
+											secureTextEntry={!showApiSecret}
+											value={apiSecret}
+											onChangeText={setApiSecret}
+											autoCapitalize="none"
+										/>
+										<TouchableOpacity
+											style={styles.inlineEyeBtn}
+											onPress={() => setShowApiSecret(!showApiSecret)}
+											hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+										>
+											{showApiSecret ? (
+												<EyeOff size={18} color={c.textSecondary} />
+											) : (
+												<Eye size={18} color={c.textSecondary} />
+											)}
+										</TouchableOpacity>
+									</View>
+									<TouchableOpacity style={[styles.genBtn, { backgroundColor: c.blue, marginBottom: 0 }]} onPress={() => onOpenGenerator("apikey")}>
 										<RefreshCw color="#fff" size={18} />
 									</TouchableOpacity>
 								</View>
@@ -512,6 +573,23 @@ const styles = StyleSheet.create({
 		paddingVertical: 11,
 		fontSize: 15,
 		marginBottom: 10,
+	},
+	inputWithIcon: {
+		flexDirection: "row",
+		alignItems: "center",
+		borderRadius: 10,
+		paddingRight: 8,
+	},
+	inputInside: {
+		flex: 1,
+		paddingHorizontal: 12,
+		paddingVertical: 11,
+		fontSize: 15,
+	},
+	inlineEyeBtn: {
+		padding: 6,
+		justifyContent: "center",
+		alignItems: "center",
 	},
 	genBtn: {
 		paddingHorizontal: 16,

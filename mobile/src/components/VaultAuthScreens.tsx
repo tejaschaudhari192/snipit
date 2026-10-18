@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, SafeAreaView, ActivityIndicator, Platform, StatusBar } from "react-native";
-import { ArrowLeft, Lock, Shield, KeyRound, Check, Copy, Download } from "lucide-react-native";
+import { ArrowLeft, Lock, Shield, KeyRound, Check, Copy, Download, Eye, EyeOff } from "lucide-react-native";
 import { UserSession } from "../core/vault-storage";
 import { useThemeVars } from "../config/theme";
 
@@ -46,7 +46,7 @@ export function VaultRecoveryScreen({
 				</Text>
 				{error ? <Text style={styles.errorText}>{error}</Text> : null}
 				<TextInput
-					style={[styles.input, { height: 100, backgroundColor: c.bgSecondary, color: c.text, borderColor: c.border }]}
+					style={[styles.input, { height: 100, backgroundColor: c.bgSecondary, color: c.text, borderColor: c.border, borderWidth: 1 }]}
 					placeholder="e.g. apple banana cherry dog elephant fish grape horse..."
 					placeholderTextColor={c.textSecondary}
 					multiline
@@ -103,6 +103,8 @@ export function VaultUnlockScreen({
 }) {
 	const c = useThemeVars(theme);
 	const isLight = theme === "light";
+	const [showPassword, setShowPassword] = useState(false);
+
 	return (
 		<SafeAreaView style={[styles.container, { backgroundColor: c.bg }]}>
 			<View style={[styles.header, { borderBottomColor: c.border }]}>
@@ -124,16 +126,30 @@ export function VaultUnlockScreen({
 					{user ? `Account: ${user.email}\n` : ""}Enter your master password to decrypt your credentials.
 				</Text>
 				{error ? <Text style={styles.errorText}>{error}</Text> : null}
-				<TextInput
-					style={[styles.input, { backgroundColor: c.bgSecondary, color: c.text, borderColor: c.border }]}
-					placeholder="Master Password"
-					placeholderTextColor={c.textSecondary}
-					secureTextEntry
-					value={masterPassword}
-					onChangeText={setMasterPassword}
-					onSubmitEditing={onUnlock}
-					editable={!isDecrypting}
-				/>
+				<View style={[styles.passwordWrapper, { backgroundColor: c.bgSecondary, borderColor: c.border }]}>
+					<TextInput
+						style={[styles.passwordInput, { color: c.text }]}
+						placeholder="Master Password"
+						placeholderTextColor={c.textSecondary}
+						secureTextEntry={!showPassword}
+						value={masterPassword}
+						onChangeText={setMasterPassword}
+						onSubmitEditing={onUnlock}
+						editable={!isDecrypting}
+						autoCapitalize="none"
+					/>
+					<TouchableOpacity
+						style={styles.eyeBtn}
+						onPress={() => setShowPassword(!showPassword)}
+						hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+					>
+						{showPassword ? (
+							<EyeOff size={18} color={c.textSecondary} />
+						) : (
+							<Eye size={18} color={c.textSecondary} />
+						)}
+					</TouchableOpacity>
+				</View>
 				<TouchableOpacity
 					style={[
 						styles.primaryBtn,
@@ -199,6 +215,9 @@ export function VaultOnboardingScreen({
 }) {
 	const c = useThemeVars(theme);
 	const isLight = theme === "light";
+	const [showMasterPassword, setShowMasterPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
 	return (
 		<SafeAreaView style={[styles.container, { backgroundColor: c.bg }]}>
 			<View style={[styles.header, { borderBottomColor: c.border }]}>
@@ -242,22 +261,50 @@ export function VaultOnboardingScreen({
 							This password derives your encryption key. We cannot restore your vault if lost.
 						</Text>
 						{error ? <Text style={styles.errorText}>{error}</Text> : null}
-						<TextInput
-							style={[styles.input, { backgroundColor: c.bgSecondary, color: c.text, borderColor: c.border }]}
-							placeholder="Master Password (min 8 chars)"
-							placeholderTextColor={c.textSecondary}
-							secureTextEntry
-							value={masterPassword}
-							onChangeText={setMasterPassword}
-						/>
-						<TextInput
-							style={[styles.input, { backgroundColor: c.bgSecondary, color: c.text, borderColor: c.border }]}
-							placeholder="Confirm Master Password"
-							placeholderTextColor={c.textSecondary}
-							secureTextEntry
-							value={confirmPassword}
-							onChangeText={setConfirmPassword}
-						/>
+						<View style={[styles.passwordWrapper, { backgroundColor: c.bgSecondary, borderColor: c.border }]}>
+							<TextInput
+								style={[styles.passwordInput, { color: c.text }]}
+								placeholder="Master Password (min 8 chars)"
+								placeholderTextColor={c.textSecondary}
+								secureTextEntry={!showMasterPassword}
+								value={masterPassword}
+								onChangeText={setMasterPassword}
+								autoCapitalize="none"
+							/>
+							<TouchableOpacity
+								style={styles.eyeBtn}
+								onPress={() => setShowMasterPassword(!showMasterPassword)}
+								hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+							>
+								{showMasterPassword ? (
+									<EyeOff size={18} color={c.textSecondary} />
+								) : (
+									<Eye size={18} color={c.textSecondary} />
+								)}
+							</TouchableOpacity>
+						</View>
+						<View style={[styles.passwordWrapper, { backgroundColor: c.bgSecondary, borderColor: c.border }]}>
+							<TextInput
+								style={[styles.passwordInput, { color: c.text }]}
+								placeholder="Confirm Master Password"
+								placeholderTextColor={c.textSecondary}
+								secureTextEntry={!showConfirmPassword}
+								value={confirmPassword}
+								onChangeText={setConfirmPassword}
+								autoCapitalize="none"
+							/>
+							<TouchableOpacity
+								style={styles.eyeBtn}
+								onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+								hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+							>
+								{showConfirmPassword ? (
+									<EyeOff size={18} color={c.textSecondary} />
+								) : (
+									<Eye size={18} color={c.textSecondary} />
+								)}
+							</TouchableOpacity>
+						</View>
 						<TouchableOpacity
 							style={[styles.primaryBtn, { backgroundColor: isLight ? "#000000" : "#ffffff" }]}
 							onPress={onNextToRecovery}
@@ -319,6 +366,25 @@ const styles = StyleSheet.create({
 	title: { fontSize: 22, fontWeight: "700", textAlign: "center", marginBottom: 6 },
 	subText: { fontSize: 14, textAlign: "center", lineHeight: 20, marginBottom: 18 },
 	input: { width: "100%", borderRadius: 10, padding: 13, fontSize: 15, marginBottom: 12 },
+	passwordWrapper: {
+		width: "100%",
+		flexDirection: "row",
+		alignItems: "center",
+		borderRadius: 10,
+		borderWidth: 1,
+		marginBottom: 12,
+		paddingRight: 10,
+	},
+	passwordInput: {
+		flex: 1,
+		padding: 13,
+		fontSize: 15,
+	},
+	eyeBtn: {
+		padding: 6,
+		justifyContent: "center",
+		alignItems: "center",
+	},
 	primaryBtn: { width: "100%", paddingVertical: 14, borderRadius: 12, alignItems: "center", marginTop: 8 },
 	btnText: { color: "#fff", fontSize: 16, fontWeight: "700" },
 	errorText: { color: "#ff453a", fontSize: 13, marginBottom: 10, textAlign: "center" },
@@ -329,3 +395,4 @@ const styles = StyleSheet.create({
 	recoveryBtn: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, paddingVertical: 10, borderRadius: 10, borderWidth: 0.5 },
 	checkbox: { width: 18, height: 18, borderRadius: 5, borderWidth: 1.5, borderColor: "#8e8e93", justifyContent: "center", alignItems: "center" },
 });
+
