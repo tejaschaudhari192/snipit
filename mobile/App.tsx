@@ -31,6 +31,9 @@ import { AuthScreen } from "./src/screens/AuthScreen";
 import { ProfileScreen } from "./src/screens/ProfileScreen";
 import { offlineVault, UserSession } from "./src/core/vault-storage";
 import { UserAvatar } from "./src/components/UserAvatar";
+import NetInfo from "@react-native-community/netinfo";
+import { checkAppUpdate } from "./src/core/update-checker";
+import { UpdateInfoModal } from "./src/components/UpdateInfoModal";
 
 export default function App() {
 	const [activeTool, setActiveTool] = useState<"hub" | "pwmg" | "auth" | "profile">("hub");
@@ -46,11 +49,33 @@ export default function App() {
 			: themeMode;
 
 	const [defaultTool, setDefaultTool] = useState<"hub" | "pwmg">("hub");
+	const [autoUpdateModalVisible, setAutoUpdateModalVisible] = useState(false);
+	const [autoUpdateResult, setAutoUpdateResult] = useState<any>(null);
+	const hasCheckedUpdateRef = React.useRef(false);
 
 	useEffect(() => {
 		loadUserSession();
 		loadTheme();
 		loadDefaultTool();
+
+		// Check once after launch when user is connected to internet
+		const unsubscribeNet = NetInfo.addEventListener((state) => {
+			if (state.isConnected && state.isInternetReachable !== false && !hasCheckedUpdateRef.current) {
+				hasCheckedUpdateRef.current = true;
+				checkAppUpdate()
+					.then((res) => {
+						if (res.isAvailable) {
+							setAutoUpdateResult(res);
+							setAutoUpdateModalVisible(true);
+						}
+					})
+					.catch(() => {
+						// Silent fail on background auto-check so offline/slow connections aren't interrupted
+					});
+			}
+		});
+
+		return () => unsubscribeNet();
 	}, []);
 
 	useEffect(() => {
@@ -106,161 +131,173 @@ export default function App() {
 		}
 	};
 
-	if (activeTool === "auth") {
-		return (
-			<AuthScreen
-				onBack={() => setActiveTool("hub")}
-				onAuthSuccess={() => {
-					loadUserSession();
-					setActiveTool("hub");
-				}}
-			/>
-		);
-	}
+	const renderActiveTool = () => {
+		if (activeTool === "auth") {
+			return (
+				<AuthScreen
+					onBack={() => setActiveTool("hub")}
+					onAuthSuccess={() => {
+						loadUserSession();
+						setActiveTool("hub");
+					}}
+				/>
+			);
+		}
 
-	if (activeTool === "profile") {
-		return (
-			<ProfileScreen
-				onBack={() => {
-					loadUserSession();
-					setActiveTool("hub");
-				}}
-				onLogout={async () => {
-					await handleLogout();
-					setActiveTool("hub");
-				}}
-				onOpenPasswordManager={() => setActiveTool("pwmg")}
-				onOpenAuth={() => setActiveTool("auth")}
-				theme={resolvedTheme}
-				themeMode={themeMode}
-				onThemeChange={handleThemeChange}
-				defaultTool={defaultTool}
-				onDefaultToolChange={handleDefaultToolChange}
-			/>
-		);
-	}
+		if (activeTool === "profile") {
+			return (
+				<ProfileScreen
+					onBack={() => {
+						loadUserSession();
+						setActiveTool("hub");
+					}}
+					onLogout={async () => {
+						await handleLogout();
+						setActiveTool("hub");
+					}}
+					onOpenPasswordManager={() => setActiveTool("pwmg")}
+					onOpenAuth={() => setActiveTool("auth")}
+					theme={resolvedTheme}
+					themeMode={themeMode}
+					onThemeChange={handleThemeChange}
+					defaultTool={defaultTool}
+					onDefaultToolChange={handleDefaultToolChange}
+				/>
+			);
+		}
 
-	if (activeTool === "pwmg") {
-		return (
-			<PWMGScreen
-				onBack={() => {
-					loadUserSession();
-					setActiveTool("hub");
-				}}
-				onOpenAuth={() => setActiveTool("auth")}
-				onOpenProfile={() => setActiveTool("profile")}
-				theme={resolvedTheme}
-			/>
-		);
-	}
+		if (activeTool === "pwmg") {
+			return (
+				<PWMGScreen
+					onBack={() => {
+						loadUserSession();
+						setActiveTool("hub");
+					}}
+					onOpenAuth={() => setActiveTool("auth")}
+					onOpenProfile={() => setActiveTool("profile")}
+					theme={resolvedTheme}
+				/>
+			);
+		}
 
-	const isLight = resolvedTheme === "light";
+		const isLight = resolvedTheme === "light";
+
+		return (
+			<SafeAreaView style={[styles.container, isLight && styles.lightContainer]}>
+				<ExpoStatusBar style={isLight ? "dark" : "light"} />
+
+				{/* App Header */}
+				<View style={[styles.header, isLight && styles.lightHeader]}>
+					<View style={styles.brandRow}>
+						<Image
+							source={require("./assets/snipit-logo.png")}
+							style={styles.logoImage}
+							resizeMode="contain"
+						/>
+						<Text style={[styles.brandText, isLight && styles.lightBrandText]}>Snipit</Text>
+					</View>
+
+					<View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+						{/* Short & Sweet Top Sync Status */}
+						<TouchableOpacity
+							style={[styles.syncPill, isLight && styles.lightSyncPill]}
+							onPress={() => (user ? setActiveTool("profile") : setActiveTool("auth"))}
+						>
+							<View style={[styles.syncDot, user?.token ? styles.syncDotOnline : styles.syncDotLocal]} />
+							<Cloud color={user?.token ? "#3b82f6" : "#eab308"} size={12} />
+							<Text style={[styles.syncPillText, isLight && styles.lightSyncPillText]}>
+								{user?.token ? "Synced" : "Local"}
+							</Text>
+						</TouchableOpacity>
+
+						{/* User Profile Button / Sign In Button */}
+						{user ? (
+							<TouchableOpacity
+								style={[styles.userBadge, isLight && styles.lightUserBadge]}
+								onPress={() => setActiveTool("profile")}
+							>
+								<UserAvatar
+									uri={user.avatar}
+									name={user.username || "User"}
+									size={26}
+								/>
+								<Text style={[styles.userBadgeText, isLight && styles.lightUserBadgeText]}>
+									{user.username}
+								</Text>
+								<ChevronRight color={isLight ? "#6366f1" : "#a78bfa"} size={14} style={{ marginLeft: 2 }} />
+							</TouchableOpacity>
+						) : (
+							<TouchableOpacity
+								style={styles.signInBtn}
+								onPress={() => setActiveTool("auth")}
+							>
+								<User color="#fff" size={14} />
+								<Text style={styles.signInBtnText}>Sign In</Text>
+							</TouchableOpacity>
+						)}
+					</View>
+				</View>
+
+				<ScrollView contentContainerStyle={styles.content}>
+					{/* Hero Introduction */}
+					<View style={styles.heroSection}>
+						<Text style={[styles.heroTitle, isLight && styles.lightHeroTitle]}>Select Tool</Text>
+						<Text style={[styles.heroSubtitle, isLight && styles.lightHeroSubtitle]}>
+							Direct access to Snipit's privacy-focused tools. Fast local performance with cloud account sync.
+						</Text>
+					</View>
+
+					{/* Primary Tool Cards */}
+					<View style={styles.cardList}>
+						{/* PWMG (Password Manager) Card */}
+						<TouchableOpacity
+							style={[styles.card, styles.highlightCard, isLight && styles.lightHighlightCard]}
+							activeOpacity={0.8}
+							onPress={() => setActiveTool("pwmg")}
+						>
+							<View style={[styles.cardIconBox, { backgroundColor: isLight ? "rgba(124, 58, 237, 0.12)" : "rgba(139, 92, 246, 0.2)" }]}>
+								<Shield color={isLight ? "#7c3aed" : "#a78bfa"} size={28} />
+							</View>
+							<View style={styles.cardTextBox}>
+								<View style={styles.titleRow}>
+									<Text style={[styles.cardTitle, isLight && styles.lightCardTitle]}>Password Manager</Text>
+									<View style={[styles.tagBadge, { backgroundColor: isLight ? "rgba(124, 58, 237, 0.15)" : "rgba(139, 92, 246, 0.2)" }]}>
+										<Text style={[styles.tagText, { color: isLight ? "#7c3aed" : "#a78bfa" }]}>ZERO-KNOWLEDGE</Text>
+									</View>
+								</View>
+								<Text style={[styles.cardDesc, isLight && styles.lightCardDesc]}>
+									Zero-knowledge encrypted vault with 12-word recovery key, generator & master password.
+								</Text>
+							</View>
+							<ChevronRight color={isLight ? "#7c3aed" : "#a78bfa"} size={20} />
+						</TouchableOpacity>
+					</View>
+
+					{/* Security note footer */}
+					<View style={styles.footerNote}>
+						<Lock color={isLight ? "#94a3b8" : "#64748b"} size={14} />
+						<Text style={[styles.footerText, isLight && styles.lightFooterText]}>
+							End-to-end encrypted with XSalsa20-Poly1305. Non-custodial security.
+						</Text>
+					</View>
+				</ScrollView>
+			</SafeAreaView>
+		);
+	};
 
 	return (
-		<SafeAreaView style={[styles.container, isLight && styles.lightContainer]}>
-			<ExpoStatusBar style={isLight ? "dark" : "light"} />
-
-			{/* App Header */}
-			<View style={[styles.header, isLight && styles.lightHeader]}>
-				<View style={styles.brandRow}>
-					<Image
-						source={require("./assets/snipit-logo.png")}
-						style={styles.logoImage}
-						resizeMode="contain"
-					/>
-					<Text style={[styles.brandText, isLight && styles.lightBrandText]}>Snipit</Text>
-				</View>
-
-				<View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-					{/* Short & Sweet Top Sync Status */}
-					<TouchableOpacity
-						style={[styles.syncPill, isLight && styles.lightSyncPill]}
-						onPress={() => (user ? setActiveTool("profile") : setActiveTool("auth"))}
-					>
-						<View style={[styles.syncDot, user?.token ? styles.syncDotOnline : styles.syncDotLocal]} />
-						<Cloud color={user?.token ? "#3b82f6" : "#eab308"} size={12} />
-						<Text style={[styles.syncPillText, isLight && styles.lightSyncPillText]}>
-							{user?.token ? "Synced" : "Local"}
-						</Text>
-					</TouchableOpacity>
-
-					{/* User Profile Button / Sign In Button */}
-					{user ? (
-						<TouchableOpacity
-							style={[styles.userBadge, isLight && styles.lightUserBadge]}
-							onPress={() => setActiveTool("profile")}
-						>
-							<UserAvatar
-								uri={user.avatar}
-								name={user.username || "User"}
-								size={26}
-							/>
-							<Text style={[styles.userBadgeText, isLight && styles.lightUserBadgeText]}>
-								{user.username}
-							</Text>
-							<ChevronRight color={isLight ? "#6366f1" : "#a78bfa"} size={14} style={{ marginLeft: 2 }} />
-						</TouchableOpacity>
-					) : (
-						<TouchableOpacity
-							style={styles.signInBtn}
-							onPress={() => setActiveTool("auth")}
-						>
-							<User color="#fff" size={14} />
-							<Text style={styles.signInBtnText}>Sign In</Text>
-						</TouchableOpacity>
-					)}
-				</View>
-			</View>
-
-			<ScrollView contentContainerStyle={styles.content}>
-				{/* Status banner */}
-
-
-				{/* Hero Introduction */}
-				<View style={styles.heroSection}>
-					<Text style={[styles.heroTitle, isLight && styles.lightHeroTitle]}>Select Tool</Text>
-					<Text style={[styles.heroSubtitle, isLight && styles.lightHeroSubtitle]}>
-						Direct access to Snipit's privacy-focused tools. Fast local performance with cloud account sync.
-					</Text>
-				</View>
-
-				{/* Primary Tool Cards */}
-				<View style={styles.cardList}>
-					{/* PWMG (Password Manager) Card */}
-					<TouchableOpacity
-						style={[styles.card, styles.highlightCard, isLight && styles.lightHighlightCard]}
-						activeOpacity={0.8}
-						onPress={() => setActiveTool("pwmg")}
-					>
-						<View style={[styles.cardIconBox, { backgroundColor: isLight ? "rgba(124, 58, 237, 0.12)" : "rgba(139, 92, 246, 0.2)" }]}>
-							<Shield color={isLight ? "#7c3aed" : "#a78bfa"} size={28} />
-						</View>
-						<View style={styles.cardTextBox}>
-							<View style={styles.titleRow}>
-								<Text style={[styles.cardTitle, isLight && styles.lightCardTitle]}>Password Manager</Text>
-								<View style={[styles.tagBadge, { backgroundColor: isLight ? "rgba(124, 58, 237, 0.15)" : "rgba(139, 92, 246, 0.2)" }]}>
-									<Text style={[styles.tagText, { color: isLight ? "#7c3aed" : "#a78bfa" }]}>ZERO-KNOWLEDGE</Text>
-								</View>
-							</View>
-							<Text style={[styles.cardDesc, isLight && styles.lightCardDesc]}>
-								Zero-knowledge encrypted vault with 12-word recovery key, generator & master password.
-							</Text>
-						</View>
-						<ChevronRight color={isLight ? "#7c3aed" : "#a78bfa"} size={20} />
-					</TouchableOpacity>
-				</View>
-
-				{/* Security note footer */}
-				<View style={styles.footerNote}>
-					<Lock color={isLight ? "#94a3b8" : "#64748b"} size={14} />
-					<Text style={[styles.footerText, isLight && styles.lightFooterText]}>
-						End-to-end encrypted with XSalsa20-Poly1305. Non-custodial security.
-					</Text>
-				</View>
-			</ScrollView>
-		</SafeAreaView>
+		<View style={{ flex: 1 }}>
+			{renderActiveTool()}
+			<UpdateInfoModal
+				visible={autoUpdateModalVisible}
+				updateResult={autoUpdateResult}
+				theme={resolvedTheme}
+				onClose={() => setAutoUpdateModalVisible(false)}
+			/>
+		</View>
 	);
 }
+
 
 const styles = StyleSheet.create({
 	container: {
