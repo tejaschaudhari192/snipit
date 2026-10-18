@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { StyleSheet, Text, View, SafeAreaView, BackHandler, Platform, StatusBar, Share, TouchableOpacity } from "react-native";
 import { Plus } from "lucide-react-native";
 import * as Clipboard from "expo-clipboard";
+import * as FileSystem from "expo-file-system/legacy";
+import * as Sharing from "expo-sharing";
 import { offlineVault, PasswordItem, Folder, UserSession } from "../core/vault-storage";
 import { IosBottomTabBar } from "../components/IosBottomTabBar";
 import { IosDetailInspectorModal, getCategoryItemLabel } from "../components/IosDetailInspectorModal";
@@ -259,9 +261,17 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 
 	const handleRecoverWithKey = async () => {
 		setError("");
-		const phrase = inputMnemonic.trim().toLowerCase();
-		if (!isValidMnemonic(phrase)) {
-			setError("Invalid 12-word recovery key. Please check the spelling.");
+		// Extract lowercase words only in case user pasted or loaded from formatted file
+		const words = inputMnemonic
+			.toLowerCase()
+			.replace(/[^a-z\s]/g, " ")
+			.trim()
+			.split(/\s+/)
+			.filter((w) => w.length > 0);
+
+		const phrase = words.join(" ");
+		if (words.length !== 12 || !isValidMnemonic(phrase)) {
+			setError("Invalid 12-word recovery key. Please check that 12 valid words are entered.");
 			return;
 		}
 		setIsRecovering(true);
@@ -395,18 +405,9 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 	};
 
 	const handleDownloadRecovery = async (mnemonic: string) => {
-		const backupContent = `========================================
-SNIPIT PASSWORD MANAGER - RECOVERY KEY
-========================================
-Vault Recovery Phrase (12 Words):
-${mnemonic}
-
-IMPORTANT INSTRUCTIONS:
-- Store this file or text in a safe, offline location.
-- Anyone with this phrase can restore your master password.
-- Snipit cannot recover your data if you lose this key.
-Generated on: ${new Date().toISOString()}
-========================================`;
+		// Clean content: only the exact 12-word mnemonic phrase
+		const backupContent = mnemonic.trim();
+		const filename = "snipit-recovery-key.txt";
 
 		if (Platform.OS === "web") {
 			try {
@@ -414,27 +415,41 @@ Generated on: ${new Date().toISOString()}
 				const url = URL.createObjectURL(blob);
 				const a = document.createElement("a");
 				a.href = url;
-				a.download = `snipit-vault-recovery-key-${Date.now()}.txt`;
+				a.download = filename;
 				document.body.appendChild(a);
 				a.click();
 				document.body.removeChild(a);
 				URL.revokeObjectURL(url);
-				showAlert("Backup Key Saved", "Your recovery key file has been downloaded successfully.", "success");
-			} catch (err: any) {
-				await Clipboard.setStringAsync(mnemonic);
-				showAlert("Recovery Key Copied", "Your recovery key has been copied to clipboard.", "info");
+				showAlert("Recovery Key Downloaded", "File snipit-recovery-key.txt downloaded.", "success");
+			} catch {
+				await Clipboard.setStringAsync(backupContent);
+				showAlert("Recovery Key Copied", "Recovery key copied to clipboard.", "info");
 			}
 			return;
 		}
 
 		try {
-			await Share.share({
-				title: "Snipit Vault Recovery Key",
-				message: backupContent,
+			const fileUri = `${FileSystem.documentDirectory}${filename}`;
+			await FileSystem.writeAsStringAsync(fileUri, backupContent, {
+				encoding: FileSystem.EncodingType.UTF8,
 			});
+
+			// If device supports direct file sharing / save dialog
+			if (await Sharing.isAvailableAsync()) {
+				await Sharing.shareAsync(fileUri, {
+					mimeType: "text/plain",
+					dialogTitle: "Save Recovery Key File",
+					UTI: "public.plain-text",
+				});
+				showAlert("Key File Ready", "Save snipit-recovery-key.txt to your Files or Drive.", "success");
+			} else {
+				await Clipboard.setStringAsync(backupContent);
+				showAlert("Key Copied", "Key copied to clipboard. Save it securely.", "info");
+			}
 		} catch (err: any) {
-			await Clipboard.setStringAsync(mnemonic);
-			showAlert("Recovery Key Copied", "Share unavailable. Key has been copied to your clipboard.", "info");
+			console.log("Error saving recovery key file:", err);
+			await Clipboard.setStringAsync(backupContent);
+			showAlert("Key Copied", "Recovery key copied to clipboard.", "info");
 		}
 	};
 

@@ -205,12 +205,13 @@ export function ProfileScreen({
         }
 
         if (!user?.token) {
-            if (user) {
-                const updated = { ...user, username: newUsername.trim() };
-                await offlineVault.saveUser(updated);
-                setUser(updated);
-            }
+            const updated: UserSession = user
+                ? { ...user, username: newUsername.trim() }
+                : { id: "guest", email: "", username: newUsername.trim(), avatar: avatarInputUrl };
+            await offlineVault.saveUser(updated);
+            setUser(updated);
             setIsEditingUsername(false);
+            showAlert("Success", "Username saved locally.", "success");
             return;
         }
 
@@ -244,7 +245,7 @@ export function ProfileScreen({
     };
 
     const handleSaveAvatar = async (urlToSave?: string) => {
-        const targetUrl = urlToSave !== undefined ? urlToSave : avatarInputUrl.trim();
+        const targetUrl = (urlToSave !== undefined ? urlToSave : avatarInputUrl).trim();
         setSavingAvatar(true);
 
         try {
@@ -260,11 +261,13 @@ export function ProfileScreen({
                 });
             }
 
-            if (user) {
-                const updated = { ...user, avatar: targetUrl };
-                await offlineVault.saveUser(updated);
-                setUser(updated);
-            }
+            const updated: UserSession = user
+                ? { ...user, avatar: targetUrl }
+                : { id: "guest", email: "", username: newUsername || "Guest User", avatar: targetUrl };
+
+            await offlineVault.saveUser(updated);
+            setUser(updated);
+            setAvatarInputUrl(targetUrl);
             setIsAvatarModalOpen(false);
             showAlert("Avatar Updated", "Your profile photo has been updated successfully.", "success");
         } catch (err: any) {

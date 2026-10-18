@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, SafeAreaView, ActivityIndicator, Platform, StatusBar } from "react-native";
-import { ArrowLeft, Lock, Shield, KeyRound, Check, Copy, Download, Eye, EyeOff } from "lucide-react-native";
+import { ArrowLeft, Lock, Shield, KeyRound, Check, Copy, Download, Eye, EyeOff, Upload, ClipboardPaste } from "lucide-react-native";
+import * as DocumentPicker from "expo-document-picker";
+import * as FileSystem from "expo-file-system/legacy";
+import * as Clipboard from "expo-clipboard";
 import { UserSession } from "../core/vault-storage";
 import { useThemeVars } from "../config/theme";
 
@@ -45,9 +48,56 @@ export function VaultRecoveryScreen({
 					Enter your 12-word recovery mnemonic phrase separated by spaces to restore your master password.
 				</Text>
 				{error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+				{/* Quick Actions: Upload File or Paste */}
+				<View style={{ flexDirection: "row", gap: 10, width: "100%", marginBottom: 12 }}>
+					<TouchableOpacity
+						style={[styles.recoveryBtn, { borderColor: c.border }]}
+						onPress={async () => {
+							try {
+								const res = await DocumentPicker.getDocumentAsync({
+									type: ["text/plain", "*/*"],
+									copyToCacheDirectory: true,
+								});
+								if (!res.canceled && res.assets && res.assets.length > 0) {
+									const fileUri = res.assets[0].uri;
+									let text = "";
+									if (Platform.OS === "web") {
+										const fileRes = await fetch(fileUri);
+										text = await fileRes.text();
+									} else {
+										text = await FileSystem.readAsStringAsync(fileUri);
+									}
+									// Extract only 12-word mnemonic sequence if wrapped with spaces/newlines
+									const clean = text.trim();
+									setInputMnemonic(clean);
+								}
+							} catch (e) {
+								console.log("Could not pick or read file:", e);
+							}
+						}}
+						activeOpacity={0.7}
+					>
+						<Upload color={c.text} size={16} />
+						<Text style={{ color: c.text, fontSize: 13, fontWeight: "600" }}>Upload Key File</Text>
+					</TouchableOpacity>
+
+					<TouchableOpacity
+						style={[styles.recoveryBtn, { borderColor: c.border }]}
+						onPress={async () => {
+							const text = await Clipboard.getStringAsync();
+							if (text) setInputMnemonic(text.trim());
+						}}
+						activeOpacity={0.7}
+					>
+						<ClipboardPaste color={c.text} size={16} />
+						<Text style={{ color: c.text, fontSize: 13, fontWeight: "600" }}>Paste Key</Text>
+					</TouchableOpacity>
+				</View>
+
 				<TextInput
 					style={[styles.input, { height: 100, backgroundColor: c.bgSecondary, color: c.text, borderColor: c.border, borderWidth: 1 }]}
-					placeholder="e.g. apple banana cherry dog elephant fish grape horse..."
+					placeholder="Enter or paste your 12-word recovery key..."
 					placeholderTextColor={c.textSecondary}
 					multiline
 					value={inputMnemonic}
