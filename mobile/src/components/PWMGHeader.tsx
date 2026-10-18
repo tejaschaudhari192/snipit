@@ -15,7 +15,7 @@ interface PWMGHeaderProps {
 	onOpenProfile?: () => void;
 	onOpenGenerator: () => void;
 	onLock: () => void;
-	onAdd: () => void;
+	onAdd?: () => void;
 }
 
 export function PWMGHeader({
@@ -82,14 +82,6 @@ export function PWMGHeader({
 						hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 					>
 						<Lock color={c.textSecondary} size={19} />
-					</TouchableOpacity>
-
-					<TouchableOpacity
-						style={[styles.iosAddPlusBtn, { backgroundColor: c.text }]}
-						onPress={onAdd}
-						hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-					>
-						<Plus color={c.bg} size={20} strokeWidth={2.6} />
 					</TouchableOpacity>
 				</View>
 			</View>

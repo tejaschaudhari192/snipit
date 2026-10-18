@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { StyleSheet, Text, View, SafeAreaView, BackHandler, Platform, StatusBar, Share } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, BackHandler, Platform, StatusBar, Share, TouchableOpacity } from "react-native";
+import { Plus } from "lucide-react-native";
 import * as Clipboard from "expo-clipboard";
 import { offlineVault, PasswordItem, Folder, UserSession } from "../core/vault-storage";
 import { IosBottomTabBar } from "../components/IosBottomTabBar";
@@ -611,6 +612,25 @@ Generated on: ${new Date().toISOString()}
 				/>
 			)}
 
+			{/* Right-Bottom Floating Action Button (FAB) to Create New Item */}
+			{activeBottomTab !== "folders" && activeBottomTab !== "settings" && (
+				<TouchableOpacity
+					style={[
+						styles.floatingAddBtn,
+						{ backgroundColor: c.text },
+					]}
+					onPress={() => {
+						form.resetForm();
+						if (activeBottomTab === "notes") form.setItemCategory("note");
+						form.setIsAddModalOpen(true);
+					}}
+					activeOpacity={0.85}
+					accessibilityLabel="Create New Item"
+				>
+					<Plus color={c.bg} size={26} strokeWidth={2.6} />
+				</TouchableOpacity>
+			)}
+
 			{/* Floating Tab Bar */}
 			<IosBottomTabBar
 				activeTab={activeBottomTab}
@@ -781,5 +801,21 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		padding: 20,
+	},
+	floatingAddBtn: {
+		position: "absolute",
+		right: 20,
+		bottom: Platform.OS === "ios" ? 102 : 106,
+		width: 56,
+		height: 56,
+		borderRadius: 28,
+		justifyContent: "center",
+		alignItems: "center",
+		shadowColor: "#000",
+		shadowOffset: { width: 0, height: 4 },
+		shadowOpacity: 0.3,
+		shadowRadius: 6,
+		elevation: 8,
+		zIndex: 30,
 	},
 });
