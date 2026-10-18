@@ -77,6 +77,7 @@ const configurations = {
 			"https://snipit-nu.vercel.app",
 			"https://cpaste.onrender.com",
 			"http://localhost:5173",
+			"http://localhost:8081",
 		],
 		methods: "GET,POST,PUT,DELETE,PATCH",
 	},

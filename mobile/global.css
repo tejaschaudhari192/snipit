@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg: #000000;
+  --color-bg-secondary: #1c1c1e;
+  --color-bg-tertiary: #2c2c2e;
+  --color-border: rgba(84, 84, 88, 0.35);
+}
+
+.light {
+  --color-bg: #f2f2f7;
+  --color-bg-secondary: #ffffff;
+  --color-bg-tertiary: #e5e5ea;
+  --color-border: rgba(60, 60, 67, 0.18);
+}

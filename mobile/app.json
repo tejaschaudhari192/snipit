@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "Snipit",
+    "slug": "mobile",
+    "version": "1.0.1",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "scheme": "snipit",
+    "description": "Snipit — Privacy-focused developer suite with zero-knowledge password manager and snippets.",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.snipit.app"
+    },
+    "android": {
+      "package": "com.snipit.app",
+      "versionCode": 2,
+      "adaptiveIcon": {
+        "backgroundColor": "#090d16",
+        "foregroundImage": "./assets/android-icon-foreground.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/icon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b6ca225b-223a-4183-8c56-f7fbf8d7bccb"
+      }
+    }
+  }
+}

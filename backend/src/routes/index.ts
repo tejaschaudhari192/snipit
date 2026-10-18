@@ -1,4 +1,5 @@
 import { Router } from "express";
+import versionRouter from "./version.route.js";
 import authRouter from "./auth.routes.js";
 import pasteRouter from "./paste.route.js";
 import aiRouter from "./ai.route.js";
@@ -23,6 +24,7 @@ router.use("/collaborators", collaboratorRouter);
 router.use("/music", musicRouter);
 router.use("/livekit", livekitRouter);
 router.use("/tools", toolsRouter);
+router.use("/app", versionRouter);
 router.use("/feedback", feedbackRouter);
 router.use("/folders", folderRouter);
 

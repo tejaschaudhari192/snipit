@@ -1,0 +1,38 @@
+{
+  "name": "mobile",
+  "version": "1.0.1",
+  "main": "index.ts",
+  "dependencies": {
+    "@expo/metro-runtime": "^58.0.14",
+    "@react-native-async-storage/async-storage": "^2.2.0",
+    "@scure/bip39": "^2.4.0",
+    "expo": "~58.0.14",
+    "expo-clipboard": "^58.0.3",
+    "expo-crypto": "^58.0.7",
+    "expo-secure-store": "^58.0.2",
+    "expo-status-bar": "~58.0.3",
+    "lucide-react-native": "^1.58.0",
+    "nativewind": "4.2.7",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-native": "0.88.0",
+    "react-native-reanimated": "^4.7.1",
+    "react-native-svg": "^15.16.0",
+    "react-native-web": "^0.21.4",
+    "tailwindcss": "3.4.17",
+    "tweetnacl": "^1.0.3",
+    "tweetnacl-util": "^0.15.1"
+  },
+  "devDependencies": {
+    "@types/react": "~19.3.0",
+    "typescript": "~6.0.3"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "build:apk": "eas build -p android --profile preview"
+  },
+  "private": true
+}
