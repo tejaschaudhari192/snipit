@@ -9,8 +9,13 @@
 		{
 			"version": "1.0.2",
 			"date": "2026-10-18",
-			"title": "status bar fit",
-			"changes": ["Fixed Android status bar header overlap across vault and unlock screens"]
+			"title": "✨ Monochrome iOS Theme, Recovery Crash Fix & UI Polish",
+			"changes": [
+				"Fixed recovery key generator crash on native Android (PRNG polyfill)",
+				"Switched Password Manager & Vault to clean iOS Black & White monochrome theme",
+				"Fixed Android status bar header overlap across vault and unlock screens",
+				"Fixed profile screen bottom padding to prevent button cut-off"
+			]
 		}
 	]
 }

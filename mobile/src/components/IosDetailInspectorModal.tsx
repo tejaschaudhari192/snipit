@@ -88,7 +88,7 @@ export function IosDetailInspectorModal({
 							onPress={() => onOpenEdit(item)}
 							hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
 						>
-							<Text style={[styles.navEditText, { color: vars.blue }]}>Edit</Text>
+							<Text style={[styles.navEditText, { color: vars.text, fontWeight: "600" }]}>Edit</Text>
 						</TouchableOpacity>
 					</View>
 

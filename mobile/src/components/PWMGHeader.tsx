@@ -42,8 +42,8 @@ export function PWMGHeader({
 					hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
 					activeOpacity={0.7}
 				>
-					<ArrowLeft color={c.blue} size={22} />
-					<Text style={[styles.iosNavBackText, { color: c.blue }]}>Hub</Text>
+					<ArrowLeft color={c.text} size={22} />
+					<Text style={[styles.iosNavBackText, { color: c.text }]}>Hub</Text>
 				</TouchableOpacity>
 
 				<View style={styles.iosNavRightActions}>
@@ -54,7 +54,7 @@ export function PWMGHeader({
 							style={[styles.iosCircleActionBtn, { backgroundColor: "rgba(142, 142, 147, 0.16)" }]}
 							hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 						>
-							{isGridView ? <List color={c.blue} size={19} /> : <LayoutGrid color={c.blue} size={19} />}
+							{isGridView ? <List color={c.text} size={19} /> : <LayoutGrid color={c.text} size={19} />}
 						</TouchableOpacity>
 					)}
 
@@ -63,7 +63,7 @@ export function PWMGHeader({
 						style={[styles.iosCircleActionBtn, { backgroundColor: "rgba(142, 142, 147, 0.16)" }]}
 						hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 					>
-						<Sparkles color={c.blue} size={19} />
+						<Sparkles color={c.text} size={19} />
 					</TouchableOpacity>
 
 					{onOpenProfile && (
@@ -72,7 +72,7 @@ export function PWMGHeader({
 							style={[styles.iosCircleActionBtn, { backgroundColor: "rgba(142, 142, 147, 0.16)" }]}
 							hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 						>
-							<User color={c.blue} size={20} />
+							<User color={c.text} size={20} />
 						</TouchableOpacity>
 					)}
 
@@ -85,11 +85,11 @@ export function PWMGHeader({
 					</TouchableOpacity>
 
 					<TouchableOpacity
-						style={[styles.iosAddPlusBtn, { backgroundColor: c.blue }]}
+						style={[styles.iosAddPlusBtn, { backgroundColor: c.text }]}
 						onPress={onAdd}
 						hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 					>
-						<Plus color="#ffffff" size={20} strokeWidth={2.6} />
+						<Plus color={c.bg} size={20} strokeWidth={2.6} />
 					</TouchableOpacity>
 				</View>
 			</View>

@@ -25,6 +25,7 @@ export function VaultRecoveryScreen({
 	isRecovering?: boolean;
 }) {
 	const c = useThemeVars(theme);
+	const isLight = theme === "light";
 	return (
 		<SafeAreaView style={[styles.container, { backgroundColor: c.bg }]}>
 			<View style={[styles.header, { borderBottomColor: c.border }]}>
@@ -36,8 +37,8 @@ export function VaultRecoveryScreen({
 			</View>
 
 			<ScrollView contentContainerStyle={styles.authContainer}>
-				<View style={[styles.iconContainer, { backgroundColor: "rgba(10, 132, 255, 0.15)" }]}>
-					<KeyRound color={c.blue} size={40} />
+				<View style={[styles.iconContainer, { backgroundColor: isLight ? "rgba(0, 0, 0, 0.06)" : "rgba(255, 255, 255, 0.08)" }]}>
+					<KeyRound color={c.text} size={36} strokeWidth={2} />
 				</View>
 				<Text style={[styles.title, { color: c.text }]}>Restore via Recovery Key</Text>
 				<Text style={[styles.subText, { color: c.textSecondary }]}>
@@ -45,7 +46,7 @@ export function VaultRecoveryScreen({
 				</Text>
 				{error ? <Text style={styles.errorText}>{error}</Text> : null}
 				<TextInput
-					style={[styles.input, { height: 100, backgroundColor: c.bgSecondary, color: c.text }]}
+					style={[styles.input, { height: 100, backgroundColor: c.bgSecondary, color: c.text, borderColor: c.border }]}
 					placeholder="e.g. apple banana cherry dog elephant fish grape horse..."
 					placeholderTextColor={c.textSecondary}
 					multiline
@@ -53,14 +54,21 @@ export function VaultRecoveryScreen({
 					onChangeText={setInputMnemonic}
 				/>
 				<TouchableOpacity
-					style={[styles.primaryBtn, { backgroundColor: c.blue }, isRecovering && { opacity: 0.7 }]}
+					style={[
+						styles.primaryBtn,
+						{ backgroundColor: isLight ? "#000000" : "#ffffff" },
+						isRecovering && { opacity: 0.7 },
+					]}
 					onPress={onRecover}
 					disabled={isRecovering}
 				>
 					{isRecovering ? (
-						<ActivityIndicator size="small" color="#ffffff" />
+						<View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+							<ActivityIndicator size="small" color={isLight ? "#ffffff" : "#000000"} />
+							<Text style={[styles.btnText, { color: isLight ? "#ffffff" : "#000000" }]}>Recovering Vault...</Text>
+						</View>
 					) : (
-						<Text style={styles.btnText}>Recover Master Password</Text>
+						<Text style={[styles.btnText, { color: isLight ? "#ffffff" : "#000000" }]}>Recover Master Password</Text>
 					)}
 				</TouchableOpacity>
 			</ScrollView>
@@ -94,6 +102,7 @@ export function VaultUnlockScreen({
 	isDecrypting?: boolean;
 }) {
 	const c = useThemeVars(theme);
+	const isLight = theme === "light";
 	return (
 		<SafeAreaView style={[styles.container, { backgroundColor: c.bg }]}>
 			<View style={[styles.header, { borderBottomColor: c.border }]}>
@@ -101,14 +110,14 @@ export function VaultUnlockScreen({
 					<ArrowLeft color={c.text} size={20} />
 				</TouchableOpacity>
 				<Text style={[styles.headerTitle, { color: c.text }]}>Unlock Vault</Text>
-				<TouchableOpacity onPress={user && onOpenProfile ? onOpenProfile : onOpenAuth} style={[styles.accountBtn, { borderColor: c.border }]}>
-					<Text style={{ color: c.blue, fontSize: 13, fontWeight: "600" }}>{user ? user.username : "Sign In"}</Text>
+				<TouchableOpacity onPress={user && onOpenProfile ? onOpenProfile : onOpenAuth} style={[styles.accountBtn, { borderColor: c.border, backgroundColor: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.08)" }]}>
+					<Text style={{ color: c.text, fontSize: 13, fontWeight: "600" }}>{user ? user.username : "Sign In"}</Text>
 				</TouchableOpacity>
 			</View>
 
 			<ScrollView contentContainerStyle={styles.authContainer}>
-				<View style={[styles.iconContainer, { backgroundColor: "rgba(10, 132, 255, 0.15)" }]}>
-					<Lock color={c.blue} size={40} />
+				<View style={[styles.iconContainer, { backgroundColor: isLight ? "rgba(0, 0, 0, 0.06)" : "rgba(255, 255, 255, 0.08)" }]}>
+					<Lock color={c.text} size={36} strokeWidth={2} />
 				</View>
 				<Text style={[styles.title, { color: c.text }]}>Welcome Back</Text>
 				<Text style={[styles.subText, { color: c.textSecondary }]}>
@@ -116,7 +125,7 @@ export function VaultUnlockScreen({
 				</Text>
 				{error ? <Text style={styles.errorText}>{error}</Text> : null}
 				<TextInput
-					style={[styles.input, { backgroundColor: c.bgSecondary, color: c.text }]}
+					style={[styles.input, { backgroundColor: c.bgSecondary, color: c.text, borderColor: c.border }]}
 					placeholder="Master Password"
 					placeholderTextColor={c.textSecondary}
 					secureTextEntry
@@ -126,22 +135,26 @@ export function VaultUnlockScreen({
 					editable={!isDecrypting}
 				/>
 				<TouchableOpacity
-					style={[styles.primaryBtn, { backgroundColor: c.blue }, isDecrypting && { opacity: 0.7 }]}
+					style={[
+						styles.primaryBtn,
+						{ backgroundColor: isLight ? "#000000" : "#ffffff" },
+						isDecrypting && { opacity: 0.7 },
+					]}
 					onPress={onUnlock}
 					disabled={isDecrypting}
 				>
 					{isDecrypting ? (
 						<View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-							<ActivityIndicator size="small" color="#ffffff" />
-							<Text style={styles.btnText}>Decrypting Vault...</Text>
+							<ActivityIndicator size="small" color={isLight ? "#ffffff" : "#000000"} />
+							<Text style={[styles.btnText, { color: isLight ? "#ffffff" : "#000000" }]}>Decrypting Vault...</Text>
 						</View>
 					) : (
-						<Text style={styles.btnText}>Unlock Vault</Text>
+						<Text style={[styles.btnText, { color: isLight ? "#ffffff" : "#000000" }]}>Unlock Vault</Text>
 					)}
 				</TouchableOpacity>
 				{hasRecovery && (
 					<TouchableOpacity style={{ marginTop: 18, padding: 8 }} onPress={onForgotPassword}>
-						<Text style={{ color: c.blue, fontSize: 14, fontWeight: "500" }}>Forgot password? Use recovery key</Text>
+						<Text style={{ color: c.textSecondary, fontSize: 14, fontWeight: "500", textDecorationLine: "underline" }}>Forgot password? Use recovery key</Text>
 					</TouchableOpacity>
 				)}
 			</ScrollView>
@@ -185,6 +198,7 @@ export function VaultOnboardingScreen({
 	setStep: (s: number) => void;
 }) {
 	const c = useThemeVars(theme);
+	const isLight = theme === "light";
 	return (
 		<SafeAreaView style={[styles.container, { backgroundColor: c.bg }]}>
 			<View style={[styles.header, { borderBottomColor: c.border }]}>
@@ -196,8 +210,8 @@ export function VaultOnboardingScreen({
 			</View>
 
 			<ScrollView contentContainerStyle={styles.authContainer}>
-				<View style={[styles.iconContainer, { backgroundColor: "rgba(10, 132, 255, 0.15)" }]}>
-					<Shield color={c.blue} size={40} />
+				<View style={[styles.iconContainer, { backgroundColor: isLight ? "rgba(0, 0, 0, 0.06)" : "rgba(255, 255, 255, 0.08)" }]}>
+					<Shield color={c.text} size={36} strokeWidth={2} />
 				</View>
 
 				{step === 1 && (
@@ -212,8 +226,11 @@ export function VaultOnboardingScreen({
 							<Text style={[styles.featureItem, { color: c.text }]}>💳 Logins, Credit Cards, API Keys & Notes</Text>
 							<Text style={[styles.featureItem, { color: c.text }]}>⚡ 100% offline & zero cloud dependency</Text>
 						</View>
-						<TouchableOpacity style={[styles.primaryBtn, { backgroundColor: c.blue }]} onPress={() => setStep(2)}>
-							<Text style={styles.btnText}>Create Master Password</Text>
+						<TouchableOpacity
+							style={[styles.primaryBtn, { backgroundColor: isLight ? "#000000" : "#ffffff" }]}
+							onPress={() => setStep(2)}
+						>
+							<Text style={[styles.btnText, { color: isLight ? "#ffffff" : "#000000" }]}>Create Master Password</Text>
 						</TouchableOpacity>
 					</>
 				)}
@@ -226,7 +243,7 @@ export function VaultOnboardingScreen({
 						</Text>
 						{error ? <Text style={styles.errorText}>{error}</Text> : null}
 						<TextInput
-							style={[styles.input, { backgroundColor: c.bgSecondary, color: c.text }]}
+							style={[styles.input, { backgroundColor: c.bgSecondary, color: c.text, borderColor: c.border }]}
 							placeholder="Master Password (min 8 chars)"
 							placeholderTextColor={c.textSecondary}
 							secureTextEntry
@@ -234,15 +251,18 @@ export function VaultOnboardingScreen({
 							onChangeText={setMasterPassword}
 						/>
 						<TextInput
-							style={[styles.input, { backgroundColor: c.bgSecondary, color: c.text }]}
+							style={[styles.input, { backgroundColor: c.bgSecondary, color: c.text, borderColor: c.border }]}
 							placeholder="Confirm Master Password"
 							placeholderTextColor={c.textSecondary}
 							secureTextEntry
 							value={confirmPassword}
 							onChangeText={setConfirmPassword}
 						/>
-						<TouchableOpacity style={[styles.primaryBtn, { backgroundColor: c.blue }]} onPress={onNextToRecovery}>
-							<Text style={styles.btnText}>Generate Recovery Phrase</Text>
+						<TouchableOpacity
+							style={[styles.primaryBtn, { backgroundColor: isLight ? "#000000" : "#ffffff" }]}
+							onPress={onNextToRecovery}
+						>
+							<Text style={[styles.btnText, { color: isLight ? "#ffffff" : "#000000" }]}>Generate Recovery Phrase</Text>
 						</TouchableOpacity>
 					</>
 				)}
@@ -254,26 +274,29 @@ export function VaultOnboardingScreen({
 							Write down these 12 words in order. You can use them to recover your master password.
 						</Text>
 						<View style={[styles.mnemonicBox, { backgroundColor: c.bgSecondary, borderColor: c.border }]}>
-							<Text style={[styles.mnemonicText, { color: c.cyan }]}>{recoveryMnemonic}</Text>
+							<Text style={[styles.mnemonicText, { color: c.text }]}>{recoveryMnemonic}</Text>
 						</View>
 						<View style={{ flexDirection: "row", gap: 10, width: "100%", marginBottom: 16 }}>
 							<TouchableOpacity style={[styles.recoveryBtn, { borderColor: c.border }]} onPress={onCopyMnemonic}>
-								{copiedField === "mnemonic" ? <Check color={c.green} size={16} /> : <Copy color={c.blue} size={16} />}
-								<Text style={{ color: c.blue, fontSize: 13, fontWeight: "600" }}>{copiedField === "mnemonic" ? "Copied" : "Copy"}</Text>
+								{copiedField === "mnemonic" ? <Check color={c.green} size={16} /> : <Copy color={c.text} size={16} />}
+								<Text style={{ color: c.text, fontSize: 13, fontWeight: "600" }}>{copiedField === "mnemonic" ? "Copied" : "Copy"}</Text>
 							</TouchableOpacity>
 							<TouchableOpacity style={[styles.recoveryBtn, { borderColor: c.border }]} onPress={onDownloadRecovery}>
-								<Download color={c.blue} size={16} />
-								<Text style={{ color: c.blue, fontSize: 13, fontWeight: "600" }}>Download</Text>
+								<Download color={c.text} size={16} />
+								<Text style={{ color: c.text, fontSize: 13, fontWeight: "600" }}>Download</Text>
 							</TouchableOpacity>
 						</View>
 						<TouchableOpacity style={{ flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 16 }} onPress={() => setRecoveryConfirmed(!recoveryConfirmed)}>
-							<View style={[styles.checkbox, recoveryConfirmed && { backgroundColor: c.blue, borderColor: c.blue }]}>
-								{recoveryConfirmed && <Check color="#fff" size={12} />}
+							<View style={[styles.checkbox, recoveryConfirmed && { backgroundColor: isLight ? "#000" : "#fff", borderColor: isLight ? "#000" : "#fff" }]}>
+								{recoveryConfirmed && <Check color={isLight ? "#fff" : "#000"} size={12} />}
 							</View>
 							<Text style={{ color: c.textSecondary, fontSize: 13, flex: 1 }}>I have safely backed up my 12-word recovery key.</Text>
 						</TouchableOpacity>
-						<TouchableOpacity style={[styles.primaryBtn, { backgroundColor: c.blue }]} onPress={onFinish}>
-							<Text style={styles.btnText}>Complete Setup & Unlock</Text>
+						<TouchableOpacity
+							style={[styles.primaryBtn, { backgroundColor: isLight ? "#000000" : "#ffffff" }]}
+							onPress={onFinish}
+						>
+							<Text style={[styles.btnText, { color: isLight ? "#ffffff" : "#000000" }]}>Complete Setup & Unlock</Text>
 						</TouchableOpacity>
 					</>
 				)}

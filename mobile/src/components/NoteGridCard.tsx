@@ -43,7 +43,7 @@ export function NoteGridCard({ item, folders = [], c, isLight, onPress }: NoteGr
 
 				{/* Date & Note Preview */}
 				<Text style={[styles.body, { color: c.textSecondary }]} numberOfLines={5}>
-					{dateStr ? <Text style={[styles.date, { color: c.blue }]}>{dateStr} </Text> : null}
+					{dateStr ? <Text style={[styles.date, { color: c.text, fontWeight: "600" }]}>{dateStr} </Text> : null}
 					{content || "No additional text"}
 				</Text>
 

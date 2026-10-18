@@ -1,5 +1,5 @@
 import {
-	generateMnemonic,
+	entropyToMnemonic,
 	mnemonicToSeedSync,
 	validateMnemonic,
 } from "@scure/bip39";
@@ -8,11 +8,27 @@ import nacl from "tweetnacl";
 import naclUtil from "tweetnacl-util";
 import * as Crypto from "expo-crypto";
 
+// Ensure global crypto.getRandomValues is polyfilled for any library expecting it
+if (typeof globalThis.crypto === "undefined") {
+	(globalThis as any).crypto = {};
+}
+if (typeof globalThis.crypto.getRandomValues !== "function") {
+	(globalThis.crypto as any).getRandomValues = <T extends ArrayBufferView | null>(array: T): T => {
+		if (!array) return array;
+		const uint8 = new Uint8Array(array.buffer, array.byteOffset, array.byteLength);
+		const random = Crypto.getRandomValues(new Uint8Array(uint8.length));
+		uint8.set(random);
+		return array;
+	};
+}
+
 /**
  * Generate a 12-word BIP39 mnemonic recovery key.
+ * 128 bits = 16 bytes of cryptographically secure random entropy.
  */
 export function generateRecoveryMnemonic(): string {
-	return generateMnemonic(wordlist, 128);
+	const entropy = Crypto.getRandomValues(new Uint8Array(16));
+	return entropyToMnemonic(entropy, wordlist);
 }
 
 /**

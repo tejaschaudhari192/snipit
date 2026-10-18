@@ -11,6 +11,20 @@ nacl.setPRNG((x, n) => {
 	}
 });
 
+// Polyfill global crypto.getRandomValues for all modules/dependencies in React Native Android & iOS
+if (typeof globalThis.crypto === 'undefined') {
+	(globalThis as any).crypto = {};
+}
+if (typeof globalThis.crypto.getRandomValues !== 'function') {
+	(globalThis.crypto as any).getRandomValues = <T extends ArrayBufferView | null>(array: T): T => {
+		if (!array) return array;
+		const uint8 = new Uint8Array(array.buffer, array.byteOffset, array.byteLength);
+		const random = Crypto.getRandomValues(new Uint8Array(uint8.length));
+		uint8.set(random);
+		return array;
+	};
+}
+
 import App from './App';
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);

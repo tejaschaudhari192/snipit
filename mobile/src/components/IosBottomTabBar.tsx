@@ -13,6 +13,9 @@ interface Props {
 export function IosBottomTabBar({ activeTab, onTabChange, theme = "dark" }: Props) {
 	const isLight = theme === "light";
 
+	const activeColor = isLight ? "#000000" : "#ffffff";
+	const inactiveColor = isLight ? "#8e8e93" : "#636366";
+
 	return (
 		<View style={[styles.iosBottomTabBar, isLight && styles.lightIosBottomTabBar]}>
 			<TouchableOpacity
@@ -21,11 +24,11 @@ export function IosBottomTabBar({ activeTab, onTabChange, theme = "dark" }: Prop
 				activeOpacity={0.7}
 			>
 				<Key
-					color={activeTab === "passwords" ? "#0a84ff" : "#8e8e93"}
+					color={activeTab === "passwords" ? activeColor : inactiveColor}
 					size={22}
 					strokeWidth={activeTab === "passwords" ? 2.4 : 1.8}
 				/>
-				<Text style={[styles.iosTabLabel, activeTab === "passwords" && styles.iosTabLabelActive]}>
+				<Text style={[styles.iosTabLabel, { color: activeTab === "passwords" ? activeColor : inactiveColor }]}>
 					Passwords
 				</Text>
 			</TouchableOpacity>
@@ -37,11 +40,11 @@ export function IosBottomTabBar({ activeTab, onTabChange, theme = "dark" }: Prop
 				activeOpacity={0.7}
 			>
 				<StickyNote
-					color={activeTab === "notes" ? "#0a84ff" : "#8e8e93"}
+					color={activeTab === "notes" ? activeColor : inactiveColor}
 					size={22}
 					strokeWidth={activeTab === "notes" ? 2.4 : 1.8}
 				/>
-				<Text style={[styles.iosTabLabel, activeTab === "notes" && styles.iosTabLabelActive]}>
+				<Text style={[styles.iosTabLabel, { color: activeTab === "notes" ? activeColor : inactiveColor }]}>
 					Notes
 				</Text>
 			</TouchableOpacity>
@@ -53,11 +56,11 @@ export function IosBottomTabBar({ activeTab, onTabChange, theme = "dark" }: Prop
 				activeOpacity={0.7}
 			>
 				<FolderIcon
-					color={activeTab === "folders" ? "#0a84ff" : "#8e8e93"}
+					color={activeTab === "folders" ? activeColor : inactiveColor}
 					size={22}
 					strokeWidth={activeTab === "folders" ? 2.4 : 1.8}
 				/>
-				<Text style={[styles.iosTabLabel, activeTab === "folders" && styles.iosTabLabelActive]}>
+				<Text style={[styles.iosTabLabel, { color: activeTab === "folders" ? activeColor : inactiveColor }]}>
 					Folders
 				</Text>
 			</TouchableOpacity>
@@ -68,11 +71,11 @@ export function IosBottomTabBar({ activeTab, onTabChange, theme = "dark" }: Prop
 				activeOpacity={0.7}
 			>
 				<SettingsIcon
-					color={activeTab === "settings" ? "#0a84ff" : "#8e8e93"}
+					color={activeTab === "settings" ? activeColor : inactiveColor}
 					size={22}
 					strokeWidth={activeTab === "settings" ? 2.4 : 1.8}
 				/>
-				<Text style={[styles.iosTabLabel, activeTab === "settings" && styles.iosTabLabelActive]}>
+				<Text style={[styles.iosTabLabel, { color: activeTab === "settings" ? activeColor : inactiveColor }]}>
 					Settings
 				</Text>
 			</TouchableOpacity>
@@ -112,7 +115,5 @@ const styles = StyleSheet.create({
 		fontSize: 10,
 		fontWeight: "600",
 	},
-	iosTabLabelActive: {
-		color: "#0a84ff",
-	},
+	iosTabLabelActive: {},
 });

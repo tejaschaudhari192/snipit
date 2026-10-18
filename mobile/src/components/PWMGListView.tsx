@@ -60,7 +60,7 @@ export function PWMGListView({
 						Filtering by: {selectedFolderId ? folders.find((f) => f.id === selectedFolderId)?.name : activeFilter}
 					</Text>
 					<TouchableOpacity onPress={onResetFilter}>
-						<Text style={[styles.filterResetAction, { color: c.blue }]}>Show All</Text>
+						<Text style={[styles.filterResetAction, { color: c.text, textDecorationLine: "underline" }]}>Show All</Text>
 					</TouchableOpacity>
 				</View>
 			)}
