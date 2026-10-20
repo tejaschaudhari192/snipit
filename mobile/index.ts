@@ -1,7 +1,12 @@
 import './global.css';
 import { registerRootComponent } from 'expo';
+import { SafeAreaView } from 'react-native';
+import { cssInterop } from 'react-native-css-interop';
 import nacl from 'tweetnacl';
 import * as Crypto from 'expo-crypto';
+
+// Register React Native's default SafeAreaView with NativeWind / cssInterop
+cssInterop(SafeAreaView, { className: 'style' });
 
 // Initialize TweetNaCl secure PRNG for native Android and iOS environments
 nacl.setPRNG((x, n) => {

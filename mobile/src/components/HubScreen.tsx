@@ -26,7 +26,11 @@ export function HubScreen({ theme, user, onOpenTool }: HubScreenProps) {
     return (
         <SafeAreaView
             className={`flex-1 min-h-screen ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
-            style={{ paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0 }}
+            style={{
+                flex: 1,
+                backgroundColor: isLight ? "#f8fafc" : "#020617",
+                paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+            }}
         >
             <ExpoStatusBar style={isLight ? "dark" : "light"} />
 
@@ -116,7 +120,11 @@ export function HubScreen({ theme, user, onOpenTool }: HubScreenProps) {
                 </View>
             </View>
 
-            <ScrollView contentContainerStyle={{ padding: 20 }}>
+            <ScrollView
+                className={`flex-1 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
+                style={{ backgroundColor: isLight ? "#f8fafc" : "#020617" }}
+                contentContainerStyle={{ padding: 20 }}
+            >
                 {/* Hero Introduction */}
                 <View className="mb-5">
                     <Text

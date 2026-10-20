@@ -3,15 +3,21 @@
 @tailwind utilities;
 
 :root {
-  --color-bg: #000000;
-  --color-bg-secondary: #1c1c1e;
-  --color-bg-tertiary: #2c2c2e;
+  --color-bg: #020617;
+  --color-bg-secondary: #0f172a;
+  --color-bg-tertiary: #1e293b;
   --color-border: rgba(84, 84, 88, 0.35);
+  background-color: #020617;
 }
 
-.light {
-  --color-bg: #f2f2f7;
+html, body, #root {
+  background-color: #020617;
+}
+
+.light, html.light, body.light, #root.light {
+  --color-bg: #f8fafc;
   --color-bg-secondary: #ffffff;
-  --color-bg-tertiary: #e5e5ea;
+  --color-bg-tertiary: #e2e8f0;
   --color-border: rgba(60, 60, 67, 0.18);
+  background-color: #f8fafc;
 }

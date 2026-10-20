@@ -1,11 +1,21 @@
 {
-	"version": "1.0.7",
-	"buildNumber": 8,
+	"version": "1.0.8",
+	"buildNumber": 9,
 	"minSupportedVersion": "1.0.0",
 	"forceUpdate": false,
 	"downloadUrl": "https://cpaste.vercel.app/mobile",
 	"releaseDate": "2026-10-20",
 	"changelog": [
+		{
+			"version": "1.0.8",
+			"date": "2026-10-20",
+			"title": "⚡ NativeWind Setup & TypeScript Improvements",
+			"changes": [
+				"Configured react-native-css-interop and Babel preset for seamless Tailwind styling",
+				"Resolved TypeScript circular type resolution on tool rendering in App",
+				"Refactored Hub and Auth screens layout and theme responsiveness"
+			]
+		},
 		{
 			"version": "1.0.7",
 			"date": "2026-10-20",

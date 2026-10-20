@@ -22,6 +22,7 @@
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-native": "0.88.0",
+    "react-native-css-interop": "^0.2.7",
     "react-native-reanimated": "^4.7.1",
     "react-native-svg": "^15.16.0",
     "react-native-web": "^0.21.4",
@@ -31,6 +32,7 @@
   },
   "devDependencies": {
     "@types/react": "~19.3.0",
+    "babel-preset-expo": "^58.0.17",
     "typescript": "~6.0.3"
   },
   "scripts": {

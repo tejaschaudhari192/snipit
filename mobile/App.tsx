@@ -110,7 +110,7 @@ export default function App() {
 		}
 	};
 
-	const renderActiveTool = () => {
+	const renderActiveTool = (): React.ReactNode => {
 		if (activeTool === "auth") {
 			return (
 				<AuthScreen
@@ -170,7 +170,10 @@ export default function App() {
 	};
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View
+			className={`flex-1 ${resolvedTheme === "light" ? "bg-slate-50" : "bg-slate-950"}`}
+			style={{ flex: 1, backgroundColor: resolvedTheme === "light" ? "#f8fafc" : "#020617" }}
+		>
 			{renderActiveTool()}
 			<UpdateInfoModal
 				visible={autoUpdateModalVisible}
