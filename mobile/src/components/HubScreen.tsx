@@ -8,7 +8,6 @@ import {
     Platform,
     StatusBar,
     Image,
-    StyleSheet,
 } from "react-native";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { Cloud, Shield, ChevronRight, Lock, User } from "lucide-react-native";
@@ -26,64 +25,49 @@ export function HubScreen({ theme, user, onOpenTool }: HubScreenProps) {
 
     return (
         <SafeAreaView
-            style={[
-                styles.container,
-                { backgroundColor: isLight ? "#f8fafc" : "#090d16" },
-            ]}
+            className={`flex-1 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
+            style={{ paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0 }}
         >
             <ExpoStatusBar style={isLight ? "dark" : "light"} />
 
             {/* App Header */}
             <View
-                style={[
-                    styles.header,
-                    {
-                        backgroundColor: isLight ? "#ffffff" : "#090d16",
-                        borderBottomColor: isLight ? "#e2e8f0" : "#1e293b",
-                    },
-                ]}
+                className={`flex-row justify-between items-center px-4 py-3 border-b ${
+                    isLight ? "bg-white border-slate-200" : "bg-slate-950 border-slate-800"
+                }`}
             >
-                <View style={styles.brandRow}>
+                <View className="flex-row items-center gap-2.5">
                     <Image
                         source={require("../../assets/snipit-logo.png")}
-                        style={styles.logo}
+                        className="w-8 h-8 rounded-lg"
                         resizeMode="contain"
                     />
-                    <Text
-                        style={[
-                            styles.brandTitle,
-                            { color: isLight ? "#0f172a" : "#ffffff" },
-                        ]}
-                    >
+                    <Text className={`text-xl font-black tracking-tight ${isLight ? "text-slate-900" : "text-white"}`}>
                         Snipit
                     </Text>
                 </View>
 
-                <View style={styles.headerActions}>
+                <View className="flex-row items-center gap-2">
                     {/* Top Sync Status Pill */}
                     <TouchableOpacity
-                        style={[
-                            styles.syncPill,
-                            {
-                                backgroundColor: isLight ? "#f1f5f9" : "#0f172a",
-                                borderColor: isLight ? "#cbd5e1" : "#1e293b",
-                            },
-                        ]}
+                        className={`flex-row items-center gap-1.5 px-2.5 py-1.5 rounded-full border ${
+                            isLight
+                                ? "bg-slate-100 border-slate-200"
+                                : "bg-slate-900 border-slate-800"
+                        }`}
                         onPress={() => onOpenTool(user ? "profile" : "auth")}
                         activeOpacity={0.7}
                     >
                         <View
-                            style={[
-                                styles.syncDot,
-                                { backgroundColor: user?.token ? "#22c55e" : "#eab308" },
-                            ]}
+                            className={`w-1.5 h-1.5 rounded-full ${
+                                user?.token ? "bg-green-500" : "bg-yellow-500"
+                            }`}
                         />
                         <Cloud color={user?.token ? "#3b82f6" : "#eab308"} size={12} />
                         <Text
-                            style={[
-                                styles.syncText,
-                                { color: isLight ? "#475569" : "#94a3b8" },
-                            ]}
+                            className={`text-[11px] font-bold ${
+                                isLight ? "text-slate-600" : "text-slate-400"
+                            }`}
                         >
                             {user?.token ? "Synced" : "Local"}
                         </Text>
@@ -92,13 +76,11 @@ export function HubScreen({ theme, user, onOpenTool }: HubScreenProps) {
                     {/* Profile Button or Sign In Button */}
                     {user ? (
                         <TouchableOpacity
-                            style={[
-                                styles.profileBtn,
-                                {
-                                    backgroundColor: isLight ? "#eef2ff" : "rgba(124, 58, 237, 0.15)",
-                                    borderColor: isLight ? "#c7d2fe" : "rgba(139, 92, 246, 0.3)",
-                                },
-                            ]}
+                            className={`flex-row items-center gap-1.5 pl-1 pr-2.5 py-1 rounded-full border ${
+                                isLight
+                                    ? "bg-indigo-50 border-indigo-200"
+                                    : "bg-violet-950 border-violet-800"
+                            }`}
                             onPress={() => onOpenTool("profile")}
                             activeOpacity={0.7}
                         >
@@ -108,10 +90,9 @@ export function HubScreen({ theme, user, onOpenTool }: HubScreenProps) {
                                 size={26}
                             />
                             <Text
-                                style={[
-                                    styles.profileBtnText,
-                                    { color: isLight ? "#4f46e5" : "#c4b5fd" },
-                                ]}
+                                className={`text-[13px] font-bold ${
+                                    isLight ? "text-indigo-600" : "text-violet-300"
+                                }`}
                             >
                                 {user.username}
                             </Text>
@@ -122,96 +103,82 @@ export function HubScreen({ theme, user, onOpenTool }: HubScreenProps) {
                         </TouchableOpacity>
                     ) : (
                         <TouchableOpacity
-                            style={styles.signInBtn}
+                            className="flex-row items-center gap-1.5 bg-violet-600 px-3.5 py-1.5 rounded-full"
                             onPress={() => onOpenTool("auth")}
                             activeOpacity={0.8}
                         >
                             <User color="#fff" size={14} />
-                            <Text style={styles.signInBtnText}>Sign In</Text>
+                            <Text className="text-white text-[13px] font-bold">Sign In</Text>
                         </TouchableOpacity>
                     )}
                 </View>
             </View>
 
-            <ScrollView contentContainerStyle={styles.scrollContent}>
+            <ScrollView contentContainerStyle={{ padding: 20 }}>
                 {/* Hero Introduction */}
-                <View style={styles.heroSection}>
+                <View className="mb-5">
                     <Text
-                        style={[
-                            styles.heroTitle,
-                            { color: isLight ? "#0f172a" : "#f1f5f9" },
-                        ]}
+                        className={`text-2xl font-extrabold tracking-tight mb-1.5 ${
+                            isLight ? "text-slate-900" : "text-slate-100"
+                        }`}
                     >
                         Select Tool
                     </Text>
                     <Text
-                        style={[
-                            styles.heroSubtitle,
-                            { color: isLight ? "#64748b" : "#94a3b8" },
-                        ]}
+                        className={`text-sm leading-5 ${
+                            isLight ? "text-slate-500" : "text-slate-400"
+                        }`}
                     >
                         Direct access to Snipit's privacy-focused tools. Fast local performance with cloud account sync.
                     </Text>
                 </View>
 
                 {/* Primary Tool Cards */}
-                <View style={styles.cardsContainer}>
+                <View className="gap-4">
                     {/* PWMG (Password Manager) Card */}
                     <TouchableOpacity
-                        style={[
-                            styles.card,
-                            {
-                                backgroundColor: isLight ? "#ffffff" : "#131b2e",
-                                borderColor: isLight ? "#e2e8f0" : "rgba(139, 92, 246, 0.35)",
-                                shadowOpacity: isLight ? 0.06 : 0.25,
-                            },
-                        ]}
+                        className={`flex-row items-center rounded-2xl p-4 border ${
+                            isLight
+                                ? "bg-white border-slate-200 shadow-sm"
+                                : "bg-slate-900 border-violet-900"
+                        }`}
                         activeOpacity={0.8}
                         onPress={() => onOpenTool("pwmg")}
                     >
                         <View
-                            style={[
-                                styles.cardIconBox,
-                                {
-                                    backgroundColor: isLight ? "rgba(124, 58, 237, 0.1)" : "rgba(124, 58, 237, 0.2)",
-                                },
-                            ]}
+                            className={`w-12 h-12 rounded-xl justify-center items-center mr-4 ${
+                                isLight ? "bg-violet-100" : "bg-violet-950"
+                            }`}
                         >
-                            <Shield color={isLight ? "#7c3aed" : "#a78bfa"} size={28} />
+                            <Shield color={isLight ? "#7c3aed" : "#a78bfa"} size={26} />
                         </View>
-                        <View style={styles.cardContent}>
-                            <View style={styles.cardHeaderRow}>
+                        <View className="flex-1 mr-2">
+                            <View className="flex-row items-center justify-between mb-1">
                                 <Text
-                                    style={[
-                                        styles.cardTitle,
-                                        { color: isLight ? "#0f172a" : "#f1f5f9" },
-                                    ]}
+                                    className={`text-[17px] font-bold ${
+                                        isLight ? "text-slate-900" : "text-slate-100"
+                                    }`}
                                 >
                                     Password Manager
                                 </Text>
                                 <View
-                                    style={[
-                                        styles.badge,
-                                        {
-                                            backgroundColor: isLight ? "rgba(124, 58, 237, 0.12)" : "rgba(124, 58, 237, 0.22)",
-                                        },
-                                    ]}
+                                    className={`px-1.5 py-0.5 rounded ${
+                                        isLight ? "bg-violet-100" : "bg-violet-900"
+                                    }`}
                                 >
                                     <Text
-                                        style={[
-                                            styles.badgeText,
-                                            { color: isLight ? "#6d28d9" : "#c4b5fd" },
-                                        ]}
+                                        className={`text-[9px] font-black ${
+                                            isLight ? "text-violet-700" : "text-violet-300"
+                                        }`}
                                     >
                                         ZERO-KNOWLEDGE
                                     </Text>
                                 </View>
                             </View>
                             <Text
-                                style={[
-                                    styles.cardDescription,
-                                    { color: isLight ? "#64748b" : "#94a3b8" },
-                                ]}
+                                className={`text-xs leading-4 ${
+                                    isLight ? "text-slate-500" : "text-slate-400"
+                                }`}
                             >
                                 Zero-knowledge encrypted vault with 12-word recovery key, generator & master password.
                             </Text>
@@ -221,13 +188,12 @@ export function HubScreen({ theme, user, onOpenTool }: HubScreenProps) {
                 </View>
 
                 {/* Security note footer */}
-                <View style={styles.securityFooter}>
+                <View className="flex-row items-center justify-center gap-2 mt-10 px-4">
                     <Lock color={isLight ? "#94a3b8" : "#64748b"} size={14} />
                     <Text
-                        style={[
-                            styles.securityFooterText,
-                            { color: isLight ? "#94a3b8" : "#64748b" },
-                        ]}
+                        className={`text-xs text-center ${
+                            isLight ? "text-slate-400" : "text-slate-500"
+                        }`}
                     >
                         End-to-end encrypted with XSalsa20-Poly1305. Non-custodial security.
                     </Text>
@@ -236,162 +202,3 @@ export function HubScreen({ theme, user, onOpenTool }: HubScreenProps) {
         </SafeAreaView>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    },
-    header: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        borderBottomWidth: 1,
-    },
-    brandRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 10,
-    },
-    logo: {
-        width: 32,
-        height: 32,
-        borderRadius: 8,
-    },
-    brandTitle: {
-        fontSize: 20,
-        fontWeight: "900",
-        letterSpacing: -0.5,
-    },
-    headerActions: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 8,
-    },
-    syncPill: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 6,
-        paddingHorizontal: 10,
-        paddingVertical: 6,
-        borderRadius: 20,
-        borderWidth: 1,
-    },
-    syncDot: {
-        width: 6,
-        height: 6,
-        borderRadius: 3,
-    },
-    syncText: {
-        fontSize: 11,
-        fontWeight: "700",
-    },
-    profileBtn: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 6,
-        paddingLeft: 4,
-        paddingRight: 10,
-        paddingVertical: 4,
-        borderRadius: 20,
-        borderWidth: 1,
-    },
-    profileBtnText: {
-        fontSize: 13,
-        fontWeight: "700",
-    },
-    signInBtn: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 6,
-        backgroundColor: "#7c3aed",
-        paddingHorizontal: 14,
-        paddingVertical: 6,
-        borderRadius: 20,
-    },
-    signInBtnText: {
-        color: "#ffffff",
-        fontSize: 13,
-        fontWeight: "700",
-    },
-    scrollContent: {
-        padding: 20,
-    },
-    heroSection: {
-        marginBottom: 20,
-    },
-    heroTitle: {
-        fontSize: 26,
-        fontWeight: "800",
-        letterSpacing: -0.5,
-        marginBottom: 6,
-    },
-    heroSubtitle: {
-        fontSize: 14,
-        lineHeight: 20,
-    },
-    cardsContainer: {
-        gap: 16,
-    },
-    card: {
-        flexDirection: "row",
-        alignItems: "center",
-        borderRadius: 18,
-        padding: 18,
-        borderWidth: 1,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 8,
-        elevation: 2,
-    },
-    cardIconBox: {
-        width: 52,
-        height: 52,
-        borderRadius: 14,
-        justifyContent: "center",
-        alignItems: "center",
-        marginRight: 16,
-    },
-    cardContent: {
-        flex: 1,
-        marginRight: 8,
-    },
-    cardHeaderRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        marginBottom: 4,
-    },
-    cardTitle: {
-        fontSize: 17,
-        fontWeight: "700",
-    },
-    badge: {
-        paddingHorizontal: 6,
-        paddingVertical: 2,
-        borderRadius: 6,
-    },
-    badgeText: {
-        fontSize: 9,
-        fontWeight: "900",
-        letterSpacing: 0.5,
-    },
-    cardDescription: {
-        fontSize: 12,
-        lineHeight: 17,
-    },
-    securityFooter: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 8,
-        marginTop: 40,
-        paddingHorizontal: 16,
-    },
-    securityFooterText: {
-        fontSize: 12,
-        textAlign: "center",
-    },
-});

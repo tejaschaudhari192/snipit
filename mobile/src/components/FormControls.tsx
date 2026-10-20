@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TextInput, TouchableOpacity, Text, ActivityIndicator, TextInputProps, StyleSheet } from "react-native";
+import { View, TextInput, TouchableOpacity, Text, ActivityIndicator, TextInputProps } from "react-native";
 import { Eye, EyeOff } from "lucide-react-native";
 
 interface FormInputProps extends TextInputProps {
@@ -14,34 +14,29 @@ export function FormInput({
     className = "",
     placeholderTextColor,
     theme = "dark",
-    style,
     ...props
 }: FormInputProps) {
     const isLight = theme === "light";
     const defaultPlaceholderColor = isLight ? "#94a3b8" : "#64748b";
 
     return (
-        <View style={styles.inputContainer} className={`w-full mb-3.5 ${containerClassName}`}>
+        <View className={`w-full mb-3.5 ${containerClassName}`}>
             {label && (
                 <Text
-                    style={[styles.label, { color: isLight ? "#475569" : "#94a3b8" }]}
-                    className="text-xs font-semibold mb-1.5 ml-1"
+                    className={`text-xs font-semibold mb-1.5 ml-1 ${
+                        isLight ? "text-slate-600" : "text-slate-400"
+                    }`}
                 >
                     {label}
                 </Text>
             )}
             <TextInput
                 placeholderTextColor={placeholderTextColor || defaultPlaceholderColor}
-                style={[
-                    styles.input,
-                    {
-                        backgroundColor: isLight ? "#ffffff" : "#0f172a",
-                        borderColor: isLight ? "#cbd5e1" : "#1e293b",
-                        color: isLight ? "#0f172a" : "#ffffff",
-                    },
-                    style,
-                ]}
-                className={`w-full rounded-xl px-3.5 py-3 text-[15px] ${className}`}
+                className={`w-full rounded-xl px-4 py-3 text-[15px] border ${
+                    isLight
+                        ? "bg-white border-slate-300 text-slate-900"
+                        : "bg-slate-900 border-slate-800 text-white"
+                } ${className}`}
                 {...props}
             />
         </View>
@@ -64,48 +59,39 @@ export function FormPasswordInput({
     className = "",
     placeholderTextColor,
     theme = "dark",
-    style,
     ...props
 }: PasswordInputProps) {
     const isLight = theme === "light";
     const defaultPlaceholderColor = isLight ? "#94a3b8" : "#64748b";
 
     return (
-        <View style={styles.inputContainer} className={`w-full mb-3.5 ${containerClassName}`}>
+        <View className={`w-full mb-3.5 ${containerClassName}`}>
             {label && (
                 <Text
-                    style={[styles.label, { color: isLight ? "#475569" : "#94a3b8" }]}
-                    className="text-xs font-semibold mb-1.5 ml-1"
+                    className={`text-xs font-semibold mb-1.5 ml-1 ${
+                        isLight ? "text-slate-600" : "text-slate-400"
+                    }`}
                 >
                     {label}
                 </Text>
             )}
             <View
-                style={[
-                    styles.passwordWrapper,
-                    {
-                        backgroundColor: isLight ? "#ffffff" : "#0f172a",
-                        borderColor: isLight ? "#cbd5e1" : "#1e293b",
-                    },
-                ]}
-                className="w-full flex-row items-center rounded-xl pr-2"
+                className={`w-full flex-row items-center rounded-xl border pr-2 ${
+                    isLight
+                        ? "bg-white border-slate-300"
+                        : "bg-slate-900 border-slate-800"
+                }`}
             >
                 <TextInput
                     placeholderTextColor={placeholderTextColor || defaultPlaceholderColor}
                     secureTextEntry={!showPassword}
-                    style={[
-                        styles.passwordInput,
-                        {
-                            color: isLight ? "#0f172a" : "#ffffff",
-                        },
-                        style,
-                    ]}
-                    className={`flex-1 px-3.5 py-3 text-[15px] ${className}`}
+                    className={`flex-1 px-4 py-3 text-[15px] ${
+                        isLight ? "text-slate-900" : "text-white"
+                    } ${className}`}
                     {...props}
                 />
                 <TouchableOpacity
                     onPress={onToggleShowPassword}
-                    style={styles.eyeBtn}
                     className="p-2 justify-center items-center"
                     hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 >
@@ -141,76 +127,17 @@ export function PrimaryButton({
             onPress={onPress}
             disabled={disabled || loading}
             activeOpacity={0.8}
-            style={[
-                styles.button,
-                disabled || loading ? styles.buttonDisabled : null,
-            ]}
-            className={`w-full py-3.5 rounded-xl items-center justify-center mt-2 ${className}`}
+            className={`w-full bg-violet-600 py-3.5 rounded-xl items-center justify-center mt-2 ${
+                disabled || loading ? "opacity-60" : "active:bg-violet-700"
+            } ${className}`}
         >
             {loading ? (
                 <ActivityIndicator color="#ffffff" size="small" />
             ) : (
-                <Text style={styles.buttonText} className="text-white text-base font-bold">
+                <Text className="text-white text-base font-bold">
                     {title}
                 </Text>
             )}
         </TouchableOpacity>
     );
 }
-
-const styles = StyleSheet.create({
-    inputContainer: {
-        width: "100%",
-        marginBottom: 14,
-    },
-    label: {
-        fontSize: 12,
-        fontWeight: "600",
-        marginBottom: 6,
-        marginLeft: 4,
-    },
-    input: {
-        width: "100%",
-        borderWidth: 1,
-        borderRadius: 12,
-        paddingHorizontal: 14,
-        paddingVertical: 12,
-        fontSize: 15,
-    },
-    passwordWrapper: {
-        width: "100%",
-        flexDirection: "row",
-        alignItems: "center",
-        borderWidth: 1,
-        borderRadius: 12,
-        paddingRight: 6,
-    },
-    passwordInput: {
-        flex: 1,
-        paddingHorizontal: 14,
-        paddingVertical: 12,
-        fontSize: 15,
-    },
-    eyeBtn: {
-        padding: 8,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    button: {
-        width: "100%",
-        backgroundColor: "#7c3aed",
-        paddingVertical: 14,
-        borderRadius: 12,
-        alignItems: "center",
-        justifyContent: "center",
-        marginTop: 8,
-    },
-    buttonDisabled: {
-        opacity: 0.65,
-    },
-    buttonText: {
-        color: "#ffffff",
-        fontSize: 16,
-        fontWeight: "700",
-    },
-});
