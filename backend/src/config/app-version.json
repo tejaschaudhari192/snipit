@@ -1,11 +1,22 @@
 {
-	"version": "1.0.6",
-	"buildNumber": 7,
+	"version": "1.0.7",
+	"buildNumber": 8,
 	"minSupportedVersion": "1.0.0",
 	"forceUpdate": false,
 	"downloadUrl": "https://cpaste.vercel.app/mobile",
-	"releaseDate": "2026-10-19",
+	"releaseDate": "2026-10-20",
 	"changelog": [
+		{
+			"version": "1.0.7",
+			"date": "2026-10-20",
+			"title": "🛡️ Two-Way Merge Cloud Sync & Offline Outbox Protection",
+			"changes": [
+				"Implemented two-way intelligent merge between local and cloud items to prevent data loss",
+				"Added offline pending deletion queue preventing deleted items from resurrecting on sync",
+				"Added two-way folder synchronization preserving locally created categories",
+				"Automatic cloud upload for unsynced local credentials upon reconnecting"
+			]
+		},
 		{
 			"version": "1.0.6",
 			"date": "2026-10-19",
