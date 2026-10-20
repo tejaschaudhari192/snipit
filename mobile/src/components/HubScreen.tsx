@@ -25,7 +25,7 @@ export function HubScreen({ theme, user, onOpenTool }: HubScreenProps) {
 
     return (
         <SafeAreaView
-            className={`flex-1 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
+            className={`flex-1 min-h-screen ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
             style={{ paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0 }}
         >
             <ExpoStatusBar style={isLight ? "dark" : "light"} />
@@ -37,11 +37,13 @@ export function HubScreen({ theme, user, onOpenTool }: HubScreenProps) {
                 }`}
             >
                 <View className="flex-row items-center gap-2.5">
-                    <Image
-                        source={require("../../assets/snipit-logo.png")}
-                        className="w-8 h-8 rounded-lg"
-                        resizeMode="contain"
-                    />
+                    <View className="w-8 h-8 overflow-hidden rounded-lg">
+                        <Image
+                            source={require("../../assets/snipit-logo.png")}
+                            className="w-full h-full"
+                            resizeMode="contain"
+                        />
+                    </View>
                     <Text className={`text-xl font-black tracking-tight ${isLight ? "text-slate-900" : "text-white"}`}>
                         Snipit
                     </Text>

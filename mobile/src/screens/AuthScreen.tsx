@@ -152,7 +152,7 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
 
     return (
         <SafeAreaView
-            className={`flex-1 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
+            className={`flex-1 min-h-screen ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
             style={{ paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0 }}
         >
             {/* Header */}
