@@ -119,6 +119,7 @@ export default function App() {
 						loadUserSession();
 						setActiveTool("hub");
 					}}
+					theme={resolvedTheme}
 				/>
 			);
 		}

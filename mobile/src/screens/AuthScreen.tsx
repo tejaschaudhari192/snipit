@@ -8,6 +8,7 @@ import {
     StatusBar,
     BackHandler,
     ScrollView,
+    StyleSheet,
 } from "react-native";
 import { ArrowLeft, User, Globe } from "lucide-react-native";
 import { offlineVault } from "../core/vault-storage";
@@ -18,9 +19,11 @@ import { FormInput, FormPasswordInput, PrimaryButton } from "../components/FormC
 interface Props {
     onBack: () => void;
     onAuthSuccess: () => void;
+    theme?: "dark" | "light";
 }
 
-export function AuthScreen({ onBack, onAuthSuccess }: Props) {
+export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
+    const isLight = theme === "light";
     const [mode, setMode] = useState<"login" | "register">("login");
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
@@ -150,40 +153,73 @@ export function AuthScreen({ onBack, onAuthSuccess }: Props) {
 
     return (
         <SafeAreaView
-            className="flex-1 bg-[#090d16]"
-            style={{ paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0 }}
+            style={[
+                styles.container,
+                { backgroundColor: isLight ? "#f8fafc" : "#090d16" },
+            ]}
         >
             {/* Header */}
-            <View className="flex-row items-center justify-between px-4 py-3 border-b border-slate-800">
+            <View
+                style={[
+                    styles.header,
+                    {
+                        backgroundColor: isLight ? "#ffffff" : "#090d16",
+                        borderBottomColor: isLight ? "#e2e8f0" : "#1e293b",
+                    },
+                ]}
+            >
                 <TouchableOpacity
                     onPress={onBack}
-                    className="p-1.5"
+                    style={styles.backBtn}
                     hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
                     activeOpacity={0.7}
                 >
-                    <ArrowLeft color="#fff" size={20} />
+                    <ArrowLeft color={isLight ? "#0f172a" : "#ffffff"} size={20} />
                 </TouchableOpacity>
-                <Text className="text-lg font-bold text-slate-100">
+                <Text
+                    style={[
+                        styles.headerTitle,
+                        { color: isLight ? "#0f172a" : "#f1f5f9" },
+                    ]}
+                >
                     {mode === "login" ? "Sign In to Snipit" : "Create Snipit Account"}
                 </Text>
-                <View className="w-10" />
+                <View style={{ width: 40 }} />
             </View>
 
-            <ScrollView contentContainerStyle={{ padding: 24, alignItems: "center" }} keyboardShouldPersistTaps="handled">
+            <ScrollView
+                contentContainerStyle={styles.scrollContent}
+                keyboardShouldPersistTaps="handled"
+            >
                 {/* User Icon Circle */}
-                <View className="w-20 h-20 rounded-full bg-violet-600/15 justify-center items-center my-4">
+                <View
+                    style={[
+                        styles.avatarCircle,
+                        { backgroundColor: isLight ? "rgba(124, 58, 237, 0.1)" : "rgba(124, 58, 237, 0.18)" },
+                    ]}
+                >
                     <User color="#8b5cf6" size={40} />
                 </View>
 
-                <Text className="text-2xl font-bold text-white text-center mb-1.5">
+                <Text
+                    style={[
+                        styles.mainTitle,
+                        { color: isLight ? "#0f172a" : "#ffffff" },
+                    ]}
+                >
                     {mode === "login" ? "Welcome Back" : "Get Started"}
                 </Text>
-                <Text className="text-sm text-slate-400 text-center leading-5 mb-5 px-2">
+                <Text
+                    style={[
+                        styles.subTitle,
+                        { color: isLight ? "#64748b" : "#94a3b8" },
+                    ]}
+                >
                     Sign in to sync your encrypted vault and snippets across devices, or keep using offline.
                 </Text>
 
                 {error ? (
-                    <Text className="text-red-500 text-xs text-center mb-3 px-2">
+                    <Text style={styles.errorText}>
                         {error}
                     </Text>
                 ) : null}
@@ -194,6 +230,7 @@ export function AuthScreen({ onBack, onAuthSuccess }: Props) {
                         value={username}
                         onChangeText={setUsername}
                         autoCapitalize="none"
+                        theme={theme}
                     />
                 )}
 
@@ -202,6 +239,7 @@ export function AuthScreen({ onBack, onAuthSuccess }: Props) {
                     value={email}
                     onChangeText={setEmail}
                     autoCapitalize="none"
+                    theme={theme}
                 />
 
                 <FormPasswordInput
@@ -211,19 +249,26 @@ export function AuthScreen({ onBack, onAuthSuccess }: Props) {
                     value={password}
                     onChangeText={setPassword}
                     autoCapitalize="none"
+                    theme={theme}
                 />
 
                 <PrimaryButton
                     title={mode === "login" ? "Sign In" : "Register"}
                     loading={loading}
                     onPress={handleSubmit}
+                    theme={theme}
                 />
 
                 <TouchableOpacity
-                    className="mt-4 p-2"
+                    style={styles.toggleModeBtn}
                     onPress={() => setMode(mode === "login" ? "register" : "login")}
                 >
-                    <Text className="text-violet-400 text-sm font-semibold text-center">
+                    <Text
+                        style={[
+                            styles.toggleModeText,
+                            { color: isLight ? "#7c3aed" : "#a78bfa" },
+                        ]}
+                    >
                         {mode === "login"
                             ? "Don't have an account? Create one"
                             : "Already have an account? Sign In"}
@@ -232,30 +277,136 @@ export function AuthScreen({ onBack, onAuthSuccess }: Props) {
 
                 {/* Server URL Config Toggle */}
                 <TouchableOpacity
-                    className="flex-row items-center gap-1.5 mt-8 py-2"
+                    style={styles.serverConfigToggle}
                     onPress={() => setShowServerConfig(!showServerConfig)}
                 >
-                    <Globe color="#64748b" size={14} />
-                    <Text className="text-slate-500 text-xs">
+                    <Globe color={isLight ? "#64748b" : "#64748b"} size={14} />
+                    <Text
+                        style={[
+                            styles.serverConfigText,
+                            { color: isLight ? "#64748b" : "#64748b" },
+                        ]}
+                    >
                         {showServerConfig ? "Hide server endpoint" : "Configure API Server"}
                     </Text>
                 </TouchableOpacity>
 
                 {showServerConfig && (
-                    <View className="w-full bg-slate-900 rounded-xl p-3.5 mt-2 border border-slate-800">
-                        <Text className="text-slate-400 text-xs font-semibold mb-2">Backend Server URL</Text>
+                    <View
+                        style={[
+                            styles.serverConfigBox,
+                            {
+                                backgroundColor: isLight ? "#ffffff" : "#0f172a",
+                                borderColor: isLight ? "#e2e8f0" : "#1e293b",
+                            },
+                        ]}
+                    >
+                        <Text
+                            style={[
+                                styles.serverConfigLabel,
+                                { color: isLight ? "#475569" : "#94a3b8" },
+                            ]}
+                        >
+                            Backend Server URL
+                        </Text>
                         <FormInput
                             containerClassName="mb-0"
                             placeholder="http://localhost:3000"
                             value={apiUrl}
                             onChangeText={setApiUrl}
+                            theme={theme}
                         />
                     </View>
                 )}
             </ScrollView>
 
             {/* Custom Theme-matched Alert Modal */}
-            <CustomAlertModal config={alertConfig} theme="dark" />
+            <CustomAlertModal config={alertConfig} theme={theme} />
         </SafeAreaView>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    },
+    header: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        borderBottomWidth: 1,
+    },
+    backBtn: {
+        padding: 6,
+    },
+    headerTitle: {
+        fontSize: 17,
+        fontWeight: "700",
+    },
+    scrollContent: {
+        padding: 24,
+        alignItems: "center",
+    },
+    avatarCircle: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        justifyContent: "center",
+        alignItems: "center",
+        marginVertical: 16,
+    },
+    mainTitle: {
+        fontSize: 24,
+        fontWeight: "800",
+        textAlign: "center",
+        marginBottom: 6,
+    },
+    subTitle: {
+        fontSize: 14,
+        textAlign: "center",
+        lineHeight: 20,
+        marginBottom: 20,
+        paddingHorizontal: 8,
+    },
+    errorText: {
+        color: "#ef4444",
+        fontSize: 13,
+        textAlign: "center",
+        marginBottom: 12,
+        paddingHorizontal: 8,
+    },
+    toggleModeBtn: {
+        marginTop: 16,
+        padding: 8,
+    },
+    toggleModeText: {
+        fontSize: 14,
+        fontWeight: "600",
+        textAlign: "center",
+    },
+    serverConfigToggle: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 6,
+        marginTop: 28,
+        paddingVertical: 8,
+    },
+    serverConfigText: {
+        fontSize: 12,
+    },
+    serverConfigBox: {
+        width: "100%",
+        borderRadius: 14,
+        padding: 14,
+        marginTop: 8,
+        borderWidth: 1,
+    },
+    serverConfigLabel: {
+        fontSize: 12,
+        fontWeight: "600",
+        marginBottom: 8,
+    },
+});
