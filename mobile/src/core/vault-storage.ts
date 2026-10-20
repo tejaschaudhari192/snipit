@@ -437,20 +437,56 @@ export class OfflineVaultService {
                 }
             }
 
-            // 6. Sync Folders from encryptedSettings if present
+            // 6. Two-Way Sync Folders: Merge local and cloud folders instead of overwriting
             const metaRaw = await AsyncStorage.getItem(STORAGE_KEYS.VAULT_META);
             if (metaRaw) {
                 const meta: VaultMetadata = JSON.parse(metaRaw);
+                let cloudFolders: Folder[] = [];
                 if (meta.encryptedSettings) {
                     try {
                         const decryptedSettings = decryptSymmetric<any>(meta.encryptedSettings, encryptionKey);
                         if (decryptedSettings && Array.isArray(decryptedSettings.folders)) {
-                            const encryptedFolders = encryptSymmetric(decryptedSettings.folders, encryptionKey);
-                            await AsyncStorage.setItem(STORAGE_KEYS.ENCRYPTED_FOLDERS, encryptedFolders);
+                            cloudFolders = decryptedSettings.folders;
                         }
                     } catch (e) {
                         console.log("Could not decrypt settings for folders:", e);
                     }
+                }
+
+                // Get current local folders
+                let localFolders: Folder[] = [];
+                const localFoldersRaw = await AsyncStorage.getItem(STORAGE_KEYS.ENCRYPTED_FOLDERS);
+                if (localFoldersRaw) {
+                    try {
+                        localFolders = decryptSymmetric<Folder[]>(localFoldersRaw, encryptionKey) || [];
+                    } catch {
+                        localFolders = [];
+                    }
+                }
+
+                // Merge folders by ID
+                const folderMap = new Map<string, Folder>();
+                for (const cf of cloudFolders) {
+                    folderMap.set(cf.id, cf);
+                }
+
+                let hasLocalOnlyFolders = false;
+                for (const lf of localFolders) {
+                    if (!folderMap.has(lf.id)) {
+                        folderMap.set(lf.id, lf);
+                        hasLocalOnlyFolders = true;
+                    }
+                }
+
+                const mergedFolders = Array.from(folderMap.values());
+                const encryptedFolders = encryptSymmetric(mergedFolders, encryptionKey);
+                await AsyncStorage.setItem(STORAGE_KEYS.ENCRYPTED_FOLDERS, encryptedFolders);
+
+                // If phone had local folders missing on cloud, upload merged list to cloud
+                if (hasLocalOnlyFolders) {
+                    this.persistFoldersToCloud(mergedFolders).catch((e) =>
+                        console.log("Error uploading merged folders to cloud:", e),
+                    );
                 }
             }
         } catch (e) {
