@@ -86,6 +86,7 @@ const STORAGE_KEYS = {
     API_BASE_URL: "@snipit/api_url",
     THEME: "@snipit/theme",
     DEFAULT_TOOL: "@snipit/default_tool",
+    PENDING_DELETES: "@snipit/pwmg_pending_deletes",
 };
 
 export class OfflineVaultService {
@@ -311,12 +312,39 @@ export class OfflineVaultService {
             const body = await res.json();
             const serverItems: Array<{ id: string; encryptedPayload: string }> = body.data || [];
 
-            const decryptedList: PasswordItem[] = [];
+            // 1. Process pending offline deletions first
+            const pendingDeletesRaw = await AsyncStorage.getItem(STORAGE_KEYS.PENDING_DELETES);
+            let pendingDeletes: string[] = pendingDeletesRaw ? JSON.parse(pendingDeletesRaw) : [];
+
+            if (pendingDeletes.length > 0) {
+                const remainingDeletes: string[] = [];
+                for (const delId of pendingDeletes) {
+                    try {
+                        const delRes = await fetch(`${baseUrl}/tools/password-manager/vault/items/${delId}`, {
+                            method: "DELETE",
+                            headers: {
+                                Authorization: `Bearer ${user.token}`,
+                            },
+                        });
+                        if (!delRes.ok && delRes.status !== 404) {
+                            remainingDeletes.push(delId);
+                        }
+                    } catch {
+                        remainingDeletes.push(delId);
+                    }
+                }
+                pendingDeletes = remainingDeletes;
+                await AsyncStorage.setItem(STORAGE_KEYS.PENDING_DELETES, JSON.stringify(pendingDeletes));
+            }
+
+            // 2. Decrypt all server items
+            const serverDecryptedMap = new Map<string, PasswordItem>();
             for (const serverItem of serverItems) {
+                if (pendingDeletes.includes(serverItem.id)) continue; // Skip items pending local deletion
                 try {
                     const decrypted = decryptSymmetric<any>(serverItem.encryptedPayload, encryptionKey);
                     if (decrypted) {
-                        decryptedList.push({
+                        serverDecryptedMap.set(serverItem.id, {
                             id: serverItem.id,
                             title: decrypted.title || "Untitled",
                             username: decrypted.username,
@@ -337,7 +365,79 @@ export class OfflineVaultService {
                 }
             }
 
-            // Sync Folders from encryptedSettings if present
+            // 3. Two-Way Merge: Load current local items to preserve any local-only or newer items
+            let localItems: PasswordItem[] = [];
+            const localRaw = await AsyncStorage.getItem(STORAGE_KEYS.ENCRYPTED_ITEMS);
+            if (localRaw) {
+                try {
+                    localItems = decryptSymmetric<PasswordItem[]>(localRaw, encryptionKey) || [];
+                } catch {
+                    localItems = [];
+                }
+            }
+
+            const mergedMap = new Map<string, PasswordItem>();
+            const itemsToUploadToCloud: PasswordItem[] = [];
+
+            // Add all server items to map
+            for (const [id, sItem] of serverDecryptedMap.entries()) {
+                mergedMap.set(id, sItem);
+            }
+
+            // Merge local items: keep local if newer or not on server yet
+            for (const lItem of localItems) {
+                if (pendingDeletes.includes(lItem.id)) continue;
+
+                const serverItem = mergedMap.get(lItem.id);
+                if (!serverItem) {
+                    // Local item not found on server! Keep it locally and queue upload to cloud
+                    mergedMap.set(lItem.id, lItem);
+                    itemsToUploadToCloud.push(lItem);
+                } else {
+                    // Item exists in both: compare updatedAt
+                    const localTime = new Date(lItem.updatedAt || 0).getTime();
+                    const serverTime = new Date(serverItem.updatedAt || 0).getTime();
+                    if (localTime > serverTime) {
+                        mergedMap.set(lItem.id, lItem);
+                        itemsToUploadToCloud.push(lItem);
+                    }
+                }
+            }
+
+            const finalList = Array.from(mergedMap.values());
+
+            // 4. Save merged items locally so no data is ever lost
+            const encrypted = encryptSymmetric(finalList, encryptionKey);
+            await AsyncStorage.setItem(STORAGE_KEYS.ENCRYPTED_ITEMS, encrypted);
+
+            // 5. Upload any local items missing on the server
+            if (itemsToUploadToCloud.length > 0) {
+                for (const itemToUp of itemsToUploadToCloud) {
+                    try {
+                        const payloadToCloud = {
+                            ...itemToUp,
+                            itemType: itemToUp.category,
+                            folderId: itemToUp.folderId,
+                        };
+                        const encPayload = encryptSymmetric(payloadToCloud, encryptionKey);
+                        await fetch(`${baseUrl}/tools/password-manager/vault/items`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${user.token}`,
+                            },
+                            body: JSON.stringify({
+                                id: itemToUp.id,
+                                encryptedPayload: encPayload,
+                            }),
+                        });
+                    } catch (e) {
+                        console.log("Error uploading local item to cloud during merge:", e);
+                    }
+                }
+            }
+
+            // 6. Sync Folders from encryptedSettings if present
             const metaRaw = await AsyncStorage.getItem(STORAGE_KEYS.VAULT_META);
             if (metaRaw) {
                 const meta: VaultMetadata = JSON.parse(metaRaw);
@@ -353,10 +453,6 @@ export class OfflineVaultService {
                     }
                 }
             }
-
-            // Save locally
-            const encrypted = encryptSymmetric(decryptedList, encryptionKey);
-            await AsyncStorage.setItem(STORAGE_KEYS.ENCRYPTED_ITEMS, encrypted);
         } catch (e) {
             console.log("Error syncing cloud items:", e);
         }
@@ -453,16 +549,32 @@ export class OfflineVaultService {
         // Cloud delete if user is logged in
         const user = await this.getUser();
         if (user && user.token) {
+            let deletedFromCloud = false;
             try {
                 const baseUrl = await this.getApiBaseUrl();
-                await fetch(`${baseUrl}/tools/password-manager/vault/items/${id}`, {
+                const res = await fetch(`${baseUrl}/tools/password-manager/vault/items/${id}`, {
                     method: "DELETE",
                     headers: {
                         Authorization: `Bearer ${user.token}`,
                     },
                 });
+                deletedFromCloud = res.ok;
             } catch (err) {
                 console.log("Cloud sync error for deleteItem:", err);
+            }
+
+            if (!deletedFromCloud) {
+                // Record pending deletion so next sync does not bring back the deleted item from cloud
+                try {
+                    const raw = await AsyncStorage.getItem(STORAGE_KEYS.PENDING_DELETES);
+                    const pending: string[] = raw ? JSON.parse(raw) : [];
+                    if (!pending.includes(id)) {
+                        pending.push(id);
+                        await AsyncStorage.setItem(STORAGE_KEYS.PENDING_DELETES, JSON.stringify(pending));
+                    }
+                } catch (e) {
+                    console.log("Error storing pending delete:", e);
+                }
             }
         }
     }
