@@ -743,7 +743,7 @@ export class OfflineVaultService {
         if (saved === "pwmg" || saved === "hub") {
             return saved;
         }
-        return "hub";
+        return "pwmg";
     }
 
     async setDefaultTool(tool: "hub" | "pwmg"): Promise<void> {

@@ -15,7 +15,7 @@ import { UpdateInfoModal } from "./src/components/UpdateInfoModal";
 import { HubScreen } from "./src/components/HubScreen";
 
 export default function App() {
-	const [activeTool, setActiveTool] = useState<"hub" | "pwmg" | "auth" | "profile">("hub");
+	const [activeTool, setActiveTool] = useState<"hub" | "pwmg" | "auth" | "profile">("pwmg");
 	const [user, setUser] = useState<UserSession | null>(null);
 	const [themeMode, setThemeMode] = useState<"system" | "dark" | "light">("system");
 	const systemColorScheme = useColorScheme();
@@ -27,7 +27,7 @@ export default function App() {
 				: "dark"
 			: themeMode;
 
-	const [defaultTool, setDefaultTool] = useState<"hub" | "pwmg">("hub");
+	const [defaultTool, setDefaultTool] = useState<"hub" | "pwmg">("pwmg");
 	const [autoUpdateModalVisible, setAutoUpdateModalVisible] = useState(false);
 	const [autoUpdateResult, setAutoUpdateResult] = useState<any>(null);
 	const hasCheckedUpdateRef = React.useRef(false);

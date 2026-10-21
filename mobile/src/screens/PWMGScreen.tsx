@@ -37,6 +37,7 @@ type FilterCategory = "all" | "favorites" | "login" | "card" | "apikey" | "note"
 
 export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }: Props) {
 	const c = useThemeVars(theme);
+	const isLight = theme === "light";
 
 	const [hasVault, setHasVault] = useState<boolean | null>(null);
 	const [isUnlocked, setIsUnlocked] = useState(false);
