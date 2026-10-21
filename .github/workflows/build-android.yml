@@ -48,6 +48,12 @@ jobs:
         working-directory: mobile/android
         run: chmod +x ./gradlew
 
+      - name: Configure Release Signing (Use debug keystore for preview APK)
+        working-directory: mobile/android
+        run: |
+          sed -i 's/signingConfig signingConfigs.release/signingConfig signingConfigs.debug/g' app/build.gradle || true
+          sed -i 's/signingConfigs {/signingConfigs { release { storeFile file("debug.keystore")\n storePassword "android"\n keyAlias "androiddebugkey"\n keyPassword "android" }/g' app/build.gradle || true
+
       - name: Build Android Release APK
         working-directory: mobile/android
         run: ./gradlew assembleRelease --no-daemon
