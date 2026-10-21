@@ -24,9 +24,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -45,9 +42,15 @@ jobs:
         working-directory: mobile
         run: npx expo prebuild --platform android --clean --no-install
 
+      - name: Make Gradle Wrapper Executable
+        working-directory: mobile/android
+        run: chmod +x ./gradlew
+
       - name: Build Android Release APK
         working-directory: mobile/android
         run: ./gradlew assembleRelease --no-daemon
+        env:
+          ANDROID_HOME: ${{ env.ANDROID_HOME }}
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
