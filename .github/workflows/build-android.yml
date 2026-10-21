@@ -15,6 +15,8 @@ jobs:
   build:
     name: Build Android APK
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -60,9 +62,27 @@ jobs:
         env:
           ANDROID_HOME: ${{ env.ANDROID_HOME }}
 
+      - name: Rename APK for release
+        run: |
+          cp mobile/android/app/build/outputs/apk/release/*.apk ./snipit.apk
+
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Snipit-Android-APK
-          path: mobile/android/app/build/outputs/apk/release/*.apk
+          path: ./snipit.apk
           retention-days: 14
+
+      - name: Publish Direct Download APK Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: mobile-latest
+          name: Snipit Mobile Latest Build
+          body: |
+            Direct APK download for latest mobile build:
+            https://github.com/${{ github.repository }}/releases/download/mobile-latest/snipit.apk
+          files: ./snipit.apk
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
