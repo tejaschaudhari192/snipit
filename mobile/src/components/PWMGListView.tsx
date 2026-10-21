@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { Shield } from "lucide-react-native";
 import { PasswordItem, Folder } from "../core/vault-storage";
 import { IosSearchBar } from "./IosSearchBar";
@@ -55,23 +55,23 @@ export function PWMGListView({
 			/>
 
 			{(selectedFolderId || activeFilter !== "all") && (
-				<View style={styles.filterResetBanner}>
-					<Text style={[styles.filterResetText, { color: c.textSecondary }]}>
+				<View className="flex-row justify-between items-center px-4 py-1.5 mb-1">
+					<Text className={`text-[13px] ${isLight ? "text-slate-500" : "text-slate-400"}`}>
 						Filtering by: {selectedFolderId ? folders.find((f) => f.id === selectedFolderId)?.name : activeFilter}
 					</Text>
 					<TouchableOpacity onPress={onResetFilter}>
-						<Text style={[styles.filterResetAction, { color: c.text, textDecorationLine: "underline" }]}>Show All</Text>
+						<Text className={`text-[13px] font-semibold underline ${isLight ? "text-slate-900" : "text-white"}`}>Show All</Text>
 					</TouchableOpacity>
 				</View>
 			)}
 
 			{items.length === 0 ? (
-				<View style={styles.centerContainer}>
+				<View className="flex-1 justify-center items-center p-5">
 					<Shield color={c.textMuted} size={54} strokeWidth={1.5} />
-					<Text style={[styles.emptyTitle, { color: c.text }]}>
+					<Text className={`text-xl font-bold mt-4 mb-1.5 ${isLight ? "text-slate-900" : "text-white"}`}>
 						{searchQuery ? "No Results" : isNotesTab ? "No Notes" : "No Passwords"}
 					</Text>
-					<Text style={[styles.emptySubtitle, { color: c.textSecondary }]}>
+					<Text className={`text-sm text-center leading-5 max-w-[280px] ${isLight ? "text-slate-500" : "text-slate-400"}`}>
 						{searchQuery
 							? "Check spelling or search for another term."
 							: isNotesTab
@@ -85,8 +85,8 @@ export function PWMGListView({
 					data={items}
 					numColumns={2}
 					keyExtractor={(item) => item.id}
-					columnWrapperStyle={{ justifyContent: "space-between" }}
-					contentContainerStyle={{ paddingHorizontal: 10, paddingTop: 4, paddingBottom: 125 }}
+					columnWrapperClassName="justify-between"
+					contentContainerClassName="px-2.5 pt-1 pb-32"
 					renderItem={({ item }) => (
 						<NoteGridCard
 							item={item}
@@ -102,7 +102,7 @@ export function PWMGListView({
 					key="items-list"
 					data={items}
 					keyExtractor={(item) => item.id}
-					contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 125 }}
+					contentContainerClassName="px-4 pt-1 pb-32"
 					renderItem={({ item, index }) => {
 						const isCard = item.category === "card";
 						const isNote = item.category === "note";
@@ -133,39 +133,3 @@ export function PWMGListView({
 		</>
 	);
 }
-
-const styles = StyleSheet.create({
-	filterResetBanner: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		paddingHorizontal: 16,
-		paddingVertical: 6,
-		marginBottom: 4,
-	},
-	filterResetText: {
-		fontSize: 13,
-	},
-	filterResetAction: {
-		fontSize: 13,
-		fontWeight: "600",
-	},
-	centerContainer: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-		padding: 20,
-	},
-	emptyTitle: {
-		fontSize: 20,
-		fontWeight: "700",
-		marginTop: 16,
-		marginBottom: 6,
-	},
-	emptySubtitle: {
-		fontSize: 14,
-		textAlign: "center",
-		lineHeight: 20,
-		maxWidth: 280,
-	},
-});

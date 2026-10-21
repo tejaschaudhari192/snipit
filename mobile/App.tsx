@@ -172,7 +172,6 @@ export default function App() {
 	return (
 		<View
 			className={`flex-1 ${resolvedTheme === "light" ? "bg-slate-50" : "bg-slate-950"}`}
-			style={{ flex: 1, backgroundColor: resolvedTheme === "light" ? "#f8fafc" : "#020617" }}
 		>
 			{renderActiveTool()}
 			<UpdateInfoModal

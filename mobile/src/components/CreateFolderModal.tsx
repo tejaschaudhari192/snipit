@@ -1,6 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform } from "react-native";
-import { useThemeVars } from "../config/theme";
+import { View, Text, Modal, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 
 interface Props {
 	visible: boolean;
@@ -24,111 +23,68 @@ export function CreateFolderModal({
 	onSave,
 }: Props) {
 	if (!visible) return null;
-	const c = useThemeVars(theme);
+	const isLight = theme === "light";
 	const colors = ["#0a84ff", "#ff9f0a", "#30d158", "#bf5af2", "#ff375f", "#5e5ce6"];
 
 	return (
 		<Modal visible={visible} animationType="slide" transparent>
 			<KeyboardAvoidingView
-				style={styles.modalOverlay}
+				className="flex-1 bg-black/65 justify-end"
 				behavior={Platform.OS === "ios" ? "padding" : "height"}
 			>
-				<View style={[styles.modalContent, { backgroundColor: c.bgSecondary }]}>
-					<View style={styles.modalHeader}>
-						<Text style={[styles.modalTitle, { color: c.text }]}>New Folder</Text>
+				<View
+					className={`rounded-t-3xl p-5 pb-9 border-t ${
+						isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
+					}`}
+				>
+					<View className="flex-row justify-between items-center mb-4">
+						<Text className={`text-[18px] font-bold ${isLight ? "text-slate-900" : "text-white"}`}>
+							New Folder
+						</Text>
 						<TouchableOpacity onPress={onClose} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-							<Text style={{ color: c.blue, fontSize: 16, fontWeight: "600" }}>Cancel</Text>
+							<Text className="text-blue-500 text-[16px] font-semibold">Cancel</Text>
 						</TouchableOpacity>
 					</View>
 
 					<TextInput
-						style={[styles.input, { backgroundColor: c.bgTertiary, color: c.text }]}
+						className={`w-full rounded-xl p-3.5 text-[16px] mb-3.5 border ${
+							isLight
+								? "bg-slate-50 border-slate-200 text-slate-900"
+								: "bg-slate-950 border-slate-800 text-white"
+						}`}
 						placeholder="Folder Name (e.g. Work, Personal, Finance)"
-						placeholderTextColor={c.textSecondary}
+						placeholderTextColor={isLight ? "#94a3b8" : "#64748b"}
 						value={folderName}
 						onChangeText={onChangeName}
 						autoFocus
 					/>
 
-					<Text style={[styles.fieldLabel, { color: c.textSecondary }]}>Folder Color</Text>
-					<View style={styles.colorRow}>
+					<Text
+						className={`text-xs font-semibold uppercase tracking-wider mb-2 ${
+							isLight ? "text-slate-500" : "text-slate-400"
+						}`}
+					>
+						Folder Color
+					</Text>
+					<View className="flex-row gap-3 mb-4.5">
 						{colors.map((col) => (
 							<TouchableOpacity
 								key={col}
-								style={[styles.colorOption, { backgroundColor: col }, folderColor === col && styles.colorOptionSelected]}
+								className={`w-8.5 h-8.5 rounded-full ${folderColor === col ? "border-[3px] border-white" : ""}`}
+								style={{ backgroundColor: col }}
 								onPress={() => onChangeColor(col)}
 							/>
 						))}
 					</View>
 
-					<TouchableOpacity style={[styles.primaryBtn, { backgroundColor: c.blue }]} onPress={onSave}>
-						<Text style={styles.btnText}>Create Folder</Text>
+					<TouchableOpacity
+						className="w-full py-3.5 rounded-xl items-center bg-blue-600"
+						onPress={onSave}
+					>
+						<Text className="text-white text-[16px] font-bold">Create Folder</Text>
 					</TouchableOpacity>
 				</View>
 			</KeyboardAvoidingView>
 		</Modal>
 	);
 }
-
-const styles = StyleSheet.create({
-	modalOverlay: {
-		flex: 1,
-		backgroundColor: "rgba(0,0,0,0.65)",
-		justifyContent: "flex-end",
-	},
-	modalContent: {
-		borderTopLeftRadius: 20,
-		borderTopRightRadius: 20,
-		padding: 20,
-		paddingBottom: 35,
-	},
-	modalHeader: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		marginBottom: 16,
-	},
-	modalTitle: {
-		fontSize: 18,
-		fontWeight: "700",
-	},
-	input: {
-		width: "100%",
-		borderRadius: 10,
-		padding: 13,
-		fontSize: 16,
-		marginBottom: 14,
-	},
-	fieldLabel: {
-		fontSize: 12,
-		fontWeight: "600",
-		marginBottom: 8,
-		textTransform: "uppercase",
-		letterSpacing: 0.5,
-	},
-	colorRow: {
-		flexDirection: "row",
-		gap: 12,
-		marginBottom: 18,
-	},
-	colorOption: {
-		width: 34,
-		height: 34,
-		borderRadius: 17,
-	},
-	colorOptionSelected: {
-		borderWidth: 3,
-		borderColor: "#ffffff",
-	},
-	primaryBtn: {
-		width: "100%",
-		paddingVertical: 14,
-		borderRadius: 12,
-		alignItems: "center",
-	},
-	btnText: {
-		color: "#ffffff",
-		fontSize: 16,
-		fontWeight: "700",
-	},
-});

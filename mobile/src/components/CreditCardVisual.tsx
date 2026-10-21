@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { Eye, EyeOff, Copy, CreditCard, Check } from "lucide-react-native";
 
 interface Props {
@@ -43,121 +43,53 @@ export function CreditCardVisual({
 	onCopyCard,
 }: Props) {
 	return (
-		<View style={styles.creditCardVisual}>
-			<View style={styles.cardHeaderRow}>
-				<Text style={styles.cardChipText}>CARD VAULT</Text>
+		<View className="bg-indigo-950 rounded-2xl p-4.5 border border-violet-400/30 mb-4">
+			<View className="flex-row justify-between items-center">
+				<Text className="text-violet-300 text-[10px] font-extrabold tracking-wider">CARD VAULT</Text>
 				<CreditCard color="#a78bfa" size={24} />
 			</View>
 
-			<View style={{ marginVertical: 14 }}>
-				<Text style={styles.cardVisualNumber}>
+			<View className="my-3.5">
+				<Text className="text-white text-[20px] font-bold tracking-widest font-mono">
 					{showNumber ? formatCardNumber(cardNumber) : maskCardNumber(cardNumber)}
 				</Text>
 			</View>
 
-			<View style={styles.cardBottomRow}>
+			<View className="flex-row justify-between mt-2">
 				<View>
-					<Text style={styles.cardMiniLabel}>CARDHOLDER</Text>
-					<Text style={styles.cardMiniValue}>
+					<Text className="text-slate-400 text-[9px] font-bold tracking-wider">CARDHOLDER</Text>
+					<Text className="text-slate-50 text-[13px] font-semibold mt-0.5">
 						{(cardholderName || "VALUED MEMBER").toUpperCase()}
 					</Text>
 				</View>
 				<View>
-					<Text style={styles.cardMiniLabel}>EXPIRES</Text>
-					<Text style={styles.cardMiniValue}>{expiration || "MM/YY"}</Text>
+					<Text className="text-slate-400 text-[9px] font-bold tracking-wider">EXPIRES</Text>
+					<Text className="text-slate-50 text-[13px] font-semibold mt-0.5">{expiration || "MM/YY"}</Text>
 				</View>
 				<View>
-					<Text style={styles.cardMiniLabel}>CVV</Text>
-					<Text style={styles.cardMiniValue}>{showCvv ? cvv || "•••" : "•••"}</Text>
+					<Text className="text-slate-400 text-[9px] font-bold tracking-wider">CVV</Text>
+					<Text className="text-slate-50 text-[13px] font-semibold mt-0.5">{showCvv ? cvv || "•••" : "•••"}</Text>
 				</View>
 			</View>
 
-			<View style={styles.cardActionRow}>
-				<TouchableOpacity style={styles.cardActionBtn} onPress={onToggleNumber}>
+			<View className="flex-row justify-between mt-4 pt-3 border-t border-white/10">
+				<TouchableOpacity className="flex-row items-center gap-1 bg-white/10 px-2 py-1.5 rounded-lg" onPress={onToggleNumber}>
 					{showNumber ? <EyeOff color="#fff" size={14} /> : <Eye color="#fff" size={14} />}
-					<Text style={styles.cardActionText}>{showNumber ? "Mask Number" : "Show Number"}</Text>
+					<Text className="text-white text-xs font-semibold">{showNumber ? "Mask Number" : "Show Number"}</Text>
 				</TouchableOpacity>
 
-				<TouchableOpacity style={styles.cardActionBtn} onPress={onToggleCvv}>
+				<TouchableOpacity className="flex-row items-center gap-1 bg-white/10 px-2 py-1.5 rounded-lg" onPress={onToggleCvv}>
 					{showCvv ? <EyeOff color="#fff" size={14} /> : <Eye color="#fff" size={14} />}
-					<Text style={styles.cardActionText}>{showCvv ? "Mask CVV" : "Show CVV"}</Text>
+					<Text className="text-white text-xs font-semibold">{showCvv ? "Mask CVV" : "Show CVV"}</Text>
 				</TouchableOpacity>
 
 				{cardNumber && (
-					<TouchableOpacity style={styles.cardActionBtn} onPress={onCopyCard}>
+					<TouchableOpacity className="flex-row items-center gap-1 bg-white/10 px-2 py-1.5 rounded-lg" onPress={onCopyCard}>
 						{copied ? <Check color="#22c55e" size={14} /> : <Copy color="#fff" size={14} />}
-						<Text style={styles.cardActionText}>Copy Card</Text>
+						<Text className="text-white text-xs font-semibold">Copy Card</Text>
 					</TouchableOpacity>
 				)}
 			</View>
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	creditCardVisual: {
-		backgroundColor: "#1e1b4b",
-		borderRadius: 16,
-		padding: 18,
-		borderWidth: 1,
-		borderColor: "rgba(167, 139, 250, 0.3)",
-		marginBottom: 16,
-	},
-	cardHeaderRow: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-	},
-	cardChipText: {
-		color: "#a78bfa",
-		fontSize: 10,
-		fontWeight: "800",
-		letterSpacing: 1,
-	},
-	cardVisualNumber: {
-		color: "#fff",
-		fontSize: 20,
-		fontWeight: "700",
-		letterSpacing: 2,
-		fontFamily: "monospace",
-	},
-	cardBottomRow: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		marginTop: 8,
-	},
-	cardMiniLabel: {
-		color: "#94a3b8",
-		fontSize: 9,
-		fontWeight: "700",
-		letterSpacing: 1,
-	},
-	cardMiniValue: {
-		color: "#f8fafc",
-		fontSize: 13,
-		fontWeight: "600",
-		marginTop: 2,
-	},
-	cardActionRow: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		marginTop: 16,
-		paddingTop: 12,
-		borderTopWidth: 1,
-		borderTopColor: "rgba(255,255,255,0.1)",
-	},
-	cardActionBtn: {
-		flexDirection: "row",
-		alignItems: "center",
-		gap: 4,
-		backgroundColor: "rgba(255,255,255,0.1)",
-		paddingHorizontal: 8,
-		paddingVertical: 6,
-		borderRadius: 8,
-	},
-	cardActionText: {
-		color: "#fff",
-		fontSize: 12,
-		fontWeight: "600",
-	},
-});

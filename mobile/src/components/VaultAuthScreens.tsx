@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, SafeAreaView, ActivityIndicator, Platform, StatusBar } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, TextInput, SafeAreaView, ActivityIndicator, Platform, StatusBar } from "react-native";
 import { ArrowLeft, Lock, Shield, KeyRound, Check, Copy, Download, Eye, EyeOff, Upload, ClipboardPaste } from "lucide-react-native";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system/legacy";
@@ -30,29 +30,34 @@ export function VaultRecoveryScreen({
 	const c = useThemeVars(theme);
 	const isLight = theme === "light";
 	return (
-		<SafeAreaView style={[styles.container, { backgroundColor: c.bg }]}>
-			<View style={[styles.header, { borderBottomColor: c.border }]}>
-				<TouchableOpacity onPress={onBack} style={styles.iconBtn} hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
+		<SafeAreaView
+			className={`flex-1 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
+			style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
+		>
+			<View className={`flex-row items-center justify-between px-4 py-3 border-b ${isLight ? "border-slate-200" : "border-slate-800"}`}>
+				<TouchableOpacity onPress={onBack} className="p-1.5" hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
 					<ArrowLeft color={c.text} size={20} />
 				</TouchableOpacity>
-				<Text style={[styles.headerTitle, { color: c.text }]}>Account Recovery</Text>
-				<View style={{ width: 40 }} />
+				<Text className={`text-[17px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>Account Recovery</Text>
+				<View className="w-10" />
 			</View>
 
-			<ScrollView contentContainerStyle={styles.authContainer}>
-				<View style={[styles.iconContainer, { backgroundColor: isLight ? "rgba(0, 0, 0, 0.06)" : "rgba(255, 255, 255, 0.08)" }]}>
+			<ScrollView contentContainerClassName="p-6 items-center">
+				<View className={`w-[72px] h-[72px] rounded-full justify-center items-center my-4.5 ${isLight ? "bg-black/5" : "bg-white/10"}`}>
 					<KeyRound color={c.text} size={36} strokeWidth={2} />
 				</View>
-				<Text style={[styles.title, { color: c.text }]}>Restore via Recovery Key</Text>
-				<Text style={[styles.subText, { color: c.textSecondary }]}>
+				<Text className={`text-[22px] font-bold text-center mb-1.5 ${isLight ? "text-slate-900" : "text-white"}`}>Restore via Recovery Key</Text>
+				<Text className={`text-sm text-center leading-5 mb-4.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
 					Enter your 12-word recovery mnemonic phrase separated by spaces to restore your master password.
 				</Text>
-				{error ? <Text style={styles.errorText}>{error}</Text> : null}
+				{error ? <Text className="text-red-500 text-[13px] mb-2.5 text-center">{error}</Text> : null}
 
 				{/* Quick Actions: Upload File or Paste */}
-				<View style={{ flexDirection: "row", gap: 10, width: "100%", marginBottom: 12 }}>
+				<View className="flex-row gap-2.5 w-full mb-3">
 					<TouchableOpacity
-						style={[styles.recoveryBtn, { borderColor: c.border }]}
+						className={`flex-1 flex-row items-center justify-center gap-1.5 py-2.5 rounded-xl border ${
+							isLight ? "border-slate-200 bg-white" : "border-slate-800 bg-slate-900"
+						}`}
 						onPress={async () => {
 							try {
 								const res = await DocumentPicker.getDocumentAsync({
@@ -68,7 +73,6 @@ export function VaultRecoveryScreen({
 									} else {
 										text = await FileSystem.readAsStringAsync(fileUri);
 									}
-									// Extract only 12-word mnemonic sequence if wrapped with spaces/newlines
 									const clean = text.trim();
 									setInputMnemonic(clean);
 								}
@@ -79,11 +83,13 @@ export function VaultRecoveryScreen({
 						activeOpacity={0.7}
 					>
 						<Upload color={c.text} size={16} />
-						<Text style={{ color: c.text, fontSize: 13, fontWeight: "600" }}>Upload Key File</Text>
+						<Text className={`text-[13px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>Upload Key File</Text>
 					</TouchableOpacity>
 
 					<TouchableOpacity
-						style={[styles.recoveryBtn, { borderColor: c.border }]}
+						className={`flex-1 flex-row items-center justify-center gap-1.5 py-2.5 rounded-xl border ${
+							isLight ? "border-slate-200 bg-white" : "border-slate-800 bg-slate-900"
+						}`}
 						onPress={async () => {
 							const text = await Clipboard.getStringAsync();
 							if (text) setInputMnemonic(text.trim());
@@ -91,12 +97,14 @@ export function VaultRecoveryScreen({
 						activeOpacity={0.7}
 					>
 						<ClipboardPaste color={c.text} size={16} />
-						<Text style={{ color: c.text, fontSize: 13, fontWeight: "600" }}>Paste Key</Text>
+						<Text className={`text-[13px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>Paste Key</Text>
 					</TouchableOpacity>
 				</View>
 
 				<TextInput
-					style={[styles.input, { height: 100, backgroundColor: c.bgSecondary, color: c.text, borderColor: c.border, borderWidth: 1 }]}
+					className={`w-full h-[100px] rounded-xl p-3 text-[15px] mb-3 border ${
+						isLight ? "bg-white text-slate-900 border-slate-200" : "bg-slate-900 text-white border-slate-800"
+					}`}
 					placeholder="Enter or paste your 12-word recovery key..."
 					placeholderTextColor={c.textSecondary}
 					multiline
@@ -104,21 +112,19 @@ export function VaultRecoveryScreen({
 					onChangeText={setInputMnemonic}
 				/>
 				<TouchableOpacity
-					style={[
-						styles.primaryBtn,
-						{ backgroundColor: isLight ? "#000000" : "#ffffff" },
-						isRecovering && { opacity: 0.7 },
-					]}
+					className={`w-full py-3.5 rounded-xl items-center mt-2 ${
+						isLight ? "bg-slate-950" : "bg-white"
+					} ${isRecovering ? "opacity-70" : ""}`}
 					onPress={onRecover}
 					disabled={isRecovering}
 				>
 					{isRecovering ? (
-						<View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+						<View className="flex-row items-center gap-2">
 							<ActivityIndicator size="small" color={isLight ? "#ffffff" : "#000000"} />
-							<Text style={[styles.btnText, { color: isLight ? "#ffffff" : "#000000" }]}>Recovering Vault...</Text>
+							<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Recovering Vault...</Text>
 						</View>
 					) : (
-						<Text style={[styles.btnText, { color: isLight ? "#ffffff" : "#000000" }]}>Recover Master Password</Text>
+						<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Recover Master Password</Text>
 					)}
 				</TouchableOpacity>
 			</ScrollView>
@@ -156,29 +162,39 @@ export function VaultUnlockScreen({
 	const [showPassword, setShowPassword] = useState(false);
 
 	return (
-		<SafeAreaView style={[styles.container, { backgroundColor: c.bg }]}>
-			<View style={[styles.header, { borderBottomColor: c.border }]}>
-				<TouchableOpacity onPress={onBack} style={styles.iconBtn} hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
+		<SafeAreaView
+			className={`flex-1 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
+			style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
+		>
+			<View className={`flex-row items-center justify-between px-4 py-3 border-b ${isLight ? "border-slate-200" : "border-slate-800"}`}>
+				<TouchableOpacity onPress={onBack} className="p-1.5" hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
 					<ArrowLeft color={c.text} size={20} />
 				</TouchableOpacity>
-				<Text style={[styles.headerTitle, { color: c.text }]}>Unlock Vault</Text>
-				<TouchableOpacity onPress={user && onOpenProfile ? onOpenProfile : onOpenAuth} style={[styles.accountBtn, { borderColor: c.border, backgroundColor: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.08)" }]}>
-					<Text style={{ color: c.text, fontSize: 13, fontWeight: "600" }}>{user ? user.username : "Sign In"}</Text>
+				<Text className={`text-[17px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>Unlock Vault</Text>
+				<TouchableOpacity
+					onPress={user && onOpenProfile ? onOpenProfile : onOpenAuth}
+					className={`px-3 py-1.5 rounded-full border ${
+						isLight ? "border-slate-200 bg-black/5" : "border-slate-800 bg-white/10"
+					}`}
+				>
+					<Text className={`text-[13px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>{user ? user.username : "Sign In"}</Text>
 				</TouchableOpacity>
 			</View>
 
-			<ScrollView contentContainerStyle={styles.authContainer}>
-				<View style={[styles.iconContainer, { backgroundColor: isLight ? "rgba(0, 0, 0, 0.06)" : "rgba(255, 255, 255, 0.08)" }]}>
+			<ScrollView contentContainerClassName="p-6 items-center">
+				<View className={`w-[72px] h-[72px] rounded-full justify-center items-center my-4.5 ${isLight ? "bg-black/5" : "bg-white/10"}`}>
 					<Lock color={c.text} size={36} strokeWidth={2} />
 				</View>
-				<Text style={[styles.title, { color: c.text }]}>Welcome Back</Text>
-				<Text style={[styles.subText, { color: c.textSecondary }]}>
+				<Text className={`text-[22px] font-bold text-center mb-1.5 ${isLight ? "text-slate-900" : "text-white"}`}>Welcome Back</Text>
+				<Text className={`text-sm text-center leading-5 mb-4.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
 					{user ? `Account: ${user.email}\n` : ""}Enter your master password to decrypt your credentials.
 				</Text>
-				{error ? <Text style={styles.errorText}>{error}</Text> : null}
-				<View style={[styles.passwordWrapper, { backgroundColor: c.bgSecondary, borderColor: c.border }]}>
+				{error ? <Text className="text-red-500 text-[13px] mb-2.5 text-center">{error}</Text> : null}
+				<View className={`w-full flex-row items-center rounded-xl border mb-3 pr-2.5 ${
+					isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
+				}`}>
 					<TextInput
-						style={[styles.passwordInput, { color: c.text }]}
+						className={`flex-1 p-3 text-[15px] ${isLight ? "text-slate-900" : "text-white"}`}
 						placeholder="Master Password"
 						placeholderTextColor={c.textSecondary}
 						secureTextEntry={!showPassword}
@@ -189,7 +205,7 @@ export function VaultUnlockScreen({
 						autoCapitalize="none"
 					/>
 					<TouchableOpacity
-						style={styles.eyeBtn}
+						className="p-1.5 justify-center items-center"
 						onPress={() => setShowPassword(!showPassword)}
 						hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 					>
@@ -201,26 +217,24 @@ export function VaultUnlockScreen({
 					</TouchableOpacity>
 				</View>
 				<TouchableOpacity
-					style={[
-						styles.primaryBtn,
-						{ backgroundColor: isLight ? "#000000" : "#ffffff" },
-						isDecrypting && { opacity: 0.7 },
-					]}
+					className={`w-full py-3.5 rounded-xl items-center mt-2 ${
+						isLight ? "bg-slate-950" : "bg-white"
+					} ${isDecrypting ? "opacity-70" : ""}`}
 					onPress={onUnlock}
 					disabled={isDecrypting}
 				>
 					{isDecrypting ? (
-						<View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+						<View className="flex-row items-center gap-2">
 							<ActivityIndicator size="small" color={isLight ? "#ffffff" : "#000000"} />
-							<Text style={[styles.btnText, { color: isLight ? "#ffffff" : "#000000" }]}>Decrypting Vault...</Text>
+							<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Decrypting Vault...</Text>
 						</View>
 					) : (
-						<Text style={[styles.btnText, { color: isLight ? "#ffffff" : "#000000" }]}>Unlock Vault</Text>
+						<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Unlock Vault</Text>
 					)}
 				</TouchableOpacity>
 				{hasRecovery && (
-					<TouchableOpacity style={{ marginTop: 18, padding: 8 }} onPress={onForgotPassword}>
-						<Text style={{ color: c.textSecondary, fontSize: 14, fontWeight: "500", textDecorationLine: "underline" }}>Forgot password? Use recovery key</Text>
+					<TouchableOpacity className="mt-4.5 p-2" onPress={onForgotPassword}>
+						<Text className={`text-sm font-medium underline ${isLight ? "text-slate-500" : "text-slate-400"}`}>Forgot password? Use recovery key</Text>
 					</TouchableOpacity>
 				)}
 			</ScrollView>
@@ -271,51 +285,58 @@ export function VaultOnboardingScreen({
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 	return (
-		<SafeAreaView style={[styles.container, { backgroundColor: c.bg }]}>
-			<View style={[styles.header, { borderBottomColor: c.border }]}>
-				<TouchableOpacity onPress={onBack} style={styles.iconBtn} hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
+		<SafeAreaView
+			className={`flex-1 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
+			style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
+		>
+			<View className={`flex-row items-center justify-between px-4 py-3 border-b ${isLight ? "border-slate-200" : "border-slate-800"}`}>
+				<TouchableOpacity onPress={onBack} className="p-1.5" hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
 					<ArrowLeft color={c.text} size={20} />
 				</TouchableOpacity>
-				<Text style={[styles.headerTitle, { color: c.text }]}>Setup Vault</Text>
-				<View style={{ width: 40 }} />
+				<Text className={`text-[17px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>Setup Vault</Text>
+				<View className="w-10" />
 			</View>
 
-			<ScrollView contentContainerStyle={styles.authContainer}>
-				<View style={[styles.iconContainer, { backgroundColor: isLight ? "rgba(0, 0, 0, 0.06)" : "rgba(255, 255, 255, 0.08)" }]}>
+			<ScrollView contentContainerClassName="p-6 items-center">
+				<View className={`w-[72px] h-[72px] rounded-full justify-center items-center my-4.5 ${isLight ? "bg-black/5" : "bg-white/10"}`}>
 					<Shield color={c.text} size={36} strokeWidth={2} />
 				</View>
 
 				{step === 1 && (
 					<>
-						<Text style={[styles.title, { color: c.text }]}>Zero-Knowledge Vault</Text>
-						<Text style={[styles.subText, { color: c.textSecondary }]}>
+						<Text className={`text-[22px] font-bold text-center mb-1.5 ${isLight ? "text-slate-900" : "text-white"}`}>Zero-Knowledge Vault</Text>
+						<Text className={`text-sm text-center leading-5 mb-4.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
 							Your passwords are encrypted on this device using XSalsa20-Poly1305 before anything is saved.
 						</Text>
-						<View style={[styles.featureBox, { backgroundColor: c.bgSecondary, borderColor: c.border }]}>
-							<Text style={[styles.featureItem, { color: c.text }]}>🔒 Military-grade XSalsa20 encryption</Text>
-							<Text style={[styles.featureItem, { color: c.text }]}>🔑 BIP-39 12-word mnemonic backup phrase</Text>
-							<Text style={[styles.featureItem, { color: c.text }]}>💳 Logins, Credit Cards, API Keys & Notes</Text>
-							<Text style={[styles.featureItem, { color: c.text }]}>⚡ 100% offline & zero cloud dependency</Text>
+						<View className={`w-full rounded-xl p-4 mb-5 border gap-2.5 ${
+							isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
+						}`}>
+							<Text className={`text-sm leading-5 ${isLight ? "text-slate-900" : "text-white"}`}>🔒 Military-grade XSalsa20 encryption</Text>
+							<Text className={`text-sm leading-5 ${isLight ? "text-slate-900" : "text-white"}`}>🔑 BIP-39 12-word mnemonic backup phrase</Text>
+							<Text className={`text-sm leading-5 ${isLight ? "text-slate-900" : "text-white"}`}>💳 Logins, Credit Cards, API Keys & Notes</Text>
+							<Text className={`text-sm leading-5 ${isLight ? "text-slate-900" : "text-white"}`}>⚡ 100% offline & zero cloud dependency</Text>
 						</View>
 						<TouchableOpacity
-							style={[styles.primaryBtn, { backgroundColor: isLight ? "#000000" : "#ffffff" }]}
+							className={`w-full py-3.5 rounded-xl items-center mt-2 ${isLight ? "bg-slate-950" : "bg-white"}`}
 							onPress={() => setStep(2)}
 						>
-							<Text style={[styles.btnText, { color: isLight ? "#ffffff" : "#000000" }]}>Create Master Password</Text>
+							<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Create Master Password</Text>
 						</TouchableOpacity>
 					</>
 				)}
 
 				{step === 2 && (
 					<>
-						<Text style={[styles.title, { color: c.text }]}>Set Master Password</Text>
-						<Text style={[styles.subText, { color: c.textSecondary }]}>
+						<Text className={`text-[22px] font-bold text-center mb-1.5 ${isLight ? "text-slate-900" : "text-white"}`}>Set Master Password</Text>
+						<Text className={`text-sm text-center leading-5 mb-4.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
 							This password derives your encryption key. We cannot restore your vault if lost.
 						</Text>
-						{error ? <Text style={styles.errorText}>{error}</Text> : null}
-						<View style={[styles.passwordWrapper, { backgroundColor: c.bgSecondary, borderColor: c.border }]}>
+						{error ? <Text className="text-red-500 text-[13px] mb-2.5 text-center">{error}</Text> : null}
+						<View className={`w-full flex-row items-center rounded-xl border mb-3 pr-2.5 ${
+							isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
+						}`}>
 							<TextInput
-								style={[styles.passwordInput, { color: c.text }]}
+								className={`flex-1 p-3 text-[15px] ${isLight ? "text-slate-900" : "text-white"}`}
 								placeholder="Master Password (min 8 chars)"
 								placeholderTextColor={c.textSecondary}
 								secureTextEntry={!showMasterPassword}
@@ -324,7 +345,7 @@ export function VaultOnboardingScreen({
 								autoCapitalize="none"
 							/>
 							<TouchableOpacity
-								style={styles.eyeBtn}
+								className="p-1.5 justify-center items-center"
 								onPress={() => setShowMasterPassword(!showMasterPassword)}
 								hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 							>
@@ -335,9 +356,11 @@ export function VaultOnboardingScreen({
 								)}
 							</TouchableOpacity>
 						</View>
-						<View style={[styles.passwordWrapper, { backgroundColor: c.bgSecondary, borderColor: c.border }]}>
+						<View className={`w-full flex-row items-center rounded-xl border mb-3 pr-2.5 ${
+							isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
+						}`}>
 							<TextInput
-								style={[styles.passwordInput, { color: c.text }]}
+								className={`flex-1 p-3 text-[15px] ${isLight ? "text-slate-900" : "text-white"}`}
 								placeholder="Confirm Master Password"
 								placeholderTextColor={c.textSecondary}
 								secureTextEntry={!showConfirmPassword}
@@ -346,7 +369,7 @@ export function VaultOnboardingScreen({
 								autoCapitalize="none"
 							/>
 							<TouchableOpacity
-								style={styles.eyeBtn}
+								className="p-1.5 justify-center items-center"
 								onPress={() => setShowConfirmPassword(!showConfirmPassword)}
 								hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 							>
@@ -358,55 +381,74 @@ export function VaultOnboardingScreen({
 							</TouchableOpacity>
 						</View>
 						<TouchableOpacity
-							style={[styles.primaryBtn, { backgroundColor: isLight ? "#000000" : "#ffffff" }]}
+							className={`w-full py-3.5 rounded-xl items-center mt-2 ${isLight ? "bg-slate-950" : "bg-white"}`}
 							onPress={onNextToRecovery}
 						>
-							<Text style={[styles.btnText, { color: isLight ? "#ffffff" : "#000000" }]}>Generate Recovery Phrase</Text>
+							<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Generate Recovery Phrase</Text>
 						</TouchableOpacity>
 					</>
 				)}
 
 				{step === 3 && (
 					<>
-						<Text style={[styles.title, { color: c.text }]}>Your 12-Word Recovery Key</Text>
-						<Text style={[styles.subText, { color: c.textSecondary }]}>
+						<Text className={`text-[22px] font-bold text-center mb-1.5 ${isLight ? "text-slate-900" : "text-white"}`}>Your 12-Word Recovery Key</Text>
+						<Text className={`text-sm text-center leading-5 mb-4.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
 							Write down these 12 words in order. You can use them to recover your master password.
 						</Text>
-						<View style={[styles.mnemonicBox, { backgroundColor: c.bgSecondary, borderColor: c.border }]}>
-							<Text style={[styles.mnemonicText, { color: c.text }]}>{recoveryMnemonic}</Text>
+						<View className={`rounded-xl p-4 border w-full mb-3.5 ${
+							isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
+						}`}>
+							<Text className={`font-mono text-[15px] leading-6 text-center ${isLight ? "text-slate-900" : "text-white"}`}>{recoveryMnemonic}</Text>
 						</View>
-						<View style={{ flexDirection: "row", gap: 10, width: "100%", marginBottom: 16 }}>
-							<TouchableOpacity style={[styles.recoveryBtn, { borderColor: c.border }]} onPress={onCopyMnemonic}>
+						<View className="flex-row gap-2.5 w-full mb-4">
+							<TouchableOpacity
+								className={`flex-1 flex-row items-center justify-center gap-1.5 py-2.5 rounded-xl border ${
+									isLight ? "border-slate-200 bg-white" : "border-slate-800 bg-slate-900"
+								}`}
+								onPress={onCopyMnemonic}
+							>
 								{copiedField === "mnemonic" ? <Check color={c.green} size={16} /> : <Copy color={c.text} size={16} />}
-								<Text style={{ color: c.text, fontSize: 13, fontWeight: "600" }}>{copiedField === "mnemonic" ? "Copied" : "Copy"}</Text>
+								<Text className={`text-[13px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>{copiedField === "mnemonic" ? "Copied" : "Copy"}</Text>
 							</TouchableOpacity>
-							<TouchableOpacity style={[styles.recoveryBtn, { borderColor: c.border }]} onPress={onDownloadRecovery}>
+							<TouchableOpacity
+								className={`flex-1 flex-row items-center justify-center gap-1.5 py-2.5 rounded-xl border ${
+									isLight ? "border-slate-200 bg-white" : "border-slate-800 bg-slate-900"
+								}`}
+								onPress={onDownloadRecovery}
+							>
 								<Download color={c.text} size={16} />
-								<Text style={{ color: c.text, fontSize: 13, fontWeight: "600" }}>Download</Text>
+								<Text className={`text-[13px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>Download</Text>
 							</TouchableOpacity>
 						</View>
-						<TouchableOpacity style={{ flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 16 }} onPress={() => setRecoveryConfirmed(!recoveryConfirmed)}>
-							<View style={[styles.checkbox, recoveryConfirmed && { backgroundColor: isLight ? "#000" : "#fff", borderColor: isLight ? "#000" : "#fff" }]}>
+						<TouchableOpacity
+							className="flex-row items-center gap-2.5 mb-4"
+							onPress={() => setRecoveryConfirmed(!recoveryConfirmed)}
+						>
+							<View className={`w-[18px] h-[18px] rounded border justify-center items-center ${
+								recoveryConfirmed
+									? isLight
+										? "bg-slate-950 border-slate-950"
+										: "bg-white border-white"
+									: "border-slate-400"
+							}`}>
 								{recoveryConfirmed && <Check color={isLight ? "#fff" : "#000"} size={12} />}
 							</View>
-							<Text style={{ color: c.textSecondary, fontSize: 13, flex: 1 }}>I have safely backed up my 12-word recovery key.</Text>
+							<Text className={`text-[13px] flex-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>I have safely backed up my 12-word recovery key.</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
-							style={[
-								styles.primaryBtn,
-								{ backgroundColor: isLight ? "#000000" : "#ffffff" },
-								isCreatingVault && { opacity: 0.7 },
-							]}
+							className={`w-full py-3.5 rounded-xl items-center mt-2 ${
+								isLight ? "bg-slate-950" : "bg-white"
+							} ${isCreatingVault ? "opacity-70" : ""}`}
 							onPress={onFinish}
 							disabled={isCreatingVault}
 						>
 							{isCreatingVault ? (
-								<View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+								<View className="flex-row items-center gap-2">
 									<ActivityIndicator size="small" color={isLight ? "#ffffff" : "#000000"} />
-									<Text style={[styles.btnText, { color: isLight ? "#ffffff" : "#000000" }]}>Creating Vault...</Text>
+									<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Creating Vault...</Text>
 								</View>
 							) : (
-								<Text style={[styles.btnText, { color: isLight ? "#ffffff" : "#000000" }]}>Complete Setup & Unlock</Text>
+								<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Complete Setup & Unlock</Text>
 							)}
 						</TouchableOpacity>
 					</>
@@ -415,48 +457,3 @@ export function VaultOnboardingScreen({
 		</SafeAreaView>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-	},
-	header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 0.5 },
-	headerTitle: { fontSize: 17, fontWeight: "600" },
-	iconBtn: { padding: 6 },
-	accountBtn: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, borderWidth: 1 },
-	authContainer: { padding: 24, alignItems: "center" },
-	iconContainer: { width: 72, height: 72, borderRadius: 36, justifyContent: "center", alignItems: "center", marginVertical: 18 },
-	title: { fontSize: 22, fontWeight: "700", textAlign: "center", marginBottom: 6 },
-	subText: { fontSize: 14, textAlign: "center", lineHeight: 20, marginBottom: 18 },
-	input: { width: "100%", borderRadius: 10, padding: 13, fontSize: 15, marginBottom: 12 },
-	passwordWrapper: {
-		width: "100%",
-		flexDirection: "row",
-		alignItems: "center",
-		borderRadius: 10,
-		borderWidth: 1,
-		marginBottom: 12,
-		paddingRight: 10,
-	},
-	passwordInput: {
-		flex: 1,
-		padding: 13,
-		fontSize: 15,
-	},
-	eyeBtn: {
-		padding: 6,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	primaryBtn: { width: "100%", paddingVertical: 14, borderRadius: 12, alignItems: "center", marginTop: 8 },
-	btnText: { color: "#fff", fontSize: 16, fontWeight: "700" },
-	errorText: { color: "#ff453a", fontSize: 13, marginBottom: 10, textAlign: "center" },
-	featureBox: { width: "100%", borderRadius: 12, padding: 16, marginBottom: 20, borderWidth: 0.5, gap: 10 },
-	featureItem: { fontSize: 14, lineHeight: 20 },
-	mnemonicBox: { borderRadius: 12, padding: 16, borderWidth: 0.5, width: "100%", marginBottom: 14 },
-	mnemonicText: { fontFamily: "monospace", fontSize: 15, lineHeight: 24, textAlign: "center" },
-	recoveryBtn: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, paddingVertical: 10, borderRadius: 10, borderWidth: 0.5 },
-	checkbox: { width: 18, height: 18, borderRadius: 5, borderWidth: 1.5, borderColor: "#8e8e93", justifyContent: "center", alignItems: "center" },
-});
-

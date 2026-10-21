@@ -1,7 +1,6 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
 import { Sun, Moon, Smartphone, Shield, LayoutGrid, ChevronDown, Check } from "lucide-react-native";
-import { useThemeVars } from "../config/theme";
 
 interface ThemeSelectorProps {
     theme: "dark" | "light";
@@ -18,7 +17,6 @@ export function ThemeSelectorRow({
     onToggleOpen,
     onSelectMode,
 }: ThemeSelectorProps) {
-    const vars = useThemeVars(theme);
     const isLight = theme === "light";
 
     const getIcon = () => {
@@ -34,29 +32,37 @@ export function ThemeSelectorRow({
     };
 
     return (
-        <View style={[styles.card, { backgroundColor: isLight ? "#ffffff" : "#131b2e", borderColor: isLight ? "#e2e8f0" : "#1e293b" }]}>
-            <TouchableOpacity style={styles.actionRow} activeOpacity={0.8} onPress={onToggleOpen}>
+        <View
+            className={`rounded-2xl p-4 border mb-4 ${
+                isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
+            }`}
+        >
+            <TouchableOpacity className="flex-row items-center" activeOpacity={0.8} onPress={onToggleOpen}>
                 <View
-                    style={[
-                        styles.iconBox,
-                        {
-                            backgroundColor:
-                                themeMode === "light"
-                                    ? "rgba(245, 158, 11, 0.15)"
-                                    : themeMode === "dark"
-                                      ? "rgba(139, 92, 246, 0.15)"
-                                      : "rgba(59, 130, 246, 0.15)",
-                        },
-                    ]}
+                    className={`w-10 h-10 rounded-xl justify-center items-center ${
+                        themeMode === "light"
+                            ? "bg-amber-500/15"
+                            : themeMode === "dark"
+                            ? "bg-violet-500/15"
+                            : "bg-blue-500/15"
+                    }`}
                 >
                     {getIcon()}
                 </View>
-                <View style={{ flex: 1, marginLeft: 12 }}>
-                    <Text style={[styles.title, { color: vars.text }]}>Theme</Text>
-                    <Text style={[styles.subtitle, { color: vars.textSecondary }]}>{getSubtitle()}</Text>
+                <View className="flex-1 ml-3">
+                    <Text className={`text-[15px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
+                        Theme
+                    </Text>
+                    <Text className={`text-xs mt-0.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                        {getSubtitle()}
+                    </Text>
                 </View>
-                <View style={[styles.badge, { backgroundColor: isLight ? "rgba(99, 102, 241, 0.1)" : "rgba(139, 92, 246, 0.12)" }]}>
-                    <Text style={[styles.badgeText, { color: isLight ? "#6366f1" : "#a78bfa" }]}>
+                <View
+                    className={`flex-row items-center px-2.5 py-1.5 rounded-xl ${
+                        isLight ? "bg-indigo-500/10" : "bg-violet-500/15"
+                    }`}
+                >
+                    <Text className={`text-[13px] font-semibold ${isLight ? "text-indigo-600" : "text-violet-300"}`}>
                         {themeMode === "system" ? "System" : themeMode === "dark" ? "Dark" : "Light"}
                     </Text>
                     <ChevronDown
@@ -68,27 +74,36 @@ export function ThemeSelectorRow({
             </TouchableOpacity>
 
             {isOpen && (
-                <View style={[styles.dropdownMenu, { borderTopColor: isLight ? "#e2e8f0" : "#1e293b" }]}>
+                <View
+                    className={`mt-3 pt-2 border-t ${
+                        isLight ? "border-slate-100" : "border-slate-800"
+                    }`}
+                >
                     {[
-                        { mode: "system" as const, title: "System", sub: "Match device appearance setting", icon: <Smartphone color="#3b82f6" size={16} />, bg: "rgba(59, 130, 246, 0.15)" },
-                        { mode: "dark" as const, title: "Dark", sub: "High-contrast futuristic dark mode", icon: <Moon color="#a78bfa" size={16} />, bg: "rgba(139, 92, 246, 0.15)" },
-                        { mode: "light" as const, title: "Light", sub: "Clean and crisp daytime palette", icon: <Sun color="#f59e0b" size={16} />, bg: "rgba(245, 158, 11, 0.15)" },
+                        { mode: "system" as const, title: "System", sub: "Match device appearance setting", icon: <Smartphone color="#3b82f6" size={16} />, bg: "bg-blue-500/15" },
+                        { mode: "dark" as const, title: "Dark", sub: "High-contrast futuristic dark mode", icon: <Moon color="#a78bfa" size={16} />, bg: "bg-violet-500/15" },
+                        { mode: "light" as const, title: "Light", sub: "Clean and crisp daytime palette", icon: <Sun color="#f59e0b" size={16} />, bg: "bg-amber-500/15" },
                     ].map((opt) => (
                         <TouchableOpacity
                             key={opt.mode}
-                            style={[
-                                styles.optionRow,
-                                themeMode === opt.mode && { backgroundColor: isLight ? "rgba(99, 102, 241, 0.08)" : "rgba(139, 92, 246, 0.12)" },
-                            ]}
+                            className={`flex-row items-center justify-between py-2.5 px-3 rounded-xl mb-1.5 ${
+                                themeMode === opt.mode
+                                    ? isLight ? "bg-indigo-500/10" : "bg-violet-500/15"
+                                    : ""
+                            }`}
                             onPress={() => onSelectMode(opt.mode)}
                         >
-                            <View style={styles.optionLeft}>
-                                <View style={[styles.optionIconBox, { backgroundColor: opt.bg }]}>
+                            <View className="flex-row items-center flex-1">
+                                <View className={`w-8 h-8 rounded-lg items-center justify-center ${opt.bg}`}>
                                     {opt.icon}
                                 </View>
-                                <View style={{ marginLeft: 10 }}>
-                                    <Text style={[styles.optionTitle, { color: vars.text }]}>{opt.title}</Text>
-                                    <Text style={[styles.optionSub, { color: vars.textSecondary }]}>{opt.sub}</Text>
+                                <View className="ml-2.5">
+                                    <Text className={`text-sm font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
+                                        {opt.title}
+                                    </Text>
+                                    <Text className={`text-xs mt-0.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                                        {opt.sub}
+                                    </Text>
                                 </View>
                             </View>
                             {themeMode === opt.mode && <Check color={isLight ? "#6366f1" : "#a78bfa"} size={18} />}
@@ -115,35 +130,38 @@ export function DefaultToolSelectorRow({
     onToggleOpen,
     onSelectTool,
 }: DefaultToolSelectorProps) {
-    const vars = useThemeVars(theme);
     const isLight = theme === "light";
 
     return (
-        <View style={[styles.card, { backgroundColor: isLight ? "#ffffff" : "#131b2e", borderColor: isLight ? "#e2e8f0" : "#1e293b" }]}>
-            <TouchableOpacity style={styles.actionRow} activeOpacity={0.8} onPress={onToggleOpen}>
+        <View
+            className={`rounded-2xl p-4 border mb-4 ${
+                isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
+            }`}
+        >
+            <TouchableOpacity className="flex-row items-center" activeOpacity={0.8} onPress={onToggleOpen}>
                 <View
-                    style={[
-                        styles.iconBox,
-                        {
-                            backgroundColor:
-                                defaultTool === "pwmg"
-                                    ? "rgba(139, 92, 246, 0.15)"
-                                    : "rgba(59, 130, 246, 0.15)",
-                        },
-                    ]}
+                    className={`w-10 h-10 rounded-xl justify-center items-center ${
+                        defaultTool === "pwmg" ? "bg-violet-500/15" : "bg-blue-500/15"
+                    }`}
                 >
                     {defaultTool === "pwmg" ? <Shield color="#8b5cf6" size={20} /> : <LayoutGrid color="#3b82f6" size={20} />}
                 </View>
-                <View style={{ flex: 1, marginLeft: 12 }}>
-                    <Text style={[styles.title, { color: vars.text }]}>Open on Startup</Text>
-                    <Text style={[styles.subtitle, { color: vars.textSecondary }]}>
+                <View className="flex-1 ml-3">
+                    <Text className={`text-[15px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
+                        Open on Startup
+                    </Text>
+                    <Text className={`text-xs mt-0.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
                         {defaultTool === "pwmg"
                             ? "Directly opens Password Manager on start"
                             : "Directly opens Tool Hub on start"}
                     </Text>
                 </View>
-                <View style={[styles.badge, { backgroundColor: isLight ? "rgba(99, 102, 241, 0.1)" : "rgba(139, 92, 246, 0.12)" }]}>
-                    <Text style={[styles.badgeText, { color: isLight ? "#6366f1" : "#a78bfa" }]}>
+                <View
+                    className={`flex-row items-center px-2.5 py-1.5 rounded-xl ${
+                        isLight ? "bg-indigo-500/10" : "bg-violet-500/15"
+                    }`}
+                >
+                    <Text className={`text-[13px] font-semibold ${isLight ? "text-indigo-600" : "text-violet-300"}`}>
                         {defaultTool === "pwmg" ? "Password Manager" : "Tool Hub"}
                     </Text>
                     <ChevronDown
@@ -155,26 +173,35 @@ export function DefaultToolSelectorRow({
             </TouchableOpacity>
 
             {isOpen && (
-                <View style={[styles.dropdownMenu, { borderTopColor: isLight ? "#e2e8f0" : "#1e293b" }]}>
+                <View
+                    className={`mt-3 pt-2 border-t ${
+                        isLight ? "border-slate-100" : "border-slate-800"
+                    }`}
+                >
                     {[
-                        { tool: "hub" as const, title: "Tool Hub (Default)", sub: "Shows overview of all Snipit tools on app launch", icon: <LayoutGrid color="#3b82f6" size={16} />, bg: "rgba(59, 130, 246, 0.15)" },
-                        { tool: "pwmg" as const, title: "Password Manager", sub: "Bypasses hub and opens your password vault immediately", icon: <Shield color="#8b5cf6" size={16} />, bg: "rgba(139, 92, 246, 0.15)" },
+                        { tool: "hub" as const, title: "Tool Hub (Default)", sub: "Shows overview of all Snipit tools on app launch", icon: <LayoutGrid color="#3b82f6" size={16} />, bg: "bg-blue-500/15" },
+                        { tool: "pwmg" as const, title: "Password Manager", sub: "Bypasses hub and opens your password vault immediately", icon: <Shield color="#8b5cf6" size={16} />, bg: "bg-violet-500/15" },
                     ].map((opt) => (
                         <TouchableOpacity
                             key={opt.tool}
-                            style={[
-                                styles.optionRow,
-                                defaultTool === opt.tool && { backgroundColor: isLight ? "rgba(99, 102, 241, 0.08)" : "rgba(139, 92, 246, 0.12)" },
-                            ]}
+                            className={`flex-row items-center justify-between py-2.5 px-3 rounded-xl mb-1.5 ${
+                                defaultTool === opt.tool
+                                    ? isLight ? "bg-indigo-500/10" : "bg-violet-500/15"
+                                    : ""
+                            }`}
                             onPress={() => onSelectTool(opt.tool)}
                         >
-                            <View style={styles.optionLeft}>
-                                <View style={[styles.optionIconBox, { backgroundColor: opt.bg }]}>
+                            <View className="flex-row items-center flex-1">
+                                <View className={`w-8 h-8 rounded-lg items-center justify-center ${opt.bg}`}>
                                     {opt.icon}
                                 </View>
-                                <View style={{ marginLeft: 10 }}>
-                                    <Text style={[styles.optionTitle, { color: vars.text }]}>{opt.title}</Text>
-                                    <Text style={[styles.optionSub, { color: vars.textSecondary }]}>{opt.sub}</Text>
+                                <View className="ml-2.5">
+                                    <Text className={`text-sm font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
+                                        {opt.title}
+                                    </Text>
+                                    <Text className={`text-xs mt-0.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                                        {opt.sub}
+                                    </Text>
                                 </View>
                             </View>
                             {defaultTool === opt.tool && <Check color={isLight ? "#6366f1" : "#a78bfa"} size={18} />}
@@ -185,77 +212,3 @@ export function DefaultToolSelectorRow({
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    card: {
-        borderRadius: 16,
-        padding: 16,
-        borderWidth: 1,
-        marginBottom: 16,
-        overflow: "visible",
-    },
-    actionRow: {
-        flexDirection: "row",
-        alignItems: "center",
-    },
-    iconBox: {
-        width: 40,
-        height: 40,
-        borderRadius: 10,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    title: {
-        fontSize: 15,
-        fontWeight: "600",
-    },
-    subtitle: {
-        fontSize: 12,
-        marginTop: 2,
-    },
-    badge: {
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: 10,
-        paddingVertical: 6,
-        borderRadius: 10,
-    },
-    badgeText: {
-        fontSize: 13,
-        fontWeight: "600",
-    },
-    dropdownMenu: {
-        marginTop: 12,
-        paddingTop: 8,
-        borderTopWidth: 1,
-    },
-    optionRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        paddingVertical: 10,
-        paddingHorizontal: 12,
-        borderRadius: 10,
-        marginBottom: 6,
-    },
-    optionLeft: {
-        flexDirection: "row",
-        alignItems: "center",
-        flex: 1,
-    },
-    optionIconBox: {
-        width: 32,
-        height: 32,
-        borderRadius: 8,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    optionTitle: {
-        fontSize: 14,
-        fontWeight: "600",
-    },
-    optionSub: {
-        fontSize: 12,
-        marginTop: 1,
-    },
-});

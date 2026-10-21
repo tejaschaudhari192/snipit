@@ -1,6 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Plus, X } from "lucide-react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 
 interface Props {
 	title?: string;
@@ -22,15 +21,24 @@ export function IosModalHeader({
 	const isLight = theme === "light";
 
 	return (
-		<View style={[styles.iosDetailNavHeader, isLight && styles.lightIosDetailNavHeader]}>
+		<View
+			className={`flex-row items-center justify-between px-4 py-3.5 border-b ${
+				isLight ? "border-slate-200" : "border-slate-800"
+			}`}
+		>
 			<TouchableOpacity
 				onPress={onClose}
 				hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
 			>
-				<Text style={styles.iosDetailNavCancelText}>{closeLabel}</Text>
+				<Text className="text-[#0a84ff] text-[17px] font-normal">{closeLabel}</Text>
 			</TouchableOpacity>
 
-			<Text style={[styles.iosDetailNavTitle, isLight && styles.lightText]} numberOfLines={1}>
+			<Text
+				className={`text-[17px] font-semibold text-center flex-1 mx-3 ${
+					isLight ? "text-slate-900" : "text-white"
+				}`}
+				numberOfLines={1}
+			>
 				{title}
 			</Text>
 
@@ -38,44 +46,8 @@ export function IosModalHeader({
 				onPress={onSave}
 				hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
 			>
-				<Text style={styles.iosDetailNavDoneText}>{saveLabel}</Text>
+				<Text className="text-[#0a84ff] text-[17px] font-bold">{saveLabel}</Text>
 			</TouchableOpacity>
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	iosDetailNavHeader: {
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "space-between",
-		paddingHorizontal: 16,
-		paddingVertical: 14,
-		borderBottomWidth: 0.5,
-		borderBottomColor: "rgba(84, 84, 88, 0.35)",
-	},
-	lightIosDetailNavHeader: {
-		borderBottomColor: "rgba(60, 60, 70, 0.18)",
-	},
-	iosDetailNavTitle: {
-		color: "#ffffff",
-		fontSize: 17,
-		fontWeight: "600",
-		textAlign: "center",
-		flex: 1,
-		marginHorizontal: 12,
-	},
-	lightText: {
-		color: "#000000",
-	},
-	iosDetailNavCancelText: {
-		color: "#0a84ff",
-		fontSize: 17,
-		fontWeight: "400",
-	},
-	iosDetailNavDoneText: {
-		color: "#0a84ff",
-		fontSize: 17,
-		fontWeight: "700",
-	},
-});

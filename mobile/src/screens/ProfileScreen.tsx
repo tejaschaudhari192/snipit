@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-    StyleSheet,
     Text,
     View,
     TouchableOpacity,
@@ -307,30 +306,44 @@ export function ProfileScreen({
     };
 
     return (
-        <SafeAreaView style={[styles.container, { backgroundColor: isLight ? "#f8fafc" : "#090d16" }]}>
+        <SafeAreaView
+            className={`flex-1 min-h-screen ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
+            style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
+        >
             {/* Header */}
-            <View style={[styles.header, { borderBottomColor: vars.border }]}>
+            <View
+                className={`flex-row items-center justify-between px-4 py-3 border-b ${
+                    isLight ? "bg-white border-slate-200" : "bg-slate-950 border-slate-800"
+                }`}
+            >
                 <TouchableOpacity
                     onPress={onBack}
-                    style={[styles.iconBtn, { backgroundColor: isLight ? "#e2e8f0" : "#1e293b" }]}
+                    className={`p-2 rounded-full ${isLight ? "bg-slate-200" : "bg-slate-800"}`}
                     hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
                     activeOpacity={0.7}
                 >
-                    <ArrowLeft color={vars.text} size={20} />
+                    <ArrowLeft color={isLight ? "#0f172a" : "#ffffff"} size={20} />
                 </TouchableOpacity>
-                <Text style={[styles.headerTitle, { color: vars.text }]}>Account & Profile</Text>
-                <View style={{ width: 40 }} />
+                <Text className={`text-[18px] font-bold ${isLight ? "text-slate-900" : "text-white"}`}>
+                    Account & Profile
+                </Text>
+                <View className="w-10" />
             </View>
 
             <ScrollView
-                contentContainerStyle={styles.content}
+                className={`flex-1 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
+                contentContainerClassName="p-4 pb-32"
                 keyboardShouldPersistTaps="handled"
                 keyboardDismissMode="interactive"
             >
                 {/* Profile Card */}
-                <View style={[styles.profileCard, { backgroundColor: isLight ? "#ffffff" : "#131b2e", borderColor: isLight ? "#e2e8f0" : "#1e293b" }]}>
+                <View
+                    className={`rounded-2xl p-5 items-center border mb-5 ${
+                        isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
+                    }`}
+                >
                     <TouchableOpacity
-                        style={styles.avatarWrapper}
+                        className="relative w-19 h-19 rounded-full mb-1 justify-center items-center"
                         onPress={() => {
                             setAvatarInputUrl(user?.avatar || "");
                             setIsAvatarModalOpen(true);
@@ -338,7 +351,11 @@ export function ProfileScreen({
                         activeOpacity={0.8}
                     >
                         <UserAvatar uri={user?.avatar} name={user?.username || "User"} size={72} />
-                        <View style={[styles.avatarEditOverlay, { backgroundColor: vars.purple, borderColor: isLight ? "#ffffff" : "#131b2e" }]}>
+                        <View
+                            className={`absolute bottom-0 right-0 w-6 h-6 rounded-full border-2 justify-center items-center bg-violet-600 ${
+                                isLight ? "border-white" : "border-slate-900"
+                            }`}
+                        >
                             <Camera color="#fff" size={14} />
                         </View>
                     </TouchableOpacity>
@@ -348,51 +365,65 @@ export function ProfileScreen({
                             setAvatarInputUrl(user?.avatar || "");
                             setIsAvatarModalOpen(true);
                         }}
-                        style={styles.changeAvatarBtn}
+                        className="py-1 px-2 mb-1.5"
                     >
-                        <Text style={[styles.changeAvatarText, { color: isLight ? "#6366f1" : "#a78bfa" }]}>Change Photo</Text>
+                        <Text className={`text-xs font-semibold ${isLight ? "text-indigo-600" : "text-violet-300"}`}>
+                            Change Photo
+                        </Text>
                     </TouchableOpacity>
 
                     {isEditingUsername ? (
-                        <View style={{ width: "100%", alignItems: "center", marginTop: 12 }}>
+                        <View className="w-4/5 items-center mt-3">
                             <TextInput
-                                style={[styles.editInput, { color: vars.text, borderColor: vars.purple }]}
+                                className={`w-full rounded-lg px-3 py-2 text-[15px] border text-center ${
+                                    isLight
+                                        ? "bg-slate-100 border-indigo-400 text-slate-900"
+                                        : "bg-slate-950 border-violet-500 text-white"
+                                }`}
                                 value={newUsername}
                                 onChangeText={setNewUsername}
                                 autoCapitalize="none"
                                 placeholder="Enter username"
-                                placeholderTextColor={vars.textMuted}
+                                placeholderTextColor={isLight ? "#94a3b8" : "#64748b"}
                             />
-                            <View style={{ flexDirection: "row", gap: 10, marginTop: 8 }}>
+                            <View className="flex-row gap-2.5 mt-2">
                                 <TouchableOpacity
-                                    style={[styles.smallBtn, { backgroundColor: "#374151" }]}
+                                    className="px-3.5 py-1.5 rounded-md bg-slate-700"
                                     onPress={() => setIsEditingUsername(false)}
                                 >
-                                    <Text style={styles.smallBtnText}>Cancel</Text>
+                                    <Text className="text-white text-[13px] font-semibold">Cancel</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    style={[styles.smallBtn, { backgroundColor: vars.purple }]}
+                                    className="px-3.5 py-1.5 rounded-md bg-violet-600"
                                     onPress={handleUpdateUsername}
                                     disabled={savingName}
                                 >
-                                    {savingName ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.smallBtnText}>Save</Text>}
+                                    {savingName ? (
+                                        <ActivityIndicator size="small" color="#fff" />
+                                    ) : (
+                                        <Text className="text-white text-[13px] font-semibold">Save</Text>
+                                    )}
                                 </TouchableOpacity>
                             </View>
                         </View>
                     ) : (
-                        <View style={{ alignItems: "center", marginTop: 12 }}>
-                            <TouchableOpacity style={styles.nameRow} onPress={() => setIsEditingUsername(true)}>
-                                <Text style={[styles.userName, { color: vars.text }]}>{user?.username || "Guest User"}</Text>
-                                <Text style={[styles.editLabel, { color: vars.purple }]}>Edit</Text>
+                        <View className="items-center mt-3">
+                            <TouchableOpacity className="flex-row items-center gap-2" onPress={() => setIsEditingUsername(true)}>
+                                <Text className={`text-[18px] font-bold ${isLight ? "text-slate-900" : "text-white"}`}>
+                                    {user?.username || "Guest User"}
+                                </Text>
+                                <Text className="text-xs font-semibold text-violet-500">Edit</Text>
                             </TouchableOpacity>
-                            <Text style={[styles.userEmail, { color: vars.textSecondary }]}>{user?.email || "No email connected"}</Text>
+                            <Text className={`text-[13px] mt-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                                {user?.email || "No email connected"}
+                            </Text>
                         </View>
                     )}
 
-                    <View style={styles.badgeRow}>
-                        <View style={styles.statusBadge}>
+                    <View className="mt-3">
+                        <View className="flex-row items-center gap-1.5 bg-violet-500/15 px-2.5 py-1 rounded-xl">
                             <Sparkles color="#a78bfa" size={12} />
-                            <Text style={styles.statusBadgeText}>
+                            <Text className="text-xs text-violet-400 font-semibold">
                                 {user?.token ? "Cloud Verified" : "Guest Account"}
                             </Text>
                         </View>
@@ -418,8 +449,10 @@ export function ProfileScreen({
                 />
 
                 {/* Appearance Feature */}
-                <View style={styles.section}>
-                    <Text style={[styles.sectionHeader, { color: vars.textSecondary }]}>APPEARANCE & THEME</Text>
+                <View className="mb-4">
+                    <Text className={`text-[11px] font-bold tracking-wider mb-2 ml-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                        APPEARANCE & THEME
+                    </Text>
                     <ThemeSelectorRow
                         theme={theme}
                         themeMode={themeMode}
@@ -434,8 +467,10 @@ export function ProfileScreen({
                 </View>
 
                 {/* Startup Tool */}
-                <View style={styles.section}>
-                    <Text style={[styles.sectionHeader, { color: vars.textSecondary }]}>DEFAULT STARTUP TOOL</Text>
+                <View className="mb-4">
+                    <Text className={`text-[11px] font-bold tracking-wider mb-2 ml-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                        DEFAULT STARTUP TOOL
+                    </Text>
                     <DefaultToolSelectorRow
                         theme={theme}
                         defaultTool={defaultTool}
@@ -459,17 +494,25 @@ export function ProfileScreen({
                 />
 
                 {/* Account Logout / Actions */}
-                <View style={[styles.section, { marginTop: 10, marginBottom: 30, gap: 10 }]}>
+                <View className="mb-8 mt-2.5 gap-2.5">
                     {!user?.token && onOpenAuth && (
-                        <TouchableOpacity style={[styles.primaryActionBtn, { backgroundColor: vars.purple }]} onPress={onOpenAuth}>
+                        <TouchableOpacity
+                            className="flex-row items-center justify-center gap-2 rounded-2xl py-3.5 bg-violet-600"
+                            onPress={onOpenAuth}
+                        >
                             <User color="#fff" size={18} />
-                            <Text style={styles.primaryActionBtnText}>Sign In to Cloud Account</Text>
+                            <Text className="text-white text-[15px] font-bold">Sign In to Cloud Account</Text>
                         </TouchableOpacity>
                     )}
 
-                    <TouchableOpacity style={styles.logoutBtn} onPress={handleConfirmLogout}>
+                    <TouchableOpacity
+                        className="flex-row items-center justify-center gap-2 bg-red-500/10 rounded-2xl py-3.5 border border-red-500/20"
+                        onPress={handleConfirmLogout}
+                    >
                         <LogOut color="#ef4444" size={18} />
-                        <Text style={styles.logoutBtnText}>{user?.token ? "Log Out" : "Reset Guest Session"}</Text>
+                        <Text className="text-red-500 text-[15px] font-bold">
+                            {user?.token ? "Log Out" : "Reset Guest Session"}
+                        </Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
@@ -499,157 +542,3 @@ export function ProfileScreen({
         </SafeAreaView>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    },
-    header: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        borderBottomWidth: 1,
-    },
-    headerTitle: {
-        fontSize: 18,
-        fontWeight: "700",
-    },
-    iconBtn: {
-        padding: 8,
-        borderRadius: 20,
-    },
-    content: {
-        padding: 16,
-        paddingBottom: 135,
-    },
-    profileCard: {
-        borderRadius: 16,
-        padding: 20,
-        alignItems: "center",
-        borderWidth: 1,
-        marginBottom: 20,
-    },
-    avatarWrapper: {
-        position: "relative",
-        width: 76,
-        height: 76,
-        borderRadius: 38,
-        marginBottom: 4,
-    },
-    avatarEditOverlay: {
-        position: "absolute",
-        bottom: 0,
-        right: 0,
-        width: 24,
-        height: 24,
-        borderRadius: 12,
-        borderWidth: 2,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    changeAvatarBtn: {
-        paddingVertical: 4,
-        paddingHorizontal: 8,
-        marginBottom: 6,
-    },
-    changeAvatarText: {
-        fontSize: 12,
-        fontWeight: "600",
-    },
-    nameRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 8,
-    },
-    userName: {
-        fontSize: 18,
-        fontWeight: "700",
-    },
-    editLabel: {
-        fontSize: 12,
-        fontWeight: "600",
-    },
-    userEmail: {
-        fontSize: 13,
-        marginTop: 4,
-    },
-    editInput: {
-        width: "80%",
-        backgroundColor: "rgba(0,0,0,0.2)",
-        borderRadius: 8,
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        fontSize: 15,
-        borderWidth: 1,
-        textAlign: "center",
-    },
-    smallBtn: {
-        paddingHorizontal: 14,
-        paddingVertical: 6,
-        borderRadius: 6,
-    },
-    smallBtnText: {
-        color: "#fff",
-        fontSize: 13,
-        fontWeight: "600",
-    },
-    badgeRow: {
-        marginTop: 12,
-    },
-    statusBadge: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 6,
-        backgroundColor: "rgba(167, 139, 250, 0.12)",
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-        borderRadius: 12,
-    },
-    statusBadgeText: {
-        fontSize: 12,
-        color: "#a78bfa",
-        fontWeight: "600",
-    },
-    section: {
-        marginBottom: 16,
-    },
-    sectionHeader: {
-        fontSize: 11,
-        fontWeight: "700",
-        letterSpacing: 0.8,
-        marginBottom: 8,
-        marginLeft: 4,
-    },
-    primaryActionBtn: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 8,
-        borderRadius: 14,
-        paddingVertical: 14,
-    },
-    primaryActionBtnText: {
-        color: "#fff",
-        fontSize: 15,
-        fontWeight: "700",
-    },
-    logoutBtn: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 8,
-        backgroundColor: "rgba(239, 68, 68, 0.1)",
-        borderRadius: 14,
-        paddingVertical: 14,
-        borderWidth: 1,
-        borderColor: "rgba(239, 68, 68, 0.2)",
-    },
-    logoutBtnText: {
-        color: "#ef4444",
-        fontSize: 15,
-        fontWeight: "700",
-    },
-});

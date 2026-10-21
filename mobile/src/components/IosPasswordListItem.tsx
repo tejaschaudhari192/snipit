@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { Star, MoreVertical, Copy, Check } from "lucide-react-native";
 import { PasswordItem } from "../core/vault-storage";
 import { ItemAvatar } from "./ItemAvatar";
@@ -33,23 +33,23 @@ export function IosPasswordListItem({
 
 	return (
 		<TouchableOpacity
-			style={[
-				styles.iosListItem,
-				isLight && styles.lightIosListItem,
-				isFirst && styles.iosListItemFirst,
-				isLast && styles.iosListItemLast,
-				!isLast && styles.iosListItemSeparator,
-			]}
+			className={`flex-row items-center px-3.5 py-3 ${
+				isLight ? "bg-white" : "bg-slate-900"
+			} ${isFirst ? "rounded-t-2xl" : ""} ${isLast ? "rounded-b-2xl" : ""} ${
+				!isLast ? isLight ? "border-b border-slate-100" : "border-b border-slate-800" : ""
+			}`}
 			activeOpacity={0.65}
 			onPress={onPress}
 		>
 			{/* Squircle App/Site Avatar */}
 			<ItemAvatar item={item} size={42} fallbackIcon={fallbackIcon} />
 
-			<View style={styles.iosListItemContent}>
-				<View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+			<View className="flex-1 ml-3.5 justify-center">
+				<View className="flex-row items-center gap-1.5">
 					<Text
-						style={[styles.iosItemTitleText, isLight && styles.lightText]}
+						className={`text-[17px] font-semibold tracking-tight ${
+							isLight ? "text-slate-900" : "text-white"
+						}`}
 						numberOfLines={1}
 					>
 						{item.title}
@@ -58,75 +58,33 @@ export function IosPasswordListItem({
 						<Star color="#eab308" fill="#eab308" size={13} />
 					)}
 				</View>
-				<Text style={styles.iosItemSubtitleText} numberOfLines={1}>
+				<Text
+					className={`text-sm mt-0.5 ${
+						isLight ? "text-slate-500" : "text-slate-400"
+					}`}
+					numberOfLines={1}
+				>
 					{subtitle}
 				</Text>
 			</View>
 
 			{/* iOS 3-dots / Quick Context Action */}
-			<View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+			<View className="flex-row items-center gap-2">
 				{item.password && onCopyPassword ? (
 					<TouchableOpacity
-						style={styles.iosQuickCopyBtn}
+						className="p-1.5"
 						onPress={() => onCopyPassword(item.password!)}
 						hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
 					>
 						{copied ? (
-							<Check color="#34c759" size={18} />
+							<Check color="#22c55e" size={18} />
 						) : (
-							<Copy color="#8e8e93" size={18} />
+							<Copy color={isLight ? "#94a3b8" : "#64748b"} size={18} />
 						)}
 					</TouchableOpacity>
 				) : null}
-				<MoreVertical color="#8e8e93" size={18} />
+				<MoreVertical color={isLight ? "#94a3b8" : "#64748b"} size={18} />
 			</View>
 		</TouchableOpacity>
 	);
 }
-
-const styles = StyleSheet.create({
-	iosListItem: {
-		flexDirection: "row",
-		alignItems: "center",
-		backgroundColor: "#1c1c1e",
-		paddingHorizontal: 14,
-		paddingVertical: 11,
-	},
-	lightIosListItem: {
-		backgroundColor: "#ffffff",
-	},
-	iosListItemFirst: {
-		borderTopLeftRadius: 12,
-		borderTopRightRadius: 12,
-	},
-	iosListItemLast: {
-		borderBottomLeftRadius: 12,
-		borderBottomRightRadius: 12,
-	},
-	iosListItemSeparator: {
-		borderBottomWidth: 0.5,
-		borderBottomColor: "rgba(84, 84, 88, 0.4)",
-	},
-	iosListItemContent: {
-		flex: 1,
-		marginLeft: 14,
-		justifyContent: "center",
-	},
-	iosItemTitleText: {
-		color: "#ffffff",
-		fontSize: 17,
-		fontWeight: "600",
-		letterSpacing: -0.2,
-	},
-	lightText: {
-		color: "#000000",
-	},
-	iosItemSubtitleText: {
-		color: "#8e8e93",
-		fontSize: 14,
-		marginTop: 2,
-	},
-	iosQuickCopyBtn: {
-		padding: 6,
-	},
-});

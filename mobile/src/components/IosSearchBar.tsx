@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TextInput, TouchableOpacity } from "react-native";
 import { Search, X } from "lucide-react-native";
 
 interface Props {
@@ -18,11 +18,17 @@ export function IosSearchBar({
 	const isLight = theme === "light";
 
 	return (
-		<View style={styles.iosSearchWrapper}>
-			<View style={[styles.iosSearchBox, isLight && styles.lightIosSearchBox]}>
-				<Search color="#8e8e93" size={17} style={styles.iosSearchIcon} />
+		<View className="px-4 pb-2.5">
+			<View
+				className={`flex-row items-center rounded-xl px-2.5 h-[38px] ${
+					isLight ? "bg-slate-200" : "bg-slate-900"
+				}`}
+			>
+				<Search color="#8e8e93" size={17} style={{ marginRight: 6 }} />
 				<TextInput
-					style={[styles.iosSearchTextInput, isLight && styles.lightIosSearchTextInput]}
+					className={`flex-1 text-[16px] py-0 ${
+						isLight ? "text-slate-900" : "text-white"
+					}`}
 					placeholder={placeholder}
 					placeholderTextColor="#8e8e93"
 					value={value}
@@ -41,33 +47,3 @@ export function IosSearchBar({
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	iosSearchWrapper: {
-		paddingHorizontal: 16,
-		paddingBottom: 10,
-	},
-	iosSearchBox: {
-		flexDirection: "row",
-		alignItems: "center",
-		backgroundColor: "#1c1c1e",
-		borderRadius: 11,
-		paddingHorizontal: 10,
-		height: 38,
-	},
-	lightIosSearchBox: {
-		backgroundColor: "#e5e5ea",
-	},
-	iosSearchIcon: {
-		marginRight: 6,
-	},
-	iosSearchTextInput: {
-		flex: 1,
-		color: "#ffffff",
-		fontSize: 16,
-		paddingVertical: 0,
-	},
-	lightIosSearchTextInput: {
-		color: "#000000",
-	},
-});

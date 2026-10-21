@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { StyleSheet, Text, View, SafeAreaView, BackHandler, Platform, StatusBar, Share, TouchableOpacity } from "react-native";
+import { Text, View, SafeAreaView, BackHandler, Platform, StatusBar, Share, TouchableOpacity } from "react-native";
 import { Plus } from "lucide-react-native";
 import * as Clipboard from "expo-clipboard";
 import * as FileSystem from "expo-file-system/legacy";
@@ -473,8 +473,8 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 	// Render Auth/Onboarding Screens
 	if (hasVault === null) {
 		return (
-			<SafeAreaView style={[styles.centerContainer, { backgroundColor: c.bg }]}>
-				<Text style={{ color: c.textSecondary, fontSize: 14 }}>Checking vault...</Text>
+			<SafeAreaView className={`flex-1 justify-center items-center p-5 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}>
+				<Text className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>Checking vault...</Text>
 			</SafeAreaView>
 		);
 	}
@@ -560,7 +560,10 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			: `${user?.token ? "Synced with Snipit Cloud" : "Stored locally & encrypted"} • ${filteredItems.length} items`;
 
 	return (
-		<SafeAreaView style={[styles.container, { backgroundColor: c.bg }]}>
+		<SafeAreaView
+			className={`flex-1 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
+			style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
+		>
 			{/* Header */}
 			<PWMGHeader
 				c={c}
@@ -630,10 +633,10 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			{/* Right-Bottom Floating Action Button (FAB) to Create New Item */}
 			{activeBottomTab !== "folders" && activeBottomTab !== "settings" && (
 				<TouchableOpacity
-					style={[
-						styles.floatingAddBtn,
-						{ backgroundColor: c.text },
-					]}
+					className={`absolute right-5 w-14 h-14 rounded-full justify-center items-center shadow-lg elevation-8 z-30 ${
+						isLight ? "bg-slate-900" : "bg-white"
+					}`}
+					style={{ bottom: Platform.OS === "ios" ? 102 : 106 }}
 					onPress={() => {
 						form.resetForm();
 						if (activeBottomTab === "notes") form.setItemCategory("note");
@@ -642,7 +645,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 					activeOpacity={0.85}
 					accessibilityLabel="Create New Item"
 				>
-					<Plus color={c.bg} size={26} strokeWidth={2.6} />
+					<Plus color={isLight ? "#ffffff" : "#020617"} size={26} strokeWidth={2.6} />
 				</TouchableOpacity>
 			)}
 
@@ -805,32 +808,3 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		</SafeAreaView>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-	},
-	centerContainer: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-		padding: 20,
-	},
-	floatingAddBtn: {
-		position: "absolute",
-		right: 20,
-		bottom: Platform.OS === "ios" ? 102 : 106,
-		width: 56,
-		height: 56,
-		borderRadius: 28,
-		justifyContent: "center",
-		alignItems: "center",
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 4 },
-		shadowOpacity: 0.3,
-		shadowRadius: 6,
-		elevation: 8,
-		zIndex: 30,
-	},
-});

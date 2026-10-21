@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Image, Text, StyleSheet } from "react-native";
+import { View, Image, Text } from "react-native";
 import { PasswordItem } from "../core/vault-storage";
 
 interface Props {
@@ -53,15 +53,12 @@ export function ItemAvatar({ item, size = 40, fallbackIcon }: Props) {
     if (faviconUrl && !imgError) {
         return (
             <View
-                style={[
-                    styles.container,
-                    {
-                        width: size,
-                        height: size,
-                        borderRadius,
-                        backgroundColor: "#ffffff",
-                    },
-                ]}
+                className="justify-center items-center overflow-hidden border border-white/10 bg-white"
+                style={{
+                    width: size,
+                    height: size,
+                    borderRadius,
+                }}
             >
                 <Image
                     source={{ uri: faviconUrl }}
@@ -84,34 +81,20 @@ export function ItemAvatar({ item, size = 40, fallbackIcon }: Props) {
 
     return (
         <View
-            style={[
-                styles.container,
-                {
-                    width: size,
-                    height: size,
-                    borderRadius,
-                    backgroundColor,
-                },
-            ]}
+            className="justify-center items-center overflow-hidden border border-white/10"
+            style={{
+                width: size,
+                height: size,
+                borderRadius,
+                backgroundColor,
+            }}
         >
-            <Text style={[styles.initialsText, { fontSize: Math.max(12, Math.floor(size * 0.38)) }]}>
+            <Text
+                className="text-white font-bold tracking-wide"
+                style={{ fontSize: Math.max(12, Math.floor(size * 0.38)) }}
+            >
                 {initials}
             </Text>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        justifyContent: "center",
-        alignItems: "center",
-        overflow: "hidden",
-        borderWidth: 0.5,
-        borderColor: "rgba(255, 255, 255, 0.08)",
-    },
-    initialsText: {
-        color: "#ffffff",
-        fontWeight: "700",
-        letterSpacing: 0.5,
-    },
-});

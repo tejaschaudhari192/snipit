@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { Key, CreditCard, FileCode, StickyNote, User, Star, ChevronRight, Folder as FolderIcon, FolderPlus, Trash2, Layers } from "lucide-react-native";
 import { Folder, PasswordItem } from "../core/vault-storage";
 import { useThemeVars } from "../config/theme";
@@ -38,29 +38,40 @@ export function IosFoldersView({
 
 	return (
 		<ScrollView
-			style={{ flex: 1 }}
-			contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 125 }}
+			className="flex-1"
+			contentContainerClassName="px-4 pt-1 pb-32"
 			showsVerticalScrollIndicator={false}
 		>
-			<Text style={[styles.sectionHeader, { color: c.textSecondary }]}>TYPES</Text>
-			<View style={[styles.groupedCard, { backgroundColor: c.bgSecondary }]}>
+			<Text className={`text-[13px] font-semibold tracking-tight px-1 mb-[7px] mt-3.5 uppercase ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+				TYPES
+			</Text>
+			<View className={`rounded-xl overflow-hidden mb-3.5 ${isLight ? "bg-white" : "bg-slate-900"}`}>
 				{typeItems.map((t, idx) => {
 					const IconComponent = t.icon;
 					return (
 						<TouchableOpacity
 							key={t.id}
-							style={[styles.row, idx > 0 && { borderTopWidth: 0.5, borderTopColor: c.border }]}
+							className={`flex-row items-center justify-between px-4 py-3.5 ${
+								idx > 0 ? (isLight ? "border-t border-slate-100" : "border-t border-slate-800") : ""
+							}`}
 							onPress={() => onSelectType(t.id)}
 							activeOpacity={0.7}
 						>
-							<View style={styles.rowLeft}>
-								<View style={[styles.iconBox, { backgroundColor: t.color }]}>
+							<View className="flex-row items-center gap-3">
+								<View
+									style={{ backgroundColor: t.color }}
+									className="w-[30px] h-[30px] rounded-lg items-center justify-center"
+								>
 									<IconComponent color="#ffffff" size={17} strokeWidth={2.2} />
 								</View>
-								<Text style={[styles.rowTitle, { color: c.text }]}>{t.label}</Text>
+								<Text className={`text-[17px] font-semibold tracking-tight ${isLight ? "text-slate-900" : "text-white"}`}>
+									{t.label}
+								</Text>
 							</View>
-							<View style={styles.rowRight}>
-								<Text style={[styles.badgeText, { color: c.textSecondary }]}>{t.count}</Text>
+							<View className="flex-row items-center gap-2">
+								<Text className={`text-[15px] font-normal ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+									{t.count}
+								</Text>
 								<ChevronRight color={c.textSecondary} size={16} />
 							</View>
 						</TouchableOpacity>
@@ -68,33 +79,48 @@ export function IosFoldersView({
 				})}
 			</View>
 
-			<View style={styles.folderHeaderRow}>
-				<Text style={[styles.sectionHeader, { color: c.textSecondary, marginBottom: 0 }]}>FOLDERS</Text>
-				<TouchableOpacity style={styles.newFolderBtn} onPress={onCreateFolder} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+			<View className="flex-row justify-between items-center mt-5 mb-2 px-1">
+				<Text className={`text-[13px] font-semibold tracking-tight uppercase ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+					FOLDERS
+				</Text>
+				<TouchableOpacity
+					className="flex-row items-center gap-1"
+					onPress={onCreateFolder}
+					hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+				>
 					<FolderPlus color={c.blue} size={16} />
-					<Text style={{ color: c.blue, fontSize: 14, fontWeight: "600" }}>New Folder</Text>
+					<Text className="text-blue-500 text-sm font-semibold">New Folder</Text>
 				</TouchableOpacity>
 			</View>
 
-			<View style={[styles.groupedCard, { backgroundColor: c.bgSecondary }]}>
+			<View className={`rounded-xl overflow-hidden mb-3.5 ${isLight ? "bg-white" : "bg-slate-900"}`}>
 				{folders.map((f, idx) => {
 					const count = items.filter((i) => i.folderId === f.id).length;
 					return (
 						<TouchableOpacity
 							key={f.id}
-							style={[styles.row, idx > 0 && { borderTopWidth: 0.5, borderTopColor: c.border }]}
+							className={`flex-row items-center justify-between px-4 py-3.5 ${
+								idx > 0 ? (isLight ? "border-t border-slate-100" : "border-t border-slate-800") : ""
+							}`}
 							onPress={() => onSelectFolder(f.id)}
 							onLongPress={() => onDeleteFolder(f.id, f.name)}
 							activeOpacity={0.7}
 						>
-							<View style={styles.rowLeft}>
-								<View style={[styles.iconBox, { backgroundColor: f.color || c.indigo }]}>
+							<View className="flex-row items-center gap-3">
+								<View
+									style={{ backgroundColor: f.color || c.indigo }}
+									className="w-[30px] h-[30px] rounded-lg items-center justify-center"
+								>
 									<FolderIcon color="#ffffff" size={16} strokeWidth={2} />
 								</View>
-								<Text style={[styles.rowTitle, { color: c.text }]}>{f.name}</Text>
+								<Text className={`text-[17px] font-semibold tracking-tight ${isLight ? "text-slate-900" : "text-white"}`}>
+									{f.name}
+								</Text>
 							</View>
-							<View style={styles.rowRight}>
-								<Text style={[styles.badgeText, { color: c.textSecondary }]}>{count}</Text>
+							<View className="flex-row items-center gap-2">
+								<Text className={`text-[15px] font-normal ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+									{count}
+								</Text>
 								<TouchableOpacity
 									onPress={() => onDeleteFolder(f.id, f.name)}
 									hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
@@ -108,12 +134,16 @@ export function IosFoldersView({
 				})}
 
 				{folders.length === 0 && (
-					<TouchableOpacity style={styles.row} onPress={onCreateFolder} activeOpacity={0.7}>
-						<View style={styles.rowLeft}>
-							<View style={[styles.iconBox, { backgroundColor: "rgba(10, 132, 255, 0.15)" }]}>
+					<TouchableOpacity
+						className="flex-row items-center justify-between px-4 py-3.5"
+						onPress={onCreateFolder}
+						activeOpacity={0.7}
+					>
+						<View className="flex-row items-center gap-3">
+							<View className="w-[30px] h-[30px] rounded-lg items-center justify-center bg-blue-500/15">
 								<FolderPlus color={c.blue} size={17} />
 							</View>
-							<Text style={[styles.rowTitle, { color: c.blue }]}>Create Your First Folder</Text>
+							<Text className="text-[17px] font-semibold tracking-tight text-blue-500">Create Your First Folder</Text>
 						</View>
 						<ChevronRight color={c.textSecondary} size={16} />
 					</TouchableOpacity>
@@ -122,66 +152,3 @@ export function IosFoldersView({
 		</ScrollView>
 	);
 }
-
-const styles = StyleSheet.create({
-	sectionHeader: {
-		fontSize: 13,
-		fontWeight: "600",
-		letterSpacing: -0.1,
-		paddingHorizontal: 4,
-		marginBottom: 7,
-		marginTop: 14,
-		textTransform: "uppercase",
-	},
-	groupedCard: {
-		borderRadius: 12,
-		overflow: "hidden",
-		marginBottom: 14,
-	},
-	row: {
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "space-between",
-		paddingHorizontal: 16,
-		paddingVertical: 13,
-	},
-	rowLeft: {
-		flexDirection: "row",
-		alignItems: "center",
-		gap: 12,
-	},
-	rowRight: {
-		flexDirection: "row",
-		alignItems: "center",
-		gap: 8,
-	},
-	iconBox: {
-		width: 30,
-		height: 30,
-		borderRadius: 7,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	rowTitle: {
-		fontSize: 17,
-		fontWeight: "600",
-		letterSpacing: -0.2,
-	},
-	badgeText: {
-		fontSize: 15,
-		fontWeight: "400",
-	},
-	folderHeaderRow: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		marginTop: 22,
-		marginBottom: 8,
-		paddingHorizontal: 4,
-	},
-	newFolderBtn: {
-		flexDirection: "row",
-		alignItems: "center",
-		gap: 4,
-	},
-});

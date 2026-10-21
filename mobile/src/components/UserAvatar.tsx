@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Image, Text, StyleSheet, ViewStyle, StyleProp } from "react-native";
+import { View, Image, Text, ViewStyle, StyleProp } from "react-native";
 import { SvgUri } from "react-native-svg";
 
 interface UserAvatarProps {
@@ -18,16 +18,8 @@ export function UserAvatar({ uri, name = "User", size = 40, style }: UserAvatarP
         if (isSvg) {
             return (
                 <View
-                    style={[
-                        styles.container,
-                        {
-                            width: size,
-                            height: size,
-                            borderRadius,
-                            backgroundColor: "rgba(124, 58, 237, 0.15)",
-                        },
-                        style,
-                    ]}
+                    className="overflow-hidden justify-center items-center bg-violet-600/15"
+                    style={[{ width: size, height: size, borderRadius }, style]}
                 >
                     <SvgUri
                         uri={uri.trim()}
@@ -40,15 +32,8 @@ export function UserAvatar({ uri, name = "User", size = 40, style }: UserAvatarP
 
         return (
             <View
-                style={[
-                    styles.container,
-                    {
-                        width: size,
-                        height: size,
-                        borderRadius,
-                    },
-                    style,
-                ]}
+                className="overflow-hidden justify-center items-center"
+                style={[{ width: size, height: size, borderRadius }, style]}
             >
                 <Image
                     source={{ uri: uri.trim() }}
@@ -61,35 +46,15 @@ export function UserAvatar({ uri, name = "User", size = 40, style }: UserAvatarP
 
     return (
         <View
-            style={[
-                styles.container,
-                styles.fallbackCircle,
-                {
-                    width: size,
-                    height: size,
-                    borderRadius,
-                },
-                style,
-            ]}
+            className="overflow-hidden justify-center items-center bg-indigo-500"
+            style={[{ width: size, height: size, borderRadius }, style]}
         >
-            <Text style={[styles.fallbackText, { fontSize: Math.max(12, Math.floor(size * 0.42)) }]}>
+            <Text
+                className="text-white font-bold"
+                style={{ fontSize: Math.max(12, Math.floor(size * 0.42)) }}
+            >
                 {initial}
             </Text>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        overflow: "hidden",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    fallbackCircle: {
-        backgroundColor: "#6366f1",
-    },
-    fallbackText: {
-        color: "#ffffff",
-        fontWeight: "bold",
-    },
-});

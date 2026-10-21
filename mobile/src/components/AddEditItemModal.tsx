@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Text, Modal, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { Key, CreditCard, FileCode, StickyNote, User, ChevronDown, ChevronUp, RefreshCw, Tag, Plus, Trash2, Eye, EyeOff } from "lucide-react-native";
 import { PasswordItem, Folder, CustomField } from "../core/vault-storage";
 import { getCategoryItemLabel } from "./IosDetailInspectorModal";
@@ -114,6 +114,7 @@ export function AddEditItemModal({
 }: Props) {
 	if (!visible) return null;
 	const c = useThemeVars(theme);
+	const isLight = theme === "light";
 
 	const [showLoginPassword, setShowLoginPassword] = useState(false);
 	const [showCardCvv, setShowCardCvv] = useState(false);
@@ -128,39 +129,49 @@ export function AddEditItemModal({
 		{ id: "identity", label: "Identity", icon: User },
 	];
 
+	const inputClass = `rounded-xl px-3 py-2.5 text-[15px] mb-2.5 ${
+		isLight ? "bg-slate-200/60 text-slate-900" : "bg-slate-800 text-white"
+	}`;
+
+	const containerBg = isLight ? "bg-slate-100" : "bg-slate-900";
+	const tertiaryBg = isLight ? "bg-slate-200/70" : "bg-slate-800";
+	const borderColor = isLight ? "border-slate-200" : "border-slate-800";
+
 	return (
 		<Modal visible={visible} animationType="slide" transparent>
 			<KeyboardAvoidingView
-				style={styles.modalOverlay}
+				className="flex-1 bg-black/65 justify-end"
 				behavior={Platform.OS === "ios" ? "padding" : "height"}
 			>
-				<View style={[styles.modalContent, { backgroundColor: c.bgSecondary }]}>
+				<View className={`rounded-t-[18px] p-4 max-h-[92%] ${containerBg}`}>
 					{/* iOS Navigation Header */}
-					<View style={[styles.navHeader, { borderBottomColor: c.border }]}>
+					<View className={`flex-row items-center justify-between py-3 border-b mb-3 ${borderColor}`}>
 						<TouchableOpacity onPress={onClose} hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
-							<Text style={{ color: c.blue, fontSize: 17, fontWeight: "400" }}>Cancel</Text>
+							<Text className={`text-[17px] font-normal ${isLight ? "text-blue-600" : "text-blue-400"}`}>Cancel</Text>
 						</TouchableOpacity>
-						<Text style={[styles.navTitle, { color: c.text }]}>
+						<Text className={`text-[17px] font-semibold text-center ${isLight ? "text-slate-900" : "text-white"}`}>
 							{editingItem ? `Edit ${getCategoryItemLabel(itemCategory)}` : `New ${getCategoryItemLabel(itemCategory)}`}
 						</Text>
 						<TouchableOpacity onPress={onSave} hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
-							<Text style={{ color: c.blue, fontSize: 17, fontWeight: "700" }}>Done</Text>
+							<Text className={`text-[17px] font-bold ${isLight ? "text-blue-600" : "text-blue-400"}`}>Done</Text>
 						</TouchableOpacity>
 					</View>
 
 					{/* Category Picker Tabs */}
-					<View style={[styles.categoryTabs, { backgroundColor: c.bgTertiary }]}>
+					<View className={`flex-row rounded-xl p-1 mb-3.5 ${tertiaryBg}`}>
 						{categories.map((cat) => {
 							const IconComponent = cat.icon;
 							const active = itemCategory === cat.id;
 							return (
 								<TouchableOpacity
 									key={cat.id}
-									style={[styles.categoryTab, active && { backgroundColor: c.blue }]}
+									className={`flex-1 flex-row items-center justify-center gap-1 py-1.5 rounded-lg ${
+										active ? "bg-blue-600" : ""
+									}`}
 									onPress={() => setItemCategory(cat.id)}
 								>
 									<IconComponent color={active ? "#fff" : c.textSecondary} size={15} />
-									<Text style={[styles.categoryTabText, { color: active ? "#fff" : c.textSecondary }]}>
+									<Text className={`text-xs font-semibold ${active ? "text-white" : isLight ? "text-slate-500" : "text-slate-400"}`}>
 										{cat.label}
 									</Text>
 								</TouchableOpacity>
@@ -169,28 +180,28 @@ export function AddEditItemModal({
 					</View>
 
 					<ScrollView
-						style={{ maxHeight: 440 }}
+						className="max-h-[440px]"
 						showsVerticalScrollIndicator={false}
 						keyboardShouldPersistTaps="handled"
 						keyboardDismissMode="interactive"
 					>
 						{/* Folder Assignment */}
 						{folders.length > 0 && (
-							<View style={{ marginBottom: 14 }}>
-								<Text style={[styles.fieldLabel, { color: c.textSecondary }]}>Folder (Optional)</Text>
+							<View className="mb-3.5">
+								<Text className={`text-[11px] font-bold uppercase mb-1.5 tracking-wider ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+									Folder (Optional)
+								</Text>
 								<TouchableOpacity
-									style={[styles.dropdownHeader, { backgroundColor: c.bgTertiary }]}
+									className={`flex-row items-center justify-between px-3 py-2.5 rounded-xl ${tertiaryBg}`}
 									onPress={() => setIsFolderDropdownOpen(!isFolderDropdownOpen)}
 									activeOpacity={0.8}
 								>
-									<View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+									<View className="flex-row items-center gap-2">
 										<View
-											style={[
-												styles.folderDot,
-												{ backgroundColor: folders.find((f) => f.id === itemFolderId)?.color || c.textSecondary },
-											]}
+											style={{ backgroundColor: folders.find((f) => f.id === itemFolderId)?.color || c.textSecondary }}
+											className="w-2 h-2 rounded-full"
 										/>
-										<Text style={{ color: c.text, fontSize: 14, fontWeight: "600" }}>
+										<Text className={`text-sm font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
 											{folders.find((f) => f.id === itemFolderId)?.name || "No Folder"}
 										</Text>
 									</View>
@@ -198,28 +209,28 @@ export function AddEditItemModal({
 								</TouchableOpacity>
 
 								{isFolderDropdownOpen && (
-									<View style={[styles.dropdownList, { backgroundColor: c.bgTertiary, borderColor: c.border }]}>
+									<View className={`rounded-xl border mt-1.5 overflow-hidden ${tertiaryBg} ${borderColor}`}>
 										<TouchableOpacity
-											style={[styles.dropdownItem, itemFolderId === undefined && { backgroundColor: "rgba(10, 132, 255, 0.15)" }]}
+											className={`flex-row items-center gap-2.5 px-3 py-2.5 ${itemFolderId === undefined ? "bg-blue-500/15" : ""}`}
 											onPress={() => {
 												setItemFolderId(undefined);
 												setIsFolderDropdownOpen(false);
 											}}
 										>
-											<View style={[styles.folderDot, { backgroundColor: c.textSecondary }]} />
-											<Text style={{ color: c.text, fontSize: 13, fontWeight: "500" }}>No Folder</Text>
+											<View style={{ backgroundColor: c.textSecondary }} className="w-2 h-2 rounded-full" />
+											<Text className={`text-[13px] font-medium ${isLight ? "text-slate-900" : "text-white"}`}>No Folder</Text>
 										</TouchableOpacity>
 										{folders.map((f) => (
 											<TouchableOpacity
 												key={f.id}
-												style={[styles.dropdownItem, itemFolderId === f.id && { backgroundColor: "rgba(10, 132, 255, 0.15)" }]}
+												className={`flex-row items-center gap-2.5 px-3 py-2.5 ${itemFolderId === f.id ? "bg-blue-500/15" : ""}`}
 												onPress={() => {
 													setItemFolderId(f.id);
 													setIsFolderDropdownOpen(false);
 												}}
 											>
-												<View style={[styles.folderDot, { backgroundColor: f.color }]} />
-												<Text style={{ color: c.text, fontSize: 13, fontWeight: "500" }}>{f.name}</Text>
+												<View style={{ backgroundColor: f.color }} className="w-2 h-2 rounded-full" />
+												<Text className={`text-[13px] font-medium ${isLight ? "text-slate-900" : "text-white"}`}>{f.name}</Text>
 											</TouchableOpacity>
 										))}
 									</View>
@@ -229,7 +240,7 @@ export function AddEditItemModal({
 
 						{/* Item Title */}
 						<TextInput
-							style={[styles.input, { backgroundColor: c.bgTertiary, color: c.text }]}
+							className={inputClass}
 							placeholder="Item Title (e.g. GitHub, Chase Visa)"
 							placeholderTextColor={c.textSecondary}
 							value={newTitle}
@@ -240,16 +251,16 @@ export function AddEditItemModal({
 						{itemCategory === "login" && (
 							<>
 								<TextInput
-									style={[styles.input, { backgroundColor: c.bgTertiary, color: c.text }]}
+									className={inputClass}
 									placeholder="Username or Email"
 									placeholderTextColor={c.textSecondary}
 									value={newUsername}
 									onChangeText={setNewUsername}
 								/>
-								<View style={{ flexDirection: "row", gap: 8, marginBottom: 10 }}>
-									<View style={[styles.inputWithIcon, { flex: 1, backgroundColor: c.bgTertiary }]}>
+								<View className="flex-row gap-2 mb-2.5">
+									<View className={`flex-1 flex-row items-center rounded-xl pr-2 ${tertiaryBg}`}>
 										<TextInput
-											style={[styles.inputInside, { color: c.text }]}
+											className={`flex-1 px-3 py-2.5 text-[15px] ${isLight ? "text-slate-900" : "text-white"}`}
 											placeholder="Password"
 											placeholderTextColor={c.textSecondary}
 											secureTextEntry={!showLoginPassword}
@@ -258,7 +269,7 @@ export function AddEditItemModal({
 											autoCapitalize="none"
 										/>
 										<TouchableOpacity
-											style={styles.inlineEyeBtn}
+											className="p-1.5 items-center justify-center"
 											onPress={() => setShowLoginPassword(!showLoginPassword)}
 											hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 										>
@@ -269,12 +280,15 @@ export function AddEditItemModal({
 											)}
 										</TouchableOpacity>
 									</View>
-									<TouchableOpacity style={[styles.genBtn, { backgroundColor: c.blue, marginBottom: 0 }]} onPress={() => onOpenGenerator("password")}>
+									<TouchableOpacity
+										className="px-4 items-center justify-center rounded-xl bg-blue-600 mb-0"
+										onPress={() => onOpenGenerator("password")}
+									>
 										<RefreshCw color="#fff" size={18} />
 									</TouchableOpacity>
 								</View>
 								<TextInput
-									style={[styles.input, { backgroundColor: c.bgTertiary, color: c.text }]}
+									className={inputClass}
 									placeholder="Website URL (optional)"
 									placeholderTextColor={c.textSecondary}
 									value={newUrl}
@@ -287,31 +301,31 @@ export function AddEditItemModal({
 						{itemCategory === "card" && (
 							<>
 								<TextInput
-									style={[styles.input, { backgroundColor: c.bgTertiary, color: c.text }]}
+									className={inputClass}
 									placeholder="Cardholder Name"
 									placeholderTextColor={c.textSecondary}
 									value={cardHolder}
 									onChangeText={setCardHolder}
 								/>
 								<TextInput
-									style={[styles.input, { backgroundColor: c.bgTertiary, color: c.text }]}
+									className={inputClass}
 									placeholder="Card Number (16 digits)"
 									placeholderTextColor={c.textSecondary}
 									keyboardType="numeric"
 									value={cardNumber}
 									onChangeText={setCardNumber}
 								/>
-								<View style={{ flexDirection: "row", gap: 8, marginBottom: 10 }}>
+								<View className="flex-row gap-2 mb-2.5">
 									<TextInput
-										style={[styles.input, { flex: 1, marginBottom: 0, backgroundColor: c.bgTertiary, color: c.text }]}
+										className={`flex-1 ${inputClass} mb-0`}
 										placeholder="Exp (MM/YY)"
 										placeholderTextColor={c.textSecondary}
 										value={cardExp}
 										onChangeText={setCardExp}
 									/>
-									<View style={[styles.inputWithIcon, { flex: 1, backgroundColor: c.bgTertiary }]}>
+									<View className={`flex-1 flex-row items-center rounded-xl pr-2 ${tertiaryBg}`}>
 										<TextInput
-											style={[styles.inputInside, { color: c.text }]}
+											className={`flex-1 px-3 py-2.5 text-[15px] ${isLight ? "text-slate-900" : "text-white"}`}
 											placeholder="CVV"
 											placeholderTextColor={c.textSecondary}
 											keyboardType="numeric"
@@ -320,7 +334,7 @@ export function AddEditItemModal({
 											onChangeText={setCardCvv}
 										/>
 										<TouchableOpacity
-											style={styles.inlineEyeBtn}
+											className="p-1.5 items-center justify-center"
 											onPress={() => setShowCardCvv(!showCardCvv)}
 											hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 										>
@@ -332,10 +346,10 @@ export function AddEditItemModal({
 										</TouchableOpacity>
 									</View>
 								</View>
-								<View style={{ flexDirection: "row", gap: 8, marginBottom: 10 }}>
-									<View style={[styles.inputWithIcon, { flex: 1, backgroundColor: c.bgTertiary }]}>
+								<View className="flex-row gap-2 mb-2.5">
+									<View className={`flex-1 flex-row items-center rounded-xl pr-2 ${tertiaryBg}`}>
 										<TextInput
-											style={[styles.inputInside, { color: c.text }]}
+											className={`flex-1 px-3 py-2.5 text-[15px] ${isLight ? "text-slate-900" : "text-white"}`}
 											placeholder="PIN (optional)"
 											placeholderTextColor={c.textSecondary}
 											keyboardType="numeric"
@@ -344,7 +358,7 @@ export function AddEditItemModal({
 											onChangeText={setCardPin}
 										/>
 										<TouchableOpacity
-											style={styles.inlineEyeBtn}
+											className="p-1.5 items-center justify-center"
 											onPress={() => setShowCardPin(!showCardPin)}
 											hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 										>
@@ -356,7 +370,7 @@ export function AddEditItemModal({
 										</TouchableOpacity>
 									</View>
 									<TextInput
-										style={[styles.input, { flex: 1, marginBottom: 0, backgroundColor: c.bgTertiary, color: c.text }]}
+										className={`flex-1 ${inputClass} mb-0`}
 										placeholder="Billing Zip Code"
 										placeholderTextColor={c.textSecondary}
 										value={cardZip}
@@ -370,16 +384,16 @@ export function AddEditItemModal({
 						{itemCategory === "apikey" && (
 							<>
 								<TextInput
-									style={[styles.input, { backgroundColor: c.bgTertiary, color: c.text }]}
+									className={inputClass}
 									placeholder="Key ID / Key Name"
 									placeholderTextColor={c.textSecondary}
 									value={apiKeyId}
 									onChangeText={setApiKeyId}
 								/>
-								<View style={{ flexDirection: "row", gap: 8, marginBottom: 10 }}>
-									<View style={[styles.inputWithIcon, { flex: 1, backgroundColor: c.bgTertiary }]}>
+								<View className="flex-row gap-2 mb-2.5">
+									<View className={`flex-1 flex-row items-center rounded-xl pr-2 ${tertiaryBg}`}>
 										<TextInput
-											style={[styles.inputInside, { color: c.text }]}
+											className={`flex-1 px-3 py-2.5 text-[15px] ${isLight ? "text-slate-900" : "text-white"}`}
 											placeholder="API Secret Key"
 											placeholderTextColor={c.textSecondary}
 											secureTextEntry={!showApiSecret}
@@ -388,7 +402,7 @@ export function AddEditItemModal({
 											autoCapitalize="none"
 										/>
 										<TouchableOpacity
-											style={styles.inlineEyeBtn}
+											className="p-1.5 items-center justify-center"
 											onPress={() => setShowApiSecret(!showApiSecret)}
 											hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 										>
@@ -399,19 +413,22 @@ export function AddEditItemModal({
 											)}
 										</TouchableOpacity>
 									</View>
-									<TouchableOpacity style={[styles.genBtn, { backgroundColor: c.blue, marginBottom: 0 }]} onPress={() => onOpenGenerator("apikey")}>
+									<TouchableOpacity
+										className="px-4 items-center justify-center rounded-xl bg-blue-600 mb-0"
+										onPress={() => onOpenGenerator("apikey")}
+									>
 										<RefreshCw color="#fff" size={18} />
 									</TouchableOpacity>
 								</View>
 								<TextInput
-									style={[styles.input, { backgroundColor: c.bgTertiary, color: c.text }]}
+									className={inputClass}
 									placeholder="Base URL / Endpoint"
 									placeholderTextColor={c.textSecondary}
 									value={newUrl}
 									onChangeText={setNewUrl}
 								/>
 								<TextInput
-									style={[styles.input, { backgroundColor: c.bgTertiary, color: c.text }]}
+									className={inputClass}
 									placeholder="Environment (Production, Staging, etc.)"
 									placeholderTextColor={c.textSecondary}
 									value={apiEnv}
@@ -424,28 +441,28 @@ export function AddEditItemModal({
 						{itemCategory === "identity" && (
 							<>
 								<TextInput
-									style={[styles.input, { backgroundColor: c.bgTertiary, color: c.text }]}
+									className={inputClass}
 									placeholder="Full Name"
 									placeholderTextColor={c.textSecondary}
 									value={identityName}
 									onChangeText={setIdentityName}
 								/>
 								<TextInput
-									style={[styles.input, { backgroundColor: c.bgTertiary, color: c.text }]}
+									className={inputClass}
 									placeholder="Email"
 									placeholderTextColor={c.textSecondary}
 									value={identityEmail}
 									onChangeText={setIdentityEmail}
 								/>
 								<TextInput
-									style={[styles.input, { backgroundColor: c.bgTertiary, color: c.text }]}
+									className={inputClass}
 									placeholder="Phone Number"
 									placeholderTextColor={c.textSecondary}
 									value={identityPhone}
 									onChangeText={setIdentityPhone}
 								/>
 								<TextInput
-									style={[styles.input, { height: 60, backgroundColor: c.bgTertiary, color: c.text }]}
+									className={`h-[60px] ${inputClass}`}
 									placeholder="Street Address, City, State, Zip"
 									placeholderTextColor={c.textSecondary}
 									multiline
@@ -457,7 +474,7 @@ export function AddEditItemModal({
 
 						{/* Common Notes */}
 						<TextInput
-							style={[styles.input, { height: itemCategory === "note" ? 120 : 60, backgroundColor: c.bgTertiary, color: c.text }]}
+							className={`${itemCategory === "note" ? "h-[120px]" : "h-[60px]"} ${inputClass}`}
 							placeholder={itemCategory === "note" ? "Write your secure note..." : "Notes (optional)"}
 							placeholderTextColor={c.textSecondary}
 							multiline
@@ -466,24 +483,26 @@ export function AddEditItemModal({
 						/>
 
 						{/* Custom Fields */}
-						<View style={{ marginTop: 8, marginBottom: 12 }}>
-							<View style={styles.customFieldsHeader}>
-								<View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+						<View className="mt-2 mb-3">
+							<View className="flex-row justify-between items-center mb-2">
+								<View className="flex-row items-center gap-1.5">
 									<Tag color={c.blue} size={15} />
-									<Text style={[styles.fieldLabel, { color: c.textSecondary, marginBottom: 0 }]}>Custom Fields</Text>
+									<Text className={`text-[11px] font-bold uppercase tracking-wider mb-0 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+										Custom Fields
+									</Text>
 								</View>
 								<TouchableOpacity
-									style={[styles.addFieldBtn, { backgroundColor: "rgba(10, 132, 255, 0.15)" }]}
+									className="flex-row items-center gap-1 px-2 py-1 rounded-lg bg-blue-500/15"
 									onPress={() => setCustomFields([...customFields, { id: Math.random().toString(36).substring(2, 9), name: "", value: "", type: "text" }])}
 								>
 									<Plus color={c.blue} size={14} />
-									<Text style={{ color: c.blue, fontSize: 12, fontWeight: "600" }}>Add Field</Text>
+									<Text className="text-blue-500 text-xs font-semibold">Add Field</Text>
 								</TouchableOpacity>
 							</View>
 							{customFields.map((cf, index) => (
-								<View key={cf.id || index} style={styles.customFieldRow}>
+								<View key={cf.id || index} className="flex-row items-center gap-2 mb-2">
 									<TextInput
-										style={[styles.input, { flex: 1, marginBottom: 0, backgroundColor: c.bgTertiary, color: c.text }]}
+										className={`flex-1 ${inputClass} mb-0`}
 										placeholder="Field Name"
 										placeholderTextColor={c.textSecondary}
 										value={cf.name}
@@ -494,7 +513,7 @@ export function AddEditItemModal({
 										}}
 									/>
 									<TextInput
-										style={[styles.input, { flex: 1.2, marginBottom: 0, backgroundColor: c.bgTertiary, color: c.text }]}
+										className={`flex-[1.2] ${inputClass} mb-0`}
 										placeholder="Field Value"
 										placeholderTextColor={c.textSecondary}
 										value={cf.value}
@@ -505,7 +524,7 @@ export function AddEditItemModal({
 										}}
 									/>
 									<TouchableOpacity
-										style={styles.removeFieldBtn}
+										className="p-2 items-center justify-center"
 										onPress={() => setCustomFields(customFields.filter((_, i) => i !== index))}
 									>
 										<Trash2 color={c.red} size={16} />
@@ -514,8 +533,8 @@ export function AddEditItemModal({
 							))}
 						</View>
 
-						<TouchableOpacity style={[styles.primaryBtn, { backgroundColor: c.blue }]} onPress={onSave}>
-							<Text style={styles.btnText}>{editingItem ? "Update Credential" : "Save Item"}</Text>
+						<TouchableOpacity className="w-full py-3.5 rounded-xl items-center mt-2.5 mb-5 bg-blue-600" onPress={onSave}>
+							<Text className="text-white text-base font-bold">{editingItem ? "Update Credential" : "Save Item"}</Text>
 						</TouchableOpacity>
 					</ScrollView>
 				</View>
@@ -523,151 +542,3 @@ export function AddEditItemModal({
 		</Modal>
 	);
 }
-
-const styles = StyleSheet.create({
-	modalOverlay: {
-		flex: 1,
-		backgroundColor: "rgba(0, 0, 0, 0.65)",
-		justifyContent: "flex-end",
-	},
-	modalContent: {
-		borderTopLeftRadius: 18,
-		borderTopRightRadius: 18,
-		padding: 16,
-		maxHeight: "92%",
-	},
-	navHeader: {
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "space-between",
-		paddingVertical: 12,
-		borderBottomWidth: 0.5,
-		marginBottom: 12,
-	},
-	navTitle: {
-		fontSize: 17,
-		fontWeight: "600",
-		textAlign: "center",
-	},
-	categoryTabs: {
-		flexDirection: "row",
-		borderRadius: 10,
-		padding: 3,
-		marginBottom: 14,
-	},
-	categoryTab: {
-		flex: 1,
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "center",
-		gap: 4,
-		paddingVertical: 7,
-		borderRadius: 8,
-	},
-	categoryTabText: {
-		fontSize: 12,
-		fontWeight: "600",
-	},
-	fieldLabel: {
-		fontSize: 11,
-		fontWeight: "700",
-		textTransform: "uppercase",
-		marginBottom: 6,
-		letterSpacing: 0.5,
-	},
-	input: {
-		borderRadius: 10,
-		paddingHorizontal: 12,
-		paddingVertical: 11,
-		fontSize: 15,
-		marginBottom: 10,
-	},
-	inputWithIcon: {
-		flexDirection: "row",
-		alignItems: "center",
-		borderRadius: 10,
-		paddingRight: 8,
-	},
-	inputInside: {
-		flex: 1,
-		paddingHorizontal: 12,
-		paddingVertical: 11,
-		fontSize: 15,
-	},
-	inlineEyeBtn: {
-		padding: 6,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	genBtn: {
-		paddingHorizontal: 16,
-		justifyContent: "center",
-		alignItems: "center",
-		borderRadius: 10,
-		marginBottom: 10,
-	},
-	dropdownHeader: {
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "space-between",
-		paddingHorizontal: 12,
-		paddingVertical: 10,
-		borderRadius: 10,
-	},
-	dropdownList: {
-		borderRadius: 10,
-		borderWidth: 1,
-		marginTop: 6,
-		overflow: "hidden",
-	},
-	dropdownItem: {
-		flexDirection: "row",
-		alignItems: "center",
-		gap: 10,
-		paddingHorizontal: 12,
-		paddingVertical: 10,
-	},
-	folderDot: {
-		width: 8,
-		height: 8,
-		borderRadius: 4,
-	},
-	customFieldsHeader: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		marginBottom: 8,
-	},
-	addFieldBtn: {
-		flexDirection: "row",
-		alignItems: "center",
-		gap: 4,
-		paddingHorizontal: 8,
-		paddingVertical: 4,
-		borderRadius: 8,
-	},
-	customFieldRow: {
-		flexDirection: "row",
-		alignItems: "center",
-		gap: 8,
-		marginBottom: 8,
-	},
-	removeFieldBtn: {
-		padding: 8,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	primaryBtn: {
-		width: "100%",
-		paddingVertical: 13,
-		borderRadius: 12,
-		alignItems: "center",
-		marginTop: 10,
-		marginBottom: 20,
-	},
-	btnText: {
-		color: "#ffffff",
-		fontSize: 16,
-		fontWeight: "700",
-	},
-});

@@ -1,7 +1,6 @@
 import React from "react";
-import { View, Text, StyleSheet, Modal, TouchableOpacity } from "react-native";
-import { AlertCircle, CheckCircle2, Info, AlertTriangle, X } from "lucide-react-native";
-import { useThemeVars } from "../config/theme";
+import { View, Text, Modal, TouchableOpacity } from "react-native";
+import { AlertCircle, CheckCircle2, Info, AlertTriangle } from "lucide-react-native";
 
 export interface CustomAlertButton {
 	text: string;
@@ -24,7 +23,6 @@ interface CustomAlertModalProps {
 }
 
 export function CustomAlertModal({ config, theme = "dark" }: CustomAlertModalProps) {
-	const c = useThemeVars(theme);
 	const isLight = theme === "light";
 
 	if (!config.visible) return null;
@@ -41,7 +39,7 @@ export function CustomAlertModal({ config, theme = "dark" }: CustomAlertModalPro
 				return <AlertTriangle color="#f59e0b" size={32} />;
 			case "info":
 			default:
-				return <Info color={c.text} size={32} />;
+				return <Info color={isLight ? "#0f172a" : "#ffffff"} size={32} />;
 		}
 	};
 
@@ -51,43 +49,43 @@ export function CustomAlertModal({ config, theme = "dark" }: CustomAlertModalPro
 
 	return (
 		<Modal visible={config.visible} transparent animationType="fade" onRequestClose={config.onDismiss}>
-			<View style={styles.overlay}>
+			<View className="flex-1 bg-black/65 justify-center items-center px-6">
 				<View
-					style={[
-						styles.alertBox,
-						{
-							backgroundColor: isLight ? "#ffffff" : "#18181b",
-							borderColor: c.border,
-						},
-					]}
+					className={`w-full max-w-[340px] rounded-2xl border p-5.5 items-center shadow-2xl ${
+						isLight ? "bg-white border-slate-200" : "bg-zinc-900 border-zinc-800"
+					}`}
 				>
-					<View style={styles.iconContainer}>{getIcon()}</View>
-					<Text style={[styles.title, { color: c.text }]}>{config.title}</Text>
+					<View className="mb-3 justify-center items-center">{getIcon()}</View>
+					<Text className={`text-[18px] font-bold text-center mb-2 ${isLight ? "text-slate-900" : "text-white"}`}>
+						{config.title}
+					</Text>
 					{config.message ? (
-						<Text style={[styles.message, { color: c.textSecondary }]}>{config.message}</Text>
+						<Text className={`text-sm text-center leading-5 mb-5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+							{config.message}
+						</Text>
 					) : null}
 
-					<View style={styles.buttonRow}>
+					<View className="flex-row gap-2.5 w-full">
 						{buttons.map((btn, idx) => {
 							const isDestructive = btn.style === "destructive";
 							const isCancel = btn.style === "cancel";
 							const isPrimary = !isDestructive && !isCancel;
 
-							let btnBg = isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.08)";
-							let textColor = c.text;
+							let btnBgClass = isLight ? "bg-slate-100" : "bg-white/10";
+							let textClass = isLight ? "text-slate-900" : "text-white";
 
 							if (isDestructive) {
-								btnBg = "rgba(239, 68, 68, 0.15)";
-								textColor = "#ef4444";
+								btnBgClass = "bg-red-500/15";
+								textClass = "text-red-500";
 							} else if (isPrimary) {
-								btnBg = isLight ? "#000000" : "#ffffff";
-								textColor = isLight ? "#ffffff" : "#000000";
+								btnBgClass = isLight ? "bg-black" : "bg-white";
+								textClass = isLight ? "text-white" : "text-black";
 							}
 
 							return (
 								<TouchableOpacity
 									key={idx}
-									style={[styles.button, { backgroundColor: btnBg }]}
+									className={`flex-1 py-3 rounded-xl items-center justify-center ${btnBgClass}`}
 									onPress={() => {
 										if (btn.onPress) {
 											btn.onPress();
@@ -97,7 +95,7 @@ export function CustomAlertModal({ config, theme = "dark" }: CustomAlertModalPro
 									}}
 									activeOpacity={0.7}
 								>
-									<Text style={[styles.btnText, { color: textColor, fontWeight: isPrimary ? "700" : "600" }]}>
+									<Text className={`text-[15px] ${isPrimary ? "font-bold" : "font-semibold"} ${textClass}`}>
 										{btn.text}
 									</Text>
 								</TouchableOpacity>
@@ -109,58 +107,3 @@ export function CustomAlertModal({ config, theme = "dark" }: CustomAlertModalPro
 		</Modal>
 	);
 }
-
-const styles = StyleSheet.create({
-	overlay: {
-		flex: 1,
-		backgroundColor: "rgba(0, 0, 0, 0.65)",
-		justifyContent: "center",
-		alignItems: "center",
-		paddingHorizontal: 24,
-	},
-	alertBox: {
-		width: "100%",
-		maxWidth: 340,
-		borderRadius: 18,
-		borderWidth: 1,
-		padding: 22,
-		alignItems: "center",
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 10 },
-		shadowOpacity: 0.3,
-		shadowRadius: 20,
-		elevation: 10,
-	},
-	iconContainer: {
-		marginBottom: 12,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	title: {
-		fontSize: 18,
-		fontWeight: "700",
-		textAlign: "center",
-		marginBottom: 8,
-	},
-	message: {
-		fontSize: 14,
-		textAlign: "center",
-		lineHeight: 20,
-		marginBottom: 20,
-	},
-	buttonRow: {
-		flexDirection: "row",
-		gap: 10,
-		width: "100%",
-	},
-	button: {
-		flex: 1,
-		paddingVertical: 12,
-		borderRadius: 12,
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	btnText: {
-		fontSize: 15,
-	},
-});

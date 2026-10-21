@@ -153,11 +153,7 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
     return (
         <SafeAreaView
             className={`flex-1 min-h-screen ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
-            style={{
-                flex: 1,
-                backgroundColor: isLight ? "#f8fafc" : "#020617",
-                paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-            }}
+            style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
         >
             {/* Header */}
             <View
@@ -185,8 +181,7 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
 
             <ScrollView
                 className={`flex-1 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
-                style={{ backgroundColor: isLight ? "#f8fafc" : "#020617" }}
-                contentContainerStyle={{ padding: 24, alignItems: "center" }}
+                contentContainerClassName="p-6 items-center"
                 keyboardShouldPersistTaps="handled"
             >
                 {/* User Icon Circle */}

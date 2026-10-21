@@ -1,7 +1,6 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { Copy, Check, ExternalLink } from "lucide-react-native";
-import { useThemeVars } from "../config/theme";
 
 interface DetailRowProps {
     label: string;
@@ -26,20 +25,32 @@ export function DetailGroupedRow({
     onCopy,
     isCopied = false,
 }: DetailRowProps) {
-    const vars = useThemeVars(theme);
+    const isLight = theme === "light";
 
     if (!value && !rightAction) return null;
 
     return (
-        <View style={[styles.row, isDivider && { borderTopWidth: 0.5, borderTopColor: vars.border }]}>
-            <View style={{ flex: 1, marginRight: 8 }}>
-                <Text style={[styles.miniLabel, { color: vars.textSecondary }]}>{label}</Text>
+        <View
+            className={`flex-row items-center justify-between px-4 py-3.5 ${
+                isDivider ? isLight ? "border-t border-slate-200" : "border-t border-slate-800" : ""
+            }`}
+        >
+            <View className="flex-1 mr-2">
                 <Text
-                    style={[
-                        styles.valueText,
-                        { color: isUrl ? vars.blue : vars.text },
-                        isMasked && styles.passwordMasked,
-                    ]}
+                    className={`text-xs font-medium mb-1 ${
+                        isLight ? "text-slate-500" : "text-slate-400"
+                    }`}
+                >
+                    {label}
+                </Text>
+                <Text
+                    className={`text-[16px] font-normal ${
+                        isUrl
+                            ? "text-blue-500 underline"
+                            : isLight
+                            ? "text-slate-900"
+                            : "text-white"
+                    } ${isMasked ? "tracking-widest text-[18px]" : ""}`}
                     numberOfLines={isUrl ? 1 : undefined}
                     selectable={!isMasked}
                 >
@@ -52,11 +63,11 @@ export function DetailGroupedRow({
             ) : onCopy ? (
                 <TouchableOpacity onPress={onCopy} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
                     {isCopied ? (
-                        <Check color={vars.green} size={20} />
+                        <Check color="#22c55e" size={20} />
                     ) : isUrl ? (
-                        <ExternalLink color={vars.blue} size={20} />
+                        <ExternalLink color="#3b82f6" size={20} />
                     ) : (
-                        <Copy color={vars.blue} size={20} />
+                        <Copy color="#3b82f6" size={20} />
                     )}
                 </TouchableOpacity>
             ) : null}
@@ -73,38 +84,17 @@ export function DetailGroupedCard({
     theme?: "dark" | "light";
     marginTop?: number;
 }) {
-    const vars = useThemeVars(theme);
+    const isLight = theme === "light";
     return (
-        <View style={[styles.card, { backgroundColor: vars.bgTertiary, marginTop: marginTop || 0 }]}>
+        <View
+            className={`rounded-2xl overflow-hidden mb-3.5 border ${
+                isLight
+                    ? "bg-white border-slate-200"
+                    : "bg-slate-900 border-slate-800"
+            }`}
+            style={marginTop ? { marginTop } : undefined}
+        >
             {children}
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    card: {
-        borderRadius: 12,
-        overflow: "hidden",
-        marginBottom: 14,
-    },
-    row: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        paddingHorizontal: 16,
-        paddingVertical: 13,
-    },
-    miniLabel: {
-        fontSize: 12,
-        fontWeight: "500",
-        marginBottom: 3,
-    },
-    valueText: {
-        fontSize: 16,
-        fontWeight: "400",
-    },
-    passwordMasked: {
-        letterSpacing: 2,
-        fontSize: 18,
-    },
-});

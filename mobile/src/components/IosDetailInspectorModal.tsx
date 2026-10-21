@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Modal } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Modal } from "react-native";
 import { X, Star, Eye, EyeOff, Copy, Check, Trash2 } from "lucide-react-native";
 import { PasswordItem } from "../core/vault-storage";
 import { ItemAvatar } from "./ItemAvatar";
@@ -65,22 +65,23 @@ export function IosDetailInspectorModal({
 	if (!item) return null;
 
 	const vars = useThemeVars(theme);
+	const isLight = theme === "light";
 
 	return (
 		<Modal visible={visible} animationType="slide" transparent>
-			<View style={styles.modalOverlay}>
-				<View style={[styles.modalContent, { backgroundColor: vars.bgSecondary }]}>
+			<View className="flex-1 bg-black/65 justify-end">
+				<View className={`rounded-t-[18px] max-h-[92%] min-h-[75%] ${isLight ? "bg-slate-100" : "bg-slate-900"}`}>
 					{/* Header */}
-					<View style={[styles.navHeader, { borderBottomColor: vars.border }]}>
+					<View className={`flex-row items-center justify-between px-4 py-3.5 border-b ${isLight ? "border-slate-200" : "border-slate-800"}`}>
 						<TouchableOpacity
 							onPress={onClose}
-							style={styles.navDismissBtn}
+							className="w-[30px] h-[30px] rounded-full bg-slate-500/20 items-center justify-center"
 							hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
 						>
 							<X color={vars.textSecondary} size={20} />
 						</TouchableOpacity>
 
-						<Text style={[styles.navTitle, { color: vars.text }]} numberOfLines={1}>
+						<Text className={`text-[17px] font-semibold text-center flex-1 mx-3 ${isLight ? "text-slate-900" : "text-white"}`} numberOfLines={1}>
 							{item.title}
 						</Text>
 
@@ -88,31 +89,31 @@ export function IosDetailInspectorModal({
 							onPress={() => onOpenEdit(item)}
 							hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
 						>
-							<Text style={[styles.navEditText, { color: vars.text, fontWeight: "600" }]}>Edit</Text>
+							<Text className={`text-[17px] font-semibold ${isLight ? "text-blue-600" : "text-blue-400"}`}>Edit</Text>
 						</TouchableOpacity>
 					</View>
 
 					<ScrollView
-						style={{ flex: 1 }}
-						contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 40 }}
+						className="flex-1"
+						contentContainerClassName="px-4 pt-4 pb-10"
 						showsVerticalScrollIndicator={false}
 					>
 						{/* Hero Brand Icon */}
-						<View style={styles.heroContainer}>
+						<View className="items-center my-4">
 							<ItemAvatar
 								item={item}
 								size={72}
 								fallbackIcon={
-									<View style={[styles.heroFallback, getCategoryBadgeStyle(item.category)]}>
+									<View style={getCategoryBadgeStyle(item.category)} className="w-[72px] h-[72px] rounded-[18px] items-center justify-center">
 										{getCategoryIcon(item.category, 36)}
 									</View>
 								}
 							/>
-							<Text style={[styles.heroTitle, { color: vars.text }]}>{item.title}</Text>
+							<Text className={`text-[22px] font-bold mt-3 text-center ${isLight ? "text-slate-900" : "text-white"}`}>{item.title}</Text>
 							{item.isFavorite && (
-								<View style={styles.favoriteBadge}>
+								<View className="flex-row items-center gap-1 bg-yellow-500/15 px-2.5 py-0.5 rounded-full mt-1.5">
 									<Star color="#eab308" fill="#eab308" size={13} />
-									<Text style={styles.favoriteBadgeText}>Favorite</Text>
+									<Text className="text-yellow-500 text-xs font-semibold">Favorite</Text>
 								</View>
 							)}
 						</View>
@@ -156,7 +157,7 @@ export function IosDetailInspectorModal({
 										isDivider={!!item.username}
 										isMasked={!showPassword}
 										rightAction={
-											<View style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
+											<View className="flex-row items-center gap-3.5">
 												<TouchableOpacity onPress={onTogglePassword} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
 													{showPassword ? <EyeOff color={vars.textSecondary} size={20} /> : <Eye color={vars.textSecondary} size={20} />}
 												</TouchableOpacity>
@@ -256,22 +257,22 @@ export function IosDetailInspectorModal({
 
 						{/* Actions (Favorite & Delete) */}
 						<DetailGroupedCard theme={theme} marginTop={16}>
-							<TouchableOpacity style={styles.actionRow} onPress={() => onToggleFavorite(item)} activeOpacity={0.7}>
+							<TouchableOpacity className="flex-row items-center gap-3 px-4 py-3.5" onPress={() => onToggleFavorite(item)} activeOpacity={0.7}>
 								<Star
 									color={item.isFavorite ? "#eab308" : vars.blue}
 									fill={item.isFavorite ? "#eab308" : "transparent"}
 									size={18}
 								/>
-								<Text style={[styles.actionTextBlue, { color: vars.blue }]}>
+								<Text className={`text-base font-medium ${isLight ? "text-blue-600" : "text-blue-400"}`}>
 									{item.isFavorite ? "Remove from Favorites" : "Add to Favorites"}
 								</Text>
 							</TouchableOpacity>
 
-							<View style={[styles.divider, { borderTopColor: vars.border }]} />
+							<View className={`border-t ${isLight ? "border-slate-100" : "border-slate-800"}`} />
 
-							<TouchableOpacity style={styles.actionRow} onPress={() => onDeleteItem(item.id)} activeOpacity={0.7}>
+							<TouchableOpacity className="flex-row items-center gap-3 px-4 py-3.5" onPress={() => onDeleteItem(item.id)} activeOpacity={0.7}>
 								<Trash2 color={vars.red} size={18} />
-								<Text style={[styles.actionTextDestructive, { color: vars.red }]}>
+								<Text className="text-base font-medium text-red-500">
 									Delete {getCategoryItemLabel(item.category)}
 								</Text>
 							</TouchableOpacity>
@@ -282,94 +283,3 @@ export function IosDetailInspectorModal({
 		</Modal>
 	);
 }
-
-const styles = StyleSheet.create({
-	modalOverlay: {
-		flex: 1,
-		backgroundColor: "rgba(0, 0, 0, 0.65)",
-		justifyContent: "flex-end",
-	},
-	modalContent: {
-		borderTopLeftRadius: 18,
-		borderTopRightRadius: 18,
-		maxHeight: "92%",
-		minHeight: "75%",
-	},
-	navHeader: {
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "space-between",
-		paddingHorizontal: 16,
-		paddingVertical: 14,
-		borderBottomWidth: 0.5,
-	},
-	navDismissBtn: {
-		width: 30,
-		height: 30,
-		borderRadius: 15,
-		backgroundColor: "rgba(142, 142, 147, 0.22)",
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	navTitle: {
-		fontSize: 17,
-		fontWeight: "600",
-		textAlign: "center",
-		flex: 1,
-		marginHorizontal: 12,
-	},
-	navEditText: {
-		fontSize: 17,
-		fontWeight: "600",
-	},
-	heroContainer: {
-		alignItems: "center",
-		marginVertical: 16,
-	},
-	heroFallback: {
-		width: 72,
-		height: 72,
-		borderRadius: 18,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	heroTitle: {
-		fontSize: 22,
-		fontWeight: "700",
-		marginTop: 12,
-		textAlign: "center",
-	},
-	favoriteBadge: {
-		flexDirection: "row",
-		alignItems: "center",
-		gap: 4,
-		backgroundColor: "rgba(234, 179, 8, 0.15)",
-		paddingHorizontal: 10,
-		paddingVertical: 3,
-		borderRadius: 12,
-		marginTop: 6,
-	},
-	favoriteBadgeText: {
-		color: "#eab308",
-		fontSize: 12,
-		fontWeight: "600",
-	},
-	divider: {
-		borderTopWidth: 0.5,
-	},
-	actionRow: {
-		flexDirection: "row",
-		alignItems: "center",
-		gap: 12,
-		paddingHorizontal: 16,
-		paddingVertical: 14,
-	},
-	actionTextBlue: {
-		fontSize: 16,
-		fontWeight: "500",
-	},
-	actionTextDestructive: {
-		fontSize: 16,
-		fontWeight: "500",
-	},
-});
