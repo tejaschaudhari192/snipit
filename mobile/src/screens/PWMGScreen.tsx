@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { Text, View, SafeAreaView, BackHandler, Platform, StatusBar, Share, TouchableOpacity } from "react-native";
-import { Plus } from "lucide-react-native";
+import { Text, View, SafeAreaView, BackHandler, Platform, StatusBar, Share, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Plus, Shield, Lock } from "lucide-react-native";
 import * as Clipboard from "expo-clipboard";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
@@ -70,6 +70,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 	const [newFolderName, setNewFolderName] = useState("");
 	const [newFolderColor, setNewFolderColor] = useState("#0a84ff");
 	const [copiedField, setCopiedField] = useState<string | null>(null);
+	const [checkingVaultStage, setCheckingVaultStage] = useState<string>("Initializing secure vault...");
 
 	// Sensitives
 	const [showDetailPassword, setShowDetailPassword] = useState(false);
@@ -190,15 +191,25 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 	}, []);
 
 	const checkVaultStatus = async () => {
-		const u = await offlineVault.getUser();
-		setUser(u);
-		if (u?.token) await offlineVault.checkCloudVault();
-		const exists = await offlineVault.hasVault();
-		const rec = await offlineVault.hasRecoveryRecord();
-		setHasVault(exists);
-		setHasRecovery(rec);
-		setIsUnlocked(offlineVault.isUnlocked());
-		if (offlineVault.isUnlocked()) loadData();
+		try {
+			setCheckingVaultStage("Reading session credentials...");
+			const u = await offlineVault.getUser();
+			setUser(u);
+			if (u?.token) {
+				setCheckingVaultStage("Verifying cloud encryption keys...");
+				await offlineVault.checkCloudVault();
+			}
+			setCheckingVaultStage("Inspecting encrypted vault database...");
+			const exists = await offlineVault.hasVault();
+			const rec = await offlineVault.hasRecoveryRecord();
+			setHasVault(exists);
+			setHasRecovery(rec);
+			setIsUnlocked(offlineVault.isUnlocked());
+			if (offlineVault.isUnlocked()) loadData();
+		} catch (e) {
+			console.log("Error checking vault status:", e);
+			setHasVault(false);
+		}
 	};
 
 	const handleUnlock = async () => {
@@ -474,8 +485,40 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 	// Render Auth/Onboarding Screens
 	if (hasVault === null) {
 		return (
-			<SafeAreaView className={`flex-1 justify-center items-center p-5 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}>
-				<Text className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>Checking vault...</Text>
+			<SafeAreaView className={`flex-1 justify-center items-center px-6 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}>
+				<View className="items-center max-w-[300px]">
+					{/* Glowing Shield Visual */}
+					<View className={`w-20 h-20 rounded-3xl justify-center items-center mb-6 shadow-xl ${
+						isLight ? "bg-blue-50 border border-blue-100" : "bg-blue-950/40 border border-blue-800/50"
+					}`}>
+						<Shield color="#0a84ff" size={40} strokeWidth={2.2} />
+					</View>
+
+					{/* Title */}
+					<Text className={`text-xl font-bold tracking-tight mb-2 text-center ${isLight ? "text-slate-900" : "text-white"}`}>
+						Snipit Secure Vault
+					</Text>
+
+					{/* Subtitle / Description */}
+					<Text className={`text-sm text-center leading-5 mb-8 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+						Zero-knowledge encrypted credential store
+					</Text>
+
+					{/* Spinner & Active Stage Pill */}
+					<View className={`flex-row items-center gap-3 px-4 py-2.5 rounded-full border ${
+						isLight ? "bg-white border-slate-200 shadow-sm" : "bg-slate-900 border-slate-800"
+					}`}>
+						<ActivityIndicator size="small" color="#0a84ff" />
+						<Text className={`text-xs font-semibold ${isLight ? "text-slate-700" : "text-slate-300"}`}>
+							{checkingVaultStage}
+						</Text>
+					</View>
+
+					{/* Security hint footer */}
+					<Text className={`text-[11px] font-medium tracking-wide mt-10 uppercase ${isLight ? "text-slate-400" : "text-slate-500"}`}>
+						XSalsa20-Poly1305 • End-to-End Encrypted
+					</Text>
+				</View>
 			</SafeAreaView>
 		);
 	}
