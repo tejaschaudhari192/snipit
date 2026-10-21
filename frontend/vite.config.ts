@@ -18,7 +18,6 @@ export default defineConfig({
 					tiptap: [
 						"@tiptap/core",
 						"@tiptap/react",
-						"@tiptap/starter-kit",
 						"@tiptap/extension-table",
 						"@tiptap/extension-table-row",
 						"@tiptap/extension-table-header",
