@@ -11,7 +11,7 @@ function parseSemver(v: string) {
   };
 }
 
-function compareSemver(v1: string, v2: string): number {
+export function compareSemver(v1: string, v2: string): number {
   const p1 = parseSemver(v1);
   const p2 = parseSemver(v2);
 
@@ -45,11 +45,18 @@ export async function checkAppUpdate() {
     Boolean(serverInfo.minSupportedVersion) &&
     compareSemver(currentVersion, serverInfo.minSupportedVersion) < 0;
 
+  // Filter changelog entries to only show versions strictly newer than current app version
+  const newerChangelogs = Array.isArray(serverInfo.changelog)
+    ? serverInfo.changelog.filter((entry: any) =>
+        entry && entry.version ? compareSemver(entry.version, currentVersion) > 0 : false
+      )
+    : [];
+
   return {
     isAvailable: isNewer || force,
     forceUpdate: force,
     latestVersion: serverInfo.version,
-    changelog: serverInfo.changelog,
+    changelog: newerChangelogs,
     downloadUrl: serverInfo.downloadUrl,
   };
 }

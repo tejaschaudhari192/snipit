@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, ScrollView, TouchableOpacity, Modal, Linking } from "react-native";
 import { Download, CheckCircle2 } from "lucide-react-native";
 import { CONFIG } from "../config/configuration";
+import { compareSemver } from "../core/update-checker";
 
 interface UpdateModalProps {
     visible: boolean;
@@ -14,6 +15,13 @@ export function UpdateInfoModal({ visible, updateResult, theme = "dark", onClose
     const isLight = theme === "light";
 
     if (!updateResult) return null;
+
+    // Filter to show only changelog entries strictly newer than current installed version
+    const newerChangelogs = Array.isArray(updateResult.changelog)
+        ? updateResult.changelog.filter((entry: any) =>
+            entry && entry.version ? compareSemver(entry.version, CONFIG.APP_VERSION) > 0 : false
+        )
+        : [];
 
     return (
         <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
@@ -44,12 +52,12 @@ export function UpdateInfoModal({ visible, updateResult, theme = "dark", onClose
                         </Text>
                     </View>
 
-                    {updateResult.isAvailable && updateResult.changelog && updateResult.changelog.length > 0 && (
+                    {updateResult.isAvailable && newerChangelogs.length > 0 && (
                         <ScrollView className="max-h-[200px] mb-4">
                             <Text className={`text-[11px] font-bold tracking-wider mb-2 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
                                 WHAT'S NEW
                             </Text>
-                            {updateResult.changelog.map((entry: any, idx: number) => (
+                            {newerChangelogs.map((entry: any, idx: number) => (
                                 <View key={idx} className="mb-3">
                                     <Text className={`text-sm font-semibold mb-1 ${isLight ? "text-slate-900" : "text-white"}`}>
                                         v{entry.version} {entry.title ? `- ${entry.title}` : ""}
