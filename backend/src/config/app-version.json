@@ -1,11 +1,23 @@
 {
-	"version": "1.0.8",
-	"buildNumber": 9,
+	"version": "1.0.9",
+	"buildNumber": 10,
 	"minSupportedVersion": "1.0.0",
 	"forceUpdate": false,
 	"downloadUrl": "https://cpaste.vercel.app/mobile",
-	"releaseDate": "2026-10-20",
+	"releaseDate": "2026-10-21",
 	"changelog": [
+		{
+			"version": "1.0.9",
+			"date": "2026-10-21",
+			"title": "⚡ 4x Faster Vault Decryption, NativeWind Migration & Startup UX",
+			"changes": [
+				"High-speed PBKDF2-HMAC-SHA256 key derivation via fast-sha256 (>4x faster vault unlock)",
+				"Configured Password Manager as the default initial startup tool",
+				"Complete codebase refactoring to pure NativeWind utility classes (eliminated StyleSheet.create)",
+				"Revamped vault checking screen with animated shield badge and real-time stage progress",
+				"Direct GitHub release APK publishing and CI workflow optimization"
+			]
+		},
 		{
 			"version": "1.0.8",
 			"date": "2026-10-20",
