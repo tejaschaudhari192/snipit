@@ -26,8 +26,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -36,7 +34,7 @@ jobs:
 
       - name: Install mobile dependencies
         working-directory: mobile
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - name: Expo Prebuild (Generate Android native project)
         working-directory: mobile

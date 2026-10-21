@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import {
 	User,
@@ -7,6 +7,7 @@ import {
 	MoreHorizontal,
 	Check,
 	Trash2,
+	Download,
 } from "lucide-react";
 import {
 	SidebarMenu,
@@ -38,9 +39,20 @@ import {
 } from "@/components/ui/alert-dialog";
 import api from "@/lib/api";
 import { removeKeyRecord, removeRecoveryRecord } from "../../utils/indexed-db";
-import { resetVault, selectUserId } from "../../store/password-slice";
+import {
+	resetVault,
+	selectUserId,
+	selectVault,
+	selectFolders,
+} from "../../store/password-slice";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { toast } from "@/components/ui/toast";
+
+const ExportModal = lazy(() =>
+	import("../export-modal").then((m) => ({
+		default: m.ExportModal,
+	})),
+);
 
 interface SettingsMenuProps {
 	user: { username: string } | null;
@@ -58,8 +70,11 @@ export function SettingsMenu({
 	const { t } = useTranslation();
 	const dispatch = useAppDispatch();
 	const userId = useAppSelector(selectUserId);
+	const vault = useAppSelector(selectVault);
+	const folders = useAppSelector(selectFolders);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
+	const [isExportOpen, setIsExportOpen] = useState(false);
 
 	const handleDeleteVault = async () => {
 		try {
@@ -229,10 +244,37 @@ export function SettingsMenu({
 								)}
 							</DropdownMenuItem>
 
+							<DropdownMenuSeparator className="my-1" />
+
+							<DropdownMenuItem
+								className="gap-3 cursor-pointer rounded-md p-2 transition-colors focus:bg-accent"
+								onClick={() => setIsExportOpen(true)}
+							>
+								<ItemMedia
+									variant="icon"
+									className="bg-muted p-2 rounded-md"
+								>
+									<Download className="text-muted-foreground" />
+								</ItemMedia>
+								<ItemContent>
+									<ItemTitle>
+										{t(
+											"tools.password_manager.export_action",
+										)}
+									</ItemTitle>
+									<ItemDescription className="text-[10px] leading-tight">
+										{t(
+											"tools.password_manager.export.menu_desc",
+										)}
+									</ItemDescription>
+								</ItemContent>
+							</DropdownMenuItem>
+
 							<div className="mt-2 pt-2 border-t border-border/50">
 								<div className="px-2 py-1 mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
 									{t("tools.password_manager.danger_zone")}
 								</div>
+
 								<DropdownMenuItem
 									className="gap-3 cursor-pointer rounded-md p-2 text-destructive focus:bg-destructive/10 focus:text-destructive transition-colors"
 									onClick={() => setIsDeleteDialogOpen(true)}
@@ -300,6 +342,17 @@ export function SettingsMenu({
 					</AlertDialogFooter>
 				</AlertDialogContent>
 			</AlertDialog>
+
+			{isExportOpen && (
+				<Suspense fallback={null}>
+					<ExportModal
+						isOpen={isExportOpen}
+						onClose={() => setIsExportOpen(false)}
+						items={vault?.items || []}
+						folders={folders || []}
+					/>
+				</Suspense>
+			)}
 		</>
 	);
 }

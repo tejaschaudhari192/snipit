@@ -319,7 +319,9 @@
 				"retry": "Wiederholen",
 				"folder": "Ordner",
 				"importing": "Importieren...",
-				"stop": "Stoppen"
+				"stop": "Stoppen",
+				"snipit_json": "Snipit Vault (JSON)",
+				"snipit_export_desc": "Bitte wählen Sie Ihre Snipit Vault JSON-Exportdatei aus"
 			},
 			"username": "Benutzername",
 			"password": "Passwort",
@@ -433,6 +435,26 @@
 				"default_holder": "IHR NAME",
 				"disclaimer": "Im Snipit Zero-Knowledge-Tresor verschlüsselt. Behandeln Sie die Kartendaten vertraulich.",
 				"click_to_flip": "Klicken zum Umdrehen"
+			},
+			"export_action": "JSON exportieren",
+			"export_btn": "Exportieren",
+			"export": {
+				"title": "Tresordaten exportieren",
+				"desc": "Speichern Sie Ihre Anmeldedaten als unverschlüsselte JSON-Datei für Backups oder zur Übertragung in andere Tools.",
+				"menu_desc": "Unverschlüsseltes Backup aller Elemente herunterladen",
+				"scope": "Exportumfang",
+				"selected_items": "Nur Ausgewählte",
+				"entire_vault": "Gesamter Tresor",
+				"include_folders": "Ordnerkategorien und Zuordnungen einbeziehen",
+				"security_warning_title": "Sicherheitswarnung: Klartext-JSON",
+				"security_warning_desc": "Exportierte JSON-Dateien enthalten entschlüsselte Passwörter im Klartext. Bewahren Sie die Datei sicher auf oder löschen Sie sie nach Gebrauch.",
+				"acknowledge": "Ich verstehe, dass meine Passwörter als Klartext-JSON gespeichert werden.",
+				"download_btn": "JSON exportieren",
+				"no_items": "Keine Elemente zum Exportieren vorhanden.",
+				"confirm_warning": "Bitte bestätigen Sie, dass Sie das Sicherheitsrisiko verstehen.",
+				"success_title": "Export heruntergeladen",
+				"success_desc": "{{count}} Element{{s}} erfolgreich als JSON exportiert.",
+				"failed_title": "Export fehlgeschlagen"
 			}
 		},
 		"password_generator": {

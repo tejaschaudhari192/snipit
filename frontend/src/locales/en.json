@@ -349,10 +349,32 @@
 				"save_failed": "Save Failed",
 				"saving": "Saving",
 				"accept_next": "Accept Next",
-				"more_items": "More Items",
 				"one_by_one": "One By One",
-				"one_by_one_desc": "One By One Desc"
+				"one_by_one_desc": "One By One Desc",
+				"snipit_json": "Snipit Vault (JSON)",
+				"snipit_export_desc": "Please select your Snipit Vault JSON export file"
 			},
+			"export_action": "Export JSON",
+			"export_btn": "Export",
+			"export": {
+				"title": "Export Vault Data",
+				"desc": "Save your credentials as an unencrypted JSON file for backup or transferring to other tools.",
+				"menu_desc": "Download unencrypted backup of all items",
+				"scope": "Export Scope",
+				"selected_items": "Selected Only",
+				"entire_vault": "Entire Vault",
+				"include_folders": "Include folder categories and associations",
+				"security_warning_title": "Security Warning: Plaintext JSON",
+				"security_warning_desc": "Exported JSON files contain decrypted passwords and credentials in readable text. Store the downloaded file in a secure location or delete it after use.",
+				"acknowledge": "I understand my passwords will be saved in plaintext JSON.",
+				"download_btn": "Export JSON",
+				"no_items": "No items available to export.",
+				"confirm_warning": "Please confirm that you understand the security risk.",
+				"success_title": "Export Downloaded",
+				"success_desc": "Successfully exported {{count}} item{{s}} as JSON.",
+				"failed_title": "Export failed"
+			},
+
 			"fields": {
 				"username": "Username",
 				"password": "Password",

@@ -14,6 +14,7 @@ import {
 	Menu,
 	Share2,
 	Upload,
+	Download,
 	Search,
 	GitMerge,
 	MoreVertical,
@@ -32,6 +33,7 @@ interface PasswordListHeaderProps {
 	onMergeModalOpen: () => void;
 	onShareModalOpen: () => void;
 	onImport: () => void;
+	onExport: () => void;
 	onFindDuplicatesOpen: () => void;
 	onFieldCleanerOpen: () => void;
 	onNewItem: () => void;
@@ -47,6 +49,7 @@ export function PasswordListHeader({
 	onMergeModalOpen,
 	onShareModalOpen,
 	onImport,
+	onExport,
 	onFindDuplicatesOpen,
 	onFieldCleanerOpen,
 	onNewItem,
@@ -131,6 +134,13 @@ export function PasswordListHeader({
 									{t("tools.password_manager.import_action")}
 								</span>
 							</DropdownMenuItem>
+							<DropdownMenuItem onClick={onExport}>
+								<Download className="w-4 h-4 mr-2" />
+								<span>
+									{t("tools.password_manager.export_action")}
+								</span>
+							</DropdownMenuItem>
+
 							<DropdownMenuItem onClick={onFindDuplicatesOpen}>
 								<Copy className="w-4 h-4 mr-2" />
 								<span>
@@ -147,6 +157,7 @@ export function PasswordListHeader({
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
+
 					<Button
 						className="h-9 gap-2"
 						size="sm"

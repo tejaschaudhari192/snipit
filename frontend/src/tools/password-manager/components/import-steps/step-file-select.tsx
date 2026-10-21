@@ -11,6 +11,7 @@ import {
 import type { ParsedImportItem } from "../../utils/importers/types";
 import { parseChromeCSV } from "../../utils/importers/chrome-csv-parser";
 import { parseEnpassJSON } from "../../utils/importers/enpass-json-parser";
+import { parseSnipitJSON } from "../../utils/importers/snipit-json-parser";
 import { normalizeImportItem } from "../../utils/importers/normalizer";
 import { useAppSelector } from "../../store";
 import { UploadCloud, FileType } from "lucide-react";
@@ -23,7 +24,9 @@ interface Props {
 
 export default function StepFileSelect({ onNext, onCancel }: Props) {
 	const { t } = useTranslation();
-	const [sourceApp, setSourceApp] = useState<"chrome" | "enpass">("chrome");
+	const [sourceApp, setSourceApp] = useState<"chrome" | "enpass" | "snipit">(
+		"snipit",
+	);
 	const [isDragging, setIsDragging] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
@@ -40,7 +43,14 @@ export default function StepFileSelect({ onNext, onCancel }: Props) {
 			const text = await file.text();
 			let parsed: ParsedImportItem[] = [];
 
-			if (sourceApp === "chrome") {
+			if (sourceApp === "snipit") {
+				if (!file.name.endsWith(".json")) {
+					throw new Error(
+						t("tools.password_manager.import.snipit_export_desc"),
+					);
+				}
+				parsed = parseSnipitJSON(text);
+			} else if (sourceApp === "chrome") {
 				if (!file.name.endsWith(".csv")) {
 					throw new Error(
 						t("tools.password_manager.import.chrome_export_desc"),
@@ -81,22 +91,29 @@ export default function StepFileSelect({ onNext, onCancel }: Props) {
 					</Label>
 					<Select
 						value={sourceApp}
-						onValueChange={(val: "chrome" | "enpass" | null) =>
-							setSourceApp(val!)
-						}
+						onValueChange={(
+							val: "chrome" | "enpass" | "snipit" | null,
+						) => setSourceApp(val || "snipit")}
 					>
 						<SelectTrigger>
 							<SelectValue>
-								{sourceApp === "chrome"
+								{sourceApp === "snipit"
 									? t(
-											"tools.password_manager.import.chrome_csv",
+											"tools.password_manager.import.snipit_json",
 										)
-									: t(
-											"tools.password_manager.import.enpass_json",
-										)}
+									: sourceApp === "chrome"
+										? t(
+												"tools.password_manager.import.chrome_csv",
+											)
+										: t(
+												"tools.password_manager.import.enpass_json",
+											)}
 							</SelectValue>
 						</SelectTrigger>
 						<SelectContent>
+							<SelectItem value="snipit">
+								{t("tools.password_manager.import.snipit_json")}
+							</SelectItem>
 							<SelectItem value="chrome">
 								{t("tools.password_manager.import.chrome_csv")}
 							</SelectItem>
@@ -106,6 +123,7 @@ export default function StepFileSelect({ onNext, onCancel }: Props) {
 						</SelectContent>
 					</Select>
 				</div>
+
 				<div className="flex-1 space-y-2">
 					<Label className="text-sm font-medium">
 						{t("tools.password_manager.import.file_type")}

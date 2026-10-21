@@ -2,7 +2,7 @@ import type { PasswordItem } from "../../types";
 
 export interface ParsedImportItem {
 	id: string; // Temporary ID for the UI list
-	sourceApp: "chrome" | "enpass";
+	sourceApp: "chrome" | "enpass" | "snipit";
 
 	// Original fields extracted from the file
 	sourceFields: {

@@ -19,6 +19,7 @@ import {
 	Trash2,
 	FolderInput,
 	Share2,
+	Download,
 	FolderMinus,
 	FolderIcon,
 } from "lucide-react";
@@ -29,6 +30,12 @@ import type { PasswordItem, Folder } from "@/tools/password-manager/types";
 import BulkShareModal from "./bulk-share-modal";
 import { Spinner } from "@/components/ui/spinner";
 import { deleteItem, persistItem } from "../store/thunks";
+
+const ExportModal = lazy(() =>
+	import("./export-modal").then((m) => ({
+		default: m.ExportModal,
+	})),
+);
 
 const DeleteConfirmDialog = lazy(() =>
 	import("@/components/common/delete-confirm-dialog").then((m) => ({
@@ -54,6 +61,7 @@ export default function BulkActionBar({
 	const [isLoading, setIsLoading] = useState(false);
 	const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+	const [isExportOpen, setIsExportOpen] = useState(false);
 
 	const count = selectedItems.length;
 	const isVisible = count > 0;
@@ -266,6 +274,18 @@ export default function BulkActionBar({
 						</Tooltip>
 					</TooltipProvider>
 
+					{/* Export */}
+					<Button
+						variant="ghost"
+						size="sm"
+						className="h-8 gap-1.5 text-sm"
+						disabled={isLoading}
+						onClick={() => setIsExportOpen(true)}
+					>
+						<Download className="w-4 h-4" />
+						{t("tools.password_manager.export_btn")}
+					</Button>
+
 					<div className="w-px h-5 bg-border mx-1" />
 
 					{/* Delete */}
@@ -285,6 +305,19 @@ export default function BulkActionBar({
 					</Button>
 				</div>
 			</div>
+
+			{/* Bulk Export Modal */}
+			{isExportOpen && (
+				<Suspense fallback={null}>
+					<ExportModal
+						isOpen={isExportOpen}
+						onClose={() => setIsExportOpen(false)}
+						items={selectedItems}
+						folders={folders}
+						preselectedItems={selectedItems}
+					/>
+				</Suspense>
+			)}
 
 			{/* Bulk Delete Confirm */}
 			<Suspense fallback={null}>

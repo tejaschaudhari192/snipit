@@ -319,7 +319,9 @@
 				"retry": "リトライ",
 				"folder": "フォルダ",
 				"importing": "インポート中...",
-				"stop": "停止"
+				"stop": "停止",
+				"snipit_json": "Snipit Vault (JSON)",
+				"snipit_export_desc": "Snipit VaultのJSONエクスポートファイルを選択してください"
 			},
 			"username": "ユーザー名",
 			"password": "パスワード",
@@ -433,6 +435,26 @@
 				"default_holder": "お名前",
 				"disclaimer": "Snipit ゼロナレッジ保管庫で暗号化されています。カード情報は厳重に管理してください。",
 				"click_to_flip": "クリックしてカードを裏返す"
+			},
+			"export_action": "JSONをエクスポート",
+			"export_btn": "エクスポート",
+			"export": {
+				"title": "保管庫データをエクスポート",
+				"desc": "バックアップや他のツールへの移行のために、認証情報を暗号化されていないJSONファイルとして保存します。",
+				"menu_desc": "全アイテムの暗号化されていないバックアップをダウンロード",
+				"scope": "エクスポート範囲",
+				"selected_items": "選択項目のみ",
+				"entire_vault": "保管庫全体",
+				"include_folders": "フォルダーの分類と関連付けを含める",
+				"security_warning_title": "セキュリティ警告：平文のJSON",
+				"security_warning_desc": "エクスポートされたJSONファイルには復号されたパスワードが平文で含まれます。安全な場所に保存するか、使用後に削除してください。",
+				"acknowledge": "パスワードが平文のJSON形式で保存されることを理解しました。",
+				"download_btn": "JSONをエクスポート",
+				"no_items": "エクスポート可能なアイテムがありません。",
+				"confirm_warning": "セキュリティリスクを理解したことを確認してください。",
+				"success_title": "エクスポート完了",
+				"success_desc": "{{count}}件のアイテムをJSONとしてエクスポートしました。",
+				"failed_title": "エクスポート失敗"
 			}
 		},
 		"password_generator": {

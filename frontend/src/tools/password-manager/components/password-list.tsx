@@ -34,6 +34,11 @@ const FieldCleanerWizard = lazy(() =>
 		default: m.FieldCleanerWizard,
 	})),
 );
+const ExportModal = lazy(() =>
+	import("./export-modal").then((m) => ({
+		default: m.ExportModal,
+	})),
+);
 const DeleteConfirmDialog = lazy(() =>
 	import("@/components/common/delete-confirm-dialog").then((m) => ({
 		default: m.DeleteConfirmDialog,
@@ -80,6 +85,7 @@ export default function PasswordList({
 	const [isMergeModalOpen, setIsMergeModalOpen] = useState(false);
 	const [isFindDuplicatesOpen, setIsFindDuplicatesOpen] = useState(false);
 	const [isFieldCleanerOpen, setIsFieldCleanerOpen] = useState(false);
+	const [isExportOpen, setIsExportOpen] = useState(false);
 	const [rowSelection, setRowSelection] = useState<Record<string, boolean>>(
 		{},
 	);
@@ -175,6 +181,7 @@ export default function PasswordList({
 				onMergeModalOpen={() => setIsMergeModalOpen(true)}
 				onShareModalOpen={() => setIsShareModalOpen(true)}
 				onImport={onImport}
+				onExport={() => setIsExportOpen(true)}
 				onFindDuplicatesOpen={() => setIsFindDuplicatesOpen(true)}
 				onFieldCleanerOpen={() => setIsFieldCleanerOpen(true)}
 				onNewItem={onNewItem}
@@ -252,6 +259,14 @@ export default function PasswordList({
 						isOpen={isFieldCleanerOpen}
 						onClose={() => setIsFieldCleanerOpen(false)}
 						items={vault?.items || []}
+					/>
+				)}
+				{isExportOpen && (
+					<ExportModal
+						isOpen={isExportOpen}
+						onClose={() => setIsExportOpen(false)}
+						items={vault?.items || []}
+						folders={folders}
 					/>
 				)}
 			</Suspense>
