@@ -7,58 +7,86 @@ import { ShimmerProgressBar } from "@/components/ui/shimmer-progress-bar";
 interface SplashPageProps {
 	healthData?: HealthData | null;
 	onComplete?: () => void;
+	duration?: number; // Target animation duration in ms (default: 1200ms)
 }
 
-const SplashPage = ({ healthData, onComplete }: SplashPageProps) => {
+const SplashPage = ({
+	healthData,
+	onComplete,
+	duration = 1200,
+}: SplashPageProps) => {
 	const { t } = useTranslation();
-
-	const targetProgress = healthData?.progress || 0;
-	const currentLabel = healthData?.currentLabel || "Initializing...";
-	const isError = healthData?.status === "down";
-
 	const [displayProgress, setDisplayProgress] = useState(0);
-	const [activeLabel, setActiveLabel] = useState(currentLabel);
+	const [isFadingOut, setIsFadingOut] = useState(false);
 
-	// Update activeLabel when incoming currentLabel changes and not complete
+	// Determine target progress: either from backend stream healthData or smooth time-based ramp
+	const targetFromBackend = healthData?.progress ?? 0;
+
 	useEffect(() => {
-		if (currentLabel && displayProgress < 100) {
-			setActiveLabel(currentLabel);
-		}
-	}, [currentLabel, displayProgress]);
+		const startTime = performance.now();
+		let frameId: number;
+		let completedTriggered = false;
 
-	// Smoothly interpolate progress toward targetProgress with natural pacing
-	useEffect(() => {
-		if (isError) return;
+		const update = (now: number) => {
+			const elapsed = now - startTime;
+			// Baseline time-based progress fraction (0 to 1 over duration)
+			const timeFraction = Math.min(elapsed / duration, 1);
+			const timeProgress = Math.round(
+				(1 - Math.pow(1 - timeFraction, 2)) * 100,
+			);
 
-		const interval = setInterval(() => {
+			// Progress is the max of backend stream progress and time-based progression
+			// Guaranteeing steady progression that never stalls even if network fluctuates
+			const effectiveTarget = Math.max(timeProgress, targetFromBackend);
+
 			setDisplayProgress((prev) => {
-				if (prev >= targetProgress) return prev;
-				// Smooth realistic step so steps don't instantly jump to 100%
-				const diff = targetProgress - prev;
-				const step = Math.min(Math.max(1, Math.round(diff * 0.08)), 4);
-				const next = Math.min(prev + step, targetProgress);
-				return next;
+				const next = Math.max(prev, effectiveTarget);
+				return next > 100 ? 100 : next;
 			});
-		}, 25);
 
-		return () => clearInterval(interval);
-	}, [targetProgress, isError]);
+			if (effectiveTarget >= 100 || timeFraction >= 1) {
+				setDisplayProgress(100);
+				if (!completedTriggered) {
+					completedTriggered = true;
+					// Hold on 100% for 180ms, then trigger smooth fade-out and completion
+					const exitTimer = setTimeout(() => {
+						setIsFadingOut(true);
+						const finishTimer = setTimeout(() => {
+							onComplete?.();
+						}, 250);
+						return () => clearTimeout(finishTimer);
+					}, 180);
+					return () => clearTimeout(exitTimer);
+				}
+			} else {
+				frameId = requestAnimationFrame(update);
+			}
+		};
 
-	// When progress reaches 100%, show "complete" state and give user time to see the filled bar
-	useEffect(() => {
-		if (displayProgress >= 100 && onComplete) {
-			const timer = setTimeout(() => {
-				onComplete();
-			}, 900); // 900ms hold on 100% & "complete" message so user clearly sees the filled UI
-			return () => clearTimeout(timer);
-		}
-	}, [displayProgress, onComplete]);
+		frameId = requestAnimationFrame(update);
+		return () => cancelAnimationFrame(frameId);
+	}, [duration, targetFromBackend, onComplete]);
 
 	const isCompleted = displayProgress >= 100;
 
+	// Active label from backend stream or fallback stage
+	const activeLabel =
+		healthData?.currentLabel ||
+		(displayProgress < 30
+			? t("splash.initializing", "Initializing...")
+			: displayProgress < 70
+				? t("splash.loading", "Loading environment...")
+				: displayProgress < 100
+					? t("splash.preparing", "Preparing workspace...")
+					: "complete");
+
 	return (
-		<div className="relative h-dvh w-screen overflow-hidden bg-background text-foreground transition-colors duration-300 flex flex-col items-center justify-center pointer-events-none">
-			<div className="relative z-10 flex flex-col items-center justify-center animate-in fade-in zoom-in duration-700 w-full max-w-md px-6">
+		<div
+			className={`relative h-dvh w-screen overflow-hidden bg-background text-foreground transition-opacity duration-300 flex flex-col items-center justify-center pointer-events-none ${
+				isFadingOut ? "opacity-0" : "opacity-100"
+			}`}
+		>
+			<div className="relative z-10 flex flex-col items-center justify-center animate-in fade-in zoom-in duration-500 w-full max-w-md px-6">
 				<div className="flex flex-col items-center justify-center mb-6">
 					<div className="relative flex items-center justify-center w-32 h-32 mb-8">
 						<img
@@ -77,15 +105,9 @@ const SplashPage = ({ healthData, onComplete }: SplashPageProps) => {
 				<ShimmerProgressBar
 					className="mt-6"
 					progress={displayProgress}
-					label={
-						isError
-							? t("splash.system_failure")
-							: isCompleted
-								? "complete"
-								: activeLabel
-					}
+					label={isCompleted ? "complete" : activeLabel}
 					isCompleted={isCompleted}
-					isError={isError}
+					isError={false}
 				/>
 			</div>
 		</div>

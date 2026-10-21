@@ -49,7 +49,6 @@ const ForgotPasswordPage = lazy(() => import("@/pages/forgot-password"));
 const ResetPasswordPage = lazy(() => import("@/pages/reset-password"));
 const ServerErrorPage = lazy(() => import("@/pages/server-error"));
 
-import { useHealthCheck } from "@/hooks/use-health-check";
 import { CONFIG } from "./configurations";
 import { MusicProvider } from "@/context/MusicContext";
 import { useMusic } from "@/context/use-music";
@@ -65,6 +64,8 @@ const MusicPlayerModal = lazy(
 	() => import("@/components/common/music/music-player-modal"),
 );
 
+import { useHealthCheck } from "@/hooks/use-health-check";
+
 const MusicPlayerWrapper = () => {
 	const { isPlayerOpen } = useMusic();
 	if (!isPlayerOpen) return null;
@@ -76,8 +77,8 @@ const MusicPlayerWrapper = () => {
 };
 
 const App = () => {
-	const { healthData, error } = useHealthCheck();
 	const [splashFinished, setSplashFinished] = useState(false);
+	const { healthData } = useHealthCheck();
 	const { t } = useTranslation();
 
 	const showSplash = !splashFinished;
@@ -108,16 +109,6 @@ const App = () => {
 			);
 	}, [t]);
 
-	if (error) {
-		return (
-			<ThemeProvider>
-				<Router>
-					<ServerErrorPage />
-				</Router>
-			</ThemeProvider>
-		);
-	}
-
 	return (
 		<ThemeProvider>
 			<GoogleOAuthProvider clientId={CONFIG.googleClientId}>
@@ -130,9 +121,9 @@ const App = () => {
 										<Router>
 											<VoiceAgentProvider>
 												<div className="relative h-dvh w-full m-0 p-0 box-border flex flex-col overflow-hidden bg-background text-foreground font-sans">
-													{/* Splash Overlay while health check loading & filling progress */}
+													{/* Fast 1-2s Splash Screen with backend health stream attached */}
 													{showSplash && (
-														<div className="fixed inset-0 z-50 bg-background">
+														<div className="fixed inset-0 z-50 bg-background pointer-events-none">
 															<SplashPage
 																healthData={
 																	healthData

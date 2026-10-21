@@ -35,7 +35,7 @@ router.get("/stream", async (req, res) => {
 
 	for (const update of updates) {
 		sendUpdate(update);
-		// Small delay if streaming from cache for better UX
+		// Small delay if streaming from cache for smooth progression
 		if (isCached) {
 			await new Promise((resolve) => setTimeout(resolve, 50));
 		}
@@ -43,5 +43,21 @@ router.get("/stream", async (req, res) => {
 
 	res.end();
 });
+
+// Endpoint for external cron jobs (e.g., cron-job.org, Render Cron) to trigger keep-alive & rebuild cache
+router.get(
+	"/cron",
+	catchAsync(async (_req, res) => {
+		// Force refresh to rebuild and update the cached health and stream updates
+		const { health, updates } = await healthService.refreshHealthCache(true);
+		return res.status(200).json({
+			success: true,
+			message: "Health cache rebuilt successfully",
+			timestamp: health.timestamp,
+			status: health.status,
+			stepsCompleted: updates.length,
+		});
+	}),
+);
 
 export default router;
