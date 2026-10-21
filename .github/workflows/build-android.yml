@@ -38,7 +38,7 @@ jobs:
 
       - name: Install mobile dependencies
         working-directory: mobile
-        run: pnpm install --no-frozen-lockfile --config.confirmModulesPurge=false
+        run: pnpm install --no-frozen-lockfile --config.confirmModulesPurge=false --config.node-linker=hoisted
 
       - name: Expo Prebuild (Generate Android native project)
         working-directory: mobile
