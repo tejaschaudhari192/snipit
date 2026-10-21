@@ -32,6 +32,7 @@ interface Props {
 	identityAddress: string;
 	customFields: CustomField[];
 	isFolderDropdownOpen: boolean;
+	onCreateFolder?: (name: string, color?: string) => Promise<Folder | void>;
 	onClose: () => void;
 	onSave: () => void;
 	onOpenGenerator: (target: "password" | "apikey") => void;
@@ -111,6 +112,7 @@ export function AddEditItemModal({
 	setIdentityPhone,
 	setIdentityAddress,
 	setCustomFields,
+	onCreateFolder,
 }: Props) {
 	if (!visible) return null;
 	const c = useThemeVars(theme);
@@ -120,6 +122,9 @@ export function AddEditItemModal({
 	const [showCardCvv, setShowCardCvv] = useState(false);
 	const [showCardPin, setShowCardPin] = useState(false);
 	const [showApiSecret, setShowApiSecret] = useState(false);
+	const [isCreatingFolder, setIsCreatingFolder] = useState(false);
+	const [newFolderName, setNewFolderName] = useState("");
+	const [newFolderColor, setNewFolderColor] = useState("#3b82f6");
 
 	const categories: Array<{ id: PasswordItem["category"]; label: string; icon: any }> = [
 		{ id: "login", label: "Login", icon: Key },
@@ -138,14 +143,14 @@ export function AddEditItemModal({
 	const borderColor = isLight ? "border-slate-200" : "border-slate-800";
 
 	return (
-		<Modal visible={visible} animationType="slide" transparent>
+		<Modal visible={visible} animationType="slide" transparent statusBarTranslucent>
 			<KeyboardAvoidingView
 				className="flex-1 bg-black/65 justify-end"
 				behavior={Platform.OS === "ios" ? "padding" : "height"}
 			>
-				<View className={`rounded-t-[18px] p-4 max-h-[92%] ${containerBg}`}>
+				<View className={`rounded-t-[24px] px-4 pt-3 max-h-[92%] flex-1 ${containerBg}`}>
 					{/* iOS Navigation Header */}
-					<View className={`flex-row items-center justify-between py-3 border-b mb-3 ${borderColor}`}>
+					<View className={`flex-row items-center justify-between py-3 border-b mb-2 ${borderColor}`}>
 						<TouchableOpacity onPress={onClose} hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
 							<Text className={`text-[17px] font-normal ${isLight ? "text-blue-600" : "text-blue-400"}`}>Cancel</Text>
 						</TouchableOpacity>
@@ -180,63 +185,133 @@ export function AddEditItemModal({
 					</View>
 
 					<ScrollView
-						className="max-h-[440px]"
+						className="flex-1"
+						contentContainerStyle={{ paddingBottom: 280 }}
+						automaticallyAdjustKeyboardInsets={true}
 						showsVerticalScrollIndicator={false}
 						keyboardShouldPersistTaps="handled"
 						keyboardDismissMode="interactive"
 					>
 						{/* Folder Assignment */}
-						{folders.length > 0 && (
-							<View className="mb-3.5">
-								<Text className={`text-[11px] font-bold uppercase mb-1.5 tracking-wider ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+						<View className="mb-3.5">
+							<View className="flex-row items-center justify-between mb-1.5">
+								<Text className={`text-[11px] font-bold uppercase tracking-wider ${isLight ? "text-slate-500" : "text-slate-400"}`}>
 									Folder (Optional)
 								</Text>
-								<TouchableOpacity
-									className={`flex-row items-center justify-between px-3 py-2.5 rounded-xl ${tertiaryBg}`}
-									onPress={() => setIsFolderDropdownOpen(!isFolderDropdownOpen)}
-									activeOpacity={0.8}
-								>
-									<View className="flex-row items-center gap-2">
-										<View
-											style={{ backgroundColor: folders.find((f) => f.id === itemFolderId)?.color || c.textSecondary }}
-											className="w-2 h-2 rounded-full"
-										/>
-										<Text className={`text-sm font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
-											{folders.find((f) => f.id === itemFolderId)?.name || "No Folder"}
-										</Text>
-									</View>
-									{isFolderDropdownOpen ? <ChevronUp color={c.textSecondary} size={18} /> : <ChevronDown color={c.textSecondary} size={18} />}
-								</TouchableOpacity>
+								{onCreateFolder && !isCreatingFolder && (
+									<TouchableOpacity
+										onPress={() => {
+											setIsCreatingFolder(true);
+											setIsFolderDropdownOpen(true);
+										}}
+										className="flex-row items-center gap-1 py-0.5 px-2 rounded-md bg-blue-600/10"
+										activeOpacity={0.7}
+									>
+										<Plus color="#2563eb" size={13} strokeWidth={2.5} />
+										<Text className="text-[11px] font-bold text-blue-600">New Folder</Text>
+									</TouchableOpacity>
+								)}
+							</View>
 
-								{isFolderDropdownOpen && (
-									<View className={`rounded-xl border mt-1.5 overflow-hidden ${tertiaryBg} ${borderColor}`}>
+							{/* Inline New Folder Input */}
+							{isCreatingFolder && (
+								<View className={`p-2.5 mb-2 rounded-xl border ${isLight ? "bg-slate-200/50 border-slate-300" : "bg-slate-800 border-slate-700"}`}>
+									<TextInput
+										className={`text-sm font-semibold px-2 py-1.5 rounded-lg border ${
+											isLight ? "bg-white border-slate-200 text-slate-900" : "bg-slate-900 border-slate-700 text-white"
+										}`}
+										placeholder="Folder name..."
+										placeholderTextColor={isLight ? "#94a3b8" : "#64748b"}
+										value={newFolderName}
+										onChangeText={setNewFolderName}
+										autoFocus
+									/>
+									<View className="flex-row items-center justify-between mt-2 pt-1 border-t border-slate-200/50">
+										<View className="flex-row items-center gap-1.5">
+											{["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"].map((col) => (
+												<TouchableOpacity
+													key={col}
+													onPress={() => setNewFolderColor(col)}
+													className={`w-5 h-5 rounded-full ${newFolderColor === col ? "border-2 border-white scale-110" : ""}`}
+													style={{ backgroundColor: col }}
+												/>
+											))}
+										</View>
+										<View className="flex-row items-center gap-1.5">
+											<TouchableOpacity
+												onPress={() => {
+													setIsCreatingFolder(false);
+													setNewFolderName("");
+												}}
+												className="px-2 py-1"
+											>
+												<Text className={`text-xs ${isLight ? "text-slate-500" : "text-slate-400"}`}>Cancel</Text>
+											</TouchableOpacity>
+											<TouchableOpacity
+												onPress={async () => {
+													if (!newFolderName.trim() || !onCreateFolder) return;
+													const created = await onCreateFolder(newFolderName.trim(), newFolderColor);
+													if (created && created.id) {
+														setItemFolderId(created.id);
+													}
+													setNewFolderName("");
+													setIsCreatingFolder(false);
+												}}
+												className="px-2.5 py-1 rounded-md bg-blue-600"
+												activeOpacity={0.8}
+											>
+												<Text className="text-xs font-bold text-white">Create</Text>
+											</TouchableOpacity>
+										</View>
+									</View>
+								</View>
+							)}
+
+							<TouchableOpacity
+								className={`flex-row items-center justify-between px-3 py-2.5 rounded-xl ${tertiaryBg}`}
+								onPress={() => setIsFolderDropdownOpen(!isFolderDropdownOpen)}
+								activeOpacity={0.8}
+							>
+								<View className="flex-row items-center gap-2">
+									<View
+										style={{ backgroundColor: folders.find((f) => f.id === itemFolderId)?.color || c.textSecondary }}
+										className="w-2 h-2 rounded-full"
+									/>
+									<Text className={`text-sm font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
+										{folders.find((f) => f.id === itemFolderId)?.name || "No Folder"}
+									</Text>
+								</View>
+								{isFolderDropdownOpen ? <ChevronUp color={c.textSecondary} size={18} /> : <ChevronDown color={c.textSecondary} size={18} />}
+							</TouchableOpacity>
+
+							{isFolderDropdownOpen && (
+								<View className={`rounded-xl border mt-1.5 overflow-hidden ${tertiaryBg} ${borderColor}`}>
+									<TouchableOpacity
+										className={`flex-row items-center gap-2.5 px-3 py-2.5 ${itemFolderId === undefined ? "bg-blue-500/15" : ""}`}
+										onPress={() => {
+											setItemFolderId(undefined);
+											setIsFolderDropdownOpen(false);
+										}}
+									>
+										<View style={{ backgroundColor: c.textSecondary }} className="w-2 h-2 rounded-full" />
+										<Text className={`text-[13px] font-medium ${isLight ? "text-slate-900" : "text-white"}`}>No Folder</Text>
+									</TouchableOpacity>
+									{folders.map((f) => (
 										<TouchableOpacity
-											className={`flex-row items-center gap-2.5 px-3 py-2.5 ${itemFolderId === undefined ? "bg-blue-500/15" : ""}`}
+											key={f.id}
+											className={`flex-row items-center gap-2.5 px-3 py-2.5 ${itemFolderId === f.id ? "bg-blue-500/15" : ""}`}
 											onPress={() => {
-												setItemFolderId(undefined);
+												setItemFolderId(f.id);
 												setIsFolderDropdownOpen(false);
 											}}
 										>
-											<View style={{ backgroundColor: c.textSecondary }} className="w-2 h-2 rounded-full" />
-											<Text className={`text-[13px] font-medium ${isLight ? "text-slate-900" : "text-white"}`}>No Folder</Text>
+											<View style={{ backgroundColor: f.color }} className="w-2 h-2 rounded-full" />
+											<Text className={`text-[13px] font-medium ${isLight ? "text-slate-900" : "text-white"}`}>{f.name}</Text>
 										</TouchableOpacity>
-										{folders.map((f) => (
-											<TouchableOpacity
-												key={f.id}
-												className={`flex-row items-center gap-2.5 px-3 py-2.5 ${itemFolderId === f.id ? "bg-blue-500/15" : ""}`}
-												onPress={() => {
-													setItemFolderId(f.id);
-													setIsFolderDropdownOpen(false);
-												}}
-											>
-												<View style={{ backgroundColor: f.color }} className="w-2 h-2 rounded-full" />
-												<Text className={`text-[13px] font-medium ${isLight ? "text-slate-900" : "text-white"}`}>{f.name}</Text>
-											</TouchableOpacity>
-										))}
-									</View>
-								)}
-							</View>
-						)}
+									))}
+								</View>
+							)}
+						</View>
 
 						{/* Item Title */}
 						<TextInput

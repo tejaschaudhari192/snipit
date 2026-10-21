@@ -12,7 +12,10 @@ interface Props {
 	copied: boolean;
 	theme?: "dark" | "light";
 	fallbackIcon?: React.ReactNode;
+	isSelectionMode?: boolean;
+	isSelected?: boolean;
 	onPress: () => void;
+	onLongPress?: () => void;
 	onCopyPassword?: (password: string) => void;
 }
 
@@ -24,7 +27,10 @@ export function IosPasswordListItem({
 	copied,
 	theme = "dark",
 	fallbackIcon,
+	isSelectionMode = false,
+	isSelected = false,
 	onPress,
+	onLongPress,
 	onCopyPassword,
 }: Props) {
 	const isLight = theme === "light";
@@ -34,12 +40,20 @@ export function IosPasswordListItem({
 	return (
 		<TouchableOpacity
 			className={`flex-row items-center px-3.5 py-3 ${
-				isLight ? "bg-white" : "bg-slate-900"
+				isSelected
+					? isLight
+						? "bg-amber-50/60"
+						: "bg-amber-950/20"
+					: isLight
+						? "bg-white"
+						: "bg-slate-900"
 			} ${isFirst ? "rounded-t-2xl" : ""} ${isLast ? "rounded-b-2xl" : ""} ${
-				!isLast ? isLight ? "border-b border-slate-100" : "border-b border-slate-800" : ""
+				!isLast ? (isLight ? "border-b border-slate-100" : "border-b border-slate-800") : ""
 			}`}
 			activeOpacity={0.65}
 			onPress={onPress}
+			onLongPress={onLongPress}
+			delayLongPress={300}
 		>
 			{/* Squircle App/Site Avatar */}
 			<ItemAvatar item={item} size={42} fallbackIcon={fallbackIcon} />
@@ -68,23 +82,37 @@ export function IosPasswordListItem({
 				</Text>
 			</View>
 
-			{/* iOS 3-dots / Quick Context Action */}
-			<View className="flex-row items-center gap-2">
-				{item.password && onCopyPassword ? (
-					<TouchableOpacity
-						className="p-1.5"
-						onPress={() => onCopyPassword(item.password!)}
-						hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-					>
-						{copied ? (
-							<Check color="#22c55e" size={18} />
-						) : (
-							<Copy color={isLight ? "#94a3b8" : "#64748b"} size={18} />
-						)}
-					</TouchableOpacity>
-				) : null}
-				<MoreVertical color={isLight ? "#94a3b8" : "#64748b"} size={18} />
-			</View>
+			{/* Selection Checkmark OR Quick Actions */}
+			{isSelectionMode ? (
+				<View
+					className={`w-6 h-6 rounded-full items-center justify-center border mr-1 ${
+						isSelected
+							? "bg-amber-500 border-amber-500"
+							: isLight
+								? "border-slate-300 bg-slate-50"
+								: "border-slate-600 bg-slate-800"
+					}`}
+				>
+					{isSelected && <Check color="#ffffff" size={14} strokeWidth={3} />}
+				</View>
+			) : (
+				<View className="flex-row items-center gap-2">
+					{item.password && onCopyPassword ? (
+						<TouchableOpacity
+							className="p-1.5"
+							onPress={() => onCopyPassword(item.password!)}
+							hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+						>
+							{copied ? (
+								<Check color="#22c55e" size={18} />
+							) : (
+								<Copy color={isLight ? "#94a3b8" : "#64748b"} size={18} />
+							)}
+						</TouchableOpacity>
+					) : null}
+					<MoreVertical color={isLight ? "#94a3b8" : "#64748b"} size={18} />
+				</View>
+			)}
 		</TouchableOpacity>
 	);
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, RefreshControl } from "react-native";
 import { Key, CreditCard, FileCode, StickyNote, User, Star, ChevronRight, Folder as FolderIcon, FolderPlus, Trash2, Layers } from "lucide-react-native";
 import { Folder, PasswordItem } from "../core/vault-storage";
 import { useThemeVars } from "../config/theme";
@@ -8,6 +8,8 @@ interface Props {
 	folders: Folder[];
 	items: PasswordItem[];
 	theme?: "dark" | "light";
+	isRefreshing?: boolean;
+	onRefresh?: () => void;
 	onSelectFolder: (folderId: string | null) => void;
 	onSelectType: (category: string) => void;
 	onCreateFolder: () => void;
@@ -18,6 +20,8 @@ export function IosFoldersView({
 	folders,
 	items,
 	theme = "dark",
+	isRefreshing = false,
+	onRefresh,
 	onSelectFolder,
 	onSelectType,
 	onCreateFolder,
@@ -41,6 +45,16 @@ export function IosFoldersView({
 			className="flex-1"
 			contentContainerClassName="px-4 pt-1 pb-32"
 			showsVerticalScrollIndicator={false}
+			refreshControl={
+				onRefresh ? (
+					<RefreshControl
+						refreshing={isRefreshing}
+						onRefresh={onRefresh}
+						tintColor={isLight ? "#2563eb" : "#60a5fa"}
+						colors={["#2563eb"]}
+					/>
+				) : undefined
+			}
 		>
 			<Text className={`text-[13px] font-semibold tracking-tight px-1 mb-[7px] mt-3.5 uppercase ${isLight ? "text-slate-500" : "text-slate-400"}`}>
 				TYPES

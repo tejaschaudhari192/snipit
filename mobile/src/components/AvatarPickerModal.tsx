@@ -51,10 +51,10 @@ export function AvatarPickerModal({
     const isLight = theme === "light";
 
     return (
-        <Modal visible={visible} animationType="slide" transparent>
+        <Modal visible={visible} animationType="slide" transparent statusBarTranslucent>
             <KeyboardAvoidingView
                 className="flex-1 bg-black/70 justify-end"
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                behavior={Platform.OS === "ios" ? "padding" : undefined}
             >
                 <View
                     className={`rounded-t-3xl p-6 pb-10 border-t ${

@@ -27,7 +27,7 @@ export function CreateFolderModal({
 	const colors = ["#0a84ff", "#ff9f0a", "#30d158", "#bf5af2", "#ff375f", "#5e5ce6"];
 
 	return (
-		<Modal visible={visible} animationType="slide" transparent>
+		<Modal visible={visible} animationType="slide" transparent statusBarTranslucent>
 			<KeyboardAvoidingView
 				className="flex-1 bg-black/65 justify-end"
 				behavior={Platform.OS === "ios" ? "padding" : "height"}
