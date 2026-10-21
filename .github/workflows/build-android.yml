@@ -33,10 +33,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Install mobile dependencies
+        working-directory: mobile
+        run: pnpm install
 
       - name: Expo Prebuild (Generate Android native project)
         working-directory: mobile
