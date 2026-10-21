@@ -1,16 +1,21 @@
 /**
  * Script to trigger GitHub Actions Android build and provide direct APK download link.
  */
+const appJson = require('../app.json');
+const version = appJson.expo.version;
+const build = appJson.expo.android?.versionCode ?? 1;
+
 console.log("==================================================================");
-console.log("🚀 Building Snipit Android APK via GitHub Actions (Free & Unlimited)");
+console.log(`🚀 Building Snipit Android APK v${version} (Build ${build})`);
 console.log("==================================================================\n");
 
 console.log("🔗 Workflow Dashboard:");
 console.log("   https://github.com/tejaschaudhari192/snipit/actions/workflows/build-android.yml\n");
 
-console.log("📦 Direct APK Download URL (Updated automatically once build completes):");
-console.log("   https://github.com/tejaschaudhari192/snipit/releases/download/mobile-latest/snipit.apk\n");
+console.log("📦 Direct APK Download URLs (Available after workflow completes):");
+console.log(`   • Versioned APK : https://github.com/tejaschaudhari192/snipit/releases/download/mobile-latest/Snipit-v${version}-release.apk`);
+console.log("   • Canonical APK : https://github.com/tejaschaudhari192/snipit/releases/download/mobile-latest/snipit.apk\n");
 
 console.log("💡 Tip: Any git push to 'main' automatically triggers the build and");
-console.log("   updates this direct APK link! You can also trigger it manually at");
+console.log("   publishes both APK links! You can also trigger it manually at");
 console.log("   the dashboard link above.\n");

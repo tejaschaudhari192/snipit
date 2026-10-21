@@ -62,17 +62,6 @@ jobs:
         env:
           ANDROID_HOME: ${{ env.ANDROID_HOME }}
 
-      - name: Rename APK for release
-        run: |
-          cp mobile/android/app/build/outputs/apk/release/*.apk ./snipit.apk
-
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Snipit-Android-APK
-          path: ./snipit.apk
-          retention-days: 14
-
       - name: Extract App Version
         id: app_version
         run: |
@@ -80,6 +69,23 @@ jobs:
           BUILD=$(node -p "require('./mobile/app.json').expo.android.versionCode")
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "build=${BUILD}" >> $GITHUB_OUTPUT
+
+      - name: Prepare APKs for Release (Standard Versioned + Canonical Link)
+        run: |
+          VERSION="${{ steps.app_version.outputs.version }}"
+          mkdir -p release-apks
+          ORIGINAL_APK=$(ls mobile/android/app/build/outputs/apk/release/*.apk | head -n 1)
+          # Standard open-source naming: AppName-v[version]-release.apk
+          cp "$ORIGINAL_APK" "release-apks/Snipit-v${VERSION}-release.apk"
+          # Canonical permanent download file
+          cp "$ORIGINAL_APK" "release-apks/snipit.apk"
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Snipit-Android-APK
+          path: release-apks/*.apk
+          retention-days: 14
 
       - name: Publish Direct Download APK Release
         uses: softprops/action-gh-release@v2
@@ -89,9 +95,10 @@ jobs:
           name: Snipit Mobile v${{ steps.app_version.outputs.version }} (Build ${{ steps.app_version.outputs.build }})
           body: |
             ### 📱 Snipit Mobile v${{ steps.app_version.outputs.version }} (Build ${{ steps.app_version.outputs.build }})
-            Direct APK download:
-            https://github.com/${{ github.repository }}/releases/download/mobile-latest/snipit.apk
-          files: ./snipit.apk
+
+            - **Versioned APK**: [Snipit-v${{ steps.app_version.outputs.version }}-release.apk](https://github.com/${{ github.repository }}/releases/download/mobile-latest/Snipit-v${{ steps.app_version.outputs.version }}-release.apk)
+            - **Permanent Direct APK**: [snipit.apk](https://github.com/${{ github.repository }}/releases/download/mobile-latest/snipit.apk)
+          files: release-apks/*.apk
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
