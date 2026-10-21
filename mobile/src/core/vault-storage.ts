@@ -87,12 +87,33 @@ const STORAGE_KEYS = {
     THEME: "@snipit/theme",
     DEFAULT_TOOL: "@snipit/default_tool",
     PENDING_DELETES: "@snipit/pwmg_pending_deletes",
+    PENDING_FOLDER_DELETES: "@snipit/pwmg_pending_folder_deletes",
+    SYNCED_ITEM_IDS: "@snipit/pwmg_synced_item_ids",
+    SYNCED_FOLDER_IDS: "@snipit/pwmg_synced_folder_ids",
 };
 
 export class OfflineVaultService {
     private activeMEK: Uint8Array | null = null;
     private activePersonalKey: Uint8Array | null = null;
     private currentUser: UserSession | null = null;
+    private syncListeners = new Set<() => void>();
+
+    onSync(cb: () => void): () => void {
+        this.syncListeners.add(cb);
+        return () => {
+            this.syncListeners.delete(cb);
+        };
+    }
+
+    private notifySyncListeners() {
+        this.syncListeners.forEach((cb) => {
+            try {
+                cb();
+            } catch (e) {
+                console.log("Error in sync listener:", e);
+            }
+        });
+    }
 
     // ─── CLOUD VAULT INTEGRATION ───────────────────────────────────────────────
 
@@ -301,24 +322,15 @@ export class OfflineVaultService {
 
         try {
             const baseUrl = await this.getApiBaseUrl();
-            const res = await fetch(`${baseUrl}/tools/password-manager/vault/items`, {
-                headers: {
-                    Authorization: `Bearer ${user.token}`,
-                },
-            });
 
-            if (!res.ok) return;
-
-            const body = await res.json();
-            const serverItems: Array<{ id: string; encryptedPayload: string }> = body.data || [];
-
-            // 1. Process pending offline deletions first
+            // 1. Process pending offline item deletions FIRST before fetching cloud items
             const pendingDeletesRaw = await AsyncStorage.getItem(STORAGE_KEYS.PENDING_DELETES);
-            let pendingDeletes: string[] = pendingDeletesRaw ? JSON.parse(pendingDeletesRaw) : [];
+            const originalPendingDeletes: string[] = pendingDeletesRaw ? JSON.parse(pendingDeletesRaw) : [];
+            const attemptedOrDeletedIds = new Set<string>(originalPendingDeletes);
 
-            if (pendingDeletes.length > 0) {
+            if (originalPendingDeletes.length > 0) {
                 const remainingDeletes: string[] = [];
-                for (const delId of pendingDeletes) {
+                for (const delId of originalPendingDeletes) {
                     try {
                         const delRes = await fetch(`${baseUrl}/tools/password-manager/vault/items/${delId}`, {
                             method: "DELETE",
@@ -333,14 +345,70 @@ export class OfflineVaultService {
                         remainingDeletes.push(delId);
                     }
                 }
-                pendingDeletes = remainingDeletes;
-                await AsyncStorage.setItem(STORAGE_KEYS.PENDING_DELETES, JSON.stringify(pendingDeletes));
+                await AsyncStorage.setItem(STORAGE_KEYS.PENDING_DELETES, JSON.stringify(remainingDeletes));
             }
 
-            // 2. Decrypt all server items
+            // 2. Process pending offline folder deletions
+            const pendingFolderDeletesRaw = await AsyncStorage.getItem(STORAGE_KEYS.PENDING_FOLDER_DELETES);
+            const pendingFolderDeletes: string[] = pendingFolderDeletesRaw ? JSON.parse(pendingFolderDeletesRaw) : [];
+            const deletedFolderIdsSet = new Set<string>(pendingFolderDeletes);
+
+            // 3. Fetch latest cloud vault settings (fresh cloud folders)
+            let cloudFolders: Folder[] = [];
+            try {
+                const metaRes = await fetch(`${baseUrl}/tools/password-manager/vault`, {
+                    headers: {
+                        Authorization: `Bearer ${user.token}`,
+                    },
+                });
+                if (metaRes.ok) {
+                    const metaBody = await metaRes.json();
+                    if (metaBody.data) {
+                        const cachedMetaRaw = await AsyncStorage.getItem(STORAGE_KEYS.VAULT_META);
+                        const cachedMeta: VaultMetadata = cachedMetaRaw ? JSON.parse(cachedMetaRaw) : { salt: "" };
+                        cachedMeta.encryptedSettings = metaBody.data.encryptedSettings;
+                        cachedMeta.encryptedPersonalKey = metaBody.data.encryptedPersonalKey || metaBody.data.encryptedBlob;
+                        await AsyncStorage.setItem(STORAGE_KEYS.VAULT_META, JSON.stringify(cachedMeta));
+
+                        if (metaBody.data.encryptedSettings) {
+                            const decryptedSettings = decryptSymmetric<any>(metaBody.data.encryptedSettings, encryptionKey);
+                            if (decryptedSettings && Array.isArray(decryptedSettings.folders)) {
+                                cloudFolders = decryptedSettings.folders;
+                            }
+                        }
+                    }
+                }
+            } catch (e) {
+                console.log("Could not fetch latest vault metadata for folders:", e);
+            }
+
+            // If any folders were deleted offline, remove them from cloudFolders and push update
+            if (pendingFolderDeletes.length > 0) {
+                cloudFolders = cloudFolders.filter((f) => !deletedFolderIdsSet.has(f.id));
+                try {
+                    await this.persistFoldersToCloud(cloudFolders);
+                    await AsyncStorage.removeItem(STORAGE_KEYS.PENDING_FOLDER_DELETES);
+                } catch (e) {
+                    console.log("Failed to sync pending folder deletes to cloud:", e);
+                }
+            }
+
+            // 4. Fetch all cloud items
+            const res = await fetch(`${baseUrl}/tools/password-manager/vault/items`, {
+                headers: {
+                    Authorization: `Bearer ${user.token}`,
+                },
+            });
+
+            if (!res.ok) return;
+
+            const body = await res.json();
+            const serverItems: Array<{ id: string; encryptedPayload: string }> = body.data || [];
+
+            // 5. Decrypt server items (skipping any deleted items)
             const serverDecryptedMap = new Map<string, PasswordItem>();
             for (const serverItem of serverItems) {
-                if (pendingDeletes.includes(serverItem.id)) continue; // Skip items pending local deletion
+                if (attemptedOrDeletedIds.has(serverItem.id)) continue; // Filter out any deleted item
                 try {
                     const decrypted = decryptSymmetric<any>(serverItem.encryptedPayload, encryptionKey);
                     if (decrypted) {
@@ -365,7 +433,11 @@ export class OfflineVaultService {
                 }
             }
 
-            // 3. Two-Way Merge: Load current local items to preserve any local-only or newer items
+            // 6. Three-Way Merge: Load previous sync manifest and current local items
+            const syncedItemIdsRaw = await AsyncStorage.getItem(STORAGE_KEYS.SYNCED_ITEM_IDS);
+            const knownSyncedItemIds: string[] = syncedItemIdsRaw ? JSON.parse(syncedItemIdsRaw) : [];
+            const knownSyncedItemSet = new Set<string>(knownSyncedItemIds);
+
             let localItems: PasswordItem[] = [];
             const localRaw = await AsyncStorage.getItem(STORAGE_KEYS.ENCRYPTED_ITEMS);
             if (localRaw) {
@@ -379,25 +451,36 @@ export class OfflineVaultService {
             const mergedMap = new Map<string, PasswordItem>();
             const itemsToUploadToCloud: PasswordItem[] = [];
 
-            // Add all server items to map
+            // Add all live server items into merged map
             for (const [id, sItem] of serverDecryptedMap.entries()) {
                 mergedMap.set(id, sItem);
             }
 
-            // Merge local items: keep local if newer or not on server yet
+            // Reconcile each local item
             for (const lItem of localItems) {
-                if (pendingDeletes.includes(lItem.id)) continue;
+                // If item is marked for pending local deletion, ignore it
+                if (attemptedOrDeletedIds.has(lItem.id)) continue;
 
                 const serverItem = mergedMap.get(lItem.id);
                 if (!serverItem) {
-                    // Local item not found on server! Keep it locally and queue upload to cloud
-                    mergedMap.set(lItem.id, lItem);
-                    itemsToUploadToCloud.push(lItem);
+                    // Local item is absent from server!
+                    if (knownSyncedItemSet.has(lItem.id)) {
+                        // Crucial fix: Item was previously synced with cloud, but is now missing from cloud response.
+                        // This means it was DELETED on the website/cloud!
+                        // Therefore, delete it locally—do NOT re-upload or resurrect it!
+                        console.log(`[Sync] Item ${lItem.id} ("${lItem.title}") was deleted on web; removing locally.`);
+                    } else {
+                        // Item was created locally while offline and never sent to cloud.
+                        // Keep it locally and upload it to the cloud.
+                        mergedMap.set(lItem.id, lItem);
+                        itemsToUploadToCloud.push(lItem);
+                    }
                 } else {
-                    // Item exists in both: compare updatedAt
+                    // Item exists in both places: conflict resolution by timestamp
                     const localTime = new Date(lItem.updatedAt || 0).getTime();
                     const serverTime = new Date(serverItem.updatedAt || 0).getTime();
                     if (localTime > serverTime) {
+                        // Local edit is newer than server edit
                         mergedMap.set(lItem.id, lItem);
                         itemsToUploadToCloud.push(lItem);
                     }
@@ -406,11 +489,12 @@ export class OfflineVaultService {
 
             const finalList = Array.from(mergedMap.values());
 
-            // 4. Save merged items locally so no data is ever lost
+            // 7. Save merged items locally
             const encrypted = encryptSymmetric(finalList, encryptionKey);
             await AsyncStorage.setItem(STORAGE_KEYS.ENCRYPTED_ITEMS, encrypted);
 
-            // 5. Upload any local items missing on the server
+            // 8. Upload any genuine local items missing or newer on the server
+            // Use PUT to safely upsert and avoid MongoDB duplicate key errors!
             if (itemsToUploadToCloud.length > 0) {
                 for (const itemToUp of itemsToUploadToCloud) {
                     try {
@@ -420,14 +504,13 @@ export class OfflineVaultService {
                             folderId: itemToUp.folderId,
                         };
                         const encPayload = encryptSymmetric(payloadToCloud, encryptionKey);
-                        await fetch(`${baseUrl}/tools/password-manager/vault/items`, {
-                            method: "POST",
+                        await fetch(`${baseUrl}/tools/password-manager/vault/items/${itemToUp.id}`, {
+                            method: "PUT",
                             headers: {
                                 "Content-Type": "application/json",
                                 Authorization: `Bearer ${user.token}`,
                             },
                             body: JSON.stringify({
-                                id: itemToUp.id,
                                 encryptedPayload: encPayload,
                             }),
                         });
@@ -437,58 +520,59 @@ export class OfflineVaultService {
                 }
             }
 
-            // 6. Two-Way Sync Folders: Merge local and cloud folders instead of overwriting
-            const metaRaw = await AsyncStorage.getItem(STORAGE_KEYS.VAULT_META);
-            if (metaRaw) {
-                const meta: VaultMetadata = JSON.parse(metaRaw);
-                let cloudFolders: Folder[] = [];
-                if (meta.encryptedSettings) {
-                    try {
-                        const decryptedSettings = decryptSymmetric<any>(meta.encryptedSettings, encryptionKey);
-                        if (decryptedSettings && Array.isArray(decryptedSettings.folders)) {
-                            cloudFolders = decryptedSettings.folders;
-                        }
-                    } catch (e) {
-                        console.log("Could not decrypt settings for folders:", e);
-                    }
-                }
+            // 9. Update local sync manifest with all current live item IDs
+            const updatedSyncedIds = finalList.map((i) => i.id);
+            await AsyncStorage.setItem(STORAGE_KEYS.SYNCED_ITEM_IDS, JSON.stringify(updatedSyncedIds));
 
-                // Get current local folders
-                let localFolders: Folder[] = [];
-                const localFoldersRaw = await AsyncStorage.getItem(STORAGE_KEYS.ENCRYPTED_FOLDERS);
-                if (localFoldersRaw) {
-                    try {
-                        localFolders = decryptSymmetric<Folder[]>(localFoldersRaw, encryptionKey) || [];
-                    } catch {
-                        localFolders = [];
-                    }
-                }
+            // 10. Reconcile Folders with Sync Manifest
+            const syncedFolderIdsRaw = await AsyncStorage.getItem(STORAGE_KEYS.SYNCED_FOLDER_IDS);
+            const knownSyncedFolderIds: string[] = syncedFolderIdsRaw ? JSON.parse(syncedFolderIdsRaw) : [];
+            const knownSyncedFolderSet = new Set<string>(knownSyncedFolderIds);
 
-                // Merge folders by ID
-                const folderMap = new Map<string, Folder>();
-                for (const cf of cloudFolders) {
-                    folderMap.set(cf.id, cf);
+            let localFolders: Folder[] = [];
+            const localFoldersRaw = await AsyncStorage.getItem(STORAGE_KEYS.ENCRYPTED_FOLDERS);
+            if (localFoldersRaw) {
+                try {
+                    localFolders = decryptSymmetric<Folder[]>(localFoldersRaw, encryptionKey) || [];
+                } catch {
+                    localFolders = [];
                 }
+            }
 
-                let hasLocalOnlyFolders = false;
-                for (const lf of localFolders) {
-                    if (!folderMap.has(lf.id)) {
+            // Populate live cloud folders
+            const folderMap = new Map<string, Folder>();
+            for (const cf of cloudFolders) {
+                if (deletedFolderIdsSet.has(cf.id)) continue;
+                folderMap.set(cf.id, cf);
+            }
+
+            let hasLocalOnlyFolders = false;
+            for (const lf of localFolders) {
+                if (deletedFolderIdsSet.has(lf.id)) continue;
+                if (!folderMap.has(lf.id)) {
+                    if (knownSyncedFolderSet.has(lf.id)) {
+                        // Folder was deleted on cloud/web! Remove locally
+                        console.log(`[Sync] Folder ${lf.id} ("${lf.name}") was deleted on web; removing locally.`);
+                    } else {
+                        // Folder was created locally offline
                         folderMap.set(lf.id, lf);
                         hasLocalOnlyFolders = true;
                     }
                 }
-
-                const mergedFolders = Array.from(folderMap.values());
-                const encryptedFolders = encryptSymmetric(mergedFolders, encryptionKey);
-                await AsyncStorage.setItem(STORAGE_KEYS.ENCRYPTED_FOLDERS, encryptedFolders);
-
-                // If phone had local folders missing on cloud, upload merged list to cloud
-                if (hasLocalOnlyFolders) {
-                    this.persistFoldersToCloud(mergedFolders).catch((e) =>
-                        console.log("Error uploading merged folders to cloud:", e),
-                    );
-                }
             }
+
+            const mergedFolders = Array.from(folderMap.values());
+            const encryptedFolders = encryptSymmetric(mergedFolders, encryptionKey);
+            await AsyncStorage.setItem(STORAGE_KEYS.ENCRYPTED_FOLDERS, encryptedFolders);
+            await AsyncStorage.setItem(STORAGE_KEYS.SYNCED_FOLDER_IDS, JSON.stringify(mergedFolders.map((f) => f.id)));
+
+            // If local offline folders were added, sync settings back to cloud
+            if (hasLocalOnlyFolders) {
+                await this.persistFoldersToCloud(mergedFolders);
+            }
+
+            // 11. Notify UI listeners that sync completed and data is fresh
+            this.notifySyncListeners();
         } catch (e) {
             console.log("Error syncing cloud items:", e);
         }
@@ -555,17 +639,27 @@ export class OfflineVaultService {
                     folderId: saved.folderId,
                 };
                 const encryptedPayload = encryptSymmetric(payloadToCloud, key);
-                await fetch(`${baseUrl}/tools/password-manager/vault/items`, {
-                    method: "POST",
+                // Use PUT with item ID to upsert safely and prevent MongoDB duplicate key errors
+                await fetch(`${baseUrl}/tools/password-manager/vault/items/${saved.id}`, {
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${user.token}`,
                     },
                     body: JSON.stringify({
-                        id: saved.id,
                         encryptedPayload,
                     }),
                 });
+
+                // Record in sync manifest
+                try {
+                    const raw = await AsyncStorage.getItem(STORAGE_KEYS.SYNCED_ITEM_IDS);
+                    const ids: string[] = raw ? JSON.parse(raw) : [];
+                    if (!ids.includes(saved.id)) {
+                        ids.push(saved.id);
+                        await AsyncStorage.setItem(STORAGE_KEYS.SYNCED_ITEM_IDS, JSON.stringify(ids));
+                    }
+                } catch {}
             } catch (err) {
                 console.log("Cloud sync error for saveItem:", err);
             }
@@ -581,6 +675,16 @@ export class OfflineVaultService {
         const filtered = items.filter((i) => i.id !== id);
         const encrypted = encryptSymmetric(filtered, key);
         await AsyncStorage.setItem(STORAGE_KEYS.ENCRYPTED_ITEMS, encrypted);
+
+        // Remove from synced item manifest immediately
+        try {
+            const raw = await AsyncStorage.getItem(STORAGE_KEYS.SYNCED_ITEM_IDS);
+            if (raw) {
+                const ids: string[] = JSON.parse(raw);
+                const updated = ids.filter((existingId) => existingId !== id);
+                await AsyncStorage.setItem(STORAGE_KEYS.SYNCED_ITEM_IDS, JSON.stringify(updated));
+            }
+        } catch {}
 
         // Cloud delete if user is logged in
         const user = await this.getUser();
@@ -669,6 +773,16 @@ export class OfflineVaultService {
         const encrypted = encryptSymmetric(folders, key);
         await AsyncStorage.setItem(STORAGE_KEYS.ENCRYPTED_FOLDERS, encrypted);
 
+        // Record in folder sync manifest
+        try {
+            const raw = await AsyncStorage.getItem(STORAGE_KEYS.SYNCED_FOLDER_IDS);
+            const ids: string[] = raw ? JSON.parse(raw) : [];
+            if (!ids.includes(saved.id)) {
+                ids.push(saved.id);
+                await AsyncStorage.setItem(STORAGE_KEYS.SYNCED_FOLDER_IDS, JSON.stringify(ids));
+            }
+        } catch {}
+
         // Sync with backend encryptedSettings
         await this.persistFoldersToCloud(folders);
         return saved;
@@ -683,6 +797,16 @@ export class OfflineVaultService {
         const encrypted = encryptSymmetric(filtered, key);
         await AsyncStorage.setItem(STORAGE_KEYS.ENCRYPTED_FOLDERS, encrypted);
 
+        // Remove from synced folder manifest
+        try {
+            const raw = await AsyncStorage.getItem(STORAGE_KEYS.SYNCED_FOLDER_IDS);
+            if (raw) {
+                const ids: string[] = JSON.parse(raw);
+                const updated = ids.filter((id) => id !== folderId);
+                await AsyncStorage.setItem(STORAGE_KEYS.SYNCED_FOLDER_IDS, JSON.stringify(updated));
+            }
+        } catch {}
+
         // Unassign items belonging to this folder
         const items = await this.getItems();
         let changed = false;
@@ -696,7 +820,29 @@ export class OfflineVaultService {
             await AsyncStorage.setItem(STORAGE_KEYS.ENCRYPTED_ITEMS, encryptSymmetric(items, key));
         }
 
-        await this.persistFoldersToCloud(filtered);
+        const user = await this.getUser();
+        if (user && user.token) {
+            let persisted = false;
+            try {
+                await this.persistFoldersToCloud(filtered);
+                persisted = true;
+            } catch (err) {
+                console.log("Cloud sync error for deleteFolder:", err);
+            }
+
+            if (!persisted) {
+                try {
+                    const raw = await AsyncStorage.getItem(STORAGE_KEYS.PENDING_FOLDER_DELETES);
+                    const pending: string[] = raw ? JSON.parse(raw) : [];
+                    if (!pending.includes(folderId)) {
+                        pending.push(folderId);
+                        await AsyncStorage.setItem(STORAGE_KEYS.PENDING_FOLDER_DELETES, JSON.stringify(pending));
+                    }
+                } catch (e) {
+                    console.log("Error storing pending folder delete:", e);
+                }
+            }
+        }
     }
 
     private async persistFoldersToCloud(folders: Folder[]): Promise<void> {
@@ -748,6 +894,22 @@ export class OfflineVaultService {
 
     async setDefaultTool(tool: "hub" | "pwmg"): Promise<void> {
         await AsyncStorage.setItem(STORAGE_KEYS.DEFAULT_TOOL, tool);
+    }
+
+    async resetVault(): Promise<void> {
+        this.activeMEK = null;
+        this.activePersonalKey = null;
+        await AsyncStorage.multiRemove([
+            STORAGE_KEYS.VAULT_META,
+            STORAGE_KEYS.ENCRYPTED_ITEMS,
+            STORAGE_KEYS.ENCRYPTED_FOLDERS,
+            STORAGE_KEYS.RECOVERY_RECORD,
+            STORAGE_KEYS.PENDING_DELETES,
+            STORAGE_KEYS.PENDING_FOLDER_DELETES,
+            STORAGE_KEYS.SYNCED_ITEM_IDS,
+            STORAGE_KEYS.SYNCED_FOLDER_IDS,
+        ]);
+        this.notifySyncListeners();
     }
 }
 
