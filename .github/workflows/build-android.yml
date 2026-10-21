@@ -73,14 +73,23 @@ jobs:
           path: ./snipit.apk
           retention-days: 14
 
+      - name: Extract App Version
+        id: app_version
+        run: |
+          VERSION=$(node -p "require('./mobile/app.json').expo.version")
+          BUILD=$(node -p "require('./mobile/app.json').expo.android.versionCode")
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "build=${BUILD}" >> $GITHUB_OUTPUT
+
       - name: Publish Direct Download APK Release
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
           tag_name: mobile-latest
-          name: Snipit Mobile Latest Build
+          name: Snipit Mobile v${{ steps.app_version.outputs.version }} (Build ${{ steps.app_version.outputs.build }})
           body: |
-            Direct APK download for latest mobile build:
+            ### 📱 Snipit Mobile v${{ steps.app_version.outputs.version }} (Build ${{ steps.app_version.outputs.build }})
+            Direct APK download:
             https://github.com/${{ github.repository }}/releases/download/mobile-latest/snipit.apk
           files: ./snipit.apk
           prerelease: false
