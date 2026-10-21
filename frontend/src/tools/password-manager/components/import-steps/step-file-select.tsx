@@ -179,9 +179,13 @@ export default function StepFileSelect({ onNext, onCancel }: Props) {
 							? t(
 									"tools.password_manager.import.chrome_export_desc",
 								)
-							: t(
-									"tools.password_manager.import.enpass_export_desc",
-								)}
+							: sourceApp === "enpass"
+								? t(
+										"tools.password_manager.import.enpass_export_desc",
+									)
+								: t(
+										"tools.password_manager.import.snipit_export_desc",
+									)}
 					</p>
 				</div>
 			</div>
@@ -198,7 +202,7 @@ export default function StepFileSelect({ onNext, onCancel }: Props) {
 				</Button>
 				<Button
 					disabled={loading}
-					className="pointer-events-none opacity-50"
+					onClick={() => fileInputRef.current?.click()}
 				>
 					{loading
 						? t("tools.password_manager.import.processing")

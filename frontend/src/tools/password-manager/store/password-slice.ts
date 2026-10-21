@@ -24,6 +24,8 @@ import {
 	shareFolder,
 	checkRecoveryKey,
 	generateRecoveryKey,
+	recoverWithMnemonic,
+	resetMasterPassword,
 } from "./thunks";
 
 const initialState: PasswordManagerState = {
@@ -300,6 +302,35 @@ export const passwordSlice = createSlice({
 			})
 			.addCase(generateRecoveryKey.rejected, (state) => {
 				state.recoveryLoading = false;
+			})
+			// recoverWithMnemonic
+			.addCase(recoverWithMnemonic.pending, (state) => {
+				state.recoveryLoading = true;
+				state.recoveryError = null;
+			})
+			.addCase(recoverWithMnemonic.fulfilled, (state) => {
+				state.recoveryLoading = false;
+				state.recoveryError = null;
+				state.recoveryMode = true; // transition to new-password step
+			})
+			.addCase(recoverWithMnemonic.rejected, (state, action) => {
+				state.recoveryLoading = false;
+				state.recoveryError = action.payload as string ?? "Recovery failed";
+			})
+			// resetMasterPassword
+			.addCase(resetMasterPassword.pending, (state) => {
+				state.recoveryLoading = true;
+				state.recoveryError = null;
+			})
+			.addCase(resetMasterPassword.fulfilled, (state) => {
+				state.recoveryLoading = false;
+				state.recoveryError = null;
+				state.recoveryMode = false;
+				state.isUnlocked = true;
+			})
+			.addCase(resetMasterPassword.rejected, (state, action) => {
+				state.recoveryLoading = false;
+				state.recoveryError = action.payload as string ?? "Reset failed";
 			})
 			// persistFolders
 			.addCase(persistFolders.fulfilled, (state, action) => {
