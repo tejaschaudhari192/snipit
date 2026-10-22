@@ -162,7 +162,7 @@ export function PWMGListView({
 								: item.username || item.url || (item.notes ? item.notes.trim() : "Encrypted Entry");
 
 						const isSelected = selectedItemIds.includes(item.id);
-						const isSelectionMode = isNotesTab && selectedItemIds.length > 0;
+						const isSelectionMode = selectedItemIds.length > 0;
 
 						return (
 							<IosPasswordListItem
@@ -182,7 +182,7 @@ export function PWMGListView({
 									}
 								}}
 								onLongPress={() => {
-									if (isNotesTab && onLongPressItem) {
+									if (onLongPressItem) {
 										onLongPressItem(item);
 									}
 								}}

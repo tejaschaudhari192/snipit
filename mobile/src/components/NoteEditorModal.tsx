@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
 	View,
 	Text,
@@ -34,7 +34,7 @@ interface NoteEditorModalProps {
 	folders: Folder[];
 	theme?: "dark" | "light";
 	onClose: () => void;
-	onSave: (updatedItem: Partial<PasswordItem>) => void;
+	onSave: (updatedItem: Partial<PasswordItem>) => Promise<PasswordItem | void> | void;
 	onDelete?: (id: string) => void;
 	onCreateFolder?: (name: string, color?: string) => Promise<Folder | void>;
 }
@@ -63,9 +63,21 @@ export function NoteEditorModal({
 	const [newFolderName, setNewFolderName] = useState("");
 	const [newFolderColor, setNewFolderColor] = useState("#3b82f6");
 
+	// Track current active note ID (for updating created note in-place)
+	const currentNoteIdRef = useRef<string | undefined>(note?.id);
+
 	// Slide from right animation
 	const slideAnim = useRef(new Animated.Value(SCREEN_WIDTH)).current;
 	const [isModalMounted, setIsModalMounted] = useState(visible);
+
+	// Autosave debounce timer
+	const autosaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	// Keep refs for latest values so unmount/exit always saves exact state
+	const latestValuesRef = useRef({ title, notes, isFavorite, folderId });
+	useEffect(() => {
+		latestValuesRef.current = { title, notes, isFavorite, folderId };
+	}, [title, notes, isFavorite, folderId]);
 
 	useEffect(() => {
 		if (visible) {
@@ -91,11 +103,13 @@ export function NoteEditorModal({
 
 	useEffect(() => {
 		if (note) {
+			currentNoteIdRef.current = note.id;
 			setTitle(note.title || "");
 			setNotes(note.notes || "");
 			setIsFavorite(!!note.isFavorite);
 			setFolderId(note.folderId);
 		} else {
+			currentNoteIdRef.current = undefined;
 			setTitle("");
 			setNotes("");
 			setIsFavorite(false);
@@ -104,11 +118,79 @@ export function NoteEditorModal({
 		setIsFolderPickerOpen(false);
 	}, [note, visible]);
 
+	// Automatic background autosave
+	const triggerAutoSave = useCallback(() => {
+		const { title: t, notes: n, isFavorite: fav, folderId: fid } = latestValuesRef.current;
+		const cleanTitle = t.trim();
+		const cleanNotes = n.trim();
+
+		// Don't save completely blank notes
+		if (!cleanTitle && !cleanNotes) return;
+
+		const res = onSave({
+			id: currentNoteIdRef.current,
+			title: cleanTitle || "Untitled Note",
+			notes: n,
+			category: "note",
+			isFavorite: fav,
+			folderId: fid,
+			updatedAt: new Date().toISOString(),
+		});
+
+		// If a Promise is returned with saved item, preserve its id for future edits
+		if (res && typeof (res as any).then === "function") {
+			(res as Promise<any>).then((saved) => {
+				if (saved?.id) {
+					currentNoteIdRef.current = saved.id;
+				}
+			});
+		}
+	}, [onSave]);
+
+	const scheduleAutoSave = useCallback(() => {
+		if (autosaveTimerRef.current) {
+			clearTimeout(autosaveTimerRef.current);
+		}
+		autosaveTimerRef.current = setTimeout(() => {
+			triggerAutoSave();
+		}, 800);
+	}, [triggerAutoSave]);
+
+	// Automatically schedule autosave whenever user types or changes folder/favorite
+	const handleTitleChange = (val: string) => {
+		setTitle(val);
+		scheduleAutoSave();
+	};
+
+	const handleNotesChange = (val: string) => {
+		setNotes(val);
+		scheduleAutoSave();
+	};
+
+	const handleToggleFavorite = () => {
+		const nextFav = !isFavorite;
+		setIsFavorite(nextFav);
+		if (autosaveTimerRef.current) clearTimeout(autosaveTimerRef.current);
+		latestValuesRef.current.isFavorite = nextFav;
+		triggerAutoSave();
+	};
+
+	const handleSelectFolder = (fid?: string) => {
+		setFolderId(fid);
+		setIsFolderPickerOpen(false);
+		if (autosaveTimerRef.current) clearTimeout(autosaveTimerRef.current);
+		latestValuesRef.current.folderId = fid;
+		triggerAutoSave();
+	};
+
 	if (!isModalMounted && !visible) return null;
 
-	const handleSaveAndClose = () => {
-		const cleanTitle = title.trim();
-		const cleanNotes = notes.trim();
+	const handleClose = () => {
+		if (autosaveTimerRef.current) {
+			clearTimeout(autosaveTimerRef.current);
+		}
+		// Final flush autosave on exit
+		triggerAutoSave();
 
 		// Animate slide out to right
 		Animated.timing(slideAnim, {
@@ -116,20 +198,6 @@ export function NoteEditorModal({
 			duration: 220,
 			useNativeDriver: true,
 		}).start(() => {
-			if (!cleanTitle && !cleanNotes) {
-				onClose();
-				return;
-			}
-
-			onSave({
-				id: note?.id,
-				title: cleanTitle || "Untitled Note",
-				notes: notes,
-				category: "note",
-				isFavorite,
-				folderId,
-				updatedAt: new Date().toISOString(),
-			});
 			onClose();
 		});
 	};
@@ -188,7 +256,7 @@ export function NoteEditorModal({
 					{/* Left: Back & Folder Selector */}
 					<View className="flex-row items-center gap-2">
 						<TouchableOpacity
-							onPress={handleSaveAndClose}
+							onPress={handleClose}
 							className={`p-2 rounded-full ${isLight ? "bg-slate-100" : "bg-slate-900"}`}
 							hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
 						>
@@ -223,10 +291,10 @@ export function NoteEditorModal({
 						</TouchableOpacity>
 					</View>
 
-					{/* Right Actions: Favorite, Share, Delete, Done */}
+					{/* Right Actions: Favorite, Share, Delete (No Done button needed — autosaved like Samsung/Apple Notes) */}
 					<View className="flex-row items-center gap-2">
 						<TouchableOpacity
-							onPress={() => setIsFavorite(!isFavorite)}
+							onPress={handleToggleFavorite}
 							className="p-2"
 							hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 						>
@@ -259,14 +327,6 @@ export function NoteEditorModal({
 								<Trash2 color="#ef4444" size={19} />
 							</TouchableOpacity>
 						)}
-
-						<TouchableOpacity
-							onPress={handleSaveAndClose}
-							className="px-3 py-1.5 rounded-full bg-blue-600 ml-1"
-							activeOpacity={0.8}
-						>
-							<Text className="text-white text-xs font-bold">Done</Text>
-						</TouchableOpacity>
 					</View>
 				</View>
 
@@ -348,10 +408,7 @@ export function NoteEditorModal({
 						)}
 
 						<TouchableOpacity
-							onPress={() => {
-								setFolderId(undefined);
-								setIsFolderPickerOpen(false);
-							}}
+							onPress={() => handleSelectFolder(undefined)}
 							className={`flex-row items-center justify-between px-3 py-2.5 rounded-xl ${
 								folderId === undefined ? (isLight ? "bg-blue-50" : "bg-blue-950/40") : ""
 							}`}
@@ -368,10 +425,7 @@ export function NoteEditorModal({
 						{folders.map((f) => (
 							<TouchableOpacity
 								key={f.id}
-								onPress={() => {
-									setFolderId(f.id);
-									setIsFolderPickerOpen(false);
-								}}
+								onPress={() => handleSelectFolder(f.id)}
 								className={`flex-row items-center justify-between px-3 py-2.5 rounded-xl ${
 									folderId === f.id ? (isLight ? "bg-blue-50" : "bg-blue-950/40") : ""
 								}`}
@@ -421,7 +475,7 @@ export function NoteEditorModal({
 							placeholder="Title"
 							placeholderTextColor={isLight ? "#94a3b8" : "#475569"}
 							value={title}
-							onChangeText={setTitle}
+							onChangeText={handleTitleChange}
 							multiline={false}
 							returnKeyType="next"
 						/>
@@ -443,7 +497,7 @@ export function NoteEditorModal({
 							multiline
 							textAlignVertical="top"
 							value={notes}
-							onChangeText={setNotes}
+							onChangeText={handleNotesChange}
 							autoFocus={!note}
 						/>
 					</ScrollView>

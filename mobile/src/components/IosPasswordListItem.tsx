@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { Star, MoreVertical, Copy, Check } from "lucide-react-native";
+import { Star, Copy, Check } from "lucide-react-native";
 import { PasswordItem } from "../core/vault-storage";
 import { ItemAvatar } from "./ItemAvatar";
 
@@ -95,24 +95,19 @@ export function IosPasswordListItem({
 				>
 					{isSelected && <Check color="#ffffff" size={14} strokeWidth={3} />}
 				</View>
-			) : (
-				<View className="flex-row items-center gap-2">
-					{item.password && onCopyPassword ? (
-						<TouchableOpacity
-							className="p-1.5"
-							onPress={() => onCopyPassword(item.password!)}
-							hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-						>
-							{copied ? (
-								<Check color="#22c55e" size={18} />
-							) : (
-								<Copy color={isLight ? "#94a3b8" : "#64748b"} size={18} />
-							)}
-						</TouchableOpacity>
-					) : null}
-					<MoreVertical color={isLight ? "#94a3b8" : "#64748b"} size={18} />
-				</View>
-			)}
+			) : item.password && onCopyPassword ? (
+				<TouchableOpacity
+					className="p-1.5"
+					onPress={() => onCopyPassword(item.password!)}
+					hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+				>
+					{copied ? (
+						<Check color="#22c55e" size={18} />
+					) : (
+						<Copy color={isLight ? "#94a3b8" : "#64748b"} size={18} />
+					)}
+				</TouchableOpacity>
+			) : null}
 		</TouchableOpacity>
 	);
 }

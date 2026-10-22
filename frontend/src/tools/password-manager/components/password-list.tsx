@@ -1,6 +1,6 @@
 import { useState, useMemo, lazy, Suspense, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { matchSorter } from "match-sorter";
+import { searchVaultItems } from "@/tools/password-manager/utils/search-vault";
 import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
 import BulkActionBar from "./bulk-action-bar";
 import {
@@ -111,20 +111,8 @@ export default function PasswordList({
 	}, [vault?.items, activeFilter]);
 
 	const searchFiltered = useMemo(() => {
-		if (!searchQuery) return categoryFiltered;
-		return matchSorter(categoryFiltered, searchQuery, {
-			keys: [
-				"title",
-				"username",
-				"url",
-				"notes",
-				"metadata.website",
-				"metadata.url",
-				"metadata.username",
-				"metadata.email",
-			],
-		});
-	}, [categoryFiltered, searchQuery]);
+		return searchVaultItems(categoryFiltered, searchQuery, folders);
+	}, [categoryFiltered, searchQuery, folders]);
 
 	const [visibleCount, setVisibleCount] = useState(50);
 	const scrollContainerRef = useRef<HTMLDivElement>(null);

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
-import { Text, View, SafeAreaView, BackHandler, Platform, StatusBar, Share, TouchableOpacity, ActivityIndicator, Dimensions, PanResponder } from "react-native";
+import { Text, View, SafeAreaView, BackHandler, Platform, StatusBar, Share, TouchableOpacity, ActivityIndicator, Dimensions, PanResponder, ScrollView, Animated } from "react-native";
 import { Plus, Shield, Lock, X, CheckCheck } from "lucide-react-native";
 import * as Clipboard from "expo-clipboard";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
 import { offlineVault, PasswordItem, Folder, UserSession } from "../core/vault-storage";
+import { searchVaultItems } from "../core/vault-search";
 import { IosBottomTabBar } from "../components/IosBottomTabBar";
 import { IosDetailInspectorModal, getCategoryItemLabel } from "../components/IosDetailInspectorModal";
 import { generatePassword, generatePassphrase, SeparatorType } from "../core/crypto";
@@ -100,8 +101,19 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		[]
 	);
 
+	const [screenWidth, setScreenWidth] = useState(Dimensions.get("window").width);
+	const tabScrollViewRef = useRef<any>(null);
+	const isManualScroll = useRef(false);
+
+	useEffect(() => {
+		const sub = Dimensions.addEventListener("change", ({ window }: { window: { width: number; height: number; scale: number; fontScale: number } }) => {
+			setScreenWidth(window.width);
+		});
+		return () => sub.remove();
+	}, []);
+
 	const switchTab = useCallback(
-		(targetTab: "passwords" | "notes" | "folders" | "settings") => {
+		(targetTab: "passwords" | "notes" | "folders" | "settings", animateScroll = true) => {
 			setActiveBottomTab(targetTab);
 			if (targetTab === "passwords") {
 				setActiveFilter("all");
@@ -112,111 +124,115 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			} else if (targetTab === "folders") {
 				setSelectedFolderId(null);
 			}
+
+			if (animateScroll) {
+				const targetIndex = TAB_ORDER.indexOf(targetTab);
+				if (targetIndex >= 0 && tabScrollViewRef.current) {
+					isManualScroll.current = true;
+					tabScrollViewRef.current.scrollTo({
+						x: targetIndex * screenWidth,
+						animated: true,
+					});
+					setTimeout(() => {
+						isManualScroll.current = false;
+					}, 350);
+				}
+			}
 		},
-		[]
+		[TAB_ORDER, screenWidth]
 	);
 
-	const activeTabRef = useRef(activeBottomTab);
-	useEffect(() => {
-		activeTabRef.current = activeBottomTab;
-	}, [activeBottomTab]);
-
-	const panResponder = useMemo(
-		() =>
-			PanResponder.create({
-				onMoveShouldSetPanResponder: (_, gestureState) => {
-					// Detect horizontal swipe (WhatsApp-like threshold)
-					const isHorizontal =
-						Math.abs(gestureState.dx) > 28 &&
-						Math.abs(gestureState.dx) > Math.abs(gestureState.dy) * 2;
-					return isHorizontal;
-				},
-				onPanResponderRelease: (_, gestureState) => {
-					const SWIPE_THRESHOLD = 50;
-					const currentTab = activeTabRef.current;
-					const currentIndex = TAB_ORDER.indexOf(currentTab);
-
-					if (gestureState.dx < -SWIPE_THRESHOLD) {
-						// Swiped Left -> Move to next tab on the right
-						if (currentIndex < TAB_ORDER.length - 1) {
-							switchTab(TAB_ORDER[currentIndex + 1]);
-						}
-					} else if (gestureState.dx > SWIPE_THRESHOLD) {
-						// Swiped Right -> Move to previous tab on the left
-						if (currentIndex > 0) {
-							switchTab(TAB_ORDER[currentIndex - 1]);
-						}
-					}
-				},
-			}),
-		[TAB_ORDER, switchTab]
+	const handleScrollEnd = useCallback(
+		(e: any) => {
+			if (isManualScroll.current) return;
+			const offsetX = e.nativeEvent.contentOffset.x;
+			const pageIndex = Math.round(offsetX / screenWidth);
+			const targetTab = TAB_ORDER[pageIndex];
+			if (targetTab && targetTab !== activeBottomTab) {
+				switchTab(targetTab, false);
+			}
+		},
+		[screenWidth, TAB_ORDER, activeBottomTab, switchTab]
 	);
 
 	// Dedicated Fullscreen Note Editor State (Samsung/MI Notes style)
 	const [isNoteEditorOpen, setIsNoteEditorOpen] = useState(false);
 	const [editingNoteItem, setEditingNoteItem] = useState<PasswordItem | null>(null);
 
-	// Multi-select state for Notes (MI Notes / Samsung Notes experience)
-	const [selectedNoteIds, setSelectedNoteIds] = useState<string[]>([]);
-	const isNotesSelectionMode = activeBottomTab === "notes" && selectedNoteIds.length > 0;
+	// Multi-select state for Vault Items (passwords, cards, logins, notes)
+	const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
+	const isSelectionMode = selectedItemIds.length > 0;
 
 	// Reset selection mode whenever activeBottomTab changes
 	useEffect(() => {
-		setSelectedNoteIds([]);
+		setSelectedItemIds([]);
 	}, [activeBottomTab]);
 
-	const handleToggleSelectNote = useCallback((item: PasswordItem) => {
-		setSelectedNoteIds((prev) =>
+	const handleToggleSelectItem = useCallback((item: PasswordItem) => {
+		setSelectedItemIds((prev) =>
 			prev.includes(item.id) ? prev.filter((id) => id !== item.id) : [...prev, item.id]
 		);
 	}, []);
 
-	const handleLongPressNote = useCallback((item: PasswordItem) => {
-		setSelectedNoteIds((prev) => (prev.includes(item.id) ? prev : [...prev, item.id]));
+	const handleLongPressItem = useCallback((item: PasswordItem) => {
+		setSelectedItemIds((prev) => (prev.includes(item.id) ? prev : [...prev, item.id]));
 	}, []);
 
-	const handleSelectAllNotes = useCallback(() => {
-		const visibleNoteIds = items.filter((i) => i.category === "note").map((i) => i.id);
-		setSelectedNoteIds((prev) => (prev.length === visibleNoteIds.length ? [] : visibleNoteIds));
-	}, [items]);
+	const filteredItems = useMemo(() => {
+		// 1. Filter by category & folder
+		const baseItems = items.filter((item) => {
+			if (selectedFolderId && item.folderId !== selectedFolderId) return false;
+			if (activeFilter === "favorites") return !!item.isFavorite;
+			if (activeFilter !== "all") return item.category === activeFilter;
+			return true;
+		});
 
-	const handleBulkPinNotes = useCallback(async () => {
-		if (selectedNoteIds.length === 0) return;
-		const targetNotes = items.filter((i) => selectedNoteIds.includes(i.id));
+		// 2. Apply tokenized, ranked relevance search
+		return searchVaultItems(baseItems, searchQuery, folders);
+	}, [items, searchQuery, activeFilter, selectedFolderId, folders]);
+
+	const handleSelectAllVisible = useCallback(() => {
+		const visibleIds = filteredItems.map((i) => i.id);
+		setSelectedItemIds((prev) => (prev.length === visibleIds.length ? [] : visibleIds));
+	}, [filteredItems]);
+
+	const handleBulkPin = useCallback(async () => {
+		if (selectedItemIds.length === 0) return;
+		const targetItems = items.filter((i) => selectedItemIds.includes(i.id));
 		// If all are already favorite/pinned, unpin them; otherwise pin all
-		const allPinned = targetNotes.every((n) => n.isFavorite);
-		for (const note of targetNotes) {
+		const allPinned = targetItems.every((n) => n.isFavorite);
+		for (const item of targetItems) {
 			await offlineVault.saveItem({
-				...note,
+				...item,
 				isFavorite: !allPinned,
 			});
 		}
-		setSelectedNoteIds([]);
+		setSelectedItemIds([]);
 		await loadData();
-	}, [selectedNoteIds, items]);
+	}, [selectedItemIds, items]);
 
-	const handleBulkMoveNotes = useCallback(
+	const handleBulkMove = useCallback(
 		async (folderId: string | null) => {
-			if (selectedNoteIds.length === 0) return;
-			const targetNotes = items.filter((i) => selectedNoteIds.includes(i.id));
-			for (const note of targetNotes) {
+			if (selectedItemIds.length === 0) return;
+			const targetItems = items.filter((i) => selectedItemIds.includes(i.id));
+			for (const item of targetItems) {
 				await offlineVault.saveItem({
-					...note,
+					...item,
 					folderId: folderId || undefined,
 				});
 			}
-			setSelectedNoteIds([]);
+			setSelectedItemIds([]);
 			await loadData();
 		},
-		[selectedNoteIds, items]
+		[selectedItemIds, items]
 	);
 
-	const handleBulkDeleteNotes = useCallback(() => {
-		if (selectedNoteIds.length === 0) return;
-		const count = selectedNoteIds.length;
+	const handleBulkDelete = useCallback(() => {
+		if (selectedItemIds.length === 0) return;
+		const count = selectedItemIds.length;
 		showAlert(
-			"Delete Notes",
-			`Are you sure you want to delete ${count} note${count > 1 ? "s" : ""}? This cannot be undone.`,
+			"Delete Items",
+			`Are you sure you want to delete ${count} item${count > 1 ? "s" : ""}? This cannot be undone.`,
 			"warning",
 			[
 				{ text: "Cancel", style: "cancel", onPress: () => setAlertConfig((prev) => ({ ...prev, visible: false })) },
@@ -224,17 +240,17 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 					text: "Delete",
 					style: "destructive",
 					onPress: async () => {
-						for (const id of selectedNoteIds) {
+						for (const id of selectedItemIds) {
 							await offlineVault.deleteItem(id);
 						}
-						setSelectedNoteIds([]);
+						setSelectedItemIds([]);
 						setAlertConfig((prev) => ({ ...prev, visible: false }));
 						await loadData();
 					},
 				},
 			]
 		);
-	}, [selectedNoteIds]);
+	}, [selectedItemIds]);
 
 	// Custom Alert State
 	const [alertConfig, setAlertConfig] = useState<CustomAlertConfig>({
@@ -552,8 +568,8 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		loadData();
 	};
 
-	const handleSaveNote = async (updated: Partial<PasswordItem>) => {
-		await offlineVault.saveItem({
+	const handleSaveNote = async (updated: Partial<PasswordItem>): Promise<PasswordItem | void> => {
+		const saved = await offlineVault.saveItem({
 			id: updated.id,
 			title: updated.title || "Untitled Note",
 			notes: updated.notes || "",
@@ -561,7 +577,8 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			folderId: updated.folderId,
 			isFavorite: !!updated.isFavorite,
 		});
-		loadData();
+		await loadData();
+		return saved;
 	};
 
 	const handleDeleteNote = async (id: string) => {
@@ -658,23 +675,6 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			showAlert("Key Copied", "Recovery key copied to clipboard.", "info");
 		}
 	};
-
-	const filteredItems = useMemo(() => {
-		return items.filter((item) => {
-			const query = searchQuery.toLowerCase();
-			const matchesSearch =
-				item.title.toLowerCase().includes(query) ||
-				(item.username && item.username.toLowerCase().includes(query)) ||
-				(item.notes && item.notes.toLowerCase().includes(query)) ||
-				(item.url && item.url.toLowerCase().includes(query));
-
-			if (!matchesSearch) return false;
-			if (selectedFolderId && item.folderId !== selectedFolderId) return false;
-			if (activeFilter === "favorites") return !!item.isFavorite;
-			if (activeFilter !== "all") return item.category === activeFilter;
-			return true;
-		});
-	}, [items, searchQuery, activeFilter, selectedFolderId]);
 
 	// Render Auth/Onboarding Screens
 	if (hasVault === null) {
@@ -807,7 +807,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
 		>
 			{/* Header: Normal PWMGHeader OR MI Notes Style Multi-Selection Header */}
-			{isNotesSelectionMode ? (
+			{isSelectionMode ? (
 				<View
 					className={`flex-row items-center justify-between px-4 py-3.5 border-b z-30 ${
 						isLight ? "bg-white border-slate-100" : "bg-slate-950 border-slate-900"
@@ -815,7 +815,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 				>
 					{/* Left: Cancel Selection */}
 					<TouchableOpacity
-						onPress={() => setSelectedNoteIds([])}
+						onPress={() => setSelectedItemIds([])}
 						className={`p-2 rounded-full ${isLight ? "bg-slate-100" : "bg-slate-900"}`}
 						hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
 					>
@@ -828,12 +828,12 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 							isLight ? "text-slate-900" : "text-white"
 						}`}
 					>
-						{selectedNoteIds.length} item{selectedNoteIds.length > 1 ? "s" : ""} selected
+						{selectedItemIds.length} item{selectedItemIds.length > 1 ? "s" : ""} selected
 					</Text>
 
 					{/* Right: Select All / Deselect All */}
 					<TouchableOpacity
-						onPress={handleSelectAllNotes}
+						onPress={handleSelectAllVisible}
 						className={`p-2 rounded-full ${isLight ? "bg-slate-100" : "bg-slate-900"}`}
 						hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
 					>
@@ -865,9 +865,98 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 				/>
 			)}
 
-			{/* Body Container with WhatsApp-style swipe between tabs (disabled when selecting) */}
-			<View className="flex-1" {...(isNotesSelectionMode ? {} : panResponder.panHandlers)}>
-				{activeBottomTab === "folders" ? (
+			{/* Body Container with true WhatsApp-style smooth sliding between tabs */}
+			<ScrollView
+				ref={tabScrollViewRef}
+				horizontal
+				pagingEnabled
+				showsHorizontalScrollIndicator={false}
+				scrollEnabled={!isSelectionMode}
+				onMomentumScrollEnd={handleScrollEnd}
+				className="flex-1"
+			>
+				{/* 1. Passwords Tab */}
+				<View style={{ width: screenWidth }} className="flex-1">
+					<PWMGListView
+						c={c}
+						theme={theme}
+						items={filteredItems}
+						folders={folders}
+						activeBottomTab="passwords"
+						searchQuery={searchQuery}
+						activeFilter={activeFilter}
+						selectedFolderId={selectedFolderId}
+						copiedField={copiedField}
+						isGridView={false}
+						selectedItemIds={selectedItemIds}
+						isRefreshing={isRefreshing}
+						onRefresh={handleRefresh}
+						onSearchChange={setSearchQuery}
+						onResetFilter={() => {
+							setSelectedFolderId(null);
+							setActiveFilter("all");
+						}}
+						onSelectItem={(item) => {
+							if (isSelectionMode) {
+								handleToggleSelectItem(item);
+							} else if (item.category === "note") {
+								setEditingNoteItem(item);
+								setIsNoteEditorOpen(true);
+							} else {
+								setShowDetailPassword(false);
+								setShowCardNumber(false);
+								setShowCardCVV(false);
+								setSelectedItem(item);
+							}
+						}}
+						onLongPressItem={handleLongPressItem}
+						onToggleSelectItem={handleToggleSelectItem}
+						onCopyPassword={(pass, id) => copyToClipboard(pass, id)}
+					/>
+				</View>
+
+				{/* 2. Notes Tab */}
+				<View style={{ width: screenWidth }} className="flex-1">
+					<PWMGListView
+						c={c}
+						theme={theme}
+						items={filteredItems}
+						folders={folders}
+						activeBottomTab="notes"
+						searchQuery={searchQuery}
+						activeFilter={activeFilter}
+						selectedFolderId={selectedFolderId}
+						copiedField={copiedField}
+						isGridView={isNotesGridView}
+						selectedItemIds={selectedItemIds}
+						isRefreshing={isRefreshing}
+						onRefresh={handleRefresh}
+						onSearchChange={setSearchQuery}
+						onResetFilter={() => {
+							setSelectedFolderId(null);
+							setActiveFilter("all");
+						}}
+						onSelectItem={(item) => {
+							if (isSelectionMode) {
+								handleToggleSelectItem(item);
+							} else if (item.category === "note") {
+								setEditingNoteItem(item);
+								setIsNoteEditorOpen(true);
+							} else {
+								setShowDetailPassword(false);
+								setShowCardNumber(false);
+								setShowCardCVV(false);
+								setSelectedItem(item);
+							}
+						}}
+						onLongPressItem={handleLongPressItem}
+						onToggleSelectItem={handleToggleSelectItem}
+						onCopyPassword={(pass, id) => copyToClipboard(pass, id)}
+					/>
+				</View>
+
+				{/* 3. Folders Tab */}
+				<View style={{ width: screenWidth }} className="flex-1">
 					<IosFoldersView
 						folders={folders}
 						items={items}
@@ -877,17 +966,20 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 						onSelectFolder={(folderId) => {
 							setSelectedFolderId(folderId);
 							setActiveFilter("all");
-							setActiveBottomTab("passwords");
+							switchTab("passwords");
 						}}
 						onSelectType={(category) => {
 							setSelectedFolderId(null);
 							setActiveFilter(category as FilterCategory);
-							setActiveBottomTab(category === "note" ? "notes" : "passwords");
+							switchTab(category === "note" ? "notes" : "passwords");
 						}}
 						onCreateFolder={() => setIsFolderModalOpen(true)}
 						onDeleteFolder={handleDeleteFolder}
 					/>
-				) : activeBottomTab === "settings" ? (
+				</View>
+
+				{/* 4. Settings Tab */}
+				<View style={{ width: screenWidth }} className="flex-1">
 					<PWMGSettingsScreen
 						items={items}
 						folders={folders}
@@ -905,46 +997,11 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 						}}
 						showAlert={showAlert}
 					/>
-				) : (
-					<PWMGListView
-						c={c}
-						theme={theme}
-						items={filteredItems}
-						folders={folders}
-						activeBottomTab={activeBottomTab}
-						searchQuery={searchQuery}
-						activeFilter={activeFilter}
-						selectedFolderId={selectedFolderId}
-						copiedField={copiedField}
-						isGridView={isNotesGridView}
-						selectedItemIds={selectedNoteIds}
-						isRefreshing={isRefreshing}
-						onRefresh={handleRefresh}
-						onSearchChange={setSearchQuery}
-						onResetFilter={() => {
-							setSelectedFolderId(null);
-							setActiveFilter("all");
-						}}
-						onSelectItem={(item) => {
-							if (item.category === "note") {
-								setEditingNoteItem(item);
-								setIsNoteEditorOpen(true);
-							} else {
-								setShowDetailPassword(false);
-								setShowCardNumber(false);
-								setShowCardCVV(false);
-								setSelectedItem(item);
-							}
-						}}
-						onLongPressItem={handleLongPressNote}
-						onToggleSelectItem={handleToggleSelectNote}
-						onCopyPassword={(pass, id) => copyToClipboard(pass, id)}
-					/>
-				)}
-			</View>
+				</View>
+			</ScrollView>
 
 			{/* Right-Bottom Floating Action Button (FAB) to Create New Item */}
-			{!isNotesSelectionMode && activeBottomTab !== "folders" && activeBottomTab !== "settings" && (
+			{!isSelectionMode && activeBottomTab !== "folders" && activeBottomTab !== "settings" && (
 				<TouchableOpacity
 					className={`absolute right-5 w-14 h-14 rounded-full justify-center items-center shadow-lg elevation-8 z-30 ${
 						isLight ? "bg-slate-900" : "bg-white"
@@ -966,22 +1023,22 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 				</TouchableOpacity>
 			)}
 
-			{/* Floating Tab Bar OR MI Notes Bulk Action Bar (Pin, Move to, Delete) */}
-			{isNotesSelectionMode ? (
+			{/* Floating Tab Bar OR Bulk Action Bar (Pin, Move to, Delete) */}
+			{isSelectionMode ? (
 				<NotesBulkActionBar
-					selectedCount={selectedNoteIds.length}
-					totalNotesCount={items.filter((i) => i.category === "note").length}
+					selectedCount={selectedItemIds.length}
+					totalNotesCount={filteredItems.length}
 					allSelected={
-						selectedNoteIds.length > 0 &&
-						selectedNoteIds.length === items.filter((i) => i.category === "note").length
+						selectedItemIds.length > 0 &&
+						selectedItemIds.length === filteredItems.length
 					}
 					folders={folders}
 					theme={theme}
-					onSelectAll={handleSelectAllNotes}
-					onCancel={() => setSelectedNoteIds([])}
-					onPin={handleBulkPinNotes}
-					onMove={handleBulkMoveNotes}
-					onDelete={handleBulkDeleteNotes}
+					onSelectAll={handleSelectAllVisible}
+					onCancel={() => setSelectedItemIds([])}
+					onPin={handleBulkPin}
+					onMove={handleBulkMove}
+					onDelete={handleBulkDelete}
 					onCreateFolder={(name, color) => handleSaveFolder(name, color)}
 				/>
 			) : (
