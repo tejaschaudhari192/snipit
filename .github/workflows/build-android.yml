@@ -22,12 +22,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Java JDK & Gradle Cache
+      - name: Setup Java JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -46,6 +45,11 @@ jobs:
       - name: Expo Prebuild (Generate Android native project)
         working-directory: mobile
         run: npx expo prebuild --platform android --clean --no-install
+
+      - name: Setup Gradle Cache
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          build-root-directory: mobile/android
 
       - name: Make Gradle Wrapper Executable
         working-directory: mobile/android
