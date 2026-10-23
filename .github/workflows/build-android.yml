@@ -36,7 +36,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/setup@v3
         with:
-          version: '9'
+          version: '11'
 
       - name: Install mobile dependencies
         working-directory: mobile
