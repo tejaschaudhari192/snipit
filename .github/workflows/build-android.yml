@@ -61,14 +61,29 @@ jobs:
           sed -i 's/signingConfig signingConfigs.release/signingConfig signingConfigs.debug/g' app/build.gradle || true
           sed -i 's/signingConfigs {/signingConfigs { release { storeFile file("debug.keystore")\n storePassword "android"\n keyAlias "androiddebugkey"\n keyPassword "android" }/g' app/build.gradle || true
 
-      - name: Build Android Release APK (arm64-v8a for modern phones)
+      - name: Build Android Release APKs (Modern, Older & Universal)
         working-directory: mobile/android
         run: |
+          mkdir -p ../../release-apks
+
+          echo "🚀 [1/3] Building arm64-v8a (Modern Phones)..."
           ./gradlew assembleRelease \
             -PreactNativeArchitectures=arm64-v8a \
-            --parallel \
-            --build-cache \
-            --no-daemon
+            --parallel --build-cache --no-daemon
+          cp app/build/outputs/apk/release/*.apk ../../release-apks/snipit-arm64-v8a.apk
+          rm -rf app/build/outputs/apk/release/*
+
+          echo "🚀 [2/3] Building armeabi-v7a (Older 32-bit Phones)..."
+          ./gradlew assembleRelease \
+            -PreactNativeArchitectures=armeabi-v7a \
+            --parallel --build-cache --no-daemon
+          cp app/build/outputs/apk/release/*.apk ../../release-apks/snipit-armeabi-v7a.apk
+          rm -rf app/build/outputs/apk/release/*
+
+          echo "🚀 [3/3] Building Universal APK (All Devices & Emulators)..."
+          ./gradlew assembleRelease \
+            --parallel --build-cache --no-daemon
+          cp app/build/outputs/apk/release/*.apk ../../release-apks/snipit-universal.apk
         env:
           ANDROID_HOME: ${{ env.ANDROID_HOME }}
 
@@ -80,20 +95,21 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "build=${BUILD}" >> $GITHUB_OUTPUT
 
-      - name: Prepare APKs for Release (Standard Versioned + Canonical Link)
+      - name: Prepare Standard Versioned APKs
         run: |
           VERSION="${{ steps.app_version.outputs.version }}"
-          mkdir -p release-apks
-          ORIGINAL_APK=$(ls mobile/android/app/build/outputs/apk/release/*.apk | head -n 1)
-          # Standard open-source naming: AppName-v[version]-release.apk
-          cp "$ORIGINAL_APK" "release-apks/Snipit-v${VERSION}-release.apk"
-          # Canonical permanent download file
-          cp "$ORIGINAL_APK" "release-apks/snipit.apk"
+          cd release-apks
+          # Standard open-source naming: AppName-v[version]-[arch]-release.apk
+          cp snipit-arm64-v8a.apk "Snipit-v${VERSION}-arm64-v8a-release.apk"
+          cp snipit-armeabi-v7a.apk "Snipit-v${VERSION}-armeabi-v7a-release.apk"
+          cp snipit-universal.apk "Snipit-v${VERSION}-universal-release.apk"
+          # Canonical permanent default (Universal APK so automatic in-app updates work across all devices)
+          cp snipit-universal.apk snipit.apk
 
-      - name: Upload APK Artifact
+      - name: Upload APK Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Snipit-Android-APK
+          name: Snipit-Android-APKs
           path: release-apks/*.apk
           retention-days: 14
 
@@ -106,8 +122,11 @@ jobs:
           body: |
             ### 📱 Snipit Mobile v${{ steps.app_version.outputs.version }} (Build ${{ steps.app_version.outputs.build }})
 
-            - **Versioned APK**: [Snipit-v${{ steps.app_version.outputs.version }}-release.apk](https://github.com/${{ github.repository }}/releases/download/mobile-latest/Snipit-v${{ steps.app_version.outputs.version }}-release.apk)
-            - **Permanent Direct APK**: [snipit.apk](https://github.com/${{ github.repository }}/releases/download/mobile-latest/snipit.apk)
+            Choose the APK matching your device:
+            * 🌐 **[snipit.apk](https://github.com/${{ github.repository }}/releases/download/mobile-latest/snipit.apk)** — **Universal Default** (Guaranteed compatibility across all Android devices, emulators & in-app updates)
+            * ⚡ **[Snipit-v${{ steps.app_version.outputs.version }}-arm64-v8a-release.apk](https://github.com/${{ github.repository }}/releases/download/mobile-latest/Snipit-v${{ steps.app_version.outputs.version }}-arm64-v8a-release.apk)** — Optimized for modern 64-bit ARM smartphones (smaller download size)
+            * 📱 **[Snipit-v${{ steps.app_version.outputs.version }}-armeabi-v7a-release.apk](https://github.com/${{ github.repository }}/releases/download/mobile-latest/Snipit-v${{ steps.app_version.outputs.version }}-armeabi-v7a-release.apk)** — Older or budget 32-bit ARM phones
+            * 📦 **[Snipit-v${{ steps.app_version.outputs.version }}-universal-release.apk](https://github.com/${{ github.repository }}/releases/download/mobile-latest/Snipit-v${{ steps.app_version.outputs.version }}-universal-release.apk)** — Versioned universal build
           files: release-apks/*.apk
           prerelease: false
         env:
