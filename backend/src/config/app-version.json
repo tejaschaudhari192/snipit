@@ -1,11 +1,22 @@
 {
-	"version": "1.1.0",
-	"buildNumber": 11,
+	"version": "1.1.1",
+	"buildNumber": 12,
 	"minSupportedVersion": "1.0.0",
 	"forceUpdate": false,
 	"downloadUrl": "https://cpaste.vercel.app/mobile",
-	"releaseDate": "2026-10-21",
+	"releaseDate": "2026-10-22",
 	"changelog": [
+		{
+			"version": "1.1.1",
+			"date": "2026-10-22",
+			"title": "🔍 Intelligent Tokenized Vault Search & Sync Fixes",
+			"changes": [
+				"Tokenized ranked relevance search matching items by title, username, url, notes, and tags",
+				"Instant autosave debounce and note editor lifecycle stability",
+				"Enhanced multi-item bulk actions across passwords and notes",
+				"Orientation and screen dimension dynamic responsiveness"
+			]
+		},
 		{
 			"version": "1.1.0",
 			"date": "2026-10-21",

@@ -2,7 +2,7 @@
   "expo": {
     "name": "Snipit",
     "slug": "mobile",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -14,7 +14,7 @@
     },
     "android": {
       "package": "com.snipit.app",
-      "versionCode": 11,
+      "versionCode": 12,
       "adaptiveIcon": {
         "backgroundColor": "#090d16",
         "foregroundImage": "./assets/android-icon-foreground.png"
@@ -30,7 +30,8 @@
       }
     },
     "plugins": [
-      "expo-sharing"
+      "expo-sharing",
+      "react-native-quick-crypto"
     ]
   }
 }

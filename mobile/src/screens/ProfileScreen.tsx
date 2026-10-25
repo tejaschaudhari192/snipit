@@ -91,6 +91,15 @@ export function ProfileScreen({
 
     useEffect(() => {
         loadProfileData();
+        const unsub = offlineVault.onSync(async () => {
+            try {
+                const status = await offlineVault.getSyncStatus();
+                setSyncStatus(status === "local" ? "pending_offline" : status);
+            } catch {}
+        });
+        return () => {
+            unsub();
+        };
     }, []);
 
     const handleCheckUpdate = async () => {
@@ -171,6 +180,13 @@ export function ProfileScreen({
                 console.log("Could not refresh profile from server:", err);
             }
         }
+
+        try {
+            const status = await offlineVault.getSyncStatus();
+            setSyncStatus(status === "local" ? "pending_offline" : status);
+        } catch {
+            // default to synced or pending_offline
+        }
     };
 
     const handleSyncNow = async () => {
@@ -187,7 +203,8 @@ export function ProfileScreen({
             if (offlineVault.isUnlocked()) {
                 await offlineVault.syncFromCloud();
             }
-            setSyncStatus("synced");
+            const status = await offlineVault.getSyncStatus();
+            setSyncStatus(status === "local" ? "pending_offline" : status);
             showAlert("Sync Complete", "Your vault and credentials are fully synchronized with the cloud.", "success");
         } catch {
             setSyncStatus("pending_offline");

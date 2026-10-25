@@ -88,6 +88,8 @@ const STORAGE_KEYS = {
     DEFAULT_TOOL: "@snipit/default_tool",
     PENDING_DELETES: "@snipit/pwmg_pending_deletes",
     PENDING_FOLDER_DELETES: "@snipit/pwmg_pending_folder_deletes",
+    PENDING_ITEM_UPSERTS: "@snipit/pwmg_pending_item_upserts",
+    PENDING_FOLDER_UPSERTS: "@snipit/pwmg_pending_folder_upserts",
     SYNCED_ITEM_IDS: "@snipit/pwmg_synced_item_ids",
     SYNCED_FOLDER_IDS: "@snipit/pwmg_synced_folder_ids",
 };
@@ -520,9 +522,10 @@ export class OfflineVaultService {
                 }
             }
 
-            // 9. Update local sync manifest with all current live item IDs
+            // 9. Update local sync manifest with all current live item IDs and clear pending item upserts
             const updatedSyncedIds = finalList.map((i) => i.id);
             await AsyncStorage.setItem(STORAGE_KEYS.SYNCED_ITEM_IDS, JSON.stringify(updatedSyncedIds));
+            await AsyncStorage.removeItem(STORAGE_KEYS.PENDING_ITEM_UPSERTS);
 
             // 10. Reconcile Folders with Sync Manifest
             const syncedFolderIdsRaw = await AsyncStorage.getItem(STORAGE_KEYS.SYNCED_FOLDER_IDS);
@@ -565,6 +568,7 @@ export class OfflineVaultService {
             const encryptedFolders = encryptSymmetric(mergedFolders, encryptionKey);
             await AsyncStorage.setItem(STORAGE_KEYS.ENCRYPTED_FOLDERS, encryptedFolders);
             await AsyncStorage.setItem(STORAGE_KEYS.SYNCED_FOLDER_IDS, JSON.stringify(mergedFolders.map((f) => f.id)));
+            await AsyncStorage.removeItem(STORAGE_KEYS.PENDING_FOLDER_UPSERTS);
 
             // If local offline folders were added, sync settings back to cloud
             if (hasLocalOnlyFolders) {
@@ -631,6 +635,7 @@ export class OfflineVaultService {
         // Sync with backend if user is logged in
         const user = await this.getUser();
         if (user && user.token) {
+            let uploaded = false;
             try {
                 const baseUrl = await this.getApiBaseUrl();
                 const payloadToCloud = {
@@ -640,7 +645,7 @@ export class OfflineVaultService {
                 };
                 const encryptedPayload = encryptSymmetric(payloadToCloud, key);
                 // Use PUT with item ID to upsert safely and prevent MongoDB duplicate key errors
-                await fetch(`${baseUrl}/tools/password-manager/vault/items/${saved.id}`, {
+                const res = await fetch(`${baseUrl}/tools/password-manager/vault/items/${saved.id}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
@@ -650,8 +655,14 @@ export class OfflineVaultService {
                         encryptedPayload,
                     }),
                 });
+                uploaded = res.ok;
+            } catch (err) {
+                console.log("Cloud sync error for saveItem:", err);
+                uploaded = false;
+            }
 
-                // Record in sync manifest
+            if (uploaded) {
+                // Record in synced manifest and remove from pending upserts
                 try {
                     const raw = await AsyncStorage.getItem(STORAGE_KEYS.SYNCED_ITEM_IDS);
                     const ids: string[] = raw ? JSON.parse(raw) : [];
@@ -659,12 +670,33 @@ export class OfflineVaultService {
                         ids.push(saved.id);
                         await AsyncStorage.setItem(STORAGE_KEYS.SYNCED_ITEM_IDS, JSON.stringify(ids));
                     }
+                    const pendingRaw = await AsyncStorage.getItem(STORAGE_KEYS.PENDING_ITEM_UPSERTS);
+                    if (pendingRaw) {
+                        const pending: string[] = JSON.parse(pendingRaw);
+                        const filtered = pending.filter((id) => id !== saved.id);
+                        await AsyncStorage.setItem(STORAGE_KEYS.PENDING_ITEM_UPSERTS, JSON.stringify(filtered));
+                    }
                 } catch {}
-            } catch (err) {
-                console.log("Cloud sync error for saveItem:", err);
+            } else {
+                // Mark item as pending offline upsert and remove from synced IDs
+                try {
+                    const raw = await AsyncStorage.getItem(STORAGE_KEYS.SYNCED_ITEM_IDS);
+                    if (raw) {
+                        const ids: string[] = JSON.parse(raw);
+                        const filtered = ids.filter((id) => id !== saved.id);
+                        await AsyncStorage.setItem(STORAGE_KEYS.SYNCED_ITEM_IDS, JSON.stringify(filtered));
+                    }
+                    const pendingRaw = await AsyncStorage.getItem(STORAGE_KEYS.PENDING_ITEM_UPSERTS);
+                    const pending: string[] = pendingRaw ? JSON.parse(pendingRaw) : [];
+                    if (!pending.includes(saved.id)) {
+                        pending.push(saved.id);
+                        await AsyncStorage.setItem(STORAGE_KEYS.PENDING_ITEM_UPSERTS, JSON.stringify(pending));
+                    }
+                } catch {}
             }
         }
 
+        this.notifySyncListeners();
         return saved;
     }
 
@@ -773,18 +805,44 @@ export class OfflineVaultService {
         const encrypted = encryptSymmetric(folders, key);
         await AsyncStorage.setItem(STORAGE_KEYS.ENCRYPTED_FOLDERS, encrypted);
 
-        // Record in folder sync manifest
-        try {
-            const raw = await AsyncStorage.getItem(STORAGE_KEYS.SYNCED_FOLDER_IDS);
-            const ids: string[] = raw ? JSON.parse(raw) : [];
-            if (!ids.includes(saved.id)) {
-                ids.push(saved.id);
-                await AsyncStorage.setItem(STORAGE_KEYS.SYNCED_FOLDER_IDS, JSON.stringify(ids));
+        // Sync with backend encryptedSettings if logged in
+        const user = await this.getUser();
+        if (user && user.token) {
+            const synced = await this.persistFoldersToCloud(folders);
+            if (synced) {
+                try {
+                    const raw = await AsyncStorage.getItem(STORAGE_KEYS.SYNCED_FOLDER_IDS);
+                    const ids: string[] = raw ? JSON.parse(raw) : [];
+                    if (!ids.includes(saved.id)) {
+                        ids.push(saved.id);
+                        await AsyncStorage.setItem(STORAGE_KEYS.SYNCED_FOLDER_IDS, JSON.stringify(ids));
+                    }
+                    const pendingRaw = await AsyncStorage.getItem(STORAGE_KEYS.PENDING_FOLDER_UPSERTS);
+                    if (pendingRaw) {
+                        const pending: string[] = JSON.parse(pendingRaw);
+                        const filtered = pending.filter((id) => id !== saved.id);
+                        await AsyncStorage.setItem(STORAGE_KEYS.PENDING_FOLDER_UPSERTS, JSON.stringify(filtered));
+                    }
+                } catch {}
+            } else {
+                try {
+                    const raw = await AsyncStorage.getItem(STORAGE_KEYS.SYNCED_FOLDER_IDS);
+                    if (raw) {
+                        const ids: string[] = JSON.parse(raw);
+                        const filtered = ids.filter((id) => id !== saved.id);
+                        await AsyncStorage.setItem(STORAGE_KEYS.SYNCED_FOLDER_IDS, JSON.stringify(filtered));
+                    }
+                    const pendingRaw = await AsyncStorage.getItem(STORAGE_KEYS.PENDING_FOLDER_UPSERTS);
+                    const pending: string[] = pendingRaw ? JSON.parse(pendingRaw) : [];
+                    if (!pending.includes(saved.id)) {
+                        pending.push(saved.id);
+                        await AsyncStorage.setItem(STORAGE_KEYS.PENDING_FOLDER_UPSERTS, JSON.stringify(pending));
+                    }
+                } catch {}
             }
-        } catch {}
+        }
 
-        // Sync with backend encryptedSettings
-        await this.persistFoldersToCloud(folders);
+        this.notifySyncListeners();
         return saved;
     }
 
@@ -797,13 +855,19 @@ export class OfflineVaultService {
         const encrypted = encryptSymmetric(filtered, key);
         await AsyncStorage.setItem(STORAGE_KEYS.ENCRYPTED_FOLDERS, encrypted);
 
-        // Remove from synced folder manifest
+        // Remove from synced folder manifest and pending folder upserts
         try {
             const raw = await AsyncStorage.getItem(STORAGE_KEYS.SYNCED_FOLDER_IDS);
             if (raw) {
                 const ids: string[] = JSON.parse(raw);
                 const updated = ids.filter((id) => id !== folderId);
                 await AsyncStorage.setItem(STORAGE_KEYS.SYNCED_FOLDER_IDS, JSON.stringify(updated));
+            }
+            const pendingUpsertsRaw = await AsyncStorage.getItem(STORAGE_KEYS.PENDING_FOLDER_UPSERTS);
+            if (pendingUpsertsRaw) {
+                const pending: string[] = JSON.parse(pendingUpsertsRaw);
+                const updated = pending.filter((id) => id !== folderId);
+                await AsyncStorage.setItem(STORAGE_KEYS.PENDING_FOLDER_UPSERTS, JSON.stringify(updated));
             }
         } catch {}
 
@@ -824,8 +888,7 @@ export class OfflineVaultService {
         if (user && user.token) {
             let persisted = false;
             try {
-                await this.persistFoldersToCloud(filtered);
-                persisted = true;
+                persisted = await this.persistFoldersToCloud(filtered);
             } catch (err) {
                 console.log("Cloud sync error for deleteFolder:", err);
             }
@@ -843,17 +906,19 @@ export class OfflineVaultService {
                 }
             }
         }
+
+        this.notifySyncListeners();
     }
 
-    private async persistFoldersToCloud(folders: Folder[]): Promise<void> {
+    private async persistFoldersToCloud(folders: Folder[]): Promise<boolean> {
         const user = await this.getUser();
         const key = this.activePersonalKey || this.activeMEK;
-        if (!user || !user.token || !key) return;
+        if (!user || !user.token || !key) return false;
 
         try {
             const baseUrl = await this.getApiBaseUrl();
             const encryptedSettings = encryptSymmetric({ folders }, key);
-            await fetch(`${baseUrl}/tools/password-manager/vault`, {
+            const res = await fetch(`${baseUrl}/tools/password-manager/vault`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -863,8 +928,10 @@ export class OfflineVaultService {
                     encryptedSettings,
                 }),
             });
+            return res.ok;
         } catch (err) {
             console.log("Cloud sync error for folders:", err);
+            return false;
         }
     }
 
@@ -896,6 +963,69 @@ export class OfflineVaultService {
         await AsyncStorage.setItem(STORAGE_KEYS.DEFAULT_TOOL, tool);
     }
 
+    async getSyncStatus(): Promise<"local" | "synced" | "pending_offline"> {
+        const user = await this.getUser();
+        if (!user || !user.token) {
+            return "local";
+        }
+
+        // Check if there are any pending deletes or upserts recorded
+        const [
+            pendingDeletesRaw,
+            pendingFolderDeletesRaw,
+            pendingItemUpsertsRaw,
+            pendingFolderUpsertsRaw,
+            syncedItemIdsRaw,
+            syncedFolderIdsRaw,
+        ] = await Promise.all([
+            AsyncStorage.getItem(STORAGE_KEYS.PENDING_DELETES),
+            AsyncStorage.getItem(STORAGE_KEYS.PENDING_FOLDER_DELETES),
+            AsyncStorage.getItem(STORAGE_KEYS.PENDING_ITEM_UPSERTS),
+            AsyncStorage.getItem(STORAGE_KEYS.PENDING_FOLDER_UPSERTS),
+            AsyncStorage.getItem(STORAGE_KEYS.SYNCED_ITEM_IDS),
+            AsyncStorage.getItem(STORAGE_KEYS.SYNCED_FOLDER_IDS),
+        ]);
+
+        const pendingDeletes: string[] = pendingDeletesRaw ? JSON.parse(pendingDeletesRaw) : [];
+        if (pendingDeletes.length > 0) return "pending_offline";
+
+        const pendingFolderDeletes: string[] = pendingFolderDeletesRaw ? JSON.parse(pendingFolderDeletesRaw) : [];
+        if (pendingFolderDeletes.length > 0) return "pending_offline";
+
+        const pendingItemUpserts: string[] = pendingItemUpsertsRaw ? JSON.parse(pendingItemUpsertsRaw) : [];
+        if (pendingItemUpserts.length > 0) return "pending_offline";
+
+        const pendingFolderUpserts: string[] = pendingFolderUpsertsRaw ? JSON.parse(pendingFolderUpsertsRaw) : [];
+        if (pendingFolderUpserts.length > 0) return "pending_offline";
+
+        // If vault is unlocked, compare current items with synced manifests
+        if (this.isUnlocked()) {
+            try {
+                const items = await this.getItems();
+                const syncedItemIds: string[] = syncedItemIdsRaw ? JSON.parse(syncedItemIdsRaw) : [];
+                const syncedItemSet = new Set<string>(syncedItemIds);
+                for (const it of items) {
+                    if (!syncedItemSet.has(it.id)) {
+                        return "pending_offline";
+                    }
+                }
+
+                const folders = await this.getFolders();
+                const syncedFolderIds: string[] = syncedFolderIdsRaw ? JSON.parse(syncedFolderIdsRaw) : [];
+                const syncedFolderSet = new Set<string>(syncedFolderIds);
+                for (const f of folders) {
+                    if (!syncedFolderSet.has(f.id)) {
+                        return "pending_offline";
+                    }
+                }
+            } catch {
+                // If can't read items, fallback to synced check
+            }
+        }
+
+        return "synced";
+    }
+
     async resetVault(): Promise<void> {
         this.activeMEK = null;
         this.activePersonalKey = null;
@@ -906,6 +1036,8 @@ export class OfflineVaultService {
             STORAGE_KEYS.RECOVERY_RECORD,
             STORAGE_KEYS.PENDING_DELETES,
             STORAGE_KEYS.PENDING_FOLDER_DELETES,
+            STORAGE_KEYS.PENDING_ITEM_UPSERTS,
+            STORAGE_KEYS.PENDING_FOLDER_UPSERTS,
             STORAGE_KEYS.SYNCED_ITEM_IDS,
             STORAGE_KEYS.SYNCED_FOLDER_IDS,
         ]);

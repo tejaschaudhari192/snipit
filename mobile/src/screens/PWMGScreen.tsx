@@ -344,41 +344,57 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		}
 	}, [genPronounceable, genWordCount, genSeparator, genUpper, genNumbers, genLength]);
 
+	const [syncStatus, setSyncStatus] = useState<"local" | "synced" | "pending_offline" | "syncing">("local");
+
+	const refreshSyncStatus = useCallback(async () => {
+		try {
+			const status = await offlineVault.getSyncStatus();
+			setSyncStatus(status);
+		} catch (e) {
+			console.log("Error checking sync status:", e);
+		}
+	}, []);
+
 	const loadData = useCallback(async () => {
 		try {
 			const vaultItems = await offlineVault.getItems();
 			const vaultFolders = await offlineVault.getFolders();
 			setItems(vaultItems);
 			setFolders(vaultFolders);
+			await refreshSyncStatus();
 		} catch (err) {
 			console.log("Error loading vault data:", err);
 		}
-	}, []);
+	}, [refreshSyncStatus]);
 
 	const [isRefreshing, setIsRefreshing] = useState(false);
 
 	const handleRefresh = useCallback(async () => {
 		setIsRefreshing(true);
+		setSyncStatus("syncing");
 		try {
 			await offlineVault.syncFromCloud();
 			await loadData();
 		} catch (e) {
 			console.log("Error during pull-to-refresh sync:", e);
+			await refreshSyncStatus();
 		} finally {
 			setIsRefreshing(false);
 		}
-	}, [loadData]);
+	}, [loadData, refreshSyncStatus]);
 
 	useEffect(() => {
 		const unsub = offlineVault.onSync(() => {
 			if (offlineVault.isUnlocked()) {
 				loadData();
+			} else {
+				refreshSyncStatus();
 			}
 		});
 		return () => {
 			unsub();
 		};
-	}, [loadData]);
+	}, [loadData, refreshSyncStatus]);
 
 	const checkVaultStatus = async () => {
 		try {
@@ -794,12 +810,21 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 										? "Notes"
 										: "Identities";
 
+	const syncStatusText =
+		syncStatus === "syncing"
+			? "Syncing with cloud..."
+			: syncStatus === "pending_offline"
+				? "Changes saved locally • Pending sync"
+				: syncStatus === "synced"
+					? "Synced with Snipit Cloud"
+					: "Stored locally & encrypted";
+
 	const headerSubtitle =
 		activeBottomTab === "folders"
 			? `${folders.length} folders organized`
 			: activeBottomTab === "settings"
 				? "Data, maintenance & security"
-				: `${user?.token ? "Synced with Snipit Cloud" : "Stored locally & encrypted"} • ${filteredItems.length} items`;
+				: `${syncStatusText} • ${filteredItems.length} items`;
 
 	return (
 		<SafeAreaView
@@ -846,6 +871,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 					title={headerTitle}
 					subtitle={headerSubtitle}
 					userToken={user?.token}
+					syncStatus={syncStatus}
 					activeBottomTab={activeBottomTab}
 					isGridView={isNotesGridView}
 					onToggleGridView={() => setIsNotesGridView((prev) => !prev)}

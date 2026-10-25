@@ -8,6 +8,7 @@ interface PWMGHeaderProps {
 	title: string;
 	subtitle: string;
 	userToken?: string;
+	syncStatus?: "local" | "synced" | "pending_offline" | "syncing";
 	activeBottomTab?: "passwords" | "folders" | "notes" | "settings";
 	isGridView?: boolean;
 	onToggleGridView?: () => void;
@@ -23,6 +24,7 @@ export function PWMGHeader({
 	title,
 	subtitle,
 	userToken,
+	syncStatus,
 	activeBottomTab,
 	isGridView,
 	onToggleGridView,
@@ -105,7 +107,18 @@ export function PWMGHeader({
 				>
 					<View
 						className="w-1.5 h-1.5 rounded-full"
-						style={{ backgroundColor: userToken ? c.green : c.orange }}
+						style={{
+							backgroundColor:
+								syncStatus === "syncing"
+									? c.blue
+									: syncStatus === "pending_offline"
+										? c.orange
+										: syncStatus === "synced"
+											? c.green
+											: userToken
+												? c.green
+												: c.textMuted,
+						}}
 					/>
 					<Text className="text-[13px] font-medium" style={{ color: c.textSecondary }}>
 						{subtitle}

@@ -5,6 +5,17 @@ import { cssInterop } from 'react-native-css-interop';
 import nacl from 'tweetnacl';
 import * as Crypto from 'expo-crypto';
 
+// Initialize native C++ JSI crypto bindings if available
+try {
+	// eslint-disable-next-line @typescript-eslint/no-var-requires
+	const { install } = require('react-native-quick-crypto');
+	if (typeof install === 'function') {
+		install();
+	}
+} catch {
+	// Fallback to JS / Expo Go if native module is not yet compiled
+}
+
 // Register React Native's default SafeAreaView with NativeWind / cssInterop
 cssInterop(SafeAreaView, { className: 'style' });
 
