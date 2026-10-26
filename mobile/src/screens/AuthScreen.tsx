@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     SafeAreaView,
@@ -7,23 +7,18 @@ import {
     BackHandler,
     ScrollView,
     Pressable,
-    TextInput,
 } from "react-native";
 import { ArrowLeft, Globe } from "lucide-react-native";
 import { offlineVault } from "../core/vault-storage";
 import { CONFIG } from "../config/configuration";
 import { useCustomAlert } from "../hooks/useCustomAlert";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Text } from "../components/ui/text";
+import { SignInForm } from "../components/sign-in-form";
+import { SignUpForm } from "../components/sign-up-form";
+import { ForgotPasswordForm } from "../components/forgot-password-form";
 
 interface Props {
     onBack: () => void;
@@ -31,8 +26,10 @@ interface Props {
     theme?: "dark" | "light";
 }
 
+type AuthMode = "login" | "register" | "forgot";
+
 export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
-    const [mode, setMode] = useState<"login" | "register">("login");
+    const [mode, setMode] = useState<AuthMode>("login");
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -41,17 +38,20 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const passwordInputRef = useRef<any>(null);
     const { showAlert, alertModal } = useCustomAlert(theme);
 
     useEffect(() => {
         const handleHardwareBack = () => {
+            if (mode !== "login") {
+                setMode("login");
+                return true;
+            }
             onBack();
             return true;
         };
         const subscription = BackHandler.addEventListener("hardwareBackPress", handleHardwareBack);
         return () => subscription.remove();
-    }, [onBack]);
+    }, [onBack, mode]);
 
     const normalizeApiBaseUrl = (url: string) => {
         const clean = url.trim().replace(/\/+$/, "");
@@ -61,6 +61,20 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
     };
 
     const handleSubmit = async () => {
+        if (mode === "forgot") {
+            if (!email.trim()) {
+                setError("Email is required to reset password.");
+                return;
+            }
+            showAlert(
+                "Reset Link Sent",
+                `If an account exists with ${email}, password reset instructions have been sent.`,
+                "info",
+                [{ text: "OK", onPress: () => setMode("login") }]
+            );
+            return;
+        }
+
         if (!email.trim() || !password.trim()) {
             setError(mode === "login" ? "Username/Email and password are required." : "Email and password are required.");
             return;
@@ -156,11 +170,11 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
         >
             {/* Top Navigation */}
             <View className="flex-row items-center justify-between px-4 py-3 border-b border-border bg-background">
-                <Button variant="ghost" size="icon" onPress={onBack} className="h-9 w-9">
+                <Button variant="ghost" size="icon" onPress={mode === "login" ? onBack : () => setMode("login")} className="h-9 w-9">
                     <ArrowLeft className="text-foreground" size={18} />
                 </Button>
                 <Text className="text-sm font-semibold tracking-tight">
-                    {mode === "login" ? "Sign In" : "Sign Up"}
+                    {mode === "login" ? "Sign In" : mode === "register" ? "Sign Up" : "Reset Password"}
                 </Text>
                 <View className="w-9" />
             </View>
@@ -170,104 +184,82 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
                 contentContainerClassName="p-4 flex-1 justify-center max-w-sm w-full mx-auto"
                 keyboardShouldPersistTaps="handled"
             >
-                {/* Official React Native Reusables Auth Card */}
-                <Card className="border-border shadow-sm shadow-black/5">
-                    <CardHeader>
-                        <CardTitle className="text-center text-xl sm:text-left">
-                            {mode === "login" ? "Sign in to Snipit" : "Create your account"}
-                        </CardTitle>
-                        <CardDescription className="text-center sm:text-left">
-                            {mode === "login"
-                                ? "Welcome back! Please sign in to continue"
-                                : "Welcome! Please fill in the details to get started"}
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="gap-6">
-                        <View className="gap-4">
-                            {error ? (
-                                <Text className="text-destructive text-xs text-center">{error}</Text>
-                            ) : null}
+                {mode === "login" && (
+                    <SignInForm
+                        email={email}
+                        setEmail={setEmail}
+                        password={password}
+                        setPassword={setPassword}
+                        onSubmit={handleSubmit}
+                        loading={loading}
+                        error={error}
+                        onNavigateToSignUp={() => {
+                            setError("");
+                            setMode("register");
+                        }}
+                        onNavigateToForgotPassword={() => {
+                            setError("");
+                            setMode("forgot");
+                        }}
+                    />
+                )}
 
-                            {mode === "register" && (
-                                <View className="gap-1.5">
-                                    <Label htmlFor="username">Username</Label>
-                                    <Input
-                                        id="username"
-                                        placeholder="username"
-                                        autoCapitalize="none"
-                                        value={username}
-                                        onChangeText={setUsername}
-                                        returnKeyType="next"
-                                    />
-                                </View>
-                            )}
+                {mode === "register" && (
+                    <SignUpForm
+                        email={email}
+                        setEmail={setEmail}
+                        username={username}
+                        setUsername={setUsername}
+                        password={password}
+                        setPassword={setPassword}
+                        onSubmit={handleSubmit}
+                        loading={loading}
+                        error={error}
+                        onNavigateToSignIn={() => {
+                            setError("");
+                            setMode("login");
+                        }}
+                    />
+                )}
 
-                            <View className="gap-1.5">
-                                <Label htmlFor="email">Email</Label>
-                                <Input
-                                    id="email"
-                                    placeholder="m@example.com"
-                                    keyboardType="email-address"
-                                    autoComplete="email"
-                                    autoCapitalize="none"
-                                    value={email}
-                                    onChangeText={setEmail}
-                                    onSubmitEditing={() => passwordInputRef.current?.focus()}
-                                    returnKeyType="next"
-                                />
-                            </View>
+                {mode === "forgot" && (
+                    <ForgotPasswordForm
+                        email={email}
+                        setEmail={setEmail}
+                        onSubmit={handleSubmit}
+                        loading={loading}
+                        error={error}
+                        onNavigateToSignIn={() => {
+                            setError("");
+                            setMode("login");
+                        }}
+                    />
+                )}
 
-                            <View className="gap-1.5">
-                                <Label htmlFor="password">Password</Label>
-                                <Input
-                                    ref={passwordInputRef}
-                                    id="password"
-                                    secureTextEntry
-                                    returnKeyType="send"
-                                    value={password}
-                                    onChangeText={setPassword}
-                                    onSubmitEditing={handleSubmit}
-                                />
-                            </View>
-
-                            <Button className="w-full" disabled={loading} onPress={handleSubmit}>
-                                <Text>{loading ? "Please wait..." : "Continue"}</Text>
-                            </Button>
-                        </View>
-
-                        <Text className="text-center text-sm">
-                            {mode === "login" ? "Don't have an account? " : "Already have an account? "}
-                            <Pressable onPress={() => setMode(mode === "login" ? "register" : "login")}>
-                                <Text className="text-sm underline underline-offset-4">
-                                    {mode === "login" ? "Sign up" : "Sign in"}
-                                </Text>
-                            </Pressable>
+                {/* Optional Server URL Setting */}
+                <View className="mt-4">
+                    <Pressable
+                        className="flex-row items-center justify-center gap-1.5 py-1"
+                        onPress={() => setShowServerConfig(!showServerConfig)}
+                    >
+                        <Globe size={13} className="text-muted-foreground" />
+                        <Text className="text-muted-foreground text-[11px]">
+                            {showServerConfig ? "Hide server endpoint" : "Configure server URL"}
                         </Text>
+                    </Pressable>
 
-                        {/* Optional Server URL Setting */}
-                        <Pressable
-                            className="flex-row items-center justify-center gap-1.5 py-1"
-                            onPress={() => setShowServerConfig(!showServerConfig)}
-                        >
-                            <Globe size={13} className="text-muted-foreground" />
-                            <Text className="text-muted-foreground text-[11px]">
-                                {showServerConfig ? "Hide server endpoint" : "Configure server URL"}
-                            </Text>
-                        </Pressable>
-
-                        {showServerConfig && (
-                            <View className="pt-2 border-t border-border gap-1.5">
-                                <Label htmlFor="server">Server URL</Label>
-                                <Input
-                                    id="server"
-                                    placeholder="http://localhost:3000"
-                                    value={apiUrl}
-                                    onChangeText={setApiUrl}
-                                />
-                            </View>
-                        )}
-                    </CardContent>
-                </Card>
+                    {showServerConfig && (
+                        <View className="pt-2 border-t border-border gap-1.5 mt-2">
+                            <Label htmlFor="server">Server URL</Label>
+                            <Input
+                                id="server"
+                                placeholder="http://localhost:3000"
+                                value={apiUrl}
+                                onChangeText={setApiUrl}
+                            />
+                        </View>
+                    )}
+                </View>
             </ScrollView>
 
             {alertModal}

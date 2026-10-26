@@ -1,5 +1,9 @@
 import React from "react";
-import { View, Text, Modal, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Modal, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Text } from "./ui/text";
 
 interface Props {
 	visible: boolean;
@@ -16,73 +20,58 @@ export function CreateFolderModal({
 	visible,
 	folderName,
 	folderColor,
-	theme = "dark",
 	onChangeName,
 	onChangeColor,
 	onClose,
 	onSave,
 }: Props) {
 	if (!visible) return null;
-	const isLight = theme === "light";
-	const colors = ["#0a84ff", "#ff9f0a", "#30d158", "#bf5af2", "#ff375f", "#5e5ce6"];
+	const colors = ["#09090b", "#71717a", "#2563eb", "#16a34a", "#dc2626", "#9333ea"];
 
 	return (
 		<Modal visible={visible} animationType="slide" transparent statusBarTranslucent>
 			<KeyboardAvoidingView
-				className="flex-1 bg-black/65 justify-end"
+				className="flex-1 bg-black/70 justify-end"
 				behavior={Platform.OS === "ios" ? "padding" : "height"}
 			>
-				<View
-					className={`rounded-t-3xl p-5 pb-9 border-t ${
-						isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
-					}`}
-				>
+				<View className="rounded-t-2xl p-5 pb-9 border-t border-border bg-card">
 					<View className="flex-row justify-between items-center mb-4">
-						<Text className={`text-[18px] font-bold ${isLight ? "text-slate-900" : "text-white"}`}>
+						<Text className="text-lg font-bold tracking-tight text-foreground">
 							New Folder
 						</Text>
-						<TouchableOpacity onPress={onClose} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-							<Text className="text-blue-500 text-[16px] font-semibold">Cancel</Text>
-						</TouchableOpacity>
+						<Button variant="ghost" size="sm" onPress={onClose} className="h-8 px-2">
+							<Text className="text-xs">Cancel</Text>
+						</Button>
 					</View>
 
-					<TextInput
-						className={`w-full rounded-xl p-3.5 text-[16px] mb-3.5 border ${
-							isLight
-								? "bg-slate-50 border-slate-200 text-slate-900"
-								: "bg-slate-950 border-slate-800 text-white"
-						}`}
-						placeholder="Folder Name (e.g. Work, Personal, Finance)"
-						placeholderTextColor={isLight ? "#94a3b8" : "#64748b"}
-						value={folderName}
-						onChangeText={onChangeName}
-						autoFocus
-					/>
+					<View className="gap-1.5 mb-4">
+						<Label htmlFor="folder-name">Folder Name</Label>
+						<Input
+							id="folder-name"
+							placeholder="e.g. Work, Personal, Finance"
+							value={folderName}
+							onChangeText={onChangeName}
+							autoFocus
+						/>
+					</View>
 
-					<Text
-						className={`text-xs font-semibold uppercase tracking-wider mb-2 ${
-							isLight ? "text-slate-500" : "text-slate-400"
-						}`}
-					>
+					<Text className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
 						Folder Color
 					</Text>
-					<View className="flex-row gap-3 mb-4.5">
+					<View className="flex-row gap-3 mb-5">
 						{colors.map((col) => (
 							<TouchableOpacity
 								key={col}
-								className={`w-8.5 h-8.5 rounded-full ${folderColor === col ? "border-[3px] border-white" : ""}`}
+								className={`w-8 h-8 rounded-full border ${folderColor === col ? "border-foreground scale-110" : "border-border"}`}
 								style={{ backgroundColor: col }}
 								onPress={() => onChangeColor(col)}
 							/>
 						))}
 					</View>
 
-					<TouchableOpacity
-						className="w-full py-3.5 rounded-xl items-center bg-blue-600"
-						onPress={onSave}
-					>
-						<Text className="text-white text-[16px] font-bold">Create Folder</Text>
-					</TouchableOpacity>
+					<Button className="w-full h-11" onPress={onSave}>
+						<Text className="font-semibold text-primary-foreground">Create Folder</Text>
+					</Button>
 				</View>
 			</KeyboardAvoidingView>
 		</Modal>

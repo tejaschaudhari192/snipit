@@ -1,11 +1,13 @@
 import React from "react";
-import { View, Text, ScrollView, TouchableOpacity, Modal } from "react-native";
+import { View, ScrollView, TouchableOpacity, Modal } from "react-native";
 import { X, Star, Eye, EyeOff, Copy, Check, Trash2 } from "lucide-react-native";
 import { PasswordItem } from "../core/vault-storage";
 import { ItemAvatar } from "./ItemAvatar";
 import { CreditCardVisual } from "./CreditCardVisual";
 import { DetailGroupedRow, DetailGroupedCard } from "./DetailGroupedRow";
-import { useThemeVars } from "../config/theme";
+import { Button } from "./ui/button";
+import { Text } from "./ui/text";
+import { Card } from "./ui/card";
 
 interface Props {
 	visible: boolean;
@@ -64,33 +66,33 @@ export function IosDetailInspectorModal({
 }: Props) {
 	if (!item) return null;
 
-	const vars = useThemeVars(theme);
-	const isLight = theme === "light";
-
 	return (
-		<Modal visible={visible} animationType="slide" transparent>
-			<View className="flex-1 bg-black/65 justify-end">
-				<View className={`rounded-t-[18px] max-h-[92%] min-h-[75%] ${isLight ? "bg-slate-100" : "bg-slate-900"}`}>
+		<Modal visible={visible} animationType="slide" transparent statusBarTranslucent>
+			<View className="flex-1 bg-black/70 justify-end">
+				<View className="rounded-t-2xl max-h-[92%] min-h-[75%] bg-card border-t border-border">
 					{/* Header */}
-					<View className={`flex-row items-center justify-between px-4 py-3.5 border-b ${isLight ? "border-slate-200" : "border-slate-800"}`}>
-						<TouchableOpacity
+					<View className="flex-row items-center justify-between px-4 py-3 border-b border-border">
+						<Button
+							variant="ghost"
+							size="icon"
 							onPress={onClose}
-							className="w-[30px] h-[30px] rounded-full bg-slate-500/20 items-center justify-center"
-							hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+							className="h-8 w-8"
 						>
-							<X color={vars.textSecondary} size={20} />
-						</TouchableOpacity>
+							<X className="text-foreground" size={18} />
+						</Button>
 
-						<Text className={`text-[17px] font-semibold text-center flex-1 mx-3 ${isLight ? "text-slate-900" : "text-white"}`} numberOfLines={1}>
+						<Text className="text-base font-semibold text-center flex-1 mx-3 text-foreground" numberOfLines={1}>
 							{item.title}
 						</Text>
 
-						<TouchableOpacity
+						<Button
+							variant="ghost"
+							size="sm"
 							onPress={() => onOpenEdit(item)}
-							hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+							className="px-2"
 						>
-							<Text className={`text-[17px] font-semibold ${isLight ? "text-blue-600" : "text-blue-400"}`}>Edit</Text>
-						</TouchableOpacity>
+							<Text className="text-sm font-semibold">Edit</Text>
+						</Button>
 					</View>
 
 					<ScrollView
@@ -102,18 +104,18 @@ export function IosDetailInspectorModal({
 						<View className="items-center my-4">
 							<ItemAvatar
 								item={item}
-								size={72}
+								size={64}
 								fallbackIcon={
-									<View style={getCategoryBadgeStyle(item.category)} className="w-[72px] h-[72px] rounded-[18px] items-center justify-center">
-										{getCategoryIcon(item.category, 36)}
+									<View className="w-16 h-16 rounded-xl bg-muted items-center justify-center border border-border">
+										{getCategoryIcon(item.category, 32)}
 									</View>
 								}
 							/>
-							<Text className={`text-[22px] font-bold mt-3 text-center ${isLight ? "text-slate-900" : "text-white"}`}>{item.title}</Text>
+							<Text className="text-xl font-bold mt-3 text-center text-foreground">{item.title}</Text>
 							{item.isFavorite && (
-								<View className="flex-row items-center gap-1 bg-yellow-500/15 px-2.5 py-0.5 rounded-full mt-1.5">
-									<Star color="#eab308" fill="#eab308" size={13} />
-									<Text className="text-yellow-500 text-xs font-semibold">Favorite</Text>
+								<View className="flex-row items-center gap-1 bg-muted px-2.5 py-0.5 rounded-full mt-1.5 border border-border">
+									<Star className="text-foreground fill-foreground" size={12} />
+									<Text className="text-foreground text-xs font-medium">Favorite</Text>
 								</View>
 							)}
 						</View>
@@ -159,10 +161,10 @@ export function IosDetailInspectorModal({
 										rightAction={
 											<View className="flex-row items-center gap-3.5">
 												<TouchableOpacity onPress={onTogglePassword} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-													{showPassword ? <EyeOff color={vars.textSecondary} size={20} /> : <Eye color={vars.textSecondary} size={20} />}
+													{showPassword ? <EyeOff className="text-muted-foreground" size={18} /> : <Eye className="text-muted-foreground" size={18} />}
 												</TouchableOpacity>
 												<TouchableOpacity onPress={() => onCopyToClipboard(item.password!, "pass")} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-													{copiedField === "pass" ? <Check color={vars.green} size={20} /> : <Copy color={vars.blue} size={20} />}
+													{copiedField === "pass" ? <Check className="text-foreground" size={18} /> : <Copy className="text-muted-foreground" size={18} />}
 												</TouchableOpacity>
 											</View>
 										}
@@ -256,27 +258,26 @@ export function IosDetailInspectorModal({
 						)}
 
 						{/* Actions (Favorite & Delete) */}
-						<DetailGroupedCard theme={theme} marginTop={16}>
+						<Card className="border-border bg-card overflow-hidden mt-4">
 							<TouchableOpacity className="flex-row items-center gap-3 px-4 py-3.5" onPress={() => onToggleFavorite(item)} activeOpacity={0.7}>
 								<Star
-									color={item.isFavorite ? "#eab308" : vars.blue}
-									fill={item.isFavorite ? "#eab308" : "transparent"}
+									className={item.isFavorite ? "text-foreground fill-foreground" : "text-muted-foreground"}
 									size={18}
 								/>
-								<Text className={`text-base font-medium ${isLight ? "text-blue-600" : "text-blue-400"}`}>
+								<Text className="text-sm font-medium text-foreground">
 									{item.isFavorite ? "Remove from Favorites" : "Add to Favorites"}
 								</Text>
 							</TouchableOpacity>
 
-							<View className={`border-t ${isLight ? "border-slate-100" : "border-slate-800"}`} />
+							<View className="border-t border-border" />
 
 							<TouchableOpacity className="flex-row items-center gap-3 px-4 py-3.5" onPress={() => onDeleteItem(item.id)} activeOpacity={0.7}>
-								<Trash2 color={vars.red} size={18} />
-								<Text className="text-base font-medium text-red-500">
+								<Trash2 className="text-destructive" size={18} />
+								<Text className="text-sm font-medium text-destructive">
 									Delete {getCategoryItemLabel(item.category)}
 								</Text>
 							</TouchableOpacity>
-						</DetailGroupedCard>
+						</Card>
 					</ScrollView>
 				</View>
 			</View>

@@ -1,6 +1,8 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { Copy, Check, ExternalLink } from "lucide-react-native";
+import { Card } from "./ui/card";
+import { Text } from "./ui/text";
 
 interface DetailRowProps {
     label: string;
@@ -17,7 +19,6 @@ interface DetailRowProps {
 export function DetailGroupedRow({
     label,
     value,
-    theme = "dark",
     isDivider = false,
     isMasked = false,
     isUrl = false,
@@ -25,32 +26,22 @@ export function DetailGroupedRow({
     onCopy,
     isCopied = false,
 }: DetailRowProps) {
-    const isLight = theme === "light";
-
     if (!value && !rightAction) return null;
 
     return (
         <View
             className={`flex-row items-center justify-between px-4 py-3.5 ${
-                isDivider ? isLight ? "border-t border-slate-200" : "border-t border-slate-800" : ""
+                isDivider ? "border-t border-border" : ""
             }`}
         >
             <View className="flex-1 mr-2">
-                <Text
-                    className={`text-xs font-medium mb-1 ${
-                        isLight ? "text-slate-500" : "text-slate-400"
-                    }`}
-                >
+                <Text className="text-xs font-medium text-muted-foreground mb-1">
                     {label}
                 </Text>
                 <Text
-                    className={`text-[16px] font-normal ${
-                        isUrl
-                            ? "text-blue-500 underline"
-                            : isLight
-                            ? "text-slate-900"
-                            : "text-white"
-                    } ${isMasked ? "tracking-widest text-[18px]" : ""}`}
+                    className={`text-base font-medium ${
+                        isUrl ? "text-foreground underline" : "text-foreground"
+                    } ${isMasked ? "tracking-widest text-lg" : ""}`}
                     numberOfLines={isUrl ? 1 : undefined}
                     selectable={!isMasked}
                 >
@@ -63,11 +54,11 @@ export function DetailGroupedRow({
             ) : onCopy ? (
                 <TouchableOpacity onPress={onCopy} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
                     {isCopied ? (
-                        <Check color="#22c55e" size={20} />
+                        <Check className="text-foreground" size={18} />
                     ) : isUrl ? (
-                        <ExternalLink color="#3b82f6" size={20} />
+                        <ExternalLink className="text-muted-foreground" size={18} />
                     ) : (
-                        <Copy color="#3b82f6" size={20} />
+                        <Copy className="text-muted-foreground" size={18} />
                     )}
                 </TouchableOpacity>
             ) : null}
@@ -77,24 +68,18 @@ export function DetailGroupedRow({
 
 export function DetailGroupedCard({
     children,
-    theme = "dark",
     marginTop,
 }: {
     children: React.ReactNode;
     theme?: "dark" | "light";
     marginTop?: number;
 }) {
-    const isLight = theme === "light";
     return (
-        <View
-            className={`rounded-2xl overflow-hidden mb-3.5 border ${
-                isLight
-                    ? "bg-white border-slate-200"
-                    : "bg-slate-900 border-slate-800"
-            }`}
+        <Card
+            className="border-border bg-card overflow-hidden mb-3.5"
             style={marginTop ? { marginTop } : undefined}
         >
             {children}
-        </View>
+        </Card>
     );
 }

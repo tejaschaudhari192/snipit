@@ -1,35 +1,34 @@
 import React, { useState, useMemo } from "react";
 import {
 	View,
-	Text,
 	ScrollView,
 	TouchableOpacity,
 	ActivityIndicator,
-	Alert,
 	Platform,
-	Switch,
 } from "react-native";
 import {
 	Upload,
 	Download,
 	CopyX,
-	ShieldCheck,
 	Trash2,
 	ChevronRight,
-	Key,
-	Lock,
-	CheckCircle2,
-	AlertTriangle,
 	Folder as FolderIcon,
-	FileText,
 	Fingerprint,
 } from "lucide-react-native";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
 import { offlineVault, PasswordItem, Folder } from "../core/vault-storage";
-import { useThemeVars } from "../config/theme";
 import { ModernToggle } from "./ModernToggle";
+import {
+	Card,
+	CardHeader,
+	CardTitle,
+	CardDescription,
+	CardContent,
+} from "./ui/card";
+import { Text } from "./ui/text";
+import { Separator } from "./ui/separator";
 
 interface PWMGSettingsScreenProps {
 	items: PasswordItem[];
@@ -61,9 +60,6 @@ export function PWMGSettingsScreen({
 	biometricsEnabled = false,
 	onToggleBiometrics,
 }: PWMGSettingsScreenProps) {
-	const c = useThemeVars(theme);
-	const isLight = theme === "light";
-
 	const [isExporting, setIsExporting] = useState(false);
 	const [isImporting, setIsImporting] = useState(false);
 	const [isDeduplicating, setIsDeduplicating] = useState(false);
@@ -349,82 +345,66 @@ export function PWMGSettingsScreen({
 
 	return (
 		<ScrollView
-			className={`flex-1 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
+			className="flex-1 bg-background"
 			contentContainerClassName="px-4 pt-2 pb-36"
 			showsVerticalScrollIndicator={false}
 		>
 			{/* Section Header: Vault Summary */}
-			<View className="mb-4 mt-2 px-1">
-				<Text className={`text-[13px] font-bold uppercase tracking-wider ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-					VAULT OVERVIEW
+			<View className="mb-3 mt-2 px-1">
+				<Text className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+					Vault Overview
 				</Text>
 			</View>
 
 			{/* Health Stats Grid */}
-			<View className="flex-row gap-2.5 mb-5">
-				<View
-					className={`flex-1 rounded-2xl p-3.5 border ${
-						isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
-					}`}
-				>
-					<Text className={`text-[11px] font-bold uppercase tracking-wider mb-1 ${isLight ? "text-slate-400" : "text-slate-500"}`}>
-						TOTAL ITEMS
+			<View className="flex-row gap-3 mb-6">
+				<Card className="flex-1 border-border bg-card p-3.5">
+					<Text className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+						Total Items
 					</Text>
-					<Text className={`text-2xl font-bold ${isLight ? "text-slate-900" : "text-white"}`}>
+					<Text className="text-2xl font-bold tracking-tight text-foreground">
 						{health.total}
 					</Text>
-					<Text className={`text-[11px] mt-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+					<Text className="text-xs text-muted-foreground mt-1">
 						{health.loginsCount} logins • {health.notesCount} notes
 					</Text>
-				</View>
+				</Card>
 
-				<View
-					className={`flex-1 rounded-2xl p-3.5 border ${
-						isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
-					}`}
-				>
-					<Text className={`text-[11px] font-bold uppercase tracking-wider mb-1 ${isLight ? "text-slate-400" : "text-slate-500"}`}>
-						HEALTH AUDIT
+				<Card className="flex-1 border-border bg-card p-3.5">
+					<Text className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+						Health Audit
 					</Text>
-					<Text
-						className={`text-2xl font-bold ${
-							health.reusedCount > 0 || health.weakCount > 0 ? "text-amber-500" : "text-green-500"
-						}`}
-					>
+					<Text className="text-2xl font-bold tracking-tight text-foreground">
 						{health.reusedCount > 0 || health.weakCount > 0
 							? `${health.reusedCount + health.weakCount} Alerts`
 							: "Safe"}
 					</Text>
-					<Text className={`text-[11px] mt-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+					<Text className="text-xs text-muted-foreground mt-1">
 						{health.reusedCount} reused • {health.weakCount} weak
 					</Text>
-				</View>
+				</Card>
 			</View>
 
 			{/* Section: Security & Biometrics */}
 			{isBiometricAvailable && onToggleBiometrics && (
 				<>
 					<View className="mb-2 px-1">
-						<Text className={`text-[13px] font-bold uppercase tracking-wider ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-							SECURITY & UNLOCK
+						<Text className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+							Security & Unlock
 						</Text>
 					</View>
 
-					<View
-						className={`rounded-2xl border overflow-hidden mb-5 ${
-							isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
-						}`}
-					>
+					<Card className="border-border bg-card overflow-hidden mb-6">
 						<View className="flex-row items-center justify-between px-4 py-3.5">
 							<View className="flex-row items-center gap-3 flex-1 pr-3">
-								<View className="w-8 h-8 rounded-xl bg-blue-500/15 justify-center items-center">
-									<Fingerprint color="#0a84ff" size={18} strokeWidth={2.2} />
+								<View className="w-8 h-8 rounded-md bg-muted justify-center items-center">
+									<Fingerprint className="text-foreground" size={18} />
 								</View>
 								<View className="flex-1">
-									<Text className={`text-[15px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
+									<Text className="text-sm font-semibold text-foreground">
 										Biometric Unlock
 									</Text>
-									<Text className={`text-xs ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+									<Text className="text-xs text-muted-foreground">
 										Unlock vault with fingerprint or Face ID
 									</Text>
 								</View>
@@ -435,45 +415,39 @@ export function PWMGSettingsScreen({
 								theme={theme}
 							/>
 						</View>
-					</View>
+					</Card>
 				</>
 			)}
 
-			{/* Section: Data & Transfer (Web Match) */}
+			{/* Section: Data & Transfer */}
 			<View className="mb-2 px-1">
-				<Text className={`text-[13px] font-bold uppercase tracking-wider ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-					DATA & BACKUP
+				<Text className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+					Data & Backup
 				</Text>
 			</View>
 
-			<View
-				className={`rounded-2xl border overflow-hidden mb-5 ${
-					isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
-				}`}
-			>
+			<Card className="border-border bg-card overflow-hidden mb-6">
 				{/* Import Vault */}
 				<TouchableOpacity
-					className={`flex-row items-center justify-between px-4 py-3.5 border-b ${
-						isLight ? "border-slate-100" : "border-slate-800"
-					}`}
+					className="flex-row items-center justify-between px-4 py-3.5 border-b border-border"
 					onPress={handleImportVault}
 					disabled={isImporting}
 					activeOpacity={0.7}
 				>
 					<View className="flex-row items-center gap-3">
-						<View className="w-8 h-8 rounded-xl bg-blue-500/15 justify-center items-center">
-							<Upload color="#3b82f6" size={17} />
+						<View className="w-8 h-8 rounded-md bg-muted justify-center items-center">
+							<Upload className="text-foreground" size={16} />
 						</View>
 						<View>
-							<Text className={`text-[15px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
+							<Text className="text-sm font-semibold text-foreground">
 								Import Passwords & Data
 							</Text>
-							<Text className={`text-xs ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+							<Text className="text-xs text-muted-foreground">
 								Restore from Snipit JSON backup file
 							</Text>
 						</View>
 					</View>
-					{isImporting ? <ActivityIndicator size="small" color="#3b82f6" /> : <ChevronRight color={c.textSecondary} size={16} />}
+					{isImporting ? <ActivityIndicator size="small" /> : <ChevronRight className="text-muted-foreground" size={16} />}
 				</TouchableOpacity>
 
 				{/* Export Vault */}
@@ -484,52 +458,46 @@ export function PWMGSettingsScreen({
 					activeOpacity={0.7}
 				>
 					<View className="flex-row items-center gap-3">
-						<View className="w-8 h-8 rounded-xl bg-purple-500/15 justify-center items-center">
-							<Download color="#a855f7" size={17} />
+						<View className="w-8 h-8 rounded-md bg-muted justify-center items-center">
+							<Download className="text-foreground" size={16} />
 						</View>
 						<View>
-							<Text className={`text-[15px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
+							<Text className="text-sm font-semibold text-foreground">
 								Export Vault Backup
 							</Text>
-							<Text className={`text-xs ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+							<Text className="text-xs text-muted-foreground">
 								Save an unencrypted JSON snapshot
 							</Text>
 						</View>
 					</View>
-					{isExporting ? <ActivityIndicator size="small" color="#a855f7" /> : <ChevronRight color={c.textSecondary} size={16} />}
+					{isExporting ? <ActivityIndicator size="small" /> : <ChevronRight className="text-muted-foreground" size={16} />}
 				</TouchableOpacity>
-			</View>
+			</Card>
 
 			{/* Section: Vault Maintenance */}
 			<View className="mb-2 px-1">
-				<Text className={`text-[13px] font-bold uppercase tracking-wider ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-					VAULT MAINTENANCE
+				<Text className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+					Vault Maintenance
 				</Text>
 			</View>
 
-			<View
-				className={`rounded-2xl border overflow-hidden mb-5 ${
-					isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
-				}`}
-			>
+			<Card className="border-border bg-card overflow-hidden mb-6">
 				{/* Merge Duplicates */}
 				<TouchableOpacity
-					className={`flex-row items-center justify-between px-4 py-3.5 border-b ${
-						isLight ? "border-slate-100" : "border-slate-800"
-					}`}
+					className="flex-row items-center justify-between px-4 py-3.5 border-b border-border"
 					onPress={handleMergeDuplicates}
 					disabled={isDeduplicating}
 					activeOpacity={0.7}
 				>
 					<View className="flex-row items-center gap-3">
-						<View className="w-8 h-8 rounded-xl bg-amber-500/15 justify-center items-center">
-							<CopyX color="#f59e0b" size={17} />
+						<View className="w-8 h-8 rounded-md bg-muted justify-center items-center">
+							<CopyX className="text-foreground" size={16} />
 						</View>
 						<View>
-							<Text className={`text-[15px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
+							<Text className="text-sm font-semibold text-foreground">
 								Find & Merge Duplicates
 							</Text>
-							<Text className={`text-xs ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+							<Text className="text-xs text-muted-foreground">
 								{health.duplicateItemsCount > 0
 									? `${health.duplicateItemsCount} matching duplicate items found`
 									: "No duplicate credentials detected"}
@@ -537,9 +505,9 @@ export function PWMGSettingsScreen({
 						</View>
 					</View>
 					{isDeduplicating ? (
-						<ActivityIndicator size="small" color="#f59e0b" />
+						<ActivityIndicator size="small" />
 					) : (
-						<ChevronRight color={c.textSecondary} size={16} />
+						<ChevronRight className="text-muted-foreground" size={16} />
 					)}
 				</TouchableOpacity>
 
@@ -550,55 +518,51 @@ export function PWMGSettingsScreen({
 					activeOpacity={0.7}
 				>
 					<View className="flex-row items-center gap-3">
-						<View className="w-8 h-8 rounded-xl bg-indigo-500/15 justify-center items-center">
-							<FolderIcon color="#6366f1" size={17} />
+						<View className="w-8 h-8 rounded-md bg-muted justify-center items-center">
+							<FolderIcon className="text-foreground" size={16} />
 						</View>
 						<View>
-							<Text className={`text-[15px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
+							<Text className="text-sm font-semibold text-foreground">
 								Manage Folders
 							</Text>
-							<Text className={`text-xs ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+							<Text className="text-xs text-muted-foreground">
 								{folders.length} active categories
 							</Text>
 						</View>
 					</View>
-					<ChevronRight color={c.textSecondary} size={16} />
+					<ChevronRight className="text-muted-foreground" size={16} />
 				</TouchableOpacity>
-			</View>
+			</Card>
 
 			{/* Section: Danger Zone */}
 			<View className="mb-2 px-1">
-				<Text className={`text-[13px] font-bold uppercase tracking-wider ${isLight ? "text-red-500" : "text-red-400"}`}>
-					DANGER ZONE
+				<Text className="text-xs font-semibold uppercase tracking-wider text-destructive">
+					Danger Zone
 				</Text>
 			</View>
 
-			<View
-				className={`rounded-2xl border overflow-hidden ${
-					isLight ? "bg-white border-red-200" : "bg-slate-900 border-red-950/60"
-				}`}
-			>
+			<Card className="border-destructive/40 bg-card overflow-hidden">
 				<TouchableOpacity
 					className="flex-row items-center justify-between px-4 py-3.5"
 					onPress={handleConfirmReset}
 					activeOpacity={0.7}
 				>
 					<View className="flex-row items-center gap-3">
-						<View className="w-8 h-8 rounded-xl bg-red-500/15 justify-center items-center">
-							<Trash2 color="#ef4444" size={17} />
+						<View className="w-8 h-8 rounded-md bg-destructive/10 justify-center items-center">
+							<Trash2 className="text-destructive" size={16} />
 						</View>
 						<View>
-							<Text className="text-[15px] font-semibold text-red-500">
+							<Text className="text-sm font-semibold text-destructive">
 								Reset Local Vault
 							</Text>
-							<Text className={`text-xs ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+							<Text className="text-xs text-muted-foreground">
 								Permanently erase local keys & encrypted entries
 							</Text>
 						</View>
 					</View>
-					<ChevronRight color="#ef4444" size={16} />
+					<ChevronRight className="text-destructive" size={16} />
 				</TouchableOpacity>
-			</View>
+			</Card>
 		</ScrollView>
 	);
 }

@@ -1,6 +1,7 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Platform } from "react-native";
+import { View, TouchableOpacity, Platform } from "react-native";
 import { Key, Folder as FolderIcon, StickyNote, Settings as SettingsIcon } from "lucide-react-native";
+import { Text } from "./ui/text";
 
 export type BottomTabType = "passwords" | "folders" | "notes" | "settings";
 
@@ -13,17 +14,13 @@ interface Props {
 export function IosBottomTabBar({ activeTab, onTabChange, theme = "dark" }: Props) {
 	const isLight = theme === "light";
 
-	const activeColor = isLight ? "#000000" : "#ffffff";
-	const inactiveColor = isLight ? "#8e8e93" : "#636366";
+	const activeColor = isLight ? "#09090b" : "#f4f4f5";
+	const inactiveColor = isLight ? "#71717a" : "#71717a";
 
 	return (
 		<View
-			className={`absolute bottom-0 left-0 right-0 flex-row justify-around items-center border-t z-20 pt-2 ${
+			className={`absolute bottom-0 left-0 right-0 flex-row justify-around items-center border-t border-border bg-background/95 z-20 pt-2 ${
 				Platform.OS === "ios" ? "h-[84px] pb-5" : "h-[88px] pb-5"
-			} ${
-				isLight
-					? "bg-white/95 border-slate-200"
-					: "bg-slate-950/95 border-slate-800"
 			}`}
 		>
 			<TouchableOpacity
@@ -33,14 +30,14 @@ export function IosBottomTabBar({ activeTab, onTabChange, theme = "dark" }: Prop
 			>
 				<Key
 					color={activeTab === "passwords" ? activeColor : inactiveColor}
-					size={22}
-					strokeWidth={activeTab === "passwords" ? 2.4 : 1.8}
+					size={20}
+					strokeWidth={activeTab === "passwords" ? 2.2 : 1.8}
 				/>
 				<Text
-					className={`text-[10px] font-semibold ${
+					className={`text-[11px] font-medium ${
 						activeTab === "passwords"
-							? isLight ? "text-slate-900" : "text-white"
-							: "text-slate-500"
+							? "text-foreground"
+							: "text-muted-foreground"
 					}`}
 				>
 					Passwords
@@ -55,14 +52,14 @@ export function IosBottomTabBar({ activeTab, onTabChange, theme = "dark" }: Prop
 			>
 				<StickyNote
 					color={activeTab === "notes" ? activeColor : inactiveColor}
-					size={22}
-					strokeWidth={activeTab === "notes" ? 2.4 : 1.8}
+					size={20}
+					strokeWidth={activeTab === "notes" ? 2.2 : 1.8}
 				/>
 				<Text
-					className={`text-[10px] font-semibold ${
+					className={`text-[11px] font-medium ${
 						activeTab === "notes"
-							? isLight ? "text-slate-900" : "text-white"
-							: "text-slate-500"
+							? "text-foreground"
+							: "text-muted-foreground"
 					}`}
 				>
 					Notes
@@ -77,14 +74,14 @@ export function IosBottomTabBar({ activeTab, onTabChange, theme = "dark" }: Prop
 			>
 				<FolderIcon
 					color={activeTab === "folders" ? activeColor : inactiveColor}
-					size={22}
-					strokeWidth={activeTab === "folders" ? 2.4 : 1.8}
+					size={20}
+					strokeWidth={activeTab === "folders" ? 2.2 : 1.8}
 				/>
 				<Text
-					className={`text-[10px] font-semibold ${
+					className={`text-[11px] font-medium ${
 						activeTab === "folders"
-							? isLight ? "text-slate-900" : "text-white"
-							: "text-slate-500"
+							? "text-foreground"
+							: "text-muted-foreground"
 					}`}
 				>
 					Folders
@@ -98,14 +95,14 @@ export function IosBottomTabBar({ activeTab, onTabChange, theme = "dark" }: Prop
 			>
 				<SettingsIcon
 					color={activeTab === "settings" ? activeColor : inactiveColor}
-					size={22}
-					strokeWidth={activeTab === "settings" ? 2.4 : 1.8}
+					size={20}
+					strokeWidth={activeTab === "settings" ? 2.2 : 1.8}
 				/>
 				<Text
-					className={`text-[10px] font-semibold ${
+					className={`text-[11px] font-medium ${
 						activeTab === "settings"
-							? isLight ? "text-slate-900" : "text-white"
-							: "text-slate-500"
+							? "text-foreground"
+							: "text-muted-foreground"
 					}`}
 				>
 					Settings

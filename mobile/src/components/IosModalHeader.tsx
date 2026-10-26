@@ -1,5 +1,7 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View } from "react-native";
+import { Button } from "./ui/button";
+import { Text } from "./ui/text";
 
 interface Props {
 	title?: string;
@@ -16,38 +18,23 @@ export function IosModalHeader({
 	onClose,
 	saveLabel = "Done",
 	closeLabel = "Cancel",
-	theme = "dark",
 }: Props) {
-	const isLight = theme === "light";
-
 	return (
-		<View
-			className={`flex-row items-center justify-between px-4 py-3.5 border-b ${
-				isLight ? "border-slate-200" : "border-slate-800"
-			}`}
-		>
-			<TouchableOpacity
-				onPress={onClose}
-				hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-			>
-				<Text className="text-[#0a84ff] text-[17px] font-normal">{closeLabel}</Text>
-			</TouchableOpacity>
+		<View className="flex-row items-center justify-between px-4 py-3 border-b border-border bg-background">
+			<Button variant="ghost" size="sm" onPress={onClose} className="px-2">
+				<Text className="text-sm font-medium">{closeLabel}</Text>
+			</Button>
 
 			<Text
-				className={`text-[17px] font-semibold text-center flex-1 mx-3 ${
-					isLight ? "text-slate-900" : "text-white"
-				}`}
+				className="text-base font-semibold text-center flex-1 mx-2 text-foreground"
 				numberOfLines={1}
 			>
 				{title}
 			</Text>
 
-			<TouchableOpacity
-				onPress={onSave}
-				hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-			>
-				<Text className="text-[#0a84ff] text-[17px] font-bold">{saveLabel}</Text>
-			</TouchableOpacity>
+			<Button variant="default" size="sm" onPress={onSave} className="px-3">
+				<Text className="text-sm font-semibold text-primary-foreground">{saveLabel}</Text>
+			</Button>
 		</View>
 	);
 }

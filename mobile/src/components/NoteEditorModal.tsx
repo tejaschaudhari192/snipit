@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
 	View,
-	Text,
 	TextInput,
 	TouchableOpacity,
 	Modal,
@@ -20,13 +19,15 @@ import {
 	Trash2,
 	Share2,
 	Folder as FolderIcon,
-	FolderPlus,
 	Plus,
 	ChevronDown,
 	Check,
 } from "lucide-react-native";
 import { PasswordItem, Folder } from "../core/vault-storage";
-import { useThemeVars } from "../config/theme";
+import { Button } from "./ui/button";
+import { Text } from "./ui/text";
+import { Input } from "./ui/input";
+import { Separator } from "./ui/separator";
 
 interface NoteEditorModalProps {
 	visible: boolean;
@@ -51,9 +52,6 @@ export function NoteEditorModal({
 	onDelete,
 	onCreateFolder,
 }: NoteEditorModalProps) {
-	const c = useThemeVars(theme);
-	const isLight = theme === "light";
-
 	const [title, setTitle] = useState("");
 	const [notes, setNotes] = useState("");
 	const [isFavorite, setIsFavorite] = useState(false);
@@ -61,7 +59,7 @@ export function NoteEditorModal({
 	const [isFolderPickerOpen, setIsFolderPickerOpen] = useState(false);
 	const [isCreatingFolder, setIsCreatingFolder] = useState(false);
 	const [newFolderName, setNewFolderName] = useState("");
-	const [newFolderColor, setNewFolderColor] = useState("#3b82f6");
+	const [newFolderColor, setNewFolderColor] = useState("#09090b");
 
 	// Track current active note ID (for updating created note in-place)
 	const currentNoteIdRef = useRef<string | undefined>(note?.id);
@@ -241,153 +239,145 @@ export function NoteEditorModal({
 					flex: 1,
 					transform: [{ translateX: slideAnim }],
 				}}
-				className={`flex-1 ${isLight ? "bg-white" : "bg-slate-950"}`}
+				className="flex-1 bg-background"
 			>
 				<SafeAreaView
-					className={`flex-1 ${isLight ? "bg-white" : "bg-slate-950"}`}
+					className="flex-1 bg-background"
 					style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
 				>
-				{/* Top App Bar inspired by Samsung & Apple Notes */}
-				<View
-					className={`flex-row items-center justify-between px-4 py-2.5 border-b ${
-						isLight ? "border-slate-100 bg-white" : "border-slate-900 bg-slate-950"
-					}`}
-				>
+				{/* Top App Bar */}
+				<View className="flex-row items-center justify-between px-4 py-2.5 border-b border-border bg-background">
 					{/* Left: Back & Folder Selector */}
 					<View className="flex-row items-center gap-2">
-						<TouchableOpacity
+						<Button
+							variant="ghost"
+							size="icon"
 							onPress={handleClose}
-							className={`p-2 rounded-full ${isLight ? "bg-slate-100" : "bg-slate-900"}`}
-							hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+							className="h-8 w-8"
 						>
-							<ArrowLeft color={isLight ? "#0f172a" : "#f8fafc"} size={20} />
-						</TouchableOpacity>
+							<ArrowLeft className="text-foreground" size={18} />
+						</Button>
 
 						{/* Folder Pill Button */}
 						<TouchableOpacity
 							onPress={() => setIsFolderPickerOpen(!isFolderPickerOpen)}
-							className={`flex-row items-center gap-1.5 px-3 py-1.5 rounded-full border ${
-								isLight ? "bg-slate-50 border-slate-200" : "bg-slate-900 border-slate-800"
-							}`}
+							className="flex-row items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-muted/60"
 							activeOpacity={0.7}
 						>
 							{activeFolder ? (
 								<View
 									className="w-2.5 h-2.5 rounded-full"
-									style={{ backgroundColor: activeFolder.color || "#3b82f6" }}
+									style={{ backgroundColor: activeFolder.color || "#09090b" }}
 								/>
 							) : (
-								<FolderIcon color={isLight ? "#64748b" : "#94a3b8"} size={13} />
+								<FolderIcon className="text-muted-foreground" size={13} />
 							)}
 							<Text
-								className={`text-xs font-semibold max-w-[100px] ${
-									isLight ? "text-slate-700" : "text-slate-300"
-								}`}
+								className="text-xs font-medium max-w-[100px] text-foreground"
 								numberOfLines={1}
 							>
 								{activeFolder ? activeFolder.name : "No Folder"}
 							</Text>
-							<ChevronDown color={isLight ? "#64748b" : "#94a3b8"} size={13} />
+							<ChevronDown className="text-muted-foreground" size={13} />
 						</TouchableOpacity>
 					</View>
 
-					{/* Right Actions: Favorite, Share, Delete (No Done button needed — autosaved like Samsung/Apple Notes) */}
-					<View className="flex-row items-center gap-2">
-						<TouchableOpacity
+					{/* Right Actions */}
+					<View className="flex-row items-center gap-1">
+						<Button
+							variant="ghost"
+							size="icon"
 							onPress={handleToggleFavorite}
-							className="p-2"
-							hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+							className="h-8 w-8"
 						>
 							<Star
-								color={isFavorite ? "#eab308" : isLight ? "#94a3b8" : "#64748b"}
-								fill={isFavorite ? "#eab308" : "transparent"}
-								size={20}
+								className={isFavorite ? "text-foreground fill-foreground" : "text-muted-foreground"}
+								size={18}
 							/>
-						</TouchableOpacity>
+						</Button>
 
 						{(title.trim() || notes.trim()) && (
-							<TouchableOpacity
+							<Button
+								variant="ghost"
+								size="icon"
 								onPress={handleShare}
-								className="p-2"
-								hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+								className="h-8 w-8"
 							>
-								<Share2 color={isLight ? "#64748b" : "#94a3b8"} size={19} />
-							</TouchableOpacity>
+								<Share2 className="text-foreground" size={18} />
+							</Button>
 						)}
 
 						{note?.id && onDelete && (
-							<TouchableOpacity
+							<Button
+								variant="ghost"
+								size="icon"
 								onPress={() => {
 									onDelete(note.id);
 									onClose();
 								}}
-								className="p-2"
-								hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+								className="h-8 w-8"
 							>
-								<Trash2 color="#ef4444" size={19} />
-							</TouchableOpacity>
+								<Trash2 className="text-destructive" size={18} />
+							</Button>
 						)}
 					</View>
 				</View>
 
 				{/* Folder Picker Dropdown Sheet */}
 				{isFolderPickerOpen && (
-					<View
-						className={`mx-4 mt-2 p-2 rounded-2xl border shadow-lg z-50 ${
-							isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
-						}`}
-					>
+					<View className="mx-4 mt-2 p-2 rounded-xl border border-border bg-card shadow-lg z-50">
 						<View className="flex-row items-center justify-between px-2 py-1">
-							<Text className={`text-[11px] font-bold uppercase tracking-wider ${isLight ? "text-slate-400" : "text-slate-500"}`}>
+							<Text className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
 								Move to Folder
 							</Text>
 							{onCreateFolder && !isCreatingFolder && (
-								<TouchableOpacity
+								<Button
+									variant="ghost"
+									size="sm"
 									onPress={() => setIsCreatingFolder(true)}
-									className="flex-row items-center gap-1 py-0.5 px-2 rounded-md bg-blue-600/10"
-									activeOpacity={0.7}
+									className="h-6 px-2 flex-row gap-1"
 								>
-									<Plus color="#2563eb" size={13} strokeWidth={2.5} />
-									<Text className="text-[11px] font-bold text-blue-600">New</Text>
-								</TouchableOpacity>
+									<Plus className="text-foreground" size={13} strokeWidth={2.5} />
+									<Text className="text-xs font-semibold">New</Text>
+								</Button>
 							)}
 						</View>
 
 						{/* Inline Create Folder Input */}
 						{isCreatingFolder && (
-							<View className={`p-2.5 my-1.5 rounded-xl border ${isLight ? "bg-slate-50 border-slate-200" : "bg-slate-800/60 border-slate-700"}`}>
-								<TextInput
-									className={`text-sm font-semibold px-2 py-1.5 rounded-lg border ${
-										isLight ? "bg-white border-slate-200 text-slate-900" : "bg-slate-900 border-slate-700 text-white"
-									}`}
+							<View className="p-2.5 my-1.5 rounded-lg border border-border bg-muted/60">
+								<Input
 									placeholder="New folder name..."
-									placeholderTextColor={isLight ? "#94a3b8" : "#64748b"}
 									value={newFolderName}
 									onChangeText={setNewFolderName}
 									autoFocus
+									className="h-9 mb-2"
 								/>
-								<View className="flex-row items-center justify-between mt-2 pt-1 border-t border-slate-200/50">
+								<View className="flex-row items-center justify-between pt-1 border-t border-border">
 									<View className="flex-row items-center gap-1.5">
-										{["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"].map((col) => (
+										{["#09090b", "#71717a", "#2563eb", "#16a34a", "#dc2626", "#9333ea"].map((col) => (
 											<TouchableOpacity
 												key={col}
 												onPress={() => setNewFolderColor(col)}
-												className={`w-5 h-5 rounded-full ${newFolderColor === col ? "border-2 border-white scale-110" : ""}`}
+												className={`w-5 h-5 rounded-full border ${newFolderColor === col ? "border-foreground scale-110" : "border-border"}`}
 												style={{ backgroundColor: col }}
 											/>
 										))}
 									</View>
 									<View className="flex-row items-center gap-1.5">
-										<TouchableOpacity
+										<Button
+											variant="ghost"
+											size="sm"
 											onPress={() => {
 												setIsCreatingFolder(false);
 												setNewFolderName("");
 											}}
-											className="px-2 py-1"
+											className="h-7 px-2"
 										>
-											<Text className={`text-xs ${isLight ? "text-slate-500" : "text-slate-400"}`}>Cancel</Text>
-										</TouchableOpacity>
-										<TouchableOpacity
+											<Text className="text-xs">Cancel</Text>
+										</Button>
+										<Button
+											size="sm"
 											onPress={async () => {
 												if (!newFolderName.trim() || !onCreateFolder) return;
 												const created = await onCreateFolder(newFolderName.trim(), newFolderColor);
@@ -397,11 +387,10 @@ export function NoteEditorModal({
 												setNewFolderName("");
 												setIsCreatingFolder(false);
 											}}
-											className="px-2.5 py-1 rounded-md bg-blue-600"
-											activeOpacity={0.8}
+											className="h-7 px-2.5"
 										>
-											<Text className="text-xs font-bold text-white">Create</Text>
-										</TouchableOpacity>
+											<Text className="text-xs font-semibold text-primary-foreground">Create</Text>
+										</Button>
 									</View>
 								</View>
 							</View>
@@ -409,37 +398,37 @@ export function NoteEditorModal({
 
 						<TouchableOpacity
 							onPress={() => handleSelectFolder(undefined)}
-							className={`flex-row items-center justify-between px-3 py-2.5 rounded-xl ${
-								folderId === undefined ? (isLight ? "bg-blue-50" : "bg-blue-950/40") : ""
+							className={`flex-row items-center justify-between px-3 py-2.5 rounded-md ${
+								folderId === undefined ? "bg-muted" : ""
 							}`}
 						>
 							<View className="flex-row items-center gap-2.5">
-								<FolderIcon color={isLight ? "#64748b" : "#94a3b8"} size={16} />
-								<Text className={`text-sm font-medium ${isLight ? "text-slate-900" : "text-white"}`}>
+								<FolderIcon className="text-muted-foreground" size={16} />
+								<Text className="text-sm font-medium text-foreground">
 									No Folder (Root)
 								</Text>
 							</View>
-							{folderId === undefined && <Check color="#3b82f6" size={16} />}
+							{folderId === undefined && <Check className="text-foreground" size={16} />}
 						</TouchableOpacity>
 
 						{folders.map((f) => (
 							<TouchableOpacity
 								key={f.id}
 								onPress={() => handleSelectFolder(f.id)}
-								className={`flex-row items-center justify-between px-3 py-2.5 rounded-xl ${
-									folderId === f.id ? (isLight ? "bg-blue-50" : "bg-blue-950/40") : ""
+								className={`flex-row items-center justify-between px-3 py-2.5 rounded-md ${
+									folderId === f.id ? "bg-muted" : ""
 								}`}
 							>
 								<View className="flex-row items-center gap-2.5">
 									<View
 										className="w-3.5 h-3.5 rounded-full"
-										style={{ backgroundColor: f.color || "#3b82f6" }}
+										style={{ backgroundColor: f.color || "#09090b" }}
 									/>
-									<Text className={`text-sm font-medium ${isLight ? "text-slate-900" : "text-white"}`}>
+									<Text className="text-sm font-medium text-foreground">
 										{f.name}
 									</Text>
 								</View>
-								{folderId === f.id && <Check color="#3b82f6" size={16} />}
+								{folderId === f.id && <Check className="text-foreground" size={16} />}
 							</TouchableOpacity>
 						))}
 					</View>
@@ -447,7 +436,7 @@ export function NoteEditorModal({
 
 				{/* Note Editor Body */}
 				<KeyboardAvoidingView
-					className="flex-1"
+					className="flex-1 bg-background"
 					behavior={Platform.OS === "ios" ? "padding" : "height"}
 				>
 					<ScrollView
@@ -459,21 +448,19 @@ export function NoteEditorModal({
 					>
 						{/* Timestamp & Info Bar */}
 						<View className="flex-row items-center justify-between mb-2">
-							<Text className={`text-xs font-medium ${isLight ? "text-slate-400" : "text-slate-500"}`}>
+							<Text className="text-xs text-muted-foreground">
 								{formattedDate}
 							</Text>
-							<Text className={`text-xs font-medium ${isLight ? "text-slate-400" : "text-slate-500"}`}>
+							<Text className="text-xs text-muted-foreground">
 								{wordCount} words • {charCount} chars
 							</Text>
 						</View>
 
-						{/* Note Title Input (Samsung / MI Notes style bold header) */}
+						{/* Note Title Input */}
 						<TextInput
-							className={`text-2xl font-bold tracking-tight pb-2 ${
-								isLight ? "text-slate-900" : "text-white"
-							}`}
+							className="text-2xl font-bold tracking-tight pb-2 text-foreground"
 							placeholder="Title"
-							placeholderTextColor={isLight ? "#94a3b8" : "#475569"}
+							placeholderTextColor="#71717a"
 							value={title}
 							onChangeText={handleTitleChange}
 							multiline={false}
@@ -481,19 +468,13 @@ export function NoteEditorModal({
 						/>
 
 						{/* Subtle Divider */}
-						<View
-							className={`h-[1px] my-2 ${
-								isLight ? "bg-slate-100" : "bg-slate-900"
-							}`}
-						/>
+						<Separator className="my-2" />
 
-						{/* Note Content Text Area (fluid full height) */}
+						{/* Note Content Text Area */}
 						<TextInput
-							className={`text-base leading-6 pt-1 pb-32 ${
-								isLight ? "text-slate-800" : "text-slate-200"
-							}`}
+							className="text-base leading-6 pt-1 pb-32 text-foreground"
 							placeholder="Start writing..."
-							placeholderTextColor={isLight ? "#94a3b8" : "#475569"}
+							placeholderTextColor="#71717a"
 							multiline
 							textAlignVertical="top"
 							value={notes}

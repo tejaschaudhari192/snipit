@@ -1,14 +1,16 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { Star, Folder as FolderIcon, Check } from "lucide-react-native";
 import { PasswordItem, Folder } from "../core/vault-storage";
-import { ThemeColors } from "../config/theme";
+import { Card } from "@/components/ui/card";
+import { Text } from "@/components/ui/text";
+import { cn } from "@/lib/utils";
 
 interface NoteGridCardProps {
 	item: PasswordItem;
 	folders?: Folder[];
-	c: ThemeColors;
-	isLight: boolean;
+	c?: any;
+	isLight?: boolean;
 	isSelectionMode?: boolean;
 	isSelected?: boolean;
 	onPress: () => void;
@@ -18,8 +20,6 @@ interface NoteGridCardProps {
 export function NoteGridCard({
 	item,
 	folders = [],
-	c,
-	isLight,
 	isSelectionMode = false,
 	isSelected = false,
 	onPress,
@@ -61,109 +61,84 @@ export function NoteGridCard({
 	return (
 		<View className="flex-1 max-w-[50%] p-1.5" style={{ boxSizing: "border-box" as any }}>
 			<TouchableOpacity
-				className={`flex-1 rounded-2xl p-4 min-h-[145px] justify-between border shadow-sm ${
-					isSelected
-						? isLight
-							? "bg-amber-50/60 border-amber-400 shadow-amber-100"
-							: "bg-amber-950/20 border-amber-500 shadow-black"
-						: isLight
-							? "bg-white border-slate-200/90 shadow-slate-100"
-							: "bg-slate-900/95 border-slate-800 shadow-black"
-				}`}
 				activeOpacity={0.75}
 				onPress={onPress}
 				onLongPress={onLongPress}
 				delayLongPress={300}
+				className="flex-1"
 			>
-				{/* Top: Title & Selection Circle or Favorite Star */}
-				<View>
-					<View className="flex-row items-start justify-between gap-1 mb-1.5">
-						<Text
-							className={`text-[16px] font-bold leading-5 flex-1 tracking-tight ${
-								isLight ? "text-slate-900" : "text-white"
-							}`}
-							numberOfLines={2}
-						>
-							{item.title || "Untitled Note"}
-						</Text>
-						{isSelectionMode ? (
-							<View
-								className={`w-5 h-5 rounded-full items-center justify-center border ${
-									isSelected
-										? "bg-amber-500 border-amber-500"
-										: isLight
-											? "border-slate-300 bg-slate-50"
-											: "border-slate-600 bg-slate-800"
-								}`}
+				<Card
+					className={cn(
+						"flex-1 p-4 py-4 min-h-[145px] justify-between border shadow-sm",
+						isSelected
+							? "border-foreground bg-accent/40"
+							: "border-border bg-card"
+					)}
+				>
+					{/* Top: Title & Selection Circle or Favorite Star */}
+					<View>
+						<View className="flex-row items-start justify-between gap-1 mb-1.5">
+							<Text
+								className="text-[16px] font-bold leading-5 flex-1 tracking-tight text-foreground"
+								numberOfLines={2}
 							>
-								{isSelected && <Check color="#ffffff" size={12} strokeWidth={3} />}
-							</View>
-						) : item.isFavorite ? (
-							<View className="pt-0.5">
-								<Star color="#eab308" fill="#eab308" size={13} />
-							</View>
-						) : null}
+								{item.title || "Untitled Note"}
+							</Text>
+							{isSelectionMode ? (
+								<View
+									className={cn(
+										"w-5 h-5 rounded-full items-center justify-center border",
+										isSelected
+											? "bg-foreground border-foreground"
+											: "border-border bg-muted/50"
+									)}
+								>
+									{isSelected && <Check className="text-background" size={12} strokeWidth={3} />}
+								</View>
+							) : item.isFavorite ? (
+								<View className="pt-0.5">
+									<Star className="text-foreground fill-foreground" size={13} />
+								</View>
+							) : null}
+						</View>
+
+						{/* Note Body Snippet */}
+						<Text
+							className="text-[13px] leading-[18px] text-muted-foreground"
+							numberOfLines={4}
+						>
+							{content || "No text"}
+						</Text>
 					</View>
 
-					{/* Note Body Snippet */}
-					<Text
-						className={`text-[13px] leading-[18px] ${
-							isLight ? "text-slate-600" : "text-slate-400"
-						}`}
-						numberOfLines={4}
-					>
-						{content || "No text"}
-					</Text>
-				</View>
+					{/* Bottom: Date & Folder Pill */}
+					<View className="flex-row items-center justify-between mt-3 pt-2.5 border-t border-border">
+						<Text className="text-[11px] font-medium tracking-tight text-muted-foreground">
+							{dateStr}
+						</Text>
 
-				{/* Bottom: Date & Folder Pill */}
-				<View
-					className={`flex-row items-center justify-between mt-3 pt-2.5 border-t ${
-						isLight ? "border-slate-100" : "border-slate-800/80"
-					}`}
-				>
-					<Text
-						className={`text-[11px] font-medium tracking-tight ${
-							isLight ? "text-slate-400" : "text-slate-500"
-						}`}
-					>
-						{dateStr}
-					</Text>
-
-					{assignedFolder ? (
-						<View
-							className={`flex-row items-center gap-1 px-2 py-0.5 rounded-full border ${
-								isLight
-									? "bg-slate-50 border-slate-200"
-									: "bg-slate-800/80 border-slate-700/80"
-							}`}
-						>
-							<View
-								className="w-1.5 h-1.5 rounded-full"
-								style={{ backgroundColor: assignedFolder.color || "#3b82f6" }}
-							/>
-							<Text
-								className={`text-[10px] font-semibold max-w-[65px] ${
-									isLight ? "text-slate-600" : "text-slate-300"
-								}`}
-								numberOfLines={1}
-							>
-								{assignedFolder.name}
-							</Text>
-						</View>
-					) : (
-						<View className="flex-row items-center gap-1 opacity-60">
-							<FolderIcon color={isLight ? "#94a3b8" : "#64748b"} size={11} />
-							<Text
-								className={`text-[10px] ${
-									isLight ? "text-slate-400" : "text-slate-500"
-								}`}
-							>
-								Notes
-							</Text>
-						</View>
-					)}
-				</View>
+						{assignedFolder ? (
+							<View className="flex-row items-center gap-1 px-2 py-0.5 rounded-full border border-border bg-muted/40">
+								<View
+									className="w-1.5 h-1.5 rounded-full bg-foreground"
+								/>
+								<Text
+									className="text-[10px] font-semibold max-w-[65px] text-foreground"
+									numberOfLines={1}
+								>
+									{assignedFolder.name}
+								</Text>
+							</View>
+						) : (
+							<View className="flex-row items-center gap-1 opacity-70">
+								<FolderIcon className="text-muted-foreground" size={11} />
+								<Text className="text-[10px] text-muted-foreground">
+									Notes
+								</Text>
+							</View>
+						)}
+					</View>
+				</Card>
 			</TouchableOpacity>
 		</View>
 	);

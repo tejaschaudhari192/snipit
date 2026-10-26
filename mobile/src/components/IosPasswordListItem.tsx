@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { Star, Copy, Check } from "lucide-react-native";
 import { PasswordItem } from "../core/vault-storage";
 import { ItemAvatar } from "./ItemAvatar";
+import { Text } from "./ui/text";
 
 interface Props {
 	item: PasswordItem;
@@ -33,22 +34,17 @@ export function IosPasswordListItem({
 	onLongPress,
 	onCopyPassword,
 }: Props) {
-	const isLight = theme === "light";
 	const isFirst = index === 0;
 	const isLast = index === totalItems - 1;
 
 	return (
 		<TouchableOpacity
-			className={`flex-row items-center px-3.5 py-3 ${
+			className={`flex-row items-center px-4 py-3.5 ${
 				isSelected
-					? isLight
-						? "bg-amber-50/60"
-						: "bg-amber-950/20"
-					: isLight
-						? "bg-white"
-						: "bg-slate-900"
-			} ${isFirst ? "rounded-t-2xl" : ""} ${isLast ? "rounded-b-2xl" : ""} ${
-				!isLast ? (isLight ? "border-b border-slate-100" : "border-b border-slate-800") : ""
+					? "bg-muted/80"
+					: "bg-card"
+			} ${isFirst ? "rounded-t-xl" : ""} ${isLast ? "rounded-b-xl" : ""} ${
+				!isLast ? "border-b border-border" : ""
 			}`}
 			activeOpacity={0.65}
 			onPress={onPress}
@@ -56,26 +52,22 @@ export function IosPasswordListItem({
 			delayLongPress={300}
 		>
 			{/* Squircle App/Site Avatar */}
-			<ItemAvatar item={item} size={42} fallbackIcon={fallbackIcon} />
+			<ItemAvatar item={item} size={40} fallbackIcon={fallbackIcon} />
 
 			<View className="flex-1 ml-3.5 justify-center">
 				<View className="flex-row items-center gap-1.5">
 					<Text
-						className={`text-[17px] font-semibold tracking-tight ${
-							isLight ? "text-slate-900" : "text-white"
-						}`}
+						className="text-base font-semibold tracking-tight text-foreground"
 						numberOfLines={1}
 					>
 						{item.title}
 					</Text>
 					{item.isFavorite && (
-						<Star color="#eab308" fill="#eab308" size={13} />
+						<Star className="text-foreground fill-foreground" size={12} />
 					)}
 				</View>
 				<Text
-					className={`text-sm mt-0.5 ${
-						isLight ? "text-slate-500" : "text-slate-400"
-					}`}
+					className="text-xs text-muted-foreground mt-0.5"
 					numberOfLines={1}
 				>
 					{subtitle}
@@ -85,15 +77,13 @@ export function IosPasswordListItem({
 			{/* Selection Checkmark OR Quick Actions */}
 			{isSelectionMode ? (
 				<View
-					className={`w-6 h-6 rounded-full items-center justify-center border mr-1 ${
+					className={`w-5 h-5 rounded-md items-center justify-center border mr-1 ${
 						isSelected
-							? "bg-amber-500 border-amber-500"
-							: isLight
-								? "border-slate-300 bg-slate-50"
-								: "border-slate-600 bg-slate-800"
+							? "bg-primary border-primary"
+							: "border-border bg-muted"
 					}`}
 				>
-					{isSelected && <Check color="#ffffff" size={14} strokeWidth={3} />}
+					{isSelected && <Check className="text-primary-foreground" size={12} strokeWidth={3} />}
 				</View>
 			) : item.password && onCopyPassword ? (
 				<TouchableOpacity
@@ -102,9 +92,9 @@ export function IosPasswordListItem({
 					hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
 				>
 					{copied ? (
-						<Check color="#22c55e" size={18} />
+						<Check className="text-foreground" size={16} />
 					) : (
-						<Copy color={isLight ? "#94a3b8" : "#64748b"} size={18} />
+						<Copy className="text-muted-foreground" size={16} />
 					)}
 				</TouchableOpacity>
 			) : null}

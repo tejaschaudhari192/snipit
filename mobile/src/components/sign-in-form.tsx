@@ -14,15 +14,37 @@ import { Text } from '@/components/ui/text';
 import * as React from 'react';
 import { Pressable, type TextInput, View } from 'react-native';
 
-export function SignInForm() {
+export interface SignInFormProps {
+  email?: string;
+  setEmail?: (val: string) => void;
+  password?: string;
+  setPassword?: (val: string) => void;
+  onSubmit?: () => void;
+  loading?: boolean;
+  error?: string;
+  onNavigateToSignUp?: () => void;
+  onNavigateToForgotPassword?: () => void;
+}
+
+export function SignInForm({
+  email = '',
+  setEmail,
+  password = '',
+  setPassword,
+  onSubmit,
+  loading = false,
+  error,
+  onNavigateToSignUp,
+  onNavigateToForgotPassword,
+}: SignInFormProps) {
   const passwordInputRef = React.useRef<any>(null);
 
   function onEmailSubmitEditing() {
     passwordInputRef.current?.focus();
   }
 
-  function onSubmit() {
-    // TODO: Submit form and navigate to protected screen if successful
+  function handleSubmit() {
+    onSubmit?.();
   }
 
   return (
@@ -36,6 +58,9 @@ export function SignInForm() {
         </CardHeader>
         <CardContent className="gap-6">
           <View className="gap-6">
+            {error ? (
+              <Text className="text-destructive text-center text-xs">{error}</Text>
+            ) : null}
             <View className="gap-1.5">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -44,6 +69,8 @@ export function SignInForm() {
                 keyboardType="email-address"
                 autoComplete="email"
                 autoCapitalize="none"
+                value={email}
+                onChangeText={setEmail}
                 onSubmitEditing={onEmailSubmitEditing}
                 returnKeyType="next"
                 submitBehavior="submit"
@@ -56,9 +83,7 @@ export function SignInForm() {
                   variant="link"
                   size="sm"
                   className="web:h-fit ml-auto h-4 px-1 py-0 sm:h-4"
-                  onPress={() => {
-                    // TODO: Navigate to forgot password screen
-                  }}>
+                  onPress={onNavigateToForgotPassword}>
                   <Text className="font-normal leading-4">Forgot your password?</Text>
                 </Button>
               </View>
@@ -67,19 +92,18 @@ export function SignInForm() {
                 id="password"
                 secureTextEntry
                 returnKeyType="send"
-                onSubmitEditing={onSubmit}
+                value={password}
+                onChangeText={setPassword}
+                onSubmitEditing={handleSubmit}
               />
             </View>
-            <Button className="w-full" onPress={onSubmit}>
-              <Text>Continue</Text>
+            <Button className="w-full" disabled={loading} onPress={handleSubmit}>
+              <Text>{loading ? 'Please wait...' : 'Continue'}</Text>
             </Button>
           </View>
           <Text className="text-center text-sm">
             Don&apos;t have an account?{' '}
-            <Pressable
-              onPress={() => {
-                // TODO: Navigate to sign up screen
-              }}>
+            <Pressable onPress={onNavigateToSignUp}>
               <Text className="text-sm underline underline-offset-4">Sign up</Text>
             </Pressable>
           </Text>

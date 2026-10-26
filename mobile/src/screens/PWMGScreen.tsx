@@ -388,7 +388,15 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			setUser(u);
 			if (u?.token) {
 				setCheckingVaultStage("Verifying cloud encryption keys...");
-				await offlineVault.checkCloudVault();
+				// Non-blocking timeout so remote network checks don't freeze the UI on startup
+				try {
+					await Promise.race([
+						offlineVault.checkCloudVault(),
+						new Promise((_, reject) => setTimeout(() => reject(new Error("Cloud verification timeout")), 1200))
+					]);
+				} catch (err) {
+					console.warn("Cloud vault pre-check bypassed or timed out:", err);
+				}
 			}
 			setCheckingVaultStage("Inspecting encrypted vault database...");
 			const exists = await offlineVault.hasVault();

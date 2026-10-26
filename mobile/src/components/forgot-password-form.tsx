@@ -11,9 +11,25 @@ import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
 import { View } from 'react-native';
 
-export function ForgotPasswordForm() {
-  function onSubmit() {
-    // TODO: Submit form and navigate to reset password screen if successful
+export interface ForgotPasswordFormProps {
+  email?: string;
+  setEmail?: (val: string) => void;
+  onSubmit?: () => void;
+  loading?: boolean;
+  error?: string;
+  onNavigateToSignIn?: () => void;
+}
+
+export function ForgotPasswordForm({
+  email = '',
+  setEmail,
+  onSubmit,
+  loading = false,
+  error,
+  onNavigateToSignIn,
+}: ForgotPasswordFormProps) {
+  function handleSubmit() {
+    onSubmit?.();
   }
 
   return (
@@ -27,6 +43,9 @@ export function ForgotPasswordForm() {
         </CardHeader>
         <CardContent className="gap-6">
           <View className="gap-6">
+            {error ? (
+              <Text className="text-destructive text-center text-xs">{error}</Text>
+            ) : null}
             <View className="gap-1.5">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -35,14 +54,23 @@ export function ForgotPasswordForm() {
                 keyboardType="email-address"
                 autoComplete="email"
                 autoCapitalize="none"
+                value={email}
+                onChangeText={setEmail}
                 returnKeyType="send"
-                onSubmitEditing={onSubmit}
+                onSubmitEditing={handleSubmit}
               />
             </View>
-            <Button className="w-full" onPress={onSubmit}>
-              <Text>Reset your password</Text>
+            <Button className="w-full" disabled={loading} onPress={handleSubmit}>
+              <Text>{loading ? 'Please wait...' : 'Reset your password'}</Text>
             </Button>
           </View>
+          {onNavigateToSignIn && (
+            <Button variant="ghost" size="sm" onPress={onNavigateToSignIn}>
+              <Text className="text-center text-sm underline underline-offset-4">
+                Back to sign in
+              </Text>
+            </Button>
+          )}
         </CardContent>
       </Card>
     </View>

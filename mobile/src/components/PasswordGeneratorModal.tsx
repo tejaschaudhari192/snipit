@@ -1,7 +1,11 @@
 import React from "react";
-import { View, Text, Modal, TouchableOpacity, ScrollView } from "react-native";
-import { RefreshCw, Check, Copy } from "lucide-react-native";
+import { View, Modal, TouchableOpacity, ScrollView } from "react-native";
+import { RefreshCw, Check, Copy, X } from "lucide-react-native";
 import { evaluatePasswordStrength, SeparatorType } from "../core/crypto";
+import { Button } from "./ui/button";
+import { Text } from "./ui/text";
+import { Separator } from "./ui/separator";
+import { ModernToggle } from "./ModernToggle";
 
 interface Props {
 	visible: boolean;
@@ -51,84 +55,76 @@ export function PasswordGeneratorModal({
 	setGenSeparator,
 }: Props) {
 	if (!visible) return null;
-	const isLight = theme === "light";
 	const strength = evaluatePasswordStrength(generatedPass);
 
 	return (
-		<Modal visible={visible} animationType="slide" transparent>
-			<View className="flex-1 bg-black/75 justify-end">
-				<View
-					className={`rounded-t-3xl overflow-hidden max-h-[85%] border-t ${
-						isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
-					}`}
-				>
+		<Modal visible={visible} animationType="slide" transparent statusBarTranslucent>
+			<View className="flex-1 bg-black/70 justify-end">
+				<View className="rounded-t-2xl overflow-hidden max-h-[85%] border-t border-border bg-card">
 					{/* Header Display */}
-					<View className="p-5" style={{ backgroundColor: strength.headerBg }}>
-						<View className="flex-row justify-between items-center mb-4">
-							<TouchableOpacity onPress={onClose} className="w-8.5 h-8.5 rounded-full bg-black/20 justify-center items-center">
-								<Text className="text-white text-[18px] font-bold">✕</Text>
-							</TouchableOpacity>
+					<View className="p-5 bg-muted/60 border-b border-border">
+						<View className="flex-row justify-between items-center mb-3">
+							<Button variant="ghost" size="icon" onPress={onClose} className="h-8 w-8">
+								<X className="text-foreground" size={16} />
+							</Button>
 							<View className="flex-row gap-2">
-								<TouchableOpacity onPress={onRefresh} className="w-8.5 h-8.5 rounded-full bg-black/20 justify-center items-center">
-									<RefreshCw color="#fff" size={18} />
-								</TouchableOpacity>
-								<TouchableOpacity onPress={() => onCopy(generatedPass, "gen")} className="w-8.5 h-8.5 rounded-full bg-black/20 justify-center items-center">
-									{copiedField === "gen" ? <Check color="#fff" size={18} /> : <Copy color="#fff" size={18} />}
-								</TouchableOpacity>
+								<Button variant="outline" size="icon" onPress={onRefresh} className="h-8 w-8">
+									<RefreshCw className="text-foreground" size={14} />
+								</Button>
+								<Button variant="outline" size="icon" onPress={() => onCopy(generatedPass, "gen")} className="h-8 w-8">
+									{copiedField === "gen" ? <Check className="text-foreground" size={14} /> : <Copy className="text-muted-foreground" size={14} />}
+								</Button>
 							</View>
 						</View>
-						<Text className="text-white text-[22px] font-bold font-mono tracking-wider text-center" numberOfLines={3} selectable>
+						<Text className="text-xl font-bold font-mono tracking-wider text-center text-foreground px-2" numberOfLines={3} selectable>
 							{generatedPass}
 						</Text>
 					</View>
 
 					{/* Strength & Fill Sub-Bar */}
-					<View className="flex-row justify-between items-center px-4 py-2.5" style={{ backgroundColor: strength.barBg }}>
-						<Text className="text-white text-xs font-bold uppercase tracking-wider">{strength.label}</Text>
-						<TouchableOpacity className="bg-white/20 px-3 py-1.5 rounded-lg" onPress={() => onApply(generatedPass)}>
-							<Text className="text-white text-xs font-bold uppercase tracking-wider">
+					<View className="flex-row justify-between items-center px-4 py-2 border-b border-border bg-muted/30">
+						<Text className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{strength.label}</Text>
+						<Button variant="ghost" size="sm" className="h-7 px-2" onPress={() => onApply(generatedPass)}>
+							<Text className="text-xs font-semibold">
 								{genTargetField ? "Fill Form" : "Fill"}
 							</Text>
-						</TouchableOpacity>
+						</Button>
 					</View>
 
 					{/* Options Body */}
 					<ScrollView className="p-5" showsVerticalScrollIndicator={false}>
 						<View className="flex-row justify-between items-center py-2.5">
-							<Text className={`text-[15px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
+							<Text className="text-sm font-medium text-foreground">
 								Pronounceable Passphrase
 							</Text>
-							<TouchableOpacity
-								className={`w-11 h-6 rounded-full p-0.5 justify-center ${genPronounceable ? "bg-blue-600" : "bg-slate-700"}`}
-								onPress={() => setGenPronounceable(!genPronounceable)}
-							>
-								<View className={`w-5 h-5 rounded-full bg-white ${genPronounceable ? "self-end" : ""}`} />
-							</TouchableOpacity>
+							<ModernToggle
+								value={genPronounceable}
+								onValueChange={setGenPronounceable}
+								theme={theme}
+							/>
 						</View>
 
 						{genPronounceable ? (
 							<>
 								<View className="my-2.5">
-									<View className="flex-row justify-between items-center mb-1">
-										<Text className={`text-[13px] font-medium ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+									<View className="flex-row justify-between items-center mb-1.5">
+										<Text className="text-xs font-medium text-muted-foreground">
 											Number of Words
 										</Text>
-										<Text className="text-blue-500 text-xs font-bold">{genWordCount} words</Text>
+										<Text className="text-xs font-semibold text-foreground">{genWordCount} words</Text>
 									</View>
-									<View className="flex-row flex-wrap gap-1.5 mt-1.5 mb-2">
+									<View className="flex-row flex-wrap gap-1.5 mt-1 mb-2">
 										{[2, 3, 4, 5, 6].map((count) => (
 											<TouchableOpacity
 												key={count}
-												className={`py-1.5 px-2.5 rounded-lg items-center border ${
+												className={`py-1.5 px-3 rounded-md items-center border ${
 													genWordCount === count
-														? "bg-violet-600 border-violet-500"
-														: isLight
-														? "bg-slate-100 border-slate-200"
-														: "bg-slate-950 border-slate-800"
+														? "bg-foreground border-foreground"
+														: "bg-muted border-border"
 												}`}
 												onPress={() => setGenWordCount(count)}
 											>
-												<Text className={`text-xs font-semibold ${genWordCount === count ? "text-white" : isLight ? "text-slate-700" : "text-slate-400"}`}>
+												<Text className={`text-xs font-medium ${genWordCount === count ? "text-background font-semibold" : "text-foreground"}`}>
 													{count}
 												</Text>
 											</TouchableOpacity>
@@ -137,23 +133,21 @@ export function PasswordGeneratorModal({
 								</View>
 
 								<View className="my-2.5">
-									<Text className={`text-[13px] font-medium mb-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+									<Text className="text-xs font-medium text-muted-foreground mb-1.5">
 										Separated By
 									</Text>
-									<View className="flex-row flex-wrap gap-1.5 mt-1.5 mb-2">
+									<View className="flex-row flex-wrap gap-1.5 mt-1 mb-2">
 										{(["hyphen", "hash", "space", "comma", "none"] as SeparatorType[]).map((sep) => (
 											<TouchableOpacity
 												key={sep}
-												className={`py-1.5 px-2.5 rounded-lg items-center border ${
+												className={`py-1.5 px-3 rounded-md items-center border ${
 													genSeparator === sep
-														? "bg-violet-600 border-violet-500"
-														: isLight
-														? "bg-slate-100 border-slate-200"
-														: "bg-slate-950 border-slate-800"
+														? "bg-foreground border-foreground"
+														: "bg-muted border-border"
 												}`}
 												onPress={() => setGenSeparator(sep)}
 											>
-												<Text className={`text-xs font-semibold ${genSeparator === sep ? "text-white" : isLight ? "text-slate-700" : "text-slate-400"}`}>
+												<Text className={`text-xs font-medium ${genSeparator === sep ? "text-background font-semibold" : "text-foreground"}`}>
 													{sep === "hyphen" ? "Hyphen (-)" : sep === "hash" ? "Hash (#)" : sep === "space" ? "Space ( )" : sep === "comma" ? "Comma (,)" : "None"}
 												</Text>
 											</TouchableOpacity>
@@ -163,26 +157,24 @@ export function PasswordGeneratorModal({
 							</>
 						) : (
 							<View className="my-2.5">
-								<View className="flex-row justify-between items-center mb-1">
-									<Text className={`text-[13px] font-medium ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+								<View className="flex-row justify-between items-center mb-1.5">
+									<Text className="text-xs font-medium text-muted-foreground">
 										Character Length
 									</Text>
-									<Text className="text-blue-500 text-xs font-bold">{genLength} chars</Text>
+									<Text className="text-xs font-semibold text-foreground">{genLength} chars</Text>
 								</View>
-								<View className="flex-row flex-wrap gap-1.5 mt-1.5 mb-2">
+								<View className="flex-row flex-wrap gap-1.5 mt-1 mb-2">
 									{[8, 12, 15, 20, 25, 32].map((len) => (
 										<TouchableOpacity
 											key={len}
-											className={`py-1.5 px-2.5 rounded-lg items-center border ${
+											className={`py-1.5 px-3 rounded-md items-center border ${
 												genLength === len
-													? "bg-violet-600 border-violet-500"
-													: isLight
-													? "bg-slate-100 border-slate-200"
-													: "bg-slate-950 border-slate-800"
+													? "bg-foreground border-foreground"
+													: "bg-muted border-border"
 											}`}
 											onPress={() => setGenLength(len)}
 										>
-											<Text className={`text-xs font-semibold ${genLength === len ? "text-white" : isLight ? "text-slate-700" : "text-slate-400"}`}>
+											<Text className={`text-xs font-medium ${genLength === len ? "text-background font-semibold" : "text-foreground"}`}>
 												{len}
 											</Text>
 										</TouchableOpacity>
@@ -191,43 +183,41 @@ export function PasswordGeneratorModal({
 							</View>
 						)}
 
-						<View className={`h-px my-3.5 ${isLight ? "bg-slate-200" : "bg-slate-800"}`} />
-						<Text className={`text-xs font-extrabold uppercase tracking-wider mb-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+						<Separator className="my-3" />
+						<Text className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
 							Include
 						</Text>
 
-						<View className="flex-row justify-between items-center py-2.5">
-							<Text className={`text-[15px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
+						<View className="flex-row justify-between items-center py-2">
+							<Text className="text-sm font-medium text-foreground">
 								{genPronounceable ? "Capitalize Words" : "Uppercase (A-Z)"}
 							</Text>
-							<TouchableOpacity
-								className={`w-11 h-6 rounded-full p-0.5 justify-center ${genUpper ? "bg-blue-600" : "bg-slate-700"}`}
-								onPress={() => setGenUpper(!genUpper)}
-							>
-								<View className={`w-5 h-5 rounded-full bg-white ${genUpper ? "self-end" : ""}`} />
-							</TouchableOpacity>
+							<ModernToggle
+								value={genUpper}
+								onValueChange={setGenUpper}
+								theme={theme}
+							/>
 						</View>
 
-						<View className="flex-row justify-between items-center py-2.5">
-							<Text className={`text-[15px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
+						<View className="flex-row justify-between items-center py-2">
+							<Text className="text-sm font-medium text-foreground">
 								Digits (0-9)
 							</Text>
-							<TouchableOpacity
-								className={`w-11 h-6 rounded-full p-0.5 justify-center ${genNumbers ? "bg-blue-600" : "bg-slate-700"}`}
-								onPress={() => setGenNumbers(!genNumbers)}
-							>
-								<View className={`w-5 h-5 rounded-full bg-white ${genNumbers ? "self-end" : ""}`} />
-							</TouchableOpacity>
+							<ModernToggle
+								value={genNumbers}
+								onValueChange={setGenNumbers}
+								theme={theme}
+							/>
 						</View>
 
-						<TouchableOpacity
-							className="w-full bg-violet-600 py-3.5 rounded-xl items-center mt-5 mb-6"
+						<Button
+							className="w-full h-11 mt-5 mb-6"
 							onPress={() => onApply(generatedPass)}
 						>
-							<Text className="text-white text-[16px] font-bold">
+							<Text className="font-semibold text-primary-foreground">
 								{genTargetField ? "Use & Close" : "Copy & Close"}
 							</Text>
-						</TouchableOpacity>
+						</Button>
 					</ScrollView>
 				</View>
 			</View>

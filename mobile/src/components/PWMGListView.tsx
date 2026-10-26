@@ -75,11 +75,11 @@ export function PWMGListView({
 
 			{(selectedFolderId || activeFilter !== "all") && (
 				<View className="flex-row justify-between items-center px-4 py-1.5 mb-1">
-					<Text className={`text-[13px] ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+					<Text className="text-xs text-muted-foreground">
 						Filtering by: {selectedFolderId ? folders.find((f) => f.id === selectedFolderId)?.name : activeFilter}
 					</Text>
 					<TouchableOpacity onPress={onResetFilter}>
-						<Text className={`text-[13px] font-semibold underline ${isLight ? "text-slate-900" : "text-white"}`}>Show All</Text>
+						<Text className="text-xs font-semibold underline text-foreground">Show All</Text>
 					</TouchableOpacity>
 				</View>
 			)}
@@ -87,18 +87,18 @@ export function PWMGListView({
 			{items.length === 0 ? (
 				<ScrollView
 					contentContainerStyle={{ flexGrow: 1 }}
-					contentContainerClassName="justify-center items-center p-5"
+					contentContainerClassName="justify-center items-center p-6 bg-background"
 					refreshControl={refreshElem}
 				>
 					{isNotesTab ? (
-						<StickyNote color={c.textMuted} size={54} strokeWidth={1.5} />
+						<StickyNote className="text-muted-foreground" size={48} strokeWidth={1.5} />
 					) : (
-						<Shield color={c.textMuted} size={54} strokeWidth={1.5} />
+						<Shield className="text-muted-foreground" size={48} strokeWidth={1.5} />
 					)}
-					<Text className={`text-xl font-bold mt-4 mb-1.5 ${isLight ? "text-slate-900" : "text-white"}`}>
+					<Text className="text-lg font-bold tracking-tight mt-4 mb-1.5 text-foreground">
 						{searchQuery ? "No Results" : isNotesTab ? "No Notes Yet" : "No Passwords"}
 					</Text>
-					<Text className={`text-sm text-center leading-5 max-w-[280px] ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+					<Text className="text-xs text-center leading-5 max-w-[280px] text-muted-foreground">
 						{searchQuery
 							? "Check spelling or search for another term."
 							: isNotesTab
