@@ -240,11 +240,11 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 					text: "Delete",
 					style: "destructive",
 					onPress: async () => {
+						setAlertConfig((prev) => ({ ...prev, visible: false }));
 						for (const id of selectedItemIds) {
 							await offlineVault.deleteItem(id);
 						}
 						setSelectedItemIds([]);
-						setAlertConfig((prev) => ({ ...prev, visible: false }));
 						await loadData();
 					},
 				},

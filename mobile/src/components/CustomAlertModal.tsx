@@ -29,17 +29,33 @@ export function CustomAlertModal({ config, theme = "dark" }: CustomAlertModalPro
 
 	const type = config.type || "info";
 
-	const getIcon = () => {
+	const getIconBadge = () => {
 		switch (type) {
 			case "success":
-				return <CheckCircle2 color="#22c55e" size={32} />;
+				return (
+					<View className="w-13 h-13 rounded-full bg-emerald-500/15 justify-center items-center mb-3.5">
+						<CheckCircle2 color="#10b981" size={28} />
+					</View>
+				);
 			case "error":
-				return <AlertCircle color="#ef4444" size={32} />;
+				return (
+					<View className="w-13 h-13 rounded-full bg-rose-500/15 justify-center items-center mb-3.5">
+						<AlertCircle color="#f43f5e" size={28} />
+					</View>
+				);
 			case "warning":
-				return <AlertTriangle color="#f59e0b" size={32} />;
+				return (
+					<View className="w-13 h-13 rounded-full bg-amber-500/15 justify-center items-center mb-3.5">
+						<AlertTriangle color="#f59e0b" size={28} />
+					</View>
+				);
 			case "info":
 			default:
-				return <Info color={isLight ? "#0f172a" : "#ffffff"} size={32} />;
+				return (
+					<View className={`w-13 h-13 rounded-full justify-center items-center mb-3.5 ${isLight ? "bg-slate-100" : "bg-slate-800"}`}>
+						<Info color={isLight ? "#0f172a" : "#ffffff"} size={28} />
+					</View>
+				);
 		}
 	};
 
@@ -48,54 +64,63 @@ export function CustomAlertModal({ config, theme = "dark" }: CustomAlertModalPro
 		: [{ text: "OK", style: "default", onPress: config.onDismiss }];
 
 	return (
-		<Modal visible={config.visible} transparent animationType="fade" onRequestClose={config.onDismiss}>
-			<View className="flex-1 bg-black/65 justify-center items-center px-6">
+		<Modal visible={config.visible} transparent animationType="fade" onRequestClose={config.onDismiss} statusBarTranslucent>
+			<View className="flex-1 bg-black/70 justify-center items-center px-6">
 				<View
-					className={`w-full max-w-[340px] rounded-2xl border p-5.5 items-center shadow-2xl ${
-						isLight ? "bg-white border-slate-200" : "bg-zinc-900 border-zinc-800"
+					className={`w-full max-w-[340px] rounded-3xl border px-6 py-6 items-center shadow-2xl ${
+						isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
 					}`}
 				>
-					<View className="mb-3 justify-center items-center">{getIcon()}</View>
-					<Text className={`text-[18px] font-bold text-center mb-2 ${isLight ? "text-slate-900" : "text-white"}`}>
+					{getIconBadge()}
+
+					<Text className={`text-[19px] font-bold text-center tracking-tight mb-2 px-1 ${isLight ? "text-slate-900" : "text-white"}`}>
 						{config.title}
 					</Text>
+
 					{config.message ? (
-						<Text className={`text-sm text-center leading-5 mb-5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+						<Text className={`text-[14px] text-center leading-5 mb-6 px-1 ${isLight ? "text-slate-600" : "text-slate-300"}`}>
 							{config.message}
 						</Text>
-					) : null}
+					) : (
+						<View className="mb-2" />
+					)}
 
-					<View className="flex-row gap-2.5 w-full">
+					<View className="flex-row gap-3 w-full">
 						{buttons.map((btn, idx) => {
 							const isDestructive = btn.style === "destructive";
 							const isCancel = btn.style === "cancel";
 							const isPrimary = !isDestructive && !isCancel;
 
-							let btnBgClass = isLight ? "bg-slate-100" : "bg-white/10";
-							let textClass = isLight ? "text-slate-900" : "text-white";
+							let btnBgClass = isLight ? "bg-slate-100" : "bg-slate-800";
+							let textClass = isLight ? "text-slate-700" : "text-slate-300";
 
 							if (isDestructive) {
-								btnBgClass = "bg-red-500/15";
-								textClass = "text-red-500";
+								btnBgClass = "bg-rose-500/15 border border-rose-500/30";
+								textClass = "text-rose-500";
 							} else if (isPrimary) {
-								btnBgClass = isLight ? "bg-black" : "bg-white";
-								textClass = isLight ? "text-white" : "text-black";
+								btnBgClass = isLight ? "bg-slate-900" : "bg-white";
+								textClass = isLight ? "text-white" : "text-slate-950";
 							}
 
 							return (
 								<TouchableOpacity
 									key={idx}
-									className={`flex-1 py-3 rounded-xl items-center justify-center ${btnBgClass}`}
+									className={`flex-1 py-3.5 px-4 rounded-xl items-center justify-center ${btnBgClass}`}
 									onPress={() => {
-										if (btn.onPress) {
-											btn.onPress();
-										} else if (config.onDismiss) {
+										// Dismiss modal immediately for instant UI responsiveness
+										if (config.onDismiss) {
 											config.onDismiss();
 										}
+										if (btn.onPress) {
+											// Run action without blocking modal close animation
+											setTimeout(() => {
+												btn.onPress?.();
+											}, 0);
+										}
 									}}
-									activeOpacity={0.7}
+									activeOpacity={0.75}
 								>
-									<Text className={`text-[15px] ${isPrimary ? "font-bold" : "font-semibold"} ${textClass}`}>
+									<Text className={`text-[15px] ${isPrimary || isDestructive ? "font-bold" : "font-semibold"} ${textClass}`}>
 										{btn.text}
 									</Text>
 								</TouchableOpacity>
