@@ -485,13 +485,8 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			}
 		}
 
-		// 2. No password entered yet: set pending toggle and inform user
+		// 2. No password entered yet: set pending toggle and guide user via inline message without popup
 		setPendingEnableBiometrics(true);
-		showAlert(
-			"Enter Master Password",
-			"Please enter your master password and tap Unlock Vault to confirm and activate biometric unlock.",
-			"info"
-		);
 	};
 
 	const handleUnlock = async () => {
@@ -816,63 +811,72 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 
 	if (isRecoveryMode) {
 		return (
-			<VaultRecoveryScreen
-				onBack={() => setIsRecoveryMode(false)}
-				theme={theme}
-				error={error}
-				inputMnemonic={inputMnemonic}
-				setInputMnemonic={setInputMnemonic}
-				onRecover={handleRecoverWithKey}
-				isRecovering={isRecovering}
-			/>
+			<>
+				<VaultRecoveryScreen
+					onBack={() => setIsRecoveryMode(false)}
+					theme={theme}
+					error={error}
+					inputMnemonic={inputMnemonic}
+					setInputMnemonic={setInputMnemonic}
+					onRecover={handleRecoverWithKey}
+					isRecovering={isRecovering}
+				/>
+				{alertModal}
+			</>
 		);
 	}
 
 	if (!hasVault) {
 		return (
-			<VaultOnboardingScreen
-				onBack={onBack}
-				theme={theme}
-				step={onboardingStep}
-				masterPassword={masterPassword}
-				confirmPassword={confirmPassword}
-				recoveryMnemonic={recoveryMnemonic}
-				recoveryConfirmed={recoveryConfirmed}
-				copiedField={copiedField}
-				error={error}
-				setMasterPassword={setMasterPassword}
-				setConfirmPassword={setConfirmPassword}
-				setRecoveryConfirmed={setRecoveryConfirmed}
-				onNextToRecovery={handleNextToRecovery}
-				onDownloadRecovery={() => recoveryMnemonic && handleDownloadRecovery(recoveryMnemonic)}
-				onCopyMnemonic={() => recoveryMnemonic && copyToClipboard(recoveryMnemonic, "mnemonic")}
-				onFinish={handleFinishOnboarding}
-				setStep={setOnboardingStep}
-				isCreatingVault={isCreatingVault}
-			/>
+			<>
+				<VaultOnboardingScreen
+					onBack={onBack}
+					theme={theme}
+					step={onboardingStep}
+					masterPassword={masterPassword}
+					confirmPassword={confirmPassword}
+					recoveryMnemonic={recoveryMnemonic}
+					recoveryConfirmed={recoveryConfirmed}
+					copiedField={copiedField}
+					error={error}
+					setMasterPassword={setMasterPassword}
+					setConfirmPassword={setConfirmPassword}
+					setRecoveryConfirmed={setRecoveryConfirmed}
+					onNextToRecovery={handleNextToRecovery}
+					onDownloadRecovery={() => recoveryMnemonic && handleDownloadRecovery(recoveryMnemonic)}
+					onCopyMnemonic={() => recoveryMnemonic && copyToClipboard(recoveryMnemonic, "mnemonic")}
+					onFinish={handleFinishOnboarding}
+					setStep={setOnboardingStep}
+					isCreatingVault={isCreatingVault}
+				/>
+				{alertModal}
+			</>
 		);
 	}
 
 	if (!isUnlocked) {
 		return (
-			<VaultUnlockScreen
-				onBack={onBack}
-				theme={theme}
-				user={user}
-				error={error}
-				hasRecovery={hasRecovery}
-				masterPassword={masterPassword}
-				setMasterPassword={setMasterPassword}
-				onUnlock={handleUnlock}
-				onOpenAuth={onOpenAuth}
-				onOpenProfile={onOpenProfile}
-				onForgotPassword={() => setIsRecoveryMode(true)}
-				isDecrypting={isDecrypting}
-				isBiometricAvailable={isBiometricAvailable}
-				biometricsEnabled={biometricsEnabled || pendingEnableBiometrics}
-				onBiometricUnlock={handleBiometricUnlock}
-				onToggleBiometrics={handleToggleBiometrics}
-			/>
+			<>
+				<VaultUnlockScreen
+					onBack={onBack}
+					theme={theme}
+					user={user}
+					error={error}
+					hasRecovery={hasRecovery}
+					masterPassword={masterPassword}
+					setMasterPassword={setMasterPassword}
+					onUnlock={handleUnlock}
+					onOpenAuth={onOpenAuth}
+					onOpenProfile={onOpenProfile}
+					onForgotPassword={() => setIsRecoveryMode(true)}
+					isDecrypting={isDecrypting}
+					isBiometricAvailable={isBiometricAvailable}
+					biometricsEnabled={biometricsEnabled || pendingEnableBiometrics}
+					onBiometricUnlock={handleBiometricUnlock}
+					onToggleBiometrics={handleToggleBiometrics}
+				/>
+				{alertModal}
+			</>
 		);
 	}
 

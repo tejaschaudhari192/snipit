@@ -431,8 +431,20 @@ export function PWMGSettingsScreen({
 							<Switch
 								value={biometricsEnabled}
 								onValueChange={onToggleBiometrics}
-								trackColor={{ false: isLight ? "#e2e8f0" : "#334155", true: "#0a84ff" }}
-								thumbColor={Platform.OS === "android" ? (biometricsEnabled ? "#ffffff" : "#cbd5e1") : undefined}
+								trackColor={{
+									false: isLight ? "#cbd5e1" : "#475569",
+									true: "#0a84ff",
+								}}
+								thumbColor={
+									Platform.OS === "android"
+										? biometricsEnabled
+											? "#ffffff"
+											: isLight
+											? "#ffffff"
+											: "#94a3b8"
+										: undefined
+								}
+								ios_backgroundColor={isLight ? "#cbd5e1" : "#334155"}
 							/>
 						</View>
 					</View>
