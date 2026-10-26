@@ -12,7 +12,7 @@ import {
 import { ArrowLeft, User, Globe } from "lucide-react-native";
 import { offlineVault } from "../core/vault-storage";
 import { CONFIG } from "../config/configuration";
-import { CustomAlertModal, CustomAlertConfig } from "../components/CustomAlertModal";
+import { useCustomAlert } from "../hooks/useCustomAlert";
 import { FormInput, FormPasswordInput, PrimaryButton } from "../components/FormControls";
 
 interface Props {
@@ -33,11 +33,8 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    // Custom Alert State
-    const [alertConfig, setAlertConfig] = useState<CustomAlertConfig>({
-        visible: false,
-        title: "",
-    });
+    // Custom Alert Hook
+    const { showAlert, alertModal } = useCustomAlert(theme);
 
     useEffect(() => {
         const handleHardwareBack = () => {
@@ -127,22 +124,18 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
             };
 
             await offlineVault.saveUser(userData);
-            setAlertConfig({
-                visible: true,
-                title: "Welcome Back",
-                message: `Logged in successfully as ${userData.username || "User"}!`,
-                type: "success",
-                buttons: [
+            showAlert(
+                "Welcome Back",
+                `Logged in successfully as ${userData.username || "User"}!`,
+                "success",
+                [
                     {
                         text: "Continue",
                         style: "default",
-                        onPress: () => {
-                            setAlertConfig((prev) => ({ ...prev, visible: false }));
-                            onAuthSuccess();
-                        },
+                        onPress: onAuthSuccess,
                     },
-                ],
-            });
+                ]
+            );
         } catch (err: any) {
             setError(err.message || "Failed to reach Snipit server. Check server URL.");
         } finally {
@@ -302,7 +295,7 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
             </ScrollView>
 
             {/* Custom Theme-matched Alert Modal */}
-            <CustomAlertModal config={alertConfig} theme={theme} />
+            {alertModal}
         </SafeAreaView>
     );
 }

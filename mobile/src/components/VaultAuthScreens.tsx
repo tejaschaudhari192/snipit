@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, TextInput, SafeAreaView, ActivityIndicator, Platform, StatusBar } from "react-native";
-import { ArrowLeft, Lock, Shield, KeyRound, Check, Copy, Download, Eye, EyeOff, Upload, ClipboardPaste } from "lucide-react-native";
+import { View, Text, TouchableOpacity, ScrollView, TextInput, SafeAreaView, ActivityIndicator, Platform, StatusBar, Switch } from "react-native";
+import { ArrowLeft, Lock, Shield, KeyRound, Check, Copy, Download, Eye, EyeOff, Upload, ClipboardPaste, Fingerprint } from "lucide-react-native";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Clipboard from "expo-clipboard";
@@ -145,6 +145,10 @@ export function VaultUnlockScreen({
 	onOpenProfile,
 	onForgotPassword,
 	isDecrypting = false,
+	isBiometricAvailable = false,
+	biometricsEnabled = false,
+	onBiometricUnlock,
+	onToggleBiometrics,
 }: AuthProps & {
 	user: UserSession | null;
 	error: string;
@@ -156,6 +160,10 @@ export function VaultUnlockScreen({
 	onOpenProfile?: () => void;
 	onForgotPassword: () => void;
 	isDecrypting?: boolean;
+	isBiometricAvailable?: boolean;
+	biometricsEnabled?: boolean;
+	onBiometricUnlock?: () => void;
+	onToggleBiometrics?: (val: boolean) => void;
 }) {
 	const c = useThemeVars(theme);
 	const isLight = theme === "light";
@@ -216,26 +224,72 @@ export function VaultUnlockScreen({
 						)}
 					</TouchableOpacity>
 				</View>
-				<TouchableOpacity
-					className={`w-full py-3.5 rounded-xl items-center mt-2 ${
-						isLight ? "bg-slate-950" : "bg-white"
-					} ${isDecrypting ? "opacity-70" : ""}`}
-					onPress={onUnlock}
-					disabled={isDecrypting}
-				>
-					{isDecrypting ? (
-						<View className="flex-row items-center gap-2">
-							<ActivityIndicator size="small" color={isLight ? "#ffffff" : "#000000"} />
-							<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Decrypting Vault...</Text>
-						</View>
-					) : (
-						<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Unlock Vault</Text>
+				<View className="w-full flex-row items-center gap-2.5 mt-2">
+					<TouchableOpacity
+						className={`flex-1 py-3.5 rounded-xl items-center ${
+							isLight ? "bg-slate-950" : "bg-white"
+						} ${isDecrypting ? "opacity-70" : ""}`}
+						onPress={onUnlock}
+						disabled={isDecrypting}
+					>
+						{isDecrypting ? (
+							<View className="flex-row items-center gap-2">
+								<ActivityIndicator size="small" color={isLight ? "#ffffff" : "#000000"} />
+								<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Decrypting Vault...</Text>
+							</View>
+						) : (
+							<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Unlock Vault</Text>
+						)}
+					</TouchableOpacity>
+
+					{isBiometricAvailable && biometricsEnabled && onBiometricUnlock && (
+						<TouchableOpacity
+							className={`w-13 h-13 rounded-xl justify-center items-center border ${
+								isLight ? "border-slate-300 bg-white" : "border-slate-800 bg-slate-900"
+							} ${isDecrypting ? "opacity-50" : ""}`}
+							onPress={onBiometricUnlock}
+							disabled={isDecrypting}
+							accessibilityLabel="Unlock with Biometrics"
+						>
+							<Fingerprint color={isLight ? "#0f172a" : "#f8fafc"} size={24} strokeWidth={2.2} />
+						</TouchableOpacity>
 					)}
-				</TouchableOpacity>
+				</View>
 				{hasRecovery && (
 					<TouchableOpacity className="mt-4.5 p-2" onPress={onForgotPassword}>
 						<Text className={`text-sm font-medium underline ${isLight ? "text-slate-500" : "text-slate-400"}`}>Forgot password? Use recovery key</Text>
 					</TouchableOpacity>
+				)}
+
+				{/* Biometric Toggle: Placed way below the master password input */}
+				{isBiometricAvailable && onToggleBiometrics && (
+					<View className={`w-full mt-16 p-4 rounded-2xl border ${
+						isLight ? "bg-white border-slate-200" : "bg-slate-900/80 border-slate-800"
+					}`}>
+						<View className="flex-row items-center justify-between">
+							<View className="flex-row items-center gap-3 flex-1 pr-3">
+								<View className={`w-10 h-10 rounded-xl justify-center items-center ${
+									isLight ? "bg-blue-50" : "bg-blue-950/40"
+								}`}>
+									<Fingerprint color="#0a84ff" size={22} strokeWidth={2.2} />
+								</View>
+								<View className="flex-1">
+									<Text className={`text-[15px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
+										Biometric Unlock
+									</Text>
+									<Text className={`text-[12px] leading-4 mt-0.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+										Use fingerprint or Face ID to quickly unlock your vault
+									</Text>
+								</View>
+							</View>
+							<Switch
+								value={biometricsEnabled}
+								onValueChange={onToggleBiometrics}
+								trackColor={{ false: isLight ? "#e2e8f0" : "#334155", true: "#0a84ff" }}
+								thumbColor={Platform.OS === "android" ? (biometricsEnabled ? "#ffffff" : "#cbd5e1") : undefined}
+							/>
+						</View>
+					</View>
 				)}
 			</ScrollView>
 		</SafeAreaView>

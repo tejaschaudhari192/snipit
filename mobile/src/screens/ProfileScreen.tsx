@@ -20,7 +20,7 @@ import { CloudSyncCard, VaultSecurityCard, AppVersionCard } from "../components/
 import { useThemeVars } from "../config/theme";
 import { checkAppUpdate } from "../core/update-checker";
 import { UpdateInfoModal } from "../components/UpdateInfoModal";
-import { CustomAlertModal, CustomAlertConfig } from "../components/CustomAlertModal";
+import { useCustomAlert } from "../hooks/useCustomAlert";
 
 interface Props {
     onBack: () => void;
@@ -67,27 +67,8 @@ export function ProfileScreen({
     const [updateResult, setUpdateResult] = useState<any>(null);
     const [updateError, setUpdateError] = useState<string | null>(null);
 
-    // Custom Alert State
-    const [alertConfig, setAlertConfig] = useState<CustomAlertConfig>({
-        visible: false,
-        title: "",
-    });
-
-    const showAlert = (
-        title: string,
-        message?: string,
-        type: "info" | "success" | "warning" | "error" = "info",
-        buttons?: CustomAlertConfig["buttons"],
-    ) => {
-        setAlertConfig({
-            visible: true,
-            title,
-            message,
-            type,
-            buttons,
-            onDismiss: () => setAlertConfig((prev) => ({ ...prev, visible: false })),
-        });
-    };
+    // Custom Alert Hook
+    const { alertConfig, setAlertConfig, showAlert, alertModal } = useCustomAlert(theme);
 
     useEffect(() => {
         loadProfileData();
@@ -564,7 +545,7 @@ export function ProfileScreen({
             />
 
             {/* Custom Theme-matched Alert Modal */}
-            <CustomAlertModal config={alertConfig} theme={theme} />
+            {alertModal}
         </SafeAreaView>
     );
 }

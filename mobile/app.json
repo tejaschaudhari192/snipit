@@ -10,7 +10,10 @@
     "description": "Snipit — Privacy-focused developer suite with zero-knowledge password manager and snippets.",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.snipit.app"
+      "bundleIdentifier": "com.snipit.app",
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Use Face ID to securely unlock your Snipit password vault."
+      }
     },
     "android": {
       "package": "com.snipit.app",
@@ -31,7 +34,14 @@
     },
     "plugins": [
       "expo-sharing",
-      "react-native-quick-crypto"
+      "react-native-quick-crypto",
+      "expo-secure-store",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow Snipit to use Face ID to quickly unlock your vault."
+        }
+      ]
     ]
   }
 }

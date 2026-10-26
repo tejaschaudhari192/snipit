@@ -12,7 +12,7 @@ import { generatePassword, generatePassphrase, SeparatorType } from "../core/cry
 import { generateRecoveryMnemonic, isValidMnemonic } from "../core/recovery";
 import { useThemeVars } from "../config/theme";
 import { useVaultItemForm } from "../hooks/useVaultItemForm";
-import { CustomAlertModal, CustomAlertConfig } from "../components/CustomAlertModal";
+import { useCustomAlert } from "../hooks/useCustomAlert";
 
 // Modular views
 import { PWMGHeader } from "../components/PWMGHeader";
@@ -62,6 +62,10 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 	const [isDecrypting, setIsDecrypting] = useState(false);
 	const [isRecovering, setIsRecovering] = useState(false);
 	const [isCreatingVault, setIsCreatingVault] = useState(false);
+
+	// Biometric State
+	const [isBiometricAvailable, setIsBiometricAvailable] = useState(false);
+	const [biometricsEnabled, setBiometricsEnabled] = useState(false);
 
 	// Vault items & Folders state
 	const [items, setItems] = useState<PasswordItem[]>([]);
@@ -252,27 +256,8 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		);
 	}, [selectedItemIds]);
 
-	// Custom Alert State
-	const [alertConfig, setAlertConfig] = useState<CustomAlertConfig>({
-		visible: false,
-		title: "",
-	});
-
-	const showAlert = (
-		title: string,
-		message?: string,
-		type: "info" | "success" | "warning" | "error" = "info",
-		buttons?: CustomAlertConfig["buttons"],
-	) => {
-		setAlertConfig({
-			visible: true,
-			title,
-			message,
-			type,
-			buttons,
-			onDismiss: () => setAlertConfig((prev) => ({ ...prev, visible: false })),
-		});
-	};
+	// Custom Alert Hook
+	const { alertConfig, setAlertConfig, showAlert, alertModal } = useCustomAlert(theme);
 
 	// Add/Edit Form State Hook
 	const form = useVaultItemForm();
@@ -410,11 +395,70 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			const rec = await offlineVault.hasRecoveryRecord();
 			setHasVault(exists);
 			setHasRecovery(rec);
-			setIsUnlocked(offlineVault.isUnlocked());
-			if (offlineVault.isUnlocked()) loadData();
+
+			// Check biometric capability and state
+			const hwAvailable = await offlineVault.isBiometricHardwareAvailable();
+			const bioEnabled = await offlineVault.isBiometricsEnabled();
+			setIsBiometricAvailable(hwAvailable);
+			setBiometricsEnabled(bioEnabled);
+
+			const unlocked = offlineVault.isUnlocked();
+			setIsUnlocked(unlocked);
+			if (unlocked) {
+				loadData();
+			} else if (exists && bioEnabled) {
+				// Automatically prompt for biometric unlock on entry if enabled
+				setTimeout(() => {
+					handleBiometricUnlock();
+				}, 350);
+			}
 		} catch (e) {
 			console.log("Error checking vault status:", e);
 			setHasVault(false);
+		}
+	};
+
+	const handleBiometricUnlock = async () => {
+		setError("");
+		setIsDecrypting(true);
+		try {
+			const success = await offlineVault.unlockWithBiometrics();
+			if (success) {
+				setIsUnlocked(true);
+				setMasterPassword("");
+				loadData();
+			}
+		} catch (err: any) {
+			console.log("Biometric unlock error:", err);
+		} finally {
+			setIsDecrypting(false);
+		}
+	};
+
+	const handleToggleBiometrics = async (enable: boolean) => {
+		if (!enable) {
+			await offlineVault.setBiometricsEnabled(false);
+			setBiometricsEnabled(false);
+			showAlert("Biometrics Disabled", "Fingerprint / Face ID unlock has been turned off.", "info");
+			return;
+		}
+
+		// If turning ON but vault is currently locked, user must enter master password first
+		if (!offlineVault.isUnlocked()) {
+			showAlert(
+				"Unlock Required",
+				"Please enter your master password to unlock the vault before enabling biometric quick unlock.",
+				"info"
+			);
+			return;
+		}
+
+		const success = await offlineVault.setBiometricsEnabled(true);
+		if (success) {
+			setBiometricsEnabled(true);
+			showAlert("Biometrics Enabled", "You can now unlock your vault with fingerprint or Face ID.", "success");
+		} else {
+			showAlert("Biometrics Setup", "Could not enable biometrics. Please verify your device security settings.", "warning");
 		}
 	};
 
@@ -787,6 +831,10 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 				onOpenProfile={onOpenProfile}
 				onForgotPassword={() => setIsRecoveryMode(true)}
 				isDecrypting={isDecrypting}
+				isBiometricAvailable={isBiometricAvailable}
+				biometricsEnabled={biometricsEnabled}
+				onBiometricUnlock={handleBiometricUnlock}
+				onToggleBiometrics={handleToggleBiometrics}
 			/>
 		);
 	}
@@ -1226,7 +1274,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			/>
 
 			{/* Custom Theme-matched Alert Modal */}
-			<CustomAlertModal config={alertConfig} theme={theme} />
+			{alertModal}
 		</SafeAreaView>
 	);
 }

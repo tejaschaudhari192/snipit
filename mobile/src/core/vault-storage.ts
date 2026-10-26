@@ -1,5 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Crypto from "expo-crypto";
+import * as SecureStore from "expo-secure-store";
+import * as LocalAuthentication from "expo-local-authentication";
 import naclUtil from "tweetnacl-util";
 import {
     deriveMEK,
@@ -92,6 +94,8 @@ const STORAGE_KEYS = {
     PENDING_FOLDER_UPSERTS: "@snipit/pwmg_pending_folder_upserts",
     SYNCED_ITEM_IDS: "@snipit/pwmg_synced_item_ids",
     SYNCED_FOLDER_IDS: "@snipit/pwmg_synced_folder_ids",
+    BIOMETRICS_ENABLED: "@snipit/pwmg_biometrics_enabled",
+    BIOMETRIC_VAULT_PAYLOAD: "snipit_biometric_vault_payload",
 };
 
 export class OfflineVaultService {
@@ -313,6 +317,135 @@ export class OfflineVaultService {
             }
             return false;
         } catch {
+            return false;
+        }
+    }
+
+    // ─── BIOMETRIC AUTHENTICATION ──────────────────────────────────────────────
+
+    /**
+     * Checks if device has biometric hardware and at least one enrolled biometric.
+     */
+    async isBiometricHardwareAvailable(): Promise<boolean> {
+        try {
+            const hasHardware = await LocalAuthentication.hasHardwareAsync();
+            if (!hasHardware) return false;
+            const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+            return isEnrolled;
+        } catch {
+            return false;
+        }
+    }
+
+    /**
+     * Checks whether user has toggled biometric unlock ON for this vault.
+     */
+    async isBiometricsEnabled(): Promise<boolean> {
+        try {
+            const enabled = await AsyncStorage.getItem(STORAGE_KEYS.BIOMETRICS_ENABLED);
+            if (enabled !== "true") return false;
+            // Also check that hardware is still available
+            const hasHw = await this.isBiometricHardwareAvailable();
+            return hasHw;
+        } catch {
+            return false;
+        }
+    }
+
+    /**
+     * Enables or disables biometric unlock.
+     * When enabling, saves the active decryption keys into hardware SecureStore.
+     */
+    async setBiometricsEnabled(enable: boolean): Promise<boolean> {
+        if (!enable) {
+            await AsyncStorage.setItem(STORAGE_KEYS.BIOMETRICS_ENABLED, "false");
+            try {
+                await SecureStore.deleteItemAsync(STORAGE_KEYS.BIOMETRIC_VAULT_PAYLOAD);
+            } catch {}
+            return true;
+        }
+
+        // Enabling biometrics: vault must already be unlocked so we have active keys
+        if (!this.isUnlocked() || !this.activeMEK) {
+            return false;
+        }
+
+        const available = await this.isBiometricHardwareAvailable();
+        if (!available) {
+            return false;
+        }
+
+        // Authenticate user with biometric prompt first to confirm enrollment
+        const auth = await LocalAuthentication.authenticateAsync({
+            promptMessage: "Confirm fingerprint or Face ID to enable quick unlock",
+            fallbackLabel: "Use Master Password",
+            disableDeviceFallback: false,
+        });
+
+        if (!auth.success) {
+            return false;
+        }
+
+        try {
+            const payload = {
+                mek: naclUtil.encodeBase64(this.activeMEK),
+                personalKey: this.activePersonalKey ? naclUtil.encodeBase64(this.activePersonalKey) : undefined,
+            };
+
+            await SecureStore.setItemAsync(
+                STORAGE_KEYS.BIOMETRIC_VAULT_PAYLOAD,
+                JSON.stringify(payload),
+                {
+                    requireAuthentication: false, // Protected via LocalAuthentication check
+                }
+            );
+
+            await AsyncStorage.setItem(STORAGE_KEYS.BIOMETRICS_ENABLED, "true");
+            return true;
+        } catch (err) {
+            console.log("Error saving biometric payload to SecureStore:", err);
+            return false;
+        }
+    }
+
+    /**
+     * Attempts to unlock vault using Biometric authentication.
+     */
+    async unlockWithBiometrics(): Promise<boolean> {
+        const isEnabled = await this.isBiometricsEnabled();
+        if (!isEnabled) return false;
+
+        const auth = await LocalAuthentication.authenticateAsync({
+            promptMessage: "Unlock Snipit Vault",
+            cancelLabel: "Use Password",
+            fallbackLabel: "Use Master Password",
+            disableDeviceFallback: false,
+        });
+
+        if (!auth.success) {
+            return false;
+        }
+
+        try {
+            const raw = await SecureStore.getItemAsync(STORAGE_KEYS.BIOMETRIC_VAULT_PAYLOAD);
+            if (!raw) return false;
+
+            const payload: { mek: string; personalKey?: string } = JSON.parse(raw);
+            if (!payload.mek) return false;
+
+            const mek = naclUtil.decodeBase64(payload.mek);
+            this.activeMEK = mek;
+            if (payload.personalKey) {
+                this.activePersonalKey = naclUtil.decodeBase64(payload.personalKey);
+            } else {
+                this.activePersonalKey = mek;
+            }
+
+            // Sync from cloud in background if user is logged in
+            this.syncFromCloud().catch((e) => console.log("Background cloud sync error:", e));
+            return true;
+        } catch (err) {
+            console.log("Biometric unlock error:", err);
             return false;
         }
     }
