@@ -3,7 +3,12 @@
 	"buildNumber": 12,
 	"minSupportedVersion": "1.0.0",
 	"forceUpdate": false,
-	"downloadUrl": "https://cpaste.vercel.app/mobile",
+	"downloadUrl": "https://cpaste.vercel.app/snipit-universal",
+	"downloadUrls": {
+		"arm64-v8a": "https://cpaste.vercel.app/snipit-arm64-v8a",
+		"armeabi-v7a": "https://cpaste.vercel.app/snipit-armeabi-v7a",
+		"universal": "https://cpaste.vercel.app/snipit-universal"
+	},
 	"releaseDate": "2026-10-22",
 	"changelog": [
 		{

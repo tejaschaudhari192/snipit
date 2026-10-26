@@ -34,8 +34,25 @@ function getVersionConfig() {
 
 const router: Router = Router();
 
-router.get("/version", (_req, res) => {
-	const versionData = getVersionConfig();
+router.get("/version", (req, res) => {
+	const versionData = { ...getVersionConfig() };
+	const arch =
+		typeof req.query.arch === "string" ? req.query.arch.toLowerCase() : "";
+
+	// Dynamically pick download URL based on requested CPU architecture if available
+	if (versionData.downloadUrls) {
+		if (arch.includes("arm64") || arch.includes("aarch64")) {
+			versionData.downloadUrl =
+				versionData.downloadUrls["arm64-v8a"] ||
+				versionData.downloadUrl;
+		} else if (arch.includes("v7a") || arch.includes("armeabi")) {
+			versionData.downloadUrl =
+				versionData.downloadUrls["armeabi-v7a"] ||
+				versionData.downloadUrl;
+		} else if (arch && versionData.downloadUrls[arch]) {
+			versionData.downloadUrl = versionData.downloadUrls[arch];
+		}
+	}
 
 	// If downloadUrl is not a full URL or user specifies apkFileName in Supabase storage:
 	if (versionData.apkFileName && supabase && STORAGE_BUCKET) {

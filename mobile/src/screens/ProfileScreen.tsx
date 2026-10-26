@@ -110,9 +110,18 @@ export function ProfileScreen({
             setUpdateResult(res);
             setUpdateModalVisible(true);
         } catch (err: any) {
-            const errorMsg = err?.message || "Unable to reach server to check for updates.";
+            const errorMsg =
+                err?.message || "You are currently offline. Please connect to the internet and try again.";
+            const isOffline =
+                errorMsg.toLowerCase().includes("offline") ||
+                errorMsg.toLowerCase().includes("connect to the internet");
+
             setUpdateError(errorMsg);
-            showAlert("Update Check Failed", errorMsg, "error");
+            showAlert(
+                isOffline ? "No Internet Connection" : "Update Check Failed",
+                errorMsg,
+                isOffline ? "warning" : "error"
+            );
         } finally {
             setCheckingUpdate(false);
         }
