@@ -779,7 +779,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 	// Render Auth/Onboarding Screens
 	if (hasVault === null) {
 		return (
-			<SafeAreaView className={`flex-1 justify-center items-center px-6 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}>
+			<SafeAreaView className="flex-1 justify-center items-center px-6 bg-background">
 				<View className="items-center max-w-[300px]">
 					{/* Glowing Shield Visual */}
 					<View className={`w-20 h-20 rounded-3xl justify-center items-center mb-6 shadow-xl ${
@@ -925,15 +925,13 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 
 	return (
 		<SafeAreaView
-			className={`flex-1 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
+			className="flex-1 bg-background"
 			style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
 		>
 			{/* Header: Normal PWMGHeader OR MI Notes Style Multi-Selection Header */}
 			{isSelectionMode ? (
 				<View
-					className={`flex-row items-center justify-between px-4 py-3.5 border-b z-30 ${
-						isLight ? "bg-white border-slate-100" : "bg-slate-950 border-slate-900"
-					}`}
+					className="flex-row items-center justify-between px-4 py-3.5 border-b z-30 bg-background border-border"
 				>
 					{/* Left: Cancel Selection */}
 					<TouchableOpacity

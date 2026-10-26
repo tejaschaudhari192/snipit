@@ -15,11 +15,14 @@ import { UpdateInfoModal } from "./src/components/UpdateInfoModal";
 import { HubScreen } from "./src/components/HubScreen";
 import { UIStyleProvider } from "./src/core/UIStyleContext";
 
+import { useColorScheme as useNativeWindColorScheme } from "nativewind";
+
 export default function App() {
 	const [activeTool, setActiveTool] = useState<"hub" | "pwmg" | "auth" | "profile">("pwmg");
 	const [user, setUser] = useState<UserSession | null>(null);
 	const [themeMode, setThemeMode] = useState<"system" | "dark" | "light">("system");
 	const systemColorScheme = useColorScheme();
+	const { setColorScheme } = useNativeWindColorScheme();
 
 	const resolvedTheme: "dark" | "light" =
 		themeMode === "system"
@@ -27,6 +30,10 @@ export default function App() {
 				? "light"
 				: "dark"
 			: themeMode;
+
+	useEffect(() => {
+		setColorScheme(resolvedTheme);
+	}, [resolvedTheme, setColorScheme]);
 
 	const [defaultTool, setDefaultTool] = useState<"hub" | "pwmg">("pwmg");
 	const [autoUpdateModalVisible, setAutoUpdateModalVisible] = useState(false);
@@ -173,7 +180,7 @@ export default function App() {
 	return (
 		<UIStyleProvider>
 			<View
-				className={`flex-1 ${resolvedTheme === "light" ? "bg-slate-50" : "bg-slate-950"}`}
+				className={`flex-1 ${resolvedTheme === "dark" ? "dark bg-background" : "bg-background"}`}
 			>
 				{renderActiveTool()}
 				<UpdateInfoModal
