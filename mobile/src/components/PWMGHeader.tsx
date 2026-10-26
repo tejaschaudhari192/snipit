@@ -1,7 +1,9 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { ArrowLeft, Sparkles, User, Lock, LayoutGrid, List } from "lucide-react-native";
 import { ThemeColors } from "../config/theme";
+import { Button } from "./ui/button";
+import { Text } from "./ui/text";
 
 interface PWMGHeaderProps {
 	c: ThemeColors;
@@ -20,7 +22,6 @@ interface PWMGHeaderProps {
 }
 
 export function PWMGHeader({
-	c,
 	title,
 	subtitle,
 	userToken,
@@ -34,70 +35,69 @@ export function PWMGHeader({
 	onLock,
 }: PWMGHeaderProps) {
 	return (
-		<View>
+		<View className="bg-background border-b border-border">
 			{/* Top Bar Navigation */}
-			<View
-				className="flex-row items-center justify-between px-4 pt-2 pb-1.5"
-				style={{ backgroundColor: c.bg }}
-			>
-				<TouchableOpacity
+			<View className="flex-row items-center justify-between px-4 py-2">
+				<Button
+					variant="ghost"
+					className="h-8 px-2 flex-row gap-1"
 					onPress={onBack}
-					className="flex-row items-center gap-1"
-					hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-					activeOpacity={0.7}
 				>
-					<ArrowLeft color={c.text} size={22} />
-					<Text className="text-[17px] font-medium" style={{ color: c.text }}>
-						Hub
-					</Text>
-				</TouchableOpacity>
+					<ArrowLeft className="text-foreground" size={18} />
+					<Text className="text-sm font-medium">Hub</Text>
+				</Button>
 
-				<View className="flex-row items-center gap-2.5">
-					{/* Grid / List toggle button shown on notes tab */}
+				<View className="flex-row items-center gap-1.5">
+					{/* Grid / List toggle on notes tab */}
 					{activeBottomTab === "notes" && onToggleGridView && (
-						<TouchableOpacity
+						<Button
+							variant="ghost"
+							size="icon"
+							className="h-8 w-8"
 							onPress={onToggleGridView}
-							className="w-9 h-9 rounded-full justify-center items-center bg-slate-500/15"
-							hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 						>
-							{isGridView ? <List color={c.text} size={19} /> : <LayoutGrid color={c.text} size={19} />}
-						</TouchableOpacity>
+							{isGridView ? (
+								<List className="text-foreground" size={16} />
+							) : (
+								<LayoutGrid className="text-foreground" size={16} />
+							)}
+						</Button>
 					)}
 
-					<TouchableOpacity
+					<Button
+						variant="ghost"
+						size="icon"
+						className="h-8 w-8"
 						onPress={onOpenGenerator}
-						className="w-9 h-9 rounded-full justify-center items-center bg-slate-500/15"
-						hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 					>
-						<Sparkles color={c.text} size={19} />
-					</TouchableOpacity>
+						<Sparkles className="text-foreground" size={16} />
+					</Button>
 
 					{onOpenProfile && (
-						<TouchableOpacity
+						<Button
+							variant="ghost"
+							size="icon"
+							className="h-8 w-8"
 							onPress={onOpenProfile}
-							className="w-9 h-9 rounded-full justify-center items-center bg-slate-500/15"
-							hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 						>
-							<User color={c.text} size={20} />
-						</TouchableOpacity>
+							<User className="text-foreground" size={16} />
+						</Button>
 					)}
 
-					<TouchableOpacity
+					<Button
+						variant="ghost"
+						size="icon"
+						className="h-8 w-8"
 						onPress={onLock}
-						className="w-9 h-9 rounded-full justify-center items-center bg-slate-500/15"
-						hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 					>
-						<Lock color={c.textSecondary} size={19} />
-					</TouchableOpacity>
+						<Lock className="text-muted-foreground" size={16} />
+					</Button>
 				</View>
 			</View>
 
 			{/* Large Title & Sync Status Header */}
-			<View className="px-4 py-2.5">
-				<Text
-					className="text-[34px] font-extrabold tracking-tight"
-					style={{ color: c.text }}
-				>
+			<View className="px-4 pb-3 pt-1">
+				<Text className="text-2xl font-bold tracking-tight text-foreground">
 					{title}
 				</Text>
 				<TouchableOpacity
@@ -105,22 +105,8 @@ export function PWMGHeader({
 					onPress={onOpenProfile}
 					activeOpacity={0.7}
 				>
-					<View
-						className="w-1.5 h-1.5 rounded-full"
-						style={{
-							backgroundColor:
-								syncStatus === "syncing"
-									? c.blue
-									: syncStatus === "pending_offline"
-										? c.orange
-										: syncStatus === "synced"
-											? c.green
-											: userToken
-												? c.green
-												: c.textMuted,
-						}}
-					/>
-					<Text className="text-[13px] font-medium" style={{ color: c.textSecondary }}>
+					<View className="w-1.5 h-1.5 rounded-full bg-foreground" />
+					<Text className="text-xs text-muted-foreground">
 						{subtitle}
 					</Text>
 				</TouchableOpacity>

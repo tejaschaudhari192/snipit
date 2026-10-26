@@ -1,19 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
-    Text,
     View,
-    TouchableOpacity,
     SafeAreaView,
     Platform,
     StatusBar,
     BackHandler,
     ScrollView,
+    Pressable,
+    TextInput,
 } from "react-native";
-import { ArrowLeft, User, Globe } from "lucide-react-native";
+import { ArrowLeft, Globe } from "lucide-react-native";
 import { offlineVault } from "../core/vault-storage";
 import { CONFIG } from "../config/configuration";
 import { useCustomAlert } from "../hooks/useCustomAlert";
-import { FormInput, FormPasswordInput, PrimaryButton } from "../components/FormControls";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import { Text } from "../components/ui/text";
 
 interface Props {
     onBack: () => void;
@@ -22,18 +32,16 @@ interface Props {
 }
 
 export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
-    const isLight = theme === "light";
     const [mode, setMode] = useState<"login" | "register">("login");
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
     const [apiUrl, setApiUrl] = useState(CONFIG.DEFAULT_API_URL);
     const [showServerConfig, setShowServerConfig] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    // Custom Alert Hook
+    const passwordInputRef = useRef<any>(null);
     const { showAlert, alertModal } = useCustomAlert(theme);
 
     useEffect(() => {
@@ -96,7 +104,6 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
             const token = data.token;
             let avatar = data.avatar || "";
 
-            // Fetch latest user profile from /auth/me to get the user's avatar
             if (token) {
                 try {
                     const meRes = await fetch(`${baseUrl}/auth/me`, {
@@ -110,11 +117,10 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
                         if (meData.username) data.username = meData.username;
                     }
                 } catch {
-                    // Fall back to login response
+                    // Fall back
                 }
             }
 
-            // Store logged-in user session
             const userData = {
                 id: data._id || data.id || email,
                 email: data.email || email,
@@ -125,7 +131,7 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
 
             await offlineVault.saveUser(userData);
             showAlert(
-                "Welcome Back",
+                "Welcome",
                 `Logged in successfully as ${userData.username || "User"}!`,
                 "success",
                 [
@@ -145,154 +151,125 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
 
     return (
         <SafeAreaView
-            className={`flex-1 min-h-screen ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
+            className="flex-1 bg-background"
             style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
         >
-            {/* Header */}
-            <View
-                className={`flex-row items-center justify-between px-4 py-3 border-b ${
-                    isLight ? "bg-white border-slate-200" : "bg-slate-950 border-slate-800"
-                }`}
-            >
-                <TouchableOpacity
-                    onPress={onBack}
-                    className="p-1.5"
-                    hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-                    activeOpacity={0.7}
-                >
-                    <ArrowLeft color={isLight ? "#0f172a" : "#ffffff"} size={20} />
-                </TouchableOpacity>
-                <Text
-                    className={`text-lg font-bold ${
-                        isLight ? "text-slate-900" : "text-slate-100"
-                    }`}
-                >
-                    {mode === "login" ? "Sign In to Snipit" : "Create Snipit Account"}
+            {/* Top Navigation */}
+            <View className="flex-row items-center justify-between px-4 py-3 border-b border-border bg-background">
+                <Button variant="ghost" size="icon" onPress={onBack} className="h-9 w-9">
+                    <ArrowLeft className="text-foreground" size={18} />
+                </Button>
+                <Text className="text-sm font-semibold tracking-tight">
+                    {mode === "login" ? "Sign In" : "Sign Up"}
                 </Text>
-                <View className="w-10" />
+                <View className="w-9" />
             </View>
 
             <ScrollView
-                className={`flex-1 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
-                contentContainerClassName="p-6 items-center"
+                className="flex-1 bg-background"
+                contentContainerClassName="p-4 flex-1 justify-center max-w-sm w-full mx-auto"
                 keyboardShouldPersistTaps="handled"
             >
-                {/* User Icon Circle */}
-                <View
-                    className={`w-20 h-20 rounded-full justify-center items-center my-4 ${
-                        isLight ? "bg-violet-100" : "bg-violet-950"
-                    }`}
-                >
-                    <User color="#8b5cf6" size={40} />
-                </View>
+                {/* Official React Native Reusables Auth Card */}
+                <Card className="border-border shadow-sm shadow-black/5">
+                    <CardHeader>
+                        <CardTitle className="text-center text-xl sm:text-left">
+                            {mode === "login" ? "Sign in to Snipit" : "Create your account"}
+                        </CardTitle>
+                        <CardDescription className="text-center sm:text-left">
+                            {mode === "login"
+                                ? "Welcome back! Please sign in to continue"
+                                : "Welcome! Please fill in the details to get started"}
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="gap-6">
+                        <View className="gap-4">
+                            {error ? (
+                                <Text className="text-destructive text-xs text-center">{error}</Text>
+                            ) : null}
 
-                <Text
-                    className={`text-2xl font-extrabold text-center mb-1.5 ${
-                        isLight ? "text-slate-900" : "text-white"
-                    }`}
-                >
-                    {mode === "login" ? "Welcome Back" : "Get Started"}
-                </Text>
-                <Text
-                    className={`text-sm text-center leading-5 mb-5 px-2 ${
-                        isLight ? "text-slate-600" : "text-slate-400"
-                    }`}
-                >
-                    Sign in to sync your encrypted vault and snippets across devices, or keep using offline.
-                </Text>
+                            {mode === "register" && (
+                                <View className="gap-1.5">
+                                    <Label htmlFor="username">Username</Label>
+                                    <Input
+                                        id="username"
+                                        placeholder="username"
+                                        autoCapitalize="none"
+                                        value={username}
+                                        onChangeText={setUsername}
+                                        returnKeyType="next"
+                                    />
+                                </View>
+                            )}
 
-                {error ? (
-                    <Text className="text-red-500 text-xs text-center mb-3 px-2">
-                        {error}
-                    </Text>
-                ) : null}
+                            <View className="gap-1.5">
+                                <Label htmlFor="email">Email</Label>
+                                <Input
+                                    id="email"
+                                    placeholder="m@example.com"
+                                    keyboardType="email-address"
+                                    autoComplete="email"
+                                    autoCapitalize="none"
+                                    value={email}
+                                    onChangeText={setEmail}
+                                    onSubmitEditing={() => passwordInputRef.current?.focus()}
+                                    returnKeyType="next"
+                                />
+                            </View>
 
-                {mode === "register" && (
-                    <FormInput
-                        placeholder="Username"
-                        value={username}
-                        onChangeText={setUsername}
-                        autoCapitalize="none"
-                        theme={theme}
-                    />
-                )}
+                            <View className="gap-1.5">
+                                <Label htmlFor="password">Password</Label>
+                                <Input
+                                    ref={passwordInputRef}
+                                    id="password"
+                                    secureTextEntry
+                                    returnKeyType="send"
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    onSubmitEditing={handleSubmit}
+                                />
+                            </View>
 
-                <FormInput
-                    placeholder={mode === "login" ? "Email or Username" : "Email address"}
-                    value={email}
-                    onChangeText={setEmail}
-                    autoCapitalize="none"
-                    theme={theme}
-                />
+                            <Button className="w-full" disabled={loading} onPress={handleSubmit}>
+                                <Text>{loading ? "Please wait..." : "Continue"}</Text>
+                            </Button>
+                        </View>
 
-                <FormPasswordInput
-                    placeholder="Account Password"
-                    showPassword={showPassword}
-                    onToggleShowPassword={() => setShowPassword(!showPassword)}
-                    value={password}
-                    onChangeText={setPassword}
-                    autoCapitalize="none"
-                    theme={theme}
-                />
-
-                <PrimaryButton
-                    title={mode === "login" ? "Sign In" : "Register"}
-                    loading={loading}
-                    onPress={handleSubmit}
-                    theme={theme}
-                />
-
-                <TouchableOpacity
-                    className="mt-4 p-2"
-                    onPress={() => setMode(mode === "login" ? "register" : "login")}
-                >
-                    <Text
-                        className="text-sm font-medium text-center text-foreground underline"
-                    >
-                        {mode === "login"
-                            ? "Don't have an account? Create one"
-                            : "Already have an account? Sign In"}
-                    </Text>
-                </TouchableOpacity>
-
-                {/* Server URL Config Toggle */}
-                <TouchableOpacity
-                    className="flex-row items-center gap-1.5 mt-7 py-2"
-                    onPress={() => setShowServerConfig(!showServerConfig)}
-                >
-                    <Globe color="#64748b" size={14} />
-                    <Text className="text-slate-500 text-xs">
-                        {showServerConfig ? "Hide server endpoint" : "Configure API Server"}
-                    </Text>
-                </TouchableOpacity>
-
-                {showServerConfig && (
-                    <View
-                        className={`w-full rounded-2xl p-4 mt-2 border ${
-                            isLight
-                                ? "bg-white border-slate-200"
-                                : "bg-slate-900 border-slate-800"
-                        }`}
-                    >
-                        <Text
-                            className={`text-xs font-semibold mb-2 ${
-                                isLight ? "text-slate-600" : "text-slate-400"
-                            }`}
-                        >
-                            Backend Server URL
+                        <Text className="text-center text-sm">
+                            {mode === "login" ? "Don't have an account? " : "Already have an account? "}
+                            <Pressable onPress={() => setMode(mode === "login" ? "register" : "login")}>
+                                <Text className="text-sm underline underline-offset-4">
+                                    {mode === "login" ? "Sign up" : "Sign in"}
+                                </Text>
+                            </Pressable>
                         </Text>
-                        <FormInput
-                            containerClassName="mb-0"
-                            placeholder="http://localhost:3000"
-                            value={apiUrl}
-                            onChangeText={setApiUrl}
-                            theme={theme}
-                        />
-                    </View>
-                )}
+
+                        {/* Optional Server URL Setting */}
+                        <Pressable
+                            className="flex-row items-center justify-center gap-1.5 py-1"
+                            onPress={() => setShowServerConfig(!showServerConfig)}
+                        >
+                            <Globe size={13} className="text-muted-foreground" />
+                            <Text className="text-muted-foreground text-[11px]">
+                                {showServerConfig ? "Hide server endpoint" : "Configure server URL"}
+                            </Text>
+                        </Pressable>
+
+                        {showServerConfig && (
+                            <View className="pt-2 border-t border-border gap-1.5">
+                                <Label htmlFor="server">Server URL</Label>
+                                <Input
+                                    id="server"
+                                    placeholder="http://localhost:3000"
+                                    value={apiUrl}
+                                    onChangeText={setApiUrl}
+                                />
+                            </View>
+                        )}
+                    </CardContent>
+                </Card>
             </ScrollView>
 
-            {/* Custom Theme-matched Alert Modal */}
             {alertModal}
         </SafeAreaView>
     );

@@ -1,7 +1,6 @@
 import React from "react";
 import {
     View,
-    Text,
     TouchableOpacity,
     ScrollView,
     SafeAreaView,
@@ -13,6 +12,15 @@ import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { Cloud, Shield, ChevronRight, Lock, User } from "lucide-react-native";
 import { UserAvatar } from "./UserAvatar";
 import { UserSession } from "../core/vault-storage";
+import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+    CardContent,
+} from "./ui/card";
+import { Button } from "./ui/button";
+import { Text } from "./ui/text";
 
 interface HubScreenProps {
     theme: "dark" | "light";
@@ -25,181 +33,101 @@ export function HubScreen({ theme, user, onOpenTool }: HubScreenProps) {
 
     return (
         <SafeAreaView
-            className={`flex-1 min-h-screen ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
+            className="flex-1 min-h-screen bg-background"
             style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
         >
             <ExpoStatusBar style={isLight ? "dark" : "light"} />
 
             {/* App Header */}
-            <View
-                className={`flex-row justify-between items-center px-4 py-3 border-b ${
-                    isLight ? "bg-white border-slate-200" : "bg-slate-950 border-slate-800"
-                }`}
-            >
+            <View className="flex-row justify-between items-center px-4 py-3 border-b border-border bg-background">
                 <View className="flex-row items-center gap-2.5">
-                    <View className="w-8 h-8 overflow-hidden rounded-lg">
+                    <View className="w-8 h-8 overflow-hidden rounded-md border border-border">
                         <Image
                             source={require("../../assets/snipit-logo.png")}
                             className="w-full h-full"
                             resizeMode="contain"
                         />
                     </View>
-                    <Text className={`text-xl font-black tracking-tight ${isLight ? "text-slate-900" : "text-white"}`}>
-                        Snipit
-                    </Text>
+                    <Text className="text-lg font-bold tracking-tight">Snipit</Text>
                 </View>
 
                 <View className="flex-row items-center gap-2">
-                    {/* Top Sync Status Pill */}
-                    <TouchableOpacity
-                        className={`flex-row items-center gap-1.5 px-2.5 py-1.5 rounded-full border ${
-                            isLight
-                                ? "bg-slate-100 border-slate-200"
-                                : "bg-slate-900 border-slate-800"
-                        }`}
+                    {/* Top Sync Status */}
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 px-2.5 flex-row gap-1.5"
                         onPress={() => onOpenTool(user ? "profile" : "auth")}
-                        activeOpacity={0.7}
                     >
-                        <View
-                            className={`w-1.5 h-1.5 rounded-full ${
-                                user?.token ? "bg-green-500" : "bg-yellow-500"
-                            }`}
-                        />
-                        <Cloud color={user?.token ? "#3b82f6" : "#eab308"} size={12} />
-                        <Text
-                            className={`text-[11px] font-bold ${
-                                isLight ? "text-slate-600" : "text-slate-400"
-                            }`}
-                        >
-                            {user?.token ? "Synced" : "Local"}
-                        </Text>
-                    </TouchableOpacity>
+                        <View className="w-1.5 h-1.5 rounded-full bg-foreground" />
+                        <Text className="text-xs">{user?.token ? "Synced" : "Local"}</Text>
+                    </Button>
 
-                    {/* Profile Button or Sign In Button */}
+                    {/* Profile / Auth Button */}
                     {user ? (
-                        <TouchableOpacity
-                            className={`flex-row items-center gap-1.5 pl-1 pr-2.5 py-1 rounded-full border ${
-                                isLight
-                                    ? "bg-indigo-50 border-indigo-200"
-                                    : "bg-violet-950 border-violet-800"
-                            }`}
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 px-2 flex-row gap-1.5"
                             onPress={() => onOpenTool("profile")}
-                            activeOpacity={0.7}
                         >
-                            <UserAvatar
-                                uri={user.avatar}
-                                name={user.username || "User"}
-                                size={26}
-                            />
-                            <Text
-                                className={`text-[13px] font-bold ${
-                                    isLight ? "text-indigo-600" : "text-violet-300"
-                                }`}
-                            >
-                                {user.username}
-                            </Text>
-                            <ChevronRight
-                                color={isLight ? "#6366f1" : "#a78bfa"}
-                                size={14}
-                            />
-                        </TouchableOpacity>
+                            <UserAvatar uri={user.avatar} name={user.username || "User"} size={22} />
+                            <Text className="text-xs font-medium">{user.username}</Text>
+                        </Button>
                     ) : (
-                        <TouchableOpacity
-                            className="flex-row items-center gap-1.5 bg-violet-600 px-3.5 py-1.5 rounded-full"
+                        <Button
+                            size="sm"
+                            className="h-8 px-3"
                             onPress={() => onOpenTool("auth")}
-                            activeOpacity={0.8}
                         >
-                            <User color="#fff" size={14} />
-                            <Text className="text-white text-[13px] font-bold">Sign In</Text>
-                        </TouchableOpacity>
+                            <Text className="text-xs font-semibold text-primary-foreground">
+                                Sign In
+                            </Text>
+                        </Button>
                     )}
                 </View>
             </View>
 
-            <ScrollView
-                className={`flex-1 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
-                contentContainerClassName="p-5"
-            >
-                {/* Hero Introduction */}
+            <ScrollView className="flex-1 bg-background" contentContainerClassName="p-5 max-w-lg w-full mx-auto">
                 <View className="mb-5">
-                    <Text
-                        className={`text-2xl font-extrabold tracking-tight mb-1.5 ${
-                            isLight ? "text-slate-900" : "text-slate-100"
-                        }`}
-                    >
-                        Select Tool
-                    </Text>
-                    <Text
-                        className={`text-sm leading-5 ${
-                            isLight ? "text-slate-500" : "text-slate-400"
-                        }`}
-                    >
+                    <Text className="text-2xl font-bold tracking-tight mb-1">Select Tool</Text>
+                    <Text className="text-sm text-muted-foreground">
                         Direct access to Snipit's privacy-focused tools. Fast local performance with cloud account sync.
                     </Text>
                 </View>
 
-                {/* Primary Tool Cards */}
-                <View className="gap-4">
-                    {/* PWMG (Password Manager) Card */}
-                    <TouchableOpacity
-                        className={`flex-row items-center rounded-2xl p-4 border ${
-                            isLight
-                                ? "bg-white border-slate-200 shadow-sm"
-                                : "bg-slate-900 border-violet-900"
-                        }`}
-                        activeOpacity={0.8}
-                        onPress={() => onOpenTool("pwmg")}
-                    >
-                        <View
-                            className={`w-12 h-12 rounded-xl justify-center items-center mr-4 ${
-                                isLight ? "bg-violet-100" : "bg-violet-950"
-                            }`}
-                        >
-                            <Shield color={isLight ? "#7c3aed" : "#a78bfa"} size={26} />
+                {/* Primary Tool Card with Shadcn Card */}
+                <TouchableOpacity
+                    activeOpacity={0.85}
+                    onPress={() => onOpenTool("pwmg")}
+                >
+                    <Card className="border-border bg-card p-4 flex-row items-center gap-4">
+                        <View className="w-12 h-12 rounded-lg bg-muted justify-center items-center">
+                            <Shield className="text-foreground" size={24} />
                         </View>
-                        <View className="flex-1 mr-2">
-                            <View className="flex-row items-center justify-between mb-1">
-                                <Text
-                                    className={`text-[17px] font-bold ${
-                                        isLight ? "text-slate-900" : "text-slate-100"
-                                    }`}
-                                >
+                        <View className="flex-1">
+                            <View className="flex-row items-center justify-between mb-0.5">
+                                <CardTitle className="text-base font-semibold">
                                     Password Manager
-                                </Text>
-                                <View
-                                    className={`px-1.5 py-0.5 rounded ${
-                                        isLight ? "bg-violet-100" : "bg-violet-900"
-                                    }`}
-                                >
-                                    <Text
-                                        className={`text-[9px] font-black ${
-                                            isLight ? "text-violet-700" : "text-violet-300"
-                                        }`}
-                                    >
-                                        ZERO-KNOWLEDGE
+                                </CardTitle>
+                                <View className="px-1.5 py-0.5 rounded border border-border bg-muted">
+                                    <Text className="text-[10px] font-mono font-medium">
+                                        E2EE
                                     </Text>
                                 </View>
                             </View>
-                            <Text
-                                className={`text-xs leading-4 ${
-                                    isLight ? "text-slate-500" : "text-slate-400"
-                                }`}
-                            >
+                            <CardDescription className="text-xs leading-4 text-muted-foreground">
                                 Zero-knowledge encrypted vault with 12-word recovery key, generator & master password.
-                            </Text>
+                            </CardDescription>
                         </View>
-                        <ChevronRight color={isLight ? "#7c3aed" : "#a78bfa"} size={20} />
-                    </TouchableOpacity>
-                </View>
+                        <ChevronRight className="text-muted-foreground" size={18} />
+                    </Card>
+                </TouchableOpacity>
 
-                {/* Security note footer */}
-                <View className="flex-row items-center justify-center gap-2 mt-10 px-4">
-                    <Lock color={isLight ? "#94a3b8" : "#64748b"} size={14} />
-                    <Text
-                        className={`text-xs text-center ${
-                            isLight ? "text-slate-400" : "text-slate-500"
-                        }`}
-                    >
+                {/* Security footer */}
+                <View className="flex-row items-center justify-center gap-2 mt-12 px-4">
+                    <Lock className="text-muted-foreground" size={13} />
+                    <Text className="text-xs text-muted-foreground text-center">
                         End-to-end encrypted with XSalsa20-Poly1305. Non-custodial security.
                     </Text>
                 </View>

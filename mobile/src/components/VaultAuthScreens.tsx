@@ -1,12 +1,40 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, TextInput, SafeAreaView, ActivityIndicator, Platform, StatusBar, Switch } from "react-native";
-import { ArrowLeft, Lock, Shield, KeyRound, Check, Copy, Download, Eye, EyeOff, Upload, ClipboardPaste, Fingerprint } from "lucide-react-native";
+import {
+	View,
+	ScrollView,
+	SafeAreaView,
+	Platform,
+	StatusBar,
+	TouchableOpacity,
+} from "react-native";
+import {
+	ArrowLeft,
+	Lock,
+	KeyRound,
+	Check,
+	Copy,
+	Download,
+	Upload,
+	ClipboardPaste,
+	Fingerprint,
+} from "lucide-react-native";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Clipboard from "expo-clipboard";
 import { UserSession } from "../core/vault-storage";
-import { useThemeVars } from "../config/theme";
 import { ModernToggle } from "./ModernToggle";
+import {
+	Card,
+	CardHeader,
+	CardTitle,
+	CardDescription,
+	CardContent,
+} from "./ui/card";
+import { Button } from "./ui/button";
+import { Text } from "./ui/text";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { FormInput, FormPasswordInput } from "./FormControls";
 
 interface AuthProps {
 	onBack: () => void;
@@ -15,7 +43,6 @@ interface AuthProps {
 
 export function VaultRecoveryScreen({
 	onBack,
-	theme = "dark",
 	error,
 	inputMnemonic,
 	setInputMnemonic,
@@ -28,106 +55,96 @@ export function VaultRecoveryScreen({
 	onRecover: () => void;
 	isRecovering?: boolean;
 }) {
-	const c = useThemeVars(theme);
-	const isLight = theme === "light";
 	return (
 		<SafeAreaView
-			className={`flex-1 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
+			className="flex-1 bg-background"
 			style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
 		>
-			<View className={`flex-row items-center justify-between px-4 py-3 border-b ${isLight ? "border-slate-200" : "border-slate-800"}`}>
-				<TouchableOpacity onPress={onBack} className="p-1.5" hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
-					<ArrowLeft color={c.text} size={20} />
-				</TouchableOpacity>
-				<Text className={`text-[17px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>Account Recovery</Text>
-				<View className="w-10" />
+			<View className="flex-row items-center justify-between px-4 py-3 border-b border-border bg-background">
+				<Button variant="ghost" size="icon" onPress={onBack} className="h-9 w-9">
+					<ArrowLeft className="text-foreground" size={18} />
+				</Button>
+				<Text className="text-sm font-semibold tracking-tight">Recovery</Text>
+				<View className="w-9" />
 			</View>
 
-			<ScrollView contentContainerClassName="p-6 items-center">
-				<View className={`w-[72px] h-[72px] rounded-full justify-center items-center my-4.5 ${isLight ? "bg-black/5" : "bg-white/10"}`}>
-					<KeyRound color={c.text} size={36} strokeWidth={2} />
-				</View>
-				<Text className={`text-[22px] font-bold text-center mb-1.5 ${isLight ? "text-slate-900" : "text-white"}`}>Restore via Recovery Key</Text>
-				<Text className={`text-sm text-center leading-5 mb-4.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-					Enter your 12-word recovery mnemonic phrase separated by spaces to restore your master password.
-				</Text>
-				{error ? <Text className="text-red-500 text-[13px] mb-2.5 text-center">{error}</Text> : null}
-
-				{/* Quick Actions: Upload File or Paste */}
-				<View className="flex-row gap-2.5 w-full mb-3">
-					<TouchableOpacity
-						className={`flex-1 flex-row items-center justify-center gap-1.5 py-2.5 rounded-xl border ${
-							isLight ? "border-slate-200 bg-white" : "border-slate-800 bg-slate-900"
-						}`}
-						onPress={async () => {
-							try {
-								const res = await DocumentPicker.getDocumentAsync({
-									type: ["text/plain", "*/*"],
-									copyToCacheDirectory: true,
-								});
-								if (!res.canceled && res.assets && res.assets.length > 0) {
-									const fileUri = res.assets[0].uri;
-									let text = "";
-									if (Platform.OS === "web") {
-										const fileRes = await fetch(fileUri);
-										text = await fileRes.text();
-									} else {
-										text = await FileSystem.readAsStringAsync(fileUri);
-									}
-									const clean = text.trim();
-									setInputMnemonic(clean);
-								}
-							} catch (e) {
-								console.log("Could not pick or read file:", e);
-							}
-						}}
-						activeOpacity={0.7}
-					>
-						<Upload color={c.text} size={16} />
-						<Text className={`text-[13px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>Upload Key File</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity
-						className={`flex-1 flex-row items-center justify-center gap-1.5 py-2.5 rounded-xl border ${
-							isLight ? "border-slate-200 bg-white" : "border-slate-800 bg-slate-900"
-						}`}
-						onPress={async () => {
-							const text = await Clipboard.getStringAsync();
-							if (text) setInputMnemonic(text.trim());
-						}}
-						activeOpacity={0.7}
-					>
-						<ClipboardPaste color={c.text} size={16} />
-						<Text className={`text-[13px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>Paste Key</Text>
-					</TouchableOpacity>
-				</View>
-
-				<TextInput
-					className={`w-full h-[100px] rounded-xl p-3 text-[15px] mb-3 border ${
-						isLight ? "bg-white text-slate-900 border-slate-200" : "bg-slate-900 text-white border-slate-800"
-					}`}
-					placeholder="Enter or paste your 12-word recovery key..."
-					placeholderTextColor={c.textSecondary}
-					multiline
-					value={inputMnemonic}
-					onChangeText={setInputMnemonic}
-				/>
-				<TouchableOpacity
-					className={`w-full py-3.5 rounded-xl items-center mt-2 ${
-						isLight ? "bg-slate-950" : "bg-white"
-					} ${isRecovering ? "opacity-70" : ""}`}
-					onPress={onRecover}
-					disabled={isRecovering}
-				>
-					{isRecovering ? (
-						<View className="flex-row items-center gap-2">
-							<ActivityIndicator size="small" color={isLight ? "#ffffff" : "#000000"} />
-							<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Recovering Vault...</Text>
+			<ScrollView contentContainerClassName="p-4 flex-1 justify-center max-w-sm w-full mx-auto">
+				<Card className="w-full border-border bg-card">
+					<CardHeader className="text-center pb-2">
+						<View className="w-12 h-12 rounded-full bg-muted justify-center items-center mx-auto mb-2">
+							<KeyRound className="text-foreground" size={24} />
 						</View>
-					) : (
-						<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Recover Master Password</Text>
-					)}
-				</TouchableOpacity>
+						<CardTitle className="text-xl font-bold tracking-tight text-center">
+							Restore Vault
+						</CardTitle>
+						<CardDescription className="text-center text-xs">
+							Enter your 12-word recovery mnemonic key to restore your vault.
+						</CardDescription>
+					</CardHeader>
+
+					<CardContent className="gap-3 pt-2">
+						{error ? (
+							<Text className="text-destructive text-xs text-center">{error}</Text>
+						) : null}
+
+						<View className="flex-row gap-2">
+							<Button
+								variant="outline"
+								className="flex-1 h-9 flex-row gap-1.5"
+								onPress={async () => {
+									try {
+										const res = await DocumentPicker.getDocumentAsync({
+											type: ["application/json", "text/plain", "*/*"],
+											copyToCacheDirectory: true,
+										});
+										if (!res.canceled && res.assets && res.assets.length > 0) {
+											const fileUri = res.assets[0].uri;
+											const content = await FileSystem.readAsStringAsync(fileUri);
+											const parsed = JSON.parse(content);
+											if (parsed.mnemonic) setInputMnemonic(parsed.mnemonic);
+											else if (typeof parsed === "string") setInputMnemonic(parsed.trim());
+										}
+									} catch (e) {
+										console.log("Could not read file:", e);
+									}
+								}}
+							>
+								<Upload className="text-foreground" size={14} />
+								<Text className="text-xs">Upload File</Text>
+							</Button>
+
+							<Button
+								variant="outline"
+								className="flex-1 h-9 flex-row gap-1.5"
+								onPress={async () => {
+									const text = await Clipboard.getStringAsync();
+									if (text) setInputMnemonic(text.trim());
+								}}
+							>
+								<ClipboardPaste className="text-foreground" size={14} />
+								<Text className="text-xs">Paste Key</Text>
+							</Button>
+						</View>
+
+						<Input
+							multiline
+							placeholder="word1 word2 word3..."
+							value={inputMnemonic}
+							onChangeText={setInputMnemonic}
+							className="h-24 p-3 text-sm"
+						/>
+
+						<Button
+							className="w-full mt-2"
+							disabled={isRecovering}
+							onPress={onRecover}
+						>
+							<Text className="font-semibold text-primary-foreground">
+								{isRecovering ? "Recovering..." : "Restore Password"}
+							</Text>
+						</Button>
+					</CardContent>
+				</Card>
 			</ScrollView>
 		</SafeAreaView>
 	);
@@ -135,7 +152,6 @@ export function VaultRecoveryScreen({
 
 export function VaultUnlockScreen({
 	onBack,
-	theme = "dark",
 	user,
 	error,
 	hasRecovery,
@@ -166,130 +182,114 @@ export function VaultUnlockScreen({
 	onBiometricUnlock?: () => void;
 	onToggleBiometrics?: (val: boolean) => void;
 }) {
-	const c = useThemeVars(theme);
-	const isLight = theme === "light";
 	const [showPassword, setShowPassword] = useState(false);
 
 	return (
 		<SafeAreaView
-			className={`flex-1 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
+			className="flex-1 bg-background"
 			style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
 		>
-			<View className={`flex-row items-center justify-between px-4 py-3 border-b ${isLight ? "border-slate-200" : "border-slate-800"}`}>
-				<TouchableOpacity onPress={onBack} className="p-1.5" hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
-					<ArrowLeft color={c.text} size={20} />
-				</TouchableOpacity>
-				<Text className={`text-[17px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>Unlock Vault</Text>
-				<TouchableOpacity
+			<View className="flex-row items-center justify-between px-4 py-3 border-b border-border bg-background">
+				<Button variant="ghost" size="icon" onPress={onBack} className="h-9 w-9">
+					<ArrowLeft className="text-foreground" size={18} />
+				</Button>
+				<Text className="text-sm font-semibold tracking-tight">Unlock Vault</Text>
+				<Button
+					variant="outline"
+					size="sm"
+					className="h-8 px-2.5"
 					onPress={user && onOpenProfile ? onOpenProfile : onOpenAuth}
-					className={`px-3 py-1.5 rounded-full border ${
-						isLight ? "border-slate-200 bg-black/5" : "border-slate-800 bg-white/10"
-					}`}
 				>
-					<Text className={`text-[13px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>{user ? user.username : "Sign In"}</Text>
-				</TouchableOpacity>
+					<Text className="text-xs">{user ? user.username : "Sign In"}</Text>
+				</Button>
 			</View>
 
-			<ScrollView contentContainerClassName="p-6 items-center">
-				<View className={`w-[72px] h-[72px] rounded-full justify-center items-center my-4.5 ${isLight ? "bg-black/5" : "bg-white/10"}`}>
-					<Lock color={c.text} size={36} strokeWidth={2} />
-				</View>
-				<Text className={`text-[22px] font-bold text-center mb-1.5 ${isLight ? "text-slate-900" : "text-white"}`}>Welcome Back</Text>
-				<Text className={`text-sm text-center leading-5 mb-4.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-					{user ? `Account: ${user.email}\n` : ""}Enter your master password to decrypt your credentials.
-				</Text>
-				{error ? <Text className="text-red-500 text-[13px] mb-2.5 text-center">{error}</Text> : null}
-				<View className={`w-full flex-row items-center rounded-xl border mb-3 pr-2.5 ${
-					isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
-				}`}>
-					<TextInput
-						className={`flex-1 p-3 text-[15px] ${isLight ? "text-slate-900" : "text-white"}`}
-						placeholder="Master Password"
-						placeholderTextColor={c.textSecondary}
-						secureTextEntry={!showPassword}
-						value={masterPassword}
-						onChangeText={setMasterPassword}
-						onSubmitEditing={onUnlock}
-						editable={!isDecrypting}
-						autoCapitalize="none"
-					/>
-					<TouchableOpacity
-						className="p-1.5 justify-center items-center"
-						onPress={() => setShowPassword(!showPassword)}
-						hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-					>
-						{showPassword ? (
-							<EyeOff size={18} color={c.textSecondary} />
-						) : (
-							<Eye size={18} color={c.textSecondary} />
-						)}
-					</TouchableOpacity>
-				</View>
-				<View className="w-full flex-row items-center gap-2.5 mt-2">
-					<TouchableOpacity
-						className={`flex-1 py-3.5 rounded-xl items-center ${
-							isLight ? "bg-slate-950" : "bg-white"
-						} ${isDecrypting ? "opacity-70" : ""}`}
-						onPress={onUnlock}
-						disabled={isDecrypting}
-					>
-						{isDecrypting ? (
-							<View className="flex-row items-center gap-2">
-								<ActivityIndicator size="small" color={isLight ? "#ffffff" : "#000000"} />
-								<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Decrypting Vault...</Text>
-							</View>
-						) : (
-							<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Unlock Vault</Text>
-						)}
-					</TouchableOpacity>
+			<ScrollView contentContainerClassName="p-4 flex-1 justify-center max-w-sm w-full mx-auto">
+				<Card className="w-full border-border bg-card">
+					<CardHeader className="text-center pb-2">
+						<View className="w-12 h-12 rounded-full bg-muted justify-center items-center mx-auto mb-2">
+							<Lock className="text-foreground" size={24} />
+						</View>
+						<CardTitle className="text-xl font-bold tracking-tight text-center">
+							Welcome Back
+						</CardTitle>
+						<CardDescription className="text-center text-xs">
+							{user ? `${user.email} • ` : ""}Enter master password to unlock
+						</CardDescription>
+					</CardHeader>
 
-					{isBiometricAvailable && biometricsEnabled && onBiometricUnlock && (
-						<TouchableOpacity
-							className={`w-13 h-13 rounded-xl justify-center items-center border ${
-								isLight ? "border-slate-300 bg-white" : "border-slate-800 bg-slate-900"
-							} ${isDecrypting ? "opacity-50" : ""}`}
-							onPress={onBiometricUnlock}
-							disabled={isDecrypting}
-							accessibilityLabel="Unlock with Biometrics"
-						>
-							<Fingerprint color={isLight ? "#0f172a" : "#f8fafc"} size={24} strokeWidth={2.2} />
-						</TouchableOpacity>
-					)}
-				</View>
-				{hasRecovery && (
-					<TouchableOpacity className="mt-4.5 p-2" onPress={onForgotPassword}>
-						<Text className={`text-sm font-medium underline ${isLight ? "text-slate-500" : "text-slate-400"}`}>Forgot password? Use recovery key</Text>
-					</TouchableOpacity>
-				)}
+					<CardContent className="gap-3 pt-2">
+						{error ? (
+							<Text className="text-destructive text-xs text-center">{error}</Text>
+						) : null}
 
-				{/* Biometric Toggle: Placed way below the master password input */}
+						<FormPasswordInput
+							placeholder="Master Password"
+							value={masterPassword}
+							onChangeText={setMasterPassword}
+							showPassword={showPassword}
+							onToggleShowPassword={() => setShowPassword(!showPassword)}
+							onSubmitEditing={onUnlock}
+							editable={!isDecrypting}
+						/>
+
+						<View className="flex-row gap-2">
+							<Button
+								className="flex-1"
+								disabled={isDecrypting}
+								onPress={onUnlock}
+							>
+								<Text className="font-semibold text-primary-foreground">
+									{isDecrypting ? "Decrypting..." : "Unlock Vault"}
+								</Text>
+							</Button>
+
+							{isBiometricAvailable && biometricsEnabled && onBiometricUnlock && (
+								<Button
+									variant="outline"
+									size="icon"
+									className="h-10 w-10 shrink-0"
+									disabled={isDecrypting}
+									onPress={onBiometricUnlock}
+								>
+									<Fingerprint className="text-foreground" size={20} />
+								</Button>
+							)}
+						</View>
+
+						{hasRecovery && (
+							<Button
+								variant="link"
+								className="h-auto p-0 mt-1"
+								onPress={onForgotPassword}
+							>
+								<Text className="text-xs text-muted-foreground text-center">
+									Forgot master password? Use recovery key
+								</Text>
+							</Button>
+						)}
+					</CardContent>
+				</Card>
+
+				{/* Biometric toggle card */}
 				{isBiometricAvailable && onToggleBiometrics && (
-					<View className={`w-full mt-16 p-4 rounded-2xl border ${
-						isLight ? "bg-white border-slate-200" : "bg-slate-900/80 border-slate-800"
-					}`}>
+					<Card className="w-full mt-4 border-border bg-card py-3 px-4">
 						<View className="flex-row items-center justify-between">
-							<View className="flex-row items-center gap-3 flex-1 pr-3">
-								<View className={`w-10 h-10 rounded-xl justify-center items-center ${
-									isLight ? "bg-blue-50" : "bg-blue-950/40"
-								}`}>
-									<Fingerprint color="#0a84ff" size={22} strokeWidth={2.2} />
-								</View>
+							<View className="flex-row items-center gap-2.5 flex-1 pr-2">
+								<Fingerprint className="text-foreground" size={18} />
 								<View className="flex-1">
-									<Text className={`text-[15px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
-										Biometric Unlock
-									</Text>
-									<Text className={`text-[12px] leading-4 mt-0.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-										Use fingerprint or Face ID to quickly unlock your vault
+									<Text className="text-xs font-semibold">Biometric Unlock</Text>
+									<Text className="text-[11px] text-muted-foreground">
+										Unlock with fingerprint or face ID
 									</Text>
 								</View>
 							</View>
 							<ModernToggle
 								value={biometricsEnabled}
 								onValueChange={onToggleBiometrics}
-								theme={theme}
 							/>
 						</View>
-					</View>
+					</Card>
 				)}
 			</ScrollView>
 		</SafeAreaView>
@@ -298,7 +298,6 @@ export function VaultUnlockScreen({
 
 export function VaultOnboardingScreen({
 	onBack,
-	theme = "dark",
 	step,
 	masterPassword,
 	confirmPassword,
@@ -333,180 +332,167 @@ export function VaultOnboardingScreen({
 	setStep: (s: number) => void;
 	isCreatingVault?: boolean;
 }) {
-	const c = useThemeVars(theme);
-	const isLight = theme === "light";
 	const [showMasterPassword, setShowMasterPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 	return (
 		<SafeAreaView
-			className={`flex-1 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
+			className="flex-1 bg-background"
 			style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
 		>
-			<View className={`flex-row items-center justify-between px-4 py-3 border-b ${isLight ? "border-slate-200" : "border-slate-800"}`}>
-				<TouchableOpacity onPress={onBack} className="p-1.5" hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
-					<ArrowLeft color={c.text} size={20} />
-				</TouchableOpacity>
-				<Text className={`text-[17px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>Setup Vault</Text>
-				<View className="w-10" />
+			<View className="flex-row items-center justify-between px-4 py-3 border-b border-border bg-background">
+				<Button
+					variant="ghost"
+					size="icon"
+					onPress={step === 1 ? onBack : () => setStep(step - 1)}
+					className="h-9 w-9"
+				>
+					<ArrowLeft className="text-foreground" size={18} />
+				</Button>
+				<Text className="text-sm font-semibold tracking-tight">
+					Step {step} of 3
+				</Text>
+				<View className="w-9" />
 			</View>
 
-			<ScrollView contentContainerClassName="p-6 items-center">
-				<View className={`w-[72px] h-[72px] rounded-full justify-center items-center my-4.5 ${isLight ? "bg-black/5" : "bg-white/10"}`}>
-					<Shield color={c.text} size={36} strokeWidth={2} />
-				</View>
-
-				{step === 1 && (
-					<>
-						<Text className={`text-[22px] font-bold text-center mb-1.5 ${isLight ? "text-slate-900" : "text-white"}`}>Zero-Knowledge Vault</Text>
-						<Text className={`text-sm text-center leading-5 mb-4.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-							Your passwords are encrypted on this device using XSalsa20-Poly1305 before anything is saved.
-						</Text>
-						<View className={`w-full rounded-xl p-4 mb-5 border gap-2.5 ${
-							isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
-						}`}>
-							<Text className={`text-sm leading-5 ${isLight ? "text-slate-900" : "text-white"}`}>🔒 Military-grade XSalsa20 encryption</Text>
-							<Text className={`text-sm leading-5 ${isLight ? "text-slate-900" : "text-white"}`}>🔑 BIP-39 12-word mnemonic backup phrase</Text>
-							<Text className={`text-sm leading-5 ${isLight ? "text-slate-900" : "text-white"}`}>💳 Logins, Credit Cards, API Keys & Notes</Text>
-							<Text className={`text-sm leading-5 ${isLight ? "text-slate-900" : "text-white"}`}>⚡ 100% offline & zero cloud dependency</Text>
-						</View>
-						<TouchableOpacity
-							className={`w-full py-3.5 rounded-xl items-center mt-2 ${isLight ? "bg-slate-950" : "bg-white"}`}
-							onPress={() => setStep(2)}
-						>
-							<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Create Master Password</Text>
-						</TouchableOpacity>
-					</>
-				)}
-
-				{step === 2 && (
-					<>
-						<Text className={`text-[22px] font-bold text-center mb-1.5 ${isLight ? "text-slate-900" : "text-white"}`}>Set Master Password</Text>
-						<Text className={`text-sm text-center leading-5 mb-4.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-							This password derives your encryption key. We cannot restore your vault if lost.
-						</Text>
-						{error ? <Text className="text-red-500 text-[13px] mb-2.5 text-center">{error}</Text> : null}
-						<View className={`w-full flex-row items-center rounded-xl border mb-3 pr-2.5 ${
-							isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
-						}`}>
-							<TextInput
-								className={`flex-1 p-3 text-[15px] ${isLight ? "text-slate-900" : "text-white"}`}
-								placeholder="Master Password (min 8 chars)"
-								placeholderTextColor={c.textSecondary}
-								secureTextEntry={!showMasterPassword}
-								value={masterPassword}
-								onChangeText={setMasterPassword}
-								autoCapitalize="none"
-							/>
-							<TouchableOpacity
-								className="p-1.5 justify-center items-center"
-								onPress={() => setShowMasterPassword(!showMasterPassword)}
-								hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-							>
-								{showMasterPassword ? (
-									<EyeOff size={18} color={c.textSecondary} />
-								) : (
-									<Eye size={18} color={c.textSecondary} />
-								)}
-							</TouchableOpacity>
-						</View>
-						<View className={`w-full flex-row items-center rounded-xl border mb-3 pr-2.5 ${
-							isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
-						}`}>
-							<TextInput
-								className={`flex-1 p-3 text-[15px] ${isLight ? "text-slate-900" : "text-white"}`}
-								placeholder="Confirm Master Password"
-								placeholderTextColor={c.textSecondary}
-								secureTextEntry={!showConfirmPassword}
-								value={confirmPassword}
-								onChangeText={setConfirmPassword}
-								autoCapitalize="none"
-							/>
-							<TouchableOpacity
-								className="p-1.5 justify-center items-center"
-								onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-								hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-							>
-								{showConfirmPassword ? (
-									<EyeOff size={18} color={c.textSecondary} />
-								) : (
-									<Eye size={18} color={c.textSecondary} />
-								)}
-							</TouchableOpacity>
-						</View>
-						<TouchableOpacity
-							className={`w-full py-3.5 rounded-xl items-center mt-2 ${isLight ? "bg-slate-950" : "bg-white"}`}
-							onPress={onNextToRecovery}
-						>
-							<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Generate Recovery Phrase</Text>
-						</TouchableOpacity>
-					</>
-				)}
-
-				{step === 3 && (
-					<>
-						<Text className={`text-[22px] font-bold text-center mb-1.5 ${isLight ? "text-slate-900" : "text-white"}`}>Your 12-Word Recovery Key</Text>
-						<Text className={`text-sm text-center leading-5 mb-4.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-							Write down these 12 words in order. You can use them to recover your master password.
-						</Text>
-						<View className={`rounded-xl p-4 border w-full mb-3.5 ${
-							isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
-						}`}>
-							<Text className={`font-mono text-[15px] leading-6 text-center ${isLight ? "text-slate-900" : "text-white"}`}>{recoveryMnemonic}</Text>
-						</View>
-						<View className="flex-row gap-2.5 w-full mb-4">
-							<TouchableOpacity
-								className={`flex-1 flex-row items-center justify-center gap-1.5 py-2.5 rounded-xl border ${
-									isLight ? "border-slate-200 bg-white" : "border-slate-800 bg-slate-900"
-								}`}
-								onPress={onCopyMnemonic}
-							>
-								{copiedField === "mnemonic" ? <Check color={c.green} size={16} /> : <Copy color={c.text} size={16} />}
-								<Text className={`text-[13px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>{copiedField === "mnemonic" ? "Copied" : "Copy"}</Text>
-							</TouchableOpacity>
-							<TouchableOpacity
-								className={`flex-1 flex-row items-center justify-center gap-1.5 py-2.5 rounded-xl border ${
-									isLight ? "border-slate-200 bg-white" : "border-slate-800 bg-slate-900"
-								}`}
-								onPress={onDownloadRecovery}
-							>
-								<Download color={c.text} size={16} />
-								<Text className={`text-[13px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>Download</Text>
-							</TouchableOpacity>
-						</View>
-						<TouchableOpacity
-							className="flex-row items-center gap-2.5 mb-4"
-							onPress={() => setRecoveryConfirmed(!recoveryConfirmed)}
-						>
-							<View className={`w-[18px] h-[18px] rounded border justify-center items-center ${
-								recoveryConfirmed
-									? isLight
-										? "bg-slate-950 border-slate-950"
-										: "bg-white border-white"
-									: "border-slate-400"
-							}`}>
-								{recoveryConfirmed && <Check color={isLight ? "#fff" : "#000"} size={12} />}
-							</View>
-							<Text className={`text-[13px] flex-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>I have safely backed up my 12-word recovery key.</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							className={`w-full py-3.5 rounded-xl items-center mt-2 ${
-								isLight ? "bg-slate-950" : "bg-white"
-							} ${isCreatingVault ? "opacity-70" : ""}`}
-							onPress={onFinish}
-							disabled={isCreatingVault}
-						>
-							{isCreatingVault ? (
-								<View className="flex-row items-center gap-2">
-									<ActivityIndicator size="small" color={isLight ? "#ffffff" : "#000000"} />
-									<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Creating Vault...</Text>
+			<ScrollView contentContainerClassName="p-4 flex-1 justify-center max-w-sm w-full mx-auto">
+				<Card className="w-full border-border bg-card">
+					{step === 1 && (
+						<>
+							<CardHeader className="text-center pb-2">
+								<View className="w-12 h-12 rounded-full bg-muted justify-center items-center mx-auto mb-2">
+									<Lock className="text-foreground" size={24} />
 								</View>
-							) : (
-								<Text className={`text-base font-bold ${isLight ? "text-white" : "text-slate-950"}`}>Complete Setup & Unlock</Text>
-							)}
-						</TouchableOpacity>
-					</>
-				)}
+								<CardTitle className="text-xl font-bold tracking-tight text-center">
+									Zero-Knowledge Vault
+								</CardTitle>
+								<CardDescription className="text-center text-xs">
+									All passwords and secure notes are encrypted on this device with XSalsa20-Poly1305.
+								</CardDescription>
+							</CardHeader>
+							<CardContent className="pt-2">
+								<Button className="w-full" onPress={() => setStep(2)}>
+									<Text className="font-semibold text-primary-foreground">
+										Create Local Vault
+									</Text>
+								</Button>
+							</CardContent>
+						</>
+					)}
+
+					{step === 2 && (
+						<>
+							<CardHeader className="text-center pb-2">
+								<CardTitle className="text-xl font-bold tracking-tight text-center">
+									Set Master Password
+								</CardTitle>
+								<CardDescription className="text-center text-xs">
+									Derives your encryption key. Cannot be recovered without your key.
+								</CardDescription>
+							</CardHeader>
+							<CardContent className="gap-2.5 pt-2">
+								{error ? (
+									<Text className="text-destructive text-xs text-center">{error}</Text>
+								) : null}
+
+								<FormPasswordInput
+									placeholder="Master Password (min 8 chars)"
+									value={masterPassword}
+									onChangeText={setMasterPassword}
+									showPassword={showMasterPassword}
+									onToggleShowPassword={() => setShowMasterPassword(!showMasterPassword)}
+								/>
+
+								<FormPasswordInput
+									placeholder="Confirm Master Password"
+									value={confirmPassword}
+									onChangeText={setConfirmPassword}
+									showPassword={showConfirmPassword}
+									onToggleShowPassword={() => setShowConfirmPassword(!showConfirmPassword)}
+								/>
+
+								<Button className="w-full mt-2" onPress={onNextToRecovery}>
+									<Text className="font-semibold text-primary-foreground">
+										Generate Recovery Phrase
+									</Text>
+								</Button>
+							</CardContent>
+						</>
+					)}
+
+					{step === 3 && (
+						<>
+							<CardHeader className="text-center pb-2">
+								<CardTitle className="text-xl font-bold tracking-tight text-center">
+									12-Word Recovery Key
+								</CardTitle>
+								<CardDescription className="text-center text-xs">
+									Save these words safely to restore your master password.
+								</CardDescription>
+							</CardHeader>
+							<CardContent className="gap-3 pt-2">
+								<View className="rounded-lg border border-border bg-muted p-3.5">
+									<Text className="font-mono text-xs text-center leading-5 select-all">
+										{recoveryMnemonic}
+									</Text>
+								</View>
+
+								<View className="flex-row gap-2">
+									<Button
+										variant="outline"
+										className="flex-1 h-9 flex-row gap-1.5"
+										onPress={onCopyMnemonic}
+									>
+										{copiedField === "mnemonic" ? (
+											<Check className="text-foreground" size={14} />
+										) : (
+											<Copy className="text-foreground" size={14} />
+										)}
+										<Text className="text-xs">
+											{copiedField === "mnemonic" ? "Copied" : "Copy"}
+										</Text>
+									</Button>
+									<Button
+										variant="outline"
+										className="flex-1 h-9 flex-row gap-1.5"
+										onPress={onDownloadRecovery}
+									>
+										<Download className="text-foreground" size={14} />
+										<Text className="text-xs">Download</Text>
+									</Button>
+								</View>
+
+								<TouchableOpacity
+									className="flex-row items-center gap-2 mt-2"
+									onPress={() => setRecoveryConfirmed(!recoveryConfirmed)}
+								>
+									<View
+										className={`w-4 h-4 rounded border border-border items-center justify-center ${
+											recoveryConfirmed ? "bg-primary" : "bg-background"
+										}`}
+									>
+										{recoveryConfirmed && (
+											<Check className="text-primary-foreground" size={12} />
+										)}
+									</View>
+									<Text className="text-xs text-muted-foreground flex-1">
+										I have written down or saved my recovery phrase
+									</Text>
+								</TouchableOpacity>
+
+								<Button
+									className="w-full mt-2"
+									disabled={!recoveryConfirmed || isCreatingVault}
+									onPress={onFinish}
+								>
+									<Text className="font-semibold text-primary-foreground">
+										{isCreatingVault ? "Creating Vault..." : "Complete & Enter Vault"}
+									</Text>
+								</Button>
+							</CardContent>
+						</>
+					)}
+				</Card>
 			</ScrollView>
 		</SafeAreaView>
 	);
