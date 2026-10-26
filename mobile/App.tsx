@@ -13,6 +13,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { checkAppUpdate } from "./src/core/update-checker";
 import { UpdateInfoModal } from "./src/components/UpdateInfoModal";
 import { HubScreen } from "./src/components/HubScreen";
+import { UIStyleProvider } from "./src/core/UIStyleContext";
 
 export default function App() {
 	const [activeTool, setActiveTool] = useState<"hub" | "pwmg" | "auth" | "profile">("pwmg");
@@ -170,17 +171,19 @@ export default function App() {
 	};
 
 	return (
-		<View
-			className={`flex-1 ${resolvedTheme === "light" ? "bg-slate-50" : "bg-slate-950"}`}
-		>
-			{renderActiveTool()}
-			<UpdateInfoModal
-				visible={autoUpdateModalVisible}
-				updateResult={autoUpdateResult}
-				theme={resolvedTheme}
-				onClose={() => setAutoUpdateModalVisible(false)}
-			/>
-		</View>
+		<UIStyleProvider>
+			<View
+				className={`flex-1 ${resolvedTheme === "light" ? "bg-slate-50" : "bg-slate-950"}`}
+			>
+				{renderActiveTool()}
+				<UpdateInfoModal
+					visible={autoUpdateModalVisible}
+					updateResult={autoUpdateResult}
+					theme={resolvedTheme}
+					onClose={() => setAutoUpdateModalVisible(false)}
+				/>
+			</View>
+		</UIStyleProvider>
 	);
 }
 

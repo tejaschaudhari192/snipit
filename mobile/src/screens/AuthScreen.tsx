@@ -247,9 +247,7 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
                     onPress={() => setMode(mode === "login" ? "register" : "login")}
                 >
                     <Text
-                        className={`text-sm font-semibold text-center ${
-                            isLight ? "text-violet-600" : "text-violet-400"
-                        }`}
+                        className="text-sm font-medium text-center text-foreground underline"
                     >
                         {mode === "login"
                             ? "Don't have an account? Create one"
