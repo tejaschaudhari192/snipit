@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View, TouchableOpacity } from "react-native";
-import { Sun, Moon, Smartphone, Shield, LayoutGrid, ChevronDown, Check } from "lucide-react-native";
+import { Sun, Moon, Smartphone, Shield, LayoutGrid, ChevronDown, Check, Layers, Sparkles } from "lucide-react-native";
 
 interface ThemeSelectorProps {
     theme: "dark" | "light";
@@ -205,6 +205,118 @@ export function DefaultToolSelectorRow({
                                 </View>
                             </View>
                             {defaultTool === opt.tool && <Check color={isLight ? "#6366f1" : "#a78bfa"} size={18} />}
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            )}
+        </View>
+    );
+}
+
+interface UIStyleSelectorProps {
+    theme: "dark" | "light";
+    uiStyle: "shadcn" | "native";
+    isOpen: boolean;
+    onToggleOpen: () => void;
+    onSelectStyle: (style: "shadcn" | "native") => void;
+}
+
+export function UIStyleSelectorRow({
+    theme,
+    uiStyle,
+    isOpen,
+    onToggleOpen,
+    onSelectStyle,
+}: UIStyleSelectorProps) {
+    const isLight = theme === "light";
+
+    const getSubtitle = () => {
+        if (uiStyle === "native") return "Jetpack Compose (Android) & SwiftUI (iOS)";
+        return "Shadcn / Reanimated Fluid Controls (Default)";
+    };
+
+    return (
+        <View
+            className={`rounded-2xl p-4 border mb-4 ${
+                isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
+            }`}
+        >
+            <TouchableOpacity className="flex-row items-center" activeOpacity={0.8} onPress={onToggleOpen}>
+                <View
+                    className={`w-10 h-10 rounded-xl justify-center items-center ${
+                        uiStyle === "native" ? "bg-emerald-500/15" : "bg-blue-500/15"
+                    }`}
+                >
+                    <Layers color={uiStyle === "native" ? "#10b981" : "#3b82f6"} size={20} />
+                </View>
+                <View className="flex-1 ml-3">
+                    <Text className={`text-[15px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
+                        UI Component Engine
+                    </Text>
+                    <Text className={`text-xs mt-0.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                        {getSubtitle()}
+                    </Text>
+                </View>
+                <View
+                    className={`w-8 h-8 rounded-full items-center justify-center ${
+                        isLight ? "bg-slate-100" : "bg-slate-800"
+                    }`}
+                >
+                    <ChevronDown
+                        size={16}
+                        color={isLight ? "#64748b" : "#94a3b8"}
+                        style={{ marginLeft: 4, transform: [{ rotate: isOpen ? "180deg" : "0deg" }] }}
+                    />
+                </View>
+            </TouchableOpacity>
+
+            {isOpen && (
+                <View
+                    className={`mt-3 pt-2 border-t ${
+                        isLight ? "border-slate-100" : "border-slate-800"
+                    }`}
+                >
+                    {[
+                        {
+                            style: "shadcn" as const,
+                            title: "Shadcn / Reanimated (Default)",
+                            sub: "Tailwind styled with 60/120fps fluid spring physics",
+                            icon: <Sparkles color="#3b82f6" size={16} />,
+                            bg: "bg-blue-500/15",
+                        },
+                        {
+                            style: "native" as const,
+                            title: "Native System (@expo/ui)",
+                            sub: "Direct Jetpack Compose on Android & SwiftUI on iOS",
+                            icon: <Smartphone color="#10b981" size={16} />,
+                            bg: "bg-emerald-500/15",
+                        },
+                    ].map((opt) => (
+                        <TouchableOpacity
+                            key={opt.style}
+                            className={`flex-row items-center justify-between py-2.5 px-3 rounded-xl mb-1.5 ${
+                                uiStyle === opt.style
+                                    ? isLight
+                                        ? "bg-indigo-500/10"
+                                        : "bg-violet-500/15"
+                                    : ""
+                            }`}
+                            onPress={() => onSelectStyle(opt.style)}
+                        >
+                            <View className="flex-row items-center flex-1">
+                                <View className={`w-8 h-8 rounded-lg items-center justify-center ${opt.bg}`}>
+                                    {opt.icon}
+                                </View>
+                                <View className="ml-2.5">
+                                    <Text className={`text-sm font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
+                                        {opt.title}
+                                    </Text>
+                                    <Text className={`text-xs mt-0.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                                        {opt.sub}
+                                    </Text>
+                                </View>
+                            </View>
+                            {uiStyle === opt.style && <Check color={isLight ? "#6366f1" : "#a78bfa"} size={18} />}
                         </TouchableOpacity>
                     ))}
                 </View>

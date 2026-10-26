@@ -20,7 +20,7 @@ try {
 cssInterop(SafeAreaView, { className: 'style' });
 
 // Initialize TweetNaCl secure PRNG for native Android and iOS environments
-nacl.setPRNG((x, n) => {
+nacl.setPRNG((x: Uint8Array, n: number) => {
 	const random = Crypto.getRandomValues(new Uint8Array(n));
 	for (let i = 0; i < n; i++) {
 		x[i] = random[i];

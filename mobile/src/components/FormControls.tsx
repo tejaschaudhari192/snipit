@@ -3,6 +3,7 @@ import { View, TextInput, TouchableOpacity, Text, ActivityIndicator, TextInputPr
 import { Eye, EyeOff } from "lucide-react-native";
 
 interface FormInputProps extends TextInputProps {
+    placeholder?: string;
     label?: string;
     containerClassName?: string;
     theme?: "dark" | "light";
@@ -44,6 +45,7 @@ export function FormInput({
 }
 
 interface PasswordInputProps extends TextInputProps {
+    placeholder?: string;
     label?: string;
     showPassword: boolean;
     onToggleShowPassword: () => void;

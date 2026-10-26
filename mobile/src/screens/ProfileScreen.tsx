@@ -15,7 +15,7 @@ import { ArrowLeft, User, LogOut, Sparkles, Camera } from "lucide-react-native";
 import { offlineVault, UserSession } from "../core/vault-storage";
 import { UserAvatar } from "../components/UserAvatar";
 import { AvatarPickerModal } from "../components/AvatarPickerModal";
-import { ThemeSelectorRow, DefaultToolSelectorRow } from "../components/ProfileDropdownSelectors";
+import { ThemeSelectorRow, DefaultToolSelectorRow, UIStyleSelectorRow } from "../components/ProfileDropdownSelectors";
 import { CloudSyncCard, VaultSecurityCard, AppVersionCard } from "../components/ProfileFeatureCards";
 import { useThemeVars } from "../config/theme";
 import { checkAppUpdate } from "../core/update-checker";
@@ -60,6 +60,8 @@ export function ProfileScreen({
     const [savingAvatar, setSavingAvatar] = useState(false);
     const [isThemeDropdownOpen, setIsThemeDropdownOpen] = useState(false);
     const [isDefaultToolDropdownOpen, setIsDefaultToolDropdownOpen] = useState(false);
+    const [uiStyle, setUiStyle] = useState<"shadcn" | "native">("shadcn");
+    const [isUIStyleDropdownOpen, setIsUIStyleDropdownOpen] = useState(false);
 
     // Update checker state
     const [checkingUpdate, setCheckingUpdate] = useState(false);
@@ -177,6 +179,11 @@ export function ProfileScreen({
         } catch {
             // default to synced or pending_offline
         }
+
+        try {
+            const savedStyle = await offlineVault.getUIStyle();
+            setUiStyle(savedStyle);
+        } catch {}
     };
 
     const handleSyncNow = async () => {
@@ -464,11 +471,37 @@ export function ProfileScreen({
                         theme={theme}
                         themeMode={themeMode}
                         isOpen={isThemeDropdownOpen}
-                        onToggleOpen={() => setIsThemeDropdownOpen((prev) => !prev)}
+                        onToggleOpen={() => {
+                            setIsThemeDropdownOpen((prev) => !prev);
+                            setIsUIStyleDropdownOpen(false);
+                            setIsDefaultToolDropdownOpen(false);
+                        }}
                         onSelectMode={(mode) => {
                             if (onThemeChange) onThemeChange(mode);
                             else offlineVault.setTheme(mode);
                             setIsThemeDropdownOpen(false);
+                        }}
+                    />
+                </View>
+
+                {/* UI Component Engine */}
+                <View className="mb-4">
+                    <Text className={`text-[11px] font-bold tracking-wider mb-2 ml-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                        UI COMPONENT ENGINE
+                    </Text>
+                    <UIStyleSelectorRow
+                        theme={theme}
+                        uiStyle={uiStyle}
+                        isOpen={isUIStyleDropdownOpen}
+                        onToggleOpen={() => {
+                            setIsUIStyleDropdownOpen((prev) => !prev);
+                            setIsThemeDropdownOpen(false);
+                            setIsDefaultToolDropdownOpen(false);
+                        }}
+                        onSelectStyle={async (style) => {
+                            await offlineVault.setUIStyle(style);
+                            setUiStyle(style);
+                            setIsUIStyleDropdownOpen(false);
                         }}
                     />
                 </View>

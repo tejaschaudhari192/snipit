@@ -6,6 +6,7 @@ import * as FileSystem from "expo-file-system/legacy";
 import * as Clipboard from "expo-clipboard";
 import { UserSession } from "../core/vault-storage";
 import { useThemeVars } from "../config/theme";
+import { ModernToggle } from "./ModernToggle";
 
 interface AuthProps {
 	onBack: () => void;
@@ -282,23 +283,10 @@ export function VaultUnlockScreen({
 									</Text>
 								</View>
 							</View>
-							<Switch
+							<ModernToggle
 								value={biometricsEnabled}
 								onValueChange={onToggleBiometrics}
-								trackColor={{
-									false: isLight ? "#cbd5e1" : "#475569",
-									true: "#0a84ff",
-								}}
-								thumbColor={
-									Platform.OS === "android"
-										? biometricsEnabled
-											? "#ffffff"
-											: isLight
-											? "#ffffff"
-											: "#94a3b8"
-										: undefined
-								}
-								ios_backgroundColor={isLight ? "#cbd5e1" : "#334155"}
+								theme={theme}
 							/>
 						</View>
 					</View>

@@ -5,7 +5,7 @@ import { wordlist } from "@scure/bip39/wordlists/english.js";
 
 // Configure TweetNaCl PRNG for React Native Android / iOS release builds
 // Without this, TweetNaCl throws "Error: no PRNG" on native platforms.
-nacl.setPRNG((x, n) => {
+nacl.setPRNG((x: Uint8Array, n: number) => {
 	const random = Crypto.getRandomValues(new Uint8Array(n));
 	for (let i = 0; i < n; i++) {
 		x[i] = random[i];
@@ -207,7 +207,7 @@ export function generatePassword(optionsOrLength: GenerateOptions | number = 15)
 
 	const randomBytes = nacl.randomBytes(length);
 	return Array.from(randomBytes)
-		.map((n) => pool[n % pool.length])
+		.map((n: number) => pool[n % pool.length])
 		.join("");
 }
 

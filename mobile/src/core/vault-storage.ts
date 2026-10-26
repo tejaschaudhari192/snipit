@@ -96,6 +96,7 @@ const STORAGE_KEYS = {
     SYNCED_FOLDER_IDS: "@snipit/pwmg_synced_folder_ids",
     BIOMETRICS_ENABLED: "@snipit/pwmg_biometrics_enabled",
     BIOMETRIC_VAULT_PAYLOAD: "snipit_biometric_vault_payload",
+    UI_STYLE: "@snipit/ui_style",
 };
 
 export class OfflineVaultService {
@@ -1080,6 +1081,21 @@ export class OfflineVaultService {
 
     async setTheme(theme: "system" | "dark" | "light"): Promise<void> {
         await AsyncStorage.setItem(STORAGE_KEYS.THEME, theme);
+    }
+
+    // ─── UI COMPONENT STYLE (SHADCN VS NATIVE) ─────────────────────────────────
+
+    async getUIStyle(): Promise<"shadcn" | "native"> {
+        const saved = await AsyncStorage.getItem(STORAGE_KEYS.UI_STYLE);
+        if (saved === "native" || saved === "shadcn") {
+            return saved;
+        }
+        return "shadcn";
+    }
+
+    async setUIStyle(style: "shadcn" | "native"): Promise<void> {
+        await AsyncStorage.setItem(STORAGE_KEYS.UI_STYLE, style);
+        this.notifySyncListeners();
     }
 
     // ─── DEFAULT STARTUP TOOL ──────────────────────────────────────────────────

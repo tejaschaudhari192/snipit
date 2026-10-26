@@ -38,7 +38,7 @@ export default function App() {
 		loadDefaultTool();
 
 		// Check once after launch when user is connected to internet
-		const unsubscribeNet = NetInfo.addEventListener((state) => {
+		const unsubscribeNet = NetInfo.addEventListener((state: any) => {
 			if (state.isConnected && state.isInternetReachable !== false && !hasCheckedUpdateRef.current) {
 				hasCheckedUpdateRef.current = true;
 				checkAppUpdate()
