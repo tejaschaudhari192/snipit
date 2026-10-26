@@ -418,6 +418,8 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		}
 	};
 
+	const [pendingEnableBiometrics, setPendingEnableBiometrics] = useState(false);
+
 	const handleBiometricUnlock = async () => {
 		setError("");
 		setIsDecrypting(true);
@@ -439,27 +441,57 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		if (!enable) {
 			await offlineVault.setBiometricsEnabled(false);
 			setBiometricsEnabled(false);
+			setPendingEnableBiometrics(false);
 			showAlert("Biometrics Disabled", "Fingerprint / Face ID unlock has been turned off.", "info");
 			return;
 		}
 
-		// If turning ON but vault is currently locked, user must enter master password first
-		if (!offlineVault.isUnlocked()) {
-			showAlert(
-				"Unlock Required",
-				"Please enter your master password to unlock the vault before enabling biometric quick unlock.",
-				"info"
-			);
+		// If turning ON and vault is already unlocked (e.g. from Settings tab)
+		if (offlineVault.isUnlocked()) {
+			const success = await offlineVault.setBiometricsEnabled(true);
+			if (success) {
+				setBiometricsEnabled(true);
+				showAlert("Biometrics Enabled", "You can now unlock your vault with fingerprint or Face ID.", "success");
+			} else {
+				showAlert("Biometrics Setup", "Could not enable biometrics. Please verify your device security settings.", "warning");
+			}
 			return;
 		}
 
-		const success = await offlineVault.setBiometricsEnabled(true);
-		if (success) {
-			setBiometricsEnabled(true);
-			showAlert("Biometrics Enabled", "You can now unlock your vault with fingerprint or Face ID.", "success");
-		} else {
-			showAlert("Biometrics Setup", "Could not enable biometrics. Please verify your device security settings.", "warning");
+		// If user toggles ON from the unlock screen (vault currently locked):
+		// 1. If master password already entered in input, unlock immediately and enable
+		if (masterPassword) {
+			setIsDecrypting(true);
+			try {
+				const unlocked = await offlineVault.unlockVault(masterPassword);
+				if (unlocked) {
+					setIsUnlocked(true);
+					setMasterPassword("");
+					const bioOk = await offlineVault.setBiometricsEnabled(true);
+					if (bioOk) {
+						setBiometricsEnabled(true);
+					}
+					loadData();
+					return;
+				} else {
+					setError("Invalid master password. Please enter the correct password first.");
+					return;
+				}
+			} catch (e: any) {
+				setError(e.message || "Failed to unlock vault.");
+				return;
+			} finally {
+				setIsDecrypting(false);
+			}
 		}
+
+		// 2. No password entered yet: set pending toggle and inform user
+		setPendingEnableBiometrics(true);
+		showAlert(
+			"Enter Master Password",
+			"Please enter your master password and tap Unlock Vault to confirm and activate biometric unlock.",
+			"info"
+		);
 	};
 
 	const handleUnlock = async () => {
@@ -474,6 +506,11 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			if (success) {
 				setIsUnlocked(true);
 				setMasterPassword("");
+				if (pendingEnableBiometrics) {
+					setPendingEnableBiometrics(false);
+					await offlineVault.setBiometricsEnabled(true);
+					setBiometricsEnabled(true);
+				}
 				loadData();
 			} else {
 				setError("Invalid master password. Please try again.");
@@ -832,7 +869,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 				onForgotPassword={() => setIsRecoveryMode(true)}
 				isDecrypting={isDecrypting}
 				isBiometricAvailable={isBiometricAvailable}
-				biometricsEnabled={biometricsEnabled}
+				biometricsEnabled={biometricsEnabled || pendingEnableBiometrics}
 				onBiometricUnlock={handleBiometricUnlock}
 				onToggleBiometrics={handleToggleBiometrics}
 			/>
@@ -1070,6 +1107,9 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 							switchTab(tab);
 						}}
 						showAlert={showAlert}
+						isBiometricAvailable={isBiometricAvailable}
+						biometricsEnabled={biometricsEnabled}
+						onToggleBiometrics={handleToggleBiometrics}
 					/>
 				</View>
 			</ScrollView>

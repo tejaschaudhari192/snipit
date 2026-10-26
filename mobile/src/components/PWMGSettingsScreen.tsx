@@ -7,6 +7,7 @@ import {
 	ActivityIndicator,
 	Alert,
 	Platform,
+	Switch,
 } from "react-native";
 import {
 	Upload,
@@ -21,6 +22,7 @@ import {
 	AlertTriangle,
 	Folder as FolderIcon,
 	FileText,
+	Fingerprint,
 } from "lucide-react-native";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system/legacy";
@@ -41,6 +43,9 @@ interface PWMGSettingsScreenProps {
 		type?: "info" | "success" | "warning" | "error",
 		buttons?: any[],
 	) => void;
+	isBiometricAvailable?: boolean;
+	biometricsEnabled?: boolean;
+	onToggleBiometrics?: (enable: boolean) => void;
 }
 
 export function PWMGSettingsScreen({
@@ -51,6 +56,9 @@ export function PWMGSettingsScreen({
 	onResetVault,
 	onSelectTab,
 	showAlert,
+	isBiometricAvailable = false,
+	biometricsEnabled = false,
+	onToggleBiometrics,
 }: PWMGSettingsScreenProps) {
 	const c = useThemeVars(theme);
 	const isLight = theme === "light";
@@ -391,6 +399,45 @@ export function PWMGSettingsScreen({
 					</Text>
 				</View>
 			</View>
+
+			{/* Section: Security & Biometrics */}
+			{isBiometricAvailable && onToggleBiometrics && (
+				<>
+					<View className="mb-2 px-1">
+						<Text className={`text-[13px] font-bold uppercase tracking-wider ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+							SECURITY & UNLOCK
+						</Text>
+					</View>
+
+					<View
+						className={`rounded-2xl border overflow-hidden mb-5 ${
+							isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
+						}`}
+					>
+						<View className="flex-row items-center justify-between px-4 py-3.5">
+							<View className="flex-row items-center gap-3 flex-1 pr-3">
+								<View className="w-8 h-8 rounded-xl bg-blue-500/15 justify-center items-center">
+									<Fingerprint color="#0a84ff" size={18} strokeWidth={2.2} />
+								</View>
+								<View className="flex-1">
+									<Text className={`text-[15px] font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
+										Biometric Unlock
+									</Text>
+									<Text className={`text-xs ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+										Unlock vault with fingerprint or Face ID
+									</Text>
+								</View>
+							</View>
+							<Switch
+								value={biometricsEnabled}
+								onValueChange={onToggleBiometrics}
+								trackColor={{ false: isLight ? "#e2e8f0" : "#334155", true: "#0a84ff" }}
+								thumbColor={Platform.OS === "android" ? (biometricsEnabled ? "#ffffff" : "#cbd5e1") : undefined}
+							/>
+						</View>
+					</View>
+				</>
+			)}
 
 			{/* Section: Data & Transfer (Web Match) */}
 			<View className="mb-2 px-1">
