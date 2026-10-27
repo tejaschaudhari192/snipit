@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { Platform, TextInput } from 'react-native';
+import { Platform, TextInput, View } from 'react-native';
 
 import { Host, TextInput as NativeTextInput } from '@expo/ui';
 import { useUIStyle } from '@/core/UIStyleContext';
@@ -10,26 +10,30 @@ const Input = React.forwardRef<any, React.ComponentPropsWithoutRef<typeof TextIn
     const { uiStyle } = useUIStyle();
 
     if (uiStyle === 'native' && Platform.OS !== 'web') {
+      const isFlex = className?.includes('flex-1');
       return (
-        <Host matchContents>
-          <NativeTextInput
-            defaultValue={props.value ?? props.defaultValue}
-            onChangeText={props.onChangeText}
-            placeholder={props.placeholder}
-            placeholderTextColor={props.placeholderTextColor}
-            editable={props.editable}
-            secureTextEntry={props.secureTextEntry}
-            keyboardType={props.keyboardType}
-            autoCapitalize={props.autoCapitalize}
-            autoCorrect={props.autoCorrect}
-            returnKeyType={props.returnKeyType}
-            onSubmitEditing={props.onSubmitEditing ? () => props.onSubmitEditing?.({} as any) : undefined}
-            autoFocus={props.autoFocus}
-            multiline={props.multiline}
-            numberOfLines={props.numberOfLines}
-            maxLength={props.maxLength}
-          />
-        </Host>
+        <View className={cn(isFlex ? 'flex-1' : 'w-full')} style={{ height: 44 }}>
+          <Host style={{ width: '100%', height: 44 }}>
+            <NativeTextInput
+              defaultValue={props.value ?? props.defaultValue}
+              onChangeText={props.onChangeText}
+              placeholder={props.placeholder}
+              placeholderTextColor={props.placeholderTextColor}
+              editable={props.editable}
+              secureTextEntry={props.secureTextEntry}
+              keyboardType={props.keyboardType}
+              autoCapitalize={props.autoCapitalize}
+              autoCorrect={props.autoCorrect}
+              returnKeyType={props.returnKeyType}
+              onSubmitEditing={props.onSubmitEditing ? () => props.onSubmitEditing?.({} as any) : undefined}
+              autoFocus={props.autoFocus}
+              multiline={props.multiline}
+              numberOfLines={props.numberOfLines}
+              maxLength={props.maxLength}
+              style={{ width: '100%', height: 44, borderRadius: 8 }}
+            />
+          </Host>
+        </View>
       );
     }
 

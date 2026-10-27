@@ -1,11 +1,13 @@
 import React from "react";
-import { View, Modal, TouchableOpacity, ScrollView } from "react-native";
+import { View, Modal, TouchableOpacity, ScrollView, Platform } from "react-native";
 import { RefreshCw, Check, Copy, X } from "lucide-react-native";
 import { evaluatePasswordStrength, SeparatorType } from "../core/crypto";
 import { Button } from "./ui/button";
 import { Text } from "./ui/text";
 import { Separator } from "./ui/separator";
 import { ModernToggle } from "./ModernToggle";
+import { useUIStyle } from "../core/UIStyleContext";
+import { Slider } from "./ui/slider";
 
 interface Props {
 	visible: boolean;
@@ -54,6 +56,7 @@ export function PasswordGeneratorModal({
 	setGenNumbers,
 	setGenSeparator,
 }: Props) {
+	const { uiStyle } = useUIStyle();
 	if (!visible) return null;
 	const strength = evaluatePasswordStrength(generatedPass);
 
@@ -113,23 +116,13 @@ export function PasswordGeneratorModal({
 										</Text>
 										<Text className="text-xs font-semibold text-foreground">{genWordCount} words</Text>
 									</View>
-									<View className="flex-row flex-wrap gap-1.5 mt-1 mb-2">
-										{[2, 3, 4, 5, 6].map((count) => (
-											<TouchableOpacity
-												key={count}
-												className={`py-1.5 px-3 rounded-md items-center border ${
-													genWordCount === count
-														? "bg-foreground border-foreground"
-														: "bg-muted border-border"
-												}`}
-												onPress={() => setGenWordCount(count)}
-											>
-												<Text className={`text-xs font-medium ${genWordCount === count ? "text-background font-semibold" : "text-foreground"}`}>
-													{count}
-												</Text>
-											</TouchableOpacity>
-										))}
-									</View>
+									<Slider
+										value={genWordCount}
+										min={2}
+										max={6}
+										step={1}
+										onValueChange={setGenWordCount}
+									/>
 								</View>
 
 								<View className="my-2.5">
@@ -163,23 +156,13 @@ export function PasswordGeneratorModal({
 									</Text>
 									<Text className="text-xs font-semibold text-foreground">{genLength} chars</Text>
 								</View>
-								<View className="flex-row flex-wrap gap-1.5 mt-1 mb-2">
-									{[8, 12, 15, 20, 25, 32].map((len) => (
-										<TouchableOpacity
-											key={len}
-											className={`py-1.5 px-3 rounded-md items-center border ${
-												genLength === len
-													? "bg-foreground border-foreground"
-													: "bg-muted border-border"
-											}`}
-											onPress={() => setGenLength(len)}
-										>
-											<Text className={`text-xs font-medium ${genLength === len ? "text-background font-semibold" : "text-foreground"}`}>
-												{len}
-											</Text>
-										</TouchableOpacity>
-									))}
-								</View>
+								<Slider
+									value={genLength}
+									min={8}
+									max={32}
+									step={4}
+									onValueChange={setGenLength}
+								/>
 							</View>
 						)}
 

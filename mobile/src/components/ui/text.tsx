@@ -64,10 +64,13 @@ const ARIA_LEVEL: Partial<Record<TextVariant, string>> = {
 
 const TextClassContext = React.createContext<string | undefined>(undefined);
 
+import { useUIStyle } from '@/core/UIStyleContext';
+
 function Text({
   className,
   asChild = false,
   variant = 'default',
+  style,
   ...props
 }: React.ComponentProps<typeof RNText> &
   React.RefAttributes<typeof RNText> &
@@ -75,12 +78,40 @@ function Text({
     asChild?: boolean;
   }) {
   const textClass = React.useContext(TextClassContext);
+  const { uiStyle } = useUIStyle();
   const Component = asChild ? Slot : RNText;
+
+  if (uiStyle === 'native' && Platform.OS !== 'web' && !asChild) {
+    const isHeading = variant === 'h1' || variant === 'h2' || variant === 'h3' || variant === 'h4';
+    return (
+      <RNText
+        className={cn(textVariants({ variant }), textClass, className)}
+        role={variant ? ROLE[variant] : undefined}
+        aria-level={variant ? ARIA_LEVEL[variant] : undefined}
+        allowFontScaling={true}
+        style={[
+          Platform.select({
+            ios: {
+              fontFamily: isHeading ? 'System' : undefined,
+              letterSpacing: isHeading ? -0.4 : 0,
+            },
+            android: {
+              fontFamily: isHeading ? 'sans-serif-medium' : 'sans-serif',
+            },
+          }),
+          style,
+        ]}
+        {...props}
+      />
+    );
+  }
+
   return (
     <Component
       className={cn(textVariants({ variant }), textClass, className)}
       role={variant ? ROLE[variant] : undefined}
       aria-level={variant ? ARIA_LEVEL[variant] : undefined}
+      style={style}
       {...props}
     />
   );

@@ -22,6 +22,11 @@ import { checkAppUpdate } from "../core/update-checker";
 import { UpdateInfoModal } from "../components/UpdateInfoModal";
 import { useCustomAlert } from "../hooks/useCustomAlert";
 import { useUIStyle } from "../core/UIStyleContext";
+import { Card } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Text as UIText } from "../components/ui/text";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
 
 interface Props {
     onBack: () => void;
@@ -346,8 +351,8 @@ export function ProfileScreen({
                 keyboardDismissMode="interactive"
             >
                 {/* Profile Card */}
-                <View
-                    className="rounded-2xl p-5 items-center border mb-5 bg-card border-border"
+                <Card
+                    className="p-5 items-center mb-5"
                 >
                     <TouchableOpacity
                         className="relative w-19 h-19 rounded-full mb-1 justify-center items-center"
@@ -372,9 +377,9 @@ export function ProfileScreen({
                         }}
                         className="py-1 px-2 mb-1.5"
                     >
-                        <Text className="text-xs font-semibold text-primary">
+                        <UIText className="text-xs font-semibold text-primary">
                             Change Photo
-                        </Text>
+                        </UIText>
                     </TouchableOpacity>
 
                     {isEditingUsername ? (
@@ -392,7 +397,7 @@ export function ProfileScreen({
                                     className="px-3.5 py-1.5 rounded-md bg-secondary"
                                     onPress={() => setIsEditingUsername(false)}
                                 >
-                                    <Text className="text-secondary-foreground text-[13px] font-semibold">Cancel</Text>
+                                    <UIText className="text-secondary-foreground text-[13px] font-semibold">Cancel</UIText>
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     className="px-3.5 py-1.5 rounded-md bg-primary"
@@ -402,7 +407,7 @@ export function ProfileScreen({
                                     {savingName ? (
                                         <ActivityIndicator size="small" color="#fff" />
                                     ) : (
-                                        <Text className="text-primary-foreground text-[13px] font-semibold">Save</Text>
+                                        <UIText className="text-primary-foreground text-[13px] font-semibold">Save</UIText>
                                     )}
                                 </TouchableOpacity>
                             </View>
@@ -410,26 +415,26 @@ export function ProfileScreen({
                     ) : (
                         <View className="items-center mt-3">
                             <TouchableOpacity className="flex-row items-center gap-2" onPress={() => setIsEditingUsername(true)}>
-                                <Text className="text-[18px] font-bold text-foreground">
+                                <UIText className="text-[18px] font-bold text-foreground">
                                     {user?.username || "Guest User"}
-                                </Text>
-                                <Text className="text-xs font-semibold text-primary">Edit</Text>
+                                </UIText>
+                                <UIText className="text-xs font-semibold text-primary">Edit</UIText>
                             </TouchableOpacity>
-                            <Text className="text-[13px] mt-1 text-muted-foreground">
+                            <UIText className="text-[13px] mt-1 text-muted-foreground">
                                 {user?.email || "No email connected"}
-                            </Text>
+                            </UIText>
                         </View>
                     )}
 
                     <View className="mt-3">
                         <View className="flex-row items-center gap-1.5 bg-primary/10 border border-primary/20 px-2.5 py-1 rounded-xl">
                             <Sparkles className="text-primary" size={12} />
-                            <Text className="text-xs text-primary font-semibold">
+                            <UIText className="text-xs text-primary font-semibold">
                                 {user?.token ? "Cloud Verified" : "Guest Account"}
-                            </Text>
+                            </UIText>
                         </View>
                     </View>
-                </View>
+                </Card>
 
                 {/* Cloud Sync Feature Card */}
                 <CloudSyncCard
@@ -522,24 +527,26 @@ export function ProfileScreen({
                 {/* Account Logout / Actions */}
                 <View className="mb-8 mt-2.5 gap-2.5">
                     {!user?.token && onOpenAuth && (
-                        <TouchableOpacity
-                            className="flex-row items-center justify-center gap-2 rounded-2xl py-3.5 bg-primary"
+                        <Button
+                            variant="default"
+                            className="w-full h-12 rounded-2xl flex-row items-center justify-center gap-2"
                             onPress={onOpenAuth}
                         >
                             <User className="text-primary-foreground" size={18} />
-                            <Text className="text-primary-foreground text-[15px] font-bold">Sign In to Cloud Account</Text>
-                        </TouchableOpacity>
+                            <UIText className="text-primary-foreground text-[15px] font-bold">Sign In to Cloud Account</UIText>
+                        </Button>
                     )}
 
-                    <TouchableOpacity
-                        className="flex-row items-center justify-center gap-2 bg-destructive/10 rounded-2xl py-3.5 border border-destructive/20"
+                    <Button
+                        variant="destructive"
+                        className="w-full h-12 rounded-2xl flex-row items-center justify-center gap-2"
                         onPress={handleConfirmLogout}
                     >
-                        <LogOut className="text-destructive" size={18} />
-                        <Text className="text-destructive text-[15px] font-bold">
+                        <LogOut className="text-destructive-foreground" size={18} />
+                        <UIText className="text-destructive-foreground text-[15px] font-bold">
                             {user?.token ? "Log Out" : "Reset Guest Session"}
-                        </Text>
-                    </TouchableOpacity>
+                        </UIText>
+                    </Button>
                 </View>
             </ScrollView>
 

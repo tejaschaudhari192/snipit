@@ -33,16 +33,18 @@ export function FormInput({
         return (
             <View className={cn("w-full mb-3", containerClassName)}>
                 {label && <Label className="mb-1.5">{label}</Label>}
-                <Host matchContents>
-                    <NativeTextInput
-                        placeholder={placeholder}
-                        defaultValue={value}
-                        onChangeText={onChangeText}
-                        autoCapitalize={autoCapitalize as any}
-                        secureTextEntry={secureTextEntry}
-                        style={{ height: 44, borderRadius: 8 }}
-                    />
-                </Host>
+                <View style={{ width: "100%" }}>
+                    <Host style={{ width: "100%" }}>
+                        <NativeTextInput
+                            placeholder={placeholder}
+                            defaultValue={value}
+                            onChangeText={onChangeText}
+                            autoCapitalize={autoCapitalize as any}
+                            secureTextEntry={secureTextEntry}
+                            style={{ height: 44, borderRadius: 8, width: "100%" }}
+                        />
+                    </Host>
+                </View>
             </View>
         );
     }
@@ -90,15 +92,15 @@ export function FormPasswordInput({
             <View className={cn("w-full mb-3", containerClassName)}>
                 {label && <Label className="mb-1.5">{label}</Label>}
                 <View className="w-full flex-row items-center border border-input rounded-md pr-2 bg-background">
-                    <View className="flex-1">
-                        <Host matchContents>
+                    <View className="flex-1" style={{ height: 44 }}>
+                        <Host style={{ width: "100%", height: 44 }}>
                             <NativeTextInput
                                 placeholder={placeholder}
                                 defaultValue={value}
                                 onChangeText={onChangeText}
                                 secureTextEntry={!showPassword}
                                 autoCapitalize="none"
-                                style={{ height: 44, borderRadius: 8, backgroundColor: "transparent" }}
+                                style={{ height: 44, borderRadius: 8, backgroundColor: "transparent", width: "100%" }}
                             />
                         </Host>
                     </View>
@@ -167,13 +169,13 @@ export function PrimaryButton({
     if (uiStyle === "native" && Platform.OS !== "web") {
         return (
             <View className={cn("w-full mt-2 overflow-hidden rounded-md", className)}>
-                <Host matchContents>
+                <Host style={{ width: "100%", height: 44 }}>
                     <NativeButton
                         label={loading ? "Loading..." : title}
                         variant="filled"
                         onPress={onPress}
                         disabled={disabled || loading}
-                        style={{ height: 44, borderRadius: 8 }}
+                        style={{ height: 44, borderRadius: 8, width: "100%" }}
                     />
                 </Host>
             </View>

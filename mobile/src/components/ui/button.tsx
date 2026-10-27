@@ -1,9 +1,10 @@
 import { TextClassContext } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { Platform, Pressable } from 'react-native';
+import { Platform, Pressable, View } from 'react-native';
 import { Host, Button as NativeButton } from '@expo/ui';
 import { useUIStyle } from '@/core/UIStyleContext';
+import React from 'react';
 
 const buttonVariants = cva(
   cn(
@@ -97,20 +98,32 @@ function Button({ className, variant, size, children, onPress, ...props }: Butto
 
   if (uiStyle === 'native' && Platform.OS !== 'web') {
     const nativeVariant = variant === 'outline' ? 'outlined' : variant === 'ghost' || variant === 'link' ? 'text' : 'filled';
-    const label = typeof children === 'string' ? children : undefined;
+    
+    // Extract label text if passed as a string or as a nested <Text>String</Text>
+    let label: string | undefined = undefined;
+    if (typeof children === 'string') {
+      label = children;
+    } else if (React.isValidElement(children) && typeof (children.props as any)?.children === 'string') {
+      label = (children.props as any).children;
+    }
+
     const nativeChildren = typeof children === 'function' ? null : (label ? undefined : children);
+    const isIcon = size === 'icon';
 
     return (
-      <Host matchContents>
-        <NativeButton
-          variant={nativeVariant}
-          label={label}
-          onPress={onPress as (() => void) | undefined}
-          disabled={props.disabled ?? false}
-        >
-          {nativeChildren}
-        </NativeButton>
-      </Host>
+      <View className={cn(isIcon ? 'w-10 h-10' : undefined, className)}>
+        <Host style={{ minWidth: isIcon ? 40 : 64, height: size === 'sm' ? 36 : isIcon ? 40 : 44 }}>
+          <NativeButton
+            variant={nativeVariant}
+            label={label}
+            onPress={onPress as (() => void) | undefined}
+            disabled={props.disabled ?? false}
+            style={{ width: '100%', height: size === 'sm' ? 36 : isIcon ? 40 : 44 }}
+          >
+            {nativeChildren}
+          </NativeButton>
+        </Host>
+      </View>
     );
   }
 
