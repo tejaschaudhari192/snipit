@@ -27,7 +27,7 @@ export function ModernToggle({
 
 	if (uiStyle === "native" && Platform.OS !== "web") {
 		return (
-			<Host matchContents>
+			<Host style={{ width: 52, height: 32 }}>
 				<NativeSwitch
 					value={value}
 					onValueChange={onValueChange}

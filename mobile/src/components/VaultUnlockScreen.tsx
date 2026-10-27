@@ -66,10 +66,10 @@ export function VaultUnlockScreen({
 				<Button
 					variant="outline"
 					size="sm"
-					className="h-8 px-2.5"
+					className="h-8 px-3 min-w-[72px]"
 					onPress={user && onOpenProfile ? onOpenProfile : onOpenAuth}
 				>
-					<Text className="text-xs">{user ? user.username : "Sign In"}</Text>
+					<Text className="text-xs font-medium">{user ? (user.username || user.email?.split("@")[0] || "Account") : "Sign In"}</Text>
 				</Button>
 			</View>
 

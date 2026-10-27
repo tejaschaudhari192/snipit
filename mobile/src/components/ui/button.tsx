@@ -97,8 +97,8 @@ function Button({ className, variant, size, children, onPress, ...props }: Butto
   const { uiStyle } = useUIStyle();
 
   if (uiStyle === 'native' && Platform.OS !== 'web') {
-    const nativeVariant = variant === 'outline' ? 'outlined' : variant === 'ghost' || variant === 'link' ? 'text' : 'filled';
-    
+    const isIcon = size === 'icon';
+
     // Extract label text if passed as a string or as a nested <Text>String</Text>
     let label: string | undefined = undefined;
     if (typeof children === 'string') {
@@ -107,21 +107,36 @@ function Button({ className, variant, size, children, onPress, ...props }: Butto
       label = (children.props as any).children;
     }
 
-    const nativeChildren = typeof children === 'function' ? null : (label ? undefined : children);
-    const isIcon = size === 'icon';
+    // If it's an icon button or there is no text label, Jetpack Compose Button cannot display React Native Lucide SVGs.
+    // Render as a high-fidelity Pressable with proper design tokens so the icon is always clearly visible.
+    if (isIcon || !label) {
+      return (
+        <TextClassContext.Provider value={buttonTextVariants({ variant, size })}>
+          <Pressable
+            className={cn(props.disabled && 'opacity-50', buttonVariants({ variant, size }), className)}
+            role="button"
+            onPress={onPress}
+            {...props}
+          >
+            {children}
+          </Pressable>
+        </TextClassContext.Provider>
+      );
+    }
+
+    const isFlex1 = className?.includes('flex-1');
+    const nativeVariant = variant === 'outline' ? 'outlined' : variant === 'ghost' || variant === 'link' ? 'text' : 'filled';
 
     return (
-      <View className={cn(isIcon ? 'w-10 h-10' : undefined, className)}>
-        <Host style={{ minWidth: isIcon ? 40 : 64, height: size === 'sm' ? 36 : isIcon ? 40 : 44 }}>
+      <View className={cn(isFlex1 ? 'flex-1' : undefined, className)}>
+        <Host style={{ minWidth: 64, height: size === 'sm' ? 36 : 44, width: isFlex1 ? '100%' : undefined }}>
           <NativeButton
             variant={nativeVariant}
             label={label}
             onPress={onPress as (() => void) | undefined}
             disabled={props.disabled ?? false}
-            style={{ width: '100%', height: size === 'sm' ? 36 : isIcon ? 40 : 44 }}
-          >
-            {nativeChildren}
-          </NativeButton>
+            style={{ width: '100%', height: size === 'sm' ? 36 : 44 }}
+          />
         </Host>
       </View>
     );

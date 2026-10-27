@@ -17,18 +17,6 @@ export function useCustomAlert(theme: "dark" | "light" = "dark") {
 			type: "info" | "success" | "warning" | "error" = "info",
 			buttons?: CustomAlertConfig["buttons"]
 		) => {
-			if (uiStyle === "native" && Platform.OS !== "web") {
-				const alertButtons = buttons && buttons.length > 0
-					? buttons.map((b) => ({
-							text: b.text,
-							style: b.style === "destructive" ? "destructive" : b.style === "cancel" ? "cancel" : "default",
-							onPress: b.onPress,
-					  }))
-					: [{ text: "OK" }];
-				Alert.alert(title, message, alertButtons as any);
-				return;
-			}
-
 			setAlertConfig({
 				visible: true,
 				title,
@@ -38,14 +26,14 @@ export function useCustomAlert(theme: "dark" | "light" = "dark") {
 				onDismiss: () => setAlertConfig((prev) => ({ ...prev, visible: false })),
 			});
 		},
-		[uiStyle]
+		[]
 	);
 
 	const hideAlert = useCallback(() => {
 		setAlertConfig((prev) => ({ ...prev, visible: false }));
 	}, []);
 
-	const alertModal = uiStyle === "native" && Platform.OS !== "web" ? null : (
+	const alertModal = (
 		<CustomAlertModal
 			config={alertConfig}
 			theme={theme}
