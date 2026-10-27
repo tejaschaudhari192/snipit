@@ -288,14 +288,13 @@ export function ProfileScreen({
         }
     };
 
-    const performLogout = async () => {
-        try {
-            await offlineVault.logout();
-            setUser(null);
-            onLogout();
-        } catch {
-            onLogout();
-        }
+    const performLogout = () => {
+        // Don't call offlineVault.logout() here — the parent's onLogout()
+        // handler (App.tsx handleLogout) already does it. Calling it twice
+        // on mobile causes a silent failure that prevents the screen from
+        // navigating away.
+        setUser(null);
+        onLogout();
     };
 
     const handleConfirmLogout = () => {

@@ -32,8 +32,11 @@ export default function App() {
 			: themeMode;
 
 	useEffect(() => {
-		setColorScheme(resolvedTheme);
-	}, [resolvedTheme, setColorScheme]);
+		// Pass themeMode directly so NativeWind handles "system" natively.
+		// If we pass the resolved value, NativeWind locks to it and stops
+		// reacting when the device theme changes.
+		setColorScheme(themeMode);
+	}, [themeMode, setColorScheme]);
 
 	const [defaultTool, setDefaultTool] = useState<"hub" | "pwmg">("pwmg");
 	const [autoUpdateModalVisible, setAutoUpdateModalVisible] = useState(false);
