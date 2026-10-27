@@ -4,7 +4,6 @@ import {
 	TextInput,
 	TouchableOpacity,
 	Modal,
-	SafeAreaView,
 	ScrollView,
 	KeyboardAvoidingView,
 	Platform,
@@ -13,6 +12,7 @@ import {
 	Animated,
 	Dimensions,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
 	ArrowLeft,
 	Star,
@@ -243,7 +243,7 @@ export function NoteEditorModal({
 			>
 				<SafeAreaView
 					className="flex-1 bg-background"
-					style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
+					edges={["top", "bottom", "left", "right"]}
 				>
 				{/* Top App Bar */}
 				<View className="flex-row items-center justify-between px-4 py-2.5 border-b border-border bg-background">

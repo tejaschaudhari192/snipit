@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from "react";
 import {
     View,
-    SafeAreaView,
     Platform,
     StatusBar,
     BackHandler,
     ScrollView,
-    Pressable,
 } from "react-native";
-import { ArrowLeft, Globe } from "lucide-react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ArrowLeft } from "lucide-react-native";
 import { offlineVault } from "../core/vault-storage";
 import { CONFIG } from "../config/configuration";
 import { useCustomAlert } from "../hooks/useCustomAlert";
 import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
 import { Text } from "../components/ui/text";
 import { SignInForm } from "../components/sign-in-form";
 import { SignUpForm } from "../components/sign-up-form";
@@ -33,8 +30,6 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [apiUrl, setApiUrl] = useState(CONFIG.DEFAULT_API_URL);
-    const [showServerConfig, setShowServerConfig] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
@@ -66,12 +61,29 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
                 setError("Email is required to reset password.");
                 return;
             }
-            showAlert(
-                "Reset Link Sent",
-                `If an account exists with ${email}, password reset instructions have been sent.`,
-                "info",
-                [{ text: "OK", onPress: () => setMode("login") }]
-            );
+            setLoading(true);
+            try {
+                const baseUrl = normalizeApiBaseUrl(CONFIG.DEFAULT_API_URL);
+                const res = await fetch(`${baseUrl}/auth/forgotpassword`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: email.trim() }),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    throw new Error(data.message || "Failed to send reset link.");
+                }
+                showAlert(
+                    "Reset Link Sent",
+                    `If an account exists with ${email}, password reset instructions have been sent.`,
+                    "info",
+                    [{ text: "OK", onPress: () => setMode("login") }]
+                );
+            } catch (err: any) {
+                setError(err.message || "Failed to request password reset.");
+            } finally {
+                setLoading(false);
+            }
             return;
         }
 
@@ -88,7 +100,7 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
         setLoading(true);
 
         try {
-            const baseUrl = normalizeApiBaseUrl(apiUrl);
+            const baseUrl = normalizeApiBaseUrl(CONFIG.DEFAULT_API_URL);
             await offlineVault.setApiBaseUrl(baseUrl);
             const endpoint = mode === "login" ? "/auth/login" : "/auth/register";
             const body = mode === "login"
@@ -157,17 +169,14 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
                 ]
             );
         } catch (err: any) {
-            setError(err.message || "Failed to reach Snipit server. Check server URL.");
+            setError(err.message || "Failed to reach Snipit authentication server.");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <SafeAreaView
-            className="flex-1 bg-background"
-            style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
-        >
+        <SafeAreaView className="flex-1 bg-background" edges={["top", "bottom", "left", "right"]}>
             {/* Top Navigation */}
             <View className="flex-row items-center justify-between px-4 py-3 border-b border-border bg-background">
                 <Button variant="ghost" size="icon" onPress={mode === "login" ? onBack : () => setMode("login")} className="h-9 w-9">
@@ -181,8 +190,10 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
 
             <ScrollView
                 className="flex-1 bg-background"
-                contentContainerClassName="p-4 flex-1 justify-center max-w-sm w-full mx-auto"
+                contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+                contentContainerClassName="p-4 max-w-sm w-full mx-auto"
                 keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
             >
                 {mode === "login" && (
                     <SignInForm
@@ -235,31 +246,6 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
                         }}
                     />
                 )}
-
-                {/* Optional Server URL Setting */}
-                <View className="mt-4">
-                    <Pressable
-                        className="flex-row items-center justify-center gap-1.5 py-1"
-                        onPress={() => setShowServerConfig(!showServerConfig)}
-                    >
-                        <Globe size={13} className="text-muted-foreground" />
-                        <Text className="text-muted-foreground text-[11px]">
-                            {showServerConfig ? "Hide server endpoint" : "Configure server URL"}
-                        </Text>
-                    </Pressable>
-
-                    {showServerConfig && (
-                        <View className="pt-2 border-t border-border gap-1.5 mt-2">
-                            <Label htmlFor="server">Server URL</Label>
-                            <Input
-                                id="server"
-                                placeholder="http://localhost:3000"
-                                value={apiUrl}
-                                onChangeText={setApiUrl}
-                            />
-                        </View>
-                    )}
-                </View>
             </ScrollView>
 
             {alertModal}

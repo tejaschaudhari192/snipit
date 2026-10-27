@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
-import { Text, View, SafeAreaView, BackHandler, Platform, StatusBar, Share, TouchableOpacity, ActivityIndicator, Dimensions, PanResponder, ScrollView, Animated } from "react-native";
+import { Text, View, BackHandler, Platform, StatusBar, Share, TouchableOpacity, ActivityIndicator, Dimensions, PanResponder, ScrollView, Animated } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Plus, Shield, Lock, X, CheckCheck } from "lucide-react-native";
 import * as Clipboard from "expo-clipboard";
 import * as FileSystem from "expo-file-system/legacy";
@@ -926,7 +927,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 	return (
 		<SafeAreaView
 			className="flex-1 bg-background"
-			style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
+			edges={["top", "bottom", "left", "right"]}
 		>
 			{/* Header: Normal PWMGHeader OR MI Notes Style Multi-Selection Header */}
 			{isSelectionMode ? (

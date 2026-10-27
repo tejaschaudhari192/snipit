@@ -3,11 +3,11 @@ import {
     View,
     TouchableOpacity,
     ScrollView,
-    SafeAreaView,
     Platform,
     StatusBar,
     Image,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { Cloud, Shield, ChevronRight, Lock, User } from "lucide-react-native";
 import { UserAvatar } from "./UserAvatar";
@@ -33,8 +33,8 @@ export function HubScreen({ theme, user, onOpenTool }: HubScreenProps) {
 
     return (
         <SafeAreaView
-            className="flex-1 min-h-screen bg-background"
-            style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
+            className="flex-1 bg-background"
+            edges={["top", "bottom", "left", "right"]}
         >
             <ExpoStatusBar style={isLight ? "dark" : "light"} />
 

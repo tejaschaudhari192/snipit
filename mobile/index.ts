@@ -1,6 +1,6 @@
 import './global.css';
 import { registerRootComponent } from 'expo';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { cssInterop } from 'react-native-css-interop';
 import nacl from 'tweetnacl';
 import * as Crypto from 'expo-crypto';
@@ -16,7 +16,7 @@ try {
 	// Fallback to JS / Expo Go if native module is not yet compiled
 }
 
-// Register React Native's default SafeAreaView with NativeWind / cssInterop
+// Register SafeAreaView with NativeWind / cssInterop
 cssInterop(SafeAreaView, { className: 'style' });
 
 // Initialize TweetNaCl secure PRNG for native Android and iOS environments

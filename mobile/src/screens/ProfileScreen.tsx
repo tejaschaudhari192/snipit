@@ -5,12 +5,12 @@ import {
     TouchableOpacity,
     TextInput,
     ScrollView,
-    SafeAreaView,
     ActivityIndicator,
     Platform,
     StatusBar,
     BackHandler,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { ArrowLeft, User, LogOut, Sparkles, Camera } from "lucide-react-native";
 import { offlineVault, UserSession } from "../core/vault-storage";
 import { UserAvatar } from "../components/UserAvatar";
@@ -321,8 +321,8 @@ export function ProfileScreen({
 
     return (
         <SafeAreaView
-            className={`flex-1 min-h-screen ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
-            style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
+            className="flex-1 bg-background"
+            edges={["top", "bottom", "left", "right"]}
         >
             {/* Header */}
             <View
