@@ -14,7 +14,7 @@ import { checkAppUpdate } from "./src/core/update-checker";
 import { UpdateInfoModal } from "./src/components/UpdateInfoModal";
 import { HubScreen } from "./src/components/HubScreen";
 import { UIStyleProvider } from "./src/core/UIStyleContext";
-
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useColorScheme as useNativeWindColorScheme } from "nativewind";
 
 export default function App() {
@@ -178,19 +178,21 @@ export default function App() {
 	};
 
 	return (
-		<UIStyleProvider>
-			<View
-				className={`flex-1 ${resolvedTheme === "dark" ? "dark bg-background" : "bg-background"}`}
-			>
-				{renderActiveTool()}
-				<UpdateInfoModal
-					visible={autoUpdateModalVisible}
-					updateResult={autoUpdateResult}
-					theme={resolvedTheme}
-					onClose={() => setAutoUpdateModalVisible(false)}
-				/>
-			</View>
-		</UIStyleProvider>
+		<SafeAreaProvider>
+			<UIStyleProvider>
+				<View
+					className={`flex-1 ${resolvedTheme === "dark" ? "dark bg-background" : "bg-background"}`}
+				>
+					{renderActiveTool()}
+					<UpdateInfoModal
+						visible={autoUpdateModalVisible}
+						updateResult={autoUpdateResult}
+						theme={resolvedTheme}
+						onClose={() => setAutoUpdateModalVisible(false)}
+					/>
+				</View>
+			</UIStyleProvider>
+		</SafeAreaProvider>
 	);
 }
 

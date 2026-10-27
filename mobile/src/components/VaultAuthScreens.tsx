@@ -58,7 +58,7 @@ export function VaultRecoveryScreen({
 	return (
 		<SafeAreaView
 			className="flex-1 bg-background"
-			style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
+			edges={["top", "bottom", "left", "right"]}
 		>
 			<View className="flex-row items-center justify-between px-4 py-3 border-b border-border bg-background">
 				<Button variant="ghost" size="icon" onPress={onBack} className="h-9 w-9">
@@ -68,7 +68,12 @@ export function VaultRecoveryScreen({
 				<View className="w-9" />
 			</View>
 
-			<ScrollView contentContainerClassName="p-4 flex-1 justify-center max-w-sm w-full mx-auto">
+			<ScrollView
+				className="flex-1 bg-background"
+				contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+				contentContainerClassName="p-4 max-w-sm w-full mx-auto"
+				showsVerticalScrollIndicator={false}
+			>
 				<Card className="w-full border-border bg-card">
 					<CardHeader className="text-center pb-2">
 						<View className="w-12 h-12 rounded-full bg-muted justify-center items-center mx-auto mb-2">
@@ -343,7 +348,7 @@ export function VaultOnboardingScreen({
 	return (
 		<SafeAreaView
 			className="flex-1 bg-background"
-			style={Platform.OS === "android" ? { paddingTop: StatusBar.currentHeight } : undefined}
+			edges={["top", "bottom", "left", "right"]}
 		>
 			<View className="flex-row items-center justify-between px-4 py-3 border-b border-border bg-background">
 				<Button
@@ -360,7 +365,12 @@ export function VaultOnboardingScreen({
 				<View className="w-9" />
 			</View>
 
-			<ScrollView contentContainerClassName="p-4 flex-1 justify-center max-w-sm w-full mx-auto">
+			<ScrollView
+				className="flex-1 bg-background"
+				contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+				contentContainerClassName="p-4 max-w-sm w-full mx-auto"
+				showsVerticalScrollIndicator={false}
+			>
 				<Card className="w-full border-border bg-card">
 					{step === 1 && (
 						<>
