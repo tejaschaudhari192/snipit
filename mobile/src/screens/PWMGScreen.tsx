@@ -795,22 +795,20 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 					</Text>
 
 					{/* Subtitle / Description */}
-					<Text className={`text-sm text-center leading-5 mb-8 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+					<Text className="text-sm text-center leading-5 mb-8 text-muted-foreground">
 						Zero-knowledge encrypted credential store
 					</Text>
 
 					{/* Spinner & Active Stage Pill */}
-					<View className={`flex-row items-center gap-3 px-4 py-2.5 rounded-full border ${
-						isLight ? "bg-white border-slate-200 shadow-sm" : "bg-slate-900 border-slate-800"
-					}`}>
+					<View className="flex-row items-center gap-3 px-4 py-2.5 rounded-full border bg-card border-border shadow-sm">
 						<ActivityIndicator size="small" color="#0a84ff" />
-						<Text className={`text-xs font-semibold ${isLight ? "text-slate-700" : "text-slate-300"}`}>
+						<Text className="text-xs font-semibold text-foreground">
 							{checkingVaultStage}
 						</Text>
 					</View>
 
 					{/* Security hint footer */}
-					<Text className={`text-[11px] font-medium tracking-wide mt-10 uppercase ${isLight ? "text-slate-400" : "text-slate-500"}`}>
+					<Text className="text-[11px] font-medium tracking-wide mt-10 uppercase text-muted-foreground">
 						XSalsa20-Poly1305 • End-to-End Encrypted
 					</Text>
 				</View>
@@ -937,17 +935,15 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 					{/* Left: Cancel Selection */}
 					<TouchableOpacity
 						onPress={() => setSelectedItemIds([])}
-						className={`p-2 rounded-full ${isLight ? "bg-slate-100" : "bg-slate-900"}`}
+						className="p-2 rounded-full bg-muted"
 						hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
 					>
-						<X color={isLight ? "#0f172a" : "#f8fafc"} size={22} />
+						<X className="text-foreground" size={22} />
 					</TouchableOpacity>
 
 					{/* Center: Selected Counter (MI Notes italicized large counter) */}
 					<Text
-						className={`text-xl font-bold tracking-tight italic ${
-							isLight ? "text-slate-900" : "text-white"
-						}`}
+						className="text-xl font-bold tracking-tight italic text-foreground"
 					>
 						{selectedItemIds.length} item{selectedItemIds.length > 1 ? "s" : ""} selected
 					</Text>
@@ -955,10 +951,10 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 					{/* Right: Select All / Deselect All */}
 					<TouchableOpacity
 						onPress={handleSelectAllVisible}
-						className={`p-2 rounded-full ${isLight ? "bg-slate-100" : "bg-slate-900"}`}
+						className="p-2 rounded-full bg-muted"
 						hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
 					>
-						<CheckCheck color={isLight ? "#0f172a" : "#f8fafc"} size={22} />
+						<CheckCheck className="text-foreground" size={22} />
 					</TouchableOpacity>
 				</View>
 			) : (

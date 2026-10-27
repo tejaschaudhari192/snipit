@@ -21,6 +21,7 @@ import { useThemeVars } from "../config/theme";
 import { checkAppUpdate } from "../core/update-checker";
 import { UpdateInfoModal } from "../components/UpdateInfoModal";
 import { useCustomAlert } from "../hooks/useCustomAlert";
+import { useUIStyle } from "../core/UIStyleContext";
 
 interface Props {
     onBack: () => void;
@@ -60,7 +61,7 @@ export function ProfileScreen({
     const [savingAvatar, setSavingAvatar] = useState(false);
     const [isThemeDropdownOpen, setIsThemeDropdownOpen] = useState(false);
     const [isDefaultToolDropdownOpen, setIsDefaultToolDropdownOpen] = useState(false);
-    const [uiStyle, setUiStyle] = useState<"shadcn" | "native">("shadcn");
+    const { uiStyle, setUIStyle } = useUIStyle();
     const [isUIStyleDropdownOpen, setIsUIStyleDropdownOpen] = useState(false);
 
     // Update checker state
@@ -180,10 +181,7 @@ export function ProfileScreen({
             // default to synced or pending_offline
         }
 
-        try {
-            const savedStyle = await offlineVault.getUIStyle();
-            setUiStyle(savedStyle);
-        } catch {}
+        // uiStyle is managed reactively by useUIStyle() context
     };
 
     const handleSyncNow = async () => {
@@ -326,35 +324,31 @@ export function ProfileScreen({
         >
             {/* Header */}
             <View
-                className={`flex-row items-center justify-between px-4 py-3 border-b ${
-                    isLight ? "bg-white border-slate-200" : "bg-slate-950 border-slate-800"
-                }`}
+                className="flex-row items-center justify-between px-4 py-3 border-b bg-card border-border"
             >
                 <TouchableOpacity
                     onPress={onBack}
-                    className={`p-2 rounded-full ${isLight ? "bg-slate-200" : "bg-slate-800"}`}
+                    className="p-2 rounded-full bg-muted"
                     hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
                     activeOpacity={0.7}
                 >
-                    <ArrowLeft color={isLight ? "#0f172a" : "#ffffff"} size={20} />
+                    <ArrowLeft className="text-foreground" size={20} />
                 </TouchableOpacity>
-                <Text className={`text-[18px] font-bold ${isLight ? "text-slate-900" : "text-white"}`}>
+                <Text className="text-[18px] font-bold text-foreground">
                     Account & Profile
                 </Text>
                 <View className="w-10" />
             </View>
 
             <ScrollView
-                className={`flex-1 ${isLight ? "bg-slate-50" : "bg-slate-950"}`}
+                className="flex-1 bg-background"
                 contentContainerClassName="p-4 pb-32"
                 keyboardShouldPersistTaps="handled"
                 keyboardDismissMode="interactive"
             >
                 {/* Profile Card */}
                 <View
-                    className={`rounded-2xl p-5 items-center border mb-5 ${
-                        isLight ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
-                    }`}
+                    className="rounded-2xl p-5 items-center border mb-5 bg-card border-border"
                 >
                     <TouchableOpacity
                         className="relative w-19 h-19 rounded-full mb-1 justify-center items-center"
@@ -366,11 +360,9 @@ export function ProfileScreen({
                     >
                         <UserAvatar uri={user?.avatar} name={user?.username || "User"} size={72} />
                         <View
-                            className={`absolute bottom-0 right-0 w-6 h-6 rounded-full border-2 justify-center items-center bg-violet-600 ${
-                                isLight ? "border-white" : "border-slate-900"
-                            }`}
+                            className="absolute bottom-0 right-0 w-6 h-6 rounded-full border-2 justify-center items-center bg-primary border-card"
                         >
-                            <Camera color="#fff" size={14} />
+                            <Camera className="text-primary-foreground" size={14} />
                         </View>
                     </TouchableOpacity>
 
@@ -381,7 +373,7 @@ export function ProfileScreen({
                         }}
                         className="py-1 px-2 mb-1.5"
                     >
-                        <Text className={`text-xs font-semibold ${isLight ? "text-indigo-600" : "text-violet-300"}`}>
+                        <Text className="text-xs font-semibold text-primary">
                             Change Photo
                         </Text>
                     </TouchableOpacity>
@@ -389,33 +381,29 @@ export function ProfileScreen({
                     {isEditingUsername ? (
                         <View className="w-4/5 items-center mt-3">
                             <TextInput
-                                className={`w-full rounded-lg px-3 py-2 text-[15px] border text-center ${
-                                    isLight
-                                        ? "bg-slate-100 border-indigo-400 text-slate-900"
-                                        : "bg-slate-950 border-violet-500 text-white"
-                                }`}
+                                className="w-full rounded-lg px-3 py-2 text-[15px] border text-center bg-background border-input text-foreground"
                                 value={newUsername}
                                 onChangeText={setNewUsername}
                                 autoCapitalize="none"
                                 placeholder="Enter username"
-                                placeholderTextColor={isLight ? "#94a3b8" : "#64748b"}
+                                placeholderTextColor="#64748b"
                             />
                             <View className="flex-row gap-2.5 mt-2">
                                 <TouchableOpacity
-                                    className="px-3.5 py-1.5 rounded-md bg-slate-700"
+                                    className="px-3.5 py-1.5 rounded-md bg-secondary"
                                     onPress={() => setIsEditingUsername(false)}
                                 >
-                                    <Text className="text-white text-[13px] font-semibold">Cancel</Text>
+                                    <Text className="text-secondary-foreground text-[13px] font-semibold">Cancel</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    className="px-3.5 py-1.5 rounded-md bg-violet-600"
+                                    className="px-3.5 py-1.5 rounded-md bg-primary"
                                     onPress={handleUpdateUsername}
                                     disabled={savingName}
                                 >
                                     {savingName ? (
                                         <ActivityIndicator size="small" color="#fff" />
                                     ) : (
-                                        <Text className="text-white text-[13px] font-semibold">Save</Text>
+                                        <Text className="text-primary-foreground text-[13px] font-semibold">Save</Text>
                                     )}
                                 </TouchableOpacity>
                             </View>
@@ -423,21 +411,21 @@ export function ProfileScreen({
                     ) : (
                         <View className="items-center mt-3">
                             <TouchableOpacity className="flex-row items-center gap-2" onPress={() => setIsEditingUsername(true)}>
-                                <Text className={`text-[18px] font-bold ${isLight ? "text-slate-900" : "text-white"}`}>
+                                <Text className="text-[18px] font-bold text-foreground">
                                     {user?.username || "Guest User"}
                                 </Text>
-                                <Text className="text-xs font-semibold text-violet-500">Edit</Text>
+                                <Text className="text-xs font-semibold text-primary">Edit</Text>
                             </TouchableOpacity>
-                            <Text className={`text-[13px] mt-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                            <Text className="text-[13px] mt-1 text-muted-foreground">
                                 {user?.email || "No email connected"}
                             </Text>
                         </View>
                     )}
 
                     <View className="mt-3">
-                        <View className="flex-row items-center gap-1.5 bg-violet-500/15 px-2.5 py-1 rounded-xl">
-                            <Sparkles color="#a78bfa" size={12} />
-                            <Text className="text-xs text-violet-400 font-semibold">
+                        <View className="flex-row items-center gap-1.5 bg-primary/10 border border-primary/20 px-2.5 py-1 rounded-xl">
+                            <Sparkles className="text-primary" size={12} />
+                            <Text className="text-xs text-primary font-semibold">
                                 {user?.token ? "Cloud Verified" : "Guest Account"}
                             </Text>
                         </View>
@@ -499,8 +487,7 @@ export function ProfileScreen({
                             setIsDefaultToolDropdownOpen(false);
                         }}
                         onSelectStyle={async (style) => {
-                            await offlineVault.setUIStyle(style);
-                            setUiStyle(style);
+                            await setUIStyle(style);
                             setIsUIStyleDropdownOpen(false);
                         }}
                     />
@@ -537,20 +524,20 @@ export function ProfileScreen({
                 <View className="mb-8 mt-2.5 gap-2.5">
                     {!user?.token && onOpenAuth && (
                         <TouchableOpacity
-                            className="flex-row items-center justify-center gap-2 rounded-2xl py-3.5 bg-violet-600"
+                            className="flex-row items-center justify-center gap-2 rounded-2xl py-3.5 bg-primary"
                             onPress={onOpenAuth}
                         >
-                            <User color="#fff" size={18} />
-                            <Text className="text-white text-[15px] font-bold">Sign In to Cloud Account</Text>
+                            <User className="text-primary-foreground" size={18} />
+                            <Text className="text-primary-foreground text-[15px] font-bold">Sign In to Cloud Account</Text>
                         </TouchableOpacity>
                     )}
 
                     <TouchableOpacity
-                        className="flex-row items-center justify-center gap-2 bg-red-500/10 rounded-2xl py-3.5 border border-red-500/20"
+                        className="flex-row items-center justify-center gap-2 bg-destructive/10 rounded-2xl py-3.5 border border-destructive/20"
                         onPress={handleConfirmLogout}
                     >
-                        <LogOut color="#ef4444" size={18} />
-                        <Text className="text-red-500 text-[15px] font-bold">
+                        <LogOut className="text-destructive" size={18} />
+                        <Text className="text-destructive text-[15px] font-bold">
                             {user?.token ? "Log Out" : "Reset Guest Session"}
                         </Text>
                     </TouchableOpacity>

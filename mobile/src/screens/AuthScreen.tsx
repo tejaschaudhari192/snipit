@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     View,
     Platform,
     StatusBar,
     BackHandler,
     ScrollView,
+    Linking,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArrowLeft } from "lucide-react-native";
@@ -34,6 +35,96 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
     const [error, setError] = useState("");
 
     const { showAlert, alertModal } = useCustomAlert(theme);
+
+    const handleAuthData = useCallback(async (data: any, fallbackEmail = "") => {
+        const baseUrl = CONFIG.DEFAULT_API_URL;
+        const token = data.token;
+        let avatar = data.avatar || "";
+        let finalUsername = data.username || data.email?.split("@")[0] || fallbackEmail.split("@")[0] || "User";
+
+        if (token) {
+            try {
+                const meRes = await fetch(`${baseUrl}/auth/me`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                if (meRes.ok) {
+                    const meData = await meRes.json();
+                    if (meData.avatar) avatar = meData.avatar;
+                    if (meData.username) finalUsername = meData.username;
+                }
+            } catch {
+                // Keep default
+            }
+        }
+
+        const userData = {
+            id: data._id || data.id || data.email || fallbackEmail,
+            email: data.email || fallbackEmail,
+            username: finalUsername,
+            token,
+            avatar,
+        };
+
+        await offlineVault.saveUser(userData);
+        showAlert(
+            "Welcome",
+            `Logged in successfully as ${userData.username}!`,
+            "success",
+            [
+                {
+                    text: "Continue",
+                    style: "default",
+                    onPress: onAuthSuccess,
+                },
+            ]
+        );
+    }, [showAlert, onAuthSuccess]);
+
+    // Handle OAuth callback (both web URL query and native deep link scheme)
+    useEffect(() => {
+        const processUrl = async (urlStr?: string | null) => {
+            if (!urlStr) return;
+            try {
+                const parsed = new URL(urlStr);
+                const code = parsed.searchParams.get("code");
+                const token = parsed.searchParams.get("token");
+
+                if (token) {
+                    setLoading(true);
+                    await handleAuthData({ token });
+                    setLoading(false);
+                } else if (code) {
+                    setLoading(true);
+                    const res = await fetch(`${CONFIG.DEFAULT_API_URL}/auth/github`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ code }),
+                    });
+                    const data = await res.json();
+                    if (!res.ok) {
+                        throw new Error(data.message || "GitHub authentication failed.");
+                    }
+                    await handleAuthData(data);
+                }
+            } catch (err: any) {
+                setError(err.message || "OAuth login failed.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        // Check current web URL params
+        if (Platform.OS === "web" && typeof window !== "undefined") {
+            processUrl(window.location.href);
+        }
+
+        // Native deep link check
+        Linking.getInitialURL().then(processUrl);
+        const sub = Linking.addEventListener("url", (e) => processUrl(e.url));
+        return () => sub.remove();
+    }, [handleAuthData]);
 
     useEffect(() => {
         const handleHardwareBack = () => {
@@ -127,47 +218,7 @@ export function AuthScreen({ onBack, onAuthSuccess, theme = "dark" }: Props) {
                 throw new Error(data.message || data.error || `Authentication failed (Status ${res.status}).`);
             }
 
-            const token = data.token;
-            let avatar = data.avatar || "";
-
-            if (token) {
-                try {
-                    const meRes = await fetch(`${baseUrl}/auth/me`, {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    });
-                    if (meRes.ok) {
-                        const meData = await meRes.json();
-                        if (meData.avatar) avatar = meData.avatar;
-                        if (meData.username) data.username = meData.username;
-                    }
-                } catch {
-                    // Fall back
-                }
-            }
-
-            const userData = {
-                id: data._id || data.id || email,
-                email: data.email || email,
-                username: data.username || username || email.split("@")[0],
-                token,
-                avatar,
-            };
-
-            await offlineVault.saveUser(userData);
-            showAlert(
-                "Welcome",
-                `Logged in successfully as ${userData.username || "User"}!`,
-                "success",
-                [
-                    {
-                        text: "Continue",
-                        style: "default",
-                        onPress: onAuthSuccess,
-                    },
-                ]
-            );
+            await handleAuthData(data, email.trim());
         } catch (err: any) {
             setError(err.message || "Failed to reach Snipit authentication server.");
         } finally {

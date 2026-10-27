@@ -2,6 +2,8 @@ import { TextClassContext } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Platform, Pressable } from 'react-native';
+import { Host, Button as NativeButton } from '@expo/ui';
+import { useUIStyle } from '@/core/UIStyleContext';
 
 const buttonVariants = cva(
   cn(
@@ -90,14 +92,38 @@ const buttonTextVariants = cva(
 
 type ButtonProps = React.ComponentProps<typeof Pressable> & React.RefAttributes<typeof Pressable> & VariantProps<typeof buttonVariants>;
 
-function Button({ className, variant, size, ...props }: ButtonProps) {
+function Button({ className, variant, size, children, onPress, ...props }: ButtonProps) {
+  const { uiStyle } = useUIStyle();
+
+  if (uiStyle === 'native' && Platform.OS !== 'web') {
+    const nativeVariant = variant === 'outline' ? 'outlined' : variant === 'ghost' || variant === 'link' ? 'text' : 'filled';
+    const label = typeof children === 'string' ? children : undefined;
+    const nativeChildren = typeof children === 'function' ? null : (label ? undefined : children);
+
+    return (
+      <Host matchContents>
+        <NativeButton
+          variant={nativeVariant}
+          label={label}
+          onPress={onPress as (() => void) | undefined}
+          disabled={props.disabled ?? false}
+        >
+          {nativeChildren}
+        </NativeButton>
+      </Host>
+    );
+  }
+
   return (
     <TextClassContext.Provider value={buttonTextVariants({ variant, size })}>
       <Pressable
         className={cn(props.disabled && 'opacity-50', buttonVariants({ variant, size }), className)}
         role="button"
+        onPress={onPress}
         {...props}
-      />
+      >
+        {children}
+      </Pressable>
     </TextClassContext.Provider>
   );
 }

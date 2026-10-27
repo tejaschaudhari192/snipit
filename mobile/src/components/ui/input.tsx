@@ -2,8 +2,37 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { Platform, TextInput } from 'react-native';
 
+import { Host, TextInput as NativeTextInput } from '@expo/ui';
+import { useUIStyle } from '@/core/UIStyleContext';
+
 const Input = React.forwardRef<any, React.ComponentPropsWithoutRef<typeof TextInput>>(
   ({ className, ...props }, ref) => {
+    const { uiStyle } = useUIStyle();
+
+    if (uiStyle === 'native' && Platform.OS !== 'web') {
+      return (
+        <Host matchContents>
+          <NativeTextInput
+            defaultValue={props.value ?? props.defaultValue}
+            onChangeText={props.onChangeText}
+            placeholder={props.placeholder}
+            placeholderTextColor={props.placeholderTextColor}
+            editable={props.editable}
+            secureTextEntry={props.secureTextEntry}
+            keyboardType={props.keyboardType}
+            autoCapitalize={props.autoCapitalize}
+            autoCorrect={props.autoCorrect}
+            returnKeyType={props.returnKeyType}
+            onSubmitEditing={props.onSubmitEditing ? () => props.onSubmitEditing?.({} as any) : undefined}
+            autoFocus={props.autoFocus}
+            multiline={props.multiline}
+            numberOfLines={props.numberOfLines}
+            maxLength={props.maxLength}
+          />
+        </Host>
+      );
+    }
+
     return (
       <TextInput
         ref={ref}
@@ -16,7 +45,7 @@ const Input = React.forwardRef<any, React.ComponentPropsWithoutRef<typeof TextIn
             ),
           Platform.select({
             web: cn(
-              'placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground outline-none transition-[color,box-shadow] md:text-sm',
+              'placeholder:text-muted-foreground selection:bg-primary outline-none transition-[color,box-shadow] md:text-sm',
               'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
               'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive'
             ),
