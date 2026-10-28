@@ -28,6 +28,7 @@ import { Button } from "./ui/button";
 import { Text } from "./ui/text";
 import { Input } from "./ui/input";
 import { Separator } from "./ui/separator";
+import { CreatableCombobox } from "./ui/creatable-combobox";
 
 interface NoteEditorModalProps {
 	visible: boolean;
@@ -56,10 +57,6 @@ export function NoteEditorModal({
 	const [notes, setNotes] = useState("");
 	const [isFavorite, setIsFavorite] = useState(false);
 	const [folderId, setFolderId] = useState<string | undefined>(undefined);
-	const [isFolderPickerOpen, setIsFolderPickerOpen] = useState(false);
-	const [isCreatingFolder, setIsCreatingFolder] = useState(false);
-	const [newFolderName, setNewFolderName] = useState("");
-	const [newFolderColor, setNewFolderColor] = useState("#09090b");
 
 	// Track current active note ID (for updating created note in-place)
 	const currentNoteIdRef = useRef<string | undefined>(note?.id);
@@ -113,7 +110,6 @@ export function NoteEditorModal({
 			setIsFavorite(false);
 			setFolderId(undefined);
 		}
-		setIsFolderPickerOpen(false);
 	}, [note, visible]);
 
 	// Automatic background autosave
@@ -175,7 +171,6 @@ export function NoteEditorModal({
 
 	const handleSelectFolder = (fid?: string) => {
 		setFolderId(fid);
-		setIsFolderPickerOpen(false);
 		if (autosaveTimerRef.current) clearTimeout(autosaveTimerRef.current);
 		latestValuesRef.current.folderId = fid;
 		triggerAutoSave();
@@ -258,28 +253,45 @@ export function NoteEditorModal({
 							<ArrowLeft className="text-foreground" size={18} />
 						</Button>
 
-						{/* Folder Pill Button */}
-						<TouchableOpacity
-							onPress={() => setIsFolderPickerOpen(!isFolderPickerOpen)}
-							className="flex-row items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-muted/60"
-							activeOpacity={0.7}
-						>
-							{activeFolder ? (
-								<View
-									className="w-2.5 h-2.5 rounded-full"
-									style={{ backgroundColor: activeFolder.color || "#09090b" }}
-								/>
-							) : (
-								<FolderIcon className="text-muted-foreground" size={13} />
+						{/* Unified Creatable Combobox Folder Trigger */}
+						<CreatableCombobox
+							options={folders.map((f) => ({ id: f.id, label: f.name, color: f.color }))}
+							selectedId={folderId}
+							onSelect={handleSelectFolder}
+							onCreate={onCreateFolder ? async (name, color) => {
+								const created = await onCreateFolder(name, color);
+								if (created && created.id) {
+									return { id: created.id, label: created.name, color: created.color };
+								}
+							} : undefined}
+							placeholder="No Folder"
+							noneLabel="No Folder (Root)"
+							createLabel="Create new folder"
+							title="Move Note to Folder"
+							triggerRender={({ selectedOption, open }) => (
+								<TouchableOpacity
+									onPress={open}
+									className="flex-row items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-muted/60"
+									activeOpacity={0.7}
+								>
+									{selectedOption ? (
+										<View
+											className="w-2.5 h-2.5 rounded-full"
+											style={{ backgroundColor: selectedOption.color || "#09090b" }}
+										/>
+									) : (
+										<FolderIcon className="text-muted-foreground" size={13} />
+									)}
+									<Text
+										className="text-xs font-medium max-w-[100px] text-foreground"
+										numberOfLines={1}
+									>
+										{selectedOption ? selectedOption.label : "No Folder"}
+									</Text>
+									<ChevronDown className="text-muted-foreground" size={13} />
+								</TouchableOpacity>
 							)}
-							<Text
-								className="text-xs font-medium max-w-[100px] text-foreground"
-								numberOfLines={1}
-							>
-								{activeFolder ? activeFolder.name : "No Folder"}
-							</Text>
-							<ChevronDown className="text-muted-foreground" size={13} />
-						</TouchableOpacity>
+						/>
 					</View>
 
 					{/* Right Actions */}
@@ -322,117 +334,6 @@ export function NoteEditorModal({
 						)}
 					</View>
 				</View>
-
-				{/* Folder Picker Dropdown Sheet */}
-				{isFolderPickerOpen && (
-					<View className="mx-4 mt-2 p-2 rounded-xl border border-border bg-card shadow-lg z-50">
-						<View className="flex-row items-center justify-between px-2 py-1">
-							<Text className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-								Move to Folder
-							</Text>
-							{onCreateFolder && !isCreatingFolder && (
-								<Button
-									variant="ghost"
-									size="sm"
-									onPress={() => setIsCreatingFolder(true)}
-									className="h-6 px-2 flex-row gap-1"
-								>
-									<Plus className="text-foreground" size={13} strokeWidth={2.5} />
-									<Text className="text-xs font-semibold">New</Text>
-								</Button>
-							)}
-						</View>
-
-						{/* Inline Create Folder Input */}
-						{isCreatingFolder && (
-							<View className="p-2.5 my-1.5 rounded-lg border border-border bg-muted/60">
-								<Input
-									placeholder="New folder name..."
-									value={newFolderName}
-									onChangeText={setNewFolderName}
-									autoFocus
-									className="h-9 mb-2"
-								/>
-								<View className="flex-row items-center justify-between pt-1 border-t border-border">
-									<View className="flex-row items-center gap-1.5">
-										{["#09090b", "#71717a", "#2563eb", "#16a34a", "#dc2626", "#9333ea"].map((col) => (
-											<TouchableOpacity
-												key={col}
-												onPress={() => setNewFolderColor(col)}
-												className={`w-5 h-5 rounded-full border ${newFolderColor === col ? "border-foreground scale-110" : "border-border"}`}
-												style={{ backgroundColor: col }}
-											/>
-										))}
-									</View>
-									<View className="flex-row items-center gap-1.5">
-										<Button
-											variant="ghost"
-											size="sm"
-											onPress={() => {
-												setIsCreatingFolder(false);
-												setNewFolderName("");
-											}}
-											className="h-7 px-2"
-										>
-											<Text className="text-xs">Cancel</Text>
-										</Button>
-										<Button
-											size="sm"
-											onPress={async () => {
-												if (!newFolderName.trim() || !onCreateFolder) return;
-												const created = await onCreateFolder(newFolderName.trim(), newFolderColor);
-												if (created && created.id) {
-													setFolderId(created.id);
-												}
-												setNewFolderName("");
-												setIsCreatingFolder(false);
-											}}
-											className="h-7 px-2.5"
-										>
-											<Text className="text-xs font-semibold text-primary-foreground">Create</Text>
-										</Button>
-									</View>
-								</View>
-							</View>
-						)}
-
-						<TouchableOpacity
-							onPress={() => handleSelectFolder(undefined)}
-							className={`flex-row items-center justify-between px-3 py-2.5 rounded-md ${
-								folderId === undefined ? "bg-muted" : ""
-							}`}
-						>
-							<View className="flex-row items-center gap-2.5">
-								<FolderIcon className="text-muted-foreground" size={16} />
-								<Text className="text-sm font-medium text-foreground">
-									No Folder (Root)
-								</Text>
-							</View>
-							{folderId === undefined && <Check className="text-foreground" size={16} />}
-						</TouchableOpacity>
-
-						{folders.map((f) => (
-							<TouchableOpacity
-								key={f.id}
-								onPress={() => handleSelectFolder(f.id)}
-								className={`flex-row items-center justify-between px-3 py-2.5 rounded-md ${
-									folderId === f.id ? "bg-muted" : ""
-								}`}
-							>
-								<View className="flex-row items-center gap-2.5">
-									<View
-										className="w-3.5 h-3.5 rounded-full"
-										style={{ backgroundColor: f.color || "#09090b" }}
-									/>
-									<Text className="text-sm font-medium text-foreground">
-										{f.name}
-									</Text>
-								</View>
-								{folderId === f.id && <Check className="text-foreground" size={16} />}
-							</TouchableOpacity>
-						))}
-					</View>
-				)}
 
 				{/* Note Editor Body */}
 				<KeyboardAvoidingView

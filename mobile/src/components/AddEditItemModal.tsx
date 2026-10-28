@@ -7,6 +7,8 @@ import { Button } from "./ui/button";
 import { Text } from "./ui/text";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
+import { CreatableCombobox } from "./ui/creatable-combobox";
 
 interface Props {
 	visible: boolean;
@@ -122,9 +124,6 @@ export function AddEditItemModal({
 	const [showCardCvv, setShowCardCvv] = useState(false);
 	const [showCardPin, setShowCardPin] = useState(false);
 	const [showApiSecret, setShowApiSecret] = useState(false);
-	const [isCreatingFolder, setIsCreatingFolder] = useState(false);
-	const [newFolderName, setNewFolderName] = useState("");
-	const [newFolderColor, setNewFolderColor] = useState("#09090b");
 
 	const categories: Array<{ id: PasswordItem["category"]; label: string; icon: any }> = [
 		{ id: "login", label: "Login", icon: Key },
@@ -155,26 +154,33 @@ export function AddEditItemModal({
 					</View>
 
 					{/* Category Picker Tabs */}
-					<View className="flex-row rounded-lg p-1 mb-3.5 bg-muted border border-border">
-						{categories.map((cat) => {
-							const IconComponent = cat.icon;
-							const active = itemCategory === cat.id;
-							return (
-								<TouchableOpacity
-									key={cat.id}
-									className={`flex-1 flex-row items-center justify-center gap-1 py-1.5 rounded-md ${
-										active ? "bg-background shadow-sm border border-border" : ""
-									}`}
-									onPress={() => setItemCategory(cat.id)}
-								>
-									<IconComponent className={active ? "text-foreground" : "text-muted-foreground"} size={14} />
-									<Text className={`text-xs font-medium ${active ? "text-foreground font-semibold" : "text-muted-foreground"}`}>
-										{cat.label}
-									</Text>
-								</TouchableOpacity>
-							);
-						})}
-					</View>
+					<Tabs
+						value={itemCategory}
+						onValueChange={(val) => setItemCategory(val as PasswordItem["category"])}
+						className="mb-3.5"
+					>
+						<TabsList className="w-full flex-row">
+							{categories.map((cat) => {
+								const IconComponent = cat.icon;
+								const active = itemCategory === cat.id;
+								return (
+									<TabsTrigger
+										key={cat.id}
+										value={cat.id}
+										className="flex-1 flex-row items-center justify-center gap-1.5"
+									>
+										<IconComponent
+											className={active ? "text-foreground" : "text-muted-foreground"}
+											size={14}
+										/>
+										<Text className={`text-xs ${active ? "font-semibold" : "font-medium"}`}>
+											{cat.label}
+										</Text>
+									</TabsTrigger>
+								);
+							})}
+						</TabsList>
+					</Tabs>
 
 					<ScrollView
 						className="flex-1"
@@ -184,125 +190,25 @@ export function AddEditItemModal({
 						keyboardShouldPersistTaps="handled"
 						keyboardDismissMode="interactive"
 					>
-						{/* Folder Assignment */}
+						{/* Folder Assignment with CreatableCombobox */}
 						<View className="mb-3.5">
-							<View className="flex-row items-center justify-between mb-1.5">
-								<Text className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-									Folder (Optional)
-								</Text>
-								{onCreateFolder && !isCreatingFolder && (
-									<Button
-										variant="ghost"
-										size="sm"
-										onPress={() => {
-											setIsCreatingFolder(true);
-											setIsFolderDropdownOpen(true);
-										}}
-										className="h-6 px-2 flex-row gap-1"
-									>
-										<Plus className="text-foreground" size={13} strokeWidth={2.5} />
-										<Text className="text-xs font-semibold">New Folder</Text>
-									</Button>
-								)}
-							</View>
-
-							{/* Inline New Folder Input */}
-							{isCreatingFolder && (
-								<View className="p-3 mb-2 rounded-lg border border-border bg-muted/60">
-									<Input
-										placeholder="Folder name..."
-										value={newFolderName}
-										onChangeText={setNewFolderName}
-										autoFocus
-										className="h-9"
-									/>
-									<View className="flex-row items-center justify-between mt-2 pt-2 border-t border-border">
-										<View className="flex-row items-center gap-1.5">
-											{["#09090b", "#71717a", "#2563eb", "#16a34a", "#dc2626", "#9333ea"].map((col) => (
-												<TouchableOpacity
-													key={col}
-													onPress={() => setNewFolderColor(col)}
-													className={`w-5 h-5 rounded-full border ${newFolderColor === col ? "border-foreground scale-110" : "border-border"}`}
-													style={{ backgroundColor: col }}
-												/>
-											))}
-										</View>
-										<View className="flex-row items-center gap-1.5">
-											<Button
-												variant="ghost"
-												size="sm"
-												onPress={() => {
-													setIsCreatingFolder(false);
-													setNewFolderName("");
-												}}
-												className="h-7 px-2"
-											>
-												<Text className="text-xs">Cancel</Text>
-											</Button>
-											<Button
-												size="sm"
-												onPress={async () => {
-													if (!newFolderName.trim() || !onCreateFolder) return;
-													const created = await onCreateFolder(newFolderName.trim(), newFolderColor);
-													if (created && created.id) {
-														setItemFolderId(created.id);
-													}
-													setNewFolderName("");
-													setIsCreatingFolder(false);
-												}}
-												className="h-7 px-2.5"
-											>
-												<Text className="text-xs font-semibold text-primary-foreground">Create</Text>
-											</Button>
-										</View>
-									</View>
-								</View>
-							)}
-
-							<TouchableOpacity
-								className="flex-row items-center justify-between px-3 py-2.5 rounded-md border border-input bg-background"
-								onPress={() => setIsFolderDropdownOpen(!isFolderDropdownOpen)}
-								activeOpacity={0.8}
-							>
-								<View className="flex-row items-center gap-2">
-									<View
-										style={{ backgroundColor: folders.find((f) => f.id === itemFolderId)?.color || "#71717a" }}
-										className="w-2 h-2 rounded-full"
-									/>
-									<Text className="text-sm font-medium text-foreground">
-										{folders.find((f) => f.id === itemFolderId)?.name || "No Folder"}
-									</Text>
-								</View>
-								{isFolderDropdownOpen ? <ChevronUp className="text-muted-foreground" size={18} /> : <ChevronDown className="text-muted-foreground" size={18} />}
-							</TouchableOpacity>
-
-							{isFolderDropdownOpen && (
-								<View className="rounded-md border border-border mt-1.5 overflow-hidden bg-card">
-									<TouchableOpacity
-										className={`flex-row items-center gap-2.5 px-3 py-2.5 ${itemFolderId === undefined ? "bg-muted" : ""}`}
-										onPress={() => {
-											setItemFolderId(undefined);
-											setIsFolderDropdownOpen(false);
-										}}
-									>
-										<View className="w-2 h-2 rounded-full bg-muted-foreground" />
-										<Text className="text-xs font-medium text-foreground">No Folder</Text>
-									</TouchableOpacity>
-									{folders.map((f) => (
-										<TouchableOpacity
-											key={f.id}
-											className={`flex-row items-center gap-2.5 px-3 py-2.5 ${itemFolderId === f.id ? "bg-muted" : ""}`}
-											onPress={() => {
-												setItemFolderId(f.id);
-												setIsFolderDropdownOpen(false);
-											}}
-										>
-											<View style={{ backgroundColor: f.color }} className="w-2 h-2 rounded-full" />
-											<Text className="text-xs font-medium text-foreground">{f.name}</Text>
-										</TouchableOpacity>
-									))}
-								</View>
-							)}
+							<Text className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+								Folder (Optional)
+							</Text>
+							<CreatableCombobox
+								options={folders.map((f) => ({ id: f.id, label: f.name, color: f.color }))}
+								selectedId={itemFolderId}
+								onSelect={(id) => setItemFolderId(id)}
+								onCreate={onCreateFolder ? async (name, color) => {
+									const created = await onCreateFolder(name, color);
+									if (created && created.id) {
+										return { id: created.id, label: created.name, color: created.color };
+									}
+								} : undefined}
+								placeholder="Select a folder..."
+								noneLabel="No Folder (Root)"
+								createLabel="Create new folder"
+							/>
 						</View>
 
 						{/* Item Title */}
