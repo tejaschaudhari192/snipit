@@ -35,8 +35,6 @@ interface Props {
     theme?: "dark" | "light";
     themeMode?: "system" | "dark" | "light";
     onThemeChange?: (theme: "system" | "dark" | "light") => void;
-    defaultTool?: "hub" | "pwmg";
-    onDefaultToolChange?: (tool: "hub" | "pwmg") => void;
 }
 
 export function ProfileScreen({
@@ -47,8 +45,6 @@ export function ProfileScreen({
     theme = "dark",
     themeMode = "system",
     onThemeChange,
-    defaultTool = "hub",
-    onDefaultToolChange,
 }: Props) {
     const vars = useThemeVars(theme);
     const isLight = theme === "light";
@@ -442,13 +438,6 @@ export function ProfileScreen({
                     onSyncNow={handleSyncNow}
                 />
 
-                {/* Vault & Security Feature Card */}
-                <VaultSecurityCard
-                    c={vars}
-                    isLight={isLight}
-                    onOpenPasswordManager={onOpenPasswordManager}
-                />
-
                 {/* Appearance Feature */}
                 <View className="mb-4">
                     <Text className={`text-[11px] font-bold tracking-wider mb-2 ml-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
@@ -469,25 +458,7 @@ export function ProfileScreen({
                         }}
                     />
                 </View>
-
-                {/* Startup Tool */}
-                <View className="mb-4">
-                    <Text className={`text-[11px] font-bold tracking-wider mb-2 ml-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-                        DEFAULT STARTUP TOOL
-                    </Text>
-                    <DefaultToolSelectorRow
-                        theme={theme}
-                        defaultTool={defaultTool}
-                        isOpen={isDefaultToolDropdownOpen}
-                        onToggleOpen={() => setIsDefaultToolDropdownOpen((prev) => !prev)}
-                        onSelectTool={(tool) => {
-                            if (onDefaultToolChange) onDefaultToolChange(tool);
-                            else offlineVault.setDefaultTool(tool);
-                            setIsDefaultToolDropdownOpen(false);
-                        }}
-                    />
-                </View>
-
+                
                 {/* App Version & Updates Feature Card */}
                 <AppVersionCard
                     c={vars}

@@ -1,16 +1,9 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Modal, TouchableOpacity, Pressable } from "react-native";
 import { AlertCircle, CheckCircle2, Info, AlertTriangle } from "lucide-react-native";
-import {
-    AlertDialog,
-    AlertDialogContent,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogDescription,
-    AlertDialogFooter,
-} from "./ui/alert-dialog";
 import { Button } from "./ui/button";
 import { Text } from "./ui/text";
+import { Card } from "./ui/card";
 
 export interface CustomAlertButton {
     text: string;
@@ -41,27 +34,27 @@ export function CustomAlertModal({ config }: CustomAlertModalProps) {
         switch (type) {
             case "success":
                 return (
-                    <View className="w-10 h-10 rounded-full bg-muted justify-center items-center mb-2">
-                        <CheckCircle2 color="#22c55e" size={22} />
+                    <View className="w-12 h-12 rounded-full bg-green-500/10 justify-center items-center mb-3">
+                        <CheckCircle2 color="#22c55e" size={26} />
                     </View>
                 );
             case "error":
                 return (
-                    <View className="w-10 h-10 rounded-full bg-destructive/10 justify-center items-center mb-2">
-                        <AlertCircle color="#ef4444" size={22} />
+                    <View className="w-12 h-12 rounded-full bg-destructive/15 justify-center items-center mb-3">
+                        <AlertCircle color="#ef4444" size={26} />
                     </View>
                 );
             case "warning":
                 return (
-                    <View className="w-10 h-10 rounded-full bg-muted justify-center items-center mb-2">
-                        <AlertTriangle color="#f59e0b" size={22} />
+                    <View className="w-12 h-12 rounded-full bg-amber-500/15 justify-center items-center mb-3">
+                        <AlertTriangle color="#f59e0b" size={26} />
                     </View>
                 );
             case "info":
             default:
                 return (
-                    <View className="w-10 h-10 rounded-full bg-muted justify-center items-center mb-2">
-                        <Info color="#71717a" size={22} />
+                    <View className="w-12 h-12 rounded-full bg-muted justify-center items-center mb-3">
+                        <Info color="#71717a" size={26} />
                     </View>
                 );
         }
@@ -73,52 +66,67 @@ export function CustomAlertModal({ config }: CustomAlertModalProps) {
             : [{ text: "OK", style: "default" as const, onPress: config.onDismiss }];
 
     return (
-        <AlertDialog
-            open={config.visible}
-            onOpenChange={(open) => {
-                if (!open) config.onDismiss?.();
-            }}
+        <Modal
+            visible={config.visible}
+            transparent
+            animationType="none"
+            statusBarTranslucent
+            onRequestClose={config.onDismiss}
         >
-            <AlertDialogContent className="max-w-[340px] items-center p-6">
-                <AlertDialogHeader className="items-center">
-                    {getIconBadge()}
-                    <AlertDialogTitle className="text-center font-semibold">
-                        {config.title}
-                    </AlertDialogTitle>
-                    {config.message ? (
-                        <AlertDialogDescription className="text-center text-sm">
-                            {config.message}
-                        </AlertDialogDescription>
-                    ) : null}
-                </AlertDialogHeader>
+            <Pressable
+                className="flex-1 bg-black/60 items-center justify-center p-4"
+                onPress={config.onDismiss}
+            >
+                <Pressable
+                    className="w-full max-w-sm"
+                    onPress={(e) => e.stopPropagation()}
+                >
+                    <Card className="border border-border/80 bg-background/95 backdrop-blur-2xl shadow-2xl rounded-2xl p-6 items-center">
+                        {/* Media Icon Badge */}
+                        {getIconBadge()}
 
-                <AlertDialogFooter className="flex-row gap-2.5 w-full mt-4">
-                    {buttons.map((btn, idx) => {
-                        const variant =
-                            btn.style === "destructive"
-                                ? "destructive"
-                                : btn.style === "cancel"
-                                ? "outline"
-                                : "default";
+                        {/* Title */}
+                        <Text className="text-center font-bold text-lg text-foreground tracking-tight">
+                            {config.title}
+                        </Text>
 
-                        return (
-                            <Button
-                                key={idx}
-                                variant={variant}
-                                className="flex-1 h-10"
-                                onPress={() => {
-                                    if (config.onDismiss) config.onDismiss();
-                                    if (btn.onPress) {
-                                        setTimeout(() => btn.onPress?.(), 0);
-                                    }
-                                }}
-                            >
-                                <Text className="font-medium">{btn.text}</Text>
-                            </Button>
-                        );
-                    })}
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
+                        {/* Description Message */}
+                        {config.message ? (
+                            <Text className="text-center text-sm text-muted-foreground mt-2 leading-5">
+                                {config.message}
+                            </Text>
+                        ) : null}
+
+                        {/* Action Buttons Footer */}
+                        <View className="flex-row gap-2.5 w-full mt-6">
+                            {buttons.map((btn, idx) => {
+                                const variant =
+                                    btn.style === "destructive"
+                                        ? "destructive"
+                                        : btn.style === "cancel"
+                                        ? "outline"
+                                        : "default";
+
+                                return (
+                                    <Button
+                                        key={idx}
+                                        variant={variant}
+                                        className="flex-1 h-10"
+                                        onPress={() => {
+                                            // Close modal immediately without lag or delay
+                                            config.onDismiss?.();
+                                            // Immediately execute action handler
+                                            btn.onPress?.();
+                                        }}
+                                    >
+                                        <Text className="font-semibold">{btn.text}</Text>
+                                    </Button>
+                                );
+                            })}
+                        </View>
+                    </Card>
+                </Pressable>
+            </Pressable>
+        </Modal>
     );
 }

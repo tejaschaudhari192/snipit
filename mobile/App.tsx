@@ -12,13 +12,12 @@ import { offlineVault, UserSession } from "./src/core/vault-storage";
 import NetInfo from "@react-native-community/netinfo";
 import { checkAppUpdate } from "./src/core/update-checker";
 import { UpdateInfoModal } from "./src/components/UpdateInfoModal";
-import { HubScreen } from "./src/components/HubScreen";
 import { UIStyleProvider } from "./src/core/UIStyleContext";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useColorScheme as useNativeWindColorScheme } from "nativewind";
 
 export default function App() {
-	const [activeTool, setActiveTool] = useState<"hub" | "pwmg" | "auth" | "profile">("pwmg");
+	const [activeTool, setActiveTool] = useState<"pwmg" | "auth" | "profile">("pwmg");
 	const [user, setUser] = useState<UserSession | null>(null);
 	const [themeMode, setThemeMode] = useState<"system" | "dark" | "light">("system");
 	const systemColorScheme = useColorScheme();
@@ -33,12 +32,9 @@ export default function App() {
 
 	useEffect(() => {
 		// Pass themeMode directly so NativeWind handles "system" natively.
-		// If we pass the resolved value, NativeWind locks to it and stops
-		// reacting when the device theme changes.
 		setColorScheme(themeMode);
 	}, [themeMode, setColorScheme]);
 
-	const [defaultTool, setDefaultTool] = useState<"hub" | "pwmg">("pwmg");
 	const [autoUpdateModalVisible, setAutoUpdateModalVisible] = useState(false);
 	const [autoUpdateResult, setAutoUpdateResult] = useState<any>(null);
 	const hasCheckedUpdateRef = React.useRef(false);
@@ -46,7 +42,6 @@ export default function App() {
 	useEffect(() => {
 		loadUserSession();
 		loadTheme();
-		loadDefaultTool();
 
 		// Check once after launch when user is connected to internet
 		const unsubscribeNet = NetInfo.addEventListener((state: any) => {
@@ -60,7 +55,7 @@ export default function App() {
 						}
 					})
 					.catch(() => {
-						// Silent fail on background auto-check so offline/slow connections aren't interrupted
+						// Silent fail on background auto-check
 					});
 			}
 		});
@@ -70,9 +65,9 @@ export default function App() {
 
 	useEffect(() => {
 		const onHardwareBack = () => {
-			if (activeTool !== "hub") {
+			if (activeTool !== "pwmg") {
 				loadUserSession();
-				setActiveTool("hub");
+				setActiveTool("pwmg");
 				return true;
 			}
 			return false;
@@ -81,19 +76,6 @@ export default function App() {
 		const subscription = BackHandler.addEventListener("hardwareBackPress", onHardwareBack);
 		return () => subscription.remove();
 	}, [activeTool]);
-
-	const loadDefaultTool = async () => {
-		const tool = await offlineVault.getDefaultTool();
-		setDefaultTool(tool);
-		if (tool === "pwmg") {
-			setActiveTool("pwmg");
-		}
-	};
-
-	const handleDefaultToolChange = async (tool: "hub" | "pwmg") => {
-		setDefaultTool(tool);
-		await offlineVault.setDefaultTool(tool);
-	};
 
 	const loadTheme = async () => {
 		const t = await offlineVault.getTheme();
@@ -125,10 +107,10 @@ export default function App() {
 		if (activeTool === "auth") {
 			return (
 				<AuthScreen
-					onBack={() => setActiveTool("hub")}
+					onBack={() => setActiveTool("pwmg")}
 					onAuthSuccess={() => {
 						loadUserSession();
-						setActiveTool("hub");
+						setActiveTool("pwmg");
 					}}
 					theme={resolvedTheme}
 				/>
@@ -140,42 +122,26 @@ export default function App() {
 				<ProfileScreen
 					onBack={() => {
 						loadUserSession();
-						setActiveTool("hub");
+						setActiveTool("pwmg");
 					}}
 					onLogout={async () => {
 						await handleLogout();
-						setActiveTool("hub");
+						setActiveTool("pwmg");
 					}}
 					onOpenPasswordManager={() => setActiveTool("pwmg")}
 					onOpenAuth={() => setActiveTool("auth")}
 					theme={resolvedTheme}
 					themeMode={themeMode}
 					onThemeChange={handleThemeChange}
-					defaultTool={defaultTool}
-					onDefaultToolChange={handleDefaultToolChange}
-				/>
-			);
-		}
-
-		if (activeTool === "pwmg") {
-			return (
-				<PWMGScreen
-					onBack={() => {
-						loadUserSession();
-						setActiveTool("hub");
-					}}
-					onOpenAuth={() => setActiveTool("auth")}
-					onOpenProfile={() => setActiveTool("profile")}
-					theme={resolvedTheme}
 				/>
 			);
 		}
 
 		return (
-			<HubScreen
+			<PWMGScreen
+				onOpenAuth={() => setActiveTool("auth")}
+				onOpenProfile={() => setActiveTool("profile")}
 				theme={resolvedTheme}
-				user={user}
-				onOpenTool={setActiveTool}
 			/>
 		);
 	};

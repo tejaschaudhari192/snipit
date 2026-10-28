@@ -16,7 +16,7 @@ import { Text } from "./ui/text";
 import { FormPasswordInput } from "./FormControls";
 
 interface VaultUnlockScreenProps {
-	onBack: () => void;
+	onBack?: () => void;
 	theme?: "dark" | "light";
 	user: UserSession | null;
 	error: string;
@@ -35,7 +35,6 @@ interface VaultUnlockScreenProps {
 }
 
 export function VaultUnlockScreen({
-	onBack,
 	user,
 	error,
 	hasRecovery,
@@ -59,10 +58,7 @@ export function VaultUnlockScreen({
 			edges={["top", "bottom", "left", "right"]}
 		>
 			<View className="flex-row items-center justify-between px-4 py-3 border-b border-border bg-background">
-				<Button variant="ghost" size="icon" onPress={onBack} className="h-9 w-9">
-					<ArrowLeft className="text-foreground" size={18} />
-				</Button>
-				<Text className="text-sm font-semibold tracking-tight">Unlock Vault</Text>
+				<Text className="text-base font-bold tracking-tight">Unlock Vault</Text>
 				<Button
 					variant="outline"
 					size="sm"

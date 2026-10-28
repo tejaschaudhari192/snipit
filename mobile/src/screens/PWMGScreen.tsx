@@ -14,6 +14,7 @@ import { generateRecoveryMnemonic, isValidMnemonic } from "../core/recovery";
 import { useThemeVars } from "../config/theme";
 import { useVaultItemForm } from "../hooks/useVaultItemForm";
 import { useCustomAlert } from "../hooks/useCustomAlert";
+import { MobileSplashScreen } from "../components/MobileSplashScreen";
 
 // Modular views
 import { PWMGHeader } from "../components/PWMGHeader";
@@ -32,7 +33,7 @@ import {
 } from "../components/VaultAuthScreens";
 
 interface Props {
-	onBack: () => void;
+	onBack?: () => void;
 	onOpenAuth: () => void;
 	onOpenProfile?: () => void;
 	theme?: "dark" | "light";
@@ -296,13 +297,13 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 				setIsRecoveryMode(false);
 				return true;
 			}
-			onBack();
-			return true;
+			// PWMGScreen is the root screen — no parent to go back to
+			return false;
 		};
 
 		const subscription = BackHandler.addEventListener("hardwareBackPress", handleHardwareBack);
 		return () => subscription.remove();
-	}, [isNoteEditorOpen, isGeneratorOpen, isFolderModalOpen, form.isAddModalOpen, selectedItem, isRecoveryMode, onBack]);
+	}, [isNoteEditorOpen, isGeneratorOpen, isFolderModalOpen, form.isAddModalOpen, selectedItem, isRecoveryMode]);
 
 	useEffect(() => {
 		refreshGenerator();
@@ -682,9 +683,29 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		return saved;
 	};
 
-	const handleDeleteNote = async (id: string) => {
-		await offlineVault.deleteItem(id);
-		loadData();
+	const handleDeleteNote = (id: string) => {
+		const targetNote = items.find((i) => i.id === id) || (editingNoteItem?.id === id ? editingNoteItem : null);
+		const noteTitle = targetNote?.title ? ` "${targetNote.title}"` : "";
+
+		showAlert(
+			"Delete Note",
+			`Are you sure you want to delete this note${noteTitle}?`,
+			"warning",
+			[
+				{ text: "Cancel", style: "cancel", onPress: () => setAlertConfig((prev) => ({ ...prev, visible: false })) },
+				{
+					text: "Delete",
+					style: "destructive",
+					onPress: async () => {
+						setAlertConfig((prev) => ({ ...prev, visible: false }));
+						setIsNoteEditorOpen(false);
+						setEditingNoteItem(null);
+						await offlineVault.deleteItem(id);
+						loadData();
+					},
+				},
+			]
+		);
 	};
 
 	const handleSaveFolder = async (name?: string, color?: string): Promise<Folder | void> => {
@@ -779,41 +800,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 
 	// Render Auth/Onboarding Screens
 	if (hasVault === null) {
-		return (
-			<SafeAreaView className="flex-1 justify-center items-center px-6 bg-background">
-				<View className="items-center max-w-[300px]">
-					{/* Glowing Shield Visual */}
-					<View className={`w-20 h-20 rounded-3xl justify-center items-center mb-6 shadow-xl ${
-						isLight ? "bg-blue-50 border border-blue-100" : "bg-blue-950/40 border border-blue-800/50"
-					}`}>
-						<Shield color="#0a84ff" size={40} strokeWidth={2.2} />
-					</View>
-
-					{/* Title */}
-					<Text className={`text-xl font-bold tracking-tight mb-2 text-center ${isLight ? "text-slate-900" : "text-white"}`}>
-						Snipit Secure Vault
-					</Text>
-
-					{/* Subtitle / Description */}
-					<Text className="text-sm text-center leading-5 mb-8 text-muted-foreground">
-						Zero-knowledge encrypted credential store
-					</Text>
-
-					{/* Spinner & Active Stage Pill */}
-					<View className="flex-row items-center gap-3 px-4 py-2.5 rounded-full border bg-card border-border shadow-sm">
-						<ActivityIndicator size="small" color="#0a84ff" />
-						<Text className="text-xs font-semibold text-foreground">
-							{checkingVaultStage}
-						</Text>
-					</View>
-
-					{/* Security hint footer */}
-					<Text className="text-[11px] font-medium tracking-wide mt-10 uppercase text-muted-foreground">
-						XSalsa20-Poly1305 • End-to-End Encrypted
-					</Text>
-				</View>
-			</SafeAreaView>
-		);
+		return <MobileSplashScreen label={checkingVaultStage} />;
 	}
 
 	if (isRecoveryMode) {
@@ -837,7 +824,6 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		return (
 			<>
 				<VaultOnboardingScreen
-					onBack={onBack}
 					theme={theme}
 					step={onboardingStep}
 					masterPassword={masterPassword}
@@ -865,7 +851,6 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		return (
 			<>
 				<VaultUnlockScreen
-					onBack={onBack}
 					theme={theme}
 					user={user}
 					error={error}
@@ -886,41 +871,6 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			</>
 		);
 	}
-
-	const headerTitle =
-		activeBottomTab === "folders"
-			? "Folders"
-			: activeBottomTab === "settings"
-				? "Vault Settings"
-				: selectedFolderId
-					? folders.find((f) => f.id === selectedFolderId)?.name || "Folder"
-					: activeFilter === "favorites"
-						? "Favorites"
-						: activeFilter === "all"
-							? "Passwords"
-							: activeFilter === "card"
-								? "Cards"
-								: activeFilter === "apikey"
-									? "API Keys"
-									: activeFilter === "note"
-										? "Notes"
-										: "Identities";
-
-	const syncStatusText =
-		syncStatus === "syncing"
-			? "Syncing with cloud..."
-			: syncStatus === "pending_offline"
-				? "Changes saved locally • Pending sync"
-				: syncStatus === "synced"
-					? "Synced with Snipit Cloud"
-					: "Stored locally & encrypted";
-
-	const headerSubtitle =
-		activeBottomTab === "folders"
-			? `${folders.length} folders organized`
-			: activeBottomTab === "settings"
-				? "Data, maintenance & security"
-				: `${syncStatusText} • ${filteredItems.length} items`;
 
 	return (
 		<SafeAreaView
@@ -959,15 +909,14 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 				</View>
 			) : (
 				<PWMGHeader
-					c={c}
-					title={headerTitle}
-					subtitle={headerSubtitle}
-					userToken={user?.token}
-					syncStatus={syncStatus}
 					activeBottomTab={activeBottomTab}
+					activeFilter={activeFilter}
+					folders={folders}
+					selectedFolderId={selectedFolderId}
+					totalFilteredCount={filteredItems.length}
+					syncStatus={syncStatus}
 					isGridView={isNotesGridView}
 					onToggleGridView={() => setIsNotesGridView((prev) => !prev)}
-					onBack={onBack}
 					onOpenProfile={onOpenProfile}
 					onOpenGenerator={() => setIsGeneratorOpen(true)}
 					onLock={handleLock}

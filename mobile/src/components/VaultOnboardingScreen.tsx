@@ -14,7 +14,7 @@ import { Text } from "./ui/text";
 import { FormPasswordInput } from "./FormControls";
 
 interface VaultOnboardingScreenProps {
-	onBack: () => void;
+	onBack?: () => void;
 	theme?: "dark" | "light";
 	step: number;
 	masterPassword: string;
@@ -62,14 +62,18 @@ export function VaultOnboardingScreen({
 			edges={["top", "bottom", "left", "right"]}
 		>
 			<View className="flex-row items-center justify-between px-4 py-3 border-b border-border bg-background">
-				<Button
-					variant="ghost"
-					size="icon"
-					onPress={step === 1 ? onBack : () => setStep(step - 1)}
-					className="h-9 w-9"
-				>
-					<ArrowLeft className="text-foreground" size={18} />
-				</Button>
+				{step > 1 ? (
+					<Button
+						variant="ghost"
+						size="icon"
+						onPress={() => setStep(step - 1)}
+						className="h-9 w-9"
+					>
+						<ArrowLeft className="text-foreground" size={18} />
+					</Button>
+				) : (
+					<View className="w-9" />
+				)}
 				<Text className="text-sm font-semibold tracking-tight">
 					Step {step} of 3
 				</Text>
