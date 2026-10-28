@@ -76,10 +76,10 @@ export function VaultUnlockScreen({
 			<ScrollView
 				className="flex-1 bg-background"
 				contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
-				contentContainerClassName="p-4 max-w-sm w-full mx-auto"
+				contentContainerClassName="max-w-sm w-full mx-auto"
 				showsVerticalScrollIndicator={false}
 			>
-				<Card className="w-full border-border bg-card">
+				<Card className="w-full border-border bg-card py-6">
 					<CardHeader className="text-center pb-2">
 						<View className="w-12 h-12 rounded-full bg-muted justify-center items-center mx-auto mb-2">
 							<Lock className="text-foreground" size={24} />
