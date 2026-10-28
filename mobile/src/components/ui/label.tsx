@@ -1,7 +1,6 @@
 import { cn } from '@/lib/utils';
 import * as LabelPrimitive from '@rn-primitives/label';
-import { Platform, Text as RNText, useColorScheme } from 'react-native';
-import { useUIStyle } from '@/core/UIStyleContext';
+import { Platform } from 'react-native';
 
 function Label({
   className,
@@ -10,31 +9,8 @@ function Label({
   onPressIn,
   onPressOut,
   disabled,
-  style,
   ...props
 }: React.ComponentProps<typeof LabelPrimitive.Text>) {
-  const { uiStyle } = useUIStyle();
-  const scheme = useColorScheme();
-  const isDark = scheme === 'dark';
-
-  if (uiStyle === 'native' && Platform.OS !== 'web') {
-    return (
-      <RNText
-        style={[
-          {
-            fontSize: 13,
-            fontWeight: '600',
-            color: isDark ? '#8E8E93' : '#6C6C70',
-            marginBottom: 4,
-          },
-          style,
-        ]}
-        className={className}
-        {...props}
-      />
-    );
-  }
-
   return (
     <LabelPrimitive.Root
       className={cn(
@@ -55,7 +31,6 @@ function Label({
           Platform.select({ web: 'leading-none' }),
           className
         )}
-        style={style}
         {...props}
       />
     </LabelPrimitive.Root>

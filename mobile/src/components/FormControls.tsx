@@ -1,12 +1,10 @@
 import React from "react";
-import { View, TextInputProps, TouchableOpacity, Platform, ActivityIndicator } from "react-native";
+import { View, TextInputProps, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Eye, EyeOff } from "lucide-react-native";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { Text } from "./ui/text";
-import { Host, Button as NativeButton, TextInput as NativeTextInput } from "@expo/ui";
-import { useUIStyle } from "../core/UIStyleContext";
 import { cn } from "../lib/utils";
 
 export interface FormInputProps extends TextInputProps {
@@ -27,28 +25,6 @@ export function FormInput({
     secureTextEntry,
     ...props
 }: FormInputProps) {
-    const { uiStyle } = useUIStyle();
-
-    if (uiStyle === "native" && Platform.OS !== "web") {
-        return (
-            <View className={cn("w-full mb-3", containerClassName)}>
-                {label && <Label className="mb-1.5">{label}</Label>}
-                <View style={{ width: "100%" }}>
-                    <Host style={{ width: "100%" }}>
-                        <NativeTextInput
-                            placeholder={placeholder}
-                            defaultValue={value}
-                            onChangeText={onChangeText}
-                            autoCapitalize={autoCapitalize as any}
-                            secureTextEntry={secureTextEntry}
-                            style={{ height: 44, borderRadius: 8, width: "100%" }}
-                        />
-                    </Host>
-                </View>
-            </View>
-        );
-    }
-
     return (
         <View className={cn("w-full mb-3", containerClassName)}>
             {label && <Label className="mb-1.5">{label}</Label>}
@@ -66,7 +42,6 @@ export function FormInput({
 }
 
 export interface PasswordInputProps extends TextInputProps {
-    placeholder?: string;
     label?: string;
     showPassword: boolean;
     onToggleShowPassword: () => void;
@@ -85,41 +60,6 @@ export function FormPasswordInput({
     placeholder,
     ...props
 }: PasswordInputProps) {
-    const { uiStyle } = useUIStyle();
-
-    if (uiStyle === "native" && Platform.OS !== "web") {
-        return (
-            <View className={cn("w-full mb-3", containerClassName)}>
-                {label && <Label className="mb-1.5">{label}</Label>}
-                <View className="w-full flex-row items-center border border-input rounded-md pr-2 bg-background">
-                    <View className="flex-1" style={{ height: 44 }}>
-                        <Host style={{ width: "100%", height: 44 }}>
-                            <NativeTextInput
-                                placeholder={placeholder}
-                                defaultValue={value}
-                                onChangeText={onChangeText}
-                                secureTextEntry={!showPassword}
-                                autoCapitalize="none"
-                                style={{ height: 44, borderRadius: 8, backgroundColor: "transparent", width: "100%" }}
-                            />
-                        </Host>
-                    </View>
-                    <TouchableOpacity
-                        onPress={onToggleShowPassword}
-                        className="p-2 justify-center items-center"
-                        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                    >
-                        {showPassword ? (
-                            <EyeOff color="#71717a" size={18} />
-                        ) : (
-                            <Eye color="#71717a" size={18} />
-                        )}
-                    </TouchableOpacity>
-                </View>
-            </View>
-        );
-    }
-
     return (
         <View className={cn("w-full mb-3", containerClassName)}>
             {label && <Label className="mb-1.5">{label}</Label>}
@@ -164,24 +104,6 @@ export function PrimaryButton({
     disabled = false,
     className = "",
 }: PrimaryButtonProps) {
-    const { uiStyle } = useUIStyle();
-
-    if (uiStyle === "native" && Platform.OS !== "web") {
-        return (
-            <View className={cn("w-full mt-2 overflow-hidden rounded-md", className)}>
-                <Host style={{ width: "100%", height: 44 }}>
-                    <NativeButton
-                        label={loading ? "Loading..." : title}
-                        variant="filled"
-                        onPress={onPress}
-                        disabled={disabled || loading}
-                        style={{ height: 44, borderRadius: 8, width: "100%" }}
-                    />
-                </Host>
-            </View>
-        );
-    }
-
     return (
         <Button
             onPress={onPress}

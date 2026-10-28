@@ -1,10 +1,7 @@
 import { TextClassContext } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { Platform, Pressable, View } from 'react-native';
-import { Host, Button as NativeButton } from '@expo/ui';
-import { useUIStyle } from '@/core/UIStyleContext';
-import React from 'react';
+import { Platform, Pressable } from 'react-native';
 
 const buttonVariants = cva(
   cn(
@@ -93,65 +90,14 @@ const buttonTextVariants = cva(
 
 type ButtonProps = React.ComponentProps<typeof Pressable> & React.RefAttributes<typeof Pressable> & VariantProps<typeof buttonVariants>;
 
-function Button({ className, variant, size, children, onPress, ...props }: ButtonProps) {
-  const { uiStyle } = useUIStyle();
-
-  if (uiStyle === 'native' && Platform.OS !== 'web') {
-    const isIcon = size === 'icon';
-
-    // Extract label text if passed as a string or as a nested <Text>String</Text>
-    let label: string | undefined = undefined;
-    if (typeof children === 'string') {
-      label = children;
-    } else if (React.isValidElement(children) && typeof (children.props as any)?.children === 'string') {
-      label = (children.props as any).children;
-    }
-
-    // If it's an icon button or there is no text label, Jetpack Compose Button cannot display React Native Lucide SVGs.
-    // Render as a high-fidelity Pressable with proper design tokens so the icon is always clearly visible.
-    if (isIcon || !label) {
-      return (
-        <TextClassContext.Provider value={buttonTextVariants({ variant, size })}>
-          <Pressable
-            className={cn(props.disabled && 'opacity-50', buttonVariants({ variant, size }), className)}
-            role="button"
-            onPress={onPress}
-            {...props}
-          >
-            {children}
-          </Pressable>
-        </TextClassContext.Provider>
-      );
-    }
-
-    const isFlex1 = className?.includes('flex-1');
-    const nativeVariant = variant === 'outline' ? 'outlined' : variant === 'ghost' || variant === 'link' ? 'text' : 'filled';
-
-    return (
-      <View className={cn(isFlex1 ? 'flex-1' : undefined, className)}>
-        <Host style={{ minWidth: 64, height: size === 'sm' ? 36 : 44, width: isFlex1 ? '100%' : undefined }}>
-          <NativeButton
-            variant={nativeVariant}
-            label={label}
-            onPress={onPress as (() => void) | undefined}
-            disabled={props.disabled ?? false}
-            style={{ width: '100%', height: size === 'sm' ? 36 : 44 }}
-          />
-        </Host>
-      </View>
-    );
-  }
-
+function Button({ className, variant, size, ...props }: ButtonProps) {
   return (
     <TextClassContext.Provider value={buttonTextVariants({ variant, size })}>
       <Pressable
         className={cn(props.disabled && 'opacity-50', buttonVariants({ variant, size }), className)}
         role="button"
-        onPress={onPress}
         {...props}
-      >
-        {children}
-      </Pressable>
+      />
     </TextClassContext.Provider>
   );
 }

@@ -1,10 +1,7 @@
 import React, { useState, useCallback } from "react";
-import { Alert, Platform } from "react-native";
 import { CustomAlertModal, CustomAlertConfig } from "../components/CustomAlertModal";
-import { useUIStyle } from "../core/UIStyleContext";
 
 export function useCustomAlert(theme: "dark" | "light" = "dark") {
-	const { uiStyle } = useUIStyle();
 	const [alertConfig, setAlertConfig] = useState<CustomAlertConfig>({
 		visible: false,
 		title: "",

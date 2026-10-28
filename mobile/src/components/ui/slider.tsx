@@ -1,7 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, Text as RNText, Platform } from "react-native";
-import { useUIStyle } from "@/core/UIStyleContext";
-import { Host, Slider as UniversalNativeSlider } from "@expo/ui";
+import { View, TouchableOpacity, Text as RNText } from "react-native";
 import { cn } from "@/lib/utils";
 
 export interface SliderProps {
@@ -23,24 +21,6 @@ export function Slider({
 	className,
 	showTicks = true,
 }: SliderProps) {
-	const { uiStyle } = useUIStyle();
-
-	if (uiStyle === "native" && Platform.OS !== "web") {
-		return (
-			<View className={cn("w-full py-1", className)} style={{ height: 44, justifyContent: "center" }}>
-				<Host style={{ width: "100%", height: 44 }}>
-					<UniversalNativeSlider
-						value={value}
-						min={min}
-						max={max}
-						step={step}
-						onValueChange={onValueChange}
-					/>
-				</Host>
-			</View>
-		);
-	}
-
 	// Fluid Shadcn styled touch-drag track with thumb & step marks
 	const [trackWidth, setTrackWidth] = React.useState(0);
 	const percentage = Math.min(1, Math.max(0, (value - min) / (max - min)));

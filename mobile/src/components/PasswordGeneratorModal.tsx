@@ -6,7 +6,6 @@ import { Button } from "./ui/button";
 import { Text } from "./ui/text";
 import { Separator } from "./ui/separator";
 import { ModernToggle } from "./ModernToggle";
-import { useUIStyle } from "../core/UIStyleContext";
 import { Slider } from "./ui/slider";
 
 interface Props {
@@ -56,7 +55,6 @@ export function PasswordGeneratorModal({
 	setGenNumbers,
 	setGenSeparator,
 }: Props) {
-	const { uiStyle } = useUIStyle();
 	if (!visible) return null;
 	const strength = evaluatePasswordStrength(generatedPass);
 
