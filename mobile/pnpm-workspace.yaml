@@ -1,10 +1,15 @@
 allowBuilds:
   core-js: true
 minimumReleaseAgeExclude:
-  - '@expo/cli@58.1.11'
+  - '@expo/cli@58.1.11 || 58.1.16'
   - '@expo/schema-utils@58.0.2'
-  - babel-preset-expo@58.0.17
-  - expo-modules-core@58.0.22
-  - expo-modules-jsi@58.0.15
-  - expo@58.0.14
+  - babel-preset-expo@58.0.17 || 58.0.21
+  - expo-modules-core@58.0.22 || 58.0.27
+  - expo-modules-jsi@58.0.15 || 58.0.20
+  - expo@58.0.14 || 58.0.20
   - expo-crypto@58.0.7
+  - '@expo/fingerprint@0.21.7'
+  - '@expo/metro-config@58.0.18'
+  - '@expo/router-server@58.0.18'
+  - expo-file-system@58.0.12
+  - expo-modules-cli@0.3.3

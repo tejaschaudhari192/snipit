@@ -27,15 +27,6 @@
     "web": {
       "favicon": "./assets/icon.png"
     },
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff",
-      "dark": {
-        "image": "./assets/splash-icon.png",
-        "backgroundColor": "#09090b"
-      }
-    },
     "extra": {
       "eas": {
         "projectId": "b6ca225b-223a-4183-8c56-f7fbf8d7bccb"
@@ -63,7 +54,8 @@
             "backgroundColor": "#09090b"
           }
         }
-      ]
+      ],
+      "expo-status-bar"
     ]
   }
 }
