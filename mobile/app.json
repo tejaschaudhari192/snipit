@@ -27,6 +27,15 @@
     "web": {
       "favicon": "./assets/icon.png"
     },
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff",
+      "dark": {
+        "image": "./assets/splash-icon.png",
+        "backgroundColor": "#09090b"
+      }
+    },
     "extra": {
       "eas": {
         "projectId": "b6ca225b-223a-4183-8c56-f7fbf8d7bccb"
@@ -40,6 +49,19 @@
         "expo-local-authentication",
         {
           "faceIDPermission": "Allow Snipit to use Face ID to quickly unlock your vault."
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff",
+          "dark": {
+            "image": "./assets/splash-icon.png",
+            "backgroundColor": "#09090b"
+          }
         }
       ]
     ]

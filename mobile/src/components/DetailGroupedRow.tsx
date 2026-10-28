@@ -3,6 +3,7 @@ import { View, TouchableOpacity } from "react-native";
 import { Copy, Check, ExternalLink } from "lucide-react-native";
 import { Card } from "./ui/card";
 import { Text } from "./ui/text";
+import { Icon } from "./ui/icon";
 
 interface DetailRowProps {
     label: string;
@@ -54,11 +55,11 @@ export function DetailGroupedRow({
             ) : onCopy ? (
                 <TouchableOpacity onPress={onCopy} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
                     {isCopied ? (
-                        <Check className="text-foreground" size={18} />
+                        <Icon as={Check} className="text-foreground" size={18} />
                     ) : isUrl ? (
-                        <ExternalLink className="text-muted-foreground" size={18} />
+                        <Icon as={ExternalLink} className="text-muted-foreground" size={18} />
                     ) : (
-                        <Copy className="text-muted-foreground" size={18} />
+                        <Icon as={Copy} className="text-muted-foreground" size={18} />
                     )}
                 </TouchableOpacity>
             ) : null}

@@ -28,6 +28,7 @@ import { Button } from "./ui/button";
 import { Text } from "./ui/text";
 import { Input } from "./ui/input";
 import { Separator } from "./ui/separator";
+import { Icon } from "./ui/icon";
 import { CreatableCombobox } from "./ui/creatable-combobox";
 
 interface NoteEditorModalProps {
@@ -250,7 +251,7 @@ export function NoteEditorModal({
 							onPress={handleClose}
 							className="h-8 w-8"
 						>
-							<ArrowLeft className="text-foreground" size={18} />
+							<Icon as={ArrowLeft} className="text-foreground" size={18} />
 						</Button>
 
 						{/* Unified Creatable Combobox Folder Trigger */}
@@ -280,7 +281,7 @@ export function NoteEditorModal({
 											style={{ backgroundColor: selectedOption.color || "#09090b" }}
 										/>
 									) : (
-										<FolderIcon className="text-muted-foreground" size={13} />
+										<Icon as={FolderIcon} className="text-muted-foreground" size={13} />
 									)}
 									<Text
 										className="text-xs font-medium max-w-[100px] text-foreground"
@@ -288,7 +289,7 @@ export function NoteEditorModal({
 									>
 										{selectedOption ? selectedOption.label : "No Folder"}
 									</Text>
-									<ChevronDown className="text-muted-foreground" size={13} />
+									<Icon as={ChevronDown} className="text-muted-foreground" size={13} />
 								</TouchableOpacity>
 							)}
 						/>

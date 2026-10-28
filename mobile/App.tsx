@@ -5,6 +5,7 @@ import {
 	useColorScheme,
 	BackHandler,
 } from "react-native";
+import * as SplashScreen from "expo-splash-screen";
 import { PWMGScreen } from "./src/screens/PWMGScreen";
 import { AuthScreen } from "./src/screens/AuthScreen";
 import { ProfileScreen } from "./src/screens/ProfileScreen";
@@ -42,6 +43,9 @@ export default function App() {
 	useEffect(() => {
 		loadUserSession();
 		loadTheme();
+
+		// Hide native splash screen once initial session is ready
+		SplashScreen.hideAsync().catch(() => {});
 
 		// Check once after launch when user is connected to internet
 		const unsubscribeNet = NetInfo.addEventListener((state: any) => {

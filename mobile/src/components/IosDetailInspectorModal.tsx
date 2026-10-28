@@ -1,6 +1,7 @@
 import React from "react";
 import { View, ScrollView, TouchableOpacity, Modal } from "react-native";
 import { X, Star, Eye, EyeOff, Copy, Check, Trash2 } from "lucide-react-native";
+import { Icon } from "./ui/icon";
 import { PasswordItem } from "../core/vault-storage";
 import { ItemAvatar } from "./ItemAvatar";
 import { CreditCardVisual } from "./CreditCardVisual";
@@ -260,7 +261,8 @@ export function IosDetailInspectorModal({
 						{/* Actions (Favorite & Delete) */}
 						<Card className="border-border bg-card overflow-hidden mt-4">
 							<TouchableOpacity className="flex-row items-center gap-3 px-4 py-3.5" onPress={() => onToggleFavorite(item)} activeOpacity={0.7}>
-								<Star
+								<Icon
+									as={Star}
 									className={item.isFavorite ? "text-foreground fill-foreground" : "text-muted-foreground"}
 									size={18}
 								/>
@@ -272,7 +274,7 @@ export function IosDetailInspectorModal({
 							<View className="border-t border-border" />
 
 							<TouchableOpacity className="flex-row items-center gap-3 px-4 py-3.5" onPress={() => onDeleteItem(item.id)} activeOpacity={0.7}>
-								<Trash2 className="text-destructive" size={18} />
+								<Icon as={Trash2} className="text-destructive" size={18} />
 								<Text className="text-sm font-medium text-destructive">
 									Delete {getCategoryItemLabel(item.category)}
 								</Text>

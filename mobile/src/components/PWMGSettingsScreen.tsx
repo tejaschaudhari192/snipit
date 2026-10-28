@@ -15,6 +15,7 @@ import {
 	Folder as FolderIcon,
 	Fingerprint,
 } from "lucide-react-native";
+import { Icon } from "./ui/icon";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
@@ -398,7 +399,7 @@ export function PWMGSettingsScreen({
 						<View className="flex-row items-center justify-between px-4 py-3.5">
 							<View className="flex-row items-center gap-3 flex-1 pr-3">
 								<View className="w-8 h-8 rounded-md bg-muted justify-center items-center">
-									<Fingerprint className="text-foreground" size={18} />
+									<Icon as={Fingerprint} className="text-foreground" size={18} />
 								</View>
 								<View className="flex-1">
 									<Text className="text-sm font-semibold text-foreground">
@@ -436,7 +437,7 @@ export function PWMGSettingsScreen({
 				>
 					<View className="flex-row items-center gap-3">
 						<View className="w-8 h-8 rounded-md bg-muted justify-center items-center">
-							<Upload className="text-foreground" size={16} />
+							<Icon as={Upload} className="text-foreground" size={16} />
 						</View>
 						<View>
 							<Text className="text-sm font-semibold text-foreground">
@@ -447,7 +448,7 @@ export function PWMGSettingsScreen({
 							</Text>
 						</View>
 					</View>
-					{isImporting ? <ActivityIndicator size="small" /> : <ChevronRight className="text-muted-foreground" size={16} />}
+					{isImporting ? <ActivityIndicator size="small" /> : <Icon as={ChevronRight} className="text-muted-foreground" size={16} />}
 				</TouchableOpacity>
 
 				{/* Export Vault */}
@@ -459,7 +460,7 @@ export function PWMGSettingsScreen({
 				>
 					<View className="flex-row items-center gap-3">
 						<View className="w-8 h-8 rounded-md bg-muted justify-center items-center">
-							<Download className="text-foreground" size={16} />
+							<Icon as={Download} className="text-foreground" size={16} />
 						</View>
 						<View>
 							<Text className="text-sm font-semibold text-foreground">
@@ -470,7 +471,7 @@ export function PWMGSettingsScreen({
 							</Text>
 						</View>
 					</View>
-					{isExporting ? <ActivityIndicator size="small" /> : <ChevronRight className="text-muted-foreground" size={16} />}
+					{isExporting ? <ActivityIndicator size="small" /> : <Icon as={ChevronRight} className="text-muted-foreground" size={16} />}
 				</TouchableOpacity>
 			</Card>
 
@@ -491,7 +492,7 @@ export function PWMGSettingsScreen({
 				>
 					<View className="flex-row items-center gap-3">
 						<View className="w-8 h-8 rounded-md bg-muted justify-center items-center">
-							<CopyX className="text-foreground" size={16} />
+							<Icon as={CopyX} className="text-foreground" size={16} />
 						</View>
 						<View>
 							<Text className="text-sm font-semibold text-foreground">
@@ -507,7 +508,7 @@ export function PWMGSettingsScreen({
 					{isDeduplicating ? (
 						<ActivityIndicator size="small" />
 					) : (
-						<ChevronRight className="text-muted-foreground" size={16} />
+						<Icon as={ChevronRight} className="text-muted-foreground" size={16} />
 					)}
 				</TouchableOpacity>
 
@@ -519,7 +520,7 @@ export function PWMGSettingsScreen({
 				>
 					<View className="flex-row items-center gap-3">
 						<View className="w-8 h-8 rounded-md bg-muted justify-center items-center">
-							<FolderIcon className="text-foreground" size={16} />
+							<Icon as={FolderIcon} className="text-foreground" size={16} />
 						</View>
 						<View>
 							<Text className="text-sm font-semibold text-foreground">
@@ -530,7 +531,7 @@ export function PWMGSettingsScreen({
 							</Text>
 						</View>
 					</View>
-					<ChevronRight className="text-muted-foreground" size={16} />
+					<Icon as={ChevronRight} className="text-muted-foreground" size={16} />
 				</TouchableOpacity>
 			</Card>
 
@@ -549,7 +550,7 @@ export function PWMGSettingsScreen({
 				>
 					<View className="flex-row items-center gap-3">
 						<View className="w-8 h-8 rounded-md bg-destructive/10 justify-center items-center">
-							<Trash2 className="text-destructive" size={16} />
+							<Icon as={Trash2} className="text-destructive" size={16} />
 						</View>
 						<View>
 							<Text className="text-sm font-semibold text-destructive">
@@ -560,7 +561,7 @@ export function PWMGSettingsScreen({
 							</Text>
 						</View>
 					</View>
-					<ChevronRight className="text-destructive" size={16} />
+					<Icon as={ChevronRight} className="text-destructive" size={16} />
 				</TouchableOpacity>
 			</Card>
 		</ScrollView>

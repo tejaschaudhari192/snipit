@@ -150,7 +150,7 @@ export function MobileSplashScreen({
 
 	const shimmerTranslateX = shimmerAnim.interpolate({
 		inputRange: [0, 1],
-		outputRange: [-120, 320],
+		outputRange: [-80, 280],
 	});
 
 	return (
@@ -200,44 +200,44 @@ export function MobileSplashScreen({
 					<View className="w-full relative px-2 mt-4">
 						{/* Progress Track */}
 						<View
-							style={{ width: "100%", height: 10 }}
-							className="w-full h-2.5 bg-muted/40 rounded-full relative overflow-hidden"
+							style={{
+								width: "100%",
+								height: 10,
+								borderRadius: 999,
+								overflow: "hidden",
+								backgroundColor: "rgba(113, 113, 122, 0.2)",
+							}}
 						>
 							{/* Indicator */}
 							<Animated.View
 								style={{
 									width: progressWidthPercent,
 									height: "100%",
+									borderRadius: 999,
+									backgroundColor: isError ? "#ef4444" : "#3b82f6",
+									overflow: "hidden",
+									shadowColor: isError ? "#ef4444" : "#3b82f6",
+									shadowOffset: { width: 0, height: 0 },
+									shadowOpacity: 0.8,
+									shadowRadius: 6,
+									elevation: 6,
 								}}
-								className={`h-full rounded-full relative overflow-hidden ${
-									isError ? "bg-destructive" : "bg-blue-500"
-								}`}
 							>
 								{/* Shimmer sweep effect while progressing */}
 								{!isCompleted && !isError && (
 									<Animated.View
 										style={{
+											position: "absolute",
+											top: 0,
+											bottom: 0,
+											width: 80,
+											backgroundColor: "rgba(255, 255, 255, 0.4)",
 											transform: [{ translateX: shimmerTranslateX }],
-											width: 96,
-											height: "100%",
 										}}
-										className="absolute top-0 bottom-0 bg-white/40"
 									/>
 								)}
 							</Animated.View>
 						</View>
-
-						{/* Glow underneath that tracks progress */}
-						<Animated.View
-							style={{
-								width: progressWidthPercent,
-								height: 4,
-								opacity: isCompleted ? 0 : 0.6,
-							}}
-							className={`h-1 rounded-full mt-1.5 ${
-								isError ? "bg-destructive" : "bg-blue-500"
-							}`}
-						/>
 					</View>
 
 					{/* Sublabel if provided */}
