@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Modal, TouchableOpacity, Pressable } from "react-native";
+import React, { useRef, useEffect } from "react";
+import { View, Modal, Pressable, Animated } from "react-native";
 import { AlertCircle, CheckCircle2, Info, AlertTriangle } from "lucide-react-native";
 import { Button } from "./ui/button";
 import { Text } from "./ui/text";
@@ -26,7 +26,29 @@ interface CustomAlertModalProps {
 }
 
 export function CustomAlertModal({ config }: CustomAlertModalProps) {
-    if (!config.visible) return null;
+    const opacity = useRef(new Animated.Value(0)).current;
+    const scale = useRef(new Animated.Value(0.92)).current;
+    const [mounted, setMounted] = React.useState(false);
+
+    useEffect(() => {
+        if (config.visible) {
+            setMounted(true);
+            opacity.setValue(0);
+            scale.setValue(0.92);
+            Animated.parallel([
+                Animated.timing(opacity, { toValue: 1, duration: 150, useNativeDriver: true }),
+                Animated.spring(scale, { toValue: 1, useNativeDriver: true, bounciness: 4, speed: 20 }),
+            ]).start();
+        } else {
+            Animated.timing(opacity, {
+                toValue: 0,
+                duration: 120,
+                useNativeDriver: true,
+            }).start(() => setMounted(false));
+        }
+    }, [config.visible]);
+
+    if (!mounted) return null;
 
     const type = config.type || "info";
 
@@ -67,22 +89,26 @@ export function CustomAlertModal({ config }: CustomAlertModalProps) {
 
     return (
         <Modal
-            visible={config.visible}
+            visible={mounted}
             transparent
             animationType="none"
             statusBarTranslucent
             onRequestClose={config.onDismiss}
         >
-            <Pressable
+            <Animated.View
+                style={{ opacity }}
                 className="flex-1 bg-black/60 items-center justify-center p-4"
-                onPress={config.onDismiss}
             >
                 <Pressable
+                    className="absolute inset-0"
+                    onPress={config.onDismiss}
+                />
+                <Animated.View
+                    style={{ transform: [{ scale }] }}
                     className="w-full max-w-sm"
-                    onPress={(e) => e.stopPropagation()}
                 >
-                    <Card className="border border-border/80 bg-background/95 backdrop-blur-2xl shadow-2xl rounded-2xl p-6 items-center">
-                        {/* Media Icon Badge */}
+                    <Card className="border border-border/80 bg-background/95 shadow-2xl rounded-2xl p-6 items-center">
+                        {/* Icon Badge */}
                         {getIconBadge()}
 
                         {/* Title */}
@@ -90,14 +116,14 @@ export function CustomAlertModal({ config }: CustomAlertModalProps) {
                             {config.title}
                         </Text>
 
-                        {/* Description Message */}
+                        {/* Message */}
                         {config.message ? (
                             <Text className="text-center text-sm text-muted-foreground mt-2 leading-5">
                                 {config.message}
                             </Text>
                         ) : null}
 
-                        {/* Action Buttons Footer */}
+                        {/* Buttons */}
                         <View className="flex-row gap-2.5 w-full mt-6">
                             {buttons.map((btn, idx) => {
                                 const variant =
@@ -113,9 +139,7 @@ export function CustomAlertModal({ config }: CustomAlertModalProps) {
                                         variant={variant}
                                         className="flex-1 h-10"
                                         onPress={() => {
-                                            // Close modal immediately without lag or delay
-                                            config.onDismiss?.();
-                                            // Immediately execute action handler
+                                            // Run the button's own action first
                                             btn.onPress?.();
                                         }}
                                     >
@@ -125,8 +149,8 @@ export function CustomAlertModal({ config }: CustomAlertModalProps) {
                             })}
                         </View>
                     </Card>
-                </Pressable>
-            </Pressable>
+                </Animated.View>
+            </Animated.View>
         </Modal>
     );
 }

@@ -29,7 +29,7 @@ export function CreateFolderModal({
 	const colors = ["#09090b", "#71717a", "#2563eb", "#16a34a", "#dc2626", "#9333ea"];
 
 	return (
-		<Modal visible={visible} animationType="slide" transparent statusBarTranslucent>
+		<Modal visible={visible} animationType="none" transparent statusBarTranslucent>
 			<KeyboardAvoidingView
 				className="flex-1 bg-black/70 justify-end"
 				behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -40,7 +40,7 @@ export function CreateFolderModal({
 							New Folder
 						</Text>
 						<Button variant="ghost" size="sm" onPress={onClose} className="h-8 px-2">
-							<Text className="text-xs">Cancel</Text>
+							<Text className="text-sm font-semibold text-foreground">Cancel</Text>
 						</Button>
 					</View>
 

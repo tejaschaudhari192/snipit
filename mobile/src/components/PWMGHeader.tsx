@@ -1,6 +1,7 @@
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 import { Sparkles, User, Lock, LayoutGrid, List } from "lucide-react-native";
+import { Icon } from "./ui/icon";
 import { ThemeColors } from "../config/theme";
 import { Button } from "./ui/button";
 import { Text } from "./ui/text";
@@ -107,9 +108,9 @@ export function PWMGHeader({
 							onPress={onToggleGridView}
 						>
 							{isGridView ? (
-								<List className="text-foreground" size={16} />
+								<Icon as={List} className="text-foreground" size={16} />
 							) : (
-								<LayoutGrid className="text-foreground" size={16} />
+								<Icon as={LayoutGrid} className="text-foreground" size={16} />
 							)}
 						</Button>
 					)}
@@ -120,7 +121,7 @@ export function PWMGHeader({
 						className="h-8 w-8"
 						onPress={onOpenGenerator}
 					>
-						<Sparkles className="text-foreground" size={16} />
+						<Icon as={Sparkles} className="text-foreground" size={16} />
 					</Button>
 
 					{onOpenProfile && (
@@ -130,7 +131,7 @@ export function PWMGHeader({
 							className="h-8 w-8"
 							onPress={onOpenProfile}
 						>
-							<User className="text-foreground" size={16} />
+							<Icon as={User} className="text-foreground" size={16} />
 						</Button>
 					)}
 
@@ -140,7 +141,7 @@ export function PWMGHeader({
 						className="h-8 w-8"
 						onPress={onLock}
 					>
-						<Lock className="text-muted-foreground" size={16} />
+						<Icon as={Lock} className="text-muted-foreground" size={16} />
 					</Button>
 				</View>
 			</View>

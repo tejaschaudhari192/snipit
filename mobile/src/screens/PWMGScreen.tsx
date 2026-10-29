@@ -31,6 +31,7 @@ import {
 	VaultRecoveryScreen,
 	VaultOnboardingScreen,
 } from "../components/VaultAuthScreens";
+import { CloudVaultDetectedScreen } from "../components/CloudVaultDetectedScreen";
 
 interface Props {
 	onBack?: () => void;
@@ -46,6 +47,8 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 	const isLight = theme === "light";
 
 	const [hasVault, setHasVault] = useState<boolean | null>(null);
+	const [hasCloudVault, setHasCloudVault] = useState(false);
+	const [showCloudDetected, setShowCloudDetected] = useState(false);
 	const [isUnlocked, setIsUnlocked] = useState(false);
 	const [hasRecovery, setHasRecovery] = useState(false);
 	const [user, setUser] = useState<UserSession | null>(null);
@@ -122,10 +125,11 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		(targetTab: "passwords" | "notes" | "folders" | "settings", animateScroll = true) => {
 			setActiveBottomTab(targetTab);
 			if (targetTab === "passwords") {
-				setActiveFilter("all");
+				if (activeFilter === "note") {
+					setActiveFilter("all");
+				}
 				setSelectedFolderId(null);
 			} else if (targetTab === "notes") {
-				setActiveFilter("note");
 				setSelectedFolderId(null);
 			} else if (targetTab === "folders") {
 				setSelectedFolderId(null);
@@ -145,7 +149,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 				}
 			}
 		},
-		[TAB_ORDER, screenWidth]
+		[TAB_ORDER, screenWidth, activeFilter]
 	);
 
 	const handleScrollEnd = useCallback(
@@ -184,23 +188,32 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		setSelectedItemIds((prev) => (prev.includes(item.id) ? prev : [...prev, item.id]));
 	}, []);
 
-	const filteredItems = useMemo(() => {
-		// 1. Filter by category & folder
+	// 1. Password items (passwords, cards, apikeys, identities - never notes)
+	const passwordItems = useMemo(() => {
 		const baseItems = items.filter((item) => {
 			if (selectedFolderId && item.folderId !== selectedFolderId) return false;
 			if (activeFilter === "favorites") return !!item.isFavorite;
-			if (activeFilter !== "all") return item.category === activeFilter;
-			return true;
+			if (activeFilter !== "all" && activeFilter !== "note") return item.category === activeFilter;
+			return item.category !== "note";
 		});
-
-		// 2. Apply tokenized, ranked relevance search
 		return searchVaultItems(baseItems, searchQuery, folders);
 	}, [items, searchQuery, activeFilter, selectedFolderId, folders]);
 
+	// 2. Note items (always note items, never passwords)
+	const noteItems = useMemo(() => {
+		const baseItems = items.filter((item) => {
+			if (selectedFolderId && item.folderId !== selectedFolderId) return false;
+			return item.category === "note";
+		});
+		return searchVaultItems(baseItems, searchQuery, folders);
+	}, [items, searchQuery, selectedFolderId, folders]);
+
+	const currentTabItems = activeBottomTab === "notes" ? noteItems : passwordItems;
+
 	const handleSelectAllVisible = useCallback(() => {
-		const visibleIds = filteredItems.map((i) => i.id);
+		const visibleIds = currentTabItems.map((i) => i.id);
 		setSelectedItemIds((prev) => (prev.length === visibleIds.length ? [] : visibleIds));
-	}, [filteredItems]);
+	}, [currentTabItems]);
 
 	const handleBulkPin = useCallback(async () => {
 		if (selectedItemIds.length === 0) return;
@@ -388,14 +401,15 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			setCheckingVaultStage("Reading session credentials...");
 			const u = await offlineVault.getUser();
 			setUser(u);
+			let cloudFound = false;
 			if (u?.token) {
 				setCheckingVaultStage("Verifying cloud encryption keys...");
-				// Non-blocking timeout so remote network checks don't freeze the UI on startup
 				try {
-					await Promise.race([
+					cloudFound = await Promise.race([
 						offlineVault.checkCloudVault(),
-						new Promise((_, reject) => setTimeout(() => reject(new Error("Cloud verification timeout")), 1200))
+						new Promise<boolean>((_, reject) => setTimeout(() => reject(new Error("Cloud verification timeout")), 3500))
 					]);
+					setHasCloudVault(cloudFound);
 				} catch (err) {
 					console.warn("Cloud vault pre-check bypassed or timed out:", err);
 				}
@@ -405,6 +419,10 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			const rec = await offlineVault.hasRecoveryRecord();
 			setHasVault(exists);
 			setHasRecovery(rec);
+
+			if (!exists && cloudFound) {
+				setShowCloudDetected(true);
+			}
 
 			// Check biometric capability and state
 			const hwAvailable = await offlineVault.isBiometricHardwareAvailable();
@@ -611,29 +629,10 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		}
 	};
 
-	const handleDeleteItem = (id: string) => {
-		const targetItem = items.find((i) => i.id === id) || (selectedItem?.id === id ? selectedItem : null);
-		const typeLabel = targetItem ? getCategoryItemLabel(targetItem.category) : "Item";
-		const itemTitle = targetItem?.title ? ` "${targetItem.title}"` : "";
-
-		showAlert(
-			`Delete ${typeLabel}`,
-			`Are you sure you want to delete this ${typeLabel.toLowerCase()}${itemTitle}?`,
-			"warning",
-			[
-				{ text: "Cancel", style: "cancel", onPress: () => setAlertConfig((prev) => ({ ...prev, visible: false })) },
-				{
-					text: "Delete",
-					style: "destructive",
-					onPress: async () => {
-						setAlertConfig((prev) => ({ ...prev, visible: false }));
-						await offlineVault.deleteItem(id);
-						if (selectedItem?.id === id) setSelectedItem(null);
-						loadData();
-					},
-				},
-			]
-		);
+	const handleDeleteItem = async (id: string) => {
+		await offlineVault.deleteItem(id);
+		if (selectedItem?.id === id) setSelectedItem(null);
+		loadData();
 	};
 
 	const handleSaveNewItem = async () => {
@@ -803,6 +802,27 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		return <MobileSplashScreen label={checkingVaultStage} />;
 	}
 
+	if (showCloudDetected) {
+		return (
+			<>
+				<CloudVaultDetectedScreen
+					userEmail={user?.email}
+					onEnableSync={async () => {
+						setShowCloudDetected(false);
+						const exists = await offlineVault.hasVault();
+						setHasVault(exists || true);
+					}}
+					onStartFresh={() => {
+						setShowCloudDetected(false);
+						setHasVault(false);
+					}}
+					onBack={onBack}
+				/>
+				{alertModal}
+			</>
+		);
+	}
+
 	if (isRecoveryMode) {
 		return (
 			<>
@@ -841,6 +861,33 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 					onFinish={handleFinishOnboarding}
 					setStep={setOnboardingStep}
 					isCreatingVault={isCreatingVault}
+					onCheckExistingCloudVault={async () => {
+						setCheckingVaultStage("Checking for existing cloud vault...");
+						const u = await offlineVault.getUser();
+						if (!u?.token) {
+							showAlert(
+								"Sign In Required",
+								"Please sign in with your Snipit account in Profile to connect your cloud vault.",
+								"info",
+								[
+									{ text: "Cancel", style: "cancel" },
+									{ text: "Sign In", onPress: onOpenAuth }
+								]
+							);
+							return;
+						}
+						try {
+							const found = await offlineVault.checkCloudVault();
+							if (found) {
+								setShowCloudDetected(true);
+							} else {
+								showAlert("No Cloud Vault Found", "No encrypted vault was found for your account. You can create a new vault.", "info");
+							}
+						} catch (e: any) {
+							showAlert("Sync Error", e?.message || "Failed to check cloud vault.", "error");
+						}
+					}}
+					onOpenRecovery={() => setIsRecoveryMode(true)}
 				/>
 				{alertModal}
 			</>
@@ -913,7 +960,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 					activeFilter={activeFilter}
 					folders={folders}
 					selectedFolderId={selectedFolderId}
-					totalFilteredCount={filteredItems.length}
+					totalFilteredCount={currentTabItems.length}
 					syncStatus={syncStatus}
 					isGridView={isNotesGridView}
 					onToggleGridView={() => setIsNotesGridView((prev) => !prev)}
@@ -947,7 +994,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 					<PWMGListView
 						c={c}
 						theme={theme}
-						items={filteredItems}
+						items={passwordItems}
 						folders={folders}
 						activeBottomTab="passwords"
 						searchQuery={searchQuery}
@@ -987,7 +1034,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 					<PWMGListView
 						c={c}
 						theme={theme}
-						items={filteredItems}
+						items={noteItems}
 						folders={folders}
 						activeBottomTab="notes"
 						searchQuery={searchQuery}
@@ -1097,10 +1144,10 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			{isSelectionMode ? (
 				<NotesBulkActionBar
 					selectedCount={selectedItemIds.length}
-					totalNotesCount={filteredItems.length}
+					totalNotesCount={currentTabItems.length}
 					allSelected={
 						selectedItemIds.length > 0 &&
-						selectedItemIds.length === filteredItems.length
+						selectedItemIds.length === currentTabItems.length
 					}
 					folders={folders}
 					theme={theme}

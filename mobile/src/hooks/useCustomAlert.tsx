@@ -7,6 +7,10 @@ export function useCustomAlert(theme: "dark" | "light" = "dark") {
 		title: "",
 	});
 
+	const hideAlert = useCallback(() => {
+		setAlertConfig((prev) => ({ ...prev, visible: false }));
+	}, []);
+
 	const showAlert = useCallback(
 		(
 			title: string,
@@ -14,21 +18,29 @@ export function useCustomAlert(theme: "dark" | "light" = "dark") {
 			type: "info" | "success" | "warning" | "error" = "info",
 			buttons?: CustomAlertConfig["buttons"]
 		) => {
+			// Wrap each button's onPress to auto-close before running the action
+			const wrappedButtons = buttons?.map((btn) => ({
+				...btn,
+				onPress: () => {
+					setAlertConfig((prev) => ({ ...prev, visible: false }));
+					// Defer the action slightly so the fade-out animation can start first
+					if (btn.onPress) {
+						setTimeout(btn.onPress, 80);
+					}
+				},
+			}));
+
 			setAlertConfig({
 				visible: true,
 				title,
 				message,
 				type,
-				buttons,
+				buttons: wrappedButtons,
 				onDismiss: () => setAlertConfig((prev) => ({ ...prev, visible: false })),
 			});
 		},
 		[]
 	);
-
-	const hideAlert = useCallback(() => {
-		setAlertConfig((prev) => ({ ...prev, visible: false }));
-	}, []);
 
 	const alertModal = (
 		<CustomAlertModal

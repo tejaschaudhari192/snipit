@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { View, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ArrowLeft, Lock, KeyRound, Check, Copy, Download } from "lucide-react-native";
+import { ArrowLeft, Lock, KeyRound, Check, Copy, Download, Cloud, LifeBuoy } from "lucide-react-native";
+import { Icon } from "./ui/icon";
 import {
 	Card,
 	CardHeader,
@@ -32,6 +33,8 @@ interface VaultOnboardingScreenProps {
 	onFinish: () => void;
 	setStep: (s: number) => void;
 	isCreatingVault?: boolean;
+	onCheckExistingCloudVault?: () => void;
+	onOpenRecovery?: () => void;
 }
 
 export function VaultOnboardingScreen({
@@ -52,6 +55,8 @@ export function VaultOnboardingScreen({
 	onFinish,
 	setStep,
 	isCreatingVault = false,
+	onCheckExistingCloudVault,
+	onOpenRecovery,
 }: VaultOnboardingScreenProps) {
 	const [showMasterPassword, setShowMasterPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -86,7 +91,7 @@ export function VaultOnboardingScreen({
 				contentContainerClassName="p-4 max-w-sm w-full mx-auto"
 				showsVerticalScrollIndicator={false}
 			>
-				<Card className="w-full border-border bg-card">
+				<Card className="w-full border-border bg-card py-6">
 					{step === 1 && (
 						<>
 							<CardHeader className="text-center pb-2">
@@ -133,6 +138,39 @@ export function VaultOnboardingScreen({
 										Create Secure Vault
 									</Text>
 								</Button>
+
+								{/* Alternatives: Existing Cloud Vault / Recovery Key */}
+								<View className="pt-4 border-t border-border mt-3 gap-2">
+									<Text className="text-[11px] text-center uppercase tracking-wider text-muted-foreground font-semibold">
+										Already Have a Vault?
+									</Text>
+
+									{onCheckExistingCloudVault && (
+										<Button
+											variant="outline"
+											className="w-full h-10 flex-row gap-2"
+											onPress={onCheckExistingCloudVault}
+										>
+											<Icon as={Cloud} className="text-foreground" size={15} />
+											<Text className="text-xs font-semibold text-foreground">
+												Sync Existing Cloud Vault
+											</Text>
+										</Button>
+									)}
+
+									{onOpenRecovery && (
+										<Button
+											variant="ghost"
+											className="w-full h-9 flex-row gap-1.5"
+											onPress={onOpenRecovery}
+										>
+											<Icon as={LifeBuoy} className="text-muted-foreground" size={14} />
+											<Text className="text-xs font-medium text-muted-foreground">
+												Restore from Recovery Phrase
+											</Text>
+										</Button>
+									)}
+								</View>
 							</CardContent>
 						</>
 					)}

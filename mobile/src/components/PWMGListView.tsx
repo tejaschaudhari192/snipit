@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo, useCallback } from "react";
 import { View, Text, FlatList, TouchableOpacity, RefreshControl, ScrollView } from "react-native";
 import { Shield, StickyNote } from "lucide-react-native";
 import { PasswordItem, Folder } from "../core/vault-storage";
@@ -30,7 +30,7 @@ interface PWMGListViewProps {
 	onCopyPassword: (password: string, id: string) => void;
 }
 
-export function PWMGListView({
+export const PWMGListView = memo(function PWMGListView({
 	c,
 	theme,
 	items,
@@ -54,6 +54,24 @@ export function PWMGListView({
 	const isLight = theme === "light";
 	const isNotesTab = activeBottomTab === "notes";
 	const showGrid = isNotesTab && isGridView;
+
+	const handleItemPress = useCallback((item: PasswordItem) => {
+		if (selectedItemIds.length > 0 && onToggleSelectItem) {
+			onToggleSelectItem(item);
+		} else {
+			onSelectItem(item);
+		}
+	}, [selectedItemIds.length, onToggleSelectItem, onSelectItem]);
+
+	const handleItemLongPress = useCallback((item: PasswordItem) => {
+		if (onLongPressItem) {
+			onLongPressItem(item);
+		}
+	}, [onLongPressItem]);
+
+	const handleCopy = useCallback((pass: string, id: string) => {
+		onCopyPassword(pass, id);
+	}, [onCopyPassword]);
 
 	const refreshElem = onRefresh ? (
 		<RefreshControl
@@ -126,18 +144,8 @@ export function PWMGListView({
 								isLight={isLight}
 								isSelectionMode={isSelectionMode}
 								isSelected={isSelected}
-								onPress={() => {
-									if (isSelectionMode && onToggleSelectItem) {
-										onToggleSelectItem(item);
-									} else {
-										onSelectItem(item);
-									}
-								}}
-								onLongPress={() => {
-									if (isNotesTab && onLongPressItem) {
-										onLongPressItem(item);
-									}
-								}}
+								onPress={() => handleItemPress(item)}
+								onLongPress={() => handleItemLongPress(item)}
 							/>
 						);
 					}}
@@ -149,6 +157,9 @@ export function PWMGListView({
 					keyExtractor={(item) => item.id}
 					contentContainerClassName="px-4 pt-1 pb-32"
 					refreshControl={refreshElem}
+					initialNumToRender={15}
+					maxToRenderPerBatch={10}
+					windowSize={7}
 					renderItem={({ item, index }) => {
 						const isCard = item.category === "card";
 						const isNote = item.category === "note";
@@ -174,19 +185,9 @@ export function PWMGListView({
 								theme={theme}
 								isSelectionMode={isSelectionMode}
 								isSelected={isSelected}
-								onPress={() => {
-									if (isSelectionMode && onToggleSelectItem) {
-										onToggleSelectItem(item);
-									} else {
-										onSelectItem(item);
-									}
-								}}
-								onLongPress={() => {
-									if (onLongPressItem) {
-										onLongPressItem(item);
-									}
-								}}
-								onCopyPassword={(pass) => onCopyPassword(pass, item.id)}
+								onPress={() => handleItemPress(item)}
+								onLongPress={() => handleItemLongPress(item)}
+								onCopyPassword={(pass) => handleCopy(pass, item.id)}
 							/>
 						);
 					}}
@@ -194,4 +195,4 @@ export function PWMGListView({
 			)}
 		</>
 	);
-}
+});

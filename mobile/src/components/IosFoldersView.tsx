@@ -1,6 +1,7 @@
 import React from "react";
 import { View, TouchableOpacity, ScrollView, RefreshControl } from "react-native";
 import { Key, CreditCard, FileCode, StickyNote, User, Star, ChevronRight, Folder as FolderIcon, FolderPlus, Trash2, Layers } from "lucide-react-native";
+import { Icon } from "@/components/ui/icon";
 import { Folder, PasswordItem } from "../core/vault-storage";
 import { Card } from "@/components/ui/card";
 import { Text } from "@/components/ui/text";
@@ -70,7 +71,7 @@ export function IosFoldersView({
 						>
 							<View className="flex-row items-center gap-3">
 								<View className="w-[32px] h-[32px] rounded-lg items-center justify-center bg-muted/60 border border-border">
-									<IconComponent className="text-foreground" size={16} strokeWidth={2} />
+									<Icon as={IconComponent} className="text-foreground" size={16} strokeWidth={2} />
 								</View>
 								<Text className="text-[16px] font-medium tracking-tight text-foreground">
 									{t.label}
@@ -80,7 +81,7 @@ export function IosFoldersView({
 								<Text className="text-[14px] text-muted-foreground">
 									{t.count}
 								</Text>
-								<ChevronRight className="text-muted-foreground" size={16} />
+								<Icon as={ChevronRight} className="text-muted-foreground" size={16} />
 							</View>
 						</TouchableOpacity>
 					);
@@ -96,7 +97,7 @@ export function IosFoldersView({
 					onPress={onCreateFolder}
 					hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 				>
-					<FolderPlus className="text-foreground" size={15} />
+					<Icon as={FolderPlus} className="text-foreground" size={15} />
 					<Text className="text-xs font-semibold text-foreground">New Folder</Text>
 				</TouchableOpacity>
 			</View>
@@ -117,7 +118,7 @@ export function IosFoldersView({
 						>
 							<View className="flex-row items-center gap-3">
 								<View className="w-[32px] h-[32px] rounded-lg items-center justify-center bg-muted/60 border border-border">
-									<FolderIcon className="text-foreground" size={16} strokeWidth={2} />
+									<Icon as={FolderIcon} className="text-foreground" size={16} strokeWidth={2} />
 								</View>
 								<Text className="text-[16px] font-medium tracking-tight text-foreground">
 									{f.name}
@@ -131,9 +132,9 @@ export function IosFoldersView({
 									onPress={() => onDeleteFolder(f.id, f.name)}
 									hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
 								>
-									<Trash2 className="text-muted-foreground" size={15} />
+									<Icon as={Trash2} className="text-muted-foreground" size={15} />
 								</TouchableOpacity>
-								<ChevronRight className="text-muted-foreground" size={16} />
+								<Icon as={ChevronRight} className="text-muted-foreground" size={16} />
 							</View>
 						</TouchableOpacity>
 					);
@@ -147,11 +148,11 @@ export function IosFoldersView({
 					>
 						<View className="flex-row items-center gap-3">
 							<View className="w-[32px] h-[32px] rounded-lg items-center justify-center bg-muted/60 border border-border">
-								<FolderPlus className="text-foreground" size={16} />
+								<Icon as={FolderPlus} className="text-foreground" size={16} />
 							</View>
 							<Text className="text-[15px] font-medium text-foreground">Create Your First Folder</Text>
 						</View>
-						<ChevronRight className="text-muted-foreground" size={16} />
+						<Icon as={ChevronRight} className="text-muted-foreground" size={16} />
 					</TouchableOpacity>
 				)}
 			</Card>

@@ -18,10 +18,17 @@ export function SocialConnections({ disabled = false }: SocialConnectionsProps) 
   const handleGoogleClick = async () => {
     setIsGoogleLoading(true);
     try {
+      const redirectUri = Platform.OS === 'web' && typeof window !== 'undefined'
+        ? window.location.origin + '/login'
+        : 'snipit://auth';
+      const googleClientId = '392631362986-lkj5367esiteu3ernnt5dcqpub9n963j.apps.googleusercontent.com';
+      // Request id_token directly using implicit flow / OpenID Connect
+      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=id_token&scope=openid%20profile%20email&nonce=${Math.random().toString(36).substring(2)}`;
+      
       if (Platform.OS === 'web') {
-        window.open('https://accounts.google.com', '_blank');
+        window.location.href = googleAuthUrl;
       } else {
-        await Linking.openURL('https://accounts.google.com');
+        await Linking.openURL(googleAuthUrl);
       }
     } catch (e) {
       console.warn('Google sign in error:', e);
@@ -33,8 +40,10 @@ export function SocialConnections({ disabled = false }: SocialConnectionsProps) 
   const handleGithubClick = async () => {
     setIsGithubLoading(true);
     try {
-      const redirectUri = Platform.OS === 'web' && typeof window !== 'undefined' ? window.location.origin + '/login' : 'snipit://auth';
-      const clientId = 'Ov23liO3L7N03X9CgWdC'; // Snipit GitHub OAuth client id
+      const redirectUri = Platform.OS === 'web' && typeof window !== 'undefined'
+        ? window.location.origin + '/login'
+        : 'snipit://auth';
+      const clientId = 'Ov23liHMoJXEpPm74W4B'; // Snipit GitHub OAuth client id matching backend
       const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user:email`;
       
       if (Platform.OS === 'web') {

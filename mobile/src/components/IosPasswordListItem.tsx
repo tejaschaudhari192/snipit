@@ -1,6 +1,7 @@
-import React from "react";
+import React, { memo } from "react";
 import { View, TouchableOpacity } from "react-native";
 import { Star, Copy, Check } from "lucide-react-native";
+import { Icon } from "./ui/icon";
 import { PasswordItem } from "../core/vault-storage";
 import { ItemAvatar } from "./ItemAvatar";
 import { Text } from "./ui/text";
@@ -20,7 +21,7 @@ interface Props {
 	onCopyPassword?: (password: string) => void;
 }
 
-export function IosPasswordListItem({
+export const IosPasswordListItem = memo(function IosPasswordListItem({
 	item,
 	index,
 	totalItems,
@@ -63,7 +64,7 @@ export function IosPasswordListItem({
 						{item.title}
 					</Text>
 					{item.isFavorite && (
-						<Star className="text-foreground fill-foreground" size={12} />
+						<Icon as={Star} className="text-foreground fill-foreground" size={12} />
 					)}
 				</View>
 				<Text
@@ -83,7 +84,7 @@ export function IosPasswordListItem({
 							: "border-border bg-muted"
 					}`}
 				>
-					{isSelected && <Check className="text-primary-foreground" size={12} strokeWidth={3} />}
+					{isSelected && <Icon as={Check} className="text-primary-foreground" size={12} strokeWidth={3} />}
 				</View>
 			) : item.password && onCopyPassword ? (
 				<TouchableOpacity
@@ -92,12 +93,12 @@ export function IosPasswordListItem({
 					hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
 				>
 					{copied ? (
-						<Check className="text-foreground" size={16} />
+						<Icon as={Check} className="text-foreground" size={16} />
 					) : (
-						<Copy className="text-muted-foreground" size={16} />
+						<Icon as={Copy} className="text-muted-foreground" size={16} />
 					)}
 				</TouchableOpacity>
 			) : null}
 		</TouchableOpacity>
 	);
-}
+});

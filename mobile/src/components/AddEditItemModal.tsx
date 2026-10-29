@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Modal, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, Platform } from "react-native";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { View, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, Platform, Animated, Dimensions, Pressable } from "react-native";
 import { Key, CreditCard, FileCode, StickyNote, User, ChevronDown, ChevronUp, RefreshCw, Tag, Plus, Trash2, Eye, EyeOff } from "lucide-react-native";
 import { PasswordItem, Folder, CustomField } from "../core/vault-storage";
 import { getCategoryItemLabel } from "./IosDetailInspectorModal";
@@ -118,7 +118,41 @@ export function AddEditItemModal({
 	setCustomFields,
 	onCreateFolder,
 }: Props) {
-	if (!visible) return null;
+	const SCREEN_HEIGHT = Dimensions.get("window").height;
+	const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
+	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		if (visible) {
+			setMounted(true);
+			translateY.setValue(SCREEN_HEIGHT);
+			Animated.spring(translateY, {
+				toValue: 0,
+				useNativeDriver: true,
+				bounciness: 0,
+				speed: 22,
+			}).start();
+		} else if (mounted) {
+			Animated.timing(translateY, {
+				toValue: SCREEN_HEIGHT,
+				duration: 180,
+				useNativeDriver: true,
+			}).start(() => {
+				setMounted(false);
+			});
+		}
+	}, [visible]);
+
+	const handleRequestClose = useCallback(() => {
+		Animated.timing(translateY, {
+			toValue: SCREEN_HEIGHT,
+			duration: 180,
+			useNativeDriver: true,
+		}).start(() => {
+			onClose();
+			setMounted(false);
+		});
+	}, [onClose, translateY, SCREEN_HEIGHT]);
 
 	const [showLoginPassword, setShowLoginPassword] = useState(false);
 	const [showCardCvv, setShowCardCvv] = useState(false);
@@ -133,17 +167,27 @@ export function AddEditItemModal({
 		{ id: "identity", label: "Identity", icon: User },
 	];
 
+	if (!mounted) return null;
+
 	return (
-		<Modal visible={visible} animationType="slide" transparent statusBarTranslucent>
+		<View
+			className="absolute inset-0 z-50 justify-end"
+			pointerEvents={visible ? "auto" : "none"}
+		>
+			<Pressable className="absolute inset-0 bg-black/70" onPress={handleRequestClose} />
 			<KeyboardAvoidingView
-				className="flex-1 bg-black/70 justify-end"
+				className="flex-1 justify-end"
 				behavior={Platform.OS === "ios" ? "padding" : "height"}
+				pointerEvents="box-none"
 			>
-				<View className="rounded-t-2xl px-4 pt-3 max-h-[92%] flex-1 bg-card border-t border-border">
+				<Animated.View
+					style={{ transform: [{ translateY }] }}
+					className="rounded-t-2xl px-4 pt-3 max-h-[92%] flex-1 bg-card border-t border-border z-10"
+				>
 					{/* Modal Navigation Header */}
 					<View className="flex-row items-center justify-between py-3 border-b border-border mb-3">
-						<Button variant="ghost" size="sm" onPress={onClose} className="px-2">
-							<Text className="text-sm">Cancel</Text>
+						<Button variant="ghost" size="sm" onPress={handleRequestClose} className="px-2">
+							<Text className="text-sm font-semibold text-foreground">Cancel</Text>
 						</Button>
 						<Text className="text-base font-semibold text-center text-foreground">
 							{editingItem ? `Edit ${getCategoryItemLabel(itemCategory)}` : `New ${getCategoryItemLabel(itemCategory)}`}
@@ -522,8 +566,8 @@ export function AddEditItemModal({
 							<Text className="font-semibold text-primary-foreground">{editingItem ? "Update Credential" : "Save Item"}</Text>
 						</Button>
 					</ScrollView>
-				</View>
+				</Animated.View>
 			</KeyboardAvoidingView>
-		</Modal>
+		</View>
 	);
 }

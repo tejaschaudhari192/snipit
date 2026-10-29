@@ -1,6 +1,7 @@
-import React from "react";
+import React, { memo } from "react";
 import { View, TouchableOpacity } from "react-native";
 import { Star, Folder as FolderIcon, Check } from "lucide-react-native";
+import { Icon } from "@/components/ui/icon";
 import { PasswordItem, Folder } from "../core/vault-storage";
 import { Card } from "@/components/ui/card";
 import { Text } from "@/components/ui/text";
@@ -17,7 +18,7 @@ interface NoteGridCardProps {
 	onLongPress?: () => void;
 }
 
-export function NoteGridCard({
+export const NoteGridCard = memo(function NoteGridCard({
 	item,
 	folders = [],
 	isSelectionMode = false,
@@ -93,11 +94,11 @@ export function NoteGridCard({
 											: "border-border bg-muted/50"
 									)}
 								>
-									{isSelected && <Check className="text-background" size={12} strokeWidth={3} />}
+									{isSelected && <Icon as={Check} className="text-background" size={12} strokeWidth={3} />}
 								</View>
 							) : item.isFavorite ? (
 								<View className="pt-0.5">
-									<Star className="text-foreground fill-foreground" size={13} />
+									<Icon as={Star} className="text-foreground fill-foreground" size={13} />
 								</View>
 							) : null}
 						</View>
@@ -131,7 +132,7 @@ export function NoteGridCard({
 							</View>
 						) : (
 							<View className="flex-row items-center gap-1 opacity-70">
-								<FolderIcon className="text-muted-foreground" size={11} />
+								<Icon as={FolderIcon} className="text-muted-foreground" size={11} />
 								<Text className="text-[10px] text-muted-foreground">
 									Notes
 								</Text>
@@ -142,4 +143,4 @@ export function NoteGridCard({
 			</TouchableOpacity>
 		</View>
 	);
-}
+});
