@@ -315,7 +315,8 @@ export const passwordSlice = createSlice({
 			})
 			.addCase(recoverWithMnemonic.rejected, (state, action) => {
 				state.recoveryLoading = false;
-				state.recoveryError = action.payload as string ?? "Recovery failed";
+				state.recoveryError =
+					(action.payload as string) ?? "Recovery failed";
 			})
 			// resetMasterPassword
 			.addCase(resetMasterPassword.pending, (state) => {
@@ -330,7 +331,8 @@ export const passwordSlice = createSlice({
 			})
 			.addCase(resetMasterPassword.rejected, (state, action) => {
 				state.recoveryLoading = false;
-				state.recoveryError = action.payload as string ?? "Reset failed";
+				state.recoveryError =
+					(action.payload as string) ?? "Reset failed";
 			})
 			// persistFolders
 			.addCase(persistFolders.fulfilled, (state, action) => {

@@ -1,5 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getVault, updateVault } from "@/tools/password-manager/api/password-manager";
+import {
+	getVault,
+	updateVault,
+} from "@/tools/password-manager/api/password-manager";
 import { keyStore } from "@/tools/password-manager/store/key-store";
 import {
 	getRecoveryRecord,
@@ -20,7 +23,10 @@ import {
 	decodeBase64,
 	getPublicKeyFromPrivateKey,
 } from "@/tools/password-manager/utils/crypto";
-import type { PasswordManagerState, ServerVaultData } from "@/tools/password-manager/types";
+import type {
+	PasswordManagerState,
+	ServerVaultData,
+} from "@/tools/password-manager/types";
 import { fetchVaultData } from "./vault";
 import { fetchSharedCollections } from "./sharing";
 
@@ -105,7 +111,9 @@ export const recoverWithMnemonic = createAsyncThunk(
 				mek,
 			) as string;
 			if (!decodedPersonalKeyB64)
-				return rejectWithValue("Invalid recovery key: could not decrypt personal key");
+				return rejectWithValue(
+					"Invalid recovery key: could not decrypt personal key",
+				);
 			const personalKey = decodeBase64(decodedPersonalKeyB64);
 
 			if (!vaultData.encryptedPrivateKey)
@@ -115,7 +123,9 @@ export const recoverWithMnemonic = createAsyncThunk(
 				mek,
 			) as string;
 			if (!privateKey)
-				return rejectWithValue("Invalid recovery key: could not decrypt private key");
+				return rejectWithValue(
+					"Invalid recovery key: could not decrypt private key",
+				);
 
 			keyStore.setMEK(mek);
 			keyStore.setPersonalKey(personalKey);
@@ -127,7 +137,9 @@ export const recoverWithMnemonic = createAsyncThunk(
 			return recoveredPassword;
 		} catch (error) {
 			// Propagate real error message instead of swallowing with a generic message
-			return rejectWithValue((error as Error).message ?? "Recovery failed");
+			return rejectWithValue(
+				(error as Error).message ?? "Recovery failed",
+			);
 		}
 	},
 );

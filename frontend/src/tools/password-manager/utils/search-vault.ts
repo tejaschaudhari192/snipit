@@ -12,7 +12,9 @@ export interface SearchScoreResult<T> {
 function extractUrlKeywords(rawUrl?: string): string {
 	if (!rawUrl) return "";
 	try {
-		const parsed = new URL(rawUrl.startsWith("http") ? rawUrl : `https://${rawUrl}`);
+		const parsed = new URL(
+			rawUrl.startsWith("http") ? rawUrl : `https://${rawUrl}`,
+		);
 		return `${rawUrl} ${parsed.hostname} ${parsed.pathname}`.toLowerCase();
 	} catch {
 		return rawUrl.toLowerCase();
@@ -39,11 +41,14 @@ export function scoreVaultItem(
 		item.metadata?.fullName ||
 		""
 	).toLowerCase();
-	const urlKeywords = extractUrlKeywords(item.url || item.metadata?.url || item.metadata?.website);
+	const urlKeywords = extractUrlKeywords(
+		item.url || item.metadata?.url || item.metadata?.website,
+	);
 	const notes = (item.notes || "").toLowerCase();
 
 	const folderName =
-		(item.folderId && folderNameMap?.get(item.folderId))?.toLowerCase() || "";
+		(item.folderId && folderNameMap?.get(item.folderId))?.toLowerCase() ||
+		"";
 
 	// Metadata values (e.g., cardholderName, last 4 digits of card, api key id)
 	const metaValues = item.metadata
@@ -174,8 +179,12 @@ export function searchVaultItems(
 		if (b.score !== a.score) {
 			return b.score - a.score;
 		}
-		const dateA = a.item.updatedAt ? new Date(a.item.updatedAt).getTime() : 0;
-		const dateB = b.item.updatedAt ? new Date(b.item.updatedAt).getTime() : 0;
+		const dateA = a.item.updatedAt
+			? new Date(a.item.updatedAt).getTime()
+			: 0;
+		const dateB = b.item.updatedAt
+			? new Date(b.item.updatedAt).getTime()
+			: 0;
 		return dateB - dateA;
 	});
 
