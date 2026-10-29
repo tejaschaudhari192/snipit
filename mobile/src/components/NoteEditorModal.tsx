@@ -244,18 +244,19 @@ export function NoteEditorModal({
 				{/* Top App Bar */}
 				<View className="flex-row items-center justify-between px-4 py-2.5 border-b border-border bg-background">
 					{/* Left: Back & Folder Selector */}
-					<View className="flex-row items-center gap-2">
+					<View className="flex-row items-center gap-2 flex-1 mr-2">
 						<Button
 							variant="ghost"
 							size="icon"
 							onPress={handleClose}
-							className="h-8 w-8"
+							className="h-8 w-8 shrink-0"
 						>
 							<Icon as={ArrowLeft} className="text-foreground" size={18} />
 						</Button>
 
 						{/* Unified Creatable Combobox Folder Trigger */}
 						<CreatableCombobox
+							className="w-auto shrink"
 							options={folders.map((f) => ({ id: f.id, label: f.name, color: f.color }))}
 							selectedId={folderId}
 							onSelect={handleSelectFolder}

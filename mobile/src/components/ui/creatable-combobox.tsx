@@ -97,7 +97,7 @@ export function CreatableCombobox({
     };
 
     return (
-        <View className={cn("w-full", className)}>
+        <View className={cn(!triggerRender && "w-full", className)}>
             {/* Trigger Button */}
             {triggerRender ? (
                 triggerRender({ selectedOption, open: openModal })
