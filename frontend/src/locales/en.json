@@ -374,7 +374,6 @@
 				"success_desc": "Successfully exported {{count}} item{{s}} as JSON.",
 				"failed_title": "Export failed"
 			},
-
 			"fields": {
 				"username": "Username",
 				"password": "Password",
@@ -1481,7 +1480,10 @@
 	"splash": {
 		"system_failure": "System failure detected",
 		"connected": "Connected",
-		"error": "Error"
+		"error": "Error",
+		"initializing": "Initializing...",
+		"loading": "Loading environment...",
+		"preparing": "Preparing workspace..."
 	},
 	"server_error": {
 		"title": "System Offline",

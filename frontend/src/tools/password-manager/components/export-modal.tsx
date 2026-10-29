@@ -253,9 +253,7 @@ export function ExportModal({
 
 				<DialogFooter className="gap-2 sm:gap-0 pt-2">
 					<Button variant="outline" size="sm" onClick={onClose}>
-						{t("tools.password_manager.cancel", {
-							defaultValue: "Cancel",
-						})}
+						{t("tools.password_manager.cancel")}
 					</Button>
 					<Button
 						size="sm"

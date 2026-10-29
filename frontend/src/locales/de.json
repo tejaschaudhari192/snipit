@@ -1481,7 +1481,10 @@
 	"splash": {
 		"system_failure": "Systemfehler erkannt",
 		"connected": "Verbunden",
-		"error": "Fehler"
+		"error": "Fehler",
+		"initializing": "Initialisieren...",
+		"loading": "Umgebung wird geladen...",
+		"preparing": "Arbeitsbereich vorbereiten..."
 	},
 	"server_error": {
 		"subtitle": "Wir haben Probleme, uns mit unseren Kernservices zu verbinden. Unser Team wurde benachrichtigt und arbeitet an einer Lösung.",

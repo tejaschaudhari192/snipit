@@ -73,11 +73,11 @@ const SplashPage = ({
 	const activeLabel =
 		healthData?.currentLabel ||
 		(displayProgress < 30
-			? t("splash.initializing", "Initializing...")
+			? t("splash.initializing")
 			: displayProgress < 70
-				? t("splash.loading", "Loading environment...")
+				? t("splash.loading")
 				: displayProgress < 100
-					? t("splash.preparing", "Preparing workspace...")
+					? t("splash.preparing")
 					: "complete");
 
 	return (
