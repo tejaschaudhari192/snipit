@@ -20,6 +20,10 @@ import {
 	CardContent,
 } from "./ui/card";
 import { Button } from "./ui/button";
+import {
+	PasswordRequirementsAlert,
+	evaluatePasswordRequirements,
+} from "./PasswordRequirementsAlert";
 import { Text } from "./ui/text";
 import { FormPasswordInput } from "./FormControls";
 
@@ -44,6 +48,11 @@ interface VaultOnboardingScreenProps {
 	isCreatingVault?: boolean;
 	onCheckExistingCloudVault?: () => void;
 	onOpenRecovery?: () => void;
+	showAlert?: (
+		title: string,
+		message?: string,
+		type?: "info" | "success" | "warning" | "error",
+	) => void;
 }
 
 export function VaultOnboardingScreen({
@@ -65,9 +74,36 @@ export function VaultOnboardingScreen({
 	isCreatingVault = false,
 	onCheckExistingCloudVault,
 	onOpenRecovery,
+	showAlert,
 }: VaultOnboardingScreenProps) {
 	const [showMasterPassword, setShowMasterPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+	const handleStep1Submit = () => {
+		if (!masterPassword || masterPassword.length < 8) {
+			const msg = "Master password must be at least 8 characters.";
+			if (showAlert) showAlert("Password Requirement", msg, "warning");
+			return;
+		}
+		const { requirements, allMet } =
+			evaluatePasswordRequirements(masterPassword);
+		if (!allMet) {
+			const missing: string[] = [];
+			if (!requirements.upper) missing.push("an uppercase letter (A-Z)");
+			if (!requirements.number) missing.push("a number (0-9)");
+			if (!requirements.special) missing.push("a special symbol");
+			const msg =
+				"Your master password must include " + missing.join(", ") + ".";
+			if (showAlert) showAlert("Password Requirement", msg, "warning");
+			return;
+		}
+		if (masterPassword !== confirmPassword) {
+			const msg = "Passwords do not match.";
+			if (showAlert) showAlert("Password Mismatch", msg, "warning");
+			return;
+		}
+		onNextToRecovery();
+	};
 
 	return (
 		<SafeAreaView
@@ -141,6 +177,10 @@ export function VaultOnboardingScreen({
 									}
 								/>
 
+								<PasswordRequirementsAlert
+									password={masterPassword}
+								/>
+
 								<FormPasswordInput
 									label="Confirm Master Password"
 									placeholder="Re-enter password"
@@ -152,12 +192,12 @@ export function VaultOnboardingScreen({
 											!showConfirmPassword,
 										)
 									}
-									onSubmitEditing={onNextToRecovery}
+									onSubmitEditing={handleStep1Submit}
 								/>
 
 								<Button
 									className="w-full mt-2"
-									onPress={onNextToRecovery}
+									onPress={handleStep1Submit}
 								>
 									<Text className="font-semibold text-primary-foreground">
 										Create Secure Vault

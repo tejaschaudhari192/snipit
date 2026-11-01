@@ -682,17 +682,9 @@ export function PWMGScreen({
 
 	const handleNextToRecovery = () => {
 		setError("");
-		if (!masterPassword || masterPassword.length < 8) {
-			setError("Master password must be at least 8 characters.");
-			return;
-		}
-		if (masterPassword !== confirmPassword) {
-			setError("Passwords do not match.");
-			return;
-		}
 		const mnemonic = generateRecoveryMnemonic();
 		setRecoveryMnemonic(mnemonic);
-		setOnboardingStep(3);
+		setOnboardingStep(2);
 	};
 
 	const handleFinishOnboarding = async () => {
@@ -1072,6 +1064,7 @@ export function PWMGScreen({
 					setConfirmPassword={setConfirmPassword}
 					setRecoveryConfirmed={setRecoveryConfirmed}
 					onNextToRecovery={handleNextToRecovery}
+					showAlert={showAlert}
 					onDownloadRecovery={() =>
 						recoveryMnemonic &&
 						handleDownloadRecovery(recoveryMnemonic)
