@@ -39,7 +39,10 @@ export const NoteGridCard = memo(function NoteGridCard({
 			date.getFullYear() === now.getFullYear();
 
 		if (isToday) {
-			return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+			return date.toLocaleTimeString([], {
+				hour: "numeric",
+				minute: "2-digit",
+			});
 		}
 
 		const yesterday = new Date();
@@ -57,10 +60,15 @@ export const NoteGridCard = memo(function NoteGridCard({
 	};
 
 	const dateStr = getDisplayDate();
-	const assignedFolder = item.folderId ? folders.find((f) => f.id === item.folderId) : null;
+	const assignedFolder = item.folderId
+		? folders.find((f) => f.id === item.folderId)
+		: null;
 
 	return (
-		<View className="flex-1 max-w-[50%] p-1.5" style={{ boxSizing: "border-box" as any }}>
+		<View
+			className="flex-1 max-w-[50%] p-1.5"
+			style={{ boxSizing: "border-box" as any }}
+		>
 			<TouchableOpacity
 				activeOpacity={0.75}
 				onPress={onPress}
@@ -73,7 +81,7 @@ export const NoteGridCard = memo(function NoteGridCard({
 						"flex-1 p-4 py-4 min-h-[145px] justify-between border shadow-sm",
 						isSelected
 							? "border-foreground bg-accent/40"
-							: "border-border bg-card"
+							: "border-border bg-card",
 					)}
 				>
 					{/* Top: Title & Selection Circle or Favorite Star */}
@@ -91,14 +99,25 @@ export const NoteGridCard = memo(function NoteGridCard({
 										"w-5 h-5 rounded-full items-center justify-center border",
 										isSelected
 											? "bg-foreground border-foreground"
-											: "border-border bg-muted/50"
+											: "border-border bg-muted/50",
 									)}
 								>
-									{isSelected && <Icon as={Check} className="text-background" size={12} strokeWidth={3} />}
+									{isSelected && (
+										<Icon
+											as={Check}
+											className="text-background"
+											size={12}
+											strokeWidth={3}
+										/>
+									)}
 								</View>
 							) : item.isFavorite ? (
 								<View className="pt-0.5">
-									<Icon as={Star} className="text-foreground fill-foreground" size={13} />
+									<Icon
+										as={Star}
+										className="text-foreground fill-foreground"
+										size={13}
+									/>
 								</View>
 							) : null}
 						</View>
@@ -120,9 +139,7 @@ export const NoteGridCard = memo(function NoteGridCard({
 
 						{assignedFolder ? (
 							<View className="flex-row items-center gap-1 px-2 py-0.5 rounded-full border border-border bg-muted/40">
-								<View
-									className="w-1.5 h-1.5 rounded-full bg-foreground"
-								/>
+								<View className="w-1.5 h-1.5 rounded-full bg-foreground" />
 								<Text
 									className="text-[10px] font-semibold max-w-[65px] text-foreground"
 									numberOfLines={1}
@@ -132,7 +149,11 @@ export const NoteGridCard = memo(function NoteGridCard({
 							</View>
 						) : (
 							<View className="flex-row items-center gap-1 opacity-70">
-								<Icon as={FolderIcon} className="text-muted-foreground" size={11} />
+								<Icon
+									as={FolderIcon}
+									className="text-muted-foreground"
+									size={11}
+								/>
 								<Text className="text-[10px] text-muted-foreground">
 									Notes
 								</Text>

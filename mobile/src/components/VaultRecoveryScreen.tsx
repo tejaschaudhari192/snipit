@@ -1,7 +1,12 @@
 import React from "react";
 import { View, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ArrowLeft, KeyRound, Upload, ClipboardPaste } from "lucide-react-native";
+import {
+	ArrowLeft,
+	KeyRound,
+	Upload,
+	ClipboardPaste,
+} from "lucide-react-native";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Clipboard from "expo-clipboard";
@@ -40,16 +45,26 @@ export function VaultRecoveryScreen({
 			edges={["top", "bottom", "left", "right"]}
 		>
 			<View className="flex-row items-center justify-between px-4 py-3 border-b border-border bg-background">
-				<Button variant="ghost" size="icon" onPress={onBack} className="h-9 w-9">
+				<Button
+					variant="ghost"
+					size="icon"
+					onPress={onBack}
+					className="h-9 w-9"
+				>
 					<ArrowLeft className="text-foreground" size={18} />
 				</Button>
-				<Text className="text-sm font-semibold tracking-tight">Recovery</Text>
+				<Text className="text-sm font-semibold tracking-tight">
+					Recovery
+				</Text>
 				<View className="w-9" />
 			</View>
 
 			<ScrollView
 				className="flex-1 bg-background"
-				contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+				contentContainerStyle={{
+					flexGrow: 1,
+					justifyContent: "center",
+				}}
 				contentContainerClassName="p-4 max-w-sm w-full mx-auto"
 				showsVerticalScrollIndicator={false}
 			>
@@ -62,13 +77,16 @@ export function VaultRecoveryScreen({
 							Restore Vault
 						</CardTitle>
 						<CardDescription className="text-center text-xs">
-							Enter your 12-word recovery mnemonic key to restore your vault.
+							Enter your 12-word recovery mnemonic key to restore
+							your vault.
 						</CardDescription>
 					</CardHeader>
 
 					<CardContent className="gap-3 pt-2">
 						{error ? (
-							<Text className="text-destructive text-xs text-center">{error}</Text>
+							<Text className="text-destructive text-xs text-center">
+								{error}
+							</Text>
 						) : null}
 
 						<View className="flex-row gap-2">
@@ -77,18 +95,38 @@ export function VaultRecoveryScreen({
 								className="flex-1 h-9 flex-row gap-1.5"
 								onPress={async () => {
 									try {
-										const res = await DocumentPicker.getDocumentAsync({
-											type: ["application/json", "text/plain", "*/*"],
-											copyToCacheDirectory: true,
-										});
-										if (!res.canceled && res.assets && res.assets.length > 0) {
+										const res =
+											await DocumentPicker.getDocumentAsync(
+												{
+													type: [
+														"application/json",
+														"text/plain",
+														"*/*",
+													],
+													copyToCacheDirectory: true,
+												},
+											);
+										if (
+											!res.canceled &&
+											res.assets &&
+											res.assets.length > 0
+										) {
 											const fileUri = res.assets[0].uri;
-											const content = await FileSystem.readAsStringAsync(fileUri);
-											const match = content.match(/RECOVERY KEY:\s*([a-z\s]+)/i);
+											const content =
+												await FileSystem.readAsStringAsync(
+													fileUri,
+												);
+											const match = content.match(
+												/RECOVERY KEY:\s*([a-z\s]+)/i,
+											);
 											if (match && match[1]) {
-												setInputMnemonic(match[1].trim());
+												setInputMnemonic(
+													match[1].trim(),
+												);
 											} else {
-												setInputMnemonic(content.trim());
+												setInputMnemonic(
+													content.trim(),
+												);
 											}
 										}
 									} catch (err) {
@@ -104,11 +142,15 @@ export function VaultRecoveryScreen({
 								variant="outline"
 								className="flex-1 h-9 flex-row gap-1.5"
 								onPress={async () => {
-									const text = await Clipboard.getStringAsync();
+									const text =
+										await Clipboard.getStringAsync();
 									if (text) setInputMnemonic(text.trim());
 								}}
 							>
-								<ClipboardPaste className="text-foreground" size={14} />
+								<ClipboardPaste
+									className="text-foreground"
+									size={14}
+								/>
 								<Text className="text-xs">Paste Key</Text>
 							</Button>
 						</View>
@@ -129,7 +171,9 @@ export function VaultRecoveryScreen({
 							onPress={onRecover}
 						>
 							<Text className="font-semibold text-primary-foreground">
-								{isRecovering ? "Decrypting Vault..." : "Restore Vault"}
+								{isRecovering
+									? "Decrypting Vault..."
+									: "Restore Vault"}
 							</Text>
 						</Button>
 					</CardContent>

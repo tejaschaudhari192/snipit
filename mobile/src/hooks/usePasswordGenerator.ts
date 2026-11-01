@@ -1,9 +1,15 @@
 import { useState, useCallback, useEffect } from "react";
-import { generatePassword, generatePassphrase, SeparatorType } from "../core/crypto";
+import {
+	generatePassword,
+	generatePassphrase,
+	SeparatorType,
+} from "../core/crypto";
 
 export function usePasswordGenerator() {
 	const [isOpen, setIsOpen] = useState(false);
-	const [targetField, setTargetField] = useState<"password" | "apikey" | null>(null);
+	const [targetField, setTargetField] = useState<
+		"password" | "apikey" | null
+	>(null);
 	const [length, setLength] = useState(15);
 	const [wordCount, setWordCount] = useState(3);
 	const [pronounceable, setPronounceable] = useState(true);

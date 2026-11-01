@@ -1,6 +1,11 @@
 import React from "react";
 import { View, TouchableOpacity, Platform } from "react-native";
-import { Key, Folder as FolderIcon, StickyNote, Settings as SettingsIcon } from "lucide-react-native";
+import {
+	Key,
+	Folder as FolderIcon,
+	StickyNote,
+	Settings as SettingsIcon,
+} from "lucide-react-native";
 import { Text } from "./ui/text";
 
 export type BottomTabType = "passwords" | "folders" | "notes" | "settings";
@@ -11,7 +16,11 @@ interface Props {
 	theme?: "dark" | "light";
 }
 
-export function IosBottomTabBar({ activeTab, onTabChange, theme = "dark" }: Props) {
+export function IosBottomTabBar({
+	activeTab,
+	onTabChange,
+	theme = "dark",
+}: Props) {
 	const isLight = theme === "light";
 
 	const activeColor = isLight ? "#09090b" : "#f4f4f5";
@@ -29,7 +38,9 @@ export function IosBottomTabBar({ activeTab, onTabChange, theme = "dark" }: Prop
 				activeOpacity={0.7}
 			>
 				<Key
-					color={activeTab === "passwords" ? activeColor : inactiveColor}
+					color={
+						activeTab === "passwords" ? activeColor : inactiveColor
+					}
 					size={20}
 					strokeWidth={activeTab === "passwords" ? 2.2 : 1.8}
 				/>
@@ -73,7 +84,9 @@ export function IosBottomTabBar({ activeTab, onTabChange, theme = "dark" }: Prop
 				activeOpacity={0.7}
 			>
 				<FolderIcon
-					color={activeTab === "folders" ? activeColor : inactiveColor}
+					color={
+						activeTab === "folders" ? activeColor : inactiveColor
+					}
 					size={20}
 					strokeWidth={activeTab === "folders" ? 2.2 : 1.8}
 				/>
@@ -94,7 +107,9 @@ export function IosBottomTabBar({ activeTab, onTabChange, theme = "dark" }: Prop
 				activeOpacity={0.7}
 			>
 				<SettingsIcon
-					color={activeTab === "settings" ? activeColor : inactiveColor}
+					color={
+						activeTab === "settings" ? activeColor : inactiveColor
+					}
 					size={20}
 					strokeWidth={activeTab === "settings" ? 2.2 : 1.8}
 				/>

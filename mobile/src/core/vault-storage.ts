@@ -403,7 +403,7 @@ export class OfflineVaultService {
 		if (!isEnabled) return false;
 
 		const auth = await LocalAuthentication.authenticateAsync({
-			promptMessage: "Unlock Snipit Vault",
+			promptMessage: "Unlock Vault",
 			cancelLabel: "Use Password",
 			fallbackLabel: "Use Master Password",
 			disableDeviceFallback: false,

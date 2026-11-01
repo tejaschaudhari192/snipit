@@ -68,7 +68,9 @@ export function PWMGSettingsScreen({
 	// ─── VAULT HEALTH COMPUTATIONS ─────────────────────────────────────────────
 	const health = useMemo(() => {
 		const total = items.length;
-		const logins = items.filter((i) => i.category === "login" || !i.category);
+		const logins = items.filter(
+			(i) => i.category === "login" || !i.category,
+		);
 		const cards = items.filter((i) => i.category === "card");
 		const notes = items.filter((i) => i.category === "note");
 		const apiKeys = items.filter((i) => i.category === "apikey");
@@ -119,7 +121,11 @@ export function PWMGSettingsScreen({
 	// ─── EXPORT BACKUP ─────────────────────────────────────────────────────────
 	const handleExportVault = async () => {
 		if (items.length === 0) {
-			showAlert("Empty Vault", "There are no credentials or notes to export.", "warning");
+			showAlert(
+				"Empty Vault",
+				"There are no credentials or notes to export.",
+				"warning",
+			);
 			return;
 		}
 
@@ -163,7 +169,11 @@ export function PWMGSettingsScreen({
 				a.download = fileName;
 				a.click();
 				URL.revokeObjectURL(url);
-				showAlert("Export Complete", "Vault backup has been downloaded.", "success");
+				showAlert(
+					"Export Complete",
+					"Vault backup has been downloaded.",
+					"success",
+				);
 			} else {
 				const filePath = `${FileSystem.documentDirectory}${fileName}`;
 				await FileSystem.writeAsStringAsync(filePath, jsonStr, {
@@ -178,12 +188,20 @@ export function PWMGSettingsScreen({
 						UTI: "public.json",
 					});
 				} else {
-					showAlert("Export Complete", `Saved to ${filePath}`, "success");
+					showAlert(
+						"Export Complete",
+						`Saved to ${filePath}`,
+						"success",
+					);
 				}
 			}
 		} catch (err: any) {
 			console.log("Export error:", err);
-			showAlert("Export Failed", err.message || "Failed to create vault export.", "error");
+			showAlert(
+				"Export Failed",
+				err.message || "Failed to create vault export.",
+				"error",
+			);
 		} finally {
 			setIsExporting(false);
 		}
@@ -216,13 +234,19 @@ export function PWMGSettingsScreen({
 			const incomingItems: any[] = Array.isArray(parsed)
 				? parsed
 				: Array.isArray(parsed.items)
-				? parsed.items
+					? parsed.items
+					: [];
+
+			const incomingFolders: any[] = Array.isArray(parsed.folders)
+				? parsed.folders
 				: [];
 
-			const incomingFolders: any[] = Array.isArray(parsed.folders) ? parsed.folders : [];
-
 			if (incomingItems.length === 0 && incomingFolders.length === 0) {
-				showAlert("Invalid File", "No recognizable vault items or folders found in this file.", "error");
+				showAlert(
+					"Invalid File",
+					"No recognizable vault items or folders found in this file.",
+					"error",
+				);
 				setIsImporting(false);
 				return;
 			}
@@ -242,7 +266,12 @@ export function PWMGSettingsScreen({
 			// Save Items
 			let importedCount = 0;
 			for (const item of incomingItems) {
-				if (item.title || item.username || item.password || item.notes) {
+				if (
+					item.title ||
+					item.username ||
+					item.password ||
+					item.notes
+				) {
 					await offlineVault.saveItem({
 						title: item.title || "Imported Item",
 						username: item.username,
@@ -253,7 +282,9 @@ export function PWMGSettingsScreen({
 						folderId: item.folderId,
 						isFavorite: !!item.isFavorite,
 						metadata: item.metadata || {},
-						customFields: Array.isArray(item.customFields) ? item.customFields : [],
+						customFields: Array.isArray(item.customFields)
+							? item.customFields
+							: [],
 					});
 					importedCount++;
 				}
@@ -263,11 +294,15 @@ export function PWMGSettingsScreen({
 			showAlert(
 				"Import Successful",
 				`Imported ${importedCount} items and ${incomingFolders.length} folders into your vault.`,
-				"success"
+				"success",
 			);
 		} catch (err: any) {
 			console.log("Import error:", err);
-			showAlert("Import Failed", "Could not parse file. Ensure it is a valid Snipit JSON backup.", "error");
+			showAlert(
+				"Import Failed",
+				"Could not parse file. Ensure it is a valid Vault JSON backup.",
+				"error",
+			);
 		} finally {
 			setIsImporting(false);
 		}
@@ -276,7 +311,11 @@ export function PWMGSettingsScreen({
 	// ─── AUTO-MERGE DUPLICATES ─────────────────────────────────────────────────
 	const handleMergeDuplicates = async () => {
 		if (health.duplicateItemsCount === 0) {
-			showAlert("No Duplicates", "Your vault has zero duplicate credentials.", "info");
+			showAlert(
+				"No Duplicates",
+				"Your vault has zero duplicate credentials.",
+				"info",
+			);
 			return;
 		}
 
@@ -298,29 +337,43 @@ export function PWMGSettingsScreen({
 									// Keep the first item (or the one updated most recently)
 									const sorted = [...group].sort(
 										(a, b) =>
-											new Date(b.updatedAt || 0).getTime() -
-											new Date(a.updatedAt || 0).getTime()
+											new Date(
+												b.updatedAt || 0,
+											).getTime() -
+											new Date(
+												a.updatedAt || 0,
+											).getTime(),
 									);
 									const primary = sorted[0];
 
 									// Delete the redundant duplicates
 									for (let i = 1; i < sorted.length; i++) {
-										await offlineVault.deleteItem(sorted[i].id);
+										await offlineVault.deleteItem(
+											sorted[i].id,
+										);
 										mergedCount++;
 									}
 								}
 							}
 
 							onReloadData();
-							showAlert("Deduplication Complete", `Merged ${mergedCount} duplicate entries.`, "success");
+							showAlert(
+								"Deduplication Complete",
+								`Merged ${mergedCount} duplicate entries.`,
+								"success",
+							);
 						} catch (err: any) {
-							showAlert("Error", err.message || "Failed to merge duplicates.", "error");
+							showAlert(
+								"Error",
+								err.message || "Failed to merge duplicates.",
+								"error",
+							);
 						} finally {
 							setIsDeduplicating(false);
 						}
 					},
 				},
-			]
+			],
 		);
 	};
 
@@ -340,7 +393,7 @@ export function PWMGSettingsScreen({
 						onResetVault();
 					},
 				},
-			]
+			],
 		);
 	};
 
@@ -399,7 +452,11 @@ export function PWMGSettingsScreen({
 						<View className="flex-row items-center justify-between px-4 py-3.5">
 							<View className="flex-row items-center gap-3 flex-1 pr-3">
 								<View className="w-8 h-8 rounded-md bg-muted justify-center items-center">
-									<Icon as={Fingerprint} className="text-foreground" size={18} />
+									<Icon
+										as={Fingerprint}
+										className="text-foreground"
+										size={18}
+									/>
 								</View>
 								<View className="flex-1">
 									<Text className="text-sm font-semibold text-foreground">
@@ -437,18 +494,30 @@ export function PWMGSettingsScreen({
 				>
 					<View className="flex-row items-center gap-3">
 						<View className="w-8 h-8 rounded-md bg-muted justify-center items-center">
-							<Icon as={Upload} className="text-foreground" size={16} />
+							<Icon
+								as={Upload}
+								className="text-foreground"
+								size={16}
+							/>
 						</View>
 						<View>
 							<Text className="text-sm font-semibold text-foreground">
 								Import Passwords & Data
 							</Text>
 							<Text className="text-xs text-muted-foreground">
-								Restore from Snipit JSON backup file
+								Restore from Vault JSON backup file
 							</Text>
 						</View>
 					</View>
-					{isImporting ? <ActivityIndicator size="small" /> : <Icon as={ChevronRight} className="text-muted-foreground" size={16} />}
+					{isImporting ? (
+						<ActivityIndicator size="small" />
+					) : (
+						<Icon
+							as={ChevronRight}
+							className="text-muted-foreground"
+							size={16}
+						/>
+					)}
 				</TouchableOpacity>
 
 				{/* Export Vault */}
@@ -460,7 +529,11 @@ export function PWMGSettingsScreen({
 				>
 					<View className="flex-row items-center gap-3">
 						<View className="w-8 h-8 rounded-md bg-muted justify-center items-center">
-							<Icon as={Download} className="text-foreground" size={16} />
+							<Icon
+								as={Download}
+								className="text-foreground"
+								size={16}
+							/>
 						</View>
 						<View>
 							<Text className="text-sm font-semibold text-foreground">
@@ -471,7 +544,15 @@ export function PWMGSettingsScreen({
 							</Text>
 						</View>
 					</View>
-					{isExporting ? <ActivityIndicator size="small" /> : <Icon as={ChevronRight} className="text-muted-foreground" size={16} />}
+					{isExporting ? (
+						<ActivityIndicator size="small" />
+					) : (
+						<Icon
+							as={ChevronRight}
+							className="text-muted-foreground"
+							size={16}
+						/>
+					)}
 				</TouchableOpacity>
 			</Card>
 
@@ -492,7 +573,11 @@ export function PWMGSettingsScreen({
 				>
 					<View className="flex-row items-center gap-3">
 						<View className="w-8 h-8 rounded-md bg-muted justify-center items-center">
-							<Icon as={CopyX} className="text-foreground" size={16} />
+							<Icon
+								as={CopyX}
+								className="text-foreground"
+								size={16}
+							/>
 						</View>
 						<View>
 							<Text className="text-sm font-semibold text-foreground">
@@ -508,7 +593,11 @@ export function PWMGSettingsScreen({
 					{isDeduplicating ? (
 						<ActivityIndicator size="small" />
 					) : (
-						<Icon as={ChevronRight} className="text-muted-foreground" size={16} />
+						<Icon
+							as={ChevronRight}
+							className="text-muted-foreground"
+							size={16}
+						/>
 					)}
 				</TouchableOpacity>
 
@@ -520,7 +609,11 @@ export function PWMGSettingsScreen({
 				>
 					<View className="flex-row items-center gap-3">
 						<View className="w-8 h-8 rounded-md bg-muted justify-center items-center">
-							<Icon as={FolderIcon} className="text-foreground" size={16} />
+							<Icon
+								as={FolderIcon}
+								className="text-foreground"
+								size={16}
+							/>
 						</View>
 						<View>
 							<Text className="text-sm font-semibold text-foreground">
@@ -531,7 +624,11 @@ export function PWMGSettingsScreen({
 							</Text>
 						</View>
 					</View>
-					<Icon as={ChevronRight} className="text-muted-foreground" size={16} />
+					<Icon
+						as={ChevronRight}
+						className="text-muted-foreground"
+						size={16}
+					/>
 				</TouchableOpacity>
 			</Card>
 
@@ -550,7 +647,11 @@ export function PWMGSettingsScreen({
 				>
 					<View className="flex-row items-center gap-3">
 						<View className="w-8 h-8 rounded-md bg-destructive/10 justify-center items-center">
-							<Icon as={Trash2} className="text-destructive" size={16} />
+							<Icon
+								as={Trash2}
+								className="text-destructive"
+								size={16}
+							/>
 						</View>
 						<View>
 							<Text className="text-sm font-semibold text-destructive">
@@ -561,7 +662,11 @@ export function PWMGSettingsScreen({
 							</Text>
 						</View>
 					</View>
-					<Icon as={ChevronRight} className="text-destructive" size={16} />
+					<Icon
+						as={ChevronRight}
+						className="text-destructive"
+						size={16}
+					/>
 				</TouchableOpacity>
 			</Card>
 		</ScrollView>

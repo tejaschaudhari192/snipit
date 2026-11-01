@@ -4,8 +4,11 @@ import { PasswordItem, CustomField } from "../core/vault-storage";
 export function useVaultItemForm() {
 	const [editingItem, setEditingItem] = useState<PasswordItem | null>(null);
 	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-	const [itemCategory, setItemCategory] = useState<PasswordItem["category"]>("login");
-	const [itemFolderId, setItemFolderId] = useState<string | undefined>(undefined);
+	const [itemCategory, setItemCategory] =
+		useState<PasswordItem["category"]>("login");
+	const [itemFolderId, setItemFolderId] = useState<string | undefined>(
+		undefined,
+	);
 	const [newTitle, setNewTitle] = useState("");
 	const [newUsername, setNewUsername] = useState("");
 	const [newPassword, setNewPassword] = useState("");

@@ -11,7 +11,8 @@ interface PWMGHeaderProps {
 	title?: string;
 	subtitle?: string;
 	activeBottomTab?: "passwords" | "folders" | "notes" | "settings";
-	activeFilter?: "all" | "favorites" | "login" | "card" | "apikey" | "note" | "identity";
+	activeFilter?:
+		"all" | "favorites" | "login" | "card" | "apikey" | "note" | "identity";
 	folders?: { id: string; name: string }[];
 	selectedFolderId?: string | null;
 	totalFilteredCount?: number;
@@ -47,7 +48,8 @@ export function PWMGHeader({
 			: activeBottomTab === "settings"
 				? "Vault Settings"
 				: selectedFolderId
-					? folders.find((f) => f.id === selectedFolderId)?.name || "Folder"
+					? folders.find((f) => f.id === selectedFolderId)?.name ||
+						"Folder"
 					: activeFilter === "favorites"
 						? "Favorites"
 						: activeFilter === "all"
@@ -67,7 +69,7 @@ export function PWMGHeader({
 			: syncStatus === "pending_offline"
 				? "Changes saved locally • Pending sync"
 				: syncStatus === "synced"
-					? "Synced with Snipit Cloud"
+					? "Synced with Cloud"
 					: "Stored locally & encrypted";
 
 	const displaySubtitle =
@@ -82,7 +84,10 @@ export function PWMGHeader({
 			<View className="flex-row items-center justify-between px-4 py-3">
 				{/* Top-Left: Title & Subtitle */}
 				<View className="flex-1 pr-3">
-					<Text className="text-xl font-bold tracking-tight text-foreground" numberOfLines={1}>
+					<Text
+						className="text-xl font-bold tracking-tight text-foreground"
+						numberOfLines={1}
+					>
 						{displayTitle}
 					</Text>
 					<TouchableOpacity
@@ -91,7 +96,10 @@ export function PWMGHeader({
 						activeOpacity={0.7}
 					>
 						<View className="w-1.5 h-1.5 rounded-full bg-foreground" />
-						<Text className="text-xs text-muted-foreground" numberOfLines={1}>
+						<Text
+							className="text-xs text-muted-foreground"
+							numberOfLines={1}
+						>
 							{displaySubtitle}
 						</Text>
 					</TouchableOpacity>
@@ -108,9 +116,17 @@ export function PWMGHeader({
 							onPress={onToggleGridView}
 						>
 							{isGridView ? (
-								<Icon as={List} className="text-foreground" size={16} />
+								<Icon
+									as={List}
+									className="text-foreground"
+									size={16}
+								/>
 							) : (
-								<Icon as={LayoutGrid} className="text-foreground" size={16} />
+								<Icon
+									as={LayoutGrid}
+									className="text-foreground"
+									size={16}
+								/>
 							)}
 						</Button>
 					)}
@@ -121,7 +137,11 @@ export function PWMGHeader({
 						className="h-8 w-8"
 						onPress={onOpenGenerator}
 					>
-						<Icon as={Sparkles} className="text-foreground" size={16} />
+						<Icon
+							as={Sparkles}
+							className="text-foreground"
+							size={16}
+						/>
 					</Button>
 
 					{onOpenProfile && (
@@ -131,7 +151,11 @@ export function PWMGHeader({
 							className="h-8 w-8"
 							onPress={onOpenProfile}
 						>
-							<Icon as={User} className="text-foreground" size={16} />
+							<Icon
+								as={User}
+								className="text-foreground"
+								size={16}
+							/>
 						</Button>
 					)}
 
@@ -141,7 +165,11 @@ export function PWMGHeader({
 						className="h-8 w-8"
 						onPress={onLock}
 					>
-						<Icon as={Lock} className="text-muted-foreground" size={16} />
+						<Icon
+							as={Lock}
+							className="text-muted-foreground"
+							size={16}
+						/>
 					</Button>
 				</View>
 			</View>

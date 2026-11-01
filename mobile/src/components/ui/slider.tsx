@@ -71,19 +71,28 @@ export function Slider({
 			{/* Discrete Step Indicators */}
 			{showTicks && (
 				<View className="flex-row justify-between items-center px-0.5 mt-1">
-					{Array.from({ length: Math.floor((max - min) / step) + 1 }).map((_, i) => {
+					{Array.from({
+						length: Math.floor((max - min) / step) + 1,
+					}).map((_, i) => {
 						const tickVal = min + i * step;
 						const isSelected = tickVal === value;
 						return (
 							<TouchableOpacity
 								key={tickVal}
 								onPress={() => onValueChange(tickVal)}
-								hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+								hitSlop={{
+									top: 8,
+									bottom: 8,
+									left: 8,
+									right: 8,
+								}}
 							>
 								<RNText
 									className={cn(
 										"text-[10px] font-semibold",
-										isSelected ? "text-primary font-bold" : "text-muted-foreground/60"
+										isSelected
+											? "text-primary font-bold"
+											: "text-muted-foreground/60",
 									)}
 								>
 									{tickVal}

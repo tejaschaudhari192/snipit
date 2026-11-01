@@ -1,5 +1,12 @@
 import React, { memo, useCallback } from "react";
-import { View, Text, FlatList, TouchableOpacity, RefreshControl, ScrollView } from "react-native";
+import {
+	View,
+	Text,
+	FlatList,
+	TouchableOpacity,
+	RefreshControl,
+	ScrollView,
+} from "react-native";
 import { Shield, StickyNote } from "lucide-react-native";
 import { PasswordItem, Folder } from "../core/vault-storage";
 import { IosSearchBar } from "./IosSearchBar";
@@ -55,23 +62,32 @@ export const PWMGListView = memo(function PWMGListView({
 	const isNotesTab = activeBottomTab === "notes";
 	const showGrid = isNotesTab && isGridView;
 
-	const handleItemPress = useCallback((item: PasswordItem) => {
-		if (selectedItemIds.length > 0 && onToggleSelectItem) {
-			onToggleSelectItem(item);
-		} else {
-			onSelectItem(item);
-		}
-	}, [selectedItemIds.length, onToggleSelectItem, onSelectItem]);
+	const handleItemPress = useCallback(
+		(item: PasswordItem) => {
+			if (selectedItemIds.length > 0 && onToggleSelectItem) {
+				onToggleSelectItem(item);
+			} else {
+				onSelectItem(item);
+			}
+		},
+		[selectedItemIds.length, onToggleSelectItem, onSelectItem],
+	);
 
-	const handleItemLongPress = useCallback((item: PasswordItem) => {
-		if (onLongPressItem) {
-			onLongPressItem(item);
-		}
-	}, [onLongPressItem]);
+	const handleItemLongPress = useCallback(
+		(item: PasswordItem) => {
+			if (onLongPressItem) {
+				onLongPressItem(item);
+			}
+		},
+		[onLongPressItem],
+	);
 
-	const handleCopy = useCallback((pass: string, id: string) => {
-		onCopyPassword(pass, id);
-	}, [onCopyPassword]);
+	const handleCopy = useCallback(
+		(pass: string, id: string) => {
+			onCopyPassword(pass, id);
+		},
+		[onCopyPassword],
+	);
 
 	const refreshElem = onRefresh ? (
 		<RefreshControl
@@ -94,10 +110,16 @@ export const PWMGListView = memo(function PWMGListView({
 			{(selectedFolderId || activeFilter !== "all") && (
 				<View className="flex-row justify-between items-center px-4 py-1.5 mb-1">
 					<Text className="text-xs text-muted-foreground">
-						Filtering by: {selectedFolderId ? folders.find((f) => f.id === selectedFolderId)?.name : activeFilter}
+						Filtering by:{" "}
+						{selectedFolderId
+							? folders.find((f) => f.id === selectedFolderId)
+									?.name
+							: activeFilter}
 					</Text>
 					<TouchableOpacity onPress={onResetFilter}>
-						<Text className="text-xs font-semibold underline text-foreground">Show All</Text>
+						<Text className="text-xs font-semibold underline text-foreground">
+							Show All
+						</Text>
 					</TouchableOpacity>
 				</View>
 			)}
@@ -109,12 +131,24 @@ export const PWMGListView = memo(function PWMGListView({
 					refreshControl={refreshElem}
 				>
 					{isNotesTab ? (
-						<StickyNote className="text-muted-foreground" size={48} strokeWidth={1.5} />
+						<StickyNote
+							className="text-muted-foreground"
+							size={48}
+							strokeWidth={1.5}
+						/>
 					) : (
-						<Shield className="text-muted-foreground" size={48} strokeWidth={1.5} />
+						<Shield
+							className="text-muted-foreground"
+							size={48}
+							strokeWidth={1.5}
+						/>
 					)}
 					<Text className="text-lg font-bold tracking-tight mt-4 mb-1.5 text-foreground">
-						{searchQuery ? "No Results" : isNotesTab ? "No Notes Yet" : "No Passwords"}
+						{searchQuery
+							? "No Results"
+							: isNotesTab
+								? "No Notes Yet"
+								: "No Passwords"}
 					</Text>
 					<Text className="text-xs text-center leading-5 max-w-[280px] text-muted-foreground">
 						{searchQuery
@@ -135,7 +169,8 @@ export const PWMGListView = memo(function PWMGListView({
 					refreshControl={refreshElem}
 					renderItem={({ item }) => {
 						const isSelected = selectedItemIds.includes(item.id);
-						const isSelectionMode = isNotesTab && selectedItemIds.length > 0;
+						const isSelectionMode =
+							isNotesTab && selectedItemIds.length > 0;
 						return (
 							<NoteGridCard
 								item={item}
@@ -170,7 +205,11 @@ export const PWMGListView = memo(function PWMGListView({
 								: cardMeta.cardholderName || "Credit Card"
 							: isNote
 								? item.notes?.trim() || "Empty note"
-								: item.username || item.url || (item.notes ? item.notes.trim() : "Encrypted Entry");
+								: item.username ||
+									item.url ||
+									(item.notes
+										? item.notes.trim()
+										: "Encrypted Entry");
 
 						const isSelected = selectedItemIds.includes(item.id);
 						const isSelectionMode = selectedItemIds.length > 0;
@@ -187,7 +226,9 @@ export const PWMGListView = memo(function PWMGListView({
 								isSelected={isSelected}
 								onPress={() => handleItemPress(item)}
 								onLongPress={() => handleItemLongPress(item)}
-								onCopyPassword={(pass) => handleCopy(pass, item.id)}
+								onCopyPassword={(pass) =>
+									handleCopy(pass, item.id)
+								}
 							/>
 						);
 					}}

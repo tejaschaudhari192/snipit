@@ -9,8 +9,8 @@ export function useVaultMultiSelect(
 		title: string,
 		message?: string,
 		type?: "info" | "success" | "warning" | "error",
-		buttons?: any[]
-	) => void
+		buttons?: any[],
+	) => void,
 ) {
 	const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
 	const isSelectionMode = selectedItemIds.length > 0;
@@ -21,17 +21,23 @@ export function useVaultMultiSelect(
 
 	const toggleSelectItem = useCallback((item: PasswordItem) => {
 		setSelectedItemIds((prev) =>
-			prev.includes(item.id) ? prev.filter((id) => id !== item.id) : [...prev, item.id]
+			prev.includes(item.id)
+				? prev.filter((id) => id !== item.id)
+				: [...prev, item.id],
 		);
 	}, []);
 
 	const longPressItem = useCallback((item: PasswordItem) => {
-		setSelectedItemIds((prev) => (prev.includes(item.id) ? prev : [...prev, item.id]));
+		setSelectedItemIds((prev) =>
+			prev.includes(item.id) ? prev : [...prev, item.id],
+		);
 	}, []);
 
 	const selectAllVisible = useCallback(() => {
 		const visibleIds = filteredItems.map((i) => i.id);
-		setSelectedItemIds((prev) => (prev.length === visibleIds.length ? [] : visibleIds));
+		setSelectedItemIds((prev) =>
+			prev.length === visibleIds.length ? [] : visibleIds,
+		);
 	}, [filteredItems]);
 
 	const bulkPin = useCallback(async () => {
@@ -51,7 +57,9 @@ export function useVaultMultiSelect(
 	const bulkMove = useCallback(
 		async (folderId: string | null) => {
 			if (selectedItemIds.length === 0) return;
-			const targetItems = items.filter((i) => selectedItemIds.includes(i.id));
+			const targetItems = items.filter((i) =>
+				selectedItemIds.includes(i.id),
+			);
 			for (const item of targetItems) {
 				await offlineVault.saveItem({
 					...item,
@@ -61,7 +69,7 @@ export function useVaultMultiSelect(
 			setSelectedItemIds([]);
 			await onReloadData();
 		},
-		[selectedItemIds, items, onReloadData]
+		[selectedItemIds, items, onReloadData],
 	);
 
 	const bulkDelete = useCallback(() => {
@@ -84,7 +92,7 @@ export function useVaultMultiSelect(
 						await onReloadData();
 					},
 				},
-			]
+			],
 		);
 	}, [selectedItemIds, showAlert, onReloadData]);
 

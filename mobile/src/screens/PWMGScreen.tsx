@@ -1,15 +1,46 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
-import { Text, View, BackHandler, Platform, StatusBar, Share, TouchableOpacity, ActivityIndicator, Dimensions, PanResponder, ScrollView, Animated } from "react-native";
+import React, {
+	useState,
+	useEffect,
+	useMemo,
+	useCallback,
+	useRef,
+} from "react";
+import {
+	Text,
+	View,
+	BackHandler,
+	Platform,
+	StatusBar,
+	Share,
+	TouchableOpacity,
+	ActivityIndicator,
+	Dimensions,
+	PanResponder,
+	ScrollView,
+	Animated,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Plus, Shield, Lock, X, CheckCheck } from "lucide-react-native";
 import * as Clipboard from "expo-clipboard";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
-import { offlineVault, PasswordItem, Folder, UserSession } from "../core/vault-storage";
+import {
+	offlineVault,
+	PasswordItem,
+	Folder,
+	UserSession,
+} from "../core/vault-storage";
 import { searchVaultItems } from "../core/vault-search";
 import { IosBottomTabBar } from "../components/IosBottomTabBar";
-import { IosDetailInspectorModal, getCategoryItemLabel } from "../components/IosDetailInspectorModal";
-import { generatePassword, generatePassphrase, SeparatorType } from "../core/crypto";
+import {
+	IosDetailInspectorModal,
+	getCategoryItemLabel,
+} from "../components/IosDetailInspectorModal";
+import {
+	generatePassword,
+	generatePassphrase,
+	SeparatorType,
+} from "../core/crypto";
 import { generateRecoveryMnemonic, isValidMnemonic } from "../core/recovery";
 import { useThemeVars } from "../config/theme";
 import { useVaultItemForm } from "../hooks/useVaultItemForm";
@@ -40,9 +71,15 @@ interface Props {
 	theme?: "dark" | "light";
 }
 
-type FilterCategory = "all" | "favorites" | "login" | "card" | "apikey" | "note" | "identity";
+type FilterCategory =
+	"all" | "favorites" | "login" | "card" | "apikey" | "note" | "identity";
 
-export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }: Props) {
+export function PWMGScreen({
+	onBack,
+	onOpenAuth,
+	onOpenProfile,
+	theme = "dark",
+}: Props) {
 	const c = useThemeVars(theme);
 	const isLight = theme === "light";
 
@@ -57,7 +94,9 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 	const [onboardingStep, setOnboardingStep] = useState(1);
 	const [masterPassword, setMasterPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
-	const [recoveryMnemonic, setRecoveryMnemonic] = useState<string | null>(null);
+	const [recoveryMnemonic, setRecoveryMnemonic] = useState<string | null>(
+		null,
+	);
 	const [recoveryConfirmed, setRecoveryConfirmed] = useState(false);
 	const [error, setError] = useState("");
 
@@ -77,13 +116,17 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 	const [folders, setFolders] = useState<Folder[]>([]);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [activeFilter, setActiveFilter] = useState<FilterCategory>("all");
-	const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
+	const [selectedFolderId, setSelectedFolderId] = useState<string | null>(
+		null,
+	);
 	const [selectedItem, setSelectedItem] = useState<PasswordItem | null>(null);
 	const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
 	const [newFolderName, setNewFolderName] = useState("");
 	const [newFolderColor, setNewFolderColor] = useState("#0a84ff");
 	const [copiedField, setCopiedField] = useState<string | null>(null);
-	const [checkingVaultStage, setCheckingVaultStage] = useState<string>("Initializing secure vault...");
+	const [checkingVaultStage, setCheckingVaultStage] = useState<string>(
+		"Initializing secure vault...",
+	);
 
 	// Sensitives
 	const [showDetailPassword, setShowDetailPassword] = useState(false);
@@ -92,7 +135,9 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 
 	// Generator Modal State
 	const [isGeneratorOpen, setIsGeneratorOpen] = useState(false);
-	const [genTargetField, setGenTargetField] = useState<"password" | "apikey" | null>(null);
+	const [genTargetField, setGenTargetField] = useState<
+		"password" | "apikey" | null
+	>(null);
 	const [genLength, setGenLength] = useState(15);
 	const [genWordCount, setGenWordCount] = useState(3);
 	const [genPronounceable, setGenPronounceable] = useState(true);
@@ -102,27 +147,44 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 	const [generatedPass, setGeneratedPass] = useState("");
 
 	// Bottom Tab Bar
-	const [activeBottomTab, setActiveBottomTab] = useState<"passwords" | "notes" | "folders" | "settings">("passwords");
+	const [activeBottomTab, setActiveBottomTab] = useState<
+		"passwords" | "notes" | "folders" | "settings"
+	>("passwords");
 	const [isNotesGridView, setIsNotesGridView] = useState(true);
 
-	const TAB_ORDER: ("passwords" | "notes" | "folders" | "settings")[] = useMemo(
-		() => ["passwords", "notes", "folders", "settings"],
-		[]
-	);
+	const TAB_ORDER: ("passwords" | "notes" | "folders" | "settings")[] =
+		useMemo(() => ["passwords", "notes", "folders", "settings"], []);
 
-	const [screenWidth, setScreenWidth] = useState(Dimensions.get("window").width);
+	const [screenWidth, setScreenWidth] = useState(
+		Dimensions.get("window").width,
+	);
 	const tabScrollViewRef = useRef<any>(null);
 	const isManualScroll = useRef(false);
 
 	useEffect(() => {
-		const sub = Dimensions.addEventListener("change", ({ window }: { window: { width: number; height: number; scale: number; fontScale: number } }) => {
-			setScreenWidth(window.width);
-		});
+		const sub = Dimensions.addEventListener(
+			"change",
+			({
+				window,
+			}: {
+				window: {
+					width: number;
+					height: number;
+					scale: number;
+					fontScale: number;
+				};
+			}) => {
+				setScreenWidth(window.width);
+			},
+		);
 		return () => sub.remove();
 	}, []);
 
 	const switchTab = useCallback(
-		(targetTab: "passwords" | "notes" | "folders" | "settings", animateScroll = true) => {
+		(
+			targetTab: "passwords" | "notes" | "folders" | "settings",
+			animateScroll = true,
+		) => {
 			setActiveBottomTab(targetTab);
 			if (targetTab === "passwords") {
 				if (activeFilter === "note") {
@@ -149,7 +211,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 				}
 			}
 		},
-		[TAB_ORDER, screenWidth, activeFilter]
+		[TAB_ORDER, screenWidth, activeFilter],
 	);
 
 	const handleScrollEnd = useCallback(
@@ -162,12 +224,14 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 				switchTab(targetTab, false);
 			}
 		},
-		[screenWidth, TAB_ORDER, activeBottomTab, switchTab]
+		[screenWidth, TAB_ORDER, activeBottomTab, switchTab],
 	);
 
 	// Dedicated Fullscreen Note Editor State (Samsung/MI Notes style)
 	const [isNoteEditorOpen, setIsNoteEditorOpen] = useState(false);
-	const [editingNoteItem, setEditingNoteItem] = useState<PasswordItem | null>(null);
+	const [editingNoteItem, setEditingNoteItem] = useState<PasswordItem | null>(
+		null,
+	);
 
 	// Multi-select state for Vault Items (passwords, cards, logins, notes)
 	const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
@@ -180,20 +244,26 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 
 	const handleToggleSelectItem = useCallback((item: PasswordItem) => {
 		setSelectedItemIds((prev) =>
-			prev.includes(item.id) ? prev.filter((id) => id !== item.id) : [...prev, item.id]
+			prev.includes(item.id)
+				? prev.filter((id) => id !== item.id)
+				: [...prev, item.id],
 		);
 	}, []);
 
 	const handleLongPressItem = useCallback((item: PasswordItem) => {
-		setSelectedItemIds((prev) => (prev.includes(item.id) ? prev : [...prev, item.id]));
+		setSelectedItemIds((prev) =>
+			prev.includes(item.id) ? prev : [...prev, item.id],
+		);
 	}, []);
 
 	// 1. Password items (passwords, cards, apikeys, identities - never notes)
 	const passwordItems = useMemo(() => {
 		const baseItems = items.filter((item) => {
-			if (selectedFolderId && item.folderId !== selectedFolderId) return false;
+			if (selectedFolderId && item.folderId !== selectedFolderId)
+				return false;
 			if (activeFilter === "favorites") return !!item.isFavorite;
-			if (activeFilter !== "all" && activeFilter !== "note") return item.category === activeFilter;
+			if (activeFilter !== "all" && activeFilter !== "note")
+				return item.category === activeFilter;
 			return item.category !== "note";
 		});
 		return searchVaultItems(baseItems, searchQuery, folders);
@@ -202,17 +272,21 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 	// 2. Note items (always note items, never passwords)
 	const noteItems = useMemo(() => {
 		const baseItems = items.filter((item) => {
-			if (selectedFolderId && item.folderId !== selectedFolderId) return false;
+			if (selectedFolderId && item.folderId !== selectedFolderId)
+				return false;
 			return item.category === "note";
 		});
 		return searchVaultItems(baseItems, searchQuery, folders);
 	}, [items, searchQuery, selectedFolderId, folders]);
 
-	const currentTabItems = activeBottomTab === "notes" ? noteItems : passwordItems;
+	const currentTabItems =
+		activeBottomTab === "notes" ? noteItems : passwordItems;
 
 	const handleSelectAllVisible = useCallback(() => {
 		const visibleIds = currentTabItems.map((i) => i.id);
-		setSelectedItemIds((prev) => (prev.length === visibleIds.length ? [] : visibleIds));
+		setSelectedItemIds((prev) =>
+			prev.length === visibleIds.length ? [] : visibleIds,
+		);
 	}, [currentTabItems]);
 
 	const handleBulkPin = useCallback(async () => {
@@ -233,7 +307,9 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 	const handleBulkMove = useCallback(
 		async (folderId: string | null) => {
 			if (selectedItemIds.length === 0) return;
-			const targetItems = items.filter((i) => selectedItemIds.includes(i.id));
+			const targetItems = items.filter((i) =>
+				selectedItemIds.includes(i.id),
+			);
 			for (const item of targetItems) {
 				await offlineVault.saveItem({
 					...item,
@@ -243,7 +319,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			setSelectedItemIds([]);
 			await loadData();
 		},
-		[selectedItemIds, items]
+		[selectedItemIds, items],
 	);
 
 	const handleBulkDelete = useCallback(() => {
@@ -254,7 +330,12 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			`Are you sure you want to delete ${count} item${count > 1 ? "s" : ""}? This cannot be undone.`,
 			"warning",
 			[
-				{ text: "Cancel", style: "cancel", onPress: () => setAlertConfig((prev) => ({ ...prev, visible: false })) },
+				{
+					text: "Cancel",
+					style: "cancel",
+					onPress: () =>
+						setAlertConfig((prev) => ({ ...prev, visible: false })),
+				},
 				{
 					text: "Delete",
 					style: "destructive",
@@ -267,12 +348,13 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 						await loadData();
 					},
 				},
-			]
+			],
 		);
 	}, [selectedItemIds]);
 
 	// Custom Alert Hook
-	const { alertConfig, setAlertConfig, showAlert, alertModal } = useCustomAlert(theme);
+	const { alertConfig, setAlertConfig, showAlert, alertModal } =
+		useCustomAlert(theme);
 
 	// Add/Edit Form State Hook
 	const form = useVaultItemForm();
@@ -314,13 +396,30 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			return false;
 		};
 
-		const subscription = BackHandler.addEventListener("hardwareBackPress", handleHardwareBack);
+		const subscription = BackHandler.addEventListener(
+			"hardwareBackPress",
+			handleHardwareBack,
+		);
 		return () => subscription.remove();
-	}, [isNoteEditorOpen, isGeneratorOpen, isFolderModalOpen, form.isAddModalOpen, selectedItem, isRecoveryMode]);
+	}, [
+		isNoteEditorOpen,
+		isGeneratorOpen,
+		isFolderModalOpen,
+		form.isAddModalOpen,
+		selectedItem,
+		isRecoveryMode,
+	]);
 
 	useEffect(() => {
 		refreshGenerator();
-	}, [genLength, genWordCount, genPronounceable, genUpper, genNumbers, genSeparator]);
+	}, [
+		genLength,
+		genWordCount,
+		genPronounceable,
+		genUpper,
+		genNumbers,
+		genSeparator,
+	]);
 
 	const refreshGenerator = useCallback(() => {
 		if (genPronounceable) {
@@ -342,9 +441,18 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			});
 			setGeneratedPass(pass);
 		}
-	}, [genPronounceable, genWordCount, genSeparator, genUpper, genNumbers, genLength]);
+	}, [
+		genPronounceable,
+		genWordCount,
+		genSeparator,
+		genUpper,
+		genNumbers,
+		genLength,
+	]);
 
-	const [syncStatus, setSyncStatus] = useState<"local" | "synced" | "pending_offline" | "syncing">("local");
+	const [syncStatus, setSyncStatus] = useState<
+		"local" | "synced" | "pending_offline" | "syncing"
+	>("local");
 
 	const refreshSyncStatus = useCallback(async () => {
 		try {
@@ -407,11 +515,22 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 				try {
 					cloudFound = await Promise.race([
 						offlineVault.checkCloudVault(),
-						new Promise<boolean>((_, reject) => setTimeout(() => reject(new Error("Cloud verification timeout")), 3500))
+						new Promise<boolean>((_, reject) =>
+							setTimeout(
+								() =>
+									reject(
+										new Error("Cloud verification timeout"),
+									),
+								3500,
+							),
+						),
 					]);
 					setHasCloudVault(cloudFound);
 				} catch (err) {
-					console.warn("Cloud vault pre-check bypassed or timed out:", err);
+					console.warn(
+						"Cloud vault pre-check bypassed or timed out:",
+						err,
+					);
 				}
 			}
 			setCheckingVaultStage("Inspecting encrypted vault database...");
@@ -425,7 +544,8 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			}
 
 			// Check biometric capability and state
-			const hwAvailable = await offlineVault.isBiometricHardwareAvailable();
+			const hwAvailable =
+				await offlineVault.isBiometricHardwareAvailable();
 			const bioEnabled = await offlineVault.isBiometricsEnabled();
 			setIsBiometricAvailable(hwAvailable);
 			setBiometricsEnabled(bioEnabled);
@@ -446,7 +566,8 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		}
 	};
 
-	const [pendingEnableBiometrics, setPendingEnableBiometrics] = useState(false);
+	const [pendingEnableBiometrics, setPendingEnableBiometrics] =
+		useState(false);
 
 	const handleBiometricUnlock = async () => {
 		setError("");
@@ -470,7 +591,11 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			await offlineVault.setBiometricsEnabled(false);
 			setBiometricsEnabled(false);
 			setPendingEnableBiometrics(false);
-			showAlert("Biometrics Disabled", "Fingerprint / Face ID unlock has been turned off.", "info");
+			showAlert(
+				"Biometrics Disabled",
+				"Fingerprint / Face ID unlock has been turned off.",
+				"info",
+			);
 			return;
 		}
 
@@ -479,9 +604,17 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			const success = await offlineVault.setBiometricsEnabled(true);
 			if (success) {
 				setBiometricsEnabled(true);
-				showAlert("Biometrics Enabled", "You can now unlock your vault with fingerprint or Face ID.", "success");
+				showAlert(
+					"Biometrics Enabled",
+					"You can now unlock your vault with fingerprint or Face ID.",
+					"success",
+				);
 			} else {
-				showAlert("Biometrics Setup", "Could not enable biometrics. Please verify your device security settings.", "warning");
+				showAlert(
+					"Biometrics Setup",
+					"Could not enable biometrics. Please verify your device security settings.",
+					"warning",
+				);
 			}
 			return;
 		}
@@ -502,7 +635,9 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 					loadData();
 					return;
 				} else {
-					setError("Invalid master password. Please enter the correct password first.");
+					setError(
+						"Invalid master password. Please enter the correct password first.",
+					);
 					return;
 				}
 			} catch (e: any) {
@@ -562,12 +697,19 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 
 	const handleFinishOnboarding = async () => {
 		if (!recoveryConfirmed) {
-			showAlert("Confirm Key", "Please confirm that you have saved your 12-word recovery key.", "warning");
+			showAlert(
+				"Confirm Key",
+				"Please confirm that you have saved your 12-word recovery key.",
+				"warning",
+			);
 			return;
 		}
 		setIsCreatingVault(true);
 		try {
-			await offlineVault.createVault(masterPassword, recoveryMnemonic || undefined);
+			await offlineVault.createVault(
+				masterPassword,
+				recoveryMnemonic || undefined,
+			);
 			setHasVault(true);
 			setIsUnlocked(true);
 			setMasterPassword("");
@@ -593,7 +735,9 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 
 		const phrase = words.join(" ");
 		if (words.length !== 12 || !isValidMnemonic(phrase)) {
-			setError("Invalid 12-word recovery key. Please check that 12 valid words are entered.");
+			setError(
+				"Invalid 12-word recovery key. Please check that 12 valid words are entered.",
+			);
 			return;
 		}
 		setIsRecovering(true);
@@ -604,7 +748,11 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 				setIsRecoveryMode(false);
 				setInputMnemonic("");
 				loadData();
-				showAlert("Vault Recovered", "Vault unlocked. You can now update your master password in Settings.", "success");
+				showAlert(
+					"Vault Recovered",
+					"Vault unlocked. You can now update your master password in Settings.",
+					"success",
+				);
 			} else {
 				setError("Recovery failed. Key does not match this vault.");
 			}
@@ -625,7 +773,10 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		await offlineVault.saveItem({ ...item, isFavorite: !item.isFavorite });
 		loadData();
 		if (selectedItem?.id === item.id) {
-			setSelectedItem({ ...selectedItem, isFavorite: !selectedItem.isFavorite });
+			setSelectedItem({
+				...selectedItem,
+				isFavorite: !selectedItem.isFavorite,
+			});
 		}
 	};
 
@@ -643,18 +794,40 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 
 		let metadata: Record<string, string> = {};
 		if (form.itemCategory === "card") {
-			metadata = { cardholderName: form.cardHolder, cardNumber: form.cardNumber, expiration: form.cardExp, cvv: form.cardCvv, pin: form.cardPin, zipCode: form.cardZip };
+			metadata = {
+				cardholderName: form.cardHolder,
+				cardNumber: form.cardNumber,
+				expiration: form.cardExp,
+				cvv: form.cardCvv,
+				pin: form.cardPin,
+				zipCode: form.cardZip,
+			};
 		} else if (form.itemCategory === "apikey") {
-			metadata = { keyId: form.apiKeyId, apiKey: form.apiSecret, environment: form.apiEnv };
+			metadata = {
+				keyId: form.apiKeyId,
+				apiKey: form.apiSecret,
+				environment: form.apiEnv,
+			};
 		} else if (form.itemCategory === "identity") {
-			metadata = { fullName: form.identityName, email: form.identityEmail, phone: form.identityPhone, address: form.identityAddress };
+			metadata = {
+				fullName: form.identityName,
+				email: form.identityEmail,
+				phone: form.identityPhone,
+				address: form.identityAddress,
+			};
 		}
 
 		await offlineVault.saveItem({
 			id: form.editingItem?.id,
 			title: form.newTitle,
-			username: form.itemCategory === "login" ? form.newUsername : form.identityEmail || form.cardHolder || form.apiKeyId,
-			password: form.itemCategory === "login" ? form.newPassword : form.apiSecret || form.cardCvv,
+			username:
+				form.itemCategory === "login"
+					? form.newUsername
+					: form.identityEmail || form.cardHolder || form.apiKeyId,
+			password:
+				form.itemCategory === "login"
+					? form.newPassword
+					: form.apiSecret || form.cardCvv,
 			url: form.newUrl,
 			notes: form.newNotes,
 			category: form.itemCategory,
@@ -669,7 +842,9 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		loadData();
 	};
 
-	const handleSaveNote = async (updated: Partial<PasswordItem>): Promise<PasswordItem | void> => {
+	const handleSaveNote = async (
+		updated: Partial<PasswordItem>,
+	): Promise<PasswordItem | void> => {
 		const saved = await offlineVault.saveItem({
 			id: updated.id,
 			title: updated.title || "Untitled Note",
@@ -683,7 +858,9 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 	};
 
 	const handleDeleteNote = (id: string) => {
-		const targetNote = items.find((i) => i.id === id) || (editingNoteItem?.id === id ? editingNoteItem : null);
+		const targetNote =
+			items.find((i) => i.id === id) ||
+			(editingNoteItem?.id === id ? editingNoteItem : null);
 		const noteTitle = targetNote?.title ? ` "${targetNote.title}"` : "";
 
 		showAlert(
@@ -691,7 +868,12 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			`Are you sure you want to delete this note${noteTitle}?`,
 			"warning",
 			[
-				{ text: "Cancel", style: "cancel", onPress: () => setAlertConfig((prev) => ({ ...prev, visible: false })) },
+				{
+					text: "Cancel",
+					style: "cancel",
+					onPress: () =>
+						setAlertConfig((prev) => ({ ...prev, visible: false })),
+				},
 				{
 					text: "Delete",
 					style: "destructive",
@@ -703,18 +885,24 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 						loadData();
 					},
 				},
-			]
+			],
 		);
 	};
 
-	const handleSaveFolder = async (name?: string, color?: string): Promise<Folder | void> => {
+	const handleSaveFolder = async (
+		name?: string,
+		color?: string,
+	): Promise<Folder | void> => {
 		const targetName = (name !== undefined ? name : newFolderName).trim();
 		const targetColor = color || newFolderColor;
 		if (!targetName) {
 			showAlert("Validation", "Folder name is required.", "warning");
 			return;
 		}
-		const saved = await offlineVault.saveFolder({ name: targetName, color: targetColor });
+		const saved = await offlineVault.saveFolder({
+			name: targetName,
+			color: targetColor,
+		});
 		setNewFolderName("");
 		setIsFolderModalOpen(false);
 		await loadData();
@@ -727,18 +915,24 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			`Are you sure you want to delete "${folderName}"? Items inside will remain in your vault.`,
 			"warning",
 			[
-				{ text: "Cancel", style: "cancel", onPress: () => setAlertConfig((prev) => ({ ...prev, visible: false })) },
+				{
+					text: "Cancel",
+					style: "cancel",
+					onPress: () =>
+						setAlertConfig((prev) => ({ ...prev, visible: false })),
+				},
 				{
 					text: "Delete",
 					style: "destructive",
 					onPress: async () => {
 						setAlertConfig((prev) => ({ ...prev, visible: false }));
 						await offlineVault.deleteFolder(folderId);
-						if (selectedFolderId === folderId) setSelectedFolderId(null);
+						if (selectedFolderId === folderId)
+							setSelectedFolderId(null);
 						loadData();
 					},
 				},
-			]
+			],
 		);
 	};
 
@@ -755,7 +949,9 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 
 		if (Platform.OS === "web") {
 			try {
-				const blob = new Blob([backupContent], { type: "text/plain;charset=utf-8" });
+				const blob = new Blob([backupContent], {
+					type: "text/plain;charset=utf-8",
+				});
 				const url = URL.createObjectURL(blob);
 				const a = document.createElement("a");
 				a.href = url;
@@ -764,10 +960,18 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 				a.click();
 				document.body.removeChild(a);
 				URL.revokeObjectURL(url);
-				showAlert("Recovery Key Downloaded", "File snipit-recovery-key.txt downloaded.", "success");
+				showAlert(
+					"Recovery Key Downloaded",
+					"File snipit-recovery-key.txt downloaded.",
+					"success",
+				);
 			} catch {
 				await Clipboard.setStringAsync(backupContent);
-				showAlert("Recovery Key Copied", "Recovery key copied to clipboard.", "info");
+				showAlert(
+					"Recovery Key Copied",
+					"Recovery key copied to clipboard.",
+					"info",
+				);
 			}
 			return;
 		}
@@ -785,15 +989,27 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 					dialogTitle: "Save Recovery Key File",
 					UTI: "public.plain-text",
 				});
-				showAlert("Key File Ready", "Save snipit-recovery-key.txt to your Files or Drive.", "success");
+				showAlert(
+					"Key File Ready",
+					"Save snipit-recovery-key.txt to your Files or Drive.",
+					"success",
+				);
 			} else {
 				await Clipboard.setStringAsync(backupContent);
-				showAlert("Key Copied", "Key copied to clipboard. Save it securely.", "info");
+				showAlert(
+					"Key Copied",
+					"Key copied to clipboard. Save it securely.",
+					"info",
+				);
 			}
 		} catch (err: any) {
 			console.log("Error saving recovery key file:", err);
 			await Clipboard.setStringAsync(backupContent);
-			showAlert("Key Copied", "Recovery key copied to clipboard.", "info");
+			showAlert(
+				"Key Copied",
+				"Recovery key copied to clipboard.",
+				"info",
+			);
 		}
 	};
 
@@ -856,13 +1072,21 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 					setConfirmPassword={setConfirmPassword}
 					setRecoveryConfirmed={setRecoveryConfirmed}
 					onNextToRecovery={handleNextToRecovery}
-					onDownloadRecovery={() => recoveryMnemonic && handleDownloadRecovery(recoveryMnemonic)}
-					onCopyMnemonic={() => recoveryMnemonic && copyToClipboard(recoveryMnemonic, "mnemonic")}
+					onDownloadRecovery={() =>
+						recoveryMnemonic &&
+						handleDownloadRecovery(recoveryMnemonic)
+					}
+					onCopyMnemonic={() =>
+						recoveryMnemonic &&
+						copyToClipboard(recoveryMnemonic, "mnemonic")
+					}
 					onFinish={handleFinishOnboarding}
 					setStep={setOnboardingStep}
 					isCreatingVault={isCreatingVault}
 					onCheckExistingCloudVault={async () => {
-						setCheckingVaultStage("Checking for existing cloud vault...");
+						setCheckingVaultStage(
+							"Checking for existing cloud vault...",
+						);
 						const u = await offlineVault.getUser();
 						if (!u?.token) {
 							showAlert(
@@ -871,8 +1095,8 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 								"info",
 								[
 									{ text: "Cancel", style: "cancel" },
-									{ text: "Sign In", onPress: onOpenAuth }
-								]
+									{ text: "Sign In", onPress: onOpenAuth },
+								],
 							);
 							return;
 						}
@@ -881,10 +1105,18 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 							if (found) {
 								setShowCloudDetected(true);
 							} else {
-								showAlert("No Cloud Vault Found", "No encrypted vault was found for your account. You can create a new vault.", "info");
+								showAlert(
+									"No Cloud Vault Found",
+									"No encrypted vault was found for your account. You can create a new vault.",
+									"info",
+								);
 							}
 						} catch (e: any) {
-							showAlert("Sync Error", e?.message || "Failed to check cloud vault.", "error");
+							showAlert(
+								"Sync Error",
+								e?.message || "Failed to check cloud vault.",
+								"error",
+							);
 						}
 					}}
 					onOpenRecovery={() => setIsRecoveryMode(true)}
@@ -910,7 +1142,9 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 					onForgotPassword={() => setIsRecoveryMode(true)}
 					isDecrypting={isDecrypting}
 					isBiometricAvailable={isBiometricAvailable}
-					biometricsEnabled={biometricsEnabled || pendingEnableBiometrics}
+					biometricsEnabled={
+						biometricsEnabled || pendingEnableBiometrics
+					}
 					onBiometricUnlock={handleBiometricUnlock}
 					onToggleBiometrics={handleToggleBiometrics}
 				/>
@@ -926,9 +1160,7 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 		>
 			{/* Header: Normal PWMGHeader OR MI Notes Style Multi-Selection Header */}
 			{isSelectionMode ? (
-				<View
-					className="flex-row items-center justify-between px-4 py-3.5 border-b z-30 bg-background border-border"
-				>
+				<View className="flex-row items-center justify-between px-4 py-3.5 border-b z-30 bg-background border-border">
 					{/* Left: Cancel Selection */}
 					<TouchableOpacity
 						onPress={() => setSelectedItemIds([])}
@@ -939,10 +1171,9 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 					</TouchableOpacity>
 
 					{/* Center: Selected Counter (MI Notes italicized large counter) */}
-					<Text
-						className="text-xl font-bold tracking-tight italic text-foreground"
-					>
-						{selectedItemIds.length} item{selectedItemIds.length > 1 ? "s" : ""} selected
+					<Text className="text-xl font-bold tracking-tight italic text-foreground">
+						{selectedItemIds.length} item
+						{selectedItemIds.length > 1 ? "s" : ""} selected
 					</Text>
 
 					{/* Right: Select All / Deselect All */}
@@ -1085,7 +1316,9 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 						onSelectType={(category) => {
 							setSelectedFolderId(null);
 							setActiveFilter(category as FilterCategory);
-							switchTab(category === "note" ? "notes" : "passwords");
+							switchTab(
+								category === "note" ? "notes" : "passwords",
+							);
 						}}
 						onCreateFolder={() => setIsFolderModalOpen(true)}
 						onDeleteFolder={handleDeleteFolder}
@@ -1118,27 +1351,33 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 			</ScrollView>
 
 			{/* Right-Bottom Floating Action Button (FAB) to Create New Item */}
-			{!isSelectionMode && activeBottomTab !== "folders" && activeBottomTab !== "settings" && (
-				<TouchableOpacity
-					className={`absolute right-5 w-14 h-14 rounded-full justify-center items-center shadow-lg elevation-8 z-30 ${
-						isLight ? "bg-slate-900" : "bg-white"
-					}`}
-					style={{ bottom: Platform.OS === "ios" ? 102 : 106 }}
-					onPress={() => {
-						if (activeBottomTab === "notes") {
-							setEditingNoteItem(null);
-							setIsNoteEditorOpen(true);
-						} else {
-							form.resetForm();
-							form.setIsAddModalOpen(true);
-						}
-					}}
-					activeOpacity={0.85}
-					accessibilityLabel="Create New Item"
-				>
-					<Plus color={isLight ? "#ffffff" : "#020617"} size={26} strokeWidth={2.6} />
-				</TouchableOpacity>
-			)}
+			{!isSelectionMode &&
+				activeBottomTab !== "folders" &&
+				activeBottomTab !== "settings" && (
+					<TouchableOpacity
+						className={`absolute right-5 w-14 h-14 rounded-full justify-center items-center shadow-lg elevation-8 z-30 ${
+							isLight ? "bg-slate-900" : "bg-white"
+						}`}
+						style={{ bottom: Platform.OS === "ios" ? 102 : 106 }}
+						onPress={() => {
+							if (activeBottomTab === "notes") {
+								setEditingNoteItem(null);
+								setIsNoteEditorOpen(true);
+							} else {
+								form.resetForm();
+								form.setIsAddModalOpen(true);
+							}
+						}}
+						activeOpacity={0.85}
+						accessibilityLabel="Create New Item"
+					>
+						<Plus
+							color={isLight ? "#ffffff" : "#020617"}
+							size={26}
+							strokeWidth={2.6}
+						/>
+					</TouchableOpacity>
+				)}
 
 			{/* Floating Tab Bar OR Bulk Action Bar (Pin, Move to, Delete) */}
 			{isSelectionMode ? (
@@ -1156,7 +1395,9 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 					onPin={handleBulkPin}
 					onMove={handleBulkMove}
 					onDelete={handleBulkDelete}
-					onCreateFolder={(name, color) => handleSaveFolder(name, color)}
+					onCreateFolder={(name, color) =>
+						handleSaveFolder(name, color)
+					}
 				/>
 			) : (
 				<IosBottomTabBar
@@ -1182,11 +1423,15 @@ export function PWMGScreen({ onBack, onOpenAuth, onOpenProfile, theme = "dark" }
 				}}
 				onToggleFavorite={handleToggleFavorite}
 				onDeleteItem={handleDeleteItem}
-				onTogglePassword={() => setShowDetailPassword(!showDetailPassword)}
+				onTogglePassword={() =>
+					setShowDetailPassword(!showDetailPassword)
+				}
 				onToggleCardNumber={() => setShowCardNumber(!showCardNumber)}
 				onToggleCardCVV={() => setShowCardCVV(!showCardCVV)}
 				onCopyToClipboard={copyToClipboard}
-				getCategoryBadgeStyle={() => ({ backgroundColor: "rgba(10, 132, 255, 0.15)" })}
+				getCategoryBadgeStyle={() => ({
+					backgroundColor: "rgba(10, 132, 255, 0.15)",
+				})}
 				getCategoryIcon={() => null}
 			/>
 

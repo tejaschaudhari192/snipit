@@ -1,61 +1,61 @@
 {
-  "expo": {
-    "name": "Snipit",
-    "slug": "mobile",
-    "version": "1.2.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "automatic",
-    "scheme": "snipit",
-    "description": "Snipit — Privacy-focused developer suite with zero-knowledge password manager and snippets.",
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.snipit.app",
-      "infoPlist": {
-        "NSFaceIDUsageDescription": "Use Face ID to securely unlock your Snipit password vault."
-      }
-    },
-    "android": {
-      "package": "com.snipit.app",
-      "versionCode": 13,
-      "adaptiveIcon": {
-        "backgroundColor": "#090d16",
-        "foregroundImage": "./assets/android-icon-foreground.png"
-      },
-      "predictiveBackGestureEnabled": false
-    },
-    "web": {
-      "favicon": "./assets/icon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "b6ca225b-223a-4183-8c56-f7fbf8d7bccb"
-      }
-    },
-    "plugins": [
-      "expo-sharing",
-      "react-native-quick-crypto",
-      "expo-secure-store",
-      [
-        "expo-local-authentication",
-        {
-          "faceIDPermission": "Allow Snipit to use Face ID to quickly unlock your vault."
-        }
-      ],
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
-          "dark": {
-            "image": "./assets/splash-icon.png",
-            "backgroundColor": "#09090b"
-          }
-        }
-      ],
-      "expo-status-bar"
-    ]
-  }
+	"expo": {
+		"name": "Vault",
+		"slug": "vault",
+		"version": "1.2.0",
+		"orientation": "portrait",
+		"icon": "./assets/icon.png",
+		"userInterfaceStyle": "automatic",
+		"scheme": "vault",
+		"description": "Vault — Privacy-focused, zero-knowledge encrypted password, notes and credential manager.",
+		"ios": {
+			"supportsTablet": true,
+			"bundleIdentifier": "com.snipit.vault",
+			"infoPlist": {
+				"NSFaceIDUsageDescription": "Use Face ID to securely unlock your Vault."
+			}
+		},
+		"android": {
+			"package": "com.snipit.vault",
+			"versionCode": 13,
+			"adaptiveIcon": {
+				"backgroundColor": "#090d16",
+				"foregroundImage": "./assets/android-icon-foreground.png"
+			},
+			"predictiveBackGestureEnabled": false
+		},
+		"web": {
+			"favicon": "./assets/icon.png"
+		},
+		"extra": {
+			"eas": {
+				"projectId": "b6ca225b-223a-4183-8c56-f7fbf8d7bccb"
+			}
+		},
+		"plugins": [
+			"expo-sharing",
+			"react-native-quick-crypto",
+			"expo-secure-store",
+			[
+				"expo-local-authentication",
+				{
+					"faceIDPermission": "Allow Vault to use Face ID to quickly unlock your vault."
+				}
+			],
+			[
+				"expo-splash-screen",
+				{
+					"image": "./assets/splash-icon.png",
+					"imageWidth": 200,
+					"resizeMode": "contain",
+					"backgroundColor": "#ffffff",
+					"dark": {
+						"image": "./assets/splash-icon.png",
+						"backgroundColor": "#09090b"
+					}
+				}
+			],
+			"expo-status-bar"
+		]
+	}
 }

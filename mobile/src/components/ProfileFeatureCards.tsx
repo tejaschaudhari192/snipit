@@ -144,7 +144,7 @@ export function VaultSecurityCard({
 								className="text-[15px] font-semibold text-foreground"
 								style={{ color: textColor }}
 							>
-								Snipit Password Vault
+								Password Vault
 							</UIText>
 							<UIText
 								className="text-xs mt-0.5 text-muted-foreground"

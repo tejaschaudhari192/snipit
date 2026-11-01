@@ -21,7 +21,12 @@ export function IosModalHeader({
 }: Props) {
 	return (
 		<View className="flex-row items-center justify-between px-4 py-3 border-b border-border bg-background">
-			<Button variant="ghost" size="sm" onPress={onClose} className="px-2">
+			<Button
+				variant="ghost"
+				size="sm"
+				onPress={onClose}
+				className="px-2"
+			>
 				<Text className="text-sm font-medium">{closeLabel}</Text>
 			</Button>
 
@@ -32,8 +37,15 @@ export function IosModalHeader({
 				{title}
 			</Text>
 
-			<Button variant="default" size="sm" onPress={onSave} className="px-3">
-				<Text className="text-sm font-semibold text-primary-foreground">{saveLabel}</Text>
+			<Button
+				variant="default"
+				size="sm"
+				onPress={onSave}
+				className="px-3"
+			>
+				<Text className="text-sm font-semibold text-primary-foreground">
+					{saveLabel}
+				</Text>
 			</Button>
 		</View>
 	);

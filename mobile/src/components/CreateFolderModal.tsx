@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Modal, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
+import {
+	View,
+	Modal,
+	TouchableOpacity,
+	KeyboardAvoidingView,
+	Platform,
+} from "react-native";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -26,10 +32,22 @@ export function CreateFolderModal({
 	onSave,
 }: Props) {
 	if (!visible) return null;
-	const colors = ["#09090b", "#71717a", "#2563eb", "#16a34a", "#dc2626", "#9333ea"];
+	const colors = [
+		"#09090b",
+		"#71717a",
+		"#2563eb",
+		"#16a34a",
+		"#dc2626",
+		"#9333ea",
+	];
 
 	return (
-		<Modal visible={visible} animationType="none" transparent statusBarTranslucent>
+		<Modal
+			visible={visible}
+			animationType="none"
+			transparent
+			statusBarTranslucent
+		>
 			<KeyboardAvoidingView
 				className="flex-1 bg-black/70 justify-end"
 				behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -39,8 +57,15 @@ export function CreateFolderModal({
 						<Text className="text-lg font-bold tracking-tight text-foreground">
 							New Folder
 						</Text>
-						<Button variant="ghost" size="sm" onPress={onClose} className="h-8 px-2">
-							<Text className="text-sm font-semibold text-foreground">Cancel</Text>
+						<Button
+							variant="ghost"
+							size="sm"
+							onPress={onClose}
+							className="h-8 px-2"
+						>
+							<Text className="text-sm font-semibold text-foreground">
+								Cancel
+							</Text>
 						</Button>
 					</View>
 
@@ -70,7 +95,9 @@ export function CreateFolderModal({
 					</View>
 
 					<Button className="w-full h-11" onPress={onSave}>
-						<Text className="font-semibold text-primary-foreground">Create Folder</Text>
+						<Text className="font-semibold text-primary-foreground">
+							Create Folder
+						</Text>
 					</Button>
 				</View>
 			</KeyboardAvoidingView>

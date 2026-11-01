@@ -10,7 +10,7 @@ export async function copyToClipboard(
 	text: string,
 	field: string,
 	setCopiedField: (f: string | null) => void,
-	timeoutMs = 2000
+	timeoutMs = 2000,
 ) {
 	await Clipboard.setStringAsync(text);
 	setCopiedField(field);
@@ -22,14 +22,20 @@ export async function copyToClipboard(
  */
 export async function downloadRecoveryKeyFile(
 	mnemonic: string,
-	showAlert: (title: string, message?: string, type?: "info" | "success" | "warning" | "error") => void
+	showAlert: (
+		title: string,
+		message?: string,
+		type?: "info" | "success" | "warning" | "error",
+	) => void,
 ) {
 	const backupContent = mnemonic.trim();
 	const filename = "snipit-recovery-key.txt";
 
 	if (Platform.OS === "web") {
 		try {
-			const blob = new Blob([backupContent], { type: "text/plain;charset=utf-8" });
+			const blob = new Blob([backupContent], {
+				type: "text/plain;charset=utf-8",
+			});
 			const url = URL.createObjectURL(blob);
 			const a = document.createElement("a");
 			a.href = url;
@@ -38,10 +44,18 @@ export async function downloadRecoveryKeyFile(
 			a.click();
 			document.body.removeChild(a);
 			URL.revokeObjectURL(url);
-			showAlert("Recovery Key Downloaded", "File snipit-recovery-key.txt downloaded.", "success");
+			showAlert(
+				"Recovery Key Downloaded",
+				"File snipit-recovery-key.txt downloaded.",
+				"success",
+			);
 		} catch {
 			await Clipboard.setStringAsync(backupContent);
-			showAlert("Recovery Key Copied", "Recovery key copied to clipboard.", "info");
+			showAlert(
+				"Recovery Key Copied",
+				"Recovery key copied to clipboard.",
+				"info",
+			);
 		}
 		return;
 	}
@@ -58,10 +72,18 @@ export async function downloadRecoveryKeyFile(
 				dialogTitle: "Save Recovery Key File",
 				UTI: "public.plain-text",
 			});
-			showAlert("Key File Ready", "Save snipit-recovery-key.txt to your Files or Drive.", "success");
+			showAlert(
+				"Key File Ready",
+				"Save snipit-recovery-key.txt to your Files or Drive.",
+				"success",
+			);
 		} else {
 			await Clipboard.setStringAsync(backupContent);
-			showAlert("Key Copied", "Key copied to clipboard. Save it securely.", "info");
+			showAlert(
+				"Key Copied",
+				"Key copied to clipboard. Save it securely.",
+				"info",
+			);
 		}
 	} catch (err: any) {
 		console.log("Error saving recovery key file:", err);
