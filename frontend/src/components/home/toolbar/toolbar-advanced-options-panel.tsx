@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Users } from "lucide-react";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTranslation } from "react-i18next";
 import { AdvancedOptions } from "../advanced-options";
 
@@ -44,9 +43,9 @@ export function ToolbarAdvancedOptionsPanel({
 						</Button>
 					</div>
 
-					<ScrollArea className="max-h-112.5 pr-2">
+					<div className="max-h-[60vh] sm:max-h-112.5 overflow-y-auto pr-1 sm:pr-2 custom-scrollbar">
 						<AdvancedOptions />
-					</ScrollArea>
+					</div>
 				</div>
 			</CollapsibleContent>
 		</Collapsible>
