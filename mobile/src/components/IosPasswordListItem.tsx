@@ -27,7 +27,6 @@ export const IosPasswordListItem = memo(function IosPasswordListItem({
 	totalItems,
 	subtitle,
 	copied,
-	theme = "dark",
 	fallbackIcon,
 	isSelectionMode = false,
 	isSelected = false,
@@ -41,9 +40,7 @@ export const IosPasswordListItem = memo(function IosPasswordListItem({
 	return (
 		<TouchableOpacity
 			className={`flex-row items-center px-4 py-3.5 ${
-				isSelected
-					? "bg-muted/80"
-					: "bg-card"
+				isSelected ? "bg-muted/80" : "bg-card"
 			} ${isFirst ? "rounded-t-xl" : ""} ${isLast ? "rounded-b-xl" : ""} ${
 				!isLast ? "border-b border-border" : ""
 			}`}
@@ -64,7 +61,11 @@ export const IosPasswordListItem = memo(function IosPasswordListItem({
 						{item.title}
 					</Text>
 					{item.isFavorite && (
-						<Icon as={Star} className="text-foreground fill-foreground" size={12} />
+						<Icon
+							as={Star}
+							className="text-foreground fill-foreground"
+							size={12}
+						/>
 					)}
 				</View>
 				<Text
@@ -84,7 +85,14 @@ export const IosPasswordListItem = memo(function IosPasswordListItem({
 							: "border-border bg-muted"
 					}`}
 				>
-					{isSelected && <Icon as={Check} className="text-primary-foreground" size={12} strokeWidth={3} />}
+					{isSelected && (
+						<Icon
+							as={Check}
+							className="text-primary-foreground"
+							size={12}
+							strokeWidth={3}
+						/>
+					)}
 				</View>
 			) : item.password && onCopyPassword ? (
 				<TouchableOpacity
@@ -93,9 +101,17 @@ export const IosPasswordListItem = memo(function IosPasswordListItem({
 					hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
 				>
 					{copied ? (
-						<Icon as={Check} className="text-foreground" size={16} />
+						<Icon
+							as={Check}
+							className="text-foreground"
+							size={16}
+						/>
 					) : (
-						<Icon as={Copy} className="text-muted-foreground" size={16} />
+						<Icon
+							as={Copy}
+							className="text-muted-foreground"
+							size={16}
+						/>
 					)}
 				</TouchableOpacity>
 			) : null}

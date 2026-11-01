@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import { View, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ArrowLeft, Lock, KeyRound, Check, Copy, Download, Cloud, LifeBuoy } from "lucide-react-native";
+import {
+	ArrowLeft,
+	Lock,
+	KeyRound,
+	Check,
+	Copy,
+	Download,
+	Cloud,
+	LifeBuoy,
+} from "lucide-react-native";
 import { Icon } from "./ui/icon";
 import {
 	Card,
@@ -38,7 +47,6 @@ interface VaultOnboardingScreenProps {
 }
 
 export function VaultOnboardingScreen({
-	onBack,
 	step,
 	masterPassword,
 	confirmPassword,
@@ -87,7 +95,10 @@ export function VaultOnboardingScreen({
 
 			<ScrollView
 				className="flex-1 bg-background"
-				contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+				contentContainerStyle={{
+					flexGrow: 1,
+					justifyContent: "center",
+				}}
 				contentContainerClassName="p-4 max-w-sm w-full mx-auto"
 				showsVerticalScrollIndicator={false}
 			>
@@ -96,19 +107,25 @@ export function VaultOnboardingScreen({
 						<>
 							<CardHeader className="text-center pb-2">
 								<View className="w-12 h-12 rounded-full bg-muted justify-center items-center mx-auto mb-2">
-									<Lock className="text-foreground" size={24} />
+									<Lock
+										className="text-foreground"
+										size={24}
+									/>
 								</View>
 								<CardTitle className="text-xl font-bold tracking-tight text-center">
 									Zero-Knowledge Vault
 								</CardTitle>
 								<CardDescription className="text-center text-xs">
-									All passwords and secure notes are encrypted on this device with XSalsa20-Poly1305.
+									All passwords and secure notes are encrypted
+									on this device with XSalsa20-Poly1305.
 								</CardDescription>
 							</CardHeader>
 
 							<CardContent className="gap-3 pt-2">
 								{error ? (
-									<Text className="text-destructive text-xs text-center">{error}</Text>
+									<Text className="text-destructive text-xs text-center">
+										{error}
+									</Text>
 								) : null}
 
 								<FormPasswordInput
@@ -117,7 +134,11 @@ export function VaultOnboardingScreen({
 									value={masterPassword}
 									onChangeText={setMasterPassword}
 									showPassword={showMasterPassword}
-									onToggleShowPassword={() => setShowMasterPassword(!showMasterPassword)}
+									onToggleShowPassword={() =>
+										setShowMasterPassword(
+											!showMasterPassword,
+										)
+									}
 								/>
 
 								<FormPasswordInput
@@ -126,7 +147,11 @@ export function VaultOnboardingScreen({
 									value={confirmPassword}
 									onChangeText={setConfirmPassword}
 									showPassword={showConfirmPassword}
-									onToggleShowPassword={() => setShowConfirmPassword(!showConfirmPassword)}
+									onToggleShowPassword={() =>
+										setShowConfirmPassword(
+											!showConfirmPassword,
+										)
+									}
 									onSubmitEditing={onNextToRecovery}
 								/>
 
@@ -151,7 +176,11 @@ export function VaultOnboardingScreen({
 											className="w-full h-10 flex-row gap-2"
 											onPress={onCheckExistingCloudVault}
 										>
-											<Icon as={Cloud} className="text-foreground" size={15} />
+											<Icon
+												as={Cloud}
+												className="text-foreground"
+												size={15}
+											/>
 											<Text className="text-xs font-semibold text-foreground">
 												Sync Existing Cloud Vault
 											</Text>
@@ -164,7 +193,11 @@ export function VaultOnboardingScreen({
 											className="w-full h-9 flex-row gap-1.5"
 											onPress={onOpenRecovery}
 										>
-											<Icon as={LifeBuoy} className="text-muted-foreground" size={14} />
+											<Icon
+												as={LifeBuoy}
+												className="text-muted-foreground"
+												size={14}
+											/>
 											<Text className="text-xs font-medium text-muted-foreground">
 												Restore from Recovery Phrase
 											</Text>
@@ -179,13 +212,18 @@ export function VaultOnboardingScreen({
 						<>
 							<CardHeader className="text-center pb-2">
 								<View className="w-12 h-12 rounded-full bg-muted justify-center items-center mx-auto mb-2">
-									<KeyRound className="text-foreground" size={24} />
+									<KeyRound
+										className="text-foreground"
+										size={24}
+									/>
 								</View>
 								<CardTitle className="text-xl font-bold tracking-tight text-center">
 									Emergency Key
 								</CardTitle>
 								<CardDescription className="text-center text-xs">
-									Save these 12 words securely. It is the only way to recover your vault if you forget your master password.
+									Save these 12 words securely. It is the only
+									way to recover your vault if you forget your
+									master password.
 								</CardDescription>
 							</CardHeader>
 
@@ -202,8 +240,13 @@ export function VaultOnboardingScreen({
 										className="flex-1 h-9 flex-row gap-1.5"
 										onPress={onDownloadRecovery}
 									>
-										<Download className="text-foreground" size={14} />
-										<Text className="text-xs">Save File</Text>
+										<Download
+											className="text-foreground"
+											size={14}
+										/>
+										<Text className="text-xs">
+											Save File
+										</Text>
 									</Button>
 
 									<Button
@@ -212,12 +255,20 @@ export function VaultOnboardingScreen({
 										onPress={onCopyMnemonic}
 									>
 										{copiedField === "mnemonic" ? (
-											<Check className="text-foreground" size={14} />
+											<Check
+												className="text-foreground"
+												size={14}
+											/>
 										) : (
-											<Copy className="text-foreground" size={14} />
+											<Copy
+												className="text-foreground"
+												size={14}
+											/>
 										)}
 										<Text className="text-xs">
-											{copiedField === "mnemonic" ? "Copied" : "Copy Words"}
+											{copiedField === "mnemonic"
+												? "Copied"
+												: "Copy Words"}
 										</Text>
 									</Button>
 								</View>
@@ -238,23 +289,35 @@ export function VaultOnboardingScreen({
 						<>
 							<CardHeader className="text-center pb-2">
 								<View className="w-12 h-12 rounded-full bg-muted justify-center items-center mx-auto mb-2">
-									<Check className="text-foreground" size={24} />
+									<Check
+										className="text-foreground"
+										size={24}
+									/>
 								</View>
 								<CardTitle className="text-xl font-bold tracking-tight text-center">
 									Ready to Encrypt
 								</CardTitle>
 								<CardDescription className="text-center text-xs">
-									Please confirm you have backed up your recovery key.
+									Please confirm you have backed up your
+									recovery key.
 								</CardDescription>
 							</CardHeader>
 
 							<CardContent className="gap-3 pt-2">
 								<Button
-									variant={recoveryConfirmed ? "default" : "outline"}
+									variant={
+										recoveryConfirmed
+											? "default"
+											: "outline"
+									}
 									className="w-full h-10 flex-row gap-2"
-									onPress={() => setRecoveryConfirmed(!recoveryConfirmed)}
+									onPress={() =>
+										setRecoveryConfirmed(!recoveryConfirmed)
+									}
 								>
-									<View className={`w-4 h-4 rounded border ${recoveryConfirmed ? "border-primary-foreground bg-primary-foreground" : "border-border"}`} />
+									<View
+										className={`w-4 h-4 rounded border ${recoveryConfirmed ? "border-primary-foreground bg-primary-foreground" : "border-border"}`}
+									/>
 									<Text className="text-xs font-medium">
 										I have safely backed up my 12 words
 									</Text>
@@ -262,11 +325,15 @@ export function VaultOnboardingScreen({
 
 								<Button
 									className="w-full mt-2"
-									disabled={!recoveryConfirmed || isCreatingVault}
+									disabled={
+										!recoveryConfirmed || isCreatingVault
+									}
 									onPress={onFinish}
 								>
 									<Text className="font-semibold text-primary-foreground">
-										{isCreatingVault ? "Creating Vault..." : "Finish Setup"}
+										{isCreatingVault
+											? "Creating Vault..."
+											: "Finish Setup"}
 									</Text>
 								</Button>
 							</CardContent>

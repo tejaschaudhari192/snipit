@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ArrowLeft, Lock, Fingerprint } from "lucide-react-native";
+import { Lock, Fingerprint } from "lucide-react-native";
 import { UserSession } from "../core/vault-storage";
 import { ModernToggle } from "./ModernToggle";
 import {
@@ -58,20 +58,31 @@ export function VaultUnlockScreen({
 			edges={["top", "bottom", "left", "right"]}
 		>
 			<View className="flex-row items-center justify-between px-4 py-3 border-b border-border bg-background">
-				<Text className="text-base font-bold tracking-tight">Unlock Vault</Text>
+				<Text className="text-base font-bold tracking-tight">
+					Unlock Vault
+				</Text>
 				<Button
 					variant="outline"
 					size="sm"
 					className="h-8 px-3 min-w-[72px]"
 					onPress={user && onOpenProfile ? onOpenProfile : onOpenAuth}
 				>
-					<Text className="text-xs font-medium">{user ? (user.username || user.email?.split("@")[0] || "Account") : "Sign In"}</Text>
+					<Text className="text-xs font-medium">
+						{user
+							? user.username ||
+								user.email?.split("@")[0] ||
+								"Account"
+							: "Sign In"}
+					</Text>
 				</Button>
 			</View>
 
 			<ScrollView
 				className="flex-1 bg-background"
-				contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+				contentContainerStyle={{
+					flexGrow: 1,
+					justifyContent: "center",
+				}}
 				contentContainerClassName="max-w-sm w-full mx-auto"
 				showsVerticalScrollIndicator={false}
 			>
@@ -84,13 +95,16 @@ export function VaultUnlockScreen({
 							Welcome Back
 						</CardTitle>
 						<CardDescription className="text-center text-xs">
-							{user ? `${user.email} • ` : ""}Enter master password to unlock
+							{user ? `${user.email} • ` : ""}Enter master
+							password to unlock
 						</CardDescription>
 					</CardHeader>
 
 					<CardContent className="gap-3 pt-2">
 						{error ? (
-							<Text className="text-destructive text-xs text-center">{error}</Text>
+							<Text className="text-destructive text-xs text-center">
+								{error}
+							</Text>
 						) : null}
 
 						<FormPasswordInput
@@ -98,7 +112,9 @@ export function VaultUnlockScreen({
 							value={masterPassword}
 							onChangeText={setMasterPassword}
 							showPassword={showPassword}
-							onToggleShowPassword={() => setShowPassword(!showPassword)}
+							onToggleShowPassword={() =>
+								setShowPassword(!showPassword)
+							}
 							onSubmitEditing={onUnlock}
 							editable={!isDecrypting}
 						/>
@@ -110,21 +126,28 @@ export function VaultUnlockScreen({
 								onPress={onUnlock}
 							>
 								<Text className="font-semibold text-primary-foreground">
-									{isDecrypting ? "Decrypting..." : "Unlock Vault"}
+									{isDecrypting
+										? "Decrypting..."
+										: "Unlock Vault"}
 								</Text>
 							</Button>
 
-							{isBiometricAvailable && biometricsEnabled && onBiometricUnlock && (
-								<Button
-									variant="outline"
-									size="icon"
-									className="h-10 w-10 shrink-0"
-									disabled={isDecrypting}
-									onPress={onBiometricUnlock}
-								>
-									<Fingerprint className="text-foreground" size={20} />
-								</Button>
-							)}
+							{isBiometricAvailable &&
+								biometricsEnabled &&
+								onBiometricUnlock && (
+									<Button
+										variant="outline"
+										size="icon"
+										className="h-10 w-10 shrink-0"
+										disabled={isDecrypting}
+										onPress={onBiometricUnlock}
+									>
+										<Fingerprint
+											className="text-foreground"
+											size={20}
+										/>
+									</Button>
+								)}
 						</View>
 
 						{hasRecovery && (
@@ -146,9 +169,14 @@ export function VaultUnlockScreen({
 					<Card className="w-full mt-4 border-border bg-card py-3 px-4">
 						<View className="flex-row items-center justify-between">
 							<View className="flex-row items-center gap-2.5 flex-1 pr-2">
-								<Fingerprint className="text-foreground" size={18} />
+								<Fingerprint
+									className="text-foreground"
+									size={18}
+								/>
 								<View className="flex-1">
-									<Text className="text-xs font-semibold">Biometric Unlock</Text>
+									<Text className="text-xs font-semibold">
+										Biometric Unlock
+									</Text>
 									<Text className="text-[11px] text-muted-foreground">
 										Unlock with fingerprint or face ID
 									</Text>

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { CustomAlertModal, CustomAlertConfig } from "../components/CustomAlertModal";
+import { CustomAlertModal, CustomAlertConfig } from "../components/modals";
 
 export function useCustomAlert(theme: "dark" | "light" = "dark") {
 	const [alertConfig, setAlertConfig] = useState<CustomAlertConfig>({
@@ -16,7 +16,7 @@ export function useCustomAlert(theme: "dark" | "light" = "dark") {
 			title: string,
 			message?: string,
 			type: "info" | "success" | "warning" | "error" = "info",
-			buttons?: CustomAlertConfig["buttons"]
+			buttons?: CustomAlertConfig["buttons"],
 		) => {
 			// Wrap each button's onPress to auto-close before running the action
 			const wrappedButtons = buttons?.map((btn) => ({
@@ -36,18 +36,14 @@ export function useCustomAlert(theme: "dark" | "light" = "dark") {
 				message,
 				type,
 				buttons: wrappedButtons,
-				onDismiss: () => setAlertConfig((prev) => ({ ...prev, visible: false })),
+				onDismiss: () =>
+					setAlertConfig((prev) => ({ ...prev, visible: false })),
 			});
 		},
-		[]
+		[],
 	);
 
-	const alertModal = (
-		<CustomAlertModal
-			config={alertConfig}
-			theme={theme}
-		/>
-	);
+	const alertModal = <CustomAlertModal config={alertConfig} theme={theme} />;
 
 	return {
 		alertConfig,

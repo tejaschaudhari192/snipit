@@ -1,6 +1,15 @@
 import React from "react";
 import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
-import { Cloud, CheckCircle2, AlertCircle, User, RefreshCw, Shield, ChevronRight, Download } from "lucide-react-native";
+import {
+	Cloud,
+	CheckCircle2,
+	AlertCircle,
+	User,
+	RefreshCw,
+	Shield,
+	ChevronRight,
+	Download,
+} from "lucide-react-native";
 import { CONFIG } from "../config/configuration";
 import { ThemeColors } from "../config/theme";
 import { Card } from "./ui/card";
@@ -25,9 +34,14 @@ export function CloudSyncCard({
 	onOpenAuth,
 	onSyncNow,
 }: CloudSyncSectionProps) {
+	const textColor = c.text;
+	const textSecondary = c.textSecondary;
 	return (
 		<View className="mb-4">
-			<Text className={`text-[11px] font-bold tracking-wider mb-2 ml-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+			<Text
+				className={`text-[11px] font-bold tracking-wider mb-2 ml-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}
+				style={{ color: textSecondary }}
+			>
 				CLOUD SYNCHRONIZATION
 			</Text>
 			<Card className="p-4">
@@ -36,10 +50,16 @@ export function CloudSyncCard({
 						<Cloud color="#3b82f6" size={20} />
 					</View>
 					<View className="flex-1 ml-3">
-						<UIText className="text-[15px] font-semibold text-foreground">
+						<UIText
+							className="text-[15px] font-semibold text-foreground"
+							style={{ color: textColor }}
+						>
 							Cloud Sync Status
 						</UIText>
-						<UIText className="text-xs mt-0.5 text-muted-foreground">
+						<UIText
+							className="text-xs mt-0.5 text-muted-foreground"
+							style={{ color: textSecondary }}
+						>
 							{userToken
 								? syncStatus === "synced"
 									? "Fully synchronized with Snipit cloud"
@@ -60,7 +80,9 @@ export function CloudSyncCard({
 						onPress={onOpenAuth}
 					>
 						<User color="#fff" size={16} />
-						<Text className="text-white text-sm font-semibold">Sign In / Register to Sync</Text>
+						<Text className="text-white text-sm font-semibold">
+							Sign In / Register to Sync
+						</Text>
 					</TouchableOpacity>
 				)}
 
@@ -75,7 +97,9 @@ export function CloudSyncCard({
 						) : (
 							<>
 								<RefreshCw color="#fff" size={16} />
-								<Text className="text-white text-sm font-semibold">Sync with Cloud Now</Text>
+								<Text className="text-white text-sm font-semibold">
+									Sync with Cloud Now
+								</Text>
 							</>
 						)}
 					</TouchableOpacity>
@@ -91,27 +115,48 @@ interface VaultSecurityCardProps {
 	onOpenPasswordManager: () => void;
 }
 
-export function VaultSecurityCard({ c, isLight, onOpenPasswordManager }: VaultSecurityCardProps) {
+export function VaultSecurityCard({
+	c,
+	isLight,
+	onOpenPasswordManager,
+}: VaultSecurityCardProps) {
+	const textColor = c.text;
+	const textSecondary = c.textSecondary;
 	return (
 		<View className="mb-4">
-			<Text className={`text-[11px] font-bold tracking-wider mb-2 ml-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+			<Text
+				className={`text-[11px] font-bold tracking-wider mb-2 ml-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}
+				style={{ color: textSecondary }}
+			>
 				VAULT & SECURITY
 			</Text>
-			<TouchableOpacity activeOpacity={0.8} onPress={onOpenPasswordManager}>
+			<TouchableOpacity
+				activeOpacity={0.8}
+				onPress={onOpenPasswordManager}
+			>
 				<Card className="p-4">
 					<View className="flex-row items-center">
 						<View className="w-10 h-10 rounded-xl justify-center items-center bg-violet-500/15">
 							<Shield color="#8b5cf6" size={20} />
 						</View>
 						<View className="flex-1 ml-3">
-							<UIText className="text-[15px] font-semibold text-foreground">
+							<UIText
+								className="text-[15px] font-semibold text-foreground"
+								style={{ color: textColor }}
+							>
 								Snipit Password Vault
 							</UIText>
-							<UIText className="text-xs mt-0.5 text-muted-foreground">
+							<UIText
+								className="text-xs mt-0.5 text-muted-foreground"
+								style={{ color: textSecondary }}
+							>
 								Zero-knowledge encrypted passwords and cards
 							</UIText>
 						</View>
-						<ChevronRight color={isLight ? "#94a3b8" : "#64748b"} size={18} />
+						<ChevronRight
+							color={isLight ? "#94a3b8" : "#64748b"}
+							size={18}
+						/>
 					</View>
 				</Card>
 			</TouchableOpacity>
@@ -127,10 +172,21 @@ interface AppVersionCardProps {
 	onCheckUpdate: () => void;
 }
 
-export function AppVersionCard({ c, isLight, checkingUpdate, updateError, onCheckUpdate }: AppVersionCardProps) {
+export function AppVersionCard({
+	c,
+	isLight,
+	checkingUpdate,
+	updateError,
+	onCheckUpdate,
+}: AppVersionCardProps) {
+	const textColor = c.text;
+	const textSecondary = c.textSecondary;
 	return (
 		<View className="mb-4">
-			<Text className={`text-[11px] font-bold tracking-wider mb-2 ml-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+			<Text
+				className={`text-[11px] font-bold tracking-wider mb-2 ml-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}
+				style={{ color: textSecondary }}
+			>
 				APP & UPDATES
 			</Text>
 			<Card className={`p-4 ${updateError ? "border-red-500" : ""}`}>
@@ -140,14 +196,27 @@ export function AppVersionCard({ c, isLight, checkingUpdate, updateError, onChec
 							updateError ? "bg-red-500/15" : "bg-violet-500/15"
 						}`}
 					>
-						<Download color={updateError ? "#ef4444" : "#a855f7"} size={20} />
+						<Download
+							color={updateError ? "#ef4444" : "#a855f7"}
+							size={20}
+						/>
 					</View>
 					<View className="flex-1 ml-3">
-						<UIText className="text-[15px] font-semibold text-foreground">
+						<UIText
+							className="text-[15px] font-semibold text-foreground"
+							style={{ color: textColor }}
+						>
 							Version {CONFIG.APP_VERSION}
 						</UIText>
-						<UIText className={`text-xs mt-0.5 ${updateError ? "text-red-500" : "text-muted-foreground"}`}>
-							{updateError ? updateError : "Check for latest release & APK update"}
+						<UIText
+							className={`text-xs mt-0.5 ${updateError ? "text-red-500" : "text-muted-foreground"}`}
+							style={{
+								color: updateError ? c.red : textSecondary,
+							}}
+						>
+							{updateError
+								? updateError
+								: "Check for latest release & APK update"}
 						</UIText>
 					</View>
 					<TouchableOpacity

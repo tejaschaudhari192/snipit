@@ -20,12 +20,8 @@ interface NotesBulkActionBarProps {
 
 export function NotesBulkActionBar({
 	selectedCount,
-	totalNotesCount,
-	allSelected,
 	folders,
 	theme = "dark",
-	onSelectAll,
-	onCancel,
 	onPin,
 	onMove,
 	onDelete,
@@ -68,14 +64,29 @@ export function NotesBulkActionBar({
 				{/* 2. Move to (Unified CreatableCombobox) */}
 				<View className="flex-1 items-center justify-center">
 					<CreatableCombobox
-						options={folders.map((f) => ({ id: f.id, label: f.name, color: f.color }))}
+						options={folders.map((f) => ({
+							id: f.id,
+							label: f.name,
+							color: f.color,
+						}))}
 						onSelect={(id) => onMove(id ?? null)}
-						onCreate={onCreateFolder ? async (name, color) => {
-							const created = await onCreateFolder(name, color);
-							if (created && created.id) {
-								return { id: created.id, label: created.name, color: created.color };
-							}
-						} : undefined}
+						onCreate={
+							onCreateFolder
+								? async (name, color) => {
+										const created = await onCreateFolder(
+											name,
+											color,
+										);
+										if (created && created.id) {
+											return {
+												id: created.id,
+												label: created.name,
+												color: created.color,
+											};
+										}
+									}
+								: undefined
+						}
 						placeholder="Move to folder"
 						noneLabel="No Folder (Root)"
 						createLabel="Create new folder"
@@ -93,7 +104,9 @@ export function NotesBulkActionBar({
 								/>
 								<Text
 									className={`text-[11px] font-semibold tracking-tight ${
-										isLight ? "text-slate-800" : "text-slate-200"
+										isLight
+											? "text-slate-800"
+											: "text-slate-200"
 									}`}
 								>
 									Move to
@@ -109,11 +122,7 @@ export function NotesBulkActionBar({
 					onPress={onDelete}
 					activeOpacity={0.7}
 				>
-					<Trash2
-						color="#ef4444"
-						size={22}
-						strokeWidth={2.2}
-					/>
+					<Trash2 color="#ef4444" size={22} strokeWidth={2.2} />
 					<Text className="text-[11px] font-semibold tracking-tight text-red-500">
 						Delete
 					</Text>

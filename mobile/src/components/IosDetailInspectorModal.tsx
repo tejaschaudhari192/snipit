@@ -1,5 +1,13 @@
 import React, { useRef, useEffect, useCallback } from "react";
-import { View, ScrollView, TouchableOpacity, Pressable, PanResponder, Animated, Dimensions } from "react-native";
+import {
+	View,
+	ScrollView,
+	TouchableOpacity,
+	Pressable,
+	PanResponder,
+	Animated,
+	Dimensions,
+} from "react-native";
 import { X, Star, Eye, EyeOff, Copy, Check, Trash2 } from "lucide-react-native";
 import { Icon } from "./ui/icon";
 import { PasswordItem } from "../core/vault-storage";
@@ -27,8 +35,13 @@ interface Props {
 	onToggleCardNumber: () => void;
 	onToggleCardCVV: () => void;
 	onCopyToClipboard: (text: string, fieldId: string) => void;
-	getCategoryBadgeStyle: (category: PasswordItem["category"]) => any;
-	getCategoryIcon: (category: PasswordItem["category"], size?: number) => React.ReactNode;
+	getCategoryBadgeStyle?: (
+		category: PasswordItem["category"],
+	) => Record<string, string | number>;
+	getCategoryIcon: (
+		category: PasswordItem["category"],
+		size?: number,
+	) => React.ReactNode;
 }
 
 export function getCategoryItemLabel(cat: PasswordItem["category"]): string {
@@ -71,6 +84,7 @@ export function IosDetailInspectorModal({
 		lastItemRef.current = item;
 	}
 	const currentItem = item || lastItemRef.current;
+	const currentCategory = currentItem?.category ?? "login";
 
 	// Self-contained delete confirmation alert — avoids re-rendering PWMGScreen
 	const { showAlert, alertModal } = useCustomAlert(theme);
@@ -92,13 +106,14 @@ export function IosDetailInspectorModal({
 						onClose();
 					},
 				},
-			]
+			],
 		);
 	};
 
 	const SCREEN_HEIGHT = Dimensions.get("window").height;
 	const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
 	const [modalMounted, setModalMounted] = React.useState(false);
+	const categoryBadgeStyle = getCategoryBadgeStyle?.(currentCategory) ?? {};
 
 	// Manage mount/unmount separately from `visible` so we can animate in/out
 	useEffect(() => {
@@ -120,7 +135,7 @@ export function IosDetailInspectorModal({
 				setModalMounted(false);
 			});
 		}
-	}, [visible]);
+	}, [visible, SCREEN_HEIGHT, modalMounted, translateY]);
 
 	const handleRequestClose = useCallback(() => {
 		Animated.timing(translateY, {
@@ -138,7 +153,10 @@ export function IosDetailInspectorModal({
 		PanResponder.create({
 			onStartShouldSetPanResponder: () => false,
 			onMoveShouldSetPanResponder: (_, gestureState) => {
-				return gestureState.dy > 8 && Math.abs(gestureState.dy) > Math.abs(gestureState.dx) * 2;
+				return (
+					gestureState.dy > 8 &&
+					Math.abs(gestureState.dy) > Math.abs(gestureState.dx) * 2
+				);
 			},
 			onPanResponderMove: (_, gestureState) => {
 				if (gestureState.dy > 0) {
@@ -166,7 +184,7 @@ export function IosDetailInspectorModal({
 					}).start();
 				}
 			},
-		})
+		}),
 	).current;
 
 	if (!currentItem) return null;
@@ -177,7 +195,10 @@ export function IosDetailInspectorModal({
 			className="absolute inset-0 z-50 justify-end"
 			pointerEvents={visible ? "auto" : "none"}
 		>
-			<Pressable className="absolute inset-0 bg-black/70" onPress={handleRequestClose} />
+			<Pressable
+				className="absolute inset-0 bg-black/70"
+				onPress={handleRequestClose}
+			/>
 			<Animated.View
 				style={{ transform: [{ translateY }] }}
 				className="rounded-t-2xl max-h-[92%] min-h-[75%] bg-card border-t border-border z-10"
@@ -194,10 +215,17 @@ export function IosDetailInspectorModal({
 							onPress={handleRequestClose}
 							className="h-8 w-8"
 						>
-							<Icon as={X} className="text-foreground" size={18} />
+							<Icon
+								as={X}
+								className="text-foreground"
+								size={18}
+							/>
 						</Button>
 
-						<Text className="text-base font-semibold text-center flex-1 mx-3 text-foreground" numberOfLines={1}>
+						<Text
+							className="text-base font-semibold text-center flex-1 mx-3 text-foreground"
+							numberOfLines={1}
+						>
 							{currentItem.title}
 						</Text>
 
@@ -207,118 +235,210 @@ export function IosDetailInspectorModal({
 							onPress={() => onOpenEdit(currentItem)}
 							className="px-2"
 						>
-							<Text className="text-sm font-semibold text-foreground">Edit</Text>
+							<Text className="text-sm font-semibold text-foreground">
+								Edit
+							</Text>
 						</Button>
 					</View>
 				</View>
 
-					<ScrollView
-						className="flex-1"
-						contentContainerClassName="px-4 pt-4 pb-10"
-						showsVerticalScrollIndicator={false}
-					>
-						{/* Hero Brand Icon */}
-						<View className="items-center my-4">
-							<ItemAvatar
-								item={currentItem}
-								size={64}
-								fallbackIcon={
-									<View className="w-16 h-16 rounded-xl bg-muted items-center justify-center border border-border">
-										{getCategoryIcon(currentItem.category, 32)}
-									</View>
-								}
-							/>
-							<Text className="text-xl font-bold mt-3 text-center text-foreground">{currentItem.title}</Text>
-							{currentItem.isFavorite && (
-								<View className="flex-row items-center gap-1 bg-muted px-2.5 py-0.5 rounded-full mt-1.5 border border-border">
-									<Icon as={Star} className="text-foreground fill-foreground" size={12} />
-									<Text className="text-foreground text-xs font-medium">Favorite</Text>
+				<ScrollView
+					className="flex-1"
+					contentContainerClassName="px-4 pt-4 pb-10"
+					showsVerticalScrollIndicator={false}
+				>
+					{/* Hero Brand Icon */}
+					<View className="items-center my-4">
+						<ItemAvatar
+							item={currentItem}
+							size={64}
+							fallbackIcon={
+								<View className="w-16 h-16 rounded-xl bg-muted items-center justify-center border border-border">
+									{getCategoryIcon(currentCategory, 32)}
 								</View>
-							)}
+							}
+						/>
+						<View
+							className="mt-3 px-2.5 py-1 rounded-full border border-border"
+							style={categoryBadgeStyle}
+						>
+							<Text className="text-[10px] font-semibold uppercase tracking-[0.18em] text-foreground">
+								{getCategoryItemLabel(currentCategory)}
+							</Text>
 						</View>
-
-						{/* Credit Card Visual */}
-						{currentItem.category === "card" && (
-							<CreditCardVisual
-								cardNumber={currentItem.metadata?.cardNumber}
-								cardholderName={currentItem.metadata?.cardholderName}
-								expiration={currentItem.metadata?.expiration}
-								cvv={currentItem.metadata?.cvv}
-								showNumber={showCardNumber}
-								showCvv={showCardCVV}
-								copied={copiedField === "cardnum"}
-								onToggleNumber={onToggleCardNumber}
-								onToggleCvv={onToggleCardCVV}
-								onCopyCard={() =>
-									currentItem.metadata?.cardNumber && onCopyToClipboard(currentItem.metadata.cardNumber, "cardnum")
-								}
-							/>
+						<Text className="text-xl font-bold mt-3 text-center text-foreground">
+							{currentItem.title}
+						</Text>
+						{currentItem.isFavorite && (
+							<View className="flex-row items-center gap-1 bg-muted px-2.5 py-0.5 rounded-full mt-1.5 border border-border">
+								<Icon
+									as={Star}
+									className="text-foreground fill-foreground"
+									size={12}
+								/>
+								<Text className="text-foreground text-xs font-medium">
+									Favorite
+								</Text>
+							</View>
 						)}
+					</View>
 
-						{/* Primary Account Fields */}
-						{(currentItem.username || currentItem.password || currentItem.url) && (
-							<DetailGroupedCard theme={theme}>
-								{currentItem.username && (
-									<DetailGroupedRow
-										label="Email / Username"
-										value={currentItem.username}
-										theme={theme}
-										onCopy={() => onCopyToClipboard(currentItem.username!, "user")}
-										isCopied={copiedField === "user"}
-									/>
-								)}
+					{/* Credit Card Visual */}
+					{currentItem.category === "card" && (
+						<CreditCardVisual
+							cardNumber={currentItem.metadata?.cardNumber}
+							cardholderName={
+								currentItem.metadata?.cardholderName
+							}
+							expiration={currentItem.metadata?.expiration}
+							cvv={currentItem.metadata?.cvv}
+							showNumber={showCardNumber}
+							showCvv={showCardCVV}
+							copied={copiedField === "cardnum"}
+							onToggleNumber={onToggleCardNumber}
+							onToggleCvv={onToggleCardCVV}
+							onCopyCard={() =>
+								currentItem.metadata?.cardNumber &&
+								onCopyToClipboard(
+									currentItem.metadata.cardNumber,
+									"cardnum",
+								)
+							}
+						/>
+					)}
 
-								{currentItem.password && (
-									<DetailGroupedRow
-										label={currentItem.category === "apikey" ? "API Secret Key" : "Password"}
-										value={showPassword ? currentItem.password : "••••••••••••••••"}
-										theme={theme}
-										isDivider={!!currentItem.username}
-										isMasked={!showPassword}
-										rightAction={
-											<View className="flex-row items-center gap-3.5">
-												<TouchableOpacity onPress={onTogglePassword} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-													{showPassword ? (
-														<Icon as={EyeOff} className="text-muted-foreground" size={18} />
-													) : (
-														<Icon as={Eye} className="text-muted-foreground" size={18} />
-													)}
-												</TouchableOpacity>
-												<TouchableOpacity onPress={() => onCopyToClipboard(currentItem.password!, "pass")} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-													{copiedField === "pass" ? (
-														<Icon as={Check} className="text-foreground" size={18} />
-													) : (
-														<Icon as={Copy} className="text-muted-foreground" size={18} />
-													)}
-												</TouchableOpacity>
-											</View>
-										}
-									/>
-								)}
+					{/* Primary Account Fields */}
+					{(currentItem.username ||
+						currentItem.password ||
+						currentItem.url) && (
+						<DetailGroupedCard theme={theme}>
+							{currentItem.username && (
+								<DetailGroupedRow
+									label="Email / Username"
+									value={currentItem.username}
+									theme={theme}
+									onCopy={() =>
+										onCopyToClipboard(
+											currentItem.username!,
+											"user",
+										)
+									}
+									isCopied={copiedField === "user"}
+								/>
+							)}
 
-								{currentItem.url && (
-									<DetailGroupedRow
-										label="Website"
-										value={currentItem.url}
-										theme={theme}
-										isDivider={!!(currentItem.username || currentItem.password)}
-										isUrl
-										onCopy={() => onCopyToClipboard(currentItem.url!, "url")}
-										isCopied={copiedField === "url"}
-									/>
-								)}
-							</DetailGroupedCard>
-						)}
+							{currentItem.password && (
+								<DetailGroupedRow
+									label={
+										currentItem.category === "apikey"
+											? "API Secret Key"
+											: "Password"
+									}
+									value={
+										showPassword
+											? currentItem.password
+											: "••••••••••••••••"
+									}
+									theme={theme}
+									isDivider={!!currentItem.username}
+									isMasked={!showPassword}
+									rightAction={
+										<View className="flex-row items-center gap-3.5">
+											<TouchableOpacity
+												onPress={onTogglePassword}
+												hitSlop={{
+													top: 12,
+													bottom: 12,
+													left: 12,
+													right: 12,
+												}}
+											>
+												{showPassword ? (
+													<Icon
+														as={EyeOff}
+														className="text-muted-foreground"
+														size={18}
+													/>
+												) : (
+													<Icon
+														as={Eye}
+														className="text-muted-foreground"
+														size={18}
+													/>
+												)}
+											</TouchableOpacity>
+											<TouchableOpacity
+												onPress={() =>
+													onCopyToClipboard(
+														currentItem.password!,
+														"pass",
+													)
+												}
+												hitSlop={{
+													top: 12,
+													bottom: 12,
+													left: 12,
+													right: 12,
+												}}
+											>
+												{copiedField === "pass" ? (
+													<Icon
+														as={Check}
+														className="text-foreground"
+														size={18}
+													/>
+												) : (
+													<Icon
+														as={Copy}
+														className="text-muted-foreground"
+														size={18}
+													/>
+												)}
+											</TouchableOpacity>
+										</View>
+									}
+								/>
+							)}
 
-						{/* API Key Metadata */}
-						{currentItem.category === "apikey" && currentItem.metadata && (
+							{currentItem.url && (
+								<DetailGroupedRow
+									label="Website"
+									value={currentItem.url}
+									theme={theme}
+									isDivider={
+										!!(
+											currentItem.username ||
+											currentItem.password
+										)
+									}
+									isUrl
+									onCopy={() =>
+										onCopyToClipboard(
+											currentItem.url!,
+											"url",
+										)
+									}
+									isCopied={copiedField === "url"}
+								/>
+							)}
+						</DetailGroupedCard>
+					)}
+
+					{/* API Key Metadata */}
+					{currentItem.category === "apikey" &&
+						currentItem.metadata && (
 							<DetailGroupedCard theme={theme}>
 								{currentItem.metadata.keyId && (
 									<DetailGroupedRow
 										label="Key ID / Identifier"
 										value={currentItem.metadata.keyId}
 										theme={theme}
-										onCopy={() => onCopyToClipboard(currentItem.metadata!.keyId, "keyid")}
+										onCopy={() =>
+											onCopyToClipboard(
+												currentItem.metadata!.keyId,
+												"keyid",
+											)
+										}
 										isCopied={copiedField === "keyid"}
 									/>
 								)}
@@ -333,18 +453,25 @@ export function IosDetailInspectorModal({
 							</DetailGroupedCard>
 						)}
 
-						{/* Identity Metadata */}
-						{currentItem.category === "identity" && currentItem.metadata && (
+					{/* Identity Metadata */}
+					{currentItem.category === "identity" &&
+						currentItem.metadata && (
 							<DetailGroupedCard theme={theme}>
 								{currentItem.metadata.fullName && (
-									<DetailGroupedRow label="Full Name" value={currentItem.metadata.fullName} theme={theme} />
+									<DetailGroupedRow
+										label="Full Name"
+										value={currentItem.metadata.fullName}
+										theme={theme}
+									/>
 								)}
 								{currentItem.metadata.phone && (
 									<DetailGroupedRow
 										label="Phone Number"
 										value={currentItem.metadata.phone}
 										theme={theme}
-										isDivider={!!currentItem.metadata.fullName}
+										isDivider={
+											!!currentItem.metadata.fullName
+										}
 									/>
 								)}
 								{currentItem.metadata.address && (
@@ -352,21 +479,31 @@ export function IosDetailInspectorModal({
 										label="Physical Address"
 										value={currentItem.metadata.address}
 										theme={theme}
-										isDivider={!!(currentItem.metadata.fullName || currentItem.metadata.phone)}
+										isDivider={
+											!!(
+												currentItem.metadata.fullName ||
+												currentItem.metadata.phone
+											)
+										}
 									/>
 								)}
 							</DetailGroupedCard>
 						)}
 
-						{/* Notes */}
-						{currentItem.notes && (
-							<DetailGroupedCard theme={theme}>
-								<DetailGroupedRow label="Notes" value={currentItem.notes} theme={theme} />
-							</DetailGroupedCard>
-						)}
+					{/* Notes */}
+					{currentItem.notes && (
+						<DetailGroupedCard theme={theme}>
+							<DetailGroupedRow
+								label="Notes"
+								value={currentItem.notes}
+								theme={theme}
+							/>
+						</DetailGroupedCard>
+					)}
 
-						{/* Custom Fields */}
-						{currentItem.customFields && currentItem.customFields.length > 0 && (
+					{/* Custom Fields */}
+					{currentItem.customFields &&
+						currentItem.customFields.length > 0 && (
 							<DetailGroupedCard theme={theme}>
 								{currentItem.customFields.map((cf, idx) => (
 									<DetailGroupedRow
@@ -375,37 +512,64 @@ export function IosDetailInspectorModal({
 										value={cf.value || "—"}
 										theme={theme}
 										isDivider={idx > 0}
-										onCopy={cf.value ? () => onCopyToClipboard(cf.value, `cf_${idx}`) : undefined}
+										onCopy={
+											cf.value
+												? () =>
+														onCopyToClipboard(
+															cf.value,
+															`cf_${idx}`,
+														)
+												: undefined
+										}
 										isCopied={copiedField === `cf_${idx}`}
 									/>
 								))}
 							</DetailGroupedCard>
 						)}
 
-						{/* Actions (Favorite & Delete) */}
-						<Card className="border-border bg-card overflow-hidden mt-4">
-							<TouchableOpacity className="flex-row items-center gap-3 px-4 py-3.5" onPress={() => onToggleFavorite(currentItem)} activeOpacity={0.7}>
-								<Icon
-									as={Star}
-									className={currentItem.isFavorite ? "text-foreground fill-foreground" : "text-muted-foreground"}
-									size={18}
-								/>
-								<Text className="text-sm font-medium text-foreground">
-									{currentItem.isFavorite ? "Remove from Favorites" : "Add to Favorites"}
-								</Text>
-							</TouchableOpacity>
+					{/* Actions (Favorite & Delete) */}
+					<Card className="border-border bg-card overflow-hidden mt-4">
+						<TouchableOpacity
+							className="flex-row items-center gap-3 px-4 py-3.5"
+							onPress={() => onToggleFavorite(currentItem)}
+							activeOpacity={0.7}
+						>
+							<Icon
+								as={Star}
+								className={
+									currentItem.isFavorite
+										? "text-foreground fill-foreground"
+										: "text-muted-foreground"
+								}
+								size={18}
+							/>
+							<Text className="text-sm font-medium text-foreground">
+								{currentItem.isFavorite
+									? "Remove from Favorites"
+									: "Add to Favorites"}
+							</Text>
+						</TouchableOpacity>
 
-							<View className="border-t border-border" />
+						<View className="border-t border-border" />
 
-							<TouchableOpacity className="flex-row items-center gap-3 px-4 py-3.5" onPress={handleDeletePress} activeOpacity={0.7}>
-								<Icon as={Trash2} className="text-destructive" size={18} />
-								<Text className="text-sm font-medium text-destructive">
-									Delete {getCategoryItemLabel(currentItem.category)}
-								</Text>
-							</TouchableOpacity>
-						</Card>
-					</ScrollView>
-				</Animated.View>
+						<TouchableOpacity
+							className="flex-row items-center gap-3 px-4 py-3.5"
+							onPress={handleDeletePress}
+							activeOpacity={0.7}
+						>
+							<Icon
+								as={Trash2}
+								className="text-destructive"
+								size={18}
+							/>
+							<Text className="text-sm font-medium text-destructive">
+								Delete{" "}
+								{getCategoryItemLabel(currentItem.category)}
+							</Text>
+						</TouchableOpacity>
+					</Card>
+				</ScrollView>
+			</Animated.View>
 			{/* Delete confirmation alert — isolated in modal tree, not PWMGScreen */}
 			{alertModal}
 		</View>

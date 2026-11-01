@@ -46,14 +46,14 @@ export function MobileSplashScreen({
 				duration: 1200,
 				easing: Easing.linear,
 				useNativeDriver: true,
-			})
+			}),
 		);
 		shimmerLoop.start();
 
 		return () => {
 			shimmerLoop.stop();
 		};
-	}, []);
+	}, [scaleAnim, shimmerAnim]);
 
 	// Asymptotic realistic progression toward 100%, exactly like VaultProgressLoader
 	useEffect(() => {
@@ -110,7 +110,7 @@ export function MobileSplashScreen({
 			]).start();
 			prevLabelRef.current = label;
 		}
-	}, [label]);
+	}, [label, labelFadeAnim, labelScaleAnim]);
 
 	// Completion handling with fade-out
 	useEffect(() => {
@@ -126,7 +126,7 @@ export function MobileSplashScreen({
 			}, 400);
 			return () => clearTimeout(timer);
 		}
-	}, [isCompleted, onComplete]);
+	}, [isCompleted, onComplete, fadeAnim]);
 
 	// Animate progress width
 	useEffect(() => {
@@ -135,7 +135,7 @@ export function MobileSplashScreen({
 			duration: 60,
 			useNativeDriver: false,
 		}).start();
-	}, [displayProgress]);
+	}, [displayProgress, progressAnim]);
 
 	const activeLabel = isError
 		? errorMessage
@@ -214,9 +214,13 @@ export function MobileSplashScreen({
 									width: progressWidthPercent,
 									height: "100%",
 									borderRadius: 999,
-									backgroundColor: isError ? "#ef4444" : "#3b82f6",
+									backgroundColor: isError
+										? "#ef4444"
+										: "#3b82f6",
 									overflow: "hidden",
-									shadowColor: isError ? "#ef4444" : "#3b82f6",
+									shadowColor: isError
+										? "#ef4444"
+										: "#3b82f6",
 									shadowOffset: { width: 0, height: 0 },
 									shadowOpacity: 0.8,
 									shadowRadius: 6,
@@ -231,8 +235,14 @@ export function MobileSplashScreen({
 											top: 0,
 											bottom: 0,
 											width: 80,
-											backgroundColor: "rgba(255, 255, 255, 0.4)",
-											transform: [{ translateX: shimmerTranslateX }],
+											backgroundColor:
+												"rgba(255, 255, 255, 0.4)",
+											transform: [
+												{
+													translateX:
+														shimmerTranslateX,
+												},
+											],
 										}}
 									/>
 								)}
