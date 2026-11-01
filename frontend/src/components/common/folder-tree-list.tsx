@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Folder, ChevronRight, ChevronDown, Plus, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useFolders } from "@/context/FolderContext";
+import { useAuth } from "@/context/AuthContext";
 import { CreateFolderDialog } from "@/components/profile/create-folder-dialog";
 import { cn } from "cn";
 
@@ -21,7 +22,8 @@ export const FolderTreeList: React.FC<FolderTreeListProps> = ({
 	onSelect,
 }) => {
 	const { t } = useTranslation();
-	const { folders, getHierarchicalOptions } = useFolders();
+	const { user } = useAuth();
+	const { folders, getHierarchicalOptions, loadingTree } = useFolders();
 	const [expandedFolders, setExpandedFolders] = useState<
 		Record<string, boolean>
 	>({});
@@ -90,90 +92,132 @@ export const FolderTreeList: React.FC<FolderTreeListProps> = ({
 				</div>
 			</button>
 
-			{folderOptions.map((f) => {
-				const isSelected = folderId === f._id;
-				const isExpanded = !!expandedFolders[f._id];
-				const disabled = isFolderDisabled(f._id);
+			{/* Loading Skeleton */}
+			{loadingTree && (
+				<div className="py-1 px-2 space-y-1.5 animate-pulse">
+					<div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-muted/40">
+						<div className="w-3.5 h-3.5 rounded bg-muted-foreground/20" />
+						<div className="h-3 w-24 rounded bg-muted-foreground/20" />
+					</div>
+					<div className="flex items-center gap-2 pl-6 pr-2 py-1.5 rounded-lg bg-muted/30">
+						<div className="w-3.5 h-3.5 rounded bg-muted-foreground/15" />
+						<div className="h-3 w-28 rounded bg-muted-foreground/15" />
+					</div>
+					<div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-muted/20">
+						<div className="w-3.5 h-3.5 rounded bg-muted-foreground/10" />
+						<div className="h-3 w-20 rounded bg-muted-foreground/10" />
+					</div>
+				</div>
+			)}
 
-				return (
-					<button
-						key={f._id}
-						type="button"
-						disabled={disabled}
-						onClick={() => {
-							if (!disabled) {
-								setFolderId?.(f._id);
-								onSelect?.();
-							}
-						}}
-						className={cn(
-							"w-full text-left py-2 pr-3 rounded-lg text-xs font-bold flex items-center justify-between transition-colors duration-150 group/item",
-							isSelected
-								? "bg-primary/10 text-primary font-bold"
-								: "text-foreground/80 hover:bg-primary/5 hover:text-primary",
-							disabled &&
-								"opacity-50 cursor-not-allowed hover:bg-transparent hover:text-foreground/80",
-						)}
-						style={{ paddingLeft: `${f.depth * 14 + 6}px` }}
-					>
-						<div className="flex items-center gap-1.5 min-w-0 flex-1">
-							{/* Toggle Expand Arrow */}
-							<div
-								onClick={(e) => {
-									e.stopPropagation();
-									e.preventDefault();
-									setExpandedFolders((prev) => ({
-										...prev,
-										[f._id]: !prev[f._id],
-									}));
-								}}
-								className={cn(
-									"w-4 h-4 flex items-center justify-center rounded text-muted-foreground/60 hover:bg-muted shrink-0 cursor-pointer",
-									f.hasChildren
-										? "opacity-100"
-										: "opacity-0 pointer-events-none",
-								)}
-							>
-								{isExpanded ? (
-									<ChevronDown className="w-3 h-3" />
-								) : (
-									<ChevronRight className="w-3 h-3" />
-								)}
+			{/* Folders List */}
+			{!loadingTree &&
+				folderOptions.map((f) => {
+					const isSelected = folderId === f._id;
+					const isExpanded = !!expandedFolders[f._id];
+					const disabled = isFolderDisabled(f._id);
+
+					return (
+						<button
+							key={f._id}
+							type="button"
+							disabled={disabled}
+							onClick={() => {
+								if (!disabled) {
+									setFolderId?.(f._id);
+									onSelect?.();
+								}
+							}}
+							className={cn(
+								"w-full text-left py-2 pr-3 rounded-lg text-xs font-bold flex items-center justify-between transition-colors duration-150 group/item",
+								isSelected
+									? "bg-primary/10 text-primary font-bold"
+									: "text-foreground/80 hover:bg-primary/5 hover:text-primary",
+								disabled &&
+									"opacity-50 cursor-not-allowed hover:bg-transparent hover:text-foreground/80",
+							)}
+							style={{ paddingLeft: `${f.depth * 14 + 6}px` }}
+						>
+							<div className="flex items-center gap-1.5 min-w-0 flex-1">
+								{/* Toggle Expand Arrow */}
+								<div
+									onClick={(e) => {
+										e.stopPropagation();
+										e.preventDefault();
+										setExpandedFolders((prev) => ({
+											...prev,
+											[f._id]: !prev[f._id],
+										}));
+									}}
+									className={cn(
+										"w-4 h-4 flex items-center justify-center rounded text-muted-foreground/60 hover:bg-muted shrink-0 cursor-pointer",
+										f.hasChildren
+											? "opacity-100"
+											: "opacity-0 pointer-events-none",
+									)}
+								>
+									{isExpanded ? (
+										<ChevronDown className="w-3 h-3" />
+									) : (
+										<ChevronRight className="w-3 h-3" />
+									)}
+								</div>
+
+								<Folder
+									className="w-3.5 h-3.5 shrink-0"
+									style={{
+										color:
+											f.color ||
+											(isSelected
+												? "currentColor"
+												: "var(--color-primary)"),
+									}}
+								/>
+								<span className="truncate">{f.name}</span>
 							</div>
 
-							<Folder
-								className="w-3.5 h-3.5 shrink-0"
-								style={{
-									color:
-										f.color ||
-										(isSelected
-											? "currentColor"
-											: "var(--color-primary)"),
-								}}
-							/>
-							<span className="truncate">{f.name}</span>
-						</div>
+							{/* Selected Checkmark & Hover Actions */}
+							<div className="flex items-center gap-1 shrink-0">
+								{isSelected && (
+									<Check className="w-3.5 h-3.5 text-primary shrink-0" />
+								)}
+								{!disabled && (
+									<div
+										onClick={(e) =>
+											handleCreateClick(e, f._id)
+										}
+										className="p-1 rounded-md text-muted-foreground/60 hover:text-primary hover:bg-primary/10 opacity-0 group-hover/item:opacity-100 transition-all cursor-pointer shrink-0"
+										title={t(
+											"profile.enter_subfolder_name",
+											{
+												name: f.name,
+											},
+										)}
+									>
+										<Plus className="w-3 h-3" />
+									</div>
+								)}
+							</div>
+						</button>
+					);
+				})}
 
-						{/* Selected Checkmark & Hover Actions */}
-						<div className="flex items-center gap-1 shrink-0">
-							{isSelected && (
-								<Check className="w-3.5 h-3.5 text-primary shrink-0" />
-							)}
-							{!disabled && (
-								<div
-									onClick={(e) => handleCreateClick(e, f._id)}
-									className="p-1 rounded-md text-muted-foreground/60 hover:text-primary hover:bg-primary/10 opacity-0 group-hover/item:opacity-100 transition-all cursor-pointer shrink-0"
-									title={t("profile.enter_subfolder_name", {
-										name: f.name,
-									})}
-								>
-									<Plus className="w-3 h-3" />
-								</div>
-							)}
-						</div>
-					</button>
-				);
-			})}
+			{/* Empty / Guest Notice */}
+			{!loadingTree && folderOptions.length === 0 && (
+				<div className="px-3 py-2.5 text-center">
+					{user ? (
+						<p className="text-[11px] text-muted-foreground">
+							{t("folders.empty_hint") ||
+								"No folders yet. Click the + icon above to start organizing."}
+						</p>
+					) : (
+						<p className="text-[11px] text-muted-foreground">
+							{t("common.auth.auth_required") ||
+								"Sign in to organize snippets into folders"}
+						</p>
+					)}
+				</div>
+			)}
 
 			<CreateFolderDialog
 				open={createDialogOpen}

@@ -9,6 +9,7 @@ import {
 	Folder,
 	ChevronDown,
 	HelpCircle,
+	Loader2,
 } from "lucide-react";
 import { cn } from "cn";
 import { LockedSettingWrapper } from "@/components/common/locked-setting-wrapper";
@@ -175,7 +176,7 @@ export const AdvancedConfigGrid = ({
 	const { t } = useTranslation();
 	const { user } = useAuth();
 	const navigate = useNavigate();
-	const { folders } = useFolders();
+	const { folders, loadTree, loadingTree, hasLoadedTree } = useFolders();
 	const [folderPopoverOpen, setFolderPopoverOpen] = useState(false);
 
 	const isIdDisabled = disabled || (!isOwner && !isAdmin);
@@ -221,7 +222,17 @@ export const AdvancedConfigGrid = ({
 					/>
 					<Popover
 						open={folderPopoverOpen}
-						onOpenChange={setFolderPopoverOpen}
+						onOpenChange={(open) => {
+							setFolderPopoverOpen(open);
+							if (
+								open &&
+								user &&
+								!hasLoadedTree &&
+								!loadingTree
+							) {
+								loadTree();
+							}
+						}}
 					>
 						<PopoverTrigger
 							className={cn(
@@ -248,7 +259,11 @@ export const AdvancedConfigGrid = ({
 										: t("profile.root_no_folder")}
 								</span>
 							</div>
-							<ChevronDown className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+							{loadingTree ? (
+								<Loader2 className="w-3.5 h-3.5 text-primary animate-spin shrink-0" />
+							) : (
+								<ChevronDown className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+							)}
 						</PopoverTrigger>
 						<PopoverContent
 							align="start"

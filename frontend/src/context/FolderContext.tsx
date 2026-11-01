@@ -32,6 +32,7 @@ interface FolderContextType {
 	currentFolderContents: { subfolders: FolderData[]; snippets: PasteData[] };
 	activeFolderId: string | null;
 	loadingTree: boolean;
+	hasLoadedTree: boolean;
 	loadingContents: boolean;
 	setActiveFolderId: (id: string | null) => void;
 	loadTree: () => Promise<void>;
@@ -76,6 +77,7 @@ export const FolderProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
 	const [loadingTree, setLoadingTree] = useState(false);
+	const [hasLoadedTree, setHasLoadedTree] = useState(false);
 	const [loadingContents, setLoadingContents] = useState(false);
 
 	const loadTree = useCallback(async () => {
@@ -84,6 +86,7 @@ export const FolderProvider: React.FC<{ children: React.ReactNode }> = ({
 		try {
 			const res = await foldersApi.getFoldersTree();
 			setFolders(res.folders);
+			setHasLoadedTree(true);
 		} catch (error) {
 			console.error("Error loading folders:", error);
 		} finally {
@@ -113,6 +116,7 @@ export const FolderProvider: React.FC<{ children: React.ReactNode }> = ({
 			setFolders([]);
 			setCurrentFolderContents({ subfolders: [], snippets: [] });
 			setActiveFolderId(null);
+			setHasLoadedTree(false);
 		}
 	}, [user]);
 
@@ -412,6 +416,7 @@ export const FolderProvider: React.FC<{ children: React.ReactNode }> = ({
 				currentFolderContents,
 				activeFolderId,
 				loadingTree,
+				hasLoadedTree,
 				loadingContents,
 				setActiveFolderId,
 				loadTree,
