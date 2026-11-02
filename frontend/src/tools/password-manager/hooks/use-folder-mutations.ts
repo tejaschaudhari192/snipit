@@ -87,5 +87,25 @@ export function useFolderMutations() {
 		[vault, dispatch],
 	);
 
-	return { createFolder, editFolder, deleteFolder };
+	const reorderFolders = useCallback(
+		(newFolders: Folder[]) => {
+			if (!vault) return;
+			dispatch(
+				setVault({
+					folders: newFolders,
+				}),
+			);
+			dispatch(persistFolders(newFolders))
+				.unwrap()
+				.catch((err) =>
+					toast.add({
+						title: err.message || "Failed to save folder order",
+						type: "error",
+					}),
+				);
+		},
+		[vault, dispatch],
+	);
+
+	return { createFolder, editFolder, deleteFolder, reorderFolders };
 }

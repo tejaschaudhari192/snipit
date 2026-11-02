@@ -8,6 +8,7 @@ import {
 	Globe,
 	Share2,
 	FolderPlus,
+	ArrowLeft,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -65,12 +66,14 @@ interface PasswordDetailProps {
 	item: PasswordItem | null | undefined;
 	isNew: boolean;
 	onSave: (item: PasswordItem) => void;
+	onBack?: () => void;
 }
 
 export default function PasswordDetail({
 	item,
 	isNew,
 	onSave,
+	onBack,
 }: PasswordDetailProps) {
 	const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 	const [folderModalOpen, setFolderModalOpen] = useState(false);
@@ -87,8 +90,18 @@ export default function PasswordDetail({
 		const isExistingItem = !!(item && item.createdAt);
 		return (
 			<div className="flex flex-col h-full bg-background">
-				<div className="flex items-center justify-between p-5 border-b border-border">
-					<h2 className="text-sm font-semibold flex-1">
+				<div className="flex items-center justify-between p-5 border-b border-border gap-3">
+					{onBack && (
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={onBack}
+							className="h-8 w-8 text-muted-foreground hover:text-foreground shrink-0"
+						>
+							<ArrowLeft className="h-4 w-4" />
+						</Button>
+					)}
+					<h2 className="text-sm font-semibold flex-1 truncate">
 						{isExistingItem
 							? t("tools.password_manager.edit_title")
 							: t("tools.password_manager.new_title")}
@@ -142,6 +155,16 @@ export default function PasswordDetail({
 			<div className="flex flex-col h-full bg-background/95 backdrop-blur-xl text-foreground">
 				{/* Header Actions */}
 				<div className="flex items-center gap-3 p-5 border-b border-border/40 bg-muted/20">
+					{onBack && (
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={onBack}
+							className="h-8 w-8 text-muted-foreground hover:text-foreground shrink-0"
+						>
+							<ArrowLeft className="h-4 w-4" />
+						</Button>
+					)}
 					<div className="flex-1 min-w-0 flex items-center justify-end gap-2">
 						<div className="w-32">
 							<Select

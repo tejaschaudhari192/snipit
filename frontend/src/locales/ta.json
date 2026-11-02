@@ -457,7 +457,9 @@
 				"success_desc": "{{count}} உருப்படி(கள்) வெற்றிகரமாக JSON வடிவில் ஏற்றுமதி செய்யப்பட்டது.",
 				"failed_title": "ஏற்றுமதி தோல்வியடைந்தது"
 			},
-			"categories": "வகைகள்"
+			"categories": "வகைகள்",
+			"reorder": "மறுவரிசைப்படுத்து",
+			"reorder_sidebar_hint": "மறுவரிசைப்படுத்த இழுக்கவும்"
 		},
 		"password_generator": {
 			"title": "கடவுச்சொல் ஜெனரேட்டர்",

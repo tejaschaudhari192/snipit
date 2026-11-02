@@ -456,7 +456,9 @@
 			"moved_n_items": "Moved {{count}} item{{s}} to {{folder}}",
 			"failed_to_delete_items": "Failed to delete {{count}} item{{s}}.",
 			"deleted_n_items": "Deleted {{count}} item{{s}}",
-			"categories": "Categories"
+			"categories": "Categories",
+			"reorder": "Reorder",
+			"reorder_sidebar_hint": "Drag items to reorder"
 		},
 		"password_generator": {
 			"title": "Password Generator",

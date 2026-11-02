@@ -456,7 +456,9 @@
 				"success_desc": "{{count}} Element{{s}} erfolgreich als JSON exportiert.",
 				"failed_title": "Export fehlgeschlagen"
 			},
-			"categories": "Kategorien"
+			"categories": "Kategorien",
+			"reorder": "Neu anordnen",
+			"reorder_sidebar_hint": "Elemente zum Neuanordnen ziehen"
 		},
 		"password_generator": {
 			"title": "Passwort-Generator",

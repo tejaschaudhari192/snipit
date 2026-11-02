@@ -457,7 +457,9 @@
 				"success_desc": "{{count}} ഇനം വിജയകരമായി JSON ആയി എക്സ്പോർട്ട് ചെയ്തു.",
 				"failed_title": "എക്സ്പോർട്ട് പരാജയപ്പെട്ടു"
 			},
-			"categories": "വിഭാഗങ്ങൾ"
+			"categories": "വിഭാഗങ്ങൾ",
+			"reorder": "പുനഃക്രമീകരിക്കുക",
+			"reorder_sidebar_hint": "മാറ്റാൻ വലിച്ചിടുക"
 		},
 		"password_generator": {
 			"title": "പാസ്‌വേഡ് ജനറേറ്റർ",

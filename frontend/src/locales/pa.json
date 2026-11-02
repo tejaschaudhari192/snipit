@@ -457,7 +457,9 @@
 				"success_desc": "{{count}} ਆਈਟਮਾਂ ਨੂੰ JSON ਵਜੋਂ ਸਫਲਤਾਪੂਰਵਕ ਨਿਰਯਾਤ ਕੀਤਾ ਗਿਆ।",
 				"failed_title": "ਨਿਰਯਾਤ ਅਸਫਲ ਰਿਹਾ"
 			},
-			"categories": "ਸ਼੍ਰੇਣੀਆਂ"
+			"categories": "ਸ਼੍ਰੇਣੀਆਂ",
+			"reorder": "ਮੁੜ ਕ੍ਰਮਬੱਧ ਕਰੋ",
+			"reorder_sidebar_hint": "ਕ੍ਰਮ ਬਦਲਣ ਲਈ ਖਿੱਚੋ"
 		},
 		"password_generator": {
 			"title": "ਪਾਸਵਰਡ ਜਨਰੇਟਰ",

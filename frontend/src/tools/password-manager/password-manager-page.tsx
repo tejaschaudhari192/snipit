@@ -182,6 +182,9 @@ function PasswordManagerInner() {
 										item={activeItem}
 										isNew={isNewItem}
 										onSave={saveItem}
+										onBack={() =>
+											dispatch(handleCancelDetail())
+										}
 									/>
 								</Suspense>
 							</div>
@@ -210,7 +213,7 @@ function PasswordManagerInner() {
 				) : (
 					<div className="flex-1 flex overflow-hidden bg-pm-surface">
 						{/* Sidebar */}
-						<div className="w-60 shrink-0 h-full overflow-hidden border-r border-pm-border flex flex-col bg-pm-sidebar shadow-sm z-10">
+						<div className="w-64 shrink-0 h-full overflow-hidden border-r border-pm-border flex flex-col bg-pm-sidebar shadow-sm z-10">
 							<SidebarProvider className="min-h-0 h-full w-full">
 								<Suspense fallback={<SidebarSkeleton />}>
 									<PasswordSidebar />

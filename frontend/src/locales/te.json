@@ -457,7 +457,9 @@
 				"success_desc": "{{count}} అంశం(లు) విజయవంతంగా JSON గా ఎగుమతి చేయబడ్డాయి.",
 				"failed_title": "ఎగుమతి విఫలమైంది"
 			},
-			"categories": "వర్గాలు"
+			"categories": "వర్గాలు",
+			"reorder": "మళ్లీ క్రమబద్ధీకరించండి",
+			"reorder_sidebar_hint": "క్రమాన్ని మార్చడానికి లాగండి"
 		},
 		"password_generator": {
 			"title": "పాస్‌వర్డ్ జెనరేటర్",
