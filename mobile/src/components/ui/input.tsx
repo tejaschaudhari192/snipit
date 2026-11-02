@@ -1,14 +1,21 @@
 import { cn } from "@/lib/utils";
 import { Platform, TextInput } from "react-native";
 
-function Input({
-	className,
-	...props
-}: React.ComponentProps<typeof TextInput> & React.RefAttributes<TextInput>) {
+interface InputProps
+	extends
+		React.ComponentProps<typeof TextInput>,
+		React.RefAttributes<TextInput> {
+	hasError?: boolean;
+}
+
+function Input({ className, hasError, ...props }: InputProps) {
 	return (
 		<TextInput
 			className={cn(
-				"dark:bg-input/30 border-input bg-background text-foreground flex h-10 w-full min-w-0 flex-row items-center rounded-md border px-3 py-1 text-base leading-5 shadow-sm shadow-black/5 sm:h-9",
+				"dark:bg-input/30 bg-background text-foreground flex h-10 w-full min-w-0 flex-row items-center rounded-md border px-3 py-1 text-base leading-5 shadow-sm shadow-black/5 sm:h-9",
+				hasError
+					? "border-destructive ring-1 ring-destructive/40"
+					: "border-input",
 				props.editable === false &&
 					cn(
 						"opacity-50",

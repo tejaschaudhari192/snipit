@@ -1,71 +1,72 @@
 import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Text } from "@/components/ui/text";
 import * as React from "react";
 import { View } from "react-native";
+import { AuthCardWrapper } from "./auth-card-wrapper";
 
-export function ResetPasswordForm() {
+export interface ResetPasswordFormProps {
+	onSubmit?: () => void;
+	loading?: boolean;
+	error?: string;
+	onNavigateToSignIn?: () => void;
+}
+
+export function ResetPasswordForm({
+	onSubmit,
+	loading = false,
+	error,
+	onNavigateToSignIn,
+}: ResetPasswordFormProps) {
 	const codeInputRef = React.useRef<any>(null);
 
 	function onPasswordSubmitEditing() {
 		codeInputRef.current?.focus();
 	}
 
-	function onSubmit() {
-		// TODO: Submit form and navigate to protected screen if successful
-	}
-
 	return (
-		<View className="gap-6">
-			<Card className="border-border/0 sm:border-border shadow-none sm:shadow-sm sm:shadow-black/5">
-				<CardHeader>
-					<CardTitle className="text-center text-xl sm:text-left">
-						Reset password
-					</CardTitle>
-					<CardDescription className="text-center sm:text-left">
-						Enter the code sent to your email and set a new password
-					</CardDescription>
-				</CardHeader>
-				<CardContent className="gap-6">
-					<View className="gap-6">
-						<View className="gap-1.5">
-							<View className="flex-row items-center">
-								<Label htmlFor="password">New password</Label>
-							</View>
-							<Input
-								id="password"
-								secureTextEntry
-								returnKeyType="next"
-								submitBehavior="submit"
-								onSubmitEditing={onPasswordSubmitEditing}
-							/>
-						</View>
-						<View className="gap-1.5">
-							<Label htmlFor="code">Verification code</Label>
-							<Input
-								id="code"
-								autoCapitalize="none"
-								returnKeyType="send"
-								keyboardType="numeric"
-								autoComplete="sms-otp"
-								textContentType="oneTimeCode"
-								onSubmitEditing={onSubmit}
-							/>
-						</View>
-						<Button className="w-full" onPress={onSubmit}>
-							<Text>Reset Password</Text>
-						</Button>
-					</View>
-				</CardContent>
-			</Card>
-		</View>
+		<AuthCardWrapper
+			title="Reset password"
+			description="Enter the code sent to your email and set a new password"
+			error={error}
+			showSocial={false}
+		>
+			<PasswordInput
+				id="password"
+				label="New password"
+				placeholder="Enter new password"
+				returnKeyType="next"
+				submitBehavior="submit"
+				onSubmitEditing={onPasswordSubmitEditing}
+			/>
+
+			<View className="gap-1.5">
+				<Label htmlFor="code">Verification code</Label>
+				<Input
+					ref={codeInputRef}
+					id="code"
+					autoCapitalize="none"
+					returnKeyType="send"
+					keyboardType="numeric"
+					autoComplete="sms-otp"
+					textContentType="oneTimeCode"
+					onSubmitEditing={onSubmit}
+				/>
+			</View>
+
+			<Button className="w-full" disabled={loading} onPress={onSubmit}>
+				<Text>{loading ? "Please wait..." : "Reset Password"}</Text>
+			</Button>
+
+			{onNavigateToSignIn ? (
+				<Button variant="ghost" size="sm" onPress={onNavigateToSignIn}>
+					<Text className="text-center text-sm underline underline-offset-4">
+						Back to sign in
+					</Text>
+				</Button>
+			) : null}
+		</AuthCardWrapper>
 	);
 }
