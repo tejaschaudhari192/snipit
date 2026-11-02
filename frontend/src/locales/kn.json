@@ -456,7 +456,8 @@
 				"success_title": "ರಫ್ತು ಡೌನ್‌ಲೋಡ್ ಆಗಿದೆ",
 				"success_desc": "{{count}} ಐಟಂಗಳು JSON ಆಗಿ ಯಶಸ್ವಿಯಾಗಿ ರಫ್ತಾಗಿವೆ.",
 				"failed_title": "ರಫ್ತು ವಿಫಲವಾಗಿದೆ"
-			}
+			},
+			"categories": "ವರ್ಗಗಳು"
 		},
 		"password_generator": {
 			"title": "ಪಾಸ್ವರ್ಡ್ ಜನರೇಟರ್",

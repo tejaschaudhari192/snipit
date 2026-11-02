@@ -456,7 +456,8 @@
 				"success_title": "निर्यात डाउनलोड किया गया",
 				"success_desc": "सफलतापूर्वक {{count}} मद{{s}} JSON के रूप में निर्यात किया गया।",
 				"failed_title": "निर्यात विफल"
-			}
+			},
+			"categories": "श्रेणियाँ"
 		},
 		"password_generator": {
 			"title": "पासवर्ड जेनरेटर",

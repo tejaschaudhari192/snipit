@@ -34,7 +34,15 @@ i18n.use(initReactI18next).init({
 	},
 	lng: localStore.getItem(CONFIG.storageKeys.appLanguage) ?? "en",
 	fallbackLng: "en",
+	saveMissing: true,
+	missingKeyHandler: (lngs, ns, key, res) => {
+		console.warn(
+			`[i18n] Missing translation key: "${key}" (languages: ${Array.isArray(lngs) ? lngs.join(", ") : lngs}, namespace: ${ns})`,
+			{ fallbackValue: res },
+		);
+	},
 	parseMissingKeyHandler: (key) => {
+		console.warn(`[i18n] Missing translation key: "${key}"`);
 		try {
 			const storageKey = CONFIG.storageKeys.localizationIssues;
 			const raw = localStore.getItem(storageKey);

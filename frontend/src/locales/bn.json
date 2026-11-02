@@ -456,7 +456,8 @@
 				"success_title": "এক্সপোর্ট ডাউনলোড হয়েছে",
 				"success_desc": "সফলভাবে {{count}}টি আইটেম JSON হিসেবে এক্সপোর্ট করা হয়েছে।",
 				"failed_title": "এক্সপোর্ট ব্যর্থ হয়েছে"
-			}
+			},
+			"categories": "বিভাগসমূহ"
 		},
 		"password_generator": {
 			"title": "পাসওয়ার্ড জেনারেটর",

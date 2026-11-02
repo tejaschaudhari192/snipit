@@ -456,7 +456,8 @@
 				"success_title": "ఎగుమతి డౌన్‌లోడ్ చేయబడింది",
 				"success_desc": "{{count}} అంశం(లు) విజయవంతంగా JSON గా ఎగుమతి చేయబడ్డాయి.",
 				"failed_title": "ఎగుమతి విఫలమైంది"
-			}
+			},
+			"categories": "వర్గాలు"
 		},
 		"password_generator": {
 			"title": "పాస్‌వర్డ్ జెనరేటర్",

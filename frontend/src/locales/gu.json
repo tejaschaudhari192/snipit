@@ -456,7 +456,8 @@
 				"success_title": "નિકાસ ડાઉનલોડ થઈ ગઈ",
 				"success_desc": "{{count}} આઇટમ{{s}} સફળતાપૂર્વક JSON તરીકે નિકાસ કરવામાં આવી.",
 				"failed_title": "નિકાસ નિષ્ફળ"
-			}
+			},
+			"categories": "શ્રેણીઓ"
 		},
 		"password_generator": {
 			"title": "પાસવર્ડ જનરેટર",

@@ -455,7 +455,8 @@
 			"failed_to_move_items": "Failed to move {{count}} item{{s}}.",
 			"moved_n_items": "Moved {{count}} item{{s}} to {{folder}}",
 			"failed_to_delete_items": "Failed to delete {{count}} item{{s}}.",
-			"deleted_n_items": "Deleted {{count}} item{{s}}"
+			"deleted_n_items": "Deleted {{count}} item{{s}}",
+			"categories": "Categories"
 		},
 		"password_generator": {
 			"title": "Password Generator",

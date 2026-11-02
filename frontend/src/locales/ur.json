@@ -456,7 +456,8 @@
 				"success_title": "برآمد ڈاؤن لوڈ ہو گئی",
 				"success_desc": "کامیابی کے ساتھ {{count}} آئٹم{{s}} JSON کے طور پر برآمد ہو گئے۔",
 				"failed_title": "برآمد ناکام ہو گئی"
-			}
+			},
+			"categories": "اقسام"
 		},
 		"password_generator": {
 			"title": "پاس ورڈ جنریٹر",

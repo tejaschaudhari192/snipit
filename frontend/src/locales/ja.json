@@ -455,7 +455,8 @@
 				"success_title": "エクスポート完了",
 				"success_desc": "{{count}}件のアイテムをJSONとしてエクスポートしました。",
 				"failed_title": "エクスポート失敗"
-			}
+			},
+			"categories": "カテゴリー"
 		},
 		"password_generator": {
 			"title": "パスワードジェネレーター",
