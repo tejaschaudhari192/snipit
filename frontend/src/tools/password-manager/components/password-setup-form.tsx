@@ -3,17 +3,14 @@ import { useTranslation } from "react-i18next";
 import { cn } from "cn";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { PasswordStrengthMeter } from "@/components/common/password-strength-meter";
-import { usePasswordStrength } from "@/hooks/use-password-strength";
-import { CheckCircle2, Circle, Eye, EyeOff, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 
 interface PasswordSetupFormProps {
 	password: string;
 	onPasswordChange: (value: string) => void;
 	confirmPassword: string;
 	onConfirmPasswordChange: (value: string) => void;
-	showRequirements?: boolean;
 	className?: string;
 }
 
@@ -22,12 +19,10 @@ export default function PasswordSetupForm({
 	onPasswordChange,
 	confirmPassword,
 	onConfirmPasswordChange,
-	showRequirements = true,
 	className,
 }: PasswordSetupFormProps) {
 	const { t } = useTranslation();
 	const [showPassword, setShowPassword] = useState(false);
-	const { requirements: reqs } = usePasswordStrength(password);
 
 	return (
 		<div className={cn("flex flex-col gap-6", className)}>
@@ -85,81 +80,6 @@ export default function PasswordSetupForm({
 					</p>
 				)}
 			</div>
-
-			{showRequirements && (
-				<Card className="border-border/50 bg-card/50 backdrop-blur-sm shadow-sm">
-					<CardContent className="p-4">
-						<div className="flex items-center gap-2 mb-4">
-							<ShieldCheck className="h-4 w-4 text-primary" />
-							<h4 className="text-sm font-medium">
-								{t("tools.password_manager.requirements")}
-							</h4>
-						</div>
-
-						<div className="space-y-2">
-							{[
-								{
-									key: "length",
-									label: t(
-										"tools.password_manager.req_length",
-									),
-								},
-								{
-									key: "upper",
-									label: t(
-										"tools.password_manager.req_uppercase",
-									),
-								},
-								{
-									key: "number",
-									label: t(
-										"tools.password_manager.req_number",
-									),
-								},
-								{
-									key: "special",
-									label: t(
-										"tools.password_manager.req_special",
-									),
-								},
-							].map(({ key, label }) => {
-								const met = reqs[key as keyof typeof reqs];
-
-								return (
-									<div
-										key={key}
-										className={`
-                                flex items-center gap-3 rounded-lg p-2
-                                transition-all duration-300
-                                ${
-									met
-										? "bg-green-500/10 border border-green-500/20"
-										: "bg-muted/50 border border-transparent"
-								}
-                            `}
-									>
-										{met ? (
-											<CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
-										) : (
-											<Circle className="h-4 w-4 text-muted-foreground shrink-0" />
-										)}
-
-										<span
-											className={`text-sm transition-colors ${
-												met
-													? "text-foreground font-medium"
-													: "text-muted-foreground"
-											}`}
-										>
-											{label}
-										</span>
-									</div>
-								);
-							})}
-						</div>
-					</CardContent>
-				</Card>
-			)}
 		</div>
 	);
 }
