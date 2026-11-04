@@ -188,15 +188,19 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 	const updateField = (
 		index: number,
 		key: keyof CustomField,
-		val: string,
+		val: string | File,
 	) => {
 		const updated = [...customFields];
 		if (key === "type") {
 			updated[index].type = val as CustomField["type"];
 		} else if (key === "name") {
-			updated[index].name = val;
+			updated[index].name = val as string;
 		} else if (key === "value") {
-			updated[index].value = val;
+			updated[index].value = val as string;
+		} else if (key === "fileName") {
+			updated[index].fileName = val as string;
+		} else if (key === "fileContent") {
+			updated[index].fileContent = val as string;
 		}
 		setCustomFields(updated);
 	};

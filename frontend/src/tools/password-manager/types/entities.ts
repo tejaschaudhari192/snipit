@@ -12,8 +12,11 @@ export interface CustomField {
 		| "number"
 		| "email"
 		| "tel"
-		| "color";
-	isProtected?: boolean; // If true, value is masked by default
+		| "color"
+		| "file";
+	isProtected?: boolean;
+	fileName?: string | null;
+	fileContent?: string | null;
 }
 
 export interface PasswordItem {

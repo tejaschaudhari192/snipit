@@ -9,7 +9,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Upload } from "lucide-react";
 import { CUSTOM_FIELD_TYPES } from "@/tools/password-manager/utils/constants";
 import type { CustomField } from "@/tools/password-manager/types";
 
@@ -67,25 +67,59 @@ export function CustomFieldsEditor({
 							))}
 						</SelectContent>
 					</Select>
-					<Input
-						type={
-							field.type === "password"
-								? "password"
-								: field.type === "number"
-									? "number"
-									: field.type === "color"
-										? "color"
-										: "text"
-						}
-						placeholder={t("tools.password_manager.field_value")}
-						value={field.value}
-						onChange={(e) =>
-							updateField(i, "value", e.target.value)
-						}
-						className={
-							field.type === "color" ? "w-12 h-9 p-1" : "flex-1"
-						}
-					/>
+					{field.type === "file" ? (
+						<div className="flex-1 flex items-center gap-2">
+							<Input
+								type="file"
+								id={`custom-file-${i}`}
+								className="hidden"
+								onChange={(e) => {
+									const file = e.target.files?.[0];
+									if (!file) return;
+									const reader = new FileReader();
+									reader.onload = (event) => {
+										const content = event.target
+											?.result as string;
+										updateField(i, "fileName", file.name);
+										updateField(i, "fileContent", content);
+										updateField(i, "value", file.name);
+									};
+									reader.readAsText(file);
+								}}
+							/>
+							<Label
+								htmlFor={`custom-file-${i}`}
+								className="cursor-pointer inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3"
+							>
+								<Upload className="mr-2 h-4 w-4" />
+								{t("tools.password_manager.choose_file")}
+							</Label>
+						</div>
+					) : (
+						<Input
+							type={
+								field.type === "password"
+									? "password"
+									: field.type === "number"
+										? "number"
+										: field.type === "color"
+											? "color"
+											: "text"
+							}
+							placeholder={t(
+								"tools.password_manager.field_value",
+							)}
+							value={field.value}
+							onChange={(e) =>
+								updateField(i, "value", e.target.value)
+							}
+							className={
+								field.type === "color"
+									? "w-12 h-9 p-1"
+									: "flex-1"
+							}
+						/>
+					)}
 					<Button
 						type="button"
 						variant="ghost"
