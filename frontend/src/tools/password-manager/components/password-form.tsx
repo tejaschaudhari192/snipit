@@ -53,6 +53,49 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 		return meta;
 	});
 
+	// --- NEW: Drag and Drop State/Handlers ---
+	const [isDragging, setIsDragging] = useState(false);
+
+	const handleFiles = (files: FileList | File) => {
+		const file = files instanceof File ? files : files[0];
+		if (!file) return;
+
+		const reader = new FileReader();
+		reader.onload = (event) => {
+			const content = event.target?.result as string;
+			setMetadata((prev) => ({
+				...prev,
+				fileName: file.name,
+				fileContent: content,
+			}));
+			if (!title) {
+				setTitle(file.name);
+			}
+		};
+		reader.readAsText(file);
+	};
+
+	const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setIsDragging(true);
+	};
+
+	const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setIsDragging(false);
+	};
+
+	const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setIsDragging(false);
+		const files = e.dataTransfer.files;
+		handleFiles(files);
+	};
+	// ------------------------------------------
+
 	const [folderModalOpen, setFolderModalOpen] = useState(false);
 	const { createFolder } = useFolderMutations();
 
@@ -165,20 +208,7 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 	const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
 		if (!file) return;
-
-		const reader = new FileReader();
-		reader.onload = (event) => {
-			const content = event.target?.result as string;
-			setMetadata((prev) => ({
-				...prev,
-				fileName: file.name,
-				fileContent: content,
-			}));
-			if (!title) {
-				setTitle(file.name);
-			}
-		};
-		reader.readAsText(file);
+		handleFiles(file);
 	};
 
 	const schemaFields = getFieldsForType(itemType || "login");
@@ -320,7 +350,16 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 					</CardHeader>
 					<CardContent className="px-4 py-4 space-y-4">
 						{itemType === "credfile" && (
-							<div className="flex items-center justify-between p-3 border border-border rounded-xl bg-muted/30 border-dashed">
+							<div
+								className={`flex items-center justify-between p-3 border border-border rounded-xl bg-muted/30 border-dashed transition-colors ${
+									isDragging
+										? "border-primary bg-primary/10"
+										: ""
+								}`}
+								onDragOver={handleDragOver}
+								onDragLeave={handleDragLeave}
+								onDrop={handleDrop}
+							>
 								<div className="space-y-1">
 									<Label className="text-sm font-medium">
 										{t(
