@@ -10,10 +10,11 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@/tools/password-manager/store";
 import { selectMergedFolders } from "../store/password-slice";
-import { Upload } from "lucide-react";
+import { Upload, FileText as FileTextIcon, X } from "lucide-react";
 import type { PasswordItem, CustomField } from "../types";
 import { getFieldsForType } from "../utils/item-types";
 import { FolderModal } from "./folder-modal";
@@ -23,6 +24,20 @@ import { OptionDisplay } from "@/components/common/option-display";
 export interface PasswordFormProps {
 	onAdd: (item: PasswordItem) => void;
 	editItem?: PasswordItem | null;
+}
+
+function formatFileSize(bytes: number): string {
+	if (bytes === 0) return "0 B";
+	const k = 1024;
+	const sizes = ["B", "KB", "MB", "GB"];
+	const i = Math.floor(Math.log(bytes) / Math.log(k));
+	return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+}
+
+function getFileSizeFromBase64(base64: string | null | undefined): number {
+	if (!base64) return 0;
+	const data = base64.split(",")[1] ?? base64;
+	return Math.round((data.length * 3) / 4);
 }
 
 import {
@@ -72,7 +87,7 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 				setTitle(file.name);
 			}
 		};
-		reader.readAsText(file);
+		reader.readAsDataURL(file);
 	};
 
 	const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -364,18 +379,51 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 								onDragLeave={handleDragLeave}
 								onDrop={handleDrop}
 							>
-								<div className="space-y-1">
-									<Label className="text-sm font-medium">
-										{t(
-											"tools.password_manager.upload_file",
-										)}
-									</Label>
-									<p className="text-xs text-muted-foreground">
-										{t(
-											"tools.password_manager.upload_file_desc",
-										)}
-									</p>
-								</div>
+								{metadata.fileName ? (
+									<div className="flex items-center gap-2 w-full">
+										<FileTextIcon className="w-4 h-4 text-muted-foreground" />
+										<span className="text-sm text-foreground truncate max-w-50">
+											{metadata.fileName}
+										</span>
+										<span className="text-xs text-muted-foreground">
+											{formatFileSize(
+												getFileSizeFromBase64(
+													metadata.fileContent,
+												),
+											)}
+										</span>
+										<Button
+											type="button"
+											variant="ghost"
+											size="icon"
+											onClick={() => {
+												setMetadata((prev) => {
+													const rest = { ...prev };
+													delete rest.fileName;
+													delete rest.fileContent;
+													return rest;
+												});
+											}}
+											aria-label="Remove file"
+											className="h-6 w-6 p-0"
+										>
+											<X className="w-3 h-3 text-red-500" />
+										</Button>
+									</div>
+								) : (
+									<div className="space-y-1">
+										<Label className="text-sm font-medium">
+											{t(
+												"tools.password_manager.upload_file",
+											)}
+										</Label>
+										<p className="text-xs text-muted-foreground">
+											{t(
+												"tools.password_manager.upload_file_desc",
+											)}
+										</p>
+									</div>
+								)}
 								<div>
 									<Input
 										type="file"
@@ -388,9 +436,13 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 										className="cursor-pointer inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3"
 									>
 										<Upload className="mr-2 h-4 w-4" />
-										{t(
-											"tools.password_manager.choose_file",
-										)}
+										{metadata.fileName
+											? t(
+													"tools.password_manager.replace_file",
+												)
+											: t(
+													"tools.password_manager.choose_file",
+												)}
 									</Label>
 								</div>
 							</div>

@@ -160,6 +160,7 @@
 			"upload_file": "ファイルをアップロード",
 			"upload_file_desc": "詳細を自動入力するファイルを選択",
 			"choose_file": "ファイルを選択",
+			"replace_file": "ファイルを置き換える",
 			"generate": "生成",
 			"strength_label": "パスワードの強度:",
 			"delete_confirm": "本当にこのアイテムを削除しますか？",

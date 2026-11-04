@@ -9,9 +9,29 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Plus, Trash2, Upload } from "lucide-react";
+import {
+	Plus,
+	Trash2,
+	Upload,
+	X,
+	FileText as FileTextIcon,
+} from "lucide-react";
 import { CUSTOM_FIELD_TYPES } from "@/tools/password-manager/utils/constants";
 import type { CustomField } from "@/tools/password-manager/types";
+
+function formatFileSize(bytes: number): string {
+	if (bytes === 0) return "0 B";
+	const k = 1024;
+	const sizes = ["B", "KB", "MB", "GB"];
+	const i = Math.floor(Math.log(bytes) / Math.log(k));
+	return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+}
+
+function getFileSizeFromBase64(base64: string | null | undefined): number {
+	if (!base64) return 0;
+	const data = base64.split(",")[1] ?? base64;
+	return Math.round((data.length * 3) / 4);
+}
 
 interface CustomFieldsEditorProps {
 	customFields: CustomField[];
@@ -68,33 +88,106 @@ export function CustomFieldsEditor({
 						</SelectContent>
 					</Select>
 					{field.type === "file" ? (
-						<div className="flex-1 flex items-center gap-2">
-							<Input
-								type="file"
-								id={`custom-file-${i}`}
-								className="hidden"
-								onChange={(e) => {
-									const file = e.target.files?.[0];
-									if (!file) return;
-									const reader = new FileReader();
-									reader.onload = (event) => {
-										const content = event.target
-											?.result as string;
-										updateField(i, "fileName", file.name);
-										updateField(i, "fileContent", content);
-										updateField(i, "value", file.name);
-									};
-									reader.readAsText(file);
-								}}
-							/>
-							<Label
-								htmlFor={`custom-file-${i}`}
-								className="cursor-pointer inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3"
-							>
-								<Upload className="mr-2 h-4 w-4" />
-								{t("tools.password_manager.choose_file")}
-							</Label>
-						</div>
+						field.fileName ? (
+							<div className="flex-1 flex flex-col gap-2 items-start">
+								<div className="flex items-center gap-2 w-full">
+									<FileTextIcon className="w-4 h-4 text-muted-foreground" />
+									<span className="text-sm text-foreground truncate max-w-37.5">
+										{field.fileName}
+									</span>
+									<span className="text-xs text-muted-foreground">
+										{formatFileSize(
+											getFileSizeFromBase64(
+												field.fileContent,
+											),
+										)}
+									</span>
+									<Button
+										type="button"
+										variant="ghost"
+										size="icon"
+										onClick={() => {
+											updateField(i, "fileName", "");
+											updateField(i, "fileContent", "");
+											updateField(i, "value", "");
+										}}
+										aria-label="Remove file"
+										className="h-6 w-6 p-0"
+									>
+										<X className="w-3 h-3 text-red-500" />
+									</Button>
+								</div>
+								<Input
+									type="file"
+									id={`custom-file-${i}`}
+									className="hidden"
+									onChange={(e) => {
+										const file = e.target.files?.[0];
+										if (!file) return;
+										const reader = new FileReader();
+										reader.onload = (event) => {
+											const content = event.target
+												?.result as string;
+											updateField(
+												i,
+												"fileName",
+												file.name,
+											);
+											updateField(
+												i,
+												"fileContent",
+												content,
+											);
+											updateField(i, "value", file.name);
+										};
+										reader.readAsDataURL(file);
+									}}
+								/>
+								<Label
+									htmlFor={`custom-file-${i}`}
+									className="cursor-pointer inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3"
+								>
+									<Upload className="mr-2 h-4 w-4" />
+									{t("tools.password_manager.replace_file")}
+								</Label>
+							</div>
+						) : (
+							<div className="flex-1 flex items-center gap-2">
+								<Input
+									type="file"
+									id={`custom-file-${i}`}
+									className="hidden"
+									onChange={(e) => {
+										const file = e.target.files?.[0];
+										if (!file) return;
+										const reader = new FileReader();
+										reader.onload = (event) => {
+											const content = event.target
+												?.result as string;
+											updateField(
+												i,
+												"fileName",
+												file.name,
+											);
+											updateField(
+												i,
+												"fileContent",
+												content,
+											);
+											updateField(i, "value", file.name);
+										};
+										reader.readAsDataURL(file);
+									}}
+								/>
+								<Label
+									htmlFor={`custom-file-${i}`}
+									className="cursor-pointer inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3"
+								>
+									<Upload className="mr-2 h-4 w-4" />
+									{t("tools.password_manager.choose_file")}
+								</Label>
+							</div>
+						)
 					) : (
 						<Input
 							type={
