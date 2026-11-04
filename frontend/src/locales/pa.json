@@ -162,6 +162,7 @@
 			"upload_file_desc": "ਵੇਰਵੇ ਆਪਣੇ ਆਪ ਭਰਨ ਲਈ ਇੱਕ ਫਾਈਲ ਚੁਣੋ",
 			"choose_file": "ਫਾਈਲ ਚੁਣੋ",
 			"replace_file": "ਫਾਈਲ ਬਦਲੋ",
+			"accepted_types": "ਸਵੀਕਾਰਯੋਗ ਕਿਸਮ: {{types}} | ਵੱਧ ਤੋਂ ਵੱਧ ਆਕਾਰ: {{maxSize}}",
 			"generate": "ਬਣਾਓ",
 			"strength_label": "ਪਾਸਵਰਡ ਦੀ ਤਾਕਤ:",
 			"delete_confirm": "ਕੀ ਤੁਸੀਂ ਯਕੀਨੀ ਤੌਰ 'ਤੇ ਇਸ ਆਈਟਮ ਨੂੰ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?",

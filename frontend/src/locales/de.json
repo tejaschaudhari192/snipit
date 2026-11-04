@@ -156,6 +156,7 @@
 			"upload_file_desc": "Wählen Sie eine Datei aus, um Details automatisch auszufüllen",
 			"choose_file": "Datei auswählen",
 			"replace_file": "Datei ersetzen",
+			"accepted_types": "Akzeptierte Typen: {{types}} | Max. Größe: {{maxSize}}",
 			"generate": "Generieren",
 			"strength_label": "Passwortstärke:",
 			"delete_confirm": "Sind Sie sicher, dass Sie dieses Element löschen möchten?",

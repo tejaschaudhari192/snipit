@@ -10,6 +10,20 @@ import {
 	AttachmentTitle,
 } from "@/components/ui/attachment";
 
+function getFileSizeFromBase64(base64: string | null | undefined): number {
+	if (!base64) return 0;
+	const data = base64.split(",")[1] ?? base64;
+	return Math.round((data.length * 3) / 4);
+}
+
+function formatFileSize(bytes: number): string {
+	if (bytes === 0) return "0 B";
+	const k = 1024;
+	const sizes = ["B", "KB", "MB", "GB"];
+	const i = Math.floor(Math.log(bytes) / Math.log(k));
+	return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+}
+
 export function CustomFieldRenderer({ field }: { field: CustomField }) {
 	const isFileType = field.type === "file" && field.fileName;
 	const isImage =
@@ -73,17 +87,11 @@ export function CustomFieldRenderer({ field }: { field: CustomField }) {
 						<AttachmentTitle>{field.fileName}</AttachmentTitle>
 						<AttachmentDescription>
 							{field.fileContent
-								? `${
-										Math.round(
-											(atob(
-												field.fileContent.split(
-													",",
-												)[1] ?? field.fileContent,
-											).length *
-												3) /
-												4,
-										) / 1024
-									} KB`
+								? `${formatFileSize(
+										getFileSizeFromBase64(
+											field.fileContent,
+										),
+									)}`
 								: "File"}
 						</AttachmentDescription>
 					</AttachmentContent>

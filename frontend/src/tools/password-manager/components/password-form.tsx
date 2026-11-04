@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@/tools/password-manager/store";
 import { selectMergedFolders } from "../store/password-slice";
 import { Upload, FileText as FileTextIcon, X } from "lucide-react";
+import { toast } from "@/components/ui/toast";
 import type { PasswordItem, CustomField } from "../types";
 import { getFieldsForType } from "../utils/item-types";
 import { FolderModal } from "./folder-modal";
@@ -25,6 +26,8 @@ export interface PasswordFormProps {
 	onAdd: (item: PasswordItem) => void;
 	editItem?: PasswordItem | null;
 }
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 function formatFileSize(bytes: number): string {
 	if (bytes === 0) return "0 B";
@@ -74,6 +77,14 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 	const handleFiles = (files: FileList | File) => {
 		const file = files instanceof File ? files : files[0];
 		if (!file) return;
+
+		if (file.size > MAX_FILE_SIZE) {
+			toast.add({
+				title: t("tools.password_manager.file_too_large"),
+				type: "error",
+			});
+			return;
+		}
 
 		const reader = new FileReader();
 		reader.onload = (event) => {

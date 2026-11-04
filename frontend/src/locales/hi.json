@@ -162,6 +162,7 @@
 			"upload_file_desc": "विवरण स्वचालित रूप से भरने के लिए फ़ाइल चुनें",
 			"choose_file": "फ़ाइल चुनें",
 			"replace_file": "फ़ाइल बदलें",
+			"accepted_types": "स्वीकार्य प्रकार: {{types}} | अधिकतम आकार: {{maxSize}}",
 			"generate": "उत्पन्न करें",
 			"strength_label": "पासवर्ड की ताकत:",
 			"delete_confirm": "क्या आप वाकई इस आइटम को हटाना चाहते हैं?",

@@ -242,6 +242,7 @@
 			"upload_file_desc": "Select a file to automatically fill details",
 			"choose_file": "Choose File",
 			"replace_file": "Replace File",
+			"accepted_types": "Accepted types: {{types}} | Max size: {{maxSize}}",
 			"generate": "Generate",
 			"strength_label": "Password strength:",
 			"copy_password": "Copy password",
