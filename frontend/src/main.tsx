@@ -3,7 +3,8 @@ import { createRoot } from "react-dom/client";
 import { Toaster } from "@/components/ui/toast";
 import "@/index.css";
 import App from "@/App.tsx";
-import "./i18n"; // 👈 import here to initialize before anything else
+import "./i18n";
+import { ErrorBoundary } from "@/components/common/error-boundary";
 
 if (typeof document !== "undefined") {
 	document.addEventListener("mousedown", (e) => {
@@ -26,7 +27,9 @@ if (typeof document !== "undefined") {
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
-		<Toaster />
-		<App />
+		<ErrorBoundary scope="Root">
+			<Toaster />
+			<App />
+		</ErrorBoundary>
 	</StrictMode>,
 );
