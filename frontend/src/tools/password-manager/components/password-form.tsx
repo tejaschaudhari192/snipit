@@ -9,7 +9,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@/tools/password-manager/store";
 import { selectMergedFolders } from "../store/password-slice";
@@ -20,6 +20,8 @@ import { FolderModal } from "./folder-modal";
 import { useFolderMutations } from "../hooks/use-folder-mutations";
 import { UI_DEFAULTS, ITEM_TYPE_OPTIONS } from "../utils/constants";
 import { OptionDisplay } from "@/components/common/option-display";
+import { Folder, Lock, Sparkles } from "lucide-react";
+
 export interface PasswordFormProps {
 	onAdd: (item: PasswordItem) => void;
 	editItem?: PasswordItem | null;
@@ -110,46 +112,37 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 			...(metadata.url && { url: metadata.url }),
 		};
 
-		// Remove root fields from metadata before saving
-		const cleanMetadata = { ...metadata };
-		delete cleanMetadata.username;
-		delete cleanMetadata.password;
-		delete cleanMetadata.url;
-
-		onAdd({
-			id: editItem?.id ?? crypto.randomUUID(),
-			title: title.trim(),
-			...(notes.trim() && { notes: notes.trim() }),
-			...rootFields,
-			...(folderId !== "none" && { folderId }),
-			...(selectedFolder?.collectionId && {
-				collectionId: selectedFolder.collectionId,
-			}),
-			...(itemType && itemType !== "other" && { itemType }),
-			...(customFields.filter((f) => f.name.trim()).length > 0 && {
-				customFields: customFields.filter((f) => f.name.trim()),
-			}),
-			...(attachments.length > 0 && {
-				attachments,
-			}),
-			...(Object.keys(cleanMetadata).length > 0 && {
-				metadata: cleanMetadata,
-			}),
-			createdAt: editItem?.createdAt ?? now,
+		const item: PasswordItem = {
+			id: editItem?.id || crypto.randomUUID(),
+			title,
+			notes,
+			itemType,
+			folderId: folderId !== "none" ? folderId : undefined,
+			collectionId: selectedFolder?.collectionId,
+			customFields,
+			attachments,
+			metadata,
+			createdAt: editItem?.createdAt || now,
 			updatedAt: now,
-		} as PasswordItem);
-		resetForm();
+			...rootFields,
+		};
+		onAdd(item);
 	};
 
 	const addField = () => {
-		setCustomFields([
-			...customFields,
-			{ id: crypto.randomUUID(), name: "", type: "text", value: "" },
+		setCustomFields((prev) => [
+			...prev,
+			{
+				id: crypto.randomUUID(),
+				name: "",
+				type: "text",
+				value: "",
+			},
 		]);
 	};
 
 	const removeField = (index: number) => {
-		setCustomFields(customFields.filter((_, i) => i !== index));
+		setCustomFields((prev) => prev.filter((_, i) => i !== index));
 	};
 
 	const updateField = (
@@ -157,15 +150,11 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 		key: keyof CustomField,
 		val: string,
 	) => {
-		const updated = [...customFields];
-		if (key === "type") {
-			updated[index].type = val as CustomField["type"];
-		} else if (key === "name") {
-			updated[index].name = val as string;
-		} else if (key === "value") {
-			updated[index].value = val as string;
-		}
-		setCustomFields(updated);
+		setCustomFields((prev) =>
+			prev.map((field, i) =>
+				i === index ? { ...field, [key]: val } : field,
+			),
+		);
 	};
 
 	const handleAddAttachment = (att: ItemAttachment) => {
@@ -189,50 +178,49 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 	return (
 		<form
 			id="password-form"
-			className="pb-8"
+			className="pb-10 space-y-6"
 			onSubmit={(e) => {
 				e.preventDefault();
 				handleSubmit();
 			}}
 		>
-			<div className="px-5 pt-6 pb-2">
-				{/* Title */}
+			{/* Top Header Section: Illustrated Icon + Title Input + Selectors */}
+			<div className="px-6 pt-5 pb-1 space-y-4">
 				<div className="flex items-start gap-4">
-					<div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-						<span className="text-primary text-2xl font-bold">
-							{title ? title.substring(0, 2).toUpperCase() : "?"}
-						</span>
+					{/* Stylized Illustrated Icon matching the inspiration */}
+					<div className="relative w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 shadow-xs">
+						<Lock className="w-7 h-7 text-primary" />
+						<Sparkles className="w-3.5 h-3.5 text-primary absolute -top-1 -right-1" />
 					</div>
-					<div className="min-w-0 flex-1 space-y-3 pt-1">
+
+					<div className="min-w-0 flex-1 pt-1">
 						<Input
 							required
 							placeholder={t(
 								"tools.password_manager.title_placeholder",
+								{ defaultValue: "Enter title..." },
 							)}
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
 							autoComplete="off"
-							className="text-xl font-bold h-8 bg-transparent border-0 border-b border-border rounded-none focus-visible:ring-0 focus-visible:border-primary px-0"
+							className="text-lg md:text-xl font-semibold h-10 bg-transparent border-0 border-b border-border/70 rounded-none focus-visible:ring-0 focus-visible:border-primary px-0 text-foreground transition-colors placeholder:text-muted-foreground/50"
 						/>
 					</div>
 				</div>
-			</div>
 
-			<div className="p-5 space-y-5">
-				{/* Type & Category Selections */}
-				<div className="flex gap-3 pb-2">
-					<div className="space-y-1.5 flex-1">
-						<Label className="text-xs text-muted-foreground">
+				{/* Type & Folder Pill Dropdowns */}
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+					<div className="space-y-1.5">
+						<Label className="text-xs font-medium text-muted-foreground">
 							Type
 						</Label>
 						<Select
 							value={itemType}
 							onValueChange={(val: string | null) => {
 								setItemType(val as PasswordItem["itemType"]);
-								// Keep metadata instead of clearing it, so user doesn't lose data on misclick
 							}}
 						>
-							<SelectTrigger className="w-full bg-background border-border rounded-xl capitalize">
+							<SelectTrigger className="w-full h-10 bg-background border-border/80 rounded-xl capitalize font-medium text-sm">
 								<SelectValue>
 									{(() => {
 										const opt = ITEM_TYPE_OPTIONS.find(
@@ -259,8 +247,9 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 							</SelectContent>
 						</Select>
 					</div>
-					<div className="space-y-1.5 flex-1">
-						<Label className="text-xs text-muted-foreground">
+
+					<div className="space-y-1.5">
+						<Label className="text-xs font-medium text-muted-foreground">
 							Folder
 						</Label>
 						<Select
@@ -273,28 +262,41 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 								}
 							}}
 						>
-							<SelectTrigger className="w-full bg-background border-border rounded-xl">
-								<SelectValue placeholder="No Folder">
-									{folderId === "new_folder"
-										? "+ Create folder"
-										: folderId === "none" || !folderId
-											? t(
-													"tools.password_manager.no_folder",
-												)
-											: folders.find(
-													(f: {
-														id: string;
-														name: string;
-													}) => f.id === folderId,
-												)?.name ||
-												t(
-													"tools.password_manager.no_folder",
-												)}
-								</SelectValue>
+							<SelectTrigger className="w-full h-10 bg-background border-border/80 rounded-xl font-medium text-sm">
+								<div className="flex items-center gap-2 truncate">
+									<Folder className="w-4 h-4 text-muted-foreground shrink-0" />
+									<SelectValue placeholder="No Folder">
+										{folderId === "new_folder"
+											? "+ Create folder"
+											: folderId === "none" || !folderId
+												? t(
+														"tools.password_manager.no_folder",
+														{
+															defaultValue:
+																"No Folder",
+														},
+													)
+												: folders.find(
+														(f: {
+															id: string;
+															name: string;
+														}) => f.id === folderId,
+													)?.name ||
+													t(
+														"tools.password_manager.no_folder",
+														{
+															defaultValue:
+																"No Folder",
+														},
+													)}
+									</SelectValue>
+								</div>
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value="none">
-									{t("tools.password_manager.no_folder")}
+									{t("tools.password_manager.no_folder", {
+										defaultValue: "No Folder",
+									})}
 								</SelectItem>
 								{folders.map(
 									(f: { id: string; name: string }) => (
@@ -313,15 +315,22 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 						</Select>
 					</div>
 				</div>
+			</div>
 
-				{/* Details Card */}
-				<Card className="shadow-sm border-border gap-0 py-0 overflow-hidden">
-					<CardHeader className="px-4 py-3 bg-muted/20 border-b border-border/40">
-						<CardTitle className="text-sm font-semibold flex items-center gap-2">
-							{t("tools.password_manager.details_title")}
-						</CardTitle>
-					</CardHeader>
-					<CardContent className="px-4 py-4 space-y-4">
+			{/* Item Details Container Card matching the design */}
+			<div className="px-6 space-y-2">
+				<Label className="text-sm font-semibold text-foreground block">
+					{t("tools.password_manager.details_title", {
+						defaultValue: "Item Details",
+					})}
+				</Label>
+
+				<Card className="shadow-xs border-border/70 rounded-2xl bg-card overflow-hidden">
+					<CardContent className="p-5 space-y-4">
+						<div className="text-xs font-semibold text-foreground/90 uppercase tracking-wider">
+							Core Account Details
+						</div>
+
 						{/* Dynamic Schema Fields or Credit Card Editor */}
 						{itemType === "card" ? (
 							<CreditCardFormEditor
@@ -337,15 +346,18 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 							/>
 						)}
 
-						{/* Global Notes */}
+						{/* Additional Notes Field */}
 						<div className="space-y-1.5 pt-2">
-							<Label className="text-xs text-muted-foreground">
-								{t("tools.password_manager.notes_placeholder")}
+							<Label className="text-xs font-medium text-foreground/80">
+								{t("tools.password_manager.notes_placeholder", {
+									defaultValue: "Additional Notes",
+								})}
 							</Label>
 							<Textarea
 								value={notes}
 								onChange={(e) => setNotes(e.target.value)}
-								className="bg-background rounded-xl border border-border min-h-25"
+								placeholder="Notes about this entry..."
+								className="bg-background rounded-xl border border-border/80 min-h-24 text-sm focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all resize-y"
 							/>
 						</div>
 					</CardContent>
@@ -361,14 +373,11 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 				onSave={(name, color) => {
 					createFolder(name, color);
 					setFolderModalOpen(false);
-					// Since we don't return the ID from createFolder synchronously and it generates one,
-					// the folder will appear in the list asynchronously. We could just leave folderId as "none" for now,
-					// or we can just let the user select it once it appears.
 				}}
 				onDelete={() => {}}
 			/>
 
-			{/* Custom Fields */}
+			{/* Custom Fields Section */}
 			<CustomFieldsEditor
 				customFields={customFields}
 				addField={addField}
@@ -376,7 +385,7 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 				updateField={updateField}
 			/>
 
-			{/* Dedicated Attachments */}
+			{/* Dedicated Attachments Section */}
 			<AttachmentsEditor
 				attachments={attachments}
 				userId={userId}

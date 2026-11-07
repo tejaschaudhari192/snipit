@@ -68,7 +68,7 @@ export function AttachmentsEditor({
 		setUploadingFiles((prev) => [...prev, file.name]);
 
 		try {
-			// Encrypt file with auto-generated key and upload to Supabase as [pm-uat]_...
+			// Encrypt file with auto-generated key and upload to Supabase
 			const newAttachment = await uploadEncryptedVaultAttachment({
 				file,
 				userId,
@@ -87,7 +87,9 @@ export function AttachmentsEditor({
 		} catch (error: unknown) {
 			console.error("Upload error:", error);
 			toast.add({
-				title: "Failed to upload encrypted file",
+				title:
+					(error as Error)?.message ||
+					"Failed to upload encrypted file",
 				type: "error",
 			});
 		} finally {
@@ -120,20 +122,14 @@ export function AttachmentsEditor({
 	};
 
 	return (
-		<div className="space-y-4 px-5 pt-4">
+		<div className="space-y-3 px-6">
 			<div className="flex items-center justify-between">
 				<div className="space-y-0.5">
-					<Label className="text-sm font-medium">
+					<Label className="text-sm font-semibold text-foreground">
 						{t("tools.password_manager.attachments", {
 							defaultValue: "Attachments",
 						})}
 					</Label>
-					<p className="text-xs text-muted-foreground">
-						{t("tools.password_manager.attachments_desc", {
-							defaultValue:
-								"Files encrypted and securely stored in Supabase",
-						})}
-					</p>
 				</div>
 				<div>
 					<Input
@@ -160,10 +156,11 @@ export function AttachmentsEditor({
 								.getElementById("add-new-attachment")
 								?.click();
 						}}
+						className="h-8 px-3 rounded-lg border-border/80 hover:bg-muted/50 font-medium text-xs gap-1.5"
 					>
-						<Plus className="h-3 w-3 mr-1" />
+						<Plus className="h-3.5 w-3.5" />
 						{t("tools.password_manager.add_attachment", {
-							defaultValue: "Add file",
+							defaultValue: "Add File",
 						})}
 					</Button>
 				</div>
@@ -189,7 +186,7 @@ export function AttachmentsEditor({
 						return (
 							<div
 								key={att.id}
-								className="flex items-center justify-between p-2.5 bg-background border border-border rounded-xl shadow-2xs hover:border-border/80 transition-colors"
+								className="flex items-center justify-between p-2.5 bg-background border border-border/70 rounded-xl shadow-2xs hover:border-border transition-colors"
 							>
 								<div className="flex items-center gap-2.5 min-w-0 flex-1 mr-2">
 									<div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0 overflow-hidden relative">
@@ -219,7 +216,7 @@ export function AttachmentsEditor({
 											</span>
 											{att.storagePath && (
 												<span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.2 rounded font-mono">
-													Supabase E2EE
+													Encrypted Cloud
 												</span>
 											)}
 										</div>
@@ -250,7 +247,7 @@ export function AttachmentsEditor({
 												)
 												?.click();
 										}}
-										className="h-8 w-8 text-muted-foreground hover:text-foreground"
+										className="h-8 w-8 text-muted-foreground hover:text-foreground rounded-lg"
 										title={t(
 											"tools.password_manager.replace",
 											{
@@ -272,7 +269,7 @@ export function AttachmentsEditor({
 											}
 											onRemoveAttachment(att.id);
 										}}
-										className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-500/10"
+										className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-lg"
 									>
 										<Trash2 className="w-4 h-4" />
 									</Button>
@@ -283,12 +280,12 @@ export function AttachmentsEditor({
 				</div>
 			)}
 
-			{/* Drop Zone */}
+			{/* Drop Zone Matching Inspired Design */}
 			<div
-				className={`flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-xl transition-colors cursor-pointer ${
+				className={`flex flex-col items-center justify-center py-7 px-6 border-2 border-dashed rounded-2xl transition-all cursor-pointer ${
 					isDragging
-						? "border-primary bg-primary/5"
-						: "border-border/60 hover:border-border hover:bg-muted/10"
+						? "border-primary bg-primary/5 scale-[0.99]"
+						: "border-border/70 hover:border-primary/50 hover:bg-muted/15 bg-background"
 				}`}
 				onDragOver={handleDragOver}
 				onDragLeave={handleDragLeave}
@@ -297,15 +294,20 @@ export function AttachmentsEditor({
 					document.getElementById("add-new-attachment")?.click();
 				}}
 			>
-				<Upload className="w-8 h-8 text-muted-foreground/60 mb-2" />
-				<p className="text-sm font-medium text-foreground text-center">
+				<div className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center mb-2.5 text-muted-foreground group-hover:text-primary transition-colors">
+					<Upload className="w-5 h-5 stroke-[1.75]" />
+				</div>
+				<p className="text-sm font-semibold text-foreground text-center">
 					{t("tools.password_manager.drag_drop_attachments", {
 						defaultValue:
-							"Drag & drop files here, or click to browse",
+							"Drag & drop files here or select to upload",
 					})}
 				</p>
-				<p className="text-xs text-muted-foreground mt-1">
-					{t("tools.password_manager.upload_file_desc")}
+				<p className="text-xs text-muted-foreground/80 mt-1 text-center">
+					{t("tools.password_manager.attachments_desc", {
+						defaultValue:
+							"Securely store related documents and files",
+					})}
 				</p>
 			</div>
 		</div>

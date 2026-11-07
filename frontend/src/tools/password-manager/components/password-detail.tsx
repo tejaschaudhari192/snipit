@@ -89,34 +89,57 @@ export default function PasswordDetail({
 
 	if (isNew) {
 		const isExistingItem = !!(item && item.createdAt);
+		const typeLabel = item?.itemType
+			? t(`tools.password_manager.type_${item.itemType}`, {
+					defaultValue: item.itemType,
+				})
+			: t("tools.password_manager.type_login", { defaultValue: "Login" });
+
 		return (
 			<div className="flex flex-col h-full bg-background">
-				<div className="flex items-center justify-between p-5 border-b border-border gap-3">
+				<div className="flex items-center justify-between px-6 py-4 border-b border-border/60 gap-3 bg-background/80 backdrop-blur-sm sticky top-0 z-10">
 					{onBack && (
 						<Button
 							variant="ghost"
 							size="icon"
 							onClick={onBack}
-							className="h-8 w-8 text-muted-foreground hover:text-foreground shrink-0"
+							className="h-8 w-8 text-muted-foreground hover:text-foreground shrink-0 rounded-lg"
 						>
 							<ArrowLeft className="h-4 w-4" />
 						</Button>
 					)}
-					<h2 className="text-sm font-semibold flex-1 truncate">
+					<h2 className="text-base font-semibold flex-1 truncate text-foreground">
 						{isExistingItem
-							? t("tools.password_manager.edit_title")
-							: t("tools.password_manager.new_title")}
+							? `${t("tools.password_manager.edit", { defaultValue: "Edit" })} ${typeLabel}`
+							: `${t("tools.password_manager.new_item", { defaultValue: "Create New" })} ${typeLabel} Entry`}
 					</h2>
-					<Button
-						type="submit"
-						form="password-form"
-						size="sm"
-						className="h-8 px-4"
-					>
-						{isExistingItem
-							? t("tools.password_manager.save")
-							: t("tools.password_manager.add")}
-					</Button>
+					<div className="flex items-center gap-2">
+						<Button
+							type="submit"
+							form="password-form"
+							size="sm"
+							className="h-8 px-4 rounded-lg font-medium shadow-xs"
+						>
+							{isExistingItem
+								? t("tools.password_manager.save", {
+										defaultValue: "Save Changes",
+									})
+								: t("tools.password_manager.add", {
+										defaultValue: "Add Item",
+									})}
+						</Button>
+						{onBack && (
+							<Button
+								type="button"
+								variant="secondary"
+								size="sm"
+								onClick={onBack}
+								className="h-8 px-3.5 rounded-lg font-medium text-muted-foreground hover:text-foreground"
+							>
+								{t("common.cancel", { defaultValue: "Cancel" })}
+							</Button>
+						)}
+					</div>
 				</div>
 				<div className="flex-1 overflow-y-auto no-scrollbar fade-bottom">
 					<Suspense
