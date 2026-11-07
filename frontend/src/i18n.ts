@@ -3,6 +3,7 @@ import { initReactI18next } from "react-i18next";
 import { localStore } from "@/utils/storage";
 import { CONFIG } from "@/configurations";
 import en from "@/locales/en.json";
+import sa from "@/locales/sa.json";
 import mr from "@/locales/mr.json";
 import hi from "@/locales/hi.json";
 import ja from "@/locales/ja.json";
@@ -19,6 +20,7 @@ import ur from "@/locales/ur.json";
 i18n.use(initReactI18next).init({
 	resources: {
 		en: { translation: en },
+		sa: { translation: sa },
 		mr: { translation: mr },
 		hi: { translation: hi },
 		ja: { translation: ja },

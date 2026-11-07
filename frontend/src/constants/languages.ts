@@ -24,6 +24,7 @@ export const LANGUAGES = [
 
 export const UI_LANGUAGES = [
 	{ label: "English", value: "en" },
+	{ label: "संस्कृतम्", value: "sa" },
 	{ label: "हिन्दी", value: "hi" },
 	{ label: "বাংলা", value: "bn" },
 	{ label: "मराठी", value: "mr" },
@@ -39,6 +40,7 @@ export const UI_LANGUAGES = [
 ];
 
 export const TRANSLITERATION_LANGUAGES = [
+	{ label: "संस्कृतम्", value: "sa", script: "devanagari", name: "Sanskrit" },
 	{ label: "हिन्दी", value: "hi", script: "devanagari", name: "Hindi" },
 	{ label: "தமிழ்", value: "ta", script: "tamil", name: "Tamil" },
 	{ label: "తెలుగు", value: "te", script: "telugu", name: "Telugu" },
