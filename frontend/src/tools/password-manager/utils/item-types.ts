@@ -154,11 +154,6 @@ export const ITEM_TYPE_SCHEMAS: Record<string, ItemTypeSchema> = {
 				type: "text",
 				placeholder: "tools.password_manager.cred_file_name",
 			},
-			{
-				key: "fileContent",
-				label: "tools.password_manager.fields.file_content",
-				type: "file",
-			},
 		],
 	},
 	note: {

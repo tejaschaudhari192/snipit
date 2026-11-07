@@ -14,6 +14,7 @@ import type {
 // Import temporarily from slice
 import { fetchVaultData } from "./vault";
 import { deleteCollection } from "./sharing";
+import { deleteVaultAttachment } from "../../services/attachment-storage.service";
 
 export const persistItem = createAsyncThunk(
 	"passwordManager/persistItem",
@@ -97,14 +98,17 @@ export const deleteItem = createAsyncThunk(
 	async (id: string, { getState, rejectWithValue, dispatch }) => {
 		const state = (getState() as { passwordManager: PasswordManagerState })
 			.passwordManager;
-		// Find the item to see if it has a collectionId
+		// Find the item to see if it has a collectionId or attachments
 		let targetCollectionId: string | undefined;
 		const itemInPersonal = state.personalItems.find((i) => i.id === id);
+		let targetItem: PasswordItem | undefined = itemInPersonal;
 		if (itemInPersonal?.collectionId) {
 			targetCollectionId = itemInPersonal.collectionId;
 		} else {
 			for (const coll of state.sharedCollections) {
-				if (coll.items.some((i) => i.id === id)) {
+				const shared = coll.items.find((i) => i.id === id);
+				if (shared) {
+					targetItem = shared;
 					targetCollectionId = coll.collection.id;
 					break;
 				}
@@ -113,6 +117,15 @@ export const deleteItem = createAsyncThunk(
 
 		try {
 			await deleteVaultItem(id);
+
+			// Clean up any encrypted attachments stored in Supabase
+			if (targetItem?.attachments && targetItem.attachments.length > 0) {
+				targetItem.attachments.forEach((att) => {
+					if (att.storagePath) {
+						deleteVaultAttachment(att.storagePath).catch(() => {});
+					}
+				});
+			}
 
 			// If it was part of a hidden collection (meaning an individually shared item), delete the collection too
 			if (targetCollectionId) {

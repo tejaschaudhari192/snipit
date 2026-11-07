@@ -29,8 +29,10 @@ export interface CustomField {
 export interface ItemAttachment {
 	id: string;
 	fileName: string;
-	fileContent: string;
-	fileSize?: number;
+	fileSize: number;
+	mimeType?: string;
+	storagePath: string;
+	encKey: string;
 	createdAt?: string;
 }
 

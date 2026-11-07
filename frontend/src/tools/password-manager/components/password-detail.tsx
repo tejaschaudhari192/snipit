@@ -441,7 +441,6 @@ export default function PasswordDetail({
 										key={field.key}
 										field={field as SchemaField}
 										value={value}
-										fileName={item.metadata?.fileName}
 									/>
 								);
 							})}
@@ -512,30 +511,10 @@ export default function PasswordDetail({
 						)}
 
 						{/* Dedicated Attachments Section */}
-						{((item.attachments && item.attachments.length > 0) ||
-							(item.metadata?.fileName &&
-								item.metadata?.fileContent)) && (
+						{item.attachments && item.attachments.length > 0 && (
 							<div className="bg-muted/20 border border-border/40 rounded-2xl p-6 shadow-xs">
 								<AttachmentsRenderer
-									attachments={
-										item.attachments &&
-										item.attachments.length > 0
-											? item.attachments
-											: item.metadata?.fileName &&
-												  item.metadata?.fileContent
-												? [
-														{
-															id: "legacy_credfile",
-															fileName:
-																item.metadata
-																	.fileName,
-															fileContent:
-																item.metadata
-																	.fileContent,
-														},
-													]
-												: []
-									}
+									attachments={item.attachments}
 								/>
 							</div>
 						)}

@@ -19,8 +19,10 @@ export interface CustomField {
 export interface ItemAttachment {
 	id: string;
 	fileName: string;
-	fileContent: string; // Base64 data URL
-	fileSize?: number;
+	fileSize: number;
+	mimeType?: string;
+	storagePath: string; // Supabase storage path: vault-attachments/...
+	encKey: string; // Auto-generated attachment decryption key (base64)
 	createdAt?: string;
 }
 

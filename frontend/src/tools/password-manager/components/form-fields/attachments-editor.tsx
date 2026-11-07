@@ -10,18 +10,25 @@ import {
 	Upload,
 	FileText,
 	Image as ImageIcon,
+	Loader2,
+	Lock,
 } from "lucide-react";
 import type { ItemAttachment } from "@/tools/password-manager/types";
 import {
 	MAX_FILE_SIZE,
 	ACCEPTED_FILE_TYPES,
 	formatFileSize,
-	getFileSizeFromBase64,
 	isValidFileType,
 } from "@/tools/password-manager/utils/file-utils";
+import {
+	uploadEncryptedVaultAttachment,
+	deleteVaultAttachment,
+} from "../../services/attachment-storage.service";
 
 interface AttachmentsEditorProps {
 	attachments: ItemAttachment[];
+	userId?: string;
+	itemId?: string;
 	onAddAttachment: (attachment: ItemAttachment) => void;
 	onRemoveAttachment: (id: string) => void;
 	onReplaceAttachment: (id: string, newAttachment: ItemAttachment) => void;
@@ -29,14 +36,17 @@ interface AttachmentsEditorProps {
 
 export function AttachmentsEditor({
 	attachments,
+	userId,
+	itemId,
 	onAddAttachment,
 	onRemoveAttachment,
 	onReplaceAttachment,
 }: AttachmentsEditorProps) {
 	const { t } = useTranslation();
 	const [isDragging, setIsDragging] = useState(false);
+	const [uploadingFiles, setUploadingFiles] = useState<string[]>([]);
 
-	const processFile = (file: File, replaceId?: string) => {
+	const processFile = async (file: File, replaceId?: string) => {
 		if (file.size > MAX_FILE_SIZE) {
 			toast.add({
 				title: t("tools.password_manager.file_too_large"),
@@ -55,24 +65,36 @@ export function AttachmentsEditor({
 			return;
 		}
 
-		const reader = new FileReader();
-		reader.onload = (event) => {
-			const content = event.target?.result as string;
-			const newAttachment: ItemAttachment = {
-				id: replaceId ?? crypto.randomUUID(),
-				fileName: file.name,
-				fileContent: content,
-				fileSize: file.size,
-				createdAt: new Date().toISOString(),
-			};
+		setUploadingFiles((prev) => [...prev, file.name]);
+
+		try {
+			// Encrypt file with auto-generated key and upload to Supabase as [pm-uat]_...
+			const newAttachment = await uploadEncryptedVaultAttachment({
+				file,
+				userId,
+				itemId,
+			});
 
 			if (replaceId) {
+				const existing = attachments.find((a) => a.id === replaceId);
+				if (existing?.storagePath) {
+					deleteVaultAttachment(existing.storagePath).catch(() => {});
+				}
 				onReplaceAttachment(replaceId, newAttachment);
 			} else {
 				onAddAttachment(newAttachment);
 			}
-		};
-		reader.readAsDataURL(file);
+		} catch (error: unknown) {
+			console.error("Upload error:", error);
+			toast.add({
+				title: "Failed to upload encrypted file",
+				type: "error",
+			});
+		} finally {
+			setUploadingFiles((prev) =>
+				prev.filter((name) => name !== file.name),
+			);
+		}
 	};
 
 	const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -92,25 +114,26 @@ export function AttachmentsEditor({
 		e.stopPropagation();
 		setIsDragging(false);
 		const files = e.dataTransfer.files;
-		if (files.length > 0) {
+		if (files && files.length > 0) {
 			Array.from(files).forEach((file) => processFile(file));
 		}
 	};
 
 	return (
-		<div className="space-y-3 px-5">
+		<div className="space-y-4 pt-4 border-t border-border">
 			<div className="flex items-center justify-between">
-				<div className="flex items-center gap-2">
+				<div className="space-y-0.5">
 					<Label className="text-sm font-medium">
 						{t("tools.password_manager.attachments", {
 							defaultValue: "Attachments",
 						})}
 					</Label>
-					{attachments.length > 0 && (
-						<span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-medium">
-							{attachments.length}
-						</span>
-					)}
+					<p className="text-xs text-muted-foreground">
+						{t("tools.password_manager.attachments_desc", {
+							defaultValue:
+								"Files encrypted and securely stored in Supabase",
+						})}
+					</p>
 				</div>
 				<div>
 					<Input
@@ -140,11 +163,21 @@ export function AttachmentsEditor({
 					>
 						<Plus className="h-3 w-3 mr-1" />
 						{t("tools.password_manager.add_attachment", {
-							defaultValue: "Add File",
+							defaultValue: "Add file",
 						})}
 					</Button>
 				</div>
 			</div>
+
+			{/* Uploading Status Banner */}
+			{uploadingFiles.length > 0 && (
+				<div className="p-2.5 rounded-xl bg-primary/10 border border-primary/20 flex items-center gap-2 text-xs text-primary font-medium animate-pulse">
+					<Loader2 className="w-4 h-4 animate-spin shrink-0" />
+					<span>
+						Encrypting & uploading {uploadingFiles.join(", ")}...
+					</span>
+				</div>
+			)}
 
 			{/* Attached Files List */}
 			{attachments.length > 0 && (
@@ -159,31 +192,37 @@ export function AttachmentsEditor({
 								className="flex items-center justify-between p-2.5 bg-background border border-border rounded-xl shadow-2xs hover:border-border/80 transition-colors"
 							>
 								<div className="flex items-center gap-2.5 min-w-0 flex-1 mr-2">
-									<div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0 overflow-hidden">
-										{isImage && att.fileContent ? (
-											<img
-												src={att.fileContent}
-												alt={att.fileName}
-												className="w-full h-full object-cover"
-											/>
-										) : isImage ? (
+									<div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0 overflow-hidden relative">
+										{isImage ? (
 											<ImageIcon className="w-4 h-4 text-muted-foreground" />
 										) : (
 											<FileText className="w-4 h-4 text-muted-foreground" />
+										)}
+										{att.encKey && (
+											<div
+												className="absolute bottom-0 right-0 p-0.5 bg-background/80 rounded-tl"
+												title="E2EE Encrypted"
+											>
+												<Lock className="w-2.5 h-2.5 text-primary" />
+											</div>
 										)}
 									</div>
 									<div className="min-w-0 flex-1">
 										<p className="text-sm font-medium text-foreground truncate">
 											{att.fileName}
 										</p>
-										<p className="text-xs text-muted-foreground">
-											{formatFileSize(
-												att.fileSize ??
-													getFileSizeFromBase64(
-														att.fileContent,
-													),
+										<div className="flex items-center gap-2 text-xs text-muted-foreground">
+											<span>
+												{formatFileSize(
+													att.fileSize ?? 0,
+												)}
+											</span>
+											{att.storagePath && (
+												<span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.2 rounded font-mono">
+													Supabase E2EE
+												</span>
 											)}
-										</p>
+										</div>
 									</div>
 								</div>
 
@@ -195,15 +234,15 @@ export function AttachmentsEditor({
 										accept={ACCEPTED_FILE_TYPES}
 										onChange={(e) => {
 											const file = e.target.files?.[0];
-											if (file) processFile(file, att.id);
+											if (!file) return;
+											processFile(file, att.id);
 											e.target.value = "";
 										}}
 									/>
 									<Button
 										type="button"
 										variant="ghost"
-										size="sm"
-										className="h-8 text-xs text-muted-foreground hover:text-foreground"
+										size="icon"
 										onClick={() => {
 											document
 												.getElementById(
@@ -211,19 +250,28 @@ export function AttachmentsEditor({
 												)
 												?.click();
 										}}
+										className="h-8 w-8 text-muted-foreground hover:text-foreground"
+										title={t(
+											"tools.password_manager.replace",
+											{
+												defaultValue: "Replace",
+											},
+										)}
 									>
-										<Upload className="w-3.5 h-3.5 mr-1" />
-										{t("tools.password_manager.replace", {
-											defaultValue: "Replace",
-										})}
+										<Upload className="w-4 h-4" />
 									</Button>
 									<Button
 										type="button"
 										variant="ghost"
 										size="icon"
-										onClick={() =>
-											onRemoveAttachment(att.id)
-										}
+										onClick={() => {
+											if (att.storagePath) {
+												deleteVaultAttachment(
+													att.storagePath,
+												).catch(() => {});
+											}
+											onRemoveAttachment(att.id);
+										}}
 										className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-500/10"
 									>
 										<Trash2 className="w-4 h-4" />
@@ -235,12 +283,12 @@ export function AttachmentsEditor({
 				</div>
 			)}
 
-			{/* Drag & Drop Zone */}
+			{/* Drop Zone */}
 			<div
-				className={`flex flex-col items-center justify-center p-4 border border-dashed rounded-xl transition-colors cursor-pointer text-center ${
+				className={`flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-xl transition-colors cursor-pointer ${
 					isDragging
-						? "border-primary bg-primary/10"
-						: "border-border/80 bg-muted/20 hover:bg-muted/30"
+						? "border-primary bg-primary/5"
+						: "border-border/60 hover:border-border hover:bg-muted/10"
 				}`}
 				onDragOver={handleDragOver}
 				onDragLeave={handleDragLeave}
@@ -249,17 +297,15 @@ export function AttachmentsEditor({
 					document.getElementById("add-new-attachment")?.click();
 				}}
 			>
-				<Upload className="w-5 h-5 text-muted-foreground mb-1" />
-				<p className="text-xs font-medium text-foreground">
-					{t("tools.password_manager.drop_files_here", {
-						defaultValue: "Drop files here or click to browse",
+				<Upload className="w-8 h-8 text-muted-foreground/60 mb-2" />
+				<p className="text-sm font-medium text-foreground text-center">
+					{t("tools.password_manager.drag_drop_attachments", {
+						defaultValue:
+							"Drag & drop files here, or click to browse",
 					})}
 				</p>
-				<p className="text-[11px] text-muted-foreground mt-0.5">
-					{t("tools.password_manager.accepted_types", {
-						types: ACCEPTED_FILE_TYPES,
-						maxSize: formatFileSize(MAX_FILE_SIZE),
-					})}
+				<p className="text-xs text-muted-foreground mt-1">
+					{t("tools.password_manager.upload_file_desc")}
 				</p>
 			</div>
 		</div>

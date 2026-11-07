@@ -2,17 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
 import { Label } from "@/components/ui/label";
-import { Download, Eye, EyeOff } from "lucide-react";
-import {
-	Attachment,
-	AttachmentAction,
-	AttachmentActions,
-	AttachmentContent,
-	AttachmentDescription,
-	AttachmentMedia,
-	AttachmentTitle,
-} from "@/components/ui/attachment";
-import { FileTextIcon } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface SchemaField {
@@ -25,13 +15,11 @@ interface SchemaField {
 interface SchemaFieldRendererProps {
 	field: SchemaField;
 	value: string | undefined;
-	fileName?: string;
 }
 
 export function SchemaFieldRenderer({
 	field,
 	value,
-	fileName,
 }: SchemaFieldRendererProps) {
 	const { t } = useTranslation();
 	const [showValue, setShowValue] = React.useState(false);
@@ -52,52 +40,6 @@ export function SchemaFieldRenderer({
 				>
 					{value}
 				</a>
-			</div>
-		);
-	}
-
-	if (field.type === "file") {
-		const kb = Math.round(value.length / 1024);
-		const sizeString =
-			kb > 1024 ? `${(kb / 1024).toFixed(1)} MB` : `${kb} KB`;
-		const fName = fileName || "credentials.txt";
-
-		return (
-			<div className="space-y-1.5 mt-2 mb-2">
-				<Label className="text-[13px] text-muted-foreground block font-medium mb-1">
-					{field.placeholder ? t(field.placeholder) : t(field.label)}
-				</Label>
-				<Attachment>
-					<AttachmentMedia>
-						<FileTextIcon />
-					</AttachmentMedia>
-					<AttachmentContent>
-						<AttachmentTitle>{fName}</AttachmentTitle>
-						<AttachmentDescription>
-							Text File · {sizeString}
-						</AttachmentDescription>
-					</AttachmentContent>
-					<AttachmentActions>
-						<AttachmentAction
-							aria-label={`Download ${fName}`}
-							onClick={() => {
-								const blob = new Blob([value], {
-									type: "text/plain",
-								});
-								const url = URL.createObjectURL(blob);
-								const a = document.createElement("a");
-								a.href = url;
-								a.download = fName;
-								document.body.appendChild(a);
-								a.click();
-								document.body.removeChild(a);
-								URL.revokeObjectURL(url);
-							}}
-						>
-							<Download className="w-4 h-4" />
-						</AttachmentAction>
-					</AttachmentActions>
-				</Attachment>
 			</div>
 		);
 	}

@@ -10,12 +10,10 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@/tools/password-manager/store";
 import { selectMergedFolders } from "../store/password-slice";
-import { Upload, FileText as FileTextIcon, X } from "lucide-react";
-import { toast } from "@/components/ui/toast";
+import { selectUserId } from "../store/selectors";
 import type { PasswordItem, CustomField, ItemAttachment } from "../types";
 import { getFieldsForType } from "../utils/item-types";
 import { FolderModal } from "./folder-modal";
@@ -26,14 +24,6 @@ export interface PasswordFormProps {
 	onAdd: (item: PasswordItem) => void;
 	editItem?: PasswordItem | null;
 }
-
-import {
-	MAX_FILE_SIZE,
-	ACCEPTED_FILE_TYPES,
-	formatFileSize,
-	getFileSizeFromBase64,
-	isValidFileType,
-} from "../utils/file-utils";
 
 import {
 	SchemaFieldsEditor,
@@ -53,33 +43,13 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 	const [folderId, setFolderId] = useState<string>(
 		editItem?.folderId ?? "none",
 	);
-	const [customFields, setCustomFields] = useState<CustomField[]>(() => {
-		// Filter out any legacy file fields from custom fields
-		return (editItem?.customFields ?? []).filter(
-			(f: CustomField & { fileName?: string; fileContent?: string }) =>
-				(f.type as string) !== "file",
-		);
-	});
-	const [attachments, setAttachments] = useState<ItemAttachment[]>(() => {
-		const list: ItemAttachment[] = [...(editItem?.attachments ?? [])];
-		// Migrate legacy file custom fields if present
-		(editItem?.customFields ?? []).forEach(
-			(f: CustomField & { fileName?: string; fileContent?: string }) => {
-				if (
-					(f.type as string) === "file" &&
-					(f.fileName || f.fileContent)
-				) {
-					list.push({
-						id: f.id || crypto.randomUUID(),
-						fileName: f.fileName || f.name || "Attachment",
-						fileContent: f.fileContent || f.value || "",
-						createdAt: editItem?.createdAt,
-					});
-				}
-			},
-		);
-		return list;
-	});
+	const userId = useAppSelector(selectUserId);
+	const [customFields, setCustomFields] = useState<CustomField[]>(
+		() => editItem?.customFields ?? [],
+	);
+	const [attachments, setAttachments] = useState<ItemAttachment[]>(
+		() => editItem?.attachments ?? [],
+	);
 	const [metadata, setMetadata] = useState<Record<string, string>>(() => {
 		const meta = { ...(editItem?.metadata ?? {}) };
 		if (editItem?.username) meta.username = editItem.username;
@@ -87,67 +57,6 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 		if (editItem?.url) meta.url = editItem.url;
 		return meta;
 	});
-
-	// --- NEW: Drag and Drop State/Handlers ---
-	const [isDragging, setIsDragging] = useState(false);
-
-	const handleFiles = (files: FileList | File) => {
-		const file = files instanceof File ? files : files[0];
-		if (!file) return;
-
-		if (file.size > MAX_FILE_SIZE) {
-			toast.add({
-				title: t("tools.password_manager.file_too_large"),
-				type: "error",
-			});
-			return;
-		}
-
-		if (!isValidFileType(file.name, ACCEPTED_FILE_TYPES)) {
-			toast.add({
-				title: t("tools.password_manager.invalid_file_type", {
-					defaultValue: "Invalid file type",
-				}),
-				type: "error",
-			});
-			return;
-		}
-
-		const reader = new FileReader();
-		reader.onload = (event) => {
-			const content = event.target?.result as string;
-			setMetadata((prev) => ({
-				...prev,
-				fileName: file.name,
-				fileContent: content,
-			}));
-			if (!title) {
-				setTitle(file.name);
-			}
-		};
-		reader.readAsDataURL(file);
-	};
-
-	const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-		e.preventDefault();
-		e.stopPropagation();
-		setIsDragging(true);
-	};
-
-	const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-		e.preventDefault();
-		e.stopPropagation();
-		setIsDragging(false);
-	};
-
-	const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-		e.preventDefault();
-		e.stopPropagation();
-		setIsDragging(false);
-		const files = e.dataTransfer.files;
-		handleFiles(files);
-	};
-	// ------------------------------------------
 
 	const [folderModalOpen, setFolderModalOpen] = useState(false);
 	const { createFolder } = useFolderMutations();
@@ -161,38 +70,8 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 			setNotes(editItem.notes ?? "");
 			setItemType(editItem.itemType ?? "login");
 			setFolderId(editItem.folderId ?? "none");
-			setCustomFields(
-				(editItem.customFields ?? []).filter(
-					(
-						f: CustomField & {
-							fileName?: string;
-							fileContent?: string;
-						},
-					) => (f.type as string) !== "file",
-				),
-			);
-			const list: ItemAttachment[] = [...(editItem.attachments ?? [])];
-			(editItem.customFields ?? []).forEach(
-				(
-					f: CustomField & {
-						fileName?: string;
-						fileContent?: string;
-					},
-				) => {
-					if (
-						(f.type as string) === "file" &&
-						(f.fileName || f.fileContent)
-					) {
-						list.push({
-							id: f.id || crypto.randomUUID(),
-							fileName: f.fileName || f.name || "Attachment",
-							fileContent: f.fileContent || f.value || "",
-							createdAt: editItem.createdAt,
-						});
-					}
-				},
-			);
-			setAttachments(list);
+			setCustomFields(editItem.customFields ?? []);
+			setAttachments(editItem.attachments ?? []);
 			const meta = { ...(editItem.metadata ?? {}) };
 			if (editItem.username) meta.username = editItem.username;
 			if (editItem.password) meta.password = editItem.password;
@@ -303,12 +182,6 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 
 	const updateMetadata = (key: string, value: string) => {
 		setMetadata((prev) => ({ ...prev, [key]: value }));
-	};
-
-	const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
-		if (!file) return;
-		handleFiles(file);
 	};
 
 	const schemaFields = getFieldsForType(itemType || "login");
@@ -449,86 +322,6 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 						</CardTitle>
 					</CardHeader>
 					<CardContent className="px-4 py-4 space-y-4">
-						{itemType === "credfile" && (
-							<div
-								className={`flex items-center justify-between p-3 border border-border rounded-xl bg-muted/30 border-dashed transition-colors ${
-									isDragging
-										? "border-primary bg-primary/10"
-										: ""
-								}`}
-								onDragOver={handleDragOver}
-								onDragLeave={handleDragLeave}
-								onDrop={handleDrop}
-							>
-								{metadata.fileName ? (
-									<div className="flex items-center gap-2 w-full">
-										<FileTextIcon className="w-4 h-4 text-muted-foreground" />
-										<span className="text-sm text-foreground truncate max-w-50">
-											{metadata.fileName}
-										</span>
-										<span className="text-xs text-muted-foreground">
-											{formatFileSize(
-												getFileSizeFromBase64(
-													metadata.fileContent,
-												),
-											)}
-										</span>
-										<Button
-											type="button"
-											variant="ghost"
-											size="icon"
-											onClick={() => {
-												setMetadata((prev) => {
-													const rest = { ...prev };
-													delete rest.fileName;
-													delete rest.fileContent;
-													return rest;
-												});
-											}}
-											aria-label="Remove file"
-											className="h-6 w-6 p-0"
-										>
-											<X className="w-3 h-3 text-red-500" />
-										</Button>
-									</div>
-								) : (
-									<div className="space-y-1">
-										<Label className="text-sm font-medium">
-											{t(
-												"tools.password_manager.upload_file",
-											)}
-										</Label>
-										<p className="text-xs text-muted-foreground">
-											{t(
-												"tools.password_manager.upload_file_desc",
-											)}
-										</p>
-									</div>
-								)}
-								<div>
-									<Input
-										type="file"
-										id="credfile-upload"
-										className="hidden"
-										accept={ACCEPTED_FILE_TYPES}
-										onChange={handleFileUpload}
-									/>
-									<Label
-										htmlFor="credfile-upload"
-										className="cursor-pointer inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-3"
-									>
-										<Upload className="mr-2 h-4 w-4" />
-										{metadata.fileName
-											? t(
-													"tools.password_manager.replace_file",
-												)
-											: t(
-													"tools.password_manager.choose_file",
-												)}
-									</Label>
-								</div>
-							</div>
-						)}
 						{/* Dynamic Schema Fields or Credit Card Editor */}
 						{itemType === "card" ? (
 							<CreditCardFormEditor
@@ -586,6 +379,8 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 			{/* Dedicated Attachments */}
 			<AttachmentsEditor
 				attachments={attachments}
+				userId={userId}
+				itemId={editItem?.id}
 				onAddAttachment={handleAddAttachment}
 				onRemoveAttachment={handleRemoveAttachment}
 				onReplaceAttachment={handleReplaceAttachment}
