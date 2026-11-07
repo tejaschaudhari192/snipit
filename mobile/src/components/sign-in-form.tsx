@@ -5,7 +5,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { Text } from "@/components/ui/text";
 import * as React from "react";
 import { View } from "react-native";
-import { AuthCardWrapper } from "./auth-card-wrapper";
+import { AuthCardWrapper } from "./auth";
 
 export interface SignInFormProps {
 	email?: string;

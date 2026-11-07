@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Text } from "@/components/ui/text";
 import { View } from "react-native";
-import { AuthCardWrapper } from "./auth-card-wrapper";
+import { AuthCardWrapper } from "./auth";
 
 export interface ForgotPasswordFormProps {
 	email?: string;
