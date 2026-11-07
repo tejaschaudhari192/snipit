@@ -35,6 +35,7 @@ import {
 import { CustomFieldsEditor } from "./form-fields/custom-fields-editor";
 import { AttachmentsEditor } from "./form-fields/attachments-editor";
 import { CreditCardFormEditor } from "./form-fields/credit-card-form-editor";
+import { CredFileEditor } from "./form-fields/credfile-editor";
 
 export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 	const { t } = useTranslation();
@@ -158,8 +159,8 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 		);
 	};
 
-	const handleAddAttachment = (att: ItemAttachment) => {
-		setAttachments((prev) => [...prev, att]);
+	const handleAddAttachment = (newAtt: ItemAttachment) => {
+		setAttachments((prev) => [...prev, newAtt]);
 	};
 
 	const handleRemoveAttachment = (id: string) => {
@@ -329,7 +330,7 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 				</div>
 			</div>
 
-			{/* Item Details Container Card matching the design */}
+			{/* Item Details Container Card */}
 			<div className="px-6 space-y-2">
 				<Label className="text-sm font-semibold text-foreground block">
 					{t("tools.password_manager.details_title", {
@@ -340,11 +341,33 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 				<Card className="shadow-xs border-border/70 rounded-2xl bg-card overflow-hidden">
 					<CardContent className="p-5 space-y-4">
 						<div className="text-xs font-semibold text-foreground/90 uppercase tracking-wider">
-							Core Account Details
+							{itemType === "credfile"
+								? "Credential File"
+								: itemType === "card"
+									? "Card Details"
+									: "Core Account Details"}
 						</div>
 
-						{/* Dynamic Schema Fields or Credit Card Editor */}
-						{itemType === "card" ? (
+						{/* Dynamic Schema Fields, Credit Card Editor, or Credential File Editor */}
+						{itemType === "credfile" ? (
+							<CredFileEditor
+								attachments={attachments}
+								userId={userId}
+								itemId={editItem?.id}
+								title={title}
+								onFileUploaded={(newAtt, autoTitle) => {
+									if (autoTitle) {
+										setTitle(autoTitle);
+									}
+									setAttachments([newAtt]);
+								}}
+								onFileRemoved={(attId) => {
+									setAttachments((prev) =>
+										prev.filter((a) => a.id !== attId),
+									);
+								}}
+							/>
+						) : itemType === "card" ? (
 							<CreditCardFormEditor
 								metadata={metadata}
 								updateMetadata={updateMetadata}
@@ -397,15 +420,17 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 				updateField={updateField}
 			/>
 
-			{/* Dedicated Attachments Section */}
-			<AttachmentsEditor
-				attachments={attachments}
-				userId={userId}
-				itemId={editItem?.id}
-				onAddAttachment={handleAddAttachment}
-				onRemoveAttachment={handleRemoveAttachment}
-				onReplaceAttachment={handleReplaceAttachment}
-			/>
+			{/* Dedicated Attachments Section for all non-credfile types */}
+			{itemType !== "credfile" && (
+				<AttachmentsEditor
+					attachments={attachments}
+					userId={userId}
+					itemId={editItem?.id}
+					onAddAttachment={handleAddAttachment}
+					onRemoveAttachment={handleRemoveAttachment}
+					onReplaceAttachment={handleReplaceAttachment}
+				/>
+			)}
 		</form>
 	);
 }

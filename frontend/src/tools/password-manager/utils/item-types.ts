@@ -147,14 +147,7 @@ export const ITEM_TYPE_SCHEMAS: Record<string, ItemTypeSchema> = {
 	},
 	credfile: {
 		id: "credfile",
-		fields: [
-			{
-				key: "fileName",
-				label: "tools.password_manager.fields.file_name",
-				type: "text",
-				placeholder: "tools.password_manager.cred_file_name",
-			},
-		],
+		fields: [],
 	},
 	note: {
 		id: "note",
