@@ -45,6 +45,7 @@ import { ItemAvatar } from "./item-avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SchemaFieldRenderer } from "./detail-fields/schema-field-renderer";
 import { CustomFieldRenderer } from "./detail-fields/custom-field-renderer";
+import { AttachmentsRenderer } from "./detail-fields/attachments-renderer";
 import { CreditCardPreview } from "./detail-fields/credit-card-preview";
 import { useDeleteItem } from "@/tools/password-manager/hooks/use-delete-item";
 import { Label } from "@/components/ui/label";
@@ -507,6 +508,35 @@ export default function PasswordDetail({
 										/>
 									))}
 								</div>
+							</div>
+						)}
+
+						{/* Dedicated Attachments Section */}
+						{((item.attachments && item.attachments.length > 0) ||
+							(item.metadata?.fileName &&
+								item.metadata?.fileContent)) && (
+							<div className="bg-muted/20 border border-border/40 rounded-2xl p-6 shadow-xs">
+								<AttachmentsRenderer
+									attachments={
+										item.attachments &&
+										item.attachments.length > 0
+											? item.attachments
+											: item.metadata?.fileName &&
+												  item.metadata?.fileContent
+												? [
+														{
+															id: "legacy_credfile",
+															fileName:
+																item.metadata
+																	.fileName,
+															fileContent:
+																item.metadata
+																	.fileContent,
+														},
+													]
+												: []
+									}
+								/>
 							</div>
 						)}
 					</div>

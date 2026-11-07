@@ -21,6 +21,7 @@ import type {
 export type {
 	CardMetadata,
 	CustomField,
+	ItemAttachment,
 	Folder,
 	PasswordItem,
 	RecoveryRecord,
@@ -608,6 +609,7 @@ export class OfflineVaultService {
 							folderId: decrypted.folderId,
 							metadata: decrypted.metadata,
 							customFields: decrypted.customFields,
+							attachments: decrypted.attachments,
 							createdAt:
 								decrypted.createdAt || new Date().toISOString(),
 							updatedAt:

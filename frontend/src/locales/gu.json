@@ -461,7 +461,11 @@
 			},
 			"categories": "શ્રેણીઓ",
 			"reorder": "પુનઃક્રમિત કરો",
-			"reorder_sidebar_hint": "ક્રમ બદલવા માટે ખેંચો"
+			"reorder_sidebar_hint": "ક્રમ બદલવા માટે ખેંચો",
+			"attachments": "જોડાણો",
+			"add_attachment": "ફાઇલ ઉમેરો",
+			"drop_files_here": "અહીં ફાઇલો મૂકો અથવા પસંદ કરવા માટે ક્લિક કરો",
+			"replace": "બદલો"
 		},
 		"password_generator": {
 			"title": "પાસવર્ડ જનરેટર",

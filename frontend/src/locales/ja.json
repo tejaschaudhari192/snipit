@@ -460,7 +460,11 @@
 			},
 			"categories": "カテゴリー",
 			"reorder": "並び替える",
-			"reorder_sidebar_hint": "ドラッグして並べ替え"
+			"reorder_sidebar_hint": "ドラッグして並べ替え",
+			"attachments": "添付ファイル",
+			"add_attachment": "ファイルを追加",
+			"drop_files_here": "ここにファイルをドロップするか、クリックして参照",
+			"replace": "置換"
 		},
 		"password_generator": {
 			"title": "パスワードジェネレーター",

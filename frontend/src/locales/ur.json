@@ -461,7 +461,11 @@
 			},
 			"categories": "اقسام",
 			"reorder": "ترتیب نو",
-			"reorder_sidebar_hint": "ترتیب نو کیلئے ڈریگ کریں"
+			"reorder_sidebar_hint": "ترتیب نو کیلئے ڈریگ کریں",
+			"attachments": "منسلکات",
+			"add_attachment": "فائل شامل کریں",
+			"drop_files_here": "فائلیں یہاں ڈراپ کریں یا براؤز کرنے کیلئے کلک کریں",
+			"replace": "تبدیل کریں"
 		},
 		"password_generator": {
 			"title": "پاس ورڈ جنریٹر",

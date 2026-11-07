@@ -49,7 +49,8 @@ router.get(
 	"/cron",
 	catchAsync(async (_req, res) => {
 		// Force refresh to rebuild and update the cached health and stream updates
-		const { health, updates } = await healthService.refreshHealthCache(true);
+		const { health, updates } =
+			await healthService.refreshHealthCache(true);
 		return res.status(200).json({
 			success: true,
 			message: "Health cache rebuilt successfully",

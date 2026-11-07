@@ -461,7 +461,11 @@
 			},
 			"categories": "ವರ್ಗಗಳು",
 			"reorder": "ಮರುಕ್ರಮಗೊಳಿಸಿ",
-			"reorder_sidebar_hint": "ಮರುಕ್ರಮಗೊಳಿಸಲು ಐಟಂಗಳನ್ನು ಎಳೆಯಿರಿ"
+			"reorder_sidebar_hint": "ಮರುಕ್ರಮಗೊಳಿಸಲು ಐಟಂಗಳನ್ನು ಎಳೆಯಿರಿ",
+			"attachments": "ಲಗತ್ತುಗಳು",
+			"add_attachment": "ಫೈಲ್ ಸೇರಿಸಿ",
+			"drop_files_here": "ಇಲ್ಲಿ ಫೈಲ್‌ಗಳನ್ನು ಬಿಡಿ ಅಥವಾ ಬ್ರೌಸ್ ಮಾಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ",
+			"replace": "ಬದಲಾಯಿಸಿ"
 		},
 		"password_generator": {
 			"title": "ಪಾಸ್ವರ್ಡ್ ಜನರೇಟರ್",

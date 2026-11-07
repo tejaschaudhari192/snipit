@@ -460,7 +460,11 @@
 			"deleted_n_items": "Deleted {{count}} item{{s}}",
 			"categories": "Categories",
 			"reorder": "Reorder",
-			"reorder_sidebar_hint": "Drag items to reorder"
+			"reorder_sidebar_hint": "Drag items to reorder",
+			"attachments": "Attachments",
+			"add_attachment": "Add File",
+			"drop_files_here": "Drop files here or click to browse",
+			"replace": "Replace"
 		},
 		"password_generator": {
 			"title": "Password Generator",

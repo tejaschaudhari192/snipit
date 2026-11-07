@@ -105,7 +105,6 @@ export const CUSTOM_FIELD_TYPES: CustomField["type"][] = [
 	"email",
 	"tel",
 	"color",
-	"file",
 ];
 
 export const UI_DEFAULTS = {

@@ -1,110 +1,12 @@
 import type { CustomField } from "@/tools/password-manager/types";
-import { Download, FileTextIcon } from "lucide-react";
-import {
-	Attachment,
-	AttachmentAction,
-	AttachmentActions,
-	AttachmentContent,
-	AttachmentDescription,
-	AttachmentMedia,
-	AttachmentTitle,
-} from "@/components/ui/attachment";
-
-function getFileSizeFromBase64(base64: string | null | undefined): number {
-	if (!base64) return 0;
-	const data = base64.split(",")[1] ?? base64;
-	return Math.round((data.length * 3) / 4);
-}
-
-function formatFileSize(bytes: number): string {
-	if (bytes === 0) return "0 B";
-	const k = 1024;
-	const sizes = ["B", "KB", "MB", "GB"];
-	const i = Math.floor(Math.log(bytes) / Math.log(k));
-	return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
-}
 
 export function CustomFieldRenderer({ field }: { field: CustomField }) {
-	const isFileType = field.type === "file" && field.fileName;
-	const isImage =
-		isFileType &&
-		/\.(jpg|jpeg|png|gif|webp|svg)$/i.test(field.fileName ?? "");
-
-	const handleDownload = () => {
-		if (!field.fileContent) return;
-		try {
-			const base64 = field.fileContent.split(",")[1] ?? field.fileContent;
-			const byteCharacters = atob(base64);
-			const byteNumbers = new Array(byteCharacters.length);
-			for (let i = 0; i < byteCharacters.length; i++) {
-				byteNumbers[i] = byteCharacters.charCodeAt(i);
-			}
-			const byteArray = new Uint8Array(byteNumbers);
-			const mimeType =
-				field.fileContent.split(";")[0]?.split(":")[1] ??
-				"application/octet-stream";
-			const blob = new Blob([byteArray], { type: mimeType });
-			const url = URL.createObjectURL(blob);
-			const a = document.createElement("a");
-			a.href = url;
-			a.download = field.fileName ?? "download";
-			document.body.appendChild(a);
-			a.click();
-			document.body.removeChild(a);
-			URL.revokeObjectURL(url);
-		} catch {
-			const url = field.fileContent.startsWith("data:")
-				? field.fileContent
-				: `data:application/octet-stream;base64,${field.fileContent}`;
-			const a = document.createElement("a");
-			a.href = url;
-			a.download = field.fileName ?? "download";
-			document.body.appendChild(a);
-			a.click();
-			document.body.removeChild(a);
-		}
-	};
-
 	return (
 		<div className="bg-background rounded-xl px-3 py-2.5 border border-border overflow-hidden">
 			<p className="text-xs text-muted-foreground mb-0.5 truncate">
 				{field.name}
 			</p>
-			{isFileType ? (
-				<Attachment>
-					<AttachmentMedia variant={isImage ? "image" : "icon"}>
-						{isImage ? (
-							<img
-								src={field.fileContent ?? ""}
-								alt={field.fileName ?? ""}
-								className="w-full h-full object-cover"
-							/>
-						) : (
-							<FileTextIcon className="w-5 h-5" />
-						)}
-					</AttachmentMedia>
-					<AttachmentContent>
-						<AttachmentTitle>{field.fileName}</AttachmentTitle>
-						<AttachmentDescription>
-							{field.fileContent
-								? `${formatFileSize(
-										getFileSizeFromBase64(
-											field.fileContent,
-										),
-									)}`
-								: "File"}
-						</AttachmentDescription>
-					</AttachmentContent>
-					<AttachmentActions>
-						<AttachmentAction
-							aria-label={`Download ${field.fileName}`}
-							onClick={handleDownload}
-						>
-							<Download className="w-4 h-4" />
-						</AttachmentAction>
-					</AttachmentActions>
-				</Attachment>
-			) : field.type === "password" ? (
+			{field.type === "password" ? (
 				<span className="text-sm font-mono text-foreground">
 					••••••••
 				</span>

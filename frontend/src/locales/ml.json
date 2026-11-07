@@ -461,7 +461,11 @@
 			},
 			"categories": "വിഭാഗങ്ങൾ",
 			"reorder": "പുനഃക്രമീകരിക്കുക",
-			"reorder_sidebar_hint": "മാറ്റാൻ വലിച്ചിടുക"
+			"reorder_sidebar_hint": "മാറ്റാൻ വലിച്ചിടുക",
+			"attachments": "അറ്റാച്ചുമെന്റുകൾ",
+			"add_attachment": "ഫയൽ ചേർക്കുക",
+			"drop_files_here": "ഫയലുകൾ ഇവിടെ ഇടുക അല്ലെങ്കിൽ ബ്രൗസ് ചെയ്യാൻ ക്ലിക്ക് ചെയ്യുക",
+			"replace": "മാറ്റിസ്ഥാപിക്കുക"
 		},
 		"password_generator": {
 			"title": "പാസ്‌വേഡ് ജനറേറ്റർ",

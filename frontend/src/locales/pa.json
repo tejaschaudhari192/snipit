@@ -461,7 +461,11 @@
 			},
 			"categories": "ਸ਼੍ਰੇਣੀਆਂ",
 			"reorder": "ਮੁੜ ਕ੍ਰਮਬੱਧ ਕਰੋ",
-			"reorder_sidebar_hint": "ਕ੍ਰਮ ਬਦਲਣ ਲਈ ਖਿੱਚੋ"
+			"reorder_sidebar_hint": "ਕ੍ਰਮ ਬਦਲਣ ਲਈ ਖਿੱਚੋ",
+			"attachments": "ਨੱਥੀ ਫ਼ਾਈਲਾਂ",
+			"add_attachment": "ਫ਼ਾਈਲ ਸ਼ਾਮਲ ਕਰੋ",
+			"drop_files_here": "ਫ਼ਾਈਲਾਂ ਇੱਥੇ ਸੁੱਟੋ ਜਾਂ ਬ੍ਰਾਊਜ਼ ਕਰਨ ਲਈ ਕਲਿੱਕ ਕਰੋ",
+			"replace": "ਬਦਲੋ"
 		},
 		"password_generator": {
 			"title": "ਪਾਸਵਰਡ ਜਨਰੇਟਰ",

@@ -461,7 +461,11 @@
 			},
 			"categories": "श्रेणी",
 			"reorder": "पुनर्क्रमित करा",
-			"reorder_sidebar_hint": "क्रम बदलण्यासाठी आयटम ड्रॅग करा"
+			"reorder_sidebar_hint": "क्रम बदलण्यासाठी आयटम ड्रॅग करा",
+			"attachments": "संलग्न फाइल्स",
+			"add_attachment": "फाइल जोडा",
+			"drop_files_here": "येथे फाइल्स टाका किंवा निवडण्यासाठी क्लिक करा",
+			"replace": "बदला"
 		},
 		"password_generator": {
 			"title": "पासवर्ड जनरेटर",

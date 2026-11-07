@@ -461,7 +461,11 @@
 			},
 			"categories": "వర్గాలు",
 			"reorder": "మళ్లీ క్రమబద్ధీకరించండి",
-			"reorder_sidebar_hint": "క్రమాన్ని మార్చడానికి లాగండి"
+			"reorder_sidebar_hint": "క్రమాన్ని మార్చడానికి లాగండి",
+			"attachments": "జోడింపులు",
+			"add_attachment": "ఫైల్‌ను జోడించండి",
+			"drop_files_here": "ఫైళ్ళను ఇక్కడ వదలండి లేదా బ్రౌజ్ చేయడానికి క్లిక్ చేయండి",
+			"replace": "భర్తీ చేయండి"
 		},
 		"password_generator": {
 			"title": "పాస్‌వర్డ్ జెనరేటర్",

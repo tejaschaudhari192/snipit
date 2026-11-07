@@ -26,6 +26,14 @@ export interface CustomField {
 	isProtected?: boolean;
 }
 
+export interface ItemAttachment {
+	id: string;
+	fileName: string;
+	fileContent: string;
+	fileSize?: number;
+	createdAt?: string;
+}
+
 export interface CardMetadata {
 	cardholderName?: string;
 	cardNumber?: string;
@@ -56,6 +64,7 @@ export interface PasswordItem {
 	folderId?: string;
 	metadata?: Record<string, string>;
 	customFields?: CustomField[];
+	attachments?: ItemAttachment[];
 	createdAt: string;
 	updatedAt: string;
 }

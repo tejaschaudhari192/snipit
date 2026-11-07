@@ -461,7 +461,11 @@
 			},
 			"categories": "श्रेणियाँ",
 			"reorder": "पुनर्क्रमित करें",
-			"reorder_sidebar_hint": "क्रम बदलने के लिए खींचें"
+			"reorder_sidebar_hint": "क्रम बदलने के लिए खींचें",
+			"attachments": "संलग्नक",
+			"add_attachment": "फ़ाइल जोड़ें",
+			"drop_files_here": "फ़ाइलें यहाँ छोड़ें या ब्राउज़ करने के लिए क्लिक करें",
+			"replace": "बदलें"
 		},
 		"password_generator": {
 			"title": "पासवर्ड जेनरेटर",

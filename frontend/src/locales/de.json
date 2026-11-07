@@ -460,7 +460,11 @@
 			},
 			"categories": "Kategorien",
 			"reorder": "Neu anordnen",
-			"reorder_sidebar_hint": "Elemente zum Neuanordnen ziehen"
+			"reorder_sidebar_hint": "Elemente zum Neuanordnen ziehen",
+			"attachments": "Anhänge",
+			"add_attachment": "Datei hinzufügen",
+			"drop_files_here": "Dateien hier ablegen oder zum Durchsuchen klicken",
+			"replace": "Ersetzen"
 		},
 		"password_generator": {
 			"title": "Passwort-Generator",

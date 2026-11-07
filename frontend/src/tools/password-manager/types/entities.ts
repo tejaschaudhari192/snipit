@@ -12,11 +12,16 @@ export interface CustomField {
 		| "number"
 		| "email"
 		| "tel"
-		| "color"
-		| "file";
-	isProtected?: boolean;
-	fileName?: string | null;
-	fileContent?: string | null;
+		| "color";
+	isProtected?: boolean; // If true, value is masked by default
+}
+
+export interface ItemAttachment {
+	id: string;
+	fileName: string;
+	fileContent: string; // Base64 data URL
+	fileSize?: number;
+	createdAt?: string;
 }
 
 export interface PasswordItem {
@@ -40,6 +45,7 @@ export interface PasswordItem {
 		| "other";
 	metadata?: Record<string, string>;
 	customFields?: CustomField[];
+	attachments?: ItemAttachment[];
 	createdAt?: string;
 	updatedAt?: string;
 }

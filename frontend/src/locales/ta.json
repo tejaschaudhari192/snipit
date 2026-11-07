@@ -461,7 +461,11 @@
 			},
 			"categories": "வகைகள்",
 			"reorder": "மறுவரிசைப்படுத்து",
-			"reorder_sidebar_hint": "மறுவரிசைப்படுத்த இழுக்கவும்"
+			"reorder_sidebar_hint": "மறுவரிசைப்படுத்த இழுக்கவும்",
+			"attachments": "இணைப்புகள்",
+			"add_attachment": "கோப்பைச் சேர்க்கவும்",
+			"drop_files_here": "கோப்புகளை இங்கே விடவும் அல்லது உலாவ கிளிக் செய்யவும்",
+			"replace": "மாற்று"
 		},
 		"password_generator": {
 			"title": "கடவுச்சொல் ஜெனரேட்டர்",

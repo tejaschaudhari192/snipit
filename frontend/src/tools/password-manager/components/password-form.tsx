@@ -16,7 +16,7 @@ import { useAppSelector } from "@/tools/password-manager/store";
 import { selectMergedFolders } from "../store/password-slice";
 import { Upload, FileText as FileTextIcon, X } from "lucide-react";
 import { toast } from "@/components/ui/toast";
-import type { PasswordItem, CustomField } from "../types";
+import type { PasswordItem, CustomField, ItemAttachment } from "../types";
 import { getFieldsForType } from "../utils/item-types";
 import { FolderModal } from "./folder-modal";
 import { useFolderMutations } from "../hooks/use-folder-mutations";
@@ -27,27 +27,20 @@ export interface PasswordFormProps {
 	editItem?: PasswordItem | null;
 }
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-
-function formatFileSize(bytes: number): string {
-	if (bytes === 0) return "0 B";
-	const k = 1024;
-	const sizes = ["B", "KB", "MB", "GB"];
-	const i = Math.floor(Math.log(bytes) / Math.log(k));
-	return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
-}
-
-function getFileSizeFromBase64(base64: string | null | undefined): number {
-	if (!base64) return 0;
-	const data = base64.split(",")[1] ?? base64;
-	return Math.round((data.length * 3) / 4);
-}
+import {
+	MAX_FILE_SIZE,
+	ACCEPTED_FILE_TYPES,
+	formatFileSize,
+	getFileSizeFromBase64,
+	isValidFileType,
+} from "../utils/file-utils";
 
 import {
 	SchemaFieldsEditor,
 	type SchemaField,
 } from "./form-fields/schema-fields-editor";
 import { CustomFieldsEditor } from "./form-fields/custom-fields-editor";
+import { AttachmentsEditor } from "./form-fields/attachments-editor";
 import { CreditCardFormEditor } from "./form-fields/credit-card-form-editor";
 
 export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
@@ -60,9 +53,33 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 	const [folderId, setFolderId] = useState<string>(
 		editItem?.folderId ?? "none",
 	);
-	const [customFields, setCustomFields] = useState<CustomField[]>(
-		editItem?.customFields ?? [],
-	);
+	const [customFields, setCustomFields] = useState<CustomField[]>(() => {
+		// Filter out any legacy file fields from custom fields
+		return (editItem?.customFields ?? []).filter(
+			(f: CustomField & { fileName?: string; fileContent?: string }) =>
+				(f.type as string) !== "file",
+		);
+	});
+	const [attachments, setAttachments] = useState<ItemAttachment[]>(() => {
+		const list: ItemAttachment[] = [...(editItem?.attachments ?? [])];
+		// Migrate legacy file custom fields if present
+		(editItem?.customFields ?? []).forEach(
+			(f: CustomField & { fileName?: string; fileContent?: string }) => {
+				if (
+					(f.type as string) === "file" &&
+					(f.fileName || f.fileContent)
+				) {
+					list.push({
+						id: f.id || crypto.randomUUID(),
+						fileName: f.fileName || f.name || "Attachment",
+						fileContent: f.fileContent || f.value || "",
+						createdAt: editItem?.createdAt,
+					});
+				}
+			},
+		);
+		return list;
+	});
 	const [metadata, setMetadata] = useState<Record<string, string>>(() => {
 		const meta = { ...(editItem?.metadata ?? {}) };
 		if (editItem?.username) meta.username = editItem.username;
@@ -81,6 +98,16 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 		if (file.size > MAX_FILE_SIZE) {
 			toast.add({
 				title: t("tools.password_manager.file_too_large"),
+				type: "error",
+			});
+			return;
+		}
+
+		if (!isValidFileType(file.name, ACCEPTED_FILE_TYPES)) {
+			toast.add({
+				title: t("tools.password_manager.invalid_file_type", {
+					defaultValue: "Invalid file type",
+				}),
 				type: "error",
 			});
 			return;
@@ -134,7 +161,38 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 			setNotes(editItem.notes ?? "");
 			setItemType(editItem.itemType ?? "login");
 			setFolderId(editItem.folderId ?? "none");
-			setCustomFields(editItem.customFields ?? []);
+			setCustomFields(
+				(editItem.customFields ?? []).filter(
+					(
+						f: CustomField & {
+							fileName?: string;
+							fileContent?: string;
+						},
+					) => (f.type as string) !== "file",
+				),
+			);
+			const list: ItemAttachment[] = [...(editItem.attachments ?? [])];
+			(editItem.customFields ?? []).forEach(
+				(
+					f: CustomField & {
+						fileName?: string;
+						fileContent?: string;
+					},
+				) => {
+					if (
+						(f.type as string) === "file" &&
+						(f.fileName || f.fileContent)
+					) {
+						list.push({
+							id: f.id || crypto.randomUUID(),
+							fileName: f.fileName || f.name || "Attachment",
+							fileContent: f.fileContent || f.value || "",
+							createdAt: editItem.createdAt,
+						});
+					}
+				},
+			);
+			setAttachments(list);
 			const meta = { ...(editItem.metadata ?? {}) };
 			if (editItem.username) meta.username = editItem.username;
 			if (editItem.password) meta.password = editItem.password;
@@ -151,6 +209,7 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 		setItemType("login");
 		setFolderId("none");
 		setCustomFields([]);
+		setAttachments([]);
 		setMetadata({});
 	};
 
@@ -191,6 +250,9 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 			...(customFields.filter((f) => f.name.trim()).length > 0 && {
 				customFields: customFields.filter((f) => f.name.trim()),
 			}),
+			...(attachments.length > 0 && {
+				attachments,
+			}),
 			...(Object.keys(cleanMetadata).length > 0 && {
 				metadata: cleanMetadata,
 			}),
@@ -214,7 +276,7 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 	const updateField = (
 		index: number,
 		key: keyof CustomField,
-		val: string | File,
+		val: string,
 	) => {
 		const updated = [...customFields];
 		if (key === "type") {
@@ -223,12 +285,20 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 			updated[index].name = val as string;
 		} else if (key === "value") {
 			updated[index].value = val as string;
-		} else if (key === "fileName") {
-			updated[index].fileName = val as string;
-		} else if (key === "fileContent") {
-			updated[index].fileContent = val as string;
 		}
 		setCustomFields(updated);
+	};
+
+	const handleAddAttachment = (att: ItemAttachment) => {
+		setAttachments((prev) => [...prev, att]);
+	};
+
+	const handleRemoveAttachment = (id: string) => {
+		setAttachments((prev) => prev.filter((a) => a.id !== id));
+	};
+
+	const handleReplaceAttachment = (id: string, newAtt: ItemAttachment) => {
+		setAttachments((prev) => prev.map((a) => (a.id === id ? newAtt : a)));
 	};
 
 	const updateMetadata = (key: string, value: string) => {
@@ -440,6 +510,7 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 										type="file"
 										id="credfile-upload"
 										className="hidden"
+										accept={ACCEPTED_FILE_TYPES}
 										onChange={handleFileUpload}
 									/>
 									<Label
@@ -510,6 +581,14 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 				addField={addField}
 				removeField={removeField}
 				updateField={updateField}
+			/>
+
+			{/* Dedicated Attachments */}
+			<AttachmentsEditor
+				attachments={attachments}
+				onAddAttachment={handleAddAttachment}
+				onRemoveAttachment={handleRemoveAttachment}
+				onReplaceAttachment={handleReplaceAttachment}
 			/>
 		</form>
 	);
