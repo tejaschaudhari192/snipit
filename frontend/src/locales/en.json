@@ -464,7 +464,9 @@
 			"attachments": "Attachments",
 			"add_attachment": "Add File",
 			"drop_files_here": "Drop files here or click to browse",
-			"replace": "Replace"
+			"replace": "Replace",
+			"attachments_desc": "Encrypted files securely stored in the cloud",
+			"drag_drop_attachments": "Drag & drop files here, or click to browse"
 		},
 		"password_generator": {
 			"title": "Password Generator",

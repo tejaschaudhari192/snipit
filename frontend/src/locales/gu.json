@@ -465,7 +465,9 @@
 			"attachments": "જોડાણો",
 			"add_attachment": "ફાઇલ ઉમેરો",
 			"drop_files_here": "અહીં ફાઇલો મૂકો અથવા પસંદ કરવા માટે ક્લિક કરો",
-			"replace": "બદલો"
+			"replace": "બદલો",
+			"attachments_desc": "એન્ક્રિપ્ટેડ ફાઇલો ક્લાઉડમાં સુરક્ષિત રીતે સંગ્રહિત છે",
+			"drag_drop_attachments": "ફાઇલો અહીં ખેંચો અને છોડો, અથવા બ્રાઉઝ કરવા માટે ક્લિક કરો"
 		},
 		"password_generator": {
 			"title": "પાસવર્ડ જનરેટર",

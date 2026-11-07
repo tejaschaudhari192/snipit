@@ -464,7 +464,9 @@
 			"attachments": "Anhänge",
 			"add_attachment": "Datei hinzufügen",
 			"drop_files_here": "Dateien hier ablegen oder zum Durchsuchen klicken",
-			"replace": "Ersetzen"
+			"replace": "Ersetzen",
+			"attachments_desc": "Verschlüsselte Dateien sicher in der Cloud gespeichert",
+			"drag_drop_attachments": "Dateien hierher ziehen oder zum Durchsuchen klicken"
 		},
 		"password_generator": {
 			"title": "Passwort-Generator",

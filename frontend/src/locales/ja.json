@@ -464,7 +464,9 @@
 			"attachments": "添付ファイル",
 			"add_attachment": "ファイルを追加",
 			"drop_files_here": "ここにファイルをドロップするか、クリックして参照",
-			"replace": "置換"
+			"replace": "置換",
+			"attachments_desc": "暗号化されたファイルはクラウドに安全に保存されます",
+			"drag_drop_attachments": "ファイルをここにドラッグ＆ドロップ、またはクリックして参照"
 		},
 		"password_generator": {
 			"title": "パスワードジェネレーター",

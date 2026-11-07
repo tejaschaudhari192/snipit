@@ -31,8 +31,10 @@ export async function uploadEncryptedVaultAttachment({
 
 	const attachmentId = crypto.randomUUID();
 	const sanitized = sanitizeFileName(file.name) || "attachment";
-	const prefix = `[pm-uat]_${Date.now()}_${attachmentId}_${sanitized}.enc`;
-	const storagePath = `vault-attachments/${userId}/${itemId || "general"}/${prefix}`;
+	// Note: Supabase storage keys reject brackets `[` and `]`, causing 'InvalidKey' errors.
+	// We use 'pm-uat_' as the prefix instead of '[pm-uat]_'.
+	const fileNameInStorage = `pm-uat_${Date.now()}_${attachmentId}_${sanitized}.enc`;
+	const storagePath = `vault-attachments/${userId}/${itemId || "general"}/${fileNameInStorage}`;
 
 	// 1. Generate an auto-generated random 32-byte key for this attachment
 	const randomKey = nacl.randomBytes(32);

@@ -120,7 +120,7 @@ export function AttachmentsEditor({
 	};
 
 	return (
-		<div className="space-y-4 pt-4 border-t border-border">
+		<div className="space-y-4 px-5 pt-4">
 			<div className="flex items-center justify-between">
 				<div className="space-y-0.5">
 					<Label className="text-sm font-medium">
