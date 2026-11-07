@@ -150,18 +150,27 @@ class PasteService {
 		id: string,
 	): Promise<{ acknowledged: boolean; deletedCount: number }> {
 		expirationScheduler.cancel(id);
-		pasteModel.findOne({ id }).then((paste) => {
-			// Clean up Supabase storage files in background without blocking client response
-			deletePasteStorageFiles(paste).catch((err) => {
+
+		// Atomically find and delete the document in a single operation
+		const paste = await pasteModel.findOneAndDelete({ id });
+
+		if (paste) {
+			// Clean up Supabase storage files immediately using the deleted document snapshot
+			try {
+				await deletePasteStorageFiles(paste);
+			} catch (err) {
 				logger.error(
 					`[PasteService] Failed to clean up storage files for paste ${id}:`,
 					err,
 				);
-			});
-		});
+			}
+		}
 
-		collaboratorModel.deleteMany({ pasteId: id });
-		return await pasteModel.deleteOne({ id });
+		await collaboratorModel.deleteMany({ pasteId: id });
+		return {
+			acknowledged: true,
+			deletedCount: paste ? 1 : 0,
+		};
 	}
 
 	async updatePaste(id: string, data: UpdatePasteData) {

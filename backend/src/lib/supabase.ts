@@ -19,12 +19,19 @@ export const extractFilePathFromUrl = (fileUrl: string): string | null => {
 	const bucket = configurations.supabase_storage_bucket;
 	if (!bucket || !fileUrl) return null;
 
+	// Handle standard Supabase public or authenticated/sign URLs
 	const urlParts = fileUrl.split(`/${bucket}/`);
 	const pathPart = urlParts[1];
 	if (urlParts.length >= 2 && pathPart) {
-		// Clean any trailing query parameters or quotes
-		const cleanPath = pathPart.split("?")[0];
-		return cleanPath ? cleanPath.replace(/['")\\]+$/, "") : null;
+		// Clean any trailing query parameters, fragments or quotes
+		const cleanPath = pathPart.split("?")[0]?.split("#")[0];
+		if (!cleanPath) return null;
+		const trimmedPath = cleanPath.replace(/['")\\]+$/, "");
+		try {
+			return decodeURIComponent(trimmedPath);
+		} catch {
+			return trimmedPath;
+		}
 	}
 	return null;
 };
@@ -38,9 +45,9 @@ export const extractStorageUrlsFromContent = (content?: string): string[] => {
 	if (!bucket) return [];
 
 	const urls: string[] = [];
-	// Matches any Supabase storage URLs pointing to the configured bucket
+	// Matches any Supabase storage URLs pointing to the configured bucket (public or signed objects)
 	const regex = new RegExp(
-		`https?://[^"'\\s)]+/storage/v1/object/public/${bucket}/[^"'\\s)]+`,
+		`https?://[^"'\\s)]+/storage/v1/object/(?:public|sign)/${bucket}/[^"'\\s)]+`,
 		"gi",
 	);
 
