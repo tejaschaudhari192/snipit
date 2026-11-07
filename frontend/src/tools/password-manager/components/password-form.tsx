@@ -20,7 +20,8 @@ import { FolderModal } from "./folder-modal";
 import { useFolderMutations } from "../hooks/use-folder-mutations";
 import { UI_DEFAULTS, ITEM_TYPE_OPTIONS } from "../utils/constants";
 import { OptionDisplay } from "@/components/common/option-display";
-import { Folder, Lock, Sparkles } from "lucide-react";
+import { Folder } from "lucide-react";
+import { ItemAvatar } from "./item-avatar";
 
 export interface PasswordFormProps {
 	onAdd: (item: PasswordItem) => void;
@@ -184,14 +185,25 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 				handleSubmit();
 			}}
 		>
-			{/* Top Header Section: Illustrated Icon + Title Input + Selectors */}
+			{/* Top Header Section: Avatar + Title Input + Selectors */}
 			<div className="px-6 pt-5 pb-1 space-y-4">
 				<div className="flex items-start gap-4">
-					{/* Stylized Illustrated Icon matching the inspiration */}
-					<div className="relative w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 shadow-xs">
-						<Lock className="w-7 h-7 text-primary" />
-						<Sparkles className="w-3.5 h-3.5 text-primary absolute -top-1 -right-1" />
-					</div>
+					<ItemAvatar
+						item={
+							{
+								id: editItem?.id || "",
+								title: title || editItem?.title || "New",
+								itemType,
+								url: metadata.url || metadata.website,
+								metadata,
+							} as PasswordItem
+						}
+						className="w-14 h-14 flex shrink-0"
+						imgClassName="w-14 h-14 object-contain rounded-2xl"
+						fallbackClassName="w-14 h-14 rounded-2xl shadow-xs"
+						fallbackTextClassName="text-white text-lg font-bold"
+						useTwoLetters={true}
+					/>
 
 					<div className="min-w-0 flex-1 pt-1">
 						<Input
