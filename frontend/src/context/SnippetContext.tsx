@@ -98,11 +98,9 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 
 				if (user) {
 					// Use current state for page number
-					const limit = isFirstLoad ? 20 : 10;
-					const backendData = await getUserPastes(
-						isFirstLoad ? 1 : historyStateRef.current.page,
-						limit,
-					);
+					const limit = 10;
+					const page = isFirstLoad ? 1 : historyStateRef.current.page;
+					const backendData = await getUserPastes(page, limit);
 					fetchedPastes = backendData.pastes;
 					hasMore = backendData.hasMore;
 
@@ -140,7 +138,7 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 
 						return {
 							items: newItems,
-							page: isFirstLoad ? 2 : prev.page + 1,
+							page: page + 1,
 							hasMore: user ? hasMore : false,
 							loading: false,
 							isLoadingMore: false,
@@ -204,21 +202,31 @@ export const SnippetProvider: React.FC<{ children: React.ReactNode }> = ({
 
 			try {
 				if (user) {
-					const limit = isFirstLoad ? 20 : 10;
-					const data = await getUserPastes(
-						isFirstLoad ? 1 : profileStateRef.current.page,
-						limit,
-					);
+					const limit = 10;
+					const page = isFirstLoad ? 1 : profileStateRef.current.page;
+					const data = await getUserPastes(page, limit);
 
-					setProfile((prev) => ({
-						items: isFirstLoad
+					setProfile((prev) => {
+						const newPastes = isFirstLoad
 							? data.pastes
-							: [...prev.items, ...data.pastes],
-						page: isFirstLoad ? 2 : prev.page + 1,
-						hasMore: data.hasMore,
-						loading: false,
-						isLoadingMore: false,
-					}));
+							: (() => {
+									const existingIds = new Set(
+										prev.items.map((p) => p.id),
+									);
+									const uniqueIncoming = data.pastes.filter(
+										(p) => !existingIds.has(p.id),
+									);
+									return [...prev.items, ...uniqueIncoming];
+								})();
+
+						return {
+							items: newPastes,
+							page: page + 1,
+							hasMore: data.hasMore,
+							loading: false,
+							isLoadingMore: false,
+						};
+					});
 				} else {
 					// Guest Pagination for Created
 					const allCreated = guestStorage.getCreated();
