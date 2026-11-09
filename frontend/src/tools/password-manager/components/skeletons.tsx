@@ -125,3 +125,135 @@ export function SharingCenterSkeleton() {
 		</div>
 	);
 }
+
+export function DashboardSkeleton() {
+	return (
+		<div className="flex-1 overflow-y-auto no-scrollbar bg-background">
+			{/* Top Hero Banner Skeleton */}
+			<div className="border-b border-border/60 bg-muted/10 px-6 sm:px-8 py-6">
+				<div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+					<div className="space-y-2">
+						<div className="flex items-center gap-2">
+							<Skeleton className="w-8 h-8 rounded-lg" />
+							<Skeleton className="h-7 w-64 rounded-lg" />
+						</div>
+						<Skeleton className="h-4 w-80 rounded-md" />
+					</div>
+					<div className="flex items-center gap-2.5">
+						<Skeleton className="h-9 w-32 rounded-xl" />
+						<Skeleton className="h-9 w-28 rounded-xl" />
+					</div>
+				</div>
+			</div>
+
+			<div className="p-6 sm:p-8 space-y-6 max-w-7xl mx-auto">
+				{/* 4 Metric KPI Cards */}
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+					{Array.from({ length: 4 }).map((_, i) => (
+						<div
+							key={i}
+							className="p-5 rounded-2xl bg-card border border-border/70 shadow-xs flex flex-col justify-between space-y-4"
+						>
+							<div className="flex items-center justify-between">
+								<Skeleton className="h-4 w-24 rounded-md" />
+								<Skeleton className="w-8 h-8 rounded-xl" />
+							</div>
+							<div className="space-y-1.5">
+								<Skeleton className="h-8 w-20 rounded-md" />
+								<Skeleton className="h-3.5 w-32 rounded-md" />
+							</div>
+							<Skeleton className="h-1 w-full rounded-full" />
+						</div>
+					))}
+				</div>
+
+				{/* 2-Column Middle Row: Security Gauge + Strength Spectrum */}
+				<div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+					{/* Circular Gauge Skeleton */}
+					<div className="lg:col-span-6 p-6 rounded-2xl bg-card border border-border/70 shadow-xs flex flex-col sm:flex-row items-center gap-6">
+						<Skeleton className="w-36 h-36 rounded-full shrink-0" />
+						<div className="flex-1 space-y-3 w-full">
+							<Skeleton className="h-5 w-28 rounded-full" />
+							<Skeleton className="h-6 w-44 rounded-md" />
+							<Skeleton className="h-4 w-full rounded-md" />
+							<Skeleton className="h-4 w-3/4 rounded-md" />
+							<Skeleton className="h-3.5 w-48 rounded-md mt-2" />
+						</div>
+					</div>
+
+					{/* Strength Spectrum Skeleton */}
+					<div className="lg:col-span-6 p-6 rounded-2xl bg-card border border-border/70 shadow-xs flex flex-col justify-between space-y-4">
+						<div className="space-y-2">
+							<div className="flex items-center justify-between">
+								<Skeleton className="h-5 w-48 rounded-md" />
+								<Skeleton className="h-4 w-24 rounded-md" />
+							</div>
+							<Skeleton className="h-3.5 w-72 rounded-md" />
+							<Skeleton className="h-3 w-full rounded-full my-4" />
+						</div>
+						<div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2 border-t border-border/50">
+							{Array.from({ length: 5 }).map((_, i) => (
+								<Skeleton
+									key={i}
+									className="h-4 w-full rounded-md"
+								/>
+							))}
+						</div>
+					</div>
+				</div>
+
+				{/* 6 Category Tiles */}
+				<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+					{Array.from({ length: 6 }).map((_, i) => (
+						<div
+							key={i}
+							className="p-3.5 rounded-xl bg-card border border-border/60 space-y-2"
+						>
+							<div className="flex items-center justify-between">
+								<Skeleton className="w-4 h-4 rounded-md" />
+								<Skeleton className="w-3 h-3 rounded-md" />
+							</div>
+							<Skeleton className="h-6 w-10 rounded-md" />
+							<Skeleton className="h-3 w-16 rounded-md" />
+						</div>
+					))}
+				</div>
+
+				{/* Vulnerability Audit List Skeleton */}
+				<div className="rounded-2xl bg-card border border-border/70 shadow-xs overflow-hidden">
+					<div className="p-5 border-b border-border/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-muted/20">
+						<div className="space-y-1.5">
+							<Skeleton className="h-5 w-56 rounded-md" />
+							<Skeleton className="h-3.5 w-80 rounded-md" />
+						</div>
+						<div className="flex gap-2">
+							{Array.from({ length: 4 }).map((_, i) => (
+								<Skeleton
+									key={i}
+									className="h-7 w-20 rounded-lg"
+								/>
+							))}
+						</div>
+					</div>
+					<div className="divide-y divide-border/50 p-2">
+						{Array.from({ length: 4 }).map((_, i) => (
+							<div
+								key={i}
+								className="p-3.5 flex items-center justify-between gap-4"
+							>
+								<div className="flex items-center gap-3.5 flex-1">
+									<Skeleton className="w-10 h-10 rounded-xl shrink-0" />
+									<div className="space-y-1.5 flex-1">
+										<Skeleton className="h-4 w-36 rounded-md" />
+										<Skeleton className="h-3 w-48 rounded-md" />
+									</div>
+								</div>
+								<Skeleton className="h-8 w-20 rounded-lg shrink-0" />
+							</div>
+						))}
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+}

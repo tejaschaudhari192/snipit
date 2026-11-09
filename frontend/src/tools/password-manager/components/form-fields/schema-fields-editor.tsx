@@ -172,9 +172,7 @@ function PasswordField({
 						className="h-7 px-2.5 text-xs text-primary font-medium hover:bg-primary/10 hover:text-primary rounded-lg transition-colors gap-1.5"
 					>
 						<Sparkles className="h-3.5 w-3.5" />
-						{t("tools.password_manager.generate", {
-							defaultValue: "Generate Password",
-						})}
+						{t("tools.password_manager.generate_password")}
 					</Button>
 				</div>
 			</div>
@@ -273,10 +271,6 @@ export function SchemaFieldsEditor({
 													<DrawerTitle>
 														{t(
 															"tools.password_generator.title",
-															{
-																defaultValue:
-																	"Generate Password",
-															},
 														)}
 													</DrawerTitle>
 												</DrawerHeader>

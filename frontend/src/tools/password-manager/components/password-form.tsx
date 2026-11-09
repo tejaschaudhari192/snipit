@@ -20,8 +20,8 @@ import { FolderModal } from "./folder-modal";
 import { useFolderMutations } from "../hooks/use-folder-mutations";
 import { UI_DEFAULTS, ITEM_TYPE_OPTIONS } from "../utils/constants";
 import { OptionDisplay } from "@/components/common/option-display";
-import { Folder } from "lucide-react";
 import { ItemAvatar } from "./item-avatar";
+import { FolderCombobox } from "./folder-combobox";
 
 export interface PasswordFormProps {
 	onAdd: (item: PasswordItem) => void;
@@ -211,7 +211,6 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 							required
 							placeholder={t(
 								"tools.password_manager.title_placeholder",
-								{ defaultValue: "Enter title..." },
 							)}
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
@@ -265,67 +264,12 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 						<Label className="text-xs font-medium text-muted-foreground">
 							Folder
 						</Label>
-						<Select
+						<FolderCombobox
+							folders={folders}
 							value={folderId}
-							onValueChange={(val: string | null) => {
-								if (val === "new_folder") {
-									setFolderModalOpen(true);
-								} else {
-									setFolderId(val!);
-								}
-							}}
-						>
-							<SelectTrigger className="w-full h-10 bg-background border-border/80 rounded-xl font-medium text-sm">
-								<div className="flex items-center gap-2 truncate">
-									<Folder className="w-4 h-4 text-muted-foreground shrink-0" />
-									<SelectValue placeholder="No Folder">
-										{folderId === "new_folder"
-											? "+ Create folder"
-											: folderId === "none" || !folderId
-												? t(
-														"tools.password_manager.no_folder",
-														{
-															defaultValue:
-																"No Folder",
-														},
-													)
-												: folders.find(
-														(f: {
-															id: string;
-															name: string;
-														}) => f.id === folderId,
-													)?.name ||
-													t(
-														"tools.password_manager.no_folder",
-														{
-															defaultValue:
-																"No Folder",
-														},
-													)}
-									</SelectValue>
-								</div>
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="none">
-									{t("tools.password_manager.no_folder", {
-										defaultValue: "No Folder",
-									})}
-								</SelectItem>
-								{folders.map(
-									(f: { id: string; name: string }) => (
-										<SelectItem key={f.id} value={f.id}>
-											{f.name}
-										</SelectItem>
-									),
-								)}
-								<SelectItem
-									value="new_folder"
-									className="text-primary font-medium"
-								>
-									+ Create folder
-								</SelectItem>
-							</SelectContent>
-						</Select>
+							onChange={(newId) => setFolderId(newId ?? "none")}
+							triggerClassName="h-10 bg-background border-border/80 rounded-xl font-medium text-sm"
+						/>
 					</div>
 				</div>
 			</div>
@@ -333,9 +277,7 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 			{/* Item Details Container Card */}
 			<div className="px-6 space-y-2">
 				<Label className="text-sm font-semibold text-foreground block">
-					{t("tools.password_manager.details_title", {
-						defaultValue: "Item Details",
-					})}
+					{t("tools.password_manager.details_title")}
 				</Label>
 
 				<Card className="shadow-xs border-border/70 rounded-2xl bg-card overflow-hidden">
@@ -384,9 +326,7 @@ export default function PasswordForm({ onAdd, editItem }: PasswordFormProps) {
 						{/* Additional Notes Field */}
 						<div className="space-y-1.5 pt-2">
 							<Label className="text-xs font-medium text-foreground/80">
-								{t("tools.password_manager.notes_placeholder", {
-									defaultValue: "Additional Notes",
-								})}
+								{t("tools.password_manager.additional_notes")}
 							</Label>
 							<Textarea
 								value={notes}

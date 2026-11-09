@@ -32,9 +32,7 @@ export function CustomFieldsEditor({
 		<div className="space-y-3 px-6">
 			<div className="flex items-center justify-between">
 				<Label className="text-sm font-semibold text-foreground">
-					{t("tools.password_manager.custom_fields", {
-						defaultValue: "Custom Fields",
-					})}
+					{t("tools.password_manager.custom_fields")}
 				</Label>
 				<Button
 					type="button"
@@ -44,9 +42,7 @@ export function CustomFieldsEditor({
 					className="h-8 px-3 rounded-lg border-border/80 hover:bg-muted/50 font-medium text-xs gap-1.5"
 				>
 					<Plus className="h-3.5 w-3.5" />
-					{t("tools.password_manager.add_field", {
-						defaultValue: "Add Field",
-					})}
+					{t("tools.password_manager.add_field")}
 				</Button>
 			</div>
 

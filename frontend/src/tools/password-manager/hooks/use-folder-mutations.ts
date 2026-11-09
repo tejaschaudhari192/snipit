@@ -13,8 +13,12 @@ export function useFolderMutations() {
 	const vault = useAppSelector(selectVault);
 
 	const createFolder = useCallback(
-		(name: string, color: string, iconName?: string) => {
-			if (!name.trim() || !vault) return;
+		(
+			name: string,
+			color: string,
+			iconName?: string,
+		): Folder | undefined => {
+			if (!name.trim() || !vault) return undefined;
 			const newFolder: Folder = {
 				id: crypto.randomUUID(),
 				name: name.trim(),
@@ -37,6 +41,7 @@ export function useFolderMutations() {
 						type: "error",
 					}),
 				);
+			return newFolder;
 		},
 		[vault, dispatch],
 	);

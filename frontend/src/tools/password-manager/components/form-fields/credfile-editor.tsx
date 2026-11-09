@@ -50,9 +50,7 @@ export function CredFileEditor({
 
 		if (!isValidFileType(file.name, ACCEPTED_FILE_TYPES)) {
 			toast.add({
-				title: t("tools.password_manager.invalid_file_type", {
-					defaultValue: "Invalid file type",
-				}),
+				title: t("tools.password_manager.invalid_file_type"),
 				type: "error",
 			});
 			return;
@@ -176,9 +174,7 @@ export function CredFileEditor({
 							className="h-8 px-2.5 text-xs rounded-lg gap-1.5"
 						>
 							<Upload className="w-3.5 h-3.5" />
-							{t("tools.password_manager.replace_file", {
-								defaultValue: "Replace",
-							})}
+							{t("tools.password_manager.replace_file")}
 						</Button>
 						<Button
 							type="button"
@@ -219,15 +215,10 @@ export function CredFileEditor({
 						<Upload className="w-6 h-6 stroke-[1.75]" />
 					</div>
 					<p className="text-sm font-semibold text-foreground text-center">
-						{t("tools.password_manager.upload_file", {
-							defaultValue: "Upload Credential File",
-						})}
+						{t("tools.password_manager.upload_file")}
 					</p>
 					<p className="text-xs text-muted-foreground/80 mt-1 text-center max-w-xs">
-						{t("tools.password_manager.upload_file_desc", {
-							defaultValue:
-								"Drag & drop your file here, or click to browse. Encrypted with zero-knowledge before upload.",
-						})}
+						{t("tools.password_manager.upload_file_desc")}
 					</p>
 				</div>
 			)}

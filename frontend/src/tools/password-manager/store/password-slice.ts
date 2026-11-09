@@ -45,7 +45,7 @@ const initialState: PasswordManagerState = {
 	cloudVaultStatus: "checking",
 	activeItem: null,
 	isNewItem: false,
-	activeFilter: "all",
+	activeFilter: "dashboard",
 	isSidebarDrawerOpen: false,
 	isUnlocked: false,
 

@@ -21,10 +21,16 @@ import {
 	Plane,
 	Code,
 	Landmark,
+	LayoutDashboard,
 } from "lucide-react";
 import type { CustomField } from "../types";
 
 export const SIDEBAR_NAV_ITEMS = [
+	{
+		icon: LayoutDashboard,
+		label: "tools.password_manager.dashboard",
+		id: "dashboard",
+	},
 	{ icon: Key, label: "tools.password_manager.all_items", id: "all" },
 	{ icon: Star, label: "tools.password_manager.favorites", id: "favorites" },
 	{ icon: Clock, label: "tools.password_manager.recent", id: "recent" },

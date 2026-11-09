@@ -57,9 +57,7 @@ export function AttachmentsEditor({
 
 		if (!isValidFileType(file.name, ACCEPTED_FILE_TYPES)) {
 			toast.add({
-				title: t("tools.password_manager.invalid_file_type", {
-					defaultValue: "Invalid file type",
-				}),
+				title: t("tools.password_manager.invalid_file_type"),
 				type: "error",
 			});
 			return;
@@ -126,9 +124,7 @@ export function AttachmentsEditor({
 			<div className="flex items-center justify-between">
 				<div className="space-y-0.5">
 					<Label className="text-sm font-semibold text-foreground">
-						{t("tools.password_manager.attachments", {
-							defaultValue: "Attachments",
-						})}
+						{t("tools.password_manager.attachments")}
 					</Label>
 				</div>
 				<div>
@@ -159,9 +155,7 @@ export function AttachmentsEditor({
 						className="h-8 px-3 rounded-lg border-border/80 hover:bg-muted/50 font-medium text-xs gap-1.5"
 					>
 						<Plus className="h-3.5 w-3.5" />
-						{t("tools.password_manager.add_attachment", {
-							defaultValue: "Add File",
-						})}
+						{t("tools.password_manager.add_attachment")}
 					</Button>
 				</div>
 			</div>
@@ -250,9 +244,6 @@ export function AttachmentsEditor({
 										className="h-8 w-8 text-muted-foreground hover:text-foreground rounded-lg"
 										title={t(
 											"tools.password_manager.replace",
-											{
-												defaultValue: "Replace",
-											},
 										)}
 									>
 										<Upload className="w-4 h-4" />
@@ -298,16 +289,10 @@ export function AttachmentsEditor({
 					<Upload className="w-5 h-5 stroke-[1.75]" />
 				</div>
 				<p className="text-sm font-semibold text-foreground text-center">
-					{t("tools.password_manager.drag_drop_attachments", {
-						defaultValue:
-							"Drag & drop files here or select to upload",
-					})}
+					{t("tools.password_manager.drag_drop_attachments")}
 				</p>
 				<p className="text-xs text-muted-foreground/80 mt-1 text-center">
-					{t("tools.password_manager.attachments_desc", {
-						defaultValue:
-							"Securely store related documents and files",
-					})}
+					{t("tools.password_manager.attachments_desc")}
 				</p>
 			</div>
 		</div>

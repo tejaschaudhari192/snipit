@@ -229,7 +229,7 @@
 			"vault_deleted": "ভল্ট সফলভাবে মুছে ফেলা হয়েছে",
 			"delete_desc": "এই কাজ বাতিল করা যাবে না। এটি নির্বাচিত আইটেম স্থায়ীভাবে মুছে ফেলবে।",
 			"fields": {
-				"email": "Email",
+				"email": "ইমেইল",
 				"username": "ব্যবহারকারীর নাম",
 				"password": "পাসওয়ার্ড",
 				"website": "ওয়েবসাইট",
@@ -336,7 +336,7 @@
 			"merged_from": "থেকে মার্জড",
 			"merged_old": "পুরাতন একত্রিত",
 			"merge_items": "আইটেম মার্জ",
-			"merge_desc": "Go Desc",
+			"merge_desc": "মার্জ ডেস্ক",
 			"merge_conflict_desc": "দ্বন্দ্ব বিবরণ মার্জ করুন",
 			"conflict": "দ্বন্দ্ব",
 			"merge_no_conflicts": "মার্জ কোন দ্বন্দ্ব নেই",
@@ -467,7 +467,81 @@
 			"drop_files_here": "এখানে ফাইল ফেলে দিন বা ব্রাউজ করতে ক্লিক করুন",
 			"replace": "প্রতিস্থাপন করুন",
 			"attachments_desc": "এনক্রিপ্ট করা ফাইল ক্লাউডে নিরাপদে সংরক্ষিত",
-			"drag_drop_attachments": "ফাইল এখানে টেনে আনুন, অথবা ব্রাউজ করতে ক্লিক করুন"
+			"drag_drop_attachments": "ফাইল এখানে টেনে আনুন, অথবা ব্রাউজ করতে ক্লিক করুন",
+			"card_number": "কার্ড নম্বর",
+			"cred_file_name": "শংসাপত্র ফাইলের নাম",
+			"key_id": "কী আইডি",
+			"dashboard": "ড্যাশবোর্ড",
+			"select_folder": "ফোল্ডার নির্বাচন করুন...",
+			"search_or_create_folder": "ফোল্ডার খুঁজুন বা তৈরি করুন...",
+			"no_folders_found": "কোন ফোল্ডার পাওয়া যায়নি",
+			"create_folder_named": "\"{{name}}\" ফোল্ডার তৈরি করুন",
+			"invalid_file_type": "অবৈধ ফাইলের ধরন",
+			"generate_password": "পাসওয়ার্ড তৈরি করুন",
+			"additional_notes": "অতিরিক্ত নোট",
+			"dashboard_view": {
+				"title": "ভল্ট ওভারভিউ এবং অ্যানালিটিক্স",
+				"subtitle": "জিরো-নলেজ এনক্রিপ্টেড সিকিউরিটি ড্যাশবোর্ড ও হেলথ অ্যানালিটিক্স",
+				"find_duplicates": "ডুপ্লিকেট খুঁজুন",
+				"new_entry": "নতুন এন্ট্রি",
+				"total_assets": "মোট সম্পদ",
+				"active": "সক্রিয়",
+				"logins_cards": "{{logins}}লগইন •{{cards}}কার্ড",
+				"security_health": "নিরাপত্তা স্বাস্থ্য",
+				"weak_passwords": "দুর্বল পাসওয়ার্ড",
+				"reused_keys": "পুনরায় ব্যবহার করা কী",
+				"no_weak_credentials": "কোন দুর্বল শংসাপত্র নেই",
+				"items_need_stronger": "{{count}}আইটেমগুলির আরও শক্তিশালী কী প্রয়োজন",
+				"zero_collisions": "শূন্য পাসওয়ার্ড সংঘর্ষ",
+				"used_multiple_accounts": "একাধিক অ্যাকাউন্ট জুড়ে ব্যবহৃত",
+				"passed": "উত্তীর্ণ",
+				"action": "অ্যাকশন",
+				"secure": "নিরাপত্তা",
+				"warning": "সতর্কতা",
+				"status_excellent": "চমৎকার অবস্থা",
+				"status_good": "ভাল সুরক্ষা",
+				"status_review": "পর্যালোচনার প্রস্তাবিত",
+				"strength_spectrum_title": "পাসওয়ার্ড শক্তি বর্ণালী",
+				"evaluated_count": "{{count}}মোট মূল্যায়ন",
+				"strength_spectrum_desc": "শূন্য-জ্ঞান zxcvbn অ্যালগরিদমিক এনট্রপির মাধ্যমে মূল্যায়ন করা হয়েছে।",
+				"very_weak": "V. দুর্বল",
+				"weak": "দুর্বল",
+				"fair": "ফেয়ার",
+				"strong": "শক্তিশালী",
+				"very_strong": "ভি. শক্তিশালী",
+				"logins": "লগইন",
+				"cards": "কার্ড",
+				"api_keys": "API কী",
+				"passkeys": "পাসকি",
+				"cred_files": "ক্রেড ফাইল",
+				"secure_notes": "সুরক্ষিত নোটস অডিট",
+				"recommendations_title": "নিরাপত্তা সুপারিশ এবং অডিট",
+				"recommendations_desc": "আপনার ভল্টকে শক্ত রাখতে আপডেট বা পাসওয়ার্ড ঘোরানোর জন্য প্রয়োজনীয় আইটেমগুলি পর্যালোচনা করুন৷",
+				"tab_all": "সমস্ত ({{count}})",
+				"tab_weak": "দুর্বল ({{count}})",
+				"tab_reused": "পুনরায় ব্যবহার করা হয়েছে ({{count}}St</17\">পুনরায় ব্যবহার করা হয়েছে ({{count}})",
+				"tab_stale": "বাসি ({{count}})",
+				"no_vulnerabilities": "এই বিভাগে কোন দুর্বলতা শনাক্ত করা হয়নি",
+				"no_vulnerabilities_desc": "এই বিভাগের সমস্ত আইটেম বর্তমান নিরাপত্তা মানদণ্ড পূরণ করে।",
+				"update": "আপডেট",
+				"badge_weak": "P_____ed=\"22\"> id=\"24\">>90d পুরানো",
+				"badge_reused": "পুনরায় ব্যবহার করা হয়েছে ({{count}}x)",
+				"badge_stale": ">90d পুরানো",
+				"gauge": {
+					"score": "স্কোর",
+					"rating_title": "ভল্ট নিরাপত্তা রেটিং",
+					"passwords_audited": "{{count}}পাসওয়ার্ড অডিট করা হয়েছে",
+					"zero_knowledge_verification": "শূন্য-জ্ঞান যাচাইকরণ",
+					"excellent_label": "চমৎকার",
+					"excellent_desc": "আপনি সেরা নিরাপত্তা অনুসরণ করুন মান।",
+					"good_label": "সুস্বাস্থ্য",
+					"good_desc": "শক্তিশালী সামগ্রিক প্রতিরক্ষা, পর্যালোচনা করার জন্য কয়েকটি আইটেম সহ।",
+					"warning_label": "মনোযোগ প্রয়োজন",
+					"warning_desc": "একাধিক পুনঃব্যবহৃত বা দুর্বল পাসওয়ার্ড ঘোরানো উচিত।",
+					"critical_label": "দুর্বল",
+					"critical_desc": "লঙ্ঘন প্রশমিত করার জন্য অবিলম্বে পাসওয়ার্ড আপডেট করার পরামর্শ দেওয়া হয়।"
+				}
+			}
 		},
 		"password_generator": {
 			"title": "পাসওয়ার্ড জেনারেটর",
@@ -696,7 +770,7 @@
 				"bucket_risky": "ঝুঁকিপূর্ণ",
 				"predict_button": "নিশ্চিতকরণের সম্ভাবনা দেখুন",
 				"predict_prompt_title": "এআই নিশ্চিতকরণ সম্ভাবনা",
-				"predict_prompt_desc": "RailTC ML মডেলের মাধ্যমে ওয়েটিং লিস্ট ক্লিয়ার হওয়ার সম্ভাবনা এবং চার্টের প্রবণতা বিশ্লেষণ করুন।",
+				"predict_prompt_desc": "RailTC ML মডেলের সাথে অপেক্ষা তালিকার ছাড়পত্রের সম্ভাবনা এবং ঐতিহাসিক চার্ট প্রবণতা বিশ্লেষণ করুন।",
 				"ai_action_title": "এআই পরামর্শ ও সুপারিশকৃত পদক্ষেপ",
 				"key_drivers_title": "প্রধান নিশ্চিতকরণ কারণ ও পেনাল্টি",
 				"driver_helps": "নিশ্চিতকরণে সহায়ক",
@@ -718,7 +792,7 @@
 			"passengers_count": "{{count}} যাত্রী",
 			"booking_label": "বুকিং: {{status}}",
 			"class_label_prefix": "শ্রেণি:",
-			"loading_prediction": "RailTC ML সহ নিশ্চিতকরণ সম্ভাবনা এবং রুট প্রবণতা বিশ্লেষণ করা হচ্ছে...",
+			"loading_prediction": "RailTC ML এর সাথে নিশ্চিতকরণের সম্ভাব্যতা এবং রুট প্রবণতা বিশ্লেষণ করা হচ্ছে...",
 			"analyzing_route_insights": "ওয়েটিংলিস্ট ক্লিয়ারিং সম্ভাবনা এবং ঐতিহাসিক চার্ট অন্তর্দৃষ্টি গণনা করা হচ্ছে...",
 			"select_departure_date": "যাত্রার তারিখ নির্বাচন করুন",
 			"today": "আজ",
@@ -743,13 +817,13 @@
 				"click_to_check": "লাইভ স্ট্যাটাস দেখতে ক্লিক করুন",
 				"track_live_status": "ট্রেন {{train}}-এর লাইভ স্ট্যাটাস ট্র্যাক করুন",
 				"auto_cleaned_hint": "মেয়াদোত্তীর্ণ যাত্রাগুলি স্বয়ংক্রিয়ভাবে মুছে ফেলা হয়",
-				"loading_alerts": "Loading active tracking alerts..."
+				"loading_alerts": "সক্রিয় ট্র্যাকিং সতর্কতা লোড হচ্ছে..."
 			},
 			"share": "শেয়ার করুন",
 			"share_ticket_title": "টিকিট শেয়ার করুন",
 			"share_ticket_subtitle": "টিকিটের বিবরণ শেয়ার করুন এবং সহযাত্রীদের যাত্রার স্থিতি সম্পর্কে আপডেট রাখুন।",
 			"recipient_emails_label": "প্রাপকের ইমেল ঠিকানা",
-			"press_enter_hint": "Enter চাপুন বা যোগ করুন",
+			"press_enter_hint": "এন্টার টিপুন বা যোগ করুন",
 			"invalid_email_title": "অবৈধ ইমেল ঠিকানা",
 			"auto_alerts_title": "স্থিতি পরিবর্তনের বিষয়ে প্রাপকদের আপডেট রাখুন",
 			"auto_alerts_desc": "যাত্রীর বার্থের স্থিতি পরিবর্তিত হলে (যেমন RAC → CNF) বা চার্ট তৈরি হলে স্বয়ংক্রিয়ভাবে সতর্কতা ইমেল পাঠান।",
@@ -1020,30 +1094,30 @@
 		"edit_name": "নাম সম্পাদনা করুন",
 		"color_tag": "রঙের ট্যাগ",
 		"tabs": {
-			"snippets": "My Snippets",
-			"devices": "Devices & Sessions",
+			"snippets": "আমার স্নিপেট",
+			"devices": "ডিভাইস এবং সেশন",
 			"profile": "প্রোফাইল ও অ্যাকাউন্ট"
 		},
 		"devices": {
-			"title": "Active Sessions & Devices",
-			"subtitle": "Manage devices and browsers where you are currently signed in to your Snipit account.",
-			"this_device": "This Device",
-			"active_now": "Active Now",
-			"other_devices": "Other Active Devices",
-			"no_other_devices": "No other devices are currently signed in to your account.",
-			"session_expires": "15-Day Session • Expires {{date}}",
-			"signed_in": "Signed in {{time}}",
-			"ip_address": "IP Address",
-			"revoke_session": "Revoke Session",
-			"revoke_session_desc": "Are you sure you want to revoke this session? The device will be logged out immediately.",
-			"revoke_all_others": "Log Out All Other Devices",
-			"revoke_all_others_desc": "This will revoke all active sessions except your current device. You will need to log in again on other devices.",
-			"revoked_success": "Session revoked successfully",
-			"revoked_all_success": "Logged out of all other devices successfully",
-			"revoking": "Revoking...",
-			"loading_sessions": "Loading active devices...",
-			"guest_warning_title": "Sign in to manage devices",
-			"guest_warning_desc": "Session and device management is available for registered users.",
+			"title": "সক্রিয় সেশন এবং ডিভাইস",
+			"subtitle": "আপনি বর্তমানে আপনার স্নিপিট অ্যাকাউন্টে সাইন ইন করেছেন এমন ডিভাইস এবং ব্রাউজারগুলি পরিচালনা করুন৷",
+			"this_device": "এই ডিভাইস",
+			"active_now": "এখন সক্রিয়",
+			"other_devices": "অন্যান্য সক্রিয় ডিভাইস",
+			"no_other_devices": "অন্য কোন ডিভাইস বর্তমানে আপনার অ্যাকাউন্টে সাইন ইন করা আছে.",
+			"session_expires": "15-দিনের সেশন •{{date}}মেয়াদ শেষ",
+			"signed_in": "সাইন ইন{{time}}",
+			"ip_address": "আইপি ঠিকানা",
+			"revoke_session": "সেশন প্রত্যাহার করুন",
+			"revoke_session_desc": "আপনি কি এই অধিবেশন প্রত্যাহার করার বিষয়ে নিশ্চিত? ডিভাইস অবিলম্বে লগ আউট করা হবে.",
+			"revoke_all_others": "অন্যান্য সমস্ত ডিভাইস লগ আউট করুন",
+			"revoke_all_others_desc": "এটি আপনার বর্তমান ডিভাইস ছাড়া সমস্ত সক্রিয় সেশন প্রত্যাহার করবে৷ আপনাকে অন্য ডিভাইসে আবার লগ ইন করতে হবে।",
+			"revoked_success": "সেশন সফলভাবে প্রত্যাহার করা হয়েছে৷",
+			"revoked_all_success": "অন্য সব ডিভাইস থেকে সফলভাবে লগ আউট হয়েছে",
+			"revoking": "প্রত্যাহার করা হচ্ছে...",
+			"loading_sessions": "সক্রিয় ডিভাইস লোড হচ্ছে...",
+			"guest_warning_title": "ডিভাইসগুলি পরিচালনা করতে সাইন ইন করুন৷",
+			"guest_warning_desc": "সেশন এবং ডিভাইস ব্যবস্থাপনা নিবন্ধিত ব্যবহারকারীদের জন্য উপলব্ধ.",
 			"refresh": "রিফ্রেশ",
 			"revoke": "বাতিল করুন",
 			"cancel": "বাতিল",
@@ -1170,7 +1244,7 @@
 		"id_generation": {
 			"custom": "কাস্টম আইডি",
 			"automatic": "স্বয়ংক্রিয়",
-			"automatic_desc": "একটি স্মরণীয় শব্দ এবং ২-সংখ্যার নম্বর তৈরি করে (যেমন, fox42)",
+			"automatic_desc": "একটি স্মরণীয় শব্দ এবং 2-সংখ্যার সংখ্যা তৈরি করে (যেমন, fox42)",
 			"suggest_ai": "AI ব্যবহার করে আইডি সুপারিশ করুন",
 			"ai_suggested": "বিষয়বস্তুর উপর ভিত্তি করে AI একটি আইডি সুপারিশ করেছে!",
 			"semantic_tab": "শব্দ",
@@ -1428,17 +1502,25 @@
 				},
 				"expiration": {
 					"question": "স্নিপেটগুলি কতক্ষণ স্থায়ী হয়?",
-					"answer": "আপনার সম্পূর্ণ নিয়ন্ত্রণ রয়েছে: ১ ঘণ্টা থেকে ১ বছর পর্যন্ত প্রিসেট সময়সীমা, কাস্টম তারিখ ও সময়, 'বার্ন-আফটার-রিড' (একবার দেখার পর মুছে যাওয়া) অথবা 'কখনই মেয়াদ শেষ না হওয়া' (Never expire) বেছে নিতে পারেন।"
+					"answer": "স্নিপেট লাইফটাইমের উপর আপনার সম্পূর্ণ নিয়ন্ত্রণ আছে: পূর্বনির্ধারিত সময়কাল (1 ঘন্টা, 1 দিন, 1 সপ্তাহ, 1 মাস, 1 বছর) চয়ন করুন, একটি কাস্টম মেয়াদ শেষ হওয়ার তারিখ এবং সময় চয়ন করুন, স্ব-ধ্বংসকারী 'বার্ন-আফটার-রিড' (একবার দেখার) সেট করুন, অথবা সেগুলি চিরতরে রাখুন ('কখনও মেয়াদ শেষ হবে না')।"
 				},
 				"secure": {
 					"question": "আমার ডেটা এবং কোড কি সুরক্ষিত?",
-					"answer": "হ্যাঁ। Snipit ট্রানজিটে সম্পূর্ণ TLS এনক্রিপশন এবং argon2/bcrypt পাসওয়ার্ড হ্যাশিং ব্যবহার করে। এছাড়াও গোপনীয় নোটের জন্য CryptoSafe ও পাসওয়ার্ড ভল্ট ক্লায়েন্ট-সাইড জিরো-নলেজ AES-GCM এনক্রিপশন প্রদান করে।"
+					"answer": "হ্যাঁ। Snipit ট্রানজিট এবং argon2/bcrypt পাসওয়ার্ড হ্যাশিং এ এন্ড-টু-এন্ড TLS এনক্রিপশন ব্যবহার করে। সংবেদনশীল নোট এবং শংসাপত্রের জন্য, CryptoSafe এবং Password Vault-এর মতো টুলগুলি ক্লায়েন্ট-সাইড জিরো-নলেজ AES-GCM এনক্রিপশন অফার করে, যার অর্থ শুধুমাত্র আপনি ডিক্রিপশন কী ধরে রাখেন।"
 				},
 				"edit": {
 					"question": "আমি কি পরে আমার স্নিপেট সম্পাদনা করতে পারি?",
 					"answer": "হ্যাঁ। লগইন করা অবস্থায় আপনি যেকোনো সময় ড্যাশবোর্ড থেকে স্নিপেট পরিচালনা, সম্পাদনা বা মুছে ফেলতে পারেন। এছাড়াও ভূমিকা-ভিত্তিক অ্যাক্সেস নিয়ন্ত্রণের মাধ্যমে রিয়েল-টাইমে একসাথে কাজ করতে পারেন।"
 				}
 			}
+		},
+		"testimonials": {
+			"badge": "ওয়াল অফ লাভ",
+			"title": "ডেভেলপার এবং দ্রুত-চলমান দলগুলির দ্বারা পছন্দ করা হয়েছে",
+			"subtitle": "দেখুন বিকাশকারীরা কীভাবে স্নিপিটগুলিকে অনায়াসে শেয়ার করতে স্নিপিট ব্যবহার করে। id=\"15\">যাচাই করা সম্প্রদায় পর্যালোচনা থেকে",
+			"rating_summary": "যাচাই করা সম্প্রদায় পর্যালোচনা থেকে",
+			"verified": "যাচাই করা",
+			"view_linkedin": "{{name}}এর LinkedIn প্রোফাইল দেখুন"
 		}
 	},
 	"footer": {
@@ -1446,7 +1528,7 @@
 		"privacy": "গোপনীয়তা নীতি",
 		"terms": "পরিষেবার শর্তাবলী",
 		"contact": "যোগাযোগ",
-		"made_by": "Tejas দ্বারা ❤️ এর সাথে তৈরি"
+		"made_by": "দুর্গেশ ও তেজসের ❤️ দিয়ে তৈরি"
 	},
 	"splash": {
 		"system_failure": "সিস্টেম ত্রুটি সনাক্ত করা হয়েছে",
@@ -1572,7 +1654,7 @@
 			"tooltip_disable": "ইংরেজি ইনপুটে ফিরে যান"
 		},
 		"monaco_toggle": {
-			"tooltip_enable": "উন্নত সম্পাদকে যান (Monaco)",
+			"tooltip_enable": "অ্যাডভান্সড এডিটরে স্যুইচ করুন (মোনাকো)",
 			"tooltip_disable": "নেটিভ সম্পাদকে যান"
 		},
 		"media": {
@@ -1638,7 +1720,7 @@
 	"ai_writer": {
 		"title": "AI লেখক",
 		"description": "আপনি যা লিখতে চান তা বর্ণনা করুন, AI সেটি তৈরি করবে।",
-		"placeholder": "যেমন: লগইন ফর্মের জন্য React উপাদান লিখুন...",
+		"placeholder": "যেমন একটি লগইন ফর্মের জন্য একটি প্রতিক্রিয়া উপাদান লিখুন...",
 		"generating": "তৈরি করা হচ্ছে...",
 		"run": "তৈরি করুন",
 		"apply": "কোড সন্নিবেশ করান",
@@ -1754,8 +1836,8 @@
 		"talk_tooltip": "স্নিপিট ভয়েস কোপাইলটের সাথে কথা বলুন",
 		"cancel_tooltip": "থামুন / বাতিল করুন",
 		"close_panel": "প্যানেল বন্ধ করুন",
-		"hide_assistant": "Hide AI Voice Assistant",
-		"show_assistant": "Enable AI Voice Assistant",
-		"snippet_applied": "Code written into editor"
+		"hide_assistant": "AI ভয়েস সহকারী লুকান",
+		"show_assistant": "এআই ভয়েস সহকারী সক্রিয় করুন",
+		"snippet_applied": "সম্পাদকে কোড লেখা"
 	}
 }

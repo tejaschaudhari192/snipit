@@ -1,15 +1,6 @@
 import { lazy, Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-	Edit2,
-	Trash2,
-	Star,
-	Folder,
-	Globe,
-	Share2,
-	FolderPlus,
-	ArrowLeft,
-} from "lucide-react";
+import { Edit2, Trash2, Star, Globe, Share2, ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
 	Tooltip,
@@ -19,13 +10,6 @@ import {
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
 import {
 	selectMergedFolders,
@@ -62,6 +46,7 @@ const DeleteConfirmDialog = lazy(() =>
 import { FolderModal } from "./folder-modal";
 import { useFolderMutations } from "../hooks/use-folder-mutations";
 import { UI_DEFAULTS } from "../utils/constants";
+import { FolderCombobox } from "./folder-combobox";
 
 interface PasswordDetailProps {
 	item: PasswordItem | null | undefined;
@@ -90,10 +75,8 @@ export default function PasswordDetail({
 	if (isNew) {
 		const isExistingItem = !!(item && item.createdAt);
 		const typeLabel = item?.itemType
-			? t(`tools.password_manager.type_${item.itemType}`, {
-					defaultValue: item.itemType,
-				})
-			: t("tools.password_manager.type_login", { defaultValue: "Login" });
+			? t(`tools.password_manager.type_${item.itemType}`)
+			: t("tools.password_manager.type_login");
 
 		return (
 			<div className="flex flex-col h-full bg-background">
@@ -110,8 +93,8 @@ export default function PasswordDetail({
 					)}
 					<h2 className="text-base font-semibold flex-1 truncate text-foreground">
 						{isExistingItem
-							? `${t("tools.password_manager.edit", { defaultValue: "Edit" })} ${typeLabel}`
-							: `${t("tools.password_manager.new_item", { defaultValue: "Create New" })} ${typeLabel} Entry`}
+							? `${t("tools.password_manager.edit")} ${typeLabel}`
+							: `${t("tools.password_manager.new_item")} ${typeLabel}`}
 					</h2>
 					<div className="flex items-center gap-2">
 						<Button
@@ -121,12 +104,8 @@ export default function PasswordDetail({
 							className="h-8 px-4 rounded-lg font-medium shadow-xs"
 						>
 							{isExistingItem
-								? t("tools.password_manager.save", {
-										defaultValue: "Save Changes",
-									})
-								: t("tools.password_manager.add", {
-										defaultValue: "Add Item",
-									})}
+								? t("tools.password_manager.save")
+								: t("tools.password_manager.add")}
 						</Button>
 						{onBack && (
 							<Button
@@ -136,7 +115,7 @@ export default function PasswordDetail({
 								onClick={onBack}
 								className="h-8 px-3.5 rounded-lg font-medium text-muted-foreground hover:text-foreground"
 							>
-								{t("common.cancel", { defaultValue: "Cancel" })}
+								{t("tools.password_manager.cancel")}
 							</Button>
 						)}
 					</div>
@@ -190,72 +169,27 @@ export default function PasswordDetail({
 						</Button>
 					)}
 					<div className="flex-1 min-w-0 flex items-center justify-end gap-2">
-						<div className="w-32">
-							<Select
+						<div className="w-36">
+							<FolderCombobox
+								folders={folders}
 								value={item.folderId || "none"}
-								onValueChange={(val) => {
-									if (!val) return;
-									if (val === "new_folder") {
-										setFolderModalOpen(true);
-									} else {
-										const selectedFolder = folders.find(
-											(f: {
-												id: string;
-												collectionId?: string;
-											}) => f.id === val,
-										);
-										onSave({
-											...item,
-											folderId:
-												val === "none"
-													? undefined
-													: val,
-											collectionId:
-												selectedFolder?.collectionId,
-										});
-									}
+								noneLabel="No folder"
+								onChange={(val) => {
+									const selectedFolder = folders.find(
+										(f: {
+											id: string;
+											collectionId?: string;
+										}) => f.id === val,
+									);
+									onSave({
+										...item,
+										folderId: val || undefined,
+										collectionId:
+											selectedFolder?.collectionId,
+									});
 								}}
-							>
-								<SelectTrigger className="h-8 text-xs bg-background border-border">
-									<Folder className="h-3 w-3 mr-2 text-muted-foreground" />
-									<SelectValue placeholder="Folder">
-										{item.folderId === "new_folder"
-											? t(
-													"tools.password_manager.add_folder",
-												)
-											: item.folderId &&
-												  item.folderId !== "none"
-												? folders.find(
-														(f: {
-															id: string;
-															name: string;
-														}) =>
-															f.id ===
-															item.folderId,
-													)?.name
-												: "No folder"}
-									</SelectValue>
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="none">
-										No folder
-									</SelectItem>
-									{folders.map(
-										(f: { id: string; name: string }) => (
-											<SelectItem key={f.id} value={f.id}>
-												{f.name}
-											</SelectItem>
-										),
-									)}
-									<SelectItem
-										value="new_folder"
-										className="text-primary font-medium flex items-center gap-2"
-									>
-										<FolderPlus className="h-4 w-4" />
-										{t("tools.password_manager.add_folder")}
-									</SelectItem>
-								</SelectContent>
-							</Select>
+								triggerClassName="h-8 text-xs bg-background border-border"
+							/>
 						</div>
 						<TooltipProvider>
 							<Tooltip>

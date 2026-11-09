@@ -17,10 +17,14 @@ const MobileSidebarDrawer = React.lazy(
 );
 const SharingCenter = React.lazy(() => import("./components/sharing-center"));
 const ImportWizard = React.lazy(() => import("./components/import-wizard"));
+const VaultDashboard = React.lazy(
+	() => import("./components/dashboard/vault-dashboard"),
+);
 import {
 	SidebarSkeleton,
 	ListSkeleton,
 	DetailSkeleton,
+	DashboardSkeleton,
 	InitialLoader,
 } from "./components/skeletons";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -188,6 +192,17 @@ function PasswordManagerInner() {
 									/>
 								</Suspense>
 							</div>
+						) : activeFilter === "dashboard" ? (
+							<div className="h-full w-full overflow-hidden flex flex-col bg-background relative z-0 @container">
+								<Suspense fallback={<DashboardSkeleton />}>
+									<VaultDashboard
+										onNewItem={() =>
+											dispatch(handleNewItem())
+										}
+										onImport={() => setIsImportOpen(true)}
+									/>
+								</Suspense>
+							</div>
 						) : (
 							<div className="h-full w-full overflow-hidden flex flex-col bg-background relative z-0 @container">
 								<Suspense fallback={<ListSkeleton />}>
@@ -223,7 +238,16 @@ function PasswordManagerInner() {
 
 						{/* Main Content Area */}
 						<div className="flex-1 min-w-0 h-full overflow-hidden flex flex-col @container">
-							{activeFilter === "sharing" ? (
+							{activeFilter === "dashboard" ? (
+								<Suspense fallback={<DashboardSkeleton />}>
+									<VaultDashboard
+										onNewItem={() =>
+											dispatch(handleNewItem())
+										}
+										onImport={() => setIsImportOpen(true)}
+									/>
+								</Suspense>
+							) : activeFilter === "sharing" ? (
 								<Suspense fallback={<ListSkeleton />}>
 									<SharingCenter />
 								</Suspense>

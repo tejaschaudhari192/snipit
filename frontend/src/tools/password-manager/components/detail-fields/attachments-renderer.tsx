@@ -65,9 +65,7 @@ export function AttachmentsRenderer({
 		<div className="space-y-3">
 			<div className="flex items-center gap-2">
 				<h3 className="text-sm font-semibold text-foreground">
-					{t("tools.password_manager.attachments", {
-						defaultValue: "Attachments",
-					})}
+					{t("tools.password_manager.attachments")}
 				</h3>
 				<span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-medium">
 					{attachments.length}
