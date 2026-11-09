@@ -7,6 +7,8 @@ import {
 	Home,
 	ChevronDown,
 	ChevronUp,
+	RotateCcw,
+	Sparkles,
 } from "lucide-react";
 
 interface Props {
@@ -92,70 +94,99 @@ export class ErrorBoundary extends Component<Props, State> {
 						/NetworkError/i.test(this.state.error.message) ||
 						/Failed to fetch/i.test(this.state.error.message)));
 
-			return (
-				<div className="min-h-75 w-full flex-1 flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-300">
-					{/* Glow background */}
-					<div className="absolute w-72 h-72 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+			const errorCode = isNetworkOrChunkError ? "OFFLINE" : "500";
 
-					<div className="relative z-10 max-w-md w-full bg-card/60 backdrop-blur-xl border border-border/60 rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col items-center space-y-5">
-						{/* Icon badge */}
-						<div
-							className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-transform hover:scale-105 ${
-								isNetworkOrChunkError
-									? "bg-amber-500/10 text-amber-500 border border-amber-500/20"
-									: "bg-destructive/10 text-destructive border border-destructive/20"
-							}`}
-						>
-							{isNetworkOrChunkError ? (
-								<WifiOff className="w-7 h-7" />
-							) : (
-								<AlertTriangle className="w-7 h-7" />
-							)}
+			return (
+				<div className="relative min-h-[85vh] w-full flex-1 flex flex-col items-center justify-center p-6 text-center overflow-hidden bg-background">
+					{/* Ambient Atmospheric Glows */}
+					<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-lg h-128 bg-linear-to-tr from-destructive/15 via-primary/10 to-amber-500/10 rounded-full blur-[140px] pointer-events-none" />
+					<div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
+
+					{/* Subtle Background Grid Pattern */}
+					<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--color-foreground)/0.03_1px,transparent_1px)] bg-size-[24px_24px] pointer-events-none" />
+
+					<div className="relative z-10 max-w-2xl w-full flex flex-col items-center animate-in fade-in zoom-in-95 duration-700">
+						{/* Giant 404-Style Error Code Display */}
+						<div className="relative mb-2 select-none">
+							<span
+								className="text-[120px] sm:text-[160px] md:text-[200px] font-black tracking-tighter leading-none text-transparent bg-clip-text bg-linear-to-b from-primary via-primary/70 to-primary/10 drop-shadow-sm inline-block"
+								style={{
+									fontVariantNumeric: "tabular-nums",
+								}}
+							>
+								{errorCode}
+							</span>
+							<div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-30 blur-2xl">
+								<span className="text-[120px] sm:text-[160px] md:text-[200px] font-black text-primary">
+									{errorCode}
+								</span>
+							</div>
 						</div>
 
-						{/* Titles */}
-						<div className="space-y-1.5">
-							<h3 className="text-xl font-bold tracking-tight text-foreground">
+						{/* Icon Floating Badge */}
+						<div className="mb-6 -mt-4 sm:-mt-6">
+							<div
+								className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl backdrop-blur-xl shadow-xl transition-transform hover:scale-110 duration-300 ${
+									isNetworkOrChunkError
+										? "bg-amber-500/10 text-amber-500 border border-amber-500/25 shadow-amber-500/10"
+										: "bg-destructive/10 text-destructive border border-destructive/25 shadow-destructive/10"
+								}`}
+							>
+								{isNetworkOrChunkError ? (
+									<WifiOff className="w-8 h-8" />
+								) : (
+									<AlertTriangle className="w-8 h-8" />
+								)}
+							</div>
+						</div>
+
+						{/* Heading & Subtitle */}
+						<div className="space-y-3 mb-8 max-w-lg">
+							<h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
 								{isNetworkOrChunkError
 									? "Connection Interrupted"
 									: "Something went wrong"}
-							</h3>
-							<p className="text-sm text-muted-foreground leading-relaxed">
+							</h2>
+							<p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
 								{isNetworkOrChunkError
-									? "Unable to load page assets due to a connection drop or expired session. Please check your internet connection."
-									: "An unexpected rendering error occurred in this section."}
+									? "Unable to reach server assets due to a connection drop or expired session. Please verify your connection."
+									: "An unexpected rendering crash happened while displaying this view. Don't worry, your data is safe."}
 							</p>
 						</div>
 
-						{/* Action Buttons */}
-						<div className="flex flex-wrap items-center justify-center gap-2.5 w-full pt-1">
+						{/* Premium 404-Style Action Buttons */}
+						<div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto mb-8">
 							<Button
+								size="lg"
 								onClick={this.handleReload}
-								className="gap-2 h-9 px-4 rounded-xl shadow-xs"
+								className="gap-2 px-7 h-12 w-full sm:w-auto rounded-full font-bold shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
 							>
 								<RefreshCw className="w-4 h-4" />
 								Reload Application
 							</Button>
 							<Button
+								size="lg"
 								variant="outline"
 								onClick={this.handleRetry}
-								className="gap-2 h-9 px-4 rounded-xl"
+								className="gap-2 px-7 h-12 w-full sm:w-auto rounded-full font-semibold backdrop-blur-md bg-background/60 hover:scale-105 active:scale-95 transition-all"
 							>
+								<RotateCcw className="w-4 h-4" />
 								Try Again
 							</Button>
 							<Button
+								size="lg"
 								variant="ghost"
 								onClick={this.handleGoHome}
-								className="gap-2 h-9 px-3 rounded-xl text-muted-foreground"
+								className="gap-2 px-6 h-12 w-full sm:w-auto rounded-full text-muted-foreground hover:text-foreground transition-all"
 							>
 								<Home className="w-4 h-4" />
-								Home
+								Back to Home
 							</Button>
 						</div>
 
-						{/* Collapsible Error Technical Details */}
+						{/* Technical Details Glass Card */}
 						{this.state.error && (
-							<div className="w-full pt-2">
+							<div className="w-full max-w-xl">
 								<button
 									type="button"
 									onClick={() =>
@@ -164,8 +195,9 @@ export class ErrorBoundary extends Component<Props, State> {
 												!this.state.showDetails,
 										})
 									}
-									className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1 transition-colors select-none"
+									className="group inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-muted/60 hover:bg-muted text-xs font-medium text-muted-foreground hover:text-foreground transition-all select-none border border-border/40"
 								>
+									<Sparkles className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
 									<span>Technical Details</span>
 									{this.state.showDetails ? (
 										<ChevronUp className="w-3.5 h-3.5" />
@@ -175,13 +207,22 @@ export class ErrorBoundary extends Component<Props, State> {
 								</button>
 
 								{this.state.showDetails && (
-									<div className="mt-2 text-left p-3 rounded-xl bg-muted/50 border border-border/50 text-[11px] font-mono text-muted-foreground overflow-x-auto max-h-36 custom-scrollbar">
-										<p className="text-destructive font-semibold mb-1">
-											{this.state.error.name}:{" "}
+									<div className="mt-4 text-left p-4 rounded-2xl bg-muted/40 backdrop-blur-xl border border-border/60 text-xs font-mono shadow-inner animate-in fade-in slide-in-from-top-2 duration-300 overflow-hidden">
+										<div className="flex items-center justify-between pb-2 mb-2 border-b border-border/40 text-[11px] text-muted-foreground">
+											<span className="font-semibold text-destructive">
+												{this.state.error.name}
+											</span>
+											{this.props.scope && (
+												<span className="px-2 py-0.5 rounded bg-background/80 text-[10px] border border-border/40">
+													scope: {this.props.scope}
+												</span>
+											)}
+										</div>
+										<p className="text-foreground/90 font-medium mb-2 wrap-break-word">
 											{this.state.error.message}
 										</p>
 										{this.state.error.stack && (
-											<pre className="whitespace-pre-wrap leading-tight text-[10px] text-muted-foreground/80">
+											<pre className="whitespace-pre-wrap leading-relaxed text-[10.5px] text-muted-foreground/80 max-h-48 overflow-y-auto custom-scrollbar p-2 rounded-lg bg-background/50 border border-border/30">
 												{this.state.error.stack}
 											</pre>
 										)}
@@ -190,6 +231,9 @@ export class ErrorBoundary extends Component<Props, State> {
 							</div>
 						)}
 					</div>
+
+					{/* Bottom Accent Gradient Line */}
+					<div className="absolute bottom-0 left-0 w-full h-px bg-linear-to-r from-transparent via-primary/25 to-transparent pointer-events-none" />
 				</div>
 			);
 		}
