@@ -58,8 +58,24 @@ class PasteService {
 			hashedPassword = await bcrypt.hash(password, salt);
 		}
 
+		// Resolve user preferred ID theme if logged in, otherwise default to "indian"
+		let userTheme: "indian" | "tech" | "english" | "all" = "indian";
+		if (ownerId && !customId) {
+			try {
+				const owner = await User.findById(ownerId)
+					.select("idTheme")
+					.lean();
+				if (owner?.idTheme) {
+					userTheme = owner.idTheme;
+				}
+			} catch {
+				// Fallback to default
+			}
+		}
+
 		// If no customId was provided, generate pure word for attempt 0, or append number if collided
-		const generatedId = customId || uniqueIdGenerator(attempt, baseWord);
+		const generatedId =
+			customId || uniqueIdGenerator(attempt, baseWord, userTheme);
 		const currentBaseWord =
 			baseWord || (customId ? undefined : generatedId);
 		const pasteId = generatedId;

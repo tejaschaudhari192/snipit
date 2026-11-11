@@ -9,6 +9,7 @@ import {
 	languages,
 	NumberDictionary,
 } from "unique-names-generator";
+import { INDIAN_VOCAB } from "./indian-vocab.js";
 
 /**
  * Tokenizes dictionary entries into individual single words (splits multi-words like "anakin skywalker" -> "anakin", "skywalker")
@@ -30,7 +31,11 @@ const sanitizeDictionary = (list: string[]): string[] => {
 	return Array.from(words);
 };
 
+import { TECH_VOCAB } from "./tech-vocab.js";
+
 const CATEGORY_DICTIONARIES: Record<string, string[]> = {
+	desi: sanitizeDictionary(INDIAN_VOCAB),
+	tech: sanitizeDictionary(TECH_VOCAB),
 	animals: sanitizeDictionary(animals),
 	colors: sanitizeDictionary(colors),
 	adjectives: sanitizeDictionary(adjectives),

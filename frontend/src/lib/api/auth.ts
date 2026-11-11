@@ -50,6 +50,7 @@ export const registerUser = async (payload: RegisterPayload) => {
 export const updateMe = async (data: {
 	username?: string;
 	avatar?: string;
+	idTheme?: "indian" | "tech" | "english" | "all";
 }) => {
 	const response = await api.put("/auth/me", data);
 	return response.data;

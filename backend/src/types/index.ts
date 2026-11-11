@@ -64,6 +64,8 @@ export interface SharedVideoState {
 	duration?: number | undefined;
 }
 
+export type IdTheme = "indian" | "tech" | "english" | "all";
+
 export type UserData = {
 	_id: string;
 	username: string;
@@ -72,6 +74,7 @@ export type UserData = {
 	googleId?: string | undefined;
 	githubId?: string | undefined;
 	avatar?: string | undefined;
+	idTheme?: IdTheme | undefined;
 	createdAt: Date;
 	resetPasswordToken?: string | undefined;
 	resetPasswordExpires?: Date | undefined;

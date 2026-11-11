@@ -38,6 +38,11 @@ const userSchema = new Schema<IUser>(
 			type: String,
 			required: false,
 		},
+		idTheme: {
+			type: String,
+			enum: ["indian", "tech", "english", "all"],
+			default: "indian",
+		},
 		createdAt: {
 			type: Date,
 			default: Date.now,

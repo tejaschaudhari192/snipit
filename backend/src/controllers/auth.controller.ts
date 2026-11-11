@@ -179,6 +179,7 @@ class AuthController {
 			username: user.username,
 			email: user.email,
 			avatar: user.avatar,
+			idTheme: user.idTheme,
 		});
 	}
 
@@ -187,10 +188,10 @@ class AuthController {
 		if (!user) return res.status(401).json({ message: "Not authorized" });
 
 		try {
-			const { username, avatar } = req.body;
+			const { username, avatar, idTheme } = req.body;
 			const updatedUser = await this.authService.updateUserProfile(
 				user._id as string,
-				{ username, avatar },
+				{ username, avatar, idTheme },
 			);
 
 			res.status(200).json({
@@ -198,6 +199,7 @@ class AuthController {
 				username: updatedUser.username,
 				email: updatedUser.email,
 				avatar: updatedUser.avatar,
+				idTheme: updatedUser.idTheme,
 				message: "Profile updated successfully",
 			});
 		} catch (error: unknown) {

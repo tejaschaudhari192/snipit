@@ -11,6 +11,7 @@ import {
 	Shield,
 	ExternalLink,
 	Sparkles,
+	Tag,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -18,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ShimmerSection } from "@/components/common/shimmer-section";
-import type { User as UserType } from "@/types";
+import type { User as UserType, IdTheme } from "@/types";
 
 interface ProfileViewProps {
 	user: UserType | null;
@@ -27,6 +28,7 @@ interface ProfileViewProps {
 	newName: string;
 	setNewName: (v: string) => void;
 	handleUpdateName: () => void;
+	handleUpdateIdTheme?: (theme: IdTheme) => void;
 	isUpdating: boolean;
 	onLogout: () => void;
 	onOpenAvatarPicker: () => void;
@@ -39,6 +41,7 @@ export function ProfileView({
 	newName,
 	setNewName,
 	handleUpdateName,
+	handleUpdateIdTheme,
 	isUpdating,
 	onLogout,
 	onOpenAvatarPicker,
@@ -309,6 +312,96 @@ export function ProfileView({
 							<span>{t("profile.reset_password")}</span>
 							<ExternalLink className="w-3 h-3" />
 						</Button>
+					</div>
+				</div>
+
+				{/* Paste ID Vocabulary Preference Card */}
+				<div className="p-5 md:p-6 rounded-3xl border border-border/50 bg-background/50 backdrop-blur-xl shadow-sm space-y-4">
+					<div>
+						<h3 className="text-base font-extrabold text-foreground flex items-center gap-2">
+							<Tag className="w-4 h-4 text-primary" />
+							<span>
+								{t("profile.account_settings.id_preference")}
+							</span>
+						</h3>
+						<p className="text-xs text-muted-foreground">
+							{t("profile.account_settings.id_preference_desc")}
+						</p>
+					</div>
+
+					<div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+						{(
+							[
+								{
+									id: "indian",
+									label: t(
+										"profile.account_settings.id_theme_indian",
+									),
+									icon: "🪔",
+									desc: "suraj, chai, cheetah",
+								},
+								{
+									id: "tech",
+									label: t(
+										"profile.account_settings.id_theme_tech",
+									),
+									icon: "⚡",
+									desc: "byte, async, docker",
+								},
+								{
+									id: "english",
+									label: t(
+										"profile.account_settings.id_theme_english",
+									),
+									icon: "🦊",
+									desc: "swift, ruby, falcon",
+								},
+								{
+									id: "all",
+									label: t(
+										"profile.account_settings.id_theme_all",
+									),
+									icon: "🌐",
+									desc: "Equal random mix",
+								},
+							] as const
+						).map((theme) => {
+							const currentTheme = user.idTheme || "indian";
+							const isSelected = currentTheme === theme.id;
+							return (
+								<button
+									key={theme.id}
+									type="button"
+									onClick={() =>
+										handleUpdateIdTheme?.(theme.id)
+									}
+									className={`p-3 rounded-2xl border text-left flex flex-col justify-between transition-all cursor-pointer ${
+										isSelected
+											? "border-primary bg-primary/10 shadow-xs shadow-primary/20 scale-[1.02]"
+											: "border-border/50 bg-card/60 hover:border-border hover:bg-card/90"
+									}`}
+								>
+									<div className="flex items-center justify-between mb-1.5">
+										<span className="text-base">
+											{theme.icon}
+										</span>
+										{isSelected && (
+											<span className="w-4 h-4 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">
+												<Check className="w-2.5 h-2.5" />
+											</span>
+										)}
+									</div>
+									<div>
+										<p className="text-xs font-bold text-foreground">
+											{theme.label}
+										</p>
+										<p className="text-[10px] text-muted-foreground line-clamp-1 mt-0.5">
+											{theme.desc}
+										</p>
+									</div>
+								</button>
+							);
+						})}
 					</div>
 				</div>
 

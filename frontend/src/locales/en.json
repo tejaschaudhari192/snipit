@@ -1179,6 +1179,13 @@
 			"email_address_desc": "Used for sign in, notifications, and security alerts.",
 			"security": "Security & Credentials",
 			"security_desc": "Update your password or request a secure reset email.",
+			"id_preference": "Paste ID Vocabulary",
+			"id_preference_desc": "Choose your preferred word bank for auto-generated paste IDs.",
+			"id_theme_indian": "Desi / Indian",
+			"id_theme_tech": "Tech / Dev",
+			"id_theme_english": "English",
+			"id_theme_all": "Mix / All",
+			"id_theme_updated": "ID vocabulary preference updated",
 			"danger_zone": "Account Actions",
 			"sign_out_desc": "Log out from your current device session."
 		}

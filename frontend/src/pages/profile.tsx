@@ -176,6 +176,29 @@ const ProfilePage = () => {
 		}
 	};
 
+	const handleUpdateIdTheme = async (
+		theme: "indian" | "tech" | "english" | "all",
+	) => {
+		try {
+			const updatedUser = await updateMe({ idTheme: theme });
+			setUser({ ...user!, idTheme: updatedUser.idTheme || theme });
+			toast.add({
+				title: t("profile.account_settings.id_theme_updated"),
+				type: "success",
+			});
+		} catch (error: unknown) {
+			const errorMessage =
+				error instanceof Error && "response" in error
+					? (error as { response?: { data?: { message?: string } } })
+							.response?.data?.message
+					: undefined;
+			toast.add({
+				title: errorMessage || t("profile.update_failed"),
+				type: "error",
+			});
+		}
+	};
+
 	if (authLoading) {
 		return (
 			<div className="w-full px-2 py-4">
@@ -386,6 +409,7 @@ const ProfilePage = () => {
 									newName={newName}
 									setNewName={setNewName}
 									handleUpdateName={handleUpdateName}
+									handleUpdateIdTheme={handleUpdateIdTheme}
 									isUpdating={isUpdating}
 									onLogout={() => setIsLogoutDialogOpen(true)}
 									onOpenAvatarPicker={() =>

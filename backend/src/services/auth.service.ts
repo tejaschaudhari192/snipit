@@ -247,7 +247,11 @@ class AuthService {
 
 	async updateUserProfile(
 		userId: string,
-		data: { username?: string; avatar?: string },
+		data: {
+			username?: string;
+			avatar?: string;
+			idTheme?: "indian" | "tech" | "english" | "all";
+		},
 	) {
 		const user = await User.findById(userId);
 		if (!user) throw new Error("USER_NOT_FOUND");
@@ -263,6 +267,10 @@ class AuthService {
 
 		if (data.avatar !== undefined) {
 			user.avatar = data.avatar;
+		}
+
+		if (data.idTheme !== undefined) {
+			user.idTheme = data.idTheme;
 		}
 
 		await user.save();
