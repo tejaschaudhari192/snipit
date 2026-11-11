@@ -1,6 +1,6 @@
 {
-	"version": "1.2.0",
-	"buildNumber": 14,
+	"version": "1.2.1",
+	"buildNumber": 15,
 	"minSupportedVersion": "1.0.0",
 	"forceUpdate": false,
 	"downloadUrl": "https://cpaste.vercel.app/snipit-universal",
@@ -9,8 +9,20 @@
 		"armeabi-v7a": "https://cpaste.vercel.app/snipit-armeabi-v7a",
 		"universal": "https://cpaste.vercel.app/snipit-universal"
 	},
-	"releaseDate": "2026-10-29",
+	"releaseDate": "2026-11-11",
 	"changelog": [
+		{
+			"version": "1.2.1",
+			"date": "2026-11-11",
+			"title": "✨ 3D Flippable Payment Cards, Passkeys, Credential Files & Password Generator Updates",
+			"changes": [
+				"Reimagined payment card preview matching web design with interactive 3D click-to-flip, magnetic stripe, and signature panel",
+				"Full support for Passkeys and Encrypted Credential Files (.env, certs) with dedicated forms and inspector viewers",
+				"Added horizontal scrolling category picker tabs in Add/Edit credential modal",
+				"Updated Password Generator with Hash (#) as default and primary separator",
+				"Fixed Notes grid card layout batching and deck-of-cards stacking visual glitch on large vaults"
+			]
+		},
 		{
 			"version": "1.2.0",
 			"date": "2026-10-29",
