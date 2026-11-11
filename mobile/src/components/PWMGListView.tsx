@@ -6,6 +6,7 @@ import {
 	TouchableOpacity,
 	RefreshControl,
 	ScrollView,
+	Platform,
 } from "react-native";
 import { Shield, StickyNote } from "lucide-react-native";
 import { PasswordItem, Folder } from "../core/vault-storage";
@@ -167,6 +168,10 @@ export const PWMGListView = memo(function PWMGListView({
 					columnWrapperClassName="justify-between"
 					contentContainerClassName="px-2.5 pt-1 pb-32"
 					refreshControl={refreshElem}
+					initialNumToRender={8}
+					maxToRenderPerBatch={8}
+					windowSize={5}
+					removeClippedSubviews={Platform.OS === "android"}
 					renderItem={({ item }) => {
 						const isSelected = selectedItemIds.includes(item.id);
 						const isSelectionMode =

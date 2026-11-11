@@ -47,20 +47,22 @@ export function PWMGHeader({
 			? "Folders"
 			: activeBottomTab === "settings"
 				? "Vault Settings"
-				: selectedFolderId
-					? folders.find((f) => f.id === selectedFolderId)?.name ||
-						"Folder"
-					: activeFilter === "favorites"
-						? "Favorites"
-						: activeFilter === "all"
-							? "Passwords"
+				: activeBottomTab === "notes"
+					? "Notes"
+					: selectedFolderId
+						? folders.find((f) => f.id === selectedFolderId)
+								?.name || "Folder"
+						: activeFilter === "favorites"
+							? "Favorites"
 							: activeFilter === "card"
 								? "Cards"
 								: activeFilter === "apikey"
 									? "API Keys"
 									: activeFilter === "note"
 										? "Notes"
-										: "Identities");
+										: activeFilter === "identity"
+											? "Identities"
+											: "Passwords");
 
 	// Automatically compute subtitle if not explicitly provided
 	const syncStatusText =

@@ -65,10 +65,7 @@ export const NoteGridCard = memo(function NoteGridCard({
 		: null;
 
 	return (
-		<View
-			className="flex-1 max-w-[50%] p-1.5"
-			style={{ boxSizing: "border-box" as any }}
-		>
+		<View className="w-1/2 p-1.5 overflow-hidden">
 			<TouchableOpacity
 				activeOpacity={0.75}
 				onPress={onPress}
@@ -78,7 +75,7 @@ export const NoteGridCard = memo(function NoteGridCard({
 			>
 				<Card
 					className={cn(
-						"flex-1 p-4 py-4 min-h-[145px] justify-between border shadow-sm",
+						"flex-1 p-4 py-4 min-h-[145px] justify-between border shadow-sm overflow-hidden",
 						isSelected
 							? "border-foreground bg-accent/40"
 							: "border-border bg-card",
