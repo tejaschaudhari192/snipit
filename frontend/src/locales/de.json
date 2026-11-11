@@ -1122,7 +1122,14 @@
 			"updated_success": "Profilfoto aktualisiert",
 			"updated_failed": "Profilfoto konnte nicht aktualisiert werden",
 			"cancel": "Abbrechen",
-			"save": "Foto speichern"
+			"save": "Foto speichern",
+			"crop": "Zuschneiden",
+			"crop_title": "Profilbild zuschneiden",
+			"crop_description": "Ziehen Sie zum Positionieren, verwenden Sie den Schieberegler zum Zoomen, Drehen oder Spiegeln Ihres Fotos.",
+			"apply_crop": "Zuschnitt anwenden",
+			"rotate": "90° drehen",
+			"flip_h": "Horizontal spiegeln",
+			"reset": "Zurücksetzen"
 		},
 		"edit_name": "Name bearbeiten",
 		"color_tag": "Farb-Tag",
@@ -1174,7 +1181,14 @@
 			"security": "Sicherheit & Zugangsdaten",
 			"security_desc": "Aktualisieren Sie Ihr Passwort oder fordern Sie eine E-Mail zum Zurücksetzen an.",
 			"danger_zone": "Kontoaktionen",
-			"sign_out_desc": "Von dieser aktuellen Sitzung abmelden."
+			"sign_out_desc": "Von dieser aktuellen Sitzung abmelden.",
+			"id_preference": "Paste-ID-Vokabular",
+			"id_preference_desc": "Wählen Sie Ihre bevorzugte Wortdatenbank für automatisch generierte Paste-IDs.",
+			"id_theme_indian": "Desi / Indisch",
+			"id_theme_tech": "Tech / Dev",
+			"id_theme_english": "Englisch",
+			"id_theme_all": "Gemischt / Alle",
+			"id_theme_updated": "ID-Vokabular-Präferenz aktualisiert"
 		}
 	},
 	"home": {

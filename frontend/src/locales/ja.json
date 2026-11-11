@@ -1089,7 +1089,14 @@
 			"updated_success": "プロフィール写真を更新しました",
 			"updated_failed": "プロフィール写真の更新に失敗しました",
 			"cancel": "キャンセル",
-			"save": "写真を保存"
+			"save": "写真を保存",
+			"crop": "切り抜き",
+			"crop_title": "プロフィール写真の切り抜き",
+			"crop_description": "ドラッグして位置を調整し、スライダーで拡大・縮小、回転、反転を行います。",
+			"apply_crop": "切り抜きを適用",
+			"rotate": "90°回転",
+			"flip_h": "左右反転",
+			"reset": "リセット"
 		},
 		"edit_name": "名前を編集",
 		"color_tag": "カラータグ",
@@ -1141,7 +1148,14 @@
 			"security": "セキュリティと資格情報",
 			"security_desc": "パスワードを更新するか、安全なリセットメールをリクエストします。",
 			"danger_zone": "アカウント操作",
-			"sign_out_desc": "現在のセッションからログアウトします。"
+			"sign_out_desc": "現在のセッションからログアウトします。",
+			"id_preference": "ペーストID語彙設定",
+			"id_preference_desc": "自動生成されるペーストIDの語彙バンクを選択します。",
+			"id_theme_indian": "デジ / インド風",
+			"id_theme_tech": "テック / 開発者",
+			"id_theme_english": "英語",
+			"id_theme_all": "ミックス / すべて",
+			"id_theme_updated": "ID語彙の設定が更新されました"
 		}
 	},
 	"home": {
