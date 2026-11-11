@@ -1121,7 +1121,14 @@
 			"updated_success": "Profile photo updated successfully",
 			"updated_failed": "Failed to update profile photo",
 			"cancel": "Cancel",
-			"save": "Save Photo"
+			"save": "Save Photo",
+			"crop": "Crop",
+			"crop_title": "Crop Profile Photo",
+			"crop_description": "Drag to position, use the slider to zoom, rotate or flip your photo.",
+			"apply_crop": "Apply Crop",
+			"rotate": "Rotate 90°",
+			"flip_h": "Flip Horizontal",
+			"reset": "Reset"
 		},
 		"edit_name": "Edit name",
 		"reset_password": "Reset Password",

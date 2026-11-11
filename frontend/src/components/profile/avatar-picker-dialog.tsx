@@ -17,11 +17,12 @@ import {
 	Sparkles,
 	Trash2,
 	Check,
+	Crop as CropIcon,
 } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { MOCK_AVATARS } from "@/constants";
-import { compressImageFile } from "@/utils";
 import { toast } from "@/components/ui/toast";
+import { ImageCropperDialog } from "./image-cropper-dialog";
 
 interface AvatarPickerDialogProps {
 	open: boolean;
@@ -44,29 +45,45 @@ export const AvatarPickerDialog: React.FC<AvatarPickerDialogProps> = ({
 	);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isDragging, setIsDragging] = useState(false);
+	const [rawImageForCrop, setRawImageForCrop] = useState<string | null>(null);
+	const [cropperOpen, setCropperOpen] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	// Reset state when opened
 	React.useEffect(() => {
 		if (open) {
 			setSelectedAvatar(currentAvatar);
+			setRawImageForCrop(null);
+			setCropperOpen(false);
 		}
 	}, [open, currentAvatar]);
 
 	const initials = (username || "U").charAt(0).toUpperCase();
 
-	// Process and compress image file to Base64 data URL (< 300KB)
-	const processFile = async (file: File) => {
-		try {
-			const compressedDataUrl = await compressImageFile(file, 256, 0.85);
-			setSelectedAvatar(compressedDataUrl);
-		} catch (error) {
-			console.error("Failed to compress avatar image:", error);
+	// Process image file and open crop tool
+	const processFile = (file: File) => {
+		if (!file.type.startsWith("image/")) {
 			toast.add({
 				title: t("profile.avatar.invalid_image"),
 				type: "error",
 			});
+			return;
 		}
+
+		const reader = new FileReader();
+		reader.onload = () => {
+			if (typeof reader.result === "string") {
+				setRawImageForCrop(reader.result);
+				setCropperOpen(true);
+			}
+		};
+		reader.onerror = () => {
+			toast.add({
+				title: t("profile.avatar.invalid_image"),
+				type: "error",
+			});
+		};
+		reader.readAsDataURL(file);
 	};
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,15 +140,30 @@ export const AvatarPickerDialog: React.FC<AvatarPickerDialogProps> = ({
 						</span>
 					</div>
 					{selectedAvatar && (
-						<Button
-							variant="ghost"
-							size="sm"
-							onClick={() => setSelectedAvatar(undefined)}
-							className="h-8 gap-1 rounded-xl text-xs text-destructive hover:bg-destructive/10 hover:text-destructive shrink-0 cursor-pointer"
-						>
-							<Trash2 className="w-3.5 h-3.5" />
-							<span>{t("common.actions.remove")}</span>
-						</Button>
+						<div className="flex items-center gap-1.5 shrink-0">
+							<Button
+								variant="ghost"
+								size="sm"
+								onClick={() => {
+									setRawImageForCrop(selectedAvatar);
+									setCropperOpen(true);
+								}}
+								className="h-8 gap-1 rounded-xl text-xs text-primary hover:bg-primary/10 hover:text-primary cursor-pointer"
+								title={t("profile.avatar.crop")}
+							>
+								<CropIcon className="w-3.5 h-3.5" />
+								<span>{t("profile.avatar.crop")}</span>
+							</Button>
+							<Button
+								variant="ghost"
+								size="sm"
+								onClick={() => setSelectedAvatar(undefined)}
+								className="h-8 gap-1 rounded-xl text-xs text-destructive hover:bg-destructive/10 hover:text-destructive cursor-pointer"
+							>
+								<Trash2 className="w-3.5 h-3.5" />
+								<span>{t("common.actions.remove")}</span>
+							</Button>
+						</div>
 					)}
 				</div>
 
@@ -265,6 +297,18 @@ export const AvatarPickerDialog: React.FC<AvatarPickerDialogProps> = ({
 					</Button>
 				</DialogFooter>
 			</DialogContent>
+
+			{/* Nested Crop Tool Dialog */}
+			{rawImageForCrop && (
+				<ImageCropperDialog
+					open={cropperOpen}
+					onOpenChange={setCropperOpen}
+					imageSrc={rawImageForCrop}
+					onCropComplete={(croppedUrl) => {
+						setSelectedAvatar(croppedUrl);
+					}}
+				/>
+			)}
 		</Dialog>
 	);
 };
