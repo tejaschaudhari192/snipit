@@ -292,6 +292,7 @@ export function IosDetailInspectorModal({
 							}
 							expiration={currentItem.metadata?.expiration}
 							cvv={currentItem.metadata?.cvv}
+							bankName={currentItem.title}
 							showNumber={showCardNumber}
 							showCvv={showCardCVV}
 							copied={copiedField === "cardnum"}
