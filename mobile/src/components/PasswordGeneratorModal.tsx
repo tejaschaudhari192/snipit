@@ -179,8 +179,8 @@ export function PasswordGeneratorModal({
 									<View className="flex-row flex-wrap gap-1.5 mt-1 mb-2">
 										{(
 											[
-												"hyphen",
 												"hash",
+												"hyphen",
 												"space",
 												"comma",
 												"none",

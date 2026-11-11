@@ -238,7 +238,7 @@ export function generatePassphrase(
 ): string {
 	const {
 		wordCount = 3,
-		separator = "hyphen",
+		separator = "hash",
 		capitalize = true,
 		includeNumber = true,
 	} = options;

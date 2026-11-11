@@ -63,7 +63,7 @@ export function CloudVaultDetectedScreen({
 				contentContainerClassName="p-4 max-w-sm w-full mx-auto"
 				showsVerticalScrollIndicator={false}
 			>
-				<Card className="w-full border-border bg-card">
+				<Card className="w-full border-border bg-card py-6">
 					<CardHeader className="text-center pb-2 items-center">
 						<View className="w-16 h-16 rounded-full bg-primary/10 justify-center items-center mb-2">
 							<Icon

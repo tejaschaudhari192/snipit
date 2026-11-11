@@ -15,7 +15,7 @@ export function usePasswordGenerator() {
 	const [pronounceable, setPronounceable] = useState(true);
 	const [uppercase, setUppercase] = useState(true);
 	const [numbers, setNumbers] = useState(true);
-	const [separator, setSeparator] = useState<SeparatorType>("hyphen");
+	const [separator, setSeparator] = useState<SeparatorType>("hash");
 	const [generatedPass, setGeneratedPass] = useState("");
 
 	const refresh = useCallback(() => {

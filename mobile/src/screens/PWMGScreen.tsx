@@ -143,7 +143,7 @@ export function PWMGScreen({
 	const [genPronounceable, setGenPronounceable] = useState(true);
 	const [genUpper, setGenUpper] = useState(true);
 	const [genNumbers, setGenNumbers] = useState(true);
-	const [genSeparator, setGenSeparator] = useState<SeparatorType>("hyphen");
+	const [genSeparator, setGenSeparator] = useState<SeparatorType>("hash");
 	const [generatedPass, setGeneratedPass] = useState("");
 
 	// Bottom Tab Bar
