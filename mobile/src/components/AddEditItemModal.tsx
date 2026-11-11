@@ -13,6 +13,8 @@ import {
 	Key,
 	CreditCard,
 	FileCode,
+	Fingerprint,
+	Shield,
 	StickyNote,
 	User,
 	RefreshCw,
@@ -55,6 +57,10 @@ interface Props {
 	identityEmail: string;
 	identityPhone: string;
 	identityAddress: string;
+	passkeyUserId?: string;
+	passkeyPublicKey?: string;
+	credFileName?: string;
+	credFileContent?: string;
 	customFields: CustomField[];
 	isFolderDropdownOpen?: boolean;
 	onCreateFolder?: (name: string, color?: string) => Promise<Folder | void>;
@@ -82,6 +88,10 @@ interface Props {
 	setIdentityEmail: (v: string) => void;
 	setIdentityPhone: (v: string) => void;
 	setIdentityAddress: (v: string) => void;
+	setPasskeyUserId?: (v: string) => void;
+	setPasskeyPublicKey?: (v: string) => void;
+	setCredFileName?: (v: string) => void;
+	setCredFileContent?: (v: string) => void;
 	setCustomFields: (fields: CustomField[]) => void;
 }
 
@@ -109,6 +119,10 @@ export function AddEditItemModal({
 	identityEmail,
 	identityPhone,
 	identityAddress,
+	passkeyUserId = "",
+	passkeyPublicKey = "",
+	credFileName = "",
+	credFileContent = "",
 	customFields,
 	onClose,
 	onSave,
@@ -133,6 +147,10 @@ export function AddEditItemModal({
 	setIdentityEmail,
 	setIdentityPhone,
 	setIdentityAddress,
+	setPasskeyUserId,
+	setPasskeyPublicKey,
+	setCredFileName,
+	setCredFileContent,
 	setCustomFields,
 	isFolderDropdownOpen = false,
 	setIsFolderDropdownOpen,
@@ -187,6 +205,8 @@ export function AddEditItemModal({
 		{ id: "login", label: "Login", icon: Key },
 		{ id: "card", label: "Card", icon: CreditCard },
 		{ id: "apikey", label: "API Key", icon: FileCode },
+		{ id: "passkey", label: "Passkey", icon: Fingerprint },
+		{ id: "credfile", label: "File", icon: Shield },
 		{ id: "note", label: "Note", icon: StickyNote },
 		{ id: "identity", label: "Identity", icon: User },
 	];
@@ -251,33 +271,39 @@ export function AddEditItemModal({
 						}
 						className="mb-3.5"
 					>
-						<TabsList className="w-full flex-row">
-							{categories.map((cat) => {
-								const IconComponent = cat.icon;
-								const active = itemCategory === cat.id;
-								return (
-									<TabsTrigger
-										key={cat.id}
-										value={cat.id}
-										className="flex-1 flex-row items-center justify-center gap-1.5"
-									>
-										<IconComponent
-											className={
-												active
-													? "text-foreground"
-													: "text-muted-foreground"
-											}
-											size={14}
-										/>
-										<Text
-											className={`text-xs ${active ? "font-semibold" : "font-medium"}`}
+						<ScrollView
+							horizontal
+							showsHorizontalScrollIndicator={false}
+							contentContainerStyle={{ flexGrow: 1 }}
+						>
+							<TabsList className="flex-row">
+								{categories.map((cat) => {
+									const IconComponent = cat.icon;
+									const active = itemCategory === cat.id;
+									return (
+										<TabsTrigger
+											key={cat.id}
+											value={cat.id}
+											className="px-3 py-2 flex-row items-center justify-center gap-1.5"
 										>
-											{cat.label}
-										</Text>
-									</TabsTrigger>
-								);
-							})}
-						</TabsList>
+											<IconComponent
+												className={
+													active
+														? "text-foreground"
+														: "text-muted-foreground"
+												}
+												size={14}
+											/>
+											<Text
+												className={`text-xs ${active ? "font-semibold" : "font-medium"}`}
+											>
+												{cat.label}
+											</Text>
+										</TabsTrigger>
+									);
+								})}
+							</TabsList>
+						</ScrollView>
 					</Tabs>
 
 					<ScrollView
@@ -629,6 +655,60 @@ export function AddEditItemModal({
 										value={identityAddress}
 										onChangeText={setIdentityAddress}
 										className="h-16 py-2"
+									/>
+								</View>
+							</>
+						)}
+
+						{/* Passkey Form */}
+						{itemCategory === "passkey" && (
+							<>
+								<View className="mb-3">
+									<Input
+										placeholder="User ID / Username"
+										value={passkeyUserId}
+										onChangeText={setPasskeyUserId}
+										autoCapitalize="none"
+									/>
+								</View>
+								<View className="mb-3">
+									<Input
+										placeholder="Website / Relying Party (URL)"
+										value={newUrl}
+										onChangeText={setNewUrl}
+										autoCapitalize="none"
+									/>
+								</View>
+								<View className="mb-3">
+									<Input
+										placeholder="Public Key / Credential ID"
+										multiline
+										value={passkeyPublicKey}
+										onChangeText={setPasskeyPublicKey}
+										className="h-20 py-2 font-mono text-xs"
+									/>
+								</View>
+							</>
+						)}
+
+						{/* Credential File Form */}
+						{itemCategory === "credfile" && (
+							<>
+								<View className="mb-3">
+									<Input
+										placeholder="File Name (e.g., id_rsa, .env, cert.pem)"
+										value={credFileName}
+										onChangeText={setCredFileName}
+										autoCapitalize="none"
+									/>
+								</View>
+								<View className="mb-3">
+									<Input
+										placeholder="File Content / Certificate"
+										multiline
+										value={credFileContent}
+										onChangeText={setCredFileContent}
+										className="h-28 py-2 font-mono text-xs"
 									/>
 								</View>
 							</>

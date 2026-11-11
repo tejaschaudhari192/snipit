@@ -20,7 +20,19 @@ import {
 	Animated,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Plus, Shield, Lock, X, CheckCheck } from "lucide-react-native";
+import {
+	Plus,
+	Shield,
+	Lock,
+	X,
+	CheckCheck,
+	Key,
+	CreditCard,
+	FileCode,
+	Fingerprint,
+	StickyNote,
+	User,
+} from "lucide-react-native";
 import * as Clipboard from "expo-clipboard";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
@@ -72,7 +84,15 @@ interface Props {
 }
 
 type FilterCategory =
-	"all" | "favorites" | "login" | "card" | "apikey" | "note" | "identity";
+	| "all"
+	| "favorites"
+	| "login"
+	| "card"
+	| "apikey"
+	| "passkey"
+	| "credfile"
+	| "note"
+	| "identity";
 
 export function PWMGScreen({
 	onBack,
@@ -807,6 +827,16 @@ export function PWMGScreen({
 				phone: form.identityPhone,
 				address: form.identityAddress,
 			};
+		} else if (form.itemCategory === "passkey") {
+			metadata = {
+				userId: form.passkeyUserId,
+				publicKey: form.passkeyPublicKey,
+			};
+		} else if (form.itemCategory === "credfile") {
+			metadata = {
+				fileName: form.credFileName,
+				fileContent: form.credFileContent,
+			};
 		}
 
 		await offlineVault.saveItem({
@@ -815,11 +845,21 @@ export function PWMGScreen({
 			username:
 				form.itemCategory === "login"
 					? form.newUsername
-					: form.identityEmail || form.cardHolder || form.apiKeyId,
+					: form.itemCategory === "passkey"
+						? form.passkeyUserId
+						: form.itemCategory === "credfile"
+							? form.credFileName
+							: form.identityEmail ||
+								form.cardHolder ||
+								form.apiKeyId,
 			password:
 				form.itemCategory === "login"
 					? form.newPassword
-					: form.apiSecret || form.cardCvv,
+					: form.itemCategory === "passkey"
+						? form.passkeyPublicKey
+						: form.itemCategory === "credfile"
+							? form.credFileContent
+							: form.apiSecret || form.cardCvv,
 			url: form.newUrl,
 			notes: form.newNotes,
 			category: form.itemCategory,
@@ -1425,7 +1465,25 @@ export function PWMGScreen({
 				getCategoryBadgeStyle={() => ({
 					backgroundColor: "rgba(10, 132, 255, 0.15)",
 				})}
-				getCategoryIcon={() => null}
+				getCategoryIcon={(category, size = 24) => {
+					switch (category) {
+						case "card":
+							return <CreditCard size={size} color="#a855f7" />;
+						case "apikey":
+							return <FileCode size={size} color="#10b981" />;
+						case "passkey":
+							return <Fingerprint size={size} color="#f59e0b" />;
+						case "credfile":
+							return <Shield size={size} color="#f43f5e" />;
+						case "note":
+							return <StickyNote size={size} color="#06b6d4" />;
+						case "identity":
+							return <User size={size} color="#6366f1" />;
+						case "login":
+						default:
+							return <Key size={size} color="#3b82f6" />;
+					}
+				}}
 			/>
 
 			{/* Add / Edit Item Modal */}
@@ -1454,6 +1512,10 @@ export function PWMGScreen({
 				identityEmail={form.identityEmail}
 				identityPhone={form.identityPhone}
 				identityAddress={form.identityAddress}
+				passkeyUserId={form.passkeyUserId}
+				passkeyPublicKey={form.passkeyPublicKey}
+				credFileName={form.credFileName}
+				credFileContent={form.credFileContent}
 				customFields={form.customFields}
 				isFolderDropdownOpen={form.isFolderDropdownOpen}
 				onCreateFolder={(name, color) => handleSaveFolder(name, color)}
@@ -1487,6 +1549,10 @@ export function PWMGScreen({
 				setIdentityEmail={form.setIdentityEmail}
 				setIdentityPhone={form.setIdentityPhone}
 				setIdentityAddress={form.setIdentityAddress}
+				setPasskeyUserId={form.setPasskeyUserId}
+				setPasskeyPublicKey={form.setPasskeyPublicKey}
+				setCredFileName={form.setCredFileName}
+				setCredFileContent={form.setCredFileContent}
 				setCustomFields={form.setCustomFields}
 			/>
 

@@ -1,4 +1,5 @@
-export type VaultCategory = "login" | "card" | "apikey" | "note" | "identity";
+export type VaultCategory =
+	"login" | "card" | "apikey" | "passkey" | "credfile" | "note" | "identity";
 export type SyncStatus = "local" | "synced" | "pending_offline" | "syncing";
 export type VaultTheme = "system" | "dark" | "light";
 export type VaultUIStyle = "shadcn" | "native";

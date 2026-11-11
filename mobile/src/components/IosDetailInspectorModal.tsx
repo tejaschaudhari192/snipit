@@ -50,6 +50,10 @@ export function getCategoryItemLabel(cat: PasswordItem["category"]): string {
 			return "Card";
 		case "apikey":
 			return "API Key";
+		case "passkey":
+			return "Passkey";
+		case "credfile":
+			return "Credential File";
 		case "note":
 			return "Note";
 		case "identity":
@@ -485,6 +489,87 @@ export function IosDetailInspectorModal({
 												currentItem.metadata.fullName ||
 												currentItem.metadata.phone
 											)
+										}
+									/>
+								)}
+							</DetailGroupedCard>
+						)}
+
+					{/* Passkey Metadata */}
+					{currentItem.category === "passkey" &&
+						currentItem.metadata && (
+							<DetailGroupedCard theme={theme}>
+								{currentItem.metadata.userId && (
+									<DetailGroupedRow
+										label="User ID / Username"
+										value={currentItem.metadata.userId}
+										theme={theme}
+										onCopy={() =>
+											onCopyToClipboard(
+												currentItem.metadata!.userId,
+												"passkey_user",
+											)
+										}
+										isCopied={
+											copiedField === "passkey_user"
+										}
+									/>
+								)}
+								{currentItem.metadata.publicKey && (
+									<DetailGroupedRow
+										label="Public Key"
+										value={currentItem.metadata.publicKey}
+										theme={theme}
+										isDivider={
+											!!currentItem.metadata.userId
+										}
+										onCopy={() =>
+											onCopyToClipboard(
+												currentItem.metadata!.publicKey,
+												"passkey_pub",
+											)
+										}
+										isCopied={copiedField === "passkey_pub"}
+									/>
+								)}
+							</DetailGroupedCard>
+						)}
+
+					{/* Credential File Metadata */}
+					{currentItem.category === "credfile" &&
+						currentItem.metadata && (
+							<DetailGroupedCard theme={theme}>
+								{currentItem.metadata.fileName && (
+									<DetailGroupedRow
+										label="File Name"
+										value={currentItem.metadata.fileName}
+										theme={theme}
+										onCopy={() =>
+											onCopyToClipboard(
+												currentItem.metadata!.fileName,
+												"cred_name",
+											)
+										}
+										isCopied={copiedField === "cred_name"}
+									/>
+								)}
+								{currentItem.metadata.fileContent && (
+									<DetailGroupedRow
+										label="File Content"
+										value={currentItem.metadata.fileContent}
+										theme={theme}
+										isDivider={
+											!!currentItem.metadata.fileName
+										}
+										onCopy={() =>
+											onCopyToClipboard(
+												currentItem.metadata!
+													.fileContent,
+												"cred_content",
+											)
+										}
+										isCopied={
+											copiedField === "cred_content"
 										}
 									/>
 								)}

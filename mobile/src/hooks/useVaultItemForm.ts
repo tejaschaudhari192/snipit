@@ -32,6 +32,14 @@ export function useVaultItemForm() {
 	const [identityPhone, setIdentityPhone] = useState("");
 	const [identityAddress, setIdentityAddress] = useState("");
 
+	// Passkey fields
+	const [passkeyUserId, setPasskeyUserId] = useState("");
+	const [passkeyPublicKey, setPasskeyPublicKey] = useState("");
+
+	// Credential File fields
+	const [credFileName, setCredFileName] = useState("");
+	const [credFileContent, setCredFileContent] = useState("");
+
 	const resetForm = useCallback(() => {
 		setEditingItem(null);
 		setItemFolderId(undefined);
@@ -53,6 +61,10 @@ export function useVaultItemForm() {
 		setIdentityEmail("");
 		setIdentityPhone("");
 		setIdentityAddress("");
+		setPasskeyUserId("");
+		setPasskeyPublicKey("");
+		setCredFileName("");
+		setCredFileContent("");
 	}, []);
 
 	const populateForm = useCallback((item: PasswordItem) => {
@@ -83,6 +95,12 @@ export function useVaultItemForm() {
 			setIdentityEmail(meta.email || item.username || "");
 			setIdentityPhone(meta.phone || "");
 			setIdentityAddress(meta.address || "");
+		} else if (item.category === "passkey") {
+			setPasskeyUserId(meta.userId || item.username || "");
+			setPasskeyPublicKey(meta.publicKey || item.password || "");
+		} else if (item.category === "credfile") {
+			setCredFileName(meta.fileName || item.username || "");
+			setCredFileContent(meta.fileContent || item.password || "");
 		}
 		setIsAddModalOpen(true);
 	}, []);
@@ -136,6 +154,14 @@ export function useVaultItemForm() {
 		setIdentityPhone,
 		identityAddress,
 		setIdentityAddress,
+		passkeyUserId,
+		setPasskeyUserId,
+		passkeyPublicKey,
+		setPasskeyPublicKey,
+		credFileName,
+		setCredFileName,
+		credFileContent,
+		setCredFileContent,
 		resetForm,
 		populateForm,
 	};

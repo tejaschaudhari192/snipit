@@ -12,7 +12,15 @@ interface PWMGHeaderProps {
 	subtitle?: string;
 	activeBottomTab?: "passwords" | "folders" | "notes" | "settings";
 	activeFilter?:
-		"all" | "favorites" | "login" | "card" | "apikey" | "note" | "identity";
+		| "all"
+		| "favorites"
+		| "login"
+		| "card"
+		| "apikey"
+		| "passkey"
+		| "credfile"
+		| "note"
+		| "identity";
 	folders?: { id: string; name: string }[];
 	selectedFolderId?: string | null;
 	totalFilteredCount?: number;
@@ -58,11 +66,15 @@ export function PWMGHeader({
 								? "Cards"
 								: activeFilter === "apikey"
 									? "API Keys"
-									: activeFilter === "note"
-										? "Notes"
-										: activeFilter === "identity"
-											? "Identities"
-											: "Passwords");
+									: activeFilter === "passkey"
+										? "Passkeys"
+										: activeFilter === "credfile"
+											? "Credential Files"
+											: activeFilter === "note"
+												? "Notes"
+												: activeFilter === "identity"
+													? "Identities"
+													: "Passwords");
 
 	// Automatically compute subtitle if not explicitly provided
 	const syncStatusText =

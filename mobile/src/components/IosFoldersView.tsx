@@ -9,6 +9,8 @@ import {
 	Key,
 	CreditCard,
 	FileCode,
+	Fingerprint,
+	Shield,
 	StickyNote,
 	User,
 	Star,
@@ -71,6 +73,18 @@ export function IosFoldersView({
 			label: "API Keys",
 			icon: FileCode,
 			count: items.filter((i) => i.category === "apikey").length,
+		},
+		{
+			id: "passkey",
+			label: "Passkeys",
+			icon: Fingerprint,
+			count: items.filter((i) => i.category === "passkey").length,
+		},
+		{
+			id: "credfile",
+			label: "Credential Files",
+			icon: Shield,
+			count: items.filter((i) => i.category === "credfile").length,
 		},
 		{
 			id: "note",
