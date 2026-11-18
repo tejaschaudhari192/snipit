@@ -218,7 +218,7 @@ export function PasswordTable({
 				cell: ({ row }) => {
 					const item = row.original;
 					return (
-						<div className="text-right opacity-0 group-hover:opacity-100 transition-opacity flex justify-end">
+						<div className="text-right flex justify-end">
 							<ItemActions
 								item={item}
 								onEdit={onEdit}
