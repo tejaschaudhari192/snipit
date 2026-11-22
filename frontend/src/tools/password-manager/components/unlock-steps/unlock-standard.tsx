@@ -18,7 +18,7 @@ interface UnlockStandardProps {
 	onSubmit: (e: React.FormEvent) => void;
 	error: string | null;
 	loading: boolean;
-	hasRecoveryKey: boolean;
+	hasRecoveryKey?: boolean;
 	onShowRecovery: () => void;
 	shake: boolean;
 }
@@ -29,7 +29,6 @@ export default function UnlockStandard({
 	onSubmit,
 	error,
 	loading,
-	hasRecoveryKey,
 	onShowRecovery,
 	shake,
 }: UnlockStandardProps) {
@@ -91,19 +90,19 @@ export default function UnlockStandard({
 					</form>
 
 					<div className="mt-6 text-center space-y-2">
-						<p className="text-xs text-muted-foreground">
-							{t("tools.password_manager.forgot_password")}{" "}
-							{hasRecoveryKey ? (
-								<Button
-									variant="link"
-									onClick={onShowRecovery}
-									className="p-0 h-auto text-primary hover:text-primary/80 font-medium"
-								>
-									{t("tools.password_manager.recovery.title")}
-								</Button>
-							) : (
-								<ReadMoreDialog />
-							)}
+						<p className="text-xs text-muted-foreground flex items-center justify-center gap-1.5 flex-wrap">
+							<span>
+								{t("tools.password_manager.forgot_password")}
+							</span>
+							<Button
+								variant="link"
+								onClick={onShowRecovery}
+								className="p-0 h-auto text-primary hover:text-primary/80 font-medium text-xs"
+							>
+								{t("tools.password_manager.recovery.title")}
+							</Button>
+							<span>•</span>
+							<ReadMoreDialog />
 						</p>
 					</div>
 				</CardContent>
