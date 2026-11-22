@@ -13,6 +13,7 @@ import { toast } from "@/components/ui/toast";
 import api from "@/lib/api";
 import { useAppDispatch } from "@/tools/password-manager/store";
 import { revokeSharedAccess } from "@/tools/password-manager/store/thunks";
+import { MemberRowSkeleton } from "./skeletons";
 
 interface CollectionMembersModalProps {
 	isOpen: boolean;
@@ -38,6 +39,9 @@ export default function CollectionMembersModal({
 	const { t } = useTranslation();
 	const [members, setMembers] = useState<MemberData[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [confirmingRevokeId, setConfirmingRevokeId] = useState<string | null>(
+		null,
+	);
 	const dispatch = useAppDispatch();
 
 	const fetchMembers = useCallback(async () => {
@@ -63,17 +67,11 @@ export default function CollectionMembersModal({
 	useEffect(() => {
 		if (isOpen && collectionId) {
 			fetchMembers();
+			setConfirmingRevokeId(null);
 		}
 	}, [isOpen, collectionId, fetchMembers]);
 
 	const handleRevoke = async (accessId: string, email: string) => {
-		if (
-			!confirm(
-				t("tools.password_manager.share.revoke_confirm", { email }),
-			)
-		)
-			return;
-
 		try {
 			await dispatch(revokeSharedAccess(accessId)).unwrap();
 			toast.add({
@@ -82,6 +80,7 @@ export default function CollectionMembersModal({
 				}),
 				type: "success",
 			});
+			setConfirmingRevokeId(null);
 			fetchMembers();
 		} catch (error: unknown) {
 			const msg = error instanceof Error ? error.message : String(error);
@@ -93,33 +92,38 @@ export default function CollectionMembersModal({
 		}
 	};
 
+	const getInitials = (name?: string, email?: string) => {
+		const target = name || email || "?";
+		return target.slice(0, 2).toUpperCase();
+	};
+
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
 			<DialogContent
 				showCloseButton={false}
-				className="sm:max-w-lg bg-background border-border text-foreground shadow-2xl"
+				className="sm:max-w-lg bg-background/95 backdrop-blur-md border-border text-foreground shadow-2xl rounded-2xl"
 			>
 				<DialogHeader>
-					<DialogTitle className="flex items-center gap-2">
-						<Users className="w-5 h-5 text-primary" />
+					<DialogTitle className="flex items-center gap-2 text-xl font-semibold">
+						<div className="p-2 rounded-xl bg-primary/10 text-primary">
+							<Users className="w-5 h-5" />
+						</div>
 						{t("tools.password_manager.share.manage_access")}
 					</DialogTitle>
-					<DialogDescription className="text-muted-foreground">
+					<DialogDescription className="text-muted-foreground text-sm">
 						{t("tools.password_manager.share.people_with_access", {
 							name: collectionName,
 						})}
 					</DialogDescription>
 				</DialogHeader>
 
-				<div className="space-y-4 py-4 min-h-50">
+				<div className="space-y-4 py-2 min-h-45">
 					{loading ? (
-						<div className="flex justify-center py-8">
-							<div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-						</div>
+						<MemberRowSkeleton />
 					) : members.length === 0 ? (
 						<div className="text-center text-muted-foreground py-8 flex flex-col items-center">
-							<ShieldAlert className="w-8 h-8 mb-2 opacity-50" />
-							<p>
+							<ShieldAlert className="w-8 h-8 mb-2 opacity-40 text-muted-foreground" />
+							<p className="text-sm">
 								{t(
 									"tools.password_manager.share.no_members_found",
 								)}
@@ -127,47 +131,98 @@ export default function CollectionMembersModal({
 						</div>
 					) : (
 						<div className="space-y-2">
-							{members.map((member) => (
-								<div
-									key={member.id}
-									className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/50"
-								>
-									<div>
-										<p className="font-medium text-foreground">
-											{member.username ||
-												t(
-													"tools.password_manager.share.unknown_user",
-												)}
-										</p>
-										<p className="text-xs text-muted-foreground">
-											{member.email ||
-												t(
-													"tools.password_manager.share.unknown_email",
-												)}
-										</p>
-									</div>
-									<div className="flex items-center gap-3">
-										<span className="text-xs capitalize text-muted-foreground bg-background px-2 py-1 rounded border border-border">
-											{member.role}
-										</span>
-										{member.role !== "owner" && (
-											<Button
-												variant="ghost"
-												size="icon"
-												className="h-8 w-8 text-red-400 hover:text-red-300 hover:bg-red-500/10"
-												onClick={() =>
-													handleRevoke(
-														member.id,
-														member.email || "user",
-													)
-												}
-											>
-												<Trash2 className="w-4 h-4" />
-											</Button>
+							{members.map((member) => {
+								const isConfirming =
+									confirmingRevokeId === member.id;
+								return (
+									<div
+										key={member.id}
+										className="p-3 rounded-xl border border-border/60 bg-muted/30 flex flex-col gap-2 transition-colors"
+									>
+										<div className="flex items-center justify-between">
+											<div className="flex items-center gap-3 min-w-0">
+												<div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold text-xs shrink-0">
+													{getInitials(
+														member.username,
+														member.email,
+													)}
+												</div>
+												<div className="min-w-0">
+													<p className="font-medium text-sm text-foreground truncate">
+														{member.username ||
+															t(
+																"tools.password_manager.share.unknown_user",
+															)}
+													</p>
+													<p className="text-xs text-muted-foreground truncate">
+														{member.email ||
+															t(
+																"tools.password_manager.share.unknown_email",
+															)}
+													</p>
+												</div>
+											</div>
+
+											<div className="flex items-center gap-2 shrink-0">
+												<span className="text-xs capitalize px-2 py-0.5 rounded-full border border-border bg-background text-muted-foreground font-medium">
+													{member.role}
+												</span>
+												{member.role !== "owner" &&
+													!isConfirming && (
+														<Button
+															variant="ghost"
+															size="icon"
+															className="h-8 w-8 text-destructive/70 hover:text-destructive hover:bg-destructive/10 rounded-lg"
+															onClick={() =>
+																setConfirmingRevokeId(
+																	member.id,
+																)
+															}
+														>
+															<Trash2 className="w-4 h-4" />
+														</Button>
+													)}
+											</div>
+										</div>
+
+										{isConfirming && (
+											<div className="flex items-center justify-between pt-2 border-t border-border/50 text-xs">
+												<span className="text-destructive font-medium">
+													Remove access for this user?
+												</span>
+												<div className="flex items-center gap-2">
+													<Button
+														size="sm"
+														variant="ghost"
+														className="h-7 px-2.5 text-xs text-muted-foreground"
+														onClick={() =>
+															setConfirmingRevokeId(
+																null,
+															)
+														}
+													>
+														Cancel
+													</Button>
+													<Button
+														size="sm"
+														variant="destructive"
+														className="h-7 px-2.5 text-xs"
+														onClick={() =>
+															handleRevoke(
+																member.id,
+																member.email ||
+																	"user",
+															)
+														}
+													>
+														Revoke
+													</Button>
+												</div>
+											</div>
 										)}
 									</div>
-								</div>
-							))}
+								);
+							})}
 						</div>
 					)}
 				</div>
@@ -177,7 +232,7 @@ export default function CollectionMembersModal({
 						type="button"
 						variant="outline"
 						onClick={onClose}
-						className="border-border bg-transparent text-foreground hover:bg-muted"
+						className="border-border bg-transparent text-foreground hover:bg-muted rounded-lg"
 					>
 						Close
 					</Button>

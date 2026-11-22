@@ -126,6 +126,31 @@ export function SharingCenterSkeleton() {
 	);
 }
 
+export function MemberRowSkeleton() {
+	return (
+		<div className="space-y-2">
+			{Array.from({ length: 3 }).map((_, i) => (
+				<div
+					key={i}
+					className="flex items-center justify-between p-3 rounded-lg border border-border/50 bg-background/50"
+				>
+					<div className="flex items-center gap-3">
+						<Skeleton className="w-8 h-8 rounded-full" />
+						<div className="space-y-1.5">
+							<Skeleton className="h-3.5 w-28 rounded-md" />
+							<Skeleton className="h-2.5 w-40 rounded-md" />
+						</div>
+					</div>
+					<div className="flex items-center gap-2">
+						<Skeleton className="h-6 w-16 rounded-md" />
+						<Skeleton className="h-8 w-8 rounded-md" />
+					</div>
+				</div>
+			))}
+		</div>
+	);
+}
+
 export function DashboardSkeleton() {
 	return (
 		<div className="flex-1 overflow-y-auto no-scrollbar bg-background">
