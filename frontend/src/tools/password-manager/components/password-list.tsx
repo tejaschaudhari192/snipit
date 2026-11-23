@@ -96,8 +96,8 @@ export default function PasswordList({
 
 	const categoryFiltered = useMemo(() => {
 		const items = vault?.items ?? [];
-		if (activeFilter === "shared-with-me") {
-			const sharedWithMeCollectionIds = new Set(
+		if (activeFilter === "shared") {
+			const sharedCollectionIds = new Set(
 				sharedCollections
 					.filter((c) => c.access.role !== "owner")
 					.map((c) => c.collection.id),
@@ -105,7 +105,7 @@ export default function PasswordList({
 			return items.filter(
 				(item) =>
 					item.collectionId &&
-					sharedWithMeCollectionIds.has(item.collectionId),
+					sharedCollectionIds.has(item.collectionId),
 			);
 		}
 		return items.filter((item: PasswordItem) => {
@@ -157,8 +157,8 @@ export default function PasswordList({
 		pageTitle = t("tools.password_manager.favorites");
 	else if (activeFilter === "recent")
 		pageTitle = t("tools.password_manager.recent");
-	else if (activeFilter === "shared-with-me")
-		pageTitle = t("tools.password_manager.shared_with_me");
+	else if (activeFilter === "shared")
+		pageTitle = t("tools.password_manager.shared");
 	else if (activeFilter === "sharing")
 		pageTitle = t("tools.password_manager.sharing_center_title");
 	else {

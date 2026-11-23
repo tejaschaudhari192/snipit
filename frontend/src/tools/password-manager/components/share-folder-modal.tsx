@@ -160,7 +160,9 @@ export default function ShareFolderModal({
 						/>
 						<p className="flex items-center gap-1.5 text-xs text-muted-foreground/80 pt-0.5">
 							<ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-							<span>Zero-knowledge end-to-end encrypted</span>
+							<span>
+								{t("tools.password_manager.share.e2ee_badge")}
+							</span>
 						</p>
 					</div>
 
@@ -188,7 +190,9 @@ export default function ShareFolderModal({
 									</span>
 								</div>
 								<span className="text-xs text-muted-foreground leading-relaxed">
-									Can view credentials
+									{t(
+										"tools.password_manager.share.viewer_desc",
+									)}
 								</span>
 							</button>
 
@@ -211,7 +215,9 @@ export default function ShareFolderModal({
 									</span>
 								</div>
 								<span className="text-xs text-muted-foreground leading-relaxed">
-									Can add and edit items
+									{t(
+										"tools.password_manager.share.editor_desc",
+									)}
 								</span>
 							</button>
 						</div>
@@ -224,7 +230,7 @@ export default function ShareFolderModal({
 							onClick={onClose}
 							className="border-border bg-transparent text-foreground hover:bg-muted rounded-lg"
 						>
-							Cancel
+							{t("common.actions.cancel")}
 						</Button>
 						<Button
 							type="submit"

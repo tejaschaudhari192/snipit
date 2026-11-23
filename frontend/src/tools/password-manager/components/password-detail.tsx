@@ -256,7 +256,11 @@ export default function PasswordDetail({
 									}
 								></TooltipTrigger>
 								<TooltipContent side="bottom">
-									<p>Share</p>
+									<p>
+										{t(
+											"tools.password_manager.share.share",
+										)}
+									</p>
 								</TooltipContent>
 							</Tooltip>
 						</TooltipProvider>
@@ -372,8 +376,13 @@ export default function PasswordDetail({
 											}
 										>
 											{isReadOnly
-												? "Shared • Read-only (Viewer)"
-												: `Shared (${itemRole})`}
+												? t(
+														"tools.password_manager.share.shared_readonly_badge",
+													)
+												: t(
+														"tools.password_manager.share.shared_role_badge",
+														{ role: itemRole },
+													)}
 										</Badge>
 									)}
 								</div>

@@ -209,15 +209,16 @@ export default function SharingCenter() {
 							<p className="text-xs text-muted-foreground">
 								{isOwner ? (
 									<span>
-										Shared folder you own and manage
+										{t(
+											"tools.password_manager.share.shared_folder_own_desc",
+										)}
 									</span>
 								) : (
 									<span>
-										Shared with you with{" "}
-										<strong className="font-medium text-foreground capitalize">
-											{coll.access.role}
-										</strong>{" "}
-										privileges
+										{t(
+											"tools.password_manager.share.shared_folder_with_me_desc",
+											{ role: coll.access.role },
+										)}
 									</span>
 								)}
 							</p>
@@ -234,7 +235,9 @@ export default function SharingCenter() {
 							}
 						>
 							<ExternalLink className="w-3.5 h-3.5" />
-							<span>View Items</span>
+							<span>
+								{t("tools.password_manager.share.view_items")}
+							</span>
 						</Button>
 
 						{isOwner && (
@@ -263,7 +266,9 @@ export default function SharingCenter() {
 					<div className="border-t border-border/60 bg-muted/20 p-4 sm:p-5 space-y-3 animate-in slide-in-from-top-2 duration-200">
 						<div className="flex items-center justify-between">
 							<h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-								People with Access
+								{t(
+									"tools.password_manager.share.people_with_access_title",
+								)}
 							</h5>
 							<Button
 								variant="ghost"
@@ -271,7 +276,7 @@ export default function SharingCenter() {
 								className="h-7 text-xs text-primary hover:text-primary gap-1 px-2"
 								onClick={() => fetchMembers(coll.collection.id)}
 							>
-								Refresh
+								{t("common.actions.refresh")}
 							</Button>
 						</div>
 
@@ -345,9 +350,14 @@ export default function SharingCenter() {
 											{isConfirming && (
 												<div className="flex items-center justify-between pt-2 border-t border-border/50 text-xs animate-in fade-in duration-150">
 													<span className="text-destructive font-medium">
-														Revoke access for{" "}
-														{member.email || "user"}
-														?
+														{t(
+															"tools.password_manager.share.revoke_access_title",
+															{
+																email:
+																	member.email ||
+																	"user",
+															},
+														)}
 													</span>
 													<div className="flex items-center gap-2">
 														<Button
@@ -360,7 +370,9 @@ export default function SharingCenter() {
 																)
 															}
 														>
-															Cancel
+															{t(
+																"common.actions.cancel",
+															)}
 														</Button>
 														<Button
 															size="sm"
@@ -377,7 +389,9 @@ export default function SharingCenter() {
 																)
 															}
 														>
-															Revoke Access
+															{t(
+																"tools.password_manager.share.revoke_access_button",
+															)}
 														</Button>
 													</div>
 												</div>

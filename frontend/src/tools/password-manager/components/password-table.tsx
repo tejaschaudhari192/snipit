@@ -129,11 +129,13 @@ export function PasswordTable({
 									</ItemTitle>
 									{isShared && (
 										<span
-											title="Shared item"
+											title={t(
+												"tools.password_manager.share.shared_item_tooltip",
+											)}
 											className="inline-flex items-center gap-1 text-[11px] font-medium text-primary bg-primary/10 px-1.5 py-0.5 rounded shrink-0"
 										>
 											<Users className="w-3 h-3" />
-											Shared
+											{t("tools.password_manager.shared")}
 										</span>
 									)}
 								</div>

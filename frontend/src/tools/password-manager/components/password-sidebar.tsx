@@ -192,15 +192,14 @@ export default function PasswordSidebar() {
 		const total = items.length;
 		const favorites = items.filter((i) => i.isFavorite).length;
 
-		// Shared with me: collections where user is not owner
-		const sharedWithMeCollectionIds = new Set(
+		// Shared: collections where user is not owner
+		const sharedCollectionIds = new Set(
 			sharedCollections
 				.filter((c) => c.access.role !== "owner")
 				.map((c) => c.collection.id),
 		);
-		const sharedWithMe = items.filter(
-			(i) =>
-				i.collectionId && sharedWithMeCollectionIds.has(i.collectionId),
+		const shared = items.filter(
+			(i) => i.collectionId && sharedCollectionIds.has(i.collectionId),
 		).length;
 
 		const categoryCounts: Record<string, number> = {};
@@ -220,7 +219,7 @@ export default function PasswordSidebar() {
 		return {
 			total,
 			favorites,
-			sharedWithMe,
+			shared,
 			categories: categoryCounts,
 			folders: folderCounts,
 		};
@@ -281,8 +280,8 @@ export default function PasswordSidebar() {
 										? counts.total
 										: item.id === "favorites"
 											? counts.favorites
-											: item.id === "shared-with-me"
-												? counts.sharedWithMe
+											: item.id === "shared"
+												? counts.shared
 												: undefined;
 
 								return (

@@ -188,7 +188,9 @@ export default function CollectionMembersModal({
 										{isConfirming && (
 											<div className="flex items-center justify-between pt-2 border-t border-border/50 text-xs">
 												<span className="text-destructive font-medium">
-													Remove access for this user?
+													{t(
+														"tools.password_manager.share.remove_member_confirm",
+													)}
 												</span>
 												<div className="flex items-center gap-2">
 													<Button
@@ -201,7 +203,9 @@ export default function CollectionMembersModal({
 															)
 														}
 													>
-														Cancel
+														{t(
+															"common.actions.cancel",
+														)}
 													</Button>
 													<Button
 														size="sm"
@@ -215,7 +219,9 @@ export default function CollectionMembersModal({
 															)
 														}
 													>
-														Revoke
+														{t(
+															"tools.password_manager.share.revoke",
+														)}
 													</Button>
 												</div>
 											</div>
@@ -234,7 +240,7 @@ export default function CollectionMembersModal({
 						onClick={onClose}
 						className="border-border bg-transparent text-foreground hover:bg-muted rounded-lg"
 					>
-						Close
+						{t("tools.password_manager.share.close")}
 					</Button>
 				</div>
 			</DialogContent>
