@@ -32,6 +32,11 @@ export const SIDEBAR_NAV_ITEMS = [
 		id: "dashboard",
 	},
 	{ icon: Key, label: "tools.password_manager.all_items", id: "all" },
+	{
+		icon: Users,
+		label: "tools.password_manager.shared_with_me",
+		id: "shared-with-me",
+	},
 	{ icon: Star, label: "tools.password_manager.favorites", id: "favorites" },
 	{ icon: Clock, label: "tools.password_manager.recent", id: "recent" },
 	{

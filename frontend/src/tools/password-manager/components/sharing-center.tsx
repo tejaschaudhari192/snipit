@@ -11,12 +11,14 @@ import {
 	Trash2,
 	Folder,
 	ShieldAlert,
+	ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
 import {
 	selectSharedCollections,
 	selectVaultLoading,
+	setActiveFilter,
 } from "@/tools/password-manager/store/password-slice";
 import { revokeSharedAccess } from "@/tools/password-manager/store/thunks";
 import { Badge } from "@/components/ui/badge";
@@ -222,8 +224,20 @@ export default function SharingCenter() {
 						</div>
 					</div>
 
-					{isOwner && (
-						<div className="flex items-center justify-end">
+					<div className="flex items-center gap-2 justify-end">
+						<Button
+							variant="outline"
+							size="sm"
+							className="gap-1.5 text-xs h-9 rounded-xl font-medium border-border/70 hover:bg-primary/10 hover:text-primary transition-colors"
+							onClick={() =>
+								dispatch(setActiveFilter(coll.collection.id))
+							}
+						>
+							<ExternalLink className="w-3.5 h-3.5" />
+							<span>View Items</span>
+						</Button>
+
+						{isOwner && (
 							<Button
 								variant={isExpanded ? "secondary" : "outline"}
 								size="sm"
@@ -240,8 +254,8 @@ export default function SharingCenter() {
 									<ChevronDown className="w-3.5 h-3.5 text-muted-foreground ml-0.5" />
 								)}
 							</Button>
-						</div>
-					)}
+						)}
+					</div>
 				</div>
 
 				{/* Expanded Member Management Panel for Owner Cards */}

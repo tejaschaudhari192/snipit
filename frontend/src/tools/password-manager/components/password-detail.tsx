@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
 import {
 	selectMergedFolders,
+	selectCollectionRolesMap,
 	handleEdit,
 } from "@/tools/password-manager/store/password-slice";
 import {
@@ -67,6 +68,11 @@ export default function PasswordDetail({
 	const { t } = useTranslation();
 	const dispatch = useAppDispatch();
 	const folders = useAppSelector(selectMergedFolders) || [];
+	const collectionRoles = useAppSelector(selectCollectionRolesMap);
+	const itemRole = item?.collectionId
+		? collectionRoles[item.collectionId]
+		: null;
+	const isReadOnly = itemRole === "viewer";
 	const { isDeleteDialogOpen, confirmDelete, handleConfirm, cancelDelete } =
 		useDeleteItem();
 
@@ -254,59 +260,73 @@ export default function PasswordDetail({
 								</TooltipContent>
 							</Tooltip>
 						</TooltipProvider>
-						<TooltipProvider>
-							<Tooltip>
-								<TooltipTrigger
-									render={
-										<Button
-											variant="ghost"
-											size="icon"
-											onClick={() =>
-												dispatch(handleEdit(item))
+						{!isReadOnly && (
+							<>
+								<TooltipProvider>
+									<Tooltip>
+										<TooltipTrigger
+											render={
+												<Button
+													variant="ghost"
+													size="icon"
+													onClick={() =>
+														dispatch(
+															handleEdit(item),
+														)
+													}
+													className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+												>
+													<Edit2 className="h-4 w-4" />
+												</Button>
 											}
-											className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
 										>
-											<Edit2 className="h-4 w-4" />
-										</Button>
-									}
-								>
-									<Button
-										variant="ghost"
-										size="icon"
-										onClick={() =>
-											dispatch(handleEdit(item))
-										}
-										className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-									>
-										<Edit2 className="h-4 w-4" />
-									</Button>
-								</TooltipTrigger>
-								<TooltipContent side="bottom">
-									<p>{t("tools.password_manager.edit")}</p>
-								</TooltipContent>
-							</Tooltip>
-						</TooltipProvider>
-						<TooltipProvider>
-							<Tooltip>
-								<TooltipTrigger
-									render={
-										<Button
-											variant="ghost"
-											size="icon"
-											onClick={() =>
-												confirmDelete(item.id)
+											<Button
+												variant="ghost"
+												size="icon"
+												onClick={() =>
+													dispatch(handleEdit(item))
+												}
+												className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+											>
+												<Edit2 className="h-4 w-4" />
+											</Button>
+										</TooltipTrigger>
+										<TooltipContent side="bottom">
+											<p>
+												{t(
+													"tools.password_manager.edit",
+												)}
+											</p>
+										</TooltipContent>
+									</Tooltip>
+								</TooltipProvider>
+								<TooltipProvider>
+									<Tooltip>
+										<TooltipTrigger
+											render={
+												<Button
+													variant="ghost"
+													size="icon"
+													onClick={() =>
+														confirmDelete(item.id)
+													}
+													className="h-8 w-8 rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10 transition-colors ml-1"
+												>
+													<Trash2 className="h-4 w-4" />
+												</Button>
 											}
-											className="h-8 w-8 rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10 transition-colors ml-1"
-										>
-											<Trash2 className="h-4 w-4" />
-										</Button>
-									}
-								></TooltipTrigger>
-								<TooltipContent side="bottom">
-									<p>{t("tools.password_manager.delete")}</p>
-								</TooltipContent>
-							</Tooltip>
-						</TooltipProvider>
+										></TooltipTrigger>
+										<TooltipContent side="bottom">
+											<p>
+												{t(
+													"tools.password_manager.delete",
+												)}
+											</p>
+										</TooltipContent>
+									</Tooltip>
+								</TooltipProvider>
+							</>
+						)}
 					</div>
 				</div>
 
@@ -328,18 +348,35 @@ export default function PasswordDetail({
 										{item.title}
 									</span>
 								</h2>
-								{item.itemType && (
-									<Badge
-										variant="outline"
-										className="bg-background/80 backdrop-blur-md border-border text-muted-foreground text-[11px] px-2.5 py-1 rounded-md leading-none font-semibold shadow-xs transition-colors hover:bg-muted"
-									>
-										{t(
-											ITEM_TYPE_OPTIONS.find(
-												(o) => o.id === item.itemType,
-											)?.label || item.itemType,
-										)}
-									</Badge>
-								)}
+								<div className="flex items-center gap-2 flex-wrap">
+									{item.itemType && (
+										<Badge
+											variant="outline"
+											className="bg-background/80 backdrop-blur-md border-border text-muted-foreground text-[11px] px-2.5 py-1 rounded-md leading-none font-semibold shadow-xs transition-colors hover:bg-muted"
+										>
+											{t(
+												ITEM_TYPE_OPTIONS.find(
+													(o) =>
+														o.id === item.itemType,
+												)?.label || item.itemType,
+											)}
+										</Badge>
+									)}
+									{itemRole && (
+										<Badge
+											variant="outline"
+											className={
+												isReadOnly
+													? "bg-amber-500/10 text-amber-500 border-amber-500/30 text-[11px] px-2.5 py-1 rounded-md font-semibold"
+													: "bg-blue-500/10 text-blue-500 border-blue-500/30 text-[11px] px-2.5 py-1 rounded-md font-semibold"
+											}
+										>
+											{isReadOnly
+												? "Shared • Read-only (Viewer)"
+												: `Shared (${itemRole})`}
+										</Badge>
+									)}
+								</div>
 							</div>
 						</div>
 					</div>

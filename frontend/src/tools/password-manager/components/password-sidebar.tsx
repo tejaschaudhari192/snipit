@@ -18,6 +18,7 @@ import {
 	setCloudSyncEnabled,
 	selectMergedFolders,
 	selectVault,
+	selectSharedCollections,
 } from "../store/password-slice";
 import { useFolderMutations } from "@/tools/password-manager/hooks/use-folder-mutations";
 import {
@@ -145,6 +146,7 @@ export default function PasswordSidebar() {
 	const [foldersOpen, setFoldersOpen] = useState(true);
 
 	const rawFolders = useAppSelector(selectMergedFolders);
+	const sharedCollections = useAppSelector(selectSharedCollections);
 	const vault = useAppSelector(selectVault);
 	const folders = useMemo(() => rawFolders || [], [rawFolders]);
 	const items = useMemo(() => vault?.items || [], [vault?.items]);
@@ -190,6 +192,17 @@ export default function PasswordSidebar() {
 		const total = items.length;
 		const favorites = items.filter((i) => i.isFavorite).length;
 
+		// Shared with me: collections where user is not owner
+		const sharedWithMeCollectionIds = new Set(
+			sharedCollections
+				.filter((c) => c.access.role !== "owner")
+				.map((c) => c.collection.id),
+		);
+		const sharedWithMe = items.filter(
+			(i) =>
+				i.collectionId && sharedWithMeCollectionIds.has(i.collectionId),
+		).length;
+
 		const categoryCounts: Record<string, number> = {};
 		ITEM_TYPE_OPTIONS.forEach((cat) => {
 			categoryCounts[cat.id] = items.filter(
@@ -207,10 +220,11 @@ export default function PasswordSidebar() {
 		return {
 			total,
 			favorites,
+			sharedWithMe,
 			categories: categoryCounts,
 			folders: folderCounts,
 		};
-	}, [items, folders]);
+	}, [items, folders, sharedCollections]);
 
 	const { createFolder, editFolder, deleteFolder, reorderFolders } =
 		useFolderMutations();
@@ -267,7 +281,9 @@ export default function PasswordSidebar() {
 										? counts.total
 										: item.id === "favorites"
 											? counts.favorites
-											: undefined;
+											: item.id === "shared-with-me"
+												? counts.sharedWithMe
+												: undefined;
 
 								return (
 									<SidebarMenuItem key={item.id}>

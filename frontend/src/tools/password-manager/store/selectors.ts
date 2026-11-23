@@ -88,6 +88,33 @@ export const selectMergedFolders = createSelector(
 	},
 );
 
+// Check role for a collection
+export const selectCollectionRole = createSelector(
+	[
+		selectSharedCollections,
+		(_state: unknown, collectionId?: string | null) => collectionId,
+	],
+	(sharedCollections, collectionId): "owner" | "editor" | "viewer" | null => {
+		if (!collectionId) return null;
+		const coll = sharedCollections.find(
+			(c) => c.collection.id === collectionId,
+		);
+		return coll ? coll.access.role : null;
+	},
+);
+
+// Map of collectionId -> role for fast lookup
+export const selectCollectionRolesMap = createSelector(
+	[selectSharedCollections],
+	(sharedCollections): Record<string, "owner" | "editor" | "viewer"> => {
+		const map: Record<string, "owner" | "editor" | "viewer"> = {};
+		sharedCollections.forEach((c) => {
+			map[c.collection.id] = c.access.role;
+		});
+		return map;
+	},
+);
+
 // Vault selector with proper memoization
 export const selectVault = createSelector(
 	[selectPersonalItems, selectSharedCollections, selectFolders],

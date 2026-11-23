@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { Folder, ArrowDown, ArrowUp } from "lucide-react";
+import { Folder, ArrowDown, ArrowUp, Users } from "lucide-react";
 import { cn } from "cn";
 import { ItemContent, ItemTitle, ItemDescription } from "@/components/ui/item";
 import {
@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/table";
 import { ItemAvatar } from "./item-avatar";
 import { ItemActions } from "./item-actions";
+import { useAppSelector } from "@/tools/password-manager/store";
+import { selectCollectionRolesMap } from "@/tools/password-manager/store/password-slice";
 import type {
 	PasswordItem,
 	Folder as FolderType,
@@ -66,6 +68,7 @@ export function PasswordTable({
 	visibleCount,
 }: PasswordTableProps) {
 	const { t } = useTranslation();
+	const collectionRoles = useAppSelector(selectCollectionRolesMap);
 
 	const columns = useMemo(() => {
 		const columnHelper = createColumnHelper<PasswordItem>();
@@ -115,13 +118,25 @@ export function PasswordTable({
 							? item.metadata[subtitleField.key]
 							: null;
 
+					const isShared = !!item.collectionId;
 					return (
 						<div className="flex items-center gap-3.5">
 							<ItemAvatar item={item} />
-							<ItemContent className="gap-0.5">
-								<ItemTitle className="font-semibold text-foreground tracking-tight">
-									{item.title}
-								</ItemTitle>
+							<ItemContent className="gap-0.5 min-w-0">
+								<div className="flex items-center gap-2">
+									<ItemTitle className="font-semibold text-foreground tracking-tight truncate">
+										{item.title}
+									</ItemTitle>
+									{isShared && (
+										<span
+											title="Shared item"
+											className="inline-flex items-center gap-1 text-[11px] font-medium text-primary bg-primary/10 px-1.5 py-0.5 rounded shrink-0"
+										>
+											<Users className="w-3 h-3" />
+											Shared
+										</span>
+									)}
+								</div>
 								<ItemDescription className="text-[13px] truncate max-w-50">
 									{item.username ||
 										subtitle ||
@@ -217,19 +232,24 @@ export function PasswordTable({
 				id: "actions",
 				cell: ({ row }) => {
 					const item = row.original;
+					const role = item.collectionId
+						? collectionRoles[item.collectionId]
+						: null;
+					const isReadOnly = role === "viewer";
 					return (
 						<div className="text-right flex justify-end">
 							<ItemActions
 								item={item}
 								onEdit={onEdit}
 								onDelete={onDelete}
+								isReadOnly={isReadOnly}
 							/>
 						</div>
 					);
 				},
 			}),
 		];
-	}, [t, folders, onEdit, onDelete]);
+	}, [t, folders, onEdit, onDelete, collectionRoles]);
 
 	const table = useReactTable({
 		data,

@@ -7,6 +7,7 @@ import {
 	selectVault,
 	selectActiveFilter,
 	selectVaultLoading,
+	selectSharedCollections,
 	handleEdit,
 } from "@/tools/password-manager/store/password-slice";
 import { ListSkeleton } from "./skeletons";
@@ -71,6 +72,7 @@ export default function PasswordList({
 		(state) => state.passwordManager?.folders || [],
 	);
 	const activeFilter = useAppSelector(selectActiveFilter);
+	const sharedCollections = useAppSelector(selectSharedCollections);
 	const isLoading = useAppSelector(selectVaultLoading);
 
 	const {
@@ -94,6 +96,18 @@ export default function PasswordList({
 
 	const categoryFiltered = useMemo(() => {
 		const items = vault?.items ?? [];
+		if (activeFilter === "shared-with-me") {
+			const sharedWithMeCollectionIds = new Set(
+				sharedCollections
+					.filter((c) => c.access.role !== "owner")
+					.map((c) => c.collection.id),
+			);
+			return items.filter(
+				(item) =>
+					item.collectionId &&
+					sharedWithMeCollectionIds.has(item.collectionId),
+			);
+		}
 		return items.filter((item: PasswordItem) => {
 			if (activeFilter === "all") return true;
 			if (activeFilter === "favorites") return !!item.isFavorite;
@@ -108,7 +122,7 @@ export default function PasswordList({
 				(!item.itemType && activeFilter === "login")
 			);
 		});
-	}, [vault?.items, activeFilter]);
+	}, [vault?.items, activeFilter, sharedCollections]);
 
 	const searchFiltered = useMemo(() => {
 		return searchVaultItems(categoryFiltered, searchQuery, folders);
@@ -143,6 +157,8 @@ export default function PasswordList({
 		pageTitle = t("tools.password_manager.favorites");
 	else if (activeFilter === "recent")
 		pageTitle = t("tools.password_manager.recent");
+	else if (activeFilter === "shared-with-me")
+		pageTitle = t("tools.password_manager.shared_with_me");
 	else if (activeFilter === "sharing")
 		pageTitle = t("tools.password_manager.sharing_center_title");
 	else {

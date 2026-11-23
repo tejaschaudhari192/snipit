@@ -13,9 +13,15 @@ interface ItemActionsProps {
 	item: PasswordItem;
 	onEdit: (item: PasswordItem) => void;
 	onDelete: (id: string) => void;
+	isReadOnly?: boolean;
 }
 
-export function ItemActions({ item, onEdit, onDelete }: ItemActionsProps) {
+export function ItemActions({
+	item,
+	onEdit,
+	onDelete,
+	isReadOnly = false,
+}: ItemActionsProps) {
 	const { t } = useTranslation();
 
 	return (
@@ -33,15 +39,17 @@ export function ItemActions({ item, onEdit, onDelete }: ItemActionsProps) {
 				<MoreVertical className="h-4 w-4" />
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end" className="w-40">
-				<DropdownMenuItem
-					onClick={(e) => {
-						e.stopPropagation();
-						onEdit(item);
-					}}
-				>
-					<Pencil className="mr-2 h-4 w-4" />
-					<span>{t("tools.password_manager.edit")}</span>
-				</DropdownMenuItem>
+				{!isReadOnly && (
+					<DropdownMenuItem
+						onClick={(e) => {
+							e.stopPropagation();
+							onEdit(item);
+						}}
+					>
+						<Pencil className="mr-2 h-4 w-4" />
+						<span>{t("tools.password_manager.edit")}</span>
+					</DropdownMenuItem>
+				)}
 				<DropdownMenuItem
 					onClick={(e) => {
 						e.stopPropagation();
@@ -54,16 +62,18 @@ export function ItemActions({ item, onEdit, onDelete }: ItemActionsProps) {
 					<Copy className="mr-2 h-4 w-4" />
 					<span>{t("tools.password_manager.copy_password")}</span>
 				</DropdownMenuItem>
-				<DropdownMenuItem
-					className="text-destructive focus:text-destructive"
-					onClick={(e) => {
-						e.stopPropagation();
-						onDelete(item.id);
-					}}
-				>
-					<Trash2 className="mr-2 h-4 w-4" />
-					<span>{t("tools.password_manager.delete")}</span>
-				</DropdownMenuItem>
+				{!isReadOnly && (
+					<DropdownMenuItem
+						className="text-destructive focus:text-destructive"
+						onClick={(e) => {
+							e.stopPropagation();
+							onDelete(item.id);
+						}}
+					>
+						<Trash2 className="mr-2 h-4 w-4" />
+						<span>{t("tools.password_manager.delete")}</span>
+					</DropdownMenuItem>
+				)}
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
