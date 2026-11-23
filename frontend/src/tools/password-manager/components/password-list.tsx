@@ -8,6 +8,7 @@ import {
 	selectActiveFilter,
 	selectVaultLoading,
 	selectSharedCollections,
+	selectMergedFolders,
 	handleEdit,
 } from "@/tools/password-manager/store/password-slice";
 import { ListSkeleton } from "./skeletons";
@@ -68,9 +69,7 @@ export default function PasswordList({
 	const { t } = useTranslation();
 	const dispatch = useAppDispatch();
 	const vault = useAppSelector(selectVault);
-	const folders = useAppSelector(
-		(state) => state.passwordManager?.folders || [],
-	);
+	const folders = useAppSelector(selectMergedFolders);
 	const activeFilter = useAppSelector(selectActiveFilter);
 	const sharedCollections = useAppSelector(selectSharedCollections);
 	const isLoading = useAppSelector(selectVaultLoading);
@@ -114,7 +113,9 @@ export default function PasswordList({
 			if (activeFilter === "recent") return true;
 			if (
 				item.folderId === activeFilter ||
-				item.collectionId === activeFilter
+				item.collectionId === activeFilter ||
+				(activeFolder?.collectionId &&
+					item.collectionId === activeFolder.collectionId)
 			)
 				return true;
 			return (

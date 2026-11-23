@@ -83,6 +83,17 @@ export const revokeVaultAccess = async <T = unknown>(
 	return response.data;
 };
 
+export const updateVaultAccessRole = async <T = unknown>(
+	accessId: string,
+	role: "viewer" | "editor",
+): Promise<T> => {
+	const response = await api.put(
+		`/tools/password-manager/vault/share/${accessId}`,
+		{ role },
+	);
+	return response.data;
+};
+
 export const lookupShareUser = async <T = unknown>(
 	data: unknown,
 ): Promise<T> => {

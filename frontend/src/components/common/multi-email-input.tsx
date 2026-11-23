@@ -12,6 +12,7 @@ interface MultiEmailInputProps {
 	isReadOnly?: boolean;
 	inputValue?: string;
 	onInputChange?: (value: string) => void;
+	onSubmit?: () => void;
 }
 
 export function MultiEmailInput({
@@ -22,6 +23,7 @@ export function MultiEmailInput({
 	isReadOnly = false,
 	inputValue,
 	onInputChange,
+	onSubmit,
 }: MultiEmailInputProps) {
 	const [internalInputValue, setInternalInputValue] = React.useState("");
 	const currentInputValue =
@@ -31,8 +33,16 @@ export function MultiEmailInput({
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (isReadOnly) return;
-		if (
-			(e.key === "Enter" || e.key === "," || e.key === " ") &&
+		if (e.key === "Enter") {
+			e.preventDefault();
+			if (currentInputValue.trim()) {
+				addEmail(currentInputValue);
+			}
+			if (onSubmit) {
+				onSubmit();
+			}
+		} else if (
+			(e.key === "," || e.key === " ") &&
 			currentInputValue.trim()
 		) {
 			e.preventDefault();

@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/select";
 import { MultiEmailInput } from "@/components/common/multi-email-input";
 import { Button } from "@/components/ui/button";
+import { IndeterminateProgressBar } from "@/components/ui/indeterminate-progress-bar";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ROLE_OPTIONS } from "@/constants";
@@ -68,7 +69,10 @@ export const CollaboratorsManager = ({
 				!collaborators.some((existing) => existing.email === email),
 		);
 
-		if (uniqueEmails.length === 0) return;
+		if (uniqueEmails.length === 0) {
+			setPendingEmails([]);
+			return;
+		}
 
 		if (pasteId) {
 			setIsUpdating(true);
@@ -187,6 +191,7 @@ export const CollaboratorsManager = ({
 						onChange={setPendingEmails}
 						inputValue={inputValue}
 						onInputChange={setInputValue}
+						onSubmit={handleAddPeople}
 						placeholder={t("common.access.add_people_placeholder")}
 						className="min-h-9 border-none bg-transparent shadow-none focus-within:ring-0 focus-within:ring-offset-0 text-[13px] px-2 py-0"
 						isReadOnly={disabled || isUpdating}
@@ -239,10 +244,10 @@ export const CollaboratorsManager = ({
 									inputValue.trim(),
 								))
 						}
-						className="h-9 px-4 font-bold shadow-md hover:shadow-lg transition-all"
+						className="relative overflow-hidden h-9 min-w-16 px-4 font-bold shadow-md hover:shadow-lg transition-all"
 					>
 						{isUpdating ? (
-							<span className="animate-pulse">...</span>
+							<IndeterminateProgressBar aria-label="Adding collaborator" />
 						) : (
 							t("common.actions.add")
 						)}

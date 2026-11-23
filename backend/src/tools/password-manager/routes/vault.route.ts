@@ -22,6 +22,7 @@ import {
 	shareFolder,
 	getCollectionAccess,
 	revokeAccess,
+	updateAccessRole,
 } from "../controllers/sharing.controller.js";
 import { protect } from "@/middleware/auth.middleware.js";
 
@@ -47,6 +48,6 @@ router.post("/share", shareCollection);
 router.post("/share/item", shareItem);
 router.post("/share/folder", shareFolder);
 router.get("/share/:collectionId", getCollectionAccess);
-router.delete("/share/:accessId", revokeAccess);
+router.route("/share/:accessId").delete(revokeAccess).put(updateAccessRole);
 
 export default router;

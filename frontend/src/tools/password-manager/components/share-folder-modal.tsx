@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { IndeterminateProgressBar } from "@/components/ui/indeterminate-progress-bar";
 import {
 	Dialog,
 	DialogContent,
@@ -9,14 +10,29 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Users, Eye, Edit3, ShieldCheck } from "lucide-react";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import { Users, User, Trash2, Eye, Edit3, ShieldCheck } from "lucide-react";
 import { selectVault } from "@/tools/password-manager/store/password-slice";
 import { toast } from "@/components/ui/toast";
 import { useAppDispatch, useAppSelector } from "@/tools/password-manager/store";
-import { Label } from "@/components/ui/label";
-import { shareFolder } from "../store/thunks";
+import { shareFolder, revokeSharedAccess } from "../store/thunks";
+import { updateVaultAccessRole } from "../api/password-manager";
 import { FolderCombobox } from "./folder-combobox";
-import { cn } from "cn";
+import api from "@/lib/api";
+
+interface MemberData {
+	id: string;
+	userId: string;
+	role: string;
+	username: string;
+	email: string;
+}
 
 interface ShareFolderModalProps {
 	isOpen: boolean;
@@ -35,6 +51,10 @@ export default function ShareFolderModal({
 	const [email, setEmail] = useState("");
 	const [role, setRole] = useState<"viewer" | "editor">("viewer");
 	const [selectedFolderId, setSelectedFolderId] = useState<string>("");
+	const [isSharing, setIsSharing] = useState(false);
+	const [members, setMembers] = useState<MemberData[]>([]);
+	const [collectionId, setCollectionId] = useState<string | undefined>();
+	const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
 	const dispatch = useAppDispatch();
 	const vault = useAppSelector(selectVault);
@@ -44,18 +64,37 @@ export default function ShareFolderModal({
 		(f) => !f.collectionId,
 	);
 
+	const fetchMembers = useCallback(async (cId: string) => {
+		try {
+			const res = await api.get<{ data: MemberData[] }>(
+				`/tools/password-manager/vault/share/${cId}`,
+			);
+			setMembers(res.data?.data || []);
+		} catch {
+			// silently ignore — user may not be owner
+		}
+	}, []);
+
 	useEffect(() => {
 		if (isOpen) {
 			setSelectedFolderId(folderId || "");
 			setEmail("");
 			setRole("viewer");
+			setMembers([]);
+			setActionLoadingId(null);
+			const folder = vault?.folders?.find((f) => f.id === folderId);
+			const existingCollectionId = folder?.collectionId;
+			setCollectionId(existingCollectionId);
+			if (existingCollectionId) {
+				void fetchMembers(existingCollectionId);
+			}
 		}
-	}, [isOpen, folderId]);
+	}, [isOpen, folderId, vault?.folders, fetchMembers]);
 
-	const handleShare = (e: React.FormEvent) => {
+	const handleShare = async (e: React.FormEvent) => {
 		e.preventDefault();
 		const finalFolderId = folderId || selectedFolderId;
-		if (!email || !finalFolderId) return;
+		if (!email || !finalFolderId || isSharing) return;
 
 		const targetEmail = email.trim();
 		const finalFolderName =
@@ -63,72 +102,139 @@ export default function ShareFolderModal({
 			vault?.folders?.find((f) => f.id === finalFolderId)?.name ||
 			"Folder";
 
-		onClose();
-		setEmail("");
+		setIsSharing(true);
 
-		dispatch(
-			shareFolder({
-				targetEmail,
-				role,
-				folderId: finalFolderId,
-				folderName: finalFolderName,
-			}),
-		)
-			.unwrap()
-			.then(() => {
-				toast.add({
-					title: t(
-						"tools.password_manager.share.folder_securely_shared_with",
-						{ email: targetEmail },
-					),
-					type: "success",
-				});
-			})
-			.catch((error: unknown) => {
-				const msg =
-					error instanceof Error ? error.message : String(error);
-				toast.add({
-					title:
-						msg ||
-						t(
-							"tools.password_manager.share.failed_to_share_folder",
-						),
-					type: "error",
-				});
+		try {
+			const result = await dispatch(
+				shareFolder({
+					targetEmail,
+					role,
+					folderId: finalFolderId,
+					folderName: finalFolderName,
+				}),
+			).unwrap();
+
+			toast.add({
+				title: t(
+					"tools.password_manager.share.folder_securely_shared_with",
+					{ email: targetEmail },
+				),
+				type: "success",
 			});
+
+			setEmail("");
+			const newCollectionId = result.collectionId ?? collectionId;
+			if (newCollectionId) {
+				setCollectionId(newCollectionId);
+				await fetchMembers(newCollectionId);
+			}
+		} catch (error: unknown) {
+			const msg = error instanceof Error ? error.message : String(error);
+			toast.add({
+				title:
+					msg ||
+					t("tools.password_manager.share.failed_to_share_folder"),
+				type: "error",
+			});
+		} finally {
+			setIsSharing(false);
+		}
 	};
 
+	const handleRoleChange = async (
+		accessId: string,
+		newRole: "viewer" | "editor",
+	) => {
+		setActionLoadingId(accessId);
+		try {
+			await updateVaultAccessRole(accessId, newRole);
+			setMembers((prev) =>
+				prev.map((m) =>
+					m.id === accessId ? { ...m, role: newRole } : m,
+				),
+			);
+		} catch (error: unknown) {
+			const msg = error instanceof Error ? error.message : String(error);
+			toast.add({
+				title: msg || t("tools.password_manager.share.failed_to_share"),
+				type: "error",
+			});
+		} finally {
+			setActionLoadingId(null);
+		}
+	};
+
+	const handleRevoke = async (accessId: string, memberEmail: string) => {
+		setActionLoadingId(accessId);
+		try {
+			await dispatch(revokeSharedAccess(accessId)).unwrap();
+			toast.add({
+				title: t("tools.password_manager.share.access_revoked", {
+					email: memberEmail,
+				}),
+				type: "success",
+			});
+			setMembers((prev) => prev.filter((m) => m.id !== accessId));
+		} catch (error: unknown) {
+			const msg = error instanceof Error ? error.message : String(error);
+			toast.add({
+				title:
+					msg || t("tools.password_manager.share.failed_to_revoke"),
+				type: "error",
+			});
+		} finally {
+			setActionLoadingId(null);
+		}
+	};
+
+	const filteredMembers = members.filter((m) => m.role !== "owner");
+
 	return (
-		<Dialog open={isOpen} onOpenChange={onClose}>
+		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
 			<DialogContent
-				showCloseButton={false}
-				className="sm:max-w-md bg-background/95 backdrop-blur-md border-border text-foreground shadow-2xl rounded-2xl"
+				showCloseButton={true}
+				className="sm:max-w-lg bg-background border-border text-foreground shadow-2xl overflow-hidden p-6 gap-0"
 			>
-				<DialogHeader>
-					<DialogTitle className="flex items-center gap-2.5 text-xl font-semibold">
+				{/* Indeterminate progress bar at top */}
+				{isSharing && (
+					<IndeterminateProgressBar
+						className="absolute top-0 left-0 right-0 w-full h-1.5 rounded-none z-10"
+						trackClassName="bg-muted rounded-none"
+						indicatorClassName="bg-primary"
+						duration={1.4}
+						aria-label={t("tools.password_manager.share.sharing")}
+					/>
+				)}
+
+				<DialogHeader className="space-y-1.5 pr-6 pb-4">
+					<DialogTitle className="flex items-center gap-2.5 text-lg font-semibold">
 						<div className="p-2 rounded-xl bg-primary/10 text-primary">
-							<Users className="w-5 h-5" />
+							<Users className="w-5 h-5 shrink-0" />
 						</div>
-						{folderName
-							? t(
-									"tools.password_manager.share.share_folder_title",
-									{ name: folderName },
-								)
-							: t("tools.password_manager.share.share_a_folder")}
+						<span className="truncate">
+							{folderName
+								? t(
+										"tools.password_manager.share.share_folder_title",
+										{ name: folderName },
+									)
+								: t(
+										"tools.password_manager.share.share_a_folder",
+									)}
+						</span>
 					</DialogTitle>
-					<DialogDescription className="text-muted-foreground text-sm">
-						{t("tools.password_manager.share.share_folder_desc")}
+					<DialogDescription className="text-muted-foreground text-xs leading-normal flex items-center gap-1.5">
+						<ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+						<span>
+							{t(
+								"tools.password_manager.share.share_folder_desc",
+							)}
+						</span>
 					</DialogDescription>
 				</DialogHeader>
 
-				<form onSubmit={handleShare} className="space-y-5 py-2">
+				<form onSubmit={handleShare} className="pt-2 pb-5 space-y-3">
 					{!folderId && (
-						<div className="space-y-2">
-							<Label className="text-sm font-medium">
-								{t(
-									"tools.password_manager.share.select_folder",
-								)}
-							</Label>
+						<div>
 							<FolderCombobox
 								folders={shareableFolders}
 								value={selectedFolderId || null}
@@ -139,15 +245,12 @@ export default function ShareFolderModal({
 								placeholder={t(
 									"tools.password_manager.share.choose_folder_to_share",
 								)}
-								triggerClassName="w-full bg-background border-border text-foreground"
+								triggerClassName="w-full h-10 bg-background border-border text-foreground text-sm rounded-lg"
 							/>
 						</div>
 					)}
 
-					<div className="space-y-2">
-						<Label className="text-sm font-medium">
-							{t("tools.password_manager.share.user_email")}
-						</Label>
+					<div className="flex items-center gap-2.5">
 						<Input
 							placeholder={t(
 								"tools.password_manager.share.enter_email",
@@ -156,93 +259,268 @@ export default function ShareFolderModal({
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
 							required
-							className="bg-background border-border text-foreground placeholder:text-muted-foreground rounded-lg"
+							disabled={isSharing}
+							className="flex-1 h-10 bg-background border-border text-foreground placeholder:text-muted-foreground text-sm rounded-lg"
 						/>
-						<p className="flex items-center gap-1.5 text-xs text-muted-foreground/80 pt-0.5">
-							<ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-							<span>
-								{t("tools.password_manager.share.e2ee_badge")}
-							</span>
-						</p>
-					</div>
 
-					<div className="space-y-2">
-						<Label className="text-sm font-medium">
-							{t("tools.password_manager.share.permission")}
-						</Label>
-						<div className="grid grid-cols-2 gap-3">
-							<button
-								type="button"
-								onClick={() => setRole("viewer")}
-								className={cn(
-									"flex flex-col items-start p-3 rounded-xl border text-left transition-all",
-									role === "viewer"
-										? "border-primary bg-primary/10 ring-1 ring-primary text-foreground"
-										: "border-border/70 hover:border-border hover:bg-muted/40 text-muted-foreground",
-								)}
-							>
-								<div className="flex items-center gap-2 mb-1">
-									<Eye className="w-4 h-4 text-primary" />
-									<span className="text-sm font-semibold text-foreground">
-										{t(
-											"tools.password_manager.share.viewer",
-										)}
-									</span>
-								</div>
-								<span className="text-xs text-muted-foreground leading-relaxed">
-									{t(
-										"tools.password_manager.share.viewer_desc",
-									)}
-								</span>
-							</button>
-
-							<button
-								type="button"
-								onClick={() => setRole("editor")}
-								className={cn(
-									"flex flex-col items-start p-3 rounded-xl border text-left transition-all",
-									role === "editor"
-										? "border-primary bg-primary/10 ring-1 ring-primary text-foreground"
-										: "border-border/70 hover:border-border hover:bg-muted/40 text-muted-foreground",
-								)}
-							>
-								<div className="flex items-center gap-2 mb-1">
-									<Edit3 className="w-4 h-4 text-primary" />
-									<span className="text-sm font-semibold text-foreground">
-										{t(
-											"tools.password_manager.share.editor",
-										)}
-									</span>
-								</div>
-								<span className="text-xs text-muted-foreground leading-relaxed">
-									{t(
-										"tools.password_manager.share.editor_desc",
-									)}
-								</span>
-							</button>
-						</div>
-					</div>
-
-					<div className="flex justify-end gap-3 pt-3">
-						<Button
-							type="button"
-							variant="outline"
-							onClick={onClose}
-							className="border-border bg-transparent text-foreground hover:bg-muted rounded-lg"
+						<Select
+							value={role}
+							onValueChange={(val) => {
+								if (val === "viewer" || val === "editor") {
+									setRole(val);
+								}
+							}}
+							disabled={isSharing}
 						>
-							{t("common.actions.cancel")}
-						</Button>
+							<SelectTrigger className="w-32 h-10 text-xs font-medium bg-background border-border text-foreground shrink-0 rounded-lg">
+								<SelectValue>
+									<span className="flex items-center gap-1.5">
+										{role === "editor" ? (
+											<Edit3 className="w-3.5 h-3.5 text-primary" />
+										) : (
+											<Eye className="w-3.5 h-3.5 text-primary" />
+										)}
+										<span>
+											{role === "editor"
+												? t(
+														"tools.password_manager.share.editor",
+													)
+												: t(
+														"tools.password_manager.share.viewer",
+													)}
+										</span>
+									</span>
+								</SelectValue>
+							</SelectTrigger>
+							<SelectContent className="bg-background border-border text-foreground shadow-xl rounded-xl min-w-[200px] p-1.5">
+								<SelectItem
+									value="viewer"
+									className="rounded-lg py-2 cursor-pointer"
+								>
+									<div className="flex items-start gap-2.5">
+										<Eye className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+										<div className="flex flex-col">
+											<span className="text-xs font-medium leading-none mb-1">
+												{t(
+													"tools.password_manager.share.viewer",
+												)}
+											</span>
+											<span className="text-[11px] text-muted-foreground leading-snug">
+												{t(
+													"tools.password_manager.share.viewer_desc",
+												)}
+											</span>
+										</div>
+									</div>
+								</SelectItem>
+								<SelectItem
+									value="editor"
+									className="rounded-lg py-2 cursor-pointer"
+								>
+									<div className="flex items-start gap-2.5">
+										<Edit3 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+										<div className="flex flex-col">
+											<span className="text-xs font-medium leading-none mb-1">
+												{t(
+													"tools.password_manager.share.editor",
+												)}
+											</span>
+											<span className="text-[11px] text-muted-foreground leading-snug">
+												{t(
+													"tools.password_manager.share.editor_desc",
+												)}
+											</span>
+										</div>
+									</div>
+								</SelectItem>
+							</SelectContent>
+						</Select>
+
 						<Button
 							type="submit"
 							disabled={
-								!email || (!folderId && !selectedFolderId)
+								!email.trim() ||
+								(!folderId && !selectedFolderId) ||
+								isSharing
 							}
-							className="rounded-lg"
+							className="h-10 px-5 shrink-0 font-medium rounded-lg"
 						>
-							{t("tools.password_manager.share.share_securely")}
+							{isSharing
+								? t("tools.password_manager.share.sharing")
+								: t("tools.password_manager.share.share")}
 						</Button>
 					</div>
 				</form>
+
+				{/* People with access list */}
+				<div className="border-t border-border pt-4 space-y-3">
+					<p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+						{t(
+							"tools.password_manager.share.people_with_access_title",
+						)}
+					</p>
+
+					{filteredMembers.length === 0 ? (
+						<div className="py-6 text-center text-xs text-muted-foreground bg-muted/20 rounded-xl border border-dashed border-border/60">
+							{t("tools.password_manager.share.no_members_found")}
+						</div>
+					) : (
+						<ul className="space-y-2 max-h-56 overflow-y-auto pr-1 -mr-1">
+							{filteredMembers.map((m) => {
+								return (
+									<li
+										key={m.id}
+										className="flex items-center justify-between gap-3 p-2.5 rounded-xl border border-border/50 bg-background/50 hover:bg-muted/40 transition-colors"
+									>
+										<div className="flex items-center gap-3 min-w-0">
+											<div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 text-primary font-semibold text-xs border border-primary/20">
+												{m.username ? (
+													m.username
+														.slice(0, 2)
+														.toUpperCase()
+												) : (
+													<User className="w-4 h-4" />
+												)}
+											</div>
+											<div className="min-w-0">
+												<p className="text-sm font-medium truncate text-foreground leading-tight">
+													{m.username ||
+														t(
+															"tools.password_manager.share.unknown_user",
+														)}
+												</p>
+												<p className="text-xs text-muted-foreground truncate leading-tight">
+													{m.email ||
+														t(
+															"tools.password_manager.share.unknown_email",
+														)}
+												</p>
+											</div>
+										</div>
+
+										<div className="flex items-center gap-2 shrink-0">
+											<Select
+												value={m.role}
+												onValueChange={(val) => {
+													if (
+														val === "viewer" ||
+														val === "editor"
+													) {
+														void handleRoleChange(
+															m.id,
+															val,
+														);
+													}
+												}}
+												disabled={
+													actionLoadingId === m.id ||
+													isSharing
+												}
+											>
+												<SelectTrigger className="h-8 w-28 text-xs font-medium bg-background border-border rounded-lg">
+													<SelectValue>
+														<span className="flex items-center gap-1.5">
+															{m.role ===
+															"editor" ? (
+																<Edit3 className="w-3.5 h-3.5 text-primary" />
+															) : (
+																<Eye className="w-3.5 h-3.5 text-primary" />
+															)}
+															<span>
+																{m.role ===
+																"editor"
+																	? t(
+																			"tools.password_manager.share.editor",
+																		)
+																	: t(
+																			"tools.password_manager.share.viewer",
+																		)}
+															</span>
+														</span>
+													</SelectValue>
+												</SelectTrigger>
+												<SelectContent className="bg-background border-border text-foreground shadow-xl rounded-xl min-w-[200px] p-1.5">
+													<SelectItem
+														value="viewer"
+														className="rounded-lg py-2 cursor-pointer"
+													>
+														<div className="flex items-start gap-2.5">
+															<Eye className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+															<div className="flex flex-col">
+																<span className="text-xs font-medium leading-none mb-1">
+																	{t(
+																		"tools.password_manager.share.viewer",
+																	)}
+																</span>
+																<span className="text-[11px] text-muted-foreground leading-snug">
+																	{t(
+																		"tools.password_manager.share.viewer_desc",
+																	)}
+																</span>
+															</div>
+														</div>
+													</SelectItem>
+													<SelectItem
+														value="editor"
+														className="rounded-lg py-2 cursor-pointer"
+													>
+														<div className="flex items-start gap-2.5">
+															<Edit3 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+															<div className="flex flex-col">
+																<span className="text-xs font-medium leading-none mb-1">
+																	{t(
+																		"tools.password_manager.share.editor",
+																	)}
+																</span>
+																<span className="text-[11px] text-muted-foreground leading-snug">
+																	{t(
+																		"tools.password_manager.share.editor_desc",
+																	)}
+																</span>
+															</div>
+														</div>
+													</SelectItem>
+												</SelectContent>
+											</Select>
+
+											<Button
+												type="button"
+												variant="ghost"
+												size="icon-xs"
+												onClick={() =>
+													handleRevoke(m.id, m.email)
+												}
+												disabled={
+													actionLoadingId === m.id ||
+													isSharing
+												}
+												className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg"
+												title={t(
+													"tools.password_manager.share.revoke",
+												)}
+											>
+												<Trash2 className="w-4 h-4" />
+											</Button>
+										</div>
+									</li>
+								);
+							})}
+						</ul>
+					)}
+				</div>
+
+				{/* Footer with Done/Close button */}
+				<div className="flex justify-end pt-4 mt-3 border-t border-border">
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						onClick={onClose}
+						className="px-5 border-border bg-transparent text-foreground hover:bg-muted rounded-lg"
+					>
+						{t("tools.password_manager.share.close")}
+					</Button>
+				</div>
 			</DialogContent>
 		</Dialog>
 	);

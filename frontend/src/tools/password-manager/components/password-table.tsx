@@ -165,15 +165,19 @@ export function PasswordTable({
 			}),
 			...(folders.length > 0
 				? [
-						columnHelper.accessor("folderId", {
+						columnHelper.accessor((row) => row.folderId, {
+							id: "folderId",
 							header: t(
 								"tools.password_manager.table_folder",
 							) as string,
-							cell: ({ getValue }) => {
-								const folderId = getValue();
-								if (!folderId) return null;
+							cell: ({ row }) => {
+								const folderId = row.original.folderId;
+								const collectionId = row.original.collectionId;
 								const folder = folders.find(
-									(f: FolderType) => f.id === folderId,
+									(f: FolderType) =>
+										(folderId && f.id === folderId) ||
+										(collectionId &&
+											f.collectionId === collectionId),
 								);
 								if (!folder) return null;
 								const IconComp = folder.iconName

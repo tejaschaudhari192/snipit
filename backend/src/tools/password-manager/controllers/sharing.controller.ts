@@ -445,3 +445,60 @@ export const revokeAccess = async (
 		next(error);
 	}
 };
+
+/**
+ * Update access role of a collection member
+ * @route PUT /api/tools/password-manager/vault/share/:accessId
+ */
+export const updateAccessRole = async (
+	req: AuthRequest,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		if (!req.user || !req.user._id) {
+			return next(new AppError("User not authenticated", 401));
+		}
+
+		const { accessId } = req.params;
+		const { role } = req.body;
+
+		if (!role || !["viewer", "editor"].includes(role)) {
+			return next(
+				new AppError(
+					"Valid role ('viewer' or 'editor') is required",
+					400,
+				),
+			);
+		}
+
+		const access = await CollectionAccess.findById(accessId);
+		if (!access) {
+			return next(new AppError("Access record not found", 404));
+		}
+
+		if (access.role === "owner") {
+			return next(new AppError("Cannot change owner access role", 400));
+		}
+
+		const collection = await Collection.findById(access.collectionId);
+		if (
+			!collection ||
+			collection.createdBy.toString() !== req.user._id.toString()
+		) {
+			return next(
+				new AppError("Only the owner can update access role", 403),
+			);
+		}
+
+		access.role = role;
+		await access.save();
+
+		res.status(200).json({
+			success: true,
+			data: access,
+		});
+	} catch (error) {
+		next(error);
+	}
+};

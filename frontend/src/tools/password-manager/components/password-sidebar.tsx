@@ -212,7 +212,9 @@ export default function PasswordSidebar() {
 		const folderCounts: Record<string, number> = {};
 		folders.forEach((f) => {
 			folderCounts[f.id] = items.filter(
-				(i) => i.folderId === f.id,
+				(i) =>
+					i.folderId === f.id ||
+					(f.collectionId && i.collectionId === f.collectionId),
 			).length;
 		});
 
