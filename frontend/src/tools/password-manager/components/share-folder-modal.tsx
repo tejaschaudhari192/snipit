@@ -292,7 +292,7 @@ export default function ShareFolderModal({
 									</span>
 								</SelectValue>
 							</SelectTrigger>
-							<SelectContent className="bg-background border-border text-foreground shadow-xl rounded-xl min-w-[200px] p-1.5">
+							<SelectContent className="bg-background border-border text-foreground shadow-xl rounded-xl min-w-50 p-1.5">
 								<SelectItem
 									value="viewer"
 									className="rounded-lg py-2 cursor-pointer"
@@ -439,7 +439,7 @@ export default function ShareFolderModal({
 														</span>
 													</SelectValue>
 												</SelectTrigger>
-												<SelectContent className="bg-background border-border text-foreground shadow-xl rounded-xl min-w-[200px] p-1.5">
+												<SelectContent className="bg-background border-border text-foreground shadow-xl rounded-xl min-w-50 p-1.5">
 													<SelectItem
 														value="viewer"
 														className="rounded-lg py-2 cursor-pointer"

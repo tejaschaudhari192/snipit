@@ -2,6 +2,7 @@ import { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SplashPage from "@/pages/splash";
 import Header from "@/components/header/header";
+import { TopNavigationProgress } from "@/components/common/top-navigation-progress";
 import ThemeProvider from "@/lib/theme";
 import { AuthProvider } from "@/context/AuthContext";
 import { PasteProvider } from "@/context/PasteContext";
@@ -128,6 +129,7 @@ const App = () => {
 									<TtsProvider>
 										<Router>
 											<VoiceAgentProvider>
+												<TopNavigationProgress />
 												<div className="relative h-dvh w-full m-0 p-0 box-border flex flex-col overflow-hidden bg-background text-foreground font-sans">
 													{/* Fast 1-2s Splash Screen with backend health stream attached */}
 													{showSplash && (
