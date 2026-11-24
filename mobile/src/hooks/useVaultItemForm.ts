@@ -71,14 +71,13 @@ export function useVaultItemForm() {
 		setEditingItem(item);
 		setItemCategory(item.category);
 		setItemFolderId(item.folderId);
+		const meta = item.metadata || {};
 		setNewTitle(item.title || "");
-		setNewUsername(item.username || "");
+		setNewUsername(item.username || meta.username || meta.email || "");
 		setNewPassword(item.password || "");
 		setNewUrl(item.url || "");
 		setNewNotes(item.notes || "");
 		setCustomFields(item.customFields || []);
-
-		const meta = item.metadata || {};
 		if (item.category === "card") {
 			setCardHolder(meta.cardholderName || "");
 			setCardNumber(meta.cardNumber || "");

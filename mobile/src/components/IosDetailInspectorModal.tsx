@@ -313,121 +313,183 @@ export function IosDetailInspectorModal({
 					)}
 
 					{/* Primary Account Fields */}
-					{(currentItem.username ||
-						currentItem.password ||
-						currentItem.url) && (
-						<DetailGroupedCard theme={theme}>
-							{currentItem.username && (
-								<DetailGroupedRow
-									label="Email / Username"
-									value={currentItem.username}
-									theme={theme}
-									onCopy={() =>
-										onCopyToClipboard(
-											currentItem.username!,
-											"user",
-										)
-									}
-									isCopied={copiedField === "user"}
-								/>
-							)}
+					{(() => {
+						const meta = currentItem.metadata || {};
+						const displayUsername =
+							currentItem.username || meta.username;
+						const displayEmail = meta.email;
+						const hasBoth = Boolean(
+							displayUsername &&
+							displayEmail &&
+							displayUsername !== displayEmail,
+						);
+						const hasAccountFields = Boolean(
+							displayUsername ||
+							displayEmail ||
+							currentItem.password ||
+							currentItem.url,
+						);
 
-							{currentItem.password && (
-								<DetailGroupedRow
-									label={
-										currentItem.category === "apikey"
-											? "API Secret Key"
-											: "Password"
-									}
-									value={
-										showPassword
-											? currentItem.password
-											: "••••••••••••••••"
-									}
-									theme={theme}
-									isDivider={!!currentItem.username}
-									isMasked={!showPassword}
-									rightAction={
-										<View className="flex-row items-center gap-3.5">
-											<TouchableOpacity
-												onPress={onTogglePassword}
-												hitSlop={{
-													top: 12,
-													bottom: 12,
-													left: 12,
-													right: 12,
-												}}
-											>
-												{showPassword ? (
-													<Icon
-														as={EyeOff}
-														className="text-muted-foreground"
-														size={18}
-													/>
-												) : (
-													<Icon
-														as={Eye}
-														className="text-muted-foreground"
-														size={18}
-													/>
-												)}
-											</TouchableOpacity>
-											<TouchableOpacity
-												onPress={() =>
+						if (!hasAccountFields) return null;
+
+						let rowCount = 0;
+
+						return (
+							<DetailGroupedCard theme={theme}>
+								{hasBoth ? (
+									<>
+										{displayUsername && (
+											<DetailGroupedRow
+												label="Username"
+												value={displayUsername}
+												theme={theme}
+												isDivider={rowCount++ > 0}
+												onCopy={() =>
 													onCopyToClipboard(
-														currentItem.password!,
-														"pass",
+														displayUsername,
+														"user",
 													)
 												}
-												hitSlop={{
-													top: 12,
-													bottom: 12,
-													left: 12,
-													right: 12,
-												}}
-											>
-												{copiedField === "pass" ? (
-													<Icon
-														as={Check}
-														className="text-foreground"
-														size={18}
-													/>
-												) : (
-													<Icon
-														as={Copy}
-														className="text-muted-foreground"
-														size={18}
-													/>
-												)}
-											</TouchableOpacity>
-										</View>
-									}
-								/>
-							)}
+												isCopied={
+													copiedField === "user"
+												}
+											/>
+										)}
+										{displayEmail && (
+											<DetailGroupedRow
+												label="Email"
+												value={displayEmail}
+												theme={theme}
+												isDivider={rowCount++ > 0}
+												onCopy={() =>
+													onCopyToClipboard(
+														displayEmail,
+														"email",
+													)
+												}
+												isCopied={
+													copiedField === "email"
+												}
+											/>
+										)}
+									</>
+								) : (
+									(displayUsername || displayEmail) && (
+										<DetailGroupedRow
+											label={
+												displayEmail && !displayUsername
+													? "Email"
+													: "Email / Username"
+											}
+											value={
+												displayUsername || displayEmail!
+											}
+											theme={theme}
+											isDivider={rowCount++ > 0}
+											onCopy={() =>
+												onCopyToClipboard(
+													(displayUsername ||
+														displayEmail)!,
+													"user",
+												)
+											}
+											isCopied={copiedField === "user"}
+										/>
+									)
+								)}
 
-							{currentItem.url && (
-								<DetailGroupedRow
-									label="Website"
-									value={currentItem.url}
-									theme={theme}
-									isDivider={
-										!!(
-											currentItem.username ||
-											currentItem.password
-										)
-									}
-									isUrl
-									onCopy={() =>
-										onCopyToClipboard(
-											currentItem.url!,
-											"url",
-										)
-									}
-									isCopied={copiedField === "url"}
-								/>
-							)}
-						</DetailGroupedCard>
-					)}
+								{currentItem.password && (
+									<DetailGroupedRow
+										label={
+											currentItem.category === "apikey"
+												? "API Secret Key"
+												: "Password"
+										}
+										value={
+											showPassword
+												? currentItem.password
+												: "••••••••••••••••"
+										}
+										theme={theme}
+										isDivider={rowCount++ > 0}
+										isMasked={!showPassword}
+										rightAction={
+											<View className="flex-row items-center gap-3.5">
+												<TouchableOpacity
+													onPress={onTogglePassword}
+													hitSlop={{
+														top: 12,
+														bottom: 12,
+														left: 12,
+														right: 12,
+													}}
+												>
+													{showPassword ? (
+														<Icon
+															as={EyeOff}
+															className="text-muted-foreground"
+															size={18}
+														/>
+													) : (
+														<Icon
+															as={Eye}
+															className="text-muted-foreground"
+															size={18}
+														/>
+													)}
+												</TouchableOpacity>
+												<TouchableOpacity
+													onPress={() =>
+														onCopyToClipboard(
+															currentItem.password!,
+															"pass",
+														)
+													}
+													hitSlop={{
+														top: 12,
+														bottom: 12,
+														left: 12,
+														right: 12,
+													}}
+												>
+													{copiedField === "pass" ? (
+														<Icon
+															as={Check}
+															className="text-foreground"
+															size={18}
+														/>
+													) : (
+														<Icon
+															as={Copy}
+															className="text-muted-foreground"
+															size={18}
+														/>
+													)}
+												</TouchableOpacity>
+											</View>
+										}
+									/>
+								)}
+
+								{currentItem.url && (
+									<DetailGroupedRow
+										label="Website"
+										value={currentItem.url}
+										theme={theme}
+										isDivider={rowCount++ > 0}
+										isUrl
+										onCopy={() =>
+											onCopyToClipboard(
+												currentItem.url!,
+												"url",
+											)
+										}
+										isCopied={copiedField === "url"}
+									/>
+								)}
+							</DetailGroupedCard>
+						);
+					})()}
 
 					{/* API Key Metadata */}
 					{currentItem.category === "apikey" &&
@@ -612,6 +674,124 @@ export function IosDetailInspectorModal({
 								))}
 							</DetailGroupedCard>
 						)}
+
+					{/* Other Metadata / Dynamic Fields (e.g. imported or custom schemas) */}
+					{(() => {
+						if (!currentItem.metadata) return null;
+						// Exclude keys already handled specifically by category blocks or credentials
+						const handledKeys = new Set([
+							"username",
+							"email",
+							"cardholderName",
+							"cardNumber",
+							"expiration",
+							"cvv",
+							"pin",
+							"zipCode",
+							"keyId",
+							"apiKey",
+							"environment",
+							"fullName",
+							"phone",
+							"address",
+							"userId",
+							"publicKey",
+							"fileName",
+							"fileContent",
+						]);
+
+						const extraEntries = Object.entries(
+							currentItem.metadata,
+						).filter(
+							([k, v]) =>
+								!handledKeys.has(k) &&
+								v !== undefined &&
+								v !== null &&
+								String(v).trim() !== "",
+						);
+
+						if (extraEntries.length === 0) return null;
+
+						const formatLabel = (key: string) => {
+							return key
+								.replace(/([A-Z])/g, " $1")
+								.replace(/[_-]/g, " ")
+								.replace(/^./, (str) => str.toUpperCase())
+								.trim();
+						};
+
+						return (
+							<DetailGroupedCard theme={theme}>
+								{extraEntries.map(([key, val], idx) => (
+									<DetailGroupedRow
+										key={key}
+										label={formatLabel(key)}
+										value={String(val)}
+										theme={theme}
+										isDivider={idx > 0}
+										onCopy={() =>
+											onCopyToClipboard(
+												String(val),
+												`meta_${key}`,
+											)
+										}
+										isCopied={copiedField === `meta_${key}`}
+									/>
+								))}
+							</DetailGroupedCard>
+						);
+					})()}
+
+					{/* Timestamps (Created & Last Modified) */}
+					{(currentItem.createdAt || currentItem.updatedAt) &&
+						(() => {
+							const formatDateStr = (dateStr?: string) => {
+								if (!dateStr) return null;
+								try {
+									const d = new Date(dateStr);
+									if (isNaN(d.getTime())) return dateStr;
+									return d.toLocaleDateString(undefined, {
+										year: "numeric",
+										month: "short",
+										day: "numeric",
+										hour: "2-digit",
+										minute: "2-digit",
+									});
+								} catch {
+									return dateStr;
+								}
+							};
+
+							const createdFormatted = formatDateStr(
+								currentItem.createdAt,
+							);
+							const updatedFormatted = formatDateStr(
+								currentItem.updatedAt,
+							);
+
+							let rowCount = 0;
+
+							return (
+								<DetailGroupedCard theme={theme}>
+									{createdFormatted && (
+										<DetailGroupedRow
+											label="Created"
+											value={createdFormatted}
+											theme={theme}
+											isDivider={rowCount++ > 0}
+										/>
+									)}
+									{updatedFormatted && (
+										<DetailGroupedRow
+											label="Last modified"
+											value={updatedFormatted}
+											theme={theme}
+											isDivider={rowCount++ > 0}
+										/>
+									)}
+								</DetailGroupedCard>
+							);
+						})()}
 
 					{/* Actions (Favorite & Delete) */}
 					<Card className="border-border bg-card overflow-hidden mt-4">

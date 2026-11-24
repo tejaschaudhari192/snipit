@@ -211,6 +211,8 @@ export const PWMGListView = memo(function PWMGListView({
 							: isNote
 								? item.notes?.trim() || "Empty note"
 								: item.username ||
+									item.metadata?.username ||
+									item.metadata?.email ||
 									item.url ||
 									(item.notes
 										? item.notes.trim()

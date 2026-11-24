@@ -804,9 +804,12 @@ export function PWMGScreen({
 			return;
 		}
 
-		let metadata: Record<string, string> = {};
+		let metadata: Record<string, string> = {
+			...(form.editingItem?.metadata || {}),
+		};
 		if (form.itemCategory === "card") {
 			metadata = {
+				...metadata,
 				cardholderName: form.cardHolder,
 				cardNumber: form.cardNumber,
 				expiration: form.cardExp,
@@ -816,12 +819,14 @@ export function PWMGScreen({
 			};
 		} else if (form.itemCategory === "apikey") {
 			metadata = {
+				...metadata,
 				keyId: form.apiKeyId,
 				apiKey: form.apiSecret,
 				environment: form.apiEnv,
 			};
 		} else if (form.itemCategory === "identity") {
 			metadata = {
+				...metadata,
 				fullName: form.identityName,
 				email: form.identityEmail,
 				phone: form.identityPhone,
@@ -829,14 +834,20 @@ export function PWMGScreen({
 			};
 		} else if (form.itemCategory === "passkey") {
 			metadata = {
+				...metadata,
 				userId: form.passkeyUserId,
 				publicKey: form.passkeyPublicKey,
 			};
 		} else if (form.itemCategory === "credfile") {
 			metadata = {
+				...metadata,
 				fileName: form.credFileName,
 				fileContent: form.credFileContent,
 			};
+		} else if (form.itemCategory === "login") {
+			if (form.newUsername.includes("@") && !metadata.email) {
+				metadata.email = form.newUsername;
+			}
 		}
 
 		await offlineVault.saveItem({
