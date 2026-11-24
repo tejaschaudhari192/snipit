@@ -1,6 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useTransition } from "react";
 import { useTranslation } from "react-i18next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SubNavProgressBar } from "@/components/ui/sub-nav-progress-bar";
 import {
 	Users,
 	UserPlus,
@@ -39,6 +40,7 @@ interface MemberData {
 
 export default function SharingCenter() {
 	const [activeTab, setActiveTab] = useState("with-me");
+	const [isPendingTab, startTabTransition] = useTransition();
 	const [isShareNewModalOpen, setIsShareNewModalOpen] = useState(false);
 	const [expandedCollectionId, setExpandedCollectionId] = useState<
 		string | null
@@ -439,106 +441,120 @@ export default function SharingCenter() {
 			</div>
 
 			{/* Tab Switcher */}
-			<Tabs
-				value={activeTab}
-				onValueChange={setActiveTab}
-				className="w-full flex-col space-y-6"
-			>
-				<TabsList className="bg-muted/60 border border-border/60 w-full sm:w-auto justify-start p-1 rounded-xl h-auto">
-					<TabsTrigger
-						value="with-me"
-						className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs rounded-lg py-2 px-4 flex items-center gap-2 text-sm font-medium transition-all"
-					>
-						{t("tools.password_manager.shared_with_me")}
-						<Badge
-							variant="secondary"
-							className="rounded-full px-2 py-0 text-xs font-semibold"
-						>
-							{sharedWithMe.length}
-						</Badge>
-					</TabsTrigger>
-					<TabsTrigger
-						value="by-me"
-						className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs rounded-lg py-2 px-4 flex items-center gap-2 text-sm font-medium transition-all"
-					>
-						{t("tools.password_manager.shared_by_me")}
-						<Badge
-							variant="secondary"
-							className="rounded-full px-2 py-0 text-xs font-semibold"
-						>
-							{sharedByMe.length}
-						</Badge>
-					</TabsTrigger>
-				</TabsList>
-
-				{/* Shared With Me Tab */}
-				<TabsContent value="with-me" className="mt-0 space-y-4">
-					{sharedWithMe.length === 0 ? (
-						<div className="relative overflow-hidden flex flex-col items-center justify-center p-12 sm:p-16 border border-dashed border-border/80 rounded-2xl bg-card/40 text-center">
-							<span className="absolute text-7xl sm:text-8xl font-black text-muted-foreground/5 select-none pointer-events-none">
-								EMPTY
-							</span>
-							<div className="p-4 rounded-2xl bg-primary/10 text-primary mb-4 relative">
-								<Shield className="w-8 h-8" />
-							</div>
-							<h3 className="text-lg font-semibold text-foreground relative">
-								{t(
-									"tools.password_manager.shared_with_me_empty",
-								)}
-							</h3>
-							<p className="text-sm text-muted-foreground mt-1 max-w-sm relative">
-								{t(
-									"tools.password_manager.shared_with_me_empty_desc",
-								)}
-							</p>
-						</div>
-					) : (
-						<div className="grid gap-3">
-							{sharedWithMe.map((c) =>
-								renderCollectionCard(c, false),
-							)}
-						</div>
+			<div className="relative">
+				<SubNavProgressBar
+					loading={isPendingTab}
+					aria-label={t(
+						"tools.password_manager.sharing_center_title",
 					)}
-				</TabsContent>
-
-				{/* Shared By Me Tab */}
-				<TabsContent value="by-me" className="mt-0 space-y-4">
-					{sharedByMe.length === 0 ? (
-						<div className="relative overflow-hidden flex flex-col items-center justify-center p-12 sm:p-16 border border-dashed border-border/80 rounded-2xl bg-card/40 text-center">
-							<span className="absolute text-7xl sm:text-8xl font-black text-muted-foreground/5 select-none pointer-events-none">
-								EMPTY
-							</span>
-							<div className="p-4 rounded-2xl bg-primary/10 text-primary mb-4 relative">
-								<Users className="w-8 h-8" />
-							</div>
-							<h3 className="text-lg font-semibold text-foreground relative">
-								{t("tools.password_manager.shared_by_me_empty")}
-							</h3>
-							<p className="text-sm text-muted-foreground mt-1 max-w-sm relative">
-								{t(
-									"tools.password_manager.shared_by_me_empty_desc",
-								)}
-							</p>
-							<Button
-								variant="outline"
-								className="mt-5 rounded-xl gap-2 relative border-border/70"
-								onClick={() => setIsShareNewModalOpen(true)}
+				/>
+				<Tabs
+					value={activeTab}
+					onValueChange={(val) => {
+						startTabTransition(() => {
+							setActiveTab(val);
+						});
+					}}
+					className="w-full flex-col space-y-6"
+				>
+					<TabsList className="bg-muted/60 border border-border/60 w-full sm:w-auto justify-start p-1 rounded-xl h-auto">
+						<TabsTrigger
+							value="with-me"
+							className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs rounded-lg py-2 px-4 flex items-center gap-2 text-sm font-medium transition-all"
+						>
+							{t("tools.password_manager.shared_with_me")}
+							<Badge
+								variant="secondary"
+								className="rounded-full px-2 py-0 text-xs font-semibold"
 							>
-								<UserPlus className="w-4 h-4" />
-								{t(
-									"tools.password_manager.share_new_collection",
+								{sharedWithMe.length}
+							</Badge>
+						</TabsTrigger>
+						<TabsTrigger
+							value="by-me"
+							className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs rounded-lg py-2 px-4 flex items-center gap-2 text-sm font-medium transition-all"
+						>
+							{t("tools.password_manager.shared_by_me")}
+							<Badge
+								variant="secondary"
+								className="rounded-full px-2 py-0 text-xs font-semibold"
+							>
+								{sharedByMe.length}
+							</Badge>
+						</TabsTrigger>
+					</TabsList>
+
+					{/* Shared With Me Tab */}
+					<TabsContent value="with-me" className="mt-0 space-y-4">
+						{sharedWithMe.length === 0 ? (
+							<div className="relative overflow-hidden flex flex-col items-center justify-center p-12 sm:p-16 border border-dashed border-border/80 rounded-2xl bg-card/40 text-center">
+								<span className="absolute text-7xl sm:text-8xl font-black text-muted-foreground/5 select-none pointer-events-none">
+									EMPTY
+								</span>
+								<div className="p-4 rounded-2xl bg-primary/10 text-primary mb-4 relative">
+									<Shield className="w-8 h-8" />
+								</div>
+								<h3 className="text-lg font-semibold text-foreground relative">
+									{t(
+										"tools.password_manager.shared_with_me_empty",
+									)}
+								</h3>
+								<p className="text-sm text-muted-foreground mt-1 max-w-sm relative">
+									{t(
+										"tools.password_manager.shared_with_me_empty_desc",
+									)}
+								</p>
+							</div>
+						) : (
+							<div className="grid gap-3">
+								{sharedWithMe.map((c) =>
+									renderCollectionCard(c, false),
 								)}
-							</Button>
-						</div>
-					) : (
-						<div className="grid gap-3">
-							{sharedByMe.map((c) =>
-								renderCollectionCard(c, true),
-							)}
-						</div>
-					)}
-				</TabsContent>
-			</Tabs>
+							</div>
+						)}
+					</TabsContent>
+
+					{/* Shared By Me Tab */}
+					<TabsContent value="by-me" className="mt-0 space-y-4">
+						{sharedByMe.length === 0 ? (
+							<div className="relative overflow-hidden flex flex-col items-center justify-center p-12 sm:p-16 border border-dashed border-border/80 rounded-2xl bg-card/40 text-center">
+								<span className="absolute text-7xl sm:text-8xl font-black text-muted-foreground/5 select-none pointer-events-none">
+									EMPTY
+								</span>
+								<div className="p-4 rounded-2xl bg-primary/10 text-primary mb-4 relative">
+									<Users className="w-8 h-8" />
+								</div>
+								<h3 className="text-lg font-semibold text-foreground relative">
+									{t(
+										"tools.password_manager.shared_by_me_empty",
+									)}
+								</h3>
+								<p className="text-sm text-muted-foreground mt-1 max-w-sm relative">
+									{t(
+										"tools.password_manager.shared_by_me_empty_desc",
+									)}
+								</p>
+								<Button
+									variant="outline"
+									className="mt-5 rounded-xl gap-2 relative border-border/70"
+									onClick={() => setIsShareNewModalOpen(true)}
+								>
+									<UserPlus className="w-4 h-4" />
+									{t(
+										"tools.password_manager.share_new_collection",
+									)}
+								</Button>
+							</div>
+						) : (
+							<div className="grid gap-3">
+								{sharedByMe.map((c) =>
+									renderCollectionCard(c, true),
+								)}
+							</div>
+						)}
+					</TabsContent>
+				</Tabs>
+			</div>
 
 			{/* Share New Folder Modal */}
 			<ShareFolderModal

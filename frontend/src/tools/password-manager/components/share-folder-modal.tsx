@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState, useEffect, useCallback } from "react";
-import { IndeterminateProgressBar } from "@/components/ui/indeterminate-progress-bar";
+import { SubNavProgressBar } from "@/components/ui/sub-nav-progress-bar";
 import {
 	Dialog,
 	DialogContent,
@@ -193,18 +193,13 @@ export default function ShareFolderModal({
 		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
 			<DialogContent
 				showCloseButton={true}
-				className="sm:max-w-lg bg-background border-border text-foreground shadow-2xl overflow-hidden p-6 gap-0"
+				className="sm:max-w-lg bg-background border-border text-foreground shadow-2xl overflow-hidden p-6 gap-0 relative"
 			>
-				{/* Indeterminate progress bar at top */}
-				{isSharing && (
-					<IndeterminateProgressBar
-						className="absolute top-0 left-0 right-0 w-full h-1.5 rounded-none z-10"
-						trackClassName="bg-muted rounded-none"
-						indicatorClassName="bg-primary"
-						duration={1.4}
-						aria-label={t("tools.password_manager.share.sharing")}
-					/>
-				)}
+				{/* Sub-nav hairline progress bar at top edge */}
+				<SubNavProgressBar
+					loading={isSharing || !!actionLoadingId}
+					aria-label={t("tools.password_manager.share.sharing")}
+				/>
 
 				<DialogHeader className="space-y-1.5 pr-6 pb-4">
 					<DialogTitle className="flex items-center gap-2.5 text-lg font-semibold">
