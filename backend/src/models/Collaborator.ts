@@ -6,7 +6,19 @@ export type ICollaborator = mongoose.Document & CollaboratorData;
 
 const collaboratorSchema = new Schema<ICollaborator>(
 	{
-		pasteId: { type: String, required: true, index: true },
+		pasteId: { type: String, required: false, index: true },
+		folderId: {
+			type: Schema.Types.ObjectId,
+			ref: "Folder",
+			required: false,
+			index: true,
+		},
+		resourceType: {
+			type: String,
+			enum: ["paste", "folder"],
+			default: "paste",
+			index: true,
+		},
 		email: { type: String, required: true, index: true },
 		userId: {
 			type: Schema.Types.ObjectId,
@@ -27,8 +39,22 @@ const collaboratorSchema = new Schema<ICollaborator>(
 	},
 );
 
-// Compound index for unique collaborator per paste
-collaboratorSchema.index({ pasteId: 1, email: 1 }, { unique: true });
+// Compound partial unique indexes per resource type
+collaboratorSchema.index(
+	{ pasteId: 1, email: 1 },
+	{
+		unique: true,
+		partialFilterExpression: { pasteId: { $type: "string" } },
+	},
+);
+
+collaboratorSchema.index(
+	{ folderId: 1, email: 1 },
+	{
+		unique: true,
+		partialFilterExpression: { folderId: { $type: "objectId" } },
+	},
+);
 
 const collaboratorModel = mongoose.model<ICollaborator>(
 	"collaborator",

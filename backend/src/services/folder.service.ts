@@ -1,6 +1,9 @@
 import folderModel from "@/models/Folder.js";
 import pasteModel from "@/models/Paste.js";
 import mongoose from "mongoose";
+import PermissionService from "@/services/permission.service.js";
+
+const permissionService = new PermissionService();
 
 export class FolderService {
 	static async createFolder(
@@ -163,12 +166,31 @@ export class FolderService {
 
 	static async getFolderContents(userId: string, folderId: string | null) {
 		const fId = folderId ? new mongoose.Types.ObjectId(folderId) : null;
+
+		if (!fId) {
+			const subfolders = await folderModel
+				.find({ owner: userId, parentId: null })
+				.sort({ name: 1 });
+			const snippets = await pasteModel
+				.find({ owner: userId, folderId: null })
+				.sort({ createdAt: -1 });
+			return { subfolders, snippets, role: "admin" as const };
+		}
+
+		const role = await permissionService.getFolderRole(
+			userId,
+			fId.toString(),
+		);
+		if (!role) {
+			throw new Error("Folder not found");
+		}
+
 		const subfolders = await folderModel
-			.find({ owner: userId, parentId: fId })
+			.find({ parentId: fId })
 			.sort({ name: 1 });
 		const snippets = await pasteModel
-			.find({ owner: userId, folderId: fId })
+			.find({ folderId: fId })
 			.sort({ createdAt: -1 });
-		return { subfolders, snippets };
+		return { subfolders, snippets, role };
 	}
 }

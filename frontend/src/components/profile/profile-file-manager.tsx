@@ -42,9 +42,9 @@ export const ProfileFileManager: React.FC<ProfileFileManagerProps> = ({
 	}, [user, externalSubfolders, folders, activeFolderId]);
 
 	return (
-		<div className="space-y-3 mb-5 select-none">
+		<div className="space-y-4 mb-4 select-none">
 			{/* Controls Bar: Breadcrumbs & View Toggle */}
-			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card/60 border border-border/40 backdrop-blur-xl rounded-2xl p-2.5 px-4 shadow-xs">
+			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card/50 border border-border/60 rounded-xl px-3.5 py-2">
 				{/* Breadcrumb Navigation */}
 				{user ? (
 					<FolderBreadcrumb
@@ -112,17 +112,17 @@ export const ProfileFileManager: React.FC<ProfileFileManagerProps> = ({
 				</div>
 			</div>
 
-			{/* Subfolders Grid / List Cards */}
+			{/* Subfolders Grid / List */}
 			{currentSubfolders.length > 0 && (
 				<div className="space-y-2">
-					<span className="text-[10px] font-extrabold text-muted-foreground/80 uppercase tracking-widest px-1">
+					<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-0.5">
 						{t("folders.subfolders")} ({currentSubfolders.length})
 					</span>
 					<div
 						className={
 							viewMode === "grid"
-								? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3"
-								: "space-y-2"
+								? "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5"
+								: "rounded-xl border border-border/60 bg-card divide-y divide-border/50 overflow-hidden"
 						}
 					>
 						{currentSubfolders.map((folder, idx) => (
@@ -130,6 +130,7 @@ export const ProfileFileManager: React.FC<ProfileFileManagerProps> = ({
 								key={folder._id}
 								folder={folder}
 								index={idx}
+								viewMode={viewMode}
 							/>
 						))}
 					</div>

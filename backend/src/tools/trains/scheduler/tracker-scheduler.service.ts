@@ -1,4 +1,5 @@
 import logger from "@/config/logger.js";
+import configurations from "@/config/configurations.js";
 import { pnrTrackingService } from "../services/pnr-tracking.service.js";
 import { TRACKER_CONFIG } from "../config/tracker.config.js";
 import type { ITrackerSchedulerStats } from "./tracker-scheduler.types.js";
@@ -19,6 +20,14 @@ class TrackerSchedulerService {
 		if (this.timer) {
 			clearInterval(this.timer);
 			this.timer = null;
+		}
+
+		if (!configurations.enable_schedulers) {
+			this.stats.isRunning = false;
+			logger.info(
+				"⏸️ PNR Tracker Scheduler is disabled (set ENABLE_SCHEDULERS=true to enable)",
+			);
+			return;
 		}
 
 		this.stats.isRunning = true;

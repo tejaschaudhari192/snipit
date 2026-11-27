@@ -129,6 +129,7 @@ const Header = ({ className }: HeaderProps) => {
 
 	const nonShareablePaths = [
 		"history",
+		"shared",
 		"about",
 		"profile",
 		"login",

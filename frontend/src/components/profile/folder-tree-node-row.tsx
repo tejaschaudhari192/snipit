@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import type { NodeApi } from "react-arborist";
 import {
 	Plus,
@@ -8,7 +8,9 @@ import {
 	FolderOpen,
 	ChevronRight,
 	ChevronDown,
+	Users,
 } from "lucide-react";
+import ShareResourceModal from "@/components/common/share-resource-modal";
 import { useTranslation } from "react-i18next";
 import type { FolderTreeNode } from "@/context/FolderContext";
 
@@ -32,6 +34,7 @@ export const FolderTreeNodeRow: React.FC<FolderTreeNodeRowProps> = ({
 	onDelete,
 }) => {
 	const { t } = useTranslation();
+	const [isShareOpen, setIsShareOpen] = useState(false);
 	const hasChildren = node.children && node.children.length > 0;
 
 	return (
@@ -109,6 +112,16 @@ export const FolderTreeNodeRow: React.FC<FolderTreeNodeRowProps> = ({
 				<button
 					onClick={(e) => {
 						e.stopPropagation();
+						setIsShareOpen(true);
+					}}
+					className="p-1 text-muted-foreground hover:text-primary hover:bg-muted/80 rounded-md transition-colors"
+					title={t("shared.share")}
+				>
+					<Users className="w-3.5 h-3.5" />
+				</button>
+				<button
+					onClick={(e) => {
+						e.stopPropagation();
 						onCreateSubfolder(node.id);
 					}}
 					className="p-1 text-muted-foreground hover:text-primary hover:bg-muted/80 rounded-md transition-colors"
@@ -137,6 +150,14 @@ export const FolderTreeNodeRow: React.FC<FolderTreeNodeRowProps> = ({
 					<Trash2 className="w-3.5 h-3.5" />
 				</button>
 			</div>
+
+			<ShareResourceModal
+				isOpen={isShareOpen}
+				onClose={() => setIsShareOpen(false)}
+				resourceType="folder"
+				resourceId={node.id}
+				resourceName={node.data.name}
+			/>
 		</div>
 	);
 };

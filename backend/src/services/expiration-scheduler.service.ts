@@ -1,5 +1,6 @@
 import logger from "@/config/logger.js";
 import pasteModel from "@/models/Paste.js";
+import configurations from "@/config/configurations.js";
 import type PasteService from "./paste.service.js";
 
 // Maximum 32-bit signed integer for setTimeout (~24.8 days)
@@ -26,6 +27,7 @@ class ExpirationSchedulerService {
 	schedule(pasteId: string, expiresAt: Date | null) {
 		this.cancel(pasteId);
 
+		if (!configurations.enable_schedulers) return;
 		if (!expiresAt) return;
 
 		const expiryDate = new Date(expiresAt);
@@ -163,57 +165,72 @@ class ExpirationSchedulerService {
 			this.dailyTimer = null;
 		}
 
-		try {
-			const now = new Date();
-			const horizon = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+		if (configurations.enable_schedulers) {
+			try {
+				const now = new Date();
+				const horizon = new Date(now.getTime() + 24 * 60 * 60 * 1000);
 
-			// Look for active snippets expiring in the next 24 hours
-			const expiringPastes = await pasteModel
-				.find({
-					expiresAt: { $gt: now, $lte: horizon },
-				})
-				.select("id expiresAt")
-				.exec();
+				// Look for active snippets expiring in the next 24 hours
+				const expiringPastes = await pasteModel
+					.find({
+						expiresAt: { $gt: now, $lte: horizon },
+					})
+					.select("id expiresAt")
+					.exec();
 
-			for (const paste of expiringPastes) {
-				if (paste.id && paste.expiresAt) {
-					this.schedule(paste.id, paste.expiresAt);
+				for (const paste of expiringPastes) {
+					if (paste.id && paste.expiresAt) {
+						this.schedule(paste.id, paste.expiresAt);
+					}
 				}
-			}
 
+				logger.info(
+					`✅ Expiration scheduler initialized: ${expiringPastes.length} active timers queued`,
+				);
+			} catch (error) {
+				logger.error(
+					"Failed to initialize expiration scheduler timers:",
+					error,
+				);
+			}
+		} else {
 			logger.info(
-				`✅ Expiration scheduler initialized: ${expiringPastes.length} active timers queued`,
-			);
-		} catch (error) {
-			logger.error(
-				"Failed to initialize expiration scheduler timers:",
-				error,
+				"⏸️ Expiration scheduler is disabled (set ENABLE_EXPIRATION_SCHEDULER=true to enable)",
 			);
 		}
 
-		// Initial catch-up sweep 3 seconds after startup to purge any overdue items
-		setTimeout(() => {
-			this.triggerDailyCleanupSweep().catch((err) => {
-				logger.error(
-					"Error during startup expired paste catch-up sweep:",
-					err,
-				);
-			});
-		}, 3000);
+		if (configurations.enable_schedulers) {
+			// Initial catch-up sweep 3 seconds after startup to purge any overdue items
+			setTimeout(() => {
+				this.triggerDailyCleanupSweep().catch((err) => {
+					logger.error(
+						"Error during startup expired paste catch-up sweep:",
+						err,
+					);
+				});
+			}, 3000);
 
-		// Periodic daily cleanup interval loop (24 hours)
-		this.dailyTimer = setInterval(() => {
-			this.triggerDailyCleanupSweep().catch((err) => {
-				logger.error(
-					"Error during scheduled daily cleanup sweep:",
-					err,
-				);
-			});
-		}, DAILY_INTERVAL_MS);
+			// Periodic daily cleanup interval loop (24 hours)
+			this.dailyTimer = setInterval(() => {
+				this.triggerDailyCleanupSweep().catch((err) => {
+					logger.error(
+						"Error during scheduled daily cleanup sweep:",
+						err,
+					);
+				});
+			}, DAILY_INTERVAL_MS);
 
-		// Unref so this timer doesn't prevent Node process from exiting if needed
-		if (this.dailyTimer && typeof this.dailyTimer.unref === "function") {
-			this.dailyTimer.unref();
+			// Unref so this timer doesn't prevent Node process from exiting if needed
+			if (
+				this.dailyTimer &&
+				typeof this.dailyTimer.unref === "function"
+			) {
+				this.dailyTimer.unref();
+			}
+		} else {
+			logger.info(
+				"⏸️ Automatic cleanup sweep is disabled (set ENABLE_CLEANUP_SWEEP=true to enable)",
+			);
 		}
 	}
 

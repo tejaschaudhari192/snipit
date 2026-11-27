@@ -32,6 +32,7 @@ import {
 const HomePage = lazyWithRetry(() => import("@/pages/home"));
 const DisplayPage = lazyWithRetry(() => import("@/pages/display"));
 const HistoryPage = lazyWithRetry(() => import("@/pages/history"));
+const SharedPage = lazyWithRetry(() => import("@/pages/shared"));
 const AboutPage = lazyWithRetry(() => import("@/pages/about"));
 const ToolsPage = lazyWithRetry(() => import("@/pages/tools"));
 const CompanionPage = lazyWithRetry(
@@ -321,6 +322,18 @@ const App = () => {
 																				}
 																			>
 																				<HistoryPage />
+																			</Suspense>
+																		}
+																	/>
+																	<Route
+																		path="/shared"
+																		element={
+																			<Suspense
+																				fallback={
+																					<HistoryPageSkeleton />
+																				}
+																			>
+																				<SharedPage />
 																			</Suspense>
 																		}
 																	/>

@@ -26,6 +26,7 @@ const envSchema = z.object({
 	LIVEKIT_API_SECRET: z.string(),
 	ADMIN_EMAIL: z.string().email(),
 	RUNNER_SERVICE_URL: z.string().url(),
+	ENABLE_SCHEDULERS: z.string().optional(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
@@ -46,6 +47,7 @@ const configurations = {
 	node_env: env.NODE_ENV,
 	port: parseInt(env.PORT, 10),
 	domain: env.DOMAIN,
+	enable_schedulers: env.ENABLE_SCHEDULERS === "true",
 	database: {
 		user: env.DB_USER,
 		password: env.DB_PASSWORD,

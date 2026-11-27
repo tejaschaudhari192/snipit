@@ -21,7 +21,9 @@ const DeleteConfirmDialog = React.lazy(() =>
 	})),
 );
 
-export const FolderTree: React.FC = () => {
+export const FolderTree: React.FC<{ hideHeader?: boolean }> = ({
+	hideHeader = false,
+}) => {
 	const { t } = useTranslation();
 	const {
 		folders,
@@ -91,27 +93,29 @@ export const FolderTree: React.FC = () => {
 	}
 
 	return (
-		<div className="w-full h-full flex flex-col min-h-0 gap-3">
+		<div className="w-full h-full flex flex-col min-h-0 gap-2">
 			{/* Explorer Section Header */}
-			<div className="flex items-center justify-between px-1 shrink-0">
-				<div className="flex items-center gap-2">
-					<span className="text-xs font-bold text-muted-foreground/80 uppercase tracking-wider">
-						{t("folders.explorer")}
-					</span>
-					{folders.length > 0 && (
-						<span className="text-xs font-extrabold px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-							{folders.length}
+			{!hideHeader && (
+				<div className="flex items-center justify-between px-1 shrink-0">
+					<div className="flex items-center gap-2">
+						<span className="text-xs font-bold text-muted-foreground/80 uppercase tracking-wider">
+							{t("folders.explorer")}
 						</span>
-					)}
+						{folders.length > 0 && (
+							<span className="text-xs font-extrabold px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+								{folders.length}
+							</span>
+						)}
+					</div>
+					<button
+						onClick={() => openCreateDialog(null)}
+						className="p-1.5 rounded-xl hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all cursor-pointer flex items-center gap-1.5 text-xs font-bold"
+						title={t("folders.create_new")}
+					>
+						<Plus className="w-4 h-4" />
+					</button>
 				</div>
-				<button
-					onClick={() => openCreateDialog(null)}
-					className="p-1.5 rounded-xl hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all cursor-pointer flex items-center gap-1.5 text-xs font-bold"
-					title={t("folders.create_new")}
-				>
-					<Plus className="w-4 h-4" />
-				</button>
-			</div>
+			)}
 
 			{loadingTree ? (
 				<div className="flex-1 w-full p-2 space-y-2.5">

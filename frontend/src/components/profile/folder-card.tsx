@@ -1,5 +1,5 @@
-import React from "react";
-import { Folder, MoreVertical, Edit2, Move, Trash2 } from "lucide-react";
+import React, { useState } from "react";
+import { Folder, MoreVertical, Edit2, Move, Trash2, Users } from "lucide-react";
 import type { FolderData } from "@/types";
 import { useTranslation } from "react-i18next";
 import {
@@ -13,14 +13,21 @@ import { CreateFolderDialog } from "./create-folder-dialog";
 import { MoveFolderDialog } from "./move-folder-dialog";
 import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
 import { useFolderActions } from "@/hooks/use-folder-actions";
+import ShareResourceModal from "@/components/common/share-resource-modal";
 
 interface FolderCardProps {
 	folder: FolderData;
 	index: number;
+	viewMode?: "grid" | "list";
 }
 
-export const FolderCard: React.FC<FolderCardProps> = ({ folder, index }) => {
+export const FolderCard: React.FC<FolderCardProps> = ({
+	folder,
+	index,
+	viewMode = "grid",
+}) => {
 	const { t } = useTranslation();
+	const [isShareOpen, setIsShareOpen] = useState(false);
 	const {
 		setActiveFolderId,
 		isRenameOpen,
@@ -42,92 +49,108 @@ export const FolderCard: React.FC<FolderCardProps> = ({ folder, index }) => {
 		confirmDeleteFolder(folder._id);
 	};
 
+	const folderColor = folder.color || "var(--color-primary)";
+
+	const actionMenu = (
+		<div
+			onClick={(e) => e.stopPropagation()}
+			className="shrink-0 relative z-20"
+		>
+			<DropdownMenu>
+				<DropdownMenuTrigger className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer outline-none">
+					<MoreVertical className="w-4 h-4" />
+				</DropdownMenuTrigger>
+				<DropdownMenuContent align="end" className="w-40">
+					<DropdownMenuItem
+						onClick={() => setIsShareOpen(true)}
+						className="gap-2 cursor-pointer text-xs"
+					>
+						<Users className="w-3.5 h-3.5" />
+						<span>{t("shared.share")}</span>
+					</DropdownMenuItem>
+					<DropdownMenuItem
+						onClick={() => openRenameDialog(folder)}
+						className="gap-2 cursor-pointer text-xs"
+					>
+						<Edit2 className="w-3.5 h-3.5" />
+						<span>{t("folders.rename")}</span>
+					</DropdownMenuItem>
+					<DropdownMenuItem
+						onClick={() =>
+							openMoveDialog(
+								folder._id,
+								"folder",
+								folder.parentId,
+							)
+						}
+						className="gap-2 cursor-pointer text-xs"
+					>
+						<Move className="w-3.5 h-3.5" />
+						<span>{t("folders.move_folder")}</span>
+					</DropdownMenuItem>
+					<DropdownMenuSeparator />
+					<DropdownMenuItem
+						onClick={handleDelete}
+						variant="destructive"
+						className="gap-2 cursor-pointer text-xs font-semibold"
+					>
+						<Trash2 className="w-3.5 h-3.5" />
+						<span>{t("folders.delete")}</span>
+					</DropdownMenuItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
+		</div>
+	);
+
 	return (
 		<div
-			className="min-w-0 h-full animate-in fade-in slide-in-from-bottom-3 duration-300 fill-mode-both relative group"
-			style={{ animationDelay: `${index * 30}ms` }}
+			className="min-w-0 animate-in fade-in duration-200 fill-mode-both relative group"
+			style={{ animationDelay: `${index * 20}ms` }}
 		>
-			<div
-				onClick={() => setActiveFolderId(folder._id)}
-				className="w-full h-full flex items-center justify-between p-3.5 rounded-2xl bg-card/60 border border-border/50 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200 cursor-pointer hover:-translate-y-0.5 relative overflow-hidden"
-			>
-				{/* Color Accent Indicator Strip */}
+			{viewMode === "list" ? (
 				<div
-					className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-2xl transition-opacity"
-					style={{
-						backgroundColor: folder.color || "var(--color-primary)",
-					}}
-				/>
-
-				<div className="flex items-center gap-3 min-w-0 flex-1 pl-1.5">
-					<div
-						className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105"
-						style={{
-							backgroundColor: folder.color
-								? `${folder.color}15`
-								: "var(--color-primary-10)",
-						}}
-					>
+					onClick={() => setActiveFolderId(folder._id)}
+					className="w-full flex items-center justify-between gap-4 px-4 py-2.5 hover:bg-muted/40 transition-colors cursor-pointer"
+				>
+					<div className="flex items-center gap-3 min-w-0 flex-1">
 						<Folder
-							className="w-4.5 h-4.5 shrink-0"
+							className="w-4 h-4 shrink-0"
 							style={{
-								color: folder.color || "var(--color-primary)",
+								color: folderColor,
+								fill: `${folderColor}20`,
 							}}
 						/>
-					</div>
-					<div className="min-w-0 flex-1">
-						<h4 className="text-xs font-bold text-foreground truncate group-hover:text-primary transition-colors">
+						<span className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
 							{folder.name}
-						</h4>
-						<span className="text-[10px] font-semibold text-muted-foreground/80">
-							{t("folders.subfolders")}
 						</span>
 					</div>
+					<div className="hidden sm:flex items-center gap-6 text-xs text-muted-foreground shrink-0">
+						<span className="w-24">
+							{t("folders.folder", { defaultValue: "Folder" })}
+						</span>
+					</div>
+					{actionMenu}
 				</div>
-
-				{/* Dropdown Menu */}
+			) : (
 				<div
-					onClick={(e) => e.stopPropagation()}
-					className="shrink-0 relative z-20"
+					onClick={() => setActiveFolderId(folder._id)}
+					className="w-full h-12 flex items-center justify-between gap-2.5 px-3.5 rounded-xl bg-card border border-border/60 hover:border-primary/40 hover:bg-muted/40 transition-colors cursor-pointer"
 				>
-					<DropdownMenu>
-						<DropdownMenuTrigger className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer outline-none">
-							<MoreVertical className="w-4 h-4" />
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end" className="w-40">
-							<DropdownMenuItem
-								onClick={() => openRenameDialog(folder)}
-								className="gap-2 cursor-pointer text-xs"
-							>
-								<Edit2 className="w-3.5 h-3.5" />
-								<span>{t("folders.rename")}</span>
-							</DropdownMenuItem>
-							<DropdownMenuItem
-								onClick={() =>
-									openMoveDialog(
-										folder._id,
-										"folder",
-										folder.parentId,
-									)
-								}
-								className="gap-2 cursor-pointer text-xs"
-							>
-								<Move className="w-3.5 h-3.5" />
-								<span>{t("folders.move_folder")}</span>
-							</DropdownMenuItem>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem
-								onClick={handleDelete}
-								variant="destructive"
-								className="gap-2 cursor-pointer text-xs font-bold"
-							>
-								<Trash2 className="w-3.5 h-3.5" />
-								<span>{t("folders.delete")}</span>
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
+					<div className="flex items-center gap-2.5 min-w-0 flex-1">
+						<Folder
+							className="w-4 h-4 shrink-0"
+							style={{
+								color: folderColor,
+								fill: `${folderColor}20`,
+							}}
+						/>
+						<span className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
+							{folder.name}
+						</span>
+					</div>
+					{actionMenu}
 				</div>
-			</div>
+			)}
 
 			<CreateFolderDialog
 				open={isRenameOpen}
@@ -149,6 +172,14 @@ export const FolderCard: React.FC<FolderCardProps> = ({ folder, index }) => {
 				onConfirm={executeDeleteFolder}
 				title={folderDeleteTitle}
 				description={folderDeleteDescription}
+			/>
+
+			<ShareResourceModal
+				isOpen={isShareOpen}
+				onClose={() => setIsShareOpen(false)}
+				resourceType="folder"
+				resourceId={folder._id}
+				resourceName={folder.name}
 			/>
 		</div>
 	);

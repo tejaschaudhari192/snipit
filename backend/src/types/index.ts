@@ -105,7 +105,9 @@ export type CommentData = {
 };
 
 export type CollaboratorData = {
-	pasteId: string;
+	pasteId?: string | undefined;
+	folderId?: string | undefined;
+	resourceType?: "paste" | "folder" | undefined;
 	email: string;
 	userId?: string | undefined;
 	role: ShareRole;

@@ -16,6 +16,58 @@ const collaboratorController = new CollaboratorController(
 	permissionService,
 );
 
+// Shared discovery endpoint
+router.get(
+	"/shared",
+	protect,
+	catchAsync(
+		collaboratorController.getSharedItems.bind(collaboratorController),
+	),
+);
+
+// Update collaborator role (paste or folder)
+router.patch(
+	"/role/:collaboratorId",
+	protect,
+	catchAsync(
+		collaboratorController.updateCollaboratorRole.bind(
+			collaboratorController,
+		),
+	),
+);
+
+// Folder collaborator endpoints
+router.get(
+	"/folder/:folderId",
+	protect,
+	catchAsync(
+		collaboratorController.getFolderCollaborators.bind(
+			collaboratorController,
+		),
+	),
+);
+
+router.post(
+	"/folder/:folderId",
+	protect,
+	catchAsync(
+		collaboratorController.addFolderCollaborator.bind(
+			collaboratorController,
+		),
+	),
+);
+
+router.delete(
+	"/folder/:folderId",
+	protect,
+	catchAsync(
+		collaboratorController.removeFolderCollaborator.bind(
+			collaboratorController,
+		),
+	),
+);
+
+// Paste collaborator endpoints
 router.post(
 	"/:id",
 	protect,

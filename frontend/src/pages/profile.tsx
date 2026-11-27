@@ -33,11 +33,6 @@ import {
 import { SidebarHeader } from "@/components/profile/sidebar-header";
 import { ProfileSidebarNav } from "@/components/profile/profile-sidebar-nav";
 
-const FolderTree = lazy(() =>
-	import("@/components/profile/folder-tree").then((m) => ({
-		default: m.FolderTree,
-	})),
-);
 const ProfileView = lazy(() =>
 	import("@/components/profile/profile-view").then((m) => ({
 		default: m.ProfileView,
@@ -53,6 +48,7 @@ const DevicesView = lazy(() =>
 		default: m.DevicesView,
 	})),
 );
+const SharedPage = lazy(() => import("@/pages/shared"));
 const LogoutDialog = lazy(() =>
 	import("@/components/header/logout-dialog").then((m) => ({
 		default: m.LogoutDialog,
@@ -76,7 +72,7 @@ const ProfilePage = () => {
 		loadFolderContents,
 	} = useFolders();
 
-	const { profile, loadProfile, loadStats } = useSnippets();
+	const { profile, loadProfile, loadStats, stats } = useSnippets();
 
 	const {
 		items: pastes,
@@ -86,6 +82,9 @@ const ProfilePage = () => {
 	} = profile;
 
 	const [searchParams, setSearchParams] = useSearchParams();
+	const [snippetsSection, setSnippetsSection] = useState<
+		"my_snippets" | "shared"
+	>("my_snippets");
 	const activeTab = (() => {
 		const tab = searchParams.get("tab");
 		if (tab === "devices") return "devices";
@@ -247,38 +246,19 @@ const ProfilePage = () => {
 			<div className="shrink-0 pt-1 pb-1">
 				<ProfileSidebarNav
 					activeTab={activeTab}
+					snippetsSection={snippetsSection}
+					onSnippetsSectionChange={setSnippetsSection}
 					onTabChange={(tab) => {
 						handleTabChange(tab);
 						setIsMobileSidebarOpen(false);
 					}}
-					snippetsCount={pastes.length}
+					snippetsCount={stats?.totalSnippets ?? pastes.length}
 				/>
 			</div>
 
-			{/* Folder Explorer Tree Container (rendered when in snippets mode) */}
+			{/* Devices / Profile info card when not in snippets mode */}
 			<div className="flex-1 min-h-0 overflow-hidden">
-				{activeTab === "snippets" ? (
-					<Suspense
-						fallback={
-							<div className="space-y-2 p-2">
-								<ShimmerSection
-									type="card"
-									className="h-10 rounded-xl"
-								/>
-								<ShimmerSection
-									type="card"
-									className="h-10 rounded-xl"
-								/>
-								<ShimmerSection
-									type="card"
-									className="h-10 rounded-xl"
-								/>
-							</div>
-						}
-					>
-						<FolderTree />
-					</Suspense>
-				) : activeTab === "devices" ? (
+				{activeTab === "snippets" ? null : activeTab === "devices" ? (
 					<div className="h-full rounded-2xl border border-dashed border-border/60 p-4 flex flex-col items-center justify-center text-center space-y-2 text-muted-foreground bg-card/20">
 						<Laptop className="w-8 h-8 text-primary/60 mb-1" />
 						<p className="text-xs font-semibold text-foreground">
@@ -418,6 +398,19 @@ const ProfilePage = () => {
 								/>
 							</Suspense>
 						</div>
+					) : snippetsSection === "shared" ? (
+						<Suspense
+							fallback={
+								<div className="space-y-4">
+									<ShimmerSection
+										type="card"
+										className="h-32 rounded-2xl"
+									/>
+								</div>
+							}
+						>
+							<SharedPage embedded />
+						</Suspense>
 					) : (
 						<div className="space-y-5 pb-6">
 							{/* Main Header & Actions */}
